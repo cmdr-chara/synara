@@ -2375,23 +2375,54 @@ impl Render for Native {
                         .child("Synara"),
                 )
                 .child(
+                    // Upstream surface picker: active surface ("Synara") plus
+                    // "Hubs", each with its subtitle. Selecting Hubs opens the
+                    // hubs rail section.
                     Button::new("app-menu")
                         .ghost()
                         .compact()
                         .icon(AssetIcon::ChevronDown)
-                        .dropdown_menu(|menu, _, _| {
-                            menu.item(
-                                PopupMenuItem::new("Synara on GitHub").on_click(|_, _, cx| {
-                                    cx.open_url("https://github.com/Emanuele-web04/synara");
-                                }),
-                            )
-                            .item(
-                                PopupMenuItem::new("Synara on GitHub (Rust port)").on_click(
-                                    |_, _, cx| {
-                                        cx.open_url("https://github.com/cmdr-chara/synara/tree/feat/rust-port");
-                                    },
-                                ),
-                            )
+                        .dropdown_menu({
+                            let weak = cx.weak_entity();
+                            move |menu, _, _cx| {
+                                let w2 = weak.clone();
+                                menu.min_w(px(200.))
+                                    .item(
+                                        PopupMenuItem::element(|_, _| {
+                                            v_flex()
+                                                .gap_0p5()
+                                                .child(div().text_size(px(13.)).child("Synara"))
+                                                .child(
+                                                    div()
+                                                        .text_size(px(11.))
+                                                        .text_color(rgba(0x777777aa))
+                                                        .child("Build, debug, and ship"),
+                                                )
+                                        })
+                                        .checked(true)
+                                        .on_click(|_, _, _| {}),
+                                    )
+                                    .item(
+                                        PopupMenuItem::element(|_, _| {
+                                            v_flex()
+                                                .gap_0p5()
+                                                .child(div().text_size(px(13.)).child("Hubs"))
+                                                .child(
+                                                    div()
+                                                        .text_size(px(11.))
+                                                        .text_color(rgba(0x777777aa))
+                                                        .child("Coordinated work across repos"),
+                                                )
+                                        })
+                                        .on_click(move |_, _w, cx| {
+                                            let _ = w2.update(cx, |this, cx| {
+                                                this.clear_views();
+                                                this.view_studio = true;
+                                                cx.notify();
+                                            });
+                                        }),
+                                    )
+                            }
                         }),
                 )
                 .child(div().flex_1())

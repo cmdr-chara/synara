@@ -596,6 +596,9 @@ impl Native {
                 find_query: String::new(),
             };
             this.refresh(cx);
+            // Give the root view initial focus so global chords dispatch even
+            // before an input takes focus (chords bubble from inputs anyway).
+            this.focus_handle.focus(window, cx);
             this
         })
     }
@@ -1105,6 +1108,157 @@ impl Native {
             self.find_query.clear();
         }
         cx.notify();
+    }
+
+    /// Global keymap: the upstream DEFAULT_SHORTCUT_FALLBACKS chords whose
+    /// targets exist on the native surface. cmd-f / cmd-j stay declared
+    /// KeyBindings (chat.find / terminal.toggle); the rest is dispatched here.
+    fn handle_chord(
+        &mut self,
+        event: &KeyDownEvent,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let m = event.keystroke.modifiers;
+        if !m.platform || m.function {
+            return;
+        }
+        let key = event.keystroke.key.as_str();
+        match (m.control, m.alt, m.shift, key) {
+            // ⌘ — chat.new / chat.newChat
+            (false, false, false, "n") | (false, true, false, "n") => self.new_thread(cx),
+            // ⌘W — threadTab.close
+            (false, false, false, "w") => {
+                if let Some(t) = self.selected_thread.clone() {
+                    self.close_tab(t, cx);
+                }
+            }
+            // ⌘L — composer.focus.toggle
+            (false, false, false, "l") => {
+                let f = self.composer.read(cx).focus_handle(cx);
+                window.focus(&f, cx);
+            }
+            // ⌘P — search.files; ⌘⇧F — search.content (same surface here).
+            // The bar lives in the sidebar: expand it when opening.
+            (false, false, false, "p") | (false, false, true, "f") => {
+                self.search_open = !self.search_open;
+                if self.search_open {
+                    self.sidebar_collapsed = false;
+                }
+                cx.notify();
+            }
+            // ⌘B — sidebar collapse
+            (false, false, false, "b") => {
+                self.sidebar_collapsed = !self.sidebar_collapsed;
+                cx.notify();
+            }
+            // ⌘, — settings
+            (false, false, false, ",") => {
+                self.clear_views();
+                self.view_settings = true;
+                if self.settings_data.is_null() {
+                    self.fetch_settings(cx);
+                }
+                cx.notify();
+            }
+            // ⌘1..⌘9 — thread.jump.N
+            (false, false, false, d) if d.len() == 1 => {
+                let i = d
+                    .as_bytes()
+                    .first()
+                    .filter(|b| b.is_ascii_digit() && **b != b'0')
+                    .map(|b| (b - b'1') as usize);
+                if let Some(t) = i.and_then(|i| self.open_threads.get(i).cloned()) {
+                    self.open_thread(t, cx);
+                }
+            }
+            // ⌘⇧T / ⌘⇧J — chat.newTerminal / terminal.workspace.newFullWidth
+            (false, false, true, "t") | (false, false, true, "j") => {
+                self.toggle_terminal(window, cx)
+            }
+            // ⌘⇧U — settings.usage
+            (false, false, true, "u") => {
+                self.clear_views();
+                self.view_settings = true;
+                self.settings_section = "usage";
+                if self.settings_data.is_null() {
+                    self.fetch_settings(cx);
+                }
+                cx.notify();
+            }
+            // ⌘⇧C — thread.copyId
+            (false, false, true, "c") => {
+                if let Some(t) = self.selected_thread.clone() {
+                    cx.write_to_clipboard(ClipboardItem::new_string(t));
+                }
+            }
+            // ⌘⌃→ / ⌘⌃Tab — threadTab.next / view.recent.next
+            (true, false, false, "right") | (true, false, false, "tab") => {
+                self.cycle_tab(1, cx)
+            }
+            // ⌘⌃← / ⌘⌃⇧Tab — threadTab.previous / view.recent.previous
+            (true, false, false, "left") | (true, false, true, "tab") => {
+                self.cycle_tab(-1, cx)
+            }
+            // ⌘⌃P — git.commitAndPush opens the changes pane
+            (true, false, false, "p") => self.toggle_changes(cx),
+            // ⌘⌥U — sidebar.activity → inbox
+            (false, true, false, "u") => {
+                self.clear_views();
+                self.view_inbox = true;
+                self.fetch_inbox(cx);
+                cx.notify();
+            }
+            // ⌘⌥A — chat.attention.next → cycle open threads
+            (false, true, false, "a") => self.cycle_tab(1, cx),
+            // ⌘⌥⇧A — thread.archive
+            (false, true, true, "a") => self.archive_selected(cx),
+            _ => {}
+        }
+    }
+
+    /// Cycle open thread tabs by offset (wraps).
+    fn cycle_tab(&mut self, offset: i64, cx: &mut Context<Self>) {
+        let n = self.open_threads.len();
+        if n == 0 {
+            return;
+        }
+        let cur = self
+            .selected_thread
+            .as_ref()
+            .and_then(|s| self.open_threads.iter().position(|t| t == s))
+            .unwrap_or(0) as i64;
+        let next = ((cur + offset) % n as i64 + n as i64) as usize % n;
+        let t = self.open_threads[next].clone();
+        self.open_thread(t, cx);
+    }
+
+    /// ⌥⇧⌘A — archive the selected thread via dispatchCommand, then close
+    /// its tab (the shell snapshot refresh removes it from the sidebar).
+    fn archive_selected(&mut self, cx: &mut Context<Self>) {
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        let client = self.client.clone();
+        let tid_cmd = tid.clone();
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let payload = json!({
+                "type": "thread.archive",
+                "commandId": uuid(),
+                "threadId": tid_cmd,
+            });
+            cx.background_executor()
+                .spawn(async move { client.call("orchestration.dispatchCommand", payload) })
+                .detach();
+        })
+        .detach();
+        self.close_tab(tid, cx);
     }
 
     /// Rail button: toggle the bottom terminal drawer. Opening spawns a PTY
@@ -8543,7 +8697,11 @@ impl Render for Native {
         v_flex()
             .size_full()
             .key_context("native")
+            .track_focus(&self.focus_handle)
             .id("native-root")
+            .on_key_down(cx.listener(|this, ev: &KeyDownEvent, w, cx| {
+                this.handle_chord(ev, w, cx);
+            }))
             .on_action(cx.listener(|this, _: &ToggleFind, w, cx| {
                 this.toggle_find(w, cx);
             }))

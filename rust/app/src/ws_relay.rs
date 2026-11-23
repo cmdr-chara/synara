@@ -121,6 +121,9 @@ fn intercept_todo(
         && !text.contains("projectAgent.")
         && !text.contains("provider.")
         && !text.contains("computer.")
+        && !text.contains("account.")
+        && !text.contains("hosts.")
+        && !text.contains("device.")
         && !text.contains("ExternalMcp")
         && !text.contains("server.readThreadDiagnostics")
         && !text.contains("server.listMcp")
@@ -192,6 +195,9 @@ fn intercept_todo(
         && !crate::skills_catalog::handles(tag)
         && !crate::project_imports::handles(tag)
         && !crate::computer_audit::handles(tag)
+        && !crate::account::handles(tag)
+        && !crate::hosts::handles(tag)
+        && !crate::device::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !crate::pull_requests::handles(tag)
         && !crate::automation::handles(tag)
@@ -213,6 +219,18 @@ fn intercept_todo(
         .get("payload")
         .cloned()
         .unwrap_or(serde_json::Value::Null);
+    if tag == "device.subscribeEvents" {
+        // Upstream answers `Stream.never` when no device engine can run: the
+        // subscription stays open and silent, since an instantly-completing
+        // stream makes the client treat the socket as a zombie and reconnect.
+        let task = tokio::spawn(async move {
+            std::future::pending::<()>().await;
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
     if tag == "projects.subscribeDevServerEvents" {
         let mut rx = crate::projects_devserver::subscribe();
         let tx = native_tx.clone();
@@ -960,6 +978,18 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::mcp_connectors::handles(tag) {
         crate::mcp_connectors::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::account::handles(tag) {
+        crate::account::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::hosts::handles(tag) {
+        crate::hosts::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::device::handles(tag) {
+        crate::device::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::studio::handles(tag) {

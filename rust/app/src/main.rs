@@ -1,3 +1,6 @@
+mod account;
+mod device;
+mod hosts;
 mod automation;
 mod fs_browse;
 mod git_domain;

@@ -3922,46 +3922,80 @@ impl Render for Native {
                         }),
                 )
             });
-        let build_mode_chip = |cx: &mut Context<Self>| {
-            h_flex()
-            .id("composer-mode")
-            .cursor_pointer()
-            .gap(px(6.))
-            .items_center()
-            .px(px(10.))
-            .py(px(3.))
-            .rounded(px(8.))
-            .child(
-                svg_icon(match self.runtime_mode {
-                    "auto" => icons::SHIELD_CODE,
-                    _ => icons::SHIELD_ACCESS,
+        // Upstream runtime-mode chip opens a picker menu: label + description
+        // rows ("Ask for approval" / "Approve for me" / "Full access") with a
+        // check on the active mode.
+        let mode_weak = cx.weak_entity();
+        let cur_mode = self.runtime_mode;
+        let build_mode_chip = move |cx: &mut Context<Self>| {
+            let weak = mode_weak.clone();
+            let active = cur_mode;
+            Button::new("composer-mode")
+                .compact()
+                .icon(
+                    svg_icon(match active {
+                        "auto" => icons::SHIELD_CODE,
+                        _ => icons::SHIELD_ACCESS,
+                    })
+                    .size(px(14.)),
+                )
+                .label(match active {
+                    "approval-required" => "Ask for approval",
+                    "auto" => "Approve for me",
+                    _ => "Full access",
                 })
-                .size(px(14.))
-                .text_color(mode_accent),
-            )
-            .child(
-                div()
-                    .text_size(px(12.))
-                    .text_color(mode_accent)
-                    .child(match self.runtime_mode {
-                        "approval-required" => "Approval required",
-                        "auto" => "Approve for me",
-                        _ => "Full access",
-                    }),
-            )
-            .child(
-                svg_icon(icons::CHEVRON_DOWN)
-                    .size(px(12.))
-                    .text_color(mode_accent.opacity(0.7)),
-            )
-            .on_click(cx.listener(|this, _ev, _w, cx| {
-                this.runtime_mode = match this.runtime_mode {
-                    "approval-required" => "auto",
-                    "auto" => "full-access",
-                    _ => "approval-required",
-                };
-                cx.notify();
-            }))
+                .dropdown_caret(true)
+                .with_variant(ButtonVariant::Custom(
+                    ButtonCustomVariant::new(cx)
+                        .color(rgba(0x00000000).into())
+                        .foreground(mode_accent.into())
+                        .hover(rgba(0xc2490414).into()),
+                ))
+                .dropdown_menu(move |menu, _w, _cx| {
+                    const MODES: [(&str, &str, &str); 3] = [
+                        (
+                            "approval-required",
+                            "Ask for approval",
+                            "Always ask to edit external files and use the internet",
+                        ),
+                        (
+                            "auto",
+                            "Approve for me",
+                            "Only ask for actions detected as potentially unsafe",
+                        ),
+                        (
+                            "full-access",
+                            "Full access",
+                            "Unrestricted access to the internet and any file on your computer",
+                        ),
+                    ];
+                    let mut m = menu.min_w(px(300.));
+                    for (id, label, desc) in MODES {
+                        let checked = active == id;
+                        let weak2 = weak.clone();
+                        m = m.item(
+                            PopupMenuItem::element(move |_, _| {
+                                v_flex()
+                                    .gap_0p5()
+                                    .child(div().text_size(px(13.)).child(label))
+                                    .child(
+                                        div()
+                                            .text_size(px(11.))
+                                            .text_color(rgba(0x777777aa))
+                                            .child(desc),
+                                    )
+                            })
+                            .checked(checked)
+                            .on_click(move |_, _w, cx| {
+                                let _ = weak2.update(cx, |this, cx| {
+                                    this.runtime_mode = id;
+                                    cx.notify();
+                                });
+                            }),
+                        );
+                    }
+                    m
+                })
         };
         // The thread composer labels the chip with the thread's own model.
         let thread_model = str_at(get(thread_v, "modelSelection"), "label")

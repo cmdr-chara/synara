@@ -147,7 +147,7 @@ fn main() {
     #[cfg(not(target_os = "linux"))]
     let app = gpui_kit::application();
 
-    app.with_assets(gpui_kit::assets::Assets).run(move |cx| {
+    app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);
 
         let options = WindowOptions {

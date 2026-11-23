@@ -20,6 +20,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::*;
 use gpui_kit::assets::IconName as AssetIcon;
+use gpui::prelude::FluentBuilder as _;
 
 use crate::ws_client::Client;
 
@@ -82,6 +83,9 @@ pub struct Native {
     find_open: bool,
     find_input: Option<Entity<InputState>>,
     find_query: String,
+    sponsor_dismissed: bool,
+    search_open: bool,
+    sidebar_collapsed: bool,
 }
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -257,7 +261,10 @@ impl Native {
                 term_status: None,
                 term_input: None,
                 term_events: false,
-                find_open: false,
+                sponsor_dismissed: false,
+            search_open: false,
+            sidebar_collapsed: false,
+            find_open: false,
                 find_input: None,
                 find_query: String::new(),
             };
@@ -1683,54 +1690,107 @@ impl Render for Native {
 
         // ---- sidebar ----
         let mut sidebar = v_flex()
-            .w(px(280.))
+            .w(px(260.))
             .h_full()
-            .gap_1()
+            .gap_0p5()
             .p_2()
             .overflow_y_scrollbar();
         let query = self.search.read(cx).value().to_string().to_lowercase();
-        sidebar = sidebar.child(
-            Button::new("app-menu")
-                .ghost()
-                .compact()
-                .label("Synara \u{25be}")
-                .w_full()
-                .dropdown_menu(|menu, _, _| {
-                    menu.item(
-                        PopupMenuItem::new("Synara on GitHub").on_click(|_, _, cx| {
-                            cx.open_url("https://github.com/Emanuele-web04/synara");
-                        }),
-                    )
-                    .item(
-                        PopupMenuItem::new("Synara on GitHub (Rust port)").on_click(
-                            |_, _, cx| {
-                                cx.open_url("https://github.com/cmdr-chara/synara/tree/feat/rust-port");
-                            },
-                        ),
-                    )
-                }),
-        );
+        // Header: bold wordmark + chevron (workspace switcher), search +
+        // new-thread icon buttons on the right — mirrors the web sidebar.
         sidebar = sidebar.child(
             h_flex()
-                .gap_2()
-                .child(div().flex_1().child(Input::new(&self.search))),
+                .items_center()
+                .gap_1()
+                .child(
+                    div()
+                        .px_1()
+                        .text_size(px(15.))
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .child("Synara"),
+                )
+                .child(
+                    Button::new("app-menu")
+                        .ghost()
+                        .compact()
+                        .icon(AssetIcon::ChevronDown)
+                        .dropdown_menu(|menu, _, _| {
+                            menu.item(
+                                PopupMenuItem::new("Synara on GitHub").on_click(|_, _, cx| {
+                                    cx.open_url("https://github.com/Emanuele-web04/synara");
+                                }),
+                            )
+                            .item(
+                                PopupMenuItem::new("Synara on GitHub (Rust port)").on_click(
+                                    |_, _, cx| {
+                                        cx.open_url("https://github.com/cmdr-chara/synara/tree/feat/rust-port");
+                                    },
+                                ),
+                            )
+                        }),
+                )
+                .child(div().flex_1())
+                .child(
+                    Button::new("sidebar-search")
+                        .ghost()
+                        .compact()
+                        .icon(IconName::Search)
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.search_open = !this.search_open;
+                            cx.notify();
+                        })),
+                )
+                .child(
+                    Button::new("sidebar-new")
+                        .ghost()
+                        .compact()
+                        .icon(AssetIcon::SquarePen)
+                        .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
+                ),
         );
+        if self.search_open {
+            sidebar = sidebar.child(
+                h_flex()
+                    .gap_2()
+                    .child(div().flex_1().child(Input::new(&self.search))),
+            );
+        }
         sidebar = sidebar.child(
-            Button::new("new-thread")
-                .outline()
-                .icon(IconName::Plus)
-                .label("New thread")
+            h_flex()
+                .id("new-thread")
                 .w_full()
+                .h(px(32.))
+                .px_2()
+                .gap_2()
+                .items_center()
+                .rounded(px(8.))
+                .cursor_pointer()
+                .hover(|d| d.bg(theme.secondary))
+                .child(
+                    Icon::new(AssetIcon::SquarePen)
+                        .size(px(16.))
+                        .text_color(theme.foreground),
+                )
+                .child(div().text_size(px(13.)).child("New thread"))
                 .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
         );
         sidebar = sidebar.child(
             div()
                 .mt_2()
-                .text_xs()
-                .font_weight(FontWeight::SEMIBOLD)
+                .text_size(px(13.))
                 .text_color(theme.muted_foreground)
                 .child("Projects"),
         );
+        if arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects").is_empty() {
+            sidebar = sidebar.child(
+                div()
+                    .w_full()
+                    .py_2()
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .child(div().text_center().child("No projects yet")),
+            );
+        }
         for project in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
             let mut proj_head = v_flex()
                 .gap_0()
@@ -1793,8 +1853,7 @@ impl Render for Native {
                 .id("chats-toggle")
                 .mt_2()
                 .cursor_pointer()
-                .text_xs()
-                .font_weight(FontWeight::SEMIBOLD)
+                .text_size(px(13.))
                 .text_color(theme.muted_foreground)
                 .child(if self.chats_collapsed {
                     "Chats \u{203a}"
@@ -1876,79 +1935,141 @@ impl Render for Native {
             }
         }
         // ---- transcript ----
-        let mut pane = v_flex().flex_1().h_full().p_4().gap_2();
+        let mut pane = v_flex().flex_1().h_full().gap_2();
+        if self.selected_thread.is_some() {
+            pane = pane.p_4();
+        }
         if self.selected_thread.is_none() {
             const WM_CHARS: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-            let wm_cols: Vec<Vec<String>> = (0..5)
-                .map(|c| {
-                    (0..30)
-                        .map(|r| {
-                            (0..13)
-                                .map(|j| {
-                                    WM_CHARS[((c * 31 + r * 13 + j * 7 + c * r) % 30) as usize]
-                                        as char
-                                })
-                                .collect()
-                        })
-                        .collect()
-                })
-                .collect();
-            let mut wm = h_flex().gap_6().px_4();
-            for col in wm_cols {
-                let mut v = v_flex();
-                for line in col {
-                    v = v.child(
-                        div()
-                            .text_xs()
-                            .text_color(rgba(0x00000010))
-                            .child(line),
-                    );
+            // AsciiWaveBackground parity: 10px glyphs on a 13px line grid,
+            // only inside sparse "noise blotch" columns hugging the pane
+            // edges; ink stays under ~18% alpha.
+            let mk_cols = |seed: usize| -> Div {
+                let mut group = h_flex().gap_4();
+                for c in 0..3usize {
+                    let mut v = v_flex().gap_0();
+                    for r in 0..40usize {
+                        let mut line = String::with_capacity(13);
+                        for j in 0..13usize {
+                            let n = (seed * 53 + c * 31 + r * 13 + j * 7 + c * r * 3 + j * r) % 61;
+                            line.push(if n < 30 { WM_CHARS[n as usize % 30] as char } else { ' ' });
+                        }
+                        v = v.child(
+                            div()
+                                .text_size(px(10.))
+                                .line_height(px(13.))
+                                .text_color(rgba(0x00000014))
+                                .child(line),
+                        );
+                    }
+                    group = group.child(v);
                 }
-                wm = wm.child(v);
-            }
-            pane = pane
+                group
+            };
+            let wm = h_flex()
+                .size_full()
+                .justify_between()
+                .px_6()
+                .child(mk_cols(1))
+                .child(mk_cols(7));
+            let mut home = v_flex()
                 .relative()
+                .flex_1()
+                .h_full()
                 .items_center()
                 .justify_center()
-                .gap_3()
-                .child(div().absolute().inset_0().overflow_hidden().child(wm))
-                .child(
+                .gap_4()
+                .child(div().absolute().inset_0().overflow_hidden().child(wm));
+            if !self.sponsor_dismissed {
+                home = home.child(
                     div()
                         .absolute()
-                        .top(px(4.))
-                        .right(px(4.))
+                        .top(px(12.))
+                        .left_0()
+                        .w_full()
                         .child(
-                            v_flex()
-                                .border_1()
-                                .border_color(theme.border)
-                                .rounded_md()
-                                .p_2()
-                                .gap_0()
-                                .child(
-                                    Button::new("support-synara")
-                                        .ghost()
-                                        .compact()
-                                        .icon(IconName::Star)
-                                        .label("Support Synara")
-                                        .on_click(cx.listener(|_this, _ev, _w, cx| {
-                                            cx.open_url("https://github.com/Emanuele-web04/synara");
-                                        })),
-                                )
-                                .child(
-                                    div()
-                                        .text_xs()
-                                        .text_color(theme.muted_foreground)
-                                        .child("Explore sponsorships and help fund development"),
-                                ),
+                            h_flex().w_full().justify_center().child(
+                                h_flex()
+                                    .relative()
+                                    .id("sponsor-banner")
+                                    .cursor_pointer()
+                                    .w(px(520.))
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .rounded(px(16.))
+                                    .bg(theme.popover)
+                                    .px_4()
+                                    .py_3()
+                                    .gap_3()
+                                    .items_center()
+                                    .on_click(cx.listener(|_this, _ev, _w, cx| {
+                                        cx.open_url("https://github.com/Emanuele-web04/synara");
+                                    }))
+                                    .child(
+                                        Icon::new(IconName::Star)
+                                            .size(px(20.))
+                                            .text_color(theme.foreground),
+                                    )
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .gap_0p5()
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .font_weight(FontWeight::MEDIUM)
+                                                    .child("Support Synara"),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child("Explore sponsorships and help fund development"),
+                                            ),
+                                    )
+                                    .child(
+                                        div()
+                                            .id("sponsor-dismiss")
+                                            .absolute()
+                                            .top(px(-6.))
+                                            .right(px(-6.))
+                                            .size(px(22.))
+                                            .flex()
+                                            .items_center()
+                                            .justify_center()
+                                            .rounded_full()
+                                            .border_1()
+                                            .border_color(theme.border)
+                                            .bg(theme.background)
+                                            .cursor_pointer()
+                                            .child(
+                                                Icon::new(AssetIcon::X)
+                                                    .size(px(12.))
+                                                    .text_color(theme.muted_foreground),
+                                            )
+                                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                                this.sponsor_dismissed = true;
+                                                cx.notify();
+                                            })),
+                                    ),
+                            ),
                         ),
-                )
-                .child(div().text_2xl().child("\u{3a5}"))
-                .child(
-                    div()
-                        .text_xl()
-                        .font_weight(FontWeight::SEMIBOLD)
-                        .child("What should we work on?"),
                 );
+            }
+            pane = pane.child(
+                home.child(div().text_size(px(40.)).child("\u{3a5}"))
+                    .child(
+                        div()
+                            .text_size(px(30.))
+                            .font_weight(FontWeight::NORMAL)
+                            .text_color({
+                                let mut c = theme.foreground;
+                                c.a *= 0.95;
+                                c
+                            })
+                            .child("What should we work on?"),
+                    ),
+            );
         }
         // ---- open tabs strip ----
         if !self.open_threads.is_empty() {
@@ -2650,14 +2771,36 @@ impl Render for Native {
         }
 
         // ---- composer ----
+        // chat-composer-shell squircle: 19px radius card, hairline border,
+        // soft surface shadow (approximated by the border + card tone).
+        let circle_btn = |id: &'static str, icon: IconName| {
+            div()
+                .id(id)
+                .size(px(28.))
+                .flex()
+                .items_center()
+                .justify_center()
+                .rounded_full()
+                .border_1()
+                .border_color(theme.border)
+                .cursor_pointer()
+                .child(
+                    Icon::new(icon)
+                        .size(px(16.))
+                        .text_color(theme.muted_foreground),
+                )
+        };
         let composer_card = v_flex()
             .w_full()
             .max_w(px(640.))
             .border_1()
             .border_color(theme.border)
-            .rounded_lg()
-            .bg(theme.background)
-            .p_2()
+            .rounded(px(19.))
+            .bg(theme.popover)
+            .shadow_md()
+            .px_3()
+            .pt_2()
+            .pb_2()
             .gap_1()
             .child(Input::new(&self.composer).appearance(false))
             .child(
@@ -2665,68 +2808,74 @@ impl Render for Native {
                     .gap_2()
                     .items_center()
                     .child(
-                        Button::new("composer-attach")
-                            .ghost()
-                            .compact()
-                            .icon(IconName::Plus)
-                            .on_click(cx.listener(|this, _ev, _w, cx| this.attach(cx))),
+                        circle_btn("composer-attach", IconName::Plus).on_click(
+                            cx.listener(|this, _ev, _w, cx| this.attach(cx)),
+                        ),
                     )
                     .child(
-                        Button::new("composer-mode")
-                            .ghost()
-                            .compact()
-                            .label(format!(
-                                "{} \u{25be}",
-                                match self.runtime_mode {
-                                    "approval-required" => "Approval required",
-                                    "auto" => "Approve for me",
-                                    _ => "Full access",
-                                }
-                            ))
-                            .dropdown_menu({
-                                let this = cx.entity();
-                                move |mut menu, _, _| {
-                                    for (mode, label) in [
-                                        ("approval-required", "Approval required"),
-                                        ("auto", "Approve for me"),
-                                        ("full-access", "Full access"),
-                                    ] {
-                                        let this = this.clone();
-                                        menu = menu.item(
-                                            PopupMenuItem::new(label).on_click(
-                                                move |_, _, cx| {
-                                                    this.update(cx, |this, cx| {
-                                                        this.runtime_mode = mode;
-                                                        cx.notify();
-                                                    });
-                                                },
-                                            ),
-                                        );
-                                    }
-                                    menu
-                                }
-                            }),
+                        h_flex()
+                            .id("composer-mode")
+                            .cursor_pointer()
+                            .gap_1()
+                            .items_center()
+                            .child(
+                                Icon::new(AssetIcon::TriangleAlert)
+                                    .size(px(12.))
+                                    .text_color(rgb(0xf59e0b)),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(rgb(0xf59e0b))
+                                    .child(format!(
+                                        "{} \u{25be}",
+                                        match self.runtime_mode {
+                                            "approval-required" => "Approval required",
+                                            "auto" => "Approve for me",
+                                            _ => "Full access",
+                                        }
+                                    )),
+                            )
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.runtime_mode = match this.runtime_mode {
+                                    "approval-required" => "auto",
+                                    "auto" => "full-access",
+                                    _ => "approval-required",
+                                };
+                                cx.notify();
+                            })),
                     )
                     .child(div().flex_1())
                     .child(
                         Button::new("composer-model")
                             .ghost()
                             .compact()
-                            .label("Astra Medium \u{25be}")
+                            .label("\u{25b8} GPT-6 Astra \u{25be}")
                             .dropdown_menu(|menu, _, _| {
-                                menu.item(PopupMenuItem::new("\u{2713} Astra Medium (codex)"))
+                                menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
                             }),
                     )
                     .child(
-                        Button::new("send")
-                            .primary()
-                            .icon(IconName::ArrowUp)
+                        div()
+                            .id("send")
+                            .size(px(28.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded_full()
+                            .bg(theme.secondary)
+                            .cursor_pointer()
+                            .child(
+                                Icon::new(IconName::ArrowUp)
+                                    .size(px(14.))
+                                    .text_color(theme.foreground),
+                            )
                             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx))),
                     ),
             );
-        let mut composer_col = v_flex().w_full().max_w(px(640.)).gap_1();
+        let mut composer_col = v_flex().w_full().max_w(px(640.)).gap_0();
         if !self.pending_attachments.is_empty() || self.uploading {
-            let mut chips = h_flex().gap_1().flex_wrap();
+            let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
                 chips = chips.child(
                     div()
@@ -2765,21 +2914,39 @@ impl Render for Native {
             composer_col = composer_col.child(chips);
         }
         if self.selected_thread.is_none() && !self.view_files && !self.view_dev && !self.view_settings {
+            // "Work in a project" ghost trigger in a tray flush above the
+            // composer card — rounded on top only, like the web shell.
             composer_col = composer_col.child(
-                h_flex().child(
-                Button::new("work-in-project")
-                    .outline()
-                    .compact()
-                    .icon(IconName::FolderClosed)
-                    .label("Work in a project")
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx))),
-                ),
+                h_flex()
+                    .id("work-in-project")
+                    .cursor_pointer()
+                    .w_full()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_t(px(19.))
+                    .bg(theme.popover)
+                    .px_3()
+                    .py_1p5()
+                    .gap_2()
+                    .items_center()
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_files(cx)))
+                    .child(
+                        Icon::new(IconName::FolderClosed)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("Work in a project"),
+                    ),
             );
         }
         composer_col = composer_col.child(composer_card);
         let composer_bar = div()
             .w_full()
-            .p_3()
+            .pb_3()
             .child(h_flex().justify_center().child(composer_col));
 
         // ---- settings pane ----
@@ -2992,7 +3159,42 @@ impl Render for Native {
                 );
         }
 
-        let mut main = v_flex().flex_1().h_full();
+        // ---- top bar: new-thread "+" left, right-side pane/notif icons;
+        // transparent so the shell band shows through like in the web app.
+        let top_bar = h_flex()
+            .w_full()
+            .h(px(44.))
+            .px_2()
+            .items_center()
+            .gap_1()
+            .child(
+                Button::new("topbar-new")
+                    .ghost()
+                    .compact()
+                    .icon(IconName::Plus)
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
+            )
+            .child(div().flex_1())
+            .child(
+                Button::new("topbar-bell")
+                    .ghost()
+                    .compact()
+                    .icon(AssetIcon::Bell)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.toggle_inbox(cx);
+                    })),
+            )
+            .child(
+                Button::new("topbar-dock")
+                    .ghost()
+                    .compact()
+                    .icon(AssetIcon::PanelRight)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.toggle_changes(cx);
+                    })),
+            );
+
+        let mut main = v_flex().flex_1().h_full().child(top_bar);
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane.overflow_y_scrollbar()));
         } else if self.view_dev {
@@ -3138,82 +3340,114 @@ impl Render for Native {
         }
 
         // ---- icon rail ----
-        let rail_btn = |id: &'static str, icon: IconName, active: bool| {
-            let b = Button::new(ElementId::Name(id.into())).icon(icon);
-            if active { b.outline() } else { b.ghost() }
-        };
-        let rail = v_flex()
-            .w(px(44.))
-            .h_full()
-            .py_2()
-            .items_center()
-            .gap_1()
-            .child(
-                rail_btn(
-                    "nav-chat",
-                    IconName::LayoutDashboard,
-                    !self.view_files && !self.view_dev && !self.view_settings && !self.view_inbox,
+        // --app-rail-width: 51px; 36px buttons on 8px radius, 6px gap,
+        // 10px top/bottom padding. Idle glyphs sit at muted-foreground/58;
+        // the active button gets the sidebar-selected (black/3%) tint and
+        // an ink glyph. h-px w-5 hairlines separate the icon groups.
+        let mut glyph_idle = theme.muted_foreground;
+        glyph_idle.a *= 0.58;
+        let rail_btn = |id: &'static str, icon: AssetIcon, active: bool, _cx: &mut Context<Self>| {
+            div()
+                .id(ElementId::Name(id.into()))
+                .size(px(36.))
+                .flex()
+                .items_center()
+                .justify_center()
+                .rounded(px(8.))
+                .cursor_pointer()
+                .when(active, |d| d.bg(theme.secondary))
+                .when(!active, |d| {
+                    d.hover(|h| h.bg(theme.secondary))
+                })
+                .child(
+                    Icon::new(icon)
+                        .size(px(20.))
+                        .text_color(if active { theme.foreground } else { glyph_idle }),
                 )
-                .on_click(cx.listener(|this, _ev, _w, cx| {
-                    this.view_files = false;
-                    this.view_dev = false;
-                    this.view_settings = false;
-                    this.view_inbox = false;
-                    cx.notify();
-                })),
+        };
+        let _rail_divider = || {
+            div()
+                .w(px(20.))
+                .h(px(1.))
+                .bg(theme.border)
+                .my(px(3.))
+        };
+        let home_active =
+            !self.view_files && !self.view_dev && !self.view_settings && !self.view_inbox;
+        let rail = v_flex()
+            .w(px(51.))
+            .h_full()
+            .py(px(10.))
+            .items_center()
+            .gap(px(6.))
+            .child(
+                rail_btn("nav-sidebartoggle", AssetIcon::PanelLeft, false, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.sidebar_collapsed = !this.sidebar_collapsed;
+                        cx.notify();
+                    }),
+                ),
             )
             .child(
-                rail_btn("nav-inbox", IconName::Inbox, self.view_inbox)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.toggle_inbox(cx);
-                    })),
-            )
-            .child(
-                rail_btn("nav-files", IconName::FolderClosed, self.view_files)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                rail_btn("nav-chat", AssetIcon::House, home_active, cx).on_click(cx.listener(
+                    |this, _ev, _w, cx| {
+                        this.view_files = false;
+                        this.view_dev = false;
                         this.view_settings = false;
                         this.view_inbox = false;
-                        this.toggle_files(cx);
+                        cx.notify();
+                    },
+                )),
+            )
+            .child(
+                rail_btn("nav-inbox", AssetIcon::Inbox, self.view_inbox, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.toggle_inbox(cx);
+                    }),
+                ),
+            )
+            .child(
+                rail_btn("nav-changes", AssetIcon::GitPullRequest, self.view_changes, cx)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.toggle_changes(cx);
                     })),
             )
             .child(
-                rail_btn("nav-activity", IconName::Cpu, self.view_dev)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                rail_btn("nav-activity", AssetIcon::Clock, self.view_dev, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = false;
                         this.view_inbox = false;
                         this.toggle_dev(cx);
-                    })),
+                    }),
+                ),
             )
             .child(
-                rail_btn("nav-grid", IconName::GalleryVerticalEnd, self.view_files)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                rail_btn("nav-tasks", AssetIcon::ListTodo, false, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.view_settings = false;
+                        this.view_inbox = false;
+                        this.toggle_dev(cx);
+                    }),
+                ),
+            )
+            .child(
+                rail_btn("nav-files", AssetIcon::Folders, self.view_files, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = false;
                         this.view_inbox = false;
                         this.toggle_files(cx);
+                    }),
+                ),
+            )
+            .child(
+                rail_btn("nav-studio", AssetIcon::LayoutGrid, self.view_terminal, cx)
+                    .on_click(cx.listener(|this, _ev, w, cx| {
+                        this.toggle_terminal(w, cx);
                     })),
             )
             .child(
-                {
-                    let b = Button::new("nav-changes").icon(AssetIcon::FileDiff);
-                    if self.view_changes { b.outline() } else { b.ghost() }
-                }
-                .on_click(cx.listener(|this, _ev, _w, cx| {
-                    this.toggle_changes(cx);
-                })),
-            )
-            .child(
-                {
-                    let b = Button::new("nav-terminal").icon(AssetIcon::SquareTerminal);
-                    if self.view_terminal { b.outline() } else { b.ghost() }
-                }
-                .on_click(cx.listener(|this, _ev, w, cx| {
-                    this.toggle_terminal(w, cx);
-                })),
-            )
-            .child(div().flex_1())
-            .child(
-                rail_btn("nav-settings", IconName::Settings, self.view_settings)
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                rail_btn("nav-more", AssetIcon::Ellipsis, self.view_settings, cx).on_click(
+                    cx.listener(|this, _ev, _w, cx| {
                         this.view_settings = !this.view_settings;
                         if this.view_settings {
                             this.view_files = false;
@@ -3221,25 +3455,18 @@ impl Render for Native {
                             this.view_inbox = false;
                         }
                         cx.notify();
-                    })),
+                    }),
+                ),
             )
+            .child(div().flex_1())
             .child(
-                rail_btn("nav-theme", if matches!(theme.mode, ThemeMode::Dark) { IconName::Sun } else { IconName::Moon }, false)
+                rail_btn("nav-help", AssetIcon::CircleQuestionMark, false, cx)
                     .on_click(cx.listener(|_this, _ev, _w, cx| {
-                        let dark = matches!(Theme::global(cx).mode, ThemeMode::Dark);
-                        Theme::change(
-                            if dark { ThemeMode::Light } else { ThemeMode::Dark },
-                            None,
-                            cx,
-                        );
+                        cx.open_url("https://github.com/Emanuele-web04/synara");
                     })),
             )
             .child(
-                rail_btn("nav-refresh", IconName::RefreshCw, false)
-                    .on_click(cx.listener(|this, _ev, _w, cx| this.refresh(cx))),
-            )
-            .child(
-                rail_btn("nav-user", IconName::CircleUser, false)
+                rail_btn("nav-user", AssetIcon::CircleUser, false, cx)
                     .on_click(cx.listener(|_this, _ev, _w, cx| {
                         cx.open_url("https://github.com/Emanuele-web04/synara");
                     })),
@@ -3253,9 +3480,11 @@ impl Render for Native {
             }))
             .bg(theme.background)
             .text_color(theme.foreground)
-            .child(rail.border_r_1().border_color(theme.border))
-            .child(sidebar.border_r_1().border_color(theme.border))
-            .child(main);
+            .child(rail.border_r_1().border_color(theme.border));
+        if !self.sidebar_collapsed {
+            root = root.child(sidebar.border_r_1().border_color(theme.border));
+        }
+        root = root.child(main);
         if self.view_changes {
             root = root.child(changes_pane.border_l_1().border_color(theme.border));
         }

@@ -4092,21 +4092,25 @@ impl Render for Native {
                             .child(section_label("Power"))
                             .child(card(
                         v_flex()
-                            .child(srow(
-                                "Keep computer awake",
-                                "Uses macOS caffeinate. On: Keep this computer awake at all times. Agent: Keep this computer awake while an agent is working. Off: Let the system sleep normally.",
+                            .child(
                                 h_flex()
+                                    .w_full()
                                     .items_center()
-                                    .rounded(px(8.))
-                                    .border_1()
-                                    .border_color(theme.border)
-                                    .p(px(2.))
-                                    .gap(px(2.))
-                                    .child(div().h(px(24.)).px(px(10.)).flex().items_center().rounded(px(6.)).child(div().text_xs().child("On")))
-                                    .child(div().h(px(24.)).px(px(10.)).flex().items_center().rounded(px(6.)).child(div().text_xs().child("Agent")))
-                                    .child(div().h(px(24.)).px(px(10.)).flex().items_center().rounded(px(6.)).bg(theme.foreground).child(div().text_xs().text_color(theme.background).child("Off")))
-                                    .into_any_element(),
-                            ))
+                                    .justify_between()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_sm().font_weight(FontWeight::MEDIUM).child("Keep computer awake"))
+                                            .child(div().w_full().text_sm().text_color(theme.muted_foreground).child("Uses macOS caffeinate. On: Keep this computer awake at all times. Agent: Keep this computer awake while an agent is working. Off: Let the system sleep normally."))
+                                            .child(div().pt_1().text_xs().text_color(theme.muted_foreground).child("Off \u{00b7} Idle")),
+                                    )
+                                    .child(seg(&["On", "Agent", "Off"], 2)),
+                            )
                             .into_any_element(),
                             )
                             .into_any_element(),

@@ -50,6 +50,8 @@ mod icons {
     pub const MORE: &[u8] = include_bytes!("../assets/icons/dot-grid-1x3-horizontal.svg");
     pub const PLUS: &[u8] = include_bytes!("../assets/icons/plus-sign.svg");
     pub const SEND: &[u8] = include_bytes!("../assets/icons/arrow-up.svg");
+    pub const ARROW_DOWN: &[u8] = include_bytes!("../assets/icons/arrow-down.svg");
+    pub const X: &[u8] = include_bytes!("../assets/icons/x.svg");
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
     pub const PIN: &[u8] = include_bytes!("../assets/icons/pin.svg");
@@ -7143,13 +7145,10 @@ impl Render for Native {
             );
 
         // ---- transcript find bar (Cmd+F) ----
-        let mut find_bar = h_flex()
-            .px_2()
-            .py_1()
-            .gap_2()
-            .items_center()
-            .border_b_1()
-            .border_color(theme.border);
+        // Upstream ThreadFindBar: floating card at top-right (w-80 rounded-3xl
+        // border bg-elevated shadow-lg). Row 1: search icon + input (h-11) +
+        // divider + X close. Row 2 (border-t): prev/next arrows + match count.
+        let mut find_bar = div().w(px(320.));
         if let Some(fi) = &self.find_input {
             let detail = self.detail.clone().unwrap_or(Value::Null);
             let tv = get(&detail, "thread");
@@ -7180,29 +7179,81 @@ impl Render for Native {
                     })
                     .count()
             };
+            let glyph = theme.muted_foreground;
             find_bar = find_bar
+                .rounded(px(24.))
+                .border_1()
+                .border_color(theme.border.opacity(0.6))
+                .bg(theme.popover)
+                .shadow_lg()
                 .child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.muted_foreground)
-                        .child("Find"),
+                    h_flex()
+                        .items_center()
+                        .h(px(44.))
+                        .px_4()
+                        .gap(px(10.))
+                        .child(
+                            svg_icon(icons::SEARCH)
+                                .size(px(16.))
+                                .text_color(glyph),
+                        )
+                        .child(
+                            div().flex_1().min_w_0().child(
+                                Input::new(fi).appearance(false),
+                            ),
+                        )
+                        .child(div().h(px(20.)).w(px(1.)).bg(theme.border))
+                        .child(
+                            Button::new("find-close")
+                                .ghost()
+                                .compact()
+                                .icon(
+                                    svg_icon(icons::X)
+                                        .size(px(16.))
+                                        .text_color(glyph),
+                                )
+                                .on_click(cx.listener(|this, _ev, w, cx| {
+                                    this.toggle_find(w, cx);
+                                })),
+                        ),
                 )
-                .child(div().w(px(220.)).child(Input::new(fi)))
                 .child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.muted_foreground)
-                        .child(format!("{count} matches")),
-                )
-                .child(div().flex_1())
-                .child(
-                    Button::new("find-close")
-                        .ghost()
-                        .compact()
-                        .label("\u{00d7}")
-                        .on_click(cx.listener(|this, _ev, w, cx| {
-                            this.toggle_find(w, cx);
-                        })),
+                    h_flex()
+                        .items_center()
+                        .justify_between()
+                        .border_t_1()
+                        .border_color(theme.border.opacity(0.6))
+                        .px_3()
+                        .py_2()
+                        .child(
+                            h_flex().items_center().gap_1()
+                                .child(
+                                    Button::new("find-prev")
+                                        .ghost()
+                                        .compact()
+                                        .icon(
+                                            svg_icon(icons::SEND)
+                                                .size(px(16.))
+                                                .text_color(glyph),
+                                        ),
+                                )
+                                .child(
+                                    Button::new("find-next")
+                                        .ghost()
+                                        .compact()
+                                        .icon(
+                                            svg_icon(icons::ARROW_DOWN)
+                                                .size(px(16.))
+                                                .text_color(glyph),
+                                        ),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(format!("{count} matches")),
+                        ),
                 );
         }
 
@@ -7232,11 +7283,13 @@ impl Render for Native {
             if self.view_terminal && self.term_active {
                 main = main.child(term_surface);
             } else {
-                if self.find_open {
-                    main = main.child(find_bar);
-                }
                 main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
                 main = main.child(composer_bar);
+                if self.find_open {
+                    main = main.child(
+                        div().absolute().top(px(8.)).right(px(8.)).child(find_bar),
+                    );
+                }
             }
         }
         if toast_shown {

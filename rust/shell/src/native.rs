@@ -4029,10 +4029,10 @@ impl Render for Native {
                     )
                     .child(
                         div()
+                            .w_full()
                             .text_sm()
                             .text_color(theme.muted_foreground)
-                            .whitespace_nowrap()
-                            .overflow_hidden()
+                            .line_height(px(22.))
                             .child(match &*self.settings_section {
                                 "general" => "Defaults for new chats, power, time, and getting started.".to_string(),
                                 "appearance" => "Customize the theme, typography, density, and time format.".to_string(),
@@ -4565,14 +4565,14 @@ impl Render for Native {
 ];
                 let search_field = h_flex()
                     .w_full()
-                    .h(px(32.))
+                    .h(px(36.))
                     .items_center()
                     .px_3()
-                    .rounded(px(8.))
-                    .border_1()
-                    .border_color(theme.border)
-                    .justify_between()
-                    .child(div().text_sm().text_color(theme.muted_foreground).child("Search shortcuts"))
+                    .gap_2()
+                    .rounded(px(10.))
+                    .bg(gpui::rgba(0x0000000a))
+                    .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(theme.muted_foreground))
+                    .child(div().flex_1().text_sm().text_color(theme.muted_foreground).child("Search shortcuts"))
                     .child(div().text_xs().text_color(theme.muted_foreground).child("\u{2318}K"))
                     .into_any_element();
                 let mut list = v_flex();
@@ -4596,11 +4596,9 @@ impl Render for Native {
                         );
                     }
                     right = right.child(
-                        h_flex()
+                        div()
                             .items_center()
-                            .gap_1()
-                            .child(svg_icon(icons::PENCIL).size(px(14.)).text_color(theme.muted_foreground))
-                            .child(svg_icon(icons::TRASH).size(px(14.)).text_color(theme.muted_foreground)),
+                            .child(svg_icon(icons::PENCIL).size(px(14.)).text_color(theme.muted_foreground)),
                     );
                     list = list.child(
                         h_flex()
@@ -4614,8 +4612,8 @@ impl Render for Native {
                                 v_flex()
                                     .flex_1()
                                     .min_w_0()
-                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
-                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
+                                    .child(div().text_sm().line_height(px(18.)).font_weight(FontWeight::MEDIUM).child(title))
+                                    .child(div().w_full().text_xs().line_height(px(16.)).text_color(theme.muted_foreground).child(desc)),
                             )
                             .child(right),
                     );

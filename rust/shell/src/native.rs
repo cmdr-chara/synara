@@ -2220,21 +2220,20 @@ impl Render for Native {
                 // Upstream SponsorLandingBanner: centered, max-w-520, borderless
                 // row — star + title + subtitle; dismiss X appears only on hover.
                 home = home.child(
-                    div().absolute().top(px(22.)).left_0().w_full().child(
-                        h_flex().w_full().justify_center().px_6().pl(px(66.)).child(
+                    div().absolute().top(px(15.)).left_0().w_full().child(
+                        h_flex().w_full().justify_center().px_6().child(
                             h_flex()
                                 .relative()
                                 .id("sponsor-banner")
                                 .group("sponsor-banner")
                                 .cursor_pointer()
-                                .w(px(588.))
+                                .w(px(520.))
                                 .rounded(px(16.))
                                 .px_4()
-                                .py(px(9.))
+                                .py(px(12.))
                                 .gap_4()
                                 .items_center()
-                                .bg(rgb(0xf6f6f6))
-                                .hover(|d| d.bg(theme.secondary))
+                                .hover(|d| d.bg(rgba(0x0000000a)))
                                 .on_click(cx.listener(|_this, _ev, _w, cx| {
                                     cx.open_url("https://www.trysynara.com/sponsor");
                                 }))

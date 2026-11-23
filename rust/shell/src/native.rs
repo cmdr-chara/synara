@@ -200,6 +200,7 @@ pub struct Native {
     view_terminal: bool,
     term_id: String,
     term_buf: String,
+    settings_scroll: ScrollHandle,
     term_status: Option<String>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
@@ -395,6 +396,7 @@ impl Native {
                 term_status: None,
                 term_input: None,
                 term_events: false,
+                settings_scroll: ScrollHandle::new(),
                 sponsor_dismissed: false,
             search_open: false,
             sidebar_collapsed: false,
@@ -3702,7 +3704,188 @@ impl Render for Native {
                 .child(t)
         };
 
-        let mut settings_pane = v_flex().flex_1().h_full().px_6().py_8().gap_6();
+        // ---- shared controls for ported settings sections ----
+        let accent_c = rgb(0xc74614);
+        let toggle = move |on: bool| {
+            let mut t = div()
+                .w(px(28.))
+                .h(px(16.))
+                .rounded_full()
+                .flex()
+                .items_center();
+            if on {
+                t = t.bg(accent_c).justify_end();
+            } else {
+                t = t.bg(rgb(0xd9d9d9)).justify_start();
+            }
+            t.child(
+                div()
+                    .w(px(12.))
+                    .h(px(12.))
+                    .rounded_full()
+                    .bg(gpui::white())
+                    .mx(px(2.)),
+            )
+            .into_any_element()
+        };
+        // Segmented control (active chip on light-gray).
+        let seg = |opts: &[&'static str], active: usize| {
+            let mut s = h_flex().items_center().rounded(px(8.)).p(px(2.)).gap(px(2.));
+            for (i, o) in opts.iter().enumerate() {
+                let mut c = div()
+                    .h(px(24.))
+                    .px(px(10.))
+                    .flex()
+                    .items_center()
+                    .rounded(px(6.));
+                if i == active {
+                    c = c.bg(rgb(0xf0f0f0));
+                }
+                s = s.child(c.child(div().text_xs().child(*o)));
+            }
+            s.into_any_element()
+        };
+        // Color swatch pill: bordered pill with color box + hex label.
+        let swatch_pill = |hex_label: &'static str, color: u32| {
+            h_flex()
+                .h(px(28.))
+                .px(px(8.))
+                .gap_2()
+                .items_center()
+                .rounded(px(8.))
+                .border_1()
+                .border_color(theme.border)
+                .child(
+                    div()
+                        .w(px(14.))
+                        .h(px(14.))
+                        .rounded(px(4.))
+                        .bg(rgb(color))
+                        .border_1()
+                        .border_color(theme.border),
+                )
+                .child(div().text_sm().child(hex_label))
+                .into_any_element()
+        };
+        // Thin track slider + value label.
+        let slider = |frac: f32, val: &'static str| {
+            h_flex()
+                .items_center()
+                .gap_2()
+                .child(
+                    div()
+                        .relative()
+                        .w(px(110.))
+                        .h(px(14.))
+                        .child(
+                            div()
+                                .absolute()
+                                .top(px(6.))
+                                .left_0()
+                                .w_full()
+                                .h(px(2.))
+                                .rounded_full()
+                                .bg(theme.foreground),
+                        )
+                        .child(
+                            div()
+                                .absolute()
+                                .top(px(1.))
+                                .left(px(110f32 * frac - 6.))
+                                .w(px(12.))
+                                .h(px(12.))
+                                .rounded_full()
+                                .bg(gpui::white())
+                                .border_1()
+                                .border_color(theme.foreground),
+                        ),
+                )
+                .child(div().text_xs().text_color(theme.muted_foreground).child(val))
+                .into_any_element()
+        };
+        // Bordered number field + "px" suffix.
+        let num_field = |v: &'static str| {
+            h_flex()
+                .items_center()
+                .gap_2()
+                .child(
+                    div()
+                        .h(px(28.))
+                        .w(px(44.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(div().text_sm().child(v)),
+                )
+                .child(div().text_sm().text_color(theme.muted_foreground).child("px"))
+                .into_any_element()
+        };
+        // Mini window mock for the Appearance theme picker.
+        let mini_pane = |bgc: u32, bar: u32| {
+            div()
+                .flex_1()
+                .h_full()
+                .bg(rgb(bgc))
+                .p(px(8.))
+                .child(
+                    v_flex()
+                        .gap(px(5.))
+                        .child(div().w(px(40.)).h(px(4.)).rounded(px(2.)).bg(rgb(bar)))
+                        .child(div().w(px(30.)).h(px(4.)).rounded(px(2.)).bg(rgb(bar)))
+                        .child(div().w(px(34.)).h(px(4.)).rounded(px(2.)).bg(rgb(bar))),
+                )
+        };
+        let theme_fg = theme.foreground;
+        let theme_bd = theme.border;
+        let theme_card = move |kind: u8, label: &'static str, selected: bool| {
+            let mut frame = div()
+                .w(px(124.))
+                .h(px(88.))
+                .rounded(px(10.))
+                .overflow_hidden()
+                .border_color(if selected { theme_fg } else { theme_bd });
+            if selected {
+                frame = frame.border_2();
+            } else {
+                frame = frame.border_1();
+            }
+            let content = match kind {
+                0 => h_flex()
+                    .size_full()
+                    .child(mini_pane(0xf5f5f5, 0xd4d4d4))
+                    .child(mini_pane(0x1a1a1a, 0x404040))
+                    .into_any_element(),
+                1 => div()
+                    .size_full()
+                    .child(mini_pane(0xf5f5f5, 0xd4d4d4))
+                    .into_any_element(),
+                _ => div()
+                    .size_full()
+                    .child(mini_pane(0x1a1a1a, 0x404040))
+                    .into_any_element(),
+            };
+            v_flex()
+                .gap(px(6.))
+                .items_center()
+                .child(frame.child(content))
+                .child(div().text_sm().child(label))
+                .into_any_element()
+        };
+
+        let settings_h = window.viewport_size().height - px(47.);
+        let mut settings_pane = v_flex()
+            .w(px(672.))
+            .h(settings_h)
+            .id("settings-scroll")
+            .track_scroll(&self.settings_scroll)
+            .overflow_y_scroll()
+            .vertical_scrollbar(&self.settings_scroll)
+            .px_6()
+            .py_8()
+            .gap_6();
         {
             let mut head = h_flex().items_start().justify_between().gap_4();
             head = head.child(
@@ -3718,16 +3901,15 @@ impl Render for Native {
                         div()
                             .text_sm()
                             .text_color(theme.muted_foreground)
-                            .child(if self.settings_section == "general" {
-                                "Defaults for new chats, power, time, and getting started.".to_string()
-                            } else {
-                                format!("{section_title} settings are not yet ported to the native shell.")
+                            .child(match &*self.settings_section {
+                                "general" => "Defaults for new chats, power, time, and getting started.".to_string(),
+                                "appearance" => "Customize the theme, typography, density, and time format.".to_string(),
+                                "notifications" => "Choose how Synara tells you when work finishes or needs attention.".to_string(),
+                                _ => format!("{section_title} settings are not yet ported to the native shell."),
                             }),
                     ),
             );
-            if self.settings_section == "general" {
-                head = head.child(outline_btn("\u{21ba} Restore defaults"));
-            }
+            head = head.child(outline_btn("\u{21ba} Restore defaults"));
             settings_pane = settings_pane.child(div().mb_2().child(head));
 
             if self.settings_section == "general" {
@@ -3819,13 +4001,256 @@ impl Render for Native {
                         ),
                     );
             }
+
+            if self.settings_section == "notifications" {
+                settings_pane = settings_pane.child(
+                    v_flex()
+                        .gap_1p5()
+                        .child(section_label("Activity alerts"))
+                        .child(card(
+                            v_flex()
+                                .child(srow(
+                                    "Activity toasts",
+                                    "Show an in-app toast when a chat or managed terminal agent finishes or needs input.",
+                                    toggle(true),
+                                ))
+                                .child(divider())
+                                .child(srow(
+                                    "Desktop notifications",
+                                    "Show an OS notification when a chat or managed terminal agent finishes or needs input while the app is in the background. Allow browser notifications to get alerts when chats or terminal agents finish or need input in the background.",
+                                    h_flex()
+                                        .items_center()
+                                        .gap_3()
+                                        .child(div().text_sm().child("Test"))
+                                        .child(toggle(true))
+                                        .into_any_element(),
+                                ))
+                                .child(divider())
+                                .child(srow(
+                                    "Wait for subagents",
+                                    "Alert once the agent and all of its background subagents have finished. Turn this off to be alerted each time the agent or one of its subagents stops.",
+                                    toggle(true),
+                                ))
+                                .into_any_element(),
+                        )),
+                );
+            }
+
+            if self.settings_section == "appearance" {
+                // Plain row without a description line.
+                let prow = |label: &'static str, ctrl: gpui::AnyElement| {
+                    h_flex()
+                        .w_full()
+                        .items_center()
+                        .justify_between()
+                        .px_3()
+                        .py(px(10.))
+                        .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(label))
+                        .child(ctrl)
+                        .into_any_element()
+                };
+                settings_pane = settings_pane.child(
+                    v_flex()
+                        .gap_1p5()
+                        .child(section_label("Theme"))
+                        .child(
+                            h_flex()
+                                .gap_4()
+                                .child(theme_card(0, "System", true))
+                                .child(theme_card(1, "Light", false))
+                                .child(theme_card(2, "Dark", false)),
+                        ),
+                );
+                for dark in [false, true] {
+                    let (name, desc, acc, bgc, fgc, al, bl, fl) = if dark {
+                        ("Dark theme", "Used when your system switches to dark.", 0xf2612d, 0x111111, 0xfcfcfc, "#F2612D", "#111111", "#FCFCFC")
+                    } else {
+                        ("Light theme", "System is currently using this light slot.", 0xc74614, 0xffffff, 0x0d0d0d, "#C74614", "#FFFFFF", "#0D0D0D")
+                    };
+                    let aa_chip = if dark {
+                        div().rounded(px(4.)).bg(rgb(0x111111)).px(px(3.))
+                            .child(div().text_xs().text_color(gpui::white()).child("Aa"))
+                            .into_any_element()
+                    } else {
+                        div().text_sm().text_color(accent_c).child("Aa").into_any_element()
+                    };
+                    let mut sel = h_flex()
+                        .w_full()
+                        .mx_3()
+                        .mt_1()
+                        .mb_2()
+                        .h(px(36.))
+                        .items_center()
+                        .justify_between()
+                        .px_3()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border);
+                    if dark {
+                        sel = sel.bg(rgb(0x111111)).child(div().text_sm().text_color(gpui::white()).child("Synara"));
+                    } else {
+                        sel = sel.child(div().text_sm().child("Synara"));
+                    }
+                    settings_pane = settings_pane.child(card(
+                        v_flex()
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .px_3()
+                                    .pt_3()
+                                    .pb_1()
+                                    .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(name))
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_3()
+                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Import"))
+                                            .child(div().text_sm().text_color(theme.muted_foreground).child("Copy"))
+                                            .child(
+                                                h_flex()
+                                                    .items_center()
+                                                    .gap_1()
+                                                    .child(aa_chip)
+                                                    .child(div().text_sm().child("Synara")),
+                                            ),
+                                    ),
+                            )
+                            .child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .px_3()
+                                    .pb_2()
+                                    .child(div().text_sm().text_color(theme.muted_foreground).child(desc))
+                                    .when(dark, |d| {
+                                        d.child(
+                                            h_flex()
+                                                .items_center()
+                                                .gap_2()
+                                                .child(div().text_sm().text_color(theme.muted_foreground).child("Use dark theme"))
+                                                .child(toggle(true)),
+                                        )
+                                    }),
+                            )
+                            .child(sel.child(div().text_sm().text_color(accent_c).child("Accent preview")))
+                            .child(divider())
+                            .child(prow("Accent", swatch_pill(al, acc)))
+                            .child(divider())
+                            .child(prow("Background", swatch_pill(bl, bgc)))
+                            .child(divider())
+                            .child(prow("Foreground", swatch_pill(fl, fgc)))
+                            .child(divider())
+                            .child(prow(
+                                "UI font",
+                                v_flex()
+                                    .items_end()
+                                    .gap_1()
+                                    .child(select_pill("System default".to_string(), None))
+                                    .child(div().text_xs().text_color(theme.muted_foreground).child("Use system UI font is on; theme fonts are not applied."))
+                                    .into_any_element(),
+                            ))
+                            .child(divider())
+                            .child(prow("Code font", select_pill("*JetBrains Mono*".to_string(), None)))
+                            .child(divider())
+                            .child(prow("Window", seg(&["Solid", "Translucent"], 1)))
+                            .child(divider())
+                            .child(prow("Sidebar only", toggle(false)))
+                            .child(divider())
+                            .child(prow("Opacity", slider(0.98, "98%")))
+                            .child(divider())
+                            .child(prow(
+                                "Blur",
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(div().text_xs().text_color(theme.muted_foreground).child("Auto"))
+                                    .child(slider(0.64, "64"))
+                                    .into_any_element(),
+                            ))
+                            .child(divider())
+                            .child(prow("Contrast", slider(0.0, "0")))
+                            .into_any_element(),
+                    ));
+                }
+                settings_pane = settings_pane
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Effects"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "ASCII background",
+                                        "Show the animated ASCII field on empty chats. Reduced motion keeps the field still.",
+                                        toggle(true),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    )
+                    .child(
+                        v_flex()
+                            .gap_1p5()
+                            .child(section_label("Typography and spacing"))
+                            .child(card(
+                                v_flex()
+                                    .child(srow(
+                                        "Use system UI font",
+                                        "Ignore the theme's custom UI font and render the interface with the native system font (SF Pro on macOS).",
+                                        toggle(true),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "UI density",
+                                        "Control spacing in the sidebar, composer, chat gutters, and settings rows without changing font size.",
+                                        seg(&["Compact", "Comfortable", "Spacious"], 1),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Chat width",
+                                        "Control how wide the chat column grows. Wide and Full give tables and wide content more room.",
+                                        seg(&["Standard", "Wide", "Full"], 0),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Base font size",
+                                        "Adjust the app text base in pixels. Chat and UI typography scale proportionally from this value.",
+                                        num_field("13"),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Terminal font size",
+                                        "Adjust terminal text independently from the app and chat font size.",
+                                        num_field("12"),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Terminal font",
+                                        "Type any monospace font installed on this device (e.g. Fira Code). Leave empty for the default. Fonts that aren't installed fall back to the system monospace.",
+                                        select_pill("Default (JetBrains Mono)".to_string(), None),
+                                    ))
+                                    .child(divider())
+                                    .child(srow(
+                                        "Font smoothing",
+                                        "Use macOS-style antialiasing for lighter, crisper text rendering.",
+                                        toggle(true),
+                                    ))
+                                    .into_any_element(),
+                            )),
+                    );
+            }
         }
         // Center the content column at upstream max-w-2xl (672px).
         let settings_pane = h_flex()
             .flex_1()
             .w_full()
             .justify_center()
-            .child(div().w(px(672.)).child(settings_pane));
+            .child(settings_pane);
+        if std::env::var("SYNARA_SCROLL_BOTTOM").is_ok() {
+            self.settings_scroll.scroll_to_bottom();
+        }
 
         // ---- settings sidebar nav (replaces project sidebar) ----
         let mut settings_nav_el = v_flex().flex_1().h_full().px(px(6.)).py(px(6.)).gap(px(2.));
@@ -4716,7 +5141,7 @@ impl Render for Native {
         // ---- main column under the strip: panes + composer ----
         let mut main = v_flex().flex_1().h_full();
         if self.view_settings {
-            main = main.child(div().flex_1().child(settings_pane.overflow_y_scrollbar()));
+            main = main.child(div().flex_1().child(settings_pane));
         } else if self.view_dev {
             main = main.child(div().flex_1().child(dev_pane.overflow_y_scrollbar()));
         } else if self.view_files {
@@ -4994,15 +5419,13 @@ impl Render for Native {
             );
 
         // ---- top strip (AppShellTopStrip) ----
-        // 47px #f7f7f7 band + 1px border over rail+panel+content: sidebar
+        // 47px #f7f7f7 band, borderless, over rail+panel+content: sidebar
         // toggle centered over the rail at left, Environment + dock toggles
         // at right (Hugeicons panel-top-open / layout-right).
         let strip = h_flex()
             .w_full()
             .h(px(47.))
             .bg(rgb(0xf7f7f7))
-            .border_b_1()
-            .border_color(rgb(0xe5e5e5))
             .items_center()
             .pr(px(19.))
             .child(
@@ -5088,6 +5511,7 @@ impl Render for Native {
         v_flex()
             .size_full()
             .key_context("native")
+            .id("native-root")
             .on_action(cx.listener(|this, _: &ToggleFind, w, cx| {
                 this.toggle_find(w, cx);
             }))

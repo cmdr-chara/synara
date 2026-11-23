@@ -15,27 +15,38 @@ const DEFAULT_URL: &str = "http://127.0.0.1:4577";
 
 pub struct Shell {
     focus_handle: FocusHandle,
-    webview: Entity<WebView>,
+    webview: Option<Entity<WebView>>,
     native: Entity<native::Native>,
     address_input: Entity<InputState>,
 }
 
 impl Shell {
     pub fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
-        let webview = cx.new(|cx| {
-            let builder = wry::WebViewBuilder::new();
-            #[cfg(debug_assertions)]
-            let builder = builder.with_devtools(true);
+        let native_ui = std::env::var("SYNARA_NATIVE").is_ok();
+        let webview = if native_ui {
+            // In native mode the WKWebView subview is never rendered; creating
+            // it anyway leaves an invisible native view over the window that
+            // intercepts scroll-wheel events (scroll stops working).
+            None
+        } else {
+            let webview = cx.new(|cx| {
+                let builder = wry::WebViewBuilder::new();
+                #[cfg(debug_assertions)]
+                let builder = builder.with_devtools(true);
 
-            WebView::build(builder, window, cx).expect("Failed to create WebView")
-        });
+                WebView::build(builder, window, cx).expect("Failed to create WebView")
+            });
+            Some(webview)
+        };
 
         let url = std::env::var("SYNARA_URL").unwrap_or_else(|_| DEFAULT_URL.to_string());
         let address_input = cx.new(|cx| InputState::new(window, cx).default_value(url.as_str()));
 
-        webview.update(cx, |view, _| {
-            view.load_url(&url);
-        });
+        if let Some(webview) = &webview {
+            webview.update(cx, |view, _| {
+                view.load_url(&url);
+            });
+        }
 
         cx.new(|cx| {
             let this = Self {
@@ -50,9 +61,11 @@ impl Shell {
                 |this: &mut Self, input, event: &InputEvent, cx| {
                     if let InputEvent::PressEnter { .. } = event {
                         let url = input.read(cx).value();
-                        this.webview.update(cx, |view, _| {
-                            view.load_url(&url);
-                        });
+                        if let Some(webview) = &this.webview {
+                            webview.update(cx, |view, _| {
+                                view.load_url(&url);
+                            });
+                        }
                     }
                 },
             )
@@ -63,15 +76,19 @@ impl Shell {
     }
 
     fn go_back(&mut self, _: &ClickEvent, _: &mut Window, cx: &mut Context<Self>) {
-        self.webview.update(cx, |webview, _| {
-            let _ = webview.back();
-        });
+        if let Some(webview) = &self.webview {
+            webview.update(cx, |webview, _| {
+                let _ = webview.back();
+            });
+        }
     }
 
     fn go_forward(&mut self, _: &ClickEvent, _: &mut Window, cx: &mut Context<Self>) {
-        self.webview.update(cx, |webview, _| {
-            let _ = webview.forward();
-        });
+        if let Some(webview) = &self.webview {
+            webview.update(cx, |webview, _| {
+                let _ = webview.forward();
+            });
+        }
     }
 }
 
@@ -83,13 +100,11 @@ impl Focusable for Shell {
 
 impl Render for Shell {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let webview = self.webview.clone();
-        let native_ui = std::env::var("SYNARA_NATIVE").is_ok();
-        if native_ui {
+        let Some(webview) = self.webview.clone() else {
             return v_flex()
                 .size_full()
                 .child(self.native.clone());
-        }
+        };
 
         v_flex()
             .size_full()
@@ -118,7 +133,7 @@ impl Render for Shell {
                             .ghost()
                             .icon(IconName::Ellipsis)
                             .dropdown_menu({
-                                let webview = self.webview.clone();
+                                let webview = webview.clone();
                                 move |menu, _, _| {
                                     let reload = webview.clone();
                                     menu.item(PopupMenuItem::new("Reload").on_click(

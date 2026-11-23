@@ -3743,7 +3743,7 @@ impl Render for Native {
                         .min_w_0()
                         .gap(px(2.))
                         .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
-                        .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(desc)),
+                        .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
                 )
                 .child(ctrl)
         };
@@ -4604,7 +4604,7 @@ impl Render for Native {
                                     .flex_1()
                                     .min_w_0()
                                     .child(div().text_sm().font_weight(FontWeight::MEDIUM).child(title))
-                                    .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(desc)),
+                                    .child(div().w_full().text_sm().text_color(theme.muted_foreground).child(desc)),
                             )
                             .child(right),
                     );

@@ -52,6 +52,10 @@ mod icons {
     pub const SEND: &[u8] = include_bytes!("../assets/icons/arrow-up.svg");
     pub const ARROW_DOWN: &[u8] = include_bytes!("../assets/icons/arrow-down.svg");
     pub const X: &[u8] = include_bytes!("../assets/icons/x.svg");
+    pub const FILE_TEXT: &[u8] = include_bytes!("../assets/icons/file-text.svg");
+    pub const UNSTAGE: &[u8] =
+        include_bytes!("../assets/icons/arrow-rotate-counter-clockwise.svg");
+    pub const STAGE: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
     pub const PIN: &[u8] = include_bytes!("../assets/icons/pin.svg");
@@ -232,7 +236,8 @@ pub struct Native {
     renaming: bool,
     rename_input: Option<Entity<InputState>>,
     view_changes: bool,
-    changes_files: Vec<Value>,
+    staged_files: Vec<Value>,
+    unstaged_files: Vec<Value>,
     changes_diff: Option<(String, String)>,
     changes_loading: bool,
     changes_unavailable: bool,
@@ -294,6 +299,48 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
 
 fn get_mut<'a>(v: &'a mut Value, k: &str) -> Option<&'a mut Value> {
     v.get_mut(k)
+}
+
+/// Split a unified diff patch into per-file rows (path, +ins, -del), like
+/// upstream's parsePatchToSortedFiles on `git readWorkingTreeDiff` output.
+fn parse_patch_files(patch: &str) -> Vec<Value> {
+    let mut files = Vec::new();
+    for part in patch.split("diff --git ") {
+        let header = part.lines().next().unwrap_or("");
+        if !header.starts_with("a/") {
+            continue;
+        }
+        let path = header
+            .split(" b/")
+            .nth(1)
+            .map(|s| s.trim().to_string())
+            .or_else(|| {
+                header
+                    .trim_start_matches("a/")
+                    .split(' ')
+                    .next()
+                    .map(|s| s.to_string())
+            })
+            .unwrap_or_default();
+        if path.is_empty() {
+            continue;
+        }
+        let mut ins = 0i64;
+        let mut del = 0i64;
+        for line in part.lines() {
+            if line.starts_with('+') && !line.starts_with("+++") {
+                ins += 1;
+            } else if line.starts_with('-') && !line.starts_with("---") {
+                del += 1;
+            }
+        }
+        files.push(json!({
+            "path": path,
+            "insertions": ins,
+            "deletions": del,
+        }));
+    }
+    files
 }
 
 fn now_iso() -> String {
@@ -498,7 +545,8 @@ impl Native {
                 renaming: false,
                 rename_input: None,
                 view_changes: false,
-                changes_files: Vec::new(),
+                staged_files: Vec::new(),
+                unstaged_files: Vec::new(),
                 changes_diff: None,
                 changes_loading: false,
                 changes_unavailable: false,
@@ -903,16 +951,45 @@ impl Native {
                 .background_executor()
                 .spawn(async move { c.call("git.status", json!({"cwd": c2})) })
                 .await;
+            let c = client.clone();
+            let c2 = cwd.clone();
+            let staged_res = cx
+                .background_executor()
+                .spawn(async move {
+                    c.call(
+                        "git.readWorkingTreeDiff",
+                        json!({"cwd": c2, "scope": "staged"}),
+                    )
+                })
+                .await;
+            let c2 = cwd.clone();
+            let unstaged_res = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "git.readWorkingTreeDiff",
+                        json!({"cwd": c2, "scope": "unstaged"}),
+                    )
+                })
+                .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.changes_loading = false;
                 match res {
-                    Some(v) => {
+                    Some(_v) => {
                         this.changes_unavailable = false;
-                        this.changes_files = arr(get(&v, "workingTree"), "files").to_vec();
+                        let parse = |r: Option<Value>| -> Vec<Value> {
+                            r.map(|v| {
+                                parse_patch_files(str_at(&v, "patch"))
+                            })
+                            .unwrap_or_default()
+                        };
+                        this.staged_files = parse(staged_res);
+                        this.unstaged_files = parse(unstaged_res);
                     }
                     None => {
                         this.changes_unavailable = true;
-                        this.changes_files = Vec::new();
+                        this.staged_files = Vec::new();
+                        this.unstaged_files = Vec::new();
                     }
                 }
                 cx.notify();
@@ -920,6 +997,31 @@ impl Native {
         })
         .detach();
         cx.notify();
+    }
+
+    fn stage_paths(&mut self, paths: Vec<String>, unstage: bool, cx: &mut Context<Self>) {
+        let Some(cwd) = self.files_root() else {
+            return;
+        };
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let method = if unstage { "git.unstageFiles" } else { "git.stageFiles" };
+            let res = cx
+                .background_executor()
+                .spawn(async move { client.call(method, json!({"cwd": cwd, "paths": paths})) })
+                .await;
+            let _ = res;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.fetch_changes(cx);
+            });
+        })
+        .detach();
     }
 
     fn open_diff(&mut self, path: String, cx: &mut Context<Self>) {
@@ -7296,106 +7398,290 @@ impl Render for Native {
             main = main.child(update_toast);
         }
 
-        // ---- changes dock (right pane) ----
-        let mut changes_pane = v_flex()
-            .w(px(300.))
-            .h_full()
-            .px(px(12.))
-            .pb_3()
-            .pt(px(9.))
-            .gap_2()
-            .child(
-                h_flex()
-                    .items_center()
-                    .justify_between()
-                    .child(
-                        div()
-                            .text_size(px(12.))
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .text_color(theme.muted_foreground)
-                            .child("CHANGES"),
-                    )
-                    .child(
-                        Button::new("changes-refresh")
-                            .ghost()
-                            .compact()
-                            .icon(IconName::RefreshCw)
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.changes_diff = None;
-                                this.fetch_changes(cx);
-                            })),
-                    ),
-            );
+        // ---- changes dock (right pane): upstream GitPanel ----
+        // Header "Source control" + refresh + close; sections Staged/Changes
+        // with file rows (icon, dir muted + name, +ins/-del, stage action);
+        // bottom diff viewport over a border-t.
+        let mut changes_pane = v_flex().w(px(300.)).h_full().flex_col();
+        changes_pane = changes_pane.child(
+            h_flex()
+                .items_center()
+                .w_full()
+                .px_4()
+                .pt(px(9.))
+                .pb_1()
+                .gap(px(6.))
+                .child(
+                    div()
+                        .text_size(px(16.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .flex_1()
+                        .min_w_0()
+                        .child("Source control"),
+                )
+                .child(
+                    Button::new("changes-refresh")
+                        .ghost()
+                        .compact()
+                        .icon(IconName::RefreshCw)
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.changes_diff = None;
+                            this.fetch_changes(cx);
+                        })),
+                )
+                .child(
+                    Button::new("changes-close")
+                        .ghost()
+                        .compact()
+                        .icon(
+                            svg_icon(icons::X)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.view_changes = false;
+                            cx.notify();
+                        })),
+                ),
+        );
+        // -- sections (top, capped height, scrollable) --
+        let selected_path = self.changes_diff.as_ref().map(|(p, _)| p.clone());
+        let mut files_area = v_flex()
+            .w_full()
+            .flex_none()
+            .max_h(px(430.))
+            .id("changes-files-scroll")
+            .overflow_y_scrollbar()
+            .px(px(6.))
+            .py_2()
+            .gap_2();
         if self.changes_loading {
-            changes_pane = changes_pane.child(
+            files_area = files_area.child(
                 div()
-                    .text_xs()
-                    .text_color(theme.muted_foreground)
-                    .child("Loading\u{2026}"),
+                    .px(px(6.))
+                    .py_1()
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground.opacity(0.7))
+                    .child("Loading changes..."),
             );
         } else if self.changes_unavailable {
-            changes_pane = changes_pane.child(
+            files_area = files_area.child(
                 div()
-                    .text_xs()
-                    .text_color(theme.muted_foreground)
-                    .child("Not a git repository."),
+                    .w_full()
+                    .py_2()
+                    .flex()
+                    .justify_center()
+                    .text_size(px(14.))
+                    .text_color(theme.muted_foreground.opacity(0.7))
+                    .child("Source control is unavailable for this thread."),
             );
-        } else if self.changes_files.is_empty() {
-            changes_pane = changes_pane.child(
+        } else if self.staged_files.is_empty() && self.unstaged_files.is_empty() {
+            files_area = files_area.child(
                 div()
-                    .text_xs()
-                    .text_color(theme.muted_foreground)
-                    .child("No working tree changes."),
+                    .w_full()
+                    .py_2()
+                    .flex()
+                    .justify_center()
+                    .text_size(px(14.))
+                    .text_color(theme.muted_foreground.opacity(0.7))
+                    .child("No changes in the working tree."),
             );
         } else {
-            for f in self.changes_files.clone() {
-                let path = str_at(&f, "path").to_string();
-                let ins = get(&f, "insertions").as_i64().unwrap_or(0);
-                let del = get(&f, "deletions").as_i64().unwrap_or(0);
-                let p = path.clone();
-                changes_pane = changes_pane.child(
-                    h_flex()
-                        .id(ElementId::Name(format!("chg-{path}").into()))
-                        .gap_2()
-                        .items_center()
-                        .cursor_pointer()
-                        .child(div().flex_1().text_xs().child(path))
-                        .child(
-                            div()
-                                .text_xs()
-                                .text_color(theme.success)
-                                .child(format!("+{ins}")),
-                        )
-                        .child(
-                            div()
-                                .text_xs()
-                                .text_color(theme.danger)
-                                .child(format!("-{del}")),
-                        )
+            for (sec_title, sec_files, empty_label, unstage, action_all) in [
+                (
+                    "Staged",
+                    self.staged_files.clone(),
+                    "No staged changes.",
+                    true,
+                    "Unstage all",
+                ),
+                (
+                    "Changes",
+                    self.unstaged_files.clone(),
+                    "No unstaged changes.",
+                    false,
+                    "Stage all",
+                ),
+            ] {
+                let adds: i64 = sec_files
+                    .iter()
+                    .map(|f| get(f, "insertions").as_i64().unwrap_or(0))
+                    .sum();
+                let dels: i64 = sec_files
+                    .iter()
+                    .map(|f| get(f, "deletions").as_i64().unwrap_or(0))
+                    .sum();
+                let all_paths: Vec<String> = sec_files
+                    .iter()
+                    .map(|f| str_at(f, "path").to_string())
+                    .collect();
+                let mut header = h_flex()
+                    .items_center()
+                    .gap_2()
+                    .px(px(6.))
+                    .py_1()
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child(sec_title),
+                    )
+                    .child(
+                        div()
+                            .rounded_full()
+                            .bg(theme.muted)
+                            .px(px(6.))
+                            .text_size(px(11.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(theme.muted_foreground)
+                            .child(sec_files.len().to_string()),
+                    )
+                    .child(
+                        div().text_size(px(11.)).text_color(theme.success).child(
+                            format!("+{adds}"),
+                        ),
+                    )
+                    .child(
+                        div().text_size(px(11.)).text_color(theme.danger).child(
+                            format!("-{dels}"),
+                        ),
+                    )
+                    .child(div().flex_1());
+                if !sec_files.is_empty() {
+                    header = header.child(
+                        Button::new(ElementId::Name(
+                            format!("chg-{sec_title}-all").into(),
+                        ))
+                        .ghost()
+                        .compact()
+                        .label(action_all)
                         .on_click(cx.listener(move |this, _ev, _w, cx| {
-                            this.open_diff(p.clone(), cx);
+                            this.stage_paths(all_paths.clone(), unstage, cx);
                         })),
-                );
+                    );
+                }
+                let mut section = v_flex().w_full().child(header);
+                if sec_files.is_empty() {
+                    section = section.child(
+                        div()
+                            .px(px(6.))
+                            .py_1()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(empty_label),
+                    );
+                } else {
+                    let mut rows = v_flex().gap(px(2.));
+                    for f in sec_files {
+                        let path = str_at(&f, "path").to_string();
+                        let ins = get(&f, "insertions").as_i64().unwrap_or(0);
+                        let del = get(&f, "deletions").as_i64().unwrap_or(0);
+                        let (dir, name) = match path.rfind('/') {
+                            Some(i) => {
+                                (format!("{}/", &path[..i]), path[i + 1..].to_string())
+                            }
+                            None => (String::new(), path.clone()),
+                        };
+                        let p = path.clone();
+                        let is_sel = selected_path.as_deref() == Some(path.as_str());
+                        let mut row = h_flex()
+                            .id(ElementId::Name(format!("chg-{path}").into()))
+                            .w_full()
+                            .gap(px(6.))
+                            .items_center()
+                            .rounded(px(6.))
+                            .px(px(6.))
+                            .py(px(4.))
+                            .cursor_pointer();
+                        if is_sel {
+                            row = row.bg(theme.sidebar_accent);
+                        } else {
+                            row = row
+                                .hover(|s| s.bg(theme.sidebar_accent.opacity(0.6)));
+                        }
+                        row = row
+                            .child(
+                                svg_icon(icons::FILE_TEXT)
+                                    .size(px(16.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .text_size(px(14.))
+                                    .overflow_hidden()
+                                    .text_ellipsis()
+                                    .whitespace_nowrap()
+                                    .child(
+                                        h_flex()
+                                            .min_w_0()
+                                            .child(
+                                                div()
+                                                    .text_color(
+                                                        theme.muted_foreground
+                                                            .opacity(0.7),
+                                                    )
+                                                    .child(dir),
+                                            )
+                                            .child(div().child(name)),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.success)
+                                    .child(format!("+{ins}")),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.danger)
+                                    .child(format!("-{del}")),
+                            );
+                        let p2 = path.clone();
+                        let action_icon = if unstage {
+                            icons::UNSTAGE
+                        } else {
+                            icons::STAGE
+                        };
+                        row = row
+                            .child(
+                                Button::new(ElementId::Name(
+                                    format!("chg-act-{path}").into(),
+                                ))
+                                .ghost()
+                                .compact()
+                                .icon(
+                                    svg_icon(action_icon)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                )
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.stage_paths(vec![p.clone()], unstage, cx);
+                                })),
+                            )
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.open_diff(p2.clone(), cx);
+                            }));
+                        rows = rows.child(row);
+                    }
+                    section = section.child(rows);
+                }
+                files_area = files_area.child(section);
             }
         }
-        if let Some((path, patch)) = &self.changes_diff {
-            changes_pane = changes_pane.child(
-                h_flex()
-                    .items_center()
-                    .justify_between()
-                    .child(div().text_xs().child(path.clone()))
-                    .child(
-                        Button::new("diff-close")
-                            .ghost()
-                            .compact()
-                            .label("\u{00d7}")
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.changes_diff = None;
-                                cx.notify();
-                            })),
-                    ),
-            );
-            let mut diff_view = v_flex().gap_0();
+        changes_pane = changes_pane.child(files_area);
+        // -- diff viewport over a border-t --
+        let mut viewport = v_flex()
+            .flex_1()
+            .min_h_0()
+            .w_full()
+            .border_t_1()
+            .border_color(theme.border.opacity(0.7));
+        if let Some((_path, patch)) = &self.changes_diff {
+            let mut diff_view = v_flex().gap_0().px_2().py_2();
             for line in patch.lines().take(400) {
                 let color = if line.starts_with('+') && !line.starts_with("+++") {
                     theme.success
@@ -7414,14 +7700,27 @@ impl Render for Native {
                         .child(line.to_string()),
                 );
             }
-            changes_pane = changes_pane.child(
+            viewport = viewport.child(
                 div()
                     .flex_1()
                     .id("diff-scroll")
                     .overflow_y_scrollbar()
                     .child(diff_view),
             );
+        } else {
+            viewport = viewport.child(
+                div()
+                    .flex_1()
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .px_4()
+                    .text_size(px(14.))
+                    .text_color(theme.muted_foreground.opacity(0.7))
+                    .child("Select a file to view its diff."),
+            );
         }
+        changes_pane = changes_pane.child(viewport);
 
         // ---- icon rail ----
         // --app-rail-width: 51px; 36px buttons on 8px radius, 6px gap,

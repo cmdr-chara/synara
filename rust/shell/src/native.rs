@@ -780,12 +780,13 @@ impl Native {
                                 t,
                                 this.queued_turns.first().cloned().unwrap_or_default(),
                                 this.runtime_mode,
+                                this.interaction_mode,
                             )
                         })
                     })
                     .ok()
                     .flatten();
-                if let Some((qtid, qtext, qmode)) = next {
+                if let Some((qtid, qtext, qmode, qimode)) = next {
                     let cmd = json!({
                         "type": "thread.turn.start",
                         "commandId": uuid(),
@@ -797,7 +798,7 @@ impl Native {
                             "attachments": [],
                         },
                         "runtimeMode": qmode,
-                        "interactionMode": "default",
+                        "interactionMode": qimode,
                         "createdAt": now_iso(),
                     });
                     let c = client.clone();
@@ -1670,6 +1671,23 @@ impl Native {
         cx.notify();
     }
 
+    /// Fire-and-forget `orchestration.dispatchCommand`, like upstream's
+    /// `orchestration.dispatchCommand(...).forget()` call sites.
+    fn dispatch_cmd(&mut self, cmd: Value, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            cx.background_executor()
+                .spawn(async move { client.call("orchestration.dispatchCommand", cmd) })
+                .detach();
+        })
+        .detach();
+    }
+
     fn insert_goal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let composer = self.composer.clone();
         self.composer.update(cx, |state, cx| {
@@ -2512,6 +2530,7 @@ impl Native {
             .map(str::to_owned);
         let client = self.client.clone();
         let mode = self.runtime_mode;
+        let imode = self.interaction_mode;
         // Attachments uploaded earlier keep the thread id they were staged
         // under (a fresh thread adopts it as its id).
         if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
@@ -2556,7 +2575,7 @@ impl Native {
                         "title": text.chars().take(60).collect::<String>(),
                         "modelSelection": model_selection,
                         "runtimeMode": mode,
-                        "interactionMode": "default",
+                        "interactionMode": imode,
                         "envMode": "local",
                         "branch": null,
                         "worktreePath": null,
@@ -2575,7 +2594,7 @@ impl Native {
                     "attachments": attachments,
                 },
                 "runtimeMode": mode,
-                "interactionMode": "default",
+                "interactionMode": imode,
                 "createdAt": now_iso(),
             }));
             for cmd in cmds {
@@ -4592,6 +4611,18 @@ impl Render for Native {
                                 "plan" | "debug" | "default" => {
                                     this.interaction_mode = cmd;
                                     this.set_draft("", w, cx);
+                                    if let Some(tid) = this.selected_thread.clone() {
+                                        this.dispatch_cmd(
+                                            json!({
+                                                "type": "thread.interaction-mode.set",
+                                                "commandId": uuid(),
+                                                "threadId": tid,
+                                                "interactionMode": cmd,
+                                                "createdAt": now_iso(),
+                                            }),
+                                            cx,
+                                        );
+                                    }
                                 }
                                 "fast" => {
                                     this.fast_mode = !this.fast_mode;

@@ -7,7 +7,7 @@ description = "Synara desktop shell: gpui-kit (gpui-fast) window embedding the w
 license = "MIT"
 
 [dependencies]
-gpui-kit = { version = "0.10", features = ["gpui-fast"] }
+gpui-kit = { version = "0.10", features = ["gpui-fast", "tree-sitter", "tree-sitter-languages"] }
 gpui-webview = { version = "0.10", features = ["gpui-fast"] }
 wry = { version = "0.53.3", package = "lb-wry" }
 anyhow = "1"

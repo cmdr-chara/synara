@@ -114,6 +114,10 @@ mod icons {
         include_bytes!("../assets/icons/branch-simple.svg");
     pub const S_ARCHIVE: &[u8] = include_bytes!("../assets/icons/archive.svg");
     pub const S_SHIELD: &[u8] = include_bytes!("../assets/icons/shield.svg");
+    pub const HANDOFF: &[u8] = include_bytes!("../assets/icons/handoff.svg");
+    pub const COPY: &[u8] = include_bytes!("../assets/icons/copy.svg");
+    pub const TEXT_WRAP: &[u8] = include_bytes!("../assets/icons/text-wrap.svg");
+    pub const BRANCH_SIMPLE: &[u8] = include_bytes!("../assets/icons/branch-simple.svg");
     pub const S_TOOLBOX: &[u8] = include_bytes!("../assets/icons/toolbox.svg");
     pub const S_CIRCLE_INFO: &[u8] =
         include_bytes!("../assets/icons/circle-info.svg");
@@ -300,6 +304,14 @@ fn rel_time(iso: &str) -> String {
     } else {
         format!("{}d", d / 86400)
     }
+}
+
+// Local wall-clock time "h:mm AM/PM" like the upstream message footer.
+fn clock_time(iso: &str) -> String {
+    let Ok(t) = chrono::DateTime::parse_from_rfc3339(iso) else {
+        return String::new();
+    };
+    t.with_timezone(&chrono::Local).format("%-I:%M %p").to_string()
 }
 
 fn uuid() -> String {
@@ -2635,183 +2647,13 @@ impl Render for Native {
                     ),
             );
         }
-        // ---- open tabs strip ----
-        if !self.open_threads.is_empty() {
-            let all_threads = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads");
-            let mut strip = h_flex().gap_1().items_center().flex_wrap();
-            for ot in self.open_threads.clone() {
-                let active = self.selected_thread.as_deref() == Some(ot.as_str());
-                let ot_title = all_threads
-                    .iter()
-                    .find(|t| str_at(t, "id") == ot)
-                    .map(|t| str_at(t, "title").to_string())
-                    .filter(|t| !t.is_empty())
-                    .unwrap_or_else(|| ot.chars().take(8).collect());
-                let sel = ot.clone();
-                let close = ot.clone();
-                let mut tab = Button::new(ElementId::Name(format!("tab-{ot}").into()))
-                    .ghost()
-                    .compact()
-                    .icon(IconName::Bot)
-                    .label(ot_title);
-                if active {
-                    tab = tab.outline();
-                }
-                strip = strip
-                    .child(tab.on_click(cx.listener(move |this, _ev, _w, cx| {
-                        if this.selected_thread.as_deref() != Some(sel.as_str()) {
-                            this.open_thread(sel.clone(), cx);
-                        }
-                    })))
-                    .child(
-                        Button::new(ElementId::Name(format!("tab-close-{close}").into()))
-                            .ghost()
-                            .compact()
-                            .label("\u{00d7}")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                this.close_tab(close.clone(), cx);
-                            })),
-                    );
-            }
-            pane = pane.child(strip);
-        }
         let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread");
-        let session_status = str_at(get(thread_v, "session"), "status").to_string();
-        let turn_state = str_at(get(thread_v, "latestTurn"), "state").to_string();
-        let title = str_at(thread_v, "title").to_string();
-        if !title.is_empty() {
-            let tid_now = self.selected_thread.clone().unwrap_or_default();
-            let pinned = self.pinned_threads.contains(&tid_now);
-            let mut header = h_flex().gap_2().items_center();
-            if self.renaming {
-                if let Some(input) = &self.rename_input {
-                    header = header
-                        .child(div().w(px(240.)).child(Input::new(input)))
-                        .child(
-                            Button::new("rename-ok")
-                                .ghost()
-                                .compact()
-                                .label("\u{2713}")
-                                .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    this.commit_rename(cx);
-                                })),
-                        )
-                        .child(
-                            Button::new("rename-cancel")
-                                .ghost()
-                                .compact()
-                                .label("\u{00d7}")
-                                .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    this.renaming = false;
-                                    this.rename_input = None;
-                                    cx.notify();
-                                })),
-                        );
-                }
-            } else {
-                header = header
-                    .child(
-                        Button::new("thread-tab")
-                            .ghost()
-                            .icon(IconName::Bot)
-                            .label(title.clone()),
-                    )
-                    .child(
-                        Button::new("thread-menu")
-                            .ghost()
-                            .compact()
-                            .label("\u{22ef}")
-                            .dropdown_menu({
-                                let this = cx.entity();
-                                let tid = tid_now.clone();
-                                let pin_label = if pinned { "Unpin" } else { "Pin" };
-                                move |mut menu, _, _| {
-                                    let t = this.clone();
-                                    let t_pin = this.clone();
-                                    let t2 = tid.clone();
-                                    menu = menu
-                                        .item(PopupMenuItem::new("Rename").on_click(
-                                            move |_, window, cx| {
-                                                t.update(cx, |this, cx| {
-                                                    this.start_rename(window, cx);
-                                                });
-                                            },
-                                        ))
-                                        .item(PopupMenuItem::new(pin_label).on_click(
-                                            move |_, _, cx| {
-                                                t_pin.update(cx, |this, cx| {
-                                                    this.toggle_pin(t2.clone(), cx);
-                                                });
-                                            },
-                                        ));
-                                    menu
-                                }
-                            }),
-                    );
-            }
-            if !session_status.is_empty() && session_status != "idle" {
-                header = header.child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.muted_foreground)
-                        .child(session_status.clone()),
-                );
-            }
-            if turn_state == "pending" || turn_state == "running" {
-                header = header
-                    .child(Spinner::new().small())
-                    .child(
-                        div()
-                            .text_xs()
-                            .text_color(theme.warning)
-                            .child("working\u{2026}"),
-                    );
-            } else if turn_state == "error" || turn_state == "interrupted" {
-                header = header.child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.danger)
-                        .child(turn_state.clone()),
-                );
-            }
-            if get(thread_v, "hasPendingApprovals").as_bool().unwrap_or(false) {
-                header = header.child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.warning)
-                        .child("approval required"),
-                );
-            }
-            if turn_state == "pending" || turn_state == "running" {
-                header = header.child(
-                    Button::new("stop-turn")
-                        .ghost()
-                        .label("Stop")
-                        .on_click(cx.listener(|this, _ev, _w, cx| {
-                            this.dispatch_thread_cmd("thread.turn.interrupt", cx)
-                        })),
-                );
-            }
-            header = header.child(
-                Button::new("archive-thread")
-                    .ghost()
-                    .label("Archive")
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.dispatch_thread_cmd("thread.archive", cx)
-                    })),
-            );
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(header),
-                ),
-            );
-        }
         let messages = arr(thread_v, "messages");
         let find_q = self.find_query.to_lowercase();
         if messages.is_empty() && self.selected_thread.is_some() && !show_landing {
             pane = pane.child(
                 h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(
+                    div().w(px(726.)).child(
                         div()
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
@@ -2851,7 +2693,7 @@ impl Render for Native {
                 pane = pane.child(
                     h_flex().w_full().justify_center().child(
                         h_flex()
-                            .w(px(755.))
+                            .w(px(726.))
                             .justify_end()
                             .child(pill.child(div().text_size(px(13.)).child(text))),
                     ),
@@ -2861,15 +2703,93 @@ impl Render for Native {
                 if is_match {
                     wrap = wrap.border_l_2().border_color(theme.warning).pl_2();
                 }
+                // Footer row under a settled assistant message (upstream):
+                // copy / fork / pin icon buttons followed by the wall-clock time.
+                let mut footer = h_flex()
+                    .mt(px(4.))
+                    .gap(px(2.))
+                    .items_center();
+                for (iid, data) in [
+                    ("msg-copy", icons::COPY),
+                    ("msg-fork", icons::BRANCH_SIMPLE),
+                    ("msg-pin", icons::PIN),
+                ] {
+                    let msg_id = str_at(m, "id").to_string();
+                    footer = footer.child(
+                        div()
+                            .id(ElementId::Name(
+                                format!("{iid}-{msg_id}").into(),
+                            ))
+                            .size(px(22.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(rgba(0x00000008)))
+                            .child(
+                                svg_icon(data)
+                                    .size(px(13.))
+                                    .text_color(theme.muted_foreground),
+                            ),
+                    );
+                }
+                let ts = clock_time(str_at(m, "createdAt"));
+                if !ts.is_empty() {
+                    footer = footer.child(
+                        div()
+                            .ml(px(4.))
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child(ts),
+                    );
+                }
                 pane = pane.child(
                     h_flex().w_full().justify_center().child(
-                        div().w(px(755.)).child(wrap.child(
-                            TextView::markdown(
-                                ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
-                                text,
-                            )
-                            .selectable(true),
-                        )),
+                        div().w(px(726.)).child(
+                            v_flex()
+                                .child(wrap.child(
+                                    TextView::markdown(
+                                        ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
+                                        text,
+                                    )
+                                    .style({
+                                        let mut s =
+                                            gpui_kit::component::text::TextViewStyle::default();
+                                        s.code_block.padding.top = Some(px(28.).into());
+                                        s
+                                    })
+                                    .code_block_actions(|cb, _w, _cx| {
+                                        let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
+                                        h_flex()
+                                            .w(px(700.))
+                                            .items_center()
+                                            .justify_between()
+                                            .child(
+                                                div()
+                                                    .text_size(px(11.))
+                                                    .text_color(rgb(0x6e7781))
+                                                    .child(lang),
+                                            )
+                                            .child(
+                                                h_flex()
+                                                    .gap(px(2.))
+                                                    .child(
+                                                        svg_icon(icons::COPY)
+                                                            .size(px(14.))
+                                                            .text_color(rgb(0x6e7781)),
+                                                    )
+                                                    .child(
+                                                        svg_icon(icons::TEXT_WRAP)
+                                                            .size(px(14.))
+                                                            .text_color(rgb(0x6e7781)),
+                                                    ),
+                                            )
+                                    })
+                                    .selectable(true),
+                                ))
+                                .child(footer),
+                        ),
                     ),
                 );
             }
@@ -2909,7 +2829,7 @@ impl Render for Native {
         if activities.len() == 1 {
             pane = pane.child(
                 h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(activity_row(&activities[0])),
+                    div().w(px(726.)).child(activity_row(&activities[0])),
                 ),
             );
         } else if activities.len() > 1 {
@@ -2949,7 +2869,7 @@ impl Render for Native {
             }
             pane = pane.child(
                 h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(card),
+                    div().w(px(726.)).child(card),
                 ),
             );
         }
@@ -2962,7 +2882,7 @@ impl Render for Native {
             }
             pane = pane.child(
                 h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(
+                    div().w(px(726.)).child(
                         div()
                             .text_xs()
                             .text_color(theme.primary)
@@ -3005,7 +2925,7 @@ impl Render for Native {
             );
             pane = pane.child(
                 h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(card),
+                    div().w(px(726.)).child(card),
                 ),
             );
         }
@@ -3041,7 +2961,7 @@ impl Render for Native {
             }
             pane = pane.child(
                 h_flex().w_full().justify_center().child(
-                    div().w(px(755.)).child(row_el),
+                    div().w(px(726.)).child(row_el),
                 ),
             );
         }
@@ -3449,233 +3369,174 @@ impl Render for Native {
                     .child("Do anything in Synara"),
             );
         }
-        let composer_card = v_flex()
-            .w_full()
-            .max_w(px(755.))
-            .border_1()
-            .border_color(theme.border)
-            .rounded(px(19.))
-            .bg(theme.popover)
-            .shadow_md()
-            .px_2()
-            .pt(px(4.))
-            .pb(px(8.))
-            .gap(px(8.))
-            .child(input_zone)
+        let in_thread = self.selected_thread.is_some();
+        // "+" extras trigger: 28px filled circle, black/3%.
+        let plus_btn = div()
+            .id("composer-attach")
+            .size(px(28.))
+            .flex()
+            .flex_none()
+            .items_center()
+            .justify_center()
+            .rounded_full()
+            .bg(rgba(0x00000008))
+            .cursor_pointer()
+            .hover(|d| d.bg(rgba(0x00000010)))
             .child(
-                h_flex()
-                    .gap_3()
-                    .items_center()
-                    .child(
-                        // "+" extras trigger: 28px filled circle, black/3%.
-                        div()
-                            .id("composer-attach")
-                            .size(px(28.))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .rounded_full()
-                            .bg(rgba(0x00000008))
-                            .cursor_pointer()
-                            .hover(|d| d.bg(rgba(0x00000010)))
-                            .child(
-                                svg_icon(icons::PLUS)
-                                    .size(px(14.))
-                                    .text_color(theme.foreground),
-                            )
-                            .on_click(
-                                cx.listener(|this, _ev, _w, cx| this.attach(cx)),
-                            ),
-                    )
-                    .child(
-                        h_flex()
-                            .id("composer-mode")
-                            .cursor_pointer()
-                            .gap(px(6.))
-                            .items_center()
-                            .px(px(10.))
-                            .py(px(3.))
-                            .rounded(px(8.))
-                            .child(
-                                svg_icon(match self.runtime_mode {
-                                    "auto" => icons::SHIELD_CODE,
-                                    _ => icons::SHIELD_ACCESS,
-                                })
-                                .size(px(14.))
-                                .text_color(mode_accent),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(12.))
-                                    .text_color(mode_accent)
-                                    .child(match self.runtime_mode {
-                                        "approval-required" => "Approval required",
-                                        "auto" => "Approve for me",
-                                        _ => "Full access",
-                                    }),
-                            )
-                            .child(
-                                svg_icon(icons::CHEVRON_DOWN)
-                                    .size(px(12.))
-                                    .text_color(mode_accent.opacity(0.7)),
-                            )
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.runtime_mode = match this.runtime_mode {
-                                    "approval-required" => "auto",
-                                    "auto" => "full-access",
-                                    _ => "approval-required",
-                                };
-                                cx.notify();
-                            })),
-                    )
-                    .child(div().flex_1())
-                    .child(
-                        Button::new("composer-model")
-                            .ghost()
-                            .compact()
-                            .icon(svg_icon(icons::CODEX))
-                            .label("GPT-6 Astra")
-                            .dropdown_caret(true)
-                            .dropdown_menu(|menu, _, _| {
-                                menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
-                            }),
-                    )
-                    .child({
-                        // Empty draft renders the muted (disabled) circle like
-                        // the web composer; filled primary once there's text.
-                        div()
-                            .id("send")
-                            .size(px(28.))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .rounded_full()
-                            .bg(if draft_empty {
-                                theme.foreground.opacity(0.2)
-                            } else {
-                                theme.foreground
-                            })
-                            .cursor_pointer()
-                            .child(
-                                svg_icon(icons::SEND)
-                                    .size(px(20.))
-                                    .text_color(theme.background),
-                            )
-                            .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)))
-                    }),
-            );
-        let mut composer_col = v_flex().w(px(755.)).gap_0();
-        // Worktree tray above the card (thread view): folder+project,
-        // split-icon+branch+chevron on the left; Temporary + Worktree
-        // checkbox on the right (upstream BranchToolbar tray).
-        if self.selected_thread.is_some() {
-            let projects = arr(
-                self.snapshot.as_ref().unwrap_or(&Value::Null),
-                "projects",
-            );
-            let thread = arr(
-                self.snapshot.as_ref().unwrap_or(&Value::Null),
-                "threads",
+                svg_icon(icons::PLUS)
+                    .size(px(14.))
+                    .text_color(theme.foreground),
             )
-            .iter()
-            .find(|t| str_at(t, "id") == self.selected_thread.as_deref().unwrap_or(""));
-            let proj_name = thread
-                .and_then(|t| {
-                    let pid = str_at(t, "projectId");
-                    projects
-                        .iter()
-                        .find(|p| str_at(p, "id") == pid)
-                        .map(|p| str_at(p, "title").to_string())
+            .on_click(cx.listener(|this, _ev, _w, cx| this.attach(cx)));
+        let build_mode_chip = |cx: &mut Context<Self>| {
+            h_flex()
+            .id("composer-mode")
+            .cursor_pointer()
+            .gap(px(6.))
+            .items_center()
+            .px(px(10.))
+            .py(px(3.))
+            .rounded(px(8.))
+            .child(
+                svg_icon(match self.runtime_mode {
+                    "auto" => icons::SHIELD_CODE,
+                    _ => icons::SHIELD_ACCESS,
                 })
-                .filter(|n| !n.is_empty())
-                .unwrap_or_else(|| {
-                    self.files_root()
-                        .and_then(|r| {
-                            std::path::Path::new(&r)
-                                .file_name()
-                                .map(|n| n.to_string_lossy().to_string())
-                        })
-                        .unwrap_or_else(|| "project".to_string())
-                });
-            let branch = self
-                .git_status
-                .as_ref()
-                .map(|s| str_at(s, "branch").to_string())
-                .unwrap_or_default();
-            let tray = h_flex()
-                .w_full()
-                .items_center()
-                .justify_between()
-                .h(px(30.))
-                .pb(px(6.))
-                .child(
-                    h_flex()
-                        .gap(px(6.))
-                        .items_center()
-                        .child(
-                            svg_icon(icons::FOLDER)
-                                .size(px(14.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(12.))
-                                .text_color(theme.foreground)
-                                .child(proj_name),
-                        )
-                        .child(
-                            svg_icon(icons::WORKTREE)
-                                .size(px(14.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(12.))
-                                .text_color(theme.foreground)
-                                .child(if branch.is_empty() {
-                                    "local".to_string()
-                                } else {
-                                    branch
-                                }),
-                        )
-                        .child(
-                            svg_icon(icons::CHEVRON_DOWN)
-                                .size(px(10.))
-                                .text_color(theme.muted_foreground),
-                        ),
-                )
-                .child(
-                    h_flex()
-                        .gap(px(10.))
-                        .items_center()
-                        .child(
-                            svg_icon(icons::AUTOMATIONS)
-                                .size(px(13.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(12.))
-                                .text_color(theme.muted_foreground)
-                                .child("Temporary"),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(12.))
-                                .text_color(theme.muted_foreground)
-                                .child("Worktree"),
-                        )
-                        .child(
-                            div()
-                                .size(px(14.))
-                                .rounded(px(4.))
-                                .border_1()
-                                .border_color(theme.border),
-                        ),
+                .size(px(14.))
+                .text_color(mode_accent),
+            )
+            .child(
+                div()
+                    .text_size(px(12.))
+                    .text_color(mode_accent)
+                    .child(match self.runtime_mode {
+                        "approval-required" => "Approval required",
+                        "auto" => "Approve for me",
+                        _ => "Full access",
+                    }),
+            )
+            .child(
+                svg_icon(icons::CHEVRON_DOWN)
+                    .size(px(12.))
+                    .text_color(mode_accent.opacity(0.7)),
+            )
+            .on_click(cx.listener(|this, _ev, _w, cx| {
+                this.runtime_mode = match this.runtime_mode {
+                    "approval-required" => "auto",
+                    "auto" => "full-access",
+                    _ => "approval-required",
+                };
+                cx.notify();
+            }))
+        };
+        // The thread composer labels the chip with the thread's own model.
+        let thread_model = str_at(get(thread_v, "modelSelection"), "label")
+            .to_string();
+        let thread_model = if thread_model.is_empty() {
+            str_at(get(thread_v, "modelSelection"), "model").to_string()
+        } else {
+            thread_model
+        };
+        let model_label = if in_thread && !thread_model.is_empty() {
+            thread_model
+        } else {
+            "GPT-6 Astra".to_string()
+        };
+        let build_model_chip = move || {
+            Button::new("composer-model")
+                .ghost()
+                .compact()
+                .icon(svg_icon(icons::CODEX))
+                .label(model_label.clone())
+                .dropdown_caret(true)
+                .dropdown_menu(|menu, _, _| {
+                    menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
+                })
+        };
+        // Empty draft renders the muted (disabled) circle like
+        // the web composer; filled primary once there's text.
+        let send_btn = div()
+            .id("send")
+            .size(px(28.))
+            .flex()
+            .flex_none()
+            .items_center()
+            .justify_center()
+            .rounded_full()
+            .bg(if draft_empty {
+                theme.foreground.opacity(0.2)
+            } else {
+                theme.foreground
+            })
+            .cursor_pointer()
+            .child(
+                svg_icon(icons::SEND)
+                    .size(px(20.))
+                    .text_color(theme.background),
+            )
+            .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)));
+        let composer_card: Div = if in_thread {
+            // Thread view: upstream ComposerCapsule — one-row rounded-full
+            // capsule with "+", the input and the send button only; the mode
+            // and model chips move to a row below it.
+            let mut capsule_input = div().flex_1().min_w_0().relative().child(
+                div()
+                    .h(px(40.))
+                    .child(Input::new(&self.composer).appearance(false)),
+            );
+            if draft_empty {
+                capsule_input = capsule_input.child(
+                    div()
+                        .absolute()
+                        .top(px(9.))
+                        .left(px(6.))
+                        .text_size(px(13.))
+                        .line_height(px(21.125))
+                        .text_color(rgba(0x67676766))
+                        .child("Do anything in Synara"),
                 );
-            composer_col = composer_col
-                .child(div().w_full().overflow_hidden().child(tray));
-        }
+            }
+            h_flex()
+                .w_full()
+                .h(px(42.))
+                .items_center()
+                .gap(px(6.))
+                .border_1()
+                .border_color(theme.border)
+                .rounded_full()
+                .bg(theme.popover)
+                .shadow_md()
+                .pl(px(7.))
+                .pr(px(7.))
+                .child(plus_btn)
+                .child(capsule_input)
+                .child(send_btn)
+        } else {
+            v_flex()
+                .w_full()
+                .max_w(px(755.))
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(19.))
+                .bg(theme.popover)
+                .shadow_md()
+                .px_2()
+                .pt(px(4.))
+                .pb(px(8.))
+                .gap(px(8.))
+                .child(input_zone)
+                .child(
+                    h_flex()
+                        .gap_3()
+                        .items_center()
+                        .child(plus_btn)
+                        .child(build_mode_chip(cx))
+                        .child(div().flex_1())
+                        .child(build_model_chip())
+                        .child(send_btn),
+                )
+        };
+        let mut composer_col = v_flex().w(px(726.)).gap_0();
         if !self.pending_attachments.is_empty() || self.uploading {
             let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
@@ -3716,6 +3577,20 @@ impl Render for Native {
             composer_col = composer_col.child(chips);
         }
         composer_col = composer_col.child(composer_card);
+        if in_thread {
+            // Chips row below the capsule (upstream): mode chip on the left,
+            // model chip on the right.
+            composer_col = composer_col.child(
+                h_flex()
+                    .w_full()
+                    .mt(px(8.))
+                    .px(px(14.))
+                    .items_center()
+                    .child(build_mode_chip(cx))
+                    .child(div().flex_1())
+                    .child(build_model_chip()),
+            );
+        }
         let composer_bar = div()
             .w_full()
             .pb(px(18.))
@@ -7330,7 +7205,111 @@ impl Render for Native {
                         ),
                     ),
             )
+            // Sidebar well (rail + panel) keeps the left of the strip clear;
+            // open-thread tabs start where the content pane starts.
+            .child(
+                div()
+                    .w(if self.sidebar_collapsed { px(0.) } else { px(257.) })
+                    .flex_none(),
+            )
+            .child({
+                // Open-thread tabs live inside the top strip (upstream ChatHeader
+                // threadTabs): bordered pill with icon + title + x per open tab,
+                // then a "+" that opens a new thread.
+                let mut tabs = h_flex().gap_1().items_center();
+                if !self.open_threads.is_empty() {
+                    let snap_threads =
+                        arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads");
+                    for ot in self.open_threads.clone() {
+                        let active =
+                            self.selected_thread.as_deref() == Some(ot.as_str());
+                        let ot_title = snap_threads
+                            .iter()
+                            .find(|t| str_at(t, "id") == ot)
+                            .map(|t| str_at(t, "title").to_string())
+                            .filter(|t| !t.is_empty())
+                            .unwrap_or_else(|| ot.chars().take(8).collect());
+                        let sel = ot.clone();
+                        let close = ot.clone();
+                        let mut pill = h_flex()
+                            .id(ElementId::Name(format!("strip-tab-{ot}").into()))
+                            .h(px(28.))
+                            .items_center()
+                            .gap(px(6.))
+                            .pl(px(9.))
+                            .pr(px(6.))
+                            .rounded(px(8.))
+                            .cursor_pointer()
+                            .border_1()
+                            .border_color(if active {
+                                theme.border
+                            } else {
+                                theme.border.opacity(0.)
+                            })
+                            .child(
+                                Icon::new(IconName::Bot)
+                                    .size(px(13.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .whitespace_nowrap()
+                                    .child(ot_title),
+                            )
+                            .child(
+                                div()
+                                    .id(ElementId::Name(
+                                        format!("strip-tab-close-{close}").into(),
+                                    ))
+                                    .size(px(16.))
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .rounded(px(4.))
+                                    .cursor_pointer()
+                                    .hover(|d| d.bg(rgba(0x0000000d)))
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .text_color(theme.muted_foreground)
+                                            .child("\u{00d7}"),
+                                    )
+                                    .on_click(cx.listener(
+                                        move |this, _ev, _w, cx| {
+                                            this.close_tab(close.clone(), cx);
+                                        },
+                                    )),
+                            )
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if this.selected_thread.as_deref() != Some(sel.as_str()) {
+                                    this.open_thread(sel.clone(), cx);
+                                }
+                            }));
+                        if !active {
+                            pill = pill.hover(|d| d.bg(rgba(0x00000008)));
+                        }
+                        tabs = tabs.child(pill);
+                    }
+                }
+                tabs = tabs.child(
+                    rail_btn("nav-newtab", icons::PLUS, false, cx).on_click(cx.listener(
+                        |this, _ev, _w, cx| this.new_thread(cx),
+                    )),
+                );
+                tabs
+            })
             .child(div().flex_1())
+            .child(
+                rail_btn("nav-handoff", icons::HANDOFF, false, cx),
+            )
+            .child(
+                div()
+                    .w(px(1.))
+                    .h(px(18.))
+                    .mx(px(6.))
+                    .bg(rgba(0x00000014)),
+            )
             .child(
                 rail_btn("nav-env", icons::PANEL_TOP_OPEN, self.view_files, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {

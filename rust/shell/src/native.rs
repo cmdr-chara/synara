@@ -1975,14 +1975,14 @@ impl Render for Native {
             };
             let glyph_el = if has_logo && !pinned_proj {
                 div()
-                    .size(px(16.))
+                    .size(px(19.))
                     .flex()
                     .items_center()
                     .justify_center()
-                    .rounded(px(3.))
+                    .rounded(px(5.))
                     .border_1()
                     .border_color(theme.border)
-                    .child(svg_icon(glyph).size(px(11.)).text_color(theme.foreground))
+                    .child(svg_icon(glyph).size(px(12.)).text_color(theme.foreground))
                     .into_any_element()
             } else {
                 svg_icon(glyph)
@@ -2069,7 +2069,7 @@ impl Render for Native {
                     &theme,
                     &pinned_ids,
                     selected_tid.as_deref(),
-                    24.,
+                    34.,
                     cx,
                 ));
             }

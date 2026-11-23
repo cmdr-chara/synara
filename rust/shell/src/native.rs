@@ -3768,7 +3768,11 @@ impl Render for Native {
         // padding x12/top12/bottom8; placeholder sits at the text origin.
         let mut input_zone = div().relative().child(
             div()
-                .min_h(px(42.25))
+                .min_h(px(if self.selected_thread.is_some() {
+                    24.
+                } else {
+                    42.25
+                }))
                 .child(Input::new(&self.composer).appearance(false)),
         );
         if draft_empty {
@@ -3777,7 +3781,11 @@ impl Render for Native {
             input_zone = input_zone.child(
                 div()
                     .absolute()
-                    .top(px(12.))
+                    .top(px(if self.selected_thread.is_some() {
+                        1.
+                    } else {
+                        12.
+                    }))
                     .left(px(12.))
                     .text_size(px(13.))
                     .line_height(px(21.125))
@@ -4006,8 +4014,28 @@ impl Render for Native {
                     .text_color(theme.background),
             )
             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)));
-        let composer_card: Div = if false {
-            unreachable!()
+        // Upstream: started threads use the single-row composer — the card holds
+        // [+ | input | send] and the pickers move to a row under the card.
+        // New-thread (home) keeps the block layout with controls inside.
+        let composer_card: Div = if in_thread {
+            div()
+                .w_full()
+                .max_w(px(755.))
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(19.))
+                .bg(theme.popover)
+                .shadow_md()
+                .px_2()
+                .py(px(4.))
+                .child(
+                    h_flex()
+                        .gap_2()
+                        .items_center()
+                        .child(plus_btn)
+                        .child(div().flex_1().min_w_0().child(input_zone))
+                        .child(send_btn),
+                )
         } else {
             v_flex()
                 .w_full()
@@ -4073,9 +4101,12 @@ impl Render for Native {
             }
             composer_col = composer_col.child(chips);
         }
-        if in_thread {
-            // Upstream thread composer floats context chips above the card:
-            // the thread's project on the left, "Temporary" on the right.
+        // Upstream floats context chips above the card only for threads bound
+        // to a worktree (envMode != "local"): project chip left, env chip right.
+        let wt_path = str_at(thread_v, "worktreePath").to_string();
+        let env_mode = str_at(thread_v, "envMode").to_string();
+        let has_env_chips = in_thread && (!wt_path.is_empty() || (env_mode != "local" && !env_mode.is_empty()));
+        if has_env_chips {
             let thread_pid = str_at(thread_v, "projectId").to_string();
             let proj_name = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
                 .iter()
@@ -4102,7 +4133,7 @@ impl Render for Native {
                     .pb(px(4.))
                     .child(chip(format!("\u{29c9} {proj_name}")))
                     .child(div().flex_1())
-                    .child(chip("\u{25cc} Temporary".to_string())),
+                    .child(chip(format!("\u{25cc} {}", if wt_path.is_empty() { "Temporary" } else { "Worktree" }))),
             );
         }
         if draft_text.starts_with('/') && !draft_text.contains(' ') {
@@ -4191,6 +4222,20 @@ impl Render for Native {
             composer_col = composer_col.child(menu_card);
         }
         composer_col = composer_col.child(composer_card);
+        if in_thread {
+            // Pickers row under the composer card (upstream "row" layout):
+            // interaction mode on the left, model picker on the right.
+            composer_col = composer_col.child(
+                h_flex()
+                    .w_full()
+                    .pt(px(8.))
+                    .px(px(4.))
+                    .items_center()
+                    .child(build_mode_chip(cx))
+                    .child(div().flex_1())
+                    .child(build_model_chip()),
+            );
+        }
         let composer_bar = div()
             .w_full()
             .pb(px(18.))

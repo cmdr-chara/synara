@@ -66,6 +66,8 @@ mod icons {
     pub const SHIELD_CODE: &[u8] = include_bytes!("../assets/icons/shield-code.svg");
     pub const CHEVRON_DOWN: &[u8] =
         include_bytes!("../assets/icons/chevron-down-small.svg");
+    pub const WORKTREE: &[u8] =
+        include_bytes!("../assets/icons/worktree-split.svg");
 }
 
 fn svg_icon(data: &'static [u8]) -> Icon {
@@ -412,6 +414,12 @@ impl Native {
         let old = self.thread_stream_id.take();
         self.selected_thread = Some(thread_id.clone());
         self.renaming = false;
+        // Selecting a thread always returns to the transcript surface.
+        self.view_files = false;
+        self.view_dev = false;
+        self.view_inbox = false;
+        self.view_settings = false;
+        self.fetch_git_status(cx);
         if !self.open_threads.contains(&thread_id) {
             self.open_threads.push(thread_id.clone());
         }
@@ -1196,9 +1204,31 @@ impl Native {
         .detach();
     }
 
-    /// Fetch git.status of the first project's workspace root.
+    /// Workspace root of the selected thread's project, if resolvable.
+    fn thread_project_root(&self) -> Option<String> {
+        let tid = self.selected_thread.as_deref()?;
+        let snap = self.snapshot.as_ref()?;
+        let pid = arr(snap, "threads")
+            .iter()
+            .find(|t| str_at(t, "id") == tid)
+            .map(|t| str_at(t, "projectId").to_string())?;
+        let root = arr(snap, "projects")
+            .iter()
+            .find(|p| str_at(p, "id") == pid)
+            .map(|p| {
+                let r = str_at(p, "workspaceRoot");
+                if r.is_empty() { str_at(p, "workspace_root") } else { r }
+            })
+            .filter(|r| !r.is_empty());
+        root.map(|r| r.to_string())
+    }
+
+    /// Fetch git.status of the selected thread's project root (fallback: first project).
     fn fetch_git_status(&self, cx: &mut Context<Self>) {
-        let Some(root) = self.files_root() else {
+        let Some(root) = self
+            .thread_project_root()
+            .or_else(|| self.files_root())
+        else {
             return;
         };
         let cell = self.client.clone();
@@ -2039,7 +2069,7 @@ impl Render for Native {
                         .bg(gpui_kit::rgb(0x22c55e)),
                 );
             }
-            let mut proj_head = v_flex()
+            let proj_head = v_flex()
                 .gap_0()
                 .mt(if project_index == 0 { px(8.) } else { px(14.) })
                 .id(ElementId::Name(
@@ -2050,34 +2080,11 @@ impl Render for Native {
                 .px_2()
                 .child(row_head)
                 .on_click(cx.listener(|this, _ev, _w, cx| {
-                    if !this.view_files {
-                        this.toggle_files(cx);
-                    } else {
-                        cx.notify();
-                    }
+                    // Upstream: clicking a project row selects it and shows
+                    // the project surface; it never opens the files browser.
+                    this.view_files = false;
+                    cx.notify();
                 }));
-            if let Some(status) = &self.git_status {
-                let branch = str_at(status, "branch");
-                if !branch.is_empty() {
-                    let dirty = get(status, "hasWorkingTreeChanges")
-                        .as_bool()
-                        .unwrap_or(false);
-                    proj_head = proj_head.child(
-                        div()
-                            .text_xs()
-                            .text_color(if dirty {
-                                theme.warning
-                            } else {
-                                theme.muted_foreground
-                            })
-                            .child(if dirty {
-                                format!("{branch} (dirty)")
-                            } else {
-                                branch.to_string()
-                            }),
-                    );
-                }
-            }
             sidebar = sidebar.child(proj_head);
             for thread in &kids {
                 sidebar = sidebar.child(thread_row(
@@ -2173,10 +2180,39 @@ impl Render for Native {
         }
         // ---- transcript ----
         let mut pane = v_flex().flex_1().h_full().gap_2();
-        if self.selected_thread.is_some() {
+        // Upstream shows the new-chat landing inside the thread pane when the
+        // thread has no messages yet (same logo + heading + watermark + banner).
+        let thread_msgs_empty = self.selected_thread.is_some()
+            && arr(
+                get(self.detail.as_ref().unwrap_or(&Value::Null), "thread"),
+                "messages",
+            )
+            .is_empty();
+        let landing_title: Option<String> = if self.selected_thread.is_none() {
+            Some("What should we do in this folder?".to_string())
+        } else if thread_msgs_empty {
+            let tid = self.selected_thread.as_deref().unwrap_or("");
+            let snap = self.snapshot.as_ref().unwrap_or(&Value::Null);
+            let pid = arr(snap, "threads")
+                .iter()
+                .find(|t| str_at(t, "id") == tid)
+                .map(|t| str_at(t, "projectId").to_string())
+                .unwrap_or_default();
+            let name = arr(snap, "projects")
+                .iter()
+                .find(|p| str_at(p, "id") == pid)
+                .map(|p| str_at(p, "title").to_string())
+                .filter(|n| !n.is_empty())
+                .unwrap_or_else(|| "this folder".to_string());
+            Some(format!("What should we do in {name}?"))
+        } else {
+            None
+        };
+        let show_landing = landing_title.is_some();
+        if self.selected_thread.is_some() && !show_landing {
             pane = pane.p_4();
         }
-        if self.selected_thread.is_none() {
+        if show_landing {
             const WM_CHARS: &[u8] =
                 b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             // AsciiWaveBackground parity: 10px glyphs on a 13px grid over the
@@ -2317,7 +2353,7 @@ impl Render for Native {
                                 c.a *= 0.95;
                                 c
                             })
-                            .child("What should we do in this folder?"),
+                            .child(landing_title.clone().unwrap_or_default()),
                     ),
             );
         }
@@ -2486,16 +2522,24 @@ impl Render for Native {
                         this.dispatch_thread_cmd("thread.archive", cx)
                     })),
             );
-            pane = pane.child(header);
+            pane = pane.child(
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(header),
+                ),
+            );
         }
         let messages = arr(thread_v, "messages");
         let find_q = self.find_query.to_lowercase();
-        if messages.is_empty() && self.selected_thread.is_some() {
+        if messages.is_empty() && self.selected_thread.is_some() && !show_landing {
             pane = pane.child(
-                div()
-                    .text_sm()
-                    .text_color(theme.muted_foreground)
-                    .child("Select a thread or type below"),
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("Select a thread or type below"),
+                    ),
+                ),
             );
         }
         for (i, m) in messages.iter().enumerate() {
@@ -2519,30 +2563,37 @@ impl Render for Native {
             if role == "user" {
                 let mut pill = div()
                     .bg(theme.list_active)
-                    .rounded_lg()
-                    .px_3()
-                    .py_2();
+                    .rounded(px(16.))
+                    .px_4()
+                    .py(px(10.))
+                    .max_w(px(560.));
                 if is_match {
                     pill = pill.border_1().border_color(theme.warning);
                 }
                 pane = pane.child(
-                    h_flex()
-                        .w_full()
-                        .justify_end()
-                        .child(pill.child(div().text_sm().child(text))),
+                    h_flex().w_full().justify_center().child(
+                        h_flex()
+                            .w(px(755.))
+                            .justify_end()
+                            .child(pill.child(div().text_sm().child(text))),
+                    ),
                 );
             } else {
                 let mut wrap = div();
                 if is_match {
                     wrap = wrap.border_l_2().border_color(theme.warning).pl_2();
                 }
-                pane = pane.child(wrap.child(
-                    TextView::markdown(
-                        ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
-                        text,
-                    )
-                    .selectable(true),
-                ));
+                pane = pane.child(
+                    h_flex().w_full().justify_center().child(
+                        div().w(px(755.)).child(wrap.child(
+                            TextView::markdown(
+                                ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
+                                text,
+                            )
+                            .selectable(true),
+                        )),
+                    ),
+                );
             }
         }
 
@@ -2578,7 +2629,11 @@ impl Render for Native {
                 .child(div().text_xs().text_color(color).child(label))
         };
         if activities.len() == 1 {
-            pane = pane.child(activity_row(&activities[0]));
+            pane = pane.child(
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(activity_row(&activities[0])),
+                ),
+            );
         } else if activities.len() > 1 {
             let mut card = v_flex()
                 .border_1()
@@ -2614,7 +2669,11 @@ impl Render for Native {
                     card = card.child(activity_row(a));
                 }
             }
-            pane = pane.child(card);
+            pane = pane.child(
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(card),
+                ),
+            );
         }
 
         // Active tools currently running.
@@ -2624,10 +2683,14 @@ impl Render for Native {
                 continue;
             }
             pane = pane.child(
-                div()
-                    .text_xs()
-                    .text_color(theme.primary)
-                    .child(format!("\u{25cf} tool running: {item}")),
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.primary)
+                            .child(format!("\u{25cf} tool running: {item}")),
+                    ),
+                ),
             );
         }
 
@@ -2662,7 +2725,11 @@ impl Render for Native {
                 )
                 .selectable(true),
             );
-            pane = pane.child(card);
+            pane = pane.child(
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(card),
+                ),
+            );
         }
 
         // Pending interactions (approvals awaiting a decision).
@@ -2694,7 +2761,11 @@ impl Render for Native {
                     );
                 }
             }
-            pane = pane.child(row_el);
+            pane = pane.child(
+                h_flex().w_full().justify_center().child(
+                    div().w(px(755.)).child(row_el),
+                ),
+            );
         }
 
         // ---- files browser / viewer ----
@@ -3162,7 +3233,118 @@ impl Render for Native {
                             .on_click(cx.listener(|this, _ev, w, cx| this.send(w, cx)))
                     }),
             );
-        let mut composer_col = v_flex().w_full().max_w(px(755.)).gap_0();
+        let mut composer_col = v_flex().w(px(755.)).gap_0();
+        // Worktree tray above the card (thread view): folder+project,
+        // split-icon+branch+chevron on the left; Temporary + Worktree
+        // checkbox on the right (upstream BranchToolbar tray).
+        if self.selected_thread.is_some() {
+            let projects = arr(
+                self.snapshot.as_ref().unwrap_or(&Value::Null),
+                "projects",
+            );
+            let thread = arr(
+                self.snapshot.as_ref().unwrap_or(&Value::Null),
+                "threads",
+            )
+            .iter()
+            .find(|t| str_at(t, "id") == self.selected_thread.as_deref().unwrap_or(""));
+            let proj_name = thread
+                .and_then(|t| {
+                    let pid = str_at(t, "projectId");
+                    projects
+                        .iter()
+                        .find(|p| str_at(p, "id") == pid)
+                        .map(|p| str_at(p, "title").to_string())
+                })
+                .filter(|n| !n.is_empty())
+                .unwrap_or_else(|| {
+                    self.files_root()
+                        .and_then(|r| {
+                            std::path::Path::new(&r)
+                                .file_name()
+                                .map(|n| n.to_string_lossy().to_string())
+                        })
+                        .unwrap_or_else(|| "project".to_string())
+                });
+            let branch = self
+                .git_status
+                .as_ref()
+                .map(|s| str_at(s, "branch").to_string())
+                .unwrap_or_default();
+            let tray = h_flex()
+                .w_full()
+                .items_center()
+                .justify_between()
+                .h(px(30.))
+                .pb(px(6.))
+                .child(
+                    h_flex()
+                        .gap(px(6.))
+                        .items_center()
+                        .child(
+                            svg_icon(icons::FOLDER)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.foreground)
+                                .child(proj_name),
+                        )
+                        .child(
+                            svg_icon(icons::WORKTREE)
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.foreground)
+                                .child(if branch.is_empty() {
+                                    "local".to_string()
+                                } else {
+                                    branch
+                                }),
+                        )
+                        .child(
+                            svg_icon(icons::CHEVRON_DOWN)
+                                .size(px(10.))
+                                .text_color(theme.muted_foreground),
+                        ),
+                )
+                .child(
+                    h_flex()
+                        .gap(px(10.))
+                        .items_center()
+                        .child(
+                            svg_icon(icons::AUTOMATIONS)
+                                .size(px(13.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child("Temporary"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child("Worktree"),
+                        )
+                        .child(
+                            div()
+                                .size(px(14.))
+                                .rounded(px(4.))
+                                .border_1()
+                                .border_color(theme.border),
+                        ),
+                );
+            composer_col = composer_col
+                .child(div().w_full().overflow_hidden().child(tray));
+        }
         if !self.pending_attachments.is_empty() || self.uploading {
             let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
@@ -3208,6 +3390,7 @@ impl Render for Native {
             .pb(px(18.))
             .child(
                 h_flex()
+                    .w_full()
                     .justify_center()
                     .pr(px(4.))
                     .child(composer_col),

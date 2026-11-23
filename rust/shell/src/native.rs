@@ -3102,7 +3102,7 @@ impl Render for Native {
                             .justify_center()
                             .rounded_full()
                             .bg(if draft_empty {
-                                rgb(0xc6c6c6).into()
+                                rgb(0xcfcfcf).into()
                             } else {
                                 theme.primary
                             })

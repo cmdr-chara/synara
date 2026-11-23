@@ -6024,8 +6024,7 @@ impl Render for Native {
                 ),
         );
         let mut nav_list = v_flex()
-            .flex_1()
-            .min_h_0()
+            .h(settings_h - px(100.))
             .id("settings-nav-scroll")
             .track_scroll(&self.settings_nav_scroll)
             .overflow_y_scroll()

@@ -111,16 +111,27 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.task.stop" => thread_simple(command, "thread.task-stop-requested"),
         "thread.task.background" => thread_simple(command, "thread.task-background-requested"),
         "thread.approval.respond" => {
-            // Resolve the pending approval row like upstream's projection:
-            // the response settles the card with the given decision.
-            // Upstream deletes the pending interaction row on resolve; the
-            // status column has no 'resolved' value in its schema.
+            // Record the decision on the row: the live provider runtime
+            // (the ACP runner polls `decision` to answer the ACP
+            // request_permission call) consumes it and then deletes the
+            // row when it resolves the interaction. 'confirmed' rows no
+            // consumer ever claims stay invisible — every UI surface
+            // filters on status='pending'.
             if let (Some(tid), Some(rid)) = (s(command, "threadId"), s(command, "requestId")) {
                 let conn = open_state_rw()?;
                 conn.execute(
-                    "DELETE FROM projection_pending_interactions \
-                     WHERE thread_id=?1 AND request_id=?2",
-                    params![tid, rid],
+                    "UPDATE projection_pending_interactions \
+                     SET status='confirmed', decision=?3, \
+                         response_command_id=?4, resolved_at=?5 \
+                     WHERE thread_id=?1 AND request_id=?2 \
+                     AND interaction_kind='approval'",
+                    params![
+                        tid,
+                        rid,
+                        s(command, "decision").unwrap_or_default(),
+                        s(command, "commandId").unwrap_or_default(),
+                        s(command, "createdAt").unwrap_or_default()
+                    ],
                 )
                 .map_err(|e| err(format!("resolve approval: {e}")))?;
             }

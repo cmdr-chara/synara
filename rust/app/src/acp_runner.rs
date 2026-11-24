@@ -374,6 +374,16 @@ struct Rpc {
     reader: BufReader<std::process::ChildStdout>,
     next_id: i64,
     pending: Vec<Value>,
+    /// Thread/turn the prompt runs for; enables upstream approval gating
+    /// on `session/request_permission`.
+    approval_ctx: Option<ApprovalCtx>,
+}
+
+#[derive(Clone)]
+struct ApprovalCtx {
+    thread_id: String,
+    turn_id: String,
+    cancelled: Arc<AtomicBool>,
 }
 
 impl Rpc {
@@ -479,34 +489,16 @@ impl Rpc {
         let method = v.get("method").and_then(Value::as_str).unwrap_or("");
         match method {
             "session/request_permission" => {
-                // Auto-approve: pick the first "allow" option so unattended
-                // runs proceed (upstream gates these behind approval cards).
-                let options = v
-                    .pointer("/params/options")
-                    .and_then(Value::as_array)
-                    .cloned()
-                    .unwrap_or_default();
-                let pick = options
-                    .iter()
-                    .find(|o| {
-                        o.get("kind")
-                            .and_then(Value::as_str)
-                            .map(|k| k.contains("allow_always"))
-                            .unwrap_or(false)
-                    })
-                    .or_else(|| {
-                        options.iter().find(|o| {
-                            o.get("kind")
-                                .and_then(Value::as_str)
-                                .map(|k| k.contains("allow_once"))
-                                .unwrap_or(false)
-                        })
-                    })
-                    .or_else(|| options.first())
-                    .cloned()
-                    .unwrap_or(Value::Null);
-                let option_id = pick.get("optionId").cloned().unwrap_or(Value::Null);
-                if let Some(rid) = v.get("id").cloned() {
+                // Upstream gates these behind an approval card. With a
+                // turn context the request becomes a pending interaction
+                // and the runner blocks on the user's decision; without
+                // one (replay) fall back to auto-approving.
+                if let Some(ctx) = self.approval_ctx.clone() {
+                    self.handle_permission(v, &ctx);
+                } else if let Some(rid) = v.get("id").cloned() {
+                    let option_id = auto_pick_option(v)
+                        .map(|o| o.get("optionId").cloned().unwrap_or(Value::Null))
+                        .unwrap_or(Value::Null);
                     let _ = self.write_raw(&json!({
                         "jsonrpc": "2.0",
                         "id": rid,
@@ -528,6 +520,209 @@ impl Rpc {
             _ => on_notify(v),
         }
     }
+
+    /// Upstream approval gating (pendingInteractions + approval.requested/
+    /// approval.resolved activities): persist the request, then block until
+    /// the user's `thread.approval.respond` decision lands on the row, the
+    /// turn is cancelled, or the wait times out. Declined/cancelled turns
+    /// reply ACP `outcome: "cancelled"` unless a reject option exists.
+    fn handle_permission(&mut self, v: &Value, ctx: &ApprovalCtx) {
+        let params = v.get("params").cloned().unwrap_or(Value::Null);
+        let tool_call = params.get("toolCall").cloned().unwrap_or(Value::Null);
+        let request_id = tool_call
+            .get("toolCallId")
+            .and_then(Value::as_str)
+            .filter(|s| !s.is_empty())
+            .map(str::to_string)
+            .unwrap_or_else(uuid_v4);
+        let title = tool_call
+            .get("title")
+            .and_then(Value::as_str)
+            .unwrap_or("Tool call")
+            .to_string();
+        let options = params
+            .get("options")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+            let now = iso_now_ms();
+            if let Err(e) = c.execute(
+                "INSERT OR REPLACE INTO projection_pending_interactions \
+                 (interaction_kind, request_id, thread_id, turn_id, \
+                  lifecycle_generation, status, decision, \
+                  response_command_id, response_requested_at, \
+                  created_at, resolved_at) \
+                 VALUES ('approval', ?1, ?2, ?3, NULL, 'pending', NULL, \
+                  NULL, NULL, ?4, NULL)",
+                params![request_id, ctx.thread_id, ctx.turn_id, now],
+            ) {
+                eprintln!("acp_runner: pending approval insert: {e}");
+            }
+            let payload = json!({
+                "requestId": request_id,
+                "requestKind": "tool",
+                "toolName": title,
+                "detail": title,
+                "sessionApprovalAvailable": true,
+            });
+            if let Err(e) = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "warn",
+                "approval.requested",
+                "Approval requested",
+                &payload,
+            ) {
+                eprintln!("acp_runner: approval activity: {}", e.0);
+            }
+        }
+        let deadline =
+            std::time::Instant::now() + std::time::Duration::from_secs(600);
+        let mut decision: Option<String> = None;
+        while decision.is_none() {
+            if ctx.cancelled.load(Ordering::SeqCst)
+                || std::time::Instant::now() >= deadline
+            {
+                break;
+            }
+            if let Ok(c) = open_state_rw() {
+                match c.query_row(
+                    "SELECT decision FROM projection_pending_interactions \
+                     WHERE thread_id=?1 AND request_id=?2 \
+                     AND interaction_kind='approval'",
+                    params![ctx.thread_id, request_id],
+                    |r| r.get::<_, Option<String>>(0),
+                ) {
+                    Ok(d) => {
+                        if let Some(d) = d {
+                            decision = Some(d);
+                        }
+                    }
+                    // Row gone without a decision — treat as cancelled.
+                    Err(_) => decision = Some("cancel".to_string()),
+                }
+            }
+            if decision.is_none() {
+                std::thread::sleep(std::time::Duration::from_millis(250));
+            }
+        }
+        let outcome = match decision.as_deref() {
+            Some("accept") | Some("acceptForSession") => {
+                let want = if decision.as_deref() == Some("acceptForSession") {
+                    "allow_always"
+                } else {
+                    "allow_once"
+                };
+                options
+                    .iter()
+                    .find(|o| {
+                        o.get("kind")
+                            .and_then(Value::as_str)
+                            .map(|k| k.contains(want))
+                            .unwrap_or(false)
+                    })
+                    .or_else(|| {
+                        options.iter().find(|o| {
+                            o.get("kind")
+                                .and_then(Value::as_str)
+                                .map(|k| k.contains("allow"))
+                                .unwrap_or(false)
+                        })
+                    })
+                    .or_else(|| options.first())
+                    .and_then(|o| o.get("optionId").cloned())
+                    .map(|oid| json!({"outcome": "selected", "optionId": oid}))
+                    .unwrap_or(json!({"outcome": "cancelled"}))
+            }
+            Some("decline") | Some("cancel") => options
+                .iter()
+                .find(|o| {
+                    o.get("kind")
+                        .and_then(Value::as_str)
+                        .map(|k| k.contains("reject"))
+                        .unwrap_or(false)
+                })
+                .and_then(|o| o.get("optionId").cloned())
+                .map(|oid| json!({"outcome": "selected", "optionId": oid}))
+                .unwrap_or(json!({"outcome": "cancelled"})),
+            // Timeout or cancelled turn: keep the unattended behavior and
+            // auto-pick an allow option so the prompt is not stranded.
+            _ => options
+                .iter()
+                .find(|o| {
+                    o.get("kind")
+                        .and_then(Value::as_str)
+                        .map(|k| k.contains("allow"))
+                        .unwrap_or(false)
+                })
+                .or_else(|| options.first())
+                .and_then(|o| o.get("optionId").cloned())
+                .map(|oid| json!({"outcome": "selected", "optionId": oid}))
+                .unwrap_or(json!({"outcome": "cancelled"})),
+        };
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute(
+                "DELETE FROM projection_pending_interactions \
+                 WHERE thread_id=?1 AND request_id=?2 \
+                 AND interaction_kind='approval'",
+                params![ctx.thread_id, request_id],
+            );
+            let payload = json!({
+                "requestId": request_id,
+                "decision": decision,
+            });
+            if let Err(e) = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "info",
+                "approval.resolved",
+                "Approval resolved",
+                &payload,
+            ) {
+                eprintln!("acp_runner: approval resolved activity: {}", e.0);
+            }
+        }
+        if let Some(rid) = v.get("id").cloned() {
+            let _ = self.write_raw(&json!({
+                "jsonrpc": "2.0",
+                "id": rid,
+                "result": {"outcome": outcome},
+            }));
+        }
+    }
+}
+
+/// Fallback pick for replayed permission requests: the first "allow"
+/// option so replay does not strand on a request that was already
+/// answered in the original session.
+fn auto_pick_option(v: &Value) -> Option<Value> {
+    let options = v
+        .pointer("/params/options")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    options
+        .iter()
+        .find(|o| {
+            o.get("kind")
+                .and_then(Value::as_str)
+                .map(|k| k.contains("allow_always"))
+                .unwrap_or(false)
+        })
+        .or_else(|| {
+            options.iter().find(|o| {
+                o.get("kind")
+                    .and_then(Value::as_str)
+                    .map(|k| k.contains("allow_once"))
+                    .unwrap_or(false)
+            })
+        })
+        .or_else(|| options.first())
+        .cloned()
 }
 
 fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
@@ -613,6 +808,11 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         reader: BufReader::new(stdout),
         next_id: 1,
         pending: Vec::new(),
+        approval_ctx: Some(ApprovalCtx {
+            thread_id: thread_id.to_string(),
+            turn_id: turn_id.clone(),
+            cancelled: cancelled.clone(),
+        }),
     };
 
     let result = (|| -> Result<String, WsErr> {

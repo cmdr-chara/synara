@@ -976,6 +976,8 @@ pub struct Native {
     composer_model: (String, String, String),
     queued_turns: Vec<String>,
     queue_paused: bool,
+    /// Debug task-list popover open (upstream ComposerCapsulePopover state).
+    task_card_open: bool,
     open_threads: Vec<String>,
     pinned_threads: Vec<String>,
     /// Insertion index for an in-flight tab-pill drag (0..=len), or None.
@@ -2357,6 +2359,7 @@ impl Native {
                 ),
                 queued_turns: Vec::new(),
                 queue_paused: false,
+                task_card_open: false,
                 composer_thread_id: None,
                 uploading: false,
                 open_threads: Vec::new(),
@@ -14986,54 +14989,112 @@ impl Render for Native {
         }
         // Upstream "Show debug task banner" flag: a local sample
         // ActiveTaskList for UI testing (1 in-progress, 1 pending, 1 done).
-        // Rendered as ComposerActiveTaskListCard inside the composer stack,
-        // right above the composer card — not in the transcript scroll.
+        // Rendered as ComposerActiveTaskListCard: a compact capsule
+        // ("1/3 tasks") above the composer card that opens the task
+        // list panel on click.
         if self.feature_flags[2] && has_thread {
             let sample_tasks: [(&'static str, u8); 3] = [
                 ("Inspect banner layout without overlapping transcript text", 0),
                 ("Confirm compact task banner width", 1),
                 ("Verify sidebar task controls", 2),
             ];
-            let mut banner = v_flex()
-                .w_full()
-                .mb(px(6.))
-                .rounded(px(10.))
-                .border_1()
-                .border_color(theme.border)
-                .bg(theme.popover)
-                .shadow_md()
-                .px(px(10.))
-                .py(px(8.))
-                .gap(px(4.));
-            for (task, status) in sample_tasks {
-                let (glyph, color) = match status {
-                    0 => ("●", theme.accent),          // inProgress
-                    1 => ("○", theme.muted_foreground), // pending
-                    _ => ("✓", theme.muted_foreground), // completed
-                };
-                banner = banner.child(
+            let completed = sample_tasks.iter().filter(|(_, s)| *s == 2).count();
+            if self.task_card_open {
+                // Popover card (upstream ActiveTaskListCard): header row with
+                // progress + the per-task status list.
+                let mut panel = v_flex()
+                    .w_full()
+                    .mb(px(6.))
+                    .rounded(px(12.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(theme.popover)
+                    .shadow_md()
+                    .py(px(6.));
+                panel = panel.child(
                     h_flex()
-                        .gap_2()
+                        .w_full()
+                        .px_3()
+                        .py(px(4.))
                         .items_center()
+                        .gap_2()
+                        .child(
+                            svg_icon(icons::TODOS)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
                         .child(
                             div()
                                 .text_size(px(11.))
-                                .text_color(color)
-                                .child(glyph),
+                                .text_color(theme.muted_foreground)
+                                .child(format!(
+                                    "{completed} out of {total} tasks completed",
+                                    total = sample_tasks.len()
+                                )),
+                        ),
+                );
+                for (task, status) in sample_tasks {
+                    let (glyph, color) = match status {
+                        0 => ("●", theme.accent),           // inProgress
+                        1 => ("○", theme.muted_foreground), // pending
+                        _ => ("✓", theme.muted_foreground), // completed
+                    };
+                    panel = panel.child(
+                        h_flex()
+                            .px_3()
+                            .py(px(3.))
+                            .gap_2()
+                            .items_center()
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(color)
+                                    .child(glyph),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(if status == 2 {
+                                        theme.muted_foreground
+                                    } else {
+                                        theme.foreground
+                                    })
+                                    .child(task),
+                            ),
+                    );
+                }
+                composer_col = composer_col.child(panel);
+            }
+            composer_col = composer_col.child(
+                h_flex().w_full().mb(px(6.)).child(
+                    h_flex()
+                        .id("active-task-list-capsule")
+                        .gap_2()
+                        .items_center()
+                        .rounded(px(12.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .bg(theme.popover)
+                        .px_3()
+                        .py(px(6.))
+                        .cursor_pointer()
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.task_card_open = !this.task_card_open;
+                            cx.notify();
+                        }))
+                        .child(
+                            svg_icon(icons::TODOS)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
                         )
                         .child(
                             div()
                                 .text_size(px(12.))
-                                .text_color(if status == 2 {
-                                    theme.muted_foreground
-                                } else {
-                                    theme.foreground
-                                })
-                                .child(task),
+                                .text_color(theme.foreground)
+                                .child(format!("{completed}/{} tasks", sample_tasks.len())),
                         ),
-                );
-            }
-            composer_col = composer_col.child(banner);
+                ),
+            );
         }
         composer_col = composer_col.child(composer_card);
         if row_composer {

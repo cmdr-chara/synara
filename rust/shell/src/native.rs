@@ -939,6 +939,7 @@ pub struct Native {
     staged_files: Vec<Value>,
     unstaged_files: Vec<Value>,
     changes_diff: Option<(String, String)>,
+    changes_diff_state: Option<Entity<gpui_kit::component::diff::DiffState>>,
     /// Diff-line blame popover (upstream DiffLineBlamePopover):
     /// (`git.blameLine` result, x, y).
     blame_pop: Option<(Value, f32, f32)>,
@@ -2173,6 +2174,7 @@ impl Native {
                 staged_files: Vec::new(),
                 unstaged_files: Vec::new(),
                 changes_diff: None,
+                changes_diff_state: None,
                 blame_pop: None,
                 changes_loading: false,
                 changes_unavailable: false,
@@ -2995,7 +2997,14 @@ impl Native {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 if let Some(v) = res {
                     this.blame_pop = None;
-                    this.changes_diff = Some((path.clone(), str_at(&v, "patch").to_string()));
+                    let patch = str_at(&v, "patch").to_string();
+                    let files =
+                        gpui_kit::component::diff::DiffFile::parse(&patch).unwrap_or_default();
+                    this.changes_diff_state = Some(cx.new(|cx| {
+                        gpui_kit::component::diff::DiffState::new(files, cx)
+                            .with_mode(gpui_kit::component::diff::DiffMode::Unified)
+                    }));
+                    this.changes_diff = Some((path.clone(), patch));
                 }
                 cx.notify();
             });
@@ -16155,6 +16164,7 @@ impl Render for Native {
                         .icon(IconName::RefreshCw)
                         .on_click(cx.listener(|this, _ev, _w, cx| {
                             this.changes_diff = None;
+                            this.changes_diff_state = None;
                             this.fetch_changes(cx);
                         })),
                 )
@@ -16795,81 +16805,39 @@ impl Render for Native {
             .w_full()
             .border_t_1()
             .border_color(theme.border.opacity(0.7));
-        if let Some((dpath, patch)) = self.changes_diff.clone() {
-            let mut diff_view = v_flex().gap_0().px_2().py_2();
-            let mut old_n: u32 = 0;
-            let mut new_n: u32 = 0;
-            for line in patch.lines().take(400) {
-                let color = if line.starts_with('+') && !line.starts_with("+++") {
-                    theme.success
-                } else if line.starts_with('-') && !line.starts_with("---") {
-                    theme.danger
-                } else if line.starts_with("@@") {
-                    theme.accent
-                } else {
-                    theme.muted_foreground
-                };
-                // Hunk headers reset the blame-side line counters;
-                // upstream blames deleted lines in the base tree.
-                let mut blame: Option<(u32, bool)> = None;
-                if line.starts_with("@@") {
-                    if let Some(h) = line.split_whitespace().nth(1) {
-                        let mut it = h.split(',');
-                        if let Some(a) = it.next().and_then(|v| v.trim_start_matches('-').parse::<u32>().ok()) {
-                            old_n = a.saturating_sub(1);
-                        }
-                    }
-                    if let Some(h) = line.split_whitespace().nth(2) {
-                        let mut it = h.split(',');
-                        if let Some(a) = it.next().and_then(|v| v.trim_start_matches('+').parse::<u32>().ok()) {
-                            new_n = a.saturating_sub(1);
-                        }
-                    }
-                } else if line.starts_with('+') && !line.starts_with("+++") {
-                    new_n += 1;
-                    blame = Some((new_n, false));
-                } else if line.starts_with('-') && !line.starts_with("---") {
-                    old_n += 1;
-                    blame = Some((old_n, true));
-                } else if line.starts_with(' ') {
-                    old_n += 1;
-                    new_n += 1;
-                    blame = Some((new_n, false));
-                }
-                let row = div()
-                    .text_xs()
-                    .font_family(theme.mono_font_family.clone())
-                    .text_color(color)
-                    .child(line.to_string());
-                if let Some((ln, base)) = blame {
-                    let pth = dpath.clone();
-                    diff_view = diff_view.child(
-                        row.id(ElementId::Name(
-                            format!("dline-{}-{}-{}", if base { 'o' } else { 'n' }, ln, line.len()).into(),
-                        ))
-                        .cursor_pointer()
-                        .on_click(cx.listener(move |this, ev: &gpui::ClickEvent, _w, cx| {
-                            this.fetch_blame(
-                                pth.clone(),
-                                ln,
-                                base,
-                                ev.position().x.as_f32(),
-                                ev.position().y.as_f32(),
-                                cx,
-                            );
-                        })),
-                    );
-                } else {
-                    diff_view = diff_view.child(row);
-                }
+        if let Some((dpath, _patch)) = self.changes_diff.clone() {
+            if let Some(dstate) = self.changes_diff_state.clone() {
+                let _ = dpath;
+                viewport = viewport.child(
+                    gpui_kit::component::diff::Diff::new(&dstate)
+                        .line_number(true)
+                        .syntax_highlight(true)
+                        .header_visible(false)
+                        .hunk_separator(gpui_kit::component::diff::DiffHunkSeparator::Metadata)
+                        .hover_highlight(gpui_kit::component::diff::DiffHoverHighlight::Line)
+                        .on_line_click({
+                            let ent = cx.entity();
+                            move |pos: &gpui_kit::component::diff::DiffLinePosition,
+                                  ev: &gpui::ClickEvent,
+                                  _w,
+                                  cx| {
+                                let p = pos.path().to_string();
+                                let ln = pos.line() as u32;
+                                let base = matches!(
+                                    pos.side(),
+                                    gpui_kit::component::diff::DiffSide::Original
+                                );
+                                let (px_, py_) = (
+                                    ev.position().x.as_f32(),
+                                    ev.position().y.as_f32(),
+                                );
+                                let _ = ent.update(cx, |this, cx| {
+                                    this.fetch_blame(p, ln, base, px_, py_, cx);
+                                });
+                            }
+                        }),
+                );
             }
-            viewport = viewport.child(
-                div()
-                    .flex_1()
-                    .id("diff-scroll")
-                    .overflow_y_scrollbar()
-                    .child(diff_view),
-            );
         } else {
             viewport = viewport.child(
                 div()

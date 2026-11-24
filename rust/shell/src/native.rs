@@ -730,6 +730,107 @@ fn inbox_groups(
     (needs_you, working, finished, failed)
 }
 
+// ── GitHub inbox list helpers (upstream githubInbox.logic.ts +
+// pullRequestList.logic.ts, reduced to the native filter surface) ─────────
+
+/// Upstream formatRelativeTime compact English labels: now, 5m, 3h, 2d, 1w, 5mo.
+fn gh_relative_time(iso: &str) -> String {
+    let Ok(t) = chrono::DateTime::parse_from_rfc3339(iso) else {
+        return String::new();
+    };
+    let diff = chrono::Utc::now().signed_duration_since(t.with_timezone(&chrono::Utc));
+    let minutes = diff.num_minutes().max(0);
+    if minutes < 1 {
+        return "now".to_string();
+    }
+    if minutes < 60 {
+        return format!("{minutes}m");
+    }
+    let hours = minutes / 60;
+    if hours < 24 {
+        return format!("{hours}h");
+    }
+    let days = hours / 24;
+    if days < 7 {
+        return format!("{days}d");
+    }
+    if days < 30 {
+        return format!("{}w", days / 7);
+    }
+    if days < 365 {
+        return format!("{}mo", days / 30);
+    }
+    format!("{}y", days / 365)
+}
+
+fn gh_item_matches_query(item: &Value, normalized_query: &str) -> bool {
+    if normalized_query.is_empty() {
+        return true;
+    }
+    let labels = arr(item, "labels")
+        .iter()
+        .map(|l| str_at(l, "name"))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let haystack = format!(
+        "{} {} {} #{} {} {}",
+        str_at(item, "title"),
+        str_at(item, "repository"),
+        str_at(item, "headBranch"),
+        get(item, "number").as_i64().unwrap_or(0),
+        str_at(get(item, "author"), "login"),
+        labels,
+    )
+    .to_lowercase();
+    haystack.contains(normalized_query)
+}
+
+/// Rows after the native kind/state/text filters. `merged` narrows the
+/// closed superset to merged pull requests, as upstream.
+fn gh_visible_items(
+    items: &[Value],
+    kind: &str,
+    state_filter: &str,
+    query: &str,
+    sort: &str,
+) -> Vec<Value> {
+    let q = query.trim().to_lowercase();
+    let stamp = if sort == "updated" { "updatedAt" } else { "createdAt" };
+    let mut rows: Vec<Value> = items
+        .iter()
+        .filter(|item| kind == "all" || str_at(item, "kind") == kind)
+        .filter(|item| {
+            state_filter != "merged"
+                || (str_at(item, "kind") == "pullRequest" && str_at(item, "state") == "merged")
+        })
+        .filter(|item| gh_item_matches_query(item, &q))
+        .cloned()
+        .collect();
+    rows.sort_by(|a, b| {
+        str_at(b, stamp)
+            .cmp(str_at(a, stamp))
+            .then(
+                get(b, "number")
+                    .as_i64()
+                    .unwrap_or(0)
+                    .cmp(&get(a, "number").as_i64().unwrap_or(0)),
+            )
+    });
+    // Pinned rows lead even inside the flat All section; sectioning happens at render time.
+    rows.sort_by_key(|item| if get(item, "isPinned").as_bool() == Some(true) { 0 } else { 1 });
+    rows
+}
+
+fn gh_actor_label(item: &Value) -> String {
+    let author = get(item, "author");
+    let login = str_at(author, "login");
+    if login.is_empty() {
+        "unknown".to_string()
+    } else {
+        login.to_string()
+    }
+}
+
 fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: Hsla) -> Stateful<Div> {
     icon_btn_pad(id, data, size, 16., hover, ink)
 }
@@ -1084,10 +1185,28 @@ pub struct Native {
     unstaged_files: Vec<Value>,
     changes_diff: Option<(String, String)>,
     changes_diff_state: Option<Entity<gpui_kit::component::diff::DiffState>>,
+    // Code review page list state (upstream GitHubInbox): the native
+    // `githubInbox.list` superset, its filters, and the search field.
+    gh_items: Vec<Value>,
+    gh_errors: Vec<Value>,
+    gh_viewer: String,
+    gh_loading: bool,
+    gh_epoch: u64,
+    gh_kind: &'static str,
+    gh_state_filter: &'static str,
+    gh_sort: &'static str,
+    gh_search: Entity<InputState>,
     // Code review page detail pane (upstream PullRequestDetailPanel):
     // the selected PR, its detail payload, the active tab and the Code
     // tab's diff viewport state.
     pr_sel: Option<(String, String, u64)>,
+    issue_sel: Option<(String, String, u64)>,
+    issue_detail: Option<Value>,
+    issue_detail_loading: bool,
+    issue_detail_tab: usize,
+    issue_detail_epoch: u64,
+    issue_comment_input: Option<Entity<gpui_kit::component::input::TextareaState>>,
+    issue_comment_posting: bool,
     pr_detail: Option<Value>,
     pr_detail_loading: bool,
     pr_detail_tab: usize,
@@ -1111,6 +1230,7 @@ pub struct Native {
     /// Per-file diff stats of the loaded pull request patch (Code tab stat line).
     pr_diff_files: Vec<Value>,
     pr_summary_scroll: ScrollHandle,
+    issue_scroll: ScrollHandle,
     pr_timeline_scroll: ScrollHandle,
     pr_comment_posting: bool,
     /// Diff-line blame popover (upstream DiffLineBlamePopover):
@@ -2670,6 +2790,19 @@ impl Native {
                 },
             )
             .detach();
+            let gh_search = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Search or paste a PR link")
+            });
+            cx.subscribe_in(
+                &gh_search,
+                window,
+                |this: &mut Self, _state, event, _window, cx| {
+                    if let InputEvent::Change = event {
+                        cx.notify();
+                    }
+                },
+            )
+            .detach();
             cx.bind_keys([
                 KeyBinding::new("cmd-f", ToggleFind, Some("native")),
                 KeyBinding::new("cmd-j", ToggleTerminal, Some("native")),
@@ -2813,7 +2946,23 @@ impl Native {
                 unstaged_files: Vec::new(),
                 changes_diff: None,
                 changes_diff_state: None,
+                gh_items: Vec::new(),
+                gh_errors: Vec::new(),
+                gh_viewer: String::new(),
+                gh_loading: false,
+                gh_epoch: 0,
+                gh_kind: "all",
+                gh_state_filter: "open",
+                gh_sort: "created",
+                gh_search,
                 pr_sel: None,
+                issue_sel: None,
+                issue_detail: None,
+                issue_detail_loading: false,
+                issue_detail_tab: 0,
+                issue_detail_epoch: 0,
+                issue_comment_input: None,
+                issue_comment_posting: false,
                 pr_detail: None,
                 pr_detail_loading: false,
                 pr_detail_tab: 0,
@@ -2831,6 +2980,7 @@ impl Native {
                 pr_comments_closed: std::collections::HashSet::new(),
                 pr_diff_files: Vec::new(),
                 pr_summary_scroll: ScrollHandle::new(),
+                issue_scroll: ScrollHandle::new(),
                 pr_timeline_scroll: ScrollHandle::new(),
                 pr_comment_posting: false,
                 blame_pop: None,
@@ -3669,6 +3819,9 @@ impl Native {
         if self.view_autom {
             self.fetch_automations(cx);
         }
+        if self.view_pullreq {
+            self.fetch_github_inbox(cx);
+        }
         if self.view_tasks || self.view_kanban {
             self.fetch_inbox(cx);
         }
@@ -3811,6 +3964,216 @@ impl Native {
                             .with_mode(gpui_kit::component::diff::DiffMode::Unified)
                     }));
                     this.changes_diff = Some((path.clone(), patch));
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Code review list: `githubInbox.list` superset for the current state
+    /// and sort (upstream githubInboxListQueryOptions). Kind and text stay
+    /// client-side filters over that superset.
+    fn fetch_github_inbox(&mut self, cx: &mut Context<Self>) {
+        self.gh_loading = true;
+        self.gh_epoch += 1;
+        let epoch = self.gh_epoch;
+        let state = if self.gh_state_filter == "open" { "open" } else { "closed" };
+        let sort = self.gh_sort;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call("githubInbox.list", json!({"state": state, "sort": sort}))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.gh_epoch != epoch {
+                    return;
+                }
+                this.gh_loading = false;
+                if let Some(v) = res {
+                    this.gh_items = arr(&v, "items").to_vec();
+                    this.gh_errors = arr(&v, "errors").to_vec();
+                    this.gh_viewer = str_at(&v, "viewer").to_string();
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Pin/unpin one inbox row in every project context it carries (upstream
+    /// pullRequestPinToggleInputs), then refresh the list superset.
+    fn toggle_github_pin(&mut self, item: Value, cx: &mut Context<Self>) {
+        let pinned = get(&item, "isPinned").as_bool().unwrap_or(false);
+        let repository = str_at(&item, "repository").to_string();
+        let number = get(&item, "number").as_i64().unwrap_or(0);
+        if repository.is_empty() || number <= 0 {
+            return;
+        }
+        let mut project_ids: Vec<String> = arr(&item, "projectContexts")
+            .iter()
+            .filter(|c| !pinned || get(c, "isPinned").as_bool() == Some(true))
+            .map(|c| str_at(c, "projectId").to_string())
+            .filter(|id| !id.is_empty())
+            .collect();
+        if project_ids.is_empty() {
+            let pid = str_at(&item, "projectId").to_string();
+            if !pid.is_empty() {
+                project_ids.push(pid);
+            }
+        }
+        project_ids.sort();
+        project_ids.dedup();
+        if project_ids.is_empty() {
+            return;
+        }
+        let next = !pinned;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let repository2 = repository.clone();
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    let mut ok = true;
+                    for project_id in project_ids {
+                        ok &= client
+                            .call(
+                                "pullRequests.setPinned",
+                                json!({
+                                    "projectId": project_id,
+                                    "repository": repository2,
+                                    "number": number,
+                                    "isPinned": next,
+                                }),
+                            )
+                            .is_some();
+                    }
+                    ok
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if res {
+                    this.fetch_github_inbox(cx);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    fn select_github_item(&mut self, item: Value, cx: &mut Context<Self>) {
+        let project_id = str_at(&item, "projectId").to_string();
+        let repository = str_at(&item, "repository").to_string();
+        let number = get(&item, "number").as_u64().unwrap_or(0);
+        if project_id.is_empty() || repository.is_empty() || number == 0 {
+            return;
+        }
+        if str_at(&item, "kind") == "issue" {
+            self.pr_sel = None;
+            self.pr_detail = None;
+            self.issue_sel = Some((project_id, repository, number));
+            self.issue_detail = None;
+            self.issue_detail_tab = 0;
+            self.issue_comment_input = None;
+            self.fetch_issue_detail(cx);
+        } else {
+            self.issue_sel = None;
+            self.issue_detail = None;
+            self.select_pr(project_id, repository, number, cx);
+        }
+    }
+
+    fn fetch_issue_detail(&mut self, cx: &mut Context<Self>) {
+        let Some((pid, repo, num)) = self.issue_sel.clone() else {
+            return;
+        };
+        self.issue_detail_loading = true;
+        self.issue_detail_epoch += 1;
+        let epoch = self.issue_detail_epoch;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "githubInbox.issueDetail",
+                        json!({"projectId": pid, "repository": repo, "number": num}),
+                    )
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.issue_detail_epoch != epoch {
+                    return;
+                }
+                this.issue_detail_loading = false;
+                if let Some(v) = res {
+                    this.issue_detail = Some(v);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    fn post_issue_comment(&mut self, cx: &mut Context<Self>) {
+        let Some((pid, repo, num)) = self.issue_sel.clone() else {
+            return;
+        };
+        let body = self
+            .issue_comment_input
+            .as_ref()
+            .map(|i| i.read(cx).value().to_string())
+            .unwrap_or_default()
+            .trim()
+            .to_string();
+        if body.is_empty() || self.issue_comment_posting {
+            return;
+        }
+        self.issue_comment_posting = true;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "githubInbox.issueComment",
+                        json!({"projectId": pid, "repository": repo, "number": num, "body": body}),
+                    )
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.issue_comment_posting = false;
+                if res.is_some() {
+                    this.issue_comment_input = None;
+                    this.fetch_issue_detail(cx);
+                    this.fetch_github_inbox(cx);
                 }
                 cx.notify();
             });
@@ -4157,6 +4520,344 @@ impl Native {
     /// PullRequestDetailPanel dock layout in the `/pull-requests` right
     /// pane: header (tab strip + stack/link/menu/primary/close) then the
     /// Summary / Timeline / Code body.
+    /// GitHubInbox issue detail: summary/timeline over
+    /// `githubInbox.issueDetail`, with external open, pin and the issue
+    /// comment composer (upstream GitHubIssueDetailPanel, plain-text body
+    /// rendering in the first native pass).
+    fn issue_detail_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
+        let theme = cx.theme().clone();
+        let detail = self.issue_detail.clone().unwrap_or(Value::Null);
+        let muted = theme.muted_foreground;
+        let state = str_at(&detail, "state").to_string();
+        let number = get(&detail, "number").as_u64().unwrap_or_else(|| {
+            self.issue_sel.as_ref().map(|(_, _, n)| *n).unwrap_or(0)
+        });
+        let repo = str_at(&detail, "repository").to_string();
+
+        let mut tabs = h_flex().gap_1().items_center().min_w_0();
+        for (i, name) in ["Summary", "Timeline"].iter().enumerate() {
+            let active = self.issue_detail_tab == i;
+            tabs = tabs.child(
+                div()
+                    .id(ElementId::Name(format!("issue-tab-{i}").into()))
+                    .h(px(28.))
+                    .px(px(10.))
+                    .flex()
+                    .items_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .text_size(px(13.))
+                    .when(active, |d| d.bg(theme.secondary).font_weight(FontWeight::MEDIUM))
+                    .when(!active, |d| {
+                        d.text_color(muted).hover(|d| d.bg(theme.secondary.opacity(0.6)))
+                    })
+                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                        this.issue_detail_tab = i;
+                        cx.notify();
+                    }))
+                    .child(*name),
+            );
+        }
+
+        let mut right = h_flex().items_center().gap_1().flex_shrink_0();
+        if let Some(item) = self
+            .gh_items
+            .iter()
+            .find(|i| {
+                str_at(i, "kind") == "issue"
+                    && str_at(i, "repository") == repo
+                    && get(i, "number").as_u64() == Some(number)
+            })
+            .cloned()
+        {
+            let pinned = get(&item, "isPinned").as_bool() == Some(true);
+            right = right.child(
+                div()
+                    .id("issue-pin")
+                    .size(px(28.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .hover(|d| d.bg(theme.secondary))
+                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                        this.toggle_github_pin(item.clone(), cx);
+                    }))
+                    .child(
+                        svg_icon(if pinned { icons::PIN_FILL } else { icons::PIN })
+                            .size(px(14.))
+                            .text_color(if pinned { theme.foreground } else { muted }),
+                    ),
+            );
+        }
+        let url = str_at(&detail, "url").to_string();
+        if !url.is_empty() {
+            right = right.child(
+                div()
+                    .id("issue-open-external")
+                    .size(px(28.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .hover(|d| d.bg(theme.secondary))
+                    .on_click(cx.listener(move |_, _e, _w, cx| {
+                        cx.open_url(&url);
+                    }))
+                    .child(svg_icon(icons::EXTERNAL_LINK).size(px(14.)).text_color(muted)),
+            );
+        }
+
+        let mut content = v_flex().w_full().gap_4().px_5().py_4();
+        if self.issue_detail_loading && self.issue_detail.is_none() {
+            content = content.child(
+                div()
+                    .py(px(40.))
+                    .w_full()
+                    .text_center()
+                    .text_size(px(13.))
+                    .text_color(muted)
+                    .child("Loading issue…"),
+            );
+        } else if self.issue_detail.is_none() {
+            content = content.child(
+                div()
+                    .py(px(40.))
+                    .w_full()
+                    .text_center()
+                    .text_size(px(13.))
+                    .text_color(muted)
+                    .child("The issue details are unavailable."),
+            );
+        } else {
+            let author = str_at(get(&detail, "author"), "login");
+            let created = gh_relative_time(str_at(&detail, "createdAt"));
+            let status_color = if state == "open" { theme.success } else { theme.accent };
+            content = content.child(
+                v_flex()
+                    .gap_2()
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .gap_2()
+                            .child(
+                                Icon::new(if state == "open" { AssetIcon::CircleDot } else { AssetIcon::CircleCheck })
+                                    .size(px(17.))
+                                    .text_color(status_color),
+                            )
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .text_size(px(17.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child(str_at(&detail, "title").to_string()),
+                            ),
+                    )
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .gap_2()
+                            .text_size(px(12.))
+                            .text_color(muted)
+                            .child(format!("#{number}"))
+                            .child(repo.clone())
+                            .child(author.to_string())
+                            .child(format!("opened {created}")),
+                    ),
+            );
+
+            if self.issue_detail_tab == 0 {
+                let body = str_at(&detail, "body").to_string();
+                content = content.child(
+                    v_flex()
+                        .gap_2()
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .text_color(muted)
+                                .child("Description"),
+                        )
+                        .child(if body.trim().is_empty() {
+                            div()
+                                .text_size(px(13.))
+                                .text_color(muted)
+                                .italic()
+                                .child("No description provided.")
+                                .into_any_element()
+                        } else {
+                            TextView::markdown(ElementId::Name("issue-desc-md".into()), body)
+                                .style({
+                                    let mut s = gpui_kit::component::text::TextViewStyle::default();
+                                    s.highlight_theme =
+                                        gpui_kit::component::highlighter::HighlightTheme::default_dark();
+                                    s
+                                })
+                                .into_any_element()
+                        }),
+                );
+            } else {
+                let comments = arr(&detail, "comments").to_vec();
+                if comments.is_empty() {
+                    content = content.child(
+                        div()
+                            .py(px(24.))
+                            .text_size(px(13.))
+                            .text_color(muted)
+                            .child("No comments yet."),
+                    );
+                }
+                for (ci, c) in comments.iter().enumerate() {
+                    let who = str_at(get(c, "author"), "login").to_string();
+                    let when = gh_relative_time(str_at(c, "createdAt"));
+                    let body = str_at(c, "body").to_string();
+                    content = content.child(
+                        v_flex()
+                            .id(ElementId::Name(format!("issue-comment-{ci}").into()))
+                            .w_full()
+                            .gap_2()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border.opacity(0.55))
+                            .px_3()
+                            .py_2()
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        div()
+                                            .text_size(px(12.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .child(if who.is_empty() { "unknown".to_string() } else { who }),
+                                    )
+                                    .child(div().text_size(px(11.)).text_color(muted).child(when)),
+                            )
+                            .child(if body.trim().is_empty() {
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(muted)
+                                    .italic()
+                                    .child("No comment body.")
+                                    .into_any_element()
+                            } else {
+                                TextView::markdown(
+                                    ElementId::Name(format!("issue-comment-md-{ci}").into()),
+                                    body,
+                                )
+                                .style({
+                                    let mut s = gpui_kit::component::text::TextViewStyle::default();
+                                    s.highlight_theme =
+                                        gpui_kit::component::highlighter::HighlightTheme::default_dark();
+                                    s
+                                })
+                                .into_any_element()
+                            }),
+                    );
+                }
+            }
+
+            // Composer stays visible in both tabs, like the upstream issue panel.
+            if self.issue_comment_input.is_none() {
+                let st = cx.new(|cx| {
+                    gpui_kit::component::input::TextareaState::new(window, cx)
+                        .placeholder("Comment on this issue…")
+                        .auto_grow(1, 6)
+                        .submit_on_enter(true)
+                });
+                cx.subscribe_in(&st, window, |this, _s, event, _w, cx| {
+                    if let gpui_kit::component::input::InputEvent::PressEnter { shift, .. } = event {
+                        if !shift {
+                            this.post_issue_comment(cx);
+                        }
+                    }
+                })
+                .detach();
+                self.issue_comment_input = Some(st);
+            }
+            let input = self.issue_comment_input.clone().unwrap();
+            content = content.child(
+                h_flex()
+                    .mt_2()
+                    .w_full()
+                    .items_end()
+                    .gap_1p5()
+                    .rounded(px(24.))
+                    .border_1()
+                    .border_color(theme.border.opacity(0.6))
+                    .py_1()
+                    .pl_3()
+                    .pr_1p5()
+                    .child(
+                        div()
+                            .size(px(20.))
+                            .flex_shrink_0()
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded_full()
+                            .bg(theme.secondary)
+                            .mb(px(4.))
+                            .child(Icon::new(AssetIcon::CircleDot).size(px(12.)).text_color(muted)),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .child(gpui_kit::component::input::Textarea::new(&input)),
+                    )
+                    .child(
+                        div()
+                            .id("issue-comment-send")
+                            .size(px(28.))
+                            .flex_shrink_0()
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded_full()
+                            .cursor_pointer()
+                            .bg(theme.accent)
+                            .when(self.issue_comment_posting, |d| d.opacity(0.35))
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                this.post_issue_comment(cx);
+                            }))
+                            .child(svg_icon(icons::SEND).size(px(14.)).text_color(theme.accent_foreground)),
+                    ),
+            );
+        }
+
+        v_flex()
+            .flex_1()
+            .h_full()
+            .min_w_0()
+            .child(
+                h_flex()
+                    .h(px(44.))
+                    .px_3()
+                    .items_center()
+                    .gap_2()
+                    .border_b_1()
+                    .border_color(theme.border)
+                    .child(tabs)
+                    .child(div().flex_1())
+                    .child(right),
+            )
+            .child(
+                div()
+                    .id("issue-detail-scroll")
+                    .flex_1()
+                    .min_h_0()
+                    .w_full()
+                    .track_scroll(&self.issue_scroll)
+                    .overflow_y_scroll()
+                    .child(content),
+            )
+            .into_any_element()
+    }
+
     fn pr_detail_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
         let theme = cx.theme().clone();
         let detail_opt = self.pr_detail.clone();
@@ -21003,166 +21704,389 @@ impl Render for Native {
             )
             .child(kanban_cols);
 
-        // /pull-requests — "Code review" list panel + detail pane.
-        // Rows come from non-dismissed pullRequests links on live threads,
-        // grouped by the repository parsed out of the PR URL.
-        let mut pr_groups: Vec<(String, Vec<(String, String, u64, String, String, bool)>)> =
-            Vec::new();
-        for t in &all_threads {
-            if !live_thread(t) {
-                continue;
-            }
-            let tid = str_at(t, "threadId").to_string();
-            let project_id = str_at(t, "projectId").to_string();
-            for l in arr(t, "pullRequests") {
-                if !get(l, "dismissedAt").is_null() {
-                    continue;
-                }
-                let pr = get(l, "pullRequest");
-                let url = str_at(pr, "url").to_string();
-                let repo = url
-                    .split("github.com/")
-                    .nth(1)
-                    .and_then(|r| r.split("/pull/").next())
-                    .unwrap_or("")
-                    .to_string();
-                let entry = (
-                    tid.clone(),
-                    project_id.clone(),
-                    pr.get("number").and_then(Value::as_u64).unwrap_or(0),
-                    str_at(pr, "title").to_string(),
-                    str_at(pr, "state").to_string(),
-                    pr.get("isDraft").and_then(Value::as_bool).unwrap_or(false),
-                );
-                if let Some(g) = pr_groups.iter_mut().find(|(r, _)| *r == repo) {
-                    g.1.push(entry);
-                } else {
-                    pr_groups.push((repo, vec![entry]));
-                }
-            }
-        }
-        let pr_count: usize = pr_groups.iter().map(|(_, v)| v.len()).sum();
-        let mut pr_rows = v_flex().px_2().pt(px(50.)).gap(px(12.)).child(
-            v_flex()
-                .w_full()
-                .items_center()
-                .gap(px(6.))
-                .child(
-                    div()
-                        .text_size(px(14.))
-                        .font_weight(FontWeight::MEDIUM)
-                        .child("No pull requests"),
-                )
-                .child(
-                    div()
-                        .text_size(px(14.))
-                        .font_weight(FontWeight::MEDIUM)
-                        .child("and issues found"),
-                )
-                .child(
-                    div()
-                        .pt(px(4.))
-                        .text_size(px(12.))
-                        .text_color(theme.muted_foreground)
-                        .child("Nothing here in the"),
-                )
-                .child(
-                    div()
-                        .text_size(px(12.))
-                        .text_color(theme.muted_foreground)
-                        .child("repositories of your projects."),
-                ),
+        // /pull-requests — upstream GitHubInbox: `githubInbox.list` rows
+        // (pull requests + issues), pinned first, with kind/state/text filters
+        // applied client-side over the current state superset.
+        let gh_query = self.gh_search.read(cx).value().trim().to_lowercase();
+        let visible_all = gh_visible_items(
+            &self.gh_items,
+            "all",
+            self.gh_state_filter,
+            &gh_query,
+            self.gh_sort,
         );
-        if pr_count > 0 {
-            pr_rows = v_flex().px_2().pt_2().gap(px(4.));
-            for (repo, prs) in &pr_groups {
-                if !repo.is_empty() {
+        let pr_count = visible_all
+            .iter()
+            .filter(|i| str_at(i, "kind") == "pullRequest")
+            .count();
+        let issue_count = visible_all
+            .iter()
+            .filter(|i| str_at(i, "kind") == "issue")
+            .count();
+        let all_count = visible_all.len();
+        let gh_rows = gh_visible_items(
+            &self.gh_items,
+            self.gh_kind,
+            self.gh_state_filter,
+            &gh_query,
+            self.gh_sort,
+        );
+        let mut pr_rows = v_flex().px_2().pt_2().gap(px(4.));
+        if self.gh_loading && self.gh_items.is_empty() {
+            for i in 0..7 {
+                pr_rows = pr_rows.child(
+                    div()
+                        .mx_1()
+                        .h(px(76.))
+                        .rounded(px(8.))
+                        .bg(theme.secondary)
+                        .id(SharedString::from(format!("gh-skel-{i}"))),
+                );
+            }
+        } else if gh_rows.is_empty() {
+            pr_rows = pr_rows.child(
+                v_flex()
+                    .w_full()
+                    .items_center()
+                    .gap(px(6.))
+                    .pt(px(50.))
+                    .child(
+                        div()
+                            .text_size(px(14.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .child(if self.gh_items.is_empty() {
+                                "No pull requests and issues found"
+                            } else {
+                                "No matching pull requests or issues"
+                            }),
+                    )
+                    .child(
+                        div()
+                            .pt(px(4.))
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child(if self.gh_items.is_empty() {
+                                "Nothing here in the repositories of your projects."
+                            } else {
+                                "Try clearing the search or filters."
+                            }),
+                    ),
+            );
+        } else {
+            let pinned_rows: Vec<Value> = gh_rows
+                .iter()
+                .filter(|i| get(i, "isPinned").as_bool() == Some(true))
+                .cloned()
+                .collect();
+            let unpinned_rows: Vec<Value> = gh_rows
+                .iter()
+                .filter(|i| get(i, "isPinned").as_bool() != Some(true))
+                .cloned()
+                .collect();
+            let mut sections: Vec<(&'static str, Vec<Value>)> = Vec::new();
+            if !pinned_rows.is_empty() {
+                sections.push(("Pinned", pinned_rows));
+            }
+            if !unpinned_rows.is_empty() {
+                sections.push(("All", unpinned_rows));
+            }
+            for (label, entries) in sections {
+                if label == "Pinned" || entries.len() != gh_rows.len() {
                     pr_rows = pr_rows.child(
                         div()
                             .px_2()
                             .pb_1()
                             .text_size(px(12.))
                             .text_color(theme.muted_foreground)
-                            .child(repo.clone()),
+                            .child(label),
                     );
                 }
-                for (_tid, project_id, num, title, state, draft) in prs {
-                    let open_state = state == "open";
-                    let sel = self
-                        .pr_sel
-                        .as_ref()
-                        .is_some_and(|(_, r, n)| *n == *num && *r == repo.as_str());
-                    let repo2 = repo.clone();
-                    let project_id = project_id.clone();
-                    let num = *num;
+                let page_key = format!("gh-{label}");
+                let extra_pages = self
+                    .preview_pages
+                    .get(&page_key)
+                    .copied()
+                    .unwrap_or(0) as usize;
+                let limit = 10usize + extra_pages * 10;
+                let total = entries.len();
+                for item in entries.iter().take(limit) {
+                    let kind = str_at(item, "kind").to_string();
+                    let repo = str_at(item, "repository").to_string();
+                    let num = get(item, "number").as_u64().unwrap_or(0);
+                    let title = str_at(item, "title").to_string();
+                    let pinned = get(item, "isPinned").as_bool() == Some(true);
+                    let state = str_at(item, "state").to_string();
+                    let draft = get(item, "isDraft").as_bool() == Some(true);
+                    let selected = if kind == "issue" {
+                        self.issue_sel
+                            .as_ref()
+                            .is_some_and(|(_, r, n)| *n == num && *r == repo)
+                    } else {
+                        self.pr_sel
+                            .as_ref()
+                            .is_some_and(|(_, r, n)| *n == num && *r == repo)
+                    };
+                    let glyph = if kind == "issue" {
+                        if state == "open" {
+                            Icon::new(AssetIcon::CircleDot)
+                                .size(px(14.))
+                                .text_color(theme.success)
+                                .into_any_element()
+                        } else {
+                            Icon::new(AssetIcon::CircleCheck)
+                                .size(px(14.))
+                                .text_color(theme.accent)
+                                .into_any_element()
+                        }
+                    } else {
+                        let (ic, color) = match (state.as_str(), draft) {
+                            ("merged", _) => (icons::MERGED_SIMPLE, theme.accent),
+                            ("closed", _) => (icons::PR_CLOSED_SIMPLE, theme.danger),
+                            (_, true) => (icons::PR_SIMPLE, theme.muted_foreground),
+                            _ => (icons::PR_SIMPLE, theme.success),
+                        };
+                        svg_icon(ic)
+                            .size(px(14.))
+                            .text_color(color)
+                            .into_any_element()
+                    };
+                    let stamp = if self.gh_sort == "updated" {
+                        str_at(item, "updatedAt")
+                    } else {
+                        str_at(item, "createdAt")
+                    };
+                    let when = gh_relative_time(stamp);
+                    let author = gh_actor_label(item);
+                    let row_item = item.clone();
+                    let pin_item = item.clone();
                     pr_rows = pr_rows.child(
                         h_flex()
-                            .id(SharedString::from(format!("pr-row-{num}")))
                             .mx_1()
-                            .px_2()
-                            .h(px(34.))
-                            .items_center()
-                            .gap_2()
-                            .rounded(px(6.))
-                            .cursor_pointer()
-                            .when(sel, |d| d.bg(theme.secondary))
-                            .when(!sel, |d| d.hover(|h| h.bg(theme.secondary)))
-                            .on_click(cx.listener(move |this, _e, _w, cx| {
-                                this.select_pr(project_id.clone(), repo2.clone(), num, cx);
-                            }))
+                            .rounded(px(8.))
+                            .items_start()
+                            .when(selected, |d| d.bg(theme.secondary))
+                            .when(!selected, |d| {
+                                d.hover(|h| h.bg(theme.secondary.opacity(0.65)))
+                            })
                             .child(
-                                svg_icon(icons::PULL_REQUESTS)
-                                    .size(px(14.))
-                                    .text_color(if open_state {
-                                        rgb(0x2da44e).into()
-                                    } else {
-                                        theme.muted_foreground
-                                    }),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(format!("#{num}")),
-                            )
-                            .child(
-                                div()
+                                v_flex()
+                                    .id(SharedString::from(format!(
+                                        "gh-row-{}-{}-{repo}-{num}",
+                                        kind.replace("pullRequest", "pr"),
+                                        str_at(item, "projectId")
+                                    )))
                                     .flex_1()
-                                    .overflow_hidden()
-                                    .text_size(px(13.))
-                                    .text_color(theme.foreground)
-                                    .child(title.clone()),
+                                    .min_w_0()
+                                    .gap_1()
+                                    .py_2()
+                                    .pl_2()
+                                    .pr_1()
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                                        this.select_github_item(row_item.clone(), cx);
+                                    }))
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .text_color(theme.foreground)
+                                            .child(title),
+                                    )
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_1p5()
+                                            .min_w_0()
+                                            .child(glyph)
+                                            .child(
+                                                div()
+                                                    .text_size(px(12.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .overflow_hidden()
+                                                    .whitespace_nowrap()
+                                                    .child(author),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_size(px(12.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child("·"),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_size(px(12.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(when),
+                                            )
+                                            .child(div().flex_1())
+                                            .child(
+                                                div()
+                                                    .text_size(px(12.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(format!("#{num}")),
+                                            ),
+                                    ),
                             )
-                            .when(*draft, |d| {
+                            .child(
+                                div()
+                                    .id(SharedString::from(format!(
+                                        "gh-pin-{kind}-{repo}-{num}"
+                                    )))
+                                    .size(px(28.))
+                                    .mt(px(5.))
+                                    .mr(px(3.))
+                                    .flex_shrink_0()
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .rounded(px(6.))
+                                    .cursor_pointer()
+                                    .hover(|d| d.bg(theme.background.opacity(0.5)))
+                                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                                        this.toggle_github_pin(pin_item.clone(), cx);
+                                    }))
+                                    .child(
+                                        svg_icon(if pinned { icons::PIN_FILL } else { icons::PIN })
+                                            .size(px(13.))
+                                            .text_color(if pinned {
+                                                theme.foreground
+                                            } else {
+                                                theme.muted_foreground
+                                            }),
+                                    ),
+                            ),
+                    );
+                }
+                if total > limit || extra_pages > 0 {
+                    let key_more = page_key.clone();
+                    let key_less = page_key.clone();
+                    pr_rows = pr_rows.child(
+                        h_flex()
+                            .px_2()
+                            .gap_2()
+                            .when(total > limit, |d| {
                                 d.child(
                                     div()
-                                        .px(px(6.))
-                                        .py(px(1.))
-                                        .rounded(px(6.))
-                                        .border_1()
-                                        .border_color(theme.border)
-                                        .text_size(px(11.))
+                                        .id(SharedString::from(format!("{key_more}-more")))
+                                        .py_1()
+                                        .cursor_pointer()
+                                        .text_size(px(12.))
                                         .text_color(theme.muted_foreground)
-                                        .child("Draft"),
+                                        .hover(|h| h.text_color(theme.foreground))
+                                        .child("Show more")
+                                        .on_click(cx.listener(move |this, _e, _w, cx| {
+                                            let pages = this
+                                                .preview_pages
+                                                .get(&key_more)
+                                                .copied()
+                                                .unwrap_or(0);
+                                            this.preview_pages.insert(key_more.clone(), pages + 1);
+                                            cx.notify();
+                                        })),
+                                )
+                            })
+                            .when(extra_pages > 0, |d| {
+                                d.child(
+                                    div()
+                                        .id(SharedString::from(format!("{key_less}-less")))
+                                        .py_1()
+                                        .cursor_pointer()
+                                        .text_size(px(12.))
+                                        .text_color(theme.muted_foreground)
+                                        .hover(|h| h.text_color(theme.foreground))
+                                        .child("Show less")
+                                        .on_click(cx.listener(move |this, _e, _w, cx| {
+                                            let pages = this
+                                                .preview_pages
+                                                .get(&key_less)
+                                                .copied()
+                                                .unwrap_or(0);
+                                            this.preview_pages
+                                                .insert(key_less.clone(), pages.saturating_sub(1));
+                                            cx.notify();
+                                        })),
                                 )
                             }),
                     );
                 }
             }
         }
-        let pr_rows = pr_rows.child(
-            div()
-                .mt(px(35.))
-                .rounded(px(8.))
-                .border_1()
-                .border_color(if dark_ui { rgb(0x6b5423) } else { rgb(0xf0d9a8) })
-                .bg(if dark_ui { rgb(0x2e2512) } else { rgb(0xfdf6e8) })
-                .px_3()
-                .py_2()
-                .text_size(px(12.))
-                .text_color(theme.foreground)
-                .child("1 project repository was unavailable. Healthy repositories are still shown."),
-        );
+        if !self.gh_errors.is_empty() {
+            let n = self.gh_errors.len();
+            let first = str_at(&self.gh_errors[0], "message").to_string();
+            pr_rows = pr_rows.child(
+                v_flex()
+                    .mt(px(12.))
+                    .mx_1()
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(theme.warning)
+                    .bg(theme.secondary)
+                    .px_3()
+                    .py_2()
+                    .gap_1()
+                    .child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.foreground)
+                            .child(if n == 1 {
+                                "1 project repository was unavailable. Healthy repositories are still shown.".to_string()
+                            } else {
+                                format!("{n} project repositories were unavailable. Healthy repositories are still shown.")
+                            }),
+                    )
+                    .when(!first.is_empty(), |d| {
+                        d.child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(first),
+                        )
+                    }),
+            );
+        }
+
+        let mut kind_tabs = h_flex().gap(px(2.)).items_center();
+        for (kind, label, count) in [
+            ("all", "All", all_count),
+            ("pullRequest", "PRs", pr_count),
+            ("issue", "Issues", issue_count),
+        ] {
+            let active = self.gh_kind == kind;
+            kind_tabs = kind_tabs.child(
+                h_flex()
+                    .id(SharedString::from(format!("gh-kind-{kind}")))
+                    .h(px(24.))
+                    .px_2()
+                    .gap_1()
+                    .items_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .when(active, |d| d.bg(soft_bg).border_1().border_color(theme.border))
+                    .when(!active, |d| d.hover(|h| h.bg(theme.secondary)))
+                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                        this.gh_kind = kind;
+                        cx.notify();
+                    }))
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .when(!active, |d| d.text_color(theme.muted_foreground))
+                            .child(label),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child(count.to_string()),
+                    ),
+            );
+        }
+        let cur_sort = self.gh_sort;
+        let cur_state = self.gh_state_filter;
+        let gh_sort_weak = cx.weak_entity();
+        let gh_filter_weak = gh_sort_weak.clone();
+
         let pullreq_panel = v_flex()
             .flex_1()
             .h_full()
@@ -21182,26 +22106,77 @@ impl Render for Native {
                     )
                     .child(div().flex_1())
                     .child(
-                        svg_icon(icons::SORT)
-                            .size(px(14.))
-                            .text_color(theme.muted_foreground),
+                        div()
+                            .id("gh-refresh")
+                            .size(px(26.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                this.fetch_github_inbox(cx);
+                            }))
+                            .child(
+                                svg_icon(icons::REFRESH)
+                                    .size(px(14.))
+                                    .text_color(theme.muted_foreground),
+                            ),
                     )
-                    .child(div().w(px(8.)))
+                    .child(div().w(px(4.)))
                     .child(
-                        svg_icon(icons::FILTER)
-                            .size(px(14.))
-                            .text_color(theme.muted_foreground),
+                        Button::new("gh-sort-menu")
+                            .ghost()
+                            .compact()
+                            .icon(svg_icon(icons::SORT).size(px(14.)))
+                            .dropdown_caret(true)
+                            .dropdown_menu(move |menu, _, _| {
+                                let mut m = menu.min_w(px(170.));
+                                for (value, label) in [("created", "Newest"), ("updated", "Recently updated")] {
+                                    let weak = gh_sort_weak.clone();
+                                    m = m.item(
+                                        PopupMenuItem::new(label)
+                                            .checked(cur_sort == value)
+                                            .on_click(move |_, _w, cx| {
+                                                let _ = weak.update(cx, |this, cx| {
+                                                    this.gh_sort = value;
+                                                    this.fetch_github_inbox(cx);
+                                                });
+                                            }),
+                                    );
+                                }
+                                m
+                            }),
                     )
-                    .child(div().w(px(8.)))
+                    .child(div().w(px(4.)))
                     .child(
-                        svg_icon(icons::MORE)
-                            .size(px(14.))
-                            .text_color(theme.muted_foreground),
+                        Button::new("gh-filter-menu")
+                            .ghost()
+                            .compact()
+                            .icon(svg_icon(icons::FILTER).size(px(14.)))
+                            .dropdown_caret(true)
+                            .dropdown_menu(move |menu, _, _| {
+                                let mut m = menu.min_w(px(150.));
+                                for (value, label) in [("open", "Open"), ("closed", "Closed"), ("merged", "Merged")] {
+                                    let weak = gh_filter_weak.clone();
+                                    m = m.item(
+                                        PopupMenuItem::new(label)
+                                            .checked(cur_state == value)
+                                            .on_click(move |_, _w, cx| {
+                                                let _ = weak.update(cx, |this, cx| {
+                                                    this.gh_state_filter = value;
+                                                    this.fetch_github_inbox(cx);
+                                                });
+                                            }),
+                                    );
+                                }
+                                m
+                            }),
                     ),
             )
             .child(
                 h_flex()
-                    .id("pr-search-open")
                     .mx_1()
                     .mb_2()
                     .h(px(30.))
@@ -21212,7 +22187,6 @@ impl Render for Native {
                     .border_1()
                     .border_color(theme.border)
                     .bg(popover_bg)
-                    .cursor_pointer()
                     .child(
                         svg_icon(icons::SEARCH)
                             .size(px(14.))
@@ -21220,80 +22194,17 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("Search or paste a PR link"),
-                    )
-                    .on_click(cx.listener(|this, _ev, w, cx| {
-                        this.open_pr_dialog(w, cx);
-                    })),
-            )
-            .child(
-                h_flex()
-                    .px_2()
-                    .pb_2()
-                    .gap_4()
-                    .items_center()
-                    .child(
-                        h_flex()
-                            .gap_1()
-                            .items_center()
-                            .h(px(24.))
-                            .px_2()
-                            .rounded(px(6.))
-                            .border_1()
-                            .border_color(theme.border)
-                            .bg(soft_bg)
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .child("All"),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(12.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(pr_count.to_string()),
-                            ),
-                    )
-                    .child(
-                        h_flex()
-                            .gap_1()
-                            .items_baseline()
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("PRs"),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(12.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(pr_count.to_string()),
-                            ),
-                    )
-                    .child(
-                        h_flex()
-                            .gap_1()
-                            .items_baseline()
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("Issues"),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(12.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("0"),
-                            ),
+                            .flex_1()
+                            .min_w_0()
+                            .child(Input::new(&self.gh_search).appearance(false)),
                     ),
             )
+            .child(kind_tabs)
             .child(pr_rows);
         let pullreq_pane = if self.pr_sel.is_some() {
             self.pr_detail_pane(window, cx)
+        } else if self.issue_sel.is_some() {
+            self.issue_detail_pane(window, cx)
         } else {
             v_flex()
                 .flex_1()

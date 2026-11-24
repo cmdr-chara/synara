@@ -149,6 +149,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             }
             thread_simple(command, "thread.user-input-response-requested")
         }
+        "thread.activity.append" => thread_activity_append(command),
         "thread.pinned-message.add" => pinned_message(command, "add"),
         "thread.pinned-message.remove" => pinned_message(command, "remove"),
         "thread.pinned-message.done.set" => pinned_message(command, "done"),
@@ -1050,6 +1051,26 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     mp.insert("source".into(), json!("native"));
     mp.insert("createdAt".into(), json!(created_at));
     mp.insert("updatedAt".into(), json!(created_at));
+    let mut async_answer_index: Option<usize> = None;
+    if let Some(resp) = async_response.as_ref().and_then(Value::as_object) {
+        if let Some(question_message_id) = s(resp, "messageId") {
+            let answers = resp.get("answers").cloned().unwrap_or(json!([]));
+            async_answer_index = Some(events.len());
+            events.push(out_event(
+                "thread.async-user-input-answered",
+                &thread_id,
+                &created_at,
+                json!({
+                    "threadId": thread_id,
+                    "messageId": question_message_id,
+                    "response": {
+                        "messageId": message_id,
+                        "answers": answers,
+                    },
+                }),
+            ));
+        }
+    }
     let message_event = out_event(
         "thread.message-sent",
         &thread_id,
@@ -1165,15 +1186,9 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if let Some(resp) = async_response.as_ref().and_then(Value::as_object) {
         if let Some(mid) = s(resp, "messageId") {
             let answers = resp.get("answers").cloned().unwrap_or(json!([]));
-            // Contract: AsyncUserInputResponse = { messageId, answers }.
-            let response = json!({ "messageId": mid, "answers": answers });
-            conn.execute(
-                "UPDATE projection_thread_messages \
-                 SET async_user_input_json = json_set(async_user_input_json, '$.response', json(?3)) \
-                 WHERE thread_id=?1 AND message_id=?2 AND async_user_input_json IS NOT NULL",
-                params![thread_id, mid, response.to_string()],
-            )
-            .map_err(|e| err(format!("record async-user-input response: {e}")))?;
+            // The response row and sequence are written after commit, when the
+            // async-user-input-answered event sequence is known.
+            let _ = answers;
             conn.execute(
                 "DELETE FROM projection_pending_interactions \
                  WHERE thread_id=?1 AND status='pending' AND interaction_kind='userInput'",
@@ -1184,6 +1199,20 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
 
     let seq = commit_events(&conn, &events, &command_id)?;
+    if let (Some(resp), Some(index)) = (async_response.as_ref().and_then(Value::as_object), async_answer_index) {
+        if let Some(question_message_id) = s(resp, "messageId") {
+            let answers = resp.get("answers").cloned().unwrap_or(json!([]));
+            let response = json!({ "messageId": message_id, "answers": answers });
+            let response_sequence = seq - (events.len() as i64 - 1 - index as i64);
+            conn.execute(
+                "UPDATE projection_thread_messages \
+                 SET async_user_input_json = json_set(async_user_input_json, '$.response', json(?3), '$.responseSequence', ?4) \
+                 WHERE thread_id=?1 AND message_id=?2 AND async_user_input_json IS NOT NULL",
+                params![thread_id, question_message_id, response.to_string(), response_sequence],
+            )
+            .map_err(|e| err(format!("record async-user-input response sequence: {e}")))?;
+        }
+    }
 
     // --- projection: message row + thread shell fields ---------------------
     let attachments = message.get("attachments").cloned().unwrap_or(json!([]));
@@ -1354,6 +1383,71 @@ fn thread_simple(command: &Map<String, Value>, event_type: &'static str) -> Resu
     }
     events.push(ev);
     let seq = commit_events(&conn, &events, &command_id)?;
+    Ok(json!({ "sequence": seq }))
+}
+
+/// `thread.activity.append`: append a caller-supplied activity exactly once,
+/// carrying requestId metadata when the payload names the interaction it belongs to.
+fn thread_activity_append(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
+    let activity = command
+        .get("activity")
+        .filter(|v| v.is_object())
+        .cloned()
+        .ok_or_else(|| err("thread.activity.append missing activity"))?;
+    for key in ["id", "tone", "kind", "summary", "createdAt"] {
+        if activity.get(key).and_then(Value::as_str).is_none() {
+            return Err(err(format!(
+                "thread.activity.append activity missing {key}"
+            )));
+        }
+    }
+    if !matches!(
+        activity.get("tone").and_then(Value::as_str),
+        Some("info" | "tool" | "approval" | "error")
+    ) {
+        return Err(err("thread.activity.append activity has an invalid tone"));
+    }
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let thread = require_thread(&conn, &thread_id)?;
+    if thread.deleted_at.is_some() {
+        return Err(err(format!("thread {thread_id} not found")));
+    }
+    if command
+        .get("requireUnarchived")
+        .and_then(Value::as_bool)
+        .unwrap_or(false)
+        && thread.archived_at.is_some()
+    {
+        return Err(err(format!(
+            "Thread '{thread_id}' is already archived and cannot handle command 'thread.activity.append'."
+        )));
+    }
+    let mut ev = out_event(
+        "thread.activity-appended",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "activity": activity,
+        }),
+    );
+    if let Some(request_id) = activity
+        .get("payload")
+        .and_then(Value::as_object)
+        .and_then(|payload| payload.get("requestId"))
+        .and_then(Value::as_str)
+    {
+        ev.metadata = Some(json!({ "requestId": request_id }));
+    }
+    let events = vec![ev];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    append_activity_projection(&conn, &thread_id, &activity, seq)?;
+    update_projection(&conn, &thread_id, &[("updated_at", json!(created_at))])?;
     Ok(json!({ "sequence": seq }))
 }
 

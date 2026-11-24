@@ -344,7 +344,15 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
                 conn,
                 &format!(
                     "SELECT activity_id AS id, turn_id, tone, kind, summary, payload_json, \
-                     created_at, sequence FROM projection_thread_activities \
+                     created_at, sequence, \
+                     CASE WHEN sequence IS NOT NULL AND EXISTS ( \
+                       SELECT 1 FROM orchestration_events AS appended \
+                       WHERE appended.sequence = projection_thread_activities.sequence \
+                         AND appended.event_type = 'thread.activity-appended' \
+                         AND json_extract(appended.payload_json, '$.activity.id') = activity_id \
+                         AND json_extract(appended.payload_json, '$.activity.sequence') IS NULL \
+                     ) THEN 'orchestration' END AS sequenceSource \
+                     FROM projection_thread_activities \
                      WHERE thread_id = '{}' ORDER BY created_at, activity_id",
                     tid.replace('\'', "''")
                 ),

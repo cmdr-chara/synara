@@ -957,6 +957,8 @@ pub struct Native {
     dismissed_status: std::collections::HashMap<String, String>,
     /// Upstream lastVisitedAtByThreadId (thread_id -> ISO timestamp).
     visited_threads: std::collections::HashMap<String, String>,
+    /// Upstream keepAwakeMode setting: 0 on, 1 agent, 2 off.
+    keep_awake_mode: usize,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
     // Working directory "Open Path in Terminal" seeds the next terminal.open
@@ -1899,6 +1901,7 @@ impl Native {
                 settings_loading: false,
                 dismissed_status: std::collections::HashMap::new(),
                 visited_threads: std::collections::HashMap::new(),
+                keep_awake_mode: 2,
                 sponsor_dismissed: false,
             search_open: false,
             sidebar_collapsed: false,
@@ -5023,6 +5026,11 @@ impl Native {
                         .and_then(Value::as_bool)
                         .unwrap_or(true);
                 }
+                this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
+                    "on" => 0,
+                    "agent" => 1,
+                    _ => 2,
+                };
                 // Sidebar UI state (upstream localStorage mirrors): dismissed
                 // status keys + last-visited stamps drive pill suppression.
                 let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
@@ -5087,6 +5095,44 @@ impl Native {
                 .await;
         })
         .detach();
+    }
+
+    /// Upstream keep-awake segmented control: writes settings.keepAwakeMode
+    /// ("on" | "agent" | "off"); the server turns that into caffeinate state.
+    fn set_keep_awake(&mut self, i: usize, cx: &mut Context<Self>) {
+        self.keep_awake_mode = i;
+        let mode = ["on", "agent", "off"][i.min(2)];
+        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
+            .and_then(|s| s.as_object_mut())
+        {
+            obj.insert("keepAwakeMode".to_string(), json!(mode));
+        }
+        cx.notify();
+        let cell = self.client.clone();
+        let payload = json!({"keepAwakeMode": mode});
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .spawn(async move {
+                    let _ = ensure_client(&cell)
+                        .and_then(|c| c.call("server.updateSettings", payload));
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    /// Upstream keepAwakeStatusLabel: "<Mode> · <Active|Idle>".
+    fn keep_awake_status(&self) -> String {
+        let active = self.keep_awake_mode == 0
+            || (self.keep_awake_mode == 1
+                && arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                    .iter()
+                    .any(|t| thread_running_for_activity(t)));
+        format!(
+            "{} \u{00b7} {}",
+            ["On", "Agent", "Off"][self.keep_awake_mode.min(2)],
+            if active { "Active" } else { "Idle" }
+        )
     }
 
     /// Persists dismissal/visited maps under settings.sidebarUi, like
@@ -10683,9 +10729,9 @@ impl Render for Native {
                                             .gap(px(2.))
                                             .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Keep computer awake"))
                                             .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child("Uses macOS caffeinate. On: Keep this computer awake at all times. Agent: Keep this computer awake while an agent is working. Off: Let the system sleep normally."))
-                                            .child(div().pt_1().text_xs().text_color(theme.muted_foreground).child("Off \u{00b7} Idle")),
+                                            .child(div().pt_1().text_xs().text_color(theme.muted_foreground).child(self.keep_awake_status())),
                                     )
-                                    .child(seg(&["On", "Agent", "Off"], 2)),
+                                    .child(Self::seg_pick(cx, "seg-keepawake", &["On", "Agent", "Off"], self.keep_awake_mode, &theme, Self::set_keep_awake)),
                             )
                             .into_any_element(),
                             )

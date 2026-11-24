@@ -49,3 +49,10 @@ Consequences: Behavior is verified byte-exact while the port stays honest about 
 Status: accepted (2026-11-22)
 Context: Phase 3 needs a native desktop front door while the 87 React UI units are rebuilt in gpui-kit. The user requires the `gpui-fast` backend.
 Decision: `rust/shell` (bin `synara-shell`) is a gpui-kit 0.10 app with `gpui-fast` on both `gpui-kit` and `gpui-webview` (a feature mismatch fails to compile). The window hosts a single full-surface wry (`lb-wry` 0.53) WebView pointed at `SYNARA_URL` (default `http://127.0.0.1:4577`, the `rust/app` front door), plus a minimal navigation chrome (back/forward/reload/address). GPUI overlays render above the page via gpui-fast window composition on macOS/Linux; Linux builds must use `platform::linux(WindowingModes::X11)` since WebKitGTK cannot embed in Wayland. This is scaffolding — each UI unit replaced natively removes webview area, not adds to it.
+
+## ADR-006: The shell UI is fully native gpui-kit — webview scaffolding removed
+
+Status: accepted (2026-11-24), supersedes the wry-embedding part of ADR-005
+Context: ADR-005 embedded the web UI in a wry WebView as scaffolding while UI units were rebuilt natively. The native rebuild completed for every surface (home, settings, rail, thread view, dock, palettes, dialogs) and pixel-diff parity vs the Electron build was verified (residual is font rasterization), so the webview area reached zero.
+Decision: `rust/shell` renders all UI as native gpui-kit (`gpui-fast`) elements driven by the WS-RPC snapshot on `SYNARA_WS`. The `lb-wry` dependency may remain in the tree for future embed needs but hosts no UI. The shell speaks only the WS-RPC contract — no HTTP page loads.
+Consequences: `SYNARA_URL` is unused; `SYNARA_WS`/`SYNARA_HTTP` are the only endpoints. Idle RSS is ~64 MB vs ~800 MB for the upstream Electron renderer.

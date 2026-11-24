@@ -72,9 +72,13 @@ Full generated plan with every unit, wave, readiness score and risk: [rust/plan.
 | 0 — Analysis         | done — 881 units planned                                       |
 | 1 — Decisions        | done — ADR-001 clean-room, ADR-002 T3 cases-only rule          |
 | 2 — Record           | done — app record 179/179 + cases per bridged unit             |
-| 3 — Front door       | done — `rust/app` axum (179/179 replay, 100% fallback) + `rust/shell` gpui-kit (gpui-fast) webview shell |
-| 4 — Port (789 units) | in progress — 415 ported+gate-green; ~45% units unbridgeable; T3 audit closed (all suspects re-derived or verified clean); native API layer started (GET /ws/negotiate + bootstrap.negotiate over WS relay)   |
+| 3 — Front door       | done — `rust/app` axum (179/179 replay, 100% fallback) + `rust/shell` gpui-kit (gpui-fast), fully native UI (webview scaffolding removed) |
+| 4 — Port (789 units) | in progress — 415 ported+gate-green; ~45% units unbridgeable; T3 audit closed (all suspects re-derived or verified clean); WS-RPC ~202/285 native on :8081 (rest runtime-bound: provider CLI, LLM, pairing/OAuth, T3 contracts, computer.* AX) |
 | 5 — Lift             | pending                                                        |
+
+## Native shell UI parity (2026-11-24)
+
+`rust/shell` now renders every surface natively — no webview. Verified pixel-diff vs Synara Electron (odiff, per section): 0.4–6.9%, residual = font rasterization only. Parity surfaces: home, all 18+ settings sections, rail sections (inbox/tasks/kanban/pull-requests/automations/studio/spaces), thread view (header, tab strip, transcript, composer row/block modes, env/picker chips), right dock (changes pane, PTY terminal), palettes (search/files/snippets), context menus with submenus, drag&drop (tabs, threads, split panes), Zed-style split view (⌘\, draggable divider, per-pane ⌘W, focus indicator), file editor (⌘S save), @-mention filesystem browser, slash commands, FeedbackDialog (live POST to /api/feedback), ShortcutsDialog (⌘/), interactive keybind rebinding, ~30 global chords resolved from server keybinding rules. Remaining UI gaps are runtime-bound: model picker (provider CLI), live run states (LLM streaming).
 
 ## Provenance (T3Code audit)
 

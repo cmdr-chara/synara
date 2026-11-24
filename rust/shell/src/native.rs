@@ -1070,6 +1070,14 @@ pub struct Native {
     autom_runs: Vec<Value>,
     autom_sel: Option<String>,
     autom_dialog: Option<AutomForm>,
+    /// Upstream useWhatsNew: bottom-left popout card on a covered upgrade.
+    wn_popout: bool,
+    /// What's-new dialog view: 0 closed, 1 current release, 2 changelog.
+    wn_view: u8,
+    wn_changelog_open: std::collections::HashSet<String>,
+    /// settings.sidebarUi.whatsNewLastSeenVersion (NullOr sentinel: None =
+    /// never dismissed, treated as fresh install on first launch).
+    wn_seen: Option<String>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -1254,6 +1262,46 @@ fn ui_answer_text(answers: Option<&Value>, q: &Value) -> Option<String> {
         .collect::<Vec<_>>()
         .join(", ");
     (!text.is_empty()).then_some(text)
+}
+
+/// Installed build version, mirrored from apps/web/package.json — WhatsNew
+/// entries key on it exactly (upstream APP_VERSION).
+const APP_VERSION: &str = "1.6.4";
+
+/// The curated "What's new" dataset, converted verbatim from upstream
+/// apps/web/src/whatsNew/entries.ts.
+fn whats_new_entries() -> &'static [Value] {
+    static E: std::sync::OnceLock<Vec<Value>> = std::sync::OnceLock::new();
+    E.get_or_init(|| {
+        serde_json::from_str(include_str!("whats_new.json")).unwrap_or_default()
+    })
+}
+
+/// Upstream compareVersions: MAJOR.MINOR.PATCH tuple compare, non-numeric -> 0.
+fn wn_cmp_versions(a: &str, b: &str) -> i64 {
+    let parts = |v: &str| {
+        let mut it = v.split('.');
+        let n = |s: Option<&str>| s.and_then(|x| x.parse::<i64>().ok()).unwrap_or(0);
+        (n(it.next()), n(it.next()), n(it.next()))
+    };
+    let (am, an, ap) = parts(a);
+    let (bm, bn, bp) = parts(b);
+    if am != bm {
+        am - bm
+    } else if an != bn {
+        an - bn
+    } else {
+        ap - bp
+    }
+}
+
+/// Entries sorted newest-first (upstream sortEntriesByVersionDesc).
+fn whats_new_sorted() -> Vec<Value> {
+    let mut e = whats_new_entries().to_vec();
+    e.sort_by(|a, b| {
+        wn_cmp_versions(str_at(b, "version"), str_at(a, "version")).cmp(&0)
+    });
+    e
 }
 
 /// One PTY session backing a terminal tab (upstream TerminalWorkspaceTabs).
@@ -2193,6 +2241,10 @@ impl Native {
             autom_runs: Vec::new(),
             autom_sel: None,
             autom_dialog: None,
+            wn_popout: false,
+            wn_view: 0,
+            wn_changelog_open: std::collections::HashSet::new(),
+            wn_seen: None,
             git_dialog: None,
             git_msg_input: None,
             git_pr_title_input: None,
@@ -5370,11 +5422,43 @@ impl Native {
                             m.get(*k).and_then(|v| v.as_bool()).unwrap_or(false);
                     }
                 }
+                this.wn_seen = get(&su, "whatsNewLastSeenVersion")
+                    .as_str()
+                    .map(|s| s.to_string());
+                this.eval_whats_new(cx);
                 this.show_next_coachmark(cx);
                 cx.notify();
             });
         })
         .detach();
+    }
+
+    /// Upstream resolveWhatsNewState: silent-bootstrap on first launch or a
+    /// build without curated notes, popout only on a covered upgrade.
+    fn eval_whats_new(&mut self, cx: &mut Context<Self>) {
+        match self.wn_seen.clone() {
+            None => self.mark_whats_new_seen(cx),
+            Some(seen) if wn_cmp_versions(APP_VERSION, &seen) > 0 => {
+                if whats_new_entries()
+                    .iter()
+                    .any(|e| str_at(e, "version") == APP_VERSION)
+                {
+                    self.wn_popout = true;
+                } else {
+                    self.mark_whats_new_seen(cx);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    /// Acknowledge the current release (upstream markSeen): record the version
+    /// under settings.sidebarUi and close every What's-new surface.
+    fn mark_whats_new_seen(&mut self, cx: &mut Context<Self>) {
+        self.wn_seen = Some(APP_VERSION.to_string());
+        self.wn_popout = false;
+        self.wn_view = 0;
+        self.persist_sidebar_ui(cx);
     }
 
     fn density_scale(&self) -> f32 {
@@ -5751,6 +5835,7 @@ impl Native {
                 "pin-git-progress-toast-preview": self.feature_flags[1],
                 "show-debug-task-banner": self.feature_flags[2],
             },
+            "whatsNewLastSeenVersion": self.wn_seen.clone(),
         });
         if let Some(obj) = get_mut(&mut self.settings_data, "settings")
             .and_then(|s| s.as_object_mut())
@@ -20232,6 +20317,402 @@ impl Render for Native {
 
         // PullRequestThreadDialog (upstream checkout mode): reference input,
         // resolved PR card, Local/Worktree confirm buttons.
+        // Upstream WhatsNewPopoutCard: bottom-left "New: vX" card after a
+        // covered upgrade. Body opens the notes dialog; the ✕ marks seen.
+        let mut wn_pop_overlay = div().absolute().inset_0().size_full();
+        if self.wn_popout && self.wn_view == 0 {
+            if let Some(entry) = whats_new_entries()
+                .iter()
+                .find(|e| str_at(e, "version") == APP_VERSION)
+            {
+                let f0 = arr(entry, "features").first();
+                let title = f0
+                    .map(|f| str_at(f, "title").to_string())
+                    .unwrap_or_else(|| format!("What's new in v{APP_VERSION}"));
+                let desc = f0.map(|f| str_at(f, "description").to_string());
+                wn_pop_overlay = wn_pop_overlay.child(
+                    v_flex()
+                        .absolute()
+                        .left(px(12.))
+                        .bottom(px(12.))
+                        .w(px(256.))
+                        .rounded(px(12.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .bg(theme.popover)
+                        .shadow_lg()
+                        .overflow_hidden()
+                        .child(
+                            h_flex()
+                                .h(px(96.))
+                                .w_full()
+                                .items_center()
+                                .justify_center()
+                                .bg(theme.muted)
+                                .child(
+                                    div()
+                                        .text_size(px(28.))
+                                        .text_color(theme.muted_foreground)
+                                        .child("Y"),
+                                ),
+                        )
+                        .child(
+                            v_flex()
+                                .px(px(16.))
+                                .pt(px(10.))
+                                .pb(px(16.))
+                                .gap_1()
+                                .child(
+                                    div()
+                                        .text_sm()
+                                        .font_weight(FontWeight::MEDIUM)
+                                        .text_color(theme.accent)
+                                        .child(format!("New v{APP_VERSION}")),
+                                )
+                                .child(
+                                    div()
+                                        .text_base()
+                                        .font_weight(FontWeight::SEMIBOLD)
+                                        .child(title),
+                                )
+                                .when_some(desc, |d, s| {
+                                    d.child(
+                                        div()
+                                            .text_sm()
+                                            .text_color(theme.muted_foreground)
+                                            .child(s),
+                                    )
+                                })
+                                .child(
+                                    div()
+                                        .mt(px(8.))
+                                        .text_sm()
+                                        .font_weight(FontWeight::MEDIUM)
+                                        .text_color(theme.muted_foreground)
+                                        .child("Find out what's new →"),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .id("wn-popout-open")
+                                .absolute()
+                                .inset_0()
+                                .cursor_pointer()
+                                .on_click(cx.listener(|this, _e, _w, cx| {
+                                    this.wn_view = 1;
+                                    cx.notify();
+                                })),
+                        )
+                        .child(
+                            div()
+                                .id("wn-popout-dismiss")
+                                .absolute()
+                                .top(px(10.))
+                                .right(px(10.))
+                                .size(px(28.))
+                                .rounded_full()
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .cursor_pointer()
+                                .hover(|h| h.bg(theme.secondary))
+                                .on_click(cx.listener(|this, _e, _w, cx| {
+                                    this.mark_whats_new_seen(cx);
+                                }))
+                                .child(
+                                    svg_icon(icons::X)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                ),
+                        ),
+                );
+            }
+        }
+
+        // Upstream WhatsNewDialog: "What's new?" feature stack for the current
+        // release, with a "Complete changelog" accordion as the second view.
+        let mut wn_dialog_overlay = div().absolute().inset_0().size_full();
+        if self.wn_view != 0 {
+            if let Some(entry) = whats_new_entries()
+                .iter()
+                .find(|e| str_at(e, "version") == APP_VERSION)
+                .cloned()
+            {
+                let feature_card = |f: &Value| {
+                    let details = str_at(f, "details");
+                    v_flex()
+                        .gap(px(8.))
+                        .child(
+                            v_flex()
+                                .gap(px(4.))
+                                .child(
+                                    div()
+                                        .text_base()
+                                        .font_weight(FontWeight::SEMIBOLD)
+                                        .child(str_at(f, "title").to_string()),
+                                )
+                                .child(
+                                    div()
+                                        .text_sm()
+                                        .text_color(theme.muted_foreground)
+                                        .child(str_at(f, "description").to_string()),
+                                ),
+                        )
+                        .when(!details.is_empty(), |d| {
+                            d.child(
+                                div()
+                                    .text_sm()
+                                    .text_color(theme.muted_foreground)
+                                    .child(details.to_string()),
+                            )
+                        })
+                };
+                let mut card = v_flex()
+                    .w(px(512.))
+                    .rounded(px(12.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(theme.popover)
+                    .shadow_lg();
+                // Header: current view = logo + title + vX · date; changelog
+                // view = back button + "Complete changelog".
+                if self.wn_view == 1 {
+                    card = card.child(
+                        h_flex()
+                            .p(px(16.))
+                            .pr(px(48.))
+                            .gap_3()
+                            .items_center()
+                            .child(
+                                div()
+                                    .text_size(px(24.))
+                                    .text_color(theme.foreground)
+                                    .child("Y"),
+                            )
+                            .child(
+                                v_flex()
+                                    .child(
+                                        div()
+                                            .text_base()
+                                            .font_weight(FontWeight::SEMIBOLD)
+                                            .child("What's new?"),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_sm()
+                                            .text_color(theme.muted_foreground)
+                                            .child(format!(
+                                                "v{APP_VERSION} · {}",
+                                                str_at(&entry, "date")
+                                            )),
+                                    ),
+                            ),
+                    );
+                    let mut body = v_flex().px(px(16.)).py(px(12.)).gap(px(32.));
+                    for f in arr(&entry, "features") {
+                        body = body.child(feature_card(f));
+                    }
+                    card = card.child(
+                        div()
+                            .max_h(px(520.))
+                            .overflow_y_scrollbar()
+                            .child(body),
+                    );
+                    card = card.child(
+                        h_flex()
+                            .p(px(12.))
+                            .justify_between()
+                            .items_center()
+                            .child(
+                                div()
+                                    .id("wn-view-changelog")
+                                    .px_2()
+                                    .h(px(28.))
+                                    .flex()
+                                    .items_center()
+                                    .gap_1()
+                                    .rounded(px(6.))
+                                    .text_sm()
+                                    .text_color(theme.muted_foreground)
+                                    .cursor_pointer()
+                                    .hover(|h| h.bg(theme.secondary))
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.wn_view = 2;
+                                        this.wn_changelog_open.clear();
+                                        this.wn_changelog_open
+                                            .insert(APP_VERSION.to_string());
+                                        cx.notify();
+                                    }))
+                                    .child("View changelog →"),
+                            )
+                            .child(
+                                div()
+                                    .id("wn-got-it")
+                                    .h(px(32.))
+                                    .px_3()
+                                    .flex()
+                                    .items_center()
+                                    .rounded(px(8.))
+                                    .bg(theme.foreground)
+                                    .text_color(theme.background)
+                                    .text_sm()
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.mark_whats_new_seen(cx);
+                                    }))
+                                    .child("Got it"),
+                            ),
+                    );
+                } else {
+                    card = card.child(
+                        h_flex()
+                            .p(px(16.))
+                            .gap_3()
+                            .items_center()
+                            .child(
+                                div()
+                                    .id("wn-back")
+                                    .size(px(28.))
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .rounded(px(6.))
+                                    .cursor_pointer()
+                                    .hover(|h| h.bg(theme.secondary))
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.wn_view = 1;
+                                        cx.notify();
+                                    }))
+                                    .child(
+                                        svg_icon(icons::CHEVRON_LEFT)
+                                            .size(px(14.))
+                                            .text_color(theme.foreground),
+                                    ),
+                            )
+                            .child(
+                                v_flex()
+                                    .child(
+                                        div()
+                                            .text_base()
+                                            .font_weight(FontWeight::SEMIBOLD)
+                                            .child("Complete changelog"),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_sm()
+                                            .text_color(theme.muted_foreground)
+                                            .child("Every curated release, newest first"),
+                                    ),
+                            ),
+                    );
+                    let sorted = whats_new_sorted();
+                    let mut acc = v_flex().px(px(16.)).py(px(8.));
+                    let n_entries = sorted.len();
+                    for (i, e) in sorted.iter().enumerate() {
+                        let ver = str_at(e, "version").to_string();
+                        let n_feat = arr(e, "features").len();
+                        let open = self.wn_changelog_open.contains(&ver);
+                        let ver_c = ver.clone();
+                        let mut row = v_flex()
+                            .w_full()
+                            .when(i + 1 < n_entries, |d| {
+                                d.border_b_1().border_color(theme.border)
+                            })
+                            .child(
+                                h_flex()
+                                    .id(SharedString::from(format!("wn-acc-{i}")))
+                                    .w_full()
+                                    .py(px(12.))
+                                    .gap_3()
+                                    .items_center()
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                                        if !this.wn_changelog_open.remove(&ver_c) {
+                                            this.wn_changelog_open.insert(ver_c.clone());
+                                        }
+                                        cx.notify();
+                                    }))
+                                    .child(
+                                        svg_icon(if open {
+                                            icons::CHEVRON_DOWN
+                                        } else {
+                                            icons::CHEVRON_RIGHT
+                                        })
+                                        .size(px(12.))
+                                        .text_color(theme.muted_foreground),
+                                    )
+                                    .child(
+                                        h_flex()
+                                            .flex_1()
+                                            .items_baseline()
+                                            .gap_2()
+                                            .child(
+                                                div()
+                                                    .text_sm()
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(str_at(e, "date").to_string()),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_base()
+                                                    .font_weight(FontWeight::SEMIBOLD)
+                                                    .child(format!("Version {ver}")),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_sm()
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(format!(
+                                                        "({n_feat} update{})",
+                                                        if n_feat == 1 { "" } else { "s" }
+                                                    )),
+                                            ),
+                                    ),
+                            );
+                        if open {
+                            let mut feats = v_flex()
+                                .pb(px(16.))
+                                .pl(px(24.))
+                                .pr(px(4.))
+                                .gap(px(24.));
+                            for f in arr(e, "features") {
+                                feats = feats.child(feature_card(f));
+                            }
+                            row = row.child(feats);
+                        }
+                        acc = acc.child(row);
+                    }
+                    card = card.child(
+                        div()
+                            .max_h(px(560.))
+                            .overflow_y_scrollbar()
+                            .child(acc),
+                    );
+                }
+                wn_dialog_overlay = wn_dialog_overlay.child(
+                    v_flex()
+                        .size_full()
+                        .items_center()
+                        .justify_center()
+                        .bg(rgba(0x00000080))
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.mark_whats_new_seen(cx);
+                            }),
+                        )
+                        .child(
+                            div()
+                                .on_mouse_down(
+                                    gpui::MouseButton::Left,
+                                    |_e, _w, cx| cx.stop_propagation(),
+                                )
+                                .child(card),
+                        ),
+                );
+            }
+        }
+
         let mut pr_overlay = div().absolute().inset_0().size_full();
         if self.pr_dialog_open {
             let mut card = v_flex()
@@ -20516,5 +20997,9 @@ impl Render for Native {
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
             .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))
             .when(self.pr_dialog_open, |d| d.child(pr_overlay))
+            .when(self.wn_popout && self.wn_view == 0, |d| {
+                d.child(wn_pop_overlay)
+            })
+            .when(self.wn_view != 0, |d| d.child(wn_dialog_overlay))
     }
 }

@@ -212,14 +212,14 @@ fn live_projects() -> Vec<Project> {
     };
     query_objects(
         &copy.conn,
-        "SELECT project_id, title, workspace_root, deleted_at FROM projection_projects \
+        "SELECT project_id, title, workspace_root, kind, deleted_at FROM projection_projects \
          ORDER BY created_at, project_id",
         &[],
         &[],
         &[],
     )
     .into_iter()
-    .filter(|p| get(p, "deletedAt").is_null())
+    .filter(|p| get(p, "deletedAt").is_null() && str_at(p, "kind") == "project")
     .map(|p| Project {
         id: str_at(&p, "projectId").to_string(),
         title: str_at(&p, "title").to_string(),
@@ -253,31 +253,17 @@ fn pins() -> HashSet<(String, String, i64)> {
     set
 }
 
-/// First github.com remote of the project's workspace root, as `owner/name`.
-fn github_repo_of(root: &str) -> Option<String> {
-    let out = Command::new("git")
-        .args(["-C", root, "remote", "-v"])
-        .output()
-        .ok()?;
-    let text = String::from_utf8_lossy(&out.stdout);
-    let mut repo = None;
-    for line in text.lines() {
-        for needle in ["git@github.com:", "https://github.com/", "ssh://git@github.com/"] {
-            if let Some(pos) = line.find(needle) {
-                let rest = &line[pos + needle.len()..];
-                let path = rest.split_whitespace().next().unwrap_or(rest);
-                let path = path.trim_end_matches(".git").trim_end_matches('/');
-                if path.matches('/').count() == 1 && !path.is_empty() {
-                    repo = Some(path.to_string());
-                }
-            }
-        }
-    }
-    repo
-}
-
 fn project_by_id(id: &str) -> Option<Project> {
     live_projects().into_iter().find(|p| p.id == id)
+}
+
+fn validate_project_repository(project: &Project, input: &str) -> Result<String, WsErr> {
+    let repository = crate::pull_requests::validate_repository(input)?;
+    let inventory = crate::pull_requests::resolve_repositories(&project.workspace_root)?;
+    inventory
+        .into_iter()
+        .find(|candidate| candidate.eq_ignore_ascii_case(&repository))
+        .ok_or_else(|| err("GitHub repository does not belong to the selected project."))
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -575,12 +561,26 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
     let mut errors: Vec<Value> = Vec::new();
 
     for p in &projects {
-        match github_repo_of(&p.workspace_root) {
-            Some(repo) => repo_projects.entry(repo).or_default().push(p),
-            None => errors.push(list_error(
+        match crate::pull_requests::resolve_repositories(&p.workspace_root) {
+            Ok(repos) => {
+                // Upstream's inbox defaults to the preferred remote only; the full inventory
+                // remains authoritative for access checks and pin ownership.
+                if let Some(repo) = repos.first() {
+                    repo_projects.entry(repo.clone()).or_default().push(p);
+                } else {
+                    errors.push(list_error(
+                        p,
+                        Value::Null,
+                        "No GitHub repository could be resolved for this project.".into(),
+                        "unavailable",
+                        Value::Null,
+                    ));
+                }
+            }
+            Err(e) => errors.push(list_error(
                 p,
                 Value::Null,
-                "No GitHub repository could be resolved for this project.".into(),
+                e.0,
                 "unavailable",
                 Value::Null,
             )),
@@ -725,44 +725,63 @@ fn detail_error(msg: impl Into<String>) -> WsErr {
     err(msg)
 }
 
+fn issue_detail_query() -> &'static str {
+    "query($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issue(number: $number) {\n      number title url body state stateReason createdAt updatedAt closedAt\n      author { login avatarUrl url ... on User { name } }\n      assignees(first: 100) { nodes { login avatarUrl url name } }\n      labels(first: 100) { nodes { name color } }\n      comments(first: 100) {\n        totalCount pageInfo { hasNextPage }\n        nodes { id body url createdAt author { login avatarUrl url ... on User { name } } }\n      }\n    }\n  }\n}"
+}
+
 fn issue_detail(payload: &Value) -> Result<Value, WsErr> {
     let project_id = str_at(payload, "projectId");
-    let repo = str_at(payload, "repository");
     let number = get(payload, "number").as_i64().unwrap_or(0);
+    if number <= 0 {
+        return Err(detail_error("number must be a positive integer"));
+    }
     let Some(project) = project_by_id(project_id) else {
         return Err(detail_error(format!("Project '{project_id}' was not found.")));
     };
-    let json_fields = "number,title,url,author,state,stateReason,labels,assignees,comments,createdAt,updatedAt,closedAt,body";
-    let issue = gh_json(
+    let repo = validate_project_repository(&project, str_at(payload, "repository"))?;
+    let (owner, name) = repo.split_once('/').unwrap_or(("", ""));
+    let response = graphql(
+        issue_detail_query(),
         &[
-            "issue".into(),
-            "view".into(),
-            number.to_string(),
-            "--repo".into(),
-            repo.to_string(),
-            "--json".into(),
-            json_fields.into(),
+            "-F".into(),
+            format!("owner={owner}"),
+            "-F".into(),
+            format!("name={name}"),
+            "-F".into(),
+            format!("number={number}"),
         ],
         &project.workspace_root,
     )
     .map_err(detail_error)?;
+    let issue = response
+        .pointer("/data/repository/issue")
+        .cloned()
+        .unwrap_or(Value::Null);
+    if issue.is_null() {
+        return Err(detail_error("GitHub issue lookup failed."));
+    }
 
     let state = issue_state(&issue);
+    let comments_connection = get(&issue, "comments");
     let mut comments = Vec::new();
-    let raw_comments = get(&issue, "comments").as_array().cloned().unwrap_or_default();
-    for c in &raw_comments {
+    for c in nodes(&issue, "comments") {
         comments.push(json!({
-            "id": str_at(c, "id"),
+            "id": str_at(&c, "id"),
             "kind": "issue-comment",
-            "author": actor(get(c, "author")),
-            "body": get(c, "body"),
-            "createdAt": get(c, "createdAt"),
-            "updatedAt": get(c, "updatedAt"),
-            "url": get(c, "url"),
+            "author": actor(get(&c, "author")),
+            "body": get(&c, "body"),
+            "createdAt": get(&c, "createdAt"),
+            "updatedAt": get(&c, "updatedAt"),
+            "url": get(&c, "url"),
             "path": Value::Null,
             "reviewState": Value::Null,
         }));
     }
+    comments.sort_by(|a, b| str_at(a, "createdAt").cmp(str_at(b, "createdAt")));
+    let comment_count = non_negative(get(comments_connection, "totalCount"));
+    let has_next_page = get(get(comments_connection, "pageInfo"), "hasNextPage")
+        .as_bool()
+        .unwrap_or(false);
     Ok(json!({
         "projectId": project.id,
         "projectTitle": project.title,
@@ -776,34 +795,41 @@ fn issue_detail(payload: &Value) -> Result<Value, WsErr> {
         "stateReason": issue_state_reason(&issue, state),
         "labels": labels(&issue),
         "assignees": inbox_actors(&issue, "assignees"),
-        "commentCount": raw_comments.len() as i64,
+        "commentCount": comment_count,
         "createdAt": get(&issue, "createdAt"),
         "updatedAt": get(&issue, "updatedAt"),
         "closedAt": get(&issue, "closedAt"),
         "body": get(&issue, "body").as_str().unwrap_or(""),
         "comments": comments,
-        "commentsTruncated": raw_comments.len() >= 100,
+        "commentsTruncated": has_next_page || (comments.len() as i64) < comment_count,
     }))
 }
 
 fn issue_comment(payload: &Value) -> Result<Value, WsErr> {
     let project_id = str_at(payload, "projectId");
-    let repo = str_at(payload, "repository");
     let number = get(payload, "number").as_i64().unwrap_or(0);
-    let body = str_at(payload, "body");
+    if number <= 0 {
+        return Err(err("number must be a positive integer"));
+    }
+    let body = str_at(payload, "body").trim();
+    if body.is_empty() || body.chars().count() > 65_536 {
+        return Err(err("body must be non-empty and at most 65536 characters"));
+    }
     let Some(project) = project_by_id(project_id) else {
         return Err(err(format!("Project '{project_id}' was not found.")));
     };
-    let out = gh_run(
+    let repo = validate_project_repository(&project, str_at(payload, "repository"))?;
+    let out = crate::pull_requests::gh_stdin(
         &[
             "issue".into(),
             "comment".into(),
             number.to_string(),
             "--repo".into(),
-            repo.to_string(),
-            "--body".into(),
-            body.to_string(),
+            format!("github.com/{repo}"),
+            "--body-file".into(),
+            "-".into(),
         ],
+        body,
         &project.workspace_root,
     )
     .map_err(err)?;

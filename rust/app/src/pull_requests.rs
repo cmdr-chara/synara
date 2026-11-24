@@ -111,9 +111,10 @@ fn valid_repo(repo: &str) -> bool {
             .all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '_' || c == '-')
 }
 
-fn validate_repository(repo: &str) -> Result<String, WsErr> {
-    if valid_repo(repo) {
-        Ok(repo.to_string())
+pub(crate) fn validate_repository(repo: &str) -> Result<String, WsErr> {
+    let normalized = repo.trim();
+    if valid_repo(normalized) {
+        Ok(normalized.to_string())
     } else {
         Err(err("Invalid GitHub repository identity."))
     }
@@ -264,7 +265,7 @@ fn find_project(project_id: &str) -> Result<Project, WsErr> {
 }
 
 /// `resolveGitHubRepositories(cwd)`: branch remote → pushDefault → origin → sorted names.
-fn resolve_repositories(cwd: &str) -> Result<Vec<String>, WsErr> {
+pub(crate) fn resolve_repositories(cwd: &str) -> Result<Vec<String>, WsErr> {
     let unavailable =
         || err("GitHub repository inventory is unavailable.".to_string());
     let branch_out = git(cwd, &["branch", "--show-current"]).map_err(|_| unavailable())?;
@@ -280,28 +281,28 @@ fn resolve_repositories(cwd: &str) -> Result<Vec<String>, WsErr> {
     if !cfg.status.success() && cfg.status.code() != Some(1) {
         return Err(unavailable());
     }
-    let text = String::from_utf8_lossy(&cfg.stdout).replace('\0', "\n");
+    let text = String::from_utf8_lossy(&cfg.stdout);
     let mut branch_remote: Option<String> = None;
     let mut push_default: Option<String> = None;
     let mut urls: BTreeMap<String, String> = BTreeMap::new();
-    for line in text.lines() {
-        let line = line.trim();
-        if line.is_empty() {
+    let branch_remote_key = format!("branch.{branch}.remote").to_lowercase();
+    for record in text.split('\0') {
+        let Some((key, value)) = record.split_once('\n') else {
+            continue;
+        };
+        let key = key.trim_end_matches('\r');
+        let value = value.trim();
+        if value.is_empty() || value == "." {
             continue;
         }
-        let (key, value) = match line.split_once(' ') {
-            Some((k, v)) => (k, v),
-            None => (line, ""),
-        };
-        if key == format!("branch.{branch}.remote") {
+        let lower_key = key.to_lowercase();
+        if lower_key == branch_remote_key {
             branch_remote = Some(value.to_string());
-        } else if key == "remote.pushDefault" {
+        } else if lower_key == "remote.pushdefault" {
             push_default = Some(value.to_string());
-        } else if let Some(name) = key
-            .strip_prefix("remote.")
-            .and_then(|k| k.strip_suffix(".url"))
-        {
-            urls.insert(name.to_string(), value.to_string());
+        } else if lower_key.starts_with("remote.") && lower_key.ends_with(".url") && key.len() > "remote..url".len() {
+            let name = &key["remote.".len()..key.len() - ".url".len()];
+            urls.entry(name.to_string()).or_insert_with(|| value.to_string());
         }
     }
     let mut candidates: Vec<String> = Vec::new();
@@ -355,7 +356,7 @@ fn validate_project_repository(project: &Project, repo: &str) -> Result<String, 
 // gh plumbing
 // ---------------------------------------------------------------------------------------------
 
-fn gh_stdin(args: &[String], stdin: &str, cwd: &str) -> Result<GhOutput, String> {
+pub(crate) fn gh_stdin(args: &[String], stdin: &str, cwd: &str) -> Result<GhOutput, String> {
     let mut child = Command::new("gh")
         .args(args)
         .current_dir(if cwd.is_empty() { "." } else { cwd })

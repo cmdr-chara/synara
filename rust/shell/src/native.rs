@@ -68,6 +68,9 @@ mod icons {
         include_bytes!("../assets/icons/arrow-rotate-counter-clockwise.svg");
     pub const STAGE: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
+    pub const FOLDER_ADD: &[u8] = include_bytes!("../assets/icons/folder-add.svg");
+    pub const DOWNLOAD: &[u8] = include_bytes!("../assets/icons/download.svg");
+    pub const IMPORT: &[u8] = include_bytes!("../assets/icons/import.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
     pub const PIN: &[u8] = include_bytes!("../assets/icons/pin.svg");
     pub const PANEL_TOP_OPEN: &[u8] =
@@ -20974,9 +20977,32 @@ impl Render for Native {
                             .child(group),
                     );
                 }
+                // Thread rows carry their provider's icon (upstream
+                // SharedProviderIcon); generic "New thread" titles none.
+                let thread_icon = if kind == "thread" {
+                    arr(
+                        self.snapshot.as_ref().unwrap_or(&Value::Null),
+                        "threads",
+                    )
+                    .iter()
+                    .find(|t| str_at(t, "id") == payload.as_str())
+                    .map(|t| {
+                        let generic = str_at(t, "title")
+                            .trim()
+                            .eq_ignore_ascii_case("new thread");
+                        if generic {
+                            &[][..]
+                        } else {
+                            provider_icon(str_at(t, "provider"))
+                        }
+                    })
+                    .unwrap_or(icons::S_CHAT_BUBBLES)
+                } else {
+                    icons::FILE_TEXT
+                };
                 let icon_data: &[u8] = match kind.as_str() {
                     "directory" | "project" => icons::FOLDER,
-                    "thread" => icons::S_CHAT_BUBBLES,
+                    "thread" => thread_icon,
                     "snippet" => icons::SEARCH,
                     "import-proj" => icons::FOLDER_OPEN,
                     "import-src" => match payload.as_str() {
@@ -20987,8 +21013,9 @@ impl Render for Native {
                     "action" => match payload.as_str() {
                         "new-chat" => icons::SIDECHAT,
                         "new-thread" => icons::NEW_THREAD,
-                        "add-project" => icons::FOLDER,
-                        "import-projects" | "import-thread" => icons::ARROW_DOWN,
+                        "add-project" => icons::FOLDER_ADD,
+                        "import-projects" => icons::DOWNLOAD,
+                        "import-thread" => icons::IMPORT,
                         "feedback" => icons::BUG,
                         "settings" => icons::S_GEAR,
                         "usage-settings" => icons::S_GAUGE,
@@ -21031,8 +21058,8 @@ impl Render for Native {
                     );
                 }
                 // Rows that enter a palette page get the trailing ▸ (upstream
-                // ChevronRightIcon).
-                if kind == "action" && matches!(payload.as_str(), "import-projects" | "import-thread") {
+                // ChevronRightIcon — only "Import projects from…" has one).
+                if kind == "action" && payload.as_str() == "import-projects" {
                     r = r.child(
                         svg_icon(icons::CHEVRON_RIGHT)
                             .size(px(12.))

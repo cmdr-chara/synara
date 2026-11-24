@@ -466,11 +466,19 @@ struct DragGhost(String);
 impl Render for DragGhost {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let theme = cx.theme();
+        let ghost_bg: gpui::Hsla = if matches!(
+            cx.window_appearance(),
+            gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
+        ) {
+            rgb(0x161616).into()
+        } else {
+            theme.popover
+        };
         div()
             .px_2()
             .py_1()
             .rounded_md()
-            .bg(theme.popover)
+            .bg(ghost_bg)
             .border_1()
             .border_color(theme.border)
             .text_xs()

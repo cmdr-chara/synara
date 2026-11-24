@@ -6071,24 +6071,34 @@ impl Render for Native {
                 for entry in self.files.clone() {
                     let name = str_at(&entry, "name").to_string();
                     let is_dir = str_at(&entry, "kind") == "directory";
+                    // Upstream explorer row: h-8 px-2, entry icon, medium name —
+                    // the icon (not the color) distinguishes directories.
                     files_pane = files_pane.child(
-                        div()
+                        h_flex()
                             .id(ElementId::Name(format!("file-{name}").into()))
                             .cursor_pointer()
+                            .h(px(32.))
+                            .items_center()
+                            .gap_1p5()
                             .px_2()
-                            .py_1()
                             .rounded_md()
-                            .text_size(px(13.))
-                            .text_color(if is_dir {
-                                theme.primary
-                            } else {
-                                theme.foreground
-                            })
-                            .child(if is_dir {
-                                format!("{name}/")
-                            } else {
-                                name
-                            })
+                            .child(
+                                svg_icon(if is_dir {
+                                    icons::FOLDER
+                                } else {
+                                    icons::FILE_TEXT
+                                })
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .text_color(theme.foreground)
+                                    .child(name),
+                            )
+                            .hover(|d| d.bg(subtle))
                             .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 this.open_entry(entry.clone(), cx)
                             })),

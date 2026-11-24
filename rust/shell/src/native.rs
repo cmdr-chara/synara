@@ -876,6 +876,10 @@ pub struct Native {
     dev_cmd: Entity<InputState>,
     runtime_mode: &'static str,
     chats_collapsed: bool,
+    /// "Show more" paging per sidebar list (upstream THREAD_PREVIEW_PAGE_SIZE=5):
+    /// number of extra revealed pages, keyed by project id ("chats" for the
+    /// Chats group, "pinned" for the Pinned section).
+    preview_pages: std::collections::HashMap<String, u32>,
     /// Project folders the user collapsed in the sidebar (upstream
     /// toggleProject). Projects start expanded.
     collapsed_projects: std::collections::HashSet<String>,
@@ -2239,6 +2243,7 @@ impl Native {
                 }),
                 runtime_mode: "full-access",
                 chats_collapsed: true,
+                preview_pages: std::collections::HashMap::new(),
                 collapsed_projects: std::collections::HashSet::new(),
                 view_settings: false,
                 settings_section: "general",
@@ -10497,6 +10502,7 @@ impl Render for Native {
         });
         for (project_index, project) in projects_list.iter().enumerate() {
             let pid = str_at(project, "id").to_string();
+            let pid_key = pid.clone();
             // Expanded when it has visible threads nested below.
             let mut kids: Vec<Value> = all_threads
                 .iter()
@@ -10664,7 +10670,9 @@ impl Render for Native {
             if !expanded {
                 continue;
             }
-            for thread in &kids {
+            let pages = *self.preview_pages.get(&pid_key).unwrap_or(&0) as usize;
+            let visible = 5 + pages * 5;
+            for thread in kids.iter().take(visible) {
                 sidebar = sidebar.child(thread_row(
                     thread,
                     &theme,
@@ -10673,6 +10681,49 @@ impl Render for Native {
                     34.,
                     cx,
                 ));
+            }
+            if kids.len() > 5 {
+                let pid_more = pid_key.clone();
+                let pid_less = pid_key.clone();
+                let mut page_row = h_flex()
+                    .id(ElementId::Name(format!("pg-{pid_key}").into()))
+                    .h(px(26.))
+                    .items_center()
+                    .pl(px(34.))
+                    .gap_2();
+                if kids.len() > visible {
+                    page_row = page_row.child(
+                        div()
+                            .id(ElementId::Name(format!("pgm-{pid_key}").into()))
+                            .cursor_pointer()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .hover(|d| d.text_color(theme.foreground))
+                            .child("Show more")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                *this.preview_pages.entry(pid_more.clone()).or_insert(0) += 1;
+                                cx.notify();
+                            })),
+                    );
+                }
+                if pages > 0 {
+                    page_row = page_row.child(
+                        div()
+                            .id(ElementId::Name(format!("pgl-{pid_key}").into()))
+                            .cursor_pointer()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .hover(|d| d.text_color(theme.foreground))
+                            .child("Show less")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if let Some(n) = this.preview_pages.get_mut(&pid_less) {
+                                    *n = n.saturating_sub(1);
+                                }
+                                cx.notify();
+                            })),
+                    );
+                }
+                sidebar = sidebar.child(page_row);
             }
         }
         sidebar = sidebar.child(
@@ -10717,15 +10768,60 @@ impl Render for Native {
         chat_threads.sort_by_key(|t| {
             if pinned_ids.contains(&str_at(t, "id").to_string()) { 0 } else { 1 }
         });
-        for thread in &chat_threads {
-            sidebar = sidebar.child(thread_row(
-                thread,
-                &theme,
-                &pinned_ids,
-                selected_tid.as_deref(),
-                8.,
-                cx,
-            ));
+        {
+            let pages = *self.preview_pages.get("chats").unwrap_or(&0) as usize;
+            let visible = 5 + pages * 5;
+            for thread in chat_threads.iter().take(visible) {
+                sidebar = sidebar.child(thread_row(
+                    thread,
+                    &theme,
+                    &pinned_ids,
+                    selected_tid.as_deref(),
+                    8.,
+                    cx,
+                ));
+            }
+            if chat_threads.len() > 5 {
+                let mut page_row = h_flex()
+                    .id("pg-chats")
+                    .h(px(26.))
+                    .items_center()
+                    .pl(px(8.))
+                    .gap_2();
+                if chat_threads.len() > visible {
+                    page_row = page_row.child(
+                        div()
+                            .id("pgm-chats")
+                            .cursor_pointer()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .hover(|d| d.text_color(theme.foreground))
+                            .child("Show more")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                *this.preview_pages.entry("chats".to_string()).or_insert(0) += 1;
+                                cx.notify();
+                            })),
+                    );
+                }
+                if pages > 0 {
+                    page_row = page_row.child(
+                        div()
+                            .id("pgl-chats")
+                            .cursor_pointer()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .hover(|d| d.text_color(theme.foreground))
+                            .child("Show less")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                if let Some(n) = this.preview_pages.get_mut("chats") {
+                                    *n = n.saturating_sub(1);
+                                }
+                                cx.notify();
+                            })),
+                    );
+                }
+                sidebar = sidebar.child(page_row);
+            }
         }
         // Server-side content matches (searchThreads).
         if !self.search_hits.is_empty() {
@@ -11034,7 +11130,7 @@ impl Render for Native {
             });
             let ripples = self.ascii_ripples.clone();
             let mut ink_rows: Vec<Vec<String>> =
-                (0..5).map(|_| Vec::with_capacity(rows)).collect();
+                (0..6).map(|_| Vec::with_capacity(rows)).collect();
             let mut rows_accent: Vec<String> = Vec::with_capacity(rows);
             let mut rng = (elapsed_ms as u32)
                 .wrapping_mul(747_796_405)
@@ -11063,7 +11159,7 @@ impl Render for Native {
                 }
             }
             for r in 0..rows {
-                let mut ink_line: [String; 5] =
+                let mut ink_line: [String; 6] =
                     std::array::from_fn(|_| String::with_capacity(cols));
                 let mut acc = String::with_capacity(cols);
                 for c in 0..cols {
@@ -11139,11 +11235,22 @@ impl Render for Native {
                         }
                     } else {
                         acc.push(' ');
-                        // Continuous upstream alpha -> five ink buckets.
-                        let bucket = if ink_alpha < 0.015 {
+                        // Continuous upstream alpha -> six ink buckets with
+                        // stochastic dithering: a cell lands in the bucket
+                        // below or above its alpha, weighted by the fraction,
+                        // so the field reads as a smooth ramp in aggregate.
+                        let pos = ink_alpha / 0.03;
+                        let base = pos.floor();
+                        rng ^= rng << 13;
+                        rng ^= rng >> 17;
+                        rng ^= rng << 5;
+                        let frac_roll = rng as f32 / 4294967296.0;
+                        let bucket = if ink_alpha < 0.004 {
                             usize::MAX
                         } else {
-                            ((ink_alpha / 0.036) as usize).min(4)
+                            ((base + if frac_roll < pos - base { 1. } else { 0. })
+                                as usize)
+                                .min(5)
                         };
                         for (bi, l) in ink_line.iter_mut().enumerate() {
                             l.push(if bi == bucket { ch } else { ' ' });
@@ -11186,7 +11293,7 @@ impl Render for Native {
                         rws,
                         theme
                             .foreground
-                            .opacity(0.036 * (bi as f32 + 1.))
+                            .opacity(0.03 * (bi as f32 + 1.))
                             .into(),
                     ));
                 }

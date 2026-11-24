@@ -1,0 +1,344 @@
+import { readExecutionContext } from "~/lib/hosts/executionContext";
+import { REMOTE_NATIVE_UNAVAILABLE } from "@synara/shared/remoteCapabilities";
+// FILE: OpenInPicker.tsx
+// Purpose: Render the chat/file header "Open In" controls for the active editor target.
+// Layer: Chat header action
+// Depends on: shared editor metadata, native shell bridge, and preferred editor state.
+
+import { type EditorId, type ResolvedKeybindingsConfig } from "@synara/contracts";
+import { useQuery } from "@tanstack/react-query";
+import { useState, type ReactNode } from "react";
+import { useEditorLaunchers, type EditorLaunchers } from "~/hooks/useEditorLaunchers";
+import { ChevronDownIcon } from "~/lib/icons";
+import { serverConfigQueryOptions } from "~/lib/serverReactQuery";
+import { cn } from "~/lib/utils";
+import {
+  Menu,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuShortcut,
+  MenuTrigger,
+  MenuItem,
+  MenuSeparator,
+} from "../ui/menu";
+import { ComposerPickerMenuPopup } from "./ComposerPickerMenuPopup";
+import {
+  ChatHeaderButton,
+  ChatHeaderIconButton,
+  ChatHeaderSplitDivider,
+  ChatHeaderSplitGroup,
+  CHAT_HEADER_SPLIT_LEADING_CLASS_NAME,
+  CHAT_HEADER_SPLIT_TRAILING_CLASS_NAME,
+} from "./chatHeaderControls";
+import { useTranslation } from "~/i18n";
+
+const EMPTY_KEYBINDINGS: ResolvedKeybindingsConfig = [];
+const EMPTY_AVAILABLE_EDITORS: ReadonlyArray<EditorId> = [];
+
+interface OpenInPickerPrimaryAction {
+  onClick: () => void;
+  disabled?: boolean;
+  icon?: ReactNode;
+}
+
+interface OpenInPickerProps {
+  // Editor config is optional: callers that already hold it (e.g. the chat
+  // header) pass it through, while standalone surfaces (file-preview headers)
+  // omit it and let the picker self-fetch.
+  keybindings?: ResolvedKeybindingsConfig;
+  availableEditors?: ReadonlyArray<EditorId>;
+  openInTarget: string | null;
+  // "responsive" (default) hides the "Open" label until the `header-actions`
+  // inline-size container (declared on an ancestor — the chat header and the
+  // file-preview header both do) is wide enough; "always" keeps it visible
+  // regardless, for surfaces that don't establish that container.
+  labelMode?: "responsive" | "always";
+  // "split" (default) renders the bordered chat-header split button; "compact"
+  // renders quiet icon-only ghost buttons for dense per-row surfaces (e.g. the
+  // changed-file rows), where labelMode is ignored and the label stays sr-only.
+  variant?: "split" | "compact";
+  // Pins the primary "Open" action to a specific editor for this surface without
+  // mutating the shared preferred-editor setting. The PDF viewer uses this to default
+  // to the OS viewer (e.g. Preview) while still listing installed editors.
+  defaultEditor?: EditorId;
+  // Lets a file surface reuse the installed-editor menu while its main action
+  // stays in-app. Omitting this preserves the normal preferred-editor action.
+  primaryAction?: OpenInPickerPrimaryAction;
+  // Surface-specific actions appended after the shared installed-editor list.
+  // OpenInPicker owns the separator so callers cannot create malformed menus.
+  additionalMenuItems?: ReactNode;
+  /** Optional surface-specific display priority; unlisted installed editors follow in catalog order. */
+  menuEditorOrder?: ReadonlyArray<EditorId>;
+  groupLabel?: string;
+  menuLabel?: string;
+}
+
+type OpenInPickerContentProps = OpenInPickerProps & {
+  keybindings: ResolvedKeybindingsConfig;
+  availableEditors: ReadonlyArray<EditorId>;
+};
+
+export function OpenInPicker(props: OpenInPickerProps) {
+  if (readExecutionContext()?.remote && !props.primaryAction)
+    return (
+      <span className="text-ui-xs text-muted-foreground" title={REMOTE_NATIVE_UNAVAILABLE}>
+        External editor unavailable remotely
+      </span>
+    );
+  return <LocalOpenInPicker {...props} />;
+}
+
+function LocalOpenInPicker(props: OpenInPickerProps) {
+  if (props.keybindings !== undefined && props.availableEditors !== undefined) {
+    return (
+      <OpenInPickerContent
+        {...props}
+        keybindings={props.keybindings}
+        availableEditors={props.availableEditors}
+      />
+    );
+  }
+  return <OpenInPickerWithConfig {...props} />;
+}
+
+function OpenInPickerWithConfig(props: OpenInPickerProps) {
+  // The query-owning wrapper mounts only for standalone surfaces. Rows that
+  // receive config from ChatView avoid both the subscription and a QueryClient
+  // dependency in isolated rendering/tests.
+  const serverConfigQuery = useQuery(serverConfigQueryOptions());
+  return (
+    <OpenInPickerContent
+      {...props}
+      keybindings={props.keybindings ?? serverConfigQuery.data?.keybindings ?? EMPTY_KEYBINDINGS}
+      availableEditors={
+        props.availableEditors ??
+        serverConfigQuery.data?.availableEditors ??
+        EMPTY_AVAILABLE_EDITORS
+      }
+    />
+  );
+}
+
+function OpenInPickerContent({ primaryAction, ...props }: OpenInPickerContentProps) {
+  return primaryAction ? (
+    <PrimaryActionOpenInPicker {...props} primaryAction={primaryAction} />
+  ) : (
+    <EditorActionOpenInPicker {...props} />
+  );
+}
+
+interface OpenInPickerFrameProps {
+  labelMode: "responsive" | "always";
+  variant: "split" | "compact";
+  groupLabel: string;
+  menuLabel: string;
+  primaryAction: OpenInPickerPrimaryAction;
+  onMenuOpenChange?: (open: boolean) => void;
+  menuContent: ReactNode;
+}
+
+// Quiet square ghost button shared by both compact controls so the pair reads as
+// one unit; `data-popup-open` keeps the menu trigger highlighted while its menu is up.
+const COMPACT_ACTION_BUTTON_CLASS_NAME =
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-[var(--color-background-button-secondary-hover)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 disabled:pointer-events-none disabled:opacity-50 data-popup-open:bg-[var(--color-background-button-secondary-hover)] data-popup-open:text-foreground";
+
+function OpenInPickerFrame(props: OpenInPickerFrameProps) {
+  const { t } = useTranslation();
+
+  if (props.variant === "compact") {
+    return (
+      <div
+        role="group"
+        aria-label={props.groupLabel}
+        className="flex shrink-0 items-center gap-0.5"
+      >
+        <button
+          type="button"
+          className={COMPACT_ACTION_BUTTON_CLASS_NAME}
+          disabled={props.primaryAction.disabled ?? false}
+          onClick={props.primaryAction.onClick}
+        >
+          {props.primaryAction.icon ?? null}
+          <span className="sr-only">{t("onboarding:notification_open")}</span>
+        </button>
+        <Menu {...(props.onMenuOpenChange ? { onOpenChange: props.onMenuOpenChange } : {})}>
+          <MenuTrigger
+            render={
+              <button
+                type="button"
+                aria-label={props.menuLabel}
+                className={COMPACT_ACTION_BUTTON_CLASS_NAME}
+              />
+            }
+          >
+            <ChevronDownIcon aria-hidden="true" className="size-3.5" />
+          </MenuTrigger>
+          {props.menuContent}
+        </Menu>
+      </div>
+    );
+  }
+  return (
+    <ChatHeaderSplitGroup label={props.groupLabel}>
+      <ChatHeaderButton
+        tone="outline"
+        className={CHAT_HEADER_SPLIT_LEADING_CLASS_NAME}
+        disabled={props.primaryAction.disabled ?? false}
+        onClick={props.primaryAction.onClick}
+      >
+        {props.primaryAction.icon ?? null}
+        <span
+          className={cn(
+            "font-normal",
+            props.labelMode === "always"
+              ? "ml-0.5"
+              : "sr-only @sm/header-actions:not-sr-only @sm/header-actions:ml-0.5",
+          )}
+        >
+          {t("onboarding:notification_open")}
+        </span>
+      </ChatHeaderButton>
+      <ChatHeaderSplitDivider />
+      <Menu {...(props.onMenuOpenChange ? { onOpenChange: props.onMenuOpenChange } : {})}>
+        <MenuTrigger
+          render={
+            <ChatHeaderIconButton
+              label={props.menuLabel}
+              tone="outline"
+              className={CHAT_HEADER_SPLIT_TRAILING_CLASS_NAME}
+            />
+          }
+        >
+          <ChevronDownIcon aria-hidden="true" className="size-3.5" />
+        </MenuTrigger>
+        {props.menuContent}
+      </Menu>
+    </ChatHeaderSplitGroup>
+  );
+}
+
+function EditorActionOpenInPicker(props: OpenInPickerContentProps) {
+  const { t } = useTranslation();
+  const launchers = useEditorLaunchers(props);
+  const PrimaryIcon = launchers.primaryOption?.Icon;
+
+  return (
+    <OpenInPickerFrame
+      labelMode={props.labelMode ?? "responsive"}
+      variant={props.variant ?? "split"}
+      groupLabel={props.groupLabel ?? t("chat:environment_openInEditorDefault")}
+      menuLabel={props.menuLabel ?? t("chat:editorOptions")}
+      primaryAction={{
+        disabled: !launchers.preferredEditor || !props.openInTarget,
+        icon: PrimaryIcon ? <PrimaryIcon aria-hidden="true" className="size-3.5" /> : null,
+        onClick: () => launchers.openInEditor(launchers.preferredEditor),
+      }}
+      menuContent={
+        <OpenInPickerMenuPopup
+          launchers={launchers}
+          openInTarget={props.openInTarget}
+          additionalMenuItems={props.additionalMenuItems}
+          menuEditorOrder={props.menuEditorOrder}
+        />
+      }
+    />
+  );
+}
+
+type PrimaryActionOpenInPickerProps = OpenInPickerContentProps & {
+  primaryAction: OpenInPickerPrimaryAction;
+};
+
+function PrimaryActionOpenInPicker({ primaryAction, ...props }: PrimaryActionOpenInPickerProps) {
+  const { t } = useTranslation();
+  const [launcherMenuMounted, setLauncherMenuMounted] = useState(false);
+
+  return (
+    <OpenInPickerFrame
+      labelMode={props.labelMode ?? "responsive"}
+      variant={props.variant ?? "split"}
+      groupLabel={props.groupLabel ?? t("chat:environment_openInEditorDefault")}
+      menuLabel={props.menuLabel ?? t("chat:editorOptions")}
+      primaryAction={primaryAction}
+      onMenuOpenChange={(open) => {
+        if (open) setLauncherMenuMounted(true);
+      }}
+      menuContent={launcherMenuMounted ? <OpenInPickerMenuWithLaunchers {...props} /> : null}
+    />
+  );
+}
+
+function OpenInPickerMenuWithLaunchers(props: OpenInPickerContentProps) {
+  const launchers = useEditorLaunchers(props);
+  return (
+    <OpenInPickerMenuPopup
+      launchers={launchers}
+      openInTarget={props.openInTarget}
+      additionalMenuItems={props.additionalMenuItems}
+      menuEditorOrder={props.menuEditorOrder}
+    />
+  );
+}
+
+function OpenInPickerMenuPopup({
+  launchers,
+  openInTarget,
+  additionalMenuItems,
+  menuEditorOrder,
+}: {
+  launchers: EditorLaunchers;
+  openInTarget: string | null;
+  additionalMenuItems: ReactNode;
+  menuEditorOrder: ReadonlyArray<EditorId> | undefined;
+}) {
+  const { t } = useTranslation();
+
+  const { options, preferredEditor, openFavoriteShortcutLabel, openInEditor } = launchers;
+  const displayedOptions = readExecutionContext()?.remote
+    ? []
+    : menuEditorOrder
+      ? [
+          ...menuEditorOrder.flatMap((editorId) =>
+            options.filter(({ value }) => value === editorId),
+          ),
+          ...options.filter(({ value }) => !menuEditorOrder.includes(value)),
+        ]
+      : options;
+
+  return (
+    <ComposerPickerMenuPopup align="end" side="bottom" className="w-44 min-w-44">
+      {displayedOptions.length === 0 && (
+        <MenuItem disabled>{t("chat:openInPicker_noEditorsFound")}</MenuItem>
+      )}
+      <MenuRadioGroup value={preferredEditor ?? ""}>
+        {displayedOptions.map(({ label, Icon, value }) => (
+          <MenuRadioItem
+            key={value}
+            preserveChildLayout
+            trailing={
+              value === preferredEditor && openFavoriteShortcutLabel ? (
+                <MenuShortcut>{openFavoriteShortcutLabel}</MenuShortcut>
+              ) : null
+            }
+            value={value}
+            disabled={!openInTarget}
+            onClick={() => openInEditor(value)}
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              <span className="shrink-0">
+                <Icon aria-hidden="true" className="size-3.5 text-muted-foreground" />
+              </span>
+              <span className="truncate">{label}</span>
+            </span>
+          </MenuRadioItem>
+        ))}
+      </MenuRadioGroup>
+      {additionalMenuItems ? (
+        <>
+          <MenuSeparator />
+          {additionalMenuItems}
+        </>
+      ) : null}
+    </ComposerPickerMenuPopup>
+  );
+}

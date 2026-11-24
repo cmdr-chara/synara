@@ -1,0 +1,107 @@
+import { afterEach, describe, expect, it } from "vitest";
+
+import {
+  buildLocalImageUrl,
+  isLocalImageMarkdownSrc,
+  isLocalVideoMarkdownSrc,
+  normalizeMarkdownImagePath,
+} from "./localImageUrls";
+
+describe("local image URL helpers", () => {
+  afterEach(() => {
+    delete (globalThis as { window?: unknown }).window;
+  });
+
+  it("detects local markdown image paths", () => {
+    expect(isLocalImageMarkdownSrc("/Users/me/.codex/generated_images/thread/call.png")).toBe(true);
+    expect(isLocalImageMarkdownSrc("./preview.webp")).toBe(true);
+    expect(
+      isLocalImageMarkdownSrc("C:\\Users\\me\\codex\\generated_images\\thread\\call.png"),
+    ).toBe(true);
+    expect(isLocalImageMarkdownSrc("D:/codex/generated_images/thread/call.png")).toBe(true);
+    expect(isLocalImageMarkdownSrc("https://example.com/image.png")).toBe(false);
+    expect(isLocalImageMarkdownSrc("/Users/me/file.txt")).toBe(false);
+  });
+
+  it("detects local markdown video paths with the same locality rules", () => {
+    expect(isLocalVideoMarkdownSrc("out/clip.mp4")).toBe(true);
+    expect(isLocalVideoMarkdownSrc("./demo.WEBM")).toBe(true);
+    expect(isLocalVideoMarkdownSrc("/tmp/simulator-recording.mov")).toBe(true);
+    expect(isLocalVideoMarkdownSrc("C:\\Users\\me\\clip.m4v")).toBe(true);
+    expect(isLocalVideoMarkdownSrc("file:///C:/Users/me/clip%20one.ogv")).toBe(true);
+    expect(isLocalVideoMarkdownSrc("https://example.com/clip.mp4")).toBe(false);
+    expect(isLocalVideoMarkdownSrc("/Users/me/file.mkv")).toBe(false);
+    // Kinds never overlap: a video is never an <img> source and vice versa.
+    expect(isLocalImageMarkdownSrc("out/clip.mp4")).toBe(false);
+    expect(isLocalVideoMarkdownSrc("out/shot.png")).toBe(false);
+    expect(isLocalVideoMarkdownSrc("out/spec.pdf")).toBe(false);
+  });
+
+  it("drops the leading slash from Windows file URLs", () => {
+    expect(normalizeMarkdownImagePath("file:///C:/Users/me/shot%20one.png")).toBe(
+      "C:/Users/me/shot one.png",
+    );
+    expect(normalizeMarkdownImagePath("file:///Users/me/shot.png")).toBe("/Users/me/shot.png");
+    expect(isLocalImageMarkdownSrc("file:///C:/Users/me/shot.png")).toBe(true);
+  });
+
+  it("builds preview and download routes (no window context)", () => {
+    expect(
+      buildLocalImageUrl({
+        src: "/Users/me/.codex/generated_images/thread/call.png",
+        cwd: "/Users/me/project",
+      }),
+    ).toBe(
+      "/api/local-image?path=%2FUsers%2Fme%2F.codex%2Fgenerated_images%2Fthread%2Fcall.png&cwd=%2FUsers%2Fme%2Fproject",
+    );
+
+    expect(
+      buildLocalImageUrl({
+        src: "/tmp/generated image.png",
+        cwd: undefined,
+        download: true,
+      }),
+    ).toBe("/api/local-image?path=%2Ftmp%2Fgenerated+image.png&download=1");
+  });
+
+  it("includes local preview grants when present", () => {
+    expect(
+      buildLocalImageUrl({
+        src: "/Users/me/Downloads/shot.png",
+        cwd: undefined,
+        grant: "grant-token",
+      }),
+    ).toBe("/api/local-image?path=%2FUsers%2Fme%2FDownloads%2Fshot.png&grant=grant-token");
+  });
+
+  it("cache-busts explicit preview reloads", () => {
+    expect(
+      buildLocalImageUrl({
+        src: "preview.png",
+        cwd: "/Users/me/project",
+        cacheKey: 3,
+      }),
+    ).toBe("/api/local-image?path=preview.png&cwd=%2FUsers%2Fme%2Fproject&v=3");
+  });
+
+  it("forwards the desktop bridge legacy token so <img> requests stay authenticated", () => {
+    (globalThis as unknown as { window: object }).window = {
+      desktopBridge: { getWsUrl: () => "ws://127.0.0.1:51204/?token=secret-token-123" },
+      location: { origin: "app://synara/" },
+    };
+    const url = buildLocalImageUrl({
+      src: "/Users/me/.codex/generated_images/thread/call.png",
+      cwd: "/Users/me/project",
+      download: true,
+    });
+    const parsed = new URL(url);
+    expect(parsed.origin).toBe("http://127.0.0.1:51204");
+    expect(parsed.pathname).toBe("/api/local-image");
+    expect(parsed.searchParams.get("path")).toBe(
+      "/Users/me/.codex/generated_images/thread/call.png",
+    );
+    expect(parsed.searchParams.get("cwd")).toBe("/Users/me/project");
+    expect(parsed.searchParams.get("download")).toBe("1");
+    expect(parsed.searchParams.get("token")).toBe("secret-token-123");
+  });
+});

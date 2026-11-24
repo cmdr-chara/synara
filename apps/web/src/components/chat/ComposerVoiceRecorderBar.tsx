@@ -1,0 +1,152 @@
+// FILE: ComposerVoiceRecorderBar.tsx
+// Purpose: Renders the expanded WhatsApp-style voice recorder UI inside the chat composer.
+// Layer: Chat composer presentation
+// Depends on: live waveform samples and caller-owned record/cancel/send actions.
+
+import { useEffect, useRef, useState } from "react";
+
+import { Loader2Icon, XIcon } from "~/lib/icons";
+import { cn } from "~/lib/utils";
+import { MAX_WAVEFORM_SAMPLES } from "~/lib/voiceRecorder";
+import { Button } from "../ui/button";
+import { useTranslation } from "~/i18n";
+
+interface ComposerVoiceRecorderBarProps {
+  disabled?: boolean;
+  durationLabel: string;
+  isRecording: boolean;
+  // Recording has started but the device has not delivered real audio yet.
+  isWaitingForAudio?: boolean;
+  isTranscribing: boolean;
+  waveformLevels: readonly number[];
+  onDiscard: () => void;
+  onStop: () => void;
+}
+
+const BAR_WIDTH_PX = 2;
+const BAR_GAP_PX = 2;
+const BAR_MIN_HEIGHT_PX = 3;
+const BAR_MAX_HEIGHT_PX = 22;
+
+export function ComposerVoiceRecorderBar(props: ComposerVoiceRecorderBarProps) {
+  const { t } = useTranslation();
+
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [trackWidth, setTrackWidth] = useState(96 * (BAR_WIDTH_PX + BAR_GAP_PX));
+
+  useEffect(() => {
+    const node = trackRef.current;
+    if (!node) {
+      return;
+    }
+    const measureTrack = (entries?: ResizeObserverEntry[]) => {
+      const width = entries?.[0]?.contentRect.width ?? node.clientWidth;
+      if (width <= 0) {
+        return;
+      }
+      setTrackWidth(width);
+    };
+    measureTrack();
+    const observer = new ResizeObserver(measureTrack);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const visibleBarCount = Math.min(
+    MAX_WAVEFORM_SAMPLES,
+    // There is no gap after the final bar.
+    Math.max(8, Math.floor((trackWidth + BAR_GAP_PX) / (BAR_WIDTH_PX + BAR_GAP_PX))),
+  );
+  const visibleLevels = props.waveformLevels.slice(-visibleBarCount);
+  // The recorder retains a bounded history. Spread that capacity across wide
+  // tracks, keeping partial recordings right-aligned as new samples arrive.
+  const barGap = Math.max(
+    BAR_GAP_PX,
+    (trackWidth - MAX_WAVEFORM_SAMPLES * BAR_WIDTH_PX) / (MAX_WAVEFORM_SAMPLES - 1),
+  );
+  const isWaitingForAudio = props.isWaitingForAudio === true && !props.isTranscribing;
+
+  return (
+    <div className="flex min-w-0 flex-1 items-center gap-2.5">
+      <div ref={trackRef} className="relative flex h-7 min-w-0 flex-1 items-center overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-dashed border-zinc-300 dark:border-zinc-700"
+        />
+        <div className="relative ml-auto flex h-full items-center" style={{ gap: `${barGap}px` }}>
+          {visibleLevels.map((level, index) => {
+            const clamped = Math.max(0.04, Math.min(1, level));
+            const height = Math.round(
+              BAR_MIN_HEIGHT_PX + clamped * (BAR_MAX_HEIGHT_PX - BAR_MIN_HEIGHT_PX),
+            );
+            const positionFromRight = visibleLevels.length - index;
+            return (
+              <span
+                key={positionFromRight}
+                aria-hidden="true"
+                className={cn(
+                  "shrink-0 rounded-[1px] bg-zinc-900 dark:bg-zinc-100",
+                  props.isTranscribing && "opacity-55",
+                )}
+                style={{
+                  width: `${BAR_WIDTH_PX}px`,
+                  height: `${height}px`,
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {isWaitingForAudio ? (
+        <span
+          role="status"
+          className="flex shrink-0 items-center gap-1.5 text-ui-sm leading-snug text-zinc-500 dark:text-zinc-400"
+        >
+          <Loader2Icon aria-hidden="true" className="size-3 animate-spin" />
+          {t("chat:waitingForMicrophone")}
+        </span>
+      ) : (
+        <span className="shrink-0 text-ui leading-snug font-medium tabular-nums tracking-[0.02em] text-zinc-500 dark:text-zinc-400">
+          {props.durationLabel}
+        </span>
+      )}
+
+      <button
+        type="button"
+        className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-zinc-200/80 text-zinc-700 transition-colors hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/10 dark:text-zinc-100 dark:hover:bg-white/15 sm:h-7 sm:w-7"
+        aria-label={
+          props.isTranscribing
+            ? t("chat:composer_transcribingVoice")
+            : t("chat:cancelVoiceRecording")
+        }
+        disabled={props.disabled || props.isTranscribing}
+        onClick={props.onDiscard}
+      >
+        {props.isTranscribing ? (
+          <Loader2Icon aria-hidden="true" className="size-3 animate-spin" />
+        ) : (
+          <XIcon aria-hidden="true" className="size-3.5" />
+        )}
+      </button>
+
+      <Button
+        type="button"
+        variant="prominent"
+        size="icon-xs"
+        className="size-7 rounded-full sm:size-7"
+        aria-label={
+          props.isTranscribing ? t("chat:composer_transcribingVoice") : t("chat:stopVoiceRecording")
+        }
+        disabled={props.disabled || props.isTranscribing}
+        onClick={props.onStop}
+      >
+        {props.isTranscribing ? (
+          <Loader2Icon aria-hidden="true" className="size-3 animate-spin" />
+        ) : (
+          <span aria-hidden="true" className="block size-2 rounded-[1px] bg-current" />
+        )}
+      </Button>
+    </div>
+  );
+}

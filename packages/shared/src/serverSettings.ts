@@ -1,0 +1,167 @@
+import {
+  DEFAULT_CODEX_ACCOUNT_ID,
+  DEFAULT_MODEL_BY_PROVIDER,
+  type ModelSelection,
+  type ProviderStartOptions,
+  type ProviderKind,
+  type ServerSettings,
+  type ServerSettingsPatch,
+} from "@synara/contracts";
+import * as Equal from "effect/Equal";
+import { deepMerge, type DeepPartial } from "./Struct";
+import { defaultInstanceIdForProvider, deriveProviderInstances } from "./providerInstances";
+
+function defaultModelForProvider(provider: ProviderKind): string | undefined {
+  // OMP resolves its model through role config, so a provider switch keeps the
+  // current model rather than inventing a default.
+  if (provider === "omp") return undefined;
+  return provider === "pi" ? "openai/gpt-5.5" : DEFAULT_MODEL_BY_PROVIDER[provider];
+}
+
+function shouldReplaceTextGenerationModelSelection(
+  patch: ServerSettingsPatch["textGenerationModelSelection"] | undefined,
+): boolean {
+  return Boolean(
+    patch &&
+    (patch.provider !== undefined || patch.instanceId !== undefined || patch.model !== undefined),
+  );
+}
+
+export function applyServerSettingsPatch(
+  current: ServerSettings,
+  patch: ServerSettingsPatch,
+): ServerSettings {
+  const selectionPatch = patch.textGenerationModelSelection;
+  const merged = deepMerge(current, patch as DeepPartial<ServerSettings>);
+  const withInstances: ServerSettings =
+    patch.providerInstances !== undefined
+      ? { ...merged, providerInstances: patch.providerInstances }
+      : merged;
+  const newThreadSelections = patch.newThreadDefaults?.modelSelectionByProvider;
+  // A deep merge would keep options the client just cleared (fast mode off, an
+  // effort reset), so each patched provider's selection replaces the stored one.
+  const next: ServerSettings =
+    newThreadSelections !== undefined
+      ? {
+          ...withInstances,
+          newThreadDefaults: {
+            ...withInstances.newThreadDefaults,
+            modelSelectionByProvider: {
+              ...current.newThreadDefaults.modelSelectionByProvider,
+              ...newThreadSelections,
+            },
+          },
+        }
+      : withInstances;
+  if (!selectionPatch) {
+    return next;
+  }
+
+  const patchedInstanceId =
+    selectionPatch.instanceId ??
+    (selectionPatch.provider
+      ? defaultInstanceIdForProvider(selectionPatch.provider)
+      : current.textGenerationModelSelection.instanceId);
+  const patchedInstance =
+    patchedInstanceId !== undefined
+      ? deriveProviderInstances(next).find((instance) => instance.instanceId === patchedInstanceId)
+      : undefined;
+  const provider =
+    patchedInstance?.driver ??
+    selectionPatch.provider ??
+    current.textGenerationModelSelection.provider;
+  const instanceId = patchedInstance?.instanceId ?? patchedInstanceId;
+  const providerChanged = provider !== current.textGenerationModelSelection.provider;
+  const model =
+    selectionPatch.model ??
+    (providerChanged ? defaultModelForProvider(provider) : undefined) ??
+    current.textGenerationModelSelection.model;
+  const options = shouldReplaceTextGenerationModelSelection(selectionPatch)
+    ? selectionPatch.options
+    : (selectionPatch.options ?? current.textGenerationModelSelection.options);
+
+  return {
+    ...next,
+    textGenerationModelSelection: {
+      provider,
+      ...(instanceId !== undefined ? { instanceId } : {}),
+      model,
+      ...(options !== undefined ? { options } : {}),
+    } as ModelSelection,
+  };
+}
+
+/**
+ * Whether a change touched more than the shared new-chat defaults. Those change
+ * with every composer pick on any client and matter only to clients, so work
+ * that follows settings (provider probes, refetches) can skip them.
+ */
+export function settingsChangedBeyondNewThreadDefaults<
+  Settings extends { readonly newThreadDefaults: unknown },
+>(previous: Settings, next: Settings): boolean {
+  const { newThreadDefaults: _previousDefaults, ...previousRest } = previous;
+  const { newThreadDefaults: _nextDefaults, ...nextRest } = next;
+  return !Equal.equals(previousRest, nextRest);
+}
+
+/** Server-owned launch options derived from the persisted non-secret settings snapshot. */
+export function providerStartOptionsFromServerSettings(
+  settings: ServerSettings,
+): ProviderStartOptions {
+  const { providers } = settings;
+  const selectedCodexAccount =
+    providers.codex.selectedAccountId === DEFAULT_CODEX_ACCOUNT_ID
+      ? undefined
+      : providers.codex.accounts.find(
+          (account) => account.id === providers.codex.selectedAccountId,
+        );
+  const codexBinaryPath = providers.codex.binaryPath.trim();
+  const codexHomePath = (selectedCodexAccount?.homePath || providers.codex.homePath).trim();
+  const claudeBinaryPath = providers.claudeAgent.binaryPath.trim();
+  return {
+    codex: {
+      ...(codexBinaryPath ? { binaryPath: codexBinaryPath } : {}),
+      ...(codexHomePath ? { homePath: codexHomePath } : {}),
+      ...(selectedCodexAccount?.shadowHomePath
+        ? { shadowHomePath: selectedCodexAccount.shadowHomePath }
+        : {}),
+      ...(selectedCodexAccount ? { accountId: selectedCodexAccount.id } : {}),
+    },
+    claudeAgent: {
+      ...(claudeBinaryPath ? { binaryPath: claudeBinaryPath } : {}),
+      ...(providers.claudeAgent.homePath.trim()
+        ? { homePath: providers.claudeAgent.homePath.trim() }
+        : {}),
+      enableArtifacts: providers.claudeAgent.enableArtifacts,
+    },
+    cursor: {
+      ...(providers.cursor.binaryPath ? { binaryPath: providers.cursor.binaryPath } : {}),
+      ...(providers.cursor.apiEndpoint ? { apiEndpoint: providers.cursor.apiEndpoint } : {}),
+    },
+    antigravity: {
+      ...(providers.antigravity.binaryPath ? { binaryPath: providers.antigravity.binaryPath } : {}),
+    },
+    grok: {
+      ...(providers.grok.binaryPath ? { binaryPath: providers.grok.binaryPath } : {}),
+    },
+    droid: {
+      ...(providers.droid.binaryPath ? { binaryPath: providers.droid.binaryPath } : {}),
+    },
+    opencode: {
+      ...(providers.opencode.binaryPath ? { binaryPath: providers.opencode.binaryPath } : {}),
+      ...(providers.opencode.serverUrl ? { serverUrl: providers.opencode.serverUrl } : {}),
+      experimentalWebSockets: providers.opencode.experimentalWebSockets,
+    },
+    pi: {
+      ...(providers.pi.binaryPath ? { binaryPath: providers.pi.binaryPath } : {}),
+      ...(providers.pi.agentDir ? { agentDir: providers.pi.agentDir } : {}),
+    },
+    devin: {
+      ...(providers.devin.binaryPath ? { binaryPath: providers.devin.binaryPath } : {}),
+    },
+    omp: {
+      ...(providers.omp.binaryPath ? { binaryPath: providers.omp.binaryPath } : {}),
+      ...(providers.omp.agentDir ? { agentDir: providers.omp.agentDir } : {}),
+    },
+  };
+}

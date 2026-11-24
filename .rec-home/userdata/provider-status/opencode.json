@@ -1,0 +1,23 @@
+{
+  "provider": "opencode",
+  "instanceId": "opencode",
+  "driver": "opencode",
+  "status": "error",
+  "available": false,
+  "installed": false,
+  "authStatus": "unknown",
+  "checkedAt": "2026-11-23T22:04:51Z",
+  "message": "OpenCode CLI (`opencode`) is not installed or not on PATH.",
+  "displayName": "OpenCode",
+  "enabled": true,
+  "versionAdvisory": {
+    "status": "unknown",
+    "currentVersion": null,
+    "latestVersion": null,
+    "latestVersionKnowable": true,
+    "updateCommand": "opencode upgrade",
+    "canUpdate": true,
+    "checkedAt": "2026-11-22T12:46:55.173Z",
+    "message": null
+  }
+}

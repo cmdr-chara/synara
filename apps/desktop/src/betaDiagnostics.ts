@@ -1,0 +1,1075 @@
+// FILE: betaDiagnostics.ts
+// Purpose: Diagnostics queue for Synara Beta and Synara Remote desktop builds.
+// Layer: Desktop telemetry (runs only when the baked build flavor is "beta" or
+// "remote"; Remote follows the user's usage-sharing switch).
+//
+// Privacy contract (also documented in docs/diagnostics.md):
+// - Only the fixed event names and payload fields declared in BetaDiagnosticsEvent
+//   are ever written. There is no generic "metadata" bag.
+// - Every flavor sends technical categories and numeric frames only. Neither regex
+//   redaction nor a Beta label is permission to send work content or raw dumps.
+// - The install id is a random UUID generated on first launch of a beta or remote
+//   install; it identifies an install, not a person.
+// - Stable/production builds never construct this object, so the stable binary
+//   has no live diagnostics code path.
+
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { randomUUID } from "node:crypto";
+import { join } from "node:path";
+
+import {
+  DESKTOP_RENDERER_ERROR_MESSAGE_MAX_LENGTH,
+  DESKTOP_RENDERER_ERROR_STACK_MAX_LENGTH,
+  type DesktopRendererError,
+  type DesktopUpdateState,
+  type DesktopUpdateFailureReason,
+  DesktopDiagnosticBreadcrumb,
+  DesktopDiagnosticIssue,
+  type DesktopDiagnosticReportStatus,
+  type ProviderKind,
+} from "@synara/contracts";
+import {
+  classifyDesktopUpdateFailure,
+  diagnosticErrorFingerprint,
+  diagnosticPayloadKind,
+  sanitizeDiagnosticCrash,
+  redactDiagnosticText,
+  sanitizeDesktopUpdateFailureReason,
+  sanitizeDiagnosticError,
+} from "@synara/shared/diagnosticsRedaction";
+import { Schema } from "effect";
+
+/** Override point for self-hosted / dev ingestion; production default ships in the binary. */
+export const BETA_DIAGNOSTICS_ENDPOINT = "https://synara-beta-diagnostics.synara-orgs.workers.dev";
+export const BETA_DIAGNOSTICS_ENDPOINT_ENV = "SYNARA_BETA_DIAGNOSTICS_URL";
+
+const FLUSH_INTERVAL_MS = 5 * 60 * 1000;
+// Crash events can carry a ~16 KiB log tail, so the queue gets headroom for a
+// burst of them without crowding out ordinary events.
+const QUEUE_MAX_BYTES = 1024 * 1024;
+const QUEUE_TRIM_TARGET_BYTES = 512 * 1024;
+const FLUSH_BATCH_MAX_EVENTS = 200;
+const FLUSH_BATCH_MAX_BYTES = 256 * 1024;
+// The server writes diagnostics/usage-snapshot.json every 6h; the main
+// process relays it as one usage.daily event per UTC day.
+const USAGE_SNAPSHOT_FIRST_DELAY_MS = 2 * 60 * 1000;
+const USAGE_SNAPSHOT_INTERVAL_MS = 6 * 60 * 60 * 1000;
+const USAGE_SNAPSHOT_MAX_AGE_MS = 12 * 60 * 60 * 1000;
+// The server snapshot counts the 24 hours before it was written.
+const USAGE_SNAPSHOT_WINDOW_MS = 24 * 60 * 60 * 1000;
+const USAGE_COUNT_MAX = 100_000;
+
+export const DIAGNOSTICS_MESSAGE_MAX_LENGTH = DESKTOP_RENDERER_ERROR_MESSAGE_MAX_LENGTH;
+export const DIAGNOSTICS_STACK_MAX_LENGTH = DESKTOP_RENDERER_ERROR_STACK_MAX_LENGTH;
+export const DIAGNOSTICS_LOG_TAIL_MAX_LENGTH = 16 * 1024;
+export const DIAGNOSTICS_LOG_TAIL_MAX_LINES = 200;
+const ERROR_FINGERPRINT_WINDOW_MS = 10 * 60 * 1000;
+const ERROR_HOURLY_CAP = 30;
+const CONTEXT_MAX_ENTRIES = 24;
+const CONTEXT_MAX_AGE_MS = 10 * 60 * 1000;
+const MEMORY_SAMPLE_INTERVAL_MS = 30_000;
+
+type DiagnosticMemoryCounters = {
+  readonly mainRssMb: number;
+  readonly rendererRssMb: number;
+  readonly gpuRssMb: number;
+  readonly utilityRssMb: number;
+};
+
+/**
+ * Allowlist of event names. Adding an event means extending this union and the
+ * payload type below — there is deliberately no free-form field.
+ */
+export type BetaDiagnosticsEventName =
+  | "app.start"
+  | "app.exit"
+  | "app.error"
+  | "app.renderer-crash"
+  | "app.child-process-crash"
+  | "update.check"
+  | "update.available"
+  | "update.downloaded"
+  | "update.installed"
+  | "update.error"
+  | "usage.daily"
+  | "beta.installed"
+  | "beta.left";
+
+/** Finished turns of the last 24h sharing one set of fixed categories. */
+/** One provider's anonymous 24h counts inside a usage.daily event. */
+export interface BetaUsageProviderEntry {
+  readonly provider: ProviderKind;
+  readonly threads: number;
+  readonly turns: number;
+  readonly turnsFailed: number;
+}
+
+export type BetaDiagnosticsPayload =
+  | {
+      readonly kind: "lifecycle";
+      readonly durationMs?: number;
+      /** Major.minor OS version (e.g. "15.3"); app.start only. */
+      readonly osVersion?: string | undefined;
+      /** Primary language subtag (e.g. "en"); app.start only. */
+      readonly locale?: string | undefined;
+    }
+  | {
+      readonly kind: "crash";
+      readonly processType: string;
+      readonly reason: string;
+      /** Legacy input only; the technical serializer always drops this field. */
+      readonly logTail?: string | undefined;
+    }
+  | {
+      readonly kind: "error";
+      readonly source: "main" | "renderer";
+      readonly message: string;
+      readonly stack?: string | undefined;
+      readonly fingerprint: string;
+    }
+  | {
+      readonly kind: "update";
+      readonly outcome: "ok" | "error";
+      readonly durationMs?: number;
+      readonly targetVersion?: string;
+      readonly errorContext?: "check" | "download" | "install";
+      readonly reason?: DesktopUpdateFailureReason;
+      /** Legacy local input only; never retained or transmitted. */
+      readonly message?: string;
+    }
+  | {
+      readonly kind: "usage";
+      /** Accepted only to scrub old callers; never serialized by the diagnostics sender. */
+      readonly providers?: readonly BetaUsageProviderEntry[];
+      readonly projects: number;
+      readonly activeThreads: number;
+    }
+  | {
+      readonly kind: "beta";
+      readonly outcome: "imported" | "import-failed" | "fresh" | "trash" | "keep";
+    };
+
+export type DiagnosticsFlavor = "beta" | "remote";
+
+export interface BetaDiagnosticsEvent {
+  readonly v: 1;
+  readonly id: string;
+  readonly ts: string;
+  readonly installId: string;
+  readonly appVersion: string;
+  readonly flavor: DiagnosticsFlavor;
+  readonly platform: string;
+  readonly arch: string;
+  readonly event: BetaDiagnosticsEventName;
+  readonly payload: BetaDiagnosticsPayload;
+}
+
+const isFiniteNonNegative = (value: unknown): value is number =>
+  typeof value === "number" && Number.isFinite(value) && value >= 0;
+
+/** Usage counts are floored, non-negative, and capped — never free text. */
+const clampUsageCount = (value: unknown): number => {
+  const count = typeof value === "number" ? Math.floor(value) : Number.NaN;
+  if (!Number.isFinite(count) || count < 0) return 0;
+  return Math.min(count, USAGE_COUNT_MAX);
+};
+
+/** Major.minor only: "15.3.1" -> "15.3", "10.0.22621" -> "10.0". */
+const sanitizeOsVersion = (value: unknown): string | undefined => {
+  if (typeof value !== "string") return undefined;
+  const match = /^(\d+)(?:\.(\d+))?/.exec(value);
+  return match ? (match[2] ? `${match[1]}.${match[2]}` : match[1]!) : undefined;
+};
+
+/** app.getLocale() -> primary language subtag ("en-US" -> "en"). */
+const sanitizeLocale = (value: unknown): string | undefined => {
+  if (typeof value !== "string") return undefined;
+  const primary = value.split("-")[0]?.toLowerCase();
+  return primary && /^[a-z]{2,3}$/.test(primary) ? primary : undefined;
+};
+
+const BETA_OUTCOMES_BY_EVENT: Partial<Record<BetaDiagnosticsEventName, ReadonlySet<string>>> = {
+  "beta.installed": new Set(["imported", "import-failed", "fresh"]),
+  "beta.left": new Set(["trash", "keep"]),
+};
+
+/**
+ * Reconstruct technical payloads for every flavor. The optional home argument is kept for callers;
+ * error descriptions, file/function names and log tails never reach the queue.
+ */
+export function sanitizeBetaDiagnosticsPayload(
+  payload: BetaDiagnosticsPayload,
+  _homeDir?: string,
+  event?: BetaDiagnosticsEventName,
+): BetaDiagnosticsPayload {
+  if (payload.kind === "lifecycle") {
+    const osVersion = sanitizeOsVersion(payload.osVersion);
+    const locale = sanitizeLocale(payload.locale);
+    return {
+      kind: "lifecycle",
+      ...(isFiniteNonNegative(payload.durationMs) ? { durationMs: payload.durationMs } : {}),
+      ...(osVersion ? { osVersion } : {}),
+      ...(locale ? { locale } : {}),
+    };
+  }
+  if (payload.kind === "crash") return { kind: "crash", ...sanitizeDiagnosticCrash(payload) };
+  if (payload.kind === "error") {
+    const source = payload.source === "renderer" ? "renderer" : "main";
+    const technical = sanitizeDiagnosticError({
+      source,
+      message: typeof payload.message === "string" ? payload.message : "",
+      ...(typeof payload.stack === "string" ? { stack: payload.stack } : {}),
+    });
+    return {
+      kind: "error",
+      source,
+      ...technical,
+      fingerprint: diagnosticErrorFingerprint({ source, ...technical }),
+    };
+  }
+  if (payload.kind === "update") {
+    const reason = sanitizeDesktopUpdateFailureReason(payload.reason);
+    return {
+      kind: "update",
+      outcome: payload.outcome === "error" ? "error" : "ok",
+      ...(isFiniteNonNegative(payload.durationMs) ? { durationMs: payload.durationMs } : {}),
+      ...(typeof payload.targetVersion === "string" &&
+      /^[0-9]+\.[0-9]+\.[0-9]+(?:-(?:beta|remote|canary)\.[0-9]+)?$/.test(payload.targetVersion)
+        ? { targetVersion: payload.targetVersion }
+        : {}),
+      ...(payload.errorContext === "check" ||
+      payload.errorContext === "download" ||
+      payload.errorContext === "install"
+        ? { errorContext: payload.errorContext }
+        : {}),
+      ...(event === "update.error" && payload.outcome === "error" && reason ? { reason } : {}),
+    };
+  }
+  if (payload.kind === "usage") {
+    return {
+      kind: "usage",
+      projects: clampUsageCount(payload.projects),
+      activeThreads: clampUsageCount(payload.activeThreads),
+    };
+  }
+  // kind === "beta"
+  const allowedOutcomes = event === undefined ? undefined : BETA_OUTCOMES_BY_EVENT[event];
+  return {
+    kind: "beta",
+    ...(allowedOutcomes?.has(payload.outcome) ? { outcome: payload.outcome } : {}),
+  };
+}
+
+export function resolveBetaDiagnosticsEndpoint(env: NodeJS.ProcessEnv): string {
+  const override = env[BETA_DIAGNOSTICS_ENDPOINT_ENV]?.trim();
+  if (!override) return BETA_DIAGNOSTICS_ENDPOINT;
+  // Loopback http targets are allowed so the worker can be developed locally;
+  // remote overrides must be TLS. Parsed as a URL so lookalike prefixes like
+  // http://localhost.evil.com cannot pass.
+  try {
+    const url = new URL(override);
+    if (url.protocol === "https:") return override;
+    if (
+      url.protocol === "http:" &&
+      (url.hostname === "127.0.0.1" || url.hostname === "localhost" || url.hostname === "[::1]")
+    ) {
+      return override;
+    }
+  } catch {
+    // Unparseable override: fall through to the baked default.
+  }
+  return BETA_DIAGNOSTICS_ENDPOINT;
+}
+
+export class BetaDiagnostics {
+  /** Random UUID identifying this beta install; generated on first launch. */
+  readonly installId: string;
+  private readonly queuePath: string;
+  private readonly usageSnapshotPath: string;
+  private readonly usageLastDayPath: string;
+  private readonly installPendingPath: string;
+  private readonly sharingResumedPath: string;
+  private readonly endpoint: string;
+  private flushTimer: ReturnType<typeof setInterval> | null = null;
+  private usageTimers: ReturnType<typeof setTimeout>[] = [];
+  private flushing = false;
+  private flushPromise: Promise<void> | null = null;
+  private flushController: AbortController | null = null;
+  private queueEpoch = 0;
+  private disposed = false;
+  private readonly recentActivity: Array<DesktopDiagnosticBreadcrumb & { at: number }> = [];
+  private readonly memorySamples: Array<{ at: number; counters: DiagnosticMemoryCounters }> = [];
+  private memoryTimer: ReturnType<typeof setInterval> | null = null;
+  private readonly sampleMemory: (() => DiagnosticMemoryCounters) | undefined;
+
+  constructor(input: {
+    readonly homeDir: string;
+    readonly appVersion: string;
+    readonly platform: string;
+    readonly arch: string;
+    readonly env?: NodeJS.ProcessEnv;
+    readonly now?: () => Date;
+    readonly sampleMemory?: () => DiagnosticMemoryCounters;
+    readonly flavor?: DiagnosticsFlavor;
+    /** Collection gate; nothing is queued or sent while it returns false. */
+    readonly isEnabled?: () => boolean;
+  }) {
+    this.queuePath = join(input.homeDir, "diagnostics", "events.jsonl");
+    this.usageSnapshotPath = join(input.homeDir, "diagnostics", "usage-snapshot.json");
+    this.usageLastDayPath = join(input.homeDir, "diagnostics", "usage-last-day");
+    this.installPendingPath = join(input.homeDir, "diagnostics", "install-pending");
+    this.sharingResumedPath = join(input.homeDir, "diagnostics", "sharing-resumed-at");
+    this.endpoint = resolveBetaDiagnosticsEndpoint(input.env ?? process.env);
+    this.installId = this.loadInstallId(input.homeDir);
+    this.now = input.now ?? (() => new Date());
+    this.appVersion = input.appVersion;
+    this.platform = input.platform;
+    this.arch = input.arch;
+    this.homeDir = input.homeDir;
+    this.sampleMemory = input.sampleMemory;
+    this.flavor = input.flavor ?? "beta";
+    this.isEnabled = input.isEnabled ?? (() => true);
+    // Scrub legacy telemetry on startup; a saved opt-out revokes pending uploads.
+    try {
+      this.clearQueueStagingFiles();
+      if (this.isEnabled()) {
+        this.trimQueueIfNeeded();
+        this.scrubQueuedEvents();
+      } else this.discardQueue();
+    } catch {
+      /* Diagnostics cleanup must never prevent app startup. */
+    }
+  }
+
+  private readonly flavor: DiagnosticsFlavor;
+  private readonly isEnabled: () => boolean;
+  private readonly now: () => Date;
+  private readonly appVersion: string;
+  private readonly platform: string;
+  private readonly arch: string;
+  private readonly homeDir: string;
+  private readonly errorFingerprintSentAt = new Map<string, number>();
+  private readonly errorSentTimestamps: number[] = [];
+  private readonly issueReports = new Map<string, { id: string; at: number }>();
+  private readonly reportStatuses = new Map<string, DesktopDiagnosticReportStatus>();
+
+  private loadInstallId(homeDir: string): string {
+    const diagnosticsDir = join(homeDir, "diagnostics");
+    const idPath = join(diagnosticsDir, "install-id");
+    try {
+      if (existsSync(idPath)) {
+        const existing = readFileSync(idPath, "utf8").trim();
+        if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(existing))
+          return existing;
+      }
+      mkdirSync(diagnosticsDir, { recursive: true });
+      const generated = randomUUID();
+      writeFileSync(`${idPath}.tmp-${process.pid}`, `${generated}\n`, {
+        encoding: "utf8",
+        mode: 0o600,
+      });
+      renameSync(`${idPath}.tmp-${process.pid}`, idPath);
+      try {
+        // Durable marker so a first launch whose backend never comes up still
+        // reports beta.installed on the next launch.
+        const pendingTmp = `${this.installPendingPath}.tmp-${process.pid}`;
+        writeFileSync(pendingTmp, `${new Date().toISOString()}\n`, {
+          encoding: "utf8",
+          mode: 0o600,
+        });
+        renameSync(pendingTmp, this.installPendingPath);
+      } catch {
+        // Marker write must not fail install-id creation.
+      }
+      return generated;
+    } catch {
+      return randomUUID();
+    }
+  }
+
+  /** True while this install still owes a beta.installed event. */
+  hasInstallPending(): boolean {
+    return existsSync(this.installPendingPath);
+  }
+
+  /** Deletes the marker once the beta.installed event is queued. */
+  clearInstallPending(): void {
+    try {
+      rmSync(this.installPendingPath, { force: true });
+    } catch {
+      // best effort
+    }
+  }
+
+  start(): void {
+    if (this.flushTimer || this.disposed) return;
+    this.clearQueueStagingFiles();
+    this.flushTimer = setInterval(() => {
+      void this.flush();
+    }, FLUSH_INTERVAL_MS);
+    this.flushTimer.unref?.();
+    if (this.sampleMemory) {
+      this.captureMemorySample();
+      this.memoryTimer = setInterval(() => this.captureMemorySample(), MEMORY_SAMPLE_INTERVAL_MS);
+      this.memoryTimer.unref?.();
+    }
+    // First usage relay 2 minutes after startup, then every 6h. Timers are
+    // unref'd so diagnostics never hold the process open.
+    const first = setTimeout(() => {
+      this.maybeTrackDailyUsage();
+      const every = setInterval(() => this.maybeTrackDailyUsage(), USAGE_SNAPSHOT_INTERVAL_MS);
+      every.unref?.();
+      this.usageTimers.push(every);
+    }, USAGE_SNAPSHOT_FIRST_DELAY_MS);
+    first.unref?.();
+    this.usageTimers.push(first);
+  }
+
+  track(event: BetaDiagnosticsEventName, input: BetaDiagnosticsPayload): string | undefined {
+    if (this.disposed || !this.isEnabled()) return;
+    if (input.kind === "crash" && input.reason === "clean-exit") return;
+    if (diagnosticPayloadKind(event) !== input.kind) return;
+    const payload = input;
+    const withContext =
+      payload.kind === "crash"
+        ? {
+            ...payload,
+            logTail: this.attachContext(payload.logTail, DIAGNOSTICS_LOG_TAIL_MAX_LENGTH, true),
+          }
+        : payload.kind === "error"
+          ? { ...payload, stack: this.attachContext(payload.stack, DIAGNOSTICS_STACK_MAX_LENGTH) }
+          : payload;
+    const sanitized = sanitizeBetaDiagnosticsPayload(withContext, this.homeDir, event);
+    // A beta lifecycle event without a valid outcome is meaningless — drop it.
+    if (sanitized.kind === "beta" && !("outcome" in sanitized)) return;
+    const record: BetaDiagnosticsEvent = {
+      v: 1,
+      id: randomUUID(),
+      ts: this.now().toISOString(),
+      installId: this.installId,
+      appVersion: this.appVersion,
+      flavor: this.flavor,
+      platform: this.platform,
+      arch: this.arch,
+      event,
+      payload: sanitized,
+    };
+    try {
+      mkdirSync(join(this.queuePath, ".."), { recursive: true });
+      appendFileSync(this.queuePath, `${JSON.stringify(record)}\n`, {
+        encoding: "utf8",
+        mode: 0o600,
+      });
+      this.trimQueueIfNeeded();
+      return record.id;
+    } catch {
+      // Diagnostics must never break the app.
+    }
+  }
+
+  /** Reuse the deployed app.error envelope; no receiver schema change is required. */
+  trackIssue(source: "main" | "renderer", input: unknown): string | null {
+    if (this.disposed || !this.isEnabled()) return null;
+    try {
+      if (!Schema.is(DesktopDiagnosticIssue)(input)) return null;
+      if (
+        input.durationMs !== undefined &&
+        (!Number.isFinite(input.durationMs) ||
+          input.durationMs < 0 ||
+          input.durationMs > 604_800_000)
+      )
+        return null;
+      const message = `Handled issue: ${input.code} (${input.reason ?? "unknown"})`;
+      const fingerprint = diagnosticErrorFingerprint({ source, message });
+      const now = this.now().getTime();
+      const previous = this.issueReports.get(fingerprint);
+      if (
+        previous &&
+        now - previous.at < ERROR_FINGERPRINT_WINDOW_MS &&
+        this.getReportStatus(previous.id) !== "unavailable"
+      )
+        return previous.id;
+      if (!this.allowError(fingerprint, false)) return null;
+      const id = this.track("app.error", {
+        kind: "error",
+        source,
+        message,
+        fingerprint,
+        ...(input.durationMs === undefined
+          ? {}
+          : { stack: `durationMs=${Math.round(input.durationMs)}` }),
+      });
+      if (!id) return null;
+      this.allowError(fingerprint);
+      this.issueReports.set(fingerprint, { id, at: now });
+      this.reportStatuses.set(id, "queued");
+      if (this.reportStatuses.size > 128)
+        this.reportStatuses.delete(this.reportStatuses.keys().next().value!);
+      // Use the existing bounded queue and retry cadence. Uploads never delay the operation.
+      void this.flush();
+      return id;
+    } catch {
+      return null;
+    }
+  }
+
+  getReportStatus(id: unknown): DesktopDiagnosticReportStatus {
+    return typeof id === "string" ? (this.reportStatuses.get(id) ?? "unavailable") : "unavailable";
+  }
+
+  /** Reconstruct from the allowlist so unknown IPC properties never enter the ring. */
+  recordActivity(input: unknown): void {
+    if (this.disposed || !this.isEnabled()) return;
+    try {
+      if (!Schema.is(DesktopDiagnosticBreadcrumb)(input)) return;
+      const at = this.now().getTime();
+      const previous = this.recentActivity.at(-1);
+      if (
+        previous?.activity === input.activity &&
+        previous.phase === input.phase &&
+        at - previous.at < 1000
+      )
+        return;
+      this.recentActivity.push({ activity: input.activity, phase: input.phase, at });
+      if (this.recentActivity.length > CONTEXT_MAX_ENTRIES) this.recentActivity.shift();
+    } catch {
+      // Malformed/accessor-backed input must not interfere with the app.
+    }
+  }
+
+  private captureMemorySample(): void {
+    if (this.disposed || !this.sampleMemory || !this.isEnabled()) return;
+    try {
+      const input = this.sampleMemory();
+      const counters = {
+        mainRssMb: input.mainRssMb,
+        rendererRssMb: input.rendererRssMb,
+        gpuRssMb: input.gpuRssMb,
+        utilityRssMb: input.utilityRssMb,
+      };
+      if (
+        Object.values(counters).some(
+          (value) => !Number.isFinite(value) || value < 0 || value > 16_777_216,
+        )
+      )
+        return;
+      this.memorySamples.push({ at: this.now().getTime(), counters });
+      if (this.memorySamples.length > 4) this.memorySamples.shift();
+    } catch {
+      // Process metrics are best effort, including during shutdown.
+    }
+  }
+
+  private attachContext(
+    text: string | undefined,
+    limit: number,
+    keepTail = false,
+  ): string | undefined {
+    const cutoff = this.now().getTime() - CONTEXT_MAX_AGE_MS;
+    const lines = [
+      ...this.memorySamples
+        .filter((sample) => sample.at >= cutoff)
+        .map(
+          (sample) =>
+            `${new Date(sample.at).toISOString()} memory MiB main=${Math.round(sample.counters.mainRssMb)} renderer=${Math.round(sample.counters.rendererRssMb)} gpu=${Math.round(sample.counters.gpuRssMb)} utility=${Math.round(sample.counters.utilityRssMb)}`,
+        ),
+      ...this.recentActivity
+        .filter((entry) => entry.at >= cutoff)
+        .map((entry) => `${new Date(entry.at).toISOString()} ${entry.activity} ${entry.phase}`),
+    ];
+    if (!lines.length) return text;
+    const context = `\n[Beta diagnostic context]\n${lines.join("\n")}`;
+    const available = Math.max(0, limit - context.length);
+    const original = redactDiagnosticText(text ?? "", { homeDir: this.homeDir, maxLength: limit });
+    return (
+      (available === 0
+        ? ""
+        : keepTail
+          ? original.slice(-available)
+          : original.slice(0, available)) + context
+    );
+  }
+
+  /** Records update transitions using only the diagnostics payload allowlist. */
+  trackUpdateStateChange(previous: DesktopUpdateState, next: DesktopUpdateState): void {
+    // Retryable failures retain available/downloaded instead of becoming error.
+    if (next.status === "error" || next.errorContext !== null) {
+      if (
+        next.status !== previous.status ||
+        next.errorContext !== previous.errorContext ||
+        next.message !== previous.message
+      )
+        this.track("update.error", {
+          kind: "update",
+          outcome: "error",
+          ...(next.errorContext ? { errorContext: next.errorContext } : {}),
+          reason: classifyDesktopUpdateFailure(next.message),
+          ...(next.message ? { message: next.message } : {}),
+        });
+      return;
+    }
+    if (next.status === previous.status) return;
+    const status = next.status;
+    if (status === "checking") {
+      this.track("update.check", { kind: "update", outcome: "ok" });
+    } else if (status === "available") {
+      this.track("update.available", {
+        kind: "update",
+        outcome: "ok",
+        ...(next.availableVersion ? { targetVersion: next.availableVersion } : {}),
+      });
+    } else if (status === "downloaded") {
+      this.track("update.downloaded", {
+        kind: "update",
+        outcome: "ok",
+        ...(next.downloadedVersion ? { targetVersion: next.downloadedVersion } : {}),
+      });
+    }
+  }
+
+  /**
+   * Records technical app.error metadata. The grouping hash excludes all original
+   * prose and file/function names; identical fingerprints are throttled to one event
+   * per 10 minutes and the session is capped at 30 errors per hour.
+   */
+  trackError(source: "main" | "renderer", error: unknown): void {
+    if (this.disposed || !this.isEnabled()) return;
+    try {
+      const rendererError =
+        source === "renderer" && error !== null && typeof error === "object"
+          ? (error as Partial<DesktopRendererError>)
+          : undefined;
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof rendererError?.message === "string"
+            ? rendererError.message
+            : String(error);
+      const stack =
+        error instanceof Error
+          ? error.stack
+          : typeof rendererError?.stack === "string"
+            ? rendererError.stack
+            : undefined;
+      const redactedMessage = redactDiagnosticText(message, {
+        homeDir: this.homeDir,
+        maxLength: DIAGNOSTICS_MESSAGE_MAX_LENGTH,
+      });
+      const redactedStack =
+        stack === undefined
+          ? undefined
+          : redactDiagnosticText(stack, {
+              homeDir: this.homeDir,
+              maxLength: DIAGNOSTICS_STACK_MAX_LENGTH,
+            });
+      const fingerprint = diagnosticErrorFingerprint({ source, message, stack });
+      if (!this.allowError(fingerprint)) return;
+      this.track("app.error", {
+        kind: "error",
+        source,
+        message: redactedMessage,
+        stack: redactedStack,
+        fingerprint,
+      });
+    } catch {
+      // Diagnostics must never break the app.
+    }
+  }
+
+  /**
+   * Relays the server-written usage snapshot as one usage.daily event per UTC
+   * day. Skips missing/corrupt snapshots, snapshots older than 12h (the server
+   * may have been down), and days already recorded in usage-last-day.
+   */
+  maybeTrackDailyUsage(): void {
+    if (this.disposed || !this.isEnabled()) return;
+    try {
+      if (!existsSync(this.usageSnapshotPath)) return;
+      const raw = JSON.parse(readFileSync(this.usageSnapshotPath, "utf8")) as {
+        v?: unknown;
+        generatedAt?: unknown;
+        projects?: unknown;
+        activeThreads?: unknown;
+      };
+      if (typeof raw.generatedAt !== "string") return;
+      const generatedMs = Date.parse(raw.generatedAt);
+      const now = this.now();
+      const nowMs = now.getTime();
+      if (
+        !Number.isFinite(generatedMs) ||
+        generatedMs > nowMs ||
+        nowMs - generatedMs > USAGE_SNAPSHOT_MAX_AGE_MS
+      ) {
+        return;
+      }
+      // The snapshot covers the 24 hours before it was written; skip any that reach
+      // back into time when sharing was off.
+      try {
+        if (existsSync(this.sharingResumedPath)) {
+          const resumedMs = Date.parse(readFileSync(this.sharingResumedPath, "utf8").trim());
+          if (!Number.isFinite(resumedMs) || generatedMs - USAGE_SNAPSHOT_WINDOW_MS < resumedMs)
+            return;
+        }
+      } catch {
+        return;
+      }
+      const today = now.toISOString().slice(0, 10);
+      try {
+        if (
+          existsSync(this.usageLastDayPath) &&
+          readFileSync(this.usageLastDayPath, "utf8").trim() === today
+        ) {
+          return;
+        }
+      } catch {
+        // unreadable marker: fall through and track
+      }
+      if (raw.v !== 1) return;
+      this.track("usage.daily", {
+        kind: "usage",
+        projects: raw.projects as number,
+        activeThreads: raw.activeThreads as number,
+      });
+      writeFileSync(this.usageLastDayPath, `${today}\n`, { encoding: "utf8", mode: 0o600 });
+    } catch {
+      // Diagnostics must never break the app.
+    }
+  }
+
+  private allowError(fingerprint: string, record = true): boolean {
+    const nowMs = this.now().getTime();
+    while (
+      this.errorSentTimestamps.length > 0 &&
+      nowMs - this.errorSentTimestamps[0]! > 60 * 60 * 1000
+    ) {
+      this.errorSentTimestamps.shift();
+    }
+    if (this.errorSentTimestamps.length >= ERROR_HOURLY_CAP) return false;
+    const lastSent = this.errorFingerprintSentAt.get(fingerprint);
+    if (lastSent !== undefined && nowMs - lastSent < ERROR_FINGERPRINT_WINDOW_MS) return false;
+    if (!record) return true;
+    this.errorFingerprintSentAt.set(fingerprint, nowMs);
+    if (this.errorFingerprintSentAt.size > 256) {
+      for (const [key, sentAt] of this.errorFingerprintSentAt) {
+        if (nowMs - sentAt > ERROR_FINGERPRINT_WINDOW_MS) this.errorFingerprintSentAt.delete(key);
+      }
+    }
+    this.errorSentTimestamps.push(nowMs);
+    return true;
+  }
+
+  // Drop only this queue's interrupted regular writes; links and unrelated files stay untouched.
+  private clearQueueStagingFiles(): void {
+    const dir = join(this.homeDir, "diagnostics");
+    try {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (
+          !entry.isFile() ||
+          !/^events\.jsonl\.(trim|flush|sanitize)-[1-9][0-9]*$/.test(entry.name)
+        )
+          continue;
+        try {
+          rmSync(join(dir, entry.name), { force: true });
+        } catch {
+          /* One unavailable staging file must not block other cleanup. */
+        }
+      }
+    } catch {
+      /* Missing or unreadable diagnostics storage must not affect the app. */
+    }
+  }
+
+  private trimQueueIfNeeded(): void {
+    try {
+      const size = statSync(this.queuePath).size;
+      if (size <= QUEUE_MAX_BYTES) return;
+      const lines = readFileSync(this.queuePath, "utf8").split("\n");
+      // Keep the newest events; diagnostics data ages out rather than growing.
+      const kept: string[] = [];
+      let keptBytes = 0;
+      for (let index = lines.length - 1; index >= 0; index -= 1) {
+        const line = lines[index]!;
+        if (line.length === 0) continue;
+        if (keptBytes + line.length > QUEUE_TRIM_TARGET_BYTES && kept.length > 0) break;
+        kept.unshift(line);
+        keptBytes += line.length + 1;
+      }
+      const stagingPath = `${this.queuePath}.trim-${process.pid}`;
+      try {
+        writeFileSync(stagingPath, `${kept.join("\n")}\n`, {
+          encoding: "utf8",
+          mode: 0o600,
+          flag: "wx",
+        });
+        renameSync(stagingPath, this.queuePath);
+      } finally {
+        this.clearQueueStagingFiles();
+      }
+      const keptIds = new Set(
+        kept.map((line) => {
+          try {
+            return (JSON.parse(line) as { id?: unknown }).id;
+          } catch {
+            return undefined;
+          }
+        }),
+      );
+      for (const [id, status] of this.reportStatuses) {
+        if (status === "queued" && !keptIds.has(id)) this.reportStatuses.set(id, "unavailable");
+      }
+    } catch {
+      // best effort
+    }
+  }
+
+  /**
+   * POSTs the oldest queued events as newline-delimited JSON. Successfully
+   * delivered lines are dropped from the head of the queue; the remainder stay
+   * for the next flush. `timeoutMs` bounds the request so a hung endpoint
+   * cannot stall quit.
+   */
+  async flush(timeoutMs = 15_000): Promise<void> {
+    if (this.flushing || this.disposed || !this.isEnabled()) return;
+    this.flushing = true;
+    const epoch = this.queueEpoch;
+    const controller = new AbortController();
+    this.flushController = controller;
+    // The promise resolves only after `flushing` clears, so dispose() can
+    // chain a final flush on it.
+    this.flushPromise = (async () => {
+      try {
+        await this.flushQueue(timeoutMs, controller.signal, epoch);
+      } finally {
+        // A revoked request must not release a later sharing generation's flush.
+        if (epoch === this.queueEpoch) {
+          this.flushing = false;
+          this.flushPromise = null;
+          this.flushController = null;
+        }
+      }
+    })();
+    await this.flushPromise;
+  }
+
+  /** Reconstruct every old offline envelope before it can be retained or transmitted. */
+  private sanitizeQueuedEvent(line: string): string | null {
+    try {
+      const record = JSON.parse(line) as BetaDiagnosticsEvent;
+      const kind = diagnosticPayloadKind(record.event);
+      if (
+        record.v !== 1 ||
+        !kind ||
+        record.payload?.kind !== kind ||
+        record.flavor !== this.flavor ||
+        record.installId !== this.installId ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(record.id)
+      )
+        return null;
+      const ts = Date.parse(record.ts);
+      if (
+        !Number.isFinite(ts) ||
+        typeof record.appVersion !== "string" ||
+        !/^\d{1,8}\.\d{1,8}\.\d{1,8}(?:-(?:beta|remote|canary)\.\d{1,8})?$/.test(record.appVersion)
+      )
+        return null;
+      const payload = sanitizeBetaDiagnosticsPayload(record.payload, this.homeDir, record.event);
+      if (payload.kind === "beta" && !("outcome" in payload)) return null;
+      return JSON.stringify({
+        v: 1,
+        id: record.id,
+        ts: new Date(ts).toISOString(),
+        installId: this.installId,
+        appVersion: record.appVersion,
+        flavor: this.flavor,
+        platform: ["darwin", "win32", "linux"].includes(record.platform)
+          ? record.platform
+          : "unknown",
+        arch: ["arm64", "x64", "ia32", "arm"].includes(record.arch) ? record.arch : "unknown",
+        event: record.event,
+        payload,
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  /** Atomically replace legacy disk rows before retaining or sending them, including failed uploads. */
+  private scrubQueuedEvents(): string[] {
+    if (!existsSync(this.queuePath)) return [];
+    const raw = readFileSync(this.queuePath, "utf8");
+    const lines = raw
+      .split("\n")
+      .filter(Boolean)
+      .flatMap((line) => {
+        const safe = this.sanitizeQueuedEvent(line);
+        return safe ? [safe] : [];
+      });
+    const serialized = lines.length ? `${lines.join("\n")}\n` : "";
+    if (serialized !== raw) {
+      const staging = `${this.queuePath}.sanitize-${process.pid}`;
+      try {
+        writeFileSync(staging, serialized, { encoding: "utf8", mode: 0o600, flag: "wx" });
+        renameSync(staging, this.queuePath);
+      } finally {
+        this.clearQueueStagingFiles();
+      }
+    }
+    return lines;
+  }
+
+  private async flushQueue(timeoutMs: number, revoked: AbortSignal, epoch: number): Promise<void> {
+    try {
+      if (!existsSync(this.queuePath)) return;
+      const lines = this.scrubQueuedEvents();
+      if (lines.length === 0) return;
+
+      const batch: string[] = [];
+      let batchBytes = 0;
+      for (const queuedLine of lines.slice(0, FLUSH_BATCH_MAX_EVENTS)) {
+        const line = queuedLine;
+        if (!line) continue;
+        if (batchBytes + line.length > FLUSH_BATCH_MAX_BYTES && batch.length > 0) break;
+        batch.push(line);
+        batchBytes += line.length + 1;
+      }
+      if (batch.length === 0) return;
+
+      const body = `${batch.join("\n")}\n`;
+      const signal = AbortSignal.any([revoked, AbortSignal.timeout(timeoutMs)]);
+      const response = await fetch(`${this.endpoint}/v1/events`, {
+        method: "POST",
+        headers: { "content-type": "application/x-ndjson" },
+        body,
+        signal,
+      });
+      if (!response.ok || signal.aborted || epoch !== this.queueEpoch || !this.isEnabled()) return;
+
+      // Events can be appended while the request was in flight, and a trim can
+      // rewrite the head, so match the sent lines by id rather than position.
+      const sentIds = new Set<string>();
+      for (const line of batch) {
+        try {
+          const id = (JSON.parse(line) as { id?: unknown }).id;
+          if (typeof id === "string") sentIds.add(id);
+        } catch {
+          // unparseable sent line: leave a defensive retry in place below
+        }
+      }
+      for (const id of sentIds) {
+        if (this.reportStatuses.has(id)) this.reportStatuses.set(id, "sent");
+      }
+      const current = readFileSync(this.queuePath, "utf8")
+        .split("\n")
+        .filter((line) => line.length > 0);
+      const rest = current.filter((line) => {
+        try {
+          const id = (JSON.parse(line) as { id?: unknown }).id;
+          return !(typeof id === "string" && sentIds.has(id));
+        } catch {
+          return true;
+        }
+      });
+      const stagingPath = `${this.queuePath}.flush-${process.pid}`;
+      if (rest.length > 0) {
+        writeFileSync(stagingPath, `${rest.join("\n")}\n`, {
+          encoding: "utf8",
+          mode: 0o600,
+          flag: "wx",
+        });
+        renameSync(stagingPath, this.queuePath);
+      } else {
+        rmSync(this.queuePath, { force: true });
+      }
+    } catch {
+      // Offline / endpoint down: keep the queue for the next flush.
+    } finally {
+      this.clearQueueStagingFiles();
+    }
+  }
+
+  /**
+   * Called when sharing turns back on: usage snapshots covering the time it was off
+   * are never relayed.
+   */
+  resumeSharing(): void {
+    try {
+      mkdirSync(join(this.homeDir, "diagnostics"), { recursive: true });
+      writeFileSync(this.sharingResumedPath, `${this.now().toISOString()}\n`, {
+        encoding: "utf8",
+        mode: 0o600,
+      });
+    } catch {
+      // best effort
+    }
+  }
+
+  /** Whether events are currently collected; false after an opt-out. */
+  isCollecting(): boolean {
+    return !this.disposed && this.isEnabled();
+  }
+
+  /** Drops unsent events and collected context after the user turns sharing off. */
+  discardQueue(): void {
+    this.queueEpoch += 1;
+    this.flushController?.abort();
+    this.flushController = null;
+    this.flushing = false;
+    this.flushPromise = null;
+    this.reportStatuses.clear();
+    this.issueReports.clear();
+    this.recentActivity.length = 0;
+    this.memorySamples.length = 0;
+    for (const path of [this.queuePath, this.usageSnapshotPath]) {
+      try {
+        rmSync(path, { force: true });
+      } catch {
+        // best effort
+      }
+    }
+    this.clearQueueStagingFiles();
+  }
+
+  /** Best-effort final flush + shutdown for app quit; bounded by `timeoutMs`. */
+  async dispose(timeoutMs = 3_000): Promise<void> {
+    if (this.disposed) return;
+    // Short sessions may never reach the 2-minute timer; a still-fresh
+    // snapshot from this or the previous launch relays on the way out.
+    this.maybeTrackDailyUsage();
+    if (this.flushTimer) {
+      clearInterval(this.flushTimer);
+      this.flushTimer = null;
+    }
+    if (this.memoryTimer) clearInterval(this.memoryTimer);
+    this.memoryTimer = null;
+    for (const timer of this.usageTimers) clearTimeout(timer);
+    this.usageTimers = [];
+    const deadline = Date.now() + timeoutMs;
+    try {
+      // Let an in-flight flush finish within the budget, then send whatever
+      // was queued while it ran (usage snapshot, beta.left, app.exit).
+      const inFlight = this.flushPromise;
+      if (inFlight) {
+        await Promise.race([
+          inFlight,
+          new Promise<void>((resolve) => setTimeout(resolve, Math.max(0, deadline - Date.now()))),
+        ]);
+      }
+      const remaining = deadline - Date.now();
+      if (remaining > 0) await this.flush(remaining);
+    } catch {
+      // shutting down
+    } finally {
+      this.disposed = true;
+    }
+  }
+}

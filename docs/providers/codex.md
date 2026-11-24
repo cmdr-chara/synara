@@ -1,0 +1,137 @@
+# Codex provider accounts
+
+Synara can run multiple Codex accounts side by side. Each account has its own
+sign-in, so you log in to each one **once** and never need to log out to switch.
+Sessions, model discovery, health checks, and git text generation all route to
+the account selected for the thread.
+
+## Where accounts live
+
+Open Settings → Providers, scroll to **Provider tools**, and expand **Codex**.
+The **Codex accounts** list has one row per account:
+
+- The first row is the default account: your regular Codex sign-in. It can be
+  renamed, given an accent color, or switched off, but not removed.
+- Each row shows the account's state (`Authenticated`, `Not authenticated`,
+  `Unavailable`, `Disabled`, …) and a switch. A switched-off account keeps its
+  settings and disappears from the model picker.
+- The editor of a signed-in account names who it is signed in as: the ChatGPT
+  email stored with the account's login. The state line carries the plan
+  (`ChatGPT Plus Subscription`), read from the same stored login when the Codex
+  CLI prints none.
+- Selecting a row opens its editor beside the list: display name and accent
+  color, sign-in state, runtime paths, and environment variables. Launch
+  details most accounts never touch sit behind **Advanced**.
+
+In the model picker every enabled account gets its own tab. Accounts of the
+same provider share the provider icon, so the open tab spells out its
+account's name and every account beyond the default carries a dot on its icon,
+in the account's accent color when it has one. Hovering a tab shows the
+account's signed-in email, and the account entries inside the picker list it
+beside the account name. An account other than the
+default is also named on the composer's model button, so you can always tell which account a
+message will use.
+
+## How isolation works
+
+Codex reads state from `CODEX_HOME`. Synara asynchronously prepares a generated
+overlay under `$SYNARA_HOME/codex-home-overlay` (or the corresponding Synara
+runtime directory) and uses an account-specific subdirectory for isolated
+accounts:
+
+- Shared non-database state is linked from the base Codex home. SQLite files
+  are not mirrored; `CODEX_SQLITE_HOME` keeps every process opening them from
+  the base home through one stable path.
+- Account-private state (`auth.json`, `models_cache.json`) comes from the
+  account's **shadow auth home** instead. Missing files are allowed so Codex
+  can create new account state lazily, while an existing private file that is
+  itself a symlink is rejected to prevent accounts from aliasing credentials.
+- Synara writes the generated `config.toml` only inside the overlay and leaves
+  the source configuration untouched.
+
+The default account uses the same overlay mechanism, with authentication and
+other shared state sourced from the configured Codex home (`~/.codex` by
+default).
+
+Codex can rediscover the source `config.toml` as project-local configuration and
+warn that user-only keys such as `notify` were ignored there. Synara already
+loads those settings from its user-level overlay, so this duplicate diagnostic
+does not add a runtime-warning row. Warnings for other project configuration
+files and actual configuration errors remain visible.
+
+## Startup configuration and MCP warnings
+
+Codex 0.169 can report the same `[features].multi_agent` deprecation through
+stderr, `configWarning`, and a thread `warning`. Synara keeps one visible runtime
+warning for this configuration issue per app-server process. It does not rewrite
+that setting in the source config or its generated overlay: the legacy key still controls the V1 fallback,
+and removing it can change the user's opt-out. Review the configuration for the
+selected Codex account, including its active profile and project layers. Modern
+`agents.enabled = false` disables subagent tools, except when
+`features.multi_agent_v2` is explicitly enabled. Keep older CLI compatibility in
+mind when changing a config shared with other Codex installations.
+
+An MCP HTTP 403 with `subscription_inactive` or `subscription_required` means
+the configured service refused access. Synara leaves the connection, credentials,
+and subscription untouched. The app-server reports the named startup failure
+and can also emit an anonymous `rmcp` worker error on stderr. Synara keeps these
+signals in diagnostics and filters MCP startup failures and app-server stderr
+from Work Performed and the chat timeline, including saved history. MCP tool
+calls that fail during a turn and turn failures remain visible.
+
+For a canceled or missing SuperX subscription, review that service's subscription
+or disable/remove its server in the effective Codex configuration if it is no
+longer wanted. Reinstalling Synara or changing an unrelated provider account does
+not grant service access.
+
+## Adding a second account
+
+1. In the **Codex accounts** list, choose **Add account**.
+2. Give it a label (e.g. "Work"). The account ID is filled in from the label
+   (`codex_work`); it is the key threads use to find the account, so it cannot
+   be changed later. Optionally pick an accent color.
+3. Leave **CODEX_HOME path** blank to let Synara keep the account's sign-in in
+   its own folder, then choose **Add account**.
+4. Select the new row and choose **Sign in**. Synara runs `codex login` in the
+   account's own environment; complete the browser prompts it opens. When the
+   login exits, Synara rechecks the account (choose **Check authentication**
+   if the prompts finished outside the dialog). The row turns to
+   `Authenticated` and the editor shows the signed-in email. The same login
+   also works from a Synara terminal through the account's **Terminal command**
+   (`codex-work login` for an account with the ID `codex_work`), followed by
+   **Refresh status** at the top of the Providers settings.
+
+5. Open the model picker in a new thread and pick a model from the account's
+   tab.
+
+To reuse a Codex home you already signed in to, choose **Import directory**
+instead of **Add account**; Synara references the directory without moving it.
+
+### Keeping the sign-in in a directory you control
+
+Set **Shadow auth home** in the account's editor to a directory such as
+`~/.codex_work` to keep only the account's sign-in there while it shares
+settings and history with the default account. The login persists in
+`~/.codex_work/auth.json`. Synara links it into the account overlay when
+possible, with a file-copy fallback on systems where file symlinks are
+unavailable, and never logs its contents. The overlay is refreshed during
+asynchronous process-environment preparation before Codex launches.
+
+Set **CODEX_HOME path** instead to keep everything about the account separate.
+
+## Caveats
+
+- An account with **no shadow auth home and no dedicated CODEX_HOME** starts
+  signed out and keeps its own login inside its
+  managed overlay home. Use a shadow auth home when you want the login to live
+  in a directory you control.
+- An account with its own dedicated **CODEX_HOME** mirrors that home's
+  credentials, so external `codex login` runs against it stay visible.
+- A shadow auth home must be a real directory with real credential files;
+  symlinked shadow homes or `auth.json` files are rejected so accounts can
+  never alias each other's credentials.
+- A thread stays on the account it started with. In a started thread the other
+  accounts' tabs are closed; start a new thread to use another account.
+- Accounts created before the account list existed keep their name and homes
+  in their original settings entry. They are edited in the same list, but have
+  no environment variables of their own.

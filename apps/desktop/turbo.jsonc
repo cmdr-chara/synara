@@ -1,0 +1,26 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "env": ["SYNARA_STABLE_ACCOUNT_URL"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/apps/server/src/persistence/Migrations.ts"],
+      "outputs": ["dist-electron/**"],
+    },
+    "dev": {
+      "dependsOn": ["@synara/cli#build"],
+      "persistent": true,
+    },
+    "start": {
+      "dependsOn": ["build", "@synara/web#build", "@synara/cli#build"],
+      "cache": false,
+      "persistent": true,
+    },
+    "smoke-test": {
+      "dependsOn": ["build", "@synara/web#build", "@synara/cli#build"],
+      "cache": false,
+      "outputs": [],
+    },
+  },
+}

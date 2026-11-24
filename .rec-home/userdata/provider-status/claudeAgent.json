@@ -1,0 +1,24 @@
+{
+  "provider": "claudeAgent",
+  "instanceId": "claudeAgent",
+  "driver": "claudeAgent",
+  "status": "error",
+  "available": false,
+  "installed": false,
+  "authStatus": "unknown",
+  "checkedAt": "2026-11-23T22:04:51Z",
+  "message": "Claude CLI (`claude`) is not installed or not on PATH.",
+  "autoRuntimeModeBinaryPath": "claude",
+  "displayName": "Claude",
+  "enabled": true,
+  "versionAdvisory": {
+    "status": "unknown",
+    "currentVersion": null,
+    "latestVersion": null,
+    "latestVersionKnowable": true,
+    "updateCommand": null,
+    "canUpdate": false,
+    "checkedAt": "2026-11-22T12:46:55.165Z",
+    "message": null
+  }
+}

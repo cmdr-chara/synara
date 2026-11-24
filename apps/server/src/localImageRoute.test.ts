@@ -1,0 +1,848 @@
+// Integration test for the production /api/local-image Effect-based route.
+// Boots the same `localImageEffectRouteLayer` that `makeEffectHttpRouteLayer` wires
+// into `effectServer.ts` and exercises it through a real HTTP listener.
+import http from "node:http";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
+import * as NodeHttpServer from "@effect/platform-node/NodeHttpServer";
+import {
+  DEFAULT_SERVER_SETTINGS,
+  ServerSettingsError,
+  type ProviderInstanceId,
+} from "@synara/contracts";
+import { DateTime, Effect, Exit, Layer, Scope, Stream } from "effect";
+import { HttpRouter } from "effect/unstable/http";
+import { afterEach, describe, expect, it } from "vitest";
+
+import { ServerAuth, type ServerAuthShape } from "./auth/Services/ServerAuth";
+import { RemoteSessionRegistryLive } from "./remoteSessions/sessionRegistry";
+import {
+  resolveDefaultChatWorkspaceRoot,
+  resolveDefaultGroupsWorkspaceRoot,
+  resolveDefaultStudioWorkspaceRoot,
+  ServerConfig,
+  type ServerConfigShape,
+} from "./config";
+import { attachmentsEffectRouteLayer, localImageEffectRouteLayer } from "./http";
+import { createLocalPreviewGrant } from "./localImageFiles";
+import type { CodexGeneratedImageHomeCandidate } from "./codexGeneratedImages.ts";
+import { ManagedAttachmentRepositoryLive } from "./persistence/Layers/ManagedAttachments";
+import {
+  ManagedAttachmentRepository,
+  type ManagedAttachmentRepositoryShape,
+} from "./persistence/Services/ManagedAttachments";
+import { stageAssistantImageAttachments } from "./assistantImageAttachments";
+import { LOCAL_LOOPBACK_ATTACHMENT_PRINCIPAL } from "./managedAttachmentPrincipal";
+import { SqlitePersistenceMemory } from "./persistence/Layers/Sqlite";
+import type { ProviderAdapterError } from "./provider/Errors.ts";
+import type { ProviderAdapterShape } from "./provider/Services/ProviderAdapter.ts";
+import { ProviderAdapterRegistry } from "./provider/Services/ProviderAdapterRegistry.ts";
+import {
+  ServerSettingsService,
+  type ServerSettingsShape,
+  toServerSettingsView,
+} from "./serverSettings.ts";
+
+const tempDirs: string[] = [];
+
+afterEach(() => {
+  for (const dir of tempDirs.splice(0)) {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+function makeTempDir(prefix: string): string {
+  const dir = mkdtempSync(path.join(os.tmpdir(), prefix));
+  tempDirs.push(dir);
+  return dir;
+}
+
+function makeRepoTempDir(prefix: string): string {
+  const dir = mkdtempSync(path.join(process.cwd(), `.${prefix}`));
+  tempDirs.push(dir);
+  return dir;
+}
+
+function makeGeneratedImage(prefix: string): { readonly homePath: string; readonly path: string } {
+  const homePath = makeRepoTempDir(prefix);
+  const imagePath = path.join(homePath, "generated_images", "thread-live", "call-live.png");
+  mkdirSync(path.dirname(imagePath), { recursive: true });
+  writeFileSync(imagePath, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+  return { homePath, path: imagePath };
+}
+
+function makeServerConfig(overrides: Partial<ServerConfigShape> = {}): ServerConfigShape {
+  const baseDir = makeTempDir("synara-effect-route-");
+  return {
+    mode: "web",
+    port: 0,
+    host: undefined,
+    cwd: baseDir,
+    homeDir: os.homedir(),
+    chatWorkspaceRoot: resolveDefaultChatWorkspaceRoot({ homeDir: os.homedir() }),
+    studioWorkspaceRoot: resolveDefaultStudioWorkspaceRoot({ homeDir: os.homedir() }),
+    groupsWorkspaceRoot: resolveDefaultGroupsWorkspaceRoot({ homeDir: os.homedir() }),
+    baseDir,
+    keybindingsConfigPath: path.join(baseDir, "keybindings.json"),
+    serverRuntimeStatePath: path.join(baseDir, "runtime.json"),
+    serverSettingsPath: path.join(baseDir, "settings.json"),
+    attachmentsDir: path.join(baseDir, "attachments"),
+    sqlitePath: path.join(baseDir, "state.sqlite"),
+    staticDir: undefined,
+    devUrl: undefined,
+    noBrowser: true,
+    authToken: undefined,
+    autoBootstrapProjectFromCwd: false,
+    logProviderEvents: false,
+    logWebSocketEvents: false,
+    ...overrides,
+  } as ServerConfigShape;
+}
+
+function makeFakeServerAuth(): ServerAuthShape {
+  const expiresAt = Effect.runSync(DateTime.now);
+  const descriptor = {
+    policy: "loopback-browser" as const,
+    bootstrapMethods: ["one-time-token" as const],
+    sessionMethods: ["browser-session-cookie" as const, "bearer-session-token" as const],
+    sessionCookieName: "synara_session",
+  };
+  const session = {
+    sessionId: "session-id" as never,
+    subject: "owner",
+    method: "browser-session-cookie" as const,
+    role: "owner" as const,
+    expiresAt,
+  };
+  return {
+    getDescriptor: () => Effect.succeed(descriptor),
+    getSessionState: () => Effect.succeed({ authenticated: false, auth: descriptor }),
+    exchangeBootstrapCredential: () =>
+      Effect.succeed({
+        response: {
+          authenticated: true,
+          role: "client" as const,
+          sessionMethod: "browser-session-cookie" as const,
+          expiresAt,
+        },
+        sessionToken: "session-token",
+      }),
+    exchangeBootstrapCredentialForBearerSession: () =>
+      Effect.succeed({
+        authenticated: true,
+        role: "client" as const,
+        sessionMethod: "bearer-session-token" as const,
+        expiresAt,
+        sessionToken: "bearer-session-token",
+      }),
+    issuePairingCredential: () =>
+      Effect.succeed({ id: "pairing-id", credential: "PAIRINGTOKEN", expiresAt }),
+    listPairingLinks: () => Effect.succeed([]),
+    revokePairingLink: () => Effect.succeed(true),
+    listClientSessions: () => Effect.succeed([]),
+    revokeClientSession: () => Effect.succeed(true),
+    revokeOtherClientSessions: () => Effect.succeed(1),
+    logoutSession: () => Effect.succeed(true),
+    authenticateHttpRequest: () => Effect.succeed({ ...session, credentialSource: "cookie" }),
+    authenticateWebSocketUpgrade: () => Effect.succeed(session),
+    issueWebSocketToken: () => Effect.succeed({ token: "ws-token", expiresAt }),
+    issueStartupPairingUrl: () => Effect.succeed("http://127.0.0.1:3773/pair#token=PAIRINGTOKEN"),
+  } satisfies ServerAuthShape;
+}
+
+function makeGeneratedImageHomeRegistry(
+  sessions: readonly {
+    readonly instanceId: ProviderInstanceId;
+    readonly homePath: CodexGeneratedImageHomeCandidate;
+  }[],
+): {
+  readonly service: typeof ProviderAdapterRegistry.Service;
+  readonly enabledInstanceScopes: Array<ReadonlySet<ProviderInstanceId> | undefined>;
+} {
+  const enabledInstanceScopes: Array<ReadonlySet<ProviderInstanceId> | undefined> = [];
+  const adapter: ProviderAdapterShape<ProviderAdapterError> = {
+    provider: "codex",
+    capabilities: { sessionModelSwitch: "in-session" },
+    startSession: () => Effect.die("unused"),
+    sendTurn: () => Effect.die("unused"),
+    interruptTurn: () => Effect.void,
+    respondToRequest: () => Effect.void,
+    respondToUserInput: () => Effect.void,
+    stopSession: () => Effect.void,
+    listSessions: () => Effect.succeed([]),
+    listGeneratedImageHomePaths: (input) => {
+      enabledInstanceScopes.push(input?.enabledProviderInstanceIds);
+      return Effect.succeed(
+        sessions
+          .filter(
+            ({ instanceId }) =>
+              !input?.enabledProviderInstanceIds ||
+              input.enabledProviderInstanceIds.has(instanceId),
+          )
+          .map(({ homePath }) => homePath),
+      );
+    },
+    hasSession: () => Effect.succeed(false),
+    readThread: () => Effect.die("unused"),
+    rollbackThread: () => Effect.die("unused"),
+    stopAll: () => Effect.void,
+    streamEvents: Stream.empty,
+  };
+  return {
+    service: {
+      getByProvider: () => Effect.succeed(adapter),
+      listProviders: () => Effect.succeed(["codex"]),
+    },
+    enabledInstanceScopes,
+  };
+}
+
+function makeServerSettings(getSettings: ServerSettingsShape["getSettings"]): ServerSettingsShape {
+  return {
+    start: Effect.void,
+    ready: Effect.void,
+    getSettings,
+    getSettingsView: getSettings.pipe(Effect.map(toServerSettingsView)),
+    getSnapshot: getSettings.pipe(
+      Effect.map((settings) => ({ revision: 0, migrationVersion: 2, settings })),
+    ),
+    updateSettings: () => Effect.die("unused"),
+    updateSettingsView: () => Effect.die("unused"),
+    subscribeChanges: Effect.succeed(Stream.empty),
+    streamChanges: Stream.empty,
+    streamViews: Stream.empty,
+  };
+}
+
+async function withEffectServer(
+  config: ServerConfigShape,
+  routeLayer: typeof localImageEffectRouteLayer | typeof attachmentsEffectRouteLayer,
+  run: (origin: string, managedAttachments: ManagedAttachmentRepositoryShape) => Promise<void>,
+  options: {
+    readonly providerRegistry?: typeof ProviderAdapterRegistry.Service;
+    readonly serverSettings?: ServerSettingsShape;
+  } = {},
+): Promise<void> {
+  const scope = await Effect.runPromise(Scope.make("sequential"));
+  let nodeServer: http.Server | null = null;
+  let managedAttachments: ManagedAttachmentRepositoryShape | undefined;
+  const servicesLayer = Layer.mergeAll(
+    Layer.succeed(ServerConfig, config),
+    Layer.succeed(ServerAuth, makeFakeServerAuth()),
+    RemoteSessionRegistryLive,
+    ...(options.providerRegistry
+      ? [Layer.succeed(ProviderAdapterRegistry, options.providerRegistry)]
+      : []),
+    ...(options.serverSettings
+      ? [Layer.succeed(ServerSettingsService, options.serverSettings)]
+      : []),
+    ManagedAttachmentRepositoryLive.pipe(Layer.provideMerge(SqlitePersistenceMemory)),
+    NodeHttpServer.layerHttpServices,
+  );
+  try {
+    // Keep the database and HTTP services alive through the callback's real requests.
+    const services = await Effect.runPromise(Layer.buildWithScope(servicesLayer, scope));
+    await Effect.runPromise(
+      Scope.provide(
+        Effect.gen(function* () {
+          managedAttachments = yield* ManagedAttachmentRepository;
+          const httpServer = yield* NodeHttpServer.make(
+            () => {
+              nodeServer = http.createServer();
+              return nodeServer;
+            },
+            { port: 0, host: "127.0.0.1" },
+          );
+          const httpApp = yield* routeLayer === localImageEffectRouteLayer
+            ? HttpRouter.toHttpEffect(localImageEffectRouteLayer)
+            : HttpRouter.toHttpEffect(attachmentsEffectRouteLayer);
+          yield* httpServer.serve(httpApp);
+        }).pipe(Effect.provideServices(services)),
+        scope,
+      ),
+    );
+    const address = (nodeServer as http.Server | null)?.address();
+    if (!address || typeof address !== "object") {
+      throw new Error("Expected effect server to expose an address");
+    }
+    const origin = `http://127.0.0.1:${address.port}`;
+    if (!managedAttachments) throw new Error("Expected route attachment repository");
+    await run(origin, managedAttachments);
+  } finally {
+    await Effect.runPromise(Scope.close(scope, Exit.void));
+  }
+}
+
+describe("localImageEffectRouteLayer", () => {
+  it("serves an allowlisted workspace image and signals downloads via Content-Disposition", async () => {
+    const workspace = makeTempDir("synara-effect-image-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const imagePath = path.join(workspace, "hero.png");
+    writeFileSync(imagePath, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+    const config = makeServerConfig({ cwd: workspace });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: imagePath, cwd: workspace });
+      const previewResponse = await fetch(`${origin}/api/local-image?${params}`);
+      expect(previewResponse.status).toBe(200);
+      expect(previewResponse.headers.get("content-type")).toContain("image/png");
+      expect(previewResponse.headers.get("content-disposition")).toBeNull();
+      expect(Buffer.from(await previewResponse.arrayBuffer())).toEqual(
+        Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+      );
+      for (const [range, bytes] of [
+        ["bytes=1-2", [0x50, 0x4e]],
+        ["bytes=-2", [0x4e, 0x47]],
+        ["bytes=2-", [0x4e, 0x47]],
+      ] as const) {
+        const part = await fetch(`${origin}/api/local-image?${params}`, {
+          headers: { Range: range },
+        });
+        expect(part.status).toBe(206);
+        expect(part.headers.get("accept-ranges")).toBe("bytes");
+        expect(part.headers.get("content-length")).toBe("2");
+        expect(Buffer.from(await part.arrayBuffer())).toEqual(Buffer.from(bytes));
+      }
+      for (const range of ["bytes=10-20", "bytes=3-1", "bytes=-0", "bytes=0-1,2-3", "bytes=a-b"]) {
+        const invalid = await fetch(`${origin}/api/local-image?${params}`, {
+          headers: { Range: range },
+        });
+        expect(invalid.status).toBe(416);
+        expect(invalid.headers.get("content-range")).toBe("bytes */4");
+      }
+
+      params.set("download", "1");
+      const downloadResponse = await fetch(`${origin}/api/local-image?${params}`);
+      expect(downloadResponse.status).toBe(200);
+      expect(downloadResponse.headers.get("content-disposition")).toBe(
+        'attachment; filename="hero.png"',
+      );
+    });
+  });
+
+  it("streams workspace videos with their video content type and byte ranges", async () => {
+    const workspace = makeTempDir("synara-effect-video-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const config = makeServerConfig({ cwd: workspace });
+    const bytes = Buffer.from(Array.from({ length: 64 }, (_, index) => index));
+    const files = [
+      ["demo.mp4", "video/mp4"],
+      ["demo.m4v", "video/x-m4v"],
+      ["demo.webm", "video/webm"],
+      ["demo.mov", "video/quicktime"],
+      ["demo.ogv", "video/ogg"],
+    ] as const;
+    for (const [fileName] of files) writeFileSync(path.join(workspace, fileName), bytes);
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      for (const [fileName, contentType] of files) {
+        const params = new URLSearchParams({
+          path: path.join(workspace, fileName),
+          cwd: workspace,
+        });
+        const full = await fetch(`${origin}/api/local-image?${params}`);
+        expect(full.status).toBe(200);
+        expect(full.headers.get("content-type")).toBe(contentType);
+        expect(full.headers.get("accept-ranges")).toBe("bytes");
+        expect(full.headers.get("x-content-type-options")).toBe("nosniff");
+        await full.arrayBuffer();
+
+        // Media elements probe with an open-ended range, then seek.
+        for (const [range, start, end] of [
+          ["bytes=0-", 0, 63],
+          ["bytes=16-31", 16, 31],
+          ["bytes=-8", 56, 63],
+        ] as const) {
+          const part = await fetch(`${origin}/api/local-image?${params}`, {
+            headers: { Range: range },
+          });
+          expect(part.status).toBe(206);
+          expect(part.headers.get("content-type")).toBe(contentType);
+          expect(part.headers.get("content-range")).toBe(`bytes ${start}-${end}/64`);
+          expect(part.headers.get("content-length")).toBe(String(end - start + 1));
+          expect(Buffer.from(await part.arrayBuffer())).toEqual(bytes.subarray(start, end + 1));
+        }
+      }
+    });
+  });
+
+  it("downloads files whose names are not plain ASCII through an RFC 5987 filename", async () => {
+    const workspace = makeTempDir("synara-effect-image-unicode-name-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const config = makeServerConfig({ cwd: workspace });
+    const files = [
+      { fileName: "报告.pdf", bytes: Buffer.from("%PDF-1.4"), encoded: "%E6%8A%A5%E5%91%8A.pdf" },
+      // macOS screenshots carry a narrow no-break space (U+202F) before AM/PM.
+      {
+        fileName: "Screenshot 2026-04-03 at 9.27.45\u202fPM.png",
+        bytes: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+        encoded: "Screenshot%202026-04-03%20at%209.27.45%E2%80%AFPM.png",
+      },
+      // RFC 5987 does not allow ' ( ) * unencoded, and encodeURIComponent leaves them.
+      {
+        fileName: "l'été (1).png",
+        bytes: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+        encoded: "l%27%C3%A9t%C3%A9%20%281%29.png",
+      },
+    ];
+    for (const { fileName, bytes } of files) writeFileSync(path.join(workspace, fileName), bytes);
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      for (const { fileName, bytes, encoded } of files) {
+        const params = new URLSearchParams({
+          path: path.join(workspace, fileName),
+          cwd: workspace,
+          download: "1",
+        });
+        // A route that rejects the header never ends the response; bound the wait.
+        const response = await fetch(`${origin}/api/local-image?${params}`, {
+          signal: AbortSignal.timeout(5_000),
+        });
+        expect(response.status).toBe(200);
+        expect(response.headers.get("content-disposition")).toBe(
+          `attachment; filename*=UTF-8''${encoded}`,
+        );
+        expect(Buffer.from(await response.arrayBuffer())).toEqual(bytes);
+      }
+    });
+  });
+
+  it("serves an absolute local image outside the workspace for file-panel previews", async () => {
+    const workspace = makeTempDir("synara-effect-image-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const externalRoot = makeTempDir("synara-effect-external-preview-");
+    const imagePath = path.join(externalRoot, "downloads-file.pdf");
+    writeFileSync(imagePath, Buffer.from("%PDF-1.7"));
+    const config = makeServerConfig({ cwd: workspace });
+
+    const grant = await createLocalPreviewGrant({ requestedPath: imagePath });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: imagePath, cwd: workspace, grant: grant.grant });
+      const response = await fetch(`${origin}/api/local-image?${params}`);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toContain("application/pdf");
+
+      params.delete("grant");
+      const ungrantedResponse = await fetch(`${origin}/api/local-image?${params}`);
+      expect(ungrantedResponse.status).toBe(404);
+    });
+  });
+
+  it("opens a generated PNG in a sibling Git worktree only with its canonical file grant", async () => {
+    // Keep the fixture outside temporary roots, which already permit generated images.
+    const root = makeRepoTempDir("synara-linked-preview-");
+    const workspace = path.join(root, "playjelly");
+    const worktree = path.join(root, "playjelly-test-synara");
+    mkdirSync(workspace);
+    const git = (args: string[]) =>
+      execFileSync("git", ["-C", workspace, ...args], { stdio: "pipe" });
+    git(["init", "--quiet"]);
+    git([
+      "-c",
+      "user.name=Preview fixture",
+      "-c",
+      "user.email=preview@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "-c",
+      "core.hooksPath=/dev/null",
+      "commit",
+      "--quiet",
+      "--allow-empty",
+      "-m",
+      "Preview fixture",
+    ]);
+    git(["worktree", "add", "--quiet", "--detach", worktree]);
+    const imagePath = path.join(worktree, "dossiers-graphique.png");
+    const unrelatedPath = path.join(root, "unrelated.png");
+    const linkPath = path.join(worktree, "image-link.png");
+    const bytes = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a7dUAAAAASUVORK5CYII=",
+      "base64",
+    );
+    writeFileSync(imagePath, bytes);
+    writeFileSync(unrelatedPath, bytes);
+    symlinkSync(imagePath, linkPath);
+    const config = makeServerConfig({ cwd: workspace });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: imagePath, cwd: workspace });
+      const preview = () => fetch(`${origin}/api/local-image?${params}`);
+      expect((await preview()).status).toBe(404);
+      const grant = await createLocalPreviewGrant({ requestedPath: linkPath });
+      params.set("grant", grant.grant);
+      const response = await preview();
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toContain("image/png");
+      expect(Buffer.from(await response.arrayBuffer())).toEqual(bytes);
+
+      // Neither the containing worktree nor a subsequently retargeted link inherits the grant.
+      params.set("path", unrelatedPath);
+      expect((await preview()).status).toBe(404);
+      rmSync(linkPath);
+      symlinkSync(unrelatedPath, linkPath);
+      params.set("path", linkPath);
+      expect((await preview()).status).toBe(404);
+    });
+  });
+
+  it("previews and downloads a simulator PNG outside the allowed roots only with its own grant", async () => {
+    // Keep this outside os.tmpdir(): temporary images are already allowlisted.
+    const externalRoot = mkdtempSync(path.join(process.cwd(), ".simulator-preview-"));
+    tempDirs.push(externalRoot);
+    const desktop = path.join(externalRoot, "Desktop");
+    mkdirSync(desktop);
+    const imagePath = path.join(desktop, "simulator-iPhone.png");
+    const otherPath = path.join(desktop, "unrelated.png");
+    const bytes = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+    writeFileSync(imagePath, bytes);
+    writeFileSync(otherPath, bytes);
+    const config = makeServerConfig();
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: imagePath, cwd: config.cwd });
+      expect((await fetch(`${origin}/api/local-image?${params}`)).status).toBe(404);
+      params.set("download", "1");
+      expect((await fetch(`${origin}/api/local-image?${params}`)).status).toBe(404);
+
+      const grant = await createLocalPreviewGrant({ requestedPath: imagePath });
+      params.set("grant", grant.grant);
+      for (const download of [false, true]) {
+        if (download) params.set("download", "1");
+        else params.delete("download");
+        const response = await fetch(`${origin}/api/local-image?${params}`);
+        expect(response.status).toBe(200);
+        expect(response.headers.get("content-type")).toContain("image/png");
+        expect(Buffer.from(await response.arrayBuffer())).toEqual(bytes);
+        if (download)
+          expect(response.headers.get("content-disposition")).toContain("simulator-iPhone.png");
+      }
+
+      params.set("path", otherPath);
+      expect((await fetch(`${origin}/api/local-image?${params}`)).status).toBe(404);
+    });
+  });
+
+  it("serves an allowlisted workspace PDF and only allows the desktop app origin to read it", async () => {
+    const workspace = makeTempDir("synara-effect-pdf-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const pdfPath = path.join(workspace, "spec.pdf");
+    writeFileSync(pdfPath, Buffer.from("%PDF-1.4"));
+    const config = makeServerConfig({ cwd: workspace });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: pdfPath, cwd: workspace });
+      const response = await fetch(`${origin}/api/local-image?${params}`, {
+        headers: { Origin: "synara://app" },
+      });
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toContain("application/pdf");
+      expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+      // The in-app viewer fetches bytes cross-origin, but only trusted app
+      // origins should get a CORS-readable response.
+      expect(response.headers.get("access-control-allow-origin")).toBe("synara://app");
+      expect(response.headers.get("vary")).toBe("Origin");
+      // Streamed responses must still advertise their size so the browser's
+      // PDF viewer can show load progress.
+      expect(response.headers.get("content-length")).toBe("8");
+      await expect(response.arrayBuffer()).resolves.toHaveProperty("byteLength", 8);
+      // No Content-Disposition: the browser must render the PDF inline in the
+      // preview iframe rather than trigger a download.
+      expect(response.headers.get("content-disposition")).toBeNull();
+    });
+  });
+
+  it("allows the configured Vite dev origin to read PDF bytes", async () => {
+    const workspace = makeTempDir("synara-effect-pdf-dev-origin-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const pdfPath = path.join(workspace, "spec.pdf");
+    writeFileSync(pdfPath, Buffer.from("%PDF-1.4"));
+    const config = makeServerConfig({
+      cwd: workspace,
+      devUrl: new URL("http://localhost:5173/"),
+    });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: pdfPath, cwd: workspace });
+      const response = await fetch(`${origin}/api/local-image?${params}`, {
+        headers: { Origin: "http://localhost:5173" },
+      });
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("access-control-allow-origin")).toBe("http://localhost:5173");
+    });
+  });
+
+  it("does not expose local preview bytes to untrusted web origins through CORS", async () => {
+    const workspace = makeTempDir("synara-effect-pdf-untrusted-origin-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const pdfPath = path.join(workspace, "spec.pdf");
+    writeFileSync(pdfPath, Buffer.from("%PDF-1.4"));
+    const config = makeServerConfig({ cwd: workspace });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: pdfPath, cwd: workspace });
+      const response = await fetch(`${origin}/api/local-image?${params}`, {
+        headers: { Origin: "https://example.test" },
+      });
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("access-control-allow-origin")).toBeNull();
+      expect(response.headers.get("vary")).toBeNull();
+    });
+  });
+
+  it("exposes missing-file errors to desktop downloads without allowing untrusted origins", async () => {
+    const workspace = makeTempDir("synara-effect-missing-image-");
+    const config = makeServerConfig({ cwd: workspace });
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: "missing.png", cwd: workspace, download: "1" });
+      for (const requestOrigin of ["synara://app", "https://example.test"]) {
+        const response = await fetch(`${origin}/api/local-image?${params}`, {
+          headers: { Origin: requestOrigin },
+        });
+        expect(response.status).toBe(404);
+        expect(await response.text()).toBe("Not Found");
+        expect(response.headers.get("access-control-allow-origin")).toBe(
+          requestOrigin === "synara://app" ? requestOrigin : null,
+        );
+      }
+    });
+  });
+
+  it("returns 404 when the requested path has an unsupported extension", async () => {
+    const workspace = makeTempDir("synara-effect-image-bad-ext-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const docPath = path.join(workspace, "notes.txt");
+    writeFileSync(docPath, "hello");
+    const config = makeServerConfig({ cwd: workspace });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: docPath, cwd: workspace });
+      const response = await fetch(`${origin}/api/local-image?${params}`);
+      expect(response.status).toBe(404);
+    });
+  });
+
+  it("serves generated images from live Codex session homes after settings drift", async () => {
+    const workspace = makeTempDir("synara-effect-image-live-session-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const image = makeGeneratedImage("synara-live-codex-home-");
+    const config = makeServerConfig({ cwd: workspace });
+    const liveHomes = makeGeneratedImageHomeRegistry([
+      { instanceId: "codex" as ProviderInstanceId, homePath: image.homePath },
+    ]);
+
+    await withEffectServer(
+      config,
+      localImageEffectRouteLayer,
+      async (origin) => {
+        const params = new URLSearchParams({ path: image.path, cwd: workspace });
+        const response = await fetch(`${origin}/api/local-image?${params}`);
+
+        expect(response.status).toBe(200);
+        expect(response.headers.get("content-type")).toContain("image/png");
+      },
+      {
+        providerRegistry: liveHomes.service,
+      },
+    );
+    expect(liveHomes.enabledInstanceScopes).toEqual([undefined]);
+  });
+
+  it("serves live Codex session images when settings cannot be read", async () => {
+    const workspace = makeTempDir("synara-effect-image-settings-failure-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const image = makeGeneratedImage("synara-live-codex-settings-failure-home-");
+    const config = makeServerConfig({ cwd: workspace });
+    const liveHomes = makeGeneratedImageHomeRegistry([
+      { instanceId: "codex_work" as ProviderInstanceId, homePath: image.homePath },
+    ]);
+
+    await withEffectServer(
+      config,
+      localImageEffectRouteLayer,
+      async (origin) => {
+        const params = new URLSearchParams({ path: image.path, cwd: workspace });
+        const response = await fetch(`${origin}/api/local-image?${params}`);
+
+        expect(response.status).toBe(200);
+        expect(response.headers.get("content-type")).toContain("image/png");
+      },
+      {
+        providerRegistry: liveHomes.service,
+        serverSettings: makeServerSettings(
+          Effect.fail(
+            new ServerSettingsError({
+              settingsPath: "<unavailable>",
+              detail: "settings unavailable",
+            }),
+          ),
+        ),
+      },
+    );
+    expect(liveHomes.enabledInstanceScopes).toEqual([undefined]);
+  });
+
+  it("filters live Codex session images to instances enabled by readable settings", async () => {
+    const workspace = makeTempDir("synara-effect-image-settings-scope-workspace-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const disabledImage = makeGeneratedImage("synara-live-codex-disabled-home-");
+    const config = makeServerConfig({ cwd: workspace });
+    const settings = {
+      ...DEFAULT_SERVER_SETTINGS,
+      providerInstances: {
+        ...DEFAULT_SERVER_SETTINGS.providerInstances,
+        codex_work: { driver: "codex", enabled: true },
+        codex_disabled: { driver: "codex", enabled: false },
+      },
+    };
+    const liveHomes = makeGeneratedImageHomeRegistry([
+      {
+        instanceId: "codex_disabled" as ProviderInstanceId,
+        homePath: disabledImage.homePath,
+      },
+    ]);
+
+    await withEffectServer(
+      config,
+      localImageEffectRouteLayer,
+      async (origin) => {
+        const disabledParams = new URLSearchParams({
+          path: disabledImage.path,
+          cwd: workspace,
+        });
+        const disabledResponse = await fetch(`${origin}/api/local-image?${disabledParams}`);
+        expect(disabledResponse.status).toBe(404);
+      },
+      {
+        providerRegistry: liveHomes.service,
+        serverSettings: makeServerSettings(Effect.succeed(settings)),
+      },
+    );
+    const [scope] = liveHomes.enabledInstanceScopes;
+    if (!scope) {
+      throw new Error("Expected readable settings to provide an explicit instance scope");
+    }
+    expect([...scope]).toEqual(["codex", "codex_work"]);
+  });
+
+  it("returns 404 for missing files", async () => {
+    const workspace = makeTempDir("synara-effect-image-missing-");
+    writeFileSync(path.join(workspace, ".git"), "gitdir: .git");
+    const ghostPath = path.join(workspace, "does-not-exist.png");
+    const config = makeServerConfig({ cwd: workspace });
+
+    await withEffectServer(config, localImageEffectRouteLayer, async (origin) => {
+      const params = new URLSearchParams({ path: ghostPath, cwd: workspace });
+      const response = await fetch(`${origin}/api/local-image?${params}`);
+      expect(response.status).toBe(404);
+    });
+  });
+});
+
+describe("attachmentsEffectRouteLayer", () => {
+  it("serves persisted image attachments by id without the file response helper", async () => {
+    const config = makeServerConfig({ authToken: "desktop-secret" });
+    mkdirSync(config.attachmentsDir, { recursive: true });
+    writeFileSync(
+      path.join(config.attachmentsDir, "thread-1-6ec544e7-9130-4a8b-993d-9635297d04d3.png"),
+      Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+    );
+
+    await withEffectServer(config, attachmentsEffectRouteLayer, async (origin) => {
+      const response = await fetch(
+        `${origin}/attachments/thread-1-6ec544e7-9130-4a8b-993d-9635297d04d3?token=desktop-secret`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toContain("image/png");
+      expect(response.headers.get("cache-control")).toBe("private, no-store");
+      expect(response.headers.get("pragma")).toBe("no-cache");
+      await expect(response.arrayBuffer()).resolves.toHaveProperty("byteLength", 4);
+    });
+  });
+
+  it.each(["png", "svg"] as const)(
+    "serves the claimed inline %s snapshot after the original image is deleted",
+    async (extension) => {
+      const config = makeServerConfig({ authToken: "desktop-secret" });
+      const workspace = makeTempDir("inline-snapshot-http-");
+      const source = path.join(workspace, `chart.${extension}`);
+      const bytes = Buffer.from(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=",
+        "base64",
+      );
+      const sourceBytes =
+        extension === "svg"
+          ? Buffer.from(
+              '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><rect width="10" height="10"/></svg>',
+            )
+          : bytes;
+      writeFileSync(source, sourceBytes);
+      await withEffectServer(config, attachmentsEffectRouteLayer, async (origin, repository) => {
+        const prepared = await Effect.runPromise(
+          stageAssistantImageAttachments({
+            text: `Before\n\n![chart](./chart.${extension})\n\nAfter`,
+            threadId: "inline-snapshot-thread",
+            messageId: "inline-snapshot-message",
+            commandId: "inline-snapshot-complete",
+            cwd: workspace,
+            sourceRoots: [workspace],
+            attachmentsDir: config.attachmentsDir,
+            existingAttachments: [],
+            repository,
+          }),
+        );
+        expect(prepared.attachments).toHaveLength(1);
+        const claim = await Effect.runPromise(
+          repository.claimForAcceptedTurn({
+            attachmentIds: prepared.attachmentIds,
+            ownerThreadId: "inline-snapshot-thread",
+            ...LOCAL_LOOPBACK_ATTACHMENT_PRINCIPAL,
+            commandId: "inline-snapshot-complete",
+            messageId: "inline-snapshot-message",
+            now: new Date().toISOString(),
+          }),
+        );
+        expect(claim.status).toBe("claimed");
+        unlinkSync(source);
+        const response = await fetch(
+          `${origin}/attachments/${prepared.attachments[0]!.id}?token=desktop-secret`,
+        );
+        expect(response.status).toBe(200);
+        expect(response.headers.get("content-type")).toContain(
+          extension === "svg" ? "image/svg+xml" : "image/png",
+        );
+        if (extension === "svg") {
+          expect(response.headers.get("content-security-policy")).toContain("sandbox");
+          expect(response.headers.get("content-security-policy")).toContain("default-src 'none'");
+          expect(response.headers.get("x-content-type-options")).toBe("nosniff");
+        }
+        expect(response.headers.get("cache-control")).toBe("private, no-store");
+        expect(Buffer.from(await response.arrayBuffer())).toEqual(sourceBytes);
+      });
+    },
+  );
+
+  it("never serves inline visual HTML from the app origin", async () => {
+    const config = makeServerConfig({ authToken: "desktop-secret" });
+    const visualDirectory = path.join(config.attachmentsDir, "visuals", "thread-1");
+    mkdirSync(visualDirectory, { recursive: true });
+    const visualName = `vis_${"c".repeat(32)}.html`;
+    writeFileSync(path.join(visualDirectory, visualName), "<script>parent.document</script>");
+
+    await withEffectServer(config, attachmentsEffectRouteLayer, async (origin) => {
+      for (const prefix of ["visuals", "Visuals", "./visuals"]) {
+        const response = await fetch(
+          `${origin}/attachments/${prefix}/thread-1/${visualName}?token=desktop-secret`,
+        );
+        expect(response.status, prefix).toBe(404);
+      }
+    });
+  });
+});

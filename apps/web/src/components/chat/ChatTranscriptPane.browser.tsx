@@ -1,0 +1,534 @@
+import "../../index.css";
+
+import { MessageId } from "@synara/contracts";
+import { type LegendListRef } from "@legendapp/list/react";
+import { page } from "vitest/browser";
+import { flushSync } from "react-dom";
+import { Profiler, useRef, useState, type ProfilerOnRenderCallback } from "react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { render } from "vitest-browser-react";
+
+import { ChatTranscriptPane } from "./ChatTranscriptPane";
+import { useTranscriptAssistantSelectionAction } from "./useTranscriptAssistantSelectionAction";
+
+const EMPTY_WORK_GROUPS: Record<string, boolean> = {};
+const EMPTY_TURN_DIFFS = new Map();
+const EMPTY_REVERT_COUNTS = new Map();
+const NOOP = () => {};
+const TIMELINE_ENTRIES = [
+  {
+    id: "assistant-message-entry",
+    kind: "message" as const,
+    createdAt: "2026-03-17T19:12:28.000Z",
+    message: {
+      id: MessageId.makeUnsafe("assistant-message-1"),
+      role: "assistant" as const,
+      text: "This is a stable assistant message for the transcript perf harness.",
+      createdAt: "2026-03-17T19:12:28.000Z",
+      streaming: false,
+    },
+  },
+];
+
+async function settleLayout(): Promise<void> {
+  await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+  await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+}
+
+function TranscriptPerfHarness(props: { onTranscriptRender: (actualDuration: number) => void }) {
+  const [composerValue, setComposerValue] = useState("");
+  const composerImagesRef = useRef<readonly []>([]);
+  const composerFilesRef = useRef<readonly []>([]);
+  const composerAssistantSelectionsRef = useRef<readonly []>([]);
+  const listRef = useRef<LegendListRef | null>(null);
+  const {
+    onMessagesClickCapture,
+    onMessagesMouseUp,
+    onMessagesPointerCancel,
+    onMessagesPointerDown,
+    onMessagesPointerUp,
+    onMessagesScroll,
+    onMessagesTouchEnd,
+    onMessagesTouchMove,
+    onMessagesTouchStart,
+    onMessagesWheel,
+  } = useTranscriptAssistantSelectionAction({
+    threadId: "thread-transcript-perf",
+    enabled: true,
+    composerImagesRef,
+    composerFilesRef,
+    composerAssistantSelectionsRef,
+    addComposerAssistantSelectionToDraft: () => true,
+    scheduleComposerFocus: NOOP,
+    onMessagesClickCaptureBase: NOOP,
+    onMessagesPointerCancelBase: NOOP,
+    onMessagesPointerDownBase: NOOP,
+    onMessagesPointerUpBase: NOOP,
+    onMessagesScrollBase: NOOP,
+    onMessagesTouchEndBase: NOOP,
+    onMessagesTouchMoveBase: NOOP,
+    onMessagesTouchStartBase: NOOP,
+    onMessagesWheelBase: NOOP,
+  });
+  const handleComposerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComposerValue(event.target.value);
+  };
+  const handleTranscriptRender: ProfilerOnRenderCallback = (_id, _phase, actualDuration) => {
+    props.onTranscriptRender(actualDuration);
+  };
+
+  return (
+    <div>
+      <label htmlFor="composer-input">Composer</label>
+      <input
+        id="composer-input"
+        placeholder="Type composer text"
+        value={composerValue}
+        onChange={handleComposerChange}
+      />
+      <Profiler id="chat-transcript-pane" onRender={handleTranscriptRender}>
+        <ChatTranscriptPane
+          activeThreadId="thread-transcript-perf"
+          activeTurnInProgress={false}
+          activeTurnStartedAt={null}
+          chatFontSizePx={15}
+          emptyStateProjectName={undefined}
+          expandedWorkGroups={EMPTY_WORK_GROUPS}
+          hasMessages
+          isRevertingCheckpoint={false}
+          isWorking={false}
+          // A local draft skips the async imported-history load, whose
+          // post-mount commit would otherwise race the baseline below and
+          // be misattributed to the composer keystroke.
+          isLocalDraft
+          worktreeSetup={null}
+          followLiveOutput={false}
+          listRef={listRef}
+          markdownCwd={undefined}
+          onExpandTimelineImage={NOOP}
+          onMessagesClickCapture={onMessagesClickCapture}
+          onMessagesMouseUp={onMessagesMouseUp}
+          onMessagesPointerCancel={onMessagesPointerCancel}
+          onMessagesPointerDown={onMessagesPointerDown}
+          onMessagesPointerUp={onMessagesPointerUp}
+          onMessagesScroll={onMessagesScroll}
+          onMessagesTouchEnd={onMessagesTouchEnd}
+          onMessagesTouchMove={onMessagesTouchMove}
+          onMessagesTouchStart={onMessagesTouchStart}
+          onMessagesWheel={onMessagesWheel}
+          onIsAtEndChange={NOOP}
+          onOpenTurnDiff={NOOP}
+          onOpenThread={NOOP}
+          onRevertUserMessage={NOOP}
+          onScrollToBottom={NOOP}
+          onToggleWorkGroup={NOOP}
+          resolvedTheme="dark"
+          revertTurnCountByUserMessageId={EMPTY_REVERT_COUNTS}
+          scrollButtonVisible={false}
+          terminalWorkspaceTerminalTabActive={false}
+          timelineEntries={TIMELINE_ENTRIES}
+          timestampFormat="locale"
+          turnDiffSummaryByAssistantMessageId={EMPTY_TURN_DIFFS}
+          workspaceRoot={undefined}
+        />
+      </Profiler>
+    </div>
+  );
+}
+
+describe("ChatTranscriptPane", () => {
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  it("does not re-render the transcript subtree when only composer text changes", async () => {
+    let transcriptCommitCount = 0;
+
+    const screen = await render(
+      <TranscriptPerfHarness
+        onTranscriptRender={(actualDuration) => {
+          // Profiler also reports zero-work parent commits when its subtree bails out.
+          if (actualDuration > 0) transcriptCommitCount += 1;
+        }}
+      />,
+    );
+    try {
+      await vi.waitFor(() => {
+        expect(transcriptCommitCount).toBeGreaterThan(0);
+      });
+
+      // Initial virtualizer measurement commits belong to mounting, not composer typing.
+      await settleLayout();
+      const input = screen.container.querySelector<HTMLInputElement>("#composer-input")!;
+      const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
+      const baselineCommitCount = transcriptCommitCount;
+      // Commit the real input event in this task; asynchronous list measurements are unrelated.
+      flushSync(() => {
+        setValue.call(input, "reply follow up");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      expect(input).toHaveValue("reply follow up");
+      expect(transcriptCommitCount).toBe(baselineCommitCount);
+    } finally {
+      await screen.unmount();
+    }
+  });
+
+  it("expands collapsed user messages from the Show more control", async () => {
+    const scrollHeightGetter = Object.getOwnPropertyDescriptor(
+      Element.prototype,
+      "scrollHeight",
+    )!.get!;
+    let overflowLayoutReads = 0;
+    const heightSpy = vi
+      .spyOn(Element.prototype, "scrollHeight", "get")
+      .mockImplementation(function (this: Element) {
+        if (this.hasAttribute("data-user-message-clamp")) overflowLayoutReads++;
+        return scrollHeightGetter.call(this);
+      });
+    const hiddenTail = "TAIL_SHOULD_APPEAR_AFTER_EXPAND";
+    // Well past the visual line clamp so the collapsed message measures as
+    // overflowing regardless of viewport width.
+    const longUserText = `${Array.from({ length: 40 }, (_, index) => `line ${index}`).join("\n")}\n${hiddenTail}`;
+    const host = document.createElement("div");
+    host.style.cssText = "display:flex;width:600px;height:520px;overflow:hidden;";
+    document.body.append(host);
+
+    const transcript = (text: string, chatFontSizePx = 15) => (
+      <ChatTranscriptPane
+        activeThreadId="thread-user-message-expand"
+        activeTurnInProgress={false}
+        activeTurnStartedAt={null}
+        chatFontSizePx={chatFontSizePx}
+        emptyStateProjectName={undefined}
+        hasMessages
+        isRevertingCheckpoint={false}
+        isWorking={false}
+        worktreeSetup={null}
+        followLiveOutput={false}
+        listRef={{ current: null }}
+        markdownCwd={undefined}
+        onExpandTimelineImage={NOOP}
+        onMessagesClickCapture={NOOP}
+        onMessagesMouseUp={NOOP}
+        onMessagesPointerCancel={NOOP}
+        onMessagesPointerDown={NOOP}
+        onMessagesPointerUp={NOOP}
+        onMessagesScroll={NOOP}
+        onMessagesTouchEnd={NOOP}
+        onMessagesTouchMove={NOOP}
+        onMessagesTouchStart={NOOP}
+        onMessagesWheel={NOOP}
+        onIsAtEndChange={NOOP}
+        onOpenTurnDiff={NOOP}
+        onOpenThread={NOOP}
+        onRevertUserMessage={NOOP}
+        onScrollToBottom={NOOP}
+        resolvedTheme="dark"
+        revertTurnCountByUserMessageId={EMPTY_REVERT_COUNTS}
+        scrollButtonVisible={false}
+        terminalWorkspaceTerminalTabActive={false}
+        timelineEntries={[
+          {
+            id: "user-message-entry",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("user-message-expand"),
+              role: "user",
+              text,
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        timestampFormat="locale"
+        turnDiffSummaryByAssistantMessageId={EMPTY_TURN_DIFFS}
+        workspaceRoot={undefined}
+      />
+    );
+    const screen = await render(transcript(longUserText), { container: host });
+    try {
+      await settleLayout();
+      expect(overflowLayoutReads).toBe(0);
+      heightSpy.mockRestore();
+      // Collapsing is a visual clamp: the tail stays in the DOM but the clamp
+      // wrapper is overflowing (cut off) until the message is expanded.
+      await vi.waitFor(() => {
+        const clampWrapper = screen.container.querySelector('[data-user-message-clamp="true"]');
+        expect(clampWrapper).not.toBeNull();
+        expect(clampWrapper!.scrollHeight).toBeGreaterThan(clampWrapper!.clientHeight);
+      });
+      const clamp = screen.container.querySelector<HTMLElement>(
+        '[data-user-message-clamp="true"]',
+      )!;
+      expect(clamp.textContent).toContain(hiddenTail);
+      const expandButton = screen.container.querySelector<HTMLButtonElement>(
+        "button[data-scroll-anchor-ignore]",
+      )!;
+      expect(expandButton.textContent).toBe("Show more");
+      expect(expandButton.getAttribute("aria-expanded")).toBe("false");
+      expect(clamp.id).not.toBe("");
+      expect(expandButton.getAttribute("aria-controls")).toBe(clamp.id);
+
+      await page.getByText("Show more").click();
+
+      await vi.waitFor(() => {
+        const wrapper = screen.container.querySelector("[data-user-message-clamp]");
+        expect(wrapper?.getAttribute("data-user-message-clamp")).toBe("false");
+        expect(wrapper!.scrollHeight).toBeLessThanOrEqual(wrapper!.clientHeight + 1);
+      });
+      await expect.element(page.getByText("Show less")).toBeInTheDocument();
+      expect(expandButton.getAttribute("aria-expanded")).toBe("true");
+      expect(screen.container.querySelector("button[data-scroll-anchor-ignore]")?.textContent).toBe(
+        "Show less",
+      );
+      await settleLayout();
+      await page.getByText("Show less").click();
+      await expect
+        .poll(() => screen.container.querySelector('[data-user-message-clamp="true"]') !== null)
+        .toBe(true);
+
+      // Below the first-paint character hint, but enough words to overflow a
+      // narrow pane. Clear a stale fade on widening and remeasure font changes.
+      const wrappingText = "word ".repeat(90);
+      await screen.rerender(transcript(wrappingText));
+      const overflowToggle = () =>
+        screen.container.querySelector(`button[aria-controls="${clamp.id}"]`);
+      await expect.poll(() => overflowToggle() === null).toBe(true);
+      host.style.width = "200px";
+      await expect
+        .poll(() => screen.container.querySelector('[data-user-message-clamp="true"]') !== null)
+        .toBe(true);
+      host.style.width = "600px";
+      await screen.rerender(transcript(wrappingText, 30));
+      await expect
+        .poll(() => screen.container.querySelector('[data-user-message-clamp="true"]') !== null)
+        .toBe(true);
+      await screen.rerender(transcript(wrappingText, 15));
+      await expect.poll(() => overflowToggle() === null).toBe(true);
+    } finally {
+      heightSpy.mockRestore();
+      await screen.unmount();
+      host.remove();
+      await settleLayout();
+    }
+  });
+
+  it("lets the inline thread error Dismiss and Unblock controls receive clicks", async () => {
+    // The overlay wrapper is pointer-events-none so its margins do not swallow
+    // transcript clicks; the banner must re-enable events itself or the
+    // buttons can never be pressed.
+    const host = document.createElement("div");
+    host.style.cssText = "display:flex;width:600px;height:520px;";
+    document.body.append(host);
+
+    const onDismissThreadError = vi.fn();
+    const onUnblockThread = vi.fn();
+    const screen = await render(
+      <ChatTranscriptPane
+        activeThreadId="thread-error-overlay"
+        activeTurnInProgress={false}
+        activeTurnStartedAt={null}
+        chatFontSizePx={15}
+        emptyStateProjectName={undefined}
+        hasMessages
+        isRevertingCheckpoint={false}
+        isWorking={false}
+        worktreeSetup={null}
+        followLiveOutput={false}
+        listRef={{ current: null }}
+        markdownCwd={undefined}
+        onExpandTimelineImage={NOOP}
+        onMessagesClickCapture={NOOP}
+        onMessagesMouseUp={NOOP}
+        onMessagesPointerCancel={NOOP}
+        onMessagesPointerDown={NOOP}
+        onMessagesPointerUp={NOOP}
+        onMessagesScroll={NOOP}
+        onMessagesTouchEnd={NOOP}
+        onMessagesTouchMove={NOOP}
+        onMessagesTouchStart={NOOP}
+        onMessagesWheel={NOOP}
+        onIsAtEndChange={NOOP}
+        onOpenTurnDiff={NOOP}
+        onOpenThread={NOOP}
+        onRevertUserMessage={NOOP}
+        onScrollToBottom={NOOP}
+        resolvedTheme="dark"
+        revertTurnCountByUserMessageId={EMPTY_REVERT_COUNTS}
+        scrollButtonVisible={false}
+        terminalWorkspaceTerminalTabActive={false}
+        threadError="Thread is blocked by an earlier provider failure: provider adapter request failed (codex): connect ETIMEDOUT"
+        unblockingThread={false}
+        onDismissThreadError={onDismissThreadError}
+        onUnblockThread={onUnblockThread}
+        timelineEntries={TIMELINE_ENTRIES}
+        timestampFormat="locale"
+        turnDiffSummaryByAssistantMessageId={EMPTY_TURN_DIFFS}
+        workspaceRoot={undefined}
+      />,
+      { container: host },
+    );
+    try {
+      const unblockButton = page.getByRole("button", { name: "Unblock thread" });
+      await expect.element(unblockButton).toBeInTheDocument();
+      await unblockButton.click();
+      expect(onUnblockThread).toHaveBeenCalledTimes(1);
+      expect(onUnblockThread).toHaveBeenCalledWith();
+
+      const dismissButton = page.getByRole("button", { name: "Dismiss error" });
+      await expect.element(dismissButton).toBeInTheDocument();
+      await dismissButton.click();
+      expect(onDismissThreadError).toHaveBeenCalledTimes(1);
+    } finally {
+      await screen.unmount();
+      host.remove();
+    }
+  });
+
+  it.each([
+    { width: 600, chatWidth: "46rem", inset: 0, visible: false },
+    { width: 1000, chatWidth: "46rem", inset: 0, visible: true },
+    { width: 1000, chatWidth: "72rem", inset: 0, visible: false },
+    { width: 1000, chatWidth: "100%", inset: 0, visible: false },
+    { width: 1500, chatWidth: "72rem", inset: 0, visible: true },
+    { width: 1000, chatWidth: "46rem", inset: 300, visible: false },
+  ])(
+    "keeps message navigation clear of content ($width / $chatWidth / inset $inset)",
+    async ({ width, chatWidth, inset, visible }) => {
+      await page.viewport(1600, 800);
+      const host = document.createElement("div");
+      host.style.cssText = `display:flex;width:${width}px;height:520px;--app-chat-max-width:${chatWidth};`;
+      document.body.append(host);
+
+      const transcript = (rightInset: number) => (
+        <ChatTranscriptPane
+          activeThreadId="thread-hidden-trail"
+          contentInsetRightPx={rightInset}
+          isLocalDraft
+          activeTurnInProgress={false}
+          activeTurnStartedAt={null}
+          chatFontSizePx={15}
+          emptyStateProjectName={undefined}
+          hasMessages
+          isRevertingCheckpoint={false}
+          isWorking={false}
+          worktreeSetup={null}
+          followLiveOutput={false}
+          listRef={{ current: null }}
+          markdownCwd={undefined}
+          onExpandTimelineImage={NOOP}
+          onMessagesClickCapture={NOOP}
+          onMessagesMouseUp={NOOP}
+          onMessagesPointerCancel={NOOP}
+          onMessagesPointerDown={NOOP}
+          onMessagesPointerUp={NOOP}
+          onMessagesScroll={NOOP}
+          onMessagesTouchEnd={NOOP}
+          onMessagesTouchMove={NOOP}
+          onMessagesTouchStart={NOOP}
+          onMessagesWheel={NOOP}
+          onIsAtEndChange={NOOP}
+          onOpenTurnDiff={NOOP}
+          onOpenThread={NOOP}
+          onRevertUserMessage={NOOP}
+          onScrollToBottom={NOOP}
+          resolvedTheme="dark"
+          revertTurnCountByUserMessageId={EMPTY_REVERT_COUNTS}
+          scrollButtonVisible={false}
+          terminalWorkspaceTerminalTabActive={false}
+          timelineEntries={[
+            {
+              id: "user-message-entry-1",
+              kind: "message",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              message: {
+                id: MessageId.makeUnsafe("user-message-trail-1"),
+                role: "user",
+                text: "First turn",
+                createdAt: "2026-03-17T19:12:28.000Z",
+                streaming: false,
+              },
+            },
+            {
+              id: "assistant-message-entry-1",
+              kind: "message",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              message: {
+                id: MessageId.makeUnsafe("assistant-message-trail-1"),
+                role: "assistant",
+                text: "First reply",
+                createdAt: "2026-03-17T19:12:29.000Z",
+                streaming: false,
+              },
+            },
+            {
+              id: "user-message-entry-2",
+              kind: "message",
+              createdAt: "2026-03-17T19:12:30.000Z",
+              message: {
+                id: MessageId.makeUnsafe("user-message-trail-2"),
+                role: "user",
+                text: "Second turn",
+                createdAt: "2026-03-17T19:12:30.000Z",
+                streaming: false,
+              },
+            },
+          ]}
+          timestampFormat="locale"
+          turnDiffSummaryByAssistantMessageId={EMPTY_TURN_DIFFS}
+          workspaceRoot={undefined}
+        />
+      );
+      const screen = await render(transcript(inset), { container: host });
+      try {
+        await vi.waitFor(() => {
+          const trail = screen.container.querySelector('nav[aria-label="Message navigation"]');
+          expect(trail?.getAttribute("aria-hidden")).toBe(String(!visible));
+        });
+
+        const ticks = Array.from(
+          screen.container.querySelectorAll<HTMLButtonElement>(
+            'nav[aria-label="Message navigation"] button',
+          ),
+        );
+        expect(ticks).toHaveLength(2);
+        expect(ticks.filter((tick) => tick.tabIndex === 0)).toHaveLength(visible ? 1 : 0);
+        if (visible) {
+          const rail = screen.container.querySelector('nav[aria-label="Message navigation"]')!;
+          const message = screen.container.querySelector('[data-message-role="assistant"]')!;
+          expect(message.getBoundingClientRect().left).toBeGreaterThan(
+            rail.getBoundingClientRect().right,
+          );
+          ticks[0]!.focus();
+          const tooltip = screen.container.querySelector('[role="tooltip"]')!;
+          await vi.waitFor(() => expect(getComputedStyle(tooltip).visibility).toBe("visible"));
+          // Changing the width preference must also hide the already-mounted rail.
+          host.style.setProperty("--app-chat-max-width", "100%");
+          await vi.waitFor(() => expect(rail.getAttribute("aria-hidden")).toBe("true"));
+          expect(ticks.every((tick) => tick.tabIndex === -1)).toBe(true);
+          expect(getComputedStyle(tooltip).visibility).toBe("hidden");
+          expect(ticks).not.toContain(document.activeElement);
+        } else if (inset > 0) {
+          const rail = screen.container.querySelector('nav[aria-label="Message navigation"]')!;
+          const message = screen.container.querySelector('[data-message-role="assistant"]')!;
+          await settleLayout();
+          await screen.rerender(transcript(0));
+          for (let frame = 0; frame < 20; frame += 1) {
+            await new Promise(requestAnimationFrame);
+            if (rail.getAttribute("aria-hidden") === "false") {
+              expect(message.getBoundingClientRect().left).toBeGreaterThan(
+                rail.getBoundingClientRect().right,
+              );
+            }
+          }
+          await expect.poll(() => rail.getAttribute("aria-hidden")).toBe("false");
+        }
+      } finally {
+        await screen.unmount();
+        host.remove();
+      }
+    },
+  );
+});

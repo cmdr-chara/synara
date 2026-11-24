@@ -1,0 +1,305 @@
+// FILE: LocalImagePreview.tsx
+// Purpose: Shared local-image loading state and error card, plus the panel
+//          preview surface used by editor file and diff views.
+// Layer: Web UI primitive
+// Exports: useLocalImagePreview, useLocalImageDownloadClick, LocalImageErrorCard,
+//          LocalImagePreview
+// Notes: Pure UI; image URL building lives in `~/lib/localImageUrls`. The chat
+//        markdown variant (`GeneratedMarkdownImage`) composes the same hook and
+//        error card with its own inline frame/overlay rendering.
+
+import { type ComponentProps, type MouseEvent, useLayoutEffect, useRef, useState } from "react";
+
+import { useExecutionImageSource } from "~/hooks/useExecutionImageSource";
+
+import { downloadUrlAsBlob } from "~/lib/browserDownload";
+import { DownloadIcon, Loader2Icon, TriangleAlertIcon } from "~/lib/icons";
+import { buildLocalImageUrl, localImageFileName } from "~/lib/localImageUrls";
+import { cn } from "~/lib/utils";
+import { toastManager } from "./ui/toast";
+import { Button } from "./ui/button";
+import { useTranslation } from "~/i18n";
+
+export type LocalImagePreviewStatus = "loading" | "ready" | "error";
+
+type LocalImagePreviewImgProps = Pick<
+  ComponentProps<"img">,
+  | "ref"
+  | "src"
+  | "width"
+  | "height"
+  | "style"
+  | "loading"
+  | "decoding"
+  | "draggable"
+  | "onLoad"
+  | "onError"
+>;
+
+export interface LocalImagePreviewState {
+  previewUrl: string;
+  downloadUrl: string;
+  fileName: string;
+  /** Value for `<a download>`: it needs a string, and an empty string still
+      hints the browser to download instead of navigating. */
+  downloadName: string;
+  status: LocalImagePreviewStatus;
+  imgProps: LocalImagePreviewImgProps;
+}
+
+export function useLocalImagePreview(input: {
+  src: string;
+  cwd: string | null | undefined;
+  previewGrant?: string | null | undefined;
+  canonicalPath?: string | undefined;
+  /** Already owner-scoped managed resource URL; never rewrite its opaque query or handle. */
+  resourceUrl?: string | undefined;
+  cacheKey?: string | number | undefined;
+  onPreviewReady?: (() => void) | undefined;
+  onPreviewError?: (() => void) | undefined;
+}): LocalImagePreviewState {
+  const { src, cwd, previewGrant } = input;
+  const previewUrl =
+    input.resourceUrl ??
+    buildLocalImageUrl({
+      src,
+      cwd: cwd ?? undefined,
+      canonicalPath: input.canonicalPath,
+      grant: previewGrant,
+      cacheKey: input.cacheKey,
+    });
+  const downloadUrl =
+    input.resourceUrl ??
+    buildLocalImageUrl({
+      src,
+      cwd: cwd ?? undefined,
+      canonicalPath: input.canonicalPath,
+      download: true,
+      grant: previewGrant,
+    });
+  const fileName = localImageFileName(src);
+  const {
+    ref: imageRef,
+    src: imageSrc,
+    error: imageError,
+    intrinsicProps,
+    onLoad: onImageLoad,
+    onError: onImageError,
+  } = useExecutionImageSource(previewUrl, true, JSON.stringify([src, cwd, input.resourceUrl]));
+  const errorNotifiedFor = useRef<string | null>(null);
+  useLayoutEffect(() => {
+    if (imageError) {
+      if (errorNotifiedFor.current !== previewUrl) {
+        errorNotifiedFor.current = previewUrl;
+        input.onPreviewError?.();
+      }
+    } else {
+      errorNotifiedFor.current = null;
+    }
+  }, [imageError, input.onPreviewError, previewUrl]);
+  // A generation distinguishes separate visits to the same URL. This keeps an
+  // A -> B -> A transition from reviving A's old error branch (which contains
+  // no <img> and therefore cannot retry), and rejects stale image events.
+  const [storedLoad, setStoredLoad] = useState<{
+    url: string;
+    generation: number;
+    status: LocalImagePreviewStatus;
+  }>(() => ({ url: previewUrl, generation: 0, status: "loading" }));
+  const load =
+    storedLoad.url === previewUrl
+      ? storedLoad
+      : { url: previewUrl, generation: storedLoad.generation + 1, status: "loading" as const };
+  if (load !== storedLoad) {
+    setStoredLoad(load);
+  }
+
+  const settleLoad = (status: Exclude<LocalImagePreviewStatus, "loading">) => {
+    setStoredLoad((current) =>
+      current.url === previewUrl && current.generation === load.generation
+        ? { ...current, status }
+        : current,
+    );
+  };
+
+  const imgProps: LocalImagePreviewImgProps = {
+    ref: imageRef,
+    src: imageSrc,
+    ...intrinsicProps,
+    loading: "lazy",
+    decoding: "async",
+    draggable: false,
+    onLoad: (event) => {
+      if (!onImageLoad(event)) return;
+      settleLoad("ready");
+      input.onPreviewReady?.();
+    },
+    onError: (event) => {
+      if (!onImageError(event)) return;
+      settleLoad("error");
+      input.onPreviewError?.();
+    },
+  };
+
+  return {
+    previewUrl,
+    downloadUrl,
+    fileName,
+    downloadName: fileName || "",
+    status: imageError ? "error" : load.status,
+    imgProps,
+  };
+}
+
+// Handles local-image downloads imperatively so failed API responses surface as
+// toasts instead of replacing the whole desktop window with a 404 page.
+export function useLocalImageDownloadClick(input: {
+  downloadUrl: string;
+  downloadName: string;
+  errorTitle?: string | undefined;
+  resolveDownloadUrl?: (() => Promise<string>) | undefined;
+  download?: typeof downloadUrlAsBlob | undefined;
+}) {
+  const { t } = useTranslation();
+
+  return (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    void Promise.resolve()
+      .then(async () => {
+        const url = input.resolveDownloadUrl ? await input.resolveDownloadUrl() : input.downloadUrl;
+        await (input.download ?? downloadUrlAsBlob)({ url, filename: input.downloadName });
+      })
+      .catch((error: unknown) => {
+        toastManager.add({
+          type: "error",
+          title: input.errorTitle ?? t("common:image_couldNotDownload"),
+          description:
+            error instanceof Error ? error.message : t("common:theFileMayHaveMovedOrBeUnavailable"),
+        });
+      });
+  };
+}
+
+// Span-only markup so the card stays valid inside markdown paragraphs. The copy
+// defaults to images; other media (e.g. LocalVideoPreview) pass their own.
+export function LocalImageErrorCard(props: {
+  downloadUrl: string;
+  /** `downloadName` from useLocalImagePreview. */
+  downloadName: string;
+  className?: string | undefined;
+  title?: string | undefined;
+  subtitle?: string | undefined;
+  downloadAriaLabel?: string | undefined;
+  retryAriaLabel?: string | undefined;
+  onDownloadClick?: ((event: MouseEvent<HTMLElement>) => void) | undefined;
+  onRetry?: (() => void) | undefined;
+}) {
+  const { t } = useTranslation();
+
+  const downloadAction = (
+    <a
+      href={props.downloadUrl}
+      download={props.downloadName}
+      onClick={props.onDownloadClick}
+      className="local-image-error__action"
+      aria-label={props.downloadAriaLabel ?? t("common:image_downloadImage")}
+    >
+      <DownloadIcon className="size-3.5" aria-hidden="true" />
+      <span>{t("common:image_download")}</span>
+    </a>
+  );
+  return (
+    <span className={cn("local-image-error", props.className)}>
+      <span className="local-image-error__icon" aria-hidden="true">
+        <TriangleAlertIcon className="size-4" />
+      </span>
+      <span className="local-image-error__body">
+        <span className="local-image-error__title">
+          {props.title ?? t("common:couldnTOpenThisImage")}
+        </span>
+        <span className="local-image-error__subtitle">
+          {props.subtitle ?? t("common:theFileMayHaveMovedOrBeUnavailable")}
+        </span>
+      </span>
+      {props.onRetry ? (
+        <span className="inline-flex shrink-0 flex-col items-stretch gap-1">
+          <Button
+            variant="outline"
+            size="chip"
+            aria-label={props.retryAriaLabel ?? t("common:image_retryPreview")}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              props.onRetry?.();
+            }}
+          >
+            {t("common:common_retry")}
+          </Button>
+          {downloadAction}
+        </span>
+      ) : (
+        downloadAction
+      )}
+    </span>
+  );
+}
+
+export function LocalImagePreview(props: {
+  src: string;
+  cwd: string | null | undefined;
+  previewGrant?: string | null | undefined;
+  cacheKey?: string | number | undefined;
+  alt: string;
+  className?: string;
+  imageClassName?: string;
+  onPreviewReady?: (() => void) | undefined;
+  onPreviewError?: (() => void) | undefined;
+}) {
+  const { t } = useTranslation();
+
+  const { downloadUrl, downloadName, status, imgProps } = useLocalImagePreview({
+    src: props.src,
+    cwd: props.cwd,
+    previewGrant: props.previewGrant,
+    cacheKey: props.cacheKey,
+    onPreviewReady: props.onPreviewReady,
+    onPreviewError: props.onPreviewError,
+  });
+  const handleDownloadClick = useLocalImageDownloadClick({ downloadUrl, downloadName });
+
+  if (status === "error") {
+    return (
+      <LocalImageErrorCard
+        downloadUrl={downloadUrl}
+        downloadName={downloadName}
+        className={props.className}
+        onDownloadClick={handleDownloadClick}
+      />
+    );
+  }
+
+  return (
+    <div className={cn("local-image-preview", props.className)} data-status={status}>
+      {status === "loading" ? (
+        <span className="local-image-preview__skeleton" aria-hidden="true">
+          <Loader2Icon className="size-4 animate-spin opacity-60" />
+        </span>
+      ) : null}
+      <img
+        {...imgProps}
+        alt={props.alt}
+        className={cn("local-image-preview__img", props.imageClassName)}
+      />
+      <a
+        href={downloadUrl}
+        download={downloadName}
+        onClick={handleDownloadClick}
+        className="local-image-preview__download"
+        aria-label={t("common:image_downloadImage")}
+        title={t("common:image_download")}
+      >
+        <DownloadIcon className="size-3.5" aria-hidden="true" />
+      </a>
+    </div>
+  );
+}

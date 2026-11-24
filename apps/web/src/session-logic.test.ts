@@ -1,0 +1,1230 @@
+import {
+  OrchestrationSessionStatus,
+  ThreadId,
+  TurnId,
+  type OrchestrationLatestTurnState,
+  type OrchestrationThreadActivity,
+} from "@synara/contracts";
+import { describe, expect, it } from "vitest";
+
+import {
+  isSessionOpenOrLatestTurnRunning,
+  isSessionOrLatestTurnRunning,
+  isSessionOrLatestTurnStartingOrRunning,
+  runningSessionActiveTurnId,
+  buildSourceProposedPlanReference,
+  deriveActiveBackgroundTasksState,
+  deriveActiveTaskListState,
+  deriveActiveWorkStartedAt,
+  derivePendingBackgroundWork,
+  findLatestProposedPlan,
+  findSidebarProposedPlan,
+  formatClockDuration,
+  formatClockElapsed,
+  formatElapsed,
+  hasActionableProposedPlan,
+  hasLiveLatestTurn,
+  hasLiveTurnTailWork,
+  isLatestTurnSettled,
+  countOutstandingBackgroundWork,
+  deriveRunningSubagentTasks,
+  isSessionAliveForSubagents,
+  isSessionRuntimeRetired,
+  NO_RUNNING_SUBAGENT_TASKS,
+} from "./session-logic";
+import { makeActivity } from "./storeTestFixtures";
+
+describe("elapsed duration formatting", () => {
+  // Settled work rounds seconds; live clocks only show time already elapsed.
+  it.each([
+    [250, "250ms", "0s"],
+    [1_500, "1.5s", "1s"],
+    [9_949, "9.9s", "9s"],
+    [9_960, "10s", "9s"],
+    [10_500, "11s", "10s"],
+    [59_499, "59s", "59s"],
+    [59_600, "1m", "59s"],
+    [60_000, "1m", "1m"],
+    [61_900, "1m 2s", "1m 1s"],
+    [119_600, "2m", "1m 59s"],
+    [3_599_499, "59m 59s", "59m 59s"],
+    [3_599_500, "1h", "59m 59s"],
+    [4_969_000, "1h 22m", "1h 22m"],
+    [86_399_499, "23h 59m", "23h 59m"],
+    [86_399_500, "1d", "23h 59m"],
+    [183_845_000, "2d 3h", "2d 3h"],
+  ])("formats %i ms as %s for settled work and %s for live clocks", (durationMs, settled, live) => {
+    const startIso = "2026-01-01T00:00:00.000Z";
+    const endIso = new Date(Date.parse(startIso) + durationMs).toISOString();
+
+    expect(formatElapsed(startIso, endIso)).toBe(settled);
+    expect(formatClockDuration(durationMs)).toBe(live);
+    expect(formatClockElapsed(startIso, endIso)).toBe(live);
+  });
+});
+
+describe("deriveActiveTaskListState", () => {
+  it("returns the latest plan update for the active turn", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "plan-old",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          explanation: "Initial plan",
+          tasks: [{ task: "Inspect code", status: "pending" }],
+        },
+      }),
+      makeActivity({
+        id: "plan-latest",
+        createdAt: "2026-02-23T00:00:02.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          explanation: "Refined plan",
+          tasks: [{ task: "Implement Codex user input", status: "inProgress" }],
+        },
+      }),
+    ];
+
+    expect(deriveActiveTaskListState(activities, TurnId.makeUnsafe("turn-1"))).toEqual({
+      createdAt: "2026-02-23T00:00:02.000Z",
+      turnId: "turn-1",
+      explanation: "Refined plan",
+      tasks: [{ task: "Implement Codex user input", status: "inProgress" }],
+    });
+  });
+
+  it("falls back to the most recent plan from a previous turn", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "plan-from-turn-1",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          tasks: [{ task: "Write tests", status: "inProgress" }],
+        },
+      }),
+    ];
+
+    expect(deriveActiveTaskListState(activities, TurnId.makeUnsafe("turn-2"))).toEqual({
+      createdAt: "2026-02-23T00:00:01.000Z",
+      turnId: "turn-1",
+      tasks: [{ task: "Write tests", status: "inProgress" }],
+    });
+  });
+
+  it("does not revive a completed prior-turn plan on a new turn", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "completed-plan-from-turn-1",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          tasks: [{ task: "Write tests", status: "completed" }],
+        },
+      }),
+    ];
+
+    expect(deriveActiveTaskListState(activities, TurnId.makeUnsafe("turn-2"))).toBeNull();
+  });
+
+  it("keeps an unfinished task list visible after its turn completes", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "unfinished-plan-from-turn-1",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          tasks: [
+            { task: "Inspect theme implementation", status: "pending" },
+            { task: "Patch token plumbing", status: "pending" },
+          ],
+        },
+      }),
+      makeActivity({
+        id: "turn-1-completed",
+        createdAt: "2026-02-23T00:00:02.000Z",
+        kind: "turn.completed",
+        summary: "Turn completed",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          state: "completed",
+        },
+      }),
+    ];
+
+    expect(deriveActiveTaskListState(activities, TurnId.makeUnsafe("turn-2"))).toEqual({
+      createdAt: "2026-02-23T00:00:01.000Z",
+      turnId: "turn-1",
+      tasks: [
+        { task: "Inspect theme implementation", status: "pending" },
+        { task: "Patch token plumbing", status: "pending" },
+      ],
+    });
+  });
+
+  it("uses sequence rather than a random activity id for same-millisecond snapshots", () => {
+    const createdAt = "2026-02-23T00:00:01.000Z";
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "z-stale",
+        sequence: 10,
+        createdAt,
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { tasks: [{ task: "Ship", status: "inProgress" }] },
+      }),
+      makeActivity({
+        id: "a-final",
+        sequence: 11,
+        createdAt,
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { tasks: [{ task: "Ship", status: "completed" }] },
+      }),
+    ];
+
+    expect(deriveActiveTaskListState(activities, TurnId.makeUnsafe("turn-1"))?.tasks).toEqual([
+      { task: "Ship", status: "completed" },
+    ]);
+  });
+
+  it("treats an empty task update as an explicit clear", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "plan-with-task",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          tasks: [{ task: "Patch UI", status: "inProgress" }],
+        },
+      }),
+      makeActivity({
+        id: "plan-cleared",
+        createdAt: "2026-02-23T00:00:02.000Z",
+        kind: "turn.tasks.updated",
+        summary: "Tasks updated",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          tasks: [],
+        },
+      }),
+    ];
+
+    expect(deriveActiveTaskListState(activities, TurnId.makeUnsafe("turn-1"))).toBeNull();
+  });
+});
+
+describe("deriveActiveBackgroundTasksState", () => {
+  it("counts only still-active non-plan background tasks for the current turn", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "plan-task-start",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "task.started",
+        summary: "Plan task started",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          taskId: "turn-1",
+          taskType: "plan",
+        },
+      }),
+      makeActivity({
+        id: "background-task-start",
+        createdAt: "2026-02-23T00:00:02.000Z",
+        kind: "task.started",
+        summary: "Subagent task started",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          taskId: "task-subagent-1",
+          taskType: "subagent",
+        },
+      }),
+      makeActivity({
+        id: "background-task-progress",
+        createdAt: "2026-02-23T00:00:03.000Z",
+        kind: "task.progress",
+        summary: "Subagent task update",
+        tone: "info",
+        turnId: "turn-1",
+        payload: {
+          taskId: "task-subagent-1",
+        },
+      }),
+      makeActivity({
+        id: "completed-other-turn",
+        createdAt: "2026-02-23T00:00:04.000Z",
+        kind: "task.completed",
+        summary: "Task completed",
+        tone: "info",
+        turnId: "turn-2",
+        payload: {
+          taskId: "task-other-turn",
+        },
+      }),
+    ];
+
+    expect(deriveActiveBackgroundTasksState(activities, TurnId.makeUnsafe("turn-1"))).toEqual({
+      activeCount: 1,
+      taskIds: ["task-subagent-1"],
+    });
+  });
+
+  it("retires paused tasks from active background work", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "background-task-start-paused",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "task.started",
+        summary: "Task started",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { taskId: "task-paused", taskType: "subagent" },
+      }),
+      makeActivity({
+        id: "background-task-paused",
+        createdAt: "2026-02-23T00:00:02.000Z",
+        kind: "task.updated",
+        summary: "Task paused",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { taskId: "task-paused", status: "paused" },
+      }),
+    ];
+
+    expect(deriveActiveBackgroundTasksState(activities, TurnId.makeUnsafe("turn-1"))).toBeNull();
+  });
+});
+
+describe("countOutstandingBackgroundWork", () => {
+  const movedToBackground = (taskId: string) =>
+    makeActivity({
+      id: `moved-${taskId}`,
+      createdAt: "2026-02-23T00:00:01.000Z",
+      kind: "runtime.warning",
+      summary: "Moved to background",
+      tone: "info",
+      turnId: "turn-1",
+      payload: {
+        nativeEventType: "background_tasks_changed",
+        data: { tasks: [{ task_id: taskId, task_type: "local_agent", description: taskId }] },
+      },
+    });
+  const completed = (taskId: string, status = "completed") =>
+    makeActivity({
+      id: `done-${taskId}`,
+      createdAt: "2026-02-23T00:01:00.000Z",
+      kind: "task.completed",
+      summary: "Task completed",
+      tone: "info",
+      payload: { taskId, status },
+    });
+  const activities = [
+    movedToBackground("agent-a"),
+    movedToBackground("agent-b"),
+    completed("agent-a"),
+  ];
+
+  it.each(["completed", "stopped"])(
+    "counts older subagents until %s evidence settles them in a live replacement session",
+    (status) => {
+      expect(
+        countOutstandingBackgroundWork({ activities, session: { orchestrationStatus: "ready" } }),
+      ).toBe(1);
+      expect(
+        countOutstandingBackgroundWork({
+          activities: [...activities, completed("agent-b", status)],
+          session: { orchestrationStatus: "ready" },
+        }),
+      ).toBe(0);
+    },
+  );
+
+  it("stops counting once the session can no longer finish them", () => {
+    expect(
+      countOutstandingBackgroundWork({ activities, session: { orchestrationStatus: "stopped" } }),
+    ).toBe(0);
+    expect(countOutstandingBackgroundWork({ activities, session: null })).toBe(0);
+  });
+});
+
+describe("deriveRunningSubagentTasks", () => {
+  let sequence = 0;
+  const task = (
+    kind: "task.started" | "task.updated" | "task.completed",
+    payload: OrchestrationThreadActivity["payload"],
+    turnId = "turn-1",
+  ) =>
+    makeActivity({
+      id: `task-${(sequence += 1)}`,
+      createdAt: `2026-02-23T00:00:${String(sequence).padStart(2, "0")}.000Z`,
+      kind,
+      tone: "info",
+      turnId,
+      payload,
+    });
+  const running = (
+    activities: OrchestrationThreadActivity[],
+    liveTurnId: string | null = null,
+    sessionStatus: Parameters<typeof deriveRunningSubagentTasks>[0]["sessionStatus"] = "ready",
+  ) =>
+    deriveRunningSubagentTasks({
+      activities,
+      liveTurnId: liveTurnId ? TurnId.makeUnsafe(liveTurnId) : null,
+      sessionStatus,
+    });
+
+  it("keeps a backgrounded OpenCode subagent after its turn until it ends", () => {
+    const started = [
+      task("task.started", { taskId: "oc", taskType: "subagent", toolUseId: "call-oc" }),
+      task("task.updated", { taskId: "oc", isBackgrounded: true }),
+    ];
+    expect(running(started).running).toEqual([
+      { taskId: "oc", toolUseId: "call-oc", resumed: false },
+    ]);
+    expect(
+      running([...started, task("task.completed", { taskId: "oc", status: "completed" })]).running,
+    ).toEqual([]);
+  });
+
+  it("counts a subagent task without a spawning call only in its live turn", () => {
+    const activities = [task("task.started", { taskId: "droid-call", taskType: "subagent" })];
+    expect(running(activities, "turn-1").running).toEqual([
+      { taskId: "droid-call", toolUseId: null, resumed: false },
+    ]);
+    expect(running(activities, "turn-2").running).toEqual([]);
+    expect(running(activities).trackedKeys.has("droid-call")).toBe(true);
+  });
+
+  it("keeps a Claude agent across turns and ignores work that is not an agent", () => {
+    const result = running(
+      [
+        task("task.started", {
+          taskId: "claude",
+          taskType: "local_agent",
+          subagentType: "general-purpose",
+          toolUseId: "toolu_agent",
+        }),
+        task("task.started", { taskId: "turn", taskType: "default" }),
+        task("task.started", { taskId: "plan", taskType: "plan" }),
+        task("task.started", { taskId: "bash", taskType: "local_bash", toolUseId: "toolu_bash" }),
+        task("task.started", { taskId: "anon-agent", taskType: "local_agent" }),
+        task("task.started", {
+          taskId: "member",
+          taskType: "local_agent",
+          toolUseId: "toolu_member",
+          workflowTaskId: "workflow",
+        }),
+      ],
+      "turn-9",
+    );
+    expect(result.running).toEqual([
+      { taskId: "claude", toolUseId: "toolu_agent", resumed: false },
+    ]);
+    expect([...result.trackedKeys]).toEqual(["toolu_agent"]);
+  });
+
+  it("marks an agent started again after it ended as resumed", () => {
+    const launch = { taskId: "claude", taskType: "local_agent", toolUseId: "toolu_agent" };
+    const resumed = [
+      task("task.started", launch),
+      task("task.completed", { taskId: "claude", status: "completed" }),
+      task("task.started", launch, "turn-2"),
+    ];
+    expect(running(resumed).running).toEqual([
+      { taskId: "claude", toolUseId: "toolu_agent", resumed: true },
+    ]);
+    expect(
+      running([...resumed, task("task.completed", { taskId: "claude", status: "completed" })])
+        .running,
+    ).toEqual([]);
+  });
+
+  it("remembers settled agents for deduping child threads", () => {
+    const result = running([
+      task("task.started", { taskId: "oc", taskType: "subagent", toolUseId: "call-oc" }),
+      task("task.completed", { taskId: "oc", status: "completed" }),
+    ]);
+    expect(result.running).toEqual([]);
+    expect(result.trackedKeys.has("call-oc")).toBe(true);
+  });
+
+  it("is empty until the session is known and once its runtime has ended", () => {
+    const activities = [
+      task("task.started", { taskId: "claude", taskType: "local_agent", toolUseId: "toolu_agent" }),
+    ];
+    expect(running(activities, null, null)).toBe(NO_RUNNING_SUBAGENT_TASKS);
+    expect(running(activities, null, "stopped")).toBe(NO_RUNNING_SUBAGENT_TASKS);
+    // A failed turn leaves the runtime, and its background agents, alive.
+    expect(running(activities, null, "error").running).toHaveLength(1);
+  });
+});
+
+describe("session runtime liveness", () => {
+  it.each([
+    [null, false, false],
+    ["starting", false, true],
+    ["running", false, true],
+    ["ready", false, true],
+    ["interrupted", false, true],
+    ["error", false, true],
+    ["stopped", true, false],
+  ] as const)("%s: retired %s, alive %s", (status, retired, alive) => {
+    expect(isSessionRuntimeRetired(status)).toBe(retired);
+    expect(isSessionAliveForSubagents(status)).toBe(alive);
+  });
+});
+
+describe("derivePendingBackgroundWork", () => {
+  function backgroundedTaskActivities(
+    taskId: string,
+    turnId = "turn-1",
+  ): OrchestrationThreadActivity[] {
+    return [
+      makeActivity({
+        id: `${taskId}-started`,
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "task.started",
+        summary: "Subagent task started",
+        tone: "info",
+        turnId,
+        payload: { taskId, taskType: "subagent" },
+      }),
+      makeActivity({
+        id: `${taskId}-backgrounded`,
+        createdAt: "2026-02-23T00:00:02.000Z",
+        kind: "task.updated",
+        summary: "Task moved to background",
+        tone: "info",
+        turnId,
+        payload: { taskId, status: "running", isBackgrounded: true },
+      }),
+    ];
+  }
+
+  function pendingWork(
+    activities: OrchestrationThreadActivity[],
+    overrides?: {
+      latestTurnId?: string | null;
+      orchestrationStatus?: "idle" | "ready" | "running" | "stopped" | "error" | null;
+    },
+  ) {
+    const latestTurnId = overrides?.latestTurnId === undefined ? "turn-1" : overrides.latestTurnId;
+    const orchestrationStatus =
+      overrides?.orchestrationStatus === undefined ? "ready" : overrides.orchestrationStatus;
+    return derivePendingBackgroundWork({
+      activities,
+      latestTurn: latestTurnId ? { turnId: TurnId.makeUnsafe(latestTurnId) } : null,
+      session: orchestrationStatus ? { orchestrationStatus } : null,
+    });
+  }
+
+  it("counts only isBackgrounded tasks created by the latest turn", () => {
+    const activities = [
+      ...backgroundedTaskActivities("task-b", "turn-2"),
+      makeActivity({
+        id: "foreground-task",
+        createdAt: "2026-02-23T00:00:03.000Z",
+        kind: "task.started",
+        summary: "Foreground task started",
+        tone: "info",
+        turnId: "turn-2",
+        payload: { taskId: "task-foreground", taskType: "subagent" },
+      }),
+    ];
+
+    expect(pendingWork(activities, { latestTurnId: "turn-2" })).toEqual({
+      count: 1,
+      taskIds: ["task-b"],
+    });
+  });
+
+  it("returns null for a stale backgrounded task from an older turn", () => {
+    const activities = backgroundedTaskActivities("task-a", "turn-1");
+
+    expect(pendingWork(activities, { latestTurnId: "turn-2" })).toBeNull();
+  });
+
+  it("returns null without a latest turn", () => {
+    const activities = backgroundedTaskActivities("task-a");
+
+    expect(pendingWork(activities, { latestTurnId: null })).toBeNull();
+  });
+
+  it("returns null without a session", () => {
+    const activities = backgroundedTaskActivities("task-a");
+
+    expect(pendingWork(activities, { orchestrationStatus: null })).toBeNull();
+  });
+
+  it.each(["stopped", "error"] as const)(
+    "returns null when the session orchestration status is %s",
+    (orchestrationStatus) => {
+      const activities = backgroundedTaskActivities("task-a");
+
+      expect(pendingWork(activities, { orchestrationStatus })).toBeNull();
+    },
+  );
+
+  it.each(["ready", "idle", "running"] as const)(
+    "counts a live backgrounded task when the session is %s",
+    (orchestrationStatus) => {
+      const activities = backgroundedTaskActivities("task-a");
+
+      expect(pendingWork(activities, { orchestrationStatus })).toEqual({
+        count: 1,
+        taskIds: ["task-a"],
+      });
+    },
+  );
+
+  it("drops tasks settled by task.completed or a terminal task.updated", () => {
+    const activities = [
+      ...backgroundedTaskActivities("task-done"),
+      ...backgroundedTaskActivities("task-failed"),
+      makeActivity({
+        id: "task-done-completed",
+        createdAt: "2026-02-23T00:00:03.000Z",
+        kind: "task.completed",
+        summary: "Task completed",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { taskId: "task-done", status: "completed" },
+      }),
+      makeActivity({
+        id: "task-failed-updated",
+        createdAt: "2026-02-23T00:00:04.000Z",
+        kind: "task.updated",
+        summary: "Task failed",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { taskId: "task-failed", status: "failed" },
+      }),
+    ];
+
+    expect(pendingWork(activities)).toBeNull();
+  });
+
+  it("drops tasks settled by a turnless provider-initiated task.completed", () => {
+    const activities = [
+      ...backgroundedTaskActivities("task-a"),
+      makeActivity({
+        id: "task-a-completed",
+        createdAt: "2026-02-23T00:00:03.000Z",
+        kind: "task.completed",
+        summary: "Task completed",
+        tone: "info",
+        payload: { taskId: "task-a", status: "completed" },
+      }),
+    ];
+
+    expect(pendingWork(activities)).toBeNull();
+  });
+
+  it("ignores tasks that were never marked isBackgrounded", () => {
+    const activities: OrchestrationThreadActivity[] = [
+      makeActivity({
+        id: "task-running",
+        createdAt: "2026-02-23T00:00:01.000Z",
+        kind: "task.updated",
+        summary: "Task running",
+        tone: "info",
+        turnId: "turn-1",
+        payload: { taskId: "task-fg", status: "running", isBackgrounded: false },
+      }),
+    ];
+
+    expect(pendingWork(activities)).toBeNull();
+  });
+});
+
+describe("findLatestProposedPlan", () => {
+  it("prefers the latest proposed plan for the active turn", () => {
+    expect(
+      findLatestProposedPlan(
+        [
+          {
+            id: "plan:thread-1:turn:turn-1",
+            turnId: TurnId.makeUnsafe("turn-1"),
+            planMarkdown: "# Older",
+            implementedAt: null,
+            implementationThreadId: null,
+            createdAt: "2026-02-23T00:00:01.000Z",
+            updatedAt: "2026-02-23T00:00:01.000Z",
+          },
+          {
+            id: "plan:thread-1:turn:turn-1",
+            turnId: TurnId.makeUnsafe("turn-1"),
+            planMarkdown: "# Latest",
+            implementedAt: null,
+            implementationThreadId: null,
+            createdAt: "2026-02-23T00:00:01.000Z",
+            updatedAt: "2026-02-23T00:00:02.000Z",
+          },
+          {
+            id: "plan:thread-1:turn:turn-2",
+            turnId: TurnId.makeUnsafe("turn-2"),
+            planMarkdown: "# Different turn",
+            implementedAt: null,
+            implementationThreadId: null,
+            createdAt: "2026-02-23T00:00:03.000Z",
+            updatedAt: "2026-02-23T00:00:03.000Z",
+          },
+        ],
+        TurnId.makeUnsafe("turn-1"),
+      ),
+    ).toEqual({
+      id: "plan:thread-1:turn:turn-1",
+      turnId: "turn-1",
+      planMarkdown: "# Latest",
+      implementedAt: null,
+      implementationThreadId: null,
+      createdAt: "2026-02-23T00:00:01.000Z",
+      updatedAt: "2026-02-23T00:00:02.000Z",
+    });
+  });
+
+  it("falls back to the most recently updated proposed plan", () => {
+    const latestPlan = findLatestProposedPlan(
+      [
+        {
+          id: "plan:thread-1:turn:turn-1",
+          turnId: TurnId.makeUnsafe("turn-1"),
+          planMarkdown: "# First",
+          implementedAt: null,
+          implementationThreadId: null,
+          createdAt: "2026-02-23T00:00:01.000Z",
+          updatedAt: "2026-02-23T00:00:01.000Z",
+        },
+        {
+          id: "plan:thread-1:turn:turn-2",
+          turnId: TurnId.makeUnsafe("turn-2"),
+          planMarkdown: "# Latest",
+          implementedAt: null,
+          implementationThreadId: null,
+          createdAt: "2026-02-23T00:00:02.000Z",
+          updatedAt: "2026-02-23T00:00:03.000Z",
+        },
+      ],
+      null,
+    );
+
+    expect(latestPlan?.planMarkdown).toBe("# Latest");
+  });
+});
+
+describe("hasActionableProposedPlan", () => {
+  it("returns true for an unimplemented proposed plan", () => {
+    expect(
+      hasActionableProposedPlan({
+        id: "plan-1",
+        turnId: TurnId.makeUnsafe("turn-1"),
+        planMarkdown: "# Plan",
+        implementedAt: null,
+        implementationThreadId: null,
+        createdAt: "2026-02-23T00:00:00.000Z",
+        updatedAt: "2026-02-23T00:00:01.000Z",
+      }),
+    ).toBe(true);
+  });
+
+  it("returns false for a proposed plan already implemented elsewhere", () => {
+    expect(
+      hasActionableProposedPlan({
+        id: "plan-1",
+        turnId: TurnId.makeUnsafe("turn-1"),
+        planMarkdown: "# Plan",
+        implementedAt: "2026-02-23T00:00:02.000Z",
+        implementationThreadId: ThreadId.makeUnsafe("thread-implement"),
+        createdAt: "2026-02-23T00:00:00.000Z",
+        updatedAt: "2026-02-23T00:00:02.000Z",
+      }),
+    ).toBe(false);
+  });
+});
+
+describe("buildSourceProposedPlanReference", () => {
+  it("returns source plan metadata for implementation turns", () => {
+    expect(
+      buildSourceProposedPlanReference({
+        threadId: ThreadId.makeUnsafe("thread-source"),
+        proposedPlan: { id: "plan-source" },
+      }),
+    ).toEqual({
+      threadId: ThreadId.makeUnsafe("thread-source"),
+      planId: "plan-source",
+    });
+  });
+
+  it("omits source plan metadata when no plan is active", () => {
+    expect(
+      buildSourceProposedPlanReference({
+        threadId: ThreadId.makeUnsafe("thread-source"),
+        proposedPlan: null,
+      }),
+    ).toBeUndefined();
+  });
+});
+
+describe("findSidebarProposedPlan", () => {
+  it("prefers the running turn source proposed plan when available on the same thread", () => {
+    expect(
+      findSidebarProposedPlan({
+        threads: [
+          {
+            id: ThreadId.makeUnsafe("thread-1"),
+            proposedPlans: [
+              {
+                id: "plan-1",
+                turnId: TurnId.makeUnsafe("turn-plan"),
+                planMarkdown: "# Source plan",
+                implementedAt: "2026-02-23T00:00:03.000Z",
+                implementationThreadId: ThreadId.makeUnsafe("thread-2"),
+                createdAt: "2026-02-23T00:00:01.000Z",
+                updatedAt: "2026-02-23T00:00:02.000Z",
+              },
+            ],
+          },
+          {
+            id: ThreadId.makeUnsafe("thread-2"),
+            proposedPlans: [
+              {
+                id: "plan-2",
+                turnId: TurnId.makeUnsafe("turn-other"),
+                planMarkdown: "# Latest elsewhere",
+                implementedAt: null,
+                implementationThreadId: null,
+                createdAt: "2026-02-23T00:00:04.000Z",
+                updatedAt: "2026-02-23T00:00:05.000Z",
+              },
+            ],
+          },
+        ],
+        latestTurn: {
+          turnId: TurnId.makeUnsafe("turn-implementation"),
+          sourceProposedPlan: {
+            threadId: ThreadId.makeUnsafe("thread-1"),
+            planId: "plan-1",
+          },
+        },
+        latestTurnSettled: false,
+        threadId: ThreadId.makeUnsafe("thread-1"),
+      }),
+    ).toEqual({
+      id: "plan-1",
+      turnId: "turn-plan",
+      planMarkdown: "# Source plan",
+      implementedAt: "2026-02-23T00:00:03.000Z",
+      implementationThreadId: "thread-2",
+      createdAt: "2026-02-23T00:00:01.000Z",
+      updatedAt: "2026-02-23T00:00:02.000Z",
+    });
+  });
+
+  it("falls back to the latest proposed plan once the turn is settled", () => {
+    expect(
+      findSidebarProposedPlan({
+        threads: [
+          {
+            id: ThreadId.makeUnsafe("thread-1"),
+            proposedPlans: [
+              {
+                id: "plan-1",
+                turnId: TurnId.makeUnsafe("turn-plan"),
+                planMarkdown: "# Older",
+                implementedAt: null,
+                implementationThreadId: null,
+                createdAt: "2026-02-23T00:00:01.000Z",
+                updatedAt: "2026-02-23T00:00:02.000Z",
+              },
+              {
+                id: "plan-2",
+                turnId: TurnId.makeUnsafe("turn-latest"),
+                planMarkdown: "# Latest",
+                implementedAt: null,
+                implementationThreadId: null,
+                createdAt: "2026-02-23T00:00:03.000Z",
+                updatedAt: "2026-02-23T00:00:04.000Z",
+              },
+            ],
+          },
+        ],
+        latestTurn: {
+          turnId: TurnId.makeUnsafe("turn-implementation"),
+          sourceProposedPlan: {
+            threadId: ThreadId.makeUnsafe("thread-1"),
+            planId: "plan-1",
+          },
+        },
+        latestTurnSettled: true,
+        threadId: ThreadId.makeUnsafe("thread-1"),
+      })?.planMarkdown,
+    ).toBe("# Latest");
+  });
+
+  it("hides implemented proposed plans once the implementation turn is settled", () => {
+    expect(
+      findSidebarProposedPlan({
+        threads: [
+          {
+            id: ThreadId.makeUnsafe("thread-1"),
+            proposedPlans: [
+              {
+                id: "plan-implemented",
+                turnId: TurnId.makeUnsafe("turn-plan"),
+                planMarkdown: "# Implemented",
+                implementedAt: "2026-02-23T00:00:05.000Z",
+                implementationThreadId: ThreadId.makeUnsafe("thread-1"),
+                createdAt: "2026-02-23T00:00:01.000Z",
+                updatedAt: "2026-02-23T00:00:05.000Z",
+              },
+            ],
+          },
+        ],
+        latestTurn: {
+          turnId: TurnId.makeUnsafe("turn-implementation"),
+          sourceProposedPlan: {
+            threadId: ThreadId.makeUnsafe("thread-1"),
+            planId: "plan-implemented",
+          },
+        },
+        latestTurnSettled: true,
+        threadId: ThreadId.makeUnsafe("thread-1"),
+      }),
+    ).toBeNull();
+  });
+});
+
+describe("isLatestTurnSettled", () => {
+  const latestTurn = {
+    turnId: TurnId.makeUnsafe("turn-1"),
+    state: "completed",
+    startedAt: "2026-02-27T21:10:00.000Z",
+    completedAt: "2026-02-27T21:10:06.000Z",
+  } as const;
+
+  it("returns false while the session still reports the latest turn as running", () => {
+    expect(
+      isLatestTurnSettled(latestTurn, {
+        orchestrationStatus: "running",
+        activeTurnId: TurnId.makeUnsafe("turn-1"),
+      }),
+    ).toBe(false);
+  });
+
+  it("returns true once the session is no longer running that turn", () => {
+    expect(
+      isLatestTurnSettled(latestTurn, {
+        orchestrationStatus: "ready",
+        activeTurnId: undefined,
+      }),
+    ).toBe(true);
+  });
+
+  it("returns false when turn timestamps are incomplete", () => {
+    expect(
+      isLatestTurnSettled(
+        {
+          turnId: TurnId.makeUnsafe("turn-1"),
+          state: "completed",
+          startedAt: null,
+          completedAt: "2026-02-27T21:10:06.000Z",
+        },
+        null,
+      ),
+    ).toBe(false);
+  });
+
+  it("returns true for interrupted turns even while the session is still running", () => {
+    expect(
+      isLatestTurnSettled(
+        {
+          ...latestTurn,
+          state: "interrupted",
+        },
+        {
+          orchestrationStatus: "running",
+          activeTurnId: TurnId.makeUnsafe("turn-1"),
+        },
+      ),
+    ).toBe(true);
+  });
+});
+
+describe("deriveActiveWorkStartedAt", () => {
+  const latestTurn = {
+    turnId: TurnId.makeUnsafe("turn-1"),
+    state: "completed",
+    startedAt: "2026-02-27T21:10:00.000Z",
+    completedAt: "2026-02-27T21:10:06.000Z",
+  } as const;
+
+  it("prefers the latest-turn start while the running session still points at it", () => {
+    expect(
+      deriveActiveWorkStartedAt(
+        latestTurn,
+        {
+          orchestrationStatus: "running",
+          activeTurnId: TurnId.makeUnsafe("turn-1"),
+        },
+        "2026-02-27T21:11:00.000Z",
+      ),
+    ).toBe("2026-02-27T21:10:00.000Z");
+  });
+
+  it("falls back to sendStartedAt when a different turn is currently running", () => {
+    expect(
+      deriveActiveWorkStartedAt(
+        latestTurn,
+        {
+          orchestrationStatus: "running",
+          activeTurnId: TurnId.makeUnsafe("turn-2"),
+        },
+        "2026-02-27T21:11:00.000Z",
+      ),
+    ).toBe("2026-02-27T21:11:00.000Z");
+  });
+
+  it("uses sendStartedAt once the prior turn is settled", () => {
+    expect(
+      deriveActiveWorkStartedAt(
+        {
+          turnId: TurnId.makeUnsafe("turn-1"),
+          state: "completed",
+          startedAt: "2026-02-27T21:10:00.000Z",
+          completedAt: "2026-02-27T21:10:06.000Z",
+        },
+        null,
+        "2026-02-27T21:11:00.000Z",
+      ),
+    ).toBe("2026-02-27T21:11:00.000Z");
+  });
+});
+
+describe("hasLiveLatestTurn", () => {
+  const latestTurn = {
+    turnId: TurnId.makeUnsafe("turn-1"),
+    state: "completed",
+    startedAt: "2026-02-27T21:10:00.000Z",
+    completedAt: "2026-02-27T21:10:06.000Z",
+  } as const;
+
+  it("returns true while the session still reports the latest turn as running", () => {
+    expect(
+      hasLiveLatestTurn(latestTurn, {
+        orchestrationStatus: "running",
+        activeTurnId: TurnId.makeUnsafe("turn-1"),
+      }),
+    ).toBe(true);
+  });
+});
+
+describe("hasLiveTurnTailWork", () => {
+  const latestTurn = {
+    turnId: TurnId.makeUnsafe("turn-1"),
+    completedAt: null,
+  } as const;
+
+  it("keeps the turn live while assistant text is still streaming", () => {
+    expect(
+      hasLiveTurnTailWork({
+        latestTurn,
+        messages: [
+          {
+            role: "assistant",
+            streaming: true,
+            turnId: TurnId.makeUnsafe("turn-1"),
+          },
+        ],
+        activities: [],
+        session: { orchestrationStatus: "ready" },
+      }),
+    ).toBe(true);
+  });
+
+  it("ignores stale assistant streaming flags once the turn is completed", () => {
+    expect(
+      hasLiveTurnTailWork({
+        latestTurn: {
+          ...latestTurn,
+          completedAt: "2026-04-13T00:00:05.000Z",
+        },
+        messages: [
+          {
+            role: "assistant",
+            streaming: true,
+            turnId: TurnId.makeUnsafe("turn-1"),
+          },
+        ],
+        activities: [],
+        session: { orchestrationStatus: "ready" },
+      }),
+    ).toBe(false);
+  });
+
+  it("keeps the turn live while a background task is still open", () => {
+    expect(
+      hasLiveTurnTailWork({
+        latestTurn,
+        messages: [],
+        activities: [
+          makeActivity({
+            id: "task-started-1",
+            kind: "task.started",
+            summary: "Repo scan started",
+            turnId: "turn-1",
+            payload: {
+              taskId: "task-1",
+              taskType: "index",
+              title: "Repo scan",
+            },
+          }),
+        ],
+        session: { orchestrationStatus: "running" },
+      }),
+    ).toBe(true);
+  });
+
+  it("ignores tool lifecycle bookkeeping once the visible answer is done", () => {
+    expect(
+      hasLiveTurnTailWork({
+        latestTurn,
+        messages: [],
+        activities: [
+          makeActivity({
+            id: "tool-started-1",
+            kind: "tool.started",
+            summary: "Run shell command started",
+            turnId: "turn-1",
+            payload: {
+              itemType: "command_execution",
+              data: {
+                item: {
+                  id: "tool-1",
+                },
+              },
+            },
+          }),
+          makeActivity({
+            id: "tool-completed-1",
+            kind: "tool.completed",
+            summary: "Run shell command",
+            turnId: "turn-1",
+            payload: {
+              itemType: "command_execution",
+              data: {
+                item: {
+                  id: "tool-1",
+                },
+              },
+            },
+          }),
+        ],
+        session: { orchestrationStatus: "running" },
+      }),
+    ).toBe(false);
+  });
+
+  it("ignores stale background tasks once the provider session is idle", () => {
+    expect(
+      hasLiveTurnTailWork({
+        latestTurn,
+        messages: [],
+        activities: [
+          makeActivity({
+            id: "task-started-1",
+            kind: "task.started",
+            summary: "Repo scan started",
+            turnId: "turn-1",
+            payload: {
+              taskId: "task-1",
+              taskType: "index",
+              title: "Repo scan",
+            },
+          }),
+          makeActivity({
+            id: "task-progress-1",
+            kind: "task.progress",
+            summary: "Repo scan in progress",
+            turnId: "turn-1",
+            payload: {
+              taskId: "task-1",
+              taskType: "index",
+              summary: "Scanning files",
+            },
+          }),
+        ],
+        session: { orchestrationStatus: "ready" },
+      }),
+    ).toBe(false);
+  });
+});
+
+describe("thread liveness predicates", () => {
+  const sessionStatuses = [undefined, ...OrchestrationSessionStatus.literals] as const;
+  const turnStates: ReadonlyArray<OrchestrationLatestTurnState | undefined> = [
+    undefined,
+    "running",
+    "interrupted",
+    "completed",
+    "error",
+  ];
+
+  // Each predicate replaced an inline expression; these are those expressions verbatim.
+  it("match the inline checks they replaced for every status pair", () => {
+    for (const status of sessionStatuses) {
+      for (const turnState of turnStates) {
+        const label = `${status ?? "none"} / ${turnState ?? "none"}`;
+        expect(isSessionOrLatestTurnRunning(status, turnState), label).toBe(
+          status === "running" || turnState === "running",
+        );
+        expect(isSessionOrLatestTurnStartingOrRunning(status, turnState), label).toBe(
+          status === "starting" || status === "running" || turnState === "running",
+        );
+        expect(isSessionOpenOrLatestTurnRunning(status, turnState), label).toBe(
+          Boolean(status && status !== "idle" && status !== "stopped") || turnState === "running",
+        );
+      }
+    }
+  });
+
+  it("reports the active turn only for a running session", () => {
+    const turnId = TurnId.makeUnsafe("turn-live");
+    for (const status of OrchestrationSessionStatus.literals) {
+      expect(
+        runningSessionActiveTurnId({ orchestrationStatus: status, activeTurnId: turnId }),
+        status,
+      ).toBe(status === "running" ? turnId : null);
+    }
+    expect(
+      runningSessionActiveTurnId({ orchestrationStatus: "running", activeTurnId: undefined }),
+    ).toBeNull();
+    expect(runningSessionActiveTurnId(null)).toBeNull();
+  });
+});

@@ -1,0 +1,30 @@
+{
+  "provider": "cursor",
+  "instanceId": "cursor",
+  "driver": "cursor",
+  "status": "error",
+  "available": false,
+  "installed": false,
+  "authStatus": "unknown",
+  "checkedAt": "2026-11-23T22:04:51Z",
+  "message": "Cursor CLI (`cursor-agent`) is not installed or not on PATH.",
+  "displayName": "Cursor",
+  "enabled": true,
+  "versionAdvisory": {
+    "status": "unknown",
+    "currentVersion": null,
+    "latestVersion": null,
+    "latestVersionKnowable": false,
+    "updateCommand": "cursor-agent update",
+    "canUpdate": true,
+    "checkedAt": "2026-11-22T12:46:55.166Z",
+    "message": null
+  },
+  "updateState": {
+    "status": "failed",
+    "startedAt": "2026-11-22T20:48:43Z",
+    "finishedAt": "2026-11-22T20:48:43Z",
+    "message": null,
+    "output": "sh: cursor-agent: command not found\n"
+  }
+}

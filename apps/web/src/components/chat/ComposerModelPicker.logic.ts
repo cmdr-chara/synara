@@ -1,0 +1,296 @@
+// FILE: ComposerModelPicker.logic.ts
+// Purpose: Pure helpers turning composer trait state into starred presets and back.
+// Layer: Chat composer state helpers
+// Depends on: composer trait resolution and the starred model storage shape.
+
+import type { ModelSlug, ProviderInstanceId, ProviderKind } from "@synara/contracts";
+import { resolveSelectableModel } from "@synara/shared/model";
+
+import { t } from "~/i18n";
+import { type StarredModel, starredModelInstanceId, starredModelKey } from "~/lib/starredModels";
+import {
+  formatProviderModelOptionName,
+  getOmpModelSelectionIssue,
+  groupProviderModelOptions,
+  type ProviderModelOption,
+} from "../../providerModelOptions";
+import {
+  type getComposerTraitSelection,
+  planComposerEffortChange,
+  supportsComposerFastModeControl,
+} from "./composerTraits";
+
+type ComposerTraitSelection = ReturnType<typeof getComposerTraitSelection>;
+type StarredTraits = Pick<StarredModel, "effort" | "fastMode" | "serviceTier" | "thinking">;
+
+/** Tab id of the starred presets list; every other tab id is a provider account
+ *  (instance id; a provider's default account shares the provider id). */
+// The colon keeps it outside the account id alphabet, so no account can claim it.
+export const STARRED_TAB = ":starred";
+export type ComposerModelPickerTab = typeof STARRED_TAB | ProviderInstanceId;
+
+// First-party family prefix each provider's icon already stands for.
+const COMPOSER_MODEL_FAMILY_PREFIX_BY_PROVIDER: Partial<Record<ProviderKind, RegExp>> = {
+  claudeAgent: /^claude\s+(?=\S)/iu,
+  codex: /^gpt-(?=\S)/iu,
+};
+
+/**
+ * Model name as the composer shows it beside its provider icon: the family prefix repeats
+ * the icon, so "Claude Opus 5" reads "Opus 5" and "GPT-5.5" reads "5.5". Gateways (Cursor,
+ * OpenCode, …) keep full names, since their icon names the gateway and not the family.
+ * Display only: search and accessible labels keep the full name.
+ */
+export function composerModelDisplayName(provider: ProviderKind, name: string): string {
+  const prefix = COMPOSER_MODEL_FAMILY_PREFIX_BY_PROVIDER[provider];
+  return prefix ? name.replace(prefix, "") : name;
+}
+
+/** Marks the open picker so global mod+digit handlers (thread jump) yield to its rows. */
+export const MODEL_PICKER_POPUP_ATTRIBUTE = "data-model-picker-popup";
+
+export function isModelPickerShortcutScopeActive(): boolean {
+  return (
+    typeof document !== "undefined" &&
+    document.querySelector(`[${MODEL_PICKER_POPUP_ATTRIBUTE}]`) !== null
+  );
+}
+
+/** Rows beyond this index get no ⌘N hint. */
+export const MODEL_PICKER_SHORTCUT_ROW_LIMIT = 9;
+
+// Snapshot the traits a star should restore. Controls the model does not expose stay
+// `null` so applying the preset never invents an option the provider would reject.
+export function resolveStarredTraits(
+  selection: Pick<
+    ComposerTraitSelection,
+    | "caps"
+    | "effort"
+    | "effortLevels"
+    | "fastModeDescriptor"
+    | "fastModeEnabled"
+    | "supportsUltrafastMode"
+    | "ultrafastModeEnabled"
+    | "thinkingEnabled"
+  >,
+): StarredTraits {
+  return {
+    effort: selection.effortLevels.length > 0 ? selection.effort : null,
+    fastMode:
+      supportsComposerFastModeControl(selection) || selection.supportsUltrafastMode
+        ? selection.fastModeEnabled
+        : null,
+    ...(selection.ultrafastModeEnabled ? { serviceTier: "ultrafast" } : {}),
+    thinking: selection.thinkingEnabled,
+  };
+}
+
+// Option patch that restores a preset's traits on its model. `selection` must be the
+// target model's trait selection so option ids and supported levels come from it.
+export function buildStarredModelOptionsPatch(input: {
+  provider: ProviderKind;
+  selection: ComposerTraitSelection;
+  starred: StarredTraits;
+}): Record<string, unknown> {
+  const { provider, selection, starred } = input;
+  const patch: Record<string, unknown> = {};
+  if (starred.effort !== null) {
+    const plan = planComposerEffortChange({
+      provider,
+      // A preset is applied independently of the prompt's Ultrathink lock.
+      selection: { ...selection, ultrathinkPromptControlled: false },
+      prompt: "",
+      value: starred.effort,
+    });
+    if (plan?.kind === "options") {
+      Object.assign(patch, plan.patch);
+    }
+  }
+  if (provider === "codex" && starred.serviceTier === "ultrafast") {
+    if (selection.supportsUltrafastMode) patch.serviceTier = starred.serviceTier;
+    else patch.fastMode = false;
+  } else if (
+    starred.fastMode !== null &&
+    (supportsComposerFastModeControl(selection) ||
+      (starred.fastMode === false && selection.supportsUltrafastMode))
+  ) {
+    patch.fastMode = starred.fastMode;
+  }
+  if (starred.thinking !== null && selection.thinkingEnabled !== null) {
+    patch.thinking = starred.thinking;
+  }
+  return patch;
+}
+
+// "High · Fast" style summary of a preset, labelled through the target model's ladder.
+export function formatStarredTraitsLabel(
+  starred: StarredTraits,
+  effortLevels: ComposerTraitSelection["effortLevels"],
+): string {
+  const effortLabel =
+    starred.effort !== null
+      ? (effortLevels.find((level) => level.value === starred.effort)?.label ?? starred.effort)
+      : null;
+  return [
+    effortLabel,
+    effortLabel === null && starred.thinking !== null
+      ? `Thinking ${starred.thinking ? "On" : "Off"}`
+      : null,
+    starred.serviceTier === "ultrafast"
+      ? t("chat:traitsPicker_ultrafast")
+      : starred.fastMode
+        ? "Fast"
+        : null,
+  ]
+    .filter((part): part is string => part !== null)
+    .join(" · ");
+}
+
+// A preset counts as "current" when every trait it pins matches the composer's.
+export function starredTraitsMatch(starred: StarredTraits, current: StarredTraits): boolean {
+  return (
+    (starred.effort === null || starred.effort === current.effort) &&
+    (starred.serviceTier || starred.fastMode !== null
+      ? starred.serviceTier === current.serviceTier && starred.fastMode === current.fastMode
+      : true) &&
+    (starred.thinking === null || starred.thinking === current.thinking)
+  );
+}
+
+// One row of the picker list, already resolved to what selecting it commits.
+export type ComposerModelPickerRow = {
+  key: string;
+  provider: ProviderKind;
+  /** Non-default account the row runs in; undefined means the default account. */
+  instanceId?: string;
+  model: string;
+  selectableModel: ModelSlug | null;
+  name: string;
+  /** Muted text after the name: the trait summary of a starred preset. */
+  detail: string | null;
+  selected: boolean;
+  groupLabel: string | null;
+  /** Present on starred rows: the preset to restore and to un-star. */
+  preset: StarredModel | null;
+};
+
+export function buildProviderTabRows(input: {
+  provider: ProviderKind;
+  /** The tab's selected account; the default account is left implicit. */
+  instanceId?: string;
+  options: ReadonlyArray<ProviderModelOption>;
+  query: string;
+  selectedModel: string | null;
+}): ComposerModelPickerRow[] {
+  const { provider, query } = input;
+  const filteredOptions =
+    query.length > 0
+      ? input.options.filter((option) =>
+          // Descriptions are not shown, so they must not produce invisible matches.
+          [option.name, option.slug, option.upstreamProviderName, option.upstreamProviderId]
+            .join(" ")
+            .toLowerCase()
+            .includes(query),
+        )
+      : input.options;
+  return groupProviderModelOptions(filteredOptions).flatMap((group) =>
+    group.options.map((option) => ({
+      key: `${input.instanceId ?? provider}:${option.slug}`,
+      provider,
+      ...(input.instanceId && input.instanceId !== provider
+        ? { instanceId: input.instanceId }
+        : {}),
+      model: option.slug,
+      selectableModel:
+        provider === "omp" && getOmpModelSelectionIssue(option.slug, input.options)
+          ? null
+          : option.slug,
+      name: option.name,
+      detail: null,
+      selected: option.slug === input.selectedModel,
+      groupLabel: group.label,
+      preset: null,
+    })),
+  );
+}
+
+export function buildStarredTabRows(input: {
+  starredModels: ReadonlyArray<StarredModel>;
+  /** Model catalog of one account (instance id; the default shares the provider id). */
+  modelOptionsFor: (
+    provider: ProviderKind,
+    instanceId: string,
+  ) => ReadonlyArray<ProviderModelOption>;
+  /** Name of the account a preset runs in; undefined while its provider has only one. */
+  accountLabelFor?: (instanceId: string) => string | undefined;
+  query: string;
+  current: { provider: ProviderKind; instanceId: string; model: string } & StarredTraits;
+  effortLevelsFor: (
+    provider: ProviderKind,
+    model: string,
+    instanceId: string,
+  ) => ComposerTraitSelection["effortLevels"];
+  supportsUltrafastFor?: (model: string, instanceId: string) => boolean;
+}): ComposerModelPickerRow[] {
+  return input.starredModels.flatMap((entry) => {
+    const instanceId = starredModelInstanceId(entry);
+    const options = input.modelOptionsFor(entry.provider, instanceId);
+    const accountLabel = input.accountLabelFor?.(instanceId);
+    const selectableModel =
+      entry.provider === "omp" && getOmpModelSelectionIssue(entry.model, options)
+        ? null
+        : resolveSelectableModel(entry.provider, entry.model, options);
+    const name =
+      options.find((option) => option.slug === selectableModel)?.name ??
+      formatProviderModelOptionName({ provider: entry.provider, slug: entry.model });
+    if (
+      input.query.length > 0 &&
+      !`${name} ${entry.model} ${entry.provider} ${accountLabel ?? ""}`
+        .toLowerCase()
+        .includes(input.query)
+    ) {
+      return [];
+    }
+    const traitsLabel = formatStarredTraitsLabel(
+      entry.serviceTier && !input.supportsUltrafastFor?.(entry.model, instanceId)
+        ? { ...entry, serviceTier: undefined }
+        : entry,
+      input.effortLevelsFor(entry.provider, entry.model, instanceId),
+    );
+    return [
+      {
+        key: starredModelKey(entry),
+        provider: entry.provider,
+        ...(instanceId !== entry.provider ? { instanceId } : {}),
+        model: entry.model,
+        selectableModel,
+        name,
+        detail:
+          selectableModel === null
+            ? "Unavailable"
+            : [accountLabel, traitsLabel].filter(Boolean).join(" · ") || null,
+        selected:
+          selectableModel !== null &&
+          entry.provider === input.current.provider &&
+          instanceId === input.current.instanceId &&
+          selectableModel === input.current.model &&
+          starredTraitsMatch(entry, input.current),
+        groupLabel: null,
+        preset: entry,
+      },
+    ];
+  });
+}
+
+// Index (0-based) of the picker row a mod+digit chord addresses, or null.
+export function modelPickerShortcutRowIndex(event: {
+  key: string;
+  metaKey: boolean;
+  ctrlKey: boolean;
+  altKey: boolean;
+  shiftKey: boolean;
+}): number | null {
+  if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return null;
+  if (!/^[1-9]$/u.test(event.key)) return null;
+  return Number(event.key) - 1;
+}

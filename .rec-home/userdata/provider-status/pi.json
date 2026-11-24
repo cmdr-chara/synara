@@ -6,7 +6,7 @@
   "available": false,
   "installed": false,
   "authStatus": "unknown",
-  "checkedAt": "2026-11-22T20:48:43Z",
+  "checkedAt": "2026-11-23T22:04:51Z",
   "message": "Pi CLI (`pi`) is not installed or not on PATH.",
   "displayName": "Pi",
   "enabled": true,

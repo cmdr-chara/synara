@@ -1,0 +1,212 @@
+// FILE: SkillsSettingsPanel.tsx
+// Purpose: Settings → Skills panel. Lists every skill from the unified cross-provider
+// catalog (~/.synara/skills plus each provider's skills folder), shows which provider
+// a skill comes from, and lets the user enable/disable each one. Disabled skills are
+// hidden from the composer skill picker on every provider.
+
+import type { ProviderKind, ServerSettings } from "@synara/contracts";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
+
+import { ProviderIcon } from "~/components/ProviderIcon";
+import { SettingsRow, SettingsSection } from "~/components/settings/SettingsPanelPrimitives";
+import { Switch } from "~/components/ui/switch";
+import { SkillCubeIcon } from "~/lib/icons";
+import { ensureNativeApi } from "~/nativeApi";
+import {
+  providerDiscoveryQueryKeys,
+  skillsCatalogQueryOptions,
+} from "~/lib/providerDiscoveryReactQuery";
+import { serverQueryKeys, serverSettingsQueryOptions } from "~/lib/serverReactQuery";
+import {
+  buildSettingsSkillGroups,
+  buildSettingsSkillSectionsFromGroups,
+  providerDisplayName,
+  settingsSkillNameKey,
+} from "./skillsSettingsModel";
+import { useTranslation } from "~/i18n";
+
+function SkillProviderStack({ providers }: { providers: ReadonlyArray<ProviderKind> }) {
+  const { t } = useTranslation();
+
+  if (providers.length === 0) {
+    return null;
+  }
+
+  const label = providers.map(providerDisplayName).join(", ");
+  const stackLabel = t("settings:provider", {
+    value0: providers.length === 1 ? t("common:copy") : t("settings:copies"),
+    value1: label,
+  });
+  return (
+    <span
+      className="inline-flex shrink-0 items-center -space-x-1"
+      aria-label={stackLabel}
+      title={stackLabel}
+    >
+      {providers.map((provider) => (
+        <span
+          key={provider}
+          className="inline-flex size-4 items-center justify-center rounded-full border border-background bg-background"
+        >
+          <ProviderIcon provider={provider} className="size-3" />
+        </span>
+      ))}
+    </span>
+  );
+}
+
+export function SkillsSettingsPanel() {
+  const { t } = useTranslation();
+
+  const queryClient = useQueryClient();
+  const catalogQuery = useQuery(skillsCatalogQueryOptions());
+  const serverSettingsQuery = useQuery(serverSettingsQueryOptions());
+
+  const disabledSkillNames = new Set(
+    (serverSettingsQuery.data?.skills.disabled ?? []).map((name) => settingsSkillNameKey(name)),
+  );
+
+  const catalogSkills = catalogQuery.data?.skills;
+  const skillGroups = useMemo(() => buildSettingsSkillGroups(catalogSkills ?? []), [catalogSkills]);
+  const skillSections = useMemo(
+    () => buildSettingsSkillSectionsFromGroups(skillGroups),
+    [skillGroups],
+  );
+
+  const setSkillEnabled = (skillName: string, enabled: boolean) => {
+    // Read through the query cache (not the render closure) so rapid toggles
+    // build on each other instead of clobbering the previous patch.
+    const latestSettings = queryClient.getQueryData<ServerSettings>(serverQueryKeys.settings());
+    const currentDisabled = latestSettings?.skills.disabled ?? [...disabledSkillNames];
+    const key = settingsSkillNameKey(skillName);
+    const next = new Set(currentDisabled.map((name) => settingsSkillNameKey(name)));
+    if (enabled) {
+      next.delete(key);
+    } else {
+      next.add(key);
+    }
+    const disabled = [...next].sort();
+    if (latestSettings) {
+      // Optimistic flip; a failed patch invalidates back to the server state.
+      queryClient.setQueryData(serverQueryKeys.settings(), {
+        ...latestSettings,
+        skills: { disabled },
+      });
+    }
+    void ensureNativeApi()
+      .server.updateSettings({ skills: { disabled } })
+      .then((nextSettings) => {
+        queryClient.setQueryData(serverQueryKeys.settings(), nextSettings);
+        // Composer skill pickers are served filtered by these toggles.
+        void queryClient.invalidateQueries({ queryKey: providerDiscoveryQueryKeys.all });
+      })
+      .catch(() => {
+        void queryClient.invalidateQueries({ queryKey: serverQueryKeys.settings() });
+      });
+  };
+
+  const totalSkills = skillGroups.length;
+  const enabledSkills = skillGroups.filter((group) => !disabledSkillNames.has(group.key)).length;
+  const synaraSkillsDir = catalogQuery.data?.synaraSkillsDir;
+
+  return (
+    <div className="space-y-8">
+      <SettingsSection title="settings:skills_portableSkills">
+        <SettingsRow
+          id="setting-synara-skills-folder"
+          title="settings:skills_synaraSkillsFolder"
+          description="settings:skillsPlacedHereAreAvailableOnEveryProviderWhen"
+          status={
+            synaraSkillsDir ? (
+              <code className="break-all text-ui-sm text-muted-foreground">{synaraSkillsDir}</code>
+            ) : null
+          }
+          control={
+            <span className="text-ui leading-snug font-medium text-muted-foreground">
+              {catalogQuery.isLoading
+                ? t("settings:skills_scanning")
+                : t("settings:skillsEnabledOf", {
+                    enabled: enabledSkills,
+                    total: totalSkills,
+                    count: totalSkills,
+                  })}
+            </span>
+          }
+        />
+      </SettingsSection>
+
+      {catalogQuery.isError ? (
+        <SettingsSection title="common:plugin_skillsSection">
+          <SettingsRow
+            id="setting-skill-discovery-failed"
+            title="settings:skills_discoveryFailed"
+            description="settings:synaraCouldNotScanTheSkillFoldersRetryAfter"
+          />
+        </SettingsSection>
+      ) : null}
+
+      {!catalogQuery.isLoading && !catalogQuery.isError && totalSkills === 0 ? (
+        <SettingsSection title="common:plugin_skillsSection">
+          <SettingsRow
+            id="setting-no-skills-found"
+            title="common:plugin_noSkillsFound"
+            description="settings:addASkillFolderContainingASKILLMdTo"
+          />
+        </SettingsSection>
+      ) : null}
+
+      {skillSections.map((section) => {
+        return (
+          <SettingsSection key={section.key} title={section.title}>
+            {section.groups.map((group) => {
+              const enabled = !disabledSkillNames.has(group.key);
+              return (
+                <SettingsRow
+                  key={group.key}
+                  title={
+                    <span className="inline-flex min-w-0 items-center gap-1.5">
+                      <SkillCubeIcon
+                        aria-hidden="true"
+                        className="size-3.5 shrink-0 text-muted-foreground"
+                      />
+                      <span className="truncate">{group.displayName}</span>
+                    </span>
+                  }
+                  description={group.description}
+                  status={
+                    <span className="flex min-w-0 flex-col gap-1">
+                      <span className="flex min-w-0 items-center gap-1.5">
+                        <SkillProviderStack providers={group.providers} />
+                        <span className="truncate text-ui-sm text-muted-foreground">
+                          {group.sources.map((source) => source.originInfo.label).join(" · ")}
+                        </span>
+                      </span>
+                      {group.sources.map((source) => (
+                        <code
+                          key={source.skill.path}
+                          className="truncate text-ui-sm text-muted-foreground"
+                        >
+                          {source.skill.path}
+                        </code>
+                      ))}
+                    </span>
+                  }
+                  control={
+                    <Switch
+                      checked={enabled}
+                      onCheckedChange={(checked) =>
+                        setSkillEnabled(group.primarySkill.name, Boolean(checked))
+                      }
+                      aria-label={t("settings:enableTheSkill", { value0: group.displayName })}
+                    />
+                  }
+                />
+              );
+            })}
+          </SettingsSection>
+        );
+      })}
+    </div>
+  );
+}

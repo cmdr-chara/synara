@@ -1,0 +1,239 @@
+// FILE: providerStatusCache.test.ts
+// Purpose: Verifies cache helpers for provider readiness snapshots.
+// Exports: Vitest coverage for tolerant cache reads and atomic cache writes.
+
+import * as NodeServices from "@effect/platform-node/NodeServices";
+import fs from "node:fs";
+import { Effect, FileSystem, Path } from "effect";
+import { describe, expect, it } from "vitest";
+
+import {
+  orderProviderStatuses,
+  readProviderStatusCache,
+  resolveProviderStatusCachePath,
+  writeProviderStatusCache,
+} from "./providerStatusCache";
+
+const readyCodexStatus = {
+  provider: "codex" as const,
+  instanceId: "codex" as const,
+  driver: "codex" as const,
+  status: "ready" as const,
+  available: true,
+  authStatus: "authenticated" as const,
+  checkedAt: "2026-04-15T10:00:00.000Z",
+};
+
+describe("providerStatusCache", () => {
+  it("caches provider readiness without the signed-in account identity", async () => {
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const fileSystem = yield* FileSystem.FileSystem;
+        const tempDir = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "synara-provider-status-cache-",
+        });
+        const cachePath = resolveProviderStatusCachePath({
+          stateDir: tempDir,
+          provider: readyCodexStatus.provider,
+        });
+
+        yield* writeProviderStatusCache({
+          filePath: cachePath,
+          provider: {
+            ...readyCodexStatus,
+            accountEmail: "work@example.com",
+            accountOrganization: "Example Org",
+          },
+        });
+
+        return {
+          cached: yield* readProviderStatusCache(cachePath),
+          serialized: JSON.parse(yield* fileSystem.readFileString(cachePath)),
+          mode: fs.statSync(cachePath).mode & 0o777,
+        };
+      }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
+    );
+
+    expect(result.cached).toEqual(readyCodexStatus);
+    expect(result.serialized).toEqual(readyCodexStatus);
+    if (process.platform !== "win32") expect(result.mode).toBe(0o600);
+  });
+
+  it("ignores malformed cache files", async () => {
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const fileSystem = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        const tempDir = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "synara-provider-status-cache-bad-",
+        });
+        const cachePath = resolveProviderStatusCachePath({
+          stateDir: tempDir,
+          provider: readyCodexStatus.provider,
+        });
+
+        yield* fileSystem.makeDirectory(path.dirname(cachePath), { recursive: true });
+        yield* fileSystem.writeFileString(cachePath, "{ definitely-not-json");
+
+        return yield* readProviderStatusCache(cachePath);
+      }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
+    );
+
+    expect(result).toBeUndefined();
+  });
+
+  it("normalizes older cache entries and ignores any account identity", async () => {
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const fileSystem = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        const tempDir = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "synara-provider-status-cache-legacy-",
+        });
+        const cachePath = resolveProviderStatusCachePath({
+          stateDir: tempDir,
+          provider: "claudeAgent",
+        });
+
+        yield* fileSystem.makeDirectory(path.dirname(cachePath), { recursive: true });
+        yield* fileSystem.writeFileString(
+          cachePath,
+          `${JSON.stringify({
+            provider: "claudeAgent",
+            status: "ready",
+            available: true,
+            authStatus: "authenticated",
+            accountEmail: "old@example.com",
+            accountOrganization: "Old Org",
+            checkedAt: "2026-04-15T10:00:00.000Z",
+          })}\n`,
+        );
+
+        return yield* readProviderStatusCache(cachePath, {
+          provider: "claudeAgent",
+          instanceId: "claudeAgent",
+        });
+      }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
+    );
+
+    expect(result).toEqual({
+      ...readyCodexStatus,
+      provider: "claudeAgent",
+      instanceId: "claudeAgent",
+      driver: "claudeAgent",
+    });
+  });
+
+  it("ignores cache entries that do not match the requested provider instance", async () => {
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const fileSystem = yield* FileSystem.FileSystem;
+        const tempDir = yield* fileSystem.makeTempDirectoryScoped({
+          prefix: "synara-provider-status-cache-identity-",
+        });
+        const cachePath = resolveProviderStatusCachePath({
+          stateDir: tempDir,
+          provider: "codex",
+          instanceId: "codex_work",
+        });
+
+        yield* writeProviderStatusCache({
+          filePath: cachePath,
+          provider: {
+            ...readyCodexStatus,
+            instanceId: "codex_personal",
+          },
+        });
+
+        return yield* readProviderStatusCache(cachePath, {
+          provider: "codex",
+          instanceId: "codex_work",
+        });
+      }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
+    );
+
+    expect(result).toBeUndefined();
+  });
+
+  it("keeps provider ordering stable for transport consumers", () => {
+    expect(
+      orderProviderStatuses([
+        {
+          provider: "antigravity",
+          instanceId: "antigravity",
+          driver: "antigravity",
+          status: "ready",
+          available: true,
+          authStatus: "authenticated",
+          checkedAt: "2026-04-15T10:02:00.000Z",
+        },
+        {
+          provider: "claudeAgent",
+          instanceId: "claudeAgent",
+          driver: "claudeAgent",
+          status: "warning",
+          available: true,
+          authStatus: "unknown",
+          checkedAt: "2026-04-15T10:01:00.000Z",
+        },
+        {
+          provider: "cursor",
+          instanceId: "cursor",
+          driver: "cursor",
+          status: "ready",
+          available: true,
+          authStatus: "unknown",
+          checkedAt: "2026-04-15T10:03:00.000Z",
+        },
+        {
+          provider: "grok",
+          instanceId: "grok",
+          driver: "grok",
+          status: "ready",
+          available: true,
+          authStatus: "unknown",
+          checkedAt: "2026-04-15T10:04:00.000Z",
+        },
+        readyCodexStatus,
+      ]),
+    ).toEqual([
+      readyCodexStatus,
+      {
+        provider: "claudeAgent",
+        instanceId: "claudeAgent",
+        driver: "claudeAgent",
+        status: "warning",
+        available: true,
+        authStatus: "unknown",
+        checkedAt: "2026-04-15T10:01:00.000Z",
+      },
+      {
+        provider: "cursor",
+        instanceId: "cursor",
+        driver: "cursor",
+        status: "ready",
+        available: true,
+        authStatus: "unknown",
+        checkedAt: "2026-04-15T10:03:00.000Z",
+      },
+      {
+        provider: "antigravity",
+        instanceId: "antigravity",
+        driver: "antigravity",
+        status: "ready",
+        available: true,
+        authStatus: "authenticated",
+        checkedAt: "2026-04-15T10:02:00.000Z",
+      },
+      {
+        provider: "grok",
+        instanceId: "grok",
+        driver: "grok",
+        status: "ready",
+        available: true,
+        authStatus: "unknown",
+        checkedAt: "2026-04-15T10:04:00.000Z",
+      },
+    ]);
+  });
+});

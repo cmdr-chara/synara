@@ -1,0 +1,875 @@
+import { describe, expect, it } from "vitest";
+
+import type * as Acp from "@agentclientprotocol/sdk";
+
+import {
+  extractModelConfigId,
+  mergeToolCallState,
+  parsePermissionRequest,
+  parseSessionModeState,
+  parseSessionUpdateEvent,
+} from "./AcpRuntimeModel.ts";
+
+describe("AcpRuntimeModel", () => {
+  it("parses session mode state from typed ACP session setup responses", () => {
+    const modeState = parseSessionModeState({
+      sessionId: "session-1",
+      modes: {
+        currentModeId: " code ",
+        availableModes: [
+          { id: " ask ", name: " Ask ", description: " Request approval " },
+          { id: " code ", name: " Code " },
+        ],
+      },
+      configOptions: [],
+    } satisfies Acp.NewSessionResponse);
+
+    expect(modeState).toEqual({
+      currentModeId: "code",
+      availableModes: [
+        { id: "ask", name: "Ask", description: "Request approval" },
+        { id: "code", name: "Code" },
+      ],
+    });
+  });
+
+  it("extracts the model config id from typed ACP config options", () => {
+    const modelConfigId = extractModelConfigId({
+      sessionId: "session-1",
+      configOptions: [
+        {
+          id: "approval",
+          name: "Approval Mode",
+          category: "permission",
+          type: "select",
+          currentValue: "ask",
+          options: [{ value: "ask", name: "Ask" }],
+        },
+        {
+          id: "model",
+          name: "Model",
+          category: "model",
+          type: "select",
+          currentValue: "default",
+          options: [{ value: "default", name: "Auto" }],
+        },
+      ],
+    } satisfies Acp.NewSessionResponse);
+
+    expect(modelConfigId).toBe("model");
+  });
+
+  it("projects typed ACP tool call updates into runtime events", () => {
+    const created = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "tool-1",
+        title: "Terminal",
+        kind: "execute",
+        status: "pending",
+        rawInput: {
+          executable: "bun",
+          args: ["run", "typecheck"],
+        },
+        content: [
+          {
+            type: "content",
+            content: {
+              type: "text",
+              text: "Running checks",
+            },
+          },
+        ],
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(created.events).toEqual([
+      {
+        _tag: "ToolCallUpdated",
+        toolCall: {
+          toolCallId: "tool-1",
+          kind: "execute",
+          title: "Ran command",
+          status: "pending",
+          command: "bun run typecheck",
+          detail: "bun run typecheck",
+          data: {
+            toolCallId: "tool-1",
+            kind: "execute",
+            command: "bun run typecheck",
+            rawInput: {
+              executable: "bun",
+              args: ["run", "typecheck"],
+            },
+            content: [
+              {
+                type: "content",
+                content: {
+                  type: "text",
+                  text: "Running checks",
+                },
+              },
+            ],
+          },
+        },
+        rawPayload: {
+          sessionId: "session-1",
+          update: {
+            sessionUpdate: "tool_call",
+            toolCallId: "tool-1",
+            title: "Terminal",
+            kind: "execute",
+            status: "pending",
+            rawInput: {
+              executable: "bun",
+              args: ["run", "typecheck"],
+            },
+            content: [
+              {
+                type: "content",
+                content: {
+                  type: "text",
+                  text: "Running checks",
+                },
+              },
+            ],
+          },
+        },
+      },
+    ]);
+
+    const updated = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "tool-1",
+        status: "completed",
+        rawOutput: { exitCode: 0 },
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(updated.events).toHaveLength(1);
+    expect(updated.events[0]?._tag).toBe("ToolCallUpdated");
+    const createdEvent = created.events[0];
+    const updatedEvent = updated.events[0];
+    if (createdEvent?._tag === "ToolCallUpdated" && updatedEvent?._tag === "ToolCallUpdated") {
+      expect(mergeToolCallState(createdEvent.toolCall, updatedEvent.toolCall)).toMatchObject({
+        toolCallId: "tool-1",
+        status: "completed",
+        title: "Ran command",
+        detail: "bun run typecheck",
+        command: "bun run typecheck",
+      });
+    }
+  });
+
+  it("retains ACP extension metadata on tool and streamed content updates", () => {
+    const toolMetadata = {
+      "cognition.ai/subagent_started": {
+        agentId: "agent-1",
+        title: "Explore the API",
+        task: "Inspect the public API surface",
+        isBackground: true,
+      },
+    };
+    const toolCall = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "agent-1",
+        status: "in_progress",
+        _meta: toolMetadata,
+      },
+    } satisfies Acp.SessionNotification).events[0];
+    expect(toolCall?._tag).toBe("ToolCallUpdated");
+    if (toolCall?._tag !== "ToolCallUpdated") throw new Error("Expected tool call update");
+    expect(toolCall.toolCall.metadata).toEqual(toolMetadata);
+
+    const content = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "agent_message_chunk",
+        content: { type: "text", text: "child output" },
+        _meta: { "cognition.ai/subagent_context": { parentAgentId: "agent-1" } },
+      },
+    } satisfies Acp.SessionNotification).events[0];
+    expect(content).toMatchObject({
+      _tag: "ContentDelta",
+      text: "child output",
+      metadata: { "cognition.ai/subagent_context": { parentAgentId: "agent-1" } },
+    });
+  });
+
+  it.each(["_toolName", "toolName", "tool_name"] as const)(
+    "projects the authoritative %s Computer name on initial calls and updates",
+    (nameKey) => {
+      const rawInput = {
+        [nameKey]: " mcp__synara__computer_type_text ",
+        label: "Message",
+        text: "private typed value",
+      };
+      for (const sessionUpdate of ["tool_call", "tool_call_update"] as const) {
+        const parsed = parseSessionUpdateEvent({
+          sessionId: "session-1",
+          update: {
+            sessionUpdate,
+            toolCallId: "computer-1",
+            title: "Tool",
+            kind: "other",
+            status: "in_progress",
+            rawInput,
+          },
+        } satisfies Acp.SessionNotification);
+        const event = parsed.events[0];
+        expect(event?._tag).toBe("ToolCallUpdated");
+        if (event?._tag !== "ToolCallUpdated") throw new Error("Expected Computer tool update");
+        expect(event.toolCall.data.toolName).toBe("computer_type_text");
+        expect(event.toolCall.data.rawInput).toBe(rawInput);
+        expect(event.toolCall.title).not.toContain(rawInput.text);
+      }
+    },
+  );
+
+  it.each([
+    { _toolName: "computer_future_tool" },
+    { _toolName: "Click mcp__synara__computer_click" },
+    { _toolName: "mcp__other__computer_click" },
+    { _toolName: "computer_click\nprivate value" },
+    { _toolName: 123, toolName: "computer_click" },
+    { _toolName: "foreign_tool", toolName: "computer_click" },
+    { text: "computer_click" },
+    "computer_click",
+  ])("does not derive a Computer name from arbitrary input or provider prose: %j", (rawInput) => {
+    const parsed = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "tool-unnamed",
+        title: "mcp__synara__computer_click",
+        kind: "other",
+        rawInput,
+      },
+    } satisfies Acp.SessionNotification);
+    const event = parsed.events[0];
+    expect(event?._tag).toBe("ToolCallUpdated");
+    if (event?._tag !== "ToolCallUpdated") throw new Error("Expected tool update");
+    expect(event.toolCall.data).not.toHaveProperty("toolName");
+    expect(event.toolCall.data.rawInput).toBe(rawInput);
+  });
+
+  it("preserves Grok prompt-policy denial text on failed shell tools", () => {
+    const pending = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "tool-denied",
+        title: "Terminal",
+        kind: "execute",
+        status: "pending",
+        rawInput: { command: "git pull" },
+      },
+    } satisfies Acp.SessionNotification);
+    const failed = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "tool-denied",
+        status: "failed",
+        content: [
+          {
+            type: "content",
+            content: {
+              type: "text",
+              text: "denied by prompt policy (tool not pre-approved)",
+            },
+          },
+        ],
+      },
+    } satisfies Acp.SessionNotification);
+
+    const pendingEvent = pending.events[0];
+    const failedEvent = failed.events[0];
+    expect(pendingEvent?._tag).toBe("ToolCallUpdated");
+    expect(failedEvent?._tag).toBe("ToolCallUpdated");
+    if (pendingEvent?._tag === "ToolCallUpdated" && failedEvent?._tag === "ToolCallUpdated") {
+      expect(mergeToolCallState(pendingEvent.toolCall, failedEvent.toolCall)).toMatchObject({
+        status: "failed",
+        command: "git pull",
+        detail: "denied by prompt policy (tool not pre-approved)",
+      });
+    }
+  });
+
+  it("derives useful tool details when Cursor sends empty rawInput placeholders", () => {
+    const searchCompleted = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "find-1",
+        kind: "search",
+        status: "completed",
+        rawOutput: {
+          totalFiles: 33,
+          truncated: false,
+        },
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(searchCompleted.events).toHaveLength(1);
+    expect(searchCompleted.events[0]).toMatchObject({
+      _tag: "ToolCallUpdated",
+      toolCall: {
+        toolCallId: "find-1",
+        kind: "search",
+        status: "completed",
+        title: "Searched",
+        detail: "33 files found",
+      },
+    });
+
+    const readCompleted = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "read-1",
+        kind: "read",
+        status: "completed",
+        rawOutput: {
+          content: "one\ntwo\n",
+        },
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(readCompleted.events[0]).toMatchObject({
+      _tag: "ToolCallUpdated",
+      toolCall: {
+        toolCallId: "read-1",
+        kind: "read",
+        status: "completed",
+        title: "Read",
+        detail: "Read 2 lines",
+      },
+    });
+
+    const locatedRead = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "read-2",
+        title: "Read File",
+        kind: "read",
+        status: "pending",
+        rawInput: {},
+        locations: [{ path: "src/index.ts", line: 12 }],
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(locatedRead.events[0]).toMatchObject({
+      _tag: "ToolCallUpdated",
+      toolCall: {
+        toolCallId: "read-2",
+        title: "Reading",
+        kind: "read",
+        detail: "src/index.ts:12",
+      },
+    });
+  });
+
+  it.each([
+    { kind: "read", title: "Read `/home/gabriel`" },
+    { kind: "search", title: "Find `foo` in `src`" },
+    { kind: "edit", title: "Edit `src/app.ts`" },
+  ] as const)(
+    "does not promote a backticked $kind title fragment into data.command",
+    ({ kind, title }) => {
+      // Grok wraps targets in backticks ("Read `/home/gabriel`"); for non-execute
+      // kinds that fragment is a path, not a command — the transcript rendered
+      // "Ran /home/gabriel" until the extraction was gated.
+      const parsed = parseSessionUpdateEvent({
+        sessionId: "session-1",
+        update: {
+          sessionUpdate: "tool_call",
+          toolCallId: `${kind}-call`,
+          title,
+          kind,
+          status: "in_progress",
+          rawInput: { _toolName: kind === "read" ? "read_file" : kind },
+        },
+      } satisfies Acp.SessionNotification);
+
+      const event = parsed.events[0];
+      if (event?._tag !== "ToolCallUpdated") throw new Error("Expected tool update");
+      expect(event.toolCall.data).not.toHaveProperty("command");
+    },
+  );
+
+  it("keeps command extraction for execute and kindless calls", () => {
+    const execute = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "bash-1",
+        title: "Run `ls -la`",
+        kind: "execute",
+        status: "in_progress",
+        rawInput: { command: "ls -la" },
+      },
+    } satisfies Acp.SessionNotification);
+
+    const executeEvent = execute.events[0];
+    if (executeEvent?._tag !== "ToolCallUpdated") throw new Error("Expected tool update");
+    expect(executeEvent.toolCall.data.command).toBe("ls -la");
+  });
+
+  it("infers Cursor placeholder kinds before deriving display titles", () => {
+    const findPending = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "find-placeholder",
+        title: "Find",
+        status: "pending",
+        rawInput: {},
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(findPending.events[0]).toMatchObject({
+      _tag: "ToolCallUpdated",
+      toolCall: {
+        toolCallId: "find-placeholder",
+        kind: "search",
+        title: "Searching",
+        data: {
+          kind: "search",
+        },
+      },
+    });
+
+    const readPending = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "read-placeholder",
+        title: "Read File",
+        status: "pending",
+        rawInput: {},
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(readPending.events[0]).toMatchObject({
+      _tag: "ToolCallUpdated",
+      toolCall: {
+        toolCallId: "read-placeholder",
+        kind: "read",
+        title: "Reading",
+        data: {
+          kind: "read",
+        },
+      },
+    });
+  });
+
+  it.each([
+    ["image_gen", "_toolName"],
+    ["image_edit", "toolName"],
+    ["generate_image", "tool_name"],
+  ])(
+    "classifies the exact %s image tool from %s without changing its approval kind",
+    (toolName, nameField) => {
+      const rawInput = { [nameField]: toolName, prompt: "Draw a diagram" };
+      const parsed = parseSessionUpdateEvent({
+        sessionId: "session-images",
+        update: {
+          sessionUpdate: "tool_call",
+          toolCallId: "image-tool",
+          title: "Tool",
+          kind: "other",
+          status: "pending",
+          rawInput,
+        },
+      });
+      const started = parsed.events[0];
+      expect(started).toMatchObject({
+        _tag: "ToolCallUpdated",
+        toolCall: {
+          kind: "image_generation",
+          data: { kind: "image_generation", rawInput },
+        },
+      });
+      const completed = parseSessionUpdateEvent({
+        sessionId: "session-images",
+        update: {
+          sessionUpdate: "tool_call_update",
+          toolCallId: "image-tool",
+          title: "Tool",
+          kind: "other",
+          status: "completed",
+          rawOutput: { path: "/tmp/generated.png" },
+        },
+      }).events[0];
+      if (started?._tag !== "ToolCallUpdated" || completed?._tag !== "ToolCallUpdated") {
+        throw new Error("expected image tool lifecycle updates");
+      }
+      expect(mergeToolCallState(started.toolCall, completed.toolCall)).toMatchObject({
+        kind: "image_generation",
+        status: "completed",
+        data: {
+          kind: "image_generation",
+          rawInput,
+          rawOutput: { path: "/tmp/generated.png" },
+        },
+      });
+      const namedUpdate = parseSessionUpdateEvent({
+        sessionId: "session-images",
+        update: {
+          sessionUpdate: "tool_call_update",
+          toolCallId: "image-tool",
+          kind: "other",
+          rawInput: { _toolName: "view_image" },
+        },
+      }).events[0];
+      if (namedUpdate?._tag !== "ToolCallUpdated") {
+        throw new Error("expected a named tool update");
+      }
+      expect(mergeToolCallState(started.toolCall, namedUpdate.toolCall).kind).toBe("other");
+      for (const kind of ["other", "edit", "execute"] as const) {
+        const request = parsePermissionRequest({
+          sessionId: "session-images",
+          options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }],
+          toolCall: { toolCallId: "image-tool", title: toolName, kind, rawInput },
+        });
+        expect(request.kind).toBe(kind);
+        expect(request.toolCall?.kind).toBe("image_generation");
+      }
+    },
+  );
+
+  it.each([
+    { title: "image_gen", kind: undefined, expected: "image_generation" },
+    { title: "image_edit", kind: "other", expected: "image_generation" },
+    { title: "generate_image", kind: "other", expected: "image_generation" },
+    { title: "generate_image", kind: "execute", expected: "execute" },
+    { title: "image_edit", kind: "edit", expected: "edit" },
+    { title: "view_image", kind: "read", expected: "read" },
+    { title: "generate_image_thumbnail", kind: "other", expected: "other" },
+    { title: "mcp__images__generate_image", kind: "other", expected: "other" },
+    { title: "Generate an image", kind: "other", expected: "other" },
+    { title: "generate_image", kind: "other", nativeToolName: "view_image", expected: "other" },
+  ] as const)("uses exact image titles only for generic ACP kinds: $title/$kind", (testCase) => {
+    const parsed = parseSessionUpdateEvent({
+      sessionId: "session-images",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "image-tool",
+        title: testCase.title,
+        ...(testCase.kind ? { kind: testCase.kind } : {}),
+        rawInput: {
+          prompt: "generate_image",
+          ...("nativeToolName" in testCase ? { _toolName: testCase.nativeToolName } : {}),
+        },
+      },
+    });
+    expect(parsed.events[0]).toMatchObject({
+      _tag: "ToolCallUpdated",
+      toolCall: { kind: testCase.expected },
+    });
+  });
+
+  it("keeps inferred Cursor action titles when completion updates only contain generic Tool", () => {
+    const pending = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "find-placeholder",
+        title: "Find",
+        status: "pending",
+        rawInput: {},
+      },
+    } satisfies Acp.SessionNotification);
+    const completed = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "find-placeholder",
+        title: "Tool",
+        status: "completed",
+        rawOutput: {
+          totalFiles: 4,
+          truncated: false,
+        },
+      },
+    } satisfies Acp.SessionNotification);
+
+    const pendingEvent = pending.events[0];
+    const completedEvent = completed.events[0];
+    if (pendingEvent?._tag === "ToolCallUpdated" && completedEvent?._tag === "ToolCallUpdated") {
+      expect(mergeToolCallState(pendingEvent.toolCall, completedEvent.toolCall)).toMatchObject({
+        toolCallId: "find-placeholder",
+        kind: "search",
+        status: "completed",
+        title: "Searched",
+        detail: "4 files found",
+      });
+    }
+  });
+
+  it("projects Cursor subagent Task tool calls as collab agent runs titled by description", () => {
+    const started = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call",
+        toolCallId: "toolu_task",
+        title: "Task: Explore composer model/effort UI",
+        kind: "other",
+        status: "pending",
+        rawInput: {
+          _toolName: "task",
+          prompt: "Explore the composer and report back with file paths.",
+          description: "Explore composer model/effort UI",
+          subagentType: { unspecified: {} },
+        },
+      },
+    } satisfies Acp.SessionNotification);
+    const startedEvent = started.events[0];
+    expect(startedEvent?._tag).toBe("ToolCallUpdated");
+    if (startedEvent?._tag !== "ToolCallUpdated") return;
+    expect(startedEvent.toolCall).toEqual({
+      toolCallId: "toolu_task",
+      kind: "agent",
+      title: "Explore composer model/effort UI",
+      status: "pending",
+      data: {
+        toolCallId: "toolu_task",
+        kind: "agent",
+        tool: "task",
+        prompt: "Explore the composer and report back with file paths.",
+        rawInput: {
+          _toolName: "task",
+          prompt: "Explore the composer and report back with file paths.",
+          description: "Explore composer model/effort UI",
+          subagentType: { unspecified: {} },
+        },
+      },
+    });
+
+    // Cursor's completion update carries only bookkeeping output; the merged state
+    // must keep the subagent kind/title and not surface that output as detail.
+    const completed = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "toolu_task",
+        status: "completed",
+        rawOutput: { durationMs: 328175, isBackground: false },
+      },
+    } satisfies Acp.SessionNotification);
+    const completedEvent = completed.events[0];
+    if (completedEvent?._tag !== "ToolCallUpdated") return;
+    const merged = mergeToolCallState(startedEvent.toolCall, completedEvent.toolCall);
+    expect(merged).toMatchObject({
+      toolCallId: "toolu_task",
+      kind: "agent",
+      status: "completed",
+      title: "Explore composer model/effort UI",
+      data: { tool: "task", kind: "agent" },
+    });
+    expect(merged.detail).toBeUndefined();
+  });
+
+  it("trims padded current mode updates before emitting a mode change", () => {
+    const result = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "current_mode_update",
+        currentModeId: " code ",
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(result.modeId).toBe("code");
+    expect(result.events).toEqual([
+      {
+        _tag: "ModeChanged",
+        modeId: "code",
+      },
+    ]);
+  });
+
+  it("projects typed ACP plan and content updates", () => {
+    const planResult = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "plan",
+        entries: [
+          { content: " Inspect state ", priority: "high", status: "completed" },
+          { content: "", priority: "medium", status: "in_progress" },
+        ],
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(planResult.events).toEqual([
+      {
+        _tag: "PlanUpdated",
+        payload: {
+          plan: [
+            { step: "Inspect state", status: "completed" },
+            { step: "Step 2", status: "inProgress" },
+          ],
+        },
+        rawPayload: {
+          sessionId: "session-1",
+          update: {
+            sessionUpdate: "plan",
+            entries: [
+              { content: " Inspect state ", priority: "high", status: "completed" },
+              { content: "", priority: "medium", status: "in_progress" },
+            ],
+          },
+        },
+      },
+    ]);
+
+    const contentResult = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "agent_message_chunk",
+        content: {
+          type: "text",
+          text: "hello from acp",
+        },
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(contentResult.events).toEqual([
+      {
+        _tag: "ContentDelta",
+        text: "hello from acp",
+        streamKind: "assistant_text",
+        rawPayload: {
+          sessionId: "session-1",
+          update: {
+            sessionUpdate: "agent_message_chunk",
+            content: {
+              type: "text",
+              text: "hello from acp",
+            },
+          },
+        },
+      },
+    ]);
+
+    const thoughtResult = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "agent_thought_chunk",
+        messageId: " thought-1 ",
+        content: {
+          type: "text",
+          text: "checking files",
+        },
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(thoughtResult.events).toEqual([
+      {
+        _tag: "ContentDelta",
+        itemId: "thought-1",
+        text: "checking files",
+        streamKind: "reasoning_text",
+        rawPayload: {
+          sessionId: "session-1",
+          update: {
+            sessionUpdate: "agent_thought_chunk",
+            messageId: " thought-1 ",
+            content: {
+              type: "text",
+              text: "checking files",
+            },
+          },
+        },
+      },
+    ]);
+  });
+
+  it("projects ACP usage updates into context-window snapshots", () => {
+    const result = parseSessionUpdateEvent({
+      sessionId: "session-1",
+      update: {
+        sessionUpdate: "usage_update",
+        size: 1_000_000,
+        used: 42_000,
+        cost: {
+          amount: 0.2,
+          currency: "USD",
+        },
+      },
+    } satisfies Acp.SessionNotification);
+
+    expect(result.events).toEqual([
+      {
+        _tag: "UsageUpdated",
+        usage: {
+          usedTokens: 42_000,
+          usedPercent: 4.2,
+          maxTokens: 1_000_000,
+          compactsAutomatically: true,
+        },
+        cost: {
+          amount: 0.2,
+          currency: "USD",
+        },
+        rawPayload: {
+          sessionId: "session-1",
+          update: {
+            sessionUpdate: "usage_update",
+            size: 1_000_000,
+            used: 42_000,
+            cost: {
+              amount: 0.2,
+              currency: "USD",
+            },
+          },
+        },
+      },
+    ]);
+  });
+
+  it("keeps permission request parsing compatible with loose extension payloads", () => {
+    const request = parsePermissionRequest({
+      sessionId: "session-1",
+      options: [
+        {
+          optionId: "allow-once",
+          name: "Allow once",
+          kind: "allow_once",
+        },
+      ],
+      toolCall: {
+        toolCallId: "tool-1",
+        title: "`cat package.json`",
+        kind: "execute",
+        status: "pending",
+        content: [
+          {
+            type: "content",
+            content: {
+              type: "text",
+              text: "Not in allowlist",
+            },
+          },
+        ],
+      },
+    });
+
+    expect(request).toMatchObject({
+      kind: "execute",
+      detail: "cat package.json",
+      toolCall: {
+        toolCallId: "tool-1",
+        kind: "execute",
+        status: "pending",
+        command: "cat package.json",
+      },
+    });
+  });
+});

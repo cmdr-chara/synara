@@ -1,0 +1,138 @@
+// FILE: SynaraThreadCreationCard.tsx
+// Purpose: End-of-turn recap for threads created through the Synara MCP harness.
+// Layer: Chat transcript UI
+
+import { PROVIDER_DISPLAY_NAMES } from "@synara/contracts";
+import { formatModelDisplayName } from "@synara/shared/model";
+import { memo } from "react";
+
+import {
+  readAvailableWorkspaceNavigation,
+  useWorkspaceSessions,
+} from "../../lib/hosts/workspaceSessions";
+import type { WorkLogSynaraThreadCreation } from "../../session-logic";
+import { ProviderIcon } from "../ProviderIcon";
+import { SynaraLogo } from "@synara/profile-ui/logo";
+import { Button } from "../ui/button";
+import { useTranslation } from "~/i18n";
+
+function threadMeta(
+  thread: WorkLogSynaraThreadCreation["threads"][number],
+  hostName: string | undefined,
+): string {
+  const model = formatModelDisplayName(thread.model) ?? thread.model;
+  const environment = thread.environment === "worktree" ? "Worktree" : "Local";
+  const meta = `${PROVIDER_DISPLAY_NAMES[thread.provider]} · ${model} · ${environment}`;
+  return hostName ? `${meta} · on ${hostName}` : meta;
+}
+
+/** Threads on another computer open in its connected workspace, never as local ids. */
+function useCreatedThreadOpener(
+  creation: WorkLogSynaraThreadCreation,
+  onOpenThread: ((threadId: string) => void) | undefined,
+): ((threadId: string) => void) | undefined {
+  const sessions = useWorkspaceSessions();
+  if (!onOpenThread || creation.environmentId === undefined) return onOpenThread;
+  const session = sessions.find(
+    (entry) =>
+      entry.host.executionScope.environmentId === creation.environmentId &&
+      readAvailableWorkspaceNavigation(entry),
+  );
+  if (!session) return undefined;
+  return (threadId) => {
+    // Loaded on click: the transcript must not create the app history at import.
+    void import("../../lib/hosts/workspaceCommands").then(({ openWorkspacePath }) =>
+      openWorkspacePath(session, `/${threadId}`),
+    );
+  };
+}
+
+export const SynaraThreadCreationCard = memo(function SynaraThreadCreationCard({
+  creation,
+  onOpenThread: onOpenLocalThread,
+}: {
+  readonly creation: WorkLogSynaraThreadCreation;
+  readonly onOpenThread?: (threadId: string) => void;
+}) {
+  const { t } = useTranslation();
+
+  const onOpenThread = useCreatedThreadOpener(creation, onOpenLocalThread);
+  const singleThread = creation.threads.length === 1 ? creation.threads[0] : undefined;
+  const title = singleThread
+    ? t("chat:threadCreated")
+    : t("chat:threadsCreated", { value0: creation.createdCount });
+  const summary = singleThread
+    ? singleThread.title
+    : t("chat:requestedThreadsCreated", {
+        value0: creation.createdCount,
+        value1: creation.requestedCount,
+      });
+
+  return (
+    <div
+      className="overflow-hidden rounded-[0.65rem] border border-[color:var(--color-border-light)] bg-[var(--color-background-elevated-primary)] dark:border-[color:color-mix(in_srgb,var(--color-border-light)_55%,transparent)]"
+      data-synara-thread-creation-card="true"
+    >
+      <div className="flex min-w-0 items-center gap-3 px-3 py-2.5">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--color-background-elevated-secondary)] text-foreground">
+          <SynaraLogo className="h-[22px] w-auto" aria-label="Synara" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-system-ui text-ui-lg font-medium text-foreground/95">
+            {title}
+          </p>
+          <p className="truncate font-system-ui text-ui-sm text-muted-foreground/65">{summary}</p>
+          {singleThread ? (
+            <div className="mt-1 flex min-w-0 items-center gap-1.5 text-ui-xs text-muted-foreground/52">
+              <ProviderIcon provider={singleThread.provider} className="size-3 shrink-0" />
+              <span className="truncate">{threadMeta(singleThread, creation.hostName)}</span>
+            </div>
+          ) : null}
+        </div>
+        {singleThread && onOpenThread ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="shrink-0"
+            onClick={() => onOpenThread(singleThread.threadId)}
+          >
+            {t("workspace:timeline_openThread")}
+          </Button>
+        ) : null}
+      </div>
+
+      {!singleThread ? (
+        <div className="border-t border-[color:var(--color-border-light)]">
+          {creation.threads.map((thread) => (
+            <div
+              key={thread.threadId}
+              className="flex min-w-0 items-center gap-2.5 border-t border-[color:var(--color-border-light)] px-3 py-2 first:border-t-0"
+            >
+              <ProviderIcon provider={thread.provider} className="size-4 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-system-ui text-ui font-medium text-foreground/90">
+                  {thread.title}
+                </p>
+                <p className="truncate font-system-ui text-ui-xs text-muted-foreground/52">
+                  {threadMeta(thread, creation.hostName)}
+                </p>
+              </div>
+              {onOpenThread ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  className="shrink-0"
+                  onClick={() => onOpenThread(thread.threadId)}
+                >
+                  {t("onboarding:notification_open")}
+                </Button>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+});

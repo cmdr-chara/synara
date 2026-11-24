@@ -1,0 +1,144 @@
+// FILE: ProviderUsagePanelContent.tsx
+// Purpose: Render a provider usage summary panel that can show both classic
+// rate-limit rows and archive-derived local usage lines in the same popover.
+// The limit rows are the point of the popover, so reset credits and usage lines
+// sit behind a "Details" toggle whose state persists in app settings.
+
+import {
+  PROVIDER_DISPLAY_NAMES,
+  type ProviderKind,
+  type ServerCodexResetCredits,
+} from "@synara/contracts";
+import { providerUsageLabel } from "@synara/shared/providerUsage";
+
+import { useAppSettings } from "~/appSettings";
+import { ExternalLinkIcon, TriangleAlertIcon } from "~/lib/icons";
+import type { OpenUsageUsageLine } from "~/lib/openUsageRateLimits";
+import {
+  deriveProviderUsageLearnMoreHref,
+  deriveRateLimitLearnMoreHref,
+  type ProviderRateLimit,
+} from "~/lib/rateLimits";
+import { deriveProviderUsageDisplayRows } from "~/lib/providerUsageDisplay";
+import { cn } from "~/lib/utils";
+
+import { ProviderUsageLimitRows } from "./ProviderUsageLimitRows";
+import { ProviderUsageLineList } from "./ProviderUsageLineList";
+import { ProviderUsageResetCredits } from "./ProviderUsageResetCredits";
+import { DisclosureChevron } from "./ui/DisclosureChevron";
+import { DisclosureRegion } from "./ui/DisclosureRegion";
+import { useTranslation } from "~/i18n";
+
+export { providerUsageLabel };
+
+export function ProviderUsagePanelContent(props: {
+  provider: ProviderKind | null | undefined;
+  rateLimits: ReadonlyArray<ProviderRateLimit>;
+  usageLines?: ReadonlyArray<OpenUsageUsageLine> | undefined;
+  notice?: string | null | undefined;
+  emptyMessage?: string | null | undefined;
+  isLoading?: boolean | undefined;
+  learnMoreHref?: string | null | undefined;
+  showUsageLines?: boolean | undefined;
+  resetCredits?: ServerCodexResetCredits | undefined;
+  resetCreditsSurface?: "settings" | "popover" | undefined;
+  showTitle?: boolean | undefined;
+  showLearnMore?: boolean | undefined;
+  className?: string | undefined;
+}) {
+  const { t } = useTranslation();
+
+  const { settings, updateSettings } = useAppSettings();
+  const visibleRows = deriveProviderUsageDisplayRows(props.rateLimits, t);
+  const learnMoreHref =
+    props.learnMoreHref ??
+    deriveRateLimitLearnMoreHref(props.rateLimits) ??
+    deriveProviderUsageLearnMoreHref(props.provider);
+
+  // Limit rows are what the popover is for; everything else waits behind "Details",
+  // limited to the sections chosen in Settings → Usage. Without limit rows the details
+  // are all there is, so they show directly and the section choices do not apply.
+  const collapseDetails = visibleRows.length > 0;
+  const resetCredits =
+    props.resetCredits && (!collapseDetails || settings.usagePopoverShowResetCredits) ? (
+      <ProviderUsageResetCredits
+        resetCredits={props.resetCredits}
+        surface={props.resetCreditsSurface ?? "popover"}
+      />
+    ) : null;
+  const usageLines =
+    props.showUsageLines !== false &&
+    props.usageLines &&
+    props.usageLines.length > 0 &&
+    (!collapseDetails || settings.usagePopoverShowUsageLines) ? (
+      <ProviderUsageLineList lines={props.usageLines} surface="popover" />
+    ) : null;
+  const hasDetails = resetCredits !== null || usageLines !== null;
+  const detailsOpen = settings.usageDetailsDefaultOpen;
+
+  return (
+    <div className={cn("space-y-2", props.className)}>
+      {props.showTitle !== false ? (
+        <div className="text-chat-meta font-medium text-muted-foreground">
+          {props.provider
+            ? t("common:providerUsageTitle", { provider: PROVIDER_DISPLAY_NAMES[props.provider] })
+            : t("chat:general_usage")}
+        </div>
+      ) : null}
+      {props.notice ? (
+        <p className="flex items-start gap-1.5 text-chat-meta leading-relaxed text-amber-600 dark:text-amber-300/90">
+          <TriangleAlertIcon className="mt-0.5 size-3 shrink-0" aria-hidden="true" />
+          <span>{props.notice}</span>
+        </p>
+      ) : null}
+      <ProviderUsageLimitRows rows={visibleRows} surface="popover" />
+      {collapseDetails ? (
+        hasDetails ? (
+          <div>
+            <button
+              type="button"
+              aria-expanded={detailsOpen}
+              onClick={() => updateSettings({ usageDetailsDefaultOpen: !detailsOpen })}
+              className="flex items-center gap-1 text-chat-meta text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <DisclosureChevron open={detailsOpen} className="size-3" />
+              {t("common:detail_details")}
+            </button>
+            <DisclosureRegion open={detailsOpen} contentClassName="space-y-2 pt-2">
+              {resetCredits}
+              {usageLines}
+            </DisclosureRegion>
+          </div>
+        ) : null
+      ) : (
+        <>
+          {resetCredits}
+          {usageLines ??
+            (props.isLoading ? (
+              <p className="text-chat-meta leading-relaxed text-muted-foreground">
+                {t("common:scanningLocalUsageDataForTheSelectedProvider")}
+              </p>
+            ) : (
+              <p className="text-chat-meta leading-relaxed text-muted-foreground">
+                {props.emptyMessage ??
+                  (props.provider
+                    ? t("common:noLocalUsageDataWasFoundYetForThe")
+                    : t("common:noLocalUsageDataWasFoundYet"))}
+              </p>
+            ))}
+        </>
+      )}
+      {props.showLearnMore === true && learnMoreHref ? (
+        <a
+          href={learnMoreHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1 pt-0.5 text-chat-meta text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {t("common:learnMore")}
+          <ExternalLinkIcon className="size-3" />
+        </a>
+      ) : null}
+    </div>
+  );
+}

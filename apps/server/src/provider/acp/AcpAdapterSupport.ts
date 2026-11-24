@@ -1,0 +1,252 @@
+/**
+ * ACP adapter support - maps protocol errors and approval decisions into DP runtime shapes.
+ *
+ * @module AcpAdapterSupport
+ */
+import {
+  type ProviderApprovalDecision,
+  type ProviderInteractionMode,
+  type ProviderKind,
+  type RuntimeMode,
+  type ThreadId,
+  type ToolLifecycleItemType,
+} from "@synara/contracts";
+import { Schema } from "effect";
+import * as AcpErrors from "./AcpErrors.ts";
+
+import { ProviderAdapterRequestError, type ProviderAdapterError } from "../Errors.ts";
+import {
+  isSynaraGatewayToolCall,
+  shouldAllowSynaraComputerProviderTool,
+} from "../../agentGateway/computerToolPermission.ts";
+
+// Synara-internal ACP tool kind for provider-native subagent runs. ACP's ToolKind has
+// no subagent variant (Cursor sends `kind: "other"` + `rawInput._toolName: "task"`), so
+// the runtime model tags detected subagent calls with this kind to reach the shared
+// collab_agent_tool_call presentation (agent icon, prompt preview, subagent live meta).
+export const ACP_SUBAGENT_TOOL_KIND = "agent";
+
+// ACP has no image-generation kind; keep this inferred presentation separate from permissions.
+export const ACP_IMAGE_GENERATION_TOOL_KIND = "image_generation";
+
+export function canonicalItemTypeFromAcpToolKind(kind: string | undefined): ToolLifecycleItemType {
+  switch (kind) {
+    case ACP_SUBAGENT_TOOL_KIND:
+      return "collab_agent_tool_call";
+    case ACP_IMAGE_GENERATION_TOOL_KIND:
+      return "image_generation";
+    case "execute":
+      return "command_execution";
+    case "edit":
+    case "delete":
+    case "move":
+      return "file_change";
+    case "fetch":
+      return "web_search";
+    case "search":
+    default:
+      return "dynamic_tool_call";
+  }
+}
+
+function acpRequestErrorDetail(error: AcpErrors.AcpRequestError): string {
+  const message = error.message.trim();
+  const data =
+    typeof error.data === "object" && error.data !== null
+      ? (error.data as Record<string, unknown>)
+      : undefined;
+  const rawDataDetail = data?.detail ?? data?.details;
+  const dataDetail =
+    typeof error.data === "string"
+      ? error.data.trim()
+      : typeof rawDataDetail === "string"
+        ? rawDataDetail.trim()
+        : "";
+
+  if (dataDetail && /^(?:internal error(?:: agent error)?|agent error)$/iu.test(message)) {
+    return dataDetail;
+  }
+  if (dataDetail && typeof data?.code === "string" && data.code.startsWith("FS_")) {
+    return message ? `${message} ${dataDetail}` : dataDetail;
+  }
+  return message || dataDetail || "ACP request failed.";
+}
+
+export function mapAcpToAdapterError(
+  provider: ProviderKind,
+  _threadId: ThreadId,
+  method: string,
+  error: AcpErrors.AcpError,
+): ProviderAdapterError {
+  if (Schema.is(AcpErrors.AcpRequestError)(error)) {
+    return new ProviderAdapterRequestError({
+      provider,
+      method,
+      detail: acpRequestErrorDetail(error),
+      cause: error,
+    });
+  }
+  return new ProviderAdapterRequestError({
+    provider,
+    method,
+    detail: error.message.trim() || "ACP request failed without an error message.",
+    cause: error,
+  });
+}
+
+type AcpPermissionOptionLike = {
+  readonly kind: "allow_once" | "allow_always" | "reject_once" | "reject_always";
+  readonly optionId: string;
+};
+
+export type AcpPermissionPolicyOutcome =
+  | { readonly outcome: "selected"; readonly optionId: string }
+  | { readonly outcome: "cancelled" };
+
+export function selectAcpPermissionOptionId(
+  decision: ProviderApprovalDecision,
+  options: ReadonlyArray<AcpPermissionOptionLike>,
+): string | undefined {
+  if (decision === "cancel") {
+    return undefined;
+  }
+
+  const preferredKinds =
+    decision === "acceptForSession"
+      ? (["allow_always", "allow_once"] as const)
+      : decision === "accept"
+        ? (["allow_once", "allow_always"] as const)
+        : (["reject_once", "reject_always"] as const);
+
+  for (const kind of preferredKinds) {
+    const optionId = options.find((option) => option.kind === kind)?.optionId.trim();
+    if (optionId) {
+      return optionId;
+    }
+  }
+  return undefined;
+}
+
+export function selectAcpFullAccessPermissionOptionId(
+  options: ReadonlyArray<AcpPermissionOptionLike>,
+): string | undefined {
+  // Prefer a request-scoped grant, but Full Access must remain operational for
+  // ACP agents that expose only the protocol's persistent allow option. Every
+  // supported adapter re-applies its native interaction mode before a turn, and
+  // Plan-mode reverse requests are still rejected by resolveAcpPermissionPolicy.
+  return selectAcpPermissionOptionId("accept", options);
+}
+
+/** Full access never blocks on a human prompt, even if an agent offers no allow option. */
+export function resolveAcpFullAccessPermissionOutcome(
+  options: ReadonlyArray<AcpPermissionOptionLike>,
+): AcpPermissionPolicyOutcome {
+  const optionId = selectAcpFullAccessPermissionOptionId(options);
+  return optionId === undefined ? { outcome: "cancelled" } : { outcome: "selected", optionId };
+}
+
+/**
+ * Applies Synara's turn-scoped permission precedence to ACP reverse requests.
+ *
+ * `interactionMode: undefined` means that no turn owns the request. Those
+ * requests are cancelled so replay or late provider activity cannot inherit a
+ * previous Plan turn or a future Full Access turn. Active adapters normalize
+ * an omitted turn mode to `default` before dispatching the prompt.
+ */
+export function resolveAcpPermissionPolicy(input: {
+  readonly runtimeMode: RuntimeMode;
+  readonly interactionMode: ProviderInteractionMode | undefined;
+  readonly options: ReadonlyArray<AcpPermissionOptionLike>;
+  readonly computerControlEnabled?: boolean;
+  readonly activeTurn?: boolean;
+  readonly autoApproveSynaraTools?: boolean;
+  readonly gatewaySessionActive?: boolean;
+  readonly toolCall?: {
+    readonly kind?: unknown;
+    readonly title?: unknown;
+    readonly rawInput?: unknown;
+    readonly metadata?: unknown;
+  };
+}): AcpPermissionPolicyOutcome | undefined {
+  if (input.interactionMode === "plan") {
+    const optionId = selectAcpPermissionOptionId("decline", input.options);
+    return optionId === undefined ? { outcome: "cancelled" } : { outcome: "selected", optionId };
+  }
+
+  if (input.interactionMode === undefined) {
+    return { outcome: "cancelled" };
+  }
+
+  if (
+    shouldAllowSynaraComputerProviderTool({
+      computerControlEnabled: input.computerControlEnabled === true,
+      activeTurn: input.activeTurn === true,
+      interactionMode: input.interactionMode,
+      runtimeMode: input.runtimeMode,
+      permission: {
+        title: input.toolCall?.title,
+        rawInput: input.toolCall?.rawInput,
+      },
+    })
+  ) {
+    const optionId = input.options.find((option) => option.kind === "allow_once")?.optionId.trim();
+    if (optionId) return { outcome: "selected", optionId };
+  }
+
+  // Coordinator threads pre-approve the Synara gateway catalog: a gateway tool
+  // call is Synara's own orchestration surface, so prompting the user for it
+  // would deadlock the coordinator on its own permission request. The name
+  // must match the catalog exactly (never the composed title), and an
+  // execute-kind request can never claim a gateway tool — a shell command
+  // named like one keeps the normal prompt path.
+  if (
+    input.autoApproveSynaraTools === true &&
+    input.gatewaySessionActive === true &&
+    input.toolCall?.kind !== "execute" &&
+    isSynaraGatewayToolCall({
+      rawInput: input.toolCall?.rawInput,
+      metadata: input.toolCall?.metadata,
+    })
+  ) {
+    const optionId = input.options.find((option) => option.kind === "allow_once")?.optionId.trim();
+    if (optionId) return { outcome: "selected", optionId };
+  }
+
+  return input.runtimeMode === "full-access"
+    ? resolveAcpFullAccessPermissionOutcome(input.options)
+    : undefined;
+}
+
+type AcpToolCallLike = {
+  readonly status?: string;
+  readonly detail?: string | null;
+  readonly title?: string | null;
+};
+
+// Converts provider-specific failed tool payloads into a stable turn failure message.
+export function readAcpFailedToolDetail(toolCall: AcpToolCallLike): string | undefined {
+  if (toolCall.status !== "failed") {
+    return undefined;
+  }
+
+  return toolCall.detail?.trim() || toolCall.title?.trim() || "Tool call failed.";
+}
+
+export function classifyAcpPromptTurnCompletion(input: {
+  readonly stopReason: string | null | undefined;
+  readonly failedToolDetail?: string | undefined;
+}): { readonly state: "completed" | "cancelled" | "failed"; readonly errorMessage?: string } {
+  if (input.stopReason !== "cancelled") {
+    return { state: "completed" };
+  }
+
+  const failedToolDetail = input.failedToolDetail?.trim();
+  if (failedToolDetail) {
+    return {
+      state: "failed",
+      errorMessage: failedToolDetail,
+    };
+  }
+
+  return { state: "cancelled" };
+}

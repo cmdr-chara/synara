@@ -1,0 +1,308 @@
+// Owns updater admission and progress policy; package lanes must never replace one another.
+import type { DesktopUpdateState } from "@synara/contracts";
+import type { SynaraDesktopFlavor } from "@synara/shared/desktopIdentity";
+
+export type DownloadProgressSample = {
+  readonly percent?: number | null;
+  readonly transferred?: number | null;
+};
+
+// Admission for periodic, foreground, and explicit checks shares the same busy states.
+export function canCheckForDesktopUpdates(state: DesktopUpdateState): boolean {
+  return state.status !== "checking" && state.status !== "downloading";
+}
+
+export function getDownloadStallTimeoutMessage(timeoutMs: number): string {
+  const timeoutSeconds = Math.max(1, Math.round(timeoutMs / 1000));
+  return `Download stalled after ${timeoutSeconds} seconds without progress. Try again.`;
+}
+
+export function isExpectedStalledDownloadCancellationError(args: {
+  readonly suppressionArmed: boolean;
+  readonly errorContext: DesktopUpdateState["errorContext"];
+  readonly message: string;
+}): boolean {
+  return (
+    args.suppressionArmed &&
+    args.errorContext === "download" &&
+    args.message.trim().toLowerCase() === "cancelled"
+  );
+}
+
+function finiteNumber(value: number | null | undefined): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+export function hasDownloadProgressAdvanced(
+  previous: DownloadProgressSample | null,
+  next: DownloadProgressSample,
+): boolean {
+  const nextTransferred = finiteNumber(next.transferred);
+  const nextPercent = finiteNumber(next.percent);
+  if (nextTransferred === null && nextPercent === null) {
+    return false;
+  }
+
+  if (previous === null) {
+    return true;
+  }
+
+  const previousTransferred = finiteNumber(previous.transferred);
+  const previousPercent = finiteNumber(previous.percent);
+  const transferredAdvanced =
+    previousTransferred === null
+      ? nextTransferred !== null
+      : nextTransferred !== null && nextTransferred > previousTransferred;
+  const percentAdvanced =
+    previousPercent === null
+      ? nextPercent !== null
+      : nextPercent !== null && nextPercent > previousPercent;
+
+  return transferredAdvanced || percentAdvanced;
+}
+
+export function shouldBroadcastDownloadProgress(
+  currentState: DesktopUpdateState,
+  nextPercent: number,
+): boolean {
+  if (currentState.status !== "downloading") {
+    return true;
+  }
+
+  const currentPercent = currentState.downloadPercent;
+  if (currentPercent === null) {
+    return true;
+  }
+
+  const previousStep = Math.floor(currentPercent);
+  const nextStep = Math.floor(nextPercent);
+  return nextStep !== previousStep || nextPercent === 100;
+}
+
+type ParsedUpdateVersion = {
+  readonly major: number;
+  readonly minor: number;
+  readonly patch: number;
+  readonly prerelease: string | null;
+};
+
+function parseUpdateVersion(version: string): ParsedUpdateVersion | null {
+  const match = version
+    .trim()
+    .match(
+      /^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/,
+    );
+  if (!match?.[1] || !match[2] || !match[3]) {
+    return null;
+  }
+  return {
+    major: Number(match[1]),
+    minor: Number(match[2]),
+    patch: Number(match[3]),
+    prerelease: match[4] ?? null,
+  };
+}
+
+export function isUpdateVersionNewer(currentVersion: string, candidateVersion: string): boolean {
+  const current = parseUpdateVersion(currentVersion);
+  const candidate = parseUpdateVersion(candidateVersion);
+  if (!current || !candidate) {
+    return candidateVersion.trim() !== currentVersion.trim();
+  }
+
+  if (candidate.major !== current.major) return candidate.major > current.major;
+  if (candidate.minor !== current.minor) return candidate.minor > current.minor;
+  if (candidate.patch !== current.patch) return candidate.patch > current.patch;
+
+  // Both prereleases of the same core: compare semver identifiers so a
+  // prerelease train can advance within one base version (beta.2 > beta.1).
+  if (current.prerelease !== null && candidate.prerelease !== null) {
+    const candidateParts = candidate.prerelease.split(".");
+    const currentParts = current.prerelease.split(".");
+    for (let index = 0; index < Math.max(candidateParts.length, currentParts.length); index += 1) {
+      const candidatePart = candidateParts[index];
+      const currentPart = currentParts[index];
+      if (candidatePart === undefined) return false;
+      if (currentPart === undefined) return true;
+      const candidateNumeric = /^\d+$/.test(candidatePart);
+      const currentNumeric = /^\d+$/.test(currentPart);
+      if (candidateNumeric && currentNumeric) {
+        if (Number(candidatePart) !== Number(currentPart)) {
+          return Number(candidatePart) > Number(currentPart);
+        }
+        continue;
+      }
+      if (candidateNumeric !== currentNumeric) return !candidateNumeric;
+      if (candidatePart !== currentPart) return candidatePart > currentPart;
+    }
+    return false;
+  }
+
+  // Treat stable as newer than the same prerelease, but never reinstall the
+  // exact same stable version from a stale updater cache.
+  return current.prerelease !== null && candidate.prerelease === null;
+}
+
+/**
+ * Whether a release is on this flavor's lane. Electron-updater's GitHub
+ * provider falls back to `latest-mac.yml` when the channel manifest is absent,
+ * so without this gate a beta install offers the newest *stable* build — and
+ * installing it would silently swap the app to a different flavor and home
+ * directory. Flavors are install identities, not in-place channels: a beta
+ * only updates to `*-beta.*` releases and a production build only takes stable
+ * ones; Remote takes only `*-remote.*` releases. Upgrading lanes always happens by installing the other app.
+ */
+export function isUpdateVersionAllowedForFlavor(
+  candidateVersion: string,
+  flavor: SynaraDesktopFlavor,
+): boolean {
+  const candidate = parseUpdateVersion(candidateVersion);
+  if (!candidate) {
+    // Beta, Remote and production fail closed: an unparseable version can never be
+    // proven to be on the right lane, so it is not offered. Canary/cua keep
+    // the pre-existing "differs means newer" behavior.
+    return flavor !== "beta" && flavor !== "remote" && flavor !== "production";
+  }
+  if (flavor === "beta" || flavor === "remote") {
+    return (
+      candidate.prerelease === flavor || (candidate.prerelease?.startsWith(`${flavor}.`) ?? false)
+    );
+  }
+  if (flavor === "production") {
+    return candidate.prerelease === null;
+  }
+  return true;
+}
+
+export function nextStatusAfterDownloadFailure(
+  currentState: DesktopUpdateState,
+): DesktopUpdateState["status"] {
+  return currentState.availableVersion ? "available" : "error";
+}
+
+export function getCanRetryAfterDownloadFailure(currentState: DesktopUpdateState): boolean {
+  return currentState.availableVersion !== null;
+}
+
+export function shouldCheckForUpdatesOnForeground(args: {
+  checkedAt: string | null;
+  backgroundedAtMs: number | null;
+  foregroundedAtMs: number;
+  minBackgroundDurationMs: number;
+  minIntervalMs: number;
+}): boolean {
+  const { checkedAt, backgroundedAtMs, foregroundedAtMs, minBackgroundDurationMs, minIntervalMs } =
+    args;
+  if (backgroundedAtMs === null || foregroundedAtMs <= backgroundedAtMs) {
+    return false;
+  }
+
+  // Ignore fleeting blur/focus churn from window transitions and native dialogs.
+  if (foregroundedAtMs - backgroundedAtMs < minBackgroundDurationMs) {
+    return false;
+  }
+
+  if (checkedAt === null) {
+    return true;
+  }
+
+  const lastCheckedAtMs = Date.parse(checkedAt);
+  if (!Number.isFinite(lastCheckedAtMs)) {
+    return true;
+  }
+
+  return foregroundedAtMs - lastCheckedAtMs >= minIntervalMs;
+}
+
+export function getAutoUpdateDisabledReason(args: {
+  isDevelopment: boolean;
+  isPackaged: boolean;
+  platform: NodeJS.Platform;
+  appImage?: string | undefined;
+  disabledByEnv: boolean;
+  hasUpdateFeedConfig: boolean;
+}): string | null {
+  if (!args.hasUpdateFeedConfig) {
+    return "Automatic updates are not available because no update feed is configured.";
+  }
+  if (args.isDevelopment || !args.isPackaged) {
+    return "Automatic updates are only available in packaged production builds.";
+  }
+  if (args.disabledByEnv) {
+    return "Automatic updates are disabled by the SYNARA_DISABLE_AUTO_UPDATE setting.";
+  }
+  if (args.platform === "linux" && !args.appImage) {
+    return "Automatic updates on Linux require running the AppImage build.";
+  }
+  return null;
+}
+
+/**
+ * Whether the updater's resolved payload can run on this runtime. Each Linux
+ * architecture publishes its own manifest and AppImage, so a correct feed
+ * already matches; this is a safety net for a mispublished or merged manifest,
+ * where the resolved AppImage could belong to the other architecture.
+ *
+ * electron-updater resolves `files[]` when present and falls back to the legacy
+ * top-level `path` from the manifest, so both are inspected. Entries are
+ * reduced to the payload's base name first: a feed URL may carry a query string
+ * or fragment, and electron-updater falls back to the first `files[]` entry
+ * when no name matches, so a Linux manifest without a recognisable AppImage is
+ * rejected instead of admitted unverified.
+ */
+export function updateFilesMatchRuntimeArch(
+  info: {
+    readonly path?: string | undefined;
+    readonly files?: ReadonlyArray<{ readonly url?: string | undefined }> | undefined;
+  },
+  platform: NodeJS.Platform,
+  arch: string,
+): boolean {
+  if (platform !== "linux") return true;
+  const candidates = [info.path, ...(info.files ?? []).map((file) => file.url)];
+  const appImages = candidates.flatMap((url) => {
+    if (typeof url !== "string") return [];
+    const basename = payloadBasename(url);
+    return /\.AppImage$/i.test(basename) ? [basename] : [];
+  });
+  // Fail closed: an updater payload we cannot name is not one we can trust to
+  // match this runtime.
+  if (appImages.length === 0) return false;
+  return appImages.every((name) =>
+    arch === "arm64" ? /arm64\.AppImage$/i.test(name) : !/arm64/i.test(name),
+  );
+}
+
+/** Payload file name from a feed entry, ignoring directory, query and fragment. */
+function payloadBasename(value: string): string {
+  try {
+    const pathname = new URL(value, "https://payload.invalid/").pathname;
+    return pathname.slice(pathname.lastIndexOf("/") + 1);
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Admission for an offered update: same flavor lane, newer version, and a
+ * payload that matches this runtime's architecture. Kept pure so the
+ * `update-available` handler cannot drift from the tested policy.
+ */
+export function shouldAcceptAvailableUpdate(input: {
+  readonly currentVersion: string;
+  readonly version: string | null | undefined;
+  readonly flavor: SynaraDesktopFlavor;
+  readonly info: {
+    readonly path?: string | undefined;
+    readonly files?: ReadonlyArray<{ readonly url?: string | undefined }> | undefined;
+  };
+  readonly platform: NodeJS.Platform;
+  readonly arch: string;
+}): boolean {
+  return (
+    typeof input.version === "string" &&
+    isUpdateVersionAllowedForFlavor(input.version, input.flavor) &&
+    isUpdateVersionNewer(input.currentVersion, input.version) &&
+    updateFilesMatchRuntimeArch(input.info, input.platform, input.arch)
+  );
+}

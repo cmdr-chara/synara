@@ -1,0 +1,322 @@
+// FILE: SettingsPanelPrimitives.tsx
+// Purpose: Shared settings section card and row primitives (Codex-style bordered groups).
+// Layer: Settings UI components
+// Exports: SettingsCard, SettingsSectionShell, SettingsSection, SettingsEmptyState,
+//          SettingsListRow, SettingsRow, SettingsSelectPopup
+
+import { type ComponentProps, type ReactNode } from "react";
+import { useTranslation } from "~/i18n";
+import { cn } from "~/lib/utils";
+import {
+  SETTINGS_CARD_CLASS_NAME,
+  SETTINGS_CARD_ROW_CLASS_NAME,
+  SETTINGS_CARD_ROW_DESCRIPTION_CLASS_NAME,
+  SETTINGS_CARD_ROW_TITLE_CLASS_NAME,
+  SETTINGS_EMPTY_STATE_CLASS_NAME,
+  SETTINGS_PANEL_SECTION_CLASS_NAME,
+  SETTINGS_SECTION_LABEL_CLASS_NAME,
+  SETTINGS_STACKED_ROWS_DIVIDER_CLASS_NAME,
+} from "~/settingsPanelStyles";
+import { SelectPopup } from "~/components/ui/select";
+import { composerPickerMenuShellClassName } from "~/components/chat/composerPickerSize";
+
+/**
+ * Grouped settings card. Children stack as rows separated by hairlines; pass
+ * `divided={false}` for a card that draws its own internal structure (the theme editor's
+ * header/body split) and `className` for one that adds layout to the card itself.
+ */
+export function SettingsCard({
+  divided: dividedProp,
+  className,
+  children,
+}: {
+  divided?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  const divided = dividedProp ?? true;
+  return (
+    <div
+      className={cn(
+        SETTINGS_CARD_CLASS_NAME,
+        divided && SETTINGS_STACKED_ROWS_DIVIDER_CLASS_NAME,
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Labelled settings group without the card — the `<section>`, its heading, and an
+ * optional trailing header action (Refresh, …). Use it when a group holds something
+ * other than a single card (a card plus editors, a loading/empty swap); use
+ * {@link SettingsSection} for the common card-only case.
+ *
+ * `id` exposes the section itself as a search/deep-link target for the case where
+ * the header owns the setting (a toggle in the action slot) and no row carries it.
+ */
+export function SettingsSectionShell({
+  title,
+  translateTitle = true,
+  action,
+  id,
+  children,
+}: {
+  title: string;
+  translateTitle?: boolean;
+  action?: ReactNode;
+  id?: string;
+  children: ReactNode;
+}) {
+  const { t } = useTranslation();
+  return (
+    <section id={id} className={cn(SETTINGS_PANEL_SECTION_CLASS_NAME, id && "scroll-mt-24")}>
+      {action != null ? (
+        <div className="flex items-center justify-between gap-2">
+          <h2 className={SETTINGS_SECTION_LABEL_CLASS_NAME}>{translateTitle ? t(title) : title}</h2>
+          {action}
+        </div>
+      ) : (
+        <h2 className={SETTINGS_SECTION_LABEL_CLASS_NAME}>{translateTitle ? t(title) : title}</h2>
+      )}
+      {children}
+    </section>
+  );
+}
+
+export function SettingsSection({
+  title,
+  children,
+  translateTitle,
+}: {
+  title: string;
+  children: ReactNode;
+  translateTitle?: boolean;
+}) {
+  return (
+    <SettingsSectionShell title={title} translateTitle={translateTitle ?? true}>
+      <SettingsCard>{children}</SettingsCard>
+    </SettingsSectionShell>
+  );
+}
+
+/**
+ * A titled block of on/off options inside a settings card, laid out two to a line. For a
+ * family of small switches that all say "show X here" (the Environment panel's sections),
+ * where a full row each would bury the card. Separators come from the parent card.
+ */
+export function SettingsToggleGroup({ title, children }: { title: string; children: ReactNode }) {
+  const { t } = useTranslation();
+  return (
+    <div className={SETTINGS_CARD_ROW_CLASS_NAME} data-slot="settings-toggle-group">
+      <h3 className="text-ui-sm text-muted-foreground">{t(title)}</h3>
+      <div className="mt-2 grid gap-x-6 gap-y-1 sm:grid-cols-2">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * One option in a {@link SettingsToggleGroup}: its name and switch on one line. The
+ * description stays available as the hover hint; `id` keeps search deep links working.
+ */
+export function SettingsToggleItem({
+  id,
+  title,
+  description,
+  control,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  control: ReactNode;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div
+      id={id}
+      title={t(description)}
+      className="flex min-h-8 scroll-mt-24 items-center justify-between gap-3"
+      data-slot="settings-toggle"
+    >
+      <span className="min-w-0 truncate text-ui text-foreground">{t(title)}</span>
+      {control}
+    </div>
+  );
+}
+
+/**
+ * Dashed placeholder block for "nothing here yet" / "nothing matched" / status copy.
+ * `layout` picks the two shapes in use: a one-line left-aligned status strip, or a
+ * taller centered empty block. `tone` switches to the destructive treatment for
+ * failures (worktree load errors).
+ */
+export function SettingsEmptyState({
+  layout: layoutProp,
+  tone: toneProp,
+  className,
+  children,
+}: {
+  layout?: "block" | "status";
+  tone?: "muted" | "destructive";
+  className?: string;
+  children: ReactNode;
+}) {
+  const layout = layoutProp ?? "block";
+  const tone = toneProp ?? "muted";
+  return (
+    <div
+      className={cn(
+        SETTINGS_EMPTY_STATE_CLASS_NAME,
+        "px-4 text-ui leading-snug",
+        layout === "block" ? "py-10 text-center" : "py-6",
+        tone === "destructive"
+          ? "border-destructive/30 bg-destructive/5 text-destructive"
+          : "text-muted-foreground",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Frosted select dropdown panel with settings `rounded-lg` chrome. */
+export function SettingsSelectPopup({
+  align: alignProp,
+  alignItemWithTrigger: alignItemWithTriggerProp,
+  shellClassName,
+  ...props
+}: Omit<ComponentProps<typeof SelectPopup>, "surface">) {
+  const align = alignProp ?? "end";
+  const alignItemWithTrigger = alignItemWithTriggerProp ?? false;
+  return (
+    <SelectPopup
+      align={align}
+      alignItemWithTrigger={alignItemWithTrigger}
+      surface="settings"
+      shellClassName={cn(composerPickerMenuShellClassName(), shellClassName)}
+      {...props}
+    />
+  );
+}
+
+/**
+ * A list item row inside a settings card — same chrome and typography as
+ * {@link SettingsRow}, but for dynamic collections (archived threads, managed
+ * worktrees, …) rather than a single setting + control. It deliberately omits
+ * the search anchor (titles are data, not stable setting names) and supports a
+ * right-click handler plus top-alignment for rows whose body can grow tall.
+ *
+ * Separators come from the parent card's `divide-y` (see {@link SettingsCard} /
+ * {@link SettingsSection}); the row never draws its own border.
+ */
+export function SettingsListRow({
+  title,
+  description,
+  actions,
+  leading,
+  align: alignProp,
+  onContextMenu,
+}: {
+  title: ReactNode;
+  description?: ReactNode;
+  actions?: ReactNode;
+  /** Glyph before the text block (a device or platform icon). */
+  leading?: ReactNode;
+  align?: "center" | "start";
+  onContextMenu?: ComponentProps<"div">["onContextMenu"];
+}) {
+  const align = alignProp ?? "center";
+  return (
+    <div
+      className={SETTINGS_CARD_ROW_CLASS_NAME}
+      data-slot="settings-row"
+      onContextMenu={onContextMenu}
+    >
+      <div
+        className={cn(
+          "flex flex-col gap-2.5 sm:flex-row sm:justify-between",
+          align === "start" ? "sm:items-start" : "sm:items-center",
+        )}
+      >
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          {leading != null ? (
+            <span className="flex size-8 shrink-0 items-center justify-center text-muted-foreground">
+              {leading}
+            </span>
+          ) : null}
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <div className={cn(SETTINGS_CARD_ROW_TITLE_CLASS_NAME, "truncate")}>{title}</div>
+            {description != null ? (
+              <div className={SETTINGS_CARD_ROW_DESCRIPTION_CLASS_NAME}>{description}</div>
+            ) : null}
+          </div>
+        </div>
+        {actions != null ? (
+          <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+            {actions}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function SettingsRow({
+  title,
+  id,
+  description,
+  status,
+  resetAction,
+  control,
+  children,
+  onClick,
+}: {
+  title: ReactNode;
+  /** Stable navigation target, independent of display copy and locale. */
+  id?: string;
+  description: string;
+  status?: ReactNode;
+  resetAction?: ReactNode;
+  control?: ReactNode;
+  children?: ReactNode;
+  onClick?: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div
+      id={id}
+      className={cn(SETTINGS_CARD_ROW_CLASS_NAME, id && "scroll-mt-24")}
+      data-slot="settings-row"
+    >
+      <div
+        className={cn(
+          "flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between",
+          onClick && "cursor-pointer",
+        )}
+        onClick={onClick}
+      >
+        <div className="min-w-0 flex-1 space-y-0.5">
+          <div className="flex min-h-5 items-center gap-1.5">
+            <h3 id={id ? `${id}-title` : undefined} className={SETTINGS_CARD_ROW_TITLE_CLASS_NAME}>
+              {typeof title === "string" ? t(title) : title}
+            </h3>
+            <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center">
+              {resetAction}
+            </span>
+          </div>
+          <p className={SETTINGS_CARD_ROW_DESCRIPTION_CLASS_NAME}>{t(description)}</p>
+          {status ? <div className="pt-1 text-ui-sm text-muted-foreground">{status}</div> : null}
+        </div>
+        {control ? (
+          <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+            {control}
+          </div>
+        ) : null}
+      </div>
+      {children}
+    </div>
+  );
+}

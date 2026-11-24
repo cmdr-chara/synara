@@ -1,0 +1,629 @@
+import { MutationObserver, QueryClient, QueryObserver } from "@tanstack/react-query";
+import { describe, expect, it, vi } from "vitest";
+
+const { readWorkingTreeDiff, createDetachedWorktree } = vi.hoisted(() => ({
+  readWorkingTreeDiff: vi.fn(async (input: { filePath?: string }) => ({
+    patch: input.filePath ?? "all",
+    truncated: false,
+  })),
+  createDetachedWorktree: vi.fn(async (input: { cwd: string; ref: string }) => ({
+    worktree: { path: `${input.cwd}-worktree`, branch: null, ref: input.ref },
+  })),
+}));
+vi.mock("../nativeApi", () => ({
+  ensureNativeApi: () => ({ git: { readWorkingTreeDiff, createDetachedWorktree } }),
+}));
+import {
+  gitQueryKeys,
+  gitStatusQueryOptions,
+  gitWorkingTreeDiffQueryOptions,
+  invalidateGitQueries,
+  invalidateGitQueriesForCwds,
+  isGitExpensiveReadCapacityError,
+  gitMutationKeys,
+  gitCreateDetachedWorktreeMutationOptions,
+  gitRunStackedActionMutationOptions,
+  refreshGitActionAvailability,
+  refreshGitQueriesForCwd,
+  refreshGitQueriesForCwdsAfterActivity,
+  refreshGitWorkingTreeDiffsForCwd,
+  refreshLocalGitQueriesForCwdsAfterActivity,
+  refreshGitAfterFileWrite,
+} from "./gitReactQuery";
+
+function deferredVoid() {
+  let resolve!: () => void;
+  const promise = new Promise<void>((resolvePromise) => {
+    resolve = resolvePromise;
+  });
+  return { promise, resolve };
+}
+
+describe("file-scoped working tree diffs", () => {
+  it("keeps each file separate from other files and the repository-wide cache", async () => {
+    const client = new QueryClient();
+    const query = (filePath?: string) => gitWorkingTreeDiffQueryOptions({ cwd: "/repo", filePath });
+    expect(await client.fetchQuery(query())).toEqual({ patch: "all", truncated: false });
+    expect(await client.fetchQuery(query("src/a.ts"))).toEqual({
+      patch: "src/a.ts",
+      truncated: false,
+    });
+    expect(await client.fetchQuery(query("src/b.ts"))).toEqual({
+      patch: "src/b.ts",
+      truncated: false,
+    });
+    expect(readWorkingTreeDiff).toHaveBeenCalledWith({
+      cwd: "/repo",
+      scope: "workingTree",
+      filePath: "src/a.ts",
+    });
+  });
+});
+
+describe("gitMutationKeys", () => {
+  it("scopes stacked action keys by cwd", () => {
+    expect(gitMutationKeys.runStackedAction("/repo/a")).not.toEqual(
+      gitMutationKeys.runStackedAction("/repo/b"),
+    );
+  });
+});
+
+describe("git mutation options", () => {
+  const queryClient = new QueryClient();
+
+  it("attaches cwd-scoped mutation key for runStackedAction", () => {
+    const options = gitRunStackedActionMutationOptions({ cwd: "/repo/a", queryClient });
+    expect(options.mutationKey).toEqual(gitMutationKeys.runStackedAction("/repo/a"));
+  });
+
+  it("does not keep a completed stacked action pending while Git queries refresh", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/non-blocking";
+    const statusKey = gitQueryKeys.status(cwd);
+    let statusCalls = 0;
+    const statusGate = deferredVoid();
+    queryClient.setQueryData(statusKey, { branch: "main" });
+    const observer = new QueryObserver(queryClient, {
+      queryKey: statusKey,
+      queryFn: async () => {
+        statusCalls += 1;
+        await statusGate.promise;
+        return { branch: "main" };
+      },
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+    const options = gitRunStackedActionMutationOptions({ cwd, queryClient });
+
+    const callbackResult = (options.onSettled as (() => unknown) | undefined)?.();
+    expect(callbackResult).toBeUndefined();
+
+    const refresh = refreshGitQueriesForCwd(queryClient, cwd);
+    await vi.waitFor(() => expect(statusCalls).toBe(1));
+    statusGate.resolve();
+    await refresh;
+    unsubscribe();
+  });
+
+  it("resolves worktree creation without waiting for the global Git refresh", async () => {
+    const queryClient = new QueryClient();
+    // An unrelated checkout cached earlier in the session whose status read hangs.
+    const otherCwd = "/repo/other-checkout";
+    const statusKey = gitQueryKeys.status(otherCwd);
+    let statusCalls = 0;
+    const statusGate = deferredVoid();
+    queryClient.setQueryData(statusKey, { branch: "main" });
+    const observer = new QueryObserver(queryClient, {
+      queryKey: statusKey,
+      queryFn: async () => {
+        statusCalls += 1;
+        await statusGate.promise;
+        return { branch: "main" };
+      },
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+    const mutation = new MutationObserver(
+      queryClient,
+      gitCreateDetachedWorktreeMutationOptions({ queryClient }),
+    );
+
+    const result = await mutation.mutate({ cwd: "/repo/project", ref: "main" });
+
+    expect(result.worktree.path).toBe("/repo/project-worktree");
+    expect(createDetachedWorktree).toHaveBeenCalledWith({
+      cwd: "/repo/project",
+      ref: "main",
+      path: null,
+    });
+    // The settled refresh still runs in the background and is still in flight.
+    await vi.waitFor(() => expect(statusCalls).toBe(1));
+    expect(queryClient.getQueryState(statusKey)?.isInvalidated).toBe(true);
+    expect(queryClient.getQueryState(statusKey)?.fetchStatus).toBe("fetching");
+
+    statusGate.resolve();
+    await vi.waitFor(() => expect(queryClient.getQueryState(statusKey)?.fetchStatus).toBe("idle"));
+    unsubscribe();
+  });
+});
+
+describe("git query invalidation", () => {
+  it("invalidates all git query families for broad refreshes", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/all";
+    const keys = [
+      gitQueryKeys.githubRepository(cwd),
+      gitQueryKeys.status(cwd),
+      gitQueryKeys.branches(cwd),
+      gitQueryKeys.workingTreeDiff(cwd, "workingTree"),
+      ["git", "pull-request", cwd, "https://example.test/pr/1"] as const,
+    ];
+
+    for (const key of keys) {
+      queryClient.setQueryData(key, {});
+    }
+
+    await invalidateGitQueries(queryClient);
+
+    for (const key of keys) {
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBe(true);
+    }
+  });
+
+  it("invalidates only queries for the affected cwd", async () => {
+    const queryClient = new QueryClient();
+    const cwdA = "/repo/a";
+    const cwdB = "/repo/b";
+    const cwdAKeys = [
+      gitQueryKeys.githubRepository(cwdA),
+      gitQueryKeys.status(cwdA),
+      gitQueryKeys.branches(cwdA),
+      gitQueryKeys.workingTreeDiff(cwdA, "workingTree"),
+      gitQueryKeys.workingTreeDiff(cwdA, "staged"),
+      ["git", "pull-request", cwdA, "https://example.test/pr/1"] as const,
+    ];
+    const cwdBKeys = [
+      gitQueryKeys.githubRepository(cwdB),
+      gitQueryKeys.status(cwdB),
+      gitQueryKeys.branches(cwdB),
+      gitQueryKeys.workingTreeDiff(cwdB, "workingTree"),
+      ["git", "pull-request", cwdB, "https://example.test/pr/2"] as const,
+    ];
+
+    for (const key of [...cwdAKeys, ...cwdBKeys]) {
+      queryClient.setQueryData(key, {});
+    }
+
+    await invalidateGitQueriesForCwds(queryClient, [cwdA]);
+
+    for (const key of cwdAKeys) {
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBe(true);
+    }
+    for (const key of cwdBKeys) {
+      expect(queryClient.getQueryState(key)?.isInvalidated).toBe(false);
+    }
+  });
+
+  it("keeps availability coalesced when a refresh is upgraded to include details", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/upgraded";
+    const statusKey = gitQueryKeys.status(cwd);
+    let statusCalls = 0;
+    const statusGate = deferredVoid();
+    queryClient.setQueryData(statusKey, {});
+    const observer = new QueryObserver(queryClient, {
+      queryKey: statusKey,
+      queryFn: async () => {
+        statusCalls += 1;
+        await statusGate.promise;
+        return {};
+      },
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+
+    const availability = refreshGitActionAvailability(queryClient, cwd);
+    const details = refreshGitQueriesForCwd(queryClient, cwd);
+    const repeatedAvailability = refreshGitActionAvailability(queryClient, cwd);
+
+    expect(repeatedAvailability).toBe(availability);
+    await vi.waitFor(() => expect(statusCalls).toBe(1));
+    statusGate.resolve();
+    await Promise.all([availability, details, repeatedAvailability]);
+    expect(statusCalls).toBe(1);
+    unsubscribe();
+  });
+
+  it("starts a fresh refresh when the existing one has already begun its reads", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/post-mutation";
+    const statusKey = gitQueryKeys.status(cwd);
+    let branch = "main";
+    let statusCalls = 0;
+    const firstStatusGate = deferredVoid();
+    queryClient.setQueryData(statusKey, { branch });
+    const observer = new QueryObserver(queryClient, {
+      queryKey: statusKey,
+      queryFn: async () => {
+        statusCalls += 1;
+        const observed = branch;
+        if (statusCalls === 1) {
+          await firstStatusGate.promise;
+        }
+        return { branch: observed };
+      },
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+
+    const first = refreshGitActionAvailability(queryClient, cwd);
+    await vi.waitFor(() => expect(statusCalls).toBe(1));
+
+    // A mutation (e.g. checkout or pull) settles while the first refresh is mid-read:
+    // its in-flight fetch observed the pre-mutation repository, so the follow-up refresh
+    // must issue new reads instead of joining it.
+    branch = "feature";
+    const second = refreshGitActionAvailability(queryClient, cwd);
+    expect(second).not.toBe(first);
+
+    firstStatusGate.resolve();
+    await Promise.all([first, second]);
+    expect(statusCalls).toBe(2);
+    expect(queryClient.getQueryData(statusKey)).toEqual({ branch: "feature" });
+    unsubscribe();
+  });
+
+  it("cancels a cold query's initial fetch instead of adopting its pre-mutation result", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/cold-cache";
+    const statusKey = gitQueryKeys.status(cwd);
+    let branch = "main";
+    let statusCalls = 0;
+    const firstStatusGate = deferredVoid();
+    // No initial cache data: the observer's mount fetch is the query's first ever fetch,
+    // which refetchQueries' cancelRefetch alone would join instead of cancelling.
+    const observer = new QueryObserver(queryClient, {
+      queryKey: statusKey,
+      queryFn: async () => {
+        statusCalls += 1;
+        const observed = branch;
+        if (statusCalls === 1) {
+          await firstStatusGate.promise;
+        }
+        return { branch: observed };
+      },
+      retry: false,
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+    await vi.waitFor(() => expect(statusCalls).toBe(1));
+
+    // A mutation settles while the initial fetch is still reading pre-mutation state.
+    branch = "feature";
+    await refreshGitActionAvailability(queryClient, cwd);
+
+    expect(statusCalls).toBe(2);
+    expect(queryClient.getQueryData(statusKey)).toEqual({ branch: "feature" });
+    firstStatusGate.resolve();
+    await Promise.resolve();
+    expect(queryClient.getQueryData(statusKey)).toEqual({ branch: "feature" });
+    unsubscribe();
+  });
+
+  it("starts a fresh active diff read when a file event races its cold fetch", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/cold-diff";
+    const diffKey = gitQueryKeys.workingTreeDiff(cwd, "workingTree");
+    let patch = "old";
+    let diffCalls = 0;
+    const firstDiffGate = deferredVoid();
+    const observer = new QueryObserver(queryClient, {
+      queryKey: diffKey,
+      queryFn: async () => {
+        diffCalls += 1;
+        const observed = patch;
+        if (diffCalls === 1) {
+          await firstDiffGate.promise;
+        }
+        return observed;
+      },
+      retry: false,
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+    const unsubscribe = observer.subscribe(() => undefined);
+    await vi.waitFor(() => expect(diffCalls).toBe(1));
+
+    patch = "fresh";
+    await refreshGitWorkingTreeDiffsForCwd(queryClient, cwd);
+
+    expect(diffCalls).toBe(2);
+    expect(queryClient.getQueryData(diffKey)).toBe("fresh");
+    firstDiffGate.resolve();
+    await Promise.resolve();
+    expect(queryClient.getQueryData(diffKey)).toBe("fresh");
+    unsubscribe();
+  });
+
+  it("coalesces file-write bursts, reads the latest patch, and leaves branch queries alone", async () => {
+    const client = new QueryClient();
+    const cwd = "/repo/autosave";
+    const key = gitQueryKeys.workingTreeDiff(cwd, "unstaged");
+    const gate = deferredVoid();
+    let contents = "first";
+    const read = vi.fn(async () => {
+      const observed = contents;
+      if (read.mock.calls.length === 1) await gate.promise;
+      return observed;
+    });
+    const branches = vi.fn();
+    client.setQueryData(key, "baseline");
+    client.setQueryData(gitQueryKeys.branches(cwd), []);
+    const stopDiff = new QueryObserver(client, {
+      queryKey: key,
+      queryFn: read,
+      staleTime: Infinity,
+    }).subscribe(() => undefined);
+    const stopBranches = new QueryObserver(client, {
+      queryKey: gitQueryKeys.branches(cwd),
+      queryFn: branches,
+      staleTime: Infinity,
+    }).subscribe(() => undefined);
+    const refresh = refreshGitAfterFileWrite(client, cwd);
+    await vi.waitFor(() => expect(read).toHaveBeenCalledTimes(1));
+    contents = "latest";
+    for (let index = 0; index < 20; index++)
+      expect(refreshGitAfterFileWrite(client, cwd)).toBe(refresh);
+    gate.resolve();
+    await refresh;
+    expect(read).toHaveBeenCalledTimes(2);
+    expect(client.getQueryData(key)).toBe("latest");
+    expect(branches).not.toHaveBeenCalled();
+    stopDiff();
+    stopBranches();
+    client.clear();
+  });
+
+  it("serializes active expensive Git detail reads after status", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/serialized";
+    const calls: string[] = [];
+    let activeCalls = 0;
+    let maxActiveCalls = 0;
+    const observe = (queryKey: readonly unknown[], label: string) => {
+      queryClient.setQueryData(queryKey, {});
+      const observer = new QueryObserver(queryClient, {
+        queryKey,
+        queryFn: async () => {
+          calls.push(label);
+          activeCalls += 1;
+          maxActiveCalls = Math.max(maxActiveCalls, activeCalls);
+          await Promise.resolve();
+          activeCalls -= 1;
+          return {};
+        },
+        staleTime: Number.POSITIVE_INFINITY,
+      });
+      return observer.subscribe(() => undefined);
+    };
+    const unsubscribes = [
+      observe(gitQueryKeys.status(cwd), "status"),
+      observe(gitQueryKeys.workingTreeDiffStats(cwd, "unstaged"), "stats"),
+      observe(gitQueryKeys.workingTreeDiff(cwd, "unstaged"), "patch"),
+    ];
+
+    await refreshGitQueriesForCwd(queryClient, cwd);
+
+    expect(calls).toEqual(["status", "stats", "patch"]);
+    expect(maxActiveCalls).toBe(1);
+    for (const unsubscribe of unsubscribes) unsubscribe();
+  });
+
+  it("refetches mounted blame and base-blob reads after a repository change", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/revision-dependent";
+    const calls: string[] = [];
+    const observe = (queryKey: readonly unknown[], label: string) => {
+      queryClient.setQueryData(queryKey, {});
+      const observer = new QueryObserver(queryClient, {
+        queryKey,
+        queryFn: async () => {
+          calls.push(label);
+          return {};
+        },
+        staleTime: Number.POSITIVE_INFINITY,
+      });
+      return observer.subscribe(() => undefined);
+    };
+    const unsubscribes = [
+      observe(gitQueryKeys.status(cwd), "status"),
+      observe(gitQueryKeys.blameLine(cwd, "src/a.ts", 3, null, null), "blame"),
+      observe(gitQueryKeys.fileAtRev(cwd, "src/a.ts", "HEAD", null), "file-at-rev"),
+    ];
+
+    await refreshGitQueriesForCwd(queryClient, cwd);
+
+    expect(calls).toContain("blame");
+    expect(calls).toContain("file-at-rev");
+    for (const unsubscribe of unsubscribes) unsubscribe();
+  });
+
+  it("prioritizes an availability refresh between active detail reads", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/prioritized";
+    const calls: string[] = [];
+    const statsGate = deferredVoid();
+    const observe = (queryKey: readonly unknown[], label: string, waitForRelease = false) => {
+      queryClient.setQueryData(queryKey, {});
+      const observer = new QueryObserver(queryClient, {
+        queryKey,
+        queryFn: async () => {
+          calls.push(label);
+          if (waitForRelease) {
+            await statsGate.promise;
+          }
+          return {};
+        },
+        staleTime: Number.POSITIVE_INFINITY,
+      });
+      return observer.subscribe(() => undefined);
+    };
+    const unsubscribes = [
+      observe(gitQueryKeys.status(cwd), "status"),
+      observe(gitQueryKeys.workingTreeDiffStats(cwd, "unstaged"), "stats", true),
+      observe(gitQueryKeys.workingTreeDiff(cwd, "unstaged"), "patch"),
+    ];
+
+    const detailsRefresh = refreshGitQueriesForCwd(queryClient, cwd);
+    await vi.waitFor(() => expect(calls).toEqual(["status", "stats"]));
+    const availabilityRefresh = refreshGitActionAvailability(queryClient, cwd);
+
+    statsGate.resolve();
+    await availabilityRefresh;
+    expect(calls).toEqual(["status", "stats", "status"]);
+
+    await detailsRefresh;
+    expect(calls).toEqual(["status", "stats", "status", "patch"]);
+    for (const unsubscribe of unsubscribes) unsubscribe();
+  });
+});
+
+describe("activity-driven git refresh", () => {
+  it("refreshes each checkout at most once per window and still reads the final state", async () => {
+    vi.useFakeTimers();
+    const queryClient = new QueryClient();
+    const fetchedCwds: string[] = [];
+    const observe = (cwd: string) =>
+      new QueryObserver(queryClient, {
+        queryKey: gitQueryKeys.status(cwd),
+        queryFn: async () => {
+          fetchedCwds.push(cwd);
+          return {};
+        },
+        staleTime: Number.POSITIVE_INFINITY,
+      }).subscribe(() => undefined);
+    const unsubscribers = [observe("/repo/a"), observe("/repo/b")];
+    const fetchCount = (cwd: string) => fetchedCwds.filter((entry) => entry === cwd).length;
+    try {
+      await vi.advanceTimersByTimeAsync(0);
+      fetchedCwds.length = 0;
+
+      refreshGitQueriesForCwdsAfterActivity(queryClient, ["/repo/a"]);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(fetchedCwds).toEqual(["/repo/a"]);
+
+      // A burst of tool completions inside the window queues one trailing pass per
+      // checkout instead of one refresh per event.
+      for (let index = 0; index < 4; index += 1) {
+        refreshGitQueriesForCwdsAfterActivity(queryClient, ["/repo/a", "/repo/b"]);
+        await vi.advanceTimersByTimeAsync(300);
+      }
+      expect(fetchCount("/repo/a")).toBe(1);
+      expect(fetchCount("/repo/b")).toBe(1);
+
+      await vi.advanceTimersByTimeAsync(2_000);
+      expect(fetchCount("/repo/a")).toBe(2);
+      expect(fetchCount("/repo/b")).toBe(2);
+
+      // Quiet afterwards: no further refresh runs on its own.
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(fetchedCwds).toHaveLength(4);
+    } finally {
+      for (const unsubscribe of unsubscribers) unsubscribe();
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("local-only git refresh", () => {
+  const observeAll = (queryClient: QueryClient, cwd: string, calls: string[]) => {
+    const observe = (queryKey: readonly unknown[], label: string) => {
+      queryClient.setQueryData(queryKey, {});
+      return new QueryObserver(queryClient, {
+        queryKey,
+        queryFn: async () => {
+          calls.push(label);
+          return {};
+        },
+        staleTime: Number.POSITIVE_INFINITY,
+      }).subscribe(() => undefined);
+    };
+    return [
+      observe(gitQueryKeys.githubRepository(cwd), "github-repository"),
+      observe(gitQueryKeys.status(cwd), "status"),
+      observe([...gitQueryKeys.pullRequest(cwd), "feature"], "pull-request"),
+      observe(gitQueryKeys.workingTreeDiffStats(cwd, "unstaged"), "stats"),
+    ];
+  };
+
+  it("leaves GitHub repository and pull-request reads to turn-level refreshes", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/local-only";
+    const calls: string[] = [];
+    const unsubscribes = observeAll(queryClient, cwd, calls);
+
+    await refreshGitQueriesForCwd(queryClient, cwd, "active-details", "local");
+    expect(calls).toEqual(["status", "stats"]);
+    expect(queryClient.getQueryState(gitQueryKeys.githubRepository(cwd))?.isInvalidated).toBe(
+      false,
+    );
+
+    calls.length = 0;
+    await refreshGitQueriesForCwd(queryClient, cwd);
+    expect(calls.toSorted()).toEqual(["github-repository", "pull-request", "stats", "status"]);
+    for (const unsubscribe of unsubscribes) unsubscribe();
+  });
+
+  it("widens a queued local refresh when a full refresh joins it", async () => {
+    const queryClient = new QueryClient();
+    const cwd = "/repo/upgraded";
+    const calls: string[] = [];
+    const unsubscribes = observeAll(queryClient, cwd, calls);
+
+    const local = refreshGitQueriesForCwd(queryClient, cwd, "active-details", "local");
+    const full = refreshGitQueriesForCwd(queryClient, cwd);
+    await Promise.all([local, full]);
+
+    expect(full).toBe(local);
+    expect(calls.toSorted()).toEqual(["github-repository", "pull-request", "stats", "status"]);
+    for (const unsubscribe of unsubscribes) unsubscribe();
+  });
+
+  it("drives tool-activity refreshes without remote reads", async () => {
+    vi.useFakeTimers();
+    const queryClient = new QueryClient();
+    const cwd = "/repo/tool-activity";
+    const calls: string[] = [];
+    const unsubscribes = observeAll(queryClient, cwd, calls);
+    try {
+      refreshLocalGitQueriesForCwdsAfterActivity(queryClient, [cwd]);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(calls).toEqual(["status", "stats"]);
+    } finally {
+      for (const unsubscribe of unsubscribes) unsubscribe();
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("git expensive-read capacity retry", () => {
+  const capacityError = {
+    code: "RPC_EXPENSIVE_READ_CAPACITY_EXCEEDED",
+    retryable: true,
+    retryAfterMs: 375,
+  };
+
+  it("recognizes the typed capacity error and honors the server retry delay", () => {
+    expect(isGitExpensiveReadCapacityError(capacityError)).toBe(true);
+    expect(isGitExpensiveReadCapacityError(new Error("network"))).toBe(false);
+
+    const options = gitStatusQueryOptions("/repo");
+    expect(typeof options.retry).toBe("function");
+    expect(typeof options.retryDelay).toBe("function");
+    if (typeof options.retry !== "function" || typeof options.retryDelay !== "function") return;
+
+    expect(options.retry(0, capacityError as never)).toBe(false);
+    expect(options.retry(0, new Error("network"))).toBe(true);
+    expect(options.retry(3, new Error("network"))).toBe(false);
+    expect(options.retryDelay(0, capacityError as never)).toBe(375);
+  });
+});

@@ -1,0 +1,381 @@
+import { assert, describe, it } from "@effect/vitest";
+import { spawnSync } from "node:child_process";
+import { basename } from "node:path";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
+import { SYNARA_PACKAGED_DESKTOP_FLAVORS } from "@synara/shared/desktopIdentity";
+import { desktopIconAssetPaths } from "./lib/brand-assets.ts";
+
+import {
+  createDesktopPlatformBuildConfig,
+  MAC_APPSNAP_HELPER_ASAR_EXCLUSION,
+  MAC_APPSNAP_HELPER_BUNDLE_PATH,
+  MAC_APPSNAP_HELPER_STAGE_PATH,
+  MAC_DEVICE_HELPER_RESOURCE_PATH,
+  MAC_DEVICE_HELPER_STAGE_PATH,
+  MAC_ENTITLEMENTS_PATH,
+  MAC_ICON_ASSET_NAME,
+  MAC_ICON_ASSETS_CAR_BUNDLE_PATH,
+  MAC_ICON_ASSETS_CAR_STAGE_PATH,
+  MAC_INHERITED_ENTITLEMENTS_PATH,
+  MAC_WINDOW_MATERIAL_ADDON_ASAR_EXCLUSION,
+  AUDIO_CAPTURE_USAGE_DESCRIPTION,
+  MICROPHONE_USAGE_DESCRIPTION,
+  validateDesktopNativeBuildHost,
+  WINDOWS_INSTALLER_GUID,
+} from "./lib/desktop-platform-build-config.ts";
+
+it("loads the desktop artifact CLI with native Node before packaging", () => {
+  const result = spawnSync(
+    process.execPath,
+    [fileURLToPath(new URL("./build-desktop-artifact.ts", import.meta.url)), "--help"],
+    { encoding: "utf8", env: { ...process.env, NODE_OPTIONS: "" }, timeout: 15_000 },
+  );
+  assert.equal(result.status, 0, result.stderr || result.error?.message);
+  assert.ok(result.stdout.includes("--platform"));
+});
+
+describe("createDesktopPlatformBuildConfig", () => {
+  it("isolates Remote's Windows installer registration and Linux executable", () => {
+    const remote = createDesktopPlatformBuildConfig({
+      platform: "win",
+      target: "nsis",
+      flavor: "remote",
+    });
+    const beta = createDesktopPlatformBuildConfig({
+      platform: "win",
+      target: "nsis",
+      flavor: "beta",
+    });
+    assert.match(String(remote.nsis?.guid), /^[0-9a-f-]{36}$/);
+    assert.notEqual(remote.nsis?.guid, WINDOWS_INSTALLER_GUID);
+    assert.notEqual(remote.nsis?.guid, beta.nsis?.guid);
+    const linux = createDesktopPlatformBuildConfig({
+      platform: "linux",
+      target: "AppImage",
+      flavor: "remote",
+    });
+    assert.equal(linux.linux?.executableName, "synara-remote");
+    assert.deepStrictEqual(linux.linux?.desktop, { entry: { StartupWMClass: "synara-remote" } });
+  });
+
+  it("retains TypeScript runtime libraries on every desktop platform", () => {
+    const require = createRequire(import.meta.url);
+    for (const platform of ["mac", "linux", "win"] as const) {
+      const config = createDesktopPlatformBuildConfig({ platform, target: "dir" });
+      assert.ok(config.onNodeModuleFile);
+      const include = require(config.onNodeModuleFile) as (filePath: string) => boolean;
+      for (const root of [
+        "/stage/node_modules/typescript/lib/",
+        "C:\\stage\\node_modules\\typescript\\lib\\",
+      ]) {
+        for (const library of [
+          "lib.d.ts",
+          "lib.es5.d.ts",
+          "lib.esnext.full.d.ts",
+          "lib.dom.d.ts",
+        ]) {
+          assert.equal(include(`${root}${library}`), true);
+        }
+      }
+      for (const file of [
+        "/stage/node_modules/other/lib/lib.d.ts",
+        "/stage/node_modules/typescript/lib/typescript.d.ts",
+        "/stage/node_modules/typescript/lib/typescript.js",
+        "/stage/node_modules/typescript/lib/nested/lib.d.ts",
+      ]) {
+        assert.equal(include(file), false);
+      }
+    }
+  });
+
+  it("names every packaged Icon Composer asset for CFBundleIconName", () => {
+    for (const flavor of SYNARA_PACKAGED_DESKTOP_FLAVORS) {
+      assert.equal(
+        basename(desktopIconAssetPaths(flavor).macIconComposer, ".icon"),
+        MAC_ICON_ASSET_NAME,
+      );
+    }
+  });
+
+  it("adds explicit microphone entitlements to macOS builds", () => {
+    const config = createDesktopPlatformBuildConfig({
+      platform: "mac",
+      target: "dmg",
+      signed: true,
+    });
+    const mac = config.mac as Record<string, unknown>;
+    const dmg = config.dmg as Record<string, unknown>;
+    const extendInfo = mac.extendInfo as Record<string, unknown>;
+
+    assert.deepStrictEqual(mac.target, ["dmg"]);
+    assert.equal(mac.icon, "icon.icns");
+    assert.equal(mac.minimumSystemVersion, "13.0");
+    assert.deepStrictEqual(config.asarUnpack, ["node_modules/node-pty/**"]);
+    assert.equal(mac.hardenedRuntime, true);
+    assert.equal(mac.notarize, false);
+    assert.ok(config.afterSign?.endsWith("/mac-after-sign.cjs"));
+    assert.equal(mac.identity, undefined);
+    assert.equal(dmg.sign, true);
+    assert.equal(dmg.writeUpdateInfo, false);
+    assert.equal(mac.entitlements, MAC_ENTITLEMENTS_PATH);
+    assert.equal(mac.entitlementsInherit, MAC_INHERITED_ENTITLEMENTS_PATH);
+    // Only Chromium's `.pak` data files skip their own signature; the
+    // framework's signature still seals them. No code may ever match.
+    assert.deepStrictEqual(mac.signIgnore, ["\\.pak$"]);
+    const skipsOwnSignature = (file: string) =>
+      (mac.signIgnore as string[]).some((pattern) => new RegExp(pattern).test(file));
+    const framework =
+      "/stage/Synara.app/Contents/Frameworks/Electron Framework.framework/Versions/A";
+    for (const data of [
+      `${framework}/Resources/am.lproj/locale.pak`,
+      `${framework}/Resources/resources.pak`,
+      "/stage/Synara.app/Contents/Frameworks/Electron Framework.framework/Resources/chrome_200_percent.pak",
+    ])
+      assert.equal(skipsOwnSignature(data), true, data);
+    for (const code of [
+      "/stage/Synara.app",
+      "/stage/Synara.app/Contents/MacOS/Synara",
+      "/stage/Synara.app/Contents/Frameworks/Electron Framework.framework",
+      `${framework}/Electron Framework`,
+      `${framework}/Libraries/libffmpeg.dylib`,
+      `${framework}/Helpers/chrome_crashpad_handler`,
+      "/stage/Synara.app/Contents/Frameworks/Synara Helper (Renderer).app",
+      "/stage/Synara.app/Contents/Frameworks/synara-window-material.node",
+      "/stage/Synara.app/Contents/Helpers/synara-appsnap-helper",
+      "/stage/Synara.app/Contents/Resources/cua-driver/cua-driver",
+      "/stage/Synara.app/Contents/Resources/cloudflared/cloudflared",
+      "/stage/Synara.app/Contents/Resources/app.asar",
+      "/stage/Synara.app/Contents/Resources/app.asar.unpacked/node_modules/node-pty/build/Release/pty.node",
+      "/stage/Synara.app/Contents/Resources/app.asar.unpacked/node_modules/@anthropic-ai/claude-agent-sdk-darwin-arm64/claude",
+      "/stage/Synara.app/Contents/Resources/tool.pak/helper",
+    ])
+      assert.equal(skipsOwnSignature(code), false, code);
+    assert.equal(MAC_APPSNAP_HELPER_BUNDLE_PATH, "Contents/Helpers/synara-appsnap-helper");
+    assert.deepStrictEqual(mac.binaries, [
+      "Contents/Helpers/synara-appsnap-helper",
+      "Contents/Frameworks/synara-window-material.node",
+      "Contents/Resources/cua-driver/cua-driver",
+      "Contents/Resources/cloudflared/cloudflared",
+    ]);
+    assert.equal(
+      mac.x64ArchFiles,
+      "Contents/{Helpers/synara-appsnap-helper,Frameworks/synara-window-material.node,Resources/cua-driver/cua-driver,Resources/cloudflared/cloudflared}",
+    );
+    assert.equal(
+      MAC_APPSNAP_HELPER_STAGE_PATH,
+      "apps/desktop/native/appsnap/build/synara-appsnap-helper",
+    );
+    assert.equal(MAC_APPSNAP_HELPER_ASAR_EXCLUSION, "!apps/desktop/native/appsnap/build/**");
+    assert.equal(config.files?.[0], "**/*");
+    assert.ok(config.files?.includes(MAC_APPSNAP_HELPER_ASAR_EXCLUSION));
+    assert.ok(config.files?.includes(MAC_WINDOW_MATERIAL_ADDON_ASAR_EXCLUSION));
+    assert.ok(config.files?.includes("!apps/desktop/resources/cua-driver/**"));
+    assert.deepStrictEqual(config.extraFiles, [
+      {
+        from: "apps/desktop/resources/cua-driver",
+        to: "Resources/cua-driver",
+      },
+      {
+        from: "apps/desktop/native/appsnap/build/synara-appsnap-helper",
+        to: "Helpers/synara-appsnap-helper",
+      },
+      {
+        from: "apps/desktop/native/window-material/build/synara-window-material.node",
+        to: "Frameworks/synara-window-material.node",
+      },
+      {
+        from: MAC_DEVICE_HELPER_STAGE_PATH,
+        to: MAC_DEVICE_HELPER_RESOURCE_PATH,
+      },
+      {
+        from: MAC_ICON_ASSETS_CAR_STAGE_PATH,
+        to: MAC_ICON_ASSETS_CAR_BUNDLE_PATH,
+      },
+    ]);
+    assert.equal(MAC_ICON_ASSETS_CAR_STAGE_PATH, "apps/desktop/resources/Assets.car");
+    assert.equal(MAC_ICON_ASSETS_CAR_BUNDLE_PATH, "Resources/Assets.car");
+    // macOS 26 reads the layered icon out of Assets.car; without this key the
+    // bundle falls back to the flat ICNS and never gets the glass material.
+    assert.equal(extendInfo.CFBundleIconName, MAC_ICON_ASSET_NAME);
+    assert.equal(extendInfo.NSMicrophoneUsageDescription, MICROPHONE_USAGE_DESCRIPTION);
+    assert.equal(extendInfo.NSAudioCaptureUsageDescription, AUDIO_CAPTURE_USAGE_DESCRIPTION);
+    assert.equal(
+      extendInfo.NSScreenCaptureUsageDescription,
+      "Synara captures the windows you authorize for Computer use.",
+    );
+    assert.equal(
+      extendInfo.NSAccessibilityUsageDescription,
+      "Synara controls the windows you authorize for Computer use.",
+    );
+  });
+
+  it("leaves the DMG container unsigned for build-only macOS artifacts", () => {
+    const config = createDesktopPlatformBuildConfig({
+      platform: "mac",
+      target: "dmg",
+      signed: false,
+    });
+
+    assert.deepStrictEqual(config.dmg, {
+      background: "apps/desktop/resources/dmgly/assets/dmg-background.png",
+      window: { width: 642, height: 406 },
+      iconSize: 128,
+      contents: [
+        { x: 172, y: 135, type: "file" },
+        { x: 514, y: 241, type: "link", path: "/Applications" },
+      ],
+      sign: false,
+      writeUpdateInfo: false,
+    });
+    assert.equal(config.mac?.identity, undefined);
+    assert.equal(config.mac?.minimumSystemVersion, "13.0");
+  });
+
+  it("seals isolated local app bundles with the existing nested signing policy", () => {
+    const config = createDesktopPlatformBuildConfig({
+      platform: "mac",
+      target: "zip",
+      signed: false,
+      adHocSign: true,
+    });
+
+    assert.equal(config.mac?.identity, "-");
+    assert.equal(config.mac?.minimumSystemVersion, "13.0");
+    assert.equal(config.mac?.timestamp, "none");
+    assert.equal(config.mac?.hardenedRuntime, false);
+    assert.equal(config.mac?.notarize, false);
+    assert.equal(config.mac?.entitlements, MAC_ENTITLEMENTS_PATH);
+    assert.equal(config.mac?.entitlementsInherit, MAC_INHERITED_ENTITLEMENTS_PATH);
+    assert.equal(config.dmg?.sign, false);
+  });
+
+  it("never replaces release signing with local ad-hoc signing", () => {
+    const config = createDesktopPlatformBuildConfig({
+      platform: "mac",
+      target: "zip",
+      signed: true,
+      adHocSign: true,
+    });
+
+    assert.equal(config.mac?.identity, undefined);
+    assert.equal(config.mac?.minimumSystemVersion, "13.0");
+    assert.equal(config.mac?.timestamp, undefined);
+    assert.equal(config.mac?.hardenedRuntime, true);
+    assert.equal(config.mac?.notarize, false);
+    assert.ok(config.afterSign?.endsWith("/mac-after-sign.cjs"));
+  });
+
+  it("packages the Linux driver as an external executable and leaves Windows unchanged", () => {
+    const linux = createDesktopPlatformBuildConfig({
+      platform: "linux",
+      target: "AppImage",
+    });
+    const win = createDesktopPlatformBuildConfig({
+      platform: "win",
+      target: "nsis",
+      windowsAzureSignOptions: { publisherName: "Synara" },
+    });
+
+    assert.equal(linux.mac, undefined);
+    assert.equal(linux.extraFiles, undefined);
+    assert.deepStrictEqual(linux.extraResources, [
+      { from: "apps/desktop/resources/cloudflared", to: "cloudflared" },
+      { from: "apps/desktop/resources/cua-driver", to: "cua-driver" },
+    ]);
+    assert.ok(linux.files?.includes("!apps/desktop/resources/cua-driver/**"));
+    assert.ok(linux.files?.includes("!apps/desktop/prod-resources/cua-driver/**"));
+    assert.deepStrictEqual(linux.asarUnpack, ["node_modules/node-pty/**"]);
+    assert.deepStrictEqual(linux.linux, {
+      target: ["AppImage"],
+      executableName: "synara",
+      icon: "icon.png",
+      category: "Development",
+      desktop: {
+        entry: {
+          StartupWMClass: "synara",
+        },
+      },
+    });
+
+    assert.equal(win.mac, undefined);
+    assert.equal(win.extraFiles, undefined);
+    assert.deepStrictEqual(win.extraResources, [
+      { from: "apps/desktop/resources/cloudflared", to: "cloudflared" },
+    ]);
+    assert.deepStrictEqual(win.asarUnpack, ["node_modules/node-pty/**"]);
+    assert.equal(WINDOWS_INSTALLER_GUID, "368107a8-afe6-5db5-ab3b-d4f331684868");
+    assert.deepStrictEqual(win.nsis, {
+      guid: WINDOWS_INSTALLER_GUID,
+    });
+    assert.deepStrictEqual(win.win, {
+      target: ["nsis"],
+      icon: "icon.ico",
+      publisherName: "Synara",
+      azureSignOptions: { publisherName: "Synara" },
+    });
+  });
+
+  it("omits Azure signing options for unsigned build-only artifacts", () => {
+    const config = createDesktopPlatformBuildConfig({
+      platform: "win",
+      target: "nsis",
+    });
+
+    assert.deepStrictEqual(config.win, {
+      target: ["nsis"],
+      icon: "icon.ico",
+    });
+  });
+
+  it("blocks unsupported or non-matching Linux native build hosts", () => {
+    assert.equal(
+      validateDesktopNativeBuildHost({
+        platform: "linux",
+        arch: "x64",
+        hostPlatform: "linux",
+        hostArch: "x64",
+      }),
+      null,
+    );
+
+    assert.equal(
+      validateDesktopNativeBuildHost({
+        platform: "linux",
+        arch: "universal",
+        hostPlatform: "linux",
+        hostArch: "x64",
+      }),
+      "Linux desktop artifacts support x64 or arm64 builds, not universal builds.",
+    );
+
+    const issue = validateDesktopNativeBuildHost({
+      platform: "linux",
+      arch: "x64",
+      hostPlatform: "darwin",
+      hostArch: "arm64",
+    });
+
+    assert.ok(issue?.includes("Build linux/x64 on a matching Linux host"));
+  });
+
+  it("requires a macOS host for the native Swift AppSnap helper", () => {
+    assert.equal(
+      validateDesktopNativeBuildHost({
+        platform: "mac",
+        arch: "universal",
+        hostPlatform: "darwin",
+        hostArch: "arm64",
+      }),
+      null,
+    );
+
+    const issue = validateDesktopNativeBuildHost({
+      platform: "mac",
+      arch: "arm64",
+      hostPlatform: "linux",
+      hostArch: "arm64",
+    });
+    assert.ok(issue?.includes("Build mac/arm64 on macOS"));
+  });
+});

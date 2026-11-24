@@ -1,0 +1,706 @@
+import { Effect, Layer } from "effect";
+import { describe, expect, it, vi } from "vitest";
+
+import {
+  ClaudeTextGeneration,
+  CodexTextGeneration,
+  CursorTextGeneration,
+  DroidTextGeneration,
+  OpenCodeTextGeneration,
+  type TextGenerationShape,
+  TextGeneration,
+} from "../Services/TextGeneration.ts";
+import { ServerSettingsService } from "../../serverSettings.ts";
+import { ProviderTextGenerationLive } from "./ProviderTextGeneration.ts";
+import { GitCore, type GitCoreShape } from "../Services/GitCore.ts";
+import { GitHubCli, type GitHubCliShape } from "../Services/GitHubCli.ts";
+import { GitCommandError, GitHubCliError } from "../Errors.ts";
+
+function createTextGenerationDouble(label: string) {
+  const generateCommitMessage = vi.fn<TextGenerationShape["generateCommitMessage"]>(() =>
+    Effect.succeed({
+      subject: `${label} commit`,
+      body: "",
+    }),
+  );
+  const generatePrContent = vi.fn<TextGenerationShape["generatePrContent"]>(() =>
+    Effect.succeed({
+      title: `${label} pr`,
+      body: "",
+    }),
+  );
+  const generateDiffSummary = vi.fn<TextGenerationShape["generateDiffSummary"]>(() =>
+    Effect.succeed({
+      summary: `${label} summary`,
+    }),
+  );
+  const generateBranchName = vi.fn<TextGenerationShape["generateBranchName"]>(() =>
+    Effect.succeed({
+      branch: `${label}-branch`,
+    }),
+  );
+  const generateThreadTitle = vi.fn<TextGenerationShape["generateThreadTitle"]>(() =>
+    Effect.succeed({
+      title: `${label} title`,
+    }),
+  );
+  const generateThreadRecap = vi.fn<TextGenerationShape["generateThreadRecap"]>(() =>
+    Effect.succeed({
+      recap: `${label} recap`,
+    }),
+  );
+  const generateComposerPrediction = vi.fn<TextGenerationShape["generateComposerPrediction"]>(() =>
+    Effect.succeed({ suggestion: `${label} suggestion` }),
+  );
+  const generateProjectDigest = vi.fn<TextGenerationShape["generateProjectDigest"]>(() =>
+    Effect.succeed({
+      summary: `${label} digest`,
+      focusItems: [],
+    }),
+  );
+  const generateAutomationIntent = vi.fn<TextGenerationShape["generateAutomationIntent"]>(() =>
+    Effect.succeed({
+      isAutomation: true,
+      confidence: 1,
+      language: null,
+      name: `${label} automation`,
+      taskPrompt: "Check the site",
+      schedule: { type: "interval", everySeconds: 3600 },
+      mode: "heartbeat",
+      completionPolicy: { type: "none" },
+      missingFields: [],
+      needsConfirmation: false,
+      reason: null,
+    }),
+  );
+  const evaluateAutomationCompletion = vi.fn<TextGenerationShape["evaluateAutomationCompletion"]>(
+    () =>
+      Effect.succeed({
+        stopMatched: false,
+        confidence: 0.2,
+        reason: `${label} completion`,
+      }),
+  );
+
+  return {
+    service: {
+      generateCommitMessage,
+      generatePrContent,
+      generateDiffSummary,
+      generateBranchName,
+      generateThreadTitle,
+      generateThreadRecap,
+      generateComposerPrediction,
+      generateProjectDigest,
+      generateAutomationIntent,
+      evaluateAutomationCompletion,
+    } satisfies TextGenerationShape,
+    generateCommitMessage,
+    generatePrContent,
+    generateDiffSummary,
+    generateBranchName,
+    generateThreadTitle,
+    generateThreadRecap,
+    generateComposerPrediction,
+    generateAutomationIntent,
+    evaluateAutomationCompletion,
+  };
+}
+
+const withRead: GitHubCliShape["withRead"] = (effect) => effect;
+
+function makeProviderTextGenerationTestLayer(
+  settingsOverrides: Parameters<typeof ServerSettingsService.layerTest>[0] = {},
+) {
+  const claude = createTextGenerationDouble("claude");
+  const codex = createTextGenerationDouble("codex");
+  const cursor = createTextGenerationDouble("cursor");
+  const droid = createTextGenerationDouble("droid");
+  const opencode = createTextGenerationDouble("opencode");
+  const listRecentCommits = vi.fn<GitCoreShape["listRecentCommits"]>(() =>
+    Effect.succeed({
+      commits: [{ sha: "abc", shortSha: "abc", subject: "feat: add settings", committedAt: "" }],
+    }),
+  );
+  const execute = vi.fn<GitHubCliShape["execute"]>(() =>
+    Effect.succeed({
+      code: 0,
+      stdout: '[{"title":"feat: improve settings"}]',
+      stderr: "",
+      signal: null,
+      timedOut: false,
+    }),
+  );
+  const layer = ProviderTextGenerationLive.pipe(
+    Layer.provide(Layer.succeed(ClaudeTextGeneration, claude.service)),
+    Layer.provide(Layer.succeed(CodexTextGeneration, codex.service)),
+    Layer.provide(Layer.succeed(CursorTextGeneration, cursor.service)),
+    Layer.provide(Layer.succeed(DroidTextGeneration, droid.service)),
+    Layer.provide(Layer.succeed(OpenCodeTextGeneration, opencode.service)),
+    Layer.provide(ServerSettingsService.layerTest(settingsOverrides)),
+    Layer.provide(Layer.succeed(GitCore, { listRecentCommits } as unknown as GitCoreShape)),
+    Layer.provide(
+      Layer.succeed(GitHubCli, {
+        execute,
+        withRead,
+      } as unknown as GitHubCliShape),
+    ),
+  );
+
+  return { layer, claude, codex, cursor, droid, opencode, listRecentCommits, execute };
+}
+
+describe("ProviderTextGenerationLive", () => {
+  const commitInput = {
+    cwd: "/repo",
+    branch: "main",
+    stagedSummary: "settings.ts",
+    stagedPatch: "+ setting",
+  };
+  const prInput = {
+    cwd: "/repo",
+    baseBranch: "main",
+    headBranch: "feature",
+    commitSummary: "change",
+    diffSummary: "settings.ts",
+    diffPatch: "+ setting",
+  };
+
+  it("routes server writing preferences and repository examples to commits and PRs", async () => {
+    const { layer, codex, listRecentCommits, execute } = makeProviderTextGenerationTestLayer();
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const service = yield* TextGeneration;
+        yield* service.generateCommitMessage(commitInput);
+        yield* service.generatePrContent(prInput);
+      }).pipe(Effect.provide(layer)),
+    );
+    const writingPreferences = {
+      style: "repository",
+      customInstructions: "",
+      recentCommitSubjects: ["feat: add settings"],
+      recentPrTitles: ["feat: improve settings"],
+    };
+    expect(codex.generateCommitMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ writingPreferences }),
+    );
+    expect(codex.generatePrContent).toHaveBeenCalledWith(
+      expect.objectContaining({ writingPreferences }),
+    );
+    expect(listRecentCommits).toHaveBeenCalledWith({ cwd: "/repo", limit: 10 });
+    expect(execute).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(["conventional", "custom"] as const)(
+    "applies %s without reading repository examples",
+    async (style) => {
+      const { layer, claude, listRecentCommits, execute } = makeProviderTextGenerationTestLayer({
+        sourceControlWritingStyle: style,
+        sourceControlCustomInstructions: "Use short bullet points.",
+      });
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const service = yield* TextGeneration;
+          yield* service.generateCommitMessage({
+            ...commitInput,
+            modelSelection: { provider: "claudeAgent", model: "claude-sonnet-4-6" },
+          });
+        }).pipe(Effect.provide(layer)),
+      );
+      expect(claude.generateCommitMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          writingPreferences: {
+            style,
+            customInstructions: "Use short bullet points.",
+            recentCommitSubjects: [],
+            recentPrTitles: [],
+          },
+        }),
+      );
+      expect(listRecentCommits).not.toHaveBeenCalled();
+      expect(execute).not.toHaveBeenCalled();
+    },
+  );
+
+  it("still generates when Git and GitHub examples are unavailable", async () => {
+    const { layer, codex, listRecentCommits, execute } = makeProviderTextGenerationTestLayer();
+    listRecentCommits.mockImplementation(() =>
+      Effect.fail(
+        new GitCommandError({
+          operation: "log",
+          command: "git log",
+          cwd: "/repo",
+          detail: "Empty repository",
+        }),
+      ),
+    );
+    execute.mockImplementation(() =>
+      Effect.fail(new GitHubCliError({ operation: "execute", detail: "Offline" })),
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const service = yield* TextGeneration;
+        yield* service.generateCommitMessage(commitInput);
+      }).pipe(Effect.provide(layer)),
+    );
+    expect(codex.generateCommitMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        writingPreferences: {
+          style: "repository",
+          customInstructions: "",
+          recentCommitSubjects: [],
+          recentPrTitles: [],
+        },
+      }),
+    );
+  });
+  it("blocks generation when the selected provider is disabled", async () => {
+    const { layer, codex, cursor, opencode } = makeProviderTextGenerationTestLayer({
+      providers: {
+        codex: { enabled: false },
+        cursor: { enabled: false },
+        droid: { enabled: false },
+        opencode: { enabled: false },
+      },
+    });
+
+    await expect(
+      Effect.runPromise(
+        Effect.gen(function* () {
+          const textGeneration = yield* TextGeneration;
+          return yield* textGeneration.generateDiffSummary({
+            cwd: "/repo",
+            patch: "diff --git a/file.ts b/file.ts",
+            modelSelection: { provider: "codex", model: "gpt-5.5" },
+          });
+        }).pipe(Effect.provide(layer)),
+      ),
+    ).rejects.toMatchObject({
+      _tag: "TextGenerationError",
+      detail: "Provider instance 'codex' is disabled.",
+    });
+    expect(codex.generateDiffSummary).not.toHaveBeenCalled();
+    expect(cursor.generateDiffSummary).not.toHaveBeenCalled();
+    expect(opencode.generateDiffSummary).not.toHaveBeenCalled();
+  });
+
+  it("routes unsupported selections through the configured supported fallback", async () => {
+    const { layer, codex, cursor } = makeProviderTextGenerationTestLayer({
+      textGenerationModelSelection: { provider: "cursor", model: "composer-2" },
+    });
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        yield* textGeneration.generateDiffSummary({
+          cwd: "/repo",
+          patch: "diff --git a/file.ts b/file.ts",
+          model: "Gemini 3.5 Flash",
+          modelSelection: { provider: "antigravity", model: "Gemini 3.5 Flash" },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(codex.generateDiffSummary).not.toHaveBeenCalled();
+    expect(cursor.generateDiffSummary).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: "composer-2",
+        modelSelection: { provider: "cursor", instanceId: "cursor", model: "composer-2" },
+      }),
+    );
+  });
+
+  it("routes standard git-writing models to Codex", async () => {
+    const { layer, codex, cursor, opencode } = makeProviderTextGenerationTestLayer();
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateDiffSummary({
+          cwd: "/repo",
+          patch: "diff --git a/file.ts b/file.ts",
+          model: "gpt-5.4-mini",
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.summary).toBe("codex summary");
+    expect(codex.generateDiffSummary).toHaveBeenCalledTimes(1);
+    expect(cursor.generateDiffSummary).not.toHaveBeenCalled();
+    expect(opencode.generateDiffSummary).not.toHaveBeenCalled();
+  });
+
+  it("keeps canonical Codex text generation on Codex when settings try to retarget its id", async () => {
+    const { layer, claude, codex } = makeProviderTextGenerationTestLayer({
+      providerInstances: {
+        codex: {
+          driver: "claudeAgent",
+          enabled: true,
+          config: { binaryPath: "/malicious/claude" },
+        },
+      },
+    });
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateDiffSummary({
+          cwd: "/repo",
+          patch: "diff --git a/file.ts b/file.ts",
+          modelSelection: {
+            provider: "codex",
+            instanceId: "codex",
+            model: "gpt-5.4-mini",
+          },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.summary).toBe("codex summary");
+    expect(codex.generateDiffSummary).toHaveBeenCalledTimes(1);
+    expect(claude.generateDiffSummary).not.toHaveBeenCalled();
+  });
+
+  it("routes OpenCode provider/model slugs to OpenCode", async () => {
+    const { layer, codex, cursor, opencode } = makeProviderTextGenerationTestLayer();
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateDiffSummary({
+          cwd: "/repo",
+          patch: "diff --git a/file.ts b/file.ts",
+          model: "openai/gpt-5",
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.summary).toBe("opencode summary");
+    expect(opencode.generateDiffSummary).toHaveBeenCalledTimes(1);
+    expect(codex.generateDiffSummary).not.toHaveBeenCalled();
+    expect(cursor.generateDiffSummary).not.toHaveBeenCalled();
+  });
+
+  it("routes explicit OpenCode model selections and preserves provider options", async () => {
+    const { layer, codex, cursor, opencode } = makeProviderTextGenerationTestLayer();
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateThreadTitle({
+          cwd: "/repo",
+          message: "Plan the deployment work",
+          modelSelection: {
+            provider: "opencode",
+            model: "openai/gpt-5",
+            options: {
+              agent: "plan",
+              variant: "balanced",
+            },
+          },
+          providerOptions: {
+            opencode: {
+              binaryPath: "/custom/bin/opencode",
+              serverUrl: "http://127.0.0.1:4096",
+            },
+          },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.title).toBe("opencode title");
+    expect(opencode.generateThreadTitle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modelSelection: expect.objectContaining({
+          instanceId: "opencode",
+          provider: "opencode",
+          model: "openai/gpt-5",
+          options: {
+            agent: "plan",
+            variant: "balanced",
+          },
+        }),
+        providerOptions: {
+          opencode: {
+            binaryPath: "/custom/bin/opencode",
+            serverUrl: "http://127.0.0.1:4096",
+          },
+        },
+      }),
+    );
+    expect(codex.generateThreadTitle).not.toHaveBeenCalled();
+    expect(cursor.generateThreadTitle).not.toHaveBeenCalled();
+  });
+
+  it("routes explicit Droid selections and preserves provider options", async () => {
+    const { layer, codex, cursor, droid, opencode } = makeProviderTextGenerationTestLayer();
+    const providerOptions = { droid: { binaryPath: "/custom/bin/droid" } };
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateThreadTitle({
+          cwd: "/repo",
+          message: "Plan the Droid integration work",
+          modelSelection: {
+            provider: "droid",
+            model: "deepseek-v4-flash-0731",
+            options: { reasoningEffort: "high" },
+          },
+          providerOptions,
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.title).toBe("droid title");
+    expect(droid.generateThreadTitle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modelSelection: {
+          provider: "droid",
+          instanceId: "droid",
+          model: "deepseek-v4-flash-0731",
+          options: { reasoningEffort: "high" },
+        },
+        providerOptions,
+      }),
+    );
+    expect(codex.generateThreadTitle).not.toHaveBeenCalled();
+    expect(cursor.generateThreadTitle).not.toHaveBeenCalled();
+    expect(opencode.generateThreadTitle).not.toHaveBeenCalled();
+  });
+
+  it.each(["droid:deepseek-v4-flash-0731", "droid/deepseek-v4-flash-0731"] as const)(
+    "routes raw %s slugs to Droid",
+    async (model) => {
+      const { layer, droid } = makeProviderTextGenerationTestLayer();
+
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const textGeneration = yield* TextGeneration;
+          return yield* textGeneration.generateCommitMessage({
+            cwd: "/repo",
+            branch: null,
+            stagedSummary: "",
+            stagedPatch: "",
+            model,
+          });
+        }).pipe(Effect.provide(layer)),
+      );
+
+      expect(droid.generateCommitMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          model: "deepseek-v4-flash-0731",
+          modelSelection: {
+            provider: "droid",
+            instanceId: "droid",
+            model: "deepseek-v4-flash-0731",
+          },
+        }),
+      );
+    },
+  );
+
+  it("routes automation intent generation through the selected provider", async () => {
+    const { layer, codex, cursor, opencode } = makeProviderTextGenerationTestLayer();
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateAutomationIntent({
+          cwd: "/repo",
+          message: "every 6h check the Amazon listing",
+          defaultMode: "heartbeat",
+          nowIso: "2026-06-19T10:00:00.000Z",
+          modelSelection: {
+            provider: "cursor",
+            model: "composer-2",
+          },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.name).toBe("cursor automation");
+    expect(cursor.generateAutomationIntent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: "every 6h check the Amazon listing",
+        defaultMode: "heartbeat",
+      }),
+    );
+    expect(codex.generateAutomationIntent).not.toHaveBeenCalled();
+    expect(opencode.generateAutomationIntent).not.toHaveBeenCalled();
+  });
+
+  it("routes automation completion evaluation through the selected provider", async () => {
+    const { layer, codex, cursor, opencode } = makeProviderTextGenerationTestLayer();
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.evaluateAutomationCompletion({
+          cwd: "/repo",
+          automationName: "Watch PR",
+          automationPrompt: "Check PR readiness.",
+          stopWhen: "the PR is ready",
+          runUserMessage: "Check PR readiness.",
+          runAssistantText: "Still working.",
+          modelSelection: {
+            provider: "cursor",
+            model: "composer-2",
+          },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.reason).toBe("cursor completion");
+    expect(cursor.evaluateAutomationCompletion).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stopWhen: "the PR is ready",
+      }),
+    );
+    expect(codex.evaluateAutomationCompletion).not.toHaveBeenCalled();
+    expect(opencode.evaluateAutomationCompletion).not.toHaveBeenCalled();
+  });
+
+  it("routes text generation by exact provider instance and merges its provider options", async () => {
+    const { layer, claude, codex } = makeProviderTextGenerationTestLayer({
+      providerInstances: {
+        claude_work: {
+          driver: "claudeAgent",
+          displayName: "Claude Work",
+          enabled: true,
+          environment: [{ name: "ANTHROPIC_AUTH_TOKEN", value: "work-token", sensitive: true }],
+          config: {
+            binaryPath: "/opt/claude",
+            homePath: "/tmp/claude-work",
+          },
+        },
+      },
+    });
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateThreadTitle({
+          cwd: "/repo",
+          message: "Name the account-isolated work",
+          modelSelection: {
+            provider: "codex",
+            instanceId: "claude_work",
+            model: "claude-sonnet-4",
+          },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result.title).toBe("claude title");
+    expect(claude.generateThreadTitle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: "claude-sonnet-4",
+        modelSelection: expect.objectContaining({
+          provider: "claudeAgent",
+          instanceId: "claude_work",
+          model: "claude-sonnet-4",
+        }),
+        providerOptions: {
+          claudeAgent: {
+            binaryPath: "/opt/claude",
+            homePath: "/tmp/claude-work",
+            environment: { ANTHROPIC_AUTH_TOKEN: "work-token" },
+          },
+        },
+      }),
+    );
+    expect(codex.generateThreadTitle).not.toHaveBeenCalled();
+  });
+
+  it("rejects disabled provider instances", async () => {
+    const { layer, claude } = makeProviderTextGenerationTestLayer({
+      providerInstances: {
+        claude_disabled: {
+          driver: "claudeAgent",
+          enabled: false,
+          config: {},
+        },
+      },
+    });
+
+    await expect(
+      Effect.runPromise(
+        Effect.gen(function* () {
+          const textGeneration = yield* TextGeneration;
+          return yield* textGeneration.generateThreadTitle({
+            cwd: "/repo",
+            message: "This should not run",
+            modelSelection: {
+              provider: "claudeAgent",
+              instanceId: "claude_disabled",
+              model: "claude-sonnet-4",
+            },
+          });
+        }).pipe(Effect.provide(layer)),
+      ),
+    ).rejects.toThrow("Provider instance 'claude_disabled' is disabled.");
+    expect(claude.generateThreadTitle).not.toHaveBeenCalled();
+  });
+  it("routes composer predictions by the chat's exact provider instance", async () => {
+    const { layer, claude, codex } = makeProviderTextGenerationTestLayer({
+      providerInstances: {
+        claude_work: {
+          driver: "claudeAgent",
+          enabled: true,
+          config: { binaryPath: "/opt/claude" },
+        },
+      },
+    });
+
+    const result = await Effect.runPromise(
+      Effect.gen(function* () {
+        const textGeneration = yield* TextGeneration;
+        return yield* textGeneration.generateComposerPrediction({
+          cwd: "/repo",
+          conversation: "User: Investigate CI\n\nAssistant: The fixture is stale.",
+          modelSelection: {
+            provider: "claudeAgent",
+            instanceId: "claude_work",
+            model: "claude-sonnet-4",
+            options: { effort: "low" },
+          },
+        });
+      }).pipe(Effect.provide(layer)),
+    );
+
+    expect(result).toEqual({ suggestion: "claude suggestion" });
+    expect(claude.generateComposerPrediction).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modelSelection: expect.objectContaining({
+          provider: "claudeAgent",
+          instanceId: "claude_work",
+          options: { effort: "low" },
+        }),
+        providerOptions: { claudeAgent: { binaryPath: "/opt/claude" } },
+      }),
+    );
+    expect(codex.generateComposerPrediction).not.toHaveBeenCalled();
+  });
+
+  it("never borrows the configured Git-writing fallback for composer predictions", async () => {
+    const { layer, codex, cursor } = makeProviderTextGenerationTestLayer({
+      textGenerationModelSelection: { provider: "cursor", model: "composer-2" },
+    });
+
+    await expect(
+      Effect.runPromise(
+        Effect.gen(function* () {
+          const textGeneration = yield* TextGeneration;
+          return yield* textGeneration.generateComposerPrediction({
+            cwd: "/repo",
+            conversation: "User: Continue\n\nAssistant: Done with step one.",
+            modelSelection: { provider: "antigravity", model: "Gemini 3.5 Flash" },
+          });
+        }).pipe(Effect.provide(layer)),
+      ),
+    ).rejects.toThrow("no supported fallback is enabled");
+    expect(cursor.generateComposerPrediction).not.toHaveBeenCalled();
+    expect(codex.generateComposerPrediction).not.toHaveBeenCalled();
+  });
+});

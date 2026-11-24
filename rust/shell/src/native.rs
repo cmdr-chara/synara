@@ -709,6 +709,8 @@ pub struct Native {
     // Global keybindings reference dialog (upstream ShortcutsDialog, mod+/).
     sc_dialog_open: bool,
     sc_dialog_input: Option<Entity<InputState>>,
+    /// App tour walkthrough (upstream AppTour): current step index.
+    tour_step: Option<usize>,
     user_input_draft: Vec<(String, usize, String)>,
 }
 
@@ -735,6 +737,42 @@ const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
     ("privacy", "Privacy"),
     ("advanced", "Advanced"),
     ("about", "About"),
+];
+
+// App tour steps (upstream APP_TOUR_STEPS, copy verbatim from locale JSON):
+// (place label, title, description, anchor rect in window coords or None for
+// a centered card). Anchors match the native rail/sidebar layout.
+const TOUR_STEPS: [(&str, &str, &str, Option<(f32, f32, f32, f32)>); 5] = [
+    (
+        "New thread",
+        "Start a chat with any agent",
+        "Pick the agent and model for each chat, and hand the work to another without leaving the thread.",
+        Some((57.0, 96.0, 300.0, 128.0)),
+    ),
+    (
+        "Activity",
+        "See what your agents are doing",
+        "See running tasks, completed work, and anything that needs your attention.",
+        None,
+    ),
+    (
+        "Tasks",
+        "Keep your to-dos in Tasks",
+        "Keep your to-dos in one place and hand them to an agent when you\u{2019}re ready.",
+        Some((8.0, 175.0, 44.0, 211.0)),
+    ),
+    (
+        "Inbox",
+        "Start the day in Inbox",
+        "Today\u{2019}s tasks, review requests, and a recap of what your agents did.",
+        Some((8.0, 91.0, 44.0, 127.0)),
+    ),
+    (
+        "Code review",
+        "Review pull requests and issues",
+        "Browse pull requests and issues, discuss them in a side chat, and ask an agent to review.",
+        Some((8.0, 217.0, 44.0, 253.0)),
+    ),
 ];
 
 fn get<'a>(v: &'a Value, k: &str) -> &'a Value {
@@ -1149,6 +1187,7 @@ impl Native {
             feedback_toast: None,
             sc_dialog_open: false,
             sc_dialog_input: None,
+            tour_step: None,
             user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
@@ -8183,7 +8222,16 @@ impl Render for Native {
                             .child(srow(
                                 "App tour",
                                 "See where Activity, Tasks, Inbox, and Code review live.",
-                                outline_btn("Replay tour"),
+                                div()
+                                    .id("btn-replay-tour")
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.clear_views();
+                                        this.tour_step = Some(0);
+                                        cx.notify();
+                                    }))
+                                    .child(outline_btn("Replay tour"))
+                                    .into_any_element(),
                             ))
                             .into_any_element(),
                             )
@@ -13383,6 +13431,188 @@ impl Render for Native {
             );
         }
 
+        // App tour (upstream AppTour): dimmed workspace, accent ring on the
+        // anchored control, step card beside it, dots + Back/Next, ✕/Escape.
+        let mut tour_overlay = div().absolute().inset_0().size_full();
+        if let Some(step_idx) = self.tour_step.filter(|i| *i < TOUR_STEPS.len()) {
+            let (place, title, desc, anchor) = TOUR_STEPS[step_idx];
+            let last = step_idx + 1 == TOUR_STEPS.len();
+            let mut dots = h_flex().gap(px(6.)).items_center();
+            for i in 0..TOUR_STEPS.len() {
+                dots = dots.child(
+                    div()
+                        .size(px(6.))
+                        .rounded_full()
+                        .bg(if i == step_idx {
+                            theme.foreground
+                        } else {
+                            theme.muted_foreground
+                        }),
+                );
+            }
+            let mut card = v_flex()
+                .w(px(300.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .p(px(16.))
+                .gap_2()
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    match ev.keystroke.key.as_str() {
+                        "escape" => {
+                            this.tour_step = None;
+                            cx.stop_propagation();
+                            cx.notify();
+                        }
+                        "arrowright" | "enter" => {
+                            this.tour_step = Some(
+                                (this.tour_step.unwrap_or(0) + 1).min(TOUR_STEPS.len() - 1),
+                            );
+                            cx.notify();
+                        }
+                        "arrowleft" => {
+                            this.tour_step = Some(this.tour_step.unwrap_or(1).saturating_sub(1));
+                            cx.notify();
+                        }
+                        _ => {}
+                    }
+                }))
+                .child(
+                    h_flex()
+                        .w_full()
+                        .items_center()
+                        .child(
+                            div()
+                                .flex_1()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(place),
+                        )
+                        .child(
+                            div()
+                                .id("tour-close")
+                                .cursor_pointer()
+                                .text_color(theme.muted_foreground)
+                                .hover(|d| d.text_color(theme.foreground))
+                                .child(svg_icon(icons::X).size(px(16.)))
+                                .on_click(cx.listener(|this, _e, _w, cx| {
+                                    this.tour_step = None;
+                                    cx.notify();
+                                })),
+                        ),
+                )
+                .child(
+                    div()
+                        .text_size(px(15.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child(title),
+                )
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child(desc),
+                )
+                .child(
+                    h_flex()
+                        .w_full()
+                        .pt_2()
+                        .items_center()
+                        .child(dots)
+                        .child(div().flex_1())
+                        .when(step_idx > 0, |d| {
+                            d.child(
+                                div()
+                                    .id("tour-back")
+                                    .cursor_pointer()
+                                    .h(px(28.))
+                                    .px_3()
+                                    .flex()
+                                    .items_center()
+                                    .rounded(px(8.))
+                                    .mr_1()
+                                    .text_size(px(13.))
+                                    .hover(|h| h.bg(theme.secondary))
+                                    .child("Back")
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.tour_step =
+                                            Some(this.tour_step.unwrap_or(1).saturating_sub(1));
+                                        cx.notify();
+                                    })),
+                            )
+                        })
+                        .child(
+                            div()
+                                .id("tour-next")
+                                .cursor_pointer()
+                                .h(px(28.))
+                                .px_3()
+                                .flex()
+                                .items_center()
+                                .rounded(px(8.))
+                                .bg(theme.foreground)
+                                .text_color(theme.background)
+                                .text_size(px(13.))
+                                .child(if last { "Done" } else { "Next" })
+                                .on_click(cx.listener(move |this, _e, _w, cx| {
+                                    this.tour_step = if last {
+                                        None
+                                    } else {
+                                        Some(step_idx + 1)
+                                    };
+                                    cx.notify();
+                                })),
+                        ),
+                );
+            let mut stage = v_flex()
+                .size_full()
+                .bg(rgba(0x00000066))
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|this, _ev, _w, cx| {
+                        this.tour_step = None;
+                        cx.notify();
+                    }),
+                );
+            if let Some((x0, y0, x1, y1)) = anchor {
+                stage = stage
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(x0 - 4.))
+                            .top(px(y0 - 4.))
+                            .w(px(x1 - x0 + 8.))
+                            .h(px(y1 - y0 + 8.))
+                            .rounded(px(10.))
+                            .border_2()
+                            .border_color(theme.primary),
+                    )
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(x1 + 14.))
+                            .top(px(y0 - 4.))
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            )
+                            .child(card),
+                    );
+            } else {
+                stage = stage.items_center().justify_center().child(
+                    div()
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                        )
+                        .child(card),
+                );
+            }
+            tour_overlay = tour_overlay.child(stage);
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -13438,5 +13668,6 @@ impl Render for Native {
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
             .when(self.feedback_open, |d| d.child(fb_overlay))
             .when(self.sc_dialog_open, |d| d.child(scd_overlay))
+            .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
     }
 }

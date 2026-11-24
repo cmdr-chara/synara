@@ -1,0 +1,513 @@
+// Verifies updater version-lane admission and progress/recovery behavior.
+import { describe, expect, it } from "vitest";
+import type { DesktopUpdateState } from "@synara/contracts";
+
+import {
+  canCheckForDesktopUpdates,
+  getCanRetryAfterDownloadFailure,
+  getAutoUpdateDisabledReason,
+  getDownloadStallTimeoutMessage,
+  hasDownloadProgressAdvanced,
+  isExpectedStalledDownloadCancellationError,
+  isUpdateVersionAllowedForFlavor,
+  isUpdateVersionNewer,
+  nextStatusAfterDownloadFailure,
+  shouldCheckForUpdatesOnForeground,
+  shouldBroadcastDownloadProgress,
+  shouldAcceptAvailableUpdate,
+  updateFilesMatchRuntimeArch,
+} from "./updateState";
+
+const baseState: DesktopUpdateState = {
+  enabled: true,
+  status: "idle",
+  currentVersion: "1.0.0",
+  hostArch: "x64",
+  appArch: "x64",
+  runningUnderArm64Translation: false,
+  availableVersion: null,
+  downloadedVersion: null,
+  downloadPercent: null,
+  checkedAt: null,
+  message: null,
+  errorContext: null,
+  canRetry: false,
+  installFailureCount: 0,
+  flavor: "production",
+  releaseUrl: null,
+};
+
+describe("update check admission", () => {
+  it.each([
+    ["downloaded", true],
+    ["available", true],
+    ["checking", false],
+    ["downloading", false],
+  ] as const)("checks while %s only when no operation owns the updater", (status, allowed) => {
+    expect(canCheckForDesktopUpdates({ ...baseState, status })).toBe(allowed);
+  });
+});
+
+describe("getDownloadStallTimeoutMessage", () => {
+  it("formats the no-progress timeout in seconds", () => {
+    expect(getDownloadStallTimeoutMessage(90_000)).toBe(
+      "Download stalled after 90 seconds without progress. Try again.",
+    );
+  });
+});
+
+describe("isExpectedStalledDownloadCancellationError", () => {
+  it("suppresses the cancellation emitted after a stalled download is cancelled", () => {
+    expect(
+      isExpectedStalledDownloadCancellationError({
+        suppressionArmed: true,
+        errorContext: "download",
+        message: " cancelled ",
+      }),
+    ).toBe(true);
+  });
+
+  it("does not suppress unrelated updater errors", () => {
+    expect(
+      isExpectedStalledDownloadCancellationError({
+        suppressionArmed: false,
+        errorContext: "download",
+        message: "cancelled",
+      }),
+    ).toBe(false);
+    expect(
+      isExpectedStalledDownloadCancellationError({
+        suppressionArmed: true,
+        errorContext: "download",
+        message: "network timeout",
+      }),
+    ).toBe(false);
+    expect(
+      isExpectedStalledDownloadCancellationError({
+        suppressionArmed: true,
+        errorContext: "check",
+        message: "cancelled",
+      }),
+    ).toBe(false);
+  });
+});
+
+describe("hasDownloadProgressAdvanced", () => {
+  it("treats the first progress sample as active progress", () => {
+    expect(hasDownloadProgressAdvanced(null, { percent: 10, transferred: 1_024 })).toBe(true);
+  });
+
+  it("ignores malformed progress samples without numeric progress", () => {
+    expect(hasDownloadProgressAdvanced(null, {})).toBe(false);
+  });
+
+  it("detects byte progress inside the same percent bucket", () => {
+    expect(
+      hasDownloadProgressAdvanced(
+        { percent: 40.1, transferred: 10_000 },
+        { percent: 40.1, transferred: 12_000 },
+      ),
+    ).toBe(true);
+  });
+
+  it("does not treat duplicate progress samples as active progress", () => {
+    expect(
+      hasDownloadProgressAdvanced(
+        { percent: 60, transferred: 20_000 },
+        { percent: 60, transferred: 20_000 },
+      ),
+    ).toBe(false);
+  });
+
+  it("falls back to percent when transferred bytes are unavailable", () => {
+    expect(hasDownloadProgressAdvanced({ percent: 60 }, { percent: 61 })).toBe(true);
+    expect(hasDownloadProgressAdvanced({ percent: 60 }, { percent: 60 })).toBe(false);
+  });
+
+  it("resets on percent progress when transferred bytes do not advance", () => {
+    expect(
+      hasDownloadProgressAdvanced(
+        { percent: 60, transferred: 20_000 },
+        { percent: 61, transferred: 20_000 },
+      ),
+    ).toBe(true);
+  });
+});
+
+describe("shouldBroadcastDownloadProgress", () => {
+  it("broadcasts the first downloading progress update", () => {
+    expect(
+      shouldBroadcastDownloadProgress(
+        { ...baseState, status: "downloading", downloadPercent: null },
+        1,
+      ),
+    ).toBe(true);
+  });
+
+  it("skips progress updates within the same whole-percent bucket", () => {
+    expect(
+      shouldBroadcastDownloadProgress(
+        { ...baseState, status: "downloading", downloadPercent: 11.2 },
+        11.7,
+      ),
+    ).toBe(false);
+  });
+
+  it("broadcasts progress updates when a new whole-percent bucket is reached", () => {
+    expect(
+      shouldBroadcastDownloadProgress(
+        { ...baseState, status: "downloading", downloadPercent: 19.9 },
+        20.1,
+      ),
+    ).toBe(true);
+  });
+
+  it("broadcasts progress updates when a retry resets the download percentage", () => {
+    expect(
+      shouldBroadcastDownloadProgress(
+        { ...baseState, status: "downloading", downloadPercent: 50.4 },
+        0.2,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe("isUpdateVersionNewer", () => {
+  it("rejects same-version updates from stale updater cache", () => {
+    expect(isUpdateVersionNewer("0.1.0", "0.1.0")).toBe(false);
+    expect(isUpdateVersionNewer("0.1.0", "v0.1.0")).toBe(false);
+  });
+
+  it("allows newer stable versions and stable releases replacing matching prereleases", () => {
+    expect(isUpdateVersionNewer("0.1.0", "0.1.1")).toBe(true);
+    expect(isUpdateVersionNewer("0.1.0-beta.1", "0.1.0")).toBe(true);
+  });
+
+  it("rejects older versions", () => {
+    expect(isUpdateVersionNewer("0.1.1", "0.1.0")).toBe(false);
+    expect(isUpdateVersionNewer("1.0.0", "0.9.9")).toBe(false);
+  });
+
+  it("orders prereleases within the same base version", () => {
+    expect(isUpdateVersionNewer("0.1.0-beta.1", "0.1.0-beta.2")).toBe(true);
+    expect(isUpdateVersionNewer("0.1.0-beta.2", "0.1.0-beta.1")).toBe(false);
+    expect(isUpdateVersionNewer("0.1.0-beta.1", "0.1.0-beta.1")).toBe(false);
+    expect(isUpdateVersionNewer("0.1.0-beta.1", "0.1.0-beta.1.1")).toBe(true);
+    // Numeric identifiers compare numerically, not lexically.
+    expect(isUpdateVersionNewer("0.1.0-beta.2", "0.1.0-beta.10")).toBe(true);
+    // A different prerelease channel does not count as newer.
+    expect(isUpdateVersionNewer("0.1.0-beta.1", "0.1.0-alpha.9")).toBe(false);
+  });
+});
+
+describe("isUpdateVersionAllowedForFlavor", () => {
+  it.each(["beta", "remote"] as const)(
+    "lets %s installs accept only their own releases",
+    (flavor) => {
+      expect(isUpdateVersionAllowedForFlavor(`0.8.4-${flavor}.2`, flavor)).toBe(true);
+      expect(isUpdateVersionAllowedForFlavor(`0.8.4-${flavor}`, flavor)).toBe(true);
+      expect(
+        isUpdateVersionAllowedForFlavor(
+          `0.8.4-${flavor === "remote" ? "beta" : "remote"}.1`,
+          flavor,
+        ),
+      ).toBe(false);
+      // The GitHub feed falls back to latest-mac.yml when beta-mac.yml is
+      // absent; a stable build must never be offered to a beta install.
+      expect(isUpdateVersionAllowedForFlavor("0.8.4", flavor)).toBe(false);
+      expect(isUpdateVersionAllowedForFlavor("0.9.0", flavor)).toBe(false);
+      expect(isUpdateVersionAllowedForFlavor("0.8.4-alpha.1", flavor)).toBe(false);
+      expect(isUpdateVersionAllowedForFlavor("0.8.4-betamax.1", flavor)).toBe(false);
+    },
+  );
+
+  it("lets production installs accept only stable releases", () => {
+    expect(isUpdateVersionAllowedForFlavor("0.8.4", "production")).toBe(true);
+    expect(isUpdateVersionAllowedForFlavor("0.8.4-beta.1", "production")).toBe(false);
+    expect(isUpdateVersionAllowedForFlavor("0.8.4-remote.1", "production")).toBe(false);
+    expect(isUpdateVersionAllowedForFlavor("v0.8.4-alpha.9", "production")).toBe(false);
+  });
+
+  it("does not gate development or canary flavors", () => {
+    expect(isUpdateVersionAllowedForFlavor("0.8.4-beta.2", "canary")).toBe(true);
+    expect(isUpdateVersionAllowedForFlavor("0.8.4", "development")).toBe(true);
+  });
+
+  it.each(["nightly-build", "0.8.4-remote..1", "0.8.4-remote."])(
+    "fails closed on malformed version %s for packaged release lanes",
+    (version) => {
+      expect(isUpdateVersionAllowedForFlavor(version, "beta")).toBe(false);
+      expect(isUpdateVersionAllowedForFlavor(version, "remote")).toBe(false);
+      expect(isUpdateVersionAllowedForFlavor(version, "production")).toBe(false);
+      // Canary keeps the pre-existing "differs means newer" passthrough.
+      expect(isUpdateVersionAllowedForFlavor("nightly-build", "canary")).toBe(true);
+    },
+  );
+});
+
+describe("getAutoUpdateDisabledReason", () => {
+  it("reports development builds as disabled", () => {
+    expect(
+      getAutoUpdateDisabledReason({
+        isDevelopment: true,
+        isPackaged: false,
+        platform: "darwin",
+        appImage: undefined,
+        disabledByEnv: false,
+        hasUpdateFeedConfig: true,
+      }),
+    ).toContain("packaged production builds");
+  });
+
+  it("reports packaged builds without an update feed as disabled", () => {
+    expect(
+      getAutoUpdateDisabledReason({
+        isDevelopment: false,
+        isPackaged: true,
+        platform: "darwin",
+        appImage: undefined,
+        disabledByEnv: false,
+        hasUpdateFeedConfig: false,
+      }),
+    ).toContain("no update feed");
+  });
+
+  it("allows packaged builds when an update feed is configured", () => {
+    expect(
+      getAutoUpdateDisabledReason({
+        isDevelopment: false,
+        isPackaged: true,
+        platform: "darwin",
+        appImage: undefined,
+        disabledByEnv: false,
+        hasUpdateFeedConfig: true,
+      }),
+    ).toBeNull();
+  });
+
+  it("reports env-disabled auto updates", () => {
+    expect(
+      getAutoUpdateDisabledReason({
+        isDevelopment: false,
+        isPackaged: true,
+        platform: "darwin",
+        appImage: undefined,
+        disabledByEnv: true,
+        hasUpdateFeedConfig: true,
+      }),
+    ).toContain("SYNARA_DISABLE_AUTO_UPDATE");
+  });
+
+  it("reports linux non-AppImage builds as disabled", () => {
+    expect(
+      getAutoUpdateDisabledReason({
+        isDevelopment: false,
+        isPackaged: true,
+        platform: "linux",
+        appImage: undefined,
+        disabledByEnv: false,
+        hasUpdateFeedConfig: true,
+      }),
+    ).toContain("AppImage");
+  });
+});
+
+describe("nextStatusAfterDownloadFailure", () => {
+  it("returns available when an update version is still known", () => {
+    expect(
+      nextStatusAfterDownloadFailure({
+        ...baseState,
+        status: "downloading",
+        availableVersion: "1.1.0",
+      }),
+    ).toBe("available");
+  });
+
+  it("returns error when no update version can be retried", () => {
+    expect(
+      nextStatusAfterDownloadFailure({
+        ...baseState,
+        status: "downloading",
+        availableVersion: null,
+      }),
+    ).toBe("error");
+  });
+});
+
+describe("getCanRetryAfterDownloadFailure", () => {
+  it("returns true when an available version is still present", () => {
+    expect(
+      getCanRetryAfterDownloadFailure({
+        ...baseState,
+        status: "downloading",
+        availableVersion: "1.1.0",
+      }),
+    ).toBe(true);
+  });
+
+  it("returns false when no version is available to retry", () => {
+    expect(
+      getCanRetryAfterDownloadFailure({
+        ...baseState,
+        status: "downloading",
+        availableVersion: null,
+      }),
+    ).toBe(false);
+  });
+});
+
+describe("shouldCheckForUpdatesOnForeground", () => {
+  it("returns false when the app was not backgrounded first", () => {
+    expect(
+      shouldCheckForUpdatesOnForeground({
+        checkedAt: "2026-03-04T00:00:00.000Z",
+        backgroundedAtMs: null,
+        foregroundedAtMs: Date.parse("2026-03-04T00:05:00.000Z"),
+        minBackgroundDurationMs: 30_000,
+        minIntervalMs: 5 * 60 * 1000,
+      }),
+    ).toBe(false);
+  });
+
+  it("returns true after foregrounding when no previous check exists", () => {
+    expect(
+      shouldCheckForUpdatesOnForeground({
+        checkedAt: null,
+        backgroundedAtMs: Date.parse("2026-03-04T00:00:00.000Z"),
+        foregroundedAtMs: Date.parse("2026-03-04T00:05:00.000Z"),
+        minBackgroundDurationMs: 30_000,
+        minIntervalMs: 5 * 60 * 1000,
+      }),
+    ).toBe(true);
+  });
+
+  it("returns false when the app was backgrounded too briefly", () => {
+    expect(
+      shouldCheckForUpdatesOnForeground({
+        checkedAt: "2026-03-04T00:00:00.000Z",
+        backgroundedAtMs: Date.parse("2026-03-04T00:04:45.000Z"),
+        foregroundedAtMs: Date.parse("2026-03-04T00:05:00.000Z"),
+        minBackgroundDurationMs: 30_000,
+        minIntervalMs: 5 * 60 * 1000,
+      }),
+    ).toBe(false);
+  });
+
+  it("returns false when the last check is still within the foreground cooldown", () => {
+    expect(
+      shouldCheckForUpdatesOnForeground({
+        checkedAt: "2026-03-04T00:03:00.000Z",
+        backgroundedAtMs: Date.parse("2026-03-04T00:04:00.000Z"),
+        foregroundedAtMs: Date.parse("2026-03-04T00:06:00.000Z"),
+        minBackgroundDurationMs: 30_000,
+        minIntervalMs: 5 * 60 * 1000,
+      }),
+    ).toBe(false);
+  });
+
+  it("returns true when the last check is older than the foreground cooldown", () => {
+    expect(
+      shouldCheckForUpdatesOnForeground({
+        checkedAt: "2026-03-04T00:00:00.000Z",
+        backgroundedAtMs: Date.parse("2026-03-04T00:04:00.000Z"),
+        foregroundedAtMs: Date.parse("2026-03-04T00:06:00.000Z"),
+        minBackgroundDurationMs: 30_000,
+        minIntervalMs: 5 * 60 * 1000,
+      }),
+    ).toBe(true);
+  });
+});
+
+describe("resolved update artifact architecture", () => {
+  const arm64AppImage = "Synara-1.5.2-arm64.AppImage";
+  const intelAppImage = "Synara-1.5.2-x86_64.AppImage";
+  const files = (...urls: string[]) => ({ files: urls.map((url) => ({ url })) });
+
+  it("keeps both Linux architectures on their own payload", () => {
+    expect(updateFilesMatchRuntimeArch(files(arm64AppImage), "linux", "arm64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch(files(intelAppImage), "linux", "arm64")).toBe(false);
+    expect(updateFilesMatchRuntimeArch(files(intelAppImage), "linux", "x64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch(files(arm64AppImage), "linux", "x64")).toBe(false);
+  });
+
+  it("rejects a manifest that mixes architectures", () => {
+    expect(updateFilesMatchRuntimeArch(files(intelAppImage, arm64AppImage), "linux", "arm64")).toBe(
+      false,
+    );
+    expect(updateFilesMatchRuntimeArch(files(intelAppImage, arm64AppImage), "linux", "x64")).toBe(
+      false,
+    );
+  });
+
+  it("inspects the legacy top-level path when files are absent", () => {
+    expect(updateFilesMatchRuntimeArch({ path: arm64AppImage }, "linux", "arm64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch({ path: intelAppImage }, "linux", "arm64")).toBe(false);
+    expect(updateFilesMatchRuntimeArch({ path: intelAppImage }, "linux", "x64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch({ path: arm64AppImage }, "linux", "x64")).toBe(false);
+    expect(updateFilesMatchRuntimeArch({}, "linux", "arm64")).toBe(false);
+  });
+
+  it("reads the payload name from URLs with a directory, query or fragment", () => {
+    const hostedArm64 =
+      "https://github.com/o/r/releases/download/v1.5.2/Synara-1.5.2-arm64.AppImage?token=1";
+    const hostedIntel =
+      "https://github.com/o/r/releases/download/v1.5.2/Synara-1.5.2-x86_64.AppImage#frag";
+    expect(updateFilesMatchRuntimeArch(files(hostedArm64), "linux", "arm64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch(files(hostedIntel), "linux", "x64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch(files(hostedArm64), "linux", "x64")).toBe(false);
+  });
+
+  it("leaves other platforms alone and rejects Linux payloads it cannot name", () => {
+    expect(updateFilesMatchRuntimeArch(files(intelAppImage), "darwin", "arm64")).toBe(true);
+    expect(updateFilesMatchRuntimeArch(files(intelAppImage), "win32", "x64")).toBe(true);
+    expect(
+      updateFilesMatchRuntimeArch(
+        { files: [{ url: undefined }, { url: "Synara-1.5.2.zip" }] },
+        "linux",
+        "arm64",
+      ),
+    ).toBe(false);
+  });
+});
+
+describe("available update admission", () => {
+  const arm64AppImage = "Synara-1.5.2-arm64.AppImage";
+  const intelAppImage = "Synara-1.5.2-x86_64.AppImage";
+  const candidate = (info: { path?: string; files?: ReadonlyArray<{ url?: string }> }) => ({
+    currentVersion: "1.5.1",
+    version: "1.5.2",
+    flavor: "production" as const,
+    info,
+    platform: "linux" as NodeJS.Platform,
+    arch: "arm64",
+  });
+
+  it("composes lane, version and architecture into one decision", () => {
+    expect(shouldAcceptAvailableUpdate(candidate({ files: [{ url: arm64AppImage }] }))).toBe(true);
+    expect(shouldAcceptAvailableUpdate(candidate({ files: [{ url: intelAppImage }] }))).toBe(false);
+    expect(shouldAcceptAvailableUpdate(candidate({ path: intelAppImage }))).toBe(false);
+    expect(shouldAcceptAvailableUpdate(candidate({ path: arm64AppImage }))).toBe(true);
+  });
+
+  it("still rejects an old version and a foreign flavor lane", () => {
+    expect(
+      shouldAcceptAvailableUpdate({
+        ...candidate({ files: [{ url: arm64AppImage }] }),
+        version: "1.5.0",
+      }),
+    ).toBe(false);
+    expect(
+      shouldAcceptAvailableUpdate({
+        ...candidate({ files: [{ url: arm64AppImage }] }),
+        version: "1.5.2-beta.1",
+      }),
+    ).toBe(false);
+    expect(
+      shouldAcceptAvailableUpdate({
+        ...candidate({ files: [{ url: arm64AppImage }] }),
+        version: "1.5.2-beta.1",
+        flavor: "beta",
+      }),
+    ).toBe(true);
+  });
+});

@@ -1,0 +1,733 @@
+// FILE: queuedComposerDrain.ts
+// Purpose: Auto-dispatch composer queued turns for every thread, including ones
+//          whose ChatView is unmounted, using the same gates as the open chat.
+// Layer: Web subscription utility
+// Exports: drain gates, bounded retry state, exclusive per-thread send lock,
+//          locked-dispatch helper, steer-gate sharing, stop hold, ChatView
+//          claim/release, watcher start
+
+import type { AssistantDeliveryMode, MessageId, ThreadId } from "@synara/contracts";
+
+import {
+  createLocalDispatchSnapshot,
+  hasLiveTurnTakenOver,
+  LOCAL_DISPATCH_TURN_TAKEOVER_TIMEOUT_MS,
+  type LocalDispatchSnapshot,
+  type QueuedSteerGate,
+  resolveQueuedSteerGateTransition,
+} from "../components/ChatView.logic";
+import { useComposerDraftStore, type QueuedComposerTurn } from "../composerDraftStore";
+import { derivePendingApprovals, derivePendingUserInputs, derivePhase } from "../session-logic";
+import { useStore, type AppState } from "../store";
+import { getThreadFromState } from "../threadDerivation";
+import type { SessionPhase, Thread } from "../types";
+import { addWsTransportStateListener, readLatestWsTransportState } from "../wsTransportEvents";
+import { useThreadDispatchStore } from "./chatDispatchStore";
+import { dispatchQueuedComposerTurnHeadless } from "./queuedComposerDispatch";
+import { deriveQueuedComposerPause } from "./queuedComposerPause";
+import { newMessageId } from "./utils";
+
+export interface QueuedComposerAutoDispatchGates {
+  hasQueueableLiveTurn: boolean;
+  phase: SessionPhase;
+  isSendBusy: boolean;
+  isConnecting: boolean;
+  isAwaitingTurnStart: boolean;
+  steerGate: QueuedSteerGate | null;
+  hasPendingApproval: boolean;
+  hasPendingCacheReview?: boolean;
+  hasPendingProgress: boolean;
+  pendingUserInputCount: number;
+  queuedTurnCount: number;
+  /** The previous turn was stopped, failed, or hit a usage limit and the user has not resumed. */
+  isQueuePaused?: boolean;
+  /** A user explicitly resumed the failed turn in a stopped provider session. */
+  canResumeClosedSession?: boolean;
+  isTransportAvailable?: boolean;
+}
+
+export function canResumeClosedQueuedComposerSession(
+  thread: Thread | undefined,
+  resumedTurnId: string | null | undefined,
+): boolean {
+  return (
+    thread?.session?.status === "closed" &&
+    resumedTurnId != null &&
+    thread.latestTurn?.turnId === resumedTurnId
+  );
+}
+
+export function shouldAutoDispatchQueuedComposerTurn(
+  gates: QueuedComposerAutoDispatchGates,
+): boolean {
+  return !(
+    gates.hasQueueableLiveTurn ||
+    (gates.phase === "disconnected" && !gates.canResumeClosedSession) ||
+    gates.isTransportAvailable === false ||
+    gates.isSendBusy ||
+    gates.isConnecting ||
+    gates.isAwaitingTurnStart ||
+    gates.steerGate !== null ||
+    gates.hasPendingApproval ||
+    gates.hasPendingCacheReview ||
+    gates.hasPendingProgress ||
+    gates.pendingUserInputCount > 0 ||
+    gates.queuedTurnCount === 0 ||
+    gates.isQueuePaused === true
+  );
+}
+
+type QueuedComposerDispatchFn = (input: {
+  threadId: ThreadId;
+  queuedTurn: QueuedComposerTurn;
+  dispatchMode: "queue" | "steer";
+  assistantDeliveryMode: AssistantDeliveryMode;
+  messageId?: MessageId;
+  onReconciledMessage?: (messageId: MessageId) => void;
+}) => Promise<boolean>;
+
+const claimedThreadIds = new Set<ThreadId>();
+const autoDispatchLocks = new Set<ThreadId>();
+const steerGatesByThreadId = new Map<ThreadId, QueuedSteerGate>();
+const awaitingTurnStartsByThreadId = new Map<
+  ThreadId,
+  { snapshot: LocalDispatchSnapshot; fromChatView: boolean }
+>();
+
+interface QueuedComposerRetryState {
+  readonly queuedTurnId: string;
+  readonly failureCount: number;
+  readonly retryAt: number | null;
+}
+
+// Three delayed retries cover transient RPC failures without turning a
+// persistent failure into an endless timer loop. Once exhausted, a queue-head
+// or relevant thread-state change gives the item a fresh budget.
+const QUEUED_COMPOSER_RETRY_DELAYS_MS = [1_000, 5_000, 15_000] as const;
+const retryStateByThreadId = new Map<ThreadId, QueuedComposerRetryState>();
+
+let drainStartCount = 0;
+let stopDrainSubscriptions: (() => void) | null = null;
+let tickScheduled = false;
+let drainWakeTimer: ReturnType<typeof setTimeout> | null = null;
+let assistantDeliveryMode: AssistantDeliveryMode = "streaming";
+let dispatchQueuedTurn: QueuedComposerDispatchFn = dispatchQueuedComposerTurnHeadless;
+let nowMs: () => number = () => Date.now();
+
+export function armQueuedComposerSteerGate(threadId: ThreadId, gate: QueuedSteerGate): void {
+  steerGatesByThreadId.set(threadId, gate);
+  requestQueuedComposerDrainPass();
+}
+
+export function clearQueuedComposerSteerGate(threadId: ThreadId): void {
+  if (!steerGatesByThreadId.delete(threadId)) {
+    return;
+  }
+  requestQueuedComposerDrainPass();
+}
+
+export function getQueuedComposerSteerGate(threadId: ThreadId): QueuedSteerGate | null {
+  return steerGatesByThreadId.get(threadId) ?? null;
+}
+
+export function isQueuedComposerAwaitingTurnStart(threadId: ThreadId): boolean {
+  return awaitingTurnStartsByThreadId.has(threadId);
+}
+
+export function tryBeginQueuedComposerAutoDispatch(threadId: ThreadId): boolean {
+  if (autoDispatchLocks.has(threadId)) {
+    return false;
+  }
+  autoDispatchLocks.add(threadId);
+  return true;
+}
+
+export function endQueuedComposerAutoDispatch(threadId: ThreadId): void {
+  if (!autoDispatchLocks.delete(threadId)) {
+    return;
+  }
+  requestQueuedComposerDrainPass();
+}
+
+// Module-scope try/finally: ChatView is a hot-path compiler target and cannot
+// lower TryStatement without a catch. Callers must already hold the lock.
+export async function runLockedQueuedComposerAutoDispatch(input: {
+  threadId: ThreadId;
+  run: () => Promise<void>;
+  onSettled?: () => void;
+}): Promise<void> {
+  try {
+    await input.run();
+  } finally {
+    input.onSettled?.();
+    endQueuedComposerAutoDispatch(input.threadId);
+  }
+}
+
+/**
+ * Records a user Stop so the thread's waiting queue pauses instead of sending
+ * when the stopped turn ends. Returns an undo for a stop request that failed.
+ */
+export function holdQueuedComposerTurnsForStop(threadId: ThreadId): () => void {
+  const thread = getThreadFromState(useStore.getState(), threadId);
+  const stoppedTurnId = thread?.session?.activeTurnId ?? thread?.latestTurn?.turnId ?? null;
+  const drafts = useComposerDraftStore.getState();
+  const previousStoppedTurnId = drafts.draftsByThreadId[threadId]?.queueStoppedTurnId ?? null;
+  if (stoppedTurnId === null || stoppedTurnId === previousStoppedTurnId) {
+    return () => {};
+  }
+  drafts.pauseQueuedTurnsAfterStop(threadId, stoppedTurnId);
+  return () => {
+    const current = useComposerDraftStore.getState().draftsByThreadId[threadId];
+    if (current?.queueStoppedTurnId === stoppedTurnId) {
+      useComposerDraftStore.getState().pauseQueuedTurnsAfterStop(threadId, previousStoppedTurnId);
+    }
+  };
+}
+
+/** Releases the stop acknowledged by a successful manual send, preserving newer queue controls. */
+export function prepareQueuedComposerResumeAfterSend(threadId: ThreadId): () => void {
+  const draft = useComposerDraftStore.getState().draftsByThreadId[threadId];
+  const stoppedTurnId = draft?.queueStoppedTurnId ?? null;
+  const resumedTurnId = draft?.queueResumedTurnId ?? null;
+  return () => {
+    const drafts = useComposerDraftStore.getState();
+    const current = drafts.draftsByThreadId[threadId];
+    if (
+      (current?.queueStoppedTurnId ?? null) === stoppedTurnId &&
+      (current?.queueResumedTurnId ?? null) === resumedTurnId
+    ) {
+      drafts.resumeQueuedTurns(threadId, null);
+    }
+  };
+}
+
+export function claimQueuedComposerAutoDispatch(threadId: ThreadId): void {
+  claimedThreadIds.add(threadId);
+}
+
+// Preserve the departing view's send before allowing the next queued turn.
+export function releaseQueuedComposerAutoDispatch(threadId: ThreadId): void {
+  claimedThreadIds.delete(threadId);
+  const snapshot = useThreadDispatchStore.getState().threads[threadId]?.localDispatch;
+  if (snapshot && !awaitingTurnStartsByThreadId.has(threadId)) {
+    awaitingTurnStartsByThreadId.set(threadId, { snapshot, fromChatView: true });
+  }
+  requestQueuedComposerDrainPass();
+}
+
+// A known-unsent worktree cancellation can release its queued successor early.
+export function cancelQueuedComposerWorktreeHandoff(
+  threadId: ThreadId,
+  messageId: MessageId,
+): void {
+  const waiting = awaitingTurnStartsByThreadId.get(threadId);
+  if (waiting?.fromChatView && waiting.snapshot.expectedUserMessageId === messageId) {
+    awaitingTurnStartsByThreadId.delete(threadId);
+    requestQueuedComposerDrainPass();
+  }
+}
+
+export function setQueuedComposerDrainAssistantDeliveryMode(nextMode: AssistantDeliveryMode): void {
+  assistantDeliveryMode = nextMode;
+}
+
+export function startQueuedComposerDrainWatcher(options?: {
+  dispatch?: QueuedComposerDispatchFn;
+  now?: () => number;
+  assistantDeliveryMode?: AssistantDeliveryMode;
+}): () => void {
+  drainStartCount += 1;
+  if (options?.dispatch) {
+    dispatchQueuedTurn = options.dispatch;
+  }
+  if (options?.now) {
+    nowMs = options.now;
+  }
+  if (options?.assistantDeliveryMode) {
+    assistantDeliveryMode = options.assistantDeliveryMode;
+  }
+  if (drainStartCount === 1) {
+    const unsubscribeDrafts = useComposerDraftStore.subscribe((current, previous) => {
+      if (!haveQueuedTurnsChanged(current.draftsByThreadId, previous.draftsByThreadId)) {
+        return;
+      }
+      resetRetriesForChangedQueueHeads(current.draftsByThreadId);
+      requestQueuedComposerDrainPass();
+    });
+    const unsubscribeStore = useStore.subscribe((current, previous) => {
+      if (!hasRelevantThreadStateChanged(current, previous)) {
+        return;
+      }
+      resetRetriesForRelevantThreadChanges(current, previous);
+      requestQueuedComposerDrainPass();
+    });
+    const unsubscribeChatDispatch = useThreadDispatchStore.subscribe((current, previous) => {
+      for (const [threadId, waiting] of awaitingTurnStartsByThreadId) {
+        if (
+          waiting.fromChatView &&
+          current.threads[threadId]?.localDispatch !== previous.threads[threadId]?.localDispatch
+        ) {
+          requestQueuedComposerDrainPass();
+          break;
+        }
+      }
+    });
+    const unsubscribeTransport = addWsTransportStateListener(() => {
+      requestQueuedComposerDrainPass();
+    });
+    stopDrainSubscriptions = () => {
+      unsubscribeDrafts();
+      unsubscribeStore();
+      unsubscribeChatDispatch();
+      unsubscribeTransport();
+    };
+    requestQueuedComposerDrainPass();
+  }
+  return () => {
+    drainStartCount = Math.max(0, drainStartCount - 1);
+    if (drainStartCount > 0) {
+      return;
+    }
+    stopDrainSubscriptions?.();
+    stopDrainSubscriptions = null;
+    if (drainWakeTimer !== null) {
+      clearTimeout(drainWakeTimer);
+      drainWakeTimer = null;
+    }
+    tickScheduled = false;
+    dispatchQueuedTurn = dispatchQueuedComposerTurnHeadless;
+    nowMs = () => Date.now();
+  };
+}
+
+function requestQueuedComposerDrainPass(): void {
+  if (tickScheduled || !hasQueuedComposerDrainWork()) {
+    return;
+  }
+  tickScheduled = true;
+  queueMicrotask(() => {
+    tickScheduled = false;
+    void runQueuedComposerDrainPass();
+  });
+}
+
+export function resetQueuedComposerDrainForTests(): void {
+  claimedThreadIds.clear();
+  autoDispatchLocks.clear();
+  steerGatesByThreadId.clear();
+  awaitingTurnStartsByThreadId.clear();
+  retryStateByThreadId.clear();
+  drainStartCount = 0;
+  stopDrainSubscriptions?.();
+  stopDrainSubscriptions = null;
+  if (drainWakeTimer !== null) {
+    clearTimeout(drainWakeTimer);
+    drainWakeTimer = null;
+  }
+  tickScheduled = false;
+  assistantDeliveryMode = "streaming";
+  dispatchQueuedTurn = dispatchQueuedComposerTurnHeadless;
+  nowMs = () => Date.now();
+}
+
+function collectThreadIdsWithQueuedTurns(): ThreadId[] {
+  const drafts = useComposerDraftStore.getState().draftsByThreadId;
+  const threadIds: ThreadId[] = [];
+  for (const [threadId, draft] of Object.entries(drafts)) {
+    if (draft.queuedTurns.length > 0) {
+      threadIds.push(threadId as ThreadId);
+    }
+  }
+  return threadIds;
+}
+
+function hasQueuedComposerDrainWork(): boolean {
+  return (
+    collectThreadIdsWithQueuedTurns().length > 0 ||
+    steerGatesByThreadId.size > 0 ||
+    awaitingTurnStartsByThreadId.size > 0
+  );
+}
+
+function haveQueuedTurnsChanged(
+  current: ReturnType<typeof useComposerDraftStore.getState>["draftsByThreadId"],
+  previous: ReturnType<typeof useComposerDraftStore.getState>["draftsByThreadId"],
+): boolean {
+  const threadIds = new Set<ThreadId>([
+    ...(Object.keys(current) as ThreadId[]),
+    ...(Object.keys(previous) as ThreadId[]),
+  ]);
+  for (const threadId of threadIds) {
+    if (
+      current[threadId]?.queuedTurns !== previous[threadId]?.queuedTurns ||
+      current[threadId]?.queueResumedTurnId !== previous[threadId]?.queueResumedTurnId ||
+      current[threadId]?.queueStoppedTurnId !== previous[threadId]?.queueStoppedTurnId
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function resetRetriesForChangedQueueHeads(
+  draftsByThreadId: ReturnType<typeof useComposerDraftStore.getState>["draftsByThreadId"],
+): void {
+  for (const [threadId, retryState] of retryStateByThreadId) {
+    const queuedTurnId = draftsByThreadId[threadId]?.queuedTurns[0]?.id;
+    if (queuedTurnId !== retryState.queuedTurnId) {
+      retryStateByThreadId.delete(threadId);
+    }
+  }
+}
+
+function collectTrackedThreadIds(): Set<ThreadId> {
+  return new Set([
+    ...collectThreadIdsWithQueuedTurns(),
+    ...steerGatesByThreadId.keys(),
+    ...awaitingTurnStartsByThreadId.keys(),
+  ]);
+}
+
+function threadDrainSignal(state: AppState, threadId: ThreadId): string {
+  const thread = getThreadFromState(state, threadId);
+  if (!thread) {
+    return "missing";
+  }
+  const pendingApprovalCount = derivePendingApprovals(
+    thread.activities,
+    thread.pendingInteractions,
+    {
+      authoritativeHasPending: thread.hasPendingApprovals,
+      latestTurnId: thread.latestTurn?.turnId,
+    },
+  ).length;
+  const pendingUserInputCount = derivePendingUserInputs(
+    thread.activities,
+    thread.pendingInteractions,
+    {
+      authoritativeHasPending: thread.hasPendingUserInput,
+      latestTurnId: thread.latestTurn?.turnId,
+    },
+  ).length;
+  return [
+    thread.session?.status ?? "",
+    thread.session?.orchestrationStatus ?? "",
+    thread.session?.activeTurnId ?? "",
+    thread.latestTurn?.turnId ?? "",
+    thread.latestTurn?.state ?? "",
+    thread.latestTurn?.startedAt ?? "",
+    thread.latestTurn?.completedAt ?? "",
+    thread.error ?? "",
+    pendingApprovalCount,
+    pendingUserInputCount,
+    thread.claudeCacheReview?.reviewId ?? "",
+    thread.claudeCacheReview?.status ?? "",
+    thread.usageLimitRecovery?.id ?? "",
+  ].join("|");
+}
+
+function hasRelevantThreadStateChanged(current: AppState, previous: AppState): boolean {
+  for (const threadId of collectTrackedThreadIds()) {
+    if (threadDrainSignal(current, threadId) !== threadDrainSignal(previous, threadId)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function resetRetriesForRelevantThreadChanges(current: AppState, previous: AppState): void {
+  for (const threadId of retryStateByThreadId.keys()) {
+    // ChatView owns relevant state transitions while claimed. Let it consume
+    // the same bounded retry budget instead of treating its own error reset as
+    // a fresh background-drain attempt. Cache review transitions release a held
+    // queue rather than retrying a failed send, so they reset the budget either way.
+    if (
+      claimedThreadIds.has(threadId) &&
+      (getThreadFromState(current, threadId)?.claudeCacheReview != null) ===
+        (getThreadFromState(previous, threadId)?.claudeCacheReview != null)
+    ) {
+      continue;
+    }
+    if (threadDrainSignal(current, threadId) !== threadDrainSignal(previous, threadId)) {
+      retryStateByThreadId.delete(threadId);
+    }
+  }
+}
+
+function readQueuedComposerAutoDispatchGates(threadId: ThreadId): QueuedComposerAutoDispatchGates {
+  const draft = useComposerDraftStore.getState().draftsByThreadId[threadId];
+  const thread = getThreadFromState(useStore.getState(), threadId);
+  const phase = derivePhase(thread?.session ?? null);
+  const hasLiveTurn = phase === "running";
+  const pendingApprovals = derivePendingApprovals(
+    thread?.activities ?? [],
+    thread?.pendingInteractions,
+    {
+      authoritativeHasPending: thread?.hasPendingApprovals,
+      latestTurnId: thread?.latestTurn?.turnId,
+    },
+  );
+  const pendingUserInputs = derivePendingUserInputs(
+    thread?.activities ?? [],
+    thread?.pendingInteractions,
+    {
+      authoritativeHasPending: thread?.hasPendingUserInput,
+      latestTurnId: thread?.latestTurn?.turnId,
+    },
+  );
+  return {
+    hasQueueableLiveTurn: hasLiveTurn && thread?.session?.activeTurnId != null,
+    phase,
+    isSendBusy: autoDispatchLocks.has(threadId),
+    isConnecting: phase === "connecting",
+    isAwaitingTurnStart: awaitingTurnStartsByThreadId.has(threadId),
+    steerGate: getQueuedComposerSteerGate(threadId),
+    hasPendingApproval: pendingApprovals.length > 0,
+    hasPendingCacheReview: thread?.claudeCacheReview != null,
+    hasPendingProgress: pendingUserInputs.length > 0,
+    pendingUserInputCount: pendingUserInputs.length,
+    queuedTurnCount: draft?.queuedTurns.length ?? 0,
+    isQueuePaused:
+      deriveQueuedComposerPause({
+        latestTurn: thread?.latestTurn,
+        usageLimitRecovery: thread?.usageLimitRecovery,
+        activities: thread?.activities ?? [],
+        threadError: thread?.error,
+        queuedTurnCount: draft?.queuedTurns.length ?? 0,
+        stoppedTurnId: draft?.queueStoppedTurnId,
+        resumedTurnId: draft?.queueResumedTurnId,
+      }) !== null,
+    canResumeClosedSession: canResumeClosedQueuedComposerSession(thread, draft?.queueResumedTurnId),
+    isTransportAvailable:
+      readLatestWsTransportState() === null || readLatestWsTransportState() === "open",
+  };
+}
+
+function advanceAwaitingTurnStarts(): number | null {
+  let earliestExpiryMs: number | null = null;
+  const now = nowMs();
+  const chatDispatches = useThreadDispatchStore.getState().threads;
+  for (const [threadId, waiting] of awaitingTurnStartsByThreadId) {
+    if (waiting.fromChatView) {
+      const current = chatDispatches[threadId]?.localDispatch;
+      if (current) {
+        waiting.snapshot = current;
+      } else if (waiting.snapshot.worktreeSetup) {
+        // Clearing a composer marker does not confirm the provider turn has started.
+        waiting.snapshot = {
+          ...waiting.snapshot,
+          worktreeSetup: null,
+          startedAt: new Date(now).toISOString(),
+        };
+      }
+    }
+    const localDispatch = waiting.snapshot;
+    const thread = getThreadFromState(useStore.getState(), threadId);
+    const pendingApprovals = derivePendingApprovals(
+      thread?.activities ?? [],
+      thread?.pendingInteractions,
+      {
+        authoritativeHasPending: thread?.hasPendingApprovals,
+        latestTurnId: thread?.latestTurn?.turnId,
+      },
+    );
+    const pendingUserInputs = derivePendingUserInputs(
+      thread?.activities ?? [],
+      thread?.pendingInteractions,
+      {
+        authoritativeHasPending: thread?.hasPendingUserInput,
+        latestTurnId: thread?.latestTurn?.turnId,
+      },
+    );
+    if (
+      hasLiveTurnTakenOver({
+        localDispatch,
+        phase: derivePhase(thread?.session ?? null),
+        latestTurn: thread?.latestTurn ?? null,
+        session: thread?.session ?? null,
+        hasPendingApproval: pendingApprovals.length > 0,
+        hasPendingUserInput: pendingUserInputs.length > 0,
+        claudeCacheReview: thread?.claudeCacheReview,
+        threadError: thread?.error,
+        now,
+      })
+    ) {
+      awaitingTurnStartsByThreadId.delete(threadId);
+      continue;
+    }
+    // Setup is driven by lifecycle events and can legitimately outlast the deadline.
+    if (localDispatch.worktreeSetup) {
+      continue;
+    }
+    const startedAtMs = Date.parse(localDispatch.startedAt);
+    if (!Number.isFinite(startedAtMs)) {
+      awaitingTurnStartsByThreadId.delete(threadId);
+      continue;
+    }
+    const expiresInMs = LOCAL_DISPATCH_TURN_TAKEOVER_TIMEOUT_MS - (now - startedAtMs);
+    earliestExpiryMs =
+      earliestExpiryMs === null ? expiresInMs : Math.min(earliestExpiryMs, expiresInMs);
+  }
+  return earliestExpiryMs;
+}
+
+function advanceSteerGates(): number | null {
+  let earliestExpiryMs: number | null = null;
+  const now = nowMs();
+  for (const [threadId, gate] of [...steerGatesByThreadId.entries()]) {
+    const thread = getThreadFromState(useStore.getState(), threadId);
+    const transition = resolveQueuedSteerGateTransition({
+      gate,
+      phase: derivePhase(thread?.session ?? null),
+      sessionErrored: thread?.session?.status === "error",
+      activeTurnId: thread?.session?.activeTurnId ?? null,
+      now,
+    });
+    if (transition.kind === "clear") {
+      steerGatesByThreadId.delete(threadId);
+      continue;
+    }
+    const nextGate = transition.gate;
+    if (
+      nextGate.sawInterruptGap !== gate.sawInterruptGap ||
+      nextGate.gapStartedAt !== gate.gapStartedAt ||
+      nextGate.armedActiveTurnId !== gate.armedActiveTurnId
+    ) {
+      steerGatesByThreadId.set(threadId, nextGate);
+    }
+    if (transition.expiresInMs !== null) {
+      earliestExpiryMs =
+        earliestExpiryMs === null
+          ? transition.expiresInMs
+          : Math.min(earliestExpiryMs, transition.expiresInMs);
+    }
+  }
+  return earliestExpiryMs;
+}
+
+function scheduleQueuedComposerDrainWake(expiresInMs: number | null): void {
+  if (drainWakeTimer !== null) {
+    clearTimeout(drainWakeTimer);
+    drainWakeTimer = null;
+  }
+  if (expiresInMs === null) {
+    return;
+  }
+  drainWakeTimer = setTimeout(
+    () => {
+      drainWakeTimer = null;
+      requestQueuedComposerDrainPass();
+    },
+    Math.max(0, expiresInMs),
+  );
+}
+
+export function recordQueuedComposerAutoDispatchFailure(
+  threadId: ThreadId,
+  queuedTurnId: string,
+): void {
+  const previous = retryStateByThreadId.get(threadId);
+  const failureCount = previous?.queuedTurnId === queuedTurnId ? previous.failureCount + 1 : 1;
+  const retryDelay = QUEUED_COMPOSER_RETRY_DELAYS_MS[failureCount - 1];
+  retryStateByThreadId.set(threadId, {
+    queuedTurnId,
+    failureCount,
+    retryAt: retryDelay === undefined ? null : nowMs() + retryDelay,
+  });
+}
+
+export function getQueuedComposerAutoDispatchRetryDelay(
+  threadId: ThreadId,
+  queuedTurnId: string,
+): number | null | undefined {
+  const retryState = retryStateByThreadId.get(threadId);
+  if (!retryState || retryState.queuedTurnId !== queuedTurnId) {
+    return undefined;
+  }
+  if (retryState.retryAt === null) {
+    return null;
+  }
+  return retryState.retryAt - nowMs();
+}
+
+export function clearQueuedComposerAutoDispatchRetry(threadId: ThreadId): void {
+  retryStateByThreadId.delete(threadId);
+}
+
+function runQueuedComposerDrainPass(): void {
+  const steerExpiryMs = advanceSteerGates();
+  const awaitingStartExpiryMs = advanceAwaitingTurnStarts();
+  let earliestWakeMs =
+    steerExpiryMs === null
+      ? awaitingStartExpiryMs
+      : awaitingStartExpiryMs === null
+        ? steerExpiryMs
+        : Math.min(steerExpiryMs, awaitingStartExpiryMs);
+
+  const threadIds = collectThreadIdsWithQueuedTurns();
+  for (const threadId of threadIds) {
+    if (claimedThreadIds.has(threadId)) {
+      continue;
+    }
+    const draft = useComposerDraftStore.getState().draftsByThreadId[threadId];
+    const nextQueuedTurn = draft?.queuedTurns[0];
+    if (!nextQueuedTurn) {
+      continue;
+    }
+    const retryDelay = getQueuedComposerAutoDispatchRetryDelay(threadId, nextQueuedTurn.id);
+    if (retryDelay === null) {
+      continue;
+    }
+    if (retryDelay !== undefined && retryDelay > 0) {
+      earliestWakeMs = earliestWakeMs === null ? retryDelay : Math.min(earliestWakeMs, retryDelay);
+      continue;
+    }
+    const gates = readQueuedComposerAutoDispatchGates(threadId);
+    if (!shouldAutoDispatchQueuedComposerTurn(gates)) {
+      continue;
+    }
+    if (!tryBeginQueuedComposerAutoDispatch(threadId)) {
+      continue;
+    }
+    const thread = getThreadFromState(useStore.getState(), threadId);
+    const messageId = newMessageId();
+    const localDispatch = {
+      ...createLocalDispatchSnapshot(thread, { expectedUserMessageId: messageId }),
+      startedAt: new Date(nowMs()).toISOString(),
+    };
+    void runLockedQueuedComposerAutoDispatch({
+      threadId,
+      run: async () => {
+        let acknowledgedMessageId = messageId;
+        const succeeded = await dispatchQueuedTurn({
+          threadId,
+          queuedTurn: nextQueuedTurn,
+          dispatchMode: "queue",
+          assistantDeliveryMode,
+          messageId,
+          onReconciledMessage: (id) => {
+            acknowledgedMessageId = id;
+          },
+        });
+        const acceptedReview = getThreadFromState(useStore.getState(), threadId)?.claudeCacheReview;
+        if (succeeded || acceptedReview?.messageId === messageId) {
+          retryStateByThreadId.delete(threadId);
+          awaitingTurnStartsByThreadId.set(threadId, {
+            snapshot: { ...localDispatch, expectedUserMessageId: acknowledgedMessageId },
+            fromChatView: false,
+          });
+          useComposerDraftStore.getState().removeQueuedTurn(threadId, nextQueuedTurn.id);
+          return;
+        }
+        if (
+          getThreadFromState(useStore.getState(), threadId)?.claudeCacheReview == null &&
+          getThreadFromState(useStore.getState(), threadId)?.usageLimitRecovery == null
+        ) {
+          recordQueuedComposerAutoDispatchFailure(threadId, nextQueuedTurn.id);
+        }
+      },
+    });
+  }
+  scheduleQueuedComposerDrainWake(earliestWakeMs);
+}

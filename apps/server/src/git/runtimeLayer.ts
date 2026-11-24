@@ -1,0 +1,56 @@
+import { Effect, Layer } from "effect";
+
+import { GitCoreLive } from "./Layers/GitCore";
+import { GitHubCliLive } from "./Layers/GitHubCli";
+import { GitManagerLive } from "./Layers/GitManager";
+import { GitStatusBroadcasterLive } from "./Layers/GitStatusBroadcaster";
+import { ClaudeTextGenerationServiceLive } from "./Layers/ClaudeTextGeneration";
+import { CodexTextGenerationServiceLive } from "./Layers/CodexTextGeneration";
+import { CursorTextGenerationServiceLive } from "./Layers/CursorTextGeneration";
+import { DroidTextGenerationServiceLive } from "./Layers/DroidTextGeneration";
+import { makeOpenCodeTextGenerationServiceLive } from "./Layers/OpenCodeTextGeneration";
+import { ProviderTextGenerationLive } from "./Layers/ProviderTextGeneration";
+import { OpenCodeRuntimeLive } from "../provider/opencodeRuntime";
+import { ServerSettingsLive } from "../serverSettings";
+import {
+  makeProviderServerPasswordResolver,
+  ProviderCredentials,
+  ProviderCredentialsLive,
+} from "../providerCredentials";
+
+const textGenerationProviderLayers = Effect.gen(function* () {
+  const credentials = yield* ProviderCredentials;
+  const resolveProviderServerPassword = makeProviderServerPasswordResolver(credentials);
+  return makeOpenCodeTextGenerationServiceLive(resolveProviderServerPassword).pipe(
+    Layer.provide(OpenCodeRuntimeLive),
+  );
+}).pipe(Effect.provide(ProviderCredentialsLive.pipe(Layer.orDie)), Layer.unwrap);
+
+export const TextGenerationLayerLive = ProviderTextGenerationLive.pipe(
+  Layer.provide(ClaudeTextGenerationServiceLive),
+  Layer.provide(CodexTextGenerationServiceLive),
+  Layer.provide(CursorTextGenerationServiceLive),
+  Layer.provide(DroidTextGenerationServiceLive),
+  Layer.provide(textGenerationProviderLayers),
+  Layer.provide(ServerSettingsLive),
+  Layer.provide(GitCoreLive),
+  Layer.provide(GitHubCliLive),
+);
+
+export const GitManagerLayerLive = GitManagerLive.pipe(
+  Layer.provideMerge(GitCoreLive),
+  Layer.provideMerge(GitHubCliLive),
+  Layer.provideMerge(TextGenerationLayerLive),
+  Layer.provide(ServerSettingsLive),
+);
+
+export const GitStatusBroadcasterLayerLive = GitStatusBroadcasterLive.pipe(
+  Layer.provide(Layer.mergeAll(GitCoreLive, GitManagerLayerLive)),
+);
+
+export const GitLayerLive = Layer.mergeAll(
+  GitCoreLive,
+  GitHubCliLive,
+  GitManagerLayerLive,
+  GitStatusBroadcasterLayerLive,
+);

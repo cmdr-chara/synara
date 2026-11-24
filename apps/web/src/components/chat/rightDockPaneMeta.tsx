@@ -1,0 +1,200 @@
+// FILE: rightDockPaneMeta.tsx
+// Purpose: Shared semantic metadata (icon + label) for right-dock pane kinds.
+// Layer: Chat right-dock UI primitives
+// Exports: per-kind meta map, launcher items, and pane label/icon resolvers.
+
+import type { ReactNode } from "react";
+import { t } from "~/i18n";
+
+import { basenameOfPath } from "~/file-icons";
+import type { LucideIcon } from "~/lib/icons";
+import {
+  BackgroundTrayIcon,
+  BotIcon,
+  DeviceMobileIcon,
+  DiffIcon,
+  FileIcon,
+  FoldersIcon,
+  GitCommitIcon,
+  GitPullRequestIcon,
+  GlobeIcon,
+  InfoIcon,
+  SidechatIcon,
+  TerminalIcon,
+} from "~/lib/icons";
+import { type RightDockPane, type RightDockPaneKind } from "~/rightDockStore.logic";
+import { CHAT_SURFACE_CHIP_ICON_CLASS_NAME, SurfaceChipIcon } from "./chatHeaderControls";
+import { FileEntryIcon } from "./FileEntryIcon";
+import { pullRequestPaneTabLabel } from "../pullRequest/pullRequestDetail.logic";
+
+export interface RightDockPaneMeta {
+  label: string;
+  Icon: LucideIcon;
+}
+
+export interface RightDockLauncherItem extends RightDockPaneMeta {
+  kind: RightDockPaneKind;
+}
+
+export const RIGHT_DOCK_PANE_META: Record<RightDockPaneKind, RightDockPaneMeta> = {
+  browser: { label: "Browser", Icon: GlobeIcon },
+  // The contracts stay platform-neutral ("device") so Android emulators can plug
+  // in later, but the only backend today is the iOS Simulator, so that is what
+  // the label says.
+  device: { label: "iOS Simulator", Icon: DeviceMobileIcon },
+  diff: { label: "Diff", Icon: DiffIcon },
+  explorer: { label: "Explorer", Icon: FoldersIcon },
+  file: { label: "File", Icon: FileIcon },
+  terminal: { label: "Terminal", Icon: TerminalIcon },
+  sidechat: { label: "Side chats", Icon: SidechatIcon },
+  git: { label: "Git", Icon: GitCommitIcon },
+  pullRequest: { label: "Pull request", Icon: GitPullRequestIcon },
+  subagents: { label: "Subagents", Icon: BotIcon },
+  backgroundTasks: { label: "Background tasks", Icon: BackgroundTrayIcon },
+};
+
+const RIGHT_DOCK_PANE_LABEL_KEYS: Record<RightDockPaneKind, string> = {
+  browser: "computer:browser",
+  device: "computer:iOSSimulator",
+  diff: "workspace:toolCallDetails_diffSection",
+  explorer: "chat:explorer",
+  file: "chat:file",
+  terminal: "workspace:viewportPane_terminal",
+  sidechat: "chat:sideChats",
+  git: "chat:git",
+  pullRequest: "git:general_environmentPullRequest",
+  subagents: "chat:subagents",
+  backgroundTasks: "chat:backgroundTasks",
+};
+
+// Neutral fallback for any pane kind we no longer recognize (e.g. stale
+// persisted state). Persisted dock state is sanitized on rehydrate, so this is
+// only a defensive guard to keep a single bad pane from crashing render.
+const FALLBACK_RIGHT_DOCK_PANE_META: RightDockPaneMeta = {
+  label: "Panel",
+  Icon: InfoIcon,
+};
+
+// Always resolve pane meta through this helper instead of indexing the map
+// directly, so an unknown kind degrades gracefully rather than throwing.
+export function getRightDockPaneMeta(
+  kind: RightDockPaneKind,
+  translate: typeof t = t,
+): RightDockPaneMeta {
+  const meta = RIGHT_DOCK_PANE_META[kind] ?? FALLBACK_RIGHT_DOCK_PANE_META;
+  return { ...meta, label: translate(RIGHT_DOCK_PANE_LABEL_KEYS[kind] ?? "common:panel") };
+}
+
+// Empty-dock launchers prioritize the everyday workspace tools. Review only
+// appears when the selected diff scope contains changes, Git is gated by
+// repository discovery, and Explorer needs a concrete workspace. Context-only
+// file and pull-request panes continue to open from their owning surfaces.
+const RIGHT_DOCK_LAUNCHER_ORDER: readonly RightDockPaneKind[] = [
+  "diff",
+  "terminal",
+  "browser",
+  "explorer",
+  "sidechat",
+  "device",
+  "git",
+];
+
+const RIGHT_DOCK_LAUNCHER_LABEL_KEYS: Partial<Record<RightDockPaneKind, string>> = {
+  diff: "chat:review",
+  explorer: "workspace:toolCallDetails_filesSection",
+  sidechat: "chat:sideChats",
+  git: "git:gitPanel_title",
+};
+
+export function resolveRightDockLauncherItems(
+  input: {
+    hasWorkspace: boolean;
+    hasGitRepository: boolean;
+    hasReview: boolean;
+    /**
+     * Simulators need a macOS server with Xcode. Off macOS the entry is hidden
+     * outright rather than shown disabled: there is nothing the user could do
+     * from this machine to make it work.
+     */
+    hasDeviceSupport?: boolean;
+  },
+  translate: typeof t = t,
+): readonly RightDockLauncherItem[] {
+  return RIGHT_DOCK_LAUNCHER_ORDER.flatMap((kind) => {
+    if (kind === "diff" && !input.hasReview) {
+      return [];
+    }
+    if (kind === "git" && !input.hasGitRepository) {
+      return [];
+    }
+    if (kind === "explorer" && !input.hasWorkspace) {
+      return [];
+    }
+    if (kind === "device" && input.hasDeviceSupport !== true) {
+      return [];
+    }
+    const meta = getRightDockPaneMeta(kind, translate);
+    const launcherLabel = RIGHT_DOCK_LAUNCHER_LABEL_KEYS[kind];
+    return [
+      {
+        kind,
+        Icon: meta.Icon,
+        label: launcherLabel ? translate(launcherLabel) : meta.label,
+      },
+    ];
+  });
+}
+
+// Resolves a tab label, preferring caller-provided per-pane overrides (e.g. the
+// embedded sidechat thread title) before falling back to the kind label.
+export function resolveRightDockPaneLabel(
+  pane: RightDockPane,
+  overrides?: Record<string, string | undefined>,
+  translate: typeof t = t,
+): string {
+  return overrides?.[pane.id] ?? getRightDockPaneMeta(pane.kind, translate).label;
+}
+
+export function buildRightDockPaneLabelOverrides(
+  panes: readonly RightDockPane[],
+  threadSummaries: readonly { id: string; title: string }[],
+): Record<string, string | undefined> | undefined {
+  const sidechatTitleByThreadId = new Map(
+    threadSummaries.map((thread) => [thread.id, thread.title] as const),
+  );
+  const overrides: Record<string, string | undefined> = {};
+
+  for (const pane of panes) {
+    if (pane.kind === "file" && pane.filePath) {
+      overrides[pane.id] = basenameOfPath(pane.filePath);
+    } else if (pane.kind === "pullRequest" && pane.pullRequestNumber !== null) {
+      overrides[pane.id] = pullRequestPaneTabLabel(pane.pullRequestNumber);
+    } else if (pane.kind === "sidechat" && pane.threadId) {
+      const title = sidechatTitleByThreadId.get(pane.threadId)?.trim();
+      if (title) {
+        overrides[pane.id] = title;
+      }
+    }
+  }
+
+  return Object.keys(overrides).length > 0 ? overrides : undefined;
+}
+
+// Resolves a tab glyph: file panes show the per-file-type icon (matching the
+// pane header and explorer rows), every other pane uses its kind icon. The file
+// glyph inherits the tab's muted foreground color (colorMode="inherit") instead
+// of its extension color, so dock tabs read like the changed-file rows rather
+// than carrying a loud per-type tint.
+export function resolveRightDockPaneIcon(pane: RightDockPane): ReactNode {
+  if (pane.kind === "file" && pane.filePath) {
+    return (
+      <FileEntryIcon
+        pathValue={pane.filePath}
+        kind="file"
+        colorMode="inherit"
+        className={CHAT_SURFACE_CHIP_ICON_CLASS_NAME}
+      />
+    );
+  }
+  return <SurfaceChipIcon icon={getRightDockPaneMeta(pane.kind).Icon} />;
+}

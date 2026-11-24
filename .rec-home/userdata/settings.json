@@ -1,0 +1,105 @@
+{
+  "revision": 16,
+  "migrationVersion": 3,
+  "settings": {
+    "autoResumeAfterUsageLimits": false,
+    "usageLimitRecoveryEpoch": 0,
+    "enableAssistantStreaming": true,
+    "enableProviderUpdateChecks": true,
+    "keepAwakeMode": "off",
+    "lowerProviderProcessPriority": true,
+    "defaultThreadEnvMode": "local",
+    "addProjectBaseDirectory": "",
+    "githubInboxIncludeUpstreams": false,
+    "sidechatExpiry": "1h",
+    "sourceControlWritingStyle": "repository",
+    "sourceControlCustomInstructions": "",
+    "gitAttributionEnabled": true,
+    "textGenerationModelSelection": {
+      "provider": "codex",
+      "instanceId": "codex",
+      "model": "gpt-6-luna"
+    },
+    "providers": {
+      "codex": {
+        "enabled": true,
+        "binaryPath": "codex",
+        "customModels": [],
+        "homePath": "",
+        "accounts": [],
+        "selectedAccountId": "default"
+      },
+      "claudeAgent": {
+        "enabled": true,
+        "binaryPath": "claude",
+        "customModels": [],
+        "homePath": "",
+        "launchArgs": "",
+        "enableArtifacts": false,
+        "confirmColdCacheResume": true
+      },
+      "cursor": {
+        "enabled": true,
+        "binaryPath": "cursor-agent",
+        "customModels": [],
+        "apiEndpoint": ""
+      },
+      "devin": {
+        "enabled": true,
+        "binaryPath": "devin",
+        "customModels": []
+      },
+      "antigravity": {
+        "enabled": true,
+        "binaryPath": "agy",
+        "customModels": []
+      },
+      "grok": {
+        "enabled": true,
+        "binaryPath": "grok",
+        "customModels": []
+      },
+      "droid": {
+        "enabled": true,
+        "binaryPath": "droid",
+        "customModels": []
+      },
+      "opencode": {
+        "enabled": true,
+        "binaryPath": "opencode",
+        "customModels": [],
+        "serverUrl": "",
+        "serverPasswordConfigured": false,
+        "experimentalWebSockets": false
+      },
+      "pi": {
+        "enabled": true,
+        "binaryPath": "pi",
+        "customModels": [],
+        "agentDir": ""
+      },
+      "omp": {
+        "enabled": true,
+        "binaryPath": "omp",
+        "customModels": [],
+        "agentDir": ""
+      }
+    },
+    "providerInstances": {},
+    "skills": {
+      "disabled": []
+    },
+    "newThreadDefaults": {
+      "modelSelectionByProvider": {},
+      "activeProvider": null,
+      "runtimeMode": null
+    },
+    "onboardingCompletedAt": "2026-11-22T12:48:40.001Z",
+    "appearance": {
+      "mode": "dark",
+      "uiDensity": "comfortable",
+      "chatWidth": "standard",
+      "showAsciiBackground": true
+    }
+  }
+}

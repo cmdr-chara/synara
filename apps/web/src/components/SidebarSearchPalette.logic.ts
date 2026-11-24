@@ -1,0 +1,604 @@
+// Purpose: Scores sidebar palette results for actions, themes, projects, and chat threads.
+// Scoring stays local and deterministic so the palette can rank title hits above
+// message-content hits while still surfacing a useful snippet for chat matches.
+// Server message hits cover threads whose messages this client has not loaded.
+import type { ComponentType } from "react";
+
+import type { ProviderKind } from "@synara/contracts";
+import { basenameOfPath } from "../file-icons";
+import type { ProjectAppearance } from "../lib/projectAppearance";
+import type { WorkspaceSession } from "../lib/hosts/workspaceSessions";
+import { isSidebarThreadVisible } from "../storeSelectors";
+import type { ThemeMode, ThemeVariant } from "../theme/theme.logic";
+
+export interface SidebarSearchAction {
+  id: string;
+  label: string;
+  description: string;
+  keywords?: readonly string[];
+  shortcutLabel?: string | null;
+  /** Context shown beside the command, such as the owning Settings section. */
+  metaLabel?: string;
+  /** Dynamic actions (e.g. "Switch to <space>") execute this instead of a wired-up prop. */
+  run?: () => void;
+  /** Overrides the id-keyed icon map for actions whose glyph is data (a space's icon). */
+  icon?: ComponentType<{ className?: string }>;
+  /**
+   * Type-to-jump targets (one per space) only appear once the user types; listing them
+   * all in the empty palette would push threads and projects below the fold.
+   */
+  requiresQuery?: boolean;
+}
+
+export interface SidebarSearchTheme {
+  id: string;
+  type: "mode" | "code-theme";
+  label: string;
+  description: string;
+  keywords?: readonly string[];
+  mode?: ThemeMode;
+  codeThemeId?: string;
+  variant?: ThemeVariant;
+  isActive: boolean;
+}
+
+/** Navigation metadata only; clients and credentials remain in the owning host. */
+export interface SidebarSearchHost {
+  environmentId: string;
+  name: string;
+  unavailable?: boolean;
+}
+
+export interface SidebarSearchProject {
+  id: string;
+  name: string;
+  remoteName: string;
+  folderName: string;
+  localName: string | null;
+  appearance?: ProjectAppearance | null;
+  cwd: string;
+  spaceName: string;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  host?: SidebarSearchHost;
+}
+
+export interface SidebarSearchProjectMatch {
+  id: string;
+  project: SidebarSearchProject;
+}
+
+export interface SidebarSearchThread {
+  id: string;
+  title: string;
+  projectId: string;
+  projectName: string;
+  projectRemoteName: string;
+  spaceName: string;
+  provider: ProviderKind;
+  createdAt: string;
+  updatedAt?: string | undefined;
+  host?: SidebarSearchHost;
+  messages: readonly {
+    text: string;
+  }[];
+}
+
+/** Field-wise equality so a rebuilt search thread list can keep its previous identity. */
+export function areSidebarSearchThreadListsEqual(
+  previous: readonly SidebarSearchThread[],
+  next: readonly SidebarSearchThread[],
+): boolean {
+  if (previous === next) return true;
+  if (previous.length !== next.length) return false;
+  for (let index = 0; index < previous.length; index += 1) {
+    const left = previous[index]!;
+    const right = next[index]!;
+    if (
+      left.id !== right.id ||
+      left.title !== right.title ||
+      left.projectId !== right.projectId ||
+      left.projectName !== right.projectName ||
+      left.projectRemoteName !== right.projectRemoteName ||
+      left.spaceName !== right.spaceName ||
+      left.provider !== right.provider ||
+      left.createdAt !== right.createdAt ||
+      left.updatedAt !== right.updatedAt ||
+      left.host?.environmentId !== right.host?.environmentId ||
+      left.host?.name !== right.host?.name ||
+      left.host?.unavailable !== right.host?.unavailable ||
+      left.messages !== right.messages
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** Server-side message hit for a thread whose messages may not be loaded on this client. */
+export interface SidebarSearchServerThreadMatch {
+  excerpt: string;
+  matchCount: number;
+}
+
+export interface SidebarSearchThreadMatch {
+  id: string;
+  thread: SidebarSearchThread;
+  matchKind: "message" | "project" | "title" | "host";
+  snippet: string | null;
+  messageMatchCount: number;
+}
+
+const EMPTY_REMOTE_MESSAGES: SidebarSearchThread["messages"] = [];
+
+/** Connected computers publish titles and project metadata, never remote transcripts. */
+export function workspaceSidebarSearch(sessions: readonly WorkspaceSession[]): {
+  projects: SidebarSearchProject[];
+  threads: SidebarSearchThread[];
+} {
+  const projects: SidebarSearchProject[] = [];
+  const threads: SidebarSearchThread[] = [];
+  for (const session of sessions) {
+    const host: SidebarSearchHost = {
+      environmentId: session.host.executionScope.environmentId,
+      name: session.host.hostName,
+      unavailable: session.summary?.state !== "open" || !session.navigation || !!session.error,
+    };
+    const projectById = new Map(
+      (session.summary?.projects ?? []).map((project) => [project.id, project]),
+    );
+    for (const project of projectById.values()) {
+      projects.push({
+        id: project.id,
+        name: project.name,
+        remoteName: project.name,
+        folderName: basenameOfPath(project.cwd),
+        localName: null,
+        appearance: project.appearance ?? null,
+        cwd: project.cwd,
+        spaceName: project.section === "projects" ? "" : "Global",
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+        host,
+      });
+    }
+    for (const thread of session.summary?.threads ?? []) {
+      const project = projectById.get(thread.projectId);
+      if (
+        !project ||
+        thread.parentThreadId ||
+        thread.archivedAt != null ||
+        !isSidebarThreadVisible(thread)
+      )
+        continue;
+      threads.push({
+        id: thread.id,
+        title: thread.title,
+        projectId: thread.projectId,
+        projectName: project.name,
+        projectRemoteName: project.name,
+        spaceName: project.section === "projects" ? "" : "Global",
+        provider: thread.modelSelection.provider,
+        createdAt: thread.createdAt,
+        updatedAt: thread.updatedAt,
+        host,
+        messages: EMPTY_REMOTE_MESSAGES,
+      });
+    }
+  }
+  return { projects, threads };
+}
+
+function normalizeText(value: string): string {
+  return value.trim().replaceAll(/\s+/g, " ").toLowerCase();
+}
+
+function normalizeDisplayText(value: string): string {
+  return value.trim().replaceAll(/\s+/g, " ");
+}
+
+function tokenizeQuery(value: string): string[] {
+  return normalizeText(value)
+    .split(" ")
+    .filter((token) => token.length > 0);
+}
+
+function truncateSnippet(value: string, startIndex: number, queryLength: number): string {
+  const SNIPPET_MAX_LENGTH = 88;
+  const safeStartIndex = Math.max(0, startIndex);
+  if (value.length <= SNIPPET_MAX_LENGTH) {
+    return value;
+  }
+
+  const contextBefore = Math.min(28, safeStartIndex);
+  const queryCenter = safeStartIndex + Math.max(queryLength, 1) / 2;
+  const desiredStart = Math.max(
+    0,
+    Math.round(queryCenter - SNIPPET_MAX_LENGTH / 2) - contextBefore,
+  );
+  const boundedStart = Math.min(desiredStart, Math.max(0, value.length - SNIPPET_MAX_LENGTH));
+  const boundedEnd = Math.min(value.length, boundedStart + SNIPPET_MAX_LENGTH);
+  const prefix = boundedStart > 0 ? "..." : "";
+  const suffix = boundedEnd < value.length ? "..." : "";
+  return `${prefix}${value.slice(boundedStart, boundedEnd).trim()}${suffix}`;
+}
+
+function buildMessageSnippet(
+  messageText: string,
+  query: string,
+  queryTokens: readonly string[],
+): string {
+  const displayMessage = normalizeDisplayText(messageText);
+  if (!displayMessage) {
+    return "";
+  }
+  const normalizedMessage = displayMessage.toLowerCase();
+
+  const phraseIndex = normalizedMessage.indexOf(query);
+  if (phraseIndex >= 0) {
+    return truncateSnippet(displayMessage, phraseIndex, query.length);
+  }
+
+  let earliestTokenIndex = Number.POSITIVE_INFINITY;
+  let matchedToken = "";
+  for (const token of queryTokens) {
+    const tokenIndex = normalizedMessage.indexOf(token);
+    if (tokenIndex >= 0 && tokenIndex < earliestTokenIndex) {
+      earliestTokenIndex = tokenIndex;
+      matchedToken = token;
+    }
+  }
+
+  if (!Number.isFinite(earliestTokenIndex)) {
+    return truncateSnippet(displayMessage, 0, 0);
+  }
+
+  return truncateSnippet(displayMessage, earliestTokenIndex, matchedToken.length);
+}
+
+function scoreMessage(
+  messages: SidebarSearchThread["messages"],
+  query: string,
+  queryTokens: readonly string[],
+): {
+  messageMatchCount: number;
+  score: number | null;
+  snippet: string | null;
+} {
+  let bestScore: number | null = null;
+  let bestSnippet: string | null = null;
+  let matchCount = 0;
+
+  for (const message of messages) {
+    const normalizedMessage = normalizeText(message.text);
+    if (!normalizedMessage) continue;
+
+    let score: number | null = null;
+    if (normalizedMessage === query) {
+      score = 165;
+    } else if (normalizedMessage.startsWith(query)) {
+      score = 155;
+    } else if (normalizedMessage.includes(query)) {
+      score = 145;
+    } else if (
+      queryTokens.length > 1 &&
+      queryTokens.every((token) => normalizedMessage.includes(token))
+    ) {
+      score = 132;
+    }
+
+    if (score === null) continue;
+
+    matchCount += 1;
+    if (bestScore === null || score > bestScore) {
+      bestScore = score;
+      bestSnippet = buildMessageSnippet(message.text, query, queryTokens);
+    }
+  }
+
+  return {
+    messageMatchCount: matchCount,
+    score: bestScore,
+    snippet: bestSnippet,
+  };
+}
+
+function scoreAction(action: SidebarSearchAction, query: string): number | null {
+  if (!query) return 0;
+
+  const label = normalizeText(action.label);
+  const description = normalizeText(action.description);
+  const keywords = (action.keywords ?? []).map(normalizeText);
+
+  if (label === query) return 140;
+  if (label.startsWith(query)) return 120;
+  if (keywords.some((keyword) => keyword === query)) return 110;
+  if (label.includes(query)) return 100;
+  if (keywords.some((keyword) => keyword.includes(query))) return 90;
+  if (description.includes(query)) return 70;
+  const tokens = tokenizeQuery(query);
+  const fields = [label, description, ...keywords];
+  if (tokens.length > 1 && tokens.every((token) => fields.some((field) => field.includes(token)))) {
+    return 60;
+  }
+  return null;
+}
+
+function scoreTheme(theme: SidebarSearchTheme, query: string): number | null {
+  if (!query) return 0;
+
+  const label = normalizeText(theme.label);
+  const description = normalizeText(theme.description);
+  const keywords = (theme.keywords ?? []).map(normalizeText);
+
+  if (label === query) return 145;
+  if (keywords.some((keyword) => keyword === query)) return 135;
+  if (label.startsWith(query)) return 125;
+  if (label.includes(query)) return 110;
+  if (keywords.some((keyword) => keyword.includes(query))) return 95;
+  if (description.includes(query)) return 75;
+  return null;
+}
+
+function scoreProject(project: SidebarSearchProject, query: string): number | null {
+  if (!query) return null;
+
+  const name = normalizeText(project.name);
+  const remoteName = normalizeText(project.remoteName);
+  const cwd = normalizeText(project.cwd);
+  const folder = normalizeText(project.folderName || basenameOfPath(project.cwd));
+  const spaceName = normalizeText(project.spaceName);
+  const hostName = normalizeText(project.host?.name ?? "");
+
+  if (name === query) return 150;
+  if (remoteName === query) return 150;
+  if (folder === query) return 145;
+  if (name.startsWith(query)) return 130;
+  if (remoteName.startsWith(query)) return 130;
+  if (folder.startsWith(query)) return 120;
+  if (name.includes(query)) return 105;
+  if (remoteName.includes(query)) return 105;
+  if (folder.includes(query)) return 95;
+  if (spaceName === query) return 90;
+  if (cwd.includes(query)) return 70;
+  if (spaceName.includes(query)) return 60;
+  if (hostName.includes(query)) return 55;
+  return null;
+}
+
+export function matchSidebarSearchActions(
+  actions: readonly SidebarSearchAction[],
+  query: string,
+): SidebarSearchAction[] {
+  const normalizedQuery = normalizeText(query);
+
+  return actions
+    .filter((action) => !action.requiresQuery || normalizedQuery.length > 0)
+    .map((action, index) => ({
+      action,
+      index,
+      score: scoreAction(action, normalizedQuery),
+    }))
+    .filter((candidate) => candidate.score !== null)
+    .toSorted((left, right) => {
+      if (left.score !== right.score) return (right.score ?? 0) - (left.score ?? 0);
+      return left.index - right.index;
+    })
+    .map((candidate) => candidate.action);
+}
+
+export function matchSidebarSearchThemes(
+  themes: readonly SidebarSearchTheme[],
+  query: string,
+): SidebarSearchTheme[] {
+  const normalizedQuery = normalizeText(query);
+  if (!normalizedQuery) {
+    return [...themes];
+  }
+
+  return themes
+    .map((theme, index) => ({
+      theme,
+      index,
+      score: scoreTheme(theme, normalizedQuery),
+    }))
+    .filter((candidate) => candidate.score !== null)
+    .toSorted((left, right) => {
+      if (left.score !== right.score) return (right.score ?? 0) - (left.score ?? 0);
+      if (left.theme.isActive !== right.theme.isActive) {
+        return left.theme.isActive ? -1 : 1;
+      }
+      return left.index - right.index;
+    })
+    .map((candidate) => candidate.theme);
+}
+
+export function matchSidebarSearchProjects(
+  projects: readonly SidebarSearchProject[],
+  query: string,
+  limit = 6,
+): SidebarSearchProjectMatch[] {
+  const normalizedQuery = normalizeText(query);
+  if (!normalizedQuery) return [];
+
+  return projects
+    .map((project) => ({
+      id: `project:${JSON.stringify([project.host?.environmentId ?? null, project.id])}`,
+      project,
+      score: scoreProject(project, normalizedQuery),
+      recency: Date.parse(project.updatedAt ?? project.createdAt ?? "") || 0,
+    }))
+    .filter((candidate) => candidate.score !== null)
+    .toSorted((left, right) => {
+      if (left.score !== right.score) return (right.score ?? 0) - (left.score ?? 0);
+      if (left.recency !== right.recency) return right.recency - left.recency;
+      return left.project.name.localeCompare(right.project.name);
+    })
+    .slice(0, limit)
+    .map(({ id, project }) => ({ id, project }));
+}
+
+/**
+ * Indexes server hits by thread. While a newer query is still in flight, the
+ * previous response only keeps hits whose excerpt matches the current query,
+ * so stale results never surface a thread the current query does not match.
+ */
+export function buildSidebarSearchServerThreadMatches(
+  result:
+    | {
+        readonly query: string;
+        readonly matches: readonly ({
+          readonly threadId: string;
+        } & SidebarSearchServerThreadMatch)[];
+      }
+    | null
+    | undefined,
+  query: string,
+): ReadonlyMap<string, SidebarSearchServerThreadMatch> {
+  const serverMatches = new Map<string, SidebarSearchServerThreadMatch>();
+  if (!result) return serverMatches;
+  const isCurrent = normalizeText(result.query) === normalizeText(query);
+  const queryTokens = tokenizeQuery(query);
+  for (const { threadId, excerpt, matchCount } of result.matches) {
+    const normalizedExcerpt = normalizeText(excerpt);
+    if (isCurrent || queryTokens.every((token) => normalizedExcerpt.includes(token))) {
+      serverMatches.set(threadId, { excerpt, matchCount });
+    }
+  }
+  return serverMatches;
+}
+
+// A server hit matched every query token somewhere in the message; its excerpt
+// may not contain them all, so it still ranks as the weakest message match.
+const SERVER_MESSAGE_MATCH_SCORE = 132;
+
+function resolveMessageMatch(
+  thread: SidebarSearchThread,
+  query: string,
+  queryTokens: readonly string[],
+  serverMatch: SidebarSearchServerThreadMatch | undefined,
+): ReturnType<typeof scoreMessage> {
+  const localMatch = scoreMessage(thread.messages, query, queryTokens);
+  if (!serverMatch) {
+    return localMatch;
+  }
+  const messageMatchCount = Math.max(localMatch.messageMatchCount, serverMatch.matchCount);
+  if (localMatch.score !== null) {
+    return { ...localMatch, messageMatchCount };
+  }
+  const excerptMatch = scoreMessage([{ text: serverMatch.excerpt }], query, queryTokens);
+  return {
+    messageMatchCount,
+    score: excerptMatch.score ?? SERVER_MESSAGE_MATCH_SCORE,
+    snippet: excerptMatch.snippet ?? buildMessageSnippet(serverMatch.excerpt, query, queryTokens),
+  };
+}
+
+export function matchSidebarSearchThreads(
+  threads: readonly SidebarSearchThread[],
+  query: string,
+  limit = 8,
+  serverMatches?: ReadonlyMap<string, SidebarSearchServerThreadMatch>,
+): SidebarSearchThreadMatch[] {
+  const normalizedQuery = normalizeText(query);
+  const queryTokens = tokenizeQuery(query);
+
+  if (!normalizedQuery) {
+    return threads
+      .map((thread) => ({
+        id: `thread:${JSON.stringify([thread.host?.environmentId ?? null, thread.id])}`,
+        thread,
+        matchKind: "title" as const,
+        snippet: null,
+        messageMatchCount: 0,
+        recency: Date.parse(thread.updatedAt ?? thread.createdAt) || 0,
+      }))
+      .toSorted((left, right) => right.recency - left.recency)
+      .slice(0, 3)
+      .map(({ id, matchKind, messageMatchCount, snippet, thread }) => ({
+        id,
+        thread,
+        matchKind,
+        snippet,
+        messageMatchCount,
+      }));
+  }
+
+  return threads
+    .map((thread, index) => {
+      const title = normalizeText(thread.title);
+      const projectName = normalizeText(thread.projectName);
+      const projectRemoteName = normalizeText(thread.projectRemoteName);
+      const spaceName = normalizeText(thread.spaceName);
+      const hostName = normalizeText(thread.host?.name ?? "");
+      const messageMatch = resolveMessageMatch(
+        thread,
+        normalizedQuery,
+        queryTokens,
+        thread.host ? undefined : serverMatches?.get(thread.id),
+      );
+      let score: number | null = null;
+      let matchKind: SidebarSearchThreadMatch["matchKind"] = "title";
+      let snippet: string | null = null;
+
+      if (title === normalizedQuery) {
+        score = 170;
+        matchKind = "title";
+      } else if (title.startsWith(normalizedQuery)) {
+        score = 145;
+        matchKind = "title";
+      } else if (title.includes(normalizedQuery)) {
+        score = 125;
+        matchKind = "title";
+      } else if (messageMatch.score !== null) {
+        score = messageMatch.score;
+        matchKind = "message";
+        snippet = messageMatch.snippet;
+      } else if (
+        projectName.startsWith(normalizedQuery) ||
+        projectRemoteName.startsWith(normalizedQuery)
+      ) {
+        score = 80;
+        matchKind = "project";
+      } else if (
+        projectName.includes(normalizedQuery) ||
+        projectRemoteName.includes(normalizedQuery)
+      ) {
+        score = 65;
+        matchKind = "project";
+      } else if (spaceName.includes(normalizedQuery)) {
+        score = 55;
+        matchKind = "project";
+      } else if (hostName.includes(normalizedQuery)) {
+        score = 50;
+        matchKind = "host";
+      }
+
+      return {
+        id: `thread:${JSON.stringify([thread.host?.environmentId ?? null, thread.id])}`,
+        thread,
+        index,
+        score,
+        matchKind,
+        snippet,
+        messageMatchCount: messageMatch.messageMatchCount,
+        recency: Date.parse(thread.updatedAt ?? thread.createdAt) || 0,
+        titleLength: thread.title.length,
+      };
+    })
+    .filter((candidate) => candidate.score !== null)
+    .toSorted((left, right) => {
+      if (left.score !== right.score) return (right.score ?? 0) - (left.score ?? 0);
+      if (left.recency !== right.recency) return right.recency - left.recency;
+      if (left.titleLength !== right.titleLength) return left.titleLength - right.titleLength;
+      return left.index - right.index;
+    })
+    .slice(0, limit)
+    .map(({ id, matchKind, messageMatchCount, snippet, thread }) => ({
+      id,
+      thread,
+      matchKind,
+      snippet,
+      messageMatchCount,
+    }));
+}

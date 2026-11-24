@@ -1,0 +1,165 @@
+// FILE: liveActivityPresentation.ts
+// Purpose: Provider-agnostic labels and live timing for normalized transcript activity.
+// Layer: Web presentation helper
+
+import { useSyncExternalStore } from "react";
+import { t } from "~/i18n";
+
+import type { WorkLogLiveActivity } from "../workLog";
+import { formatClockDuration } from "../session-logic";
+import { startVisibleInterval } from "./visibleInterval";
+
+const LIVE_ACTIVITY_TICK_MS = 1_000;
+const liveActivityClockListeners = new Set<() => void>();
+let stopLiveActivityClock: (() => void) | null = null;
+let liveActivityClockNowMs = Date.now();
+
+function emitLiveActivityClockTick(): void {
+  liveActivityClockNowMs = Date.now();
+  for (const listener of liveActivityClockListeners) {
+    listener();
+  }
+}
+
+function subscribeLiveActivityClock(listener: () => void): () => void {
+  liveActivityClockListeners.add(listener);
+  if (liveActivityClockListeners.size === 1) {
+    liveActivityClockNowMs = Date.now();
+    stopLiveActivityClock = startVisibleInterval(emitLiveActivityClockTick, LIVE_ACTIVITY_TICK_MS);
+  }
+
+  return () => {
+    liveActivityClockListeners.delete(listener);
+    if (liveActivityClockListeners.size === 0) {
+      stopLiveActivityClock?.();
+      stopLiveActivityClock = null;
+    }
+  };
+}
+
+function subscribeInactiveLiveActivityClock(): () => void {
+  return () => {};
+}
+
+function getLiveActivityClockSnapshot(): number {
+  return liveActivityClockNowMs;
+}
+
+export function isLiveActivityInProgress(activity: WorkLogLiveActivity): boolean {
+  return (
+    activity.state === "starting" ||
+    activity.state === "thinking" ||
+    activity.state === "running_tool" ||
+    activity.state === "waiting" ||
+    activity.state === "streaming"
+  );
+}
+
+export function useLiveActivityNow(activity: WorkLogLiveActivity | undefined): number {
+  const inProgress = activity ? isLiveActivityInProgress(activity) : false;
+  const nowMs = useSyncExternalStore(
+    inProgress ? subscribeLiveActivityClock : subscribeInactiveLiveActivityClock,
+    getLiveActivityClockSnapshot,
+    getLiveActivityClockSnapshot,
+  );
+  return inProgress ? nowMs : Date.now();
+}
+
+function parseTimestamp(value: string | undefined): number | null {
+  if (!value) {
+    return null;
+  }
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? null : timestamp;
+}
+
+export function liveActivityElapsedMs(activity: WorkLogLiveActivity, nowMs: number): number | null {
+  const startedAtMs = parseTimestamp(activity.startedAt);
+  const lastActivityAtMs = parseTimestamp(activity.lastActivityAt);
+  const reportedElapsedMs =
+    activity.elapsedSeconds !== undefined && activity.elapsedSeconds >= 0
+      ? activity.elapsedSeconds * 1_000
+      : null;
+
+  if (isLiveActivityInProgress(activity)) {
+    if (reportedElapsedMs !== null && lastActivityAtMs !== null) {
+      return reportedElapsedMs + Math.max(0, nowMs - lastActivityAtMs);
+    }
+    return startedAtMs === null ? null : Math.max(0, nowMs - startedAtMs);
+  }
+
+  if (reportedElapsedMs !== null) return reportedElapsedMs;
+  if (startedAtMs === null || lastActivityAtMs === null || lastActivityAtMs < startedAtMs) {
+    return null;
+  }
+  return lastActivityAtMs - startedAtMs;
+}
+
+export function formatLiveActivityProgress(progress: number): string {
+  const percent = progress >= 0 && progress <= 1 ? progress * 100 : progress;
+  return `${Math.round(Math.min(100, Math.max(0, percent)))}%`;
+}
+
+export function formatLiveActivityStateLabel(state: WorkLogLiveActivity["state"]): string {
+  switch (state) {
+    case "starting":
+      return t("chat:runStatus_starting");
+    case "thinking":
+      return t("chat:timeline_thinking");
+    case "running_tool":
+      return t("common:runningTool");
+    case "waiting":
+      return t("common:waiting");
+    case "streaming":
+      return t("common:streaming");
+    case "completed":
+      return t("workspace:triageOutcome_completed");
+    case "failed":
+      return t("chat:runStatus_failed");
+    case "cancelled":
+      return t("git:runStatus_cancelled");
+  }
+}
+
+export function formatLiveActivityElapsed(
+  activity: WorkLogLiveActivity,
+  nowMs: number,
+): string | null {
+  const elapsedMs = liveActivityElapsedMs(activity, nowMs);
+  return elapsedMs === null ? null : formatClockDuration(elapsedMs);
+}
+
+export interface LiveActivityMetaOptions {
+  // Subagent rows (Cursor/Claude `Task`, Codex collab) keep a working/elapsed
+  // tail: the row title names the task, not that it is still running.
+  readonly subagent?: boolean;
+}
+
+// Live meta only explains what a row can't state on its own: that a subagent is
+// still working, or that a call ended badly. A running tool call reads like any
+// other ("Running `bun install`") and a successful one already reads as a
+// finished sentence ("Searched for foo in src"); their timing lives in the
+// details disclosure.
+export function formatLiveActivityMeta(
+  activity: WorkLogLiveActivity,
+  nowMs: number,
+  options?: LiveActivityMetaOptions,
+): string | null {
+  const inProgress = isLiveActivityInProgress(activity);
+  if (activity.state === "completed" || (inProgress && !options?.subagent)) {
+    return null;
+  }
+
+  const parts = [
+    inProgress ? t("common:subagentWorking") : formatLiveActivityStateLabel(activity.state),
+  ];
+  const elapsed = formatLiveActivityElapsed(activity, nowMs);
+  if (elapsed !== null) {
+    parts.push(t("common:elapsed", { duration: elapsed }));
+  }
+  if (activity.progress !== undefined) {
+    parts.push(formatLiveActivityProgress(activity.progress));
+  }
+
+  return parts.join(" · ");
+}

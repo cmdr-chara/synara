@@ -1,0 +1,346 @@
+import { describe, expect, it } from "vitest";
+
+import type { ProcessRunResult } from "../processRunner.ts";
+import { IosSimulatorBackend, isStaleDescriptorError } from "./IosSimulatorBackend.ts";
+import type { HelperClient } from "./helperClient.ts";
+
+const DEVICE = "AAAA-1111";
+
+function simctlResult(stdout: string, code = 0): ProcessRunResult {
+  return { stdout, stderr: "", code, signal: null, timedOut: false };
+}
+
+const DEVICE_LIST_JSON = JSON.stringify({
+  devices: {
+    "com.apple.CoreSimulator.SimRuntime.iOS-26-0": [
+      { udid: DEVICE, name: "iPhone 17 Pro", state: "Booted", isAvailable: true },
+    ],
+  },
+});
+
+/**
+ * Stands in for the helper process. It models the one behavior this defect is
+ * about: an attachment is bound to a boot generation, and a descriptor from a
+ * previous boot fails the way the real helper fails.
+ */
+class FakeHelper {
+  attachCalls: Array<{ readonly udid: string; readonly force: boolean }> = [];
+  /** Bumped by the test to simulate the simulator rebooting underneath us. */
+  bootGeneration = 1;
+  running = true;
+
+  private attachment: { udid: string; generation: number } | null = null;
+
+  get attachedDevice() {
+    return this.attachment === null
+      ? null
+      : {
+          udid: this.attachment.udid,
+          pointWidth: 393,
+          pointHeight: 852,
+          pixelWidth: 1179,
+          pixelHeight: 2556,
+          scale: 3,
+          inputAvailable: true,
+          accessibilityAvailable: true,
+        };
+  }
+
+  start(): void {}
+
+  async attach(udid: string, options: { readonly force?: boolean } = {}) {
+    this.attachCalls.push({ udid, force: options.force === true });
+    if (!options.force && this.attachment?.udid === udid) {
+      if (this.attachment.generation !== this.bootGeneration) {
+        throw new Error("display has no framebuffer surface yet");
+      }
+      return this.attachedDevice!;
+    }
+    this.attachment = { udid, generation: this.bootGeneration };
+    return this.attachedDevice!;
+  }
+
+  /** Set by a test to make the next N injections report non-delivery. */
+  undeliverableCalls = 0;
+  requestCalls: string[] = [];
+
+  async request(method = "unknown") {
+    this.requestCalls.push(method);
+    if (this.attachment === null) throw new Error("not attached");
+    if (this.attachment.generation !== this.bootGeneration) {
+      throw new Error("display has no framebuffer surface yet");
+    }
+    if (this.undeliverableCalls > 0) {
+      this.undeliverableCalls -= 1;
+      throw new Error(
+        "1 HID event(s) were not delivered to the simulator: nothing was sent: input unavailable; inspect and retry",
+      );
+    }
+    return { ok: true };
+  }
+
+  normalize(x: number, y: number) {
+    return { x: x / 393, y: y / 852 };
+  }
+
+  async startStream() {}
+  async stopStream() {}
+  async dispose() {
+    this.attachment = null;
+  }
+}
+
+function makeBackend() {
+  const helper = new FakeHelper();
+  const backend = new IosSimulatorBackend({
+    platform: "darwin",
+    helperCacheRoot: "/tmp/synara-device-test-cache",
+    makeHelperClient: () => helper as unknown as HelperClient,
+    run: async (command, args) => {
+      if (command === "xcrun" && args[1] === "list") return simctlResult(DEVICE_LIST_JSON);
+      if (command === "xcodebuild") return simctlResult("Xcode 26.2\nBuild version 17C52");
+      return simctlResult("");
+    },
+  });
+  // The helper is normally compiled on first attach; the fake stands in for the
+  // compiled binary so these tests never touch the toolchain.
+  Object.defineProperty(backend, "compileHelperIfNeeded", {
+    value: async () => "/tmp/synara-device-test-cache/synara-device-helper",
+  });
+  return { backend, helper };
+}
+
+describe("stale descriptor detection", () => {
+  it("recognizes the helper's dead-framebuffer failures", () => {
+    expect(isStaleDescriptorError(new Error("display has no framebuffer surface yet"))).toBe(true);
+    expect(isStaleDescriptorError(new Error("not attached to a simulator"))).toBe(true);
+  });
+});
+
+describe("simulator reboot", () => {
+  it("re-attaches after a Synara-driven shutdown and reboot", async () => {
+    const { backend, helper } = makeBackend();
+    await backend.tap(DEVICE, 10, 10);
+
+    await backend.shutdown(DEVICE);
+    helper.bootGeneration = 2;
+    await backend.tap(DEVICE, 20, 20);
+
+    // The shutdown dropped the cached attachment, so this is a clean re-attach
+    // rather than a forced retry.
+    expect(helper.attachCalls).toEqual([
+      { udid: DEVICE, force: false },
+      { udid: DEVICE, force: false },
+    ]);
+  });
+
+  it("recovers when the device was rebooted outside Synara", async () => {
+    const { backend, helper } = makeBackend();
+    await backend.tap(DEVICE, 10, 10);
+
+    // No shutdown call to observe: Simulator.app or the agent's own shell did
+    // it, so the only signal is the failure itself.
+    helper.bootGeneration = 2;
+    await backend.tap(DEVICE, 20, 20);
+
+    expect(helper.attachCalls.at(-1)).toEqual({ udid: DEVICE, force: true });
+  });
+
+  it("survives repeated boot, attach, shutdown cycles", async () => {
+    const { backend, helper } = makeBackend();
+
+    for (let cycle = 1; cycle <= 3; cycle += 1) {
+      helper.bootGeneration = cycle;
+      await backend.tap(DEVICE, 5, 5);
+      await backend.shutdown(DEVICE);
+    }
+
+    // Every cycle worked; none fell into the permanent-failure state.
+    expect(helper.attachCalls).toHaveLength(3);
+    expect(helper.attachCalls.every((call) => !call.force)).toBe(true);
+  });
+
+  it("surfaces a non-descriptor failure instead of retrying it", async () => {
+    const { backend, helper } = makeBackend();
+    helper.attach = async () => {
+      throw new Error("simulator is not booted");
+    };
+
+    await expect(backend.tap(DEVICE, 1, 1)).rejects.toThrow("not booted");
+  });
+});
+
+describe("undelivered input recovery", () => {
+  it("rebinds the HID client and retries once when input does not reach the guest", async () => {
+    const { backend, helper } = makeBackend();
+    await backend.tap(DEVICE, 10, 10);
+    helper.attachCalls.length = 0;
+
+    // A stale HID client accepts the call but the event never lands. Before the
+    // fix the helper acked this as success and the tap silently vanished.
+    helper.undeliverableCalls = 1;
+    await backend.tap(DEVICE, 20, 20);
+
+    // The recovery path re-asserts the attachment and then forces a rebind, so
+    // the retry lands on a freshly built HID client.
+    expect(helper.attachCalls.some((call) => call.force)).toBe(true);
+  });
+
+  it("surfaces the failure when the retry also fails to deliver", async () => {
+    const { backend, helper } = makeBackend();
+    helper.undeliverableCalls = 5;
+
+    await expect(backend.tap(DEVICE, 1, 1)).rejects.toThrow("not delivered");
+  });
+});
+
+describe("concurrent helper starts", () => {
+  /**
+   * A backend whose helper compile is held open, so two callers can both be
+   * inside `requireHelper` at once: the pane bringing its stream up while an
+   * agent's tap arrives is the everyday shape of this.
+   */
+  function makeRacingBackend() {
+    const created: FakeHelper[] = [];
+    const disposed = new Set<FakeHelper>();
+    const backend = new IosSimulatorBackend({
+      platform: "darwin",
+      helperCacheRoot: "/tmp/synara-device-test-cache",
+      makeHelperClient: () => {
+        const helper = new FakeHelper();
+        helper.dispose = async () => {
+          disposed.add(helper);
+        };
+        created.push(helper);
+        return helper as unknown as HelperClient;
+      },
+      run: async (command, args) => {
+        if (command === "xcrun" && args[1] === "list") return simctlResult(DEVICE_LIST_JSON);
+        if (command === "xcodebuild") return simctlResult("Xcode 26.2\nBuild version 17C52");
+        return simctlResult("");
+      },
+    });
+    const compile = { calls: 0, release: () => {} };
+    const compileStarted = Promise.withResolvers<void>();
+    const compiled = new Promise<void>((resolve) => {
+      compile.release = resolve;
+    });
+    Object.defineProperty(backend, "compileHelperIfNeeded", {
+      value: async () => {
+        compile.calls += 1;
+        compileStarted.resolve();
+        await compiled;
+        return "/tmp/synara-device-test-cache/synara-device-helper";
+      },
+    });
+
+    /** Start the pane's stream and an agent's tap together, then let the compile finish. */
+    const runConcurrently = async () => {
+      const stream = backend.attachStream(DEVICE, () => {});
+      const tap = backend.tap(DEVICE, 10, 10);
+      // Give the second caller time to reach the helper too; a backend that
+      // shares the in-flight start never calls compile a second time.
+      for (let attempt = 0; attempt < 200 && compile.calls < 2; attempt += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1));
+      }
+      compile.release();
+      await Promise.all([stream, tap]);
+    };
+    return { backend, created, disposed, runConcurrently, compile, compileStarted };
+  }
+
+  it("starts exactly one helper for two concurrent operations", async () => {
+    const { created, runConcurrently } = makeRacingBackend();
+
+    await runConcurrently();
+
+    expect(created).toHaveLength(1);
+  });
+
+  it("disposes every helper it started", async () => {
+    const { backend, created, disposed, runConcurrently } = makeRacingBackend();
+    await runConcurrently();
+
+    await backend.dispose();
+
+    // A helper the backend no longer references is a live process nothing
+    // will ever stop.
+    expect(created.filter((helper) => !disposed.has(helper))).toHaveLength(0);
+  });
+
+  it("disposes during compilation without waiting for or starting a helper", async () => {
+    const { backend, created, compile, compileStarted } = makeRacingBackend();
+    const tap = expect(backend.tap(DEVICE, 10, 10)).rejects.toThrow("backend is disposed");
+    await compileStarted.promise;
+
+    const disposal = backend.dispose();
+    try {
+      const nextTick = new Promise((resolve) => setImmediate(() => resolve("pending")));
+      await expect(Promise.race([disposal.then(() => "disposed"), nextTick])).resolves.toBe(
+        "disposed",
+      );
+    } finally {
+      compile.release();
+      await disposal;
+      await tap;
+    }
+    expect(created).toHaveLength(0);
+  });
+});
+
+describe("text delivery ownership", () => {
+  it.each([
+    "1 HID event(s) were not delivered: input may have been partially delivered; still starting; nothing was sent",
+    "1 HID event(s) were not delivered: nothing was sent: long press cannot finish inside the input deadline",
+  ])("preserves the input transport after a non-retryable refusal: %s", async (failure) => {
+    const { backend, helper } = makeBackend();
+    let delivered = 0;
+    helper.request = async () => {
+      delivered++;
+      throw new Error(failure);
+    };
+    await expect(backend.typeText(DEVICE, "hello")).rejects.toThrow(failure);
+    expect(delivered).toBe(1);
+    expect(helper.attachCalls.some((call) => call.force)).toBe(false);
+  });
+  it("stops a long entry before the next chunk after cancellation", async () => {
+    const { backend, helper } = makeBackend();
+    const abort = new AbortController();
+    let chunks = 0;
+    helper.request = async () => {
+      chunks++;
+      abort.abort();
+      return { ok: true };
+    };
+    await expect(
+      backend.typeText(DEVICE, "a".repeat(241), { signal: abort.signal }),
+    ).rejects.toThrow();
+    expect(chunks).toBe(1);
+  });
+
+  it("does not dispatch cancelled text behind another input", async () => {
+    const { backend, helper } = makeBackend();
+    const tapStarted = Promise.withResolvers<void>();
+    const finishTap = Promise.withResolvers<void>();
+    const requests: string[] = [];
+    helper.request = async (method = "unknown") => {
+      requests.push(method);
+      if (method === "tap") {
+        tapStarted.resolve();
+        await finishTap.promise;
+      }
+      return { ok: true };
+    };
+    const tap = backend.tap(DEVICE, 10, 10);
+    await tapStarted.promise;
+
+    const abort = new AbortController();
+    const text = backend.typeText(DEVICE, "hello", { signal: abort.signal });
+    abort.abort();
+    finishTap.resolve();
+    await tap;
+
+    await expect(text).rejects.toMatchObject({ name: "AbortError" });
+    expect(requests).toEqual(["tap"]);
+  });
+});

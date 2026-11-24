@@ -1,0 +1,1921 @@
+// FILE: MessagesTimeline.test.tsx
+// Purpose: Covers transcript row rendering and SSR-safe presentation contracts.
+// Layer: Web chat component tests
+// Depends on: renderToStaticMarkup and a mocked LegendList.
+
+import { MessageId, ThreadId, TurnId } from "@synara/contracts";
+import { renderToStaticMarkup } from "react-dom/server";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+import { formatShortTimestamp } from "../../timestampFormat";
+import { makeActivity } from "../../storeTestFixtures";
+import { deriveWorkLogEntries, type WorkLogEntry } from "../../workLog";
+import type { TimelineEntry } from "../../session-logic";
+
+const TOOLTIP_TRIGGER_MARKER = 'data-base-ui-tooltip-trigger=""';
+// Every settled turn opens with a header carrying its final state.
+const TURN_HEADER_MARKER = 'data-turn-header="completed"';
+const FORK_SOURCE = {
+  sourceThreadId: ThreadId.makeUnsafe("source-thread"),
+  sourceTitle: "ciao (2)",
+};
+
+function makeForkImportedEntry() {
+  return {
+    id: "imported-entry",
+    kind: "message" as const,
+    createdAt: "2026-03-17T19:12:28.000Z",
+    message: {
+      id: MessageId.makeUnsafe("imported-message"),
+      role: "assistant" as const,
+      text: "Imported history",
+      createdAt: "2026-03-17T19:12:28.000Z",
+      streaming: false,
+      source: "fork-import" as const,
+    },
+  };
+}
+
+function makeForkOwnedEntry() {
+  return {
+    id: "fork-entry",
+    kind: "message" as const,
+    createdAt: "2026-03-17T19:12:29.000Z",
+    message: {
+      id: MessageId.makeUnsafe("fork-message"),
+      role: "user" as const,
+      text: "Fork-only turn",
+      createdAt: "2026-03-17T19:12:29.000Z",
+      streaming: false,
+      source: "native" as const,
+    },
+  };
+}
+
+vi.mock("@legendapp/list/react", async () => {
+  const React = await import("react");
+
+  const LegendList = React.forwardRef(function MockLegendList(
+    props: {
+      data: Array<{ id: string }>;
+      keyExtractor: (item: { id: string }) => string;
+      renderItem: (args: { item: { id: string } }) => React.ReactNode;
+      ListFooterComponent?: React.ReactNode;
+    },
+    _ref: React.ForwardedRef<unknown>,
+  ) {
+    return (
+      <div data-testid="legend-list">
+        {props.data.map((item) => (
+          <div key={props.keyExtractor(item)}>{props.renderItem({ item })}</div>
+        ))}
+        {props.ListFooterComponent}
+      </div>
+    );
+  });
+
+  return { LegendList };
+});
+
+// Baseline MessagesTimeline props shared across render tests; spread the
+// result and override individual props (or pass them as JSX after the spread).
+function makeTimelineBaseProps(nowIso: string | null = "2026-03-17T19:12:30.000Z") {
+  return {
+    hasMessages: true,
+    isWorking: false,
+    activeTurnInProgress: false,
+    activeTurnStartedAt: null,
+    turnDiffSummaryByAssistantMessageId: new Map(),
+    ...(nowIso === null ? {} : { nowIso }),
+    expandedWorkGroups: {},
+    onToggleWorkGroup: () => {},
+    onOpenTurnDiff: () => {},
+    revertTurnCountByUserMessageId: new Map(),
+    onRevertUserMessage: () => {},
+    isRevertingCheckpoint: false,
+    onImageExpand: () => {},
+    markdownCwd: undefined,
+    resolvedTheme: "dark" as const,
+    timestampFormat: "locale" as const,
+    workspaceRoot: undefined,
+  };
+}
+
+function matchMedia() {
+  return {
+    matches: false,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  };
+}
+
+beforeAll(() => {
+  const classList = {
+    add: () => {},
+    remove: () => {},
+    toggle: () => {},
+    contains: () => false,
+  };
+
+  vi.stubGlobal("localStorage", {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {},
+    clear: () => {},
+  });
+  vi.stubGlobal("window", {
+    matchMedia,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    location: { origin: "http://localhost" },
+    desktopBridge: undefined,
+  });
+  vi.stubGlobal("document", {
+    documentElement: {
+      classList,
+      offsetHeight: 0,
+    },
+    // flushStorageBeforePageHide registers visibilitychange at module load of
+    // the MessagesTimeline import chain (via composerDraftStore).
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    visibilityState: "visible",
+  });
+  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+    callback(0);
+    return 0;
+  });
+});
+
+// Warm the component module once: the first dynamic import pays the whole
+// component-graph transform, which exceeds the 5s per-test timeout on slow CI
+// runners (observed >10s under a full parallel suite). beforeAll keeps that
+// cost off any single test's clock; the explicit timeout keeps it off the
+// default 10s hook clock too.
+beforeAll(async () => {
+  await import("./MessagesTimeline");
+}, 120_000);
+
+const liveCommandEntry = (
+  id: string,
+  command: string,
+  overrides: Partial<WorkLogEntry> = {},
+): TimelineEntry => ({
+  id: `entry-${id}`,
+  kind: "work",
+  createdAt: "2026-03-17T19:12:28.100Z",
+  entry: {
+    id,
+    createdAt: "2026-03-17T19:12:28.100Z",
+    label: "Ran command",
+    tone: "tool",
+    itemType: "command_execution",
+    toolStatus: "completed",
+    command,
+    ...overrides,
+  },
+});
+const workingIndicatorMarkup = (markup: string): string =>
+  markup.slice(markup.indexOf('data-timeline-row-kind="working"'));
+
+describe("MessagesTimeline", () => {
+  it("opts user and assistant transcript markdown into automatic direction mode", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "bidi-user",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("bidi-user"),
+              role: "user",
+              text: "مرحبا بالعالم",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+          {
+            id: "bidi-assistant",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: MessageId.makeUnsafe("bidi-assistant"),
+              role: "assistant",
+              text: "[مرحبا](https://example.com)",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(markup.match(/data-direction-mode="auto-blocks"/g)).toHaveLength(2);
+  });
+
+  it("keeps a reply without folded work plain and renders the live Resumed clock when the provider reuses its turn id", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const turnId = TurnId.makeUnsafe("same-turn");
+    const launchAt = "2026-03-17T19:12:00.000Z";
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps("2026-03-17T19:12:23.000Z")}
+        isWorking
+        activeTurnInProgress
+        activeTurnId={turnId}
+        activeTurnStartedAt={launchAt}
+        timelineEntries={[
+          {
+            id: "request",
+            kind: "message",
+            createdAt: launchAt,
+            message: {
+              id: MessageId.makeUnsafe("request"),
+              role: "user",
+              text: "Launch delayed echo",
+              createdAt: launchAt,
+              streaming: false,
+              turnId,
+            },
+          },
+          {
+            id: "launch",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:04.000Z",
+            message: {
+              id: MessageId.makeUnsafe("launch"),
+              role: "assistant",
+              text: "Launched.",
+              createdAt: "2026-03-17T19:12:04.000Z",
+              completedAt: "2026-03-17T19:12:04.000Z",
+              streaming: false,
+              turnId,
+            },
+          },
+          {
+            id: "done",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:21.000Z",
+            entry: {
+              id: "done",
+              createdAt: "2026-03-17T19:12:21.000Z",
+              tone: "info",
+              label: "Done",
+              backgroundTaskCompletion: {
+                taskId: "task",
+                taskType: null,
+                description: "Delayed echo",
+                outcome: "finished",
+              },
+            },
+          },
+          {
+            id: "resumed",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:22.000Z",
+            message: {
+              id: MessageId.makeUnsafe("resumed"),
+              role: "assistant",
+              text: "Echo done.",
+              createdAt: "2026-03-17T19:12:22.000Z",
+              streaming: true,
+              turnId,
+            },
+          },
+        ]}
+        turnTimingByTurnId={
+          new Map([
+            [
+              turnId,
+              {
+                startedAt: launchAt,
+                completedAt: "2026-03-17T19:12:04.000Z",
+                interrupted: false,
+              },
+            ],
+          ])
+        }
+      />,
+    );
+    expect(markup).not.toContain(TURN_HEADER_MARKER);
+    expect(markup).toContain("Resumed: “Delayed echo” finished · ");
+    expect(markup).toContain('class="tabular-nums">2s</span>');
+    expect(markup.indexOf("Launched.")).toBeLessThan(markup.indexOf("Resumed:"));
+    expect(markup.match(/data-turn-header="live"/g)).toHaveLength(1);
+  });
+
+  it.each(["stopped", "interrupted"] as const)(
+    "renders the %s header after its request when the turn produced no content",
+    async (outcome) => {
+      const { MessagesTimeline } = await import("./MessagesTimeline");
+      const turnId = TurnId.makeUnsafe("empty-turn");
+      const markup = renderToStaticMarkup(
+        <MessagesTimeline
+          {...makeTimelineBaseProps()}
+          timelineEntries={[
+            {
+              id: "empty-request",
+              kind: "message",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              message: {
+                id: MessageId.makeUnsafe("empty-request"),
+                role: "user",
+                text: "Inspect the repository",
+                createdAt: "2026-03-17T19:12:28.000Z",
+                streaming: false,
+                turnId,
+              },
+            },
+          ]}
+          turnTimingByTurnId={
+            new Map([
+              [
+                turnId,
+                {
+                  startedAt: "2026-03-17T19:12:28.000Z",
+                  completedAt: "2026-03-17T19:12:30.000Z",
+                  interrupted: true,
+                  stoppedByUser: outcome === "stopped",
+                },
+              ],
+            ])
+          }
+        />,
+      );
+      const label = outcome === "stopped" ? "Stopped by you after 2.0s" : "Interrupted after 2.0s";
+      expect(markup).toContain(`data-turn-header="${outcome}"`);
+      expect(markup).toContain(label);
+      expect(markup.indexOf(label)).toBeGreaterThan(markup.indexOf("Inspect the repository"));
+    },
+  );
+
+  it("keeps a failed command on one line with its exit code, output behind the disclosure, even when the provider uses an error tone", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "failed-command",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "failed-command",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "Bash",
+              tone: "error",
+              activityKind: "tool.completed",
+              itemType: "command_execution",
+              toolStatus: "failed",
+              command: "missing-command --check",
+              toolDetails: {
+                kind: "command",
+                title: "Bash",
+                command: "missing-command --check",
+                output: { exitCode: 127, stderr: "missing-command: command not found" },
+              },
+            },
+          },
+        ]}
+      />,
+    );
+    expect(markup).toContain('data-command-literal="true"');
+    expect(markup).toContain("missing-command --check");
+    expect(markup).toContain("Failed · exit 127");
+    expect(markup).not.toContain("missing-command: command not found");
+    expect(markup).toContain('aria-expanded="false"');
+  });
+  // The first test pays the full dynamic-import cost of the MessagesTimeline
+  // module graph, which can exceed 10s under CI thread contention.
+  it("renders a deep link to the immediate fork source", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[makeForkImportedEntry(), makeForkOwnedEntry()]}
+        forkSource={FORK_SOURCE}
+        onOpenThread={() => {}}
+      />,
+    );
+
+    expect(markup).toContain('data-fork-source-divider="true"');
+    expect(markup).toContain('href="/source-thread"');
+    expect(markup).toContain("Continued from chat");
+    expect(markup.indexOf("Imported history")).toBeLessThan(
+      markup.indexOf('data-fork-source-divider="true"'),
+    );
+    expect(markup.indexOf('data-fork-source-divider="true"')).toBeLessThan(
+      markup.indexOf("Fork-only turn"),
+    );
+  }, 30_000);
+
+  it("renders session-context lifecycle evidence as a compact expandable row", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "context-restart-row",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "context-restart-entry",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "The session's history was lost, so the model continues from a summary.",
+              tone: "error",
+              activityKind: "provider.context.changed",
+              providerContextLifecycle: {
+                provider: "opencode",
+                nativeHistory: "unavailable",
+                restartReason: "native-resume-failed",
+                sessionRestarted: true,
+                recapInjected: true,
+                recapCharacters: 4_200,
+                recapPreview: "Bounded summary preview",
+                recapPreviewTruncated: true,
+              },
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(markup).toContain("history was lost, so the model continues from a summary.");
+    expect(markup).toContain('data-tool-detail-trigger="true"');
+    expect(markup).not.toContain('data-provider-context-lifecycle-details="true"');
+    expect(markup).not.toContain("Bounded summary preview");
+  });
+
+  it("labels only the first message when another task created the conversation", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        crossTaskOrigin={{
+          sourceThreadId: ThreadId.makeUnsafe("source-thread"),
+          sourceProvider: "codex",
+        }}
+        timelineEntries={[
+          {
+            id: "entry-first-user",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("first-user-message"),
+              role: "user",
+              text: "Inspect the repository",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+          {
+            id: "entry-second-user",
+            kind: "message",
+            createdAt: "2026-03-17T19:13:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("second-user-message"),
+              role: "user",
+              text: "Continue",
+              createdAt: "2026-03-17T19:13:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        nowIso="2026-03-17T19:14:30.000Z"
+        onOpenThread={() => {}}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup.match(/data-cross-task-origin="true"/g)).toHaveLength(1);
+    expect(markup).toContain("Sent by Synara from another thread");
+    expect(markup).toContain('aria-label="Open source thread"');
+    expect(markup.indexOf("Sent by Synara from another thread")).toBeLessThan(
+      markup.indexOf("Inspect the repository"),
+    );
+  });
+
+  it("shows only the cross-task label (not the agent chip) when both apply", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        crossTaskOrigin={{
+          sourceThreadId: ThreadId.makeUnsafe("source-thread"),
+          sourceProvider: "codex",
+        }}
+        timelineEntries={[
+          {
+            id: "entry-first-user",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("first-user-message"),
+              role: "user",
+              text: "Inspect the repository",
+              dispatchOrigin: "agent",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        nowIso="2026-03-17T19:14:30.000Z"
+        onOpenThread={() => {}}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("Sent by Synara from another thread");
+    expect(markup).not.toContain("Sent by agent");
+  });
+
+  it("names the group when a group coordinator started the thread", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        crossTaskOrigin={{
+          sourceThreadId: ThreadId.makeUnsafe("source-thread"),
+          sourceProvider: "codex",
+          coordinatorGroupName: "Release Synara",
+        }}
+        timelineEntries={[
+          {
+            id: "entry-first-user",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("first-user-message"),
+              role: "user",
+              text: "Inspect the repository",
+              dispatchOrigin: "agent",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        nowIso="2026-03-17T19:14:30.000Z"
+        onOpenThread={() => {}}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("Sent by the Release Synara coordinator");
+    expect(markup).toContain('aria-label="Open coordinator"');
+    expect(markup).not.toContain("Sent by Synara from another thread");
+  });
+
+  it("keeps edit available and hides undo before a revert checkpoint exists", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-user-no-checkpoint",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-user-no-checkpoint"),
+              role: "user",
+              text: "still waiting on undo",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+          {
+            id: "entry-assistant-no-checkpoint",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-assistant-no-checkpoint"),
+              role: "assistant",
+              text: "",
+              turnId: TurnId.makeUnsafe("turn-user-no-checkpoint"),
+              createdAt: "2026-03-17T19:12:29.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        onEditUserMessage={() => true}
+        editableUserMessageId={MessageId.makeUnsafe("message-user-no-checkpoint")}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain('aria-label="Edit message"');
+    expect(markup).not.toContain('aria-label="Revert to this message"');
+    expect(markup).not.toContain('title="Edit message"');
+    expect(markup).not.toContain('title="Revert to this message"');
+  });
+
+  it("keeps edit available while an assistant turn is running", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        activeTurnInProgress
+        activeTurnId={TurnId.makeUnsafe("turn-user-running")}
+        activeTurnStartedAt="2026-03-17T19:12:30.000Z"
+        timelineEntries={[
+          {
+            id: "entry-user-running",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-user-running"),
+              role: "user",
+              text: "change this while it runs",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        nowIso="2026-03-17T19:12:32.000Z"
+        revertTurnCountByUserMessageId={
+          new Map([[MessageId.makeUnsafe("message-user-running"), 1]])
+        }
+        onEditUserMessage={() => true}
+        editableUserMessageId={MessageId.makeUnsafe("message-user-running")}
+        resolvedTheme="light"
+      />,
+    );
+
+    const editButtonMarkup = markup.match(/<button[^>]*aria-label="Edit message"[^>]*>/)?.[0] ?? "";
+    expect(markup).toContain('aria-label="Edit message"');
+    expect(editButtonMarkup).not.toContain('disabled=""');
+    expect(markup).not.toContain('title="Edit message"');
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*aria-label="Revert to this message"/);
+  });
+
+  it("renders a 'Sent by agent' chip above agent-dispatched user messages", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-agent-user-message",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-agent-user"),
+              role: "user",
+              text: "status check from the coordinator",
+              dispatchOrigin: "agent",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("Sent by agent");
+    expect(markup).not.toContain("Sent via Automation");
+    expect(markup).not.toContain("Steering conversation");
+  });
+
+  it("renders assistant selection chips from hidden prompt markup when attachments are missing", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-user-selection-fallback",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-user-selection-fallback"),
+              role: "user",
+              text: [
+                "please use this",
+                "",
+                "<assistant_selection>",
+                "- assistant message assistant-1:",
+                "  selected line from assistant",
+                "</assistant_selection>",
+              ].join("\n"),
+              createdAt: "2026-03-17T19:12:28.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("please use this");
+    expect(markup).toContain("1 selection");
+    expect(markup).not.toContain("&lt;assistant_selection&gt;");
+  });
+
+  it("keeps the generic working copy alongside the active compaction entry", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const [compactionEntry] = deriveWorkLogEntries(
+      [
+        makeActivity({
+          id: "work-compacting",
+          createdAt: "2026-03-17T19:12:28.000Z",
+          kind: "context-compaction",
+          summary: "Compacting context",
+          tone: "info",
+          payload: {
+            itemType: "context_compaction",
+            status: "inProgress",
+            data: { item: { type: "contextCompaction", id: "compaction-1" } },
+          },
+        }),
+      ],
+      undefined,
+    );
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        activeTurnInProgress
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[
+          {
+            id: "entry-compacting",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: compactionEntry!,
+          },
+        ]}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("Compacting context");
+    expect(markup).toContain(">Working for <");
+  });
+
+  it("does not reserve a timestamp footer between live status updates and Thinking", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const activeTurnId = TurnId.makeUnsafe("turn-live-status");
+    const assistantCreatedAt = "2026-03-17T19:12:29.000Z";
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        activeTurnInProgress
+        activeTurnId={activeTurnId}
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[
+          {
+            id: "entry-tasks-updated",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.500Z",
+            entry: {
+              id: "work-tasks-updated",
+              createdAt: "2026-03-17T19:12:28.500Z",
+              label: "Tasks updated",
+              tone: "info",
+              turnId: activeTurnId,
+            },
+          },
+          {
+            id: "entry-live-assistant",
+            kind: "message",
+            createdAt: assistantCreatedAt,
+            message: {
+              id: MessageId.makeUnsafe("message-live-assistant"),
+              role: "assistant",
+              text: "",
+              createdAt: assistantCreatedAt,
+              streaming: false,
+              turnId: activeTurnId,
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(markup).toContain("Tasks updated");
+    expect(markup).toContain("Thinking");
+    expect(markup).not.toContain(formatShortTimestamp(assistantCreatedAt, "locale"));
+  });
+
+  it("folds work log summaries above the next assistant message footer", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-work-inline",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-1",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "turn",
+              tone: "info",
+            },
+          },
+          {
+            id: "entry-assistant-inline",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-assistant-inline"),
+              role: "assistant",
+              text: "done",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              completedAt: "2026-03-17T19:12:30.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain(formatShortTimestamp("2026-03-17T19:12:29.000Z", "locale"));
+    expect(markup).toContain("Worked for 1.0s");
+    expect(markup).not.toContain("data-scroll-anchor-ignore");
+    expect(markup).not.toContain(
+      `${formatShortTimestamp("2026-03-17T19:12:29.000Z", "locale")} • 1.0s`,
+    );
+    expect(markup).not.toContain("Work log");
+  });
+
+  it("keeps a Claude agent task to one plain line without rendering its Markdown", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    // No working row: the task stays a transcript row instead of the indicator's claim.
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking={false}
+        activeTurnInProgress
+        activeTurnStartedAt="2026-05-09T16:31:20.000Z"
+        timelineEntries={[
+          {
+            id: "entry-claude-agent-task",
+            kind: "work",
+            createdAt: "2026-05-09T16:31:20.000Z",
+            entry: {
+              id: "work-claude-agent-task",
+              createdAt: "2026-05-09T16:31:20.000Z",
+              label: "Agent task",
+              tone: "tool",
+              itemType: "collab_agent_tool_call",
+              toolTitle: "Map file-icon logic in file-changes",
+              detail: [
+                "## Complete File-Icon Rendering Map",
+                "",
+                "```tsx",
+                'const iconName = "react";',
+                "```",
+              ].join("\n"),
+            },
+          },
+        ]}
+        nowIso="2026-05-09T16:31:25.000Z"
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("Map file-icon logic in file-changes");
+    expect(markup).not.toContain("<h2>");
+    expect(markup).not.toContain("chat-markdown-codeblock");
+  });
+
+  it.each([
+    {
+      provider: "Codex",
+      expectedText: "git status --short</span>",
+      activity: makeActivity({
+        id: "codex-live-tool",
+        createdAt: "2026-03-17T19:12:28.100Z",
+        turnId: "turn-provider-live-tool",
+        kind: "tool.started",
+        summary: "Ran command started",
+        payload: {
+          itemType: "command_execution",
+          status: "inProgress",
+          title: "Ran command",
+          data: {
+            item: {
+              type: "commandExecution",
+              id: "codex-tool-1",
+              command: "/bin/zsh -lc 'git status --short'",
+              status: "inProgress",
+              commandActions: [{ type: "unknown", command: "git status --short" }],
+            },
+          },
+        },
+      }),
+    },
+  ])(
+    "renders $provider tool activity in the working indicator instead of Thinking",
+    async ({ activity, expectedText }) => {
+      const { MessagesTimeline } = await import("./MessagesTimeline");
+      const activeTurnId = TurnId.makeUnsafe("turn-provider-live-tool");
+      const markup = renderToStaticMarkup(
+        <MessagesTimeline
+          {...makeTimelineBaseProps()}
+          isWorking
+          activeTurnInProgress
+          activeTurnId={activeTurnId}
+          activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+          timelineEntries={deriveWorkLogEntries([activity], activeTurnId).map((entry) => ({
+            id: entry.id,
+            kind: "work" as const,
+            createdAt: entry.createdAt,
+            entry,
+          }))}
+        />,
+      );
+
+      // The call of the moment leaves the transcript for the working indicator,
+      // which wears it in place of "Thinking", once.
+      expect(markup).not.toContain('data-work-entry-display-text="true"');
+      expect(markup).toContain('data-working-tool-call="true"');
+      expect(markup.split(expectedText)).toHaveLength(2);
+      // A running tool call carries no timing tail; it reads like any tool call.
+      expect(markup).not.toContain('data-live-activity-meta="true"');
+      expect(markup).not.toContain(">Thinking<");
+    },
+  );
+
+  it.each(["Loading", "Waiting for approval", "Waiting for your answer"] as const)(
+    "keeps the live run in history, settled, while the indicator reads %s",
+    async (workingLabel) => {
+      const { MessagesTimeline } = await import("./MessagesTimeline");
+      const markup = renderToStaticMarkup(
+        <MessagesTimeline
+          {...makeTimelineBaseProps()}
+          isWorking
+          workingLabel={workingLabel}
+          activeTurnInProgress
+          activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+          timelineEntries={[
+            liveCommandEntry("w1", "git status"),
+            liveCommandEntry("w2", "git diff", { toolStatus: "running" }),
+          ]}
+        />,
+      );
+
+      // The indicator claims nothing: the run folds to its settled summary.
+      expect(markup).not.toContain('data-working-tool-call="true"');
+      expect(markup).toContain("Ran 2 commands");
+      expect(markup).toContain('data-tool-group-running="true">1 running<');
+      expect(markup).toContain(`<span>${workingLabel}</span>`);
+    },
+  );
+
+  it("shows Loading with its icon and shimmer", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        workingLabel="Loading"
+        activeTurnInProgress
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[]}
+      />,
+    );
+    const indicator = workingIndicatorMarkup(markup);
+    expect(indicator).toContain('data-working-state="label"');
+    expect(indicator).toContain("shimmer-group");
+    expect(indicator).toMatch(/data-working-state="label"><span aria-hidden="true"[^>]*><svg/);
+  });
+
+  it.each(["Waiting for approval", "Waiting for your answer"] as const)(
+    "shows %s still and without an icon",
+    async (workingLabel) => {
+      const { MessagesTimeline } = await import("./MessagesTimeline");
+      const markup = renderToStaticMarkup(
+        <MessagesTimeline
+          {...makeTimelineBaseProps()}
+          isWorking
+          workingLabel={workingLabel}
+          activeTurnInProgress
+          activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+          timelineEntries={[]}
+        />,
+      );
+      const indicator = workingIndicatorMarkup(markup);
+      expect(indicator).toContain('data-working-state="waiting"');
+      expect(indicator).not.toContain("shimmer-group");
+      expect(indicator).toMatch(
+        new RegExp(`data-working-state="waiting"><span>${workingLabel}</span></div>`),
+      );
+    },
+  );
+
+  it("reads Thinking without an icon when no tool call is live", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        activeTurnInProgress
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[]}
+      />,
+    );
+
+    expect(markup).toMatch(/data-working-state="thinking"><span>Thinking<\/span><\/div>/);
+    expect(workingIndicatorMarkup(markup)).toContain("shimmer-group");
+  });
+
+  it("reads Thinking between calls and keeps the finished run out of history", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        activeTurnInProgress
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[liveCommandEntry("w1", "git status"), liveCommandEntry("w2", "git diff")]}
+      />,
+    );
+
+    expect(markup).toContain('data-working-state="thinking"');
+    expect(markup).not.toContain("git status");
+    expect(markup).not.toContain("git diff");
+    expect(markup).not.toContain("Ran 2 commands");
+  });
+
+  it("shows a failed newest call in the failure tone, still", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking
+        activeTurnInProgress
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[
+          liveCommandEntry("w1", "git status"),
+          liveCommandEntry("w2", "bun run lint", {
+            toolStatus: "failed",
+            toolDetails: { kind: "command", title: "Ran command", output: { exitCode: 2 } },
+          }),
+        ]}
+      />,
+    );
+    const indicator = workingIndicatorMarkup(markup);
+
+    expect(indicator).toContain('data-working-state="tool-call-failed"');
+    expect(indicator).toContain("text-destructive");
+    expect(indicator).not.toContain("shimmer-group");
+    expect(indicator).toContain("bun run lint");
+    expect(indicator).toContain('data-tool-failure-meta="true">Failed · exit 2<');
+  });
+
+  it("renders every run settled when there is no working row", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        isWorking={false}
+        activeTurnInProgress
+        activeTurnStartedAt="2026-03-17T19:12:28.000Z"
+        timelineEntries={[
+          liveCommandEntry("w1", "git status", { toolStatus: "running" }),
+          liveCommandEntry("w2", "git diff"),
+        ]}
+      />,
+    );
+
+    expect(markup).not.toContain('data-timeline-row-kind="working"');
+    expect(markup).toContain("Ran 2 commands");
+    expect(markup).toContain('data-tool-group-running="true">1 running<');
+    expect(markup).not.toContain("git status");
+  });
+
+  it("attaches trailing tool rows to the last assistant reply after completion", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-assistant-final",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: MessageId.makeUnsafe("message-assistant-final"),
+              role: "assistant",
+              text: "done",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              completedAt: "2026-03-17T19:12:30.000Z",
+              streaming: false,
+            },
+          },
+          {
+            id: "entry-trailing-tool-1",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:30.100Z",
+            entry: {
+              id: "work-trailing-tool-1",
+              createdAt: "2026-03-17T19:12:30.100Z",
+              label: "tool 1",
+              tone: "tool",
+            },
+          },
+          {
+            id: "entry-trailing-tool-2",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:30.200Z",
+            entry: {
+              id: "work-trailing-tool-2",
+              createdAt: "2026-03-17T19:12:30.200Z",
+              label: "tool 2",
+              tone: "tool",
+            },
+          },
+        ]}
+        nowIso="2026-03-17T19:12:31.000Z"
+        resolvedTheme="light"
+      />,
+    );
+
+    expect(markup).toContain("Worked for ");
+    expect(markup).toContain(">done</p>");
+    // Trailing work folds into the terminal reply's collapsed disclosure rather
+    // than leaving a detached work row at the end of the transcript.
+    expect(markup).not.toContain("Tool 1");
+    expect(markup).not.toContain("Tool 2");
+    expect(markup).not.toContain('data-timeline-row-kind="work"');
+  });
+
+  it("renders inline file-change tool calls as edited rows with diff stats", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const assistantMessageId = MessageId.makeUnsafe("message-assistant-inline-edit");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-inline-file-change",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-file-change",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "File Change",
+              tone: "tool",
+              requestKind: "file-change",
+              changedFiles: ["apps/web/src/components/chat/MessagesTimeline.test.tsx"],
+              toolDetails: {
+                kind: "file-change",
+                title: "Edited",
+                diff: [
+                  "diff --git a/apps/web/src/components/chat/MessagesTimeline.test.tsx b/apps/web/src/components/chat/MessagesTimeline.test.tsx",
+                  "-old",
+                  "+new",
+                ].join("\n"),
+                files: ["apps/web/src/components/chat/MessagesTimeline.test.tsx"],
+              },
+            },
+          },
+          {
+            id: "entry-assistant-inline-edit",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: assistantMessageId,
+              role: "assistant",
+              text: "done",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              completedAt: "2026-03-17T19:12:30.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        turnDiffSummaryByAssistantMessageId={
+          new Map([
+            [
+              assistantMessageId,
+              {
+                turnId: TurnId.makeUnsafe("turn-inline-edit-1"),
+                completedAt: "2026-03-17T19:12:30.000Z",
+                assistantMessageId,
+                files: [
+                  {
+                    path: "apps/web/src/components/chat/MessagesTimeline.test.tsx",
+                    additions: 1,
+                    deletions: 1,
+                  },
+                ],
+              },
+            ],
+          ])
+        }
+      />,
+    );
+
+    expect(markup).toContain("Edited");
+    expect(markup).toContain("MessagesTimeline.test.tsx");
+    expect(markup).toContain("+1");
+    expect(markup).toContain("-1");
+    expect(markup).not.toContain(
+      "File Change - apps/web/src/components/chat/MessagesTimeline.test.tsx",
+    );
+  });
+
+  it("marks visible file-change rows with captured details as clickable", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-file-change-details",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-file-change-details",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "File Change",
+              tone: "tool",
+              requestKind: "file-change",
+              changedFiles: ["apps/web/src/components/chat/MessagesTimeline.test.tsx"],
+              toolDetails: {
+                kind: "file-change",
+                title: "Edited",
+                diff: "-old\n+new",
+                files: ["apps/web/src/components/chat/MessagesTimeline.test.tsx"],
+              },
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(markup).toContain('data-tool-detail-trigger="true"');
+    expect(markup).toContain(TOOLTIP_TRIGGER_MARKER);
+    expect(markup).not.toContain('data-tool-details-inline="true"');
+  });
+
+  it("shows the Synara mark for every provider-specific tool row shape", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const baseProps = makeTimelineBaseProps();
+
+    // Provider-style server/tool identifier while the call is active.
+    const claudeMarkup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...baseProps}
+        timelineEntries={[
+          {
+            id: "entry-inline-synara-claude",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-synara-claude",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "MCP tool call",
+              tone: "tool",
+              itemType: "dynamic_tool_call",
+              toolTitle: "Synara__synara_create_thread",
+              toolName: "Synara__synara_create_thread",
+              detail: "Synara__synara_create_thread",
+              activityKind: "tool.started",
+            },
+          },
+        ]}
+      />,
+    );
+    expect(claudeMarkup).toContain('data-tool-icon="synara"');
+    expect(claudeMarkup).not.toContain('data-tool-icon="mcp"');
+    expect(claudeMarkup).toContain("Synara is creating a thread");
+    expect(claudeMarkup).not.toContain("Synara__synara_create_thread");
+
+    // A provider may misclassify an MCP action containing "create" or "list"
+    // as a file change. Tool identity still wins over that transport category.
+    const codexMarkup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...baseProps}
+        timelineEntries={[
+          {
+            id: "entry-inline-synara-codex",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-synara-codex",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "MCP tool call",
+              tone: "tool",
+              itemType: "file_change",
+              toolTitle: "mcp__Synara__synara_list_threads",
+              detail: "mcp__Synara__synara_list_threads",
+            },
+          },
+        ]}
+      />,
+    );
+    expect(codexMarkup).toContain('data-tool-icon="synara"');
+    expect(codexMarkup).toContain("Synara listed threads");
+    expect(codexMarkup).not.toContain("mcp__Synara__synara_list_threads");
+
+    const failedMarkup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...baseProps}
+        timelineEntries={[
+          {
+            id: "entry-inline-synara-failed",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-synara-failed",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "MCP tool call",
+              tone: "tool",
+              itemType: "mcp_tool_call",
+              toolName: "mcp__synara__synara_create_threads",
+              toolStatus: "failed",
+              detail: "Claude rejected reasoningEffort",
+              activityKind: "tool.completed",
+            },
+          },
+        ]}
+      />,
+    );
+    expect(failedMarkup).toContain("Synara couldn&#x27;t create threads");
+    expect(failedMarkup).toContain("Claude rejected reasoningEffort");
+  });
+
+  it.each(["computer_click", "computer_browser_click"])(
+    "uses the requested cursor and contextual label for %s",
+    async (toolName) => {
+      const { MessagesTimeline } = await import("./MessagesTimeline");
+      const [entry] = deriveWorkLogEntries(
+        [
+          makeActivity({
+            id: "computer-human-label",
+            kind: "tool.completed",
+            summary: "Tool",
+            payload: {
+              itemType: "mcp_tool_call",
+              toolName,
+              arguments: { label: "Search", app: "Safari", x: 123, y: 456 },
+            },
+          }),
+        ],
+        undefined,
+      );
+      const markup = renderToStaticMarkup(
+        <MessagesTimeline
+          {...makeTimelineBaseProps()}
+          timelineEntries={[
+            {
+              id: "computer-row",
+              kind: "work",
+              createdAt: entry!.createdAt,
+              entry: entry!,
+            },
+          ]}
+        />,
+      );
+      expect(markup).toContain('data-tool-icon="computer"');
+      expect(markup).toContain(
+        toolName.includes("browser") ? "Click in the browser" : "Click on “Search” in Safari",
+      );
+      expect(markup).not.toContain("Synara clicked the desktop");
+      expect(markup).not.toContain("123, 456");
+      expect(markup).not.toContain('data-tool-icon="mcp"');
+    },
+  );
+
+  it("hides raw `ToolName: {json}` argument details behind the humanized heading", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const baseProps = makeTimelineBaseProps();
+
+    const renderSingleToolRow = (entry: WorkLogEntry) =>
+      renderToStaticMarkup(
+        <MessagesTimeline
+          {...baseProps}
+          timelineEntries={[
+            {
+              id: `entry-${entry.id}`,
+              kind: "work",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              entry,
+            },
+          ]}
+        />,
+      );
+
+    const readThreadMarkup = renderSingleToolRow({
+      id: "work-synara-read-thread-args",
+      createdAt: "2026-03-17T19:12:28.000Z",
+      label: "MCP tool call",
+      tone: "tool",
+      itemType: "mcp_tool_call",
+      toolName: "mcp__synara__synara_read_thread",
+      detail: 'mcp__synara__synara_read_thread: {"threadId":"c357d8c5-b4c1-47d0"}',
+      activityKind: "tool.completed",
+    });
+    expect(readThreadMarkup).toContain("Synara read a thread");
+    expect(readThreadMarkup).not.toContain("mcp__synara__synara_read_thread:");
+    expect(readThreadMarkup).not.toContain("threadId");
+
+    const diagnoseMarkup = renderSingleToolRow({
+      id: "work-synara-diagnose-args",
+      createdAt: "2026-03-17T19:12:28.000Z",
+      label: "MCP tool call",
+      tone: "tool",
+      itemType: "mcp_tool_call",
+      toolName: "mcp__synara__synara_diagnose_thread",
+      detail: 'mcp__synara__synara_diagnose_thread: {"threadId":"09a1615d-084f-40b9"}',
+      activityKind: "tool.completed",
+    });
+    expect(diagnoseMarkup).toContain("Synara diagnosed a thread");
+    expect(diagnoseMarkup).not.toContain("mcp__synara__synara_diagnose_thread:");
+    expect(diagnoseMarkup).not.toContain("threadId");
+
+    const dynamicToolMarkup = renderSingleToolRow({
+      id: "work-dynamic-tool-args",
+      createdAt: "2026-03-17T19:12:28.000Z",
+      label: "ToolSearch",
+      tone: "tool",
+      itemType: "dynamic_tool_call",
+      toolName: "ToolSearch",
+      toolTitle: "ToolSearch",
+      detail: 'ToolSearch: {"query":"select:mcp__synara__synara_read_thread_events"}',
+      activityKind: "tool.completed",
+    });
+    expect(dynamicToolMarkup).toContain("ToolSearch");
+    expect(dynamicToolMarkup).not.toContain("&quot;query&quot;");
+
+    // Failed calls are exempt: the JSON-shaped detail may be the only place
+    // the error surfaces, so it stays visible inline.
+    const failedArgsMarkup = renderSingleToolRow({
+      id: "work-synara-failed-args",
+      createdAt: "2026-03-17T19:12:28.000Z",
+      label: "MCP tool call",
+      tone: "tool",
+      itemType: "mcp_tool_call",
+      toolName: "mcp__synara__synara_create_threads",
+      toolStatus: "failed",
+      detail: 'McpError: {"code":-32602,"message":"Invalid params"}',
+      activityKind: "tool.completed",
+    });
+    expect(failedArgsMarkup).toContain("Synara couldn&#x27;t create threads");
+    expect(failedArgsMarkup).toContain("Invalid params");
+  });
+
+  it("keeps Synara tool calls and adds a thread creation recap at the end of the turn", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const assistantMessageId = MessageId.makeUnsafe("message-synara-recap");
+    const workEntries = [
+      {
+        id: "entry-synara-create-tool",
+        kind: "work",
+        createdAt: "2026-03-17T19:12:28.000Z",
+        entry: {
+          id: "work-synara-create-tool",
+          createdAt: "2026-03-17T19:12:28.000Z",
+          label: "MCP tool call",
+          tone: "tool",
+          itemType: "mcp_tool_call",
+          toolName: "mcp__synara__synara_create_threads",
+          toolTitle: "Synara created threads",
+          activityKind: "tool.completed",
+        },
+      },
+      {
+        id: "entry-synara-create-recap",
+        kind: "work",
+        createdAt: "2026-03-17T19:12:29.000Z",
+        entry: {
+          id: "work-synara-create-recap",
+          createdAt: "2026-03-17T19:12:29.000Z",
+          label: "Created 2 Synara threads",
+          tone: "info",
+          activityKind: "synara.threads.created",
+          synaraThreadCreation: {
+            operationId: "gateway:create:two-workers",
+            requestedCount: 2,
+            createdCount: 2,
+            threads: [
+              {
+                threadId: "thread-terra",
+                title: "Explain the repository with Terra",
+                provider: "codex",
+                model: "gpt-5.6-terra",
+                environment: "local",
+                status: "task_dispatched",
+              },
+              {
+                threadId: "thread-claude",
+                title: "Explain the repository with Claude",
+                provider: "claudeAgent",
+                model: "claude-sonnet-5",
+                environment: "worktree",
+                status: "task_dispatched",
+              },
+            ],
+          },
+        },
+      },
+    ] as const;
+    const baseProps = {
+      ...makeTimelineBaseProps(),
+      nowIso: "2026-03-17T19:12:31.000Z",
+      onOpenThread: () => {},
+    };
+    const liveMarkup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...baseProps}
+        isWorking
+        activeTurnInProgress
+        timelineEntries={[...workEntries]}
+      />,
+    );
+    // Mid-turn the finished call waits in the working row's claim until text
+    // settles it; the recap card is reserved for the end of the turn.
+    expect(liveMarkup).toContain('data-working-state="thinking"');
+    expect(liveMarkup).not.toContain('data-synara-thread-creation-card="true"');
+
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...baseProps}
+        timelineEntries={[
+          ...workEntries,
+          {
+            id: "entry-synara-recap-assistant",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:30.000Z",
+            message: {
+              id: assistantMessageId,
+              role: "assistant",
+              text: "Both threads are running.",
+              createdAt: "2026-03-17T19:12:30.000Z",
+              completedAt: "2026-03-17T19:12:31.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+      />,
+    );
+
+    // The original MCP tool call is preserved inside the settled turn's
+    // turn header disclosure; the recap is an additional final artifact.
+    expect(markup).toContain(TURN_HEADER_MARKER);
+    expect(markup).toContain('data-synara-thread-creation-card="true"');
+    expect(markup).toContain("2 threads created");
+    expect(markup).toContain("2/2 requested threads created");
+    expect(markup).toContain("Explain the repository with Terra");
+    expect(markup).toContain("Explain the repository with Claude");
+    expect(markup).toContain("GPT-5.6 Terra");
+    expect(markup).toContain("Claude Sonnet 5");
+    expect(markup.indexOf("Both threads are running.")).toBeLessThan(
+      markup.indexOf('data-synara-thread-creation-card="true"'),
+    );
+  });
+
+  it("shows the Computer setup card after the answer instead of inside the settled fold", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const { QueryClient, QueryClientProvider } = await import("@tanstack/react-query");
+    const markup = renderToStaticMarkup(
+      <QueryClientProvider client={new QueryClient()}>
+        <MessagesTimeline
+          {...makeTimelineBaseProps()}
+          nowIso="2026-03-17T19:12:31.000Z"
+          timelineEntries={[
+            {
+              id: "entry-computer-tool",
+              kind: "work",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              entry: {
+                id: "work-computer-tool",
+                createdAt: "2026-03-17T19:12:28.000Z",
+                label: "MCP tool call",
+                tone: "tool",
+                itemType: "mcp_tool_call",
+                toolTitle: "Listed windows",
+                activityKind: "tool.completed",
+              },
+            },
+            {
+              id: "entry-computer-setup",
+              kind: "work",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              entry: {
+                id: "work-computer-setup",
+                createdAt: "2026-03-17T19:12:29.000Z",
+                label: "Computer setup required",
+                tone: "error",
+                computerSetupRequired: { missing: ["screenRecording"] },
+              },
+            },
+            {
+              id: "entry-computer-setup-assistant",
+              kind: "message",
+              createdAt: "2026-03-17T19:12:30.000Z",
+              message: {
+                id: MessageId.makeUnsafe("message-computer-setup"),
+                role: "assistant",
+                text: "Synara needs macOS permissions first.",
+                createdAt: "2026-03-17T19:12:30.000Z",
+                completedAt: "2026-03-17T19:12:31.000Z",
+                streaming: false,
+              },
+            },
+          ]}
+        />
+      </QueryClientProvider>,
+    );
+
+    expect(markup).toContain(TURN_HEADER_MARKER);
+    expect(markup.match(/Computer control needs Screen Recording/g)).toHaveLength(1);
+    expect(markup.indexOf("Synara needs macOS permissions first.")).toBeLessThan(
+      markup.indexOf("Computer control needs Screen Recording"),
+    );
+  });
+
+  it("anchors the changed-files summary at the end of a collapsed file-change turn", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const assistantMessageId = MessageId.makeUnsafe("message-assistant-inline-multi-edit");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-inline-multi-file-change",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-multi-file-change",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "File Change",
+              tone: "tool",
+              requestKind: "file-change",
+              changedFiles: [
+                "apps/web/src/components/chat/MessagesTimeline.test.tsx",
+                "apps/web/src/components/chat/MessagesTimeline.tsx",
+              ],
+            },
+          },
+          {
+            id: "entry-assistant-inline-multi-edit",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: assistantMessageId,
+              role: "assistant",
+              text: "done",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              completedAt: "2026-03-17T19:12:30.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        turnDiffSummaryByAssistantMessageId={
+          new Map([
+            [
+              assistantMessageId,
+              {
+                turnId: TurnId.makeUnsafe("turn-inline-multi-edit-1"),
+                completedAt: "2026-03-17T19:12:30.000Z",
+                assistantMessageId,
+                files: [
+                  {
+                    path: "apps/web/src/components/chat/MessagesTimeline.test.tsx",
+                    additions: 1,
+                    deletions: 1,
+                  },
+                  {
+                    path: "apps/web/src/components/chat/MessagesTimeline.tsx",
+                    additions: 2,
+                    deletions: 0,
+                  },
+                ],
+              },
+            ],
+          ])
+        }
+      />,
+    );
+
+    // The tool work collapses, but the changed-files summary stays anchored at
+    // the end of the turn with every file from the turn diff.
+    expect(markup).toContain(TURN_HEADER_MARKER);
+    expect(markup).toContain("Edited 2 files");
+    expect(markup).toContain("apps/web/src/components/chat/MessagesTimeline.test.tsx");
+    expect(markup).toContain("apps/web/src/components/chat/MessagesTimeline.tsx");
+    expect(markup).toContain("+1");
+    expect(markup).toContain("-1");
+    expect(markup).toContain("+2");
+    expect(markup).not.toContain(">apps/web/src/components/chat<");
+  });
+
+  it("renders inline edited rows from the turn summary when the file-change tool call has no filenames", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const assistantMessageId = MessageId.makeUnsafe("message-assistant-inline-summary-fallback");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "entry-inline-summary-fallback",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:28.000Z",
+            entry: {
+              id: "work-inline-summary-fallback",
+              createdAt: "2026-03-17T19:12:28.000Z",
+              label: "File Change",
+              tone: "tool",
+              requestKind: "file-change",
+            },
+          },
+          {
+            id: "entry-assistant-inline-summary-fallback",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: assistantMessageId,
+              role: "assistant",
+              text: "done",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              completedAt: "2026-03-17T19:12:30.000Z",
+              streaming: false,
+            },
+          },
+        ]}
+        turnDiffSummaryByAssistantMessageId={
+          new Map([
+            [
+              assistantMessageId,
+              {
+                turnId: TurnId.makeUnsafe("turn-inline-summary-fallback-1"),
+                completedAt: "2026-03-17T19:12:30.000Z",
+                assistantMessageId,
+                files: [
+                  {
+                    path: "apps/web/src/components/chat/ProviderHealth.ts",
+                    additions: 63,
+                    deletions: 4,
+                  },
+                  {
+                    path: "apps/web/src/components/ChatView.tsx",
+                    additions: 41,
+                    deletions: 5,
+                  },
+                ],
+              },
+            ],
+          ])
+        }
+      />,
+    );
+
+    expect(markup).toContain("Edited");
+    expect(markup).toContain("ProviderHealth.ts");
+    expect(markup).toContain("ChatView.tsx");
+    expect(markup).toContain("+63");
+    expect(markup).toContain("-4");
+    expect(markup).toContain("+41");
+    expect(markup).toContain("-5");
+    expect(markup).not.toContain(">File Change<");
+  });
+
+  it("keeps automation-origin user messages as bubbles outside coordinator conversations", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        timelineEntries={[
+          {
+            id: "automation-row",
+            kind: "message",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            message: {
+              id: MessageId.makeUnsafe("automation-message"),
+              role: "user",
+              text: "Automation: Alpha events\nRun: scheduled",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              streaming: false,
+              source: "native",
+              dispatchOrigin: "automation",
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(markup).not.toContain("Coordinator check-in");
+    expect(markup).toContain("Sent via Automation");
+  });
+
+  it("renders a server-posted worker settle row as a compact pill", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        conversationOnly
+        timelineEntries={[
+          {
+            id: "monitor-settle-row",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            entry: {
+              id: "monitor-settle-entry",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              label: "✓ Mars rocket research finished",
+              tone: "info",
+              synaraWorkerNotice: {
+                kind: "settled",
+                marker: "✓",
+                phrase: "finished",
+                threads: [
+                  {
+                    threadId: "thread-mars",
+                    title: "Mars rocket research",
+                    outcome: "completed",
+                    result: null,
+                    pr: null,
+                    projectId: null,
+                  },
+                ],
+              },
+            },
+          },
+        ]}
+        onOpenThread={() => {}}
+      />,
+    );
+
+    expect(markup).toContain('data-worker-monitor-kind="settled"');
+    expect(markup).toContain("Mars rocket research");
+    expect(markup).toContain("finished");
+    expect(markup).toContain("<button");
+  });
+
+  it("renders the batch roll-up as a chat message with per-thread links and outcomes", async () => {
+    const { MessagesTimeline } = await import("./MessagesTimeline");
+    const markup = renderToStaticMarkup(
+      <MessagesTimeline
+        {...makeTimelineBaseProps()}
+        conversationOnly
+        timelineEntries={[
+          {
+            id: "monitor-rollup-row",
+            kind: "work",
+            createdAt: "2026-03-17T19:12:29.000Z",
+            entry: {
+              id: "monitor-rollup-entry",
+              createdAt: "2026-03-17T19:12:29.000Z",
+              label:
+                "All 3 threads settled: Alpha research ✓, Beta survey ✓, Gamma page ⚠ needs approval",
+              tone: "info",
+              synaraWorkerNotice: {
+                kind: "rollup",
+                marker: null,
+                phrase: null,
+                threads: [
+                  {
+                    threadId: "thread-a",
+                    title: "Alpha research",
+                    outcome: "completed",
+                    result: null,
+                    pr: null,
+                    projectId: null,
+                  },
+                  {
+                    threadId: "thread-b",
+                    title: "Beta survey",
+                    outcome: "completed",
+                    result: null,
+                    pr: null,
+                    projectId: null,
+                  },
+                  {
+                    threadId: "thread-c",
+                    title: "Gamma page",
+                    outcome: "waiting-approval",
+                    result: null,
+                    pr: null,
+                    projectId: null,
+                  },
+                ],
+              },
+            },
+          },
+        ]}
+        onOpenThread={() => {}}
+      />,
+    );
+
+    expect(markup).toContain('data-worker-monitor-kind="rollup"');
+    expect(markup).toContain("All 3 threads settled:");
+    expect(markup).toContain("Alpha research");
+    expect(markup).toContain("Beta survey");
+    expect(markup).toContain("Gamma page");
+    expect(markup).toContain("needs your approval");
+    // Three thread links — no full work-entry chrome around them.
+    expect(markup.match(/<button/g)?.length).toBeGreaterThanOrEqual(3);
+  });
+});

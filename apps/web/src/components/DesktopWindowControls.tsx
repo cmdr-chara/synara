@@ -1,0 +1,172 @@
+import { useEffect, useState, type ReactNode } from "react";
+
+import type { DesktopWindowState } from "@synara/contracts";
+
+import { useDesktopCustomTitleBarActive } from "~/hooks/useDesktopCustomTitleBar";
+import { isElectron } from "~/env";
+import { Maximize2, Minimize2, MinusIcon, XIcon } from "~/lib/icons";
+import { cn, getNavigatorPlatform, isWindowsPlatform } from "~/lib/utils";
+
+import { CHAT_SURFACE_HEADER_HEIGHT_CLASS } from "./chat/chatHeaderControls";
+import { toastManager } from "./ui/toast";
+import { t, useTranslation } from "~/i18n";
+
+const DEFAULT_WINDOW_STATE: DesktopWindowState = {
+  isMaximized: false,
+  isFullscreen: false,
+};
+
+// Native Windows caption glyphs. These code points resolve in "Segoe Fluent Icons"
+// (Windows 11) and fall back to "Segoe MDL2 Assets" (Windows 10): minimize, maximize,
+// restore (overlapping squares), and close.
+const GLYPH_MINIMIZE = "\uE921";
+const GLYPH_MAXIMIZE = "\uE922";
+const GLYPH_RESTORE = "\uE923";
+const GLYPH_CLOSE = "\uE8BB";
+
+// Match the native Windows caption-button footprint: 46px wide, full top-bar
+// height (CHAT_SURFACE_HEADER_HEIGHT_CLASS), flat (no radius/border), glyph centered. These are deliberately plain
+// <button>s rather than the app's Button/Tooltip primitives — those inject a
+// rounded "chrome" variant, conflicting size overrides, and a base-ui trigger that
+// intercepts the click — so the chrome stays pixel-native and onClick routes
+// straight to the window-control IPC.
+const CAPTION_BUTTON_CLASS =
+  "flex h-full w-[46px] shrink-0 items-center justify-center text-foreground/90 outline-none transition-colors duration-75 select-none hover:bg-foreground/[0.09] active:bg-foreground/[0.05] [-webkit-app-region:no-drag]";
+
+// Windows close-button accent: red fill on hover with a white glyph.
+const CLOSE_BUTTON_CLASS = "hover:bg-[#c42b1c] hover:text-white active:bg-[#b9281b]";
+
+function reportWindowControlError(title: string, error: unknown): void {
+  toastManager.add({
+    type: "error",
+    title,
+    description: error instanceof Error ? error.message : t("common:pleaseTryAgain"),
+  });
+}
+
+function CaptionGlyph({ glyph }: { glyph: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="text-[10px] leading-none"
+      style={{ fontFamily: '"Segoe Fluent Icons", "Segoe MDL2 Assets"' }}
+    >
+      {glyph}
+    </span>
+  );
+}
+
+function CaptionSvg({ children }: { children: ReactNode }) {
+  return (
+    <span aria-hidden="true" className="flex size-3.5 items-center justify-center">
+      {children}
+    </span>
+  );
+}
+
+export function DesktopWindowControls({ className }: { className?: string }) {
+  const { t } = useTranslation();
+
+  const [windowState, setWindowState] = useState<DesktopWindowState>(DEFAULT_WINDOW_STATE);
+  const customTitleBarActive = useDesktopCustomTitleBarActive();
+  const platform = getNavigatorPlatform();
+  const useWindowsGlyphs = isWindowsPlatform(platform);
+  const controls = typeof window === "undefined" ? undefined : window.desktopBridge?.windowControls;
+
+  useEffect(() => {
+    if (!controls) return;
+    let cancelled = false;
+
+    void controls
+      .getState()
+      .then((state) => {
+        if (!cancelled) setWindowState(state);
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) reportWindowControlError("Could not read window state", error);
+      });
+    const unsubscribe = controls.onState(setWindowState);
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, [controls]);
+
+  if (!isElectron || !customTitleBarActive || !controls) {
+    return null;
+  }
+
+  const { isMaximized } = windowState;
+
+  return (
+    <div
+      className={cn(
+        "flex items-stretch [-webkit-app-region:no-drag]",
+        CHAT_SURFACE_HEADER_HEIGHT_CLASS,
+        className,
+      )}
+    >
+      <button
+        type="button"
+        aria-label={t("common:app_minimize")}
+        title={t("common:app_minimize")}
+        className={CAPTION_BUTTON_CLASS}
+        onClick={() => {
+          void controls.minimize().catch((error: unknown) => {
+            reportWindowControlError("Could not minimize window", error);
+          });
+        }}
+      >
+        {useWindowsGlyphs ? (
+          <CaptionGlyph glyph={GLYPH_MINIMIZE} />
+        ) : (
+          <CaptionSvg>
+            <MinusIcon className="size-3.5" />
+          </CaptionSvg>
+        )}
+      </button>
+      <button
+        type="button"
+        aria-label={isMaximized ? t("common:app_restore") : t("common:app_maximize")}
+        title={isMaximized ? t("common:app_restore") : t("common:app_maximize")}
+        className={CAPTION_BUTTON_CLASS}
+        onClick={() => {
+          void controls
+            .toggleMaximize()
+            .then(setWindowState)
+            .catch((error: unknown) => {
+              reportWindowControlError("Could not resize window", error);
+            });
+        }}
+      >
+        {useWindowsGlyphs ? (
+          <CaptionGlyph glyph={isMaximized ? GLYPH_RESTORE : GLYPH_MAXIMIZE} />
+        ) : (
+          <CaptionSvg>
+            {isMaximized ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
+          </CaptionSvg>
+        )}
+      </button>
+      <button
+        type="button"
+        aria-label={t("common:app_close")}
+        title={t("common:app_close")}
+        className={cn(CAPTION_BUTTON_CLASS, CLOSE_BUTTON_CLASS)}
+        onClick={() => {
+          void controls.close().catch((error: unknown) => {
+            reportWindowControlError("Could not close window", error);
+          });
+        }}
+      >
+        {useWindowsGlyphs ? (
+          <CaptionGlyph glyph={GLYPH_CLOSE} />
+        ) : (
+          <CaptionSvg>
+            <XIcon className="size-3.5" />
+          </CaptionSvg>
+        )}
+      </button>
+    </div>
+  );
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@synara/scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "node ../node_modules/@typescript/native/bin/tsc --noEmit --tsBuildInfoFile node_modules/.cache/typescript-native.tsbuildinfo && bun run typecheck:computer-measurement",
+    "typecheck:computer-measurement": "node ../node_modules/@typescript/native/bin/tsc --project tsconfig.computer-measurement.json",
+    "typecheck:native": "bun run typecheck",
+    "typecheck:legacy": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@effect/platform-node": "catalog:",
+    "@synara/contracts": "workspace:*",
+    "@synara/shared": "workspace:*",
+    "effect": "catalog:",
+    "yaml": "^2.8.3"
+  },
+  "devDependencies": {
+    "@effect/language-service": "catalog:",
+    "@effect/vitest": "catalog:",
+    "@types/bun": "catalog:",
+    "electron-builder": "26.15.3",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

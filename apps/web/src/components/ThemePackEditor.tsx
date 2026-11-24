@@ -1,0 +1,875 @@
+// FILE: ThemePackEditor.tsx
+// Purpose: Per-variant theme card matching the Codex appearance settings layout.
+// Layer: Web settings UI
+// Exports: ThemePackEditor
+
+import { COARSE_HIT_AREA_TALL_CLASS_NAME, FOCUS_RING_CLASS_NAME } from "~/touchTargetStyles";
+import { DESKTOP_WINDOW_BLUR_RADIUS_MAX, DESKTOP_WINDOW_BLUR_RADIUS_MIN } from "@synara/contracts";
+import { type CSSProperties, useEffect, useId, useMemo, useRef, useState } from "react";
+import { HexColorPicker } from "react-colorful";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Popover, PopoverPopup, PopoverTrigger } from "./ui/popover";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { DisclosureRegion } from "./ui/DisclosureRegion";
+import { Switch } from "./ui/switch";
+import { Textarea } from "./ui/textarea";
+import { toastManager } from "./ui/toast";
+import { SettingsSegmentedControl } from "./settings/SettingControls";
+import { SettingsCard, SettingsSelectPopup } from "./settings/SettingsPanelPrimitives";
+import { copyTextToClipboard } from "../hooks/useCopyToClipboard";
+import { type ChromeTheme, type ThemeMode, type ThemeVariant, useTheme } from "../hooks/useTheme";
+import { readDesktopWindowTranslucency } from "../lib/desktopWindowTranslucency";
+import { cn } from "../lib/utils";
+import {
+  SETTINGS_CARD_ROW_CLASS_NAME,
+  SETTINGS_CONTROL_RADIUS_CLASS_NAME,
+  SETTINGS_STACKED_ROWS_DIVIDER_CLASS_NAME,
+} from "../settingsPanelStyles";
+import { ELEVATED_HOVER_SURFACE_RAISED_TEXT_CLASS_NAME } from "../surfaceStyles";
+import {
+  CODE_THEME_OPTIONS,
+  DEFAULT_THEME_STATE,
+  VIBRANCY_EQUIVALENT_BLUR_RADIUS,
+  WINDOW_TRANSLUCENCY_OPACITY_MIN,
+  buildThemeCssVariables,
+  getAvailableCodeThemes,
+  getCodeThemeSeed,
+  resolveThemePack,
+} from "../theme/theme.logic";
+import { useTranslation } from "~/i18n";
+import { Translation } from "~/i18n/Translation";
+
+type ThemePackEditorProps = {
+  isActive?: boolean;
+  mode?: ThemeMode;
+  variant: ThemeVariant;
+};
+
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+const WINDOW_MATERIAL_OPTIONS = [
+  { value: "solid", label: "common:solid" },
+  { value: "translucent", label: "common:translucent" },
+] as const;
+const COLOR_PICKER_COMMIT_DELAY_MS = 220;
+
+/** Borderless text action in the editor's header chrome (Copy, Import). */
+const EDITOR_TEXT_ACTION_CLASS_NAME = cn(
+  "rounded-md px-2 py-1 text-ui leading-snug text-[var(--color-text-foreground-secondary)]",
+  ELEVATED_HOVER_SURFACE_RAISED_TEXT_CLASS_NAME,
+  FOCUS_RING_CLASS_NAME,
+  COARSE_HIT_AREA_TALL_CLASS_NAME,
+);
+
+export function ThemePackEditor({
+  variant,
+  isActive: isActiveProp,
+  mode: modeProp,
+}: ThemePackEditorProps) {
+  const { t } = useTranslation();
+
+  const {
+    darkTheme,
+    lightTheme,
+    exportThemeString,
+    importThemeString,
+    isDefaultThemePack,
+    resetThemeVariant,
+    setCodeThemeId,
+    setTheme,
+    resolvedTheme,
+    theme: themeMode,
+    systemUiFont,
+    desktopBlurUnavailable,
+    setWindowTranslucency,
+    translucency: translucencyByVariant,
+    updateThemePack,
+    updateThemeFonts,
+  } = useTheme();
+  const isActive = isActiveProp ?? resolvedTheme === variant;
+  const mode = modeProp ?? themeMode;
+
+  const pack = variant === "dark" ? darkTheme : lightTheme;
+  const theme = pack.theme;
+  const translucency = translucencyByVariant[variant];
+  const previewVariables = useMemo(
+    () => buildThemeCssVariables(pack, variant, { systemUiFont }).variables,
+    [pack, variant, systemUiFont],
+  );
+  const defaultTheme = resolveThemePack(DEFAULT_THEME_STATE, variant).theme;
+  const codeThemes = useMemo(() => {
+    const options = getAvailableCodeThemes(variant);
+    return options.map((option) => ({
+      id: option.id,
+      label: option.label,
+      previewTheme: getCodeThemeSeed(option.id, variant),
+      variants: option.variants,
+    }));
+  }, [variant]);
+  const codeThemeLabel =
+    CODE_THEME_OPTIONS.find((option) => option.id === pack.codeThemeId)?.label ?? pack.codeThemeId;
+  const isPristine = isDefaultThemePack(variant);
+  const titleLabel = variant === "dark" ? t("common:darkTheme") : t("common:lightTheme");
+  const contextLabel = isActive
+    ? mode === "system"
+      ? t("common:systemIsCurrentlyUsingThisSlot", { value0: variant })
+      : t("common:thisIsTheActiveThemeRightNow")
+    : mode === "system"
+      ? t("common:usedWhenYourSystemSwitchesTo", { value0: variant })
+      : t("common:inactiveWhileTheAppIsLockedTo", { value0: mode });
+
+  const handleCopy = async () => {
+    try {
+      await copyTextToClipboard(exportThemeString(variant));
+      toastManager.add({
+        type: "success",
+        title: t("common:themeCopied"),
+        description: t("common:copiedTheThemeShareString", { value0: variant }),
+      });
+    } catch {
+      toastManager.add({
+        type: "error",
+        title: t("common:theme_copyFailed"),
+        description: t("common:unableToCopyTheThemeShareString"),
+      });
+    }
+  };
+
+  const handleImport = (value: string) => {
+    importThemeString(value, variant);
+  };
+
+  return (
+    <SettingsCard divided={false}>
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:py-3.5">
+        <div className="flex items-center gap-2">
+          <h3 className="text-ui-lg font-medium text-foreground">{titleLabel}</h3>
+          {!isPristine ? (
+            <button
+              type="button"
+              onClick={() => resetThemeVariant(variant)}
+              className={cn(
+                "rounded-md px-1.5 py-0.5 text-ui-sm text-[var(--color-text-foreground-secondary)]",
+                ELEVATED_HOVER_SURFACE_RAISED_TEXT_CLASS_NAME,
+              )}
+            >
+              {t("common:theme_reset")}
+            </button>
+          ) : null}
+        </div>
+        <div className="flex w-full min-w-0 items-center gap-1 sm:w-auto">
+          <ImportThemeDialog variant={variant} onImport={handleImport} />
+          <button
+            type="button"
+            onClick={() => void handleCopy()}
+            className={EDITOR_TEXT_ACTION_CLASS_NAME}
+          >
+            {t("workspace:share_copy")}
+          </button>
+          <Select
+            value={pack.codeThemeId}
+            onValueChange={(value) => {
+              if (typeof value !== "string") return;
+              setCodeThemeId(variant, value);
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={cn(
+                SETTINGS_CONTROL_RADIUS_CLASS_NAME,
+                "ml-1 min-w-0 flex-1 gap-2 sm:min-w-52 sm:flex-none",
+              )}
+              aria-label={t("common:codeTheme", { value0: titleLabel })}
+            >
+              <SelectValue className="flex-1 text-left">
+                <CodeThemeSelectOption label={codeThemeLabel} theme={theme} />
+              </SelectValue>
+            </SelectTrigger>
+            <SettingsSelectPopup align="end" alignItemWithTrigger={false} className="p-1.5">
+              {codeThemes.map((option) => (
+                <SelectItem
+                  hideIndicator
+                  key={option.id}
+                  value={option.id}
+                  className={cn(SETTINGS_CONTROL_RADIUS_CLASS_NAME, "px-2 py-2")}
+                >
+                  <CodeThemeSelectOption label={option.label} theme={option.previewTheme} />
+                </SelectItem>
+              ))}
+            </SettingsSelectPopup>
+          </Select>
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 pb-3 text-ui-sm text-[var(--color-text-foreground-secondary)]">
+        <span>{contextLabel}</span>
+        {!isActive ? (
+          <Button variant="outline" size="xs" onClick={() => setTheme(variant)}>
+            {t("common:use")} {variant} {t("workspace:theme")}
+          </Button>
+        ) : null}
+      </div>
+      <div className="border-b border-[color:var(--color-border)] px-4 pb-3">
+        <div
+          role="img"
+          aria-label={t("common:preview", {
+            value0: titleLabel,
+            value1: codeThemeLabel,
+          })}
+          className="flex items-center justify-between gap-3 rounded-lg border p-3"
+          style={
+            {
+              ...previewVariables,
+              backgroundColor: "var(--color-background-surface)",
+              color: "var(--color-text-foreground)",
+              borderColor: "var(--color-border)",
+              colorScheme: variant,
+            } as CSSProperties
+          }
+        >
+          <span className="text-ui-lg leading-snug font-medium">{codeThemeLabel}</span>
+          <span
+            className="rounded-md px-3 py-1 text-ui leading-snug"
+            style={{
+              backgroundColor: "var(--color-background-accent)",
+              color: "var(--color-text-accent)",
+            }}
+          >
+            {t("common:accentPreview")}
+          </span>
+        </div>
+      </div>
+
+      <div className={SETTINGS_STACKED_ROWS_DIVIDER_CLASS_NAME}>
+        <ThemeRow label={t("common:theme_accent")}>
+          <ColorPill
+            color={theme.accent}
+            ariaLabel={t("common:accentColor", { value0: titleLabel })}
+            onChange={(next) => updateThemePack(variant, { accent: next })}
+            onReset={
+              theme.accent !== defaultTheme.accent
+                ? () =>
+                    updateThemePack(variant, {
+                      accent: defaultTheme.accent,
+                    })
+                : undefined
+            }
+          />
+        </ThemeRow>
+
+        <ThemeRow label={t("common:theme_background")}>
+          <ColorPill
+            color={theme.surface}
+            ariaLabel={t("common:backgroundColor", { value0: titleLabel })}
+            onChange={(next) => updateThemePack(variant, { surface: next })}
+            onReset={
+              theme.surface !== defaultTheme.surface
+                ? () =>
+                    updateThemePack(variant, {
+                      surface: defaultTheme.surface,
+                    })
+                : undefined
+            }
+          />
+        </ThemeRow>
+
+        <ThemeRow label={t("common:theme_foreground")}>
+          <ColorPill
+            color={theme.ink}
+            ariaLabel={t("common:foregroundColor", { value0: titleLabel })}
+            onChange={(next) => updateThemePack(variant, { ink: next })}
+            onReset={
+              theme.ink !== defaultTheme.ink
+                ? () =>
+                    updateThemePack(variant, {
+                      ink: defaultTheme.ink,
+                    })
+                : undefined
+            }
+          />
+        </ThemeRow>
+
+        <ThemeRow label={t("common:theme_uiFont")}>
+          <div className="flex min-w-0 flex-col items-end gap-1">
+            <FontInput
+              value={theme.fonts.ui ?? ""}
+              placeholder={t("common:theme_systemDefault")}
+              ariaLabel={t("common:uIFont", { value0: titleLabel })}
+              onChange={(next) => updateThemeFonts(variant, { ui: next.length > 0 ? next : null })}
+            />
+            {systemUiFont ? (
+              <span className="max-w-44 text-end text-ui-sm break-words text-muted-foreground sm:max-w-none sm:whitespace-nowrap">
+                {t("common:useSystemUIFontIsOnThemeFontsAre")}
+              </span>
+            ) : null}
+          </div>
+        </ThemeRow>
+
+        <ThemeRow label={t("common:theme_codeFont")}>
+          <div className="flex flex-col items-end gap-1">
+            <FontInput
+              value={theme.fonts.code ?? ""}
+              placeholder={t("common:jetBrainsMono")}
+              ariaLabel={t("common:codeFont", { value0: titleLabel })}
+              mono
+              onChange={(next) =>
+                updateThemeFonts(variant, { code: next.length > 0 ? next : null })
+              }
+            />
+          </div>
+        </ThemeRow>
+
+        <div>
+          <ThemeRow label={t("common:sessionStatus_window")}>
+            <SettingsSegmentedControl
+              value={theme.opaqueWindows ? "solid" : "translucent"}
+              onValueChange={(value) =>
+                updateThemePack(variant, { opaqueWindows: value === "solid" })
+              }
+              ariaLabel={t("common:windowMaterial", { value0: titleLabel })}
+              options={WINDOW_MATERIAL_OPTIONS}
+            />
+          </ThemeRow>
+          <DisclosureRegion open={!theme.opaqueWindows}>
+            <div
+              className={cn(
+                SETTINGS_STACKED_ROWS_DIVIDER_CLASS_NAME,
+                "border-t border-[color:var(--color-border)]",
+              )}
+            >
+              <ThemeRow label={t("common:sidebarOnly")}>
+                <Switch
+                  checked={translucency.sidebarOnly}
+                  onCheckedChange={(checked) =>
+                    setWindowTranslucency(variant, { sidebarOnly: checked })
+                  }
+                  aria-label={t("common:translucentSidebarOnly", { value0: titleLabel })}
+                />
+              </ThemeRow>
+              <ThemeRow label={t("common:opacity")}>
+                <ThemeSlider
+                  value={translucency.opacity}
+                  min={WINDOW_TRANSLUCENCY_OPACITY_MIN}
+                  max={100}
+                  suffix="%"
+                  onChange={(next) => setWindowTranslucency(variant, { opacity: next })}
+                  ariaLabel={t("common:translucencyOpacity", { value0: titleLabel })}
+                />
+              </ThemeRow>
+              <ThemeRow label={t("common:blur")}>
+                {readDesktopWindowTranslucency() === "compositor" ? (
+                  // Hyprland blurs the transparent window with its own `decoration:blur`
+                  // settings; there is no per-window radius for the app to set.
+                  <span className="text-ui-sm text-muted-foreground">
+                    {t("settings:compositorControlsBlur")}
+                  </span>
+                ) : (
+                  <>
+                    {translucency.blur !== null ? (
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onClick={() => setWindowTranslucency(variant, { blur: null })}
+                        aria-label={t("common:automaticBackgroundBlur", { value0: titleLabel })}
+                      >
+                        {isActive && desktopBlurUnavailable
+                          ? t("common:unavailableUseAuto")
+                          : t("common:worktreeMode_auto")}
+                      </Button>
+                    ) : null}
+                    <ThemeSlider
+                      value={translucency.blur ?? VIBRANCY_EQUIVALENT_BLUR_RADIUS}
+                      {...(translucency.blur === null
+                        ? { valueLabel: t("common:worktreeMode_auto") }
+                        : {})}
+                      min={DESKTOP_WINDOW_BLUR_RADIUS_MIN}
+                      max={DESKTOP_WINDOW_BLUR_RADIUS_MAX}
+                      onChange={(next) => setWindowTranslucency(variant, { blur: next })}
+                      ariaLabel={t("common:backgroundBlur", { value0: titleLabel })}
+                    />
+                  </>
+                )}
+              </ThemeRow>
+            </div>
+          </DisclosureRegion>
+        </div>
+
+        <ThemeRow label={t("common:theme_contrast")}>
+          <ThemeSlider
+            value={theme.contrast}
+            max={100}
+            onChange={(next) => updateThemePack(variant, { contrast: next })}
+            ariaLabel={t("common:contrast", { value0: titleLabel })}
+          />
+        </ThemeRow>
+      </div>
+    </SettingsCard>
+  );
+}
+
+// ── Row primitive ─────────────────────────────────────────────────────────
+
+function ThemeRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div
+      className={cn(
+        SETTINGS_CARD_ROW_CLASS_NAME,
+        "flex min-h-12 items-center justify-between gap-3",
+      )}
+    >
+      <span className="text-ui leading-snug text-foreground/90">{label}</span>
+      <div className="flex shrink-0 items-center gap-2">{children}</div>
+    </div>
+  );
+}
+
+// ── Color pill ────────────────────────────────────────────────────────────
+
+export function ColorPill({
+  color,
+  ariaLabel,
+  onChange,
+  onReset,
+  immediate = false,
+}: {
+  color: string;
+  ariaLabel: string;
+  onChange: (next: string) => void;
+  onReset?: (() => void) | undefined;
+  immediate?: boolean;
+}) {
+  const { t } = useTranslation();
+
+  const commitTimerRef = useRef<number | null>(null);
+  const pendingCommitRef = useRef<string | null>(null);
+  const colorRef = useRef(color);
+  const [draftHexRaw, setDraftHex] = useState<string | null>(null);
+  // Derived: once the committed color catches up to the draft (commit round-
+  // trip), the draft dissolves in the same render — no state-clearing effect.
+  const draftHex = draftHexRaw === color ? null : draftHexRaw;
+  const [isOpen, setIsOpen] = useState(false);
+  const normalizedDraftHex = draftHex?.trim().toLowerCase() ?? null;
+  const previewColor =
+    normalizedDraftHex && HEX_COLOR_RE.test(normalizedDraftHex) ? normalizedDraftHex : color;
+  const inputValue = draftHex ?? color;
+  const textColor = useReadableTextColor(previewColor);
+  const ringColor = useReadableTextColor(previewColor, 0.32);
+
+  useEffect(() => {
+    colorRef.current = color;
+  }, [color]);
+
+  const clearCommitTimer = () => {
+    if (commitTimerRef.current === null) {
+      return;
+    }
+    window.clearTimeout(commitTimerRef.current);
+    commitTimerRef.current = null;
+  };
+
+  // Explicit undefined check instead of a ref-reading default parameter,
+  // which React Compiler does not support yet (it would skip this component).
+  const commitColor = (nextInput?: string | null) => {
+    const next = nextInput === undefined ? pendingCommitRef.current : nextInput;
+    clearCommitTimer();
+    pendingCommitRef.current = null;
+    if (!next || next === colorRef.current) {
+      return;
+    }
+    onChange(next);
+  };
+
+  const scheduleCommit = (next: string) => {
+    pendingCommitRef.current = next;
+    clearCommitTimer();
+    commitTimerRef.current = window.setTimeout(() => {
+      commitColor(next);
+    }, COLOR_PICKER_COMMIT_DELAY_MS);
+  };
+
+  useEffect(
+    () => () => {
+      clearCommitTimer();
+    },
+    [clearCommitTimer],
+  );
+
+  // Dragging updates only this local preview; the real theme store is committed
+  // after a short idle delay so CSS-var projection stays smooth.
+  const handleValidDraft = (next: string) => {
+    const normalized = next.trim().toLowerCase();
+    setDraftHex(normalized);
+    if (immediate) commitColor(normalized);
+    else scheduleCommit(normalized);
+  };
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setIsOpen(nextOpen);
+    if (!nextOpen) {
+      commitColor();
+      setDraftHex(null);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1">
+      {onReset ? (
+        <button
+          type="button"
+          onClick={() => {
+            clearCommitTimer();
+            pendingCommitRef.current = null;
+            setDraftHex(null);
+            onReset();
+          }}
+          className={cn(
+            "rounded-md p-1 text-[var(--color-text-foreground-tertiary)]",
+            ELEVATED_HOVER_SURFACE_RAISED_TEXT_CLASS_NAME,
+            FOCUS_RING_CLASS_NAME,
+            COARSE_HIT_AREA_TALL_CLASS_NAME,
+            "pointer-coarse:after:-inset-x-1",
+          )}
+          aria-label={t("common:reset", { value0: ariaLabel })}
+          title={t("common:theme_resetToDefault")}
+        >
+          <ResetGlyph />
+        </button>
+      ) : null}
+      <Popover open={isOpen} onOpenChange={handleOpenChange}>
+        <PopoverTrigger
+          render={
+            <button
+              type="button"
+              className={cn(
+                SETTINGS_CONTROL_RADIUS_CLASS_NAME,
+                "group relative flex h-8 min-w-44 items-center gap-2 overflow-hidden border px-2 pr-3 text-left transition-[transform,box-shadow] hover:scale-[1.005] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+              )}
+              // borderColor rides the readable color so a near-white fill still shows
+              // a crisp edge against the (also near-white) settings card.
+              style={{ backgroundColor: previewColor, color: textColor, borderColor: ringColor }}
+              aria-label={ariaLabel}
+            />
+          }
+        >
+          <span
+            aria-hidden
+            className="block size-5 shrink-0 rounded-full border"
+            style={{ borderColor: ringColor }}
+          />
+          <span className="font-system-ui flex-1 text-ui uppercase">{previewColor}</span>
+        </PopoverTrigger>
+        <PopoverPopup
+          align="end"
+          side="bottom"
+          sideOffset={8}
+          className="p-0 [&_[data-slot=popover-viewport]]:p-0"
+        >
+          <div className="theme-color-picker flex w-56 flex-col gap-3 p-3">
+            <HexColorPicker color={previewColor} onChange={handleValidDraft} />
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(event) => {
+                const next = event.target.value;
+                setDraftHex(next);
+                if (HEX_COLOR_RE.test(next.trim())) {
+                  handleValidDraft(next);
+                }
+              }}
+              onBlur={() => {
+                commitColor();
+                setDraftHex(null);
+              }}
+              spellCheck={false}
+              maxLength={7}
+              className={cn(
+                SETTINGS_CONTROL_RADIUS_CLASS_NAME,
+                "h-8 border border-[color:var(--color-border-light)] bg-[var(--color-background-elevated-secondary)] px-2 text-center font-chat-code text-ui leading-snug uppercase outline-none focus:border-[color:var(--color-border-focus)]",
+              )}
+              aria-label={t("common:hexValue", { value0: ariaLabel })}
+            />
+          </div>
+        </PopoverPopup>
+      </Popover>
+    </div>
+  );
+}
+
+function CodeThemeBadge({ theme }: { theme: ChromeTheme }) {
+  const { t } = useTranslation();
+
+  return (
+    <span
+      aria-hidden
+      className="flex size-5 shrink-0 items-center justify-center rounded-md border text-ui-xs font-semibold leading-none"
+      style={{
+        backgroundColor: theme.surface,
+        borderColor: mixColor(theme.surface, theme.ink, 0.16),
+        color: theme.accent,
+      }}
+    >
+      {t("workspace:aa")}
+    </span>
+  );
+}
+
+function CodeThemeSelectOption({ label, theme }: { label: string; theme: ChromeTheme }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2.5">
+      <CodeThemeBadge theme={theme} />
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-ui-lg text-[var(--color-text-foreground)]">{label}</div>
+      </div>
+    </div>
+  );
+}
+
+// ── Font input ────────────────────────────────────────────────────────────
+
+function FontInput({
+  value,
+  placeholder,
+  ariaLabel,
+  mono: monoProp,
+  onChange,
+}: {
+  value: string;
+  placeholder: string;
+  ariaLabel: string;
+  mono?: boolean;
+  onChange: (next: string) => void;
+}) {
+  const mono = monoProp ?? false;
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <Input
+      value={draft ?? value}
+      placeholder={placeholder}
+      onChange={(event) => {
+        const next = event.target.value;
+        setDraft(next);
+        onChange(next);
+      }}
+      onBlur={() => setDraft(null)}
+      spellCheck={false}
+      aria-label={ariaLabel}
+      className={cn(SETTINGS_CONTROL_RADIUS_CLASS_NAME, "w-56", mono && "font-chat-code")}
+    />
+  );
+}
+
+// ── Slider ────────────────────────────────────────────────────────────────
+
+function ThemeSlider({
+  value,
+  min = 0,
+  max,
+  suffix = "",
+  valueLabel,
+  onChange,
+  ariaLabel,
+}: {
+  value: number;
+  min?: number;
+  max: number;
+  suffix?: string;
+  /** Shown instead of the number, e.g. while the value is still the automatic default. */
+  valueLabel?: string;
+  onChange: (next: number) => void;
+  ariaLabel: string;
+}) {
+  const { t } = useTranslation();
+
+  const id = useId();
+  const fillPct = Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
+  return (
+    <div className="flex items-center gap-3">
+      <input
+        id={id}
+        type="range"
+        min={min}
+        max={max}
+        step={1}
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+        aria-label={ariaLabel}
+        className="theme-slider h-1.5 w-44 cursor-pointer appearance-none rounded-full bg-transparent focus-visible:outline-none"
+        style={{
+          background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${fillPct}%, var(--input) ${fillPct}%, var(--input) 100%)`,
+        }}
+      />
+      <span className="w-10 text-right font-chat-code text-ui leading-snug text-muted-foreground tabular-nums">
+        {valueLabel ?? t("common:symbol6", { value0: value, value1: suffix })}
+      </span>
+    </div>
+  );
+}
+
+// ── Import dialog ─────────────────────────────────────────────────────────
+
+function ImportThemeDialog({
+  variant,
+  onImport,
+}: {
+  variant: ThemeVariant;
+  onImport: (value: string) => void;
+}) {
+  const { t } = useTranslation();
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    try {
+      onImport(value);
+      toastManager.add({
+        type: "success",
+        title: t("common:theme_imported"),
+        description: t("common:updatedTheThemePack", { value0: variant }),
+      });
+      setValue("");
+      setError(null);
+      setOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("common:unableToImportThatThemeString"));
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        render={
+          <button type="button" className={EDITOR_TEXT_ACTION_CLASS_NAME}>
+            {t("workspace:theme_import")}
+          </button>
+        }
+      />
+      <DialogPopup className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {t("common:importTheme", {
+              variant: t(
+                variant === "dark"
+                  ? "computer:searchPalette_darkTheme"
+                  : "computer:searchPalette_lightTheme",
+              ),
+            })}
+          </DialogTitle>
+          <p className="text-ui leading-snug text-muted-foreground">
+            <Translation
+              message="common:pasteAThemeShareStringBeginningWith"
+              values={{ prefix: "codex-theme-v1:" }}
+              components={{
+                code: <code className="rounded bg-muted px-1 py-0.5 font-chat-code" />,
+              }}
+            />{" "}
+            {t("common:theEmbeddedVariantMustMatchAndTheSelectedCode", {
+              variant: t(
+                variant === "dark"
+                  ? "computer:searchPalette_darkTheme"
+                  : "computer:searchPalette_lightTheme",
+              ),
+            })}
+          </p>
+        </DialogHeader>
+        <DialogPanel>
+          <Textarea
+            value={value}
+            onChange={(event) => {
+              setValue(event.target.value);
+              setError(null);
+            }}
+            placeholder={t("common:codexThemeV1CodeThemeIdLinear")}
+            spellCheck={false}
+            rows={5}
+            className="font-chat-code text-chat-code"
+            aria-label={t("common:theme_themeShareString")}
+          />
+          {error ? <p className="mt-2 text-ui leading-snug text-destructive">{error}</p> : null}
+        </DialogPanel>
+        <DialogFooter>
+          <DialogClose
+            render={
+              <Button variant="outline" type="button" size="sm">
+                {t("common:form_cancel")}
+              </Button>
+            }
+          />
+          <Button
+            type="button"
+            size="sm"
+            disabled={value.trim().length === 0}
+            onClick={handleSubmit}
+          >
+            {t("workspace:theme_import")}
+          </Button>
+        </DialogFooter>
+      </DialogPopup>
+    </Dialog>
+  );
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+
+function ResetGlyph() {
+  return (
+    <svg
+      aria-hidden
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 12a9 9 0 1 0 3-6.7" />
+      <polyline points="3 4 3 10 9 10" />
+    </svg>
+  );
+}
+
+function useReadableTextColor(hex: string, alpha = 1): string {
+  const rgb = parseHex(hex);
+  if (!rgb) {
+    return alpha === 1 ? "#ffffff" : `rgba(255,255,255,${alpha})`;
+  }
+  const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+  if (luminance > 0.6) {
+    return alpha === 1 ? "#1a1c1f" : `rgba(26,28,31,${alpha})`;
+  }
+  return alpha === 1 ? "#ffffff" : `rgba(255,255,255,${alpha})`;
+}
+
+function mixColor(fromHex: string, toHex: string, amount: number): string {
+  const from = parseHex(fromHex);
+  const to = parseHex(toHex);
+  if (!from || !to) return fromHex;
+  const clamped = Math.max(0, Math.min(1, amount));
+  const r = Math.round(from.r + (to.r - from.r) * clamped);
+  const g = Math.round(from.g + (to.g - from.g) * clamped);
+  const b = Math.round(from.b + (to.b - from.b) * clamped);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function parseHex(hex: string): { r: number; g: number; b: number } | null {
+  if (!HEX_COLOR_RE.test(hex)) return null;
+  const value = hex.slice(1);
+  return {
+    r: Number.parseInt(value.slice(0, 2), 16),
+    g: Number.parseInt(value.slice(2, 4), 16),
+    b: Number.parseInt(value.slice(4, 6), 16),
+  };
+}

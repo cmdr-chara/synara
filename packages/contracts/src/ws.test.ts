@@ -1,0 +1,250 @@
+import { assert, it } from "@effect/vitest";
+import { Effect, Schema } from "effect";
+
+import { ORCHESTRATION_WS_CHANNELS, ORCHESTRATION_WS_METHODS } from "./orchestration";
+import { WebSocketRequest, WsResponse, WS_CHANNELS, WS_METHODS } from "./ws";
+
+const decode = <S extends Schema.Top>(
+  schema: S,
+  input: unknown,
+): Effect.Effect<Schema.Schema.Type<S>, Schema.SchemaError, never> =>
+  Schema.decodeUnknownEffect(schema as never)(input) as Effect.Effect<
+    Schema.Schema.Type<S>,
+    Schema.SchemaError,
+    never
+  >;
+
+it.effect("rejects getTurnDiff requests when fromTurnCount > toTurnCount", () =>
+  Effect.gen(function* () {
+    const result = yield* Effect.exit(
+      decode(WebSocketRequest, {
+        id: "req-1",
+        body: {
+          _tag: ORCHESTRATION_WS_METHODS.getTurnDiff,
+          threadId: "thread-1",
+          fromTurnCount: 3,
+          toTurnCount: 2,
+        },
+      }),
+    );
+    assert.strictEqual(result._tag, "Failure");
+  }),
+);
+
+it.effect("trims websocket request id and nested orchestration ids", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WebSocketRequest, {
+      id: " req-1 ",
+      body: {
+        _tag: ORCHESTRATION_WS_METHODS.getTurnDiff,
+        threadId: " thread-1 ",
+        fromTurnCount: 0,
+        toTurnCount: 0,
+      },
+    });
+    assert.strictEqual(parsed.id, "req-1");
+    assert.strictEqual(parsed.body._tag, ORCHESTRATION_WS_METHODS.getTurnDiff);
+    if (parsed.body._tag === ORCHESTRATION_WS_METHODS.getTurnDiff) {
+      assert.strictEqual(parsed.body.threadId, "thread-1");
+    }
+  }),
+);
+
+it.effect("accepts git.preparePullRequestThread requests", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WebSocketRequest, {
+      id: "req-pr-1",
+      body: {
+        _tag: WS_METHODS.gitPreparePullRequestThread,
+        cwd: "/repo",
+        reference: "#42",
+        mode: "worktree",
+      },
+    });
+    assert.strictEqual(parsed.body._tag, WS_METHODS.gitPreparePullRequestThread);
+  }),
+);
+
+it.effect("accepts project script discovery requests", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WebSocketRequest, {
+      id: "req-project-scripts-1",
+      body: {
+        _tag: WS_METHODS.projectsDiscoverScripts,
+        cwd: "/repo",
+        depth: 1,
+      },
+    });
+    assert.strictEqual(parsed.body._tag, WS_METHODS.projectsDiscoverScripts);
+  }),
+);
+
+it.effect("accepts bounded project file watch requests", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WebSocketRequest, {
+      id: "req-project-file-watch-1",
+      body: {
+        _tag: WS_METHODS.projectsSubscribeFileChange,
+        cwd: "/repo",
+        relativePath: "src/app.ts",
+      },
+    });
+    assert.strictEqual(parsed.body._tag, WS_METHODS.projectsSubscribeFileChange);
+  }),
+);
+
+it.effect("accepts automation create requests", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WebSocketRequest, {
+      id: "req-automation-create-1",
+      body: {
+        _tag: WS_METHODS.automationCreate,
+        name: "Nightly maintenance",
+        projectId: "project-1",
+        prompt: "Check stale dependencies.",
+        schedule: { type: "manual" },
+        modelSelection: {
+          provider: "codex",
+          model: "gpt-5-codex",
+        },
+      },
+    });
+    assert.strictEqual(parsed.body._tag, WS_METHODS.automationCreate);
+  }),
+);
+
+it.effect("accepts automation proposal resolution requests", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WebSocketRequest, {
+      id: "req-automation-proposal-1",
+      body: {
+        _tag: WS_METHODS.automationResolveProposal,
+        automationId: "automation-1",
+        resolution: "accepted",
+      },
+    });
+    assert.strictEqual(parsed.body._tag, WS_METHODS.automationResolveProposal);
+  }),
+);
+
+it.effect("accepts automation run action requests", () =>
+  Effect.gen(function* () {
+    const markRead = yield* decode(WebSocketRequest, {
+      id: "req-automation-read-1",
+      body: {
+        _tag: WS_METHODS.automationMarkRunRead,
+        runId: "run-1",
+        unread: false,
+      },
+    });
+    const archive = yield* decode(WebSocketRequest, {
+      id: "req-automation-archive-1",
+      body: {
+        _tag: WS_METHODS.automationArchiveRun,
+        runId: "run-1",
+        archived: true,
+      },
+    });
+
+    assert.strictEqual(markRead.body._tag, WS_METHODS.automationMarkRunRead);
+    assert.strictEqual(archive.body._tag, WS_METHODS.automationArchiveRun);
+  }),
+);
+
+it.effect("accepts every hosts namespace request", () =>
+  Effect.gen(function* () {
+    const requests = [
+      [WS_METHODS.hostsList, {}],
+      [WS_METHODS.hostsUpdate, { hostId: "host_1", discoverable: false, name: "Ada's Mac" }],
+      [WS_METHODS.hostsDelete, { hostId: "host_1" }],
+      [WS_METHODS.hostsListDevices, {}],
+      [WS_METHODS.hostsRevokeDevice, { deviceId: "00000000-0000-4000-8000-000000000001" }],
+      [WS_METHODS.hostsApproveDeviceLink, { userCode: "ABCDEFGH" }],
+      [WS_METHODS.hostsRequestGrant, { hostId: "host_1" }],
+      [WS_METHODS.hostsEnrollment, {}],
+      [WS_METHODS.hostsUnlinkLocalHost, {}],
+      [WS_METHODS.hostsListSessions, {}],
+      [WS_METHODS.hostsEndSession, { sessionId: "session_1" }],
+      [WS_METHODS.hostsBeginSyncKeyPairing, {}],
+      [
+        WS_METHODS.hostsOfferSyncKey,
+        {
+          recipientDeviceId: "00000000-0000-4000-8000-000000000001",
+          recipientPublicJwk: { kty: "EC", crv: "P-256", x: "eA", y: "eQ" },
+        },
+      ],
+      [WS_METHODS.hostsReceiveSyncKey, {}],
+      [WS_METHODS.hostsConfirmSyncKey, { verificationCode: "ABC234" }],
+    ] as const;
+
+    for (const [method, input] of requests) {
+      const parsed = yield* decode(WebSocketRequest, {
+        id: `req-${method}`,
+        body: { _tag: method, ...input },
+      });
+      assert.strictEqual(parsed.body._tag, method);
+    }
+  }),
+);
+
+it.effect("accepts typed websocket push envelopes with sequence", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WsResponse, {
+      type: "push",
+      sequence: 1,
+      channel: WS_CHANNELS.serverWelcome,
+      data: {
+        cwd: "/tmp/workspace",
+        projectName: "workspace",
+      },
+    });
+
+    if (!("type" in parsed) || parsed.type !== "push") {
+      assert.fail("expected websocket response to decode as a push envelope");
+    }
+
+    assert.strictEqual(parsed.type, "push");
+    assert.strictEqual(parsed.sequence, 1);
+    assert.strictEqual(parsed.channel, WS_CHANNELS.serverWelcome);
+  }),
+);
+
+it.effect("accepts server.keepAwakeUpdated push envelopes", () =>
+  Effect.gen(function* () {
+    const parsed = yield* decode(WsResponse, {
+      type: "push",
+      sequence: 4,
+      channel: WS_CHANNELS.serverKeepAwakeUpdated,
+      data: {
+        keepAwake: { available: true, mode: "agent", active: false, error: null },
+      },
+    });
+
+    if (!("type" in parsed) || parsed.type !== "push") {
+      assert.fail("expected websocket response to decode as a push envelope");
+    }
+
+    assert.strictEqual(parsed.channel, WS_CHANNELS.serverKeepAwakeUpdated);
+    if (parsed.channel === WS_CHANNELS.serverKeepAwakeUpdated) {
+      assert.strictEqual(parsed.data.keepAwake.mode, "agent");
+    }
+  }),
+);
+
+it.effect("rejects push envelopes when channel payload does not match the channel schema", () =>
+  Effect.gen(function* () {
+    const result = yield* Effect.exit(
+      decode(WsResponse, {
+        type: "push",
+        sequence: 2,
+        channel: ORCHESTRATION_WS_CHANNELS.domainEvent,
+        data: {
+          cwd: "/tmp/workspace",
+          projectName: "workspace",
+        },
+      }),
+    );
+
+    assert.strictEqual(result._tag, "Failure");
+  }),
+);

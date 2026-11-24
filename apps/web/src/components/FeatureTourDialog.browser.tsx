@@ -1,0 +1,341 @@
+import "../index.css";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { isBetaFeatureEnabled } from "@synara/shared/betaFeatures";
+import { act, useState } from "react";
+import { page, userEvent } from "vitest/browser";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { render } from "vitest-browser-react";
+
+import { useFeatureTourStore } from "~/featureTour/store";
+import { useOnboardingDialogStore } from "~/onboarding/onboardingDialogStore";
+import { useProjectImportDialogStore } from "~/projectImport/projectImportDialogStore";
+import { ProjectImportAnnouncementDialog } from "~/projectImport/ProjectImportAnnouncementDialog";
+import { useAnnouncementSheetSlotStore } from "./announcementSheetSlot";
+import { FeatureTourDialog } from "./FeatureTourDialog";
+import { AppSnapWelcomeDialog } from "./AppSnapWelcomeDialog";
+import { Button } from "./ui/button";
+import { Dialog, DialogPopup, DialogTitle } from "./ui/dialog";
+import { ToastProvider, toastManager } from "./ui/toast";
+
+let installation = "/first/worktrees";
+let flavor: "production" | "beta" = "production";
+vi.mock("../lib/serverReactQuery", () => ({
+  serverConfigQueryOptions: () => ({
+    queryKey: ["server", "config", installation],
+    queryFn: async () => ({ worktreesDir: installation }),
+    staleTime: Infinity,
+  }),
+}));
+vi.mock("../betaFeatures", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../betaFeatures")>()),
+  isBetaFeatureOn: (feature: string) => isBetaFeatureEnabled(feature, flavor),
+}));
+vi.mock("@tanstack/react-router", () => ({
+  useNavigate: () => vi.fn(),
+  useParams: () => null,
+  useSearch: () => ({}),
+}));
+
+const tourKey = "synara:app-tour:v1";
+const importKey = "synara:project-import-announcement:v1";
+const clients: QueryClient[] = [];
+const screens: Awaited<ReturnType<typeof render>>[] = [];
+const originalBridge = window.desktopBridge;
+
+beforeEach(async () => {
+  await page.viewport(1280, 900);
+  installation = "/first/worktrees";
+  flavor = "production";
+  localStorage.removeItem(tourKey);
+  localStorage.setItem(importKey, JSON.stringify([installation]));
+  localStorage.removeItem("synara:appsnap-welcome:v1");
+  useOnboardingDialogStore.setState({
+    isOpen: false,
+    startupGateSettled: true,
+    betaWelcomePending: false,
+  });
+  useProjectImportDialogStore.setState({ isOpen: false });
+  useAnnouncementSheetSlotStore.setState({ owner: null, handedOff: false });
+  useFeatureTourStore.setState({ replay: false });
+});
+afterEach(async () => {
+  for (const screen of screens.splice(0)) await screen.unmount();
+  for (const client of clients.splice(0)) client.clear();
+  if (originalBridge) window.desktopBridge = originalBridge;
+  else delete window.desktopBridge;
+  localStorage.removeItem(tourKey);
+  localStorage.removeItem(importKey);
+  localStorage.removeItem("synara:appsnap-welcome:v1");
+});
+async function show(children = <FeatureTourDialog />) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  clients.push(client);
+  const screen = await render(
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>,
+  );
+  screens.push(screen);
+  return screen;
+}
+
+it("walks the tour in order, remembers dismissal per installation, and replays after a handoff", async () => {
+  const screen = await show();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "See what your agents are doing" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Show Start the day in Inbox" }).click();
+  await expect.element(page.getByRole("dialog", { name: "Start the day in Inbox" })).toBeVisible();
+  await page.getByRole("button", { name: "Show Review pull requests and issues" }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "Review pull requests and issues" }))
+    .toBeVisible();
+  await expect.element(page.getByRole("button", { name: "Done" })).toBeVisible();
+  await page.getByRole("button", { name: "Done" }).click();
+  await screen.unmount();
+  screens.splice(screens.indexOf(screen), 1);
+  await show();
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  await expect.element(page.getByRole("dialog")).not.toBeInTheDocument();
+  useAnnouncementSheetSlotStore.setState({ handedOff: true });
+  useFeatureTourStore.getState().open();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Close tour" }).click();
+  await expect.element(page.getByRole("dialog")).not.toBeInTheDocument();
+});
+
+it("skips controls in a collapsed sidebar or under the rail and rings the visible ones", async () => {
+  const anchor = (id: string) => (
+    <button type="button" data-app-tour={id} style={{ width: 40, height: 40 }}>
+      {id}
+    </button>
+  );
+  await show(
+    <>
+      {/* A collapsed offcanvas sidebar stays laid out, slid off the left edge. */}
+      <div
+        style={{ position: "fixed", left: 0, top: 0, width: 260, transform: "translateX(-100%)" }}
+      >
+        {anchor("newThread")}
+      </div>
+      {/* Its controls near the edge end up under the rail. */}
+      <div style={{ position: "fixed", left: 0, top: 100 }}>{anchor("tasks")}</div>
+      <div
+        style={{ position: "fixed", left: 0, top: 80, width: 60, height: 80, background: "white" }}
+      />
+      <div style={{ position: "fixed", left: 200, top: 200 }}>
+        {anchor("activity")}
+        {anchor("inbox")}
+      </div>
+      <FeatureTourDialog />
+    </>,
+  );
+  const tour = page.getByRole("dialog", { name: "See what your agents are doing" });
+  await expect.element(tour).toBeVisible();
+  expect(tour.element().getAttribute("data-tour-side")).toBe("right");
+  expect(page.getByRole("button", { name: /^Show / }).all()).toHaveLength(2);
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect.element(page.getByRole("dialog", { name: "Start the day in Inbox" })).toBeVisible();
+});
+
+it("announces again when the browser connects to a different installation", async () => {
+  localStorage.setItem(tourKey, JSON.stringify([installation]));
+  installation = "/second/worktrees";
+  localStorage.setItem(importKey, JSON.stringify([installation]));
+  await show();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Close tour" }).click();
+  expect(JSON.parse(localStorage.getItem(tourKey) ?? "[]")).toEqual([
+    "/first/worktrees",
+    "/second/worktrees",
+  ]);
+});
+
+it("waits for onboarding and other modal flows to close on Beta", async () => {
+  flavor = "beta";
+  useOnboardingDialogStore.setState({ startupGateSettled: false });
+  function Flow() {
+    const [open, setOpen] = useState(true);
+    return (
+      <>
+        <Dialog open={open}>
+          <DialogPopup>
+            <DialogTitle>Existing setup</DialogTitle>
+            <Button onClick={() => setOpen(false)}>Finish setup</Button>
+          </DialogPopup>
+        </Dialog>
+        <FeatureTourDialog />
+      </>
+    );
+  }
+  await show(<Flow />);
+  useOnboardingDialogStore.getState().markStartupGateSettled();
+  await expect.element(page.getByRole("dialog", { name: "Existing setup" })).toBeVisible();
+  expect(document.querySelectorAll('[role="dialog"]').length).toBe(1);
+  await page.getByRole("button", { name: "Finish setup" }).click();
+  await page.getByRole("button", { name: "Show Review pull requests and issues" }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "Review pull requests and issues" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Done" }).click();
+  await expect.element(page.getByRole("dialog")).not.toBeInTheDocument();
+});
+
+it("waits for project import announcements instead of racing their shared slot", async () => {
+  localStorage.removeItem(importKey);
+  await show(
+    <>
+      <ProjectImportAnnouncementDialog />
+      <FeatureTourDialog />
+    </>,
+  );
+  await expect.element(page.getByRole("dialog", { name: "Import projects" })).toBeVisible();
+  expect(document.querySelectorAll('[role="dialog"]').length).toBe(1);
+  await page.getByRole("button", { name: "Not now" }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Close tour" }).click();
+});
+
+it.each(["low", "high"] as const)(
+  "hands off from import to the tour within one second while a %s priority toast remains",
+  async (priority) => {
+    localStorage.removeItem(importKey);
+    await show(
+      <ToastProvider>
+        <ProjectImportAnnouncementDialog />
+        <FeatureTourDialog />
+      </ToastProvider>,
+    );
+    await expect.element(page.getByRole("dialog", { name: "Import projects" })).toBeVisible();
+    vi.useFakeTimers({
+      toFake: [
+        "setTimeout",
+        "clearTimeout",
+        "requestAnimationFrame",
+        "cancelAnimationFrame",
+        "Date",
+      ],
+    });
+    // CSS animations use the browser clock; isolate the scheduler's latency here.
+    // The real-animation tests above cover waiting for exiting dialogs.
+    const animations = vi.spyOn(Element.prototype, "getAnimations").mockReturnValue([]);
+    vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+    let toastId: ReturnType<typeof toastManager.add> | undefined;
+    try {
+      await act(async () => {
+        toastId = toastManager.add({ title: "Startup notice", priority, timeout: 10_000 });
+      });
+      expect(document.querySelector('[data-slot="toast-title"]')?.textContent).toBe(
+        "Startup notice",
+      );
+      expect(document.querySelector("[data-feature-tour]")).toBeNull();
+      await act(async () => {
+        (page.getByRole("button", { name: "Not now" }).element() as HTMLButtonElement).click();
+      });
+      // Flush React between clock ticks so a restarted quiet timer counts against the budget.
+      for (let elapsed = 0; elapsed < 1_000; elapsed += 50) {
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(50);
+        });
+        expect(document.querySelectorAll('[data-slot="dialog-popup"]').length).toBeLessThanOrEqual(
+          1,
+        );
+      }
+      expect(document.querySelector("[data-feature-tour][data-open]")).not.toBeNull();
+      expect(useAnnouncementSheetSlotStore.getState().owner).not.toBeNull();
+      expect(document.querySelector('[data-slot="toast-title"]')?.textContent).toBe(
+        "Startup notice",
+      );
+      expect(JSON.parse(localStorage.getItem(importKey) ?? "[]")).toEqual([installation]);
+      expect(localStorage.getItem(tourKey)).toBeNull();
+    } finally {
+      await act(async () => {
+        if (toastId !== undefined) toastManager.close(toastId);
+      });
+      animations.mockRestore();
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    }
+  },
+);
+
+it("does not jump ahead of a slow AppSnap probe and then waits for its dismissal", async () => {
+  let resolveProbe!: (value: { supported: true }) => void;
+  window.desktopBridge = {
+    ...originalBridge,
+    appSnap: {
+      getState: () =>
+        new Promise((resolve) => {
+          resolveProbe = resolve;
+        }),
+    },
+  } as unknown as NonNullable<typeof window.desktopBridge>;
+  await show(
+    <AppSnapWelcomeDialog>
+      <FeatureTourDialog />
+    </AppSnapWelcomeDialog>,
+  );
+  // A full quiet interval passes while the real owner is still probing.
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  expect(document.querySelectorAll('[role="dialog"]').length).toBe(0);
+  resolveProbe({ supported: true });
+  await expect
+    .element(page.getByRole("dialog", { name: "Synara AppSnaps are live!" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Not now" }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await page.getByRole("button", { name: "Close tour" }).click();
+});
+
+it("restores manual replay focus after keyboard navigation and Escape", async () => {
+  localStorage.setItem(tourKey, JSON.stringify([installation]));
+  await show(
+    <>
+      <Button onClick={() => useFeatureTourStore.getState().open()}>Replay highlights</Button>
+      <FeatureTourDialog />
+    </>,
+  );
+  await page.getByRole("button", { name: "Replay highlights" }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  await userEvent.keyboard("{ArrowRight}");
+  await expect
+    .element(page.getByRole("dialog", { name: "See what your agents are doing" }))
+    .toBeVisible();
+  await userEvent.keyboard("{Escape}");
+  await expect.element(page.getByRole("dialog")).not.toBeInTheDocument();
+  await vi.waitFor(() =>
+    expect(document.activeElement).toBe(
+      page.getByRole("button", { name: "Replay highlights" }).element(),
+    ),
+  );
+});
+
+it("closes an automatic tour when another window acknowledges this installation", async () => {
+  await show();
+  await expect
+    .element(page.getByRole("dialog", { name: "Start a chat with any agent" }))
+    .toBeVisible();
+  const value = JSON.stringify([installation]);
+  localStorage.setItem(tourKey, value);
+  window.dispatchEvent(
+    new StorageEvent("storage", { key: tourKey, newValue: value, storageArea: localStorage }),
+  );
+  await expect.element(page.getByRole("dialog")).not.toBeInTheDocument();
+});

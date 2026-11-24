@@ -1,0 +1,763 @@
+import { MessageId, ThreadId, type ProviderKind } from "@synara/contracts";
+import { resolveTailUserMessageEditTarget } from "@synara/shared/conversationEdit";
+import { providerSupportsNativeTurnSteering } from "@synara/shared/providerMetadata";
+import { deriveAssociatedWorktreeMetadata } from "@synara/shared/threadWorkspace";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  COMPOSER_TURN_UNCERTAIN,
+  composerTurnMayHaveBeenSent,
+  dispatchOwnedComposerTurn,
+  ownsUnsettledComposerTurn,
+  settlePendingComposerTurn,
+} from "~/lib/composerTurnSettlement";
+
+import type { Dispatch, RefObject, SetStateAction } from "react";
+import { useCallback } from "react";
+import { newCommandId, newMessageId, newThreadId, randomUUID } from "~/lib/utils";
+import { readNativeApi } from "~/nativeApi";
+import { ProviderHandoffBackgroundTasksError } from "~/lib/threadHandoff";
+import { useComposerDraftStore } from "../../composerDraftStore";
+import { formatOutgoingComposerPrompt } from "../../lib/composerSend";
+import { reconcileDeletedThreadFromClient } from "../../lib/deletedThreadClientReconciliation";
+import {
+  armQueuedComposerSteerGate,
+  prepareQueuedComposerResumeAfterSend,
+} from "../../lib/queuedComposerDrain";
+import { appendOriginalComposerPromptBlocks } from "../../lib/terminalContext";
+import { clearPendingTurnDispatch, markPendingTurnDispatch } from "../../pendingTurnDispatch";
+import {
+  buildPlanImplementationPrompt,
+  buildPlanImplementationThreadTitle,
+} from "../../proposedPlan";
+import type { LatestProposedPlanState } from "../../session-logic";
+import { buildSourceProposedPlanReference, runningSessionActiveTurnId } from "../../session-logic";
+import { useStore } from "../../store";
+import { getThreadFromState } from "../../threadDerivation";
+import { truncateTitle } from "../../truncateTitle";
+import type { Project } from "../../types";
+import { type Thread } from "../../types";
+import {
+  createdAtAfterProviderHandoff,
+  editAndResendDispatchFields,
+  queuedChatTurnDispatchFields,
+  planImplementationDispatchSettings,
+  resolveQueuedTurnDispatchSettings,
+  threadSettingsDispatchFields,
+  turnNeedsProviderHandoff,
+  turnStartDispatchFields,
+  type QueuedSteerGate,
+  type TurnDispatchSettings,
+} from "../ChatView.logic";
+import type { ChatTurnSubmissionInput } from "./chatSendTypes";
+import { buildWorkflowResumePrompt } from "./WorkflowRunCard.logic";
+import { useChatComposerDraft } from "./useChatComposerDraft";
+import { useChatLocalDispatch } from "./useChatLocalDispatch";
+import { useChatProviderModels } from "./useChatProviderModels";
+import { useChatProviderStatus } from "./useChatProviderStatus";
+import { useChatRuntimeModes } from "./useChatRuntimeModes";
+import { useChatTimelineMessages } from "./useChatTimelineMessages";
+import { useChatTranscriptScroll } from "./useChatTranscriptScroll";
+import { useChatWorkLog } from "./useChatWorkLog";
+import { toastManager } from "../ui/toast";
+
+import type { LateComposerSendHandlers, PlanFollowUpSubmission } from "./chatSendTypes";
+interface ChatTurnFollowUpsInput {
+  threadId: ThreadId;
+  activeThread: Thread | undefined;
+  isServerThread: boolean;
+  isConnecting: boolean;
+  sendInFlightRef: RefObject<boolean>;
+  setThreadError: (targetThreadId: ThreadId | null, error: string | null) => void;
+  setTailAnchor: Dispatch<SetStateAction<{ threadId: ThreadId; messageId: MessageId } | null>>;
+  anchorSentMessagesToTop: boolean;
+  activeProposedPlan: LatestProposedPlanState | null;
+  setQueuedSteerGate: Dispatch<SetStateAction<QueuedSteerGate | null>>;
+  planSidebarDismissedForTurnRef: RefObject<string | null>;
+  setPlanSidebarOpen: Dispatch<SetStateAction<boolean>>;
+  isRevertingCheckpoint: boolean;
+  setIsRevertingCheckpoint: Dispatch<SetStateAction<boolean>>;
+  isSendBusy: ReturnType<typeof useChatLocalDispatch>["isSendBusy"];
+  beginLocalDispatch: ReturnType<typeof useChatLocalDispatch>["beginLocalDispatch"];
+  armLocalDispatchAckFallback: ReturnType<
+    typeof useChatLocalDispatch
+  >["armLocalDispatchAckFallback"];
+  resetLocalDispatch: ReturnType<typeof useChatLocalDispatch>["resetLocalDispatch"];
+  selectedProvider: ProviderKind;
+  selectedModel: string;
+  selectedPromptEffort: ReturnType<typeof useChatProviderModels>["selectedPromptEffort"];
+  turnDispatchSettings: TurnDispatchSettings;
+  computerControlChangeSequence: RefObject<number>;
+  setComposerDraftComputerControlMode: ReturnType<
+    typeof useChatComposerDraft
+  >["setComposerDraftComputerControlMode"];
+  setOptimisticUserMessages: ReturnType<
+    typeof useChatTimelineMessages
+  >["setOptimisticUserMessages"];
+  armTranscriptAutoFollow: ReturnType<typeof useChatTranscriptScroll>["armTranscriptAutoFollow"];
+  tailAnchorScrollInFlightRef: ReturnType<
+    typeof useChatTranscriptScroll
+  >["tailAnchorScrollInFlightRef"];
+  persistThreadSettingsForNextTurn: ReturnType<
+    typeof useChatRuntimeModes
+  >["persistThreadSettingsForNextTurn"];
+  canSendWithProviderHandoff: ChatTurnSubmissionInput["canSendWithProviderHandoff"];
+  prepareProviderHandoffForSend: ChatTurnSubmissionInput["prepareProviderHandoffForSend"];
+  setComposerDraftInteractionMode: ReturnType<
+    typeof useChatComposerDraft
+  >["setComposerDraftInteractionMode"];
+  rememberCustomBinaryPathForDispatch: ReturnType<
+    typeof useChatProviderStatus
+  >["rememberCustomBinaryPathForDispatch"];
+  workflowRunState: ReturnType<typeof useChatWorkLog>["workflowRunState"];
+  lateComposerSendHandlersRef: RefObject<LateComposerSendHandlers | null>;
+  activeThreadId: ThreadId | null;
+  markWorkflowRunDismissed: (threadId: ThreadId, workflowTaskId: string) => void;
+  activeProject: Project | undefined;
+  activeThreadAssociatedWorktree: ReturnType<typeof deriveAssociatedWorktreeMetadata>;
+  syncServerShellSnapshot: ReturnType<typeof useStore.getState>["syncServerShellSnapshot"];
+  planSidebarOpenOnNextThreadRef: RefObject<boolean>;
+  navigate: ReturnType<typeof useNavigate>;
+}
+
+export function useChatTurnFollowUps({
+  threadId,
+  activeThread,
+  isServerThread,
+  isConnecting,
+  sendInFlightRef,
+  setThreadError,
+  setTailAnchor,
+  anchorSentMessagesToTop,
+  activeProposedPlan,
+  setQueuedSteerGate,
+  planSidebarDismissedForTurnRef,
+  setPlanSidebarOpen,
+  isRevertingCheckpoint,
+  setIsRevertingCheckpoint,
+  isSendBusy,
+  beginLocalDispatch,
+  armLocalDispatchAckFallback,
+  resetLocalDispatch,
+  selectedProvider,
+  selectedModel,
+  selectedPromptEffort,
+  turnDispatchSettings,
+  computerControlChangeSequence,
+  setComposerDraftComputerControlMode,
+  setOptimisticUserMessages,
+  armTranscriptAutoFollow,
+  tailAnchorScrollInFlightRef,
+  persistThreadSettingsForNextTurn,
+  canSendWithProviderHandoff,
+  prepareProviderHandoffForSend,
+  setComposerDraftInteractionMode,
+  rememberCustomBinaryPathForDispatch,
+  workflowRunState,
+  lateComposerSendHandlersRef,
+  activeThreadId,
+  markWorkflowRunDismissed,
+  activeProject,
+  activeThreadAssociatedWorktree,
+  syncServerShellSnapshot,
+  planSidebarOpenOnNextThreadRef,
+  navigate,
+}: ChatTurnFollowUpsInput) {
+  async function onSubmitPlanFollowUp({
+    text,
+    interactionMode: nextInteractionMode,
+    dispatchMode,
+    queuedTurn,
+    resumeQueueAfterSend: preparedQueueResume,
+  }: PlanFollowUpSubmission): Promise<boolean> {
+    const api = readNativeApi();
+    if (
+      !api ||
+      !activeThread ||
+      !isServerThread ||
+      isSendBusy ||
+      isConnecting ||
+      sendInFlightRef.current
+    ) {
+      return false;
+    }
+
+    sendInFlightRef.current = true;
+    const previous = await settlePendingComposerTurn(api, activeThread.id, queuedTurn?.id).finally(
+      () => {
+        sendInFlightRef.current = false;
+      },
+    );
+    if (previous.status === "unknown") {
+      setThreadError(activeThread.id, COMPOSER_TURN_UNCERTAIN);
+      return false;
+    }
+    if (previous.status === "accepted") {
+      setThreadError(activeThread.id, null);
+      return queuedTurn !== undefined && previous.queuedTurnId === queuedTurn.id;
+    }
+
+    const trimmed = text.trim();
+    if (!trimmed) {
+      return false;
+    }
+
+    const planDispatchSettings = {
+      ...resolveQueuedTurnDispatchSettings(turnDispatchSettings, queuedTurn),
+      interactionMode: nextInteractionMode,
+    };
+    const modelSelectionForPlanDispatch = planDispatchSettings.modelSelection;
+    const needsProviderHandoff = turnNeedsProviderHandoff({
+      thread: activeThread,
+      modelSelection: modelSelectionForPlanDispatch,
+    });
+    if (
+      needsProviderHandoff &&
+      canSendWithProviderHandoff?.(modelSelectionForPlanDispatch) === false
+    ) {
+      return false;
+    }
+
+    const threadIdForSend = activeThread.id;
+    const resumeQueueAfterSend =
+      preparedQueueResume ??
+      (!queuedTurn || dispatchMode === "steer"
+        ? prepareQueuedComposerResumeAfterSend(threadIdForSend)
+        : undefined);
+    const messageIdForSend = newMessageId();
+    let messageCreatedAt = new Date().toISOString();
+    const outgoingMessageText = formatOutgoingComposerPrompt({
+      provider: queuedTurn?.selectedProvider ?? selectedProvider,
+      model: queuedTurn?.selectedModel ?? selectedModel,
+      effort: queuedTurn?.selectedPromptEffort ?? selectedPromptEffort,
+      text: trimmed,
+    });
+
+    sendInFlightRef.current = true;
+    beginLocalDispatch({ expectedUserMessageId: messageIdForSend });
+    setThreadError(threadIdForSend, null);
+    setOptimisticUserMessages((existing) => [
+      ...existing,
+      {
+        id: messageIdForSend,
+        role: "user",
+        text: outgoingMessageText,
+        dispatchMode,
+        createdAt: messageCreatedAt,
+        streaming: false,
+        source: "native",
+      },
+    ]);
+    armTranscriptAutoFollow(threadIdForSend, true);
+    tailAnchorScrollInFlightRef.current = anchorSentMessagesToTop;
+    setTailAnchor(
+      anchorSentMessagesToTop ? { threadId: threadIdForSend, messageId: messageIdForSend } : null,
+    );
+
+    // Nested function so the `try` body holds no value blocks — see the comment on
+    // `deleteEmptyTerminalThread` above for why React Compiler requires this shape.
+    const computerControlSequenceForSend = computerControlChangeSequence.current;
+
+    const dispatchPlanFollowUpTurn = async () => {
+      if (needsProviderHandoff && prepareProviderHandoffForSend) {
+        await prepareProviderHandoffForSend(activeThread, modelSelectionForPlanDispatch);
+        messageCreatedAt = createdAtAfterProviderHandoff({
+          activities: getThreadFromState(useStore.getState(), threadIdForSend)?.activities,
+          createdAt: messageCreatedAt,
+        });
+        setOptimisticUserMessages((messages) =>
+          messages.map((message) =>
+            message.id === messageIdForSend ? { ...message, createdAt: messageCreatedAt } : message,
+          ),
+        );
+      }
+      await persistThreadSettingsForNextTurn({
+        // The handoff owns the model switch. Save modes only after it succeeds.
+        ...(needsProviderHandoff
+          ? {
+              runtimeMode: planDispatchSettings.runtimeMode,
+              interactionMode: planDispatchSettings.interactionMode,
+            }
+          : threadSettingsDispatchFields(planDispatchSettings)),
+        threadId: threadIdForSend,
+        createdAt: messageCreatedAt,
+      });
+
+      // Keep the mode toggle and plan-follow-up banner in sync immediately
+      // while the same-thread implementation turn is starting.
+      setComposerDraftInteractionMode(threadIdForSend, nextInteractionMode);
+
+      const sourceProposedPlan =
+        nextInteractionMode === "default"
+          ? buildSourceProposedPlanReference({
+              threadId: activeThread.id,
+              proposedPlan: activeProposedPlan,
+            })
+          : undefined;
+      rememberCustomBinaryPathForDispatch({
+        threadId: threadIdForSend,
+        provider: planDispatchSettings.modelSelection.provider,
+        providerInstanceId:
+          planDispatchSettings.modelSelection.instanceId ??
+          planDispatchSettings.modelSelection.provider,
+        providerOptions: planDispatchSettings.providerOptions,
+      });
+      await dispatchOwnedComposerTurn(
+        api,
+        {
+          type: "thread.turn.start",
+          commandId: newCommandId(),
+          threadId: threadIdForSend,
+          message: {
+            messageId: messageIdForSend,
+            role: "user",
+            text: outgoingMessageText,
+            attachments: [],
+          },
+          ...turnStartDispatchFields(planDispatchSettings, dispatchMode),
+          ...(sourceProposedPlan ? { sourceProposedPlan } : {}),
+          createdAt: messageCreatedAt,
+        },
+        queuedTurn?.id,
+      );
+      if (!queuedTurn && planDispatchSettings.computerControlMode === "request") {
+        const draft = useComposerDraftStore.getState().draftsByThreadId[threadIdForSend];
+        if (
+          draft?.computerControlMode === "request" &&
+          computerControlChangeSequence.current === computerControlSequenceForSend
+        )
+          setComposerDraftComputerControlMode(threadIdForSend, "off");
+      }
+      // Steers on providers without native mid-turn steering interrupt the live
+      // turn before re-dispatching; hold queued auto-dispatch through that gap
+      // so it can't race the steer. The live session provider decides the
+      // interrupt path server-side, so the gate keys off it rather than the
+      // requested model selection.
+      const livePlanProviderForSteerGate =
+        activeThread?.session?.provider ?? modelSelectionForPlanDispatch.provider;
+      if (
+        dispatchMode === "steer" &&
+        !providerSupportsNativeTurnSteering(livePlanProviderForSteerGate)
+      ) {
+        const nextSteerGate = {
+          sawInterruptGap: false,
+          gapStartedAt: null,
+          armedActiveTurnId: activeThread?.session?.activeTurnId ?? null,
+        };
+        setQueuedSteerGate(nextSteerGate);
+        armQueuedComposerSteerGate(threadId, nextSteerGate);
+      }
+      // Optimistically open the plan sidebar when implementing (not refining).
+      // "default" mode here means the agent is executing the plan, which produces
+      // step-tracking activities that the sidebar will display.
+      if (nextInteractionMode === "default") {
+        planSidebarDismissedForTurnRef.current = null;
+        setPlanSidebarOpen(true);
+      }
+    };
+
+    try {
+      await dispatchPlanFollowUpTurn();
+      armLocalDispatchAckFallback(threadIdForSend);
+      sendInFlightRef.current = false;
+      if (resumeQueueAfterSend) resumeQueueAfterSend();
+      return true;
+    } catch (err) {
+      setOptimisticUserMessages((existing) =>
+        existing.filter((message) => message.id !== messageIdForSend),
+      );
+      if (!(err instanceof ProviderHandoffBackgroundTasksError)) {
+        setThreadError(
+          threadIdForSend,
+          err instanceof Error ? err.message : "Failed to send plan follow-up.",
+        );
+      }
+      sendInFlightRef.current = false;
+      if (!ownsUnsettledComposerTurn(threadIdForSend, messageIdForSend)) {
+        clearPendingTurnDispatch(threadIdForSend);
+      }
+      resetLocalDispatch();
+      return false;
+    }
+  }
+
+  const onEditUserMessage = useCallback(
+    async (messageId: MessageId, text: string): Promise<boolean> => {
+      const api = readNativeApi();
+      if (!api || !activeThread || !isServerThread || isRevertingCheckpoint) {
+        return false;
+      }
+      const editTarget = resolveTailUserMessageEditTarget({
+        messages: activeThread.messages,
+        messageId,
+        activeTurnId: runningSessionActiveTurnId(activeThread.session),
+      });
+      if (!editTarget.editable) {
+        setThreadError(activeThread.id, "Only the latest rollbackable user message can be edited.");
+        return false;
+      }
+      const originalMessage = activeThread.messages[editTarget.messageIndex];
+      if (!originalMessage || originalMessage.role !== "user") {
+        setThreadError(activeThread.id, "Only the latest rollbackable user message can be edited.");
+        return false;
+      }
+      if (isSendBusy || isConnecting || sendInFlightRef.current) {
+        setThreadError(activeThread.id, "Wait for the current send to start before editing.");
+        return false;
+      }
+
+      setIsRevertingCheckpoint(true);
+      setThreadError(activeThread.id, null);
+      const messageCreatedAt = new Date().toISOString();
+      const computerControlSequenceForEdit = computerControlChangeSequence.current;
+      const editedTextWithOriginalContext = appendOriginalComposerPromptBlocks({
+        editedPrompt: text,
+        originalPrompt: originalMessage.text,
+        messageId,
+      });
+      const outgoingMessageText = formatOutgoingComposerPrompt({
+        provider: selectedProvider,
+        model: selectedModel,
+        effort: selectedPromptEffort,
+        text: editedTextWithOriginalContext,
+      });
+      return await (async () => {
+        await persistThreadSettingsForNextTurn({
+          ...threadSettingsDispatchFields(turnDispatchSettings),
+          threadId: activeThread.id,
+          createdAt: messageCreatedAt,
+        });
+        await api.orchestration.dispatchCommand({
+          type: "thread.message.edit-and-resend",
+          commandId: newCommandId(),
+          threadId: activeThread.id,
+          messageId,
+          text: outgoingMessageText,
+          ...editAndResendDispatchFields(turnDispatchSettings),
+          createdAt: messageCreatedAt,
+        });
+        if (
+          turnDispatchSettings.computerControlMode === "request" &&
+          computerControlChangeSequence.current === computerControlSequenceForEdit
+        ) {
+          setComposerDraftComputerControlMode(activeThread.id, "off");
+        }
+        return true;
+      })()
+        .catch((err: unknown) => {
+          setThreadError(
+            activeThread.id,
+            err instanceof Error ? err.message : "Failed to edit message.",
+          );
+          return false;
+        })
+        .finally(() => {
+          setIsRevertingCheckpoint(false);
+        });
+    },
+    [
+      sendInFlightRef,
+      setIsRevertingCheckpoint,
+      activeThread,
+      isConnecting,
+      isRevertingCheckpoint,
+      isSendBusy,
+      isServerThread,
+      persistThreadSettingsForNextTurn,
+      selectedModel,
+      selectedPromptEffort,
+      selectedProvider,
+      setThreadError,
+      turnDispatchSettings,
+      computerControlChangeSequence,
+      setComposerDraftComputerControlMode,
+    ],
+  );
+  // Resuming a workflow is a normal composer turn instructing the agent to
+  // re-invoke the Workflow tool against the persisted script; completed agent()
+  // calls replay from cache, so a paused run picks up where it stopped. Sent as
+  // a pre-built chat turn so it takes the exact send path a queued turn does.
+
+  // Resume (composer) and Continue task (failed-turn banner): the server resends
+  // a request that never reached the provider, or continues the interrupted or
+  // failed latest turn. Neither adds a chat message. A model picked meanwhile
+  // is saved first, through the provider handoff when it changes provider.
+  const onResumeTurn = useCallback(async (): Promise<boolean> => {
+    const api = readNativeApi();
+    const current = getThreadFromState(useStore.getState(), threadId);
+    if (
+      !api ||
+      !isServerThread ||
+      !current ||
+      sendInFlightRef.current ||
+      current.session?.status === "running" ||
+      current.hasPendingApprovals ||
+      current.hasPendingUserInput
+    )
+      return false;
+    const modelSelection = turnDispatchSettings.modelSelection;
+    const needsProviderHandoff = turnNeedsProviderHandoff({ thread: current, modelSelection });
+    if (needsProviderHandoff && canSendWithProviderHandoff?.(modelSelection) === false) {
+      return false;
+    }
+    sendInFlightRef.current = true;
+    setThreadError(current.id, null);
+    const resumeTurn = async () => {
+      if (needsProviderHandoff && prepareProviderHandoffForSend) {
+        await prepareProviderHandoffForSend(current, modelSelection);
+      }
+      await persistThreadSettingsForNextTurn({
+        // The handoff owns the model switch. Save modes only after it succeeds.
+        ...(needsProviderHandoff
+          ? {
+              runtimeMode: turnDispatchSettings.runtimeMode,
+              interactionMode: turnDispatchSettings.interactionMode,
+            }
+          : threadSettingsDispatchFields(turnDispatchSettings)),
+        threadId: current.id,
+        createdAt: new Date().toISOString(),
+      });
+      await api.orchestration.dispatchCommand({
+        type: "thread.turn.resume",
+        commandId: newCommandId(),
+        threadId: current.id,
+        // This click is the consent a resent message needs to keep the computer
+        // access it asked for, checked against the current generation like a send.
+        computerControlGeneration: turnDispatchSettings.computerControlGeneration ?? 0,
+        createdAt: new Date().toISOString(),
+      });
+    };
+    // No `finally`: React Compiler cannot lower it (chatHotPath.compiler.test.ts).
+    try {
+      await resumeTurn();
+      sendInFlightRef.current = false;
+      return true;
+    } catch (err) {
+      sendInFlightRef.current = false;
+      if (!(err instanceof ProviderHandoffBackgroundTasksError)) {
+        setThreadError(current.id, err instanceof Error ? err.message : "Could not resume task.");
+      }
+      return false;
+    }
+  }, [
+    threadId,
+    isServerThread,
+    sendInFlightRef,
+    turnDispatchSettings,
+    canSendWithProviderHandoff,
+    prepareProviderHandoffForSend,
+    persistThreadSettingsForNextTurn,
+    setThreadError,
+  ]);
+
+  const onResumeWorkflowRun = useCallback(async () => {
+    if (!workflowRunState?.scriptPath || !workflowRunState.runId) return;
+    const lateSendHandlers = lateComposerSendHandlersRef.current;
+    if (!lateSendHandlers) return;
+    const { workflowTaskId } = workflowRunState;
+    const prompt = buildWorkflowResumePrompt(workflowRunState.scriptPath, workflowRunState.runId);
+    const sent = await lateSendHandlers.send(undefined, "queue", {
+      id: randomUUID(),
+      kind: "chat",
+      createdAt: new Date().toISOString(),
+      previewText: prompt,
+      prompt,
+      images: [],
+      files: [],
+      assistantSelections: [],
+      browserAnnotations: [],
+      terminalContexts: [],
+      fileComments: [],
+      pastedTexts: [],
+      pullRequestContexts: [],
+      skills: [],
+      mentions: [],
+      selectedProvider,
+      selectedModel,
+      selectedPromptEffort,
+      ...queuedChatTurnDispatchFields(turnDispatchSettings, undefined),
+    });
+    if (sent && activeThreadId) {
+      markWorkflowRunDismissed(activeThreadId, workflowTaskId);
+    }
+  }, [
+    lateComposerSendHandlersRef,
+    activeThreadId,
+    markWorkflowRunDismissed,
+    selectedModel,
+    selectedPromptEffort,
+    selectedProvider,
+    workflowRunState,
+    turnDispatchSettings,
+  ]);
+
+  const onImplementPlanInNewThread = useCallback(async () => {
+    const api = readNativeApi();
+    if (
+      !api ||
+      !activeThread ||
+      !activeProject ||
+      !activeProposedPlan ||
+      !isServerThread ||
+      isSendBusy ||
+      isConnecting ||
+      sendInFlightRef.current
+    ) {
+      return;
+    }
+
+    const createdAt = new Date().toISOString();
+    const nextThreadId = newThreadId();
+    const implementationMessageId = newMessageId();
+    let threadCreated = false;
+    let turnAccepted = false;
+    const planMarkdown = activeProposedPlan.planMarkdown;
+    const implementationPrompt = buildPlanImplementationPrompt(planMarkdown);
+    const outgoingImplementationPrompt = formatOutgoingComposerPrompt({
+      provider: selectedProvider,
+      model: selectedModel,
+      effort: selectedPromptEffort,
+      text: implementationPrompt,
+    });
+    const nextThreadTitle = truncateTitle(buildPlanImplementationThreadTitle(planMarkdown));
+    const computerControlSequenceForImplementation = computerControlChangeSequence.current;
+    const implementationDispatchSettings = planImplementationDispatchSettings(turnDispatchSettings);
+    const sourceProposedPlan = buildSourceProposedPlanReference({
+      threadId: activeThread.id,
+      proposedPlan: activeProposedPlan,
+    });
+
+    sendInFlightRef.current = true;
+    beginLocalDispatch();
+    const finish = () => {
+      sendInFlightRef.current = false;
+      resetLocalDispatch();
+    };
+
+    await api.orchestration
+      .dispatchCommand({
+        type: "thread.create",
+        commandId: newCommandId(),
+        threadId: nextThreadId,
+        projectId: activeProject.id,
+        title: nextThreadTitle,
+        modelSelection: implementationDispatchSettings.modelSelection,
+        runtimeMode: implementationDispatchSettings.runtimeMode,
+        interactionMode: implementationDispatchSettings.interactionMode,
+        envMode: activeThread.envMode ?? (activeThread.worktreePath ? "worktree" : "local"),
+        branch: activeThread.branch,
+        worktreePath: activeThread.worktreePath,
+        workingDirectory: activeThread.workingDirectory ?? null,
+        lastKnownPr: activeThread.lastKnownPr ?? null,
+        associatedWorktreePath: activeThreadAssociatedWorktree.associatedWorktreePath,
+        associatedWorktreeBranch: activeThreadAssociatedWorktree.associatedWorktreeBranch,
+        associatedWorktreeRef: activeThreadAssociatedWorktree.associatedWorktreeRef,
+        createdAt,
+      })
+      .then(() => {
+        threadCreated = true;
+        rememberCustomBinaryPathForDispatch({
+          threadId: nextThreadId,
+          provider: implementationDispatchSettings.modelSelection.provider,
+          providerInstanceId:
+            implementationDispatchSettings.modelSelection.instanceId ??
+            implementationDispatchSettings.modelSelection.provider,
+          providerOptions: implementationDispatchSettings.providerOptions,
+        });
+        return dispatchOwnedComposerTurn(api, {
+          type: "thread.turn.start",
+          commandId: newCommandId(),
+          threadId: nextThreadId,
+          message: {
+            messageId: implementationMessageId,
+            role: "user",
+            text: outgoingImplementationPrompt,
+            attachments: [],
+          },
+          ...turnStartDispatchFields(implementationDispatchSettings, "queue"),
+          ...(sourceProposedPlan ? { sourceProposedPlan } : {}),
+          createdAt,
+        });
+      })
+      .then(() => {
+        turnAccepted = true;
+        if (implementationDispatchSettings.computerControlMode === "chat") {
+          setComposerDraftComputerControlMode(nextThreadId, "chat", {
+            generation: implementationDispatchSettings.computerControlGeneration ?? 0,
+          });
+        } else if (
+          implementationDispatchSettings.computerControlMode === "request" &&
+          computerControlChangeSequence.current === computerControlSequenceForImplementation
+        ) {
+          setComposerDraftComputerControlMode(activeThread.id, "off");
+        }
+        // The turn RPC resolved for a thread this view never made active, so
+        // arm the watchdog marker with that exact thread id before navigation.
+        markPendingTurnDispatch(nextThreadId);
+        return api.orchestration.getShellSnapshot();
+      })
+      .then((snapshot) => {
+        syncServerShellSnapshot(snapshot);
+        // Signal that the plan sidebar should open on the new thread.
+        planSidebarOpenOnNextThreadRef.current = true;
+        return navigate({
+          to: "/$threadId",
+          params: { threadId: nextThreadId },
+        });
+      })
+      .catch(async (err) => {
+        if (threadCreated && !turnAccepted && !composerTurnMayHaveBeenSent(err)) {
+          const deletedOnServer = await api.orchestration
+            .dispatchCommand({
+              type: "thread.delete",
+              commandId: newCommandId(),
+              threadId: nextThreadId,
+            })
+            .then(() => true)
+            .catch(() => false);
+          if (deletedOnServer) {
+            clearPendingTurnDispatch(nextThreadId);
+            void reconcileDeletedThreadFromClient({
+              threadId: nextThreadId,
+              removeDeletedThreadFromClientState:
+                useStore.getState().removeDeletedThreadFromClientState,
+            });
+          }
+        }
+        toastManager.add({
+          type: "error",
+          title: "Could not start implementation thread",
+          description:
+            err instanceof Error ? err.message : "An error occurred while creating the new thread.",
+        });
+      })
+      .then(finish, finish);
+  }, [
+    planSidebarOpenOnNextThreadRef,
+    sendInFlightRef,
+    activeProject,
+    activeProposedPlan,
+    activeThread,
+    activeThreadAssociatedWorktree,
+    beginLocalDispatch,
+    isConnecting,
+    isSendBusy,
+    isServerThread,
+    navigate,
+    resetLocalDispatch,
+    computerControlChangeSequence,
+    selectedPromptEffort,
+    selectedModel,
+    selectedProvider,
+    rememberCustomBinaryPathForDispatch,
+    setComposerDraftComputerControlMode,
+    syncServerShellSnapshot,
+    turnDispatchSettings,
+  ]);
+  return {
+    onSubmitPlanFollowUp,
+    onResumeTurn,
+    onEditUserMessage,
+    onResumeWorkflowRun,
+    onImplementPlanInNewThread,
+  };
+}

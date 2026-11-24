@@ -1,0 +1,4461 @@
+// FILE: DevinAdapter.test.ts
+// Purpose: Compact adapter/runtime contract tests for Devin session configuration,
+// model discovery, and plan-mode fail-closed behavior.
+// Layer: Provider adapter tests
+
+import * as NodeServices from "@effect/platform-node/NodeServices";
+import { fileURLToPath } from "node:url";
+import type * as Acp from "@agentclientprotocol/sdk";
+import { RuntimeTaskId, ThreadId, TurnId, type ProviderRuntimeEvent } from "@synara/contracts";
+import {
+  Cause,
+  Deferred,
+  Effect,
+  Exit,
+  Fiber,
+  Layer,
+  Queue,
+  Scope,
+  Semaphore,
+  ServiceMap,
+  Stream,
+} from "effect";
+import { ChildProcessSpawner } from "effect/unstable/process";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { AcpRequestError, AcpTransportError } from "../acp/AcpErrors.ts";
+import { ProviderAdapterProcessError } from "../Errors.ts";
+import { ServerConfig } from "../../config.ts";
+import * as AcpErrors from "../acp/AcpErrors.ts";
+import type { AcpSessionRuntimeShape } from "../acp/AcpSessionRuntime.ts";
+import { AcpSessionRuntime } from "../acp/AcpSessionRuntime.ts";
+import { makeFakeAcpSessionRuntime } from "../acp/testing/fakeAcpSessionRuntime.ts";
+import type { DevinAcpRuntimeInput } from "../acp/DevinAcpSupport.ts";
+import type { AcpParsedSessionEvent, AcpToolCallState } from "../acp/AcpRuntimeModel.ts";
+import {
+  AgentGatewayCredentials,
+  type AgentGatewayCredentialsShape,
+} from "../../agentGateway/Services/AgentGatewayCredentials.ts";
+import { DevinAdapter } from "../Services/DevinAdapter.ts";
+import {
+  applyDevinSessionConfiguration,
+  buildDevinPromptMeta,
+  buildDevinStaticModelDescriptors,
+  canRecoverDevinWedge,
+  closeDevinSessionResources,
+  evaluateDevinWedgeSignal,
+  makeCachedDevinModelDiscovery,
+  mergeDevinModelDescriptors,
+  makeDevinAdapterLive,
+  parseDevinCliModelList,
+  pruneDevinToolCallTurnIds,
+  resolveDevinAdapterTimeouts,
+  resolveDevinOptionalTimeoutMs,
+  resolveDevinStartModel,
+  resolveDevinToolCallUpdatedTurnId,
+  resolveRequestedModeId,
+  scopeDevinRuntimeItemIdForTurn,
+} from "./DevinAdapter.ts";
+
+const asTurnId = (value: string): TurnId => TurnId.makeUnsafe(value);
+
+function makeFakeAcpRuntime(initialModeState?: {
+  currentModeId: string;
+  availableModes: Array<{ id: string; name: string }>;
+}): {
+  readonly runtime: Pick<AcpSessionRuntimeShape, "getModeState" | "setMode">;
+  readonly calls: Array<{ method: string; args: ReadonlyArray<unknown> }>;
+} {
+  const calls: Array<{ method: string; args: ReadonlyArray<unknown> }> = [];
+  let modeState = initialModeState;
+
+  const runtime = {
+    getModeState: Effect.sync(() =>
+      modeState
+        ? {
+            currentModeId: modeState.currentModeId,
+            availableModes: modeState.availableModes,
+          }
+        : undefined,
+    ),
+    setMode: (modeId: string) =>
+      Effect.sync(() => {
+        calls.push({ method: "setMode", args: [modeId] });
+        if (modeState) {
+          modeState = { ...modeState, currentModeId: modeId };
+        }
+        return {} as Acp.SetSessionModeResponse;
+      }),
+  };
+  return { runtime, calls };
+}
+
+function makeLifecycleAcpRuntime(
+  prompt?: AcpSessionRuntimeShape["prompt"],
+): AcpSessionRuntimeShape {
+  return makeFakeAcpSessionRuntime({
+    sessionId: "devin-test-session",
+    ...(prompt ? { prompt } : {}),
+  });
+}
+
+function makeEventAcpRuntime(prompt: AcpSessionRuntimeShape["prompt"]) {
+  type EventEnvelope = {
+    readonly event: AcpParsedSessionEvent;
+    readonly processed: Deferred.Deferred<void>;
+  };
+  const events = Effect.runSync(Queue.unbounded<EventEnvelope>());
+  const pendingCompletions: Array<Deferred.Deferred<void>> = [];
+  const runtime = makeLifecycleAcpRuntime(prompt);
+  const emit = (event: AcpParsedSessionEvent) =>
+    Effect.gen(function* () {
+      const processed = yield* Deferred.make<void>();
+      yield* Queue.offer(events, { event, processed });
+      yield* flushTimers();
+      yield* Deferred.await(processed);
+    });
+  return {
+    runtime: {
+      ...runtime,
+      getEvents: () =>
+        Stream.fromQueue(events).pipe(
+          Stream.map(({ event, processed }) => {
+            pendingCompletions.push(processed);
+            return event;
+          }),
+        ),
+    } as AcpSessionRuntimeShape,
+    emitToolCall: (
+      toolCallId: string,
+      status: "pending" | "inProgress" | "completed" | "failed",
+      extra?: Partial<AcpToolCallState>,
+    ) =>
+      emit({
+        _tag: "ToolCallUpdated",
+        toolCall: { toolCallId, status, data: {}, ...extra },
+        rawPayload: { toolCallId, status },
+      }),
+    emitProgress: (text = "progress", metadata?: Record<string, unknown>, itemId?: string) =>
+      emit({
+        _tag: "ContentDelta",
+        ...(itemId ? { itemId } : {}),
+        text,
+        ...(metadata ? { metadata } : {}),
+        rawPayload: { text },
+      }),
+    emitAssistantCompleted: (itemId: string) => emit({ _tag: "AssistantItemCompleted", itemId }),
+    completeProcessedEvent: () => {
+      const processed = pendingCompletions.shift();
+      if (processed !== undefined) {
+        Effect.runSync(Deferred.succeed(processed, undefined));
+      }
+    },
+  };
+}
+
+function advanceTimers(ms: number): Effect.Effect<void> {
+  return Effect.promise(() => vi.advanceTimersByTimeAsync(ms));
+}
+
+function flushTimers(): Effect.Effect<void> {
+  return advanceTimers(0);
+}
+
+function makeDevinAdapterTestLayer(
+  runtime: AcpSessionRuntimeShape,
+  onSessionUpdateProcessed?: () => void,
+  timeouts: { turnIdleMs: number; toolIdleMs: number } = { turnIdleMs: 30, toolIdleMs: 60 },
+  wedgeRecovery?: {
+    stallFuseMs: number;
+    spawnStallTimeoutMs: number;
+    checkIntervalMs: number;
+    maxPerThread: number;
+    windowMs: number;
+  },
+) {
+  return makeDevinAdapterLive(
+    {},
+    {
+      makeAcpRuntime: () => Effect.succeed(runtime),
+      timeouts,
+      ...(wedgeRecovery ? { wedgeRecovery } : {}),
+      ...(onSessionUpdateProcessed ? { onSessionUpdateProcessed } : {}),
+    },
+  ).pipe(
+    Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-adapter-test-" })),
+    Layer.provideMerge(NodeServices.layer),
+  );
+}
+
+interface WedgeRuntimePlan {
+  /** Prompt behavior per prompt CALL (task, continuation, task, ...), in order. Last entry repeats. */
+  readonly prompts: ReadonlyArray<AcpSessionRuntimeShape["prompt"]>;
+  /** When present, the makeAcpRuntime call at this index fails instead. */
+  readonly failStartAtIndex?: number;
+  readonly beforeCreate?: (index: number) => Effect.Effect<void, never, Scope.Scope>;
+  readonly cancel?: (index: number) => Effect.Effect<void>;
+}
+
+function makeWedgeRuntimeFactory(plan: WedgeRuntimePlan) {
+  const promptInputs: Array<string> = [];
+  const stderrTaps: Array<(line: string) => void> = [];
+  let callIndex = 0;
+  let promptCallIndex = 0;
+  let current: ReturnType<typeof makeEventAcpRuntime> | undefined;
+  const makeAcpRuntime = (input: DevinAcpRuntimeInput) => {
+    const index = callIndex++;
+    if (plan.failStartAtIndex === index) {
+      return Effect.fail(
+        new AcpErrors.AcpSpawnError({ command: "devin", cause: new Error("start failed") }),
+      );
+    }
+    const handles = makeEventAcpRuntime((params) => {
+      promptInputs.push(
+        (params.prompt ?? [])
+          .map((part: { type: string; text?: string }) => (part.type === "text" ? part.text : ""))
+          .join(""),
+      );
+      const behavior = plan.prompts[Math.min(promptCallIndex, plan.prompts.length - 1)]!;
+      promptCallIndex++;
+      return behavior(params);
+    });
+    if (input.onChildStderrLine) stderrTaps.push(input.onChildStderrLine);
+    current = handles;
+    return (plan.beforeCreate?.(index) ?? Effect.void).pipe(
+      Effect.as({ ...handles.runtime, cancel: plan.cancel?.(index) ?? handles.runtime.cancel }),
+    );
+  };
+  return {
+    makeAcpRuntime,
+    promptInputs,
+    stderrTaps,
+    emitToolCall: (...args: Parameters<ReturnType<typeof makeEventAcpRuntime>["emitToolCall"]>) =>
+      current!.emitToolCall(...args),
+    completeProcessedEvent: () => current!.completeProcessedEvent(),
+  };
+}
+
+const WEDGE_TEST_OPTIONS = {
+  stallFuseMs: 90,
+  spawnStallTimeoutMs: 30,
+  checkIntervalMs: 5,
+  maxPerThread: 3,
+  windowMs: 60_000,
+};
+
+const STALL_WATCH_LINE =
+  "2026-09-02T04:02:26.184938Z  WARN affogato::stall_watch: waited_secs=30 what=emit(Subagent) to agent event channel Agent pipeline await still pending";
+const SPAWN_START_LINE =
+  "2026-09-02T04:43:31.297484Z  INFO toolbox::tools::exec::session_manager: session_id=abc123 [create_session] starting";
+const SPAWN_READY_LINE =
+  "2026-09-02T04:43:31.297623Z  INFO toolbox::tools::exec::session_manager: session_id=abc123 [create_session] waiting for shell ready";
+
+const stripHarnessPrefix = (text: string): string =>
+  text.replace(/^<synara_host_context>[\s\S]*?<\/synara_host_context>/, "");
+
+/** Advance past the supervisor tick, the fuse, and the recovery's resume-replay gate. */
+function advanceThroughRecovery(): Effect.Effect<void> {
+  return advanceTimers(
+    WEDGE_TEST_OPTIONS.stallFuseMs + WEDGE_TEST_OPTIONS.checkIntervalMs * 2 + 2_000,
+  );
+}
+
+function makeWedgeTestLayer(factory: ReturnType<typeof makeWedgeRuntimeFactory>) {
+  return makeDevinAdapterLive(
+    {},
+    {
+      makeAcpRuntime: factory.makeAcpRuntime,
+      onSessionUpdateProcessed: factory.completeProcessedEvent,
+      timeouts: { turnIdleMs: 3_600_000, toolIdleMs: 3_600_000 },
+      wedgeRecovery: WEDGE_TEST_OPTIONS,
+    },
+  ).pipe(
+    Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-adapter-test-" })),
+    Layer.provideMerge(NodeServices.layer),
+  );
+}
+
+describe("resolveDevinAdapterTimeouts", () => {
+  it("uses valid environment overrides", () => {
+    expect(
+      resolveDevinAdapterTimeouts({
+        SYNARA_DEVIN_TURN_IDLE_TIMEOUT_MS: "1234",
+        SYNARA_DEVIN_TOOL_IDLE_TIMEOUT_MS: "5678",
+      }),
+    ).toEqual({ turnIdleMs: 1234, toolIdleMs: 5678 });
+  });
+});
+
+describe("resolveDevinOptionalTimeoutMs", () => {
+  it("falls back to the default when unset or invalid", () => {
+    expect(resolveDevinOptionalTimeoutMs({ envVar: "X", defaultMs: 100, env: {} })).toBe(100);
+    expect(resolveDevinOptionalTimeoutMs({ envVar: "X", defaultMs: 100, env: { X: "   " } })).toBe(
+      100,
+    );
+    expect(resolveDevinOptionalTimeoutMs({ envVar: "X", defaultMs: 100, env: { X: "abc" } })).toBe(
+      100,
+    );
+    expect(resolveDevinOptionalTimeoutMs({ envVar: "X", defaultMs: 100, env: { X: "-5" } })).toBe(
+      100,
+    );
+  });
+
+  it("treats zero as an explicit disable and passes positive values through", () => {
+    expect(resolveDevinOptionalTimeoutMs({ envVar: "X", defaultMs: 100, env: { X: "0" } })).toBe(0);
+    expect(resolveDevinOptionalTimeoutMs({ envVar: "X", defaultMs: 100, env: { X: "250" } })).toBe(
+      250,
+    );
+  });
+});
+
+describe("evaluateDevinWedgeSignal", () => {
+  const base = {
+    activeTurnId: "turn-1",
+    awaitingHuman: false,
+    stallWatchDetectedAt: undefined,
+    spawnStalls: new Map<string, number>(),
+    now: 10_000,
+    stallFuseMs: 90,
+    spawnStallTimeoutMs: 30,
+  };
+
+  it("is silent without an active turn or while awaiting a human", () => {
+    expect(evaluateDevinWedgeSignal({ ...base, activeTurnId: undefined })).toBeUndefined();
+    expect(evaluateDevinWedgeSignal({ ...base, awaitingHuman: true })).toBeUndefined();
+  });
+
+  it("fires the stall-watch signal only after the fuse elapses", () => {
+    expect(evaluateDevinWedgeSignal({ ...base, stallWatchDetectedAt: 9_990 })).toBeUndefined();
+    expect(evaluateDevinWedgeSignal({ ...base, stallWatchDetectedAt: 9_000 })).toEqual({
+      kind: "stall-watch",
+      silentMs: 1_000,
+    });
+  });
+
+  it("ignores the stall-watch path when the fuse is disabled", () => {
+    expect(
+      evaluateDevinWedgeSignal({ ...base, stallWatchDetectedAt: 0, stallFuseMs: 0 }),
+    ).toBeUndefined();
+  });
+
+  it("fires the spawn-stall signal for the oldest un-ready spawn", () => {
+    const spawnStalls = new Map([
+      ["aaa", 9_000],
+      ["bbb", 9_990],
+    ]);
+    expect(evaluateDevinWedgeSignal({ ...base, spawnStalls })).toEqual({
+      kind: "spawn-stall",
+      spawnSessionId: "aaa",
+      stalledMs: 1_000,
+    });
+  });
+
+  it("ignores spawns inside the budget and respects the disable flag", () => {
+    expect(
+      evaluateDevinWedgeSignal({ ...base, spawnStalls: new Map([["aaa", 9_990]]) }),
+    ).toBeUndefined();
+    expect(
+      evaluateDevinWedgeSignal({
+        ...base,
+        spawnStalls: new Map([["aaa", 0]]),
+        spawnStallTimeoutMs: 0,
+      }),
+    ).toBeUndefined();
+  });
+});
+
+describe("canRecoverDevinWedge", () => {
+  const base = { now: 100_000, maxPerWindow: 3, windowMs: 30_000 };
+
+  it("allows recoveries inside the budget and blocks beyond it", () => {
+    expect(canRecoverDevinWedge({ ...base, recoveryAt: [] })).toBe(true);
+    expect(canRecoverDevinWedge({ ...base, recoveryAt: [90_000, 95_000] })).toBe(true);
+    expect(canRecoverDevinWedge({ ...base, recoveryAt: [80_000, 90_000, 95_000] })).toBe(false);
+  });
+
+  it("forgets recoveries that fell out of the rolling window", () => {
+    expect(canRecoverDevinWedge({ ...base, recoveryAt: [0, 1_000, 2_000] })).toBe(true);
+  });
+});
+
+describe("Devin wedge auto-recovery", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it.each(["fiber-interrupt", "cancel-response"] as const)(
+    "recovers a stall-watch wedge with %s: cancels the turn, restarts, and continues",
+    async (settlement) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(1_000);
+      const cancelledResponse = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+      const factory = makeWedgeRuntimeFactory({
+        prompts: [
+          () =>
+            settlement === "cancel-response" ? Deferred.await(cancelledResponse) : Effect.never,
+          () => Effect.succeed({ stopReason: "end_turn" } as Acp.PromptResponse),
+        ],
+        cancel: () =>
+          settlement === "cancel-response"
+            ? Deferred.succeed(cancelledResponse, {
+                stopReason: "cancelled",
+              } as Acp.PromptResponse).pipe(Effect.andThen(flushTimers()))
+            : Effect.void,
+      });
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const adapter = yield* DevinAdapter;
+          const threadId = ThreadId.makeUnsafe("thread-devin-wedge-stall");
+          const runtimeEvents: Array<{
+            type: string;
+            turnId?: string | undefined;
+            payload?: Record<string, unknown> | undefined;
+          }> = [];
+          yield* adapter.streamEvents.pipe(
+            Stream.runForEach((event) =>
+              Effect.sync(() =>
+                runtimeEvents.push({
+                  type: event.type,
+                  ...(event.turnId !== undefined ? { turnId: String(event.turnId) } : {}),
+                  payload: event.payload as Record<string, unknown> | undefined,
+                }),
+              ),
+            ),
+            Effect.forkScoped,
+          );
+          yield* adapter.startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+          });
+          const wedgedTurn = yield* adapter.sendTurn({
+            threadId,
+            input: "do the task",
+            attachments: [],
+          });
+          yield* flushTimers();
+          expect(factory.stderrTaps.length).toBe(1);
+          factory.stderrTaps[0]!(STALL_WATCH_LINE);
+          yield* advanceThroughRecovery();
+          expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["do the task", "continue"]);
+          expect(factory.stderrTaps.length).toBe(2);
+          const session = (yield* adapter.listSessions()).find((s) => s.threadId === threadId);
+          expect(session?.status).toBe("ready");
+          const warning = runtimeEvents.find((event) => event.type === "runtime.warning");
+          expect(String(warning?.payload?.message)).toContain(
+            "restarting this session automatically",
+          );
+          const settled = runtimeEvents.find(
+            (event) =>
+              event.type === "turn.completed" &&
+              event.turnId === String(wedgedTurn.turnId) &&
+              event.payload?.state === "cancelled",
+          );
+          expect(settled?.payload?.stopReason).toBe("synara.devin.wedge-recovery");
+        }).pipe(Effect.scoped, Effect.provide(makeWedgeTestLayer(factory))),
+      );
+    },
+  );
+
+  it("reconciles live child tasks onto their original turn when wedge recovery replaces the session", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    let factory: ReturnType<typeof makeWedgeRuntimeFactory>;
+    factory = makeWedgeRuntimeFactory({
+      prompts: [() => Effect.never],
+      beforeCreate: (index) =>
+        index === 1
+          ? Effect.gen(function* () {
+              yield* factory
+                .emitToolCall("recovery-agent-call", "completed", {
+                  metadata: {
+                    "cognition.ai/subagent_started": {
+                      agentId: "recovery-agent",
+                      task: "Inspect API",
+                    },
+                    "cognition.ai/subagent_completed": { agentId: "recovery-agent", success: true },
+                  },
+                })
+                .pipe(Effect.forkScoped);
+              yield* factory
+                .emitToolCall("recovery-shell-call", "completed", {
+                  metadata: {
+                    "cognition.ai/background": true,
+                    "cognition.ai/backgroundShellId": "recovery-shell",
+                    "cognition.ai/exitCode": 0,
+                  },
+                })
+                .pipe(Effect.forkScoped);
+            })
+          : Effect.void,
+    });
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-wedge-tasks");
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const turn = yield* adapter.sendTurn({ threadId, input: "run tasks", attachments: [] });
+        yield* factory.emitToolCall("recovery-agent-call", "inProgress", {
+          metadata: {
+            "cognition.ai/subagent_started": { agentId: "recovery-agent", task: "Inspect API" },
+          },
+        });
+        yield* factory.emitToolCall("recovery-shell-call", "inProgress", {
+          metadata: {
+            "cognition.ai/background": true,
+            "cognition.ai/backgroundShellId": "recovery-shell",
+          },
+        });
+        factory.stderrTaps[0]!(STALL_WATCH_LINE);
+        yield* advanceThroughRecovery();
+        expect(factory.stderrTaps).toHaveLength(2);
+        for (const taskId of ["recovery-agent", "recovery-shell"]) {
+          const completions = events.filter(
+            (event) => event.type === "task.completed" && event.payload.taskId === taskId,
+          );
+          expect(completions).toHaveLength(2);
+          expect(completions[0]?.payload).toMatchObject({
+            status: "stopped",
+            awaitingProviderConfirmation: true,
+          });
+          expect(completions[1]).toMatchObject({
+            turnId: turn.turnId,
+            payload: { status: "completed", reconcilesStop: true },
+          });
+        }
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.completed",
+            turnId: turn.turnId,
+            itemId: scopeDevinRuntimeItemIdForTurn(turn.turnId, "recovery-agent-call"),
+          }),
+        );
+      }).pipe(Effect.scoped, Effect.provide(makeWedgeTestLayer(factory))),
+    );
+  });
+
+  it("recovers a spawn-stall wedge when a command never reaches shell-ready", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const factory = makeWedgeRuntimeFactory({
+      prompts: [
+        () => Effect.never,
+        () => Effect.succeed({ stopReason: "end_turn" } as Acp.PromptResponse),
+      ],
+    });
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-wedge-spawn");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "run it", attachments: [] });
+        yield* flushTimers();
+        factory.stderrTaps[0]!(SPAWN_START_LINE);
+        yield* advanceTimers(WEDGE_TEST_OPTIONS.checkIntervalMs);
+        expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["run it"]);
+        yield* advanceThroughRecovery();
+        expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["run it", "continue"]);
+      }).pipe(Effect.provide(makeWedgeTestLayer(factory))),
+    );
+  });
+
+  it("does not recover when the spawn reaches shell-ready or progress resumes", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const factory = makeWedgeRuntimeFactory({
+      prompts: [() => Effect.never],
+    });
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-wedge-quiet");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "work", attachments: [] });
+        yield* flushTimers();
+        factory.stderrTaps[0]!(SPAWN_START_LINE);
+        factory.stderrTaps[0]!(SPAWN_READY_LINE);
+        yield* advanceTimers(10_000);
+        expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["work"]);
+        expect(factory.stderrTaps.length).toBe(1);
+        factory.stderrTaps[0]!(STALL_WATCH_LINE);
+        yield* factory.emitToolCall("tool-1", "inProgress");
+        factory.completeProcessedEvent();
+        yield* advanceTimers(10_000);
+        expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["work"]);
+      }).pipe(Effect.provide(makeWedgeTestLayer(factory))),
+    );
+  });
+
+  it("fails the turn instead of recovering once the thread budget is exhausted", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const wedged = () => Effect.never;
+    const healthy = () => Effect.succeed({ stopReason: "end_turn" } as Acp.PromptResponse);
+    const factory = makeWedgeRuntimeFactory({
+      prompts: [wedged, healthy, wedged, healthy, wedged, healthy, wedged],
+    });
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-wedge-budget");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        for (let wedge = 0; wedge < 4; wedge++) {
+          yield* adapter.sendTurn({ threadId, input: `task ${wedge}`, attachments: [] });
+          yield* flushTimers();
+          factory.stderrTaps[factory.stderrTaps.length - 1]!(STALL_WATCH_LINE);
+          yield* advanceThroughRecovery();
+        }
+        expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual([
+          "task 0",
+          "continue",
+          "task 1",
+          "continue",
+          "task 2",
+          "continue",
+          "task 3",
+        ]);
+        const session = (yield* adapter.listSessions()).find((s) => s.threadId === threadId);
+        expect(session?.status).toBe("error");
+      }).pipe(Effect.provide(makeWedgeTestLayer(factory))),
+    );
+  });
+
+  it.each([
+    "interrupt",
+    "interrupt-current",
+    "stop",
+    "stop-all",
+    "restart",
+    "targeted-interrupt",
+  ] as const)(
+    "honors %s while recovery is waiting to create the replacement session",
+    async (action) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(1_000);
+      const entered = Effect.runSync(Deferred.make<void>());
+      const release = Effect.runSync(Deferred.make<void>());
+      const factory = makeWedgeRuntimeFactory({
+        prompts: [() => Effect.never],
+        beforeCreate: (index) =>
+          index === 1
+            ? Deferred.succeed(entered, undefined).pipe(Effect.andThen(Deferred.await(release)))
+            : Effect.void,
+      });
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const adapter = yield* DevinAdapter;
+          const threadId = ThreadId.makeUnsafe(`thread-wedge-cancel-${action}`);
+          const input = {
+            provider: "devin" as const,
+            threadId,
+            runtimeMode: "full-access" as const,
+            cwd: process.cwd(),
+          };
+          const events: Array<{ type: string }> = [];
+          yield* adapter.streamEvents.pipe(
+            Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+            Effect.forkScoped,
+          );
+          yield* adapter.startSession(input);
+          const turn = yield* adapter.sendTurn({ threadId, input: "task", attachments: [] });
+          yield* flushTimers();
+          factory.stderrTaps[0]!(STALL_WATCH_LINE);
+          yield* advanceTimers(100);
+          yield* Deferred.await(entered);
+          expect(yield* adapter.hasSession(threadId)).toBe(false);
+          const actionFiber = yield* (
+            action === "stop-all"
+              ? adapter.stopAll()
+              : action === "stop"
+                ? adapter.stopSession(threadId)
+                : action === "restart"
+                  ? adapter.startSession(input).pipe(Effect.asVoid)
+                  : adapter.interruptTurn(
+                      threadId,
+                      action === "interrupt" || action === "targeted-interrupt"
+                        ? turn.turnId
+                        : undefined,
+                      action === "targeted-interrupt" ? "unavailable-child" : undefined,
+                    )
+          ).pipe(Effect.result, Effect.forkScoped);
+          yield* flushTimers();
+          yield* Deferred.succeed(release, undefined);
+          yield* advanceThroughRecovery();
+          const result = yield* Fiber.join(actionFiber);
+          expect(result._tag).toBe(action === "targeted-interrupt" ? "Failure" : "Success");
+          expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(
+            action === "targeted-interrupt" ? ["task", "continue"] : ["task"],
+          );
+          expect(yield* adapter.hasSession(threadId)).toBe(
+            action === "restart" || action === "targeted-interrupt",
+          );
+          expect(events.filter((event) => event.type === "runtime.error")).toEqual([]);
+        }).pipe(Effect.scoped, Effect.provide(makeWedgeTestLayer(factory))),
+      );
+    },
+  );
+
+  it.each(["user-turn", "stale-interrupt", "interrupt"] as const)(
+    "preserves %s ownership while the replacement is draining resume replay",
+    async (action) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(1_000);
+      const factory = makeWedgeRuntimeFactory({
+        prompts: [
+          () => Effect.never,
+          () => Effect.succeed({ stopReason: "end_turn" } as Acp.PromptResponse),
+        ],
+      });
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const adapter = yield* DevinAdapter;
+          const threadId = ThreadId.makeUnsafe(`thread-wedge-replay-${action}`);
+          yield* adapter.startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+          });
+          const turn = yield* adapter.sendTurn({ threadId, input: "task", attachments: [] });
+          yield* flushTimers();
+          factory.stderrTaps[0]!(STALL_WATCH_LINE);
+          yield* advanceTimers(100);
+          expect(factory.stderrTaps).toHaveLength(2);
+          expect(yield* adapter.hasSession(threadId)).toBe(true);
+          expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["task"]);
+          const userAction = yield* (
+            action === "user-turn"
+              ? adapter
+                  .sendTurn({ threadId, input: "new user task", attachments: [] })
+                  .pipe(Effect.asVoid)
+              : adapter.interruptTurn(
+                  threadId,
+                  action === "interrupt" ? turn.turnId : asTurnId("unrelated-turn"),
+                )
+          ).pipe(Effect.forkScoped);
+          yield* advanceThroughRecovery();
+          yield* Fiber.join(userAction);
+          expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(
+            action === "interrupt"
+              ? ["task"]
+              : ["task", action === "user-turn" ? "new user task" : "continue"],
+          );
+          expect(yield* adapter.hasSession(threadId)).toBe(action !== "interrupt");
+        }).pipe(Effect.scoped, Effect.provide(makeWedgeTestLayer(factory))),
+      );
+    },
+  );
+
+  it("honors user cancellation while the recovery cancel notification is pending", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const entered = Effect.runSync(Deferred.make<void>());
+    const release = Effect.runSync(Deferred.make<void>());
+    const factory = makeWedgeRuntimeFactory({
+      prompts: [() => Effect.never],
+      cancel: () =>
+        Deferred.succeed(entered, undefined).pipe(Effect.andThen(Deferred.await(release))),
+    });
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const completions: Array<unknown> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              if (event.type === "turn.completed") completions.push(event.payload);
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        const threadId = ThreadId.makeUnsafe("thread-wedge-cancel-notification");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const turn = yield* adapter.sendTurn({ threadId, input: "task", attachments: [] });
+        yield* flushTimers();
+        factory.stderrTaps[0]!(STALL_WATCH_LINE);
+        yield* advanceTimers(100);
+        yield* Deferred.await(entered);
+        const cancelled = yield* adapter
+          .interruptTurn(threadId, turn.turnId)
+          .pipe(Effect.forkScoped);
+        yield* flushTimers();
+        yield* Deferred.succeed(release, undefined);
+        yield* advanceThroughRecovery();
+        yield* Fiber.join(cancelled);
+        expect(completions).toEqual([
+          expect.objectContaining({ state: "cancelled", stopReason: "cancelled" }),
+        ]);
+        expect(factory.stderrTaps).toHaveLength(1);
+        expect(factory.promptInputs.map(stripHarnessPrefix)).toEqual(["task"]);
+        expect((yield* adapter.listSessions())[0]?.status).toBe("ready");
+      }).pipe(Effect.scoped, Effect.provide(makeWedgeTestLayer(factory))),
+    );
+  });
+
+  it("leaves no session when the recovery restart itself fails", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const factory = makeWedgeRuntimeFactory({
+      prompts: [() => Effect.never],
+      failStartAtIndex: 1,
+    });
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-wedge-restart-fail");
+        const events: Array<{
+          type: string;
+          turnId?: TurnId | undefined;
+          payload: Record<string, unknown>;
+        }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() =>
+              events.push({
+                type: event.type,
+                turnId: event.turnId,
+                payload: event.payload as Record<string, unknown>,
+              }),
+            ),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const turn = yield* adapter.sendTurn({ threadId, input: "task", attachments: [] });
+        yield* flushTimers();
+        factory.stderrTaps[0]!(STALL_WATCH_LINE);
+        yield* advanceTimers(
+          WEDGE_TEST_OPTIONS.stallFuseMs + WEDGE_TEST_OPTIONS.checkIntervalMs * 2,
+        );
+        expect(
+          (yield* adapter.listSessions()).find((s) => s.threadId === threadId),
+        ).toBeUndefined();
+        expect(
+          events.filter((event) => event.type === "turn.completed" && event.turnId === turn.turnId),
+        ).toEqual([
+          expect.objectContaining({ payload: expect.objectContaining({ state: "cancelled" }) }),
+        ]);
+        expect(events.filter((event) => event.type === "runtime.error")).toEqual([
+          expect.objectContaining({
+            turnId: turn.turnId,
+            payload: expect.objectContaining({
+              message: expect.stringContaining("start failed"),
+              detail: { reason: "synara.devin.wedge-recovery" },
+            }),
+          }),
+        ]);
+      }).pipe(Effect.scoped, Effect.provide(makeWedgeTestLayer(factory))),
+    );
+  });
+});
+
+describe("Devin adapter lifecycle", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("projects Devin subagents and background shells into native task controls", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const eventRuntime = makeEventAcpRuntime(() => Effect.never);
+    const acpRequests: Array<{ method: string; payload: unknown }> = [];
+    let acpInput: DevinAcpRuntimeInput | undefined;
+    const runtime = {
+      ...eventRuntime.runtime,
+      request: (method: string, payload: unknown) =>
+        Effect.sync(() => {
+          acpRequests.push({ method, payload });
+          return {};
+        }),
+    } as AcpSessionRuntimeShape;
+    const layer = makeDevinAdapterLive(
+      {},
+      {
+        makeAcpRuntime: (input) => {
+          acpInput = input;
+          return Effect.succeed(runtime);
+        },
+        onSessionUpdateProcessed: eventRuntime.completeProcessedEvent,
+        timeouts: { turnIdleMs: 3_600_000, toolIdleMs: 3_600_000 },
+      },
+    ).pipe(
+      Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-agent-test-" })),
+      Layer.provideMerge(NodeServices.layer),
+    );
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-agent-surfaces");
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const turn = yield* adapter.sendTurn({
+          threadId,
+          input: "delegate and run a background command",
+          attachments: [],
+        });
+
+        yield* eventRuntime.emitToolCall("agent-launch-call", "inProgress", {
+          metadata: {
+            "cognition.ai/subagent_started": {
+              agentId: "agent-1",
+              title: "API investigator",
+              profile: "explorer",
+              task: "Inspect the public API surface",
+            },
+          },
+        });
+        yield* adapter.backgroundTask(threadId, "agent-1");
+        yield* eventRuntime.emitToolCall("agent-launch-call", "inProgress");
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "task.updated",
+            payload: expect.objectContaining({
+              taskId: "agent-1",
+              isBackgrounded: true,
+              toolUseId: "agent-launch-call",
+            }),
+          }),
+        );
+        yield* eventRuntime.emitProgress("Child agent output", {
+          "cognition.ai/subagent_context": { parentAgentId: "agent-1" },
+        });
+        yield* adapter.interruptTurn(threadId, turn.turnId, "agent-1");
+
+        yield* eventRuntime.emitToolCall("shell-stop-call", "inProgress", {
+          metadata: {
+            "cognition.ai/background": true,
+            "cognition.ai/backgroundShellId": "shell-stop",
+            "cognition.ai/backgroundCommand": "sleep 60",
+          },
+        });
+        yield* adapter.stopTask(threadId, "shell-stop");
+
+        yield* eventRuntime.emitToolCall("shell-done-call", "inProgress", {
+          metadata: {
+            "cognition.ai/background": true,
+            "cognition.ai/backgroundShellId": "shell-done",
+            "cognition.ai/backgroundCommand": "bun run check",
+          },
+        });
+        yield* eventRuntime.emitToolCall("shell-done-call", "completed", {
+          metadata: { "cognition.ai/exitCode": 0 },
+        });
+
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "task.started",
+            payload: expect.objectContaining({ taskId: "agent-1", toolUseId: "agent-launch-call" }),
+          }),
+        );
+        expect(acpInput?.clientCapabilities?._meta).toEqual({
+          "cognition.ai/subagentSupport": true,
+          "cognition.ai/subagentControl": true,
+        });
+        expect(acpRequests).toEqual([
+          {
+            method: "_cognition.ai/subagent/background",
+            payload: { sessionId: "devin-test-session", agentId: "agent-1" },
+          },
+          {
+            method: "_cognition.ai/subagent/cancel",
+            payload: { sessionId: "devin-test-session", agentId: "agent-1" },
+          },
+          {
+            method: "_cognition.ai/terminal/killBackgroundShell",
+            payload: { sessionId: "devin-test-session", shellId: "shell-stop" },
+          },
+        ]);
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.updated",
+            payload: expect.objectContaining({
+              itemType: "collab_agent_tool_call",
+              data: expect.objectContaining({
+                receiverThreadIds: ["agent-1"],
+                prompt: "Inspect the public API surface",
+                agentsStates: { "agent-1": { status: "running" } },
+              }),
+            }),
+          }),
+        );
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.completed",
+            payload: expect.objectContaining({
+              data: expect.objectContaining({
+                agentsStates: { "agent-1": { status: "stopped" } },
+              }),
+            }),
+          }),
+        );
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.updated",
+            payload: expect.objectContaining({
+              data: expect.objectContaining({
+                background: true,
+                agentsStates: { "agent-1": { status: "running" } },
+              }),
+            }),
+          }),
+        );
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "content.delta",
+            providerRefs: {
+              providerThreadId: "agent-1",
+              providerParentThreadId: "devin-test-session",
+            },
+          }),
+        );
+        expect(
+          events.filter((event) => event.type === "task.completed").map((event) => event.payload),
+        ).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ taskId: "agent-1", status: "stopped" }),
+            expect.objectContaining({ taskId: "shell-stop", status: "stopped" }),
+            expect.objectContaining({ taskId: "shell-done", status: "completed" }),
+          ]),
+        );
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.scoped, Effect.provide(layer)),
+    );
+  });
+
+  it("keeps stopped Devin tasks reconcilable across turns", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const firstPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    const secondPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    const prompts = [
+      Deferred.await(firstPrompt),
+      Deferred.await(secondPrompt),
+      Effect.never as Effect.Effect<Acp.PromptResponse>,
+    ];
+    const eventRuntime = makeEventAcpRuntime(() => prompts.shift() ?? Effect.never);
+    const layer = makeDevinAdapterLive(
+      {},
+      {
+        makeAcpRuntime: () => Effect.succeed(eventRuntime.runtime),
+        onSessionUpdateProcessed: eventRuntime.completeProcessedEvent,
+      },
+    ).pipe(
+      Layer.provideMerge(
+        ServerConfig.layerTest(process.cwd(), { prefix: "devin-agent-turn-test-" }),
+      ),
+      Layer.provideMerge(NodeServices.layer),
+    );
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-late-task");
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const firstTurn = yield* adapter.sendTurn({ threadId, input: "first", attachments: [] });
+        yield* eventRuntime.emitToolCall("old-shell-call", "inProgress", {
+          metadata: {
+            "cognition.ai/background": true,
+            "cognition.ai/backgroundShellId": "late-shell",
+            "cognition.ai/backgroundCommand": "bun run check",
+          },
+        });
+        yield* adapter.stopTask(threadId, "late-shell");
+        yield* Deferred.succeed(firstPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(1);
+        const secondTurn = yield* adapter.sendTurn({ threadId, input: "second", attachments: [] });
+        yield* Deferred.succeed(secondPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(1);
+        const thirdTurn = yield* adapter.sendTurn({ threadId, input: "third", attachments: [] });
+        // This sparse exit update arrives after the first turn's ACP state has
+        // been pruned from the normal one-turn correlation window.
+        yield* eventRuntime.emitToolCall("old-shell-call", "completed", {
+          metadata: { "cognition.ai/exitCode": 0 },
+        });
+        yield* advanceTimers(1);
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "task.started",
+            turnId: firstTurn.turnId,
+            payload: expect.objectContaining({ taskId: "late-shell" }),
+          }),
+        );
+        expect(
+          events.some(
+            (event) =>
+              event.type === "task.started" &&
+              event.turnId === secondTurn.turnId &&
+              event.payload.taskId === "late-shell",
+          ),
+        ).toBe(false);
+        const lateShellCompletions = events.flatMap((event) =>
+          event.type === "task.completed" && event.payload.taskId === "late-shell" ? [event] : [],
+        );
+        expect(lateShellCompletions.map((event) => event.payload.status)).toEqual([
+          "stopped",
+          "completed",
+        ]);
+        expect(lateShellCompletions).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              turnId: firstTurn.turnId,
+              payload: expect.objectContaining({ status: "completed", reconcilesStop: true }),
+            }),
+          ]),
+        );
+        expect(
+          events.some(
+            (event) =>
+              event.type === "task.completed" &&
+              event.turnId !== firstTurn.turnId &&
+              event.payload.taskId === "late-shell",
+          ),
+        ).toBe(false);
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.scoped, Effect.provide(layer)),
+    );
+  });
+
+  it("projects a successful Devin background request before start metadata arrives", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const eventRuntime = makeEventAcpRuntime(() => Effect.never);
+    const acpRequests: Array<{ method: string; payload: unknown }> = [];
+    const runtime = {
+      ...eventRuntime.runtime,
+      request: (method: string, payload: unknown) =>
+        Effect.sync(() => {
+          acpRequests.push({ method, payload });
+          return {};
+        }),
+    } as AcpSessionRuntimeShape;
+    const layer = makeDevinAdapterLive(
+      {},
+      {
+        makeAcpRuntime: () => Effect.succeed(runtime),
+        onSessionUpdateProcessed: eventRuntime.completeProcessedEvent,
+      },
+    ).pipe(
+      Layer.provideMerge(
+        ServerConfig.layerTest(process.cwd(), { prefix: "devin-late-start-test-" }),
+      ),
+      Layer.provideMerge(NodeServices.layer),
+    );
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-background-before-start");
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        // Let the event collector subscribe before backgroundTask publishes
+        // its synthetic lifecycle events (there is no preceding ACP update in
+        // this regression case to yield to the collector).
+        yield* flushTimers();
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({
+          threadId,
+          input: "background the child",
+          attachments: [],
+          interactionMode: "default",
+        });
+        yield* adapter.backgroundTask(threadId, "late-agent");
+        yield* flushTimers();
+
+        expect(acpRequests).toEqual([
+          {
+            method: "_cognition.ai/subagent/background",
+            payload: { sessionId: "devin-test-session", agentId: "late-agent" },
+          },
+        ]);
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.updated",
+            payload: expect.objectContaining({
+              itemType: "collab_agent_tool_call",
+              data: expect.objectContaining({
+                receiverThreadIds: ["late-agent"],
+                background: true,
+                agentsStates: { "late-agent": { status: "running" } },
+              }),
+            }),
+          }),
+        );
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "task.updated",
+            payload: expect.objectContaining({
+              taskId: "late-agent",
+              interactionMode: "default",
+              status: "running",
+              isBackgrounded: true,
+            }),
+          }),
+        );
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.scoped, Effect.provide(layer)),
+    );
+  });
+
+  it("preserves natural Devin completion when background and stop RPCs race it", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const cancelStarted = Effect.runSync(Deferred.make<void>());
+    const allowCancelToReturn = Effect.runSync(Deferred.make<void>());
+    const killStarted = Effect.runSync(Deferred.make<void>());
+    const allowKillToReturn = Effect.runSync(Deferred.make<void>());
+    const backgroundStarted = Effect.runSync(Deferred.make<void>());
+    const allowBackgroundToReturn = Effect.runSync(Deferred.make<void>());
+    const eventRuntime = makeEventAcpRuntime(() => Effect.never);
+    const acpRequests: Array<{ method: string; payload: unknown }> = [];
+    const runtime = {
+      ...eventRuntime.runtime,
+      request: (method: string, payload: unknown) => {
+        acpRequests.push({ method, payload });
+        if (method === "_cognition.ai/subagent/cancel") {
+          return Effect.gen(function* () {
+            yield* Deferred.succeed(cancelStarted, undefined);
+            yield* Deferred.await(allowCancelToReturn);
+            return {};
+          });
+        }
+        if (method === "_cognition.ai/terminal/killBackgroundShell") {
+          return Effect.gen(function* () {
+            yield* Deferred.succeed(killStarted, undefined);
+            yield* Deferred.await(allowKillToReturn);
+            return {};
+          });
+        }
+        if (method === "_cognition.ai/subagent/background") {
+          return Effect.gen(function* () {
+            yield* Deferred.succeed(backgroundStarted, undefined);
+            yield* Deferred.await(allowBackgroundToReturn);
+            return {};
+          });
+        }
+        return Effect.succeed({});
+      },
+    } as AcpSessionRuntimeShape;
+    const layer = makeDevinAdapterLive(
+      {},
+      {
+        makeAcpRuntime: () => Effect.succeed(runtime),
+        onSessionUpdateProcessed: eventRuntime.completeProcessedEvent,
+        timeouts: { turnIdleMs: 3_600_000, toolIdleMs: 3_600_000 },
+      },
+    ).pipe(
+      Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-race-test-" })),
+      Layer.provideMerge(NodeServices.layer),
+    );
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-control-races");
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "run concurrent work", attachments: [] });
+
+        yield* eventRuntime.emitToolCall("agent-race-call", "inProgress", {
+          metadata: {
+            "cognition.ai/subagent_started": {
+              agentId: "agent-race",
+              title: "Race test",
+              task: "Finish before cancel returns",
+            },
+          },
+        });
+        const cancelFiber = yield* adapter.stopTask(threadId, "agent-race").pipe(Effect.forkScoped);
+        yield* flushTimers();
+        yield* Deferred.await(cancelStarted);
+        yield* eventRuntime.emitToolCall("agent-race-call", "completed", {
+          metadata: {
+            "cognition.ai/subagent_completed": { agentId: "agent-race", success: true },
+          },
+        });
+        yield* Deferred.succeed(allowCancelToReturn, undefined);
+        yield* Fiber.join(cancelFiber);
+
+        yield* eventRuntime.emitToolCall("agent-late-call", "inProgress", {
+          metadata: {
+            "cognition.ai/subagent_started": {
+              agentId: "agent-late",
+              title: "Late completion test",
+              task: "Complete after cancel returns",
+            },
+          },
+        });
+        yield* adapter.stopTask(threadId, "agent-late");
+        // A sparse replay/start update after the stop acknowledgment must not
+        // erase the local correlation before Devin sends its terminal result.
+        yield* eventRuntime.emitToolCall("agent-late-call", "inProgress", {
+          metadata: {
+            "cognition.ai/subagent_started": {
+              agentId: "agent-late",
+              title: "Late completion test",
+            },
+          },
+        });
+        yield* eventRuntime.emitToolCall("agent-late-call", "completed", {
+          metadata: {
+            "cognition.ai/subagent_completed": {
+              agentId: "agent-late",
+              success: true,
+            },
+          },
+        });
+
+        yield* eventRuntime.emitToolCall("shell-race-call", "inProgress", {
+          metadata: {
+            "cognition.ai/background": true,
+            "cognition.ai/backgroundShellId": "shell-race",
+            "cognition.ai/backgroundCommand": "sleep 60",
+          },
+        });
+        const killFiber = yield* adapter.stopTask(threadId, "shell-race").pipe(Effect.forkScoped);
+        yield* flushTimers();
+        yield* Deferred.await(killStarted);
+        yield* eventRuntime.emitToolCall("shell-race-call", "completed", {
+          metadata: { "cognition.ai/exitCode": 0 },
+        });
+        yield* Deferred.succeed(allowKillToReturn, undefined);
+        yield* Fiber.join(killFiber);
+
+        yield* eventRuntime.emitToolCall("shell-late-call", "inProgress", {
+          metadata: {
+            "cognition.ai/background": true,
+            "cognition.ai/backgroundShellId": "shell-late",
+            "cognition.ai/backgroundCommand": "bun run build",
+          },
+        });
+        yield* adapter.stopTask(threadId, "shell-late");
+        yield* eventRuntime.emitToolCall("shell-late-call", "completed", {
+          metadata: { "cognition.ai/exitCode": 0 },
+        });
+
+        yield* eventRuntime.emitToolCall("agent-background-call", "inProgress", {
+          metadata: {
+            "cognition.ai/subagent_started": {
+              agentId: "agent-background-race",
+              title: "Background race test",
+              task: "Finish before background returns",
+            },
+          },
+        });
+        const backgroundFiber = yield* adapter
+          .backgroundTask(threadId, "agent-background-race")
+          .pipe(Effect.forkScoped);
+        yield* flushTimers();
+        yield* Deferred.await(backgroundStarted);
+        yield* eventRuntime.emitToolCall("agent-background-call", "completed", {
+          metadata: {
+            "cognition.ai/subagent_completed": {
+              agentId: "agent-background-race",
+              success: true,
+            },
+          },
+        });
+        yield* Deferred.succeed(allowBackgroundToReturn, undefined);
+        yield* Fiber.join(backgroundFiber);
+
+        expect(acpRequests.map((request) => request.method)).toEqual([
+          "_cognition.ai/subagent/cancel",
+          "_cognition.ai/subagent/cancel",
+          "_cognition.ai/terminal/killBackgroundShell",
+          "_cognition.ai/terminal/killBackgroundShell",
+          "_cognition.ai/subagent/background",
+        ]);
+        for (const [taskId, status] of [
+          ["agent-race", "completed"],
+          ["shell-race", "completed"],
+          ["agent-background-race", "completed"],
+        ]) {
+          expect(
+            events.filter(
+              (event) => event.type === "task.completed" && event.payload.taskId === taskId,
+            ),
+          ).toEqual([
+            expect.objectContaining({ payload: expect.objectContaining({ taskId, status }) }),
+          ]);
+        }
+        expect(
+          events.some(
+            (event) =>
+              event.type === "task.updated" &&
+              event.payload.taskId === "agent-background-race" &&
+              event.payload.isBackgrounded === true,
+          ),
+        ).toBe(false);
+        for (const [taskId, finalStatus] of [
+          ["agent-late", "completed"],
+          ["shell-late", "completed"],
+        ]) {
+          const completions = events.flatMap((event) =>
+            event.type === "task.completed" && event.payload.taskId === taskId ? [event] : [],
+          );
+          expect(completions.map((event) => event.payload.status)).toEqual([
+            "stopped",
+            finalStatus,
+          ]);
+          expect(completions[0]?.payload).toMatchObject({ awaitingProviderConfirmation: true });
+          expect(completions[1]?.payload).toMatchObject({ reconcilesStop: true });
+        }
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.scoped, Effect.provide(layer)),
+    );
+  });
+
+  it("restores background shell controls from suppressed session replay", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const eventRuntime = makeEventAcpRuntime(() => Effect.never);
+    const acpRequests: Array<{ method: string; payload: unknown }> = [];
+    const runtime = {
+      ...eventRuntime.runtime,
+      request: (method: string, payload: unknown) =>
+        Effect.sync(() => {
+          acpRequests.push({ method, payload });
+          return {};
+        }),
+    } as AcpSessionRuntimeShape;
+    const layer = makeDevinAdapterLive(
+      {},
+      {
+        makeAcpRuntime: () => Effect.succeed(runtime),
+        onSessionUpdateProcessed: eventRuntime.completeProcessedEvent,
+      },
+    ).pipe(
+      Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-replay-test-" })),
+      Layer.provideMerge(NodeServices.layer),
+    );
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-replayed-shell");
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        const replayUpdate = yield* eventRuntime
+          .emitToolCall("replayed-shell-call", "inProgress", {
+            metadata: {
+              "cognition.ai/background": true,
+              "cognition.ai/backgroundShellId": "replayed-shell",
+              "cognition.ai/backgroundCommand": "sleep 60",
+            },
+          })
+          .pipe(Effect.forkScoped);
+        const replayShellCompletion = yield* eventRuntime
+          .emitToolCall("replayed-done-shell-call", "completed", {
+            metadata: {
+              "cognition.ai/background": true,
+              "cognition.ai/backgroundShellId": "replayed-done-shell",
+              "cognition.ai/backgroundCommand": "bun run build",
+              "cognition.ai/exitCode": 0,
+            },
+          })
+          .pipe(Effect.forkScoped);
+        const replaySubagentCompletion = yield* eventRuntime
+          .emitToolCall("replayed-done-agent-call", "completed", {
+            metadata: {
+              "cognition.ai/subagent_started": {
+                agentId: "replayed-done-agent",
+                title: "Completed during replay",
+                task: "Recover its final state",
+              },
+              "cognition.ai/subagent_completed": {
+                agentId: "replayed-done-agent",
+                success: true,
+              },
+            },
+          })
+          .pipe(Effect.forkScoped);
+        const replayOrdinaryCompletion = yield* eventRuntime
+          .emitToolCall("replayed-ordinary-shell-call", "completed", {
+            metadata: {
+              "cognition.ai/background": true,
+              "cognition.ai/backgroundShellId": "ordinary-done-shell",
+              "cognition.ai/exitCode": 0,
+            },
+          })
+          .pipe(Effect.forkScoped);
+        const startSession = yield* adapter
+          .startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+            resumeCursor: { schemaVersion: 1, sessionId: "previous-session" },
+            pendingTaskReconciliations: [
+              {
+                taskId: RuntimeTaskId.makeUnsafe("replayed-done-shell"),
+                turnId: TurnId.makeUnsafe("original-replayed-turn"),
+                toolUseId: "replayed-done-shell-call",
+              },
+              {
+                taskId: RuntimeTaskId.makeUnsafe("replayed-done-agent"),
+                turnId: TurnId.makeUnsafe("original-replayed-turn"),
+                toolUseId: "replayed-done-agent-call",
+              },
+            ],
+          })
+          .pipe(Effect.forkScoped);
+        yield* flushTimers();
+        yield* advanceTimers(250);
+        yield* Fiber.join(startSession);
+        yield* Fiber.join(replayUpdate);
+        yield* Fiber.join(replayShellCompletion);
+        yield* Fiber.join(replaySubagentCompletion);
+        yield* Fiber.join(replayOrdinaryCompletion);
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "task.updated",
+            payload: expect.objectContaining({
+              taskId: "replayed-shell",
+              status: "running",
+              reconcilesStop: true,
+              isBackgrounded: true,
+            }),
+          }),
+        );
+        yield* adapter.stopTask(threadId, "replayed-shell");
+        expect(acpRequests).toContainEqual({
+          method: "_cognition.ai/terminal/killBackgroundShell",
+          payload: { sessionId: "devin-test-session", shellId: "replayed-shell" },
+        });
+        expect(
+          events.some(
+            (event) => event.type === "task.started" && event.payload.taskId === "replayed-shell",
+          ),
+        ).toBe(false);
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.completed",
+            turnId: "original-replayed-turn",
+            itemId: scopeDevinRuntimeItemIdForTurn(
+              TurnId.makeUnsafe("original-replayed-turn"),
+              "replayed-done-agent-call",
+            ),
+          }),
+        );
+        for (const taskId of ["replayed-done-shell", "replayed-done-agent"]) {
+          expect(events).toContainEqual(
+            expect.objectContaining({
+              type: "task.completed",
+              payload: expect.objectContaining({
+                taskId,
+                status: "completed",
+                reconcilesStop: true,
+              }),
+            }),
+          );
+          expect(
+            events.some(
+              (event) => event.type === "task.started" && event.payload.taskId === taskId,
+            ),
+          ).toBe(false);
+        }
+        expect(
+          events.some(
+            (event) =>
+              event.type === "task.completed" && event.payload.taskId === "ordinary-done-shell",
+          ),
+        ).toBe(false);
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "item.completed",
+            payload: expect.objectContaining({
+              data: expect.objectContaining({
+                agentsStates: {
+                  "replayed-done-agent": expect.objectContaining({ status: "completed" }),
+                },
+              }),
+            }),
+          }),
+        );
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.scoped, Effect.provide(layer)),
+    );
+  });
+
+  it("rejects an overlapping send without replacing the active turn", async () => {
+    const promptStarted = await Effect.runPromise(Deferred.make<void>());
+    const runtime = makeLifecycleAcpRuntime(() =>
+      Deferred.succeed(promptStarted, undefined).pipe(Effect.andThen(Effect.never)),
+    );
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-overlap");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const firstTurn = yield* adapter.sendTurn({ threadId, input: "first", attachments: [] });
+        yield* Deferred.await(promptStarted);
+        const duplicateError = yield* adapter
+          .sendTurn({ threadId, input: "second", attachments: [] })
+          .pipe(Effect.match({ onFailure: (error) => error, onSuccess: () => undefined }));
+        expect(duplicateError).toMatchObject({
+          _tag: "ProviderAdapterValidationError",
+          operation: "sendTurn",
+        });
+        expect(
+          (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+        ).toMatchObject({ status: "running", activeTurnId: firstTurn.turnId });
+        yield* adapter.interruptTurn(threadId, firstTurn.turnId);
+        const readySession = (yield* adapter.listSessions()).find(
+          (session) => session.threadId === threadId,
+        );
+        expect(readySession?.activeTurnId).toBeUndefined();
+        expect(readySession?.status).toBe("ready");
+        yield* adapter.stopSession(threadId);
+      }).pipe(
+        Effect.provide(
+          // Real timers: keep the watchdog's first check (5s cadence at these
+          // budgets) far beyond the assertion window instead of racing it.
+          makeDevinAdapterTestLayer(runtime, undefined, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }),
+        ),
+      ),
+    );
+  });
+
+  it("keeps tool budget for every active tool and ignores terminal regressions", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const { runtime, emitToolCall, completeProcessedEvent } = makeEventAcpRuntime(
+      () => Effect.never,
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-tool-budget");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const turn = yield* adapter.sendTurn({ threadId, input: "run tools", attachments: [] });
+        for (const [toolCallId, status] of [
+          ["tool-a", "pending"],
+          ["tool-b", "inProgress"],
+          ["tool-a", "completed"],
+          ["tool-a", "pending"],
+        ] as const) {
+          yield* emitToolCall(toolCallId, status);
+        }
+        yield* advanceTimers(30);
+        expect(
+          (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+        ).toMatchObject({ status: "running", activeTurnId: turn.turnId });
+        yield* emitToolCall("tool-b", "failed");
+        yield* advanceTimers(30);
+        expect(
+          (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+        ).toMatchObject({ status: "error" });
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.provide(makeDevinAdapterTestLayer(runtime, completeProcessedEvent))),
+    );
+  });
+
+  it("does not let stale prior-turn tool updates refresh or extend the current turn", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const firstPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    const prompts = [
+      Deferred.await(firstPrompt),
+      Effect.never as Effect.Effect<Acp.PromptResponse>,
+    ];
+    const { runtime, emitToolCall, completeProcessedEvent } = makeEventAcpRuntime(
+      () => prompts.shift() ?? Effect.never,
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-stale-tool");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "first", attachments: [] });
+        yield* emitToolCall("old-tool", "pending");
+        yield* Deferred.succeed(firstPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(1);
+        const second = yield* adapter.sendTurn({ threadId, input: "second", attachments: [] });
+        yield* emitToolCall("old-tool", "completed");
+        yield* advanceTimers(15);
+        yield* emitToolCall("old-tool", "inProgress");
+        yield* advanceTimers(40);
+        expect(
+          (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+        ).toMatchObject({ status: "error" });
+        expect(second.turnId).toBeDefined();
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.provide(makeDevinAdapterTestLayer(runtime, completeProcessedEvent))),
+    );
+  });
+
+  it("preserves all prompt history and earlier snapshots when another turn settles", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const firstPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    const secondPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    const prompts = [Deferred.await(firstPrompt), Deferred.await(secondPrompt)];
+    const { runtime, completeProcessedEvent } = makeEventAcpRuntime(
+      () => prompts.shift() ?? Effect.never,
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-retained-turn-items");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const first = yield* adapter.sendTurn({ threadId, input: "first", attachments: [] });
+        yield* Deferred.succeed(firstPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(1);
+        const afterFirst = yield* adapter.readThread(threadId);
+        expect(afterFirst.turns.map((turn) => turn.id)).toEqual([first.turnId]);
+        expect(afterFirst.turns[0]?.items.length).toBeGreaterThan(0);
+
+        const second = yield* adapter.sendTurn({ threadId, input: "second", attachments: [] });
+        yield* Deferred.succeed(secondPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(1);
+        const afterSecond = yield* adapter.readThread(threadId);
+        expect(afterSecond.turns.map((turn) => turn.id)).toEqual([first.turnId, second.turnId]);
+        expect(afterSecond.turns[0]?.items).toEqual(afterFirst.turns[0]?.items);
+        expect(afterSecond.turns[1]?.items.length).toBeGreaterThan(0);
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.provide(makeDevinAdapterTestLayer(runtime, completeProcessedEvent))),
+    );
+  });
+
+  it("resets the ordinary clock for other valid progress events", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const { runtime, emitProgress, completeProcessedEvent } = makeEventAcpRuntime(
+      () => Effect.never,
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-progress-clock");
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          cwd: process.cwd(),
+        });
+        const turn = yield* adapter.sendTurn({ threadId, input: "progress", attachments: [] });
+        yield* advanceTimers(15);
+        yield* emitProgress();
+        yield* advanceTimers(15);
+        expect(
+          (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+        ).toMatchObject({ status: "running", activeTurnId: turn.turnId });
+        yield* advanceTimers(30);
+        expect(
+          (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+        ).toMatchObject({ status: "error" });
+        yield* adapter.stopSession(threadId);
+      }).pipe(Effect.provide(makeDevinAdapterTestLayer(runtime, completeProcessedEvent))),
+    );
+  });
+
+  it("clears active tool budget on normal settlement, interrupt, timeout, and teardown", async () => {
+    const outcomes = ["settle", "interrupt", "timeout", "teardown"] as const;
+    for (const outcome of outcomes) {
+      vi.useFakeTimers();
+      vi.setSystemTime(1_000);
+      const promptResult = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+      const { runtime, emitToolCall, completeProcessedEvent } = makeEventAcpRuntime(() =>
+        Deferred.await(promptResult),
+      );
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const adapter = yield* DevinAdapter;
+          const threadId = ThreadId.makeUnsafe(`thread-devin-clear-${outcome}`);
+          yield* adapter.startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+          });
+          const turn = yield* adapter.sendTurn({ threadId, input: outcome, attachments: [] });
+          yield* emitToolCall("tool", "pending");
+          if (outcome === "settle") {
+            yield* Deferred.succeed(promptResult, { stopReason: "end_turn" } as Acp.PromptResponse);
+            yield* advanceTimers(1);
+            expect(
+              (yield* adapter.listSessions()).find((session) => session.threadId === threadId)
+                ?.status,
+            ).toBe("ready");
+          } else if (outcome === "interrupt") {
+            yield* adapter.interruptTurn(threadId, turn.turnId);
+          } else if (outcome === "timeout") {
+            yield* emitToolCall("tool", "completed");
+            yield* advanceTimers(40);
+            expect(
+              (yield* adapter.listSessions()).find((session) => session.threadId === threadId)
+                ?.status,
+            ).toBe("error");
+          }
+          yield* adapter.stopSession(threadId);
+          expect(
+            (yield* adapter.listSessions()).find((session) => session.threadId === threadId),
+          ).toBeUndefined();
+        }).pipe(Effect.provide(makeDevinAdapterTestLayer(runtime, completeProcessedEvent))),
+      );
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("applyDevinSessionConfiguration", () => {
+  it("sets plan mode when requested", async () => {
+    const { runtime, calls } = makeFakeAcpRuntime({
+      currentModeId: "default",
+      availableModes: [
+        { id: "default", name: "Default" },
+        { id: "plan", name: "Plan" },
+      ],
+    });
+
+    await Effect.runPromise(
+      applyDevinSessionConfiguration({
+        runtime,
+        runtimeMode: "full-access",
+        interactionMode: "plan",
+      }),
+    );
+
+    expect(calls).toEqual([{ method: "setMode", args: ["plan"] }]);
+  });
+
+  it("does not touch config options for the model selection", async () => {
+    // Devin models are process-start `--model` flags; the per-turn
+    // set_config_option path must stay gone.
+    const { runtime, calls } = makeFakeAcpRuntime();
+
+    await Effect.runPromise(
+      applyDevinSessionConfiguration({
+        runtime,
+        runtimeMode: "full-access",
+        interactionMode: undefined,
+      }),
+    );
+
+    expect(calls).toEqual([]);
+  });
+
+  it.each(["approval-required", "plan"] as const)(
+    "fails closed for unavailable %s mode",
+    async (mode) => {
+      const { runtime, calls } = makeFakeAcpRuntime(
+        mode === "plan"
+          ? { currentModeId: "default", availableModes: [{ id: "default", name: "Default" }] }
+          : undefined,
+      );
+
+      await expect(
+        Effect.runPromise(
+          applyDevinSessionConfiguration({
+            runtime,
+            runtimeMode: mode === "plan" ? "full-access" : "approval-required",
+            interactionMode: mode === "plan" ? "plan" : undefined,
+          }),
+        ),
+      ).rejects.toMatchObject({ _tag: "ProviderAdapterValidationError" });
+      expect(calls).toEqual([]);
+    },
+  );
+});
+
+describe("resolveRequestedModeId", () => {
+  const devin300067Modes = [
+    { id: "accept-edits", name: "Code" },
+    { id: "smart", name: "Smart" },
+    { id: "ask", name: "Ask" },
+    { id: "plan", name: "Plan" },
+    { id: "bypass", name: "Full Access" },
+  ];
+  it("leaves default mode unchanged for non-plan turns", async () => {
+    const modeId = await Effect.runPromise(
+      resolveRequestedModeId({
+        modeState: {
+          currentModeId: "default",
+          availableModes: [{ id: "default", name: "Default" }],
+        },
+        runtimeMode: "full-access",
+        interactionMode: undefined,
+      }),
+    );
+    expect(modeId).toBeUndefined();
+  });
+
+  it("rejects ambiguous partial mode matches", async () => {
+    await expect(
+      Effect.runPromise(
+        resolveRequestedModeId({
+          modeState: {
+            currentModeId: "default",
+            availableModes: [{ id: "planner", name: "Planner" }],
+          },
+          runtimeMode: "full-access",
+          interactionMode: "plan",
+        }),
+      ),
+    ).rejects.toMatchObject({ _tag: "ProviderAdapterValidationError" });
+  });
+
+  it("maps approval-required to Code in the real Devin 3000.6.7 catalog", async () => {
+    await expect(
+      Effect.runPromise(
+        resolveRequestedModeId({
+          modeState: { currentModeId: "smart", availableModes: devin300067Modes },
+          runtimeMode: "approval-required",
+          interactionMode: undefined,
+        }),
+      ),
+    ).resolves.toBe("accept-edits");
+    await expect(
+      Effect.runPromise(
+        resolveRequestedModeId({
+          modeState: { currentModeId: "accept-edits", availableModes: devin300067Modes },
+          runtimeMode: "approval-required",
+          interactionMode: undefined,
+        }),
+      ),
+    ).resolves.toBeUndefined();
+  });
+
+  it("keeps Plan precedence and never maps approval-required to Smart or Ask", async () => {
+    await expect(
+      Effect.runPromise(
+        resolveRequestedModeId({
+          modeState: { currentModeId: "accept-edits", availableModes: devin300067Modes },
+          runtimeMode: "approval-required",
+          interactionMode: "plan",
+        }),
+      ),
+    ).resolves.toBe("plan");
+
+    for (const unavailableModes of [
+      devin300067Modes.filter((mode) => mode.id !== "accept-edits"),
+      [
+        { id: "smart", name: "Smart" },
+        { id: "ask", name: "Ask" },
+      ],
+    ]) {
+      await expect(
+        Effect.runPromise(
+          resolveRequestedModeId({
+            modeState: { currentModeId: "smart", availableModes: unavailableModes },
+            runtimeMode: "approval-required",
+            interactionMode: undefined,
+          }),
+        ),
+      ).rejects.toMatchObject({ _tag: "ProviderAdapterValidationError" });
+    }
+  });
+
+  it("maps full-access to Full Access without weakening approval-required", async () => {
+    await expect(
+      Effect.runPromise(
+        resolveRequestedModeId({
+          modeState: { currentModeId: "accept-edits", availableModes: devin300067Modes },
+          runtimeMode: "full-access",
+          interactionMode: undefined,
+        }),
+      ),
+    ).resolves.toBe("bypass");
+  });
+
+  it("applies Ask Everytime when Code is absent from the Devin catalog", async () => {
+    const harness = makeFakeAcpRuntime({
+      currentModeId: "full-access",
+      availableModes: [
+        { id: "full-access", name: "Full Access" },
+        { id: "ask-everytime", name: "Ask Everytime" },
+      ],
+    });
+    await Effect.runPromise(
+      applyDevinSessionConfiguration({
+        runtime: harness.runtime,
+        runtimeMode: "approval-required",
+        interactionMode: "default",
+      }),
+    );
+    expect(harness.calls).toEqual([{ method: "setMode", args: ["ask-everytime"] }]);
+  });
+});
+
+describe("resolveDevinStartModel", () => {
+  it.each([
+    {
+      name: "prefers the concrete variant over the selection and explicit model",
+      explicitModel: "default-model",
+      modelSelection: { model: "gpt-5.6-sol", options: { modelVariant: "gpt-5-6-sol-high" } },
+      expected: "gpt-5-6-sol-high",
+    },
+    {
+      name: "prefers the selected model over explicit config",
+      explicitModel: "default-model",
+      modelSelection: { model: "gpt-5.6-sol" },
+      expected: "gpt-5.6-sol",
+    },
+    {
+      name: "falls back to explicit config without a selection",
+      explicitModel: "default-model",
+      modelSelection: undefined,
+      expected: "default-model",
+    },
+    {
+      name: "leaves an omitted model undefined",
+      explicitModel: undefined,
+      modelSelection: undefined,
+      expected: undefined,
+    },
+    {
+      name: "resolves static traits without a web-populated variant",
+      explicitModel: undefined,
+      modelSelection: { model: "swe-1-7", options: { fastMode: true } },
+      expected: "swe-1-7-lightning",
+    },
+  ])("$name", async ({ explicitModel, modelSelection, expected }) => {
+    const model = await Effect.runPromise(
+      resolveDevinStartModel({
+        explicitModel,
+        modelSelection,
+        discoverModels: () => Effect.succeed({ models: [], source: "devin-cli", cached: false }),
+      }),
+    );
+    expect(model).toBe(expected);
+  });
+
+  it("discovers once and caches the next non-web trait selection", async () => {
+    let discoveryCalls = 0;
+    const cachedFlags: Array<boolean | undefined> = [];
+    const models = mergeDevinModelDescriptors([
+      parseDevinCliModelList(
+        JSON.stringify({
+          families: [
+            {
+              family_uid: "gpt-5.6-sol",
+              family_label: "GPT-5.6 Sol",
+              slug: "gpt-5.6-sol",
+              variants: [
+                { model_uid: "gpt-5-6-sol-medium", label: "GPT-5.6 Sol Medium" },
+                { model_uid: "gpt-5-6-sol-high", label: "GPT-5.6 Sol High" },
+              ],
+            },
+          ],
+        }),
+      ),
+    ]);
+
+    const effectiveModels = await Effect.runPromise(
+      Effect.gen(function* () {
+        const discoveryLock = yield* Semaphore.make(1);
+        const discoverModels = makeCachedDevinModelDiscovery({
+          discoveryLock,
+          discover: () =>
+            Effect.sync(() => {
+              discoveryCalls += 1;
+              return { models, source: "devin-cli", cached: false };
+            }),
+        });
+        const resolve = () =>
+          resolveDevinStartModel({
+            explicitModel: undefined,
+            modelSelection: {
+              model: "gpt-5.6-sol",
+              options: { reasoningEffort: "high" },
+            },
+            discoverModels: () =>
+              discoverModels(" /usr/local/bin/devin ").pipe(
+                Effect.tap((result) =>
+                  Effect.sync(() => {
+                    cachedFlags.push(result.cached);
+                  }),
+                ),
+              ),
+          });
+        return [yield* resolve(), yield* resolve()];
+      }),
+    );
+
+    expect(discoveryCalls).toBe(1);
+    expect(cachedFlags).toEqual([false, true]);
+    expect(effectiveModels).toEqual(["gpt-5-6-sol-high", "gpt-5-6-sol-high"]);
+  });
+
+  it("retries model discovery after a fallback error", async () => {
+    let discoveryCalls = 0;
+    const results = await Effect.runPromise(
+      Effect.gen(function* () {
+        const discoveryLock = yield* Semaphore.make(1);
+        const discoverModels = makeCachedDevinModelDiscovery({
+          discoveryLock,
+          discover: () =>
+            Effect.sync(() => {
+              discoveryCalls += 1;
+              return discoveryCalls === 1
+                ? { models: [], source: "devin.static", cached: false, error: "not ready" }
+                : { models: [], source: "devin-cli", cached: false };
+            }),
+        });
+        return [yield* discoverModels("devin"), yield* discoverModels("devin")];
+      }),
+    );
+
+    expect(discoveryCalls).toBe(2);
+    expect(results[0]?.error).toBe("not ready");
+    expect(results[1]?.error).toBeUndefined();
+  });
+
+  it("coalesces concurrent model discovery through the shared lock", async () => {
+    let discoveryCalls = 0;
+    const results = await Effect.runPromise(
+      Effect.gen(function* () {
+        const discoveryLock = yield* Semaphore.make(1);
+        const discoverModels = makeCachedDevinModelDiscovery({
+          discoveryLock,
+          discover: () =>
+            Effect.gen(function* () {
+              discoveryCalls += 1;
+              yield* Effect.sleep(10);
+              return { models: [], source: "devin-cli", cached: false };
+            }),
+        });
+        return yield* Effect.all([discoverModels("devin"), discoverModels("devin")], {
+          concurrency: "unbounded",
+        });
+      }),
+    );
+
+    expect(discoveryCalls).toBe(1);
+    expect(results.map((result) => result.cached)).toEqual([false, true]);
+  });
+
+  it("does not discover models when no trait needs resolution", async () => {
+    let discoveryCalls = 0;
+    const effectiveModel = await Effect.runPromise(
+      resolveDevinStartModel({
+        explicitModel: undefined,
+        modelSelection: { model: "gpt-5.6-sol" },
+        discoverModels: () => {
+          discoveryCalls += 1;
+          return Effect.succeed({ models: [], source: "devin-cli", cached: false });
+        },
+      }),
+    );
+
+    expect(discoveryCalls).toBe(0);
+    expect(effectiveModel).toBe("gpt-5.6-sol");
+  });
+
+  it("rejects requested traits that have no concrete model variant", async () => {
+    await expect(
+      Effect.runPromise(
+        resolveDevinStartModel({
+          explicitModel: undefined,
+          modelSelection: {
+            model: "gpt-5.6-sol",
+            options: { reasoningEffort: "medium" },
+          },
+          discoverModels: () =>
+            Effect.succeed({
+              source: "devin-cli",
+              cached: false,
+              models: [
+                {
+                  slug: "gpt-5.6-sol",
+                  name: "GPT-5.6 Sol",
+                  modelVariants: [
+                    { model: "gpt-5-6-sol-low", reasoningEffort: "low" },
+                    { model: "gpt-5-6-sol-high", reasoningEffort: "high" },
+                  ],
+                },
+              ],
+            }),
+        }),
+      ),
+    ).rejects.toMatchObject({
+      _tag: "ProviderAdapterValidationError",
+      operation: "resolveDevinStartModel",
+    });
+  });
+
+  it("resolves traits when the stored model is already a concrete variant", async () => {
+    const effectiveModel = await Effect.runPromise(
+      resolveDevinStartModel({
+        explicitModel: undefined,
+        modelSelection: {
+          model: "gpt-5-6-sol-high",
+          options: { reasoningEffort: "high" },
+        },
+        discoverModels: () =>
+          Effect.succeed({
+            source: "devin-cli",
+            cached: false,
+            models: [
+              {
+                slug: "gpt-5.6-sol",
+                name: "GPT-5.6 Sol",
+                modelVariants: [
+                  { model: "gpt-5-6-sol-low", reasoningEffort: "low" },
+                  { model: "gpt-5-6-sol-high", reasoningEffort: "high" },
+                ],
+              },
+            ],
+          }),
+      }),
+    );
+
+    expect(effectiveModel).toBe("gpt-5-6-sol-high");
+  });
+});
+
+describe("buildDevinPromptMeta", () => {
+  it("maps plan to plan and default to agent", () => {
+    expect(buildDevinPromptMeta("plan")).toEqual({ mode: "plan" });
+    expect(buildDevinPromptMeta("default")).toEqual({ mode: "agent" });
+  });
+});
+
+describe("buildDevinStaticModelDescriptors", () => {
+  it("advertises SWE fast mode with concrete resolvable variants", () => {
+    const descriptors = buildDevinStaticModelDescriptors();
+    expect(descriptors.find((descriptor) => descriptor.slug === "swe-1-6")).toMatchObject({
+      supportsFastMode: true,
+      modelVariants: [
+        { model: "swe-1-6", fastMode: false },
+        { model: "swe-1-6-fast", fastMode: true },
+      ],
+    });
+  });
+});
+
+describe("Devin CLI model discovery", () => {
+  it("publishes reasoning, fast, context, and concrete variant metadata", () => {
+    const models = parseDevinCliModelList(
+      JSON.stringify({
+        families: [
+          {
+            family_uid: "gpt-5.6-sol",
+            family_label: "GPT-5.6 Sol",
+            slug: "gpt-5.6-sol",
+            variants: [
+              {
+                model_uid: "gpt-5-6-sol-medium",
+                label: "GPT-5.6 Sol Medium",
+                max_context_tokens: 200_000,
+              },
+              {
+                model_uid: "gpt-5-6-sol-low",
+                label: "GPT-5.6 Sol Low",
+                max_context_tokens: 200_000,
+              },
+              {
+                model_uid: "gpt-5-6-sol-high",
+                label: "GPT-5.6 Sol High",
+                max_context_tokens: 200_000,
+              },
+              {
+                model_uid: "gpt-5-6-sol-medium-priority",
+                label: "GPT-5.6 Sol Medium Priority",
+                max_context_tokens: 1_000_000,
+              },
+            ],
+          },
+        ],
+      }),
+    );
+
+    const [model] = mergeDevinModelDescriptors([models]);
+    if (!model) throw new Error("Expected GPT-5.6 Sol to be discovered");
+    expect(model).toMatchObject({
+      slug: "gpt-5.6-sol",
+      name: "GPT-5.6 Sol",
+      defaultReasoningEffort: "medium",
+      supportsFastMode: true,
+      defaultContextWindow: "200k",
+    });
+    expect(model.supportedReasoningEfforts?.map((effort) => effort.value)).toEqual([
+      "low",
+      "medium",
+      "high",
+    ]);
+    expect(model.contextWindowOptions?.map((option) => option.value)).toEqual(["200k", "1m"]);
+    expect(model.modelVariants).toContainEqual({
+      model: "gpt-5-6-sol-medium-priority",
+      reasoningEffort: "medium",
+      contextWindow: "1m",
+      fastMode: true,
+    });
+  });
+
+  it("recognizes SWE lightning as a fast variant", () => {
+    const [model] = mergeDevinModelDescriptors([
+      parseDevinCliModelList(
+        JSON.stringify({
+          families: [
+            {
+              family_uid: "swe-1-7",
+              family_label: "SWE 1.7",
+              slug: "swe-1-7",
+              variants: [
+                { model_uid: "swe-1-7", label: "SWE 1.7" },
+                { model_uid: "swe-1-7-lightning", label: "SWE 1.7 Lightning" },
+              ],
+            },
+          ],
+        }),
+      ),
+    ]);
+
+    expect(model).toMatchObject({
+      slug: "swe-1-7",
+      supportsFastMode: true,
+      modelVariants: [
+        { model: "swe-1-7", fastMode: false },
+        { model: "swe-1-7-lightning", fastMode: true },
+      ],
+    });
+  });
+
+  it("exposes thinking and long-context toggles for Claude-style variants", () => {
+    const models = parseDevinCliModelList(
+      JSON.stringify({
+        families: [
+          {
+            family_uid: "claude-opus-4.6",
+            family_label: "Claude Opus 4.6",
+            slug: "claude-opus-4.6",
+            variants: [
+              {
+                model_uid: "claude-opus-4-6",
+                label: "Claude Opus 4.6",
+                max_context_tokens: 200_000,
+              },
+              {
+                model_uid: "claude-opus-4-6-thinking",
+                label: "Claude Opus 4.6 Thinking",
+                max_context_tokens: 200_000,
+              },
+              {
+                model_uid: "claude-opus-4-6-1m",
+                label: "Claude Opus 4.6 1M",
+                max_context_tokens: 1_000_000,
+              },
+              {
+                model_uid: "claude-opus-4-6-thinking-1m",
+                label: "Claude Opus 4.6 Thinking 1M",
+                max_context_tokens: 1_000_000,
+              },
+            ],
+          },
+        ],
+      }),
+    );
+
+    const [model] = mergeDevinModelDescriptors([models]);
+    if (!model) throw new Error("Expected Claude Opus 4.6 to be discovered");
+    expect(model).toMatchObject({
+      supportsThinkingToggle: true,
+      defaultContextWindow: "200k",
+    });
+    expect(model.contextWindowOptions?.map((option) => option.value)).toEqual(["200k", "1m"]);
+    expect(model.modelVariants).toContainEqual({
+      model: "claude-opus-4-6-thinking-1m",
+      contextWindow: "1m",
+      thinking: true,
+    });
+    expect(model.modelVariants).toContainEqual({
+      model: "claude-opus-4-6",
+      contextWindow: "200k",
+      thinking: false,
+    });
+  });
+
+  it("returns no descriptors for non-JSON CLI output", () => {
+    expect(parseDevinCliModelList("devin: not logged in")).toEqual([]);
+  });
+});
+
+describe("resolveDevinToolCallUpdatedTurnId", () => {
+  it("keeps a trailing update on its recorded older turn while a newer turn is active", () => {
+    // Regression: a late ToolCallUpdated for turn A arriving while turn B is
+    // active must resolve under turn A (so A's tool row updates in place) and
+    // must never be re-associated with turn B — the handler only applies
+    // current-turn failed-tool detail when the resolved turn is the active
+    // turn, so a non-active resolution cannot set turn B's failure state.
+    const toolCallTurnIds = new Map<string, TurnId>([["tc-1", asTurnId("turn-A")]]);
+
+    expect(
+      resolveDevinToolCallUpdatedTurnId({
+        toolCallId: "tc-1",
+        activeTurnId: asTurnId("turn-B"),
+        resumeReplayReady: false,
+        toolCallTurnIds,
+      }),
+    ).toBe(asTurnId("turn-A"));
+  });
+
+  it("routes same-turn updates to the active turn and suppresses during replay", () => {
+    const toolCallTurnIds = new Map<string, TurnId>([["tc-1", asTurnId("turn-A")]]);
+
+    // A not-yet-recorded id belongs to the active turn.
+    expect(
+      resolveDevinToolCallUpdatedTurnId({
+        toolCallId: "tc-2",
+        activeTurnId: asTurnId("turn-B"),
+        resumeReplayReady: false,
+        toolCallTurnIds,
+      }),
+    ).toBe(asTurnId("turn-B"));
+
+    // A recorded id with no active turn (between turns) stays on its turn.
+    expect(
+      resolveDevinToolCallUpdatedTurnId({
+        toolCallId: "tc-1",
+        activeTurnId: undefined,
+        resumeReplayReady: false,
+        toolCallTurnIds,
+      }),
+    ).toBe(asTurnId("turn-A"));
+
+    // Resume replay stays suppressed like every other session/update event.
+    expect(
+      resolveDevinToolCallUpdatedTurnId({
+        toolCallId: "tc-1",
+        activeTurnId: asTurnId("turn-B"),
+        resumeReplayReady: true,
+        toolCallTurnIds,
+      }),
+    ).toBeUndefined();
+  });
+});
+
+describe("pruneDevinToolCallTurnIds", () => {
+  it("keeps only the kept turn's tool-call mappings", () => {
+    const toolCallTurnIds = new Map<string, TurnId>([
+      ["tc-a", asTurnId("turn-A")],
+      ["tc-b", asTurnId("turn-B")],
+      ["tc-c", asTurnId("turn-C")],
+    ]);
+
+    pruneDevinToolCallTurnIds(toolCallTurnIds, asTurnId("turn-B"));
+
+    expect(toolCallTurnIds).toEqual(new Map([["tc-b", asTurnId("turn-B")]]));
+  });
+
+  it("drops every mapping when there is no kept turn", () => {
+    const toolCallTurnIds = new Map<string, TurnId>([["tc-a", asTurnId("turn-A")]]);
+
+    pruneDevinToolCallTurnIds(toolCallTurnIds, undefined);
+
+    expect(toolCallTurnIds.size).toBe(0);
+  });
+});
+
+describe("closeDevinSessionResources", () => {
+  it("closes the ACP scope before config cleanup and contains cleanup failure", async () => {
+    const calls: string[] = [];
+    const scope = await Effect.runPromise(Scope.make("sequential"));
+    await Effect.runPromise(
+      Scope.addFinalizer(
+        scope,
+        Effect.sync(() => {
+          calls.push("scope");
+        }),
+      ),
+    );
+
+    await expect(
+      Effect.runPromise(
+        closeDevinSessionResources({
+          scope,
+          config: {
+            cleanup: async () => {
+              calls.push("config");
+              throw new Error("cleanup rejected");
+            },
+          },
+        }),
+      ),
+    ).resolves.toBeUndefined();
+
+    expect(calls).toEqual(["scope", "config"]);
+    expect(await Effect.runPromise(Scope.close(scope, Exit.void))).toBeUndefined();
+  });
+});
+
+describe("Devin startup timeout recovery", () => {
+  it.each([false, true])(
+    "requires successful cleanup before rejecting startup (cleanup fails: %s)",
+    async (cleanupFails) => {
+      const timeout = new AcpRequestError({
+        code: -32001,
+        errorMessage: "ACP agent did not respond to initialize within 20s.",
+        data: { reason: "acp-startup-timeout", step: "initialize", timeoutMs: 20_000 },
+      });
+      let cleanedUp = false;
+      const cleanupError = new Error("process exit unproven");
+      const runtime = { ...makeLifecycleAcpRuntime(), start: () => Effect.fail(timeout) };
+      const layer = makeDevinAdapterLive(
+        {},
+        {
+          makeAcpRuntime: () =>
+            Effect.gen(function* () {
+              yield* Effect.addFinalizer(() =>
+                Effect.sync(() => {
+                  if (cleanupFails) throw cleanupError;
+                  cleanedUp = true;
+                }),
+              );
+              return runtime;
+            }),
+        },
+      ).pipe(
+        Layer.provideMerge(
+          ServerConfig.layerTest(process.cwd(), { prefix: "devin-startup-test-" }),
+        ),
+        Layer.provideMerge(NodeServices.layer),
+      );
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const adapter = yield* DevinAdapter;
+          const threadId = ThreadId.makeUnsafe("devin-startup-timeout");
+          const exit = yield* adapter
+            .startSession({
+              provider: "devin",
+              threadId,
+              runtimeMode: "full-access",
+              cwd: process.cwd(),
+            })
+            .pipe(Effect.exit);
+          expect(Exit.isFailure(exit)).toBe(true);
+          if (Exit.isFailure(exit)) {
+            if (cleanupFails) {
+              expect(Cause.pretty(exit.cause)).toContain("process exit unproven");
+            } else {
+              expect(Cause.squash(exit.cause)).toMatchObject({
+                _tag: "ProviderAdapterProcessError",
+                reason: "startup-failed",
+                cause: timeout,
+              });
+            }
+          }
+          expect(cleanedUp).toBe(!cleanupFails);
+          expect(yield* adapter.hasSession(threadId)).toBe(false);
+        }).pipe(Effect.provide(layer)),
+      );
+    },
+  );
+});
+
+describe("Devin stale resume classification", () => {
+  it.each([
+    {
+      name: "exact resume rejection",
+      resume: true,
+      message: "Failed to load session data",
+      recoverable: true,
+    },
+    {
+      name: "normalized resume rejection",
+      resume: true,
+      message: " FAILED TO LOAD SESSION DATA ",
+      recoverable: true,
+    },
+    {
+      name: "fresh startup failure",
+      resume: false,
+      message: "Failed to load session data",
+      recoverable: false,
+    },
+    {
+      name: "auth error containing the phrase",
+      resume: true,
+      message: "Authentication failed: failed to load session data",
+      recoverable: false,
+    },
+    {
+      name: "transport failure",
+      resume: true,
+      message: "Failed to load session data",
+      transport: true,
+      recoverable: false,
+    },
+  ])("classifies $name without leaving a live session", async (testCase) => {
+    const cause = testCase.transport
+      ? new AcpTransportError({ detail: testCase.message, cause: new Error(testCase.message) })
+      : new AcpRequestError({ code: -32603, errorMessage: testCase.message });
+    const runtime = { ...makeLifecycleAcpRuntime(), start: () => Effect.fail(cause) };
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-classify-stale");
+        const error = yield* adapter
+          .startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+            ...(testCase.resume
+              ? { resumeCursor: { schemaVersion: 1, sessionId: "old-session" } }
+              : {}),
+          })
+          .pipe(Effect.flip);
+        expect(error).toBeInstanceOf(ProviderAdapterProcessError);
+        expect(error).toMatchObject({ cause });
+        expect((error as ProviderAdapterProcessError).reason).toBe(
+          testCase.recoverable ? "resume-state-unavailable" : undefined,
+        );
+        expect(yield* adapter.hasSession(threadId)).toBe(false);
+      }).pipe(Effect.provide(makeDevinAdapterTestLayer(runtime))),
+    );
+  });
+});
+
+describe("Devin resume model pinning", () => {
+  const sessionId = "devin-test-session";
+  const startWith = (input: { resumeCursor?: unknown; modelVariant?: string }) => {
+    const spawns: Array<Pick<DevinAcpRuntimeInput, "devinSettings" | "resumeSessionId">> = [];
+    const layer = makeDevinAdapterLive(
+      {},
+      {
+        makeAcpRuntime: (runtimeInput) =>
+          Effect.sync(() => {
+            spawns.push(runtimeInput);
+            return makeLifecycleAcpRuntime();
+          }),
+        timeouts: { turnIdleMs: 30, toolIdleMs: 60 },
+      },
+    ).pipe(
+      Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-resume-model-" })),
+      Layer.provideMerge(NodeServices.layer),
+    );
+    return Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-resume-model");
+        const result = yield* adapter
+          .startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+            ...(input.modelVariant
+              ? {
+                  modelSelection: {
+                    provider: "devin",
+                    model: "gpt-6-astra",
+                    options: { modelVariant: input.modelVariant },
+                  },
+                }
+              : {}),
+            ...(input.resumeCursor !== undefined ? { resumeCursor: input.resumeCursor } : {}),
+          })
+          .pipe(Effect.result);
+        const live = yield* adapter.hasSession(threadId);
+        yield* adapter.stopAll();
+        return { result, live, spawns };
+      }).pipe(Effect.provide(layer)),
+    );
+  };
+
+  it("records the concrete model and reloads only a session created for it", async () => {
+    const fresh = await startWith({ modelVariant: "gpt-6-astra-xhigh-priority" });
+    expect(fresh.result._tag).toBe("Success");
+    const cursor = fresh.result._tag === "Success" ? fresh.result.success.resumeCursor : undefined;
+    expect(cursor).toEqual({
+      schemaVersion: 1,
+      sessionId,
+      model: "gpt-6-astra-xhigh-priority",
+    });
+
+    const reloaded = await startWith({
+      modelVariant: "gpt-6-astra-xhigh-priority",
+      resumeCursor: cursor,
+    });
+    expect(reloaded.result._tag).toBe("Success");
+    expect(reloaded.spawns.map((spawn) => spawn.resumeSessionId)).toEqual([sessionId]);
+    expect(reloaded.result._tag === "Success" && reloaded.result.success.resumeCursor).toEqual(
+      cursor,
+    );
+  });
+
+  it.each([
+    {
+      name: "a session created for another variant (Fast turned off)",
+      resumeCursor: { schemaVersion: 1, sessionId, model: "gpt-6-astra-xhigh-priority" },
+    },
+    {
+      name: "a legacy cursor that never recorded its model",
+      resumeCursor: { schemaVersion: 1, sessionId },
+    },
+  ])("refuses to reload $name before spawning Devin", async ({ resumeCursor }) => {
+    const { result, live, spawns } = await startWith({
+      modelVariant: "gpt-6-astra-xhigh",
+      resumeCursor,
+    });
+    expect(result._tag).toBe("Failure");
+    if (result._tag === "Failure") {
+      expect(result.failure).toBeInstanceOf(ProviderAdapterProcessError);
+      expect(result.failure).toMatchObject({ reason: "resume-state-unavailable" });
+    }
+    expect(spawns).toEqual([]);
+    expect(live).toBe(false);
+  });
+
+  it("keeps reloading a legacy cursor when no model is requested", async () => {
+    const { result, spawns } = await startWith({
+      resumeCursor: { schemaVersion: 1, sessionId },
+    });
+    expect(result._tag).toBe("Success");
+    expect(spawns.map((spawn) => spawn.resumeSessionId)).toEqual([sessionId]);
+  });
+});
+
+function makePermissionRuntime(prompt: AcpSessionRuntimeShape["prompt"] = () => Effect.never) {
+  let permissionHandler:
+    | ((
+        request: Acp.RequestPermissionRequest,
+      ) => Effect.Effect<Acp.RequestPermissionResponse, AcpErrors.AcpError>)
+    | undefined;
+  // Permission requests must arrive while a turn is still active: an
+  // immediately-completing prompt clears the interaction mode and the policy
+  // layer would cancel the request before it ever reaches the approval card.
+  const handles = makeEventAcpRuntime(prompt);
+  let modeId = "code";
+  const runtime = {
+    ...handles.runtime,
+    // Approval-required sessions resolve their ACP mode id from the reported
+    // modes, so the harness must advertise one besides "bypass".
+    getModeState: Effect.sync(() => ({
+      currentModeId: modeId,
+      availableModes: [
+        { id: "code", name: "Accept Edits" },
+        { id: "bypass", name: "Full Access" },
+      ],
+    })),
+    setMode: (next: string) =>
+      Effect.sync(() => {
+        modeId = next;
+        return {} as Acp.SetSessionModeResponse;
+      }),
+    handleRequestPermission: (
+      handler: (
+        request: Acp.RequestPermissionRequest,
+      ) => Effect.Effect<Acp.RequestPermissionResponse, AcpErrors.AcpError>,
+    ) =>
+      Effect.sync(() => {
+        permissionHandler = handler;
+      }),
+  } as AcpSessionRuntimeShape;
+  return {
+    runtime,
+    emitToolCall: handles.emitToolCall,
+    emitProgress: handles.emitProgress,
+    emitAssistantCompleted: handles.emitAssistantCompleted,
+    completeProcessedEvent: handles.completeProcessedEvent,
+    requestPermission: (request: Acp.RequestPermissionRequest) =>
+      permissionHandler === undefined
+        ? Effect.fail(
+            new AcpRequestError({
+              code: -32603,
+              errorMessage: "permission handler was not registered",
+            }),
+          )
+        : permissionHandler(request),
+  };
+}
+
+const makePermissionParams = (
+  toolCallId: string,
+  toolCall?: Partial<Acp.RequestPermissionRequest["toolCall"]>,
+): Acp.RequestPermissionRequest => ({
+  sessionId: "devin-test-session",
+  toolCall: { toolCallId, kind: "other", ...toolCall },
+  options: [
+    { optionId: "allow-once", kind: "allow_once", name: "Allow once" },
+    { optionId: "allow-always", kind: "allow_always", name: "Always allow" },
+    { optionId: "reject-once", kind: "reject_once", name: "Reject" },
+  ],
+});
+
+function makeFakeAgentGatewayCredentials(): AgentGatewayCredentialsShape {
+  return {
+    mcpEndpointUrl: "http://127.0.0.1:9/mcp",
+    setListeningPort: () => undefined,
+    issueSessionToken: () => "session-token",
+    verifySessionToken: () => null,
+    verifySession: () => null,
+    issueStdioBootstrapToken: () => "bootstrap-token",
+    exchangeStdioBootstrapToken: () => null,
+    bindWriteAuthority: () => null,
+    verifyWriteAuthority: () => false,
+    registerInFlightRequest: () => () => undefined,
+    cancelInFlightRequests: () => ({ count: 0, settled: Promise.resolve() }),
+    cancelSessionTurnRequests: () => Promise.resolve(),
+    retireSessionTurn: () => Promise.resolve(),
+    revokeSessionToken: () => undefined,
+    connectionForThread: () => ({
+      url: "http://127.0.0.1:9/mcp",
+      bearerToken: "bearer-token",
+    }),
+    stdioProxy: { command: "/bin/true", args: [] },
+  };
+}
+
+describe("Devin permission requests", () => {
+  it("labels the approval card with the tracked tool name and arguments", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const handles = makePermissionRuntime();
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-permission-detail");
+        const runtimeEvents: Array<{
+          type: string;
+          requestId?: unknown;
+          payload?: Record<string, unknown>;
+        }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              runtimeEvents.push({
+                type: event.type,
+                requestId: event.requestId,
+                payload: event.payload as Record<string, unknown>,
+              });
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "approval-required",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "work", attachments: [] });
+        yield* handles.emitToolCall("call-1", "pending", {
+          title: "synara_list_threads",
+          kind: "other",
+          data: {
+            rawInput: {
+              _toolName: "synara_list_threads",
+              arguments: { limit: 5 },
+            },
+          },
+        });
+        handles.completeProcessedEvent();
+
+        // Devin's request_permission toolCall is sparse: only toolCallId + kind.
+        const pending = yield* handles
+          .requestPermission(makePermissionParams("call-1"))
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        const opened = runtimeEvents.find((event) => event.type === "request.opened");
+        expect(opened).toBeDefined();
+        expect(opened?.payload?.requestType).toBe("tool_approval");
+        expect(opened?.payload?.detail).toBe('synara_list_threads: {"limit":5}');
+        const openedArgs = opened?.payload?.args as Record<string, unknown> | undefined;
+        expect(openedArgs?.toolName).toBe("synara_list_threads");
+        expect(openedArgs?.input).toEqual({ limit: 5 });
+
+        yield* adapter.respondToRequest(threadId, opened!.requestId as never, "accept");
+        const response = yield* Fiber.join(pending);
+        expect(response).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-once" },
+        });
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }),
+        ),
+      ),
+    );
+  });
+
+  it("sticks 'Always allow this session' to the exact command or tool approved", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const handles = makePermissionRuntime();
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-session-allow");
+        const runtimeEvents: Array<{
+          type: string;
+          requestId?: unknown;
+          payload?: Record<string, unknown>;
+        }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              runtimeEvents.push({
+                type: event.type,
+                requestId: event.requestId,
+                payload: event.payload as Record<string, unknown>,
+              });
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "approval-required",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "work", attachments: [] });
+
+        const openedCount = () =>
+          runtimeEvents.filter((event) => event.type === "request.opened").length;
+
+        // Approving `ls` for the session …
+        const first = yield* handles
+          .requestPermission(
+            makePermissionParams("call-1", {
+              kind: "execute",
+              rawInput: { command: "ls" },
+            }),
+          )
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        const opened = runtimeEvents.find((event) => event.type === "request.opened");
+        expect(opened?.payload?.requestType).toBe("exec_command_approval");
+        yield* adapter.respondToRequest(threadId, opened!.requestId as never, "acceptForSession");
+        expect(yield* Fiber.join(first)).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-always" },
+        });
+
+        // … approves the exact same command without prompting …
+        const second = yield* handles.requestPermission(
+          makePermissionParams("call-2", {
+            kind: "execute",
+            rawInput: { command: "ls" },
+          }),
+        );
+        expect(second).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-always" },
+        });
+        expect(openedCount()).toBe(1);
+
+        // … but never a different command on the same kind — `rm -rf` still
+        // prompts even though `ls` was always-allowed.
+        const destructive = yield* handles
+          .requestPermission(
+            makePermissionParams("call-3", {
+              kind: "execute",
+              rawInput: { command: "rm -rf x" },
+            }),
+          )
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        expect(openedCount()).toBe(2);
+        const rmOpened = runtimeEvents.findLast((event) => event.type === "request.opened");
+        yield* adapter.respondToRequest(threadId, rmOpened!.requestId as never, "acceptForSession");
+        expect(yield* Fiber.join(destructive)).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-always" },
+        });
+
+        // An execute request with no command string can never be remembered:
+        // an unnamed command is not a stable identity, so it always prompts.
+        const unnamed = yield* handles
+          .requestPermission(makePermissionParams("call-4", { kind: "execute" }))
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        expect(openedCount()).toBe(3);
+        const unnamedOpened = runtimeEvents.findLast((event) => event.type === "request.opened");
+        yield* adapter.respondToRequest(
+          threadId,
+          unnamedOpened!.requestId as never,
+          "acceptForSession",
+        );
+        expect(yield* Fiber.join(unnamed)).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-always" },
+        });
+        const unnamedAgain = yield* handles
+          .requestPermission(makePermissionParams("call-5", { kind: "execute" }))
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        expect(openedCount()).toBe(4);
+        const unnamedAgainOpened = runtimeEvents.findLast(
+          (event) => event.type === "request.opened",
+        );
+        yield* adapter.respondToRequest(threadId, unnamedAgainOpened!.requestId as never, "cancel");
+        expect(yield* Fiber.join(unnamedAgain)).toEqual({
+          outcome: { outcome: "cancelled" },
+        });
+
+        // Approving one MCP tool never approves another — the remembered key
+        // is (kind + exact tool name), not the broad request kind.
+        const firstMcp = yield* handles
+          .requestPermission(
+            makePermissionParams("call-6", {
+              kind: "other",
+              rawInput: { _toolName: "mcp__github__list_issues", arguments: {} },
+            }),
+          )
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        const firstMcpOpened = runtimeEvents.findLast((event) => event.type === "request.opened");
+        yield* adapter.respondToRequest(
+          threadId,
+          firstMcpOpened!.requestId as never,
+          "acceptForSession",
+        );
+        expect(yield* Fiber.join(firstMcp)).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-always" },
+        });
+
+        const otherMcp = yield* handles
+          .requestPermission(
+            makePermissionParams("call-7", {
+              kind: "other",
+              rawInput: { _toolName: "mcp__github__create_issue", arguments: {} },
+            }),
+          )
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        expect(runtimeEvents.filter((event) => event.type === "request.opened").length).toBe(6);
+        const otherMcpOpened = runtimeEvents.findLast((event) => event.type === "request.opened");
+        yield* adapter.respondToRequest(threadId, otherMcpOpened!.requestId as never, "cancel");
+        expect(yield* Fiber.join(otherMcp)).toEqual({ outcome: { outcome: "cancelled" } });
+
+        // The same tool resolves without prompting again.
+        const sameMcp = yield* handles.requestPermission(
+          makePermissionParams("call-8", {
+            kind: "other",
+            rawInput: { _toolName: "mcp__github__list_issues", arguments: {} },
+          }),
+        );
+        expect(sameMcp).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-always" },
+        });
+        expect(runtimeEvents.filter((event) => event.type === "request.opened").length).toBe(6);
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }),
+        ),
+      ),
+    );
+  });
+
+  it("never remembers destructive or network request kinds for the session", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const handles = makePermissionRuntime();
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-session-no-memory");
+        const runtimeEvents: Array<{ type: string; requestId?: unknown }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              runtimeEvents.push({ type: event.type, requestId: event.requestId });
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "approval-required",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "work", attachments: [] });
+
+        for (const kind of ["delete", "move", "fetch"] as const) {
+          const before = runtimeEvents.filter((event) => event.type === "request.opened").length;
+          const first = yield* handles
+            .requestPermission(
+              makePermissionParams(`${kind}-1`, {
+                kind,
+                rawInput: { _toolName: `mcp__fs__${kind}_file`, arguments: {} },
+              }),
+            )
+            .pipe(Effect.forkChild);
+          yield* flushTimers();
+          const opened = runtimeEvents.findLast((event) => event.type === "request.opened");
+          expect(opened).toBeDefined();
+          yield* adapter.respondToRequest(threadId, opened!.requestId as never, "acceptForSession");
+          expect(yield* Fiber.join(first)).toEqual({
+            outcome: { outcome: "selected", optionId: "allow-always" },
+          });
+
+          // The identical request still prompts — these kinds are never
+          // written into the session allow-list.
+          const second = yield* handles
+            .requestPermission(
+              makePermissionParams(`${kind}-2`, {
+                kind,
+                rawInput: { _toolName: `mcp__fs__${kind}_file`, arguments: {} },
+              }),
+            )
+            .pipe(Effect.forkChild);
+          yield* flushTimers();
+          expect(runtimeEvents.filter((event) => event.type === "request.opened").length).toBe(
+            before + 2,
+          );
+          const secondOpened = runtimeEvents.findLast((event) => event.type === "request.opened");
+          yield* adapter.respondToRequest(threadId, secondOpened!.requestId as never, "cancel");
+          expect(yield* Fiber.join(second)).toEqual({ outcome: { outcome: "cancelled" } });
+        }
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }),
+        ),
+      ),
+    );
+  });
+
+  it("auto-approves Synara gateway tools for coordinator threads only", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const handles = makePermissionRuntime();
+    const credentialsLayer = Layer.succeed(
+      AgentGatewayCredentials,
+      makeFakeAgentGatewayCredentials(),
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-gateway-auto");
+        const runtimeEvents: Array<{
+          type: string;
+          requestId?: unknown;
+          payload?: Record<string, unknown>;
+        }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              runtimeEvents.push({
+                type: event.type,
+                requestId: event.requestId,
+                payload: event.payload as Record<string, unknown>,
+              });
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "approval-required",
+          cwd: process.cwd(),
+          autoApproveSynaraTools: true,
+        });
+        yield* adapter.sendTurn({ threadId, input: "coordinate", attachments: [] });
+
+        // A Synara gateway tool call resolves without ever surfacing a prompt.
+        const gateway = yield* handles.requestPermission(
+          makePermissionParams("call-gw", {
+            kind: "other",
+            rawInput: {
+              _toolName: "synara_list_threads",
+              arguments: { limit: 3 },
+            },
+          }),
+        );
+        expect(gateway).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-once" },
+        });
+        expect(runtimeEvents.some((event) => event.type === "request.opened")).toBe(false);
+
+        // A non-gateway tool still prompts.
+        const regular = yield* handles
+          .requestPermission(
+            makePermissionParams("call-regular", {
+              kind: "other",
+              rawInput: { _toolName: "github_list_issues", arguments: {} },
+            }),
+          )
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        const opened = runtimeEvents.find((event) => event.type === "request.opened");
+        expect(opened).toBeDefined();
+        yield* adapter.respondToRequest(threadId, opened!.requestId as never, "accept");
+        expect(yield* Fiber.join(regular)).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-once" },
+        });
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }).pipe(Layer.provideMerge(credentialsLayer)),
+        ),
+      ),
+    );
+  });
+
+  it("never auto-approves an execute kind, an unknown catalog name, or a title-only name", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const handles = makePermissionRuntime();
+    const credentialsLayer = Layer.succeed(
+      AgentGatewayCredentials,
+      makeFakeAgentGatewayCredentials(),
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-gateway-spoof");
+        const runtimeEvents: Array<{
+          type: string;
+          requestId?: unknown;
+          payload?: Record<string, unknown>;
+        }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              runtimeEvents.push({
+                type: event.type,
+                requestId: event.requestId,
+                payload: event.payload as Record<string, unknown>,
+              });
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "approval-required",
+          cwd: process.cwd(),
+          autoApproveSynaraTools: true,
+        });
+        yield* adapter.sendTurn({ threadId, input: "coordinate", attachments: [] });
+
+        const openedCount = () =>
+          runtimeEvents.filter((event) => event.type === "request.opened").length;
+        const promptCases: Array<{
+          toolCallId: string;
+          toolCall: Partial<Acp.RequestPermissionRequest["toolCall"]>;
+        }> = [
+          // An execute request titled like a gateway tool is a shell command —
+          // the kind alone must keep it off the auto-approve path.
+          {
+            toolCallId: "spoof-title-execute",
+            toolCall: { kind: "execute", title: "mcp__synara__x; rm -rf y" },
+          },
+          // Even a real catalog name on an execute-kind request keeps the
+          // normal prompt path.
+          {
+            toolCallId: "spoof-kind-execute",
+            toolCall: {
+              kind: "execute",
+              rawInput: { _toolName: "synara_list_threads", command: "rm -rf y" },
+            },
+          },
+          // The mcp__synara__ prefix alone names nothing: the part after it
+          // must be a real catalog tool.
+          {
+            toolCallId: "spoof-catalog",
+            toolCall: {
+              kind: "other",
+              rawInput: { _toolName: "mcp__synara__not_a_gateway_tool" },
+            },
+          },
+          // A gateway-looking title with no tool name in rawInput/metadata is
+          // presentational text — it never authorizes anything.
+          {
+            toolCallId: "spoof-title-only",
+            toolCall: { kind: "other", title: "mcp__synara__synara_list_threads" },
+          },
+        ];
+        for (const promptCase of promptCases) {
+          const before = openedCount();
+          const pending = yield* handles
+            .requestPermission(makePermissionParams(promptCase.toolCallId, promptCase.toolCall))
+            .pipe(Effect.forkChild);
+          yield* flushTimers();
+          expect(openedCount(), promptCase.toolCallId).toBe(before + 1);
+          const opened = runtimeEvents.findLast((event) => event.type === "request.opened");
+          yield* adapter.respondToRequest(threadId, opened!.requestId as never, "cancel");
+          expect(yield* Fiber.join(pending)).toEqual({ outcome: { outcome: "cancelled" } });
+        }
+
+        // Control: a real catalog name on a non-execute request still
+        // auto-approves.
+        const gateway = yield* handles.requestPermission(
+          makePermissionParams("call-gw", {
+            kind: "other",
+            rawInput: { _toolName: "synara_list_threads", arguments: {} },
+          }),
+        );
+        expect(gateway).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-once" },
+        });
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }).pipe(Layer.provideMerge(credentialsLayer)),
+        ),
+      ),
+    );
+  });
+
+  it("still prompts for gateway tools when autoApproveSynaraTools is unset", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const handles = makePermissionRuntime();
+    const credentialsLayer = Layer.succeed(
+      AgentGatewayCredentials,
+      makeFakeAgentGatewayCredentials(),
+    );
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("thread-devin-gateway-manual");
+        const runtimeEvents: Array<{
+          type: string;
+          requestId?: unknown;
+          payload?: Record<string, unknown>;
+        }> = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) =>
+            Effect.sync(() => {
+              runtimeEvents.push({
+                type: event.type,
+                requestId: event.requestId,
+                payload: event.payload as Record<string, unknown>,
+              });
+            }),
+          ),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "approval-required",
+          cwd: process.cwd(),
+        });
+        yield* adapter.sendTurn({ threadId, input: "work", attachments: [] });
+
+        const pending = yield* handles
+          .requestPermission(
+            makePermissionParams("call-gw", {
+              kind: "other",
+              rawInput: {
+                _toolName: "synara_list_threads",
+                arguments: { limit: 3 },
+              },
+            }),
+          )
+          .pipe(Effect.forkChild);
+        yield* flushTimers();
+        const opened = runtimeEvents.find((event) => event.type === "request.opened");
+        expect(opened).toBeDefined();
+        yield* adapter.respondToRequest(threadId, opened!.requestId as never, "accept");
+        expect(yield* Fiber.join(pending)).toEqual({
+          outcome: { outcome: "selected", optionId: "allow-once" },
+        });
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3_600_000,
+            toolIdleMs: 3_600_000,
+          }).pipe(Layer.provideMerge(credentialsLayer)),
+        ),
+      ),
+    );
+  });
+});
+
+describe("Devin retained background task ownership", () => {
+  afterEach(() => vi.useRealTimers());
+  it.each([
+    { kind: "subagent", stopReason: "end_turn" },
+    { kind: "subagent", stopReason: "cancelled" },
+    { kind: "shell", stopReason: "end_turn" },
+    { kind: "shell", stopReason: "cancelled" },
+  ] as const)(
+    "keeps a sparse nested $kind completion on its original turn ($stopReason)",
+    async ({ kind, stopReason }) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(1_000);
+      const firstPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+      const secondPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+      const thirdPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+      const prompts = [
+        Deferred.await(firstPrompt),
+        Deferred.await(secondPrompt),
+        Deferred.await(thirdPrompt),
+      ];
+      const runtime = makeEventAcpRuntime(() => prompts.shift() ?? Effect.never);
+      const layer = makeDevinAdapterTestLayer(runtime.runtime, runtime.completeProcessedEvent, {
+        turnIdleMs: 3_600_000,
+        toolIdleMs: 3_600_000,
+      });
+      await Effect.runPromise(
+        Effect.gen(function* () {
+          const adapter = yield* DevinAdapter;
+          const threadId = ThreadId.makeUnsafe(`devin-retained-${kind}-${stopReason}`);
+          const taskId = kind === "subagent" ? "old-child" : "old-shell";
+          const events: ProviderRuntimeEvent[] = [];
+          yield* adapter.streamEvents.pipe(
+            Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+            Effect.forkScoped,
+          );
+          yield* adapter.startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            cwd: process.cwd(),
+          });
+          const firstTurn = yield* adapter.sendTurn({ threadId, input: "first", attachments: [] });
+          yield* runtime.emitToolCall("old-task-call", "inProgress", {
+            metadata: {
+              "cognition.ai/subagent_context": { parentAgentId: "outer-child" },
+              ...(kind === "subagent"
+                ? {
+                    "cognition.ai/subagent_started": {
+                      agentId: taskId,
+                      title: "Earlier child",
+                      isBackground: true,
+                    },
+                  }
+                : {
+                    "cognition.ai/background": true,
+                    "cognition.ai/backgroundShellId": taskId,
+                    "cognition.ai/backgroundCommand": "bun run check",
+                  }),
+            },
+          });
+          const firstItem = events.flatMap((event) =>
+            (event.type === "item.started" ||
+              event.type === "item.updated" ||
+              event.type === "item.completed") &&
+            event.turnId === firstTurn.turnId
+              ? [event]
+              : [],
+          )[0];
+          expect(firstItem).toBeDefined();
+          yield* Deferred.succeed(firstPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+          yield* advanceTimers(1);
+          yield* adapter.sendTurn({ threadId, input: "second", attachments: [] });
+          yield* Deferred.succeed(secondPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+          yield* advanceTimers(1);
+          const thirdTurn = yield* adapter.sendTurn({
+            threadId,
+            input: "third unrelated",
+            attachments: [],
+          });
+          yield* runtime.emitProgress("The third answer is healthy.");
+          const beforeLateUpdate = events.length;
+          // Neither original turn nor parent metadata remains in this sparse
+          // notification after the ordinary one-turn correlation was pruned.
+          yield* runtime.emitToolCall("old-task-call", "failed", {
+            metadata:
+              kind === "subagent"
+                ? {
+                    "cognition.ai/subagent_completed": {
+                      agentId: taskId,
+                      success: false,
+                      summary: "Old child failed",
+                    },
+                  }
+                : { "cognition.ai/exitCode": 1 },
+          });
+          yield* advanceTimers(1);
+          const lateEvents = events.slice(beforeLateUpdate);
+          const expectedRefs = {
+            providerThreadId: "outer-child",
+            providerParentThreadId: "devin-test-session",
+          };
+          expect(lateEvents).toContainEqual(
+            expect.objectContaining({
+              type: "task.completed",
+              turnId: firstTurn.turnId,
+              providerRefs: expectedRefs,
+              payload: expect.objectContaining({ taskId, status: "failed" }),
+            }),
+          );
+          const lateItems = lateEvents.filter((event) => event.type === "item.completed");
+          expect.soft(lateItems.map((event) => event.turnId)).toEqual([firstTurn.turnId]);
+          expect.soft(lateItems.map((event) => event.itemId)).toEqual([firstItem?.itemId]);
+          expect.soft(lateItems.map((event) => event.providerRefs)).toEqual([expectedRefs]);
+          yield* Deferred.succeed(thirdPrompt, { stopReason } as Acp.PromptResponse);
+          yield* advanceTimers(1);
+          const currentCompletion = events.find(
+            (event) => event.type === "turn.completed" && event.turnId === thirdTurn.turnId,
+          );
+          expect.soft(currentCompletion).toEqual(
+            expect.objectContaining({
+              type: "turn.completed",
+              turnId: thirdTurn.turnId,
+              payload: expect.objectContaining({
+                state: stopReason === "cancelled" ? "cancelled" : "completed",
+              }),
+            }),
+          );
+          yield* adapter.stopSession(threadId);
+        }).pipe(Effect.scoped, Effect.provide(layer)),
+      );
+    },
+  );
+});
+
+it("preserves an originally unscoped root task when it completes during a newer turn", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const runtime = makeEventAcpRuntime(() => Effect.never);
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("unscoped-task-recovery");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      const starting = yield* adapter
+        .startSession({
+          provider: "devin",
+          threadId,
+          runtimeMode: "full-access",
+          resumeCursor: { schemaVersion: 1, sessionId: "previous-session" },
+          pendingTaskReconciliations: [
+            {
+              taskId: RuntimeTaskId.makeUnsafe("unscoped-agent"),
+              toolUseId: "original-unscoped-call",
+            },
+          ],
+        })
+        .pipe(Effect.forkScoped);
+      yield* flushTimers();
+      yield* advanceTimers(250);
+      yield* Fiber.join(starting);
+      yield* adapter.sendTurn({ threadId, input: "new foreground turn", attachments: [] });
+      yield* runtime.emitToolCall("replayed-call", "completed", {
+        metadata: {
+          "cognition.ai/subagent_started": {
+            agentId: "unscoped-agent",
+            parentAgentId: "new-parent",
+            task: "Inspect",
+          },
+          "cognition.ai/subagent_completed": { agentId: "unscoped-agent", success: true },
+        },
+      });
+      yield* flushTimers();
+      const correction = events.find(
+        (event) => event.type === "task.completed" && event.payload.taskId === "unscoped-agent",
+      );
+      expect(correction).toBeDefined();
+      expect(correction?.turnId).toBeUndefined();
+      expect(correction?.providerRefs).toBeUndefined();
+      expect(events).toContainEqual(
+        expect.objectContaining({ type: "item.completed", itemId: "original-unscoped-call" }),
+      );
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(runtime.runtime, runtime.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});
+
+it("routes late child tools, text and completion to the launch turn after a new turn starts", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const firstPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+  let calls = 0;
+  const runtime = makeEventAcpRuntime(() =>
+    ++calls === 1 ? Deferred.await(firstPrompt) : Effect.never,
+  );
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("late-child-stream");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+      const first = yield* adapter.sendTurn({ threadId, input: "launch", attachments: [] });
+      yield* runtime.emitToolCall("launch-tool", "inProgress", {
+        metadata: {
+          "cognition.ai/subagent_started": { agentId: "outer", task: "Work", isBackground: true },
+        },
+      });
+      yield* runtime.emitProgress(
+        "Child started before parent settled",
+        { "cognition.ai/subagent_context": { parentAgentId: "outer" } },
+        "early-child-message",
+      );
+      yield* Deferred.succeed(firstPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+      yield* runtime.emitAssistantCompleted("early-child-message");
+      yield* flushTimers();
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "item.completed",
+          itemId: scopeDevinRuntimeItemIdForTurn(first.turnId, "early-child-message"),
+        }),
+      );
+      yield* advanceTimers(100);
+      const refs = { providerThreadId: "outer", providerParentThreadId: "devin-test-session" };
+      const context = { "cognition.ai/subagent_context": { parentAgentId: "outer" } };
+      const start = events.length;
+      yield* runtime.emitToolCall("late-nested-tool", "inProgress", {
+        metadata: context,
+        title: "Late tool",
+      });
+      yield* runtime.emitProgress("Late child text", context, "child-message");
+      yield* adapter.sendTurn({ threadId, input: "new foreground", attachments: [] });
+      yield* runtime.emitAssistantCompleted("child-message");
+      yield* flushTimers();
+      const late = events.slice(start);
+      expect(late).toContainEqual(
+        expect.objectContaining({ type: "item.updated", turnId: first.turnId, providerRefs: refs }),
+      );
+      expect(late).toContainEqual(
+        expect.objectContaining({
+          type: "content.delta",
+          turnId: first.turnId,
+          providerRefs: refs,
+          payload: expect.objectContaining({ delta: "Late child text" }),
+        }),
+      );
+      expect(late).toContainEqual(
+        expect.objectContaining({
+          type: "item.completed",
+          turnId: first.turnId,
+          providerRefs: refs,
+          itemId: scopeDevinRuntimeItemIdForTurn(first.turnId, "child-message"),
+        }),
+      );
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(runtime.runtime, runtime.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});
+
+it("restores native replay ownership and launch policy through the actual ACP subprocess", async () => {
+  const layer = makeDevinAdapterLive(
+    {},
+    {
+      makeAcpRuntime: (input) =>
+        Effect.gen(function* () {
+          const context = yield* Layer.build(
+            AcpSessionRuntime.layer({
+              ...input,
+              spawn: {
+                command: process.execPath,
+                args: [
+                  fileURLToPath(new URL("../../../scripts/acp-mock-agent.ts", import.meta.url)),
+                ],
+                env: { SYNARA_ACP_DEVIN_TASK_REPLAY: "1" },
+              },
+              authPolicy: "on-demand",
+            }).pipe(
+              Layer.provide(
+                Layer.succeed(ChildProcessSpawner.ChildProcessSpawner, input.childProcessSpawner),
+              ),
+            ),
+          );
+          return ServiceMap.getUnsafe(context, AcpSessionRuntime);
+        }),
+    },
+  ).pipe(
+    Layer.provideMerge(ServerConfig.layerTest(process.cwd(), { prefix: "devin-wire-replay-" })),
+    Layer.provideMerge(NodeServices.layer),
+  );
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("devin-wire-replay");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* Effect.yieldNow;
+      yield* adapter.startSession({
+        provider: "devin",
+        threadId,
+        runtimeMode: "full-access",
+        resumeCursor: { schemaVersion: 1, sessionId: "mock-session-1" },
+        pendingTaskReconciliations: [
+          {
+            taskId: RuntimeTaskId.makeUnsafe("live-child"),
+            turnId: asTurnId("launch-turn"),
+            toolUseId: "live-child-launch",
+            interactionMode: "plan",
+          },
+          {
+            taskId: RuntimeTaskId.makeUnsafe("stopped-child"),
+            turnId: asTurnId("launch-turn"),
+            toolUseId: "stopped-child-launch",
+            interactionMode: "plan",
+          },
+          {
+            taskId: RuntimeTaskId.makeUnsafe("live-shell"),
+            turnId: asTurnId("launch-turn"),
+            toolUseId: "live-shell-tool",
+          },
+        ],
+      });
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "item.updated",
+          turnId: "launch-turn",
+          payload: expect.objectContaining({
+            itemType: "collab_agent_tool_call",
+            data: expect.objectContaining({
+              receiverThreadIds: ["live-child"],
+              agentsStates: { "live-child": { status: "running" } },
+            }),
+          }),
+        }),
+      );
+      for (const agentId of ["live-child", "stopped-child", "completed-child", "root"]) {
+        const before = events.length;
+        yield* adapter.sendTurn({
+          threadId,
+          input: agentId,
+          attachments: [],
+          interactionMode: "default",
+        });
+        yield* Effect.whileLoop({
+          while: () => !events.slice(before).some((event) => event.type === "turn.completed"),
+          body: () => Effect.sleep(10),
+          step: () => {},
+        });
+        const text = events
+          .slice(before)
+          .filter((event) => event.type === "content.delta")
+          .map((event) => event.payload.delta)
+          .join("");
+        expect(JSON.parse(text)).toEqual(
+          agentId === "root"
+            ? { outcome: "selected", optionId: "allow-once" }
+            : agentId === "live-child"
+              ? { outcome: "selected", optionId: "reject-once" }
+              : { outcome: "cancelled" },
+        );
+      }
+      expect(
+        events.filter((event) => event.type === "task.updated").map((event) => event.payload),
+      ).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            taskId: "live-child",
+            status: "running",
+            reconcilesStop: true,
+          }),
+          expect.objectContaining({
+            taskId: "live-shell",
+            status: "running",
+            reconcilesStop: true,
+          }),
+        ]),
+      );
+      expect(
+        events
+          .filter((event) => event.type === "content.delta")
+          .map((event) => event.payload.delta)
+          .join(""),
+      ).not.toContain("historical Devin text");
+      expect(events.some((event) => event.type === "task.started")).toBe(false);
+      yield* adapter.stopSession(threadId);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "item.completed",
+          payload: expect.objectContaining({
+            data: expect.objectContaining({
+              toolCallId: "live-child-launch",
+              agentsStates: { "live-child": { status: "stopped" } },
+            }),
+          }),
+        }),
+      );
+    }).pipe(Effect.scoped, Effect.provide(layer)),
+  );
+});
+
+it("settles unrecoverable task tracking when a resumed session falls back to a fresh session", async () => {
+  const runtime = makeEventAcpRuntime(() => Effect.never);
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("fresh-recovery-tasks");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* Effect.yieldNow;
+      yield* adapter.startSession({
+        provider: "devin",
+        threadId,
+        runtimeMode: "full-access",
+        pendingTaskReconciliations: [
+          {
+            taskId: RuntimeTaskId.makeUnsafe("prior-task"),
+            turnId: TurnId.makeUnsafe("prior-turn"),
+            toolUseId: "prior-tool",
+          },
+        ],
+      });
+      yield* Effect.sleep(1);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "task.completed",
+          turnId: "prior-turn",
+          payload: expect.objectContaining({
+            taskId: "prior-task",
+            toolUseId: "prior-tool",
+            status: "failed",
+            reconcilesStop: true,
+          }),
+        }),
+      );
+      expect(events.some((event) => event.type === "task.started")).toBe(false);
+      yield* adapter.sendTurn({ threadId, input: "Fresh work", attachments: [] });
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(runtime.runtime, runtime.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});
+
+afterEach(() => vi.useRealTimers());
+
+it("keeps a background child's launch permission policy after its parent settles", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const prompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+  const handles = makePermissionRuntime(() => Deferred.await(prompt));
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("child-launch-policy");
+      yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+      yield* adapter.sendTurn({ threadId, input: "launch", attachments: [] });
+      yield* handles.emitToolCall("launch", "inProgress", {
+        metadata: { "cognition.ai/subagent_started": { agentId: "child", isBackground: true } },
+      });
+      yield* Deferred.succeed(prompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+      yield* advanceTimers(100);
+      const response = yield* handles.requestPermission(
+        makePermissionParams("child-tool", {
+          _meta: { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+        }),
+      );
+      expect(response).toEqual({ outcome: { outcome: "selected", optionId: "allow-once" } });
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});
+it("cancels a stopped child's pending approval without cancelling its parent request", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const handles = makePermissionRuntime();
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("child-stop-approval");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* adapter.startSession({
+        provider: "devin",
+        threadId,
+        runtimeMode: "approval-required",
+      });
+      yield* adapter.sendTurn({ threadId, input: "launch", attachments: [] });
+      yield* handles.emitToolCall("launch", "inProgress", {
+        metadata: { "cognition.ai/subagent_started": { agentId: "child", isBackground: true } },
+      });
+      const child = yield* handles
+        .requestPermission(
+          makePermissionParams("child-tool", {
+            _meta: { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+          }),
+        )
+        .pipe(Effect.forkChild);
+      yield* flushTimers();
+      yield* adapter.stopTask!(threadId, "child");
+      expect(yield* Fiber.join(child)).toEqual({ outcome: { outcome: "cancelled" } });
+      yield* flushTimers();
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "request.resolved",
+          payload: expect.objectContaining({ decision: "cancel" }),
+        }),
+      );
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});
+it("does not mark the root prompt failed when a child tool fails in the same turn", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const prompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+  const handles = makeEventAcpRuntime(() => Deferred.await(prompt));
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("child-failure-isolation");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+      const turn = yield* adapter.sendTurn({ threadId, input: "launch", attachments: [] });
+      yield* handles.emitToolCall("launch", "inProgress", {
+        metadata: { "cognition.ai/subagent_started": { agentId: "child", isBackground: true } },
+      });
+      yield* handles.emitToolCall("child-tool", "failed", {
+        metadata: { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+        data: { rawOutput: "child failed" },
+      });
+      yield* Deferred.succeed(prompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+      yield* advanceTimers(100);
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "turn.completed",
+          turnId: turn.turnId,
+          payload: expect.objectContaining({ state: "completed" }),
+        }),
+      );
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});
+
+it.each(["default", "plan"] as const)(
+  "restores recovered child permission mode %s",
+  async (interactionMode) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+    const handles = makePermissionRuntime();
+    const runtime = {
+      ...handles.runtime,
+      start: () =>
+        handles.runtime
+          .start()
+          .pipe(Effect.map((started) => ({ ...started, resumeSessionId: "devin-test-session" }))),
+    };
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe(`recovered-child-policy-${interactionMode}`);
+        const started = yield* adapter
+          .startSession({
+            provider: "devin",
+            threadId,
+            runtimeMode: "full-access",
+            resumeCursor: { schemaVersion: 1, sessionId: "devin-test-session" },
+            pendingTaskReconciliations: [
+              {
+                taskId: RuntimeTaskId.makeUnsafe("child"),
+                turnId: TurnId.makeUnsafe("launch"),
+                toolUseId: "replayed-call",
+                interactionMode,
+              },
+            ],
+          })
+          .pipe(Effect.forkScoped);
+        for (let attempt = 0; attempt < 200 && !(yield* adapter.hasSession(threadId)); attempt++)
+          yield* advanceTimers(10);
+        expect(yield* adapter.hasSession(threadId)).toBe(true);
+        yield* advanceTimers(2100);
+        yield* Fiber.join(started);
+        yield* handles.emitToolCall("replayed-call", "inProgress", {
+          metadata: { "cognition.ai/subagent_started": { agentId: "child", isBackground: true } },
+        });
+        const response = yield* handles.requestPermission(
+          makePermissionParams("child-tool", {
+            _meta: { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+          }),
+        );
+        expect(response).toEqual({
+          outcome: {
+            outcome: "selected",
+            optionId: interactionMode === "plan" ? "reject-once" : "allow-once",
+          },
+        });
+        yield* adapter.stopSession(threadId);
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3600000,
+            toolIdleMs: 3600000,
+          }),
+        ),
+      ),
+    );
+  },
+);
+it.each([
+  { name: "omitted metadata", toolMetadata: undefined, requestMetadata: undefined, invalid: false },
+  {
+    name: "unrelated tool metadata",
+    toolMetadata: { trace: "permission" },
+    requestMetadata: undefined,
+    invalid: false,
+  },
+  {
+    name: "conflicting tracked owner",
+    toolMetadata: { "cognition.ai/subagent_context": { parentAgentId: "other-child" } },
+    requestMetadata: undefined,
+    invalid: true,
+  },
+  {
+    name: "conflicting request owner",
+    toolMetadata: { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+    requestMetadata: { "cognition.ai/subagent_context": { parentAgentId: "other-child" } },
+    invalid: true,
+  },
+  {
+    name: "invalid tool owner",
+    toolMetadata: { "cognition.ai/subagent_context": {} },
+    requestMetadata: undefined,
+    invalid: true,
+  },
+  {
+    name: "stopped child with omitted metadata",
+    toolMetadata: undefined,
+    requestMetadata: undefined,
+    invalid: true,
+    childState: "stopped",
+  },
+  {
+    name: "completed child with omitted metadata",
+    toolMetadata: undefined,
+    requestMetadata: undefined,
+    invalid: true,
+    childState: "completed",
+  },
+] as const)(
+  "keeps a Plan child's permission ownership with $name during a newer Full Access turn",
+  async (scenario) => {
+    const { toolMetadata, requestMetadata, invalid } = scenario;
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+    const launchPrompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    let prompts = 0;
+    const handles = makePermissionRuntime(() =>
+      ++prompts === 1 ? Deferred.await(launchPrompt) : Effect.never,
+    );
+    const runtime = {
+      ...handles.runtime,
+      getModeState: handles.runtime.getModeState.pipe(
+        Effect.map(
+          (state) =>
+            state && {
+              ...state,
+              availableModes: [...state.availableModes, { id: "plan", name: "Plan" }],
+            },
+        ),
+      ),
+    };
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe("child-permission-owner");
+        yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+        yield* adapter.sendTurn({
+          threadId,
+          input: "plan",
+          interactionMode: "plan",
+          attachments: [],
+        });
+        yield* handles.emitToolCall("launch", "inProgress", {
+          metadata: { "cognition.ai/subagent_started": { agentId: "child", isBackground: true } },
+        });
+        yield* handles.emitToolCall("child-tool", "inProgress", {
+          kind: "execute",
+          metadata: { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+          data: { rawInput: { command: "write-files" } },
+        });
+        yield* Deferred.succeed(launchPrompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(100);
+        if ("childState" in scenario) {
+          if (scenario.childState === "stopped") {
+            yield* adapter.stopTask(threadId, "child");
+          } else {
+            yield* handles.emitToolCall("launch", "completed", {
+              metadata: { "cognition.ai/subagent_completed": { agentId: "child", success: true } },
+            });
+          }
+        }
+        yield* adapter.sendTurn({
+          threadId,
+          input: "new parent work",
+          interactionMode: "default",
+          attachments: [],
+        });
+        const response = yield* handles.requestPermission({
+          ...makePermissionParams("child-tool", {
+            kind: "execute",
+            ...(toolMetadata !== undefined ? { _meta: toolMetadata } : {}),
+          }),
+          ...(requestMetadata !== undefined ? { _meta: requestMetadata } : {}),
+        });
+        expect(response).toEqual({
+          outcome: invalid
+            ? { outcome: "cancelled" }
+            : { outcome: "selected", optionId: "reject-once" },
+        });
+        // Rejection is child ownership, not an inactive parent or global denial.
+        expect(
+          yield* handles.requestPermission(
+            makePermissionParams("new-parent-tool", { kind: "execute" }),
+          ),
+        ).toEqual({ outcome: { outcome: "selected", optionId: "allow-once" } });
+        yield* adapter.stopSession(threadId);
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3600000,
+            toolIdleMs: 3600000,
+          }),
+        ),
+      ),
+    );
+  },
+);
+
+it("targeted child Stop keeps a sibling's shared gateway lease usable", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const handles = makePermissionRuntime();
+  const revoked = vi.fn();
+  const cancelled = vi.fn(async () => undefined);
+  const credentialsLayer = Layer.succeed(AgentGatewayCredentials, {
+    ...makeFakeAgentGatewayCredentials(),
+    revokeSessionToken: revoked,
+    cancelSessionTurnRequests: cancelled,
+  });
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("sibling-lease");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+      yield* adapter.sendTurn({ threadId, input: "launch siblings", attachments: [] });
+      for (const id of ["first", "second"])
+        yield* handles.emitToolCall(`launch-${id}`, "inProgress", {
+          metadata: { "cognition.ai/subagent_started": { agentId: id, isBackground: true } },
+        });
+      yield* adapter.stopTask!(threadId, "first");
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "task.started",
+          payload: expect.objectContaining({ taskId: "first", interactionMode: "default" }),
+        }),
+      );
+      expect(events).toContainEqual(
+        expect.objectContaining({
+          type: "task.completed",
+          payload: expect.objectContaining({ taskId: "first", interactionMode: "default" }),
+        }),
+      );
+      expect(revoked).not.toHaveBeenCalled();
+      expect(cancelled).not.toHaveBeenCalled();
+      expect(
+        yield* handles.requestPermission(
+          makePermissionParams("sibling-tool", {
+            _meta: { "cognition.ai/subagent_context": { parentAgentId: "second" } },
+          }),
+        ),
+      ).toEqual({ outcome: { outcome: "selected", optionId: "allow-once" } });
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }).pipe(Layer.provideMerge(credentialsLayer)),
+      ),
+    ),
+  );
+});
+it.each(["stop", "exit"] as const)(
+  "closes child assistant items on session %s after parent settlement",
+  async (kind) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+    const prompt = Effect.runSync(Deferred.make<Acp.PromptResponse>());
+    const exited = Effect.runSync(Deferred.make<void>());
+    const handles = makeEventAcpRuntime(() => Deferred.await(prompt));
+    const runtime = { ...handles.runtime, awaitExit: Deferred.await(exited) };
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const adapter = yield* DevinAdapter;
+        const threadId = ThreadId.makeUnsafe(`child-terminal-${kind}`);
+        const events: ProviderRuntimeEvent[] = [];
+        yield* adapter.streamEvents.pipe(
+          Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+          Effect.forkScoped,
+        );
+        yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+        const turn = yield* adapter.sendTurn({ threadId, input: "launch", attachments: [] });
+        yield* handles.emitToolCall("launch", "inProgress", {
+          metadata: { "cognition.ai/subagent_started": { agentId: "child", isBackground: true } },
+        });
+        yield* Deferred.succeed(prompt, { stopReason: "end_turn" } as Acp.PromptResponse);
+        yield* advanceTimers(100);
+        yield* handles.emitProgress(
+          "child still streaming",
+          { "cognition.ai/subagent_context": { parentAgentId: "child" } },
+          "child-message",
+        );
+        if (kind === "exit") yield* Deferred.succeed(exited, undefined);
+        else yield* adapter.stopSession(threadId);
+        yield* advanceTimers(100);
+        const completion = events.findIndex(
+          (event) =>
+            event.type === "item.completed" &&
+            event.itemId === scopeDevinRuntimeItemIdForTurn(turn.turnId, "child-message"),
+        );
+        const terminal = events.findIndex((event) => event.type === "session.exited");
+        expect(completion).toBeGreaterThanOrEqual(0);
+        expect(terminal).toBeGreaterThan(completion);
+        expect(events[terminal]?.payload).toMatchObject({
+          exitKind: kind === "exit" ? "error" : "graceful",
+        });
+        expect(events.filter((event) => event.type === "runtime.error")).toHaveLength(
+          kind === "exit" ? 1 : 0,
+        );
+        expect(yield* adapter.hasSession(threadId)).toBe(false);
+      }).pipe(
+        Effect.scoped,
+        Effect.provide(
+          makeDevinAdapterTestLayer(runtime, handles.completeProcessedEvent, {
+            turnIdleMs: 3600000,
+            toolIdleMs: 3600000,
+          }),
+        ),
+      ),
+    );
+  },
+);
+
+it("marks all owned descendants locally stopped and preserves their reconciliation records", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1000);
+  const handles = makeEventAcpRuntime(() => Effect.never);
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const adapter = yield* DevinAdapter;
+      const threadId = ThreadId.makeUnsafe("stop-descendants");
+      const events: ProviderRuntimeEvent[] = [];
+      yield* adapter.streamEvents.pipe(
+        Stream.runForEach((event) => Effect.sync(() => events.push(event))),
+        Effect.forkScoped,
+      );
+      yield* adapter.startSession({ provider: "devin", threadId, runtimeMode: "full-access" });
+      yield* adapter.sendTurn({ threadId, input: "launch", attachments: [] });
+      yield* handles.emitToolCall("parent-call", "inProgress", {
+        metadata: { "cognition.ai/subagent_started": { agentId: "parent" } },
+      });
+      yield* handles.emitToolCall("child-call", "inProgress", {
+        metadata: {
+          "cognition.ai/subagent_context": { parentAgentId: "parent" },
+          "cognition.ai/subagent_started": { agentId: "child" },
+        },
+      });
+      yield* adapter.stopTask(threadId, "parent");
+      yield* flushTimers();
+      for (const taskId of ["parent", "child"])
+        expect(events).toContainEqual(
+          expect.objectContaining({
+            type: "task.completed",
+            payload: expect.objectContaining({
+              taskId,
+              status: "stopped",
+              awaitingProviderConfirmation: true,
+              interactionMode: "default",
+            }),
+          }),
+        );
+      const before = events.length;
+      yield* handles.emitToolCall("child-call", "completed", {
+        metadata: { "cognition.ai/subagent_completed": { agentId: "child", success: false } },
+      });
+      expect(events.slice(before)).toContainEqual(
+        expect.objectContaining({
+          type: "task.completed",
+          payload: expect.objectContaining({ taskId: "child", reconcilesStop: true }),
+        }),
+      );
+      yield* adapter.stopSession(threadId);
+    }).pipe(
+      Effect.scoped,
+      Effect.provide(
+        makeDevinAdapterTestLayer(handles.runtime, handles.completeProcessedEvent, {
+          turnIdleMs: 3600000,
+          toolIdleMs: 3600000,
+        }),
+      ),
+    ),
+  );
+});

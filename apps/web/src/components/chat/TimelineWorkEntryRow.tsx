@@ -1,0 +1,1436 @@
+// FILE: TimelineWorkEntryRow.tsx
+// Purpose: Renders transcript work/tool rows and their inline details.
+// Layer: Web chat presentation component
+// Exports: TimelineWorkEntryRow, EditedFileRowContent
+
+import type { ModelSelection, TurnId } from "@synara/contracts";
+import { PROVIDER_DESCRIPTORS } from "@synara/shared/providerMetadata";
+import {
+  createElement,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
+
+import { basenameOfPath } from "~/file-icons";
+import type { TimestampFormat } from "../../appSettings";
+import { formatTimestamp } from "../../timestampFormat";
+import {
+  ArrowUpCircleIcon,
+  BackgroundTrayIcon,
+  BookOpenIcon,
+  BotIcon,
+  CheckIcon,
+  CircleAlertIcon,
+  CircleQuestionIcon,
+  ContextCompactionIcon,
+  ComputerUseIcon,
+  EyeIcon,
+  FileReadIcon,
+  GitHubIcon,
+  GlobeIcon,
+  HammerIcon,
+  HandoffIcon,
+  HistoryIcon,
+  type LucideIcon,
+  McpIcon,
+  PencilIcon,
+  SearchIcon,
+  SkillCubeIcon,
+  TerminalIcon,
+  WebSearchIcon,
+  ZapIcon,
+} from "~/lib/icons";
+import { describeLinkChip } from "~/lib/linkChips";
+import { computerToolName, describeComputerToolCall } from "~/lib/computerToolPresentation";
+import { cn } from "~/lib/utils";
+import type { FastModeNotice } from "~/lib/fastModeState";
+import { formatThreadModelSummaryLabel, resolveThreadModelSummary } from "~/lib/threadModelSummary";
+
+import { isFileChangeWorkLogEntry, type WorkLogEntry } from "../../session-logic";
+import {
+  formatAgentActivityEntryPreview,
+  isAgentActivityWorkEntry,
+  isCodexActivityStatusWorkEntry,
+  isPlainRuntimeNoticeWorkEntry,
+  isReasoningUpdateWorkEntry,
+} from "./agentActivity.logic";
+import { AutomationCreatedCard } from "./AutomationCreatedCard";
+import { McpConnectorProposalCard } from "../settings/McpConnectorProposalCard";
+import { MCP_CONNECTORS_ON } from "~/betaFeatures";
+import { BackgroundTaskRow } from "./BackgroundTaskRow";
+import { getChatTranscriptTextStyle } from "./chatTypography";
+import { SubagentRunCard } from "./SubagentRunCard";
+import { ConnectedComputerSetupRequiredCard } from "./ComputerSetupRequiredCard";
+import { ComputerControlDeniedCard } from "./ComputerControlDeniedCard";
+import ChatMarkdown from "../ChatMarkdown";
+import { DiffStatLabel } from "./DiffStatLabel";
+import { type ExpandedImagePreview } from "./ExpandedImagePreview";
+import { LinkChipIcon } from "../LinkChipIcon";
+import { McpServerIcon } from "./McpServerIcon";
+import { normalizeCompactToolLabel } from "./MessagesTimeline.logic";
+import { SynaraLogo } from "@synara/profile-ui/logo";
+import { ToolCallDetailsContent } from "./ToolCallDetailsDialog";
+import { DisclosureChevron } from "../ui/DisclosureChevron";
+import { DisclosureRegion } from "../ui/DisclosureRegion";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import { fileDiffStatsByPath, resolveFileDiffStatByChangedPath } from "~/lib/diffRendering";
+import {
+  extractToolArgumentField,
+  isPrefixedToolArgumentSummary,
+} from "../../lib/toolArgumentSummary";
+import {
+  deriveCommandReadTargets,
+  deriveFriendlyCommandTarget,
+  deriveLiteralCommand,
+  deriveSynaraMcpToolTitle,
+  extractWebFetchUrl,
+  isGenericToolTitle,
+  isSynaraBrowserToolCall,
+  normalizeToolTextForComparison,
+  resolveCommandVisualKind,
+  sanitizeSynaraMcpToolPreview,
+  type SynaraMcpToolStatus,
+} from "../../lib/toolCallLabel";
+import {
+  formatLiveActivityMeta,
+  isLiveActivityInProgress,
+  useLiveActivityNow,
+} from "../../lib/liveActivityPresentation";
+import { deriveToolFailureSummary } from "../../lib/toolCallDetails";
+import { openWorkspaceFileReference, useWorkspaceFileOpener } from "../../lib/workspaceFileOpener";
+import { DISCLOSURE_CLEANUP_BUFFER_MS, DISCLOSURE_TRANSITION_MS } from "../../lib/disclosureMotion";
+import { MUTED_LABEL_TEXT_CLASS_NAME, MUTED_LABEL_TEXT_COLOR } from "~/surfaceStyles";
+import { t, useTranslation } from "~/i18n";
+
+// Rest tone is the shared quiet-label gray (same one the composer pickers use for
+// their effort/thinking labels) so a tool row and the picker below it read as one
+// muted tone; hover still lifts the whole row to full foreground.
+const WORK_ROW_MUTED_HOVER_TONE: Record<"tool-row" | "file-row", string> = {
+  "tool-row": `${MUTED_LABEL_TEXT_CLASS_NAME} transition-colors group-hover/tool-row:text-foreground group-focus-visible/tool-row:text-foreground`,
+  "file-row": `${MUTED_LABEL_TEXT_CLASS_NAME} transition-colors group-hover/file-row:text-foreground group-focus-visible/file-row:text-foreground`,
+};
+const EMPTY_FILE_DIFF_STATS: ReadonlyMap<string, { additions: number; deletions: number }> =
+  new Map();
+
+type TimelineWorkEntry = WorkLogEntry;
+
+const AgentTaskIcon: LucideIcon = (props) => <BotIcon {...props} />;
+
+const SynaraToolIcon: LucideIcon = ({ className, ...props }) => (
+  <SynaraLogo {...props} className={cn("text-current", className)} />
+);
+
+function workToneIcon(tone: TimelineWorkEntry["tone"]): {
+  icon: LucideIcon;
+  className: string;
+} {
+  if (tone === "error") {
+    return {
+      icon: CircleAlertIcon,
+      className: "text-muted-foreground/50",
+    };
+  }
+  if (tone === "thinking") {
+    return {
+      icon: BotIcon,
+      className: "text-muted-foreground/40",
+    };
+  }
+  if (tone === "info") {
+    return {
+      icon: CheckIcon,
+      className: "text-muted-foreground/50",
+    };
+  }
+  // Generic tool calls with no recognizable kind read as "consulted something".
+  return {
+    icon: BookOpenIcon,
+    className: "text-muted-foreground/45",
+  };
+}
+
+/**
+ * Try to extract a clean file path from a detail string that may contain JSON.
+ * Handles patterns like:
+ *   Read {"file_path":"/Users/foo/bar.ts","offset":10}
+ *   {"file_path":"/path/to/file.ts"}
+ */
+function extractFilePathFromDetail(detail: string): string | null {
+  const plainPathMatch = /^(.+?\.[A-Za-z0-9][A-Za-z0-9._-]*)(?::\d+)?(?::\d+)?$/u.exec(
+    detail.trim(),
+  );
+  if (plainPathMatch?.[1]?.includes("/")) {
+    return plainPathMatch[1].trim();
+  }
+  // "path" is generic enough that a nested match (e.g. inside a config object)
+  // may not be the file the tool acted on — only regex-scan truncated JSON.
+  return extractToolArgumentField(detail, ["file_path", "filePath", "path", "filename"], {
+    fallbackScan: "whenUnparsed",
+  });
+}
+
+function workEntryPreview(workEntry: TimelineWorkEntry): string | null {
+  if (workEntry.monitorNotification) return null;
+  if (isReasoningUpdateWorkEntry(workEntry)) {
+    return formatAgentActivityEntryPreview(workEntry);
+  }
+  const isFileRelated =
+    workEntry.requestKind === "file-read" ||
+    workEntry.requestKind === "file-change" ||
+    workEntry.itemType === "file_change";
+
+  if (workEntry.itemType === "command_execution" || workEntry.command || workEntry.rawCommand) {
+    const command = workEntry.command ?? workEntry.rawCommand;
+    // Running and settled command rows share one target so the row text only
+    // swaps tense ("Searching for foo in src" → "Searched for foo in src").
+    if (command) return deriveFriendlyCommandTarget(command);
+  }
+
+  if (workEntry.preview) return workEntry.preview;
+
+  // Prefer clean basenames from changedFiles
+  if (workEntry.changedFiles && workEntry.changedFiles.length > 0) {
+    const names = workEntry.changedFiles.map((p) => basenameOfPath(p));
+    if (names.length === 1) return names[0]!;
+    return `${names.length} files`;
+  }
+
+  if (workEntry.itemType === "collab_agent_tool_call") {
+    return workEntry.detail ?? workEntry.subagentAction?.prompt ?? null;
+  }
+
+  // For detail, try to extract a clean file path first
+  if (workEntry.detail) {
+    const filePath = extractFilePathFromDetail(workEntry.detail);
+    if (filePath) return basenameOfPath(filePath);
+
+    // For file-related entries, the heading alone is enough — don't show raw JSON
+    if (isFileRelated) return null;
+
+    // For other entries, if the detail looks like raw JSON, skip it
+    const trimmedDetail = workEntry.detail.trim();
+    if (trimmedDetail.startsWith("{") || trimmedDetail.startsWith("[")) return null;
+
+    // Dynamic/MCP tool calls surface their arguments as `ToolName: {json}` —
+    // transport detail, not a human summary. The raw call stays in toolDetails.
+    // Failed calls keep their detail inline: it may carry the error text (e.g.
+    // an MCP error serialized as `McpError: {json}`), and on a failure more
+    // information beats a tidy row.
+    if (toolWorkEntryStatus(workEntry) !== "failed" && isPrefixedToolArgumentSummary(trimmedDetail))
+      return null;
+
+    const readLinesMatch = /^Read\s+(\d+\s+lines?)$/i.exec(trimmedDetail);
+    if (readLinesMatch?.[1]) return readLinesMatch[1];
+
+    // Clean, non-JSON detail — show it
+    return trimmedDetail;
+  }
+
+  return null;
+}
+
+// Exact-match candidate for icon selection: the normalized tool name wins; the
+// title's first word is the fallback for ACP calls that arrive with only a
+// `kind` and no native name (e.g. Grok's "Read /home/x" / "Find in src").
+function toolIdentityWord(workEntry: TimelineWorkEntry): string {
+  if (workEntry.toolName) {
+    return workEntry.toolName.toLowerCase().replace(/[^a-z]/g, "");
+  }
+  // A derived “Searched the web” label still describes a real web search.
+  if (workEntry.itemType === "web_search") return "";
+  const firstWord = workEntry.toolTitle?.trim().split(/\s+/, 1)[0] ?? "";
+  return firstWord.toLowerCase().replace(/[^a-z]/g, "");
+}
+
+// Provider read tools (Claude's `Read`, Grok/ACP `read_file`/`view`) arrive as
+// generic dynamic tool calls without a `file-read` requestKind, so match their
+// tool name to surface the read icon instead of the generic tool/wrench
+// fallback. The collapsed group summary shares the same read-name set in
+// toolCallGroup.logic.ts (READ_TOOL_NAMES).
+function isFileReadToolEntry(workEntry: TimelineWorkEntry): boolean {
+  const name = toolIdentityWord(workEntry);
+  return (
+    name === "read" ||
+    name === "reading" ||
+    name === "readfile" ||
+    name === "readfiles" ||
+    name === "readtextfile" ||
+    name === "view" ||
+    name === "viewfile" ||
+    name === "viewtextfile" ||
+    name === "hashlineread"
+  );
+}
+
+// Provider search tools (Claude's `Grep`/`Glob`, Grok/ACP `search`/`find`) wear
+// the magnifier like search commands do. Keep in sync with SEARCH_TOOL_NAMES
+// in toolCallGroup.logic.ts.
+function isSearchToolEntry(workEntry: TimelineWorkEntry): boolean {
+  const name = toolIdentityWord(workEntry);
+  return (
+    name === "grep" ||
+    name === "glob" ||
+    name === "search" ||
+    name === "searching" ||
+    name === "searched" ||
+    name === "find" ||
+    name === "finding" ||
+    name === "found" ||
+    name === "findfiles" ||
+    name === "searchfiles" ||
+    name === "searchtool" ||
+    name === "hashlinegrep"
+  );
+}
+
+// Command rows reuse toolCallLabel's wrapper-aware classifier so reads wear the
+// open book, searches the magnifier, wrapped git/gh commands the GitHub mark,
+// and ordinary commands keep the terminal icon. Structured read/search actions
+// (Codex commandActions, ACP `read` kinds) carry no command string; their
+// derived title ("Read"/"Searched") picks the icon instead.
+function commandWorkEntryIcon(workEntry: TimelineWorkEntry): LucideIcon {
+  const command = workEntry.command ?? workEntry.rawCommand;
+  if (!command) {
+    if (isFileReadToolEntry(workEntry)) return FileReadIcon;
+    if (isSearchToolEntry(workEntry)) return SearchIcon;
+    return TerminalIcon;
+  }
+  switch (resolveCommandVisualKind(command)) {
+    case "read":
+      return FileReadIcon;
+    case "search":
+      return SearchIcon;
+    case "git":
+    case "github":
+      return GitHubIcon;
+    case "terminal":
+      return TerminalIcon;
+  }
+}
+
+function workEntryIcon(workEntry: TimelineWorkEntry): LucideIcon {
+  // User-input rows read as a question (awaiting an answer) and an upload
+  // (answer submitted) rather than the generic "info" checkmark.
+  if (workEntry.activityKind === "user-input.requested") return CircleQuestionIcon;
+  if (workEntry.activityKind === "user-input.resolved") return ArrowUpCircleIcon;
+  if (workEntry.activityKind === "context-compaction") return ContextCompactionIcon;
+  if (workEntry.activityKind === "checkpoint.baseline.skipped") return CircleAlertIcon;
+  // Plain runtime notices share the tool-row look: a warning glyph, not italics.
+  if (isPlainRuntimeNoticeWorkEntry(workEntry)) return CircleAlertIcon;
+  // "Moved to background" notices read as a tray drop, not a warning check.
+  if (workEntry.nativeEventType === "background_tasks_changed") return BackgroundTrayIcon;
+  if (workEntry.monitorNotification)
+    return workEntry.monitorNotification.outcome === "failed" ? CircleAlertIcon : EyeIcon;
+  if (workEntry.backgroundTaskCompletion) {
+    return workEntry.backgroundTaskCompletion.taskType === "local_agent"
+      ? AgentTaskIcon
+      : BackgroundTrayIcon;
+  }
+  // A subagent's progress is its live status, not a finished step: never the
+  // success check, and a warning once it failed.
+  if (workEntry.subagentProgress) {
+    return workEntry.subagentProgress.outcome === "failed" ? CircleAlertIcon : AgentTaskIcon;
+  }
+  if (workEntry.providerHandoff) {
+    return workEntry.providerHandoff.status === "failed" ? CircleAlertIcon : HandoffIcon;
+  }
+  if (workEntry.providerContextLifecycle) {
+    return workEntry.providerContextLifecycle.nativeHistory === "unavailable"
+      ? CircleAlertIcon
+      : HistoryIcon;
+  }
+
+  if (workEntry.requestKind === "command") return commandWorkEntryIcon(workEntry);
+  if (workEntry.requestKind === "file-read") return FileReadIcon;
+  if (workEntry.requestKind === "file-change") return PencilIcon;
+  if (workEntry.requestKind === "tool") return McpIcon;
+
+  if (workEntry.itemType === "command_execution" || workEntry.command) {
+    return commandWorkEntryIcon(workEntry);
+  }
+  if (workEntry.itemType === "file_change") {
+    return PencilIcon;
+  }
+  if (workEntry.itemType === "image_generation") return ZapIcon;
+  if (workEntry.itemType === "image_view") return EyeIcon;
+  // Read/search names outrank the generic buckets: Pi maps its native
+  // `grep`/`find` to web_search, and ACP read/execute kinds land on
+  // dynamic_tool_call — the icon should follow what the tool actually is.
+  if (isFileReadToolEntry(workEntry)) return FileReadIcon;
+  if (isSearchToolEntry(workEntry)) return SearchIcon;
+  if (workEntry.itemType === "web_search") return WebSearchIcon;
+
+  switch (workEntry.itemType) {
+    case "mcp_tool_call":
+      return SkillCubeIcon;
+    case "dynamic_tool_call":
+      return HammerIcon;
+    case "collab_agent_tool_call":
+      return AgentTaskIcon;
+  }
+
+  return workToneIcon(workEntry.tone).icon;
+}
+
+// Dynamic icon selection is data, not a component declaration. Keeping the
+// createElement call in this module helper avoids presenting a render-local
+// component binding to React Compiler.
+export function renderWorkEntryIcon(Icon: LucideIcon, className: string): ReactElement {
+  return createElement(Icon, { className });
+}
+
+// The leading glyph for a tool row: recognizable product and surface icons win
+// over the kind-derived entry icon. Shared with the collapsed tool-group summary
+// row, which borrows its first entry's icon.
+export function workEntryLeftIcon(workEntry: TimelineWorkEntry): LucideIcon {
+  if (isComputerWorkEntry(workEntry)) return ComputerUseIcon;
+  if (isGitHubMcpToolCall(workEntry)) return GitHubIcon;
+  if (isSynaraBrowserWorkEntry(workEntry)) return GlobeIcon;
+  if (isSynaraToolCall(workEntry)) return SynaraToolIcon;
+  if (workEntry.itemType === "mcp_tool_call") return McpIcon;
+  return workEntryIcon(workEntry);
+}
+
+function isComputerWorkEntry(workEntry: TimelineWorkEntry): boolean {
+  return (
+    computerToolName(workEntry.toolName) !== null ||
+    /^Computer Use:/i.test(workEntry.toolTitle ?? "")
+  );
+}
+
+function isGitHubMcpToolCall(workEntry: TimelineWorkEntry): boolean {
+  const toolName = workEntry.toolName?.trim().toLowerCase();
+  return Boolean(toolName?.startsWith("mcp__codex_apps__github"));
+}
+
+// Synara's own agent-gateway tools (synara_list_threads, synara_create_thread,
+// ...) get the Synara mark instead of the generic MCP glyph. Providers report
+// the call differently: Claude prefixes the MCP server (mcp__synara__*), ACP
+// agents surface the bare tool name (synara_*), and Codex reports server/tool
+// pairs that the label humanizer renders as "Synara: ...".
+function toolWorkEntryStatus(workEntry: TimelineWorkEntry): SynaraMcpToolStatus {
+  if (workEntry.toolStatus) return workEntry.toolStatus;
+  if (workEntry.liveActivity && isLiveActivityInProgress(workEntry.liveActivity)) return "running";
+  return workEntry.activityKind !== undefined && workEntry.activityKind !== "tool.completed"
+    ? "running"
+    : "completed";
+}
+
+function isSynaraBrowserWorkEntry(workEntry: TimelineWorkEntry): boolean {
+  return isSynaraBrowserToolCall({
+    toolName: workEntry.toolName,
+    title: workEntry.toolTitle,
+    fallbackLabel: workEntry.label,
+    status: toolWorkEntryStatus(workEntry),
+  });
+}
+
+function isSynaraToolCall(workEntry: TimelineWorkEntry): boolean {
+  return (
+    deriveSynaraMcpToolTitle({
+      toolName: workEntry.toolName,
+      title: workEntry.toolTitle,
+      fallbackLabel: workEntry.label,
+      status: toolWorkEntryStatus(workEntry),
+    }) !== null
+  );
+}
+
+function capitalizePhrase(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) {
+    return value;
+  }
+  return `${trimmed.charAt(0).toUpperCase()}${trimmed.slice(1)}`;
+}
+
+function toolWorkEntryHeading(workEntry: TimelineWorkEntry, translate: typeof t): string {
+  if (workEntry.displayToolTitle) return capitalizePhrase(workEntry.displayToolTitle);
+  if (computerToolName(workEntry.toolName)) {
+    // Work-log projection already resolves the action and target. The generic
+    // MCP presentation would replace that with "Synara clicked the desktop".
+    const title = normalizeCompactToolLabel(workEntry.toolTitle ?? "");
+    if (title && !isGenericToolTitle(title) && !computerToolName(title))
+      return capitalizePhrase(title);
+    return describeComputerToolCall({ toolName: workEntry.toolName, args: undefined }, translate)!
+      .summary;
+  }
+  // Task progress is semantic copy, not a tool lifecycle status. Preserve the
+  // trailing "completed" instead of passing it through the compact tool-label
+  // normalizer, which intentionally strips lifecycle suffixes.
+  if (workEntry.activityKind === "turn.tasks.updated" || workEntry.monitorNotification) {
+    return capitalizePhrase(workEntry.label);
+  }
+  const synaraTitle = deriveSynaraMcpToolTitle(
+    {
+      toolName: workEntry.toolName,
+      title: workEntry.toolTitle,
+      fallbackLabel: workEntry.label,
+      status: toolWorkEntryStatus(workEntry),
+    },
+    translate,
+  );
+  if (synaraTitle) {
+    return synaraTitle;
+  }
+  if (!workEntry.toolTitle) {
+    return capitalizePhrase(normalizeCompactToolLabel(workEntry.label));
+  }
+  return capitalizePhrase(normalizeCompactToolLabel(workEntry.toolTitle));
+}
+
+function combineWorkEntryDisplayText(
+  heading: string,
+  preview: string | null,
+  translate: typeof t,
+): string {
+  if (!preview) {
+    return heading;
+  }
+  return normalizeToolTextForComparison(heading) === normalizeToolTextForComparison(preview)
+    ? heading
+    : translate("chat:symbol7", { value0: heading, value1: preview });
+}
+
+// Shell command rows read "Ran <command>" with the command verbatim; a plain
+// read of files says "Read <files>" instead, since that is exactly what it did.
+// A humanized guess ("Found current directory") is never shown. Approval and
+// status rows keep their own wording.
+function commandRowDisplay(
+  workEntry: TimelineWorkEntry,
+): { heading: string; object: string; literal: boolean } | null {
+  const command = workEntry.rawCommand ?? workEntry.command;
+  if (
+    (workEntry.tone !== "tool" && workEntry.toolStatus !== "failed") ||
+    !command ||
+    !(
+      workEntry.itemType === "command_execution" ||
+      workEntry.requestKind === "command" ||
+      workEntry.command
+    )
+  ) {
+    return null;
+  }
+  const running = toolWorkEntryStatus(workEntry) === "running";
+  const readTargets = deriveCommandReadTargets(command);
+  if (readTargets) {
+    return {
+      heading: running ? "chat:reading" : "chat:detail_read",
+      object: readTargets.join(", "),
+      literal: false,
+    };
+  }
+  const literal = deriveLiteralCommand(command);
+  return literal
+    ? { heading: running ? "chat:runStatus_running" : "chat:ran", object: literal, literal: true }
+    : null;
+}
+
+// What a failed call's row says about its failure ("Failed · exit 1"), or null
+// for a call that did not fail. Shared with the working indicator.
+export function workEntryFailureMetaText(workEntry: TimelineWorkEntry): string | null {
+  if (toolWorkEntryStatus(workEntry) !== "failed") return null;
+  const { exitCode } = deriveToolFailureSummary(workEntry.toolDetails);
+  return exitCode !== null ? `Failed · exit ${exitCode}` : "Failed";
+}
+
+export interface WorkEntryDisplayParts {
+  heading: string;
+  preview: string | null;
+  displayText: string;
+  // Verbatim command shown in mono after the heading, for shell command rows.
+  commandLiteral: string | null;
+}
+
+// Renders a row sentence: plain text, or the heading plus the command chip.
+export function renderWorkEntrySentence(parts: WorkEntryDisplayParts): ReactNode {
+  if (parts.commandLiteral === null) {
+    return parts.displayText;
+  }
+  // The command reads as part of the row's sentence, in the row's own type:
+  // no code chip, so a tool call stays one plain line.
+  return (
+    <>
+      {parts.heading} <span data-command-literal="true">{parts.commandLiteral}</span>
+    </>
+  );
+}
+
+// One sentence per row, live or settled: the tool's own verb plus what it acted
+// on ("Read calc.py", "Ran `ls`"). Lifecycle state is never spelled out here —
+// the verb already carries the tense and `liveActivityMetaText` covers the rest.
+// Shared with the live tool-group line, which wears its newest call's sentence.
+export function workEntryDisplayParts(
+  workEntry: TimelineWorkEntry,
+  translate: typeof t = t,
+): WorkEntryDisplayParts {
+  const commandDisplay = commandRowDisplay(workEntry);
+  if (commandDisplay) {
+    const heading = translate(commandDisplay.heading, { context: "command" });
+    return {
+      heading,
+      preview: commandDisplay.object,
+      displayText: `${heading} ${commandDisplay.object}`,
+      commandLiteral: commandDisplay.literal ? commandDisplay.object : null,
+    };
+  }
+  const webFetchUrl = extractWebFetchUrl(workEntry);
+  const heading = toolWorkEntryHeading(workEntry, translate);
+  const rawPreview = workEntryPreview(workEntry);
+  const preview =
+    !isGitHubMcpToolCall(workEntry) &&
+    (isSynaraBrowserWorkEntry(workEntry) || isSynaraToolCall(workEntry))
+      ? sanitizeSynaraMcpToolPreview(
+          {
+            preview: rawPreview,
+            heading,
+            status: toolWorkEntryStatus(workEntry),
+          },
+          translate,
+        )
+      : rawPreview;
+  const displayText = webFetchUrl
+    ? describeLinkChip(webFetchUrl).label
+    : (isReasoningUpdateWorkEntry(workEntry) || workEntry.activityKind === "tool.summary") &&
+        preview
+      ? preview
+      : combineWorkEntryDisplayText(heading, preview, translate);
+  return { heading, preview, displayText, commandLiteral: null };
+}
+
+function isFileChangeWorkEntry(workEntry: TimelineWorkEntry): boolean {
+  return isFileChangeWorkLogEntry(workEntry);
+}
+
+// Item-scoped reasoning and summaries keep full prose. Legacy reasoning groups
+// only carry a compact preview; their existing opener retains all original updates.
+function isProseWorkEntry(workEntry: TimelineWorkEntry): boolean {
+  return (
+    (isReasoningUpdateWorkEntry(workEntry) && Boolean(workEntry.toolCallId)) ||
+    workEntry.activityKind === "tool.summary"
+  );
+}
+
+function proseWorkEntryText(workEntry: TimelineWorkEntry, displayText: string): string | null {
+  const source = workEntry.detail ?? workEntry.preview ?? displayText;
+  // Codex summaries end in an empty `<!-- -->` block separator.
+  const text = source.replace(/<!--[\s\S]*?-->/gu, "").trim();
+  return text.length > 0 ? text : null;
+}
+
+function commandTooltipContent(command: string, displayText: string) {
+  return (
+    <div className="max-w-96 whitespace-pre-wrap leading-tight">
+      <div className="space-y-2">
+        <div className="space-y-0.5">
+          <div className="text-muted-foreground/70">{t("chat:timeline_summaryLabel")}</div>
+          <div>{displayText}</div>
+        </div>
+        <div className="space-y-0.5">
+          <div className="text-muted-foreground/70">{t("chat:timeline_rawCall")}</div>
+          <code className="block whitespace-pre-wrap break-words font-chat-code text-chat-code text-foreground/92">
+            {command}
+          </code>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Hover content for a tool-call row: the rich command card when a raw command is
+// present, otherwise the plain label (used to reveal truncated text / file paths).
+// Returns null when there's nothing worth showing so the row renders untouched.
+function toolRowTooltipContent(
+  rawCommand: string | null | undefined,
+  displayText: string,
+  fallback: string | undefined,
+): ReactNode {
+  if (rawCommand) {
+    return commandTooltipContent(rawCommand, displayText);
+  }
+  return fallback ? <span className="whitespace-pre-wrap">{fallback}</span> : null;
+}
+
+// Frosted hover tooltip for tool-call rows — the same surface (via the `default`
+// variant) as the sidebar thread/project hover cards, so the rows read as one
+// system. Replaces the native `title` tooltip; renders the trigger untouched when
+// there's no content to show.
+function ToolRowTooltip(props: { content: ReactNode; children: ReactElement }) {
+  if (!props.content) {
+    return props.children;
+  }
+  return (
+    <Tooltip>
+      <TooltipTrigger render={props.children} />
+      <TooltipPopup side="top" align="start" className="max-w-96 whitespace-normal">
+        {props.content}
+      </TooltipPopup>
+    </Tooltip>
+  );
+}
+
+export const TimelineWorkEntryRow = memo(function TimelineWorkEntryRow(props: {
+  workEntry: TimelineWorkEntry;
+  chatMetaFontSizePx: number;
+  textFontSizePx?: number;
+  density?: "default" | "compact";
+  mutedProse?: boolean;
+  fileDiffStatByPath?: ReadonlyMap<string, { additions: number; deletions: number }>;
+  markdownCwd: string | undefined;
+  threadId?: string | null | undefined;
+  onImageExpand: (preview: ExpandedImagePreview) => void;
+  turnId?: TurnId;
+  onOpenTurnDiff?: (turnId: TurnId, filePath?: string) => void;
+  onOpenAgentActivity?: (activityId: string) => void;
+  onOpenAutomation?: (automationId: string) => void;
+  computerControlEnabled?: boolean;
+  onEnableComputerControl?: () => void;
+  timestampFormat: TimestampFormat;
+}) {
+  const { t, formatLocale } = useTranslation();
+
+  // Defaults are applied in the body (not in the destructuring pattern): a default
+  // value inside a destructuring pattern makes React Compiler bail out on the whole
+  // component, silently dropping memoization for every tool-call row.
+  const {
+    workEntry,
+    chatMetaFontSizePx,
+    textFontSizePx: textFontSizePxProp,
+    density: densityProp,
+    mutedProse,
+    fileDiffStatByPath,
+    markdownCwd,
+    threadId,
+    onImageExpand,
+    turnId,
+    onOpenTurnDiff,
+    onOpenAgentActivity,
+    onOpenAutomation,
+    computerControlEnabled,
+    onEnableComputerControl,
+    timestampFormat,
+  } = props;
+  const textFontSizePx = textFontSizePxProp ?? chatMetaFontSizePx;
+  const density = densityProp ?? "default";
+  const compact = density === "compact";
+  const isCodexStatusRow = isCodexActivityStatusWorkEntry(workEntry);
+  const isPlainRuntimeNoticeRow = isPlainRuntimeNoticeWorkEntry(workEntry);
+  const EntryIcon = workEntryIcon(workEntry);
+  // Web-fetch tool calls surface the target site (favicon + URL) instead of the raw
+  // `WebFetch: {json}` arguments, reusing the same link-chip icon/label path as
+  // composer and markdown links so every site reference looks identical.
+  const webFetchUrl = extractWebFetchUrl(workEntry);
+  // Standard tool rows keep one discoverable left glyph. Codex status rows
+  // deliberately skip it and reuse only the shared tool-label typography.
+  const isGitHubToolRow = isGitHubMcpToolCall(workEntry);
+  const isComputerToolRow = isComputerWorkEntry(workEntry);
+  const isSynaraBrowserToolRow = !isGitHubToolRow && isSynaraBrowserWorkEntry(workEntry);
+  const isSynaraToolRow =
+    !isGitHubToolRow && !isSynaraBrowserToolRow && isSynaraToolCall(workEntry);
+  const isMcpToolRow =
+    workEntry.itemType === "mcp_tool_call" &&
+    !isGitHubToolRow &&
+    !isSynaraBrowserToolRow &&
+    !isSynaraToolRow;
+  const LeftIcon = workEntryLeftIcon(workEntry);
+  const leftIconKind = webFetchUrl
+    ? "web-fetch"
+    : isComputerToolRow
+      ? "computer"
+      : isGitHubToolRow || EntryIcon === GitHubIcon
+        ? "github"
+        : isSynaraBrowserToolRow
+          ? "browser"
+          : isSynaraToolRow
+            ? "synara"
+            : isMcpToolRow
+              ? "mcp"
+              : undefined;
+  const displayParts = workEntryDisplayParts(workEntry, t);
+  const { displayText } = displayParts;
+  const rawCommand = workEntry.rawCommand ?? workEntry.command;
+  const hoverText = rawCommand ?? webFetchUrl ?? displayText;
+  const changedFiles = workEntry.changedFiles ?? [];
+  const showEditedRows = isFileChangeWorkEntry(workEntry) && changedFiles.length > 0;
+  const canOpenAgentActivity = Boolean(onOpenAgentActivity) && isAgentActivityWorkEntry(workEntry);
+  const openAgentActivity = canOpenAgentActivity
+    ? () => onOpenAgentActivity?.(workEntry.id)
+    : undefined;
+  const hasToolDetails = Boolean(workEntry.toolDetails);
+  const providerContextLifecycle = workEntry.providerContextLifecycle;
+  const providerHandoff = workEntry.providerHandoff;
+  const monitorNotification = workEntry.monitorNotification;
+  // File-read rows open the referenced file in the in-app viewer when the
+  // hosting surface provides an opener (right-dock file pane / editor pane).
+  const opener = useWorkspaceFileOpener();
+  // Per-file +N/-M parsed from this tool call's own patch, used as a fallback when
+  // the turn-diff summary isn't in scope (e.g. standalone work rows) so every
+  // "Edited <file>" row can still show diff stats.
+  const toolDiffStatsByPath = useMemo(
+    () =>
+      isFileChangeWorkEntry(workEntry)
+        ? fileDiffStatsByPath(workEntry.toolDetails?.diff)
+        : EMPTY_FILE_DIFF_STATS,
+    [workEntry],
+  );
+  const isSubagentTaskRow = workEntry.itemType === "collab_agent_tool_call";
+  // Only a subagent row shows ticking time; other running rows need no clock.
+  const liveActivityNowMs = useLiveActivityNow(
+    isSubagentTaskRow ? workEntry.liveActivity : undefined,
+  );
+  // A failed call says so explicitly, with its exit code, instead of the
+  // generic lifecycle meta. The output itself stays behind the disclosure.
+  const failureMetaText = workEntryFailureMetaText(workEntry);
+  const liveActivityMetaText = failureMetaText
+    ? null
+    : workEntry.liveActivity
+      ? formatLiveActivityMeta(workEntry.liveActivity, liveActivityNowMs, {
+          subagent: isSubagentTaskRow,
+        })
+      : null;
+
+  // A computer-control denial renders as an actionable card (enable + retry)
+  // instead of a buried tool-error line. Kept after the hooks above so the
+  // early return never changes hook order.
+  if (workEntry.computerSetupRequired) {
+    return (
+      <ConnectedComputerSetupRequiredCard
+        {...workEntry.computerSetupRequired}
+        textFontSizePx={textFontSizePx}
+        metaFontSizePx={chatMetaFontSizePx}
+      />
+    );
+  }
+
+  const computerControlDenied = workEntry.computerControlDenied;
+  if (computerControlDenied) {
+    return (
+      <div className={cn(compact ? "py-0.5" : "py-1")}>
+        <ComputerControlDeniedCard
+          {...(computerControlEnabled !== undefined ? { computerControlEnabled } : {})}
+          textFontSizePx={textFontSizePx}
+          metaFontSizePx={chatMetaFontSizePx}
+          {...(onEnableComputerControl ? { onEnable: onEnableComputerControl } : {})}
+        />
+      </div>
+    );
+  }
+
+  // A background task keeps one row for its whole life. Kept after the hooks
+  // above so the early return never changes hook order.
+  if (workEntry.backgroundTask) {
+    return <BackgroundTaskRow task={workEntry.backgroundTask} fontSizePx={textFontSizePx} />;
+  }
+
+  // A turn's subagents fold into one entry that renders as the subagent card.
+  if (workEntry.subagentRun) {
+    return <SubagentRunCard workEntry={workEntry} fontSizePx={textFontSizePx} />;
+  }
+
+  // A created-automation row renders as its own card instead of a tool-call line.
+  // Kept after the hooks above so the early return never changes hook order.
+  const automation = workEntry.automation;
+  if (workEntry.connectorProposalId) {
+    return MCP_CONNECTORS_ON ? (
+      <McpConnectorProposalCard proposalId={workEntry.connectorProposalId} />
+    ) : null;
+  }
+  if (automation) {
+    return (
+      <div className={cn(compact ? "py-0.5" : "py-1")}>
+        <AutomationCreatedCard
+          automationId={automation.id}
+          name={automation.name}
+          cadenceLabel={automation.cadenceLabel}
+          {...(automation.proposalState ? { proposalState: automation.proposalState } : {})}
+          textFontSizePx={textFontSizePx}
+          metaFontSizePx={chatMetaFontSizePx}
+          {...(onOpenAutomation ? { onOpen: () => onOpenAutomation(automation.id) } : {})}
+        />
+      </div>
+    );
+  }
+
+  // Narration renders like the assistant's own text: full Markdown in the
+  // transcript type and color, with no glyph or disclosure.
+  const proseText = isProseWorkEntry(workEntry) ? proseWorkEntryText(workEntry, displayText) : null;
+  if (proseText !== null) {
+    return (
+      <div className="py-1" data-work-entry-prose="true">
+        <ChatMarkdown
+          text={proseText}
+          cwd={markdownCwd}
+          threadId={threadId}
+          directionMode="auto-blocks"
+          isStreaming={false}
+          style={{
+            ...getChatTranscriptTextStyle(textFontSizePx),
+            ...(mutedProse ? { color: MUTED_LABEL_TEXT_COLOR } : {}),
+          }}
+          onImageExpand={onImageExpand}
+        />
+      </div>
+    );
+  }
+
+  const readFilePath =
+    opener !== null &&
+    !canOpenAgentActivity &&
+    workEntry.detail &&
+    (workEntry.requestKind === "file-read" || isFileReadToolEntry(workEntry))
+      ? extractFilePathFromDetail(workEntry.detail)
+      : null;
+  const canOpenReadFile = readFilePath !== null;
+  const canOpenToolDetails =
+    !canOpenAgentActivity &&
+    Boolean(
+      providerContextLifecycle ||
+      providerHandoff ||
+      monitorNotification ||
+      workEntry.toolDetails ||
+      (workEntry.liveActivity && !canOpenReadFile),
+    );
+  const openReadFile = readFilePath
+    ? () => openWorkspaceFileReference(opener, readFilePath)
+    : undefined;
+  const prefetchReadFile =
+    readFilePath && opener?.prefetchFile ? () => opener.prefetchFile?.(readFilePath) : undefined;
+
+  // Use the text font size (matching the UI settings) for tool call rows
+  const rowFontSizePx = textFontSizePx;
+
+  return (
+    <div className={cn(compact ? "py-0.5" : "rounded-lg py-1")}>
+      {showEditedRows ? (
+        <div className="space-y-0.5">
+          {changedFiles.map((changedFilePath) => {
+            // Prefer the turn-diff summary's per-file stat; fall back to the stat
+            // parsed from this tool call's own patch so the +N/-M shows even when
+            // no summary is in scope (standalone work rows) or it lacks the file.
+            const summaryStat = fileDiffStatByPath?.get(changedFilePath);
+            const changedFileStat =
+              summaryStat && summaryStat.additions + summaryStat.deletions > 0
+                ? summaryStat
+                : (resolveFileDiffStatByChangedPath(
+                    toolDiffStatsByPath,
+                    changedFilePath,
+                    changedFiles.length,
+                  ) ?? summaryStat);
+            const canOpenEditedDiff = Boolean(turnId && onOpenTurnDiff);
+            const canOpenEditedRow = canOpenToolDetails || canOpenEditedDiff;
+            const editedRowClassName = cn(
+              "group/file-row flex w-full max-w-full items-center text-left transition-colors duration-150",
+              compact ? "gap-1.5" : "gap-2",
+              canOpenEditedRow ? "cursor-pointer focus-visible:outline-none" : "cursor-default",
+            );
+            const editedRowChildren = (
+              <EditedFileRowContent
+                filePath={changedFilePath}
+                additions={changedFileStat?.additions}
+                deletions={changedFileStat?.deletions}
+                fontSizePx={rowFontSizePx}
+                compact={compact}
+              />
+            );
+            if (hasToolDetails || (canOpenToolDetails && !canOpenEditedDiff)) {
+              return (
+                <ToolDetailsDisclosure
+                  key={`${workEntry.id}:${changedFilePath}`}
+                  details={workEntry.toolDetails}
+                  activity={workEntry.liveActivity}
+                  compact={compact}
+                  tooltip={<span className="whitespace-pre-wrap">{changedFilePath}</span>}
+                  summaryClassName={editedRowClassName}
+                  dataFileChangeRow
+                  timestampFormat={timestampFormat}
+                >
+                  {editedRowChildren}
+                </ToolDetailsDisclosure>
+              );
+            }
+            return (
+              <button
+                key={`${workEntry.id}:${changedFilePath}`}
+                type="button"
+                data-file-change-row="true"
+                className={editedRowClassName}
+                title={changedFilePath}
+                disabled={!canOpenEditedRow}
+                onClick={() => {
+                  if (!turnId || !onOpenTurnDiff) {
+                    return;
+                  }
+                  onOpenTurnDiff(turnId, changedFilePath);
+                }}
+              >
+                {editedRowChildren}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        (() => {
+          const rowContentChildren = (
+            <>
+              {!isCodexStatusRow ? (
+                <span
+                  className={cn(
+                    "flex shrink-0 items-center justify-center",
+                    WORK_ROW_MUTED_HOVER_TONE["tool-row"],
+                    compact ? "size-4" : "size-5",
+                  )}
+                  data-tool-icon={leftIconKind}
+                  data-work-entry-icon="true"
+                >
+                  {webFetchUrl ? (
+                    <LinkChipIcon url={webFetchUrl} className={compact ? "size-3.5" : "size-4"} />
+                  ) : isMcpToolRow && LeftIcon === McpIcon && workEntry.mcpServer ? (
+                    <McpServerIcon
+                      serverName={workEntry.mcpServer}
+                      className={compact ? "size-3.5" : "size-4"}
+                    />
+                  ) : (
+                    renderWorkEntryIcon(LeftIcon, compact ? "size-3.5" : "size-4")
+                  )}
+                </span>
+              ) : null}
+              {/* Every tool call is one plain line, sized to its content so the
+                  disclosure chevron sits right after it. */}
+              <div className="min-w-0 overflow-hidden">
+                <p
+                  className={cn(
+                    "truncate",
+                    compact ? "leading-5" : "leading-6",
+                    // Match the leading icon's tone so the row reads as one muted unit, and
+                    // brighten the whole row to foreground on hover/focus instead of a fill.
+                    WORK_ROW_MUTED_HOVER_TONE["tool-row"],
+                  )}
+                  data-runtime-notice-row={isPlainRuntimeNoticeRow ? "true" : undefined}
+                  data-codex-status-row={isCodexStatusRow ? "true" : undefined}
+                  style={{ fontSize: `${rowFontSizePx}px` }}
+                >
+                  <span data-work-entry-display-text="true">
+                    {renderWorkEntrySentence(displayParts)}
+                  </span>
+                  {liveActivityMetaText ? (
+                    <span data-live-activity-meta="true"> · {liveActivityMetaText}</span>
+                  ) : null}
+                  {failureMetaText ? (
+                    <span className="text-destructive" data-tool-failure-meta="true">
+                      {" "}
+                      · {failureMetaText}
+                    </span>
+                  ) : null}
+                </p>
+              </div>
+            </>
+          );
+          if (canOpenToolDetails) {
+            return (
+              <ToolDetailsDisclosure
+                details={workEntry.toolDetails}
+                activity={workEntry.liveActivity}
+                detailContent={
+                  monitorNotification ? (
+                    <div className="space-y-1 text-ui-sm">
+                      <time
+                        className="text-ui-xs text-muted-foreground"
+                        dateTime={workEntry.createdAt}
+                      >
+                        {formatTimestamp(workEntry.createdAt, timestampFormat, formatLocale)}
+                      </time>
+                      <pre className="whitespace-pre-wrap break-words font-chat-code">
+                        {monitorNotification.output}
+                      </pre>
+                    </div>
+                  ) : providerContextLifecycle ? (
+                    <ProviderContextLifecycleDetails info={providerContextLifecycle} />
+                  ) : providerHandoff ? (
+                    <ProviderHandoffDetails info={providerHandoff} />
+                  ) : undefined
+                }
+                compact={compact}
+                timestampFormat={timestampFormat}
+                tooltip={toolRowTooltipContent(rawCommand, displayText, displayText)}
+              >
+                {rowContentChildren}
+              </ToolDetailsDisclosure>
+            );
+          }
+
+          return (
+            <AgentActivityOpenSurface
+              canOpen={canOpenAgentActivity || canOpenReadFile}
+              compact={compact}
+              onOpen={openAgentActivity ?? openReadFile}
+              onHover={prefetchReadFile}
+              tooltip={toolRowTooltipContent(
+                rawCommand,
+                displayText,
+                canOpenReadFile ? (readFilePath ?? hoverText) : hoverText,
+              )}
+            >
+              {rowContentChildren}
+            </AgentActivityOpenSurface>
+          );
+        })()
+      )}
+    </div>
+  );
+});
+
+// Inner content for an "Edited <file> +n/-m" row. Mirrors the tool-call row treatment
+// (muted leading icon + label that brightens to foreground on hover/focus, same font
+// size) so edited rows read as the same visual unit. Callers own the interactive wrapper
+// (`group/file-row` button or disclosure summary) and pass the diff stat when available.
+export function EditedFileRowContent(props: {
+  filePath: string;
+  additions: number | undefined;
+  deletions: number | undefined;
+  fontSizePx: number;
+  compact: boolean;
+}) {
+  const { t } = useTranslation();
+
+  const { filePath, additions, deletions, fontSizePx, compact } = props;
+  const hasStat = (additions ?? 0) + (deletions ?? 0) > 0;
+  return (
+    <>
+      <span
+        className={cn(
+          "flex shrink-0 items-center justify-center",
+          WORK_ROW_MUTED_HOVER_TONE["file-row"],
+          compact ? "size-4" : "size-5",
+        )}
+        data-tool-icon="edit"
+      >
+        <PencilIcon className={compact ? "size-3.5" : "size-4"} />
+      </span>
+      <span
+        className={cn("font-system-ui shrink-0", WORK_ROW_MUTED_HOVER_TONE["file-row"])}
+        style={{ fontSize: `${fontSizePx}px` }}
+      >
+        {t("chat:timeline_edited")}
+      </span>
+      <span
+        className={cn(
+          "font-system-ui max-w-[28rem] truncate underline-offset-2",
+          WORK_ROW_MUTED_HOVER_TONE["file-row"],
+          // Filename doubles as a link affordance: underline on the same row hover/focus.
+          "group-hover/file-row:underline group-focus-visible/file-row:underline",
+        )}
+        style={{ fontSize: `${fontSizePx}px` }}
+      >
+        {basenameOfPath(filePath)}
+      </span>
+      {hasStat ? (
+        <span
+          className="font-system-ui shrink-0 tabular-nums whitespace-nowrap"
+          style={{ fontSize: `${fontSizePx}px` }}
+        >
+          <DiffStatLabel additions={additions ?? 0} deletions={deletions ?? 0} />
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+function AgentActivityOpenSurface(props: {
+  canOpen: boolean;
+  children: ReactNode;
+  compact: boolean;
+  /** Warm-up hook fired on hover/focus so opening feels instant. */
+  onHover?: (() => void) | undefined;
+  onOpen?: (() => void) | undefined;
+  title?: string | undefined;
+  /** Styled frosted hover tooltip (preferred over the native `title`). */
+  tooltip?: ReactNode;
+  dataToolDetailTrigger?: boolean | undefined;
+}) {
+  const className = cn(
+    "group/tool-row flex w-full items-center text-left transition-[opacity,translate] duration-200",
+    props.compact ? "gap-1.5" : "gap-2",
+    props.canOpen ? "cursor-pointer focus-visible:outline-none" : "cursor-default",
+  );
+
+  // Wrap the real DOM element (not this component) so Base UI's tooltip trigger
+  // can attach its hover handlers and compose with our own onClick/onPointerEnter.
+  const surface = props.canOpen ? (
+    <button
+      type="button"
+      className={className}
+      title={props.title}
+      onClick={props.onOpen}
+      data-tool-detail-trigger={props.dataToolDetailTrigger ? "true" : undefined}
+      {...(props.onHover ? { onPointerEnter: props.onHover, onFocus: props.onHover } : {})}
+    >
+      {props.children}
+    </button>
+  ) : (
+    <div className={className} title={props.title}>
+      {props.children}
+    </div>
+  );
+
+  return <ToolRowTooltip content={props.tooltip}>{surface}</ToolRowTooltip>;
+}
+
+function providerContextLifecycleReasonLabel(
+  reason: NonNullable<TimelineWorkEntry["providerContextLifecycle"]>["restartReason"],
+): string {
+  switch (reason) {
+    case "conversation-rebuilt":
+      return t("chat:conversationRebuiltFromASummary");
+    case "fork-from-earlier-turn":
+      return t("chat:forkRebuiltUpToTheChosenTurn");
+    case "fresh-session":
+      return t("chat:newSessionStarted");
+    case "interrupt-escalation":
+      return t("chat:turnStopEscalatedToASessionRestart");
+    case "native-history-unavailable":
+      return t("chat:previousHistoryUnavailable");
+    case "native-resume-failed":
+      return t("chat:couldNotResumeThePreviousSession");
+  }
+}
+
+function ProviderContextLifecycleDetails(props: {
+  info: NonNullable<TimelineWorkEntry["providerContextLifecycle"]>;
+}) {
+  const { t, formatLocale } = useTranslation();
+
+  const { info } = props;
+  const provider =
+    PROVIDER_DESCRIPTORS.find((descriptor) => descriptor.kind === info.provider)?.displayName ??
+    info.provider;
+  return (
+    <div className="space-y-3" data-provider-context-lifecycle-details="true">
+      <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1.5 rounded-lg border border-border/45 bg-background/60 px-3 py-2.5 text-ui-sm">
+        <dt className="text-muted-foreground/56">{t("workspace:models_customModelProvider")}</dt>
+        <dd className="text-foreground/84">{provider}</dd>
+        <dt className="text-muted-foreground/56">{t("chat:previousHistory")}</dt>
+        <dd className="text-foreground/84">
+          {info.nativeHistory === "available" ? t("chat:available") : t("chat:lost")}
+        </dd>
+        <dt className="text-muted-foreground/56">{t("chat:sessionRestarted")}</dt>
+        <dd className="text-foreground/84">
+          {info.sessionRestarted ? t("chat:common_yes") : t("chat:common_no")}
+        </dd>
+        <dt className="text-muted-foreground/56">{t("chat:why")}</dt>
+        <dd className="text-foreground/84">
+          {providerContextLifecycleReasonLabel(info.restartReason)}
+        </dd>
+        <dt className="text-muted-foreground/56">{t("chat:summaryIncluded")}</dt>
+        <dd className="text-foreground/84">
+          {info.recapInjected
+            ? t("chat:characters", { value0: info.recapCharacters.toLocaleString(formatLocale) })
+            : t("chat:common_no")}
+        </dd>
+      </dl>
+      {info.recapPreview ? (
+        <section className="space-y-2">
+          <h3 className="text-ui-sm font-medium text-muted-foreground/56">
+            {t("chat:summaryPreview")}
+          </h3>
+          <pre
+            className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-border/45 bg-background/60 px-3 py-2.5 font-chat-code text-chat-code leading-relaxed text-foreground/84"
+            data-session-context-recap-preview="true"
+          >
+            {info.recapPreview}
+          </pre>
+          {info.recapPreviewTruncated ? (
+            <p className="text-ui-xs text-muted-foreground/56">
+              {t("chat:showingAShortPreviewOfTheSummarySentWith")}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+function providerModelLabel(
+  selection: ModelSelection,
+  fastModeNotice: FastModeNotice | null | undefined,
+  translate: typeof t,
+): string {
+  const displayName =
+    PROVIDER_DESCRIPTORS.find((descriptor) => descriptor.kind === selection.provider)
+      ?.displayName ?? selection.provider;
+  const summary = resolveThreadModelSummary(selection, undefined, translate);
+  const modelLabel = summary
+    ? translate("common:symbol6", {
+        value0: formatThreadModelSummaryLabel(summary),
+        value1: summary.fastMode
+          ? ` · ${fastModeNotice?.label ?? translate("chat:traitsPicker_fast")}`
+          : "",
+      })
+    : selection.model;
+  return translate("common:symbol9", { value0: displayName, value1: modelLabel });
+}
+
+export function ProviderHandoffDetails(props: {
+  info: NonNullable<TimelineWorkEntry["providerHandoff"]>;
+}) {
+  const { t, formatLocale } = useTranslation();
+
+  const { info } = props;
+  return (
+    <div className="space-y-3" data-provider-handoff-details="true">
+      <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1.5 rounded-lg border border-border/45 bg-background/60 px-3 py-2.5 text-ui-sm">
+        <dt className="text-muted-foreground/56">{t("chat:from")}</dt>
+        <dd className="text-foreground/84">
+          {providerModelLabel(info.sourceModelSelection, info.sourceFastModeNotice, t)}
+        </dd>
+        <dt className="text-muted-foreground/56">{t("chat:to")}</dt>
+        <dd className="text-foreground/84">
+          {providerModelLabel(info.targetModelSelection, info.targetFastModeNotice, t)}
+        </dd>
+        {info.status === "failed" ? (
+          <>
+            <dt className="text-muted-foreground/56">{t("chat:providerUsage_error")}</dt>
+            <dd className="text-foreground/84">
+              {info.failureDetail ?? t("chat:theSessionDidNotStart")}
+            </dd>
+          </>
+        ) : (
+          <>
+            <dt className="text-muted-foreground/56">{t("chat:traitsPicker_context")}</dt>
+            <dd className="text-foreground/84">
+              {info.contextText
+                ? t("chat:characters", {
+                    value0: info.contextText.length.toLocaleString(formatLocale),
+                  })
+                : t("chat:none")}
+            </dd>
+          </>
+        )}
+      </dl>
+      {info.status === "completed" && info.contextText ? (
+        <section className="space-y-2">
+          <h3 className="text-ui-sm font-medium text-muted-foreground/56">
+            {t("chat:transferredContext")}
+          </h3>
+          <pre
+            className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-border/45 bg-background/60 px-3 py-2.5 font-chat-code text-chat-code leading-relaxed text-foreground/84"
+            data-provider-handoff-context="true"
+          >
+            {info.contextText}
+          </pre>
+          <p className="text-ui-xs text-muted-foreground/56">
+            {t("chat:sentAheadOfYourNextMessageSoTheNew")}
+          </p>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+function ToolDetailsDisclosure(props: {
+  children: ReactNode;
+  compact: boolean;
+  dataFileChangeRow?: boolean | undefined;
+  details?: TimelineWorkEntry["toolDetails"] | undefined;
+  activity?: TimelineWorkEntry["liveActivity"] | undefined;
+  detailContent?: ReactNode;
+  summaryClassName?: string | undefined;
+  timestampFormat: TimestampFormat;
+  tooltip?: ReactNode;
+}) {
+  const summaryClassName =
+    props.summaryClassName ??
+    cn(
+      "group/tool-row flex w-full items-center text-left transition-[opacity,translate] duration-200",
+      props.compact ? "gap-1.5" : "gap-2",
+      "cursor-pointer focus-visible:outline-none",
+    );
+  const [open, setOpen] = useState(false);
+  const [renderDetails, setRenderDetails] = useState(false);
+  const [motionOpen, setMotionOpen] = useState(false);
+  const openFrameRef = useRef<number | null>(null);
+  const cleanupTimeoutRef = useRef<number | null>(null);
+
+  const clearMotionTimers = useCallback(() => {
+    if (openFrameRef.current !== null) {
+      window.cancelAnimationFrame(openFrameRef.current);
+      openFrameRef.current = null;
+    }
+    if (cleanupTimeoutRef.current !== null) {
+      window.clearTimeout(cleanupTimeoutRef.current);
+      cleanupTimeoutRef.current = null;
+    }
+  }, []);
+
+  const setDetailsOpen = useCallback(
+    (nextOpen: boolean) => {
+      clearMotionTimers();
+      setOpen(nextOpen);
+
+      if (nextOpen) {
+        setRenderDetails(true);
+        setMotionOpen(false);
+        openFrameRef.current = window.requestAnimationFrame(() => {
+          openFrameRef.current = null;
+          setMotionOpen(true);
+        });
+        return;
+      }
+
+      setMotionOpen(false);
+      cleanupTimeoutRef.current = window.setTimeout(() => {
+        cleanupTimeoutRef.current = null;
+        setRenderDetails(false);
+      }, DISCLOSURE_TRANSITION_MS + DISCLOSURE_CLEANUP_BUFFER_MS);
+    },
+    [clearMotionTimers],
+  );
+
+  useEffect(() => () => clearMotionTimers(), [clearMotionTimers]);
+
+  const summaryButton = (
+    <button
+      type="button"
+      className={summaryClassName}
+      aria-expanded={open}
+      data-file-change-row={props.dataFileChangeRow ? "true" : undefined}
+      data-tool-detail-trigger="true"
+      onClick={() => {
+        setDetailsOpen(!open);
+      }}
+    >
+      {props.children}
+      <DisclosureChevron
+        open={open}
+        className="text-muted-foreground/70 group-hover/tool-row:text-foreground group-hover/file-row:text-foreground group-focus-visible/tool-row:text-foreground group-focus-visible/file-row:text-foreground"
+      />
+    </button>
+  );
+
+  return (
+    <div className="group/tool-details min-w-0">
+      <ToolRowTooltip content={props.tooltip}>{summaryButton}</ToolRowTooltip>
+      {renderDetails ? (
+        <DisclosureRegion
+          open={motionOpen}
+          contentClassName={cn("min-w-0 pt-2", props.compact ? "ml-5" : "ml-7")}
+        >
+          <div data-tool-details-inline="true">
+            {props.detailContent ?? (
+              <ToolCallDetailsContent
+                details={props.details}
+                activity={props.activity}
+                timestampFormat={props.timestampFormat}
+              />
+            )}
+          </div>
+        </DisclosureRegion>
+      ) : null}
+    </div>
+  );
+}

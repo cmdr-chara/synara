@@ -1,0 +1,432 @@
+// FILE: diagnosticsRedaction.ts
+// Purpose: Technical-only diagnostics payloads and local free-text redaction.
+// Telemetry uses the fixed-category helpers; text redaction alone is not a content boundary.
+// Layer: Shared text processing — used by the beta desktop diagnostics client
+// and re-run by the ingest worker as defense in depth.
+
+import {
+  DesktopDiagnosticIssue,
+  DesktopUpdateFailureReason,
+  DESKTOP_RENDERER_ERROR_STACK_MAX_LENGTH,
+} from "@synara/contracts";
+import { Schema } from "effect";
+
+/** Accepts only fixed updater failure categories at queue and ingest boundaries. */
+export function sanitizeDesktopUpdateFailureReason(
+  reason: unknown,
+): DesktopUpdateFailureReason | undefined {
+  return Schema.is(DesktopUpdateFailureReason)(reason) ? reason : undefined;
+}
+
+/** Recognizes bounded updater-generated messages locally; never returns any input text. */
+export function classifyDesktopUpdateFailure(message: unknown): DesktopUpdateFailureReason {
+  if (typeof message !== "string") return "unknown";
+  const text = message.slice(0, 1024);
+  // Recognize only the downloader's fixed transport reasons and bounded counters.
+  const stalledReason =
+    /^Update download stalled and could not resume \((idle-timeout|http-[45]\d{2}|request-error: net::ERR_[A-Z_]{1,64}|response-error|response-aborted|premature-end|request-abort); \d{1,20}\/(?:\d{1,20}|\?) bytes after \d{1,9} attempts\)\.$/.exec(
+      text,
+    )?.[1];
+  const requestError = stalledReason?.startsWith("request-error: ")
+    ? stalledReason.slice("request-error: ".length)
+    : text;
+  if (
+    text === "Timed out while checking for updates. Try again." ||
+    text === "Request timed out" ||
+    text === "The update couldn’t be installed automatically." ||
+    /^Request timed out after \d{1,9}ms of inactivity\.$/.test(text) ||
+    /^Download stalled after \d{1,9} seconds without progress\. Try again\.$/.test(text) ||
+    /^net::ERR_(?:TIMED_OUT|CONNECTION_TIMED_OUT)$/.test(requestError) ||
+    stalledReason === "idle-timeout"
+  )
+    return "timeout";
+  if (text === "cancelled" || requestError === "net::ERR_ABORTED") return "cancelled";
+  if (
+    /^net::ERR_(?:INTERNET_DISCONNECTED|NAME_NOT_RESOLVED|NETWORK_CHANGED|CONNECTION_(?:CLOSED|RESET|REFUSED|ABORTED)|ADDRESS_UNREACHABLE|PROXY_CONNECTION_FAILED|TUNNEL_CONNECTION_FAILED|CERT_(?:AUTHORITY_INVALID|DATE_INVALID|COMMON_NAME_INVALID))$/.test(
+      requestError,
+    ) ||
+    /^(?:response-error|response-aborted|premature-end|request-abort)$/.test(stalledReason ?? "")
+  )
+    return "network";
+  // builder-util-runtime HttpError adds a status line followed by JSON detail or Headers.
+  if (
+    /^4\d{2} [^\r\n]+\n(?:"|\{|Headers:)/.test(text) ||
+    /^Cannot download update: HTTP 4\d{2}\.$/.test(text) ||
+    /^http-4\d{2}$/.test(stalledReason ?? "")
+  )
+    return "http-client";
+  if (
+    /^5\d{2} [^\r\n]+\n(?:"|\{|Headers:)/.test(text) ||
+    /^Cannot download update: HTTP 5\d{2}\.$/.test(text) ||
+    /^http-5\d{2}$/.test(stalledReason ?? "")
+  )
+    return "http-server";
+  if (
+    /^Cannot (?:find|parse update info from) (?:remote|beta|synara|latest)(?:-mac|-linux(?:-arm64)?)?\.yml in the latest release artifacts \(/.test(
+      text,
+    )
+  )
+    return "manifest";
+  if (
+    text === "No published versions on GitHub" ||
+    text.startsWith("Cannot parse releases feed: ") ||
+    text.startsWith("Unable to find latest version on GitHub (")
+  )
+    return "release-feed";
+  if (
+    /^(?:sha256 |sha512 )?checksum mismatch(?:[ ,:(]|$)/.test(text) ||
+    text.startsWith("The downloaded update could not be verified: ") ||
+    /^Update download size mismatch \(\d{1,20} != \d{1,20} bytes\)\.$/.test(text) ||
+    text === "The downloaded update could not be reverified. Download it again." ||
+    text === "The downloaded update changed during install preparation. Download it again." ||
+    /^New version \d{1,8}\.\d{1,8}\.\d{1,8}(?:-[0-9A-Za-z.-]{1,64})? is not signed by the application owner: /.test(
+      text,
+    ) ||
+    text === "The update download did not produce a verified update. Try again."
+  )
+    return "verification";
+  return "unknown";
+}
+
+const DIAGNOSTIC_ERROR_TYPE =
+  /^(?:Error|TypeError|RangeError|ReferenceError|SyntaxError|URIError|EvalError|AggregateError)\b/;
+
+/** Every diagnostics flavor keeps fixed issue categories, built-in types and numeric locations only. */
+export function sanitizeDiagnosticError(input: {
+  readonly source: "main" | "renderer";
+  readonly message: string;
+  readonly stack?: string | undefined;
+}): { message: string; stack?: string } {
+  const issue = /^Handled issue: ([a-z0-9.-]+) \(([A-Za-z0-9._-]+)\)$/.exec(input.message);
+  if (issue && Schema.is(DesktopDiagnosticIssue)({ code: issue[1], reason: issue[2] })) {
+    const duration = /^durationMs=(\d{1,9})(?:\n|$)/.exec(input.stack ?? "");
+    return {
+      message: `Handled issue: ${issue[1]} (${issue[2]})`,
+      ...(duration && Number(duration[1]) <= 604_800_000
+        ? { stack: `durationMs=${Number(duration[1])}` }
+        : {}),
+    };
+  }
+  // Error messages can inject apparent frames; function/file names remain free text.
+  const frames = (input.stack ?? "")
+    .slice(0, DESKTOP_RENDERER_ERROR_STACK_MAX_LENGTH)
+    .split("\n")
+    .flatMap((line) => {
+      const location = /^\s*at\s+.*?:(\d{1,8}):(\d{1,8})\)?\s*$/.exec(line);
+      return location ? [`at ${input.source}:${location[1]}:${location[2]}`] : [];
+    })
+    .slice(0, 30);
+  const type =
+    DIAGNOSTIC_ERROR_TYPE.exec(input.message)?.[0] ??
+    DIAGNOSTIC_ERROR_TYPE.exec(input.stack ?? "")?.[0] ??
+    "Error";
+  return {
+    message: frames[0] ? `${type} ${frames[0]}` : type,
+    ...(frames.length > 0 ? { stack: frames.join("\n") } : {}),
+  };
+}
+
+// Process labels and exit reasons are categories, never arbitrary diagnostic text.
+export const DIAGNOSTIC_PROCESSES: ReadonlySet<string> = new Set([
+  "main",
+  "renderer",
+  "backend",
+  "server",
+  "Browser",
+  "GPU",
+  "Utility",
+  "Zygote",
+  "Sandbox helper",
+  "Pepper Plugin",
+  "Pepper Plugin Broker",
+  "unknown",
+]);
+export const DIAGNOSTIC_CRASH_REASONS: ReadonlySet<string> = new Set([
+  "clean-exit",
+  "abnormal-exit",
+  "killed",
+  "crashed",
+  "oom",
+  "launch-failed",
+  "integrity-failure",
+  "memory-eviction",
+  "unknown",
+]);
+export const DIAGNOSTIC_SIGNALS: ReadonlySet<string> = new Set([
+  "SIGABRT",
+  "SIGALRM",
+  "SIGBUS",
+  "SIGCHLD",
+  "SIGCONT",
+  "SIGFPE",
+  "SIGHUP",
+  "SIGILL",
+  "SIGINT",
+  "SIGIO",
+  "SIGIOT",
+  "SIGKILL",
+  "SIGPIPE",
+  "SIGPOLL",
+  "SIGPROF",
+  "SIGPWR",
+  "SIGQUIT",
+  "SIGSEGV",
+  "SIGSTKFLT",
+  "SIGSTOP",
+  "SIGSYS",
+  "SIGTERM",
+  "SIGTRAP",
+  "SIGTSTP",
+  "SIGTTIN",
+  "SIGTTOU",
+  "SIGURG",
+  "SIGUSR1",
+  "SIGUSR2",
+  "SIGVTALRM",
+  "SIGWINCH",
+  "SIGXCPU",
+  "SIGXFSZ",
+]);
+
+/** Used before queueing, at ingestion and on historical reads; log tails never survive. */
+export function sanitizeDiagnosticCrash(input: {
+  readonly processType?: unknown;
+  readonly reason?: unknown;
+}): { processType: string; reason: string } {
+  const processType =
+    typeof input.processType === "string" && DIAGNOSTIC_PROCESSES.has(input.processType)
+      ? input.processType
+      : "unknown";
+  if (typeof input.reason === "string" && DIAGNOSTIC_CRASH_REASONS.has(input.reason))
+    return { processType, reason: input.reason };
+  const exit =
+    typeof input.reason === "string"
+      ? /^code=(-?\d{1,10}|null)(?: signal=(SIG[A-Z0-9]{1,12}|null))?$/.exec(input.reason)
+      : null;
+  if (
+    exit &&
+    (processType === "backend" || processType === "server") &&
+    (exit[2] === undefined || exit[2] === "null" || DIAGNOSTIC_SIGNALS.has(exit[2]))
+  ) {
+    const code = exit[1] === "null" ? "null" : String(Number(exit[1]));
+    return {
+      processType,
+      reason: `code=${code}${exit[2] === undefined ? "" : ` signal=${exit[2]}`}`,
+    };
+  }
+  return { processType, reason: "unknown" };
+}
+
+/** Stable grouping hash of technical metadata only; this is not a security identifier. */
+export function diagnosticErrorFingerprint(input: {
+  readonly source: "main" | "renderer";
+  readonly message: string;
+  readonly stack?: string | undefined;
+}): string {
+  const safe = sanitizeDiagnosticError(input);
+  const key = safe.message.startsWith("Handled issue: ")
+    ? safe.message
+    : `${input.source}\n${safe.message}\n${safe.stack ?? ""}`;
+  let hash = 0xcbf29ce484222325n;
+  for (const code of key)
+    hash = BigInt.asUintN(64, (hash ^ BigInt(code.charCodeAt(0))) * 0x100000001b3n);
+  return hash.toString(16).padStart(16, "0");
+}
+
+/** Event ownership fixes payload kinds, including for old or handcrafted envelopes. */
+export function diagnosticPayloadKind(event: string): string | undefined {
+  if (event === "app.start" || event === "app.exit") return "lifecycle";
+  if (event === "app.error") return "error";
+  if (event === "app.renderer-crash" || event === "app.child-process-crash") return "crash";
+  if (
+    [
+      "update.check",
+      "update.available",
+      "update.downloaded",
+      "update.installed",
+      "update.error",
+    ].includes(event)
+  )
+    return "update";
+  if (event === "usage.daily") return "usage";
+  if (event === "beta.installed" || event === "beta.left") return "beta";
+  return undefined;
+}
+
+export interface DiagnosticsRedactionOptions {
+  /** Absolute home directory to collapse to `~` (callers pass os.homedir()). */
+  readonly homeDir?: string | undefined;
+  /** Hard cap on the returned string length, applied after redaction. */
+  readonly maxLength: number;
+}
+
+const REDACTED = "[redacted]";
+/**
+ * Sensitive key detection runs inside a replacer over whole key tokens, not as
+ * wildcards around the alternation — greedy `*` on both sides of a group is
+ * quadratic on adversarial input.
+ */
+const SENSITIVE_KEY =
+  /token|secret|password|api[_-]?key|auth|cookie|session|credential|key|sess|sid/i;
+
+/** URL schemes that address this machine or the app bundle, never a remote org. */
+const LOCAL_URL_SCHEME =
+  /^(?:file|synara(?:-[a-z]+)?|node|electron|devtools|chrome|chrome-extension)$/i;
+
+interface Replacement {
+  readonly pattern: RegExp;
+  readonly replace: string | ((match: string, ...groups: unknown[]) => string);
+}
+
+/**
+ * Ordered replacement rules. Order matters: PEM blocks and git remotes run
+ * before the generic email/URL rules so their `@`s and blocks are not picked
+ * apart first; the caller's home directory is collapsed before the generic
+ * user-directory patterns; key/value rules run last-ish so query strings and
+ * headers are already gone.
+ */
+// PEM blocks are replaced before input truncation so a key split across the
+// maxLength boundary never leaks material.
+const PEM_BLOCK = /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g;
+
+const RULES: ReadonlyArray<Replacement> = [
+  // Git remotes carry org/repo names: ssh://git@host/org/repo and the
+  // scp-style git@host:org/repo(.git).
+  { pattern: /\bssh:\/\/git@[^\s'"]+/g, replace: "<git-url>" },
+  { pattern: /\bgit@[A-Za-z0-9.-]+:[^\s'"]+/g, replace: "<git-url>" },
+  // /Users/<name>, /home/<name>, C:\Users\<name>. The Windows form allows
+  // spaces in the username and stops at the next backslash.
+  {
+    pattern: /\/Users\/[^/\s:'"]+|\/home\/[^/\s:'"]+|[A-Za-z]:\\Users\\[^\\:'"]+/g,
+    replace: "<user>",
+  },
+  // URLs of any scheme: credentials in userinfo become <redacted>@ and the
+  // query string and fragment are dropped. Network URLs keep only scheme +
+  // host, since their paths carry org, repo, and ticket names; local schemes
+  // (file://, synara://, ...) keep the path so stack frames stay readable.
+  // Runs before the email rule so userinfo is not mistaken for an address.
+  {
+    pattern:
+      /\b([a-z][a-z0-9+.-]{0,31}):\/\/([^\s/?#@]*@)?([^\s/?#]+)(\/[^\s?#]*)?(?:\?[^\s#]*)?(?:#[^\s]*)?/gi,
+    replace: (_match, scheme, userinfo, host, path) => {
+      const keepPath = typeof scheme === "string" && LOCAL_URL_SCHEME.test(scheme);
+      const tail = typeof path === "string" && path !== "/" ? (keepPath ? path : "/…") : "";
+      // Keep loopback origins recognizable across renderer/main redaction
+      // passes so fingerprinting can still normalize their changing ports.
+      const safeHost =
+        typeof scheme === "string" && /^(?:https?|wss?)$/i.test(scheme) && typeof host === "string"
+          ? host.replace(/^(?:127\.0\.0\.1|\[::1\])(?=:\d{1,5}$|$)/, "localhost")
+          : host;
+      return `${scheme}://${typeof userinfo === "string" ? "<redacted>@" : ""}${safeHost}${tail}`;
+    },
+  },
+  // Email addresses.
+  {
+    // Bounds keep this linear: a `+` before a required `@` rescans to end of
+    // input at every position otherwise.
+    pattern: /[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,63}/g,
+    replace: "<email>",
+  },
+  // Paths under ~ or <user> collapse to the basename: folder and repo names
+  // are dropped entirely.
+  {
+    pattern: /(~|<user>)[\\/](?:[^\r\n'"()\\/]+[\\/])*([^\s'"()\\/]+)/g,
+    replace: (_match, _prefix, basename) => `~/…/${basename}`,
+  },
+  // Bearer tokens and Authorization header values.
+  {
+    pattern: /\bBearer\s+\S+/gi,
+    replace: "Bearer [redacted]",
+  },
+  {
+    pattern: /\bAuthorization\s*[:=]\s*\S+(\s+\S+)?/gi,
+    replace: `Authorization: ${REDACTED}`,
+  },
+  // A Cookie/Set-Cookie header value is replaced whole — the individual
+  // name=value pairs inside it are never kept.
+  {
+    pattern: /\b(Set-Cookie|Cookie)\s*:\s*[^\r\n]*/gi,
+    replace: (_match, header) => `${header}: ${REDACTED}`,
+  },
+  // Known token shapes.
+  { pattern: /\bsk-ant-[A-Za-z0-9_-]+/g, replace: REDACTED },
+  { pattern: /\bsk-[A-Za-z0-9_-]{16,}/g, replace: REDACTED },
+  { pattern: /\b(?:ghp|gho|ghs|ghu|ghr)_[A-Za-z0-9]{20,}/g, replace: REDACTED },
+  { pattern: /\bgithub_pat_[A-Za-z0-9_]{20,}/g, replace: REDACTED },
+  { pattern: /\bxox[abprs]-[A-Za-z0-9-]+/g, replace: REDACTED },
+  { pattern: /\bAKIA[0-9A-Z]{16}\b/g, replace: REDACTED },
+  { pattern: /\bAIza[0-9A-Za-z_-]{35}\b/g, replace: REDACTED },
+  // JSON Web Tokens: three base64url segments, the header always starts "eyJ".
+  {
+    pattern: /\beyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,
+    replace: REDACTED,
+  },
+  // key=value / key: value / "key": "value" for sensitive keys. The key match
+  // is a single bounded token ({1,64} keeps backtracking linear on long
+  // alphanumeric runs); sensitivity is decided in the replacer.
+  {
+    pattern: /\b(["']?)([A-Za-z0-9_-]{1,64})(["']?)(\s*[:=]\s*)("[^"]*"|'[^']*'|[^\s,;&]+)/g,
+    replace: (match, openQ, key, closeQ, separator, value) => {
+      if (typeof key !== "string" || !SENSITIVE_KEY.test(key)) return match;
+      const v = String(value);
+      const redacted = v.startsWith('"')
+        ? `"${REDACTED}"`
+        : v.startsWith("'")
+          ? `'${REDACTED}'`
+          : REDACTED;
+      return `${openQ}${key}${closeQ}${separator}${redacted}`;
+    },
+  },
+  // IPv4 addresses.
+  { pattern: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g, replace: "<ip>" },
+  // IPv6 addresses. HH:MM:SS timestamps are kept so
+  // log excerpts stay readable. Word boundaries prevent matching suffixes of
+  // net::ERR_* codes or Node stack locations such as writable:570:12.
+  {
+    pattern:
+      /(?<![\w:])(?:(?:[0-9a-fA-F]{1,4}:){2,7}[0-9a-fA-F]{0,4}|[0-9a-fA-F:]*::[0-9a-fA-F:]*)(?![\w:])/g,
+    replace: (match) => (/^(?:[01]?\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(match) ? match : "<ip>"),
+  },
+  // Catch-all: any remaining long hex or base64url run is treated as a secret.
+  { pattern: /\b[A-Za-z0-9_-]{32,}\b/g, replace: REDACTED },
+  // Standard base64 secrets (AWS secret keys and similar) use + and /, which
+  // the run above stops at. Mixed case plus a digit and a + or / separates
+  // them from ordinary relative paths.
+  {
+    pattern: /[A-Za-z0-9+/]{40,}={0,2}/g,
+    replace: (match) =>
+      /[+/]/.test(match) && /[0-9]/.test(match) && /[a-z]/.test(match) && /[A-Z]/.test(match)
+        ? REDACTED
+        : match,
+  },
+];
+
+/**
+ * Redacts credentials, paths, addresses and tokens from diagnostic free text.
+ * Local text utility only; telemetry must use the technical allowlist helpers above.
+ */
+export function redactDiagnosticText(text: string, opts: DiagnosticsRedactionOptions): string {
+  let out = String(text).replace(PEM_BLOCK, "[redacted private key]");
+  // Bound the work first: rules only ever shrink or lightly rewrite, so
+  // redacting more than the output cap would be wasted effort — and an
+  // uncapped caller (renderer console text) would stall the main thread.
+  const inputTruncated = out.length > opts.maxLength;
+  if (inputTruncated) {
+    out = out.slice(0, opts.maxLength);
+  }
+  const homeDir = opts.homeDir?.trim();
+  if (homeDir && homeDir !== "/") {
+    out = out.split(homeDir).join("~");
+  }
+  for (const rule of RULES) {
+    rule.pattern.lastIndex = 0;
+    out =
+      typeof rule.replace === "string"
+        ? out.replace(rule.pattern, rule.replace)
+        : out.replace(rule.pattern, rule.replace);
+  }
+  if (inputTruncated || out.length > opts.maxLength) {
+    out = `${out.slice(0, Math.max(0, opts.maxLength - 1))}…`;
+  }
+  return out;
+}

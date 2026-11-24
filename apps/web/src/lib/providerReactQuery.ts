@@ -1,0 +1,226 @@
+// FILE: providerReactQuery.ts
+// Purpose: Builds React Query options for provider-backed orchestration RPC calls.
+// Layer: Web data fetching helpers
+// Depends on: native API bridge, orchestration contracts, and React Query.
+
+import { t } from "~/i18n";
+import {
+  OrchestrationGetFullThreadDiffInput,
+  OrchestrationGetTurnDiffInput,
+  ThreadId,
+} from "@synara/contracts";
+import { queryOptions } from "@tanstack/react-query";
+import { Option, Schema } from "effect";
+import { ensureNativeApi } from "../nativeApi";
+import {
+  expensiveReadErrorRefetchInterval,
+  expensiveReadRetryDelay,
+  isRpcCapacityExceededError,
+  shouldRetryExpensiveRead,
+} from "./expensiveReadRetry";
+
+interface CheckpointDiffQueryInput {
+  threadId: ThreadId | null;
+  fromTurnCount: number | null;
+  toTurnCount: number | null;
+  ignoreWhitespace: boolean;
+  cacheScope?: string | null;
+  /** Live snapshots are replaced frequently; release unused full patches immediately. */
+  liveSnapshot?: boolean;
+  enabled?: boolean;
+}
+
+export const providerQueryKeys = {
+  all: ["providers"] as const,
+  checkpointDiff: (input: CheckpointDiffQueryInput) =>
+    [
+      "providers",
+      "checkpointDiff",
+      input.threadId,
+      input.fromTurnCount,
+      input.toTurnCount,
+      input.ignoreWhitespace,
+      input.cacheScope ?? null,
+    ] as const,
+};
+
+/** Keep polling while placeholder checkpoints are still being written. */
+export const CHECKPOINT_DIFF_PENDING_REFETCH_INTERVAL_MS = 2_000;
+export const CHECKPOINT_DIFF_PENDING_REFETCH_MAX_ATTEMPTS = 12;
+
+function shouldUseFullThreadDiffApi(input: CheckpointDiffQueryInput): boolean {
+  return (
+    input.fromTurnCount === 0 &&
+    typeof input.cacheScope === "string" &&
+    input.cacheScope.startsWith("conversation:")
+  );
+}
+
+function decodeCheckpointDiffRequest(input: CheckpointDiffQueryInput) {
+  if (shouldUseFullThreadDiffApi(input)) {
+    return Schema.decodeUnknownOption(OrchestrationGetFullThreadDiffInput)({
+      threadId: input.threadId,
+      toTurnCount: input.toTurnCount,
+      ignoreWhitespace: input.ignoreWhitespace,
+    }).pipe(Option.map((fields) => ({ kind: "fullThreadDiff" as const, input: fields })));
+  }
+
+  return Schema.decodeUnknownOption(OrchestrationGetTurnDiffInput)({
+    threadId: input.threadId,
+    fromTurnCount: input.fromTurnCount,
+    toTurnCount: input.toTurnCount,
+    ignoreWhitespace: input.ignoreWhitespace,
+  }).pipe(Option.map((fields) => ({ kind: "turnDiff" as const, input: fields })));
+}
+
+function asCheckpointErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  return "";
+}
+
+function normalizeCheckpointErrorMessage(error: unknown): string {
+  const message = asCheckpointErrorMessage(error).trim();
+  if (message.length === 0) {
+    return t("git:checkpointDiffLoadFailed");
+  }
+
+  const lower = message.toLowerCase();
+  if (lower.includes("not a git repository")) {
+    return t("common:turnDiffsAreUnavailableBecauseThisProjectIsNot");
+  }
+
+  if (
+    lower.includes("checkpoint unavailable for thread") ||
+    lower.includes("checkpoint invariant violation")
+  ) {
+    const separatorIndex = message.indexOf(":");
+    if (separatorIndex >= 0) {
+      const detail = message.slice(separatorIndex + 1).trim();
+      if (detail.length > 0) {
+        return detail;
+      }
+    }
+  }
+
+  return message;
+}
+
+function isCheckpointTemporarilyUnavailable(error: unknown): boolean {
+  const message = asCheckpointErrorMessage(error).toLowerCase();
+  return (
+    message.includes("exceeds current turn count") ||
+    // Placeholder checkpoint rows can arrive before the checkpoint writer finishes.
+    message.includes("checkpoint diff is not available yet")
+  );
+}
+
+export function resolveCheckpointDiffQueryDisplayState(input: {
+  isLoading: boolean;
+  isFetching: boolean;
+  data: unknown;
+  error: unknown;
+}): { isLoading: boolean; error: string | null; refreshStatus: string | null } {
+  const hasData = input.data != null;
+  const capacityDelayed =
+    isRpcCapacityExceededError(input.error) && input.error.retryable !== false;
+  return {
+    isLoading: input.isLoading || (input.isFetching && !hasData),
+    error:
+      input.isFetching || input.error == null || capacityDelayed
+        ? null
+        : normalizeCheckpointErrorMessage(input.error),
+    refreshStatus: capacityDelayed
+      ? input.isFetching
+        ? t("git:diffRefreshing")
+        : t("git:diffRefreshDelayed")
+      : null,
+  };
+}
+
+export function checkpointDiffQueryOptions(input: CheckpointDiffQueryInput) {
+  const decodedRequest = decodeCheckpointDiffRequest(input);
+
+  return queryOptions({
+    queryKey: providerQueryKeys.checkpointDiff(input),
+    queryFn: async () => {
+      const api = ensureNativeApi();
+      if (!input.threadId || decodedRequest._tag === "None") {
+        throw new Error(t("git:checkpointDiffUnavailable"));
+      }
+      try {
+        if (decodedRequest.value.kind === "fullThreadDiff") {
+          return await api.orchestration.getFullThreadDiff(decodedRequest.value.input);
+        }
+        return await api.orchestration.getTurnDiff(decodedRequest.value.input);
+      } catch (error) {
+        // Keep the transport's typed backpressure contract for retry and display policies.
+        if (isRpcCapacityExceededError(error)) throw error;
+        throw new Error(normalizeCheckpointErrorMessage(error), { cause: error });
+      }
+    },
+    enabled: (input.enabled ?? true) && !!input.threadId && decodedRequest._tag === "Some",
+    staleTime: Infinity,
+    ...(input.liveSnapshot ? { gcTime: 0 } : {}),
+    retry: (failureCount, error) => {
+      if (isRpcCapacityExceededError(error)) {
+        return shouldRetryExpensiveRead(failureCount, error);
+      }
+      if (isCheckpointTemporarilyUnavailable(error)) {
+        return failureCount < 12;
+      }
+      return failureCount < 3;
+    },
+    retryDelay: (attempt, error) => {
+      if (isRpcCapacityExceededError(error)) {
+        return expensiveReadRetryDelay(attempt, error);
+      }
+      return isCheckpointTemporarilyUnavailable(error)
+        ? Math.min(5_000, 250 * 2 ** (attempt - 1))
+        : Math.min(1_000, 100 * 2 ** (attempt - 1));
+    },
+    refetchInterval: (query) => {
+      if (isRpcCapacityExceededError(query.state.error)) {
+        return expensiveReadErrorRefetchInterval(query);
+      }
+      const temporaryError = query.state.error;
+      if (!temporaryError || !isCheckpointTemporarilyUnavailable(temporaryError)) {
+        return false;
+      }
+      const temporaryErrorCount = query.state.errorUpdateCount ?? 0;
+      return temporaryErrorCount < CHECKPOINT_DIFF_PENDING_REFETCH_MAX_ATTEMPTS
+        ? CHECKPOINT_DIFF_PENDING_REFETCH_INTERVAL_MS
+        : false;
+    },
+  });
+}
+
+/**
+ * An inline visual's document. Visual ids are content-addressed per turn, so a
+ * fetched document never changes; a missing one is reported once, not retried.
+ */
+export function inlineVisualQueryOptions(input: { threadId: ThreadId; visualId: string }) {
+  return queryOptions({
+    queryKey: ["inlineVisual", input.threadId, input.visualId] as const,
+    queryFn: async () => {
+      const api = ensureNativeApi();
+      const result = await api.orchestration.getInlineVisual(input);
+      return result.html;
+    },
+    staleTime: Infinity,
+    gcTime: 10 * 60_000,
+    retry: (failureCount, error) => {
+      if (isRpcCapacityExceededError(error)) return shouldRetryExpensiveRead(failureCount, error);
+      const retryable = (error as { retryable?: unknown } | null)?.retryable;
+      return retryable !== false && failureCount < 2;
+    },
+    retryDelay: (attempt, error) =>
+      isRpcCapacityExceededError(error)
+        ? expensiveReadRetryDelay(attempt, error)
+        : Math.min(1_000, 200 * 2 ** (attempt - 1)),
+  });
+}

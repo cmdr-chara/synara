@@ -1,0 +1,190 @@
+/**
+ * ProjectionThreadRepository - Projection repository interface for threads.
+ *
+ * Owns persistence operations for projected thread records in the
+ * orchestration read model.
+ *
+ * @module ProjectionThreadRepository
+ */
+import {
+  IsoDateTime,
+  MessageId,
+  ModelSelection,
+  NonNegativeInt,
+  OrchestrationThreadPullRequest,
+  OrchestrationThreadPullRequestLink,
+  PendingClaudeCacheReview,
+  ThreadNotes,
+  ThreadGoal,
+  ThreadGoalAchievements,
+  ThreadPinnedMessages,
+  ThreadHandoff,
+  ThreadSidechatContext,
+  ProjectId,
+  ProviderInteractionMode,
+  RuntimeMode,
+  ThreadCreationSource,
+  ThreadEnvironmentMode,
+  ThreadId,
+  UsageLimitRecovery,
+  UsageLimitRecoverySource,
+  TurnId,
+} from "@synara/contracts";
+import { Option, Schema, ServiceMap } from "effect";
+import type { Effect } from "effect";
+
+import type { ProjectionRepositoryError } from "../Errors.ts";
+
+export const ProjectionThread = Schema.Struct({
+  threadId: ThreadId,
+  projectId: ProjectId,
+  title: Schema.String,
+  modelSelection: ModelSelection,
+  runtimeMode: RuntimeMode,
+  interactionMode: ProviderInteractionMode,
+  envMode: ThreadEnvironmentMode,
+  branch: Schema.NullOr(Schema.String),
+  worktreePath: Schema.NullOr(Schema.String),
+  workingDirectory: Schema.optional(Schema.NullOr(Schema.String)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  associatedWorktreePath: Schema.NullOr(Schema.String),
+  associatedWorktreeBranch: Schema.NullOr(Schema.String),
+  associatedWorktreeRef: Schema.NullOr(Schema.String),
+  createBranchFlowCompleted: Schema.Boolean,
+  isPinned: Schema.optional(Schema.Boolean).pipe(Schema.withDecodingDefault(() => false)),
+  parentThreadId: Schema.optional(Schema.NullOr(ThreadId)),
+  creationSource: Schema.optional(Schema.NullOr(ThreadCreationSource)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  sourceThreadId: Schema.optional(Schema.NullOr(ThreadId)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  sourceTurnId: Schema.optional(Schema.NullOr(TurnId)).pipe(Schema.withDecodingDefault(() => null)),
+  gatewayOperationId: Schema.optional(Schema.NullOr(Schema.String)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  gatewayOperationIndex: Schema.optional(Schema.NullOr(NonNegativeInt)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  subagentAgentId: Schema.optional(Schema.NullOr(Schema.String)),
+  subagentNickname: Schema.optional(Schema.NullOr(Schema.String)),
+  subagentRole: Schema.optional(Schema.NullOr(Schema.String)),
+  forkSourceThreadId: Schema.optional(Schema.NullOr(ThreadId)),
+  forkSourceMessageId: Schema.optional(Schema.NullOr(MessageId)),
+  sidechatSourceThreadId: Schema.optional(Schema.NullOr(ThreadId)),
+  // Standalone sidechats only (see ThreadSidechatContext); null for every other thread.
+  sidechatContext: Schema.optional(Schema.NullOr(ThreadSidechatContext)),
+  sidechatLastActivityAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  sidechatExpiredAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  lastKnownPr: Schema.NullOr(OrchestrationThreadPullRequest),
+  // Omission or null preserves the stored links on upsert; null on read means the row predates
+  // links or holds links this build cannot decode (readers fall back to `lastKnownPr`).
+  pullRequests: Schema.optional(Schema.NullOr(Schema.Array(OrchestrationThreadPullRequestLink))),
+  latestTurnId: Schema.NullOr(TurnId),
+  handoff: Schema.NullOr(ThreadHandoff),
+  // Omission preserves an existing review during legacy whole-row upserts;
+  // null explicitly clears it.
+  claudeCacheReview: Schema.optional(Schema.NullOr(PendingClaudeCacheReview)),
+  pinnedMessages: Schema.NullOr(ThreadPinnedMessages),
+  notes: Schema.NullOr(ThreadNotes),
+  goal: Schema.NullOr(ThreadGoal),
+  goalStartedAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  goalPausedAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  goalAchievements: Schema.optional(Schema.NullOr(ThreadGoalAchievements)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  latestUserMessageAt: Schema.NullOr(IsoDateTime),
+  latestHumanMessageAt: Schema.optional(Schema.NullOr(IsoDateTime)),
+  pendingApprovalCount: NonNegativeInt,
+  pendingUserInputCount: NonNegativeInt,
+  hasActionableProposedPlan: NonNegativeInt,
+  createdAt: IsoDateTime,
+  updatedAt: IsoDateTime,
+  archivedAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  settledAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  // A host-owned wait and cancellation fence survive restarts independently of UI clients.
+  usageLimitRecovery: Schema.optional(Schema.NullOr(UsageLimitRecovery)),
+  usageLimitRecoverySource: Schema.optional(Schema.NullOr(UsageLimitRecoverySource)),
+  usageLimitRecoveryCancelledAt: Schema.optional(Schema.NullOr(IsoDateTime)),
+  usageLimitRecoveryCancelledTurnId: Schema.optional(Schema.NullOr(TurnId)),
+  usageLimitRecoveryLastResetAt: Schema.optional(Schema.NullOr(IsoDateTime)),
+  snoozedUntil: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  snoozeReminderAt: Schema.optional(Schema.NullOr(IsoDateTime)).pipe(
+    Schema.withDecodingDefault(() => null),
+  ),
+  deletedAt: Schema.NullOr(IsoDateTime),
+});
+export type ProjectionThread = typeof ProjectionThread.Type;
+
+export const GetProjectionThreadInput = Schema.Struct({
+  threadId: ThreadId,
+});
+export type GetProjectionThreadInput = typeof GetProjectionThreadInput.Type;
+
+export const DeleteProjectionThreadInput = Schema.Struct({
+  threadId: ThreadId,
+});
+export type DeleteProjectionThreadInput = typeof DeleteProjectionThreadInput.Type;
+
+export const ListProjectionThreadsByProjectInput = Schema.Struct({
+  projectId: ProjectId,
+});
+export type ListProjectionThreadsByProjectInput = typeof ListProjectionThreadsByProjectInput.Type;
+
+/**
+ * ProjectionThreadRepositoryShape - Service API for projected thread records.
+ */
+export interface ProjectionThreadRepositoryShape {
+  /**
+   * Insert or replace a projected thread row.
+   *
+   * Upserts by `threadId`.
+   */
+  readonly upsert: (thread: ProjectionThread) => Effect.Effect<void, ProjectionRepositoryError>;
+
+  /**
+   * Read a projected thread row by id.
+   */
+  readonly getById: (
+    input: GetProjectionThreadInput,
+  ) => Effect.Effect<Option.Option<ProjectionThread>, ProjectionRepositoryError>;
+
+  /**
+   * List projected threads for a project.
+   *
+   * Returned in deterministic creation order.
+   */
+  readonly listByProjectId: (
+    input: ListProjectionThreadsByProjectInput,
+  ) => Effect.Effect<ReadonlyArray<ProjectionThread>, ProjectionRepositoryError>;
+
+  /**
+   * Soft-delete a projected thread row by id.
+   */
+  readonly deleteById: (
+    input: DeleteProjectionThreadInput,
+  ) => Effect.Effect<void, ProjectionRepositoryError>;
+}
+
+/**
+ * ProjectionThreadRepository - Service tag for thread projection persistence.
+ */
+export class ProjectionThreadRepository extends ServiceMap.Service<
+  ProjectionThreadRepository,
+  ProjectionThreadRepositoryShape
+>()("synara/persistence/Services/ProjectionThreads/ProjectionThreadRepository") {}

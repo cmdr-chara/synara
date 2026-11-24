@@ -1,0 +1,38 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rewriteRelativeImportExtensions": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "namespaceImportPackages": ["@effect/platform-node"],
+        "diagnosticSeverity": {
+          "importFromBarrel": "error",
+          "anyUnknownInErrorContext": "warning",
+          "instanceOfSchema": "warning",
+          "deterministicKeys": "warning"
+        }
+      }
+    ]
+  },
+  "include": [
+    "src",
+    "perf",
+    "../../scripts/bun-lockfile.ts",
+    "scripts/compiler-cache-key.ts",
+    "scripts/production-assets*.ts",
+    "scripts/transform-cache*.ts",
+    "scripts/parallel-transform*.ts",
+    "scripts/react-compiler-plugin.d.mts",
+    "scripts/settingsSearchRows.ts",
+    "scripts/generate-settings-search-rows.ts",
+    "vite.config.ts"
+  ]
+}

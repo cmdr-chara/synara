@@ -1,0 +1,1157 @@
+// FILE: ProviderModelPicker.tsx
+// Purpose: Renders the composer provider/model menu and supports controlled opening for shortcuts.
+// Layer: Chat composer presentation
+// Depends on: provider availability metadata, shared menu primitives, and picker trigger styling.
+
+import {
+  type ModelSlug,
+  type ProviderInstanceId,
+  ProviderKind,
+  type ServerProviderStatus,
+} from "@synara/contracts";
+import { resolveSelectableModel } from "@synara/shared/model";
+import * as Schema from "effect/Schema";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { type ProviderPickerKind, PROVIDER_OPTIONS } from "../../session-logic";
+import { appHistory } from "../../appNavigation";
+import {
+  formatProviderModelOptionName,
+  getOmpModelSelectionIssue,
+} from "../../providerModelOptions";
+import { compareProvidersByOrder } from "../../providerOrdering";
+import {
+  Menu,
+  MenuItem,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuSeparator,
+  MenuSub,
+  MenuSubTrigger,
+  MenuTrigger,
+} from "../ui/menu";
+import { PROVIDER_ICON_COMPONENT_BY_PROVIDER } from "../ProviderIcon";
+import { cn } from "~/lib/utils";
+import { TriangleAlertIcon } from "~/lib/icons";
+import { PickerPanelShell } from "./PickerPanelShell";
+import { PickerTriggerButton } from "./PickerTriggerButton";
+import { ProviderModelOptionGroupList } from "./ProviderModelOptionGroupList";
+import { ComposerPickerMenuPopup, ComposerPickerMenuSubPopup } from "./ComposerPickerMenuPopup";
+import {
+  COMPOSER_PICKER_MODEL_LIST_MAX_HEIGHT_CLASS_NAME,
+  COMPOSER_PICKER_MODEL_LIST_SCROLL_CLASS_NAME,
+  COMPOSER_PICKER_MODEL_SUBMENU_HEIGHT_CLASS_NAME,
+} from "./composerPickerStyles";
+import { ShortcutKbd } from "../ui/kbd";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
+import {
+  groupProviderModelOptions,
+  groupProviderModelOptionsWithFavorites,
+  shouldUseCollapsibleModelGroups,
+  type ProviderModelOption,
+} from "../../providerModelOptions";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+import {
+  FAVORITE_MODEL_STORAGE_KEYS,
+  favoriteModelSlugsForInstance,
+  favoriteModelStorageKey,
+  normalizeFavoriteModelStorageKeys,
+  supportsModelFavorites,
+  type FavoriteModelProvider,
+} from "../../lib/modelFavorites";
+import { Skeleton } from "../ui/skeleton";
+import { PlusIcon } from "~/lib/icons";
+import { isProviderUsable } from "../../lib/providerAvailability";
+import {
+  providerAccountIdentityLabel,
+  providerAccountQualifiedLabel,
+} from "../../lib/providerInstancePresentation";
+import { ProviderAccountDot } from "../ProviderAccountMark";
+import { t, useTranslation } from "~/i18n";
+
+function isAvailableProviderOption(option: (typeof PROVIDER_OPTIONS)[number]): option is {
+  value: ProviderKind;
+  label: string;
+  available: true;
+} {
+  return option.available;
+}
+
+export function resolveLiveProviderAvailability(provider: ServerProviderStatus | undefined): {
+  disabled: boolean;
+  label: string | null;
+} {
+  if (!provider) {
+    return {
+      disabled: true,
+      label: t("chat:providerModelPicker_checking"),
+    };
+  }
+
+  if (!provider.available) {
+    return {
+      disabled: true,
+      label:
+        provider.authStatus === "unauthenticated"
+          ? t("chat:providerModelPicker_signIn")
+          : t("chat:providerModelPicker_unavailable"),
+    };
+  }
+
+  if (provider.authStatus === "unauthenticated") {
+    return {
+      disabled: true,
+      label: t("chat:providerModelPicker_signIn"),
+    };
+  }
+
+  if (!isProviderUsable(provider)) {
+    return {
+      disabled: true,
+      label:
+        provider.status === "warning" ? t("chat:check") : t("chat:providerModelPicker_unavailable"),
+    };
+  }
+
+  return {
+    disabled: false,
+    label: null,
+  };
+}
+
+function isUnsupportedProviderInstanceStatus(status: ServerProviderStatus): boolean {
+  return (
+    status.availability === "unavailable" &&
+    status.driver !== undefined &&
+    !Schema.is(ProviderKind)(status.driver)
+  );
+}
+
+export const AVAILABLE_PROVIDER_OPTIONS = PROVIDER_OPTIONS.filter(isAvailableProviderOption);
+
+// Removes user-hidden providers from a provider option list while always
+// preserving any providers the caller marks as protected (the active and
+// locked provider for the current thread). Without that carve-out, hiding the
+// provider you're already using would erase the entry that lets you switch
+// away from it.
+function filterProviderOptionsByVisibility<T extends { value: ProviderKind }>(
+  options: ReadonlyArray<T>,
+  hiddenProviders: ReadonlySet<ProviderKind>,
+  protectedProviders: ReadonlySet<ProviderKind>,
+): ReadonlyArray<T> {
+  if (hiddenProviders.size === 0) {
+    return options;
+  }
+  return options.filter(
+    (option) => protectedProviders.has(option.value) || !hiddenProviders.has(option.value),
+  );
+}
+
+// Providers the picker may offer: installed ones in the user's order, minus hidden
+// providers, always keeping the active/locked provider reachable.
+export function resolveVisibleProviderOptions(input: {
+  provider: ProviderKind;
+  lockedProvider: ProviderKind | null;
+  providers: ReadonlyArray<ServerProviderStatus> | undefined;
+  hiddenProviders: ReadonlyArray<ProviderKind> | undefined;
+  providerOrder: ReadonlyArray<ProviderKind> | undefined;
+}) {
+  const protectedProviderSet = new Set<ProviderKind>([input.provider]);
+  if (input.lockedProvider !== null) {
+    protectedProviderSet.add(input.lockedProvider);
+  }
+  return filterProviderOptionsByVisibility(
+    AVAILABLE_PROVIDER_OPTIONS.toSorted((left, right) =>
+      compareProvidersByOrder(input.providerOrder ?? [], left.value, right.value),
+    ).filter((option) =>
+      input.providers?.some(
+        (provider) =>
+          (provider.driver ?? provider.provider) === option.value &&
+          provider.enabled !== false &&
+          provider.available,
+      ),
+    ),
+    new Set<ProviderKind>(input.hiddenProviders ?? []),
+    protectedProviderSet,
+  );
+}
+
+function providerIconClassName(
+  provider: ProviderKind | ProviderPickerKind,
+  fallbackClassName: string,
+): string {
+  return provider === "claudeAgent" ||
+    provider === "antigravity" ||
+    provider === "pi" ||
+    provider === "omp"
+    ? "text-foreground"
+    : fallbackClassName;
+}
+
+const SEARCHABLE_MODEL_PICKER_THRESHOLD = 15;
+const FavoriteModelSlugs = Schema.Array(Schema.String);
+const EMPTY_FAVORITE_MODEL_SLUGS: ReadonlyArray<string> = [];
+
+export interface ProviderModelPickerInstance {
+  readonly instanceId: ProviderInstanceId;
+  readonly provider: ProviderKind;
+  readonly label: string;
+  readonly accentColor?: string | undefined;
+  readonly enabled: boolean;
+  readonly isDefault: boolean;
+}
+
+export type ProviderModelOptionsByProviderInstance = Partial<
+  Record<ProviderInstanceId, ReadonlyArray<ProviderModelOption>>
+>;
+
+function defaultProviderInstance(provider: ProviderKind): ProviderModelPickerInstance {
+  return {
+    instanceId: provider,
+    provider,
+    label: provider === "claudeAgent" ? "Claude" : provider,
+    enabled: true,
+    isDefault: true,
+  };
+}
+
+export function findProviderStatusForInstance(input: {
+  providers: ReadonlyArray<ServerProviderStatus> | undefined;
+  provider: ProviderKind;
+  instanceId: ProviderInstanceId;
+}): ServerProviderStatus | undefined {
+  return input.providers?.find(
+    (entry) =>
+      (entry.driver ?? entry.provider) === input.provider &&
+      (entry.instanceId ?? entry.provider) === input.instanceId,
+  );
+}
+
+function resolveModelOptionsForProviderInstance(input: {
+  provider: ProviderKind;
+  instanceId: ProviderInstanceId;
+  modelOptionsByProvider: Record<ProviderKind, ReadonlyArray<ProviderModelOption>>;
+  modelOptionsByProviderInstance?: ProviderModelOptionsByProviderInstance | undefined;
+}): ReadonlyArray<ProviderModelOption> {
+  return (
+    input.modelOptionsByProviderInstance?.[input.instanceId] ??
+    input.modelOptionsByProvider[input.provider]
+  );
+}
+
+// Keeps persisted favorite model keys stable while preserving the user's order.
+function toggleFavoriteModelKey(
+  current: ReadonlyArray<string>,
+  provider: FavoriteModelProvider,
+  instanceId: ProviderInstanceId,
+  slug: string,
+): string[] {
+  const normalizedCurrent = normalizeFavoriteModelStorageKeys(provider, current);
+  const key = favoriteModelStorageKey(instanceId, slug);
+  return normalizedCurrent.includes(key)
+    ? normalizedCurrent.filter((entry) => entry !== key)
+    : [...normalizedCurrent, key];
+}
+
+function stripParameterizedModelSuffix(model: string): string {
+  return model.trim().replace(/\[[^\]]*\]$/u, "");
+}
+
+function resolveSelectedModelLabel(input: {
+  provider: ProviderKind;
+  model: string;
+  options: ReadonlyArray<ProviderModelOption>;
+}): string {
+  if (input.provider === "omp" && getOmpModelSelectionIssue(input.model, input.options)) {
+    return t("chat:selectOMPModel");
+  }
+  const resolvedSlug = resolveSelectableModel(input.provider, input.model, input.options);
+  if (resolvedSlug) {
+    const resolvedOption = input.options.find((option) => option.slug === resolvedSlug);
+    if (resolvedOption) {
+      return resolvedOption.name;
+    }
+  }
+  if (input.provider === "cursor") {
+    const baseModel = stripParameterizedModelSuffix(input.model);
+    const baseMatch = input.options.find(
+      (option) => stripParameterizedModelSuffix(option.slug) === baseModel,
+    );
+    if (baseMatch) {
+      return baseMatch.name;
+    }
+  }
+  return formatProviderModelOptionName({
+    provider: input.provider,
+    slug: input.model,
+  });
+}
+
+function buildModelSearchText(option: ProviderModelOption): string {
+  return [
+    option.name,
+    option.slug,
+    option.description,
+    option.upstreamProviderName,
+    option.upstreamProviderId,
+  ]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .join(" ")
+    .toLowerCase();
+}
+
+type ProviderModelMenuItemsProps = {
+  provider: ProviderKind;
+  model: ModelSlug;
+  lockedProvider: ProviderKind | null;
+  providers?: ReadonlyArray<ServerProviderStatus>;
+  modelOptionsByProvider: Record<ProviderKind, ReadonlyArray<ProviderModelOption>>;
+  modelOptionsByProviderInstance?: ProviderModelOptionsByProviderInstance;
+  loadingModelProviders?: Partial<Record<ProviderKind, boolean>>;
+  discoveryErrorsByProvider?: Partial<Record<ProviderKind, string | undefined>>;
+  hiddenProviders?: ReadonlyArray<ProviderKind>;
+  providerOrder?: ReadonlyArray<ProviderKind>;
+  providerInstances?: ReadonlyArray<ProviderModelPickerInstance>;
+  selectedProviderInstanceId?: ProviderInstanceId;
+  showProviderInstanceChoices?: boolean;
+  disabled?: boolean;
+  onProviderModelChange: (
+    provider: ProviderKind,
+    model: ModelSlug,
+    instanceId?: ProviderInstanceId,
+  ) => void;
+  // Invoked after a model selection commits so callers can close ancestor
+  // menus and refocus the composer.
+  onAfterSelection?: () => void;
+};
+
+// Renders only the popup body of the provider/model picker. Designed to be
+// dropped into any shared picker popup or submenu so the same selection logic can
+// be reused by the standalone picker and the combined composer trait picker.
+export const ProviderModelMenuItems = function ProviderModelMenuItems(
+  props: ProviderModelMenuItemsProps,
+) {
+  const { t } = useTranslation();
+
+  const { onAfterSelection } = props;
+  const [modelSearchQuery, setModelSearchQuery] = useState("");
+  const [cursorFavoriteModelSlugs, setCursorFavoriteModelSlugs] = useLocalStorage(
+    FAVORITE_MODEL_STORAGE_KEYS.cursor,
+    EMPTY_FAVORITE_MODEL_SLUGS,
+    FavoriteModelSlugs,
+  );
+  const [openCodeFavoriteModelSlugs, setOpenCodeFavoriteModelSlugs] = useLocalStorage(
+    FAVORITE_MODEL_STORAGE_KEYS.opencode,
+    EMPTY_FAVORITE_MODEL_SLUGS,
+    FavoriteModelSlugs,
+  );
+  const [piFavoriteModelSlugs, setPiFavoriteModelSlugs] = useLocalStorage(
+    FAVORITE_MODEL_STORAGE_KEYS.pi,
+    EMPTY_FAVORITE_MODEL_SLUGS,
+    FavoriteModelSlugs,
+  );
+  const deferredModelSearchQuery = useDeferredValue(modelSearchQuery);
+  const activeProvider = props.lockedProvider ?? props.provider;
+  const selectedProviderInstanceId = props.selectedProviderInstanceId ?? props.provider;
+  const visibleAvailableProviderOptions = resolveVisibleProviderOptions({
+    provider: props.provider,
+    lockedProvider: props.lockedProvider,
+    providers: props.providers,
+    hiddenProviders: props.hiddenProviders,
+    providerOrder: props.providerOrder,
+  });
+  const visibleUnsupportedProviderInstances = useMemo(
+    () => (props.providers ?? []).filter(isUnsupportedProviderInstanceStatus),
+    [props.providers],
+  );
+  const openCodeFavoriteModelSlugSet = new Set(openCodeFavoriteModelSlugs);
+  const cursorFavoriteModelSlugSet = new Set(cursorFavoriteModelSlugs);
+  const piFavoriteModelSlugSet = new Set(piFavoriteModelSlugs);
+  const favoriteModelSlugSets = {
+    cursor: cursorFavoriteModelSlugSet,
+    opencode: openCodeFavoriteModelSlugSet,
+    pi: piFavoriteModelSlugSet,
+  };
+
+  const providerInstancesByProvider = useMemo(() => {
+    const map = new Map<ProviderKind, ProviderModelPickerInstance[]>();
+    for (const provider of AVAILABLE_PROVIDER_OPTIONS.map((option) => option.value)) {
+      map.set(provider, []);
+    }
+    for (const instance of props.providerInstances ?? []) {
+      const entries = map.get(instance.provider);
+      if (entries) {
+        entries.push(instance);
+      }
+    }
+    for (const provider of AVAILABLE_PROVIDER_OPTIONS.map((option) => option.value)) {
+      const entries = map.get(provider);
+      if (!entries || entries.length === 0) {
+        map.set(provider, [defaultProviderInstance(provider)]);
+        continue;
+      }
+      entries.sort((left, right) => {
+        if (left.isDefault !== right.isDefault) {
+          return left.isDefault ? -1 : 1;
+        }
+        return left.label.localeCompare(right.label);
+      });
+    }
+    return map;
+  }, [props.providerInstances]);
+
+  const getProviderInstances = useCallback(
+    (provider: ProviderKind): ReadonlyArray<ProviderModelPickerInstance> =>
+      providerInstancesByProvider.get(provider) ?? [defaultProviderInstance(provider)],
+    [providerInstancesByProvider],
+  );
+
+  const isInstanceSelectable = useCallback(
+    (instance: ProviderModelPickerInstance): boolean => {
+      if (!instance.enabled) {
+        return false;
+      }
+      return !resolveLiveProviderAvailability(
+        findProviderStatusForInstance({
+          providers: props.providers,
+          provider: instance.provider,
+          instanceId: instance.instanceId,
+        }),
+      ).disabled;
+    },
+    [props.providers],
+  );
+
+  const getSelectedInstanceIdForProvider = useCallback(
+    (provider: ProviderKind): ProviderInstanceId => {
+      const instances = getProviderInstances(provider);
+      if (activeProvider === provider) {
+        // The active instance id is identity-bearing. Keep a removed id selected
+        // so callers can present an explicit missing state instead of making a
+        // healthy sibling look selected while the saved value still points at
+        // the removed account.
+        return selectedProviderInstanceId;
+      }
+      return (
+        instances.find(isInstanceSelectable)?.instanceId ??
+        instances.find((instance) => instance.isDefault)?.instanceId ??
+        instances[0]!.instanceId
+      );
+    },
+    [activeProvider, getProviderInstances, isInstanceSelectable, selectedProviderInstanceId],
+  );
+
+  const getModelOptionsForProviderInstance = useCallback(
+    (provider: ProviderKind, instanceId: ProviderInstanceId): ReadonlyArray<ProviderModelOption> =>
+      resolveModelOptionsForProviderInstance({
+        provider,
+        instanceId,
+        modelOptionsByProvider: props.modelOptionsByProvider,
+        modelOptionsByProviderInstance: props.modelOptionsByProviderInstance,
+      }),
+    [props.modelOptionsByProvider, props.modelOptionsByProviderInstance],
+  );
+
+  const resolveInstanceAvailability = useCallback(
+    (
+      instance: ProviderModelPickerInstance,
+    ): { disabled: boolean; label: string | null; identity: string | null } => {
+      const status = findProviderStatusForInstance({
+        providers: props.providers,
+        provider: instance.provider,
+        instanceId: instance.instanceId,
+      });
+      const identity = providerAccountIdentityLabel(status);
+      if (!instance.enabled) {
+        return { disabled: true, label: t("chat:disabled"), identity };
+      }
+      return { ...resolveLiveProviderAvailability(status), identity };
+    },
+    [props.providers, t],
+  );
+
+  const resolveProviderOptionAvailability = useCallback(
+    (provider: ProviderKind): { disabled: boolean; label: string | null } => {
+      const instanceAvailabilities = getProviderInstances(provider).map(
+        resolveInstanceAvailability,
+      );
+      if (instanceAvailabilities.some((availability) => !availability.disabled)) {
+        return { disabled: false, label: null };
+      }
+      return (
+        instanceAvailabilities[0] ?? {
+          disabled: true,
+          label: t("chat:providerModelPicker_unavailable"),
+        }
+      );
+    },
+    [getProviderInstances, resolveInstanceAvailability, t],
+  );
+
+  const handleModelChange = (
+    provider: ProviderKind,
+    value: string,
+    instanceId = getSelectedInstanceIdForProvider(provider),
+  ) => {
+    if (props.disabled) return;
+    if (!value) return;
+    const providerOptions = getModelOptionsForProviderInstance(provider, instanceId);
+    if (provider === "omp" && getOmpModelSelectionIssue(value, providerOptions)) return;
+    const resolvedModel = resolveSelectableModel(provider, value, providerOptions);
+    if (!resolvedModel) return;
+    props.onProviderModelChange(provider, resolvedModel, instanceId);
+    onAfterSelection?.();
+  };
+
+  const handleInstanceChange = (provider: ProviderKind, instanceId: ProviderInstanceId) => {
+    if (props.disabled || !instanceId) return;
+    // Choosing an OMP account is not a model choice. Preserve opaque selectors
+    // and stale role keys for explicit selection/validation in that account.
+    if (provider === "omp" && activeProvider === provider) {
+      props.onProviderModelChange(provider, props.model, instanceId);
+      return;
+    }
+    const providerOptions = getModelOptionsForProviderInstance(provider, instanceId);
+    const model = activeProvider === provider ? props.model : (providerOptions[0]?.slug ?? "");
+    if (!model) return;
+    const resolvedModel = resolveSelectableModel(provider, model, providerOptions);
+    props.onProviderModelChange(
+      provider,
+      resolvedModel ?? providerOptions[0]?.slug ?? model,
+      instanceId,
+    );
+  };
+
+  const renderProviderInstanceRadioGroup = (provider: ProviderKind) => {
+    const instances = getProviderInstances(provider);
+    const selectedInstanceId = getSelectedInstanceIdForProvider(provider);
+    const selectedInstanceIsMissing =
+      activeProvider === provider &&
+      !instances.some((instance) => instance.instanceId === selectedInstanceId);
+    if (
+      props.showProviderInstanceChoices === false ||
+      (instances.length <= 1 && !selectedInstanceIsMissing)
+    ) {
+      return null;
+    }
+    const sectionLabel =
+      provider === "codex" || provider === "claudeAgent" ? t("chat:accounts") : t("chat:profiles");
+    return (
+      <>
+        <div className="px-2.5 pb-1 pt-1.5 text-ui-xs font-medium text-muted-foreground uppercase tracking-[0.08em]">
+          {sectionLabel}
+        </div>
+        <MenuRadioGroup
+          value={selectedInstanceId}
+          onValueChange={(value) => {
+            if (!props.disabled && value) {
+              handleInstanceChange(provider, value);
+            }
+          }}
+        >
+          {selectedInstanceIsMissing ? (
+            <MenuRadioItem value={selectedInstanceId} disabled>
+              <span className="truncate">{t("settings:missingAccount")}</span>
+              <span className="ms-auto text-ui-xs text-muted-foreground/80 uppercase tracking-[0.08em]">
+                {t("chat:providerModelPicker_unavailable")}
+              </span>
+            </MenuRadioItem>
+          ) : null}
+          {instances.map((instance) => {
+            const availability = resolveInstanceAvailability(instance);
+            return (
+              <MenuRadioItem
+                key={instance.instanceId}
+                value={instance.instanceId}
+                disabled={availability.disabled}
+              >
+                <span className="truncate">{instance.label}</span>
+                {availability.identity ? (
+                  <span className="min-w-0 truncate text-ui-xs text-muted-foreground/80">
+                    {availability.identity}
+                  </span>
+                ) : null}
+                {availability.label ? (
+                  <span className="ms-auto text-ui-xs text-muted-foreground/80 uppercase tracking-[0.08em]">
+                    {availability.label}
+                  </span>
+                ) : null}
+              </MenuRadioItem>
+            );
+          })}
+        </MenuRadioGroup>
+        <MenuSeparator />
+      </>
+    );
+  };
+
+  const toggleFavoriteModel = (
+    provider: FavoriteModelProvider,
+    instanceId: ProviderInstanceId,
+    slug: string,
+  ) => {
+    const setFavoriteModelSlugs =
+      provider === "cursor"
+        ? setCursorFavoriteModelSlugs
+        : provider === "pi"
+          ? setPiFavoriteModelSlugs
+          : setOpenCodeFavoriteModelSlugs;
+    setFavoriteModelSlugs((current) => toggleFavoriteModelKey(current, provider, instanceId, slug));
+  };
+
+  // `instanceId` pins the list to one account; without it the provider's selected one.
+  const renderModelRadioGroup = (
+    provider: ProviderKind,
+    instanceId: ProviderInstanceId = getSelectedInstanceIdForProvider(provider),
+  ) => {
+    if (props.loadingModelProviders?.[provider]) {
+      return (
+        <div
+          className="space-y-2 px-2 py-2"
+          aria-label={t("chat:providerModelPicker_loadingModels")}
+        >
+          {Array.from({ length: 6 }, (_, index) => (
+            <div key={index} className="flex items-center gap-2 rounded-md px-2 py-1.5">
+              <Skeleton className="size-3.5 rounded-full" />
+              <Skeleton className={cn("h-3.5 rounded-full", index % 3 === 0 ? "w-24" : "w-32")} />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    const providerOptions = getModelOptionsForProviderInstance(provider, instanceId);
+    const shouldShowSearch =
+      (provider === "opencode" ||
+        provider === "cursor" ||
+        provider === "devin" ||
+        provider === "pi" ||
+        provider === "omp") &&
+      providerOptions.length >= SEARCHABLE_MODEL_PICKER_THRESHOLD;
+    const normalizedModelSearchQuery = deferredModelSearchQuery.trim().toLowerCase();
+    const filteredOptions =
+      shouldShowSearch && normalizedModelSearchQuery.length > 0
+        ? providerOptions.filter((option) =>
+            buildModelSearchText(option).includes(normalizedModelSearchQuery),
+          )
+        : providerOptions;
+    const favoriteProvider = supportsModelFavorites(provider) ? provider : null;
+    const selectedInstanceId = instanceId;
+    const isActiveAccount =
+      activeProvider === provider && instanceId === getSelectedInstanceIdForProvider(provider);
+    const favoriteModelKeySet =
+      favoriteProvider !== null ? favoriteModelSlugSets[favoriteProvider] : undefined;
+    const favoriteModelSlugSet =
+      favoriteProvider !== null && favoriteModelKeySet !== undefined
+        ? favoriteModelSlugsForInstance(favoriteProvider, selectedInstanceId, favoriteModelKeySet)
+        : undefined;
+    const groupedOptions =
+      favoriteModelSlugSet !== undefined
+        ? groupProviderModelOptionsWithFavorites({
+            options: filteredOptions,
+            favoriteSlugs: favoriteModelSlugSet,
+          })
+        : groupProviderModelOptions(filteredOptions);
+
+    const modelSelectionIssue =
+      provider === "omp" && isActiveAccount
+        ? getOmpModelSelectionIssue(props.model, providerOptions)
+        : null;
+    const discoveryError = props.discoveryErrorsByProvider?.[provider];
+    const discoveryErrorElement = (
+      <>
+        {modelSelectionIssue ? (
+          <div role="status" className="px-2 py-1.5 text-ui leading-snug text-destructive">
+            {modelSelectionIssue}
+          </div>
+        ) : null}
+        {discoveryError ? (
+          <div className="px-2 py-1.5 text-ui leading-snug text-destructive">{discoveryError}</div>
+        ) : null}
+      </>
+    );
+
+    const activeModelSlug = isActiveAccount
+      ? (resolveSelectableModel(provider, props.model, providerOptions) ?? props.model)
+      : props.model;
+
+    const content =
+      groupedOptions.length > 0 ? (
+        <MenuRadioGroup
+          value={isActiveAccount ? activeModelSlug : ""}
+          onValueChange={(value) => handleModelChange(provider, value, instanceId)}
+        >
+          <ProviderModelOptionGroupList
+            groupedOptions={groupedOptions}
+            provider={provider}
+            activeModel={activeModelSlug}
+            isSearching={normalizedModelSearchQuery.length > 0}
+            instanceId={selectedInstanceId}
+            favoriteProvider={favoriteProvider}
+            favoriteModelSlugSet={favoriteModelSlugSet}
+            onToggleFavorite={toggleFavoriteModel}
+            {...(onAfterSelection ? { onAfterSelection } : {})}
+          />
+        </MenuRadioGroup>
+      ) : provider === "omp" && normalizedModelSearchQuery.length === 0 ? (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label={t("chat:couldnTLoadOMPModelsCheckThatOmpIs2")}
+          tabIndex={-1}
+          className="text-ui-sm flex items-start gap-1.5 px-2 py-2 text-amber-600 dark:text-amber-300/90"
+        >
+          <TriangleAlertIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+          <span>{t("chat:couldnTLoadOMPModelsCheckThatOmpIs")}</span>
+        </div>
+      ) : (
+        <div className="px-2 py-2 text-muted-foreground text-ui leading-snug">
+          {provider === "pi" && normalizedModelSearchQuery.length === 0
+            ? t("chat:providerModelPicker_noPiModels")
+            : t("workspace:providerModelPicker_noMatches")}
+        </div>
+      );
+
+    if (!shouldShowSearch) {
+      const needsScrollContainer =
+        filteredOptions.length >= SEARCHABLE_MODEL_PICKER_THRESHOLD ||
+        shouldUseCollapsibleModelGroups(groupedOptions.length, false);
+      if (needsScrollContainer) {
+        return (
+          <>
+            {discoveryErrorElement}
+            <div
+              className={cn(
+                "overflow-y-auto overscroll-contain py-0.5",
+                COMPOSER_PICKER_MODEL_LIST_SCROLL_CLASS_NAME,
+                COMPOSER_PICKER_MODEL_LIST_MAX_HEIGHT_CLASS_NAME,
+              )}
+            >
+              {content}
+            </div>
+          </>
+        );
+      }
+      return (
+        <>
+          {discoveryErrorElement}
+          {content}
+        </>
+      );
+    }
+
+    return (
+      <PickerPanelShell
+        searchPlaceholder={t("chat:providerModelPicker_searchModels")}
+        query={modelSearchQuery}
+        onQueryChange={setModelSearchQuery}
+        stopSearchKeyPropagation
+        autoFocusSearch
+        widthClassName="w-full"
+        bleedParentPadding
+        listMaxHeightClassName={COMPOSER_PICKER_MODEL_LIST_MAX_HEIGHT_CLASS_NAME}
+      >
+        {discoveryErrorElement}
+        {content}
+      </PickerPanelShell>
+    );
+  };
+
+  if (props.lockedProvider !== null) {
+    const status = findProviderStatusForInstance({
+      providers: props.providers,
+      provider: props.lockedProvider,
+      instanceId: selectedProviderInstanceId,
+    });
+    if (status?.enabled === false) {
+      return (
+        <MenuItem onClick={() => appHistory.push("/settings?section=providers")}>
+          {t("chat:enableAProviderInSettings")}
+        </MenuItem>
+      );
+    }
+    return (
+      <>
+        {renderProviderInstanceRadioGroup(props.lockedProvider)}
+        {renderModelRadioGroup(props.lockedProvider)}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {visibleAvailableProviderOptions.map((option) => {
+        const OptionIcon = PROVIDER_ICON_COMPONENT_BY_PROVIDER[option.value];
+        const accounts = getProviderInstances(option.value).filter((instance) => instance.enabled);
+        if (props.showProviderInstanceChoices !== false && accounts.length > 1) {
+          // Several accounts: each is its own entry, like another provider would be.
+          return accounts.map((account) => {
+            const accountAvailability = resolveInstanceAvailability(account);
+            const accountLabel = providerAccountQualifiedLabel(option.label, account.label);
+            const accountIcon = (
+              <span className="relative flex shrink-0">
+                <OptionIcon
+                  aria-hidden="true"
+                  className={cn(
+                    "size-3 shrink-0",
+                    accountAvailability.disabled && "opacity-80",
+                    providerIconClassName(option.value, "text-muted-foreground/85"),
+                  )}
+                />
+                <ProviderAccountDot
+                  accentColor={account.accentColor}
+                  className="absolute -top-0.5 -right-1 size-1.5"
+                />
+              </span>
+            );
+            if (accountAvailability.disabled) {
+              const canOpenProviderSettings = accountAvailability.label === "Sign in";
+              return (
+                <MenuItem
+                  key={account.instanceId}
+                  disabled={!canOpenProviderSettings}
+                  onClick={
+                    canOpenProviderSettings
+                      ? () => appHistory.push("/settings?section=providers")
+                      : undefined
+                  }
+                >
+                  {accountIcon}
+                  <span className="truncate">{accountLabel}</span>
+                  <span className="ms-auto text-ui-sm text-muted-foreground/80">
+                    {accountAvailability.label}
+                  </span>
+                </MenuItem>
+              );
+            }
+            return (
+              <MenuSub key={account.instanceId}>
+                <MenuSubTrigger>
+                  {accountIcon}
+                  <span className="truncate">{accountLabel}</span>
+                  {accountAvailability.identity ? (
+                    <span className="ms-auto min-w-0 truncate text-ui-xs text-muted-foreground/80">
+                      {accountAvailability.identity}
+                    </span>
+                  ) : null}
+                </MenuSubTrigger>
+                <ComposerPickerMenuSubPopup
+                  fixedWidth
+                  className={COMPOSER_PICKER_MODEL_SUBMENU_HEIGHT_CLASS_NAME}
+                >
+                  {renderModelRadioGroup(option.value, account.instanceId)}
+                </ComposerPickerMenuSubPopup>
+              </MenuSub>
+            );
+          });
+        }
+        const availability = resolveProviderOptionAvailability(option.value);
+        if (availability.disabled) {
+          const canOpenProviderSettings = availability.label === "Sign in";
+          return (
+            <MenuItem
+              key={option.value}
+              disabled={!canOpenProviderSettings}
+              onClick={
+                canOpenProviderSettings
+                  ? () => appHistory.push("/settings?section=providers")
+                  : undefined
+              }
+            >
+              <OptionIcon
+                aria-hidden="true"
+                className={cn(
+                  "size-3 shrink-0 opacity-80",
+                  providerIconClassName(option.value, "text-muted-foreground/85"),
+                )}
+              />
+              <span>{option.label}</span>
+              <span className="ms-auto text-ui-sm text-muted-foreground/80">
+                {availability.label}
+              </span>
+            </MenuItem>
+          );
+        }
+        return (
+          <MenuSub key={option.value}>
+            <MenuSubTrigger>
+              <OptionIcon
+                aria-hidden="true"
+                className={cn(
+                  "size-3 shrink-0",
+                  providerIconClassName(option.value, "text-muted-foreground/85"),
+                )}
+              />
+              {option.label}
+            </MenuSubTrigger>
+            <ComposerPickerMenuSubPopup
+              fixedWidth
+              className={COMPOSER_PICKER_MODEL_SUBMENU_HEIGHT_CLASS_NAME}
+            >
+              {renderProviderInstanceRadioGroup(option.value)}
+              {renderModelRadioGroup(option.value)}
+            </ComposerPickerMenuSubPopup>
+          </MenuSub>
+        );
+      })}
+      {visibleUnsupportedProviderInstances.length > 0 ? <MenuSeparator /> : null}
+      {visibleUnsupportedProviderInstances.map((providerStatus) => (
+        <MenuItem
+          key={providerStatus.instanceId ?? providerStatus.driver ?? providerStatus.provider}
+          disabled
+        >
+          <span className="truncate">
+            {providerStatus.displayName ??
+              providerStatus.instanceId ??
+              providerStatus.driver ??
+              providerStatus.provider}
+          </span>
+          <span className="ms-auto text-ui-xs text-muted-foreground/80 uppercase tracking-[0.08em]">
+            {t("chat:missingDriver")}
+          </span>
+        </MenuItem>
+      ))}
+      {visibleAvailableProviderOptions.length > 0 ||
+      visibleUnsupportedProviderInstances.length > 0 ? (
+        <MenuSeparator />
+      ) : null}
+      <MenuItem onClick={() => appHistory.push("/settings?section=providers")}>
+        <PlusIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground/85" />
+        <span>{t("chat:addProviders")}</span>
+      </MenuItem>
+    </>
+  );
+};
+
+export function resolveProviderModelLabel(input: {
+  provider: ProviderKind;
+  lockedProvider: ProviderKind | null;
+  model: ModelSlug;
+  modelOptionsByProvider: Record<ProviderKind, ReadonlyArray<ProviderModelOption>>;
+  modelOptionsByProviderInstance?: ProviderModelOptionsByProviderInstance | undefined;
+  selectedProviderInstanceId?: ProviderInstanceId | undefined;
+}): string {
+  const activeProvider = input.lockedProvider ?? input.provider;
+  const activeInstanceId = input.selectedProviderInstanceId ?? activeProvider;
+  return resolveSelectedModelLabel({
+    provider: activeProvider,
+    model: input.model,
+    options: resolveModelOptionsForProviderInstance({
+      provider: activeProvider,
+      instanceId: activeInstanceId,
+      modelOptionsByProvider: input.modelOptionsByProvider,
+      modelOptionsByProviderInstance: input.modelOptionsByProviderInstance,
+    }),
+  });
+}
+
+export function getProviderIconClassName(
+  provider: ProviderKind | ProviderPickerKind,
+  fallbackClassName: string = "text-muted-foreground/70",
+): string {
+  return providerIconClassName(provider, fallbackClassName);
+}
+
+type ProviderModelPickerProps = {
+  provider: ProviderKind;
+  model: ModelSlug;
+  lockedProvider: ProviderKind | null;
+  providers?: ReadonlyArray<ServerProviderStatus>;
+  modelOptionsByProvider: Record<ProviderKind, ReadonlyArray<ProviderModelOption>>;
+  modelOptionsByProviderInstance?: ProviderModelOptionsByProviderInstance;
+  loadingModelProviders?: Partial<Record<ProviderKind, boolean>>;
+  discoveryErrorsByProvider?: Partial<Record<ProviderKind, string | undefined>>;
+  hiddenProviders?: ReadonlyArray<ProviderKind>;
+  providerOrder?: ReadonlyArray<ProviderKind>;
+  providerInstances?: ReadonlyArray<ProviderModelPickerInstance>;
+  selectedProviderInstanceId?: ProviderInstanceId;
+  showProviderInstanceChoices?: boolean;
+  activeProviderIconClassName?: string;
+  compact?: boolean;
+  // Icon-only trigger for narrow composers; the model name moves to title/sr-only.
+  hideLabel?: boolean;
+  disabled?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onSelectionCommitted?: () => void;
+  shortcutLabel?: string | null;
+  onProviderModelChange: (
+    provider: ProviderKind,
+    model: ModelSlug,
+    instanceId?: ProviderInstanceId,
+  ) => void;
+};
+
+export const ProviderModelPicker = function ProviderModelPicker(props: ProviderModelPickerProps) {
+  const { t } = useTranslation();
+
+  const { onOpenChange, onSelectionCommitted, open } = props;
+  const [uncontrolledMenuOpen, setUncontrolledMenuOpen] = useState(false);
+  const selectionCommitTimerRef = useRef<number | null>(null);
+  const isMenuOpen = open ?? uncontrolledMenuOpen;
+  const activeProvider = props.lockedProvider ?? props.provider;
+  const selectedModelLabel = resolveProviderModelLabel({
+    provider: props.provider,
+    lockedProvider: props.lockedProvider,
+    model: props.model,
+    modelOptionsByProvider: props.modelOptionsByProvider,
+    modelOptionsByProviderInstance: props.modelOptionsByProviderInstance,
+    selectedProviderInstanceId: props.selectedProviderInstanceId,
+  });
+  const selectedProviderInstanceIsMissing =
+    props.showProviderInstanceChoices !== false &&
+    props.providerInstances !== undefined &&
+    props.selectedProviderInstanceId !== undefined &&
+    !props.providerInstances.some(
+      (instance) =>
+        instance.provider === activeProvider &&
+        instance.instanceId === props.selectedProviderInstanceId,
+    );
+  const selectedAccount =
+    props.showProviderInstanceChoices === false
+      ? undefined
+      : props.providerInstances?.find(
+          (instance) =>
+            instance.provider === activeProvider &&
+            instance.instanceId === (props.selectedProviderInstanceId ?? activeProvider),
+        );
+  // The model alone does not say which account runs it once a provider has several.
+  const selectedAccountHasSiblings =
+    selectedAccount !== undefined &&
+    (props.providerInstances ?? []).some(
+      (instance) =>
+        instance.enabled &&
+        instance.provider === selectedAccount.provider &&
+        instance.instanceId !== selectedAccount.instanceId,
+    );
+  const triggerLabel = selectedProviderInstanceIsMissing
+    ? t("common:symbol9", {
+        value0: t("settings:missingAccount"),
+        value1: selectedModelLabel,
+      })
+    : selectedAccount && selectedAccountHasSiblings
+      ? t("common:symbol9", { value0: selectedAccount.label, value1: selectedModelLabel })
+      : selectedModelLabel;
+  const ProviderIcon = PROVIDER_ICON_COMPONENT_BY_PROVIDER[activeProvider];
+  const setMenuOpen = (nextOpen: boolean) => {
+    if (open === undefined) {
+      setUncontrolledMenuOpen(nextOpen);
+    }
+    onOpenChange?.(nextOpen);
+  };
+  const scheduleSelectionCommitted = () => {
+    if (selectionCommitTimerRef.current !== null) {
+      window.clearTimeout(selectionCommitTimerRef.current);
+    }
+    // Base UI restores focus to the trigger while closing; refocus callers after that tick.
+    selectionCommitTimerRef.current = window.setTimeout(() => {
+      selectionCommitTimerRef.current = null;
+      onSelectionCommitted?.();
+    }, 0);
+  };
+  useEffect(
+    () => () => {
+      if (selectionCommitTimerRef.current !== null) {
+        window.clearTimeout(selectionCommitTimerRef.current);
+      }
+    },
+    [],
+  );
+
+  const handleAfterSelection = () => {
+    setMenuOpen(false);
+    scheduleSelectionCommitted();
+  };
+
+  const triggerButton = (
+    <PickerTriggerButton
+      disabled={props.disabled ?? false}
+      compact={props.compact ?? false}
+      hideLabel={props.hideLabel ?? false}
+      className="text-[var(--color-text-foreground)]"
+      icon={
+        <span className="relative flex">
+          <ProviderIcon
+            aria-hidden="true"
+            className={cn(
+              // opacity-100 opts out of the Button base's [&_svg]:opacity-80 dimming.
+              "size-3.5 shrink-0 opacity-100",
+              providerIconClassName(activeProvider, "text-muted-foreground/70"),
+              props.activeProviderIconClassName,
+            )}
+          />
+          <ProviderAccountDot
+            accentColor={selectedAccount?.accentColor}
+            className="absolute -top-0.5 -right-1 size-1.5 ring-0"
+          />
+        </span>
+      }
+      label={triggerLabel}
+    />
+  );
+
+  return (
+    <Menu
+      open={isMenuOpen}
+      onOpenChange={(nextOpen) => {
+        if (props.disabled) {
+          setMenuOpen(false);
+          return;
+        }
+        setMenuOpen(nextOpen);
+      }}
+    >
+      {props.shortcutLabel ? (
+        <Tooltip>
+          <TooltipTrigger render={<MenuTrigger render={triggerButton} />}>
+            <span className="sr-only">{triggerLabel}</span>
+          </TooltipTrigger>
+          {!isMenuOpen ? (
+            <TooltipPopup side="top" sideOffset={6} variant="picker">
+              <span className="inline-flex items-center gap-2 px-1 py-0.5">
+                <span>{t("chat:providerModelPicker_changeModel")}</span>
+                <ShortcutKbd
+                  shortcutLabel={props.shortcutLabel}
+                  className="h-4 min-w-4 text-ui-2xs"
+                />
+              </span>
+            </TooltipPopup>
+          ) : null}
+        </Tooltip>
+      ) : (
+        <MenuTrigger render={triggerButton}>
+          <span className="sr-only">{triggerLabel}</span>
+        </MenuTrigger>
+      )}
+      <ComposerPickerMenuPopup align="start" fixedWidth>
+        <ProviderModelMenuItems
+          provider={props.provider}
+          model={props.model}
+          lockedProvider={props.lockedProvider}
+          {...(props.providers ? { providers: props.providers } : {})}
+          modelOptionsByProvider={props.modelOptionsByProvider}
+          {...(props.modelOptionsByProviderInstance
+            ? { modelOptionsByProviderInstance: props.modelOptionsByProviderInstance }
+            : {})}
+          {...(props.loadingModelProviders
+            ? { loadingModelProviders: props.loadingModelProviders }
+            : {})}
+          {...(props.discoveryErrorsByProvider
+            ? { discoveryErrorsByProvider: props.discoveryErrorsByProvider }
+            : {})}
+          {...(props.hiddenProviders ? { hiddenProviders: props.hiddenProviders } : {})}
+          {...(props.providerOrder ? { providerOrder: props.providerOrder } : {})}
+          {...(props.providerInstances ? { providerInstances: props.providerInstances } : {})}
+          {...(props.selectedProviderInstanceId
+            ? { selectedProviderInstanceId: props.selectedProviderInstanceId }
+            : {})}
+          {...(props.showProviderInstanceChoices !== undefined
+            ? { showProviderInstanceChoices: props.showProviderInstanceChoices }
+            : {})}
+          {...(props.disabled !== undefined ? { disabled: props.disabled } : {})}
+          onProviderModelChange={props.onProviderModelChange}
+          onAfterSelection={handleAfterSelection}
+        />
+      </ComposerPickerMenuPopup>
+    </Menu>
+  );
+};

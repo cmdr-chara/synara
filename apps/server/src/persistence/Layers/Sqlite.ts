@@ -1,0 +1,325 @@
+import { totalmem } from "node:os";
+
+import { Effect, Layer, FileSystem, Path } from "effect";
+import * as SqlClient from "effect/unstable/sql/SqlClient";
+
+import { runMigrations } from "../Migrations.ts";
+import { MigrationSchemaTooNewError } from "../Errors.ts";
+import {
+  inspectPendingMigrationRecovery,
+  reclaimOrphanedMigrationArtifacts,
+  resumeMarkedMigration,
+  runWithPreMigrationBackup,
+  type MigrationRecoveryMarker,
+} from "../MigrationBackup.ts";
+import { createMigrationSchemaTooNewStartupBlockError } from "../MigrationSchemaTooNewStartupBlock.ts";
+import { ensurePrivateFileSync, repairPrivateFile } from "../../privatePathPermissions.ts";
+import { resolveSqliteMemoryBudget } from "../sqliteMemoryBudget.ts";
+import { reclaimFreedSqlitePages, reclaimLegacySqliteDatabase } from "../SqliteReclamation.ts";
+import { ServerConfig } from "../../config.ts";
+import {
+  acquireDatabaseLifecycleLock,
+  releaseDatabaseLifecycleLock,
+} from "../DatabaseLifecycleLock.ts";
+
+type RuntimeSqliteLayerConfig = {
+  readonly filename: string;
+  readonly disableWAL?: boolean | undefined;
+};
+
+type Loader = {
+  layer: (config: RuntimeSqliteLayerConfig) => Layer.Layer<SqlClient.SqlClient>;
+};
+const defaultSqliteClientLoaders = {
+  bun: () => import("@effect/sql-sqlite-bun/SqliteClient"),
+  node: () => import("../NodeSqliteClient.ts"),
+} satisfies Record<string, () => Promise<Loader>>;
+
+const makeRuntimeSqliteLayer = (
+  config: RuntimeSqliteLayerConfig,
+): Layer.Layer<SqlClient.SqlClient> =>
+  Effect.gen(function* () {
+    const runtime = process.versions.bun !== undefined ? "bun" : "node";
+    const loader = defaultSqliteClientLoaders[runtime];
+    const clientModule = yield* Effect.promise<Loader>(loader);
+    // Bun otherwise creates a WAL database before setup can choose auto_vacuum
+    // and exclusive locking. Node leaves these pragmas to setup already.
+    return clientModule.layer({ ...config, disableWAL: true });
+  }).pipe(Layer.unwrap);
+
+function errnoCode(cause: unknown): string | undefined {
+  const error = cause as (Error & { readonly code?: string; readonly cause?: unknown }) | null;
+  return error?.code ?? (error?.cause as NodeJS.ErrnoException | undefined)?.code;
+}
+
+const repairSqliteFilePermissions = (dbPath: string) =>
+  Effect.promise(async () => {
+    await repairPrivateFile(dbPath);
+    for (const suffix of ["-wal", "-shm"]) {
+      await repairPrivateFile(`${dbPath}${suffix}`).catch((cause) => {
+        if (errnoCode(cause) !== "ENOENT") throw cause;
+      });
+    }
+  });
+
+interface SqliteSetupOptions {
+  readonly dbPath?: string | undefined;
+  readonly pendingRecovery?: MigrationRecoveryMarker | null | undefined;
+  readonly divergenceConsent?: string | undefined;
+  readonly onSetupComplete?: ((legacyRebuildNeeded: boolean) => void) | undefined;
+}
+
+interface MigratedSchemaSnapshot {
+  readonly tables: ReadonlyArray<string>;
+  readonly rows: ReadonlyArray<{
+    readonly table: string;
+    readonly rows: ReadonlyArray<Record<string, unknown>>;
+  }>;
+  readonly dependents: ReadonlyArray<string>;
+}
+
+/**
+ * In-memory databases are created once per test, and replaying every migration
+ * dominates test time. The fully migrated schema (and any rows migrations seed)
+ * is captured the first time and replayed as plain DDL afterwards. Only the
+ * in-memory layer uses this; file databases always run the real migrator.
+ */
+let migratedMemorySnapshot: MigratedSchemaSnapshot | undefined;
+
+const captureMigratedSchema = (sql: SqlClient.SqlClient) =>
+  Effect.gen(function* () {
+    const schema = yield* sql<{
+      readonly type: string;
+      readonly name: string;
+      readonly sql: string;
+    }>`
+      SELECT type, name, sql FROM sqlite_schema
+      WHERE sql IS NOT NULL AND name NOT GLOB 'sqlite_*'
+      ORDER BY rowid ASC
+    `;
+    const tableNames = schema.filter((row) => row.type === "table").map((row) => row.name);
+    const rows = [];
+    for (const table of [...tableNames, "sqlite_sequence"]) {
+      const exists = yield* sql`SELECT 1 FROM sqlite_schema WHERE name = ${table} LIMIT 1`;
+      if (exists.length === 0) continue;
+      const tableRows = yield* sql.unsafe<Record<string, unknown>>(`SELECT * FROM "${table}"`);
+      if (tableRows.length > 0 || table === "sqlite_sequence")
+        rows.push({ table, rows: tableRows });
+    }
+    return {
+      tables: schema.filter((row) => row.type === "table").map((row) => row.sql),
+      rows,
+      dependents: schema.filter((row) => row.type !== "table").map((row) => row.sql),
+    } satisfies MigratedSchemaSnapshot;
+  });
+
+const restoreMigratedSchema = (sql: SqlClient.SqlClient, snapshot: MigratedSchemaSnapshot) =>
+  Effect.gen(function* () {
+    yield* sql`PRAGMA foreign_keys = OFF;`;
+    yield* sql.withTransaction(
+      Effect.gen(function* () {
+        for (const statement of snapshot.tables) yield* sql.unsafe(statement);
+        for (const { table, rows } of snapshot.rows) {
+          // Inserting seed data can advance counters. Copy the original counters exactly.
+          if (table === "sqlite_sequence") yield* sql.unsafe("DELETE FROM sqlite_sequence");
+          for (const row of rows) {
+            const columns = Object.keys(row);
+            yield* sql.unsafe(
+              `INSERT INTO "${table}" (${columns.map((c) => `"${c}"`).join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`,
+              columns.map((column) => row[column] as never),
+            );
+          }
+        }
+        for (const statement of snapshot.dependents) yield* sql.unsafe(statement);
+      }),
+    );
+    yield* sql`PRAGMA foreign_keys = ON;`;
+  });
+
+const makeSetup = ({
+  dbPath,
+  pendingRecovery = null,
+  divergenceConsent,
+  onSetupComplete,
+}: SqliteSetupOptions = {}) =>
+  Layer.effectDiscard(
+    Effect.gen(function* () {
+      const sql = yield* SqlClient.SqlClient;
+      if (dbPath) {
+        // The runtime owns this database for its entire lifetime (enforced by
+        // DatabaseLifecycleLock), so make SQLite enforce the same boundary.
+        // This must happen before the first WAL access: SQLite then keeps its
+        // WAL index in heap memory instead of memory-mapping a shared `-shm`
+        // file that an unrelated sqlite client could truncate or rebuild.
+        const lockingModeRows = yield* sql<{ readonly locking_mode: string }>`
+          PRAGMA locking_mode = EXCLUSIVE;
+        `;
+        const lockingMode = lockingModeRows[0]?.locking_mode;
+        if (lockingMode?.toLowerCase() !== "exclusive") {
+          return yield* Effect.fail(
+            new Error(
+              `SQLite exclusive locking mode could not be enabled (result: ${lockingMode ?? "unknown"})`,
+            ),
+          );
+        }
+      }
+      yield* sql`PRAGMA busy_timeout = 5000;`;
+      // New databases need the pointer map before any migration creates tables.
+      // NONE databases keep their current mode until the offline shutdown rebuild.
+      const vacuumMode = yield* sql<{ readonly auto_vacuum: number }>`PRAGMA auto_vacuum;`;
+      if (dbPath && vacuumMode[0]?.auto_vacuum === 0) {
+        const tables = yield* sql`SELECT 1 FROM sqlite_schema WHERE type = 'table' LIMIT 1`;
+        if (tables.length === 0) yield* sql`PRAGMA auto_vacuum = INCREMENTAL;`;
+      }
+      const journalModeRows = yield* sql<{ readonly journal_mode: string }>`
+        PRAGMA journal_mode = WAL;
+      `;
+      const journalMode = journalModeRows[0]?.journal_mode;
+      if (journalMode?.toLowerCase() !== "wal") {
+        yield* Effect.logWarning("SQLite WAL journal mode could not be enabled", {
+          resultingJournalMode: journalMode ?? "unknown",
+        });
+      }
+      // synchronous = NORMAL under WAL preserves database consistency and is
+      // safe across application crashes (no corruption, no torn writes). The
+      // only accepted risk is that an OS crash or power loss may lose the most
+      // recent committed transaction(s) that had not yet been checkpointed.
+      // That tradeoff is deliberate: at our per-event write rate, FULL's fsync
+      // on every commit is too costly, and losing the last few events on a hard
+      // power loss is acceptable.
+      yield* sql`PRAGMA synchronous = NORMAL;`;
+      yield* sql`PRAGMA foreign_keys = ON;`;
+      // The event log alone can exceed a gigabyte, so the 2MB default page
+      // cache thrashes during projector replay and large projection reads.
+      // The page cache (negative value = KiB) keeps the hot b-tree interior
+      // pages resident and is sized to the host's physical memory (see
+      // sqliteMemoryBudget.ts). It is an on-demand ceiling for the single
+      // serialized connection, not an upfront allocation. temp_store stays at
+      // its default deliberately: the snapshot window queries can build
+      // temp b-trees proportional to live-thread history, and MEMORY would
+      // turn those into unbounded native RSS; the disk default already keeps
+      // small temp structures in memory and only spills when they grow.
+      const memoryBudget = resolveSqliteMemoryBudget(totalmem());
+      yield* sql`PRAGMA cache_size = ${sql.literal(String(memoryBudget.cacheSizePragma))};`;
+      if (dbPath) {
+        // mmap serves large sequential reads (event replay, VACUUM INTO
+        // backups) through the OS page cache without double-buffering into
+        // the SQLite heap cache. In-memory databases have nothing to map.
+        // Accepted tradeoff: with mmap, a device I/O error or an external
+        // process truncating the file surfaces as a signal (SIGBUS) instead
+        // of a recoverable SQLite error. locking_mode=EXCLUSIVE plus the
+        // lifecycle lock make external mutation effectively impossible, and
+        // no internal path truncates the live database.
+        yield* sql`PRAGMA mmap_size = ${sql.literal(String(memoryBudget.mmapSizeBytes))};`;
+        // Setting locking_mode changes connection policy; this transaction
+        // actually acquires and retains the database lock before startup
+        // continues, closing the window where another client could attach.
+        yield* sql`BEGIN EXCLUSIVE;`;
+        yield* sql`COMMIT;`;
+      }
+      // A pending marker means an earlier startup was interrupted mid-migration.
+      // Resuming reuses that attempt's snapshot instead of taking a second one,
+      // so the fallback stays the last known-good database.
+      const migrations = dbPath
+        ? pendingRecovery
+          ? resumeMarkedMigration(dbPath, pendingRecovery, runMigrations(), { divergenceConsent })
+          : runWithPreMigrationBackup(dbPath, runMigrations(), { divergenceConsent })
+        : undefined;
+      if (migrations === undefined) {
+        if (migratedMemorySnapshot === undefined) {
+          yield* runMigrations();
+          const captured = yield* captureMigratedSchema(sql);
+          migratedMemorySnapshot ??= captured;
+        } else {
+          yield* restoreMigratedSchema(sql, migratedMemorySnapshot);
+        }
+        return;
+      }
+      yield* migrations.pipe(
+        Effect.catch((cause) =>
+          cause instanceof MigrationSchemaTooNewError && dbPath
+            ? Effect.promise(() =>
+                createMigrationSchemaTooNewStartupBlockError(dbPath, cause),
+              ).pipe(Effect.uninterruptible, Effect.flatMap(Effect.fail))
+            : Effect.fail(cause),
+        ),
+      );
+      if (dbPath) {
+        const mode = yield* sql<{ readonly auto_vacuum: number }>`PRAGMA auto_vacuum;`;
+        onSetupComplete?.(mode[0]?.auto_vacuum === 0);
+        if (mode[0]?.auto_vacuum === 2) {
+          yield* Effect.forkScoped(
+            Effect.gen(function* () {
+              while (true) {
+                yield* Effect.sleep("30 seconds");
+                yield* reclaimFreedSqlitePages(sql).pipe(
+                  Effect.catch((cause) =>
+                    Effect.logWarning("SQLite incremental reclamation deferred", { cause }),
+                  ),
+                );
+              }
+            }),
+          );
+        }
+      }
+    }),
+  );
+
+export const makeSqlitePersistenceLive = (
+  dbPath: string,
+  options: { readonly divergenceConsent?: string | undefined } = {},
+) =>
+  Effect.acquireRelease(acquireDatabaseLifecycleLock(dbPath), (lock) =>
+    releaseDatabaseLifecycleLock(lock).pipe(Effect.orDie),
+  ).pipe(
+    Effect.flatMap(() =>
+      Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        yield* fs.makeDirectory(path.dirname(dbPath), { recursive: true });
+        // Ahead of the guard on purpose: a database that fails closed below
+        // never reaches the backup path, so this is the only opportunity to
+        // reclaim artifacts stranded by an earlier failed startup or restore.
+        yield* reclaimOrphanedMigrationArtifacts(dbPath);
+        const pendingRecovery = yield* inspectPendingMigrationRecovery(dbPath);
+        // Set the mode before SQLite opens the database. Never reopen the
+        // database, WAL, or SHM merely to chmod them while this connection is
+        // live: closing any descriptor for the same inode releases POSIX
+        // process locks and can leave a mapped WAL index vulnerable to SIGBUS.
+        // SQLite creates its sidecars with the database's private mode.
+        yield* Effect.sync(() => ensurePrivateFileSync(dbPath));
+        yield* repairSqliteFilePermissions(dbPath);
+
+        // Finalizers unwind in reverse acquisition order: SQL closes first,
+        // maintenance exits second, and only then is the lifecycle lock released.
+        let legacyRebuildNeeded = false;
+        yield* Effect.addFinalizer(() =>
+          legacyRebuildNeeded ? reclaimLegacySqliteDatabase(dbPath) : Effect.void,
+        );
+
+        return Layer.provideMerge(
+          makeSetup({
+            dbPath,
+            pendingRecovery,
+            divergenceConsent: options.divergenceConsent,
+            onSetupComplete: (needsRebuild) => {
+              legacyRebuildNeeded = needsRebuild;
+            },
+          }),
+          makeRuntimeSqliteLayer({ filename: dbPath }),
+        );
+      }),
+    ),
+    Layer.unwrap,
+  );
+
+export const SqlitePersistenceMemory = Layer.provideMerge(
+  makeSetup(),
+  makeRuntimeSqliteLayer({ filename: ":memory:" }),
+);
+
+export const layerConfig = Layer.unwrap(
+  Effect.map(Effect.service(ServerConfig), ({ dbPath, migrationDivergenceConsent }) =>
+    makeSqlitePersistenceLive(dbPath, { divergenceConsent: migrationDivergenceConsent }),
+  ),
+);

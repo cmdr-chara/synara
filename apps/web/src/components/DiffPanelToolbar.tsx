@@ -1,0 +1,579 @@
+// FILE: DiffPanelToolbar.tsx
+// Purpose: Unified review toolbar for the diff panel — scope picker, stats, file jump,
+//          view options, git actions, and turn selection. Picker chrome matches the
+//          Environment panel (EnvironmentRow triggers + ComposerPickerMenuPopup menus).
+// Layer: Diff panel UI
+
+import type { FileDiffMetadata } from "@pierre/diffs/react";
+import type { ThreadId, TurnId } from "@synara/contracts";
+import { FaPlusMinus } from "react-icons/fa6";
+import { useState, type ReactNode } from "react";
+
+import GitActionsControl from "~/components/GitActionsControl";
+import {
+  ChangesIcon,
+  Columns2Icon,
+  CopyIcon,
+  DiffIcon,
+  EllipsisIcon,
+  FolderIcon,
+  FoldersIcon,
+  GitBranchIcon,
+  GitCommitIcon,
+  ListChecksIcon,
+  RefreshCwIcon,
+  Rows3Icon,
+  XIcon,
+} from "~/lib/icons";
+import { cn } from "~/lib/utils";
+import { ELEVATED_HOVER_SURFACE_RAISED_TEXT_CLASS_NAME } from "~/surfaceStyles";
+import type { TimestampFormat } from "~/appSettings";
+import type { TurnDiffSummary } from "~/types";
+import type { RepoDiffScope } from "~/repoDiffScopeStore";
+import { REPO_DIFF_SCOPE_LABELS } from "~/repoDiffScopeStore";
+import { formatShortTimestamp } from "~/timestampFormat";
+import {
+  DIFF_PANEL_PICKER_SCOPE_OPTIONS,
+  isDiffPanelRepoScopeOption,
+  resolveDiffPanelPickerLabel,
+  resolveDiffPanelScopePickerValue,
+  type DiffPanelRepoScopeOption,
+  type DiffPanelTurnScopeIntent,
+  type DiffPanelViewSource,
+} from "./DiffPanel.logic";
+import {
+  DiffPanelChangeNavigationButtons,
+  type DiffPanelChangeNavigation,
+} from "./DiffPanelChangeNavigation";
+import { DiffPanelCompareRefMenuSection } from "./DiffPanelCompareRefMenuSection";
+import { DiffPanelFileJumpMenu } from "./DiffPanelFileJumpMenu";
+import { ComposerPickerMenuPopup } from "./chat/ComposerPickerMenuPopup";
+import { EnvironmentRowBody, EnvironmentRowChevron } from "./chat/environment/EnvironmentRow";
+import type { DiffRenderMode } from "./chat/chatHeaderControls";
+import { DiffStat } from "./chat/DiffStatLabel";
+import {
+  BUTTON_GROUP_ACTIVE_CLASS_NAME,
+  BUTTON_GROUP_SURFACE_CLASS_NAME,
+  ButtonGroup,
+  TOOLBAR_ICON_BUTTON_TONE_CLASS_NAME,
+} from "./ui/button-group";
+import { IconButton } from "./ui/icon-button";
+import {
+  Menu,
+  MenuCheckboxItem,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuItem,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuTrigger,
+} from "./ui/menu";
+import { useTranslation } from "~/i18n";
+
+const DIFF_PANEL_PICKER_ICON_CLASS_NAME = "size-3.5 shrink-0 text-[var(--color-text-foreground)]";
+
+/** Tighter than EnvironmentRow — dock header has no 16px icon gutter column. */
+const DIFF_PANEL_PICKER_TRIGGER_CLASS_NAME = cn(
+  "flex h-8 min-w-0 max-w-[min(38%,11rem)] cursor-pointer items-center gap-1.5 py-1 pl-2.5 pr-2.5 text-left",
+  "text-ui font-normal text-[var(--color-text-foreground)]",
+  "outline-none transition-colors",
+  BUTTON_GROUP_SURFACE_CLASS_NAME,
+  "hover:bg-[var(--color-background-button-secondary-hover)] focus-visible:bg-[var(--color-background-button-secondary-hover)]",
+);
+
+const DIFF_PANEL_MENU_ICON_CLASS_NAME = "size-3.5 shrink-0 text-muted-foreground";
+const INITIAL_VISIBLE_TURN_COUNT = 5;
+const TURN_SHOW_MORE_INCREMENT = 20;
+
+/** The panel's close action, as its own capsule; shared by the toolbar and the bare file view. */
+export function DiffPanelCloseButton({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation();
+
+  return (
+    <ButtonGroup label={t("common:panel")}>
+      <IconButton
+        variant="ghost"
+        size="icon-xs"
+        shape="capsule"
+        className={TOOLBAR_ICON_BUTTON_TONE_CLASS_NAME}
+        label={t("common:diff_closeFileView")}
+        onClick={(event) => {
+          event.stopPropagation();
+          onClose();
+        }}
+      >
+        <XIcon className="size-3.5" />
+      </IconButton>
+    </ButtonGroup>
+  );
+}
+
+interface DiffPanelToolbarProps {
+  activeCwd: string | null;
+  activeThreadId: ThreadId | null;
+  viewSource: DiffPanelViewSource;
+  turnScopeIntent: DiffPanelTurnScopeIntent;
+  scopeFileCounts: Partial<Record<RepoDiffScope, number>>;
+  activeStats: { additions: number; deletions: number } | null;
+  orderedTurnDiffSummaries: ReadonlyArray<TurnDiffSummary>;
+  inferredCheckpointTurnCountByTurnId: Record<string, number>;
+  selectedTurnId: TurnId | null;
+  timestampFormat: TimestampFormat;
+  renderableFiles: ReadonlyArray<FileDiffMetadata>;
+  selectedFilePath: string | null;
+  fileTreeOpen: boolean;
+  resolvedTheme: "light" | "dark";
+  diffRenderMode: DiffRenderMode;
+  diffWordWrap: boolean;
+  diffIgnoreWhitespace: boolean;
+  diffCopyText: string | null;
+  diffCopyLabel: string;
+  reloading: boolean;
+  allFilesCollapsed: boolean;
+  changeMarkersEnabled: boolean;
+  changeNavigation: DiffPanelChangeNavigation;
+  onChangeMarkersEnabledChange: (enabled: boolean) => void;
+  compareRef: string | null;
+  onSelectRepoScope: (scope: DiffPanelRepoScopeOption) => void;
+  onSelectCompareRef: (ref: string) => void;
+  onSelectAllTurns: () => void;
+  onSelectLastTurn: () => void;
+  onSelectTurn: (turnId: TurnId | null) => void;
+  onSelectFile: (filePath: string) => void;
+  onToggleFileTree: () => void;
+  onDiffRenderModeChange: (mode: DiffRenderMode) => void;
+  onDiffWordWrapChange: (enabled: boolean) => void;
+  onDiffIgnoreWhitespaceChange: (enabled: boolean) => void;
+  onCopyDiff: () => void;
+  onReload: () => void;
+  onToggleCollapseAll: () => void;
+  scopePickerOpen?: boolean;
+  onScopePickerOpenChange?: (open: boolean) => void;
+  onClosePanel?: () => void;
+}
+
+function ScopeCountBadge(props: { count: number | undefined }) {
+  if (typeof props.count !== "number" || props.count <= 0) {
+    return null;
+  }
+  return (
+    <span className="rounded-full bg-muted px-1.5 text-ui-xs font-medium text-muted-foreground tabular-nums">
+      {props.count}
+    </span>
+  );
+}
+
+function resolveScopeMenuIcon(scope: DiffPanelRepoScopeOption | "lastTurn") {
+  switch (scope) {
+    case "unstaged":
+      return <ChangesIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />;
+    case "staged":
+      return <ListChecksIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />;
+    case "branch":
+      return <GitBranchIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />;
+    case "lastTurn":
+      return (
+        <span className="inline-flex size-3.5 shrink-0 items-center justify-center text-muted-foreground">
+          <FaPlusMinus className="size-2.25" />
+        </span>
+      );
+    default:
+      return <DiffIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />;
+  }
+}
+
+function resolveTurnNumber(
+  summary: TurnDiffSummary,
+  inferredCheckpointTurnCountByTurnId: Record<string, number>,
+): string {
+  return String(
+    summary.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[summary.turnId] ?? "?",
+  );
+}
+
+export const DiffPanelToolbar = function DiffPanelToolbar(props: DiffPanelToolbarProps) {
+  const { t, formatLocale } = useTranslation();
+
+  const [visibleTurnCount, setVisibleTurnCount] = useState(INITIAL_VISIBLE_TURN_COUNT);
+  const scopePickerLabel = resolveDiffPanelPickerLabel(
+    props.viewSource,
+    props.turnScopeIntent,
+    props.compareRef,
+  );
+
+  let scopePickerIcon: ReactNode;
+  if (props.viewSource.kind === "turn") {
+    scopePickerIcon = <FaPlusMinus className="size-2.5 text-[var(--color-text-foreground)]" />;
+  } else {
+    scopePickerIcon = <ChangesIcon className={DIFF_PANEL_PICKER_ICON_CLASS_NAME} />;
+  }
+
+  const scopePickerCount =
+    props.viewSource.kind === "repo" ? props.scopeFileCounts[props.viewSource.scope] : undefined;
+
+  const scopePickerDescription = [
+    scopePickerLabel,
+    scopePickerCount ? `${scopePickerCount} files` : null,
+    props.activeStats ? `+${props.activeStats.additions} -${props.activeStats.deletions}` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const selectedTurnSummary = props.selectedTurnId
+    ? props.orderedTurnDiffSummaries.find((summary) => summary.turnId === props.selectedTurnId)
+    : undefined;
+  const turnsMenuLabel =
+    props.viewSource.kind === "turn" && props.selectedTurnId === null
+      ? t("common:diff_allTurns")
+      : props.viewSource.kind === "turn" && props.selectedTurnId
+        ? t("common:turn", {
+            value0: selectedTurnSummary
+              ? resolveTurnNumber(selectedTurnSummary, props.inferredCheckpointTurnCountByTurnId)
+              : (props.inferredCheckpointTurnCountByTurnId[props.selectedTurnId] ?? "?"),
+          })
+        : t("common:diff_turns");
+
+  const latestTurnId = props.orderedTurnDiffSummaries[0]?.turnId ?? null;
+  const scopePickerValue = resolveDiffPanelScopePickerValue({
+    viewSource: props.viewSource,
+    latestTurnId,
+    turnScopeIntent: props.turnScopeIntent,
+    compareRef: props.compareRef,
+  });
+  const selectedTurnIndex = props.selectedTurnId
+    ? props.orderedTurnDiffSummaries.findIndex((summary) => summary.turnId === props.selectedTurnId)
+    : -1;
+  const effectiveVisibleTurnCount = Math.max(
+    visibleTurnCount,
+    selectedTurnIndex >= 0 ? selectedTurnIndex + 1 : 0,
+  );
+  const visibleTurnSummaries = props.orderedTurnDiffSummaries.slice(0, effectiveVisibleTurnCount);
+  const hiddenTurnCount = Math.max(
+    0,
+    props.orderedTurnDiffSummaries.length - visibleTurnSummaries.length,
+  );
+  const nextVisibleTurnCount = Math.min(
+    props.orderedTurnDiffSummaries.length,
+    effectiveVisibleTurnCount + TURN_SHOW_MORE_INCREMENT,
+  );
+
+  return (
+    <div className="flex h-full w-full min-w-0 items-center gap-2 [-webkit-app-region:no-drag]">
+      <Menu
+        {...(props.scopePickerOpen !== undefined ? { open: props.scopePickerOpen } : {})}
+        onOpenChange={props.onScopePickerOpenChange}
+      >
+        <MenuTrigger
+          render={
+            <button
+              type="button"
+              className={cn(
+                DIFF_PANEL_PICKER_TRIGGER_CLASS_NAME,
+                "max-w-[min(70%,18rem)] overflow-hidden",
+              )}
+              aria-label={t("common:diff_chooseDiffSource")}
+              aria-description={scopePickerDescription}
+              title={scopePickerDescription}
+            />
+          }
+        >
+          <EnvironmentRowBody
+            compact
+            icon={scopePickerIcon}
+            label={<span className="truncate">{scopePickerLabel}</span>}
+            trailing={
+              <>
+                <ScopeCountBadge count={scopePickerCount} />
+                {props.activeStats ? (
+                  <DiffStat
+                    additions={props.activeStats.additions}
+                    deletions={props.activeStats.deletions}
+                    className="shrink-0 text-ui-sm font-medium"
+                  />
+                ) : null}
+                <EnvironmentRowChevron />
+              </>
+            }
+          />
+        </MenuTrigger>
+        <ComposerPickerMenuPopup
+          align="start"
+          side="bottom"
+          sideOffset={6}
+          className="w-56 min-w-56"
+        >
+          <MenuGroup>
+            <MenuGroupLabel>{t("common:diff_diffSource")}</MenuGroupLabel>
+            <MenuRadioGroup
+              value={scopePickerValue ?? ""}
+              onValueChange={(value) => {
+                if (value === "allTurns") {
+                  props.onSelectAllTurns();
+                  return;
+                }
+                if (value === "lastTurn") {
+                  props.onSelectLastTurn();
+                  return;
+                }
+                if (isDiffPanelRepoScopeOption(value)) {
+                  props.onSelectRepoScope(value);
+                }
+              }}
+            >
+              {DIFF_PANEL_PICKER_SCOPE_OPTIONS.map((scope) => (
+                <MenuRadioItem key={scope} value={scope}>
+                  {resolveScopeMenuIcon(scope)}
+                  <span className="min-w-0 flex-1 truncate">{REPO_DIFF_SCOPE_LABELS[scope]}</span>
+                  <ScopeCountBadge count={props.scopeFileCounts[scope]} />
+                </MenuRadioItem>
+              ))}
+              <MenuRadioItem value="allTurns">
+                <GitCommitIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />
+                <span className="min-w-0 flex-1 truncate">{t("common:diff_allTurns")}</span>
+              </MenuRadioItem>
+              <MenuRadioItem value="lastTurn">
+                {resolveScopeMenuIcon("lastTurn")}
+                <span className="min-w-0 flex-1 truncate">{t("common:diff_lastTurn")}</span>
+              </MenuRadioItem>
+            </MenuRadioGroup>
+          </MenuGroup>
+          <DiffPanelCompareRefMenuSection
+            cwd={props.activeCwd}
+            open={props.scopePickerOpen ?? false}
+            compareRef={props.compareRef}
+            scopeIsRef={props.viewSource.kind === "repo" && props.viewSource.scope === "ref"}
+            iconClassName={DIFF_PANEL_MENU_ICON_CLASS_NAME}
+            onSelectCompareRef={props.onSelectCompareRef}
+          />
+        </ComposerPickerMenuPopup>
+      </Menu>
+
+      {/* Keep actions visible and leave an icon-sized source picker when the dock is narrow. */}
+      <div className="ml-auto flex min-w-0 max-w-[calc(100%-2.5rem)] shrink-0 items-center gap-1.5">
+        <ButtonGroup label={t("common:diffTools")}>
+          <IconButton
+            variant="ghost"
+            size="icon-xs"
+            className={TOOLBAR_ICON_BUTTON_TONE_CLASS_NAME}
+            label={t("common:reloadDiff")}
+            title={t("common:reloadDiff")}
+            onClick={props.onReload}
+          >
+            <RefreshCwIcon className={cn("size-3.5", props.reloading && "animate-spin")} />
+          </IconButton>
+
+          <Menu>
+            <MenuTrigger
+              render={
+                <IconButton
+                  variant="ghost"
+                  size="icon-xs"
+                  className={TOOLBAR_ICON_BUTTON_TONE_CLASS_NAME}
+                  label={t("common:diff_viewOptions")}
+                  title={t("common:diff_viewOptions")}
+                >
+                  <EllipsisIcon className="size-3.5" />
+                </IconButton>
+              }
+            />
+            <ComposerPickerMenuPopup
+              align="end"
+              side="bottom"
+              sideOffset={6}
+              className="w-60 min-w-60"
+            >
+              <MenuGroup>
+                <MenuGroupLabel>{t("common:diff_view")}</MenuGroupLabel>
+                <MenuRadioGroup
+                  value={props.diffRenderMode}
+                  onValueChange={(value) => {
+                    if (value === "stacked" || value === "split") {
+                      props.onDiffRenderModeChange(value);
+                    }
+                  }}
+                >
+                  <MenuRadioItem value="stacked">
+                    <Rows3Icon className={DIFF_PANEL_PICKER_ICON_CLASS_NAME} />
+                    <span>{t("common:diff_stacked")}</span>
+                  </MenuRadioItem>
+                  <MenuRadioItem value="split">
+                    <Columns2Icon className={DIFF_PANEL_PICKER_ICON_CLASS_NAME} />
+                    <span>{t("common:diff_split")}</span>
+                  </MenuRadioItem>
+                </MenuRadioGroup>
+                <MenuCheckboxItem
+                  checked={props.diffIgnoreWhitespace}
+                  variant="switch"
+                  onCheckedChange={(checked) => {
+                    props.onDiffIgnoreWhitespaceChange(checked === true);
+                  }}
+                >
+                  {t("common:ignoreWhitespaceOnlyChanges")}
+                </MenuCheckboxItem>
+                <MenuCheckboxItem
+                  checked={props.diffWordWrap}
+                  variant="switch"
+                  onCheckedChange={(checked) => {
+                    props.onDiffWordWrapChange(checked === true);
+                  }}
+                >
+                  {t("common:diff_wrapLongLines")}
+                </MenuCheckboxItem>
+                <MenuCheckboxItem
+                  checked={props.changeMarkersEnabled}
+                  variant="switch"
+                  onCheckedChange={(checked) => {
+                    props.onChangeMarkersEnabledChange(checked === true);
+                  }}
+                >
+                  {t("common:changeMarkers")}
+                </MenuCheckboxItem>
+                {props.diffCopyText ? (
+                  <MenuItem
+                    onClick={() => {
+                      props.onCopyDiff();
+                    }}
+                  >
+                    <CopyIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />
+                    <span>{props.diffCopyLabel}</span>
+                  </MenuItem>
+                ) : null}
+                {props.renderableFiles.length > 0 ? (
+                  <MenuItem
+                    onClick={() => {
+                      props.onToggleCollapseAll();
+                    }}
+                  >
+                    <FolderIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />
+                    <span>
+                      {props.allFilesCollapsed
+                        ? t("common:diff_expandAllFiles")
+                        : t("common:diff_collapseAllFiles")}
+                    </span>
+                  </MenuItem>
+                ) : null}
+              </MenuGroup>
+            </ComposerPickerMenuPopup>
+          </Menu>
+
+          <DiffPanelChangeNavigationButtons
+            navigation={props.changeNavigation}
+            className={TOOLBAR_ICON_BUTTON_TONE_CLASS_NAME}
+          />
+
+          <DiffPanelFileJumpMenu
+            renderableFiles={props.renderableFiles}
+            selectedFilePath={props.selectedFilePath}
+            resolvedTheme={props.resolvedTheme}
+            onSelectFile={props.onSelectFile}
+          />
+
+          <IconButton
+            variant="ghost"
+            size="icon-xs"
+            className={cn(
+              TOOLBAR_ICON_BUTTON_TONE_CLASS_NAME,
+              props.fileTreeOpen && BUTTON_GROUP_ACTIVE_CLASS_NAME,
+            )}
+            aria-pressed={props.fileTreeOpen}
+            label={
+              props.fileTreeOpen ? t("common:diff_hideFileTree") : t("common:diff_showFileTree")
+            }
+            title={
+              props.fileTreeOpen ? t("common:diff_hideFileTree") : t("common:diff_showFileTree")
+            }
+            onClick={props.onToggleFileTree}
+          >
+            <FoldersIcon className="size-3.5" />
+          </IconButton>
+        </ButtonGroup>
+
+        {props.activeCwd ? (
+          <GitActionsControl
+            gitCwd={props.activeCwd}
+            activeThreadId={props.activeThreadId}
+            hideQuickActionLabel
+          />
+        ) : null}
+
+        <Menu>
+          <MenuTrigger
+            render={
+              <button
+                type="button"
+                className={cn(DIFF_PANEL_PICKER_TRIGGER_CLASS_NAME, "max-w-[min(32%,9.5rem)]")}
+                aria-label={t("common:diff_chooseTurnDiff")}
+                aria-description={turnsMenuLabel}
+                title={turnsMenuLabel}
+              />
+            }
+          >
+            <EnvironmentRowBody
+              compact
+              icon={<FaPlusMinus className="size-2.5 text-[var(--color-text-foreground)]" />}
+              label={<span className="truncate">{turnsMenuLabel}</span>}
+              trailing={<EnvironmentRowChevron />}
+            />
+          </MenuTrigger>
+          <ComposerPickerMenuPopup
+            align="end"
+            side="bottom"
+            sideOffset={6}
+            className="w-60 min-w-60"
+          >
+            <MenuGroup>
+              <MenuGroupLabel>{t("common:diff_turns")}</MenuGroupLabel>
+              <MenuRadioGroup
+                value={props.selectedTurnId ?? "all-turns"}
+                onValueChange={(value) => {
+                  if (value === "all-turns") {
+                    props.onSelectTurn(null);
+                    return;
+                  }
+                  props.onSelectTurn(value as TurnId);
+                }}
+              >
+                <MenuRadioItem value="all-turns">
+                  <GitCommitIcon className={DIFF_PANEL_MENU_ICON_CLASS_NAME} />
+                  <span className="min-w-0 flex-1 truncate">{t("common:diff_allTurns")}</span>
+                </MenuRadioItem>
+                {visibleTurnSummaries.map((summary) => (
+                  <MenuRadioItem key={summary.turnId} value={summary.turnId}>
+                    <FaPlusMinus className="size-2.5 shrink-0 text-muted-foreground" />
+                    <span className="min-w-0 flex-1 truncate">
+                      {t("common:diff_turn")}{" "}
+                      {resolveTurnNumber(summary, props.inferredCheckpointTurnCountByTurnId)}
+                    </span>
+                    <span className="shrink-0 text-ui-xs text-muted-foreground tabular-nums">
+                      {formatShortTimestamp(
+                        summary.completedAt,
+                        props.timestampFormat,
+                        formatLocale,
+                      )}
+                    </span>
+                  </MenuRadioItem>
+                ))}
+              </MenuRadioGroup>
+              {hiddenTurnCount > 0 ? (
+                <button
+                  type="button"
+                  className={cn(
+                    "mx-1 mt-1 flex h-8 w-[calc(100%-0.5rem)] cursor-pointer items-center justify-center rounded-md px-2 text-ui-sm",
+                    "text-muted-foreground",
+                    ELEVATED_HOVER_SURFACE_RAISED_TEXT_CLASS_NAME,
+                  )}
+                  onClick={() => setVisibleTurnCount(nextVisibleTurnCount)}
+                >
+                  {t("chat:show")} {Math.min(TURN_SHOW_MORE_INCREMENT, hiddenTurnCount)}{" "}
+                  {t("common:more2")}
+                </button>
+              ) : null}
+            </MenuGroup>
+          </ComposerPickerMenuPopup>
+        </Menu>
+
+        {props.onClosePanel ? <DiffPanelCloseButton onClose={props.onClosePanel} /> : null}
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,34 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node", "bun"],
+    "lib": ["ES2023", "esnext.disposable"],
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
+  },
+  // device-helper-smoke.ts spawns the helper through the server's sandbox
+  // wrapper so the smoke run exercises the same confinement the app applies.
+  // Duplicating that logic here is what would let the two drift.
+  // Packaged startup reuses the runtime's supervised process teardown rather
+  // than maintaining a second release-only process manager.
+  // computer-use-fixtures is the canary/fixture runner family: it crosses into
+  // apps/desktop and apps/server sources on purpose and is bundled by bun, so
+  // it stays outside the composite project list the way apps/desktop keeps
+  // src/cuaFixtures out of its own.
+  "include": [
+    "**/*.ts",
+    "../apps/server/src/device/helperSandbox.ts",
+    "../apps/server/src/persistence/AccountMigrationLineage.ts",
+    "../apps/server/src/platform/supervisedProcessTeardown.ts",
+    "../apps/server/src/platform/processTreeController.ts",
+    "../apps/server/src/platform/windowsProcessSnapshot.ts",
+    "../apps/desktop/src/desktopAppIcon.ts"
+  ],
+  "exclude": ["computer-use-fixtures"]
+}

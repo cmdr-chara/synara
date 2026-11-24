@@ -1,0 +1,3932 @@
+import { isDeepStrictEqual } from "node:util";
+import type {
+  OrchestrationCommand,
+  OrchestrationEvent,
+  OrchestrationReadModel,
+  OrchestrationThread,
+  OrchestrationThreadPullRequest,
+  OrchestrationThreadPullRequestLink,
+  ProjectKind,
+  ThreadGoalAchievement,
+} from "@synara/contracts";
+import {
+  ASYNC_USER_INPUT_ALREADY_ANSWERED,
+  formatAsyncUserInputResponse,
+} from "@synara/shared/asyncUserInput";
+import {
+  EventId,
+  MessageId,
+  MAX_PINNED_PROJECTS,
+  PROVIDER_SEND_TURN_MAX_INPUT_CHARS,
+  PINNED_MESSAGES_MAX_COUNT,
+  RESERVED_VOID_SPACE_ID,
+  SPACES_MAX_COUNT,
+  THREAD_GOAL_ACHIEVEMENTS_MAX_COUNT,
+  TurnId,
+  CommandId,
+} from "@synara/contracts";
+import {
+  deriveAssociatedWorktreeMetadata,
+  deriveAssociatedWorktreeMetadataPatch,
+  workspaceRootsEqual,
+} from "@synara/shared/threadWorkspace";
+import { collectSubagentDescendants } from "@synara/shared/threadHierarchy";
+import {
+  findPullRequestLink,
+  linkPullRequest,
+  pullRequestLinksEqual,
+  refreshPullRequestSnapshots,
+  resolveCurrentPullRequest,
+  syncDiscoveredPullRequest,
+  unlinkPullRequest,
+} from "@synara/shared/threadPullRequestLinks";
+import { isSidechatThread } from "@synara/shared/sidechatThread";
+import { autoRuntimeModeSelectionIssue } from "@synara/shared/runtimeMode";
+import { isGroupContainerKind } from "@synara/shared/projectContainers";
+import { providerSupportsNativeTurnSteering } from "@synara/shared/providerMetadata";
+import {
+  collectTailTurnIds,
+  resolveTailUserMessageEditTarget,
+} from "@synara/shared/conversationEdit";
+import { Effect } from "effect";
+
+import { computerActivationMetadata } from "../computer/computerActivation.ts";
+
+import {
+  NATIVE_REVIEW_ATTACHMENTS_UNSUPPORTED,
+  OrchestrationCommandInvariantError,
+  threadModelSelectionChangedDetail,
+} from "./Errors.ts";
+import { projectEvent } from "./projector.ts";
+import { withProjectRelocationEvents } from "./projectRelocation.ts";
+import { buildForkThreadTitle } from "./forkThreadTitle.ts";
+import { hasNativeHandoffMessages } from "./handoff.ts";
+import { resolveStableMessageTurnId } from "./messageTurnId.ts";
+import {
+  isExpiredSidechat,
+  latestSidechatActivityAt,
+  SIDECHAT_EXPIRED_EXECUTION_MESSAGE,
+  sidechatActivityInstantsEqual,
+} from "./sidechatLifecycle.ts";
+import {
+  findSpaceById,
+  isLegacyHomeChatContainerRow,
+  CHECKPOINT_REVERT_STARTED_ACTIVITY_KIND,
+  CHECKPOINT_REVERT_SUCCEEDED_ACTIVITY_KIND,
+  checkpointRevertActiveTurnDetail,
+  checkpointRevertDeleteInProgressDetail,
+  checkpointRevertInProgressDetail,
+  listActiveProjectsByWorkspaceRoot,
+  listActiveSpaces,
+  listThreadsByProjectId,
+  requireApprovalNotResponded,
+  requireProject,
+  requireProjectAbsent,
+  requireValidProjectFolders,
+  requireProjectHasNoThreads,
+  requireProjectWorkspaceRootAvailable,
+  requireSpace,
+  requireSpaceAbsent,
+  requireSpaceAssignableProject,
+  requireSpaceNameAvailable,
+  type SpaceAssignmentWorkspacePaths,
+  requireThread,
+  requireThreadAbsent,
+  requireThreadArchived,
+  requireThreadNotArchived,
+  threadHasInFlightTurn,
+  threadHasCheckpointRevertInProgress,
+  threadResumePreconditionDetail,
+  threadResumePreconditionViolation,
+} from "./commandInvariants.ts";
+
+/** A targeted Stop must not inherit ownership from a newer admitted send. */
+function isDifferentUsageLimitStopTarget(
+  thread: OrchestrationThread,
+  turnId: TurnId | undefined,
+): boolean {
+  if (turnId === undefined || thread.session?.activeTurnId === turnId) return false;
+  const recovery = thread.usageLimitRecovery;
+  if (recovery != null) {
+    return recovery.state === "resuming"
+      ? turnId !== recovery.resumedTurnId
+      : turnId !== recovery.turnId;
+  }
+  const source = thread.usageLimitRecoverySource;
+  return source?.admissionSequence !== undefined && turnId !== source.turnId;
+}
+
+const nowIso = () => new Date().toISOString();
+// Commands from the web client always carry an explicit assistantDeliveryMode;
+// this default only covers legacy/omitted fields. Streaming is the safe fallback:
+// an unrecorded preference should degrade to live output, never to a silent
+// buffer that withholds the whole assistant message until turn completion.
+const DEFAULT_ASSISTANT_DELIVERY_MODE = "streaming" as const;
+const GROUP_CONTAINER_PROJECT_KIND_SET = new Set<ProjectKind>(["studio", "group"]);
+// Kinds that claim exclusive ownership of a workspace root. Chat containers are excluded: they
+// use placeholder roots (e.g. the home dir) that legitimately coexist with real projects.
+const WORKSPACE_OWNING_PROJECT_KIND_SET = new Set<ProjectKind>(["project", "studio", "group"]);
+
+function validateSidechatExecutionAvailable(
+  command: Pick<OrchestrationCommand, "type">,
+  thread: Pick<OrchestrationThread, "sidechatExpiredAt">,
+) {
+  return isExpiredSidechat(thread)
+    ? Effect.fail(
+        new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: SIDECHAT_EXPIRED_EXECUTION_MESSAGE,
+        }),
+      )
+    : Effect.void;
+}
+
+// A standalone sidechat is a top-level, user-created thread in the project's own checkout:
+// no source thread to fork or return to, no parent, no worktree or branch switch.
+function validateStandaloneSidechatCreate(
+  command: Extract<OrchestrationCommand, { type: "thread.create" }>,
+) {
+  const conflict =
+    command.sourceThreadId !== undefined ||
+    command.sourceTurnId !== undefined ||
+    command.creationSource !== undefined ||
+    command.parentThreadId != null
+      ? "A standalone side chat cannot also have a source or parent thread."
+      : (command.envMode ?? "local") !== "local" || command.worktreePath != null
+        ? "A standalone side chat runs in the project's local checkout."
+        : null;
+  return conflict === null
+    ? Effect.void
+    : Effect.fail(
+        new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: conflict,
+        }),
+      );
+}
+
+function validateAutoRuntimeMode(
+  command: OrchestrationCommand,
+  modelSelection: OrchestrationThread["modelSelection"],
+  runtimeMode: OrchestrationThread["runtimeMode"],
+) {
+  const issue = autoRuntimeModeSelectionIssue({ runtimeMode, modelSelection });
+  return issue === null
+    ? Effect.void
+    : Effect.fail(
+        new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: issue,
+        }),
+      );
+}
+
+/**
+ * A same-thread provider handoff restarts the session on another provider or
+ * another account of the same one, so it shares Hand off's preconditions: no
+ * running turn, pending approval, or pending question the new session could
+ * not settle.
+ */
+function validateProviderHandoff(
+  command: Extract<OrchestrationCommand, { type: "thread.meta.update" }>,
+  thread: OrchestrationThread,
+) {
+  const target = command.modelSelection;
+  const detail =
+    target === undefined
+      ? "A provider handoff needs a target model selection."
+      : target.provider === thread.modelSelection.provider &&
+          (target.instanceId ?? target.provider) ===
+            (thread.modelSelection.instanceId ?? thread.modelSelection.provider)
+        ? `Thread '${command.threadId}' already runs on '${target.instanceId ?? target.provider}'.`
+        : thread.session?.status === "starting" || thread.session?.status === "running"
+          ? `Thread '${command.threadId}' still has a running turn.`
+          : thread.hasPendingApprovals || thread.hasPendingUserInput
+            ? `Thread '${command.threadId}' is waiting for an approval or an answer.`
+            : null;
+  return detail === null
+    ? Effect.void
+    : Effect.fail(new OrchestrationCommandInvariantError({ commandType: command.type, detail }));
+}
+
+const defaultMetadata: Omit<OrchestrationEvent, "sequence" | "type" | "payload"> = {
+  eventId: crypto.randomUUID() as OrchestrationEvent["eventId"],
+  aggregateKind: "thread",
+  aggregateId: "" as OrchestrationEvent["aggregateId"],
+  occurredAt: nowIso(),
+  commandId: null,
+  causationEventId: null,
+  correlationId: null,
+  metadata: {},
+};
+
+function withEventBase(
+  input: Pick<OrchestrationCommand, "commandId"> & {
+    readonly aggregateKind: OrchestrationEvent["aggregateKind"];
+    readonly aggregateId: OrchestrationEvent["aggregateId"];
+    readonly occurredAt: string;
+    readonly metadata?: OrchestrationEvent["metadata"];
+  },
+): Omit<OrchestrationEvent, "sequence" | "type" | "payload"> {
+  return {
+    ...defaultMetadata,
+    eventId: crypto.randomUUID() as OrchestrationEvent["eventId"],
+    aggregateKind: input.aggregateKind,
+    aggregateId: input.aggregateId,
+    occurredAt: input.occurredAt,
+    commandId: input.commandId,
+    correlationId: input.commandId,
+    metadata: input.metadata ?? {},
+  };
+}
+
+/**
+ * One `thread.meta-updated` carrying the full PR link list and the current PR derived from it,
+ * or no event when nothing changed (background refreshes must not append no-op events).
+ */
+function pullRequestLinksEvent(input: {
+  readonly command: Pick<OrchestrationCommand, "commandId">;
+  readonly thread: OrchestrationThread;
+  readonly nextLinks: ReadonlyArray<OrchestrationThreadPullRequestLink>;
+  readonly occurredAt: string;
+}): ReadonlyArray<Omit<OrchestrationEvent, "sequence">> {
+  if (pullRequestLinksEqual(input.thread.pullRequests, input.nextLinks)) return [];
+  return [
+    {
+      ...withEventBase({
+        aggregateKind: "thread",
+        aggregateId: input.thread.id,
+        occurredAt: input.occurredAt,
+        commandId: input.command.commandId,
+      }),
+      type: "thread.meta-updated",
+      payload: {
+        threadId: input.thread.id,
+        pullRequests: [...input.nextLinks],
+        lastKnownPr: resolveCurrentPullRequest(input.nextLinks),
+        updatedAt: input.occurredAt,
+      },
+    },
+  ];
+}
+
+/**
+ * Clients built before PR links still send `thread.meta.update { lastKnownPr }`. A PR is an
+ * explicit user link; `null` used to clear the single slot, so it now clears only the
+ * branch-managed links and keeps explicit ones.
+ */
+function legacyPullRequestPatch(
+  thread: OrchestrationThread,
+  lastKnownPr: OrchestrationThreadPullRequest | null | undefined,
+  occurredAt: string,
+): {
+  readonly pullRequests?: OrchestrationThreadPullRequestLink[];
+  readonly lastKnownPr?: OrchestrationThreadPullRequest | null;
+} {
+  if (lastKnownPr === undefined) return {};
+  const pullRequests =
+    lastKnownPr === null
+      ? syncDiscoveredPullRequest(thread.pullRequests, null, occurredAt)
+      : linkPullRequest(thread.pullRequests, {
+          pullRequest: lastKnownPr,
+          source: "user",
+          linkedAt: occurredAt,
+        });
+  return { pullRequests, lastKnownPr: resolveCurrentPullRequest(pullRequests) };
+}
+
+function userMessageUpsertEvent(input: {
+  readonly commandId: OrchestrationCommand["commandId"];
+  readonly threadId: OrchestrationThread["id"];
+  readonly message: OrchestrationThread["messages"][number];
+  readonly turnId: OrchestrationThread["messages"][number]["turnId"];
+  readonly startsNewTurn?: boolean;
+  readonly occurredAt: string;
+}): Omit<OrchestrationEvent, "sequence"> {
+  return {
+    ...withEventBase({
+      aggregateKind: "thread",
+      aggregateId: input.threadId,
+      occurredAt: input.occurredAt,
+      commandId: input.commandId,
+    }),
+    type: "thread.message-sent",
+    payload: {
+      threadId: input.threadId,
+      messageId: input.message.id,
+      role: "user",
+      text: input.message.text,
+      ...(input.message.attachments !== undefined
+        ? { attachments: input.message.attachments }
+        : {}),
+      ...(input.message.skills !== undefined ? { skills: input.message.skills } : {}),
+      ...(input.message.mentions !== undefined ? { mentions: input.message.mentions } : {}),
+      ...(input.message.dispatchMode !== undefined
+        ? { dispatchMode: input.message.dispatchMode }
+        : {}),
+      ...(input.message.dispatchOrigin !== undefined
+        ? { dispatchOrigin: input.message.dispatchOrigin }
+        : {}),
+      ...(input.startsNewTurn !== undefined
+        ? { startsNewTurn: input.startsNewTurn }
+        : input.message.startsNewTurn !== undefined
+          ? { startsNewTurn: input.message.startsNewTurn }
+          : {}),
+      turnId: input.turnId,
+      streaming: false,
+      source: input.message.source,
+      createdAt: input.message.createdAt,
+      updatedAt: input.message.updatedAt,
+    },
+  };
+}
+
+function checkpointRevertSucceededEvent(input: {
+  readonly commandId: OrchestrationCommand["commandId"];
+  readonly threadId: Extract<OrchestrationCommand, { type: "thread.revert.complete" }>["threadId"];
+  readonly turnCount: number;
+  readonly createdAt: string;
+  readonly causationEventId: OrchestrationEvent["eventId"];
+}): Omit<OrchestrationEvent, "sequence"> {
+  return {
+    ...withEventBase({
+      aggregateKind: "thread",
+      aggregateId: input.threadId,
+      occurredAt: input.createdAt,
+      commandId: input.commandId,
+    }),
+    causationEventId: input.causationEventId,
+    type: "thread.activity-appended",
+    payload: {
+      threadId: input.threadId,
+      activity: {
+        id: EventId.makeUnsafe(crypto.randomUUID()),
+        tone: "info",
+        kind: CHECKPOINT_REVERT_SUCCEEDED_ACTIVITY_KIND,
+        summary: "Checkpoint revert completed",
+        payload: { turnCount: input.turnCount },
+        turnId: null,
+        createdAt: input.createdAt,
+      },
+    },
+  };
+}
+
+function omitNullUserInputAnswers(
+  command: Extract<OrchestrationCommand, { type: "thread.user-input.respond" }>,
+) {
+  return Object.fromEntries(
+    Object.entries(command.answers).filter(([, answer]) => answer !== null && answer !== undefined),
+  );
+}
+
+function countPinnedProjects(
+  readModel: OrchestrationReadModel,
+  options?: { readonly excludeProjectIds?: ReadonlySet<string> },
+): number {
+  return readModel.projects.filter(
+    (project) =>
+      project.deletedAt === null &&
+      project.kind === "project" &&
+      project.isPinned === true &&
+      !options?.excludeProjectIds?.has(project.id),
+  ).length;
+}
+
+function validateProjectPinLimit(input: {
+  readonly command: Extract<
+    OrchestrationCommand,
+    { type: "project.create" | "project.meta.update" }
+  >;
+  readonly readModel: OrchestrationReadModel;
+  readonly projectId: OrchestrationEvent["aggregateId"];
+  readonly nextKind: ProjectKind;
+  readonly nextDeletedAt?: string | null;
+  readonly wasPinned?: boolean;
+  readonly staleProjectIds?: ReadonlySet<string>;
+}): Effect.Effect<void, OrchestrationCommandInvariantError> {
+  // The kind invariant must hold for the EFFECTIVE pin state, not only when the command sets
+  // isPinned: a kind-only update (e.g. project -> studio) would otherwise carry an existing pin
+  // onto a kind that can never be pinned.
+  const nextIsPinned = input.command.isPinned ?? input.wasPinned ?? false;
+  if (nextIsPinned && input.nextKind !== "project") {
+    return Effect.fail(
+      new OrchestrationCommandInvariantError({
+        commandType: input.command.type,
+        detail: `Only projects can be pinned.`,
+      }),
+    );
+  }
+
+  if (input.command.isPinned !== true) {
+    return Effect.void;
+  }
+
+  if (input.nextDeletedAt !== undefined && input.nextDeletedAt !== null) {
+    return Effect.fail(
+      new OrchestrationCommandInvariantError({
+        commandType: input.command.type,
+        detail: `Deleted project '${input.projectId}' cannot be pinned.`,
+      }),
+    );
+  }
+
+  if (input.wasPinned === true) {
+    return Effect.void;
+  }
+
+  const excludeProjectIds = new Set<string>([input.projectId, ...(input.staleProjectIds ?? [])]);
+  const pinnedProjectCount = countPinnedProjects(input.readModel, { excludeProjectIds });
+  if (pinnedProjectCount < MAX_PINNED_PROJECTS) {
+    return Effect.void;
+  }
+
+  return Effect.fail(
+    new OrchestrationCommandInvariantError({
+      commandType: input.command.type,
+      detail: `Only ${MAX_PINNED_PROJECTS} projects can be pinned at once.`,
+    }),
+  );
+}
+
+function deriveCommandAssociatedWorktreeMetadata(input: {
+  readonly branch: string | null;
+  readonly worktreePath: string | null;
+  readonly associatedWorktreePath?: string | null;
+  readonly associatedWorktreeBranch?: string | null;
+  readonly associatedWorktreeRef?: string | null;
+}) {
+  return deriveAssociatedWorktreeMetadata({
+    branch: input.branch,
+    worktreePath: input.worktreePath,
+    ...(input.associatedWorktreePath !== undefined
+      ? { associatedWorktreePath: input.associatedWorktreePath }
+      : {}),
+    ...(input.associatedWorktreeBranch !== undefined
+      ? { associatedWorktreeBranch: input.associatedWorktreeBranch }
+      : {}),
+    ...(input.associatedWorktreeRef !== undefined
+      ? { associatedWorktreeRef: input.associatedWorktreeRef }
+      : {}),
+  });
+}
+
+function deriveCommandAssociatedWorktreeMetadataPatch(input: {
+  readonly branch?: string | null;
+  readonly worktreePath?: string | null;
+  readonly associatedWorktreePath?: string | null;
+  readonly associatedWorktreeBranch?: string | null;
+  readonly associatedWorktreeRef?: string | null;
+}) {
+  return deriveAssociatedWorktreeMetadataPatch({
+    ...(input.branch !== undefined ? { branch: input.branch } : {}),
+    ...(input.worktreePath !== undefined ? { worktreePath: input.worktreePath } : {}),
+    ...(input.associatedWorktreePath !== undefined
+      ? { associatedWorktreePath: input.associatedWorktreePath }
+      : {}),
+    ...(input.associatedWorktreeBranch !== undefined
+      ? { associatedWorktreeBranch: input.associatedWorktreeBranch }
+      : {}),
+    ...(input.associatedWorktreeRef !== undefined
+      ? { associatedWorktreeRef: input.associatedWorktreeRef }
+      : {}),
+  });
+}
+
+type CreatedThreadWorkspaceCommand = Pick<
+  Extract<
+    OrchestrationCommand,
+    { type: "thread.create" | "thread.handoff.create" | "thread.fork.create" }
+  >,
+  | "envMode"
+  | "branch"
+  | "worktreePath"
+  | "workingDirectory"
+  | "associatedWorktreePath"
+  | "associatedWorktreeBranch"
+  | "associatedWorktreeRef"
+>;
+
+function resolveCreatedThreadWorkspaceMetadata(
+  projectKind: ProjectKind | undefined,
+  command: CreatedThreadWorkspaceCommand,
+) {
+  if (isGroupContainerKind(projectKind)) {
+    return {
+      envMode: "local" as const,
+      branch: null,
+      worktreePath: null,
+      // Backward compatibility: older Studio clients sent "Use a folder" through
+      // worktreePath. Preserve that folder while stripping its worktree semantics.
+      workingDirectory:
+        command.workingDirectory !== undefined ? command.workingDirectory : command.worktreePath,
+      associatedWorktreePath: null,
+      associatedWorktreeBranch: null,
+      associatedWorktreeRef: null,
+    };
+  }
+
+  return {
+    envMode: command.envMode,
+    branch: command.branch,
+    worktreePath: command.worktreePath,
+    workingDirectory: command.workingDirectory ?? null,
+    ...deriveCommandAssociatedWorktreeMetadata({
+      branch: command.branch,
+      worktreePath: command.worktreePath,
+      ...(command.associatedWorktreePath !== undefined
+        ? { associatedWorktreePath: command.associatedWorktreePath }
+        : {}),
+      ...(command.associatedWorktreeBranch !== undefined
+        ? { associatedWorktreeBranch: command.associatedWorktreeBranch }
+        : {}),
+      ...(command.associatedWorktreeRef !== undefined
+        ? { associatedWorktreeRef: command.associatedWorktreeRef }
+        : {}),
+    }),
+  };
+}
+
+/**
+ * Stamps authoritative goal timestamps for `thread.meta.update`. `goalAchieved`
+ * takes precedence over everything: it records a ThreadGoalAchievement (with
+ * pause-adjusted elapsed time, anchored to the thread's latest turn) and clears
+ * the goal in the same event. A goal change takes precedence over `goalPaused`
+ * in the same command: a newly set goal starts the pursuit clock, an edit of an
+ * existing goal keeps the running clock and pause state, and clearing resets
+ * everything. Pause freezes the clock at `goalPausedAt`; resume rebases
+ * `goalStartedAt` so the paused span is excluded from the elapsed time.
+ */
+function resolveThreadGoalPatch(
+  command: Extract<OrchestrationCommand, { type: "thread.meta.update" }>,
+  currentThread: OrchestrationThread,
+  occurredAt: string,
+): {
+  goal?: string;
+  goalStartedAt?: string | null;
+  goalPausedAt?: string | null;
+  goalAchievements?: readonly ThreadGoalAchievement[];
+} {
+  const activeGoal = (currentThread.goal ?? "").trim();
+  if (command.goalAchieved === true) {
+    if (activeGoal.length === 0) {
+      return {};
+    }
+    const startedMs = Date.parse(currentThread.goalStartedAt ?? "");
+    const pausedMs = Date.parse(currentThread.goalPausedAt ?? "");
+    const occurredMs = Date.parse(occurredAt);
+    const endMs = Number.isFinite(pausedMs) ? pausedMs : occurredMs;
+    const elapsedMs =
+      Number.isFinite(startedMs) && Number.isFinite(endMs) ? Math.max(0, endMs - startedMs) : null;
+    const achievement: ThreadGoalAchievement = {
+      goal: activeGoal,
+      achievedAt: occurredAt,
+      elapsedMs,
+      turnId: currentThread.latestTurn?.turnId ?? null,
+    };
+    return {
+      goal: "",
+      goalStartedAt: null,
+      goalPausedAt: null,
+      goalAchievements: [...(currentThread.goalAchievements ?? []), achievement].slice(
+        -THREAD_GOAL_ACHIEVEMENTS_MAX_COUNT,
+      ),
+    };
+  }
+  if (command.goal !== undefined) {
+    if (command.goal.trim().length === 0) {
+      return { goal: command.goal, goalStartedAt: null, goalPausedAt: null };
+    }
+    if (activeGoal.length > 0) {
+      return { goal: command.goal };
+    }
+    return { goal: command.goal, goalStartedAt: occurredAt, goalPausedAt: null };
+  }
+  if (command.goalPaused === undefined || activeGoal.length === 0) {
+    return {};
+  }
+  const pausedAt = currentThread.goalPausedAt ?? null;
+  if (command.goalPaused) {
+    return pausedAt === null ? { goalPausedAt: occurredAt } : {};
+  }
+  if (pausedAt === null) {
+    return {};
+  }
+  const startedMs = Date.parse(currentThread.goalStartedAt ?? "");
+  const pausedMs = Date.parse(pausedAt);
+  const occurredMs = Date.parse(occurredAt);
+  const rebasedStartedAt =
+    Number.isFinite(startedMs) && Number.isFinite(pausedMs) && Number.isFinite(occurredMs)
+      ? new Date(occurredMs - Math.max(0, pausedMs - startedMs)).toISOString()
+      : occurredAt;
+  return { goalStartedAt: rebasedStartedAt, goalPausedAt: null };
+}
+
+function resolveThreadWorkspaceMetadataPatch(
+  projectKind: ProjectKind | undefined,
+  command: Extract<OrchestrationCommand, { type: "thread.meta.update" }>,
+  currentThread: OrchestrationThread,
+) {
+  if (isGroupContainerKind(projectKind)) {
+    return {
+      envMode: "local" as const,
+      branch: null,
+      worktreePath: null,
+      workingDirectory:
+        command.workingDirectory !== undefined
+          ? command.workingDirectory
+          : command.worktreePath
+            ? command.worktreePath
+            : (currentThread.workingDirectory ?? currentThread.worktreePath),
+      associatedWorktreePath: null,
+      associatedWorktreeBranch: null,
+      associatedWorktreeRef: null,
+      createBranchFlowCompleted: false,
+    };
+  }
+
+  return {
+    ...(command.envMode !== undefined ? { envMode: command.envMode } : {}),
+    ...(command.branch !== undefined ? { branch: command.branch } : {}),
+    ...(command.worktreePath !== undefined ? { worktreePath: command.worktreePath } : {}),
+    ...(command.workingDirectory !== undefined
+      ? { workingDirectory: command.workingDirectory }
+      : {}),
+    ...deriveCommandAssociatedWorktreeMetadataPatch({
+      ...(command.branch !== undefined ? { branch: command.branch } : {}),
+      ...(command.worktreePath !== undefined ? { worktreePath: command.worktreePath } : {}),
+      ...(command.associatedWorktreePath !== undefined
+        ? { associatedWorktreePath: command.associatedWorktreePath }
+        : {}),
+      ...(command.associatedWorktreeBranch !== undefined
+        ? { associatedWorktreeBranch: command.associatedWorktreeBranch }
+        : {}),
+      ...(command.associatedWorktreeRef !== undefined
+        ? { associatedWorktreeRef: command.associatedWorktreeRef }
+        : {}),
+    }),
+    ...(command.createBranchFlowCompleted !== undefined
+      ? { createBranchFlowCompleted: command.createBranchFlowCompleted }
+      : {}),
+  };
+}
+
+function deriveConversationRollbackTarget(
+  messages: OrchestrationReadModel["threads"][number]["messages"],
+  messageId: string,
+): {
+  readonly role: OrchestrationReadModel["threads"][number]["messages"][number]["role"];
+  readonly removedTurnIds: ReadonlySet<string>;
+} | null {
+  const targetIndex = messages.findIndex((message) => message.id === messageId);
+  if (targetIndex < 0) {
+    return null;
+  }
+
+  return {
+    role: messages[targetIndex]!.role,
+    removedTurnIds: new Set(collectTailTurnIds({ messages, messageId })),
+  };
+}
+
+const decideCommand = Effect.fn("decideOrchestrationCommand")(function* ({
+  command,
+  readModel,
+  workspacePaths,
+}: {
+  readonly command: OrchestrationCommand;
+  readonly readModel: OrchestrationReadModel;
+  /** Reserved container roots; when provided, space assignment rejects legacy chat containers. */
+  readonly workspacePaths?: SpaceAssignmentWorkspacePaths | undefined;
+}): Effect.fn.Return<
+  Omit<OrchestrationEvent, "sequence"> | ReadonlyArray<Omit<OrchestrationEvent, "sequence">>,
+  OrchestrationCommandInvariantError
+> {
+  switch (command.type) {
+    case "thread.usage-limit.admit": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      if (
+        command.recoveryId !== undefined &&
+        (thread.usageLimitRecovery?.id !== command.recoveryId ||
+          thread.usageLimitRecovery.state !== "resuming" ||
+          thread.usageLimitRecovery.policyEpoch !== command.policyEpoch)
+      ) {
+        return usageLimitMetadataEvent(command, {});
+      }
+      const current = thread.usageLimitRecoverySource?.admissionSequence;
+      return usageLimitMetadataEvent(
+        command,
+        current !== undefined && current > command.admissionSequence
+          ? {}
+          : {
+              usageLimitRecoverySource: {
+                turnId: TurnId.makeUnsafe(`pending:${command.admissionSequence}`),
+                bindingKey: "admission",
+                admissionSequence: command.admissionSequence,
+                policyEpoch: command.policyEpoch,
+              },
+            },
+      );
+    }
+    case "thread.usage-limit.source": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      return usageLimitMetadataEvent(
+        command,
+        thread.session?.activeTurnId === command.source.turnId &&
+          (command.expectedBindingKey === undefined ||
+            thread.usageLimitRecoverySource?.bindingKey === command.expectedBindingKey)
+          ? { usageLimitRecoverySource: command.source }
+          : {},
+      );
+    }
+    case "thread.usage-limit.defer": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const recovery = thread.usageLimitRecovery;
+      const pausedAt = (thread.goal ?? "").trim() ? nowIso() : undefined;
+      return usageLimitMetadataEvent(
+        command,
+        recovery?.id === command.recoveryId &&
+          recovery.state === "resuming" &&
+          recovery.resumedTurnId === undefined
+          ? {
+              usageLimitRecovery: {
+                ...recovery,
+                state: "waiting",
+                ...(pausedAt
+                  ? { goalStartedAt: thread.goalStartedAt ?? null, goalPausedAt: pausedAt }
+                  : {}),
+              },
+              ...(pausedAt ? { goalPausedAt: pausedAt } : {}),
+            }
+          : {},
+      );
+    }
+    case "thread.usage-limit.started":
+    case "thread.usage-limit.finish": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const recovery = thread.usageLimitRecovery;
+      if (
+        !recovery ||
+        recovery.id !== command.recoveryId ||
+        recovery.state !== "resuming" ||
+        (recovery.resumedTurnId !== undefined && recovery.resumedTurnId !== command.turnId)
+      )
+        return usageLimitMetadataEvent(command, {});
+      return usageLimitMetadataEvent(command, {
+        usageLimitRecovery:
+          command.type === "thread.usage-limit.finish"
+            ? null
+            : { ...recovery, resumedTurnId: command.turnId },
+      });
+    }
+    case "thread.usage-limit.cancel-turn": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      if (
+        thread.latestTurn?.turnId !== command.sourceTurnId &&
+        thread.latestTurn?.turnId !== command.turnId &&
+        thread.session?.activeTurnId !== command.turnId
+      )
+        return usageLimitMetadataEvent(command, {});
+      const recovery = thread.usageLimitRecovery;
+      return usageLimitMetadataEvent(command, {
+        usageLimitRecoveryCancelledAt: nowIso(),
+        usageLimitRecoveryCancelledTurnId: command.turnId,
+        ...(recovery &&
+        (recovery.id === command.recoveryId ||
+          recovery.turnId === command.turnId ||
+          recovery.resumedTurnId === command.turnId)
+          ? {
+              usageLimitRecovery: null,
+              ...(recovery.goalPausedAt !== undefined &&
+              thread.goalPausedAt == null &&
+              thread.goal?.trim()
+                ? { goalPausedAt: nowIso() }
+                : {}),
+            }
+          : {}),
+      });
+    }
+    case "thread.usage-limit.cancel": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const matches =
+        command.recoveryId === undefined || thread.usageLimitRecovery?.id === command.recoveryId;
+      return usageLimitMetadataEvent(
+        command,
+        matches
+          ? {
+              usageLimitRecovery: null,
+              usageLimitRecoverySource: null,
+              usageLimitRecoveryCancelledAt: nowIso(),
+              usageLimitRecoveryCancelledTurnId:
+                thread.session?.activeTurnId ?? thread.latestTurn?.turnId ?? null,
+              ...(thread.usageLimitRecovery?.goalPausedAt !== undefined &&
+              thread.goalPausedAt == null &&
+              thread.goal?.trim()
+                ? { goalPausedAt: nowIso() }
+                : {}),
+            }
+          : {},
+      );
+    }
+    case "thread.usage-limit.schedule": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const recovery = command.recovery;
+      const latest = thread.latestTurn;
+      const resetMs = Date.parse(recovery.resetAt);
+      const cancelled =
+        thread.usageLimitRecoveryCancelledTurnId === recovery.turnId ||
+        (thread.usageLimitRecoveryCancelledTurnId == null &&
+          thread.usageLimitRecoveryCancelledAt != null &&
+          latest != null &&
+          latest.requestedAt <= thread.usageLimitRecoveryCancelledAt);
+      const source = thread.usageLimitRecoverySource;
+      if (
+        !source ||
+        source.bindingKey === "pending" ||
+        source.turnId !== recovery.turnId ||
+        source.bindingKey !== recovery.bindingKey ||
+        source.policyEpoch !== recovery.policyEpoch ||
+        !latest ||
+        latest.turnId !== recovery.turnId ||
+        latest.state !== "error" ||
+        cancelled ||
+        thread.archivedAt != null ||
+        thread.settledAt != null ||
+        thread.parentThreadId != null ||
+        thread.interactionMode === "plan" ||
+        isExpiredSidechat(thread) ||
+        thread.claudeCacheReview != null ||
+        !Number.isFinite(resetMs) ||
+        resetMs <= Date.parse(command.createdAt) ||
+        (thread.usageLimitRecoveryLastResetAt != null &&
+          resetMs <= Date.parse(thread.usageLimitRecoveryLastResetAt)) ||
+        thread.modelSelection.provider !== recovery.provider ||
+        (thread.modelSelection.instanceId ?? thread.modelSelection.provider) !==
+          recovery.providerInstanceId ||
+        thread.modelSelection.model !== recovery.model ||
+        ((thread.goal ?? "").trim() && thread.goalPausedAt != null)
+      ) {
+        return usageLimitMetadataEvent(command, {});
+      }
+      const pausedAt = (thread.goal ?? "").trim() ? nowIso() : undefined;
+      return usageLimitMetadataEvent(command, {
+        usageLimitRecovery: {
+          ...recovery,
+          state: "waiting",
+          ...(pausedAt
+            ? { goalStartedAt: thread.goalStartedAt ?? null, goalPausedAt: pausedAt }
+            : {}),
+        },
+        ...(pausedAt ? { goalPausedAt: pausedAt } : {}),
+      });
+    }
+    case "thread.usage-limit.resume": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const recovery = thread.usageLimitRecovery;
+      if (!recovery || recovery.id !== command.recoveryId || recovery.state === "resuming")
+        return usageLimitMetadataEvent(command, {});
+      if (
+        recovery.policyEpoch !== command.policyEpoch ||
+        thread.archivedAt != null ||
+        thread.settledAt != null ||
+        thread.parentThreadId != null ||
+        isExpiredSidechat(thread) ||
+        thread.latestTurn?.turnId !== recovery.turnId ||
+        thread.latestTurn.state !== "error" ||
+        thread.modelSelection.provider !== recovery.provider ||
+        (thread.modelSelection.instanceId ?? thread.modelSelection.provider) !==
+          recovery.providerInstanceId ||
+        thread.modelSelection.model !== recovery.model ||
+        (recovery.goalPausedAt !== undefined &&
+          (thread.goalPausedAt !== recovery.goalPausedAt ||
+            (thread.goalStartedAt ?? null) !== recovery.goalStartedAt))
+      ) {
+        return usageLimitMetadataEvent(command, { usageLimitRecovery: null });
+      }
+      if (
+        Date.parse(recovery.resetAt) > Date.now() ||
+        threadHasInFlightTurn(thread) ||
+        thread.hasPendingApprovals ||
+        thread.hasPendingUserInput ||
+        thread.claudeCacheReview != null ||
+        threadHasCheckpointRevertInProgress(thread) ||
+        thread.interactionMode === "plan" ||
+        (thread.snoozedUntil != null && Date.parse(thread.snoozedUntil) > Date.now())
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Usage-limit recovery is not ready.",
+        });
+      }
+      const goalPatch =
+        recovery.goalPausedAt !== undefined
+          ? resolveThreadGoalPatch(
+              {
+                type: "thread.meta.update",
+                commandId: command.commandId,
+                threadId: thread.id,
+                goalPaused: false,
+              },
+              thread,
+              nowIso(),
+            )
+          : {};
+      const nextRecovery = { ...recovery, state: "resuming" as const };
+      return [
+        usageLimitMetadataEvent(command, {
+          usageLimitRecovery: nextRecovery,
+          usageLimitRecoveryLastResetAt: recovery.resetAt,
+          ...goalPatch,
+        }),
+        {
+          ...withEventBase({
+            aggregateKind: "thread",
+            aggregateId: thread.id,
+            occurredAt: command.createdAt,
+            commandId: command.commandId,
+          }),
+          type: "thread.goal-continuation-requested",
+          payload: {
+            threadId: thread.id,
+            goalStartedAt: goalPatch.goalStartedAt ?? thread.goalStartedAt ?? null,
+            trigger: "turn-completed",
+            sourceTurnId: recovery.turnId,
+            usageLimitRecovery: nextRecovery,
+            createdAt: command.createdAt,
+          },
+        },
+      ];
+    }
+
+    case "space.create": {
+      yield* requireSpaceAbsent({ readModel, command, spaceId: command.spaceId });
+      if (command.spaceId === RESERVED_VOID_SPACE_ID) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "The reserved Void identity cannot be used for a custom space.",
+        });
+      }
+      yield* requireSpaceNameAvailable({ readModel, command, name: command.name });
+      const activeSpaces = listActiveSpaces(readModel);
+      if (activeSpaces.length >= SPACES_MAX_COUNT) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `A maximum of ${SPACES_MAX_COUNT} custom spaces is supported.`,
+        });
+      }
+      const sortOrder = activeSpaces.reduce(
+        (maximum, space) => Math.max(maximum, space.sortOrder + 1),
+        0,
+      );
+      return {
+        ...withEventBase({
+          aggregateKind: "space",
+          aggregateId: command.spaceId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "space.created",
+        payload: {
+          spaceId: command.spaceId,
+          name: command.name,
+          icon: command.icon,
+          sortOrder,
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+    }
+
+    case "space.meta.update": {
+      const existingSpace = yield* requireSpace({ readModel, command, spaceId: command.spaceId });
+      // Fields equal to the current value are not changes: a Save with nothing edited (or a
+      // rename that resends the icon) must not append an event or bump updatedAt.
+      const nextName =
+        command.name !== undefined && command.name !== existingSpace.name
+          ? command.name
+          : undefined;
+      const nextIcon =
+        command.icon !== undefined && command.icon !== existingSpace.icon
+          ? command.icon
+          : undefined;
+      if (nextName === undefined && nextIcon === undefined) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Space metadata update must change a name or icon.",
+        });
+      }
+      if (nextName !== undefined) {
+        yield* requireSpaceNameAvailable({
+          readModel,
+          command,
+          name: nextName,
+          excludeSpaceId: command.spaceId,
+        });
+      }
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "space",
+          aggregateId: command.spaceId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "space.meta-updated",
+        payload: {
+          spaceId: command.spaceId,
+          ...(nextName !== undefined ? { name: nextName } : {}),
+          ...(nextIcon !== undefined ? { icon: nextIcon } : {}),
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "space.reorder": {
+      yield* requireSpace({ readModel, command, spaceId: command.spaceId });
+      const activeSpaceIds = listActiveSpaces(readModel).map((space) => space.id);
+      const orderedSpaceIds = command.orderedSpaceIds;
+      const orderedSpaceIdSet = new Set(orderedSpaceIds);
+      const hasExactActiveSet =
+        orderedSpaceIds.length === activeSpaceIds.length &&
+        orderedSpaceIdSet.size === activeSpaceIds.length &&
+        activeSpaceIds.every((spaceId) => orderedSpaceIdSet.has(spaceId));
+      if (!hasExactActiveSet) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Space order must contain every active custom space exactly once.",
+        });
+      }
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "space",
+          aggregateId: command.spaceId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "space.order-updated",
+        payload: {
+          spaceId: command.spaceId,
+          orderedSpaceIds,
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "space.delete": {
+      yield* requireSpace({ readModel, command, spaceId: command.spaceId });
+      const occurredAt = nowIso();
+      // The deletion event owns the re-filing invariant. Projectors clear every matching
+      // assignment in one pass, avoiding an unbounded event fanout for large spaces while
+      // still including soft-deleted projects that a recovery flow could resurrect.
+      return {
+        ...withEventBase({
+          aggregateKind: "space",
+          aggregateId: command.spaceId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "space.deleted",
+        payload: { spaceId: command.spaceId, deletedAt: occurredAt },
+      };
+    }
+
+    case "space.projects.assign": {
+      yield* requireSpace({ readModel, command, spaceId: command.spaceId });
+      const occurredAt = nowIso();
+      const seenProjectIds = new Set<string>();
+      const events: Array<Omit<OrchestrationEvent, "sequence">> = [];
+      for (const projectId of command.projectIds) {
+        if (seenProjectIds.has(projectId)) continue;
+        seenProjectIds.add(projectId);
+        const project = yield* requireProject({ readModel, command, projectId });
+        // Already-filed and concurrently-deleted projects are settled, not errors: the
+        // batch stays atomic for real failures without rejecting a raced retry.
+        if (project.deletedAt !== null || project.spaceId === command.spaceId) continue;
+        if ((project.kind ?? "project") !== "project") {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: "Only ordinary projects can be assigned to a space.",
+          });
+        }
+        yield* requireSpaceAssignableProject({
+          command,
+          projectTitle: project.title,
+          projectWorkspaceRoot: project.workspaceRoot,
+          workspacePaths,
+        });
+        events.push({
+          ...withEventBase({
+            aggregateKind: "project",
+            aggregateId: project.id,
+            occurredAt,
+            commandId: command.commandId,
+          }),
+          type: "project.meta-updated" as const,
+          payload: {
+            projectId: project.id,
+            spaceId: command.spaceId,
+            updatedAt: occurredAt,
+          },
+        });
+      }
+      if (events.length === 0) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "None of the selected projects need to be assigned to this space.",
+        });
+      }
+      return events;
+    }
+
+    case "project.create": {
+      yield* requireProjectAbsent({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      const events: Array<Omit<OrchestrationEvent, "sequence">> = [];
+      const staleProjects: Array<OrchestrationReadModel["projects"][number]> = [];
+      const nextProjectKind = command.kind ?? "project";
+      const additionalFolders = command.additionalFolders ?? [];
+      yield* requireValidProjectFolders({
+        command,
+        kind: nextProjectKind,
+        workspaceRoot: command.workspaceRoot,
+        additionalFolders,
+      });
+      if (nextProjectKind === "project") {
+        // The app-managed Studio container owns its root exclusively and is never retired here:
+        // silently deleting it would orphan Studio threads, so adding its folder as a project
+        // is rejected outright.
+        const existingStudioProject = listActiveProjectsByWorkspaceRoot(
+          readModel,
+          command.workspaceRoot,
+          { kinds: GROUP_CONTAINER_PROJECT_KIND_SET },
+        )[0];
+        if (existingStudioProject) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: `Project '${existingStudioProject.id}' already uses workspace root '${existingStudioProject.workspaceRoot}'.`,
+          });
+        }
+        const existingProjects = listActiveProjectsByWorkspaceRoot(
+          readModel,
+          command.workspaceRoot,
+        );
+        for (const existingProject of existingProjects) {
+          const remainingThreads = listThreadsByProjectId(readModel, existingProject.id).filter(
+            (thread) => thread.deletedAt === null,
+          );
+          if (remainingThreads.length > 0 || command.preserveExistingProject) {
+            return yield* new OrchestrationCommandInvariantError({
+              commandType: command.type,
+              detail: `Project '${existingProject.id}' already uses workspace root '${existingProject.workspaceRoot}'.`,
+            });
+          }
+          staleProjects.push(existingProject);
+        }
+
+        for (const staleProject of staleProjects) {
+          // A removed folder can leave an active project shell with no live threads.
+          // Retire that stale shell so re-adding the same folder creates a fresh project.
+          events.push({
+            ...withEventBase({
+              aggregateKind: "project",
+              aggregateId: staleProject.id,
+              occurredAt: command.createdAt,
+              commandId: command.commandId,
+            }),
+            type: "project.deleted",
+            payload: {
+              projectId: staleProject.id,
+              deletedAt: command.createdAt,
+            },
+          });
+        }
+      }
+      if (isGroupContainerKind(nextProjectKind)) {
+        // Cross-kind on purpose: a regular project already using this root would otherwise
+        // coexist with the group container, breaking workspace-root-to-project uniqueness
+        // that shell snapshot mapping and duplicate recovery rely on.
+        const existingOwningProject = listActiveProjectsByWorkspaceRoot(
+          readModel,
+          command.workspaceRoot,
+          { kinds: WORKSPACE_OWNING_PROJECT_KIND_SET },
+        )[0];
+        if (existingOwningProject) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: `Project '${existingOwningProject.id}' already uses workspace root '${existingOwningProject.workspaceRoot}'.`,
+          });
+        }
+      }
+      yield* validateProjectPinLimit({
+        command,
+        readModel,
+        projectId: command.projectId,
+        nextKind: nextProjectKind,
+        staleProjectIds: new Set(staleProjects.map((project) => project.id)),
+      });
+
+      // Filing a new project into the requested space is best-effort: creation must never
+      // fail because the space raced a delete, so an unusable target degrades to Void.
+      const requestedSpace =
+        command.spaceId != null ? findSpaceById(readModel, command.spaceId) : undefined;
+      const creationSpaceId =
+        command.spaceId != null &&
+        nextProjectKind === "project" &&
+        requestedSpace !== undefined &&
+        requestedSpace.deletedAt === null &&
+        !isLegacyHomeChatContainerRow({
+          projectTitle: command.title,
+          projectWorkspaceRoot: command.workspaceRoot,
+          workspacePaths,
+        })
+          ? command.spaceId
+          : null;
+
+      events.push({
+        ...withEventBase({
+          aggregateKind: "project",
+          aggregateId: command.projectId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "project.created",
+        payload: {
+          projectId: command.projectId,
+          kind: nextProjectKind,
+          title: command.title,
+          workspaceRoot: command.workspaceRoot,
+          defaultModelSelection: command.defaultModelSelection ?? null,
+          scripts: [],
+          isPinned: command.isPinned,
+          spaceId: creationSpaceId,
+          additionalFolders,
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      });
+      return events.length === 1 ? events[0]! : events;
+    }
+
+    case "project.meta.update": {
+      const existingProject = yield* requireProject({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      const nextProjectKind = command.kind ?? existingProject.kind ?? "project";
+      const requestedSpaceId =
+        command.spaceId !== undefined
+          ? command.spaceId
+          : nextProjectKind !== "project" && existingProject.spaceId !== null
+            ? null
+            : undefined;
+      const effectiveSpaceId =
+        requestedSpaceId !== undefined ? requestedSpaceId : existingProject.spaceId;
+      const changedSpaceId =
+        requestedSpaceId !== undefined && requestedSpaceId !== existingProject.spaceId
+          ? requestedSpaceId
+          : undefined;
+      const hasOtherMetadataInput =
+        command.kind !== undefined ||
+        command.title !== undefined ||
+        command.workspaceRoot !== undefined ||
+        command.defaultModelSelection !== undefined ||
+        command.scripts !== undefined ||
+        command.isPinned !== undefined ||
+        command.additionalFolders !== undefined;
+      const isLegacyHomeChatContainer = isLegacyHomeChatContainerRow({
+        projectTitle: existingProject.title,
+        projectWorkspaceRoot: existingProject.workspaceRoot,
+        workspacePaths,
+      });
+      if (
+        command.title !== undefined &&
+        command.title !== existingProject.title &&
+        isLegacyHomeChatContainer
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "The legacy Chats container cannot be renamed.",
+        });
+      }
+      if (
+        command.workspaceRoot !== undefined &&
+        !workspaceRootsEqual(command.workspaceRoot, existingProject.workspaceRoot, {
+          platform: process.platform,
+        }) &&
+        isLegacyHomeChatContainer
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "The legacy Chats container workspace root cannot be changed.",
+        });
+      }
+      // Relocating the primary folder, editing the extra ones, or changing the kind must
+      // leave a valid folder set.
+      if (
+        command.workspaceRoot !== undefined ||
+        command.additionalFolders !== undefined ||
+        command.kind !== undefined
+      ) {
+        yield* requireValidProjectFolders({
+          command,
+          kind: nextProjectKind,
+          workspaceRoot: command.workspaceRoot ?? existingProject.workspaceRoot,
+          additionalFolders: command.additionalFolders ?? existingProject.additionalFolders ?? [],
+        });
+      }
+      if (effectiveSpaceId !== null) {
+        // Assignability is an invariant of the resulting row, not only of commands that
+        // explicitly set spaceId. Metadata-only updates must not turn an already-filed
+        // project into the legacy Home/Chats container while retaining its space.
+        yield* requireSpaceAssignableProject({
+          command,
+          projectTitle: command.title ?? existingProject.title,
+          projectWorkspaceRoot: command.workspaceRoot ?? existingProject.workspaceRoot,
+          workspacePaths,
+        });
+      }
+      if (command.spaceId !== undefined && command.spaceId !== null) {
+        if (existingProject.deletedAt !== null) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: "Deleted projects cannot be assigned to a space.",
+          });
+        }
+        if (nextProjectKind !== "project") {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: "Only ordinary projects can be assigned to a space.",
+          });
+        }
+        yield* requireSpace({ readModel, command, spaceId: command.spaceId });
+      }
+      if (
+        requestedSpaceId !== undefined &&
+        changedSpaceId === undefined &&
+        !hasOtherMetadataInput
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Project is already assigned to this space.",
+        });
+      }
+      // Ownership must hold for the project's *effective* root, not only when the root field is
+      // present on the command: a kind-only update (e.g. chat -> studio) would otherwise slip a
+      // second workspace-owning project onto a root that a project- or studio-kind row already
+      // claims, bypassing the same cross-kind rule project.create enforces.
+      const ownershipMayChange =
+        command.workspaceRoot !== undefined ||
+        (command.kind !== undefined && command.kind !== (existingProject.kind ?? "project"));
+      if (ownershipMayChange && nextProjectKind !== "chat") {
+        yield* requireProjectWorkspaceRootAvailable({
+          readModel,
+          command,
+          workspaceRoot: command.workspaceRoot ?? existingProject.workspaceRoot,
+          excludeProjectId: command.projectId,
+          kinds: WORKSPACE_OWNING_PROJECT_KIND_SET,
+        });
+      }
+      yield* validateProjectPinLimit({
+        command,
+        readModel,
+        projectId: command.projectId,
+        nextKind: nextProjectKind,
+        nextDeletedAt: existingProject.deletedAt,
+        wasPinned: existingProject.isPinned === true,
+      });
+      const occurredAt = nowIso();
+      const event = {
+        ...withEventBase({
+          aggregateKind: "project",
+          aggregateId: command.projectId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "project.meta-updated",
+        payload: {
+          projectId: command.projectId,
+          ...(command.kind !== undefined ? { kind: command.kind } : {}),
+          ...(command.title !== undefined ? { title: command.title } : {}),
+          ...(command.workspaceRoot !== undefined ? { workspaceRoot: command.workspaceRoot } : {}),
+          ...(command.defaultModelSelection !== undefined
+            ? { defaultModelSelection: command.defaultModelSelection }
+            : {}),
+          ...(command.scripts !== undefined ? { scripts: command.scripts } : {}),
+          ...(command.isPinned !== undefined ? { isPinned: command.isPinned } : {}),
+          ...(changedSpaceId !== undefined ? { spaceId: changedSpaceId } : {}),
+          ...(command.additionalFolders !== undefined
+            ? { additionalFolders: command.additionalFolders }
+            : {}),
+          updatedAt: occurredAt,
+        },
+      } satisfies Omit<Extract<OrchestrationEvent, { type: "project.meta-updated" }>, "sequence">;
+      return yield* withProjectRelocationEvents({
+        event,
+        previousProject: existingProject,
+        readModel,
+      });
+    }
+
+    case "project.delete": {
+      yield* requireProject({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      yield* requireProjectHasNoThreads({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "project",
+          aggregateId: command.projectId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "project.deleted",
+        payload: {
+          projectId: command.projectId,
+          deletedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.create": {
+      const project = yield* requireProject({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      yield* requireThreadAbsent({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      // Provider-native threads mirror subagents the provider already runs;
+      // Synara never starts a session for them, so the Auto-mode capability
+      // check can only reject the projection (and durably poison the runtime
+      // journal replaying it), never prevent an unverified Auto session.
+      if (command.creationSource !== "provider_native") {
+        yield* validateAutoRuntimeMode(command, command.modelSelection, command.runtimeMode);
+      }
+      const sidechatContext = command.sidechatContext ?? null;
+      if (sidechatContext !== null) {
+        yield* validateStandaloneSidechatCreate(command);
+      }
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.created",
+        payload: {
+          threadId: command.threadId,
+          projectId: command.projectId,
+          title: command.title,
+          modelSelection: command.modelSelection,
+          runtimeMode: command.runtimeMode,
+          interactionMode: command.interactionMode,
+          ...resolveCreatedThreadWorkspaceMetadata(project.kind, command),
+          createBranchFlowCompleted: isGroupContainerKind(project.kind)
+            ? false
+            : command.createBranchFlowCompleted,
+          isPinned: command.isPinned,
+          parentThreadId: command.parentThreadId,
+          ...(command.creationSource !== undefined
+            ? {
+                creationSource: command.creationSource,
+                sourceThreadId: command.sourceThreadId ?? null,
+                sourceTurnId: command.sourceTurnId ?? null,
+                gatewayOperationId: command.gatewayOperationId ?? null,
+                gatewayOperationIndex: command.gatewayOperationIndex ?? null,
+              }
+            : {}),
+          subagentAgentId: command.subagentAgentId,
+          subagentNickname: command.subagentNickname,
+          subagentRole: command.subagentRole,
+          forkSourceThreadId: null,
+          // A standalone sidechat starts its inactivity clock at creation, like a forked one.
+          ...(sidechatContext !== null
+            ? {
+                sidechatContext,
+                sidechatLastActivityAt: command.createdAt,
+                sidechatExpiredAt: null,
+              }
+            : {}),
+          // A PR carried into a new thread comes from the PR checkout flow (or a draft that
+          // inherited it), so it is an explicit link that branch discovery must not drop.
+          lastKnownPr: command.lastKnownPr ?? null,
+          pullRequests: command.lastKnownPr
+            ? linkPullRequest([], {
+                pullRequest: command.lastKnownPr,
+                source: "checkout",
+                linkedAt: command.createdAt,
+              })
+            : [],
+          handoff: null,
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.handoff.create": {
+      const project = yield* requireProject({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.sourceThreadId,
+      });
+      yield* requireThreadAbsent({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateAutoRuntimeMode(command, command.modelSelection, command.runtimeMode);
+
+      const sourceThread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.sourceThreadId,
+      });
+      if (sourceThread.projectId !== command.projectId) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Source thread '${command.sourceThreadId}' belongs to a different project.`,
+        });
+      }
+      if (sourceThread.handoff !== null && !hasNativeHandoffMessages(sourceThread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Source thread '${command.sourceThreadId}' must contain at least one native chat message after handoff before it can be handed off again.`,
+        });
+      }
+
+      const createdEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.created",
+        payload: {
+          threadId: command.threadId,
+          projectId: command.projectId,
+          title: command.title,
+          modelSelection: command.modelSelection,
+          runtimeMode: command.runtimeMode,
+          interactionMode: command.interactionMode,
+          ...resolveCreatedThreadWorkspaceMetadata(project.kind, command),
+          createBranchFlowCompleted: isGroupContainerKind(project.kind)
+            ? false
+            : command.createBranchFlowCompleted,
+          isPinned: false,
+          parentThreadId: null,
+          subagentAgentId: null,
+          subagentNickname: null,
+          subagentRole: null,
+          forkSourceThreadId: null,
+          handoff: {
+            sourceThreadId: command.sourceThreadId,
+            sourceProvider: sourceThread.modelSelection.provider,
+            importedAt: command.createdAt,
+            bootstrapStatus: "pending",
+          },
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+
+      // Imported messages keep their source-thread timestamps so the transcript still
+      // reads chronologically. They are not activity in this thread: the retention
+      // clock floors on the new thread's own createdAt/updatedAt (see
+      // `threadRetention.getThreadLastActivityMs`) so a handoff of an old
+      // conversation is never born past the retention cutoff.
+      const importedMessageEvents: ReadonlyArray<Omit<OrchestrationEvent, "sequence">> =
+        command.importedMessages.map((message) => ({
+          ...withEventBase({
+            aggregateKind: "thread",
+            aggregateId: command.threadId,
+            occurredAt: command.createdAt,
+            commandId: command.commandId,
+          }),
+          type: "thread.message-sent",
+          payload: {
+            threadId: command.threadId,
+            messageId: message.messageId,
+            role: message.role,
+            text: message.text,
+            ...(message.attachments !== undefined ? { attachments: message.attachments } : {}),
+            turnId: null,
+            streaming: false,
+            source: "handoff-import",
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+          },
+        }));
+
+      return [createdEvent, ...importedMessageEvents];
+    }
+
+    case "thread.fork.create": {
+      const project = yield* requireProject({
+        readModel,
+        command,
+        projectId: command.projectId,
+      });
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.sourceThreadId,
+      });
+      yield* requireThreadAbsent({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateAutoRuntimeMode(command, command.modelSelection, command.runtimeMode);
+
+      const sourceThread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.sourceThreadId,
+      });
+      if (sourceThread.projectId !== command.projectId) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Source thread '${command.sourceThreadId}' belongs to a different project.`,
+        });
+      }
+
+      const createdEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.created",
+        payload: {
+          threadId: command.threadId,
+          projectId: command.projectId,
+          title: command.sidechatSourceThreadId
+            ? command.title
+            : buildForkThreadTitle(
+                sourceThread,
+                listThreadsByProjectId(readModel, command.projectId),
+              ),
+          modelSelection: command.modelSelection,
+          runtimeMode: command.runtimeMode,
+          interactionMode: command.interactionMode,
+          ...resolveCreatedThreadWorkspaceMetadata(project.kind, command),
+          createBranchFlowCompleted: isGroupContainerKind(project.kind)
+            ? false
+            : command.createBranchFlowCompleted,
+          isPinned: false,
+          parentThreadId: null,
+          subagentAgentId: null,
+          subagentNickname: null,
+          subagentRole: null,
+          forkSourceThreadId: command.sourceThreadId,
+          // Resolved against the source lazily, at the provider fork: an
+          // unknown or mid-turn point falls back to the imported transcript.
+          ...(command.throughMessageId !== undefined
+            ? { forkSourceMessageId: command.throughMessageId }
+            : {}),
+          sidechatSourceThreadId: command.sidechatSourceThreadId,
+          sidechatLastActivityAt: command.sidechatSourceThreadId ? command.createdAt : null,
+          sidechatExpiredAt: null,
+          handoff: null,
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+
+      // Imported messages keep their source-thread timestamps so the transcript still
+      // reads chronologically. They are not activity in this thread: the retention
+      // clock floors on the new thread's own createdAt/updatedAt (see
+      // `threadRetention.getThreadLastActivityMs`) so a fork of an old conversation
+      // is never born past the retention cutoff.
+      const importedMessageEvents: ReadonlyArray<Omit<OrchestrationEvent, "sequence">> =
+        command.importedMessages.map((message) => ({
+          ...withEventBase({
+            aggregateKind: "thread",
+            aggregateId: command.threadId,
+            occurredAt: command.createdAt,
+            commandId: command.commandId,
+          }),
+          type: "thread.message-sent",
+          payload: {
+            threadId: command.threadId,
+            messageId: message.messageId,
+            role: message.role,
+            text: message.text,
+            ...(message.attachments !== undefined ? { attachments: message.attachments } : {}),
+            turnId: null,
+            streaming: false,
+            source: "fork-import",
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+          },
+        }));
+
+      return [createdEvent, ...importedMessageEvents];
+    }
+
+    case "thread.sidechat.activity.record": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      if (!isSidechatThread(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Thread '${command.threadId}' is not a side chat.`,
+        });
+      }
+      if (thread.sidechatExpiredAt) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Side chat '${command.threadId}' already expired.`,
+        });
+      }
+      const lastActivityAt = latestSidechatActivityAt(
+        thread.sidechatLastActivityAt,
+        command.activityAt,
+      );
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: lastActivityAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.sidechat-activity-recorded",
+        payload: { threadId: command.threadId, lastActivityAt },
+      };
+    }
+
+    case "thread.sidechat.expire": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      if (!isSidechatThread(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Thread '${command.threadId}' is not a side chat.`,
+        });
+      }
+      if (thread.sidechatExpiredAt) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Side chat '${command.threadId}' already expired.`,
+        });
+      }
+      const lastActivityAt = thread.sidechatLastActivityAt ?? thread.updatedAt ?? thread.createdAt;
+      if (!sidechatActivityInstantsEqual(lastActivityAt, command.expectedLastActivityAt)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Side chat '${command.threadId}' became active before expiry.`,
+        });
+      }
+      if (
+        thread.latestTurn?.state === "running" ||
+        thread.session?.status === "starting" ||
+        thread.session?.status === "running"
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Side chat '${command.threadId}' still has a running turn.`,
+        });
+      }
+      if (thread.hasPendingApprovals || thread.hasPendingUserInput) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Side chat '${command.threadId}' still has a pending interaction.`,
+        });
+      }
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.expiredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.sidechat-expired",
+        payload: {
+          threadId: command.threadId,
+          expectedLastActivityAt: command.expectedLastActivityAt,
+          expiredAt: command.expiredAt,
+        },
+      };
+    }
+
+    case "thread.delete": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      if (threadHasCheckpointRevertInProgress(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertDeleteInProgressDetail(command.threadId),
+        });
+      }
+      const occurredAt = nowIso();
+      const deleteEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.deleted",
+        payload: {
+          threadId: command.threadId,
+          deletedAt: occurredAt,
+        },
+      };
+      return thread.claudeCacheReview
+        ? [
+            {
+              ...withEventBase({
+                aggregateKind: "thread",
+                aggregateId: command.threadId,
+                occurredAt,
+                commandId: command.commandId,
+              }),
+              type: "thread.claude-cache-set" as const,
+              payload: { threadId: command.threadId, review: null, updatedAt: occurredAt },
+            },
+            deleteEvent,
+          ]
+        : deleteEvent;
+    }
+
+    case "thread.archive": {
+      yield* requireThreadNotArchived({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const occurredAt = nowIso();
+      // Subagent threads are only reachable through their parent, so archiving a
+      // thread archives its still-active subagent subtree with it. The commanded
+      // thread goes last: the command receipt records the final event's aggregate.
+      const subagentThreadIds = collectSubagentDescendants(readModel.threads, command.threadId)
+        .filter((thread) => thread.deletedAt === null && (thread.archivedAt ?? null) === null)
+        .map((thread) => thread.id);
+      return [...subagentThreadIds, command.threadId].flatMap(
+        (threadId): Array<Omit<OrchestrationEvent, "sequence">> => {
+          const review = readModel.threads.find(
+            (entry) => entry.id === threadId,
+          )?.claudeCacheReview;
+          const events: Array<Omit<OrchestrationEvent, "sequence">> = [];
+          if (review) {
+            events.push({
+              ...withEventBase({
+                aggregateKind: "thread",
+                aggregateId: threadId,
+                occurredAt,
+                commandId: command.commandId,
+              }),
+              type: "thread.claude-cache-set",
+              payload: { threadId, review: null, updatedAt: occurredAt },
+            });
+          }
+          events.push({
+            ...withEventBase({
+              aggregateKind: "thread",
+              aggregateId: threadId,
+              occurredAt,
+              commandId: command.commandId,
+            }),
+            type: "thread.archived",
+            payload: {
+              threadId,
+              archivedAt: occurredAt,
+              updatedAt: occurredAt,
+            },
+          });
+          return events;
+        },
+      );
+    }
+
+    case "thread.unarchive": {
+      yield* requireThreadArchived({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const occurredAt = nowIso();
+      // Restoring a parent brings back the subagent subtree that was archived with
+      // it. The commanded thread goes last: the command receipt records the final
+      // event's aggregate.
+      const subagentThreadIds = collectSubagentDescendants(readModel.threads, command.threadId)
+        .filter((thread) => thread.deletedAt === null && (thread.archivedAt ?? null) !== null)
+        .map((thread) => thread.id);
+      return [...subagentThreadIds, command.threadId].map(
+        (threadId): Omit<OrchestrationEvent, "sequence"> => ({
+          ...withEventBase({
+            aggregateKind: "thread",
+            aggregateId: threadId,
+            occurredAt,
+            commandId: command.commandId,
+          }),
+          type: "thread.unarchived",
+          payload: {
+            threadId,
+            updatedAt: occurredAt,
+          },
+        }),
+      );
+    }
+
+    case "thread.meta.update": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      if (
+        command.expectedModelSelection !== undefined &&
+        !isDeepStrictEqual(thread.modelSelection, command.expectedModelSelection)
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: threadModelSelectionChangedDetail(command.threadId),
+        });
+      }
+      const expectedSnoozedUntil = command.expectedSnoozedUntil;
+      const expiresSnooze = expectedSnoozedUntil !== undefined;
+      if (command.snoozedUntil != null || expiresSnooze) {
+        yield* requireThreadNotArchived({ readModel, command, threadId: command.threadId });
+      }
+      if (expectedSnoozedUntil !== undefined) {
+        if (
+          command.snoozedUntil !== null ||
+          expectedSnoozedUntil === null ||
+          thread.snoozedUntil == null ||
+          Date.parse(thread.snoozedUntil) !== Date.parse(expectedSnoozedUntil)
+        ) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: `Thread '${command.threadId}' snooze deadline changed before expiry.`,
+          });
+        }
+        if (Date.parse(thread.snoozedUntil) > Date.now()) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: `Thread '${command.threadId}' snooze reminder is not due.`,
+          });
+        }
+      }
+      const project = readModel.projects.find((candidate) => candidate.id === thread.projectId);
+      // Provider-native threads: see thread.create — the selection mirrors the
+      // provider's own subagent, so the Auto-mode capability check doesn't apply.
+      if (command.modelSelection !== undefined && thread.creationSource !== "provider_native") {
+        yield* validateAutoRuntimeMode(command, command.modelSelection, thread.runtimeMode);
+      }
+      if (command.providerHandoff === true) {
+        yield* validateProviderHandoff(command, thread);
+      } else if (command.providerHandoffStopsBackgroundTasks === true) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Stopping background tasks is only allowed as part of a provider handoff.",
+        });
+      }
+      const occurredAt = nowIso();
+      const goalPatch = resolveThreadGoalPatch(command, thread, occurredAt);
+      // Recheck admission inside the serialized command: stale clients may now
+      // be editing an existing goal or a thread that has already started work.
+      const startsWithMessage =
+        command.goalStartBehavior === "start-with-message" &&
+        command.goal !== undefined &&
+        command.goal.trim().length > 0 &&
+        !thread.goal?.trim() &&
+        goalPatch.goalStartedAt != null &&
+        command.goalAchieved !== true &&
+        thread.archivedAt == null &&
+        thread.parentThreadId == null &&
+        thread.interactionMode !== "plan" &&
+        !threadHasInFlightTurn(thread) &&
+        !isExpiredSidechat(thread);
+      const metadataEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.meta-updated",
+        payload: {
+          threadId: command.threadId,
+          ...(command.title !== undefined ? { title: command.title } : {}),
+          ...(command.modelSelection !== undefined
+            ? { modelSelection: command.modelSelection }
+            : {}),
+          ...resolveThreadWorkspaceMetadataPatch(project?.kind, command, thread),
+          ...(command.isPinned !== undefined ? { isPinned: command.isPinned } : {}),
+          ...(command.isSettled !== undefined
+            ? { settledAt: command.isSettled ? occurredAt : null }
+            : {}),
+          ...(command.snoozedUntil !== undefined
+            ? { snoozedUntil: command.snoozedUntil, snoozeReminderAt: null }
+            : {}),
+          ...(expiresSnooze ? { snoozeReminderAt: occurredAt, settledAt: null } : {}),
+          ...(command.parentThreadId !== undefined
+            ? { parentThreadId: command.parentThreadId }
+            : {}),
+          ...(command.subagentAgentId !== undefined
+            ? { subagentAgentId: command.subagentAgentId }
+            : {}),
+          ...(command.subagentNickname !== undefined
+            ? { subagentNickname: command.subagentNickname }
+            : {}),
+          ...(command.subagentRole !== undefined ? { subagentRole: command.subagentRole } : {}),
+          ...(command.handoff !== undefined ? { handoff: command.handoff } : {}),
+          ...legacyPullRequestPatch(thread, command.lastKnownPr, occurredAt),
+          ...(command.pinnedMessages !== undefined
+            ? { pinnedMessages: command.pinnedMessages }
+            : {}),
+          ...(command.notes !== undefined ? { notes: command.notes } : {}),
+          ...(command.goalStartBehavior !== undefined
+            ? { goalStartBehavior: startsWithMessage ? "defer" : command.goalStartBehavior }
+            : {}),
+          ...goalPatch,
+          ...(command.providerHandoff === true
+            ? {
+                providerHandoff: {
+                  sourceModelSelection: thread.modelSelection,
+                  ...(command.providerHandoffStopsBackgroundTasks === true
+                    ? { stopBackgroundTasks: true }
+                    : {}),
+                },
+              }
+            : {}),
+          updatedAt: occurredAt,
+        },
+      };
+      if (!startsWithMessage) return metadataEvent;
+
+      // The engine has already materialized large objectives. The same bounded
+      // reference is recorded in the message; no second raw-goal payload is sent.
+      const goal = goalPatch.goal!;
+      const messageId = MessageId.makeUnsafe(`goal:${command.commandId}`);
+      const messageEvent = userMessageUpsertEvent({
+        commandId: command.commandId,
+        threadId: command.threadId,
+        message: {
+          id: messageId,
+          role: "user",
+          text: `/goal ${/^(?:clear|pause|resume|edit)$|^--(?:\s|$)/i.test(goal.trim()) ? "-- " : ""}${goal}`,
+          dispatchMode: "queue",
+          dispatchOrigin: "user",
+          turnId: null,
+          streaming: false,
+          source: "native",
+          createdAt: occurredAt,
+          updatedAt: occurredAt,
+        },
+        turnId: null,
+        startsNewTurn: true,
+        occurredAt,
+      });
+      return [
+        metadataEvent,
+        messageEvent,
+        {
+          ...withEventBase({
+            aggregateKind: "thread",
+            aggregateId: command.threadId,
+            occurredAt,
+            commandId: command.commandId,
+          }),
+          causationEventId: messageEvent.eventId,
+          type: "thread.turn-queued",
+          payload: {
+            threadId: command.threadId,
+            messageId,
+            initialGoalStartedAt: goalPatch.goalStartedAt!,
+            dispatchMode: "queue",
+            dispatchOrigin: "user",
+            runtimeMode: thread.runtimeMode,
+            interactionMode: thread.interactionMode,
+            createdAt: occurredAt,
+          },
+        },
+      ];
+    }
+
+    case "thread.pull-request.link": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      // Command-created links may arrive after the user has already unlinked the PR.
+      if (
+        command.source === "created" &&
+        findPullRequestLink(thread.pullRequests, command.pullRequest.url)?.dismissedAt != null
+      ) {
+        return [];
+      }
+      const occurredAt = nowIso();
+      return pullRequestLinksEvent({
+        command,
+        thread,
+        occurredAt,
+        nextLinks: linkPullRequest(thread.pullRequests, {
+          pullRequest: command.pullRequest,
+          source: command.source ?? "user",
+          linkedAt: occurredAt,
+        }),
+      });
+    }
+
+    case "thread.pull-request.unlink": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const occurredAt = nowIso();
+      const nextLinks = unlinkPullRequest(thread.pullRequests, command.url, occurredAt);
+      if (nextLinks === null) return [];
+      return pullRequestLinksEvent({ command, thread, occurredAt, nextLinks });
+    }
+
+    case "thread.pull-request.sync": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const occurredAt = nowIso();
+      let nextLinks = [...(thread.pullRequests ?? [])];
+      if (command.discovered !== undefined) {
+        nextLinks = syncDiscoveredPullRequest(nextLinks, command.discovered, occurredAt);
+      }
+      if (command.snapshots !== undefined) {
+        nextLinks = refreshPullRequestSnapshots(nextLinks, command.snapshots);
+      }
+      return pullRequestLinksEvent({ command, thread, occurredAt, nextLinks });
+    }
+
+    case "thread.pinned-message.add": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const existingPin = thread.pinnedMessages?.find((pin) => pin.messageId === command.messageId);
+      if (!existingPin && (thread.pinnedMessages?.length ?? 0) >= PINNED_MESSAGES_MAX_COUNT) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Thread '${command.threadId}' already has the maximum of ${PINNED_MESSAGES_MAX_COUNT} pinned messages.`,
+        });
+      }
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.pinned-message-added",
+        payload: {
+          threadId: command.threadId,
+          pin: existingPin ?? {
+            messageId: command.messageId,
+            label: null,
+            done: false,
+            pinnedAt: occurredAt,
+          },
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.pinned-message.remove": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.pinned-message-removed",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.pinned-message.done.set": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.pinned-message-done-set",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          done: command.done,
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.pinned-message.label.set": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.pinned-message-label-set",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          label: command.label,
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.runtime-mode.set": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateAutoRuntimeMode(command, thread.modelSelection, command.runtimeMode);
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.runtime-mode-set",
+        payload: {
+          threadId: command.threadId,
+          runtimeMode: command.runtimeMode,
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.interaction-mode.set": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const occurredAt = nowIso();
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.interaction-mode-set",
+        payload: {
+          threadId: command.threadId,
+          previousInteractionMode: thread.interactionMode,
+          interactionMode: command.interactionMode,
+          updatedAt: occurredAt,
+        },
+      };
+    }
+
+    case "thread.turn.start": {
+      const targetThread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, targetThread);
+      // Native reviews accept only their review target, never prompt attachments.
+      // Reject before message acceptance so callers can preserve and resend the draft.
+      if (command.reviewTarget !== undefined && command.message.attachments.length > 0) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: NATIVE_REVIEW_ATTACHMENTS_UNSUPPORTED,
+        });
+      }
+      if (command.resumePrecondition !== undefined) {
+        // Quit-resume continuations are only valid while the thread is exactly as
+        // it was recorded; checked here so it holds inside the serialized dispatch.
+        const violation = threadResumePreconditionViolation(
+          targetThread,
+          command.resumePrecondition,
+        );
+        if (violation !== null) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: threadResumePreconditionDetail(command.threadId, violation),
+          });
+        }
+      }
+      if (threadHasCheckpointRevertInProgress(targetThread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertInProgressDetail(command.threadId),
+        });
+      }
+      const sourceProposedPlan = command.sourceProposedPlan;
+      const questionResponse = command.asyncUserInputResponse;
+      const questionMessage = questionResponse
+        ? targetThread.messages.find((message) => message.id === questionResponse.messageId)
+        : undefined;
+      if (questionResponse) {
+        if (
+          !questionMessage?.asyncUserInput ||
+          questionMessage.role !== "assistant" ||
+          targetThread.modelSelection.provider !== "codex" ||
+          (targetThread.session?.providerName != null &&
+            targetThread.session.providerName !== "codex") ||
+          (command.modelSelection && command.modelSelection.provider !== "codex") ||
+          targetThread.parentThreadId !== null
+        ) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: "This asynchronous question is unavailable in this Codex thread.",
+          });
+        }
+        // Serialized command admission makes concurrent answers from multiple
+        // clients a single durable submission, even with different command ids.
+        if (questionMessage.asyncUserInput.response) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: ASYNC_USER_INPUT_ALREADY_ANSWERED,
+          });
+        }
+        if (
+          questionResponse.answers.length !== questionMessage.asyncUserInput.questions.length ||
+          targetThread.messages.some((message) => message.id === command.message.messageId)
+        ) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: "Provide one answer per question and a new response message id.",
+          });
+        }
+      }
+      const messageText =
+        questionResponse && questionMessage?.asyncUserInput
+          ? formatAsyncUserInputResponse(
+              questionMessage.asyncUserInput.questions,
+              questionResponse.answers,
+            )
+          : command.message.text;
+      if (messageText.length > PROVIDER_SEND_TURN_MAX_INPUT_CHARS) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "The question response exceeds the maximum message length.",
+        });
+      }
+      // A quit-resume command is planned just before commands are admitted.
+      // Respect settings changed before its serialized dispatch instead of
+      // replaying the planner's stale permission or interaction mode.
+      const runtimeMode =
+        command.resumePrecondition === undefined && !questionResponse
+          ? command.runtimeMode
+          : targetThread.runtimeMode;
+      const interactionMode =
+        command.resumePrecondition === undefined && !questionResponse
+          ? command.interactionMode
+          : targetThread.interactionMode;
+      yield* validateAutoRuntimeMode(
+        command,
+        command.modelSelection ?? targetThread.modelSelection,
+        runtimeMode,
+      );
+      const sourceThread = sourceProposedPlan
+        ? yield* requireThread({
+            readModel,
+            command,
+            threadId: sourceProposedPlan.threadId,
+          })
+        : null;
+      const sourcePlan =
+        sourceProposedPlan && sourceThread
+          ? sourceThread.proposedPlans.find((entry) => entry.id === sourceProposedPlan.planId)
+          : null;
+      const dispatchMode = questionResponse ? "steer" : (command.dispatchMode ?? "queue");
+      if (sourceProposedPlan && !sourcePlan) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Proposed plan '${sourceProposedPlan.planId}' does not exist on thread '${sourceProposedPlan.threadId}'.`,
+        });
+      }
+      if (sourceThread && sourceThread.projectId !== targetThread.projectId) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Proposed plan '${sourceProposedPlan?.planId}' belongs to thread '${sourceThread.id}' in a different project.`,
+        });
+      }
+      const activeProvider =
+        targetThread.session?.providerName ?? targetThread.modelSelection.provider;
+      const isThreadRunning =
+        targetThread.session?.status === "running" && targetThread.session.activeTurnId !== null;
+      if (
+        (targetThread.creationSource === "provider_native" ||
+          targetThread.id.startsWith("subagent:")) &&
+        (activeProvider === "codex" ||
+          !isThreadRunning ||
+          targetThread.latestTurn?.state !== "running" ||
+          targetThread.latestTurn.turnId !== targetThread.session?.activeTurnId)
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail:
+            activeProvider === "codex"
+              ? `Direct messages to Codex subagent '${targetThread.id}' are unavailable.`
+              : `Subagent '${targetThread.id}' is no longer running.`,
+        });
+      }
+      // Subagent threads never queue: their messages steer the running child task
+      // through the parent session, so deferring until the turn settles would
+      // deliver the message only after the subagent already finished.
+      // Steers ride the live turn natively only on providers whose runtime can
+      // inject mid-turn input; everywhere else they queue and interrupt below.
+      const shouldQueue =
+        targetThread.parentThreadId === null &&
+        (targetThread.claudeCacheReview != null ||
+          (isThreadRunning &&
+            (dispatchMode === "queue" || !providerSupportsNativeTurnSteering(activeProvider))));
+      const snoozeEvents: Array<Omit<OrchestrationEvent, "sequence">> =
+        (command.dispatchOrigin ?? "user") === "user" &&
+        (targetThread.snoozedUntil != null || targetThread.snoozeReminderAt != null)
+          ? [
+              {
+                ...withEventBase({
+                  aggregateKind: "thread",
+                  aggregateId: command.threadId,
+                  occurredAt: command.createdAt,
+                  commandId: command.commandId,
+                }),
+                type: "thread.meta-updated",
+                payload: {
+                  threadId: command.threadId,
+                  snoozedUntil: null,
+                  snoozeReminderAt: null,
+                  updatedAt: command.createdAt,
+                },
+              },
+            ]
+          : [];
+      const userMessageEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.message-sent",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.message.messageId,
+          role: "user",
+          text: messageText,
+          attachments: command.message.attachments,
+          ...(command.message.skills !== undefined ? { skills: command.message.skills } : {}),
+          ...(command.message.mentions !== undefined ? { mentions: command.message.mentions } : {}),
+          dispatchMode,
+          // Explicit "user" (not absent): edit-resends replay through a fresh
+          // server-side turn.start without an origin, and the projection
+          // upsert coalesces absent origins — a human resend of a message
+          // originally dispatched by an automation/agent must overwrite the
+          // stale origin instead of inheriting it.
+          dispatchOrigin: command.dispatchOrigin ?? "user",
+          startsNewTurn: dispatchMode !== "steer" || !isThreadRunning || shouldQueue,
+          turnId: null,
+          streaming: false,
+          source: questionResponse ? "async-user-input" : "native",
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+      const turnRequestPayload = {
+        threadId: command.threadId,
+        messageId: command.message.messageId,
+        ...(command.modelSelection !== undefined ? { modelSelection: command.modelSelection } : {}),
+        ...(command.providerOptions !== undefined
+          ? { providerOptions: command.providerOptions }
+          : {}),
+        ...(command.reviewTarget !== undefined ? { reviewTarget: command.reviewTarget } : {}),
+        ...computerActivationMetadata({ ...command, userMessageText: command.message.text }),
+        assistantDeliveryMode: command.assistantDeliveryMode ?? DEFAULT_ASSISTANT_DELIVERY_MODE,
+        dispatchMode,
+        dispatchOrigin: command.dispatchOrigin ?? "user",
+        runtimeMode,
+        interactionMode,
+        ...(sourceProposedPlan !== undefined ? { sourceProposedPlan } : {}),
+        createdAt: command.createdAt,
+      } as const;
+      const queuedEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        causationEventId: userMessageEvent.eventId,
+        type: shouldQueue ? "thread.turn-queued" : "thread.turn-start-requested",
+        payload: turnRequestPayload,
+      };
+      if (shouldQueue && dispatchMode === "steer" && targetThread.claudeCacheReview == null) {
+        return [
+          ...snoozeEvents,
+          userMessageEvent,
+          queuedEvent,
+          {
+            ...withEventBase({
+              aggregateKind: "thread",
+              aggregateId: command.threadId,
+              occurredAt: command.createdAt,
+              commandId: command.commandId,
+            }),
+            causationEventId: queuedEvent.eventId,
+            type: "thread.turn-interrupt-requested",
+            payload: {
+              threadId: command.threadId,
+              turnId: targetThread.session?.activeTurnId ?? undefined,
+              createdAt: command.createdAt,
+            },
+          },
+        ];
+      }
+      if (questionResponse && questionMessage?.asyncUserInput) {
+        return [
+          ...snoozeEvents,
+          {
+            ...withEventBase({
+              aggregateKind: "thread",
+              aggregateId: command.threadId,
+              occurredAt: command.createdAt,
+              commandId: command.commandId,
+            }),
+            type: "thread.async-user-input-answered",
+            payload: {
+              threadId: command.threadId,
+              messageId: questionMessage.id,
+              response: {
+                messageId: command.message.messageId,
+                answers: questionResponse.answers,
+              },
+            },
+          },
+          userMessageEvent,
+          queuedEvent,
+        ];
+      }
+      return [...snoozeEvents, userMessageEvent, queuedEvent];
+    }
+
+    case "thread.claude-cache.set": {
+      if (command.hold) {
+        const target = readModel.threads.find((thread) => thread.id === command.threadId);
+        if (
+          !target ||
+          target.deletedAt != null ||
+          target.archivedAt != null ||
+          isExpiredSidechat(target) ||
+          command.hold.session.threadId !== command.threadId ||
+          command.hold.session.status !== "ready" ||
+          (command.review !== null &&
+            (command.review.status !== "pending" ||
+              !target.messages.some(
+                (message) => message.id === command.review?.messageId && message.role === "user",
+              )))
+        )
+          return [];
+      }
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      if (
+        command.expectedReviewId !== undefined &&
+        (thread.claudeCacheReview?.reviewId ?? null) !== command.expectedReviewId
+      )
+        return [];
+      const reviewEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.claude-cache-set",
+        payload: {
+          threadId: command.threadId,
+          review: command.review,
+          updatedAt: command.createdAt,
+        },
+      };
+      return command.hold
+        ? [
+            reviewEvent,
+            {
+              ...withEventBase({
+                aggregateKind: "thread",
+                aggregateId: command.threadId,
+                occurredAt: command.createdAt,
+                commandId: command.commandId,
+              }),
+              type: "thread.session-set",
+              payload: { threadId: command.threadId, session: command.hold.session },
+            },
+          ]
+        : reviewEvent;
+    }
+
+    case "thread.claude-cache.compacted": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const review = thread.claudeCacheReview;
+      if (
+        !review ||
+        review.reviewId !== command.reviewId ||
+        (review.status !== "compacting" && review.status !== "uncertain") ||
+        review.compactionTurnId !== command.turnId ||
+        thread.archivedAt != null
+      )
+        return [];
+      const base = {
+        aggregateKind: "thread" as const,
+        aggregateId: command.threadId,
+        occurredAt: command.createdAt,
+        commandId: command.commandId,
+      };
+      return [
+        {
+          ...withEventBase(base),
+          type: "thread.claude-cache-set",
+          payload: {
+            threadId: command.threadId,
+            review: { ...review, status: "responding" as const },
+            updatedAt: command.createdAt,
+          },
+        },
+        {
+          ...withEventBase(base),
+          type: "thread.claude-cache-response-requested",
+          payload: {
+            threadId: command.threadId,
+            review,
+            decision: "continue" as const,
+            createdAt: command.createdAt,
+          },
+        },
+      ];
+    }
+
+    case "thread.claude-cache.respond": {
+      const thread = yield* requireThread({ readModel, command, threadId: command.threadId });
+      const review = thread.claudeCacheReview;
+      if (
+        !review ||
+        review.reviewId !== command.reviewId ||
+        review.messageId !== command.messageId ||
+        (review.status !== "pending" && review.status !== "failed")
+      )
+        return [];
+      const base = {
+        aggregateKind: "thread" as const,
+        aggregateId: command.threadId,
+        occurredAt: command.createdAt,
+        commandId: command.commandId,
+      };
+      return [
+        {
+          ...withEventBase(base),
+          type: "thread.claude-cache-set",
+          payload: {
+            threadId: command.threadId,
+            review: { ...review, status: "responding" as const, error: undefined },
+            updatedAt: command.createdAt,
+          },
+        },
+        {
+          ...withEventBase(base),
+          type: "thread.claude-cache-response-requested",
+          payload: {
+            threadId: command.threadId,
+            review,
+            decision: command.decision,
+            createdAt: command.createdAt,
+          },
+        },
+      ];
+    }
+
+    case "thread.turn.dispatch-queued": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, thread);
+      if (threadHasCheckpointRevertInProgress(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertInProgressDetail(command.threadId),
+        });
+      }
+      yield* validateAutoRuntimeMode(
+        command,
+        command.modelSelection ?? thread.modelSelection,
+        command.runtimeMode,
+      );
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.turn-start-requested",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          ...(command.initialGoalStartedAt !== undefined
+            ? { initialGoalStartedAt: command.initialGoalStartedAt }
+            : {}),
+          ...(command.modelSelection !== undefined
+            ? { modelSelection: command.modelSelection }
+            : {}),
+          ...(command.providerOptions !== undefined
+            ? { providerOptions: command.providerOptions }
+            : {}),
+          ...(command.reviewTarget !== undefined ? { reviewTarget: command.reviewTarget } : {}),
+          ...computerActivationMetadata(command),
+          assistantDeliveryMode: command.assistantDeliveryMode ?? DEFAULT_ASSISTANT_DELIVERY_MODE,
+          dispatchMode: command.dispatchMode ?? "queue",
+          dispatchOrigin: command.dispatchOrigin ?? "user",
+          runtimeMode: command.runtimeMode,
+          interactionMode: command.interactionMode,
+          ...(command.sourceProposedPlan !== undefined
+            ? { sourceProposedPlan: command.sourceProposedPlan }
+            : {}),
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.turn.interrupt": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const interruptEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.turn-interrupt-requested",
+        payload: {
+          threadId: command.threadId,
+          ...(command.turnId !== undefined ? { turnId: command.turnId } : {}),
+          ...(command.requestedBy !== undefined ? { requestedBy: command.requestedBy } : {}),
+          createdAt: command.createdAt,
+        },
+      };
+      if (
+        (thread.goal ?? "").trim().length === 0 ||
+        thread.goalPausedAt != null ||
+        isDifferentUsageLimitStopTarget(thread, command.turnId)
+      ) {
+        return interruptEvent;
+      }
+
+      const pausedAt = nowIso();
+      const pauseEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: pausedAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.meta-updated",
+        payload: {
+          threadId: command.threadId,
+          goalPausedAt: pausedAt,
+          updatedAt: pausedAt,
+        },
+      };
+      return [
+        pauseEvent,
+        {
+          ...interruptEvent,
+          causationEventId: pauseEvent.eventId,
+        },
+      ];
+    }
+
+    case "thread.task.stop": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.task-stop-requested",
+        payload: {
+          threadId: command.threadId,
+          taskId: command.taskId,
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.task.background": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.task-background-requested",
+        payload: {
+          threadId: command.threadId,
+          toolUseId: command.toolUseId,
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.approval.respond": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, thread);
+      yield* requireApprovalNotResponded({
+        readModel,
+        command,
+        threadId: command.threadId,
+        requestId: command.requestId,
+        ...(command.lifecycleGeneration !== undefined
+          ? { lifecycleGeneration: command.lifecycleGeneration }
+          : {}),
+      });
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+          metadata: {
+            requestId: command.requestId,
+          },
+        }),
+        type: "thread.approval-response-requested",
+        payload: {
+          threadId: command.threadId,
+          requestId: command.requestId,
+          ...(command.lifecycleGeneration !== undefined
+            ? { lifecycleGeneration: command.lifecycleGeneration }
+            : {}),
+          decision: command.decision,
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.user-input.respond": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, thread);
+      const answers = omitNullUserInputAnswers(command);
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+          metadata: {
+            requestId: command.requestId,
+          },
+        }),
+        type: "thread.user-input-response-requested",
+        payload: {
+          threadId: command.threadId,
+          requestId: command.requestId,
+          ...(command.lifecycleGeneration !== undefined
+            ? { lifecycleGeneration: command.lifecycleGeneration }
+            : {}),
+          answers,
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.checkpoint.revert": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      if (threadHasInFlightTurn(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertActiveTurnDetail(command.threadId),
+        });
+      }
+      if (threadHasCheckpointRevertInProgress(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertInProgressDetail(command.threadId),
+        });
+      }
+      const startedEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.activity-appended",
+        payload: {
+          threadId: command.threadId,
+          activity: {
+            id: EventId.makeUnsafe(crypto.randomUUID()),
+            tone: "info",
+            kind: CHECKPOINT_REVERT_STARTED_ACTIVITY_KIND,
+            summary: "Checkpoint revert started",
+            payload: {
+              turnCount: command.turnCount,
+              scope: command.scope ?? "thread",
+            },
+            turnId: null,
+            createdAt: command.createdAt,
+          },
+        },
+      };
+      const requestedEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.checkpoint-revert-requested",
+        payload: {
+          threadId: command.threadId,
+          turnCount: command.turnCount,
+          scope: command.scope ?? "thread",
+          createdAt: command.createdAt,
+        },
+      };
+      return [startedEvent, requestedEvent];
+    }
+
+    case "thread.conversation.rollback": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      if (threadHasCheckpointRevertInProgress(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertInProgressDetail(command.threadId),
+        });
+      }
+      const rollbackTarget = deriveConversationRollbackTarget(thread.messages, command.messageId);
+      if (!rollbackTarget || rollbackTarget.role !== "user") {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Conversation rollback must target an existing user message.",
+        });
+      }
+      if (command.numTurns <= 0 || rollbackTarget.removedTurnIds.size !== command.numTurns) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Conversation rollback requested ${command.numTurns} turn(s), but target message '${command.messageId}' would remove ${rollbackTarget.removedTurnIds.size} turn(s).`,
+        });
+      }
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.conversation-rollback-requested",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          numTurns: command.numTurns,
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.message.edit-and-resend": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, thread);
+      if (threadHasCheckpointRevertInProgress(thread)) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: checkpointRevertInProgressDetail(command.threadId),
+        });
+      }
+      yield* validateAutoRuntimeMode(
+        command,
+        command.modelSelection ?? thread.modelSelection,
+        command.runtimeMode,
+      );
+      const editTarget = resolveTailUserMessageEditTarget({
+        messages: thread.messages,
+        messageId: command.messageId,
+        activeTurnId:
+          thread.session?.status === "running" ? (thread.session.activeTurnId ?? null) : null,
+      });
+      if (!editTarget.editable) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Only the latest rollbackable user message can be edited and resent (${editTarget.reason}).`,
+        });
+      }
+      const requestedEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.message-edit-resend-requested",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          text: command.text,
+          rollbackTurnCount: editTarget.rollbackTurnCount,
+          removedTurnIds: editTarget.removedTurnIds.map((turnId) => TurnId.makeUnsafe(turnId)),
+          ...(command.modelSelection !== undefined
+            ? { modelSelection: command.modelSelection }
+            : {}),
+          ...(command.providerOptions !== undefined
+            ? { providerOptions: command.providerOptions }
+            : {}),
+          ...computerActivationMetadata({ ...command, userMessageText: command.text }),
+          ...(command.assistantDeliveryMode !== undefined
+            ? { assistantDeliveryMode: command.assistantDeliveryMode }
+            : {}),
+          runtimeMode: command.runtimeMode,
+          interactionMode: command.interactionMode,
+          createdAt: command.createdAt,
+        },
+      };
+      if (thread.session?.status === "starting" || thread.session?.status === "running") {
+        return requestedEvent;
+      }
+      const startingSessionEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.session-set",
+        payload: {
+          threadId: command.threadId,
+          session: {
+            threadId: command.threadId,
+            status: "starting",
+            providerName: thread.session?.providerName ?? thread.modelSelection.provider,
+            runtimeMode: command.runtimeMode,
+            activeTurnId: null,
+            lastError: null,
+            updatedAt: command.createdAt,
+          },
+        },
+      };
+      return [
+        startingSessionEvent,
+        { ...requestedEvent, causationEventId: startingSessionEvent.eventId },
+      ];
+    }
+
+    case "thread.session.stop": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const stopEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.session-stop-requested",
+        payload: {
+          threadId: command.threadId,
+          createdAt: command.createdAt,
+        },
+      };
+      const review = thread.claudeCacheReview;
+      return review
+        ? [
+            {
+              ...withEventBase({
+                aggregateKind: "thread",
+                aggregateId: command.threadId,
+                occurredAt: command.createdAt,
+                commandId: command.commandId,
+              }),
+              type: "thread.claude-cache-set" as const,
+              payload: { threadId: command.threadId, review: null, updatedAt: command.createdAt },
+            },
+            stopEvent,
+          ]
+        : stopEvent;
+    }
+
+    case "thread.goal.continue": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, thread);
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.goal-continuation-requested",
+        payload: {
+          threadId: command.threadId,
+          goalStartedAt: command.goalStartedAt,
+          trigger: command.trigger,
+          ...(command.sourceTurnId !== undefined ? { sourceTurnId: command.sourceTurnId } : {}),
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.turn.resume": {
+      const thread = yield* requireThreadNotArchived({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      yield* validateSidechatExecutionAvailable(command, thread);
+      if (command.resumePrecondition !== undefined) {
+        const violation = threadResumePreconditionViolation(thread, command.resumePrecondition);
+        if (violation !== null) {
+          return yield* new OrchestrationCommandInvariantError({
+            commandType: command.type,
+            detail: threadResumePreconditionDetail(command.threadId, violation),
+          });
+        }
+      }
+      const refusal = threadHasInFlightTurn(thread)
+        ? `Thread '${command.threadId}' already has a turn in flight.`
+        : threadHasCheckpointRevertInProgress(thread)
+          ? checkpointRevertInProgressDetail(command.threadId)
+          : thread.hasPendingApprovals || thread.hasPendingUserInput
+            ? `Thread '${command.threadId}' is waiting for an answer.`
+            : thread.usageLimitRecovery != null
+              ? `Thread '${command.threadId}' resumes on its own after the usage limit.`
+              : thread.creationSource === "provider_native" || thread.id.startsWith("subagent:")
+                ? `Subagent '${command.threadId}' cannot be resumed.`
+                : null;
+      if (refusal !== null) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: refusal,
+        });
+      }
+      // The provider reactor reads the linked transcript and picks the target:
+      // resend a request that never started a turn, or continue the latest one.
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.goal-continuation-requested",
+        payload: {
+          threadId: command.threadId,
+          goalStartedAt: null,
+          trigger: "manual-resume",
+          ...(thread.latestTurn !== null ? { sourceTurnId: thread.latestTurn.turnId } : {}),
+          ...(command.continuationPrompt !== undefined
+            ? { resumePrompt: command.continuationPrompt }
+            : {}),
+          ...(command.computerControlGeneration !== undefined
+            ? { resumeComputerControlGeneration: command.computerControlGeneration }
+            : {}),
+          createdAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.session.set": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const sessionChanged =
+        (command.expectedSessionStatus !== undefined &&
+          thread.session?.status !== command.expectedSessionStatus) ||
+        (command.expectedSessionUpdatedAt !== undefined &&
+          thread.session?.updatedAt !== command.expectedSessionUpdatedAt);
+      if (sessionChanged) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `Thread '${command.threadId}' session changed before the conditional update.`,
+        });
+      }
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+          metadata: {},
+        }),
+        type: "thread.session-set",
+        payload: {
+          threadId: command.threadId,
+          session: command.session,
+          ...(command.session.status === "starting" && command.pendingResumeMessageId !== undefined
+            ? { pendingResumeMessageId: command.pendingResumeMessageId }
+            : {}),
+        },
+      };
+    }
+
+    case "thread.messages.import": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      return command.messages.map((message) => ({
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.message-sent" as const,
+        payload: {
+          threadId: command.threadId,
+          messageId: message.messageId,
+          role: message.role,
+          text: message.text,
+          ...(message.attachments !== undefined ? { attachments: message.attachments } : {}),
+          ...(message.dispatchOrigin !== undefined
+            ? { dispatchOrigin: message.dispatchOrigin }
+            : {}),
+          turnId: null,
+          streaming: false,
+          source: "native" as const,
+          createdAt: message.createdAt,
+          updatedAt: message.updatedAt,
+        },
+      }));
+    }
+
+    case "thread.message.assistant.delta": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const existingMessage = thread.messages.find((message) => message.id === command.messageId);
+      if (
+        command.attachments !== undefined &&
+        (existingMessage?.role !== "assistant" || existingMessage.streaming)
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: "Late image snapshots require an already finalized assistant message.",
+        });
+      }
+      const turnId = resolveStableMessageTurnId({
+        existingTurnId: existingMessage?.turnId,
+        incomingTurnId: command.turnId,
+      });
+      const deltaEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.message-sent",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          role: "assistant",
+          text: command.delta,
+          ...(command.attachments !== undefined ? { attachments: command.attachments } : {}),
+          ...(command.segmentStartedAt ? { segmentStartedAt: command.segmentStartedAt } : {}),
+          ...(command.segmentSequence !== undefined
+            ? { segmentSequence: command.segmentSequence }
+            : {}),
+          turnId,
+          streaming: true,
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+      if (existingMessage?.role !== "assistant" || existingMessage.streaming) {
+        return deltaEvent;
+      }
+      // A finalized message stays finalized. A late provider delta (after its
+      // item or turn already completed) is appended and settled again in the
+      // same command, because nothing would ever complete a reopened row.
+      return [
+        deltaEvent,
+        {
+          ...withEventBase({
+            aggregateKind: "thread",
+            aggregateId: command.threadId,
+            occurredAt: command.createdAt,
+            commandId: command.commandId,
+          }),
+          type: "thread.message-sent",
+          payload: {
+            threadId: command.threadId,
+            messageId: command.messageId,
+            role: "assistant",
+            text: `${existingMessage.text}${command.delta}`,
+            ...(command.attachments !== undefined ? { attachments: command.attachments } : {}),
+            turnId,
+            streaming: false,
+            createdAt: command.createdAt,
+            updatedAt: command.createdAt,
+          },
+        },
+      ];
+    }
+
+    case "thread.message.assistant.complete": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const existingMessage = thread.messages.find((message) => message.id === command.messageId);
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.message-sent",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          role: "assistant",
+          text: existingMessage?.text ?? "",
+          ...(command.attachments !== undefined ? { attachments: command.attachments } : {}),
+          ...(command.asyncQuestions
+            ? {
+                asyncUserInput: existingMessage?.asyncUserInput ?? {
+                  questions: command.asyncQuestions,
+                },
+              }
+            : {}),
+          turnId: resolveStableMessageTurnId({
+            existingTurnId: existingMessage?.turnId,
+            incomingTurnId: command.turnId,
+          }),
+          streaming: false,
+          createdAt: command.createdAt,
+          updatedAt: command.createdAt,
+        },
+      };
+    }
+
+    case "thread.message.user.bind-turn": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const message = thread.messages.find((entry) => entry.id === command.messageId);
+      if (!message || message.role !== "user") {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `User message '${command.messageId}' does not exist on thread '${command.threadId}'.`,
+        });
+      }
+      if (
+        message.turnId !== null &&
+        message.turnId !== undefined &&
+        message.turnId !== command.turnId
+      ) {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `User message '${command.messageId}' is already bound to turn '${message.turnId}'.`,
+        });
+      }
+      // The command engine requires at least one event per accepted command.
+      // Re-emit the canonical upsert when already bound to this exact turn so
+      // recovery retries with a fresh command id remain safely idempotent.
+      return userMessageUpsertEvent({
+        commandId: command.commandId,
+        threadId: command.threadId,
+        message,
+        turnId: command.turnId,
+        occurredAt: command.createdAt,
+      });
+    }
+
+    case "thread.message.user.set-turn-boundary": {
+      const thread = yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const message = thread.messages.find((entry) => entry.id === command.messageId);
+      if (!message || message.role !== "user") {
+        return yield* new OrchestrationCommandInvariantError({
+          commandType: command.type,
+          detail: `User message '${command.messageId}' does not exist on thread '${command.threadId}'.`,
+        });
+      }
+      return userMessageUpsertEvent({
+        commandId: command.commandId,
+        threadId: command.threadId,
+        message,
+        turnId: message.turnId,
+        startsNewTurn: command.startsNewTurn,
+        occurredAt: command.createdAt,
+      });
+    }
+
+    case "thread.proposed-plan.upsert": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.proposed-plan-upserted",
+        payload: {
+          threadId: command.threadId,
+          proposedPlan: command.proposedPlan,
+        },
+      };
+    }
+
+    case "thread.turn.diff.complete": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const diffCompletedEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.turn-diff-completed",
+        payload: {
+          threadId: command.threadId,
+          turnId: command.turnId,
+          checkpointTurnCount: command.checkpointTurnCount,
+          checkpointRef: command.checkpointRef,
+          status: command.status,
+          files: command.files,
+          assistantMessageId: command.assistantMessageId ?? null,
+          completedAt: command.completedAt,
+          ...(command.preserveLatestTurn ? { preserveLatestTurn: true } : {}),
+        },
+      };
+      return command.checkpointRevertTurnCount === undefined
+        ? diffCompletedEvent
+        : [
+            diffCompletedEvent,
+            checkpointRevertSucceededEvent({
+              commandId: command.commandId,
+              threadId: command.threadId,
+              turnCount: command.checkpointRevertTurnCount,
+              createdAt: command.createdAt,
+              causationEventId: diffCompletedEvent.eventId,
+            }),
+          ];
+    }
+
+    case "thread.revert.complete": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const revertedEvent: Omit<OrchestrationEvent, "sequence"> = {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.reverted",
+        payload: {
+          threadId: command.threadId,
+          turnCount: command.turnCount,
+        },
+      };
+      return [
+        revertedEvent,
+        checkpointRevertSucceededEvent({
+          commandId: command.commandId,
+          threadId: command.threadId,
+          turnCount: command.turnCount,
+          createdAt: command.createdAt,
+          causationEventId: revertedEvent.eventId,
+        }),
+      ];
+    }
+
+    case "thread.conversation.rollback.complete": {
+      yield* requireThread({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+        }),
+        type: "thread.conversation-rolled-back",
+        payload: {
+          threadId: command.threadId,
+          messageId: command.messageId,
+          numTurns: command.numTurns,
+          ...(command.removedTurnIds !== undefined
+            ? { removedTurnIds: command.removedTurnIds }
+            : {}),
+          ...(command.skipAttachmentPrune !== undefined
+            ? { skipAttachmentPrune: command.skipAttachmentPrune }
+            : {}),
+        },
+      };
+    }
+
+    case "thread.activity.append": {
+      yield* (command.requireUnarchived ? requireThreadNotArchived : requireThread)({
+        readModel,
+        command,
+        threadId: command.threadId,
+      });
+      const activity = command.activity;
+      const requestId =
+        typeof activity.payload === "object" &&
+        activity.payload !== null &&
+        "requestId" in activity.payload &&
+        typeof (activity.payload as { requestId?: unknown }).requestId === "string"
+          ? ((activity.payload as { requestId: string })
+              .requestId as OrchestrationEvent["metadata"]["requestId"])
+          : undefined;
+      return {
+        ...withEventBase({
+          aggregateKind: "thread",
+          aggregateId: command.threadId,
+          occurredAt: command.createdAt,
+          commandId: command.commandId,
+          ...(requestId !== undefined ? { metadata: { requestId } } : {}),
+        }),
+        type: "thread.activity-appended",
+        payload: {
+          threadId: command.threadId,
+          activity,
+        },
+      };
+    }
+
+    default: {
+      command satisfies never;
+      const fallback = command as never as { type: string };
+      return yield* new OrchestrationCommandInvariantError({
+        commandType: fallback.type,
+        detail: `Unknown command type: ${fallback.type}`,
+      });
+    }
+  }
+});
+
+/** Metadata-only accepted no-ops preserve command receipts without touching a replacement run. */
+function usageLimitMetadataEvent(
+  command: {
+    readonly commandId: CommandId;
+    readonly threadId: import("@synara/contracts").ThreadId;
+  },
+  patch: Partial<Extract<OrchestrationEvent, { type: "thread.meta-updated" }>["payload"]>,
+): Omit<Extract<OrchestrationEvent, { type: "thread.meta-updated" }>, "sequence"> {
+  const occurredAt = nowIso();
+  return {
+    ...withEventBase({
+      aggregateKind: "thread",
+      aggregateId: command.threadId,
+      occurredAt,
+      commandId: command.commandId,
+    }),
+    type: "thread.meta-updated",
+    payload: { threadId: command.threadId, updatedAt: occurredAt, ...patch },
+  };
+}
+
+export const decideOrchestrationCommand = Effect.fn("decideOrchestrationCommandWithRecovery")(
+  function* (input: Parameters<typeof decideCommand>[0]) {
+    const { command, readModel } = input;
+    // Streaming deltas and ordinary lifecycle updates keep the existing hot path.
+    const handlesRecovery =
+      command.type === "thread.meta.update" ||
+      command.type === "thread.turn.start" ||
+      command.type === "thread.turn.interrupt" ||
+      command.type === "thread.session.stop" ||
+      command.type === "thread.archive" ||
+      command.type === "thread.delete" ||
+      command.type === "thread.conversation.rollback" ||
+      command.type === "thread.message.edit-and-resend" ||
+      command.type === "thread.runtime-mode.set" ||
+      command.type === "thread.interaction-mode.set" ||
+      (command.type === "thread.session.set" &&
+        (command.usageLimitRecovery !== undefined ||
+          command.session.status === "interrupted" ||
+          command.session.status === "stopped" ||
+          command.session.status === "error"));
+    if (!handlesRecovery) return yield* decideCommand(input);
+    const thread =
+      "threadId" in command
+        ? readModel.threads.find((entry) => entry.id === command.threadId)
+        : undefined;
+    if (
+      command.type === "thread.turn.interrupt" &&
+      command.usageLimitRecoveryId !== undefined &&
+      thread
+    ) {
+      const recovery = thread.usageLimitRecovery;
+      if (recovery?.id !== command.usageLimitRecoveryId)
+        return usageLimitMetadataEvent(command, {});
+      const cancel = usageLimitMetadataEvent(command, {
+        usageLimitRecovery: null,
+        usageLimitRecoverySource: null,
+        usageLimitRecoveryCancelledAt: nowIso(),
+        usageLimitRecoveryCancelledTurnId: recovery.resumedTurnId ?? recovery.turnId,
+        ...(thread.goal?.trim() && thread.goalPausedAt == null ? { goalPausedAt: nowIso() } : {}),
+      });
+      if (recovery.state !== "resuming" || recovery.resumedTurnId === undefined) return cancel;
+      const stop = yield* decideCommand({
+        ...input,
+        command: { ...command, turnId: recovery.resumedTurnId },
+      });
+      return [cancel, ...(Array.isArray(stop) ? stop : [stop])];
+    }
+    const events = yield* decideCommand(input);
+    if (
+      command.type === "thread.turn.interrupt" &&
+      thread &&
+      isDifferentUsageLimitStopTarget(thread, command.turnId)
+    )
+      return events;
+    if (
+      command.type === "thread.session.set" &&
+      command.session.status === "error" &&
+      command.usageLimitRecovery
+    ) {
+      // Failure and its wait commit together: observers cannot mistake an armed
+      // quota recovery for a final task failure between two separate commands.
+      const sessionEvents = Array.isArray(events) ? events : [events];
+      let settled = readModel;
+      for (const event of sessionEvents)
+        settled = yield* projectEvent(settled, {
+          ...event,
+          sequence: settled.snapshotSequence + 1,
+        }).pipe(
+          Effect.mapError(
+            () =>
+              new OrchestrationCommandInvariantError({
+                commandType: command.type,
+                detail: "Could not settle usage-limit source turn.",
+              }),
+          ),
+        );
+      const scheduled = yield* decideCommand({
+        ...input,
+        readModel: settled,
+        command: {
+          type: "thread.usage-limit.schedule",
+          commandId: command.commandId,
+          threadId: command.threadId,
+          recovery: command.usageLimitRecovery,
+          createdAt: command.createdAt,
+        },
+      });
+      return [...sessionEvents, ...(Array.isArray(scheduled) ? scheduled : [scheduled])];
+    }
+    if (
+      command.type === "thread.session.set" &&
+      thread?.usageLimitRecovery?.state === "resuming" &&
+      (command.session.status === "interrupted" ||
+        command.session.status === "stopped" ||
+        command.session.status === "error")
+    ) {
+      const recovery = thread.usageLimitRecovery;
+      if (
+        recovery.resumedTurnId === undefined ||
+        thread.session?.activeTurnId === recovery.resumedTurnId ||
+        thread.latestTurn?.turnId === recovery.resumedTurnId ||
+        (thread.session?.status === "starting" &&
+          thread.session.activeTurnId == null &&
+          thread.latestTurn?.turnId === recovery.turnId)
+      ) {
+        const cancelled = yield* decideCommand({
+          ...input,
+          command: {
+            type: "thread.usage-limit.cancel",
+            commandId: command.commandId,
+            threadId: thread.id,
+            recoveryId: recovery.id,
+            createdAt: command.createdAt,
+          },
+        });
+        return [
+          ...(Array.isArray(events) ? events : [events]),
+          ...(Array.isArray(cancelled) ? cancelled : [cancelled]),
+        ];
+      }
+    }
+    if (!thread || !("threadId" in command)) return events;
+    // Only a real change invalidates a wait or its source. Clients and server
+    // housekeeping resend current values (a worktree branch rename restates its
+    // path; every send restates the model), and treating those echoes as edits
+    // silently disarmed recovery for the running turn.
+    const metadataChange =
+      command.type === "thread.meta.update" &&
+      ((command.modelSelection !== undefined &&
+        !isDeepStrictEqual(command.modelSelection, thread.modelSelection)) ||
+        (command.goal !== undefined && command.goal.trim() !== (thread.goal ?? "").trim()) ||
+        (command.goalPaused !== undefined &&
+          command.goalPaused !== (thread.goalPausedAt != null)) ||
+        command.goalAchieved === true ||
+        command.isSettled === true ||
+        (command.worktreePath !== undefined &&
+          command.worktreePath !== (thread.worktreePath ?? null)) ||
+        (command.workingDirectory !== undefined &&
+          command.workingDirectory !== (thread.workingDirectory ?? null)) ||
+        (command.parentThreadId !== undefined &&
+          command.parentThreadId !== (thread.parentThreadId ?? null)));
+    const cancel =
+      metadataChange ||
+      command.type === "thread.turn.interrupt" ||
+      command.type === "thread.session.stop" ||
+      command.type === "thread.archive" ||
+      command.type === "thread.delete" ||
+      command.type === "thread.conversation.rollback" ||
+      command.type === "thread.message.edit-and-resend" ||
+      command.type === "thread.runtime-mode.set" ||
+      command.type === "thread.interaction-mode.set" ||
+      (command.type === "thread.turn.start" &&
+        (thread.usageLimitRecovery != null || !threadHasInFlightTurn(thread)));
+    if (!cancel) return events;
+    if (
+      thread.usageLimitRecovery == null &&
+      thread.usageLimitRecoverySource == null &&
+      command.type !== "thread.turn.interrupt" &&
+      command.type !== "thread.session.stop"
+    )
+      return events;
+    const sourceTurnId =
+      (command.type === "thread.turn.interrupt" ? command.turnId : undefined) ??
+      thread.session?.activeTurnId ??
+      thread.latestTurn?.turnId ??
+      null;
+    if (
+      command.type === "thread.turn.start" &&
+      sourceTurnId === null &&
+      thread.usageLimitRecovery == null &&
+      thread.usageLimitRecoverySource == null
+    )
+      return events;
+    const cancelEvent = usageLimitMetadataEvent(command, {
+      usageLimitRecovery: null,
+      ...(command.type === "thread.turn.start" || metadataChange
+        ? { usageLimitRecoverySource: null }
+        : {}),
+      usageLimitRecoveryCancelledTurnId: sourceTurnId,
+      usageLimitRecoveryCancelledAt:
+        sourceTurnId === null && command.type === "thread.turn.start" ? null : nowIso(),
+    });
+    const original = Array.isArray(events) ? events : [events];
+    const metadataIndex = original.findIndex(
+      (event) =>
+        event.type === "thread.meta-updated" && event.payload.threadId === command.threadId,
+    );
+    if (metadataIndex >= 0 && cancelEvent.type === "thread.meta-updated") {
+      const merged = original.map((event, index) =>
+        index === metadataIndex && event.type === "thread.meta-updated"
+          ? {
+              ...event,
+              payload: {
+                ...event.payload,
+                ...cancelEvent.payload,
+                updatedAt: event.payload.updatedAt,
+              },
+            }
+          : event,
+      );
+      return Array.isArray(events) ? merged : merged[0]!;
+    }
+    if (
+      (command.type === "thread.turn.interrupt" || command.type === "thread.session.stop") &&
+      thread.usageLimitRecovery == null &&
+      cancelEvent.type === "thread.meta-updated"
+    ) {
+      const fenced = original.map((event) =>
+        event.type === "thread.turn-interrupt-requested" ||
+        event.type === "thread.session-stop-requested"
+          ? {
+              ...event,
+              payload: {
+                ...event.payload,
+                usageLimitRecoveryCancelledAt: cancelEvent.payload.usageLimitRecoveryCancelledAt,
+                usageLimitRecoveryCancelledTurnId:
+                  cancelEvent.payload.usageLimitRecoveryCancelledTurnId,
+              },
+            }
+          : event,
+      );
+      return Array.isArray(events) ? fenced : fenced[0]!;
+    }
+    // Every event is committed before publication, including the cancellation fence.
+    return command.type === "thread.turn.interrupt"
+      ? [...original, cancelEvent]
+      : [cancelEvent, ...original];
+  },
+);

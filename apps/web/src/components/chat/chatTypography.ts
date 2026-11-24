@@ -1,0 +1,104 @@
+// FILE: chatTypography.ts
+// Purpose: Centralizes transcript typography tokens shared by chat message renderers.
+// Layer: Web chat presentation constants
+// Exports: transcript measurement helpers and inline styles for chat text
+
+import type { CSSProperties } from "react";
+import { DEFAULT_CHAT_FONT_SIZE_PX, normalizeChatFontSizePx } from "../../appSettings";
+
+// Transcript work rhythm: one 14px step everywhere. Work rows are 24px and stack
+// 14px apart, and text keeps the same 14px from a stack, live or folded into
+// "Worked for" (see MessagesTimeline).
+export const WORK_ROW_STACK_CLASS_NAME = "flex flex-col gap-3.5";
+// The rows a summary or group row discloses, hung one step under it.
+export const WORK_ROW_DISCLOSED_CLASS_NAME = "flex flex-col gap-3.5 pt-3.5";
+
+// index.css shares composer corner smoothing; keep the radius as the browser fallback.
+export const USER_MESSAGE_BUBBLE_RADIUS_CLASS_NAME =
+  "chat-user-message-bubble squircle rounded-[var(--radius-user-message)]";
+export const USER_MESSAGE_BUBBLE_SHELL_PADDING_CLASS_NAME = "py-2.5";
+export const USER_MESSAGE_BUBBLE_SHELL_HORIZONTAL_PADDING_CLASS_NAME = "px-3.5";
+export const USER_MESSAGE_BUBBLE_SHELL_CHROME_CLASS_NAME = [
+  USER_MESSAGE_BUBBLE_SHELL_HORIZONTAL_PADDING_CLASS_NAME,
+  USER_MESSAGE_BUBBLE_SHELL_PADDING_CLASS_NAME,
+].join(" ");
+
+// Temporary chats disappear when focus leaves them, so their bubbles wear a dashed
+// primary outline: the transcript itself says "this conversation is throwaway".
+// Non-temporary bubbles keep a transparent border of the same width so switching
+// threads never shifts the bubble geometry by a pixel.
+const USER_MESSAGE_BUBBLE_BORDER_WIDTH_CLASS_NAME = "border";
+const USER_MESSAGE_BUBBLE_TEMPORARY_BORDER_CLASS_NAME = [
+  USER_MESSAGE_BUBBLE_BORDER_WIDTH_CLASS_NAME,
+  "border-dashed",
+  "border-[color:color-mix(in_srgb,var(--color-primary)_60%,transparent)]",
+].join(" ");
+const USER_MESSAGE_BUBBLE_PLAIN_BORDER_CLASS_NAME = [
+  USER_MESSAGE_BUBBLE_BORDER_WIDTH_CLASS_NAME,
+  "border-transparent",
+].join(" ");
+
+// Answered agent questions wear a neutral dashed outline on both bubbles: they are
+// part of the agent's run, not ordinary chat turns. Neutral, not primary, so they
+// never read as the temporary-chat outline above.
+export const USER_INPUT_EXCHANGE_BUBBLE_CLASS_NAME = [
+  USER_MESSAGE_BUBBLE_RADIUS_CLASS_NAME,
+  USER_MESSAGE_BUBBLE_SHELL_CHROME_CLASS_NAME,
+  USER_MESSAGE_BUBBLE_BORDER_WIDTH_CLASS_NAME,
+  "border-dashed border-[color:var(--color-border)]",
+  "w-max max-w-[85%] min-w-0",
+].join(" ");
+
+export function userMessageBubbleBorderClassName(isTemporaryThread: boolean): string {
+  return isTemporaryThread
+    ? USER_MESSAGE_BUBBLE_TEMPORARY_BORDER_CLASS_NAME
+    : USER_MESSAGE_BUBBLE_PLAIN_BORDER_CLASS_NAME;
+}
+// Matches Tailwind `leading-relaxed` (1.625). Shared by the assistant transcript text,
+// user message bubbles, and the composer input so every chat surface reads at one leading.
+const CHAT_TRANSCRIPT_LINE_HEIGHT_RATIO = 1.625;
+
+export function getChatTranscriptLineHeightPx(chatFontSizePx = DEFAULT_CHAT_FONT_SIZE_PX): number {
+  return normalizeChatFontSizePx(chatFontSizePx) * CHAT_TRANSCRIPT_LINE_HEIGHT_RATIO;
+}
+
+export function getChatTranscriptUserMessageLineHeightPx(
+  chatFontSizePx = DEFAULT_CHAT_FONT_SIZE_PX,
+): number {
+  return getChatTranscriptLineHeightPx(chatFontSizePx);
+}
+
+function buildChatTextStyle(fontSizePx: number, lineHeightPx: number): CSSProperties {
+  return {
+    fontSize: `${fontSizePx}px`,
+    lineHeight: `${lineHeightPx}px`,
+  };
+}
+
+export function getChatTranscriptTextStyle(
+  chatFontSizePx = DEFAULT_CHAT_FONT_SIZE_PX,
+): CSSProperties {
+  const normalizedChatFontSizePx = normalizeChatFontSizePx(chatFontSizePx);
+  return buildChatTextStyle(
+    normalizedChatFontSizePx,
+    getChatTranscriptLineHeightPx(normalizedChatFontSizePx),
+  );
+}
+
+export function getChatTranscriptUserMessageTextStyle(
+  chatFontSizePx = DEFAULT_CHAT_FONT_SIZE_PX,
+): CSSProperties {
+  const normalizedChatFontSizePx = normalizeChatFontSizePx(chatFontSizePx);
+  return buildChatTextStyle(
+    normalizedChatFontSizePx,
+    getChatTranscriptUserMessageLineHeightPx(normalizedChatFontSizePx),
+  );
+}
+
+export function getChatMessageFooterTextStyle(
+  chatFontSizePx = DEFAULT_CHAT_FONT_SIZE_PX,
+): CSSProperties {
+  const normalizedChatFontSizePx = normalizeChatFontSizePx(chatFontSizePx);
+  const footerFontSizePx = Math.max(8, normalizedChatFontSizePx - 2);
+  return buildChatTextStyle(footerFontSizePx, getChatTranscriptLineHeightPx(footerFontSizePx));
+}

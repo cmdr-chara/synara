@@ -1,0 +1,353 @@
+import { createHash } from "node:crypto";
+import { mkdtempSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+import { afterEach, describe, expect, it } from "vitest";
+
+import {
+  type ReleaseArtifactCheckpointInput,
+  verifyReleaseArtifactCheckpoint,
+} from "./release-artifact-checkpoint.ts";
+import type { ReleaseArtifactProvenanceManifest } from "./release-artifact-provenance.ts";
+
+const roots: string[] = [];
+afterEach(() => roots.splice(0).forEach((root) => rmSync(root, { recursive: true, force: true })));
+
+function checkpoint(
+  platform: "linux" | "mac" | "win" = "linux",
+  flavor: "production" | "beta" | "remote" = "production",
+  archOverride?: "arm64" | "x64",
+) {
+  const assetsDirectory = mkdtempSync(join(tmpdir(), "synara-checkpoint-"));
+  roots.push(assetsDirectory);
+  const version = flavor === "production" ? "1.2.3" : `1.2.3-${flavor}.1`;
+  const arch = archOverride ?? (flavor === "remote" && platform === "mac" ? "arm64" : "x64");
+  // Electron Builder's AppImage target emits x86_64 for Intel while provenance
+  // records the matrix spelling; other targets keep the matrix spelling.
+  const nativeFileArch = platform === "linux" && arch === "x64" ? "x86_64" : arch;
+  const productName = { production: "Synara", beta: "Synara-Beta", remote: "Synara-Remote" }[
+    flavor
+  ];
+  const stem = `${productName}-${version}-${nativeFileArch}`;
+  const payload = `${stem}.${platform === "mac" ? "dmg" : platform === "win" ? "exe" : "AppImage"}`;
+  const updater =
+    platform === "mac"
+      ? arch === "arm64"
+        ? "latest-mac.yml"
+        : `latest-mac-${arch}.yml`
+      : platform === "win"
+        ? "latest.yml"
+        : arch === "x64"
+          ? "latest-linux.yml"
+          : `latest-linux-${arch}.yml`;
+  const files = platform === "mac" ? [payload, `${stem}.zip`, updater] : [payload, updater];
+  const signing: ReleaseArtifactProvenanceManifest["signing"] =
+    platform === "mac"
+      ? {
+          status: "verified",
+          scheme: "apple-developer-id",
+          identity: {
+            teamId: "EXPECTEDTEAM",
+            authorities: ["Developer ID Application"],
+            appBundle: `${productName.replaceAll("-", " ")}.app`,
+            diskImage: payload,
+          },
+          checks: ["codesign --verify app", "stapler validate app"],
+        }
+      : {
+          status: platform === "win" ? "unsigned-explicit-release" : "not-applicable",
+          scheme: "none",
+          identity: null,
+          checks: ["packaging policy verified"],
+        };
+  const input: ReleaseArtifactCheckpointInput = {
+    assetsDirectory,
+    platform,
+    arch,
+    target: platform === "mac" ? "dmg" : platform === "win" ? "nsis" : "AppImage",
+    version,
+    flavor,
+    sourceCommit: "a".repeat(40),
+    sourceTag: `v${version}`,
+    lockfileSha256: "b".repeat(64),
+    publication: true,
+    allowUnsignedWindowsPublication: platform === "win",
+    expectedMacTeamId: "EXPECTEDTEAM",
+  };
+  const manifest: ReleaseArtifactProvenanceManifest = {
+    schemaVersion: 1,
+    platform,
+    arch: input.arch,
+    target: input.target,
+    version,
+    publication: true,
+    source: {
+      commit: input.sourceCommit,
+      tag: input.sourceTag,
+      lockfileSha256: input.lockfileSha256,
+    },
+    signing,
+    artifacts: files.map((fileName) => {
+      const bytes = fileName === updater ? `version: ${version}\n` : "original package bytes";
+      writeFileSync(join(assetsDirectory, fileName), bytes);
+      return {
+        fileName,
+        size: Buffer.byteLength(bytes),
+        sha256: createHash("sha256").update(bytes).digest("hex"),
+      };
+    }),
+  };
+  const manifestPath = join(assetsDirectory, `artifact-${platform}-${arch}.provenance.json`);
+  writeFileSync(manifestPath, JSON.stringify(manifest));
+  function changeManifest(change: (value: Record<string, any>) => void) {
+    const value = JSON.parse(readFileSync(manifestPath, "utf8"));
+    change(value);
+    writeFileSync(manifestPath, JSON.stringify(value));
+  }
+  return { input, manifestPath, payloadPath: join(assetsDirectory, payload), changeManifest };
+}
+
+function signedWindowsCheckpoint() {
+  const fixture = checkpoint("win");
+  fixture.changeManifest((manifest) => {
+    manifest.signing = {
+      status: "verified",
+      scheme: "windows-authenticode",
+      identity: [
+        {
+          fileName: "Synara-1.2.3-x64.exe",
+          publisher: "Acme",
+          subject: "O=Acme Software, CN=Acme, C=IT",
+          thumbprint: "C".repeat(40),
+          timestampSubject: "CN=Timestamp Authority",
+          timestampThumbprint: "D".repeat(40),
+        },
+      ],
+      checks: ["publisher exact match", "subject DN field match"],
+    };
+  });
+  return {
+    ...fixture,
+    input: {
+      ...fixture.input,
+      allowUnsignedWindowsPublication: false,
+      expectedWindowsPublisher: "Acme",
+      expectedWindowsSubjectDn: "CN=Acme, O=Acme Software, C=IT",
+    },
+  };
+}
+
+describe("same-run release artifact checkpoint", () => {
+  it.each([
+    ["linux", "production"],
+    ["linux", "beta"],
+    ["linux", "remote"],
+    ["mac", "production"],
+    ["mac", "beta"],
+    ["mac", "remote"],
+    ["win", "production"],
+    ["win", "beta"],
+    ["win", "remote"],
+  ] as const)(
+    "accepts the native producer's %s %s payload and its full inventory",
+    async (platform, flavor) => {
+      const { input } = checkpoint(platform, flavor);
+      const verified = await verifyReleaseArtifactCheckpoint(input);
+      expect(verified.source.commit).toBe(input.sourceCommit);
+    },
+  );
+
+  it("refuses Remote receipts as Stable or Beta and unsupported Remote targets", async () => {
+    const { input } = checkpoint("mac", "remote");
+    for (const flavor of ["production", "beta"] as const)
+      await expect(verifyReleaseArtifactCheckpoint({ ...input, flavor })).rejects.toThrow(
+        "unexpected or duplicate artifact name",
+      );
+    for (const change of [{ arch: "x64" }, { version: "1.2.3", sourceTag: "v1.2.3" }])
+      await expect(verifyReleaseArtifactCheckpoint({ ...input, ...change })).rejects.toThrow(
+        "Invalid expected release checkpoint identity",
+      );
+  });
+
+  it("rejects a Linux AppImage using the manifest architecture alias", async () => {
+    const { input, payloadPath, changeManifest } = checkpoint();
+    const incorrectFileName = "Synara-1.2.3-x64.AppImage";
+    renameSync(payloadPath, join(input.assetsDirectory, incorrectFileName));
+    changeManifest((manifest) => {
+      manifest.artifacts[0].fileName = incorrectFileName;
+    });
+    await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow(
+      "unexpected or duplicate artifact name",
+    );
+  });
+
+  it("accepts an arm64 Linux checkpoint with its own payload and feed", async () => {
+    const { input } = checkpoint("linux", "production", "arm64");
+    expect(input.arch).toBe("arm64");
+    await expect(verifyReleaseArtifactCheckpoint(input)).resolves.toMatchObject({
+      platform: "linux",
+      arch: "arm64",
+    });
+    // The x86_64 alias belongs to Intel checkpoints only.
+    const aliased = checkpoint("linux", "production", "arm64");
+    renameSync(
+      aliased.payloadPath,
+      join(aliased.input.assetsDirectory, "Synara-1.2.3-x86_64.AppImage"),
+    );
+    aliased.changeManifest((manifest) => {
+      manifest.artifacts[0].fileName = "Synara-1.2.3-x86_64.AppImage";
+    });
+    await expect(verifyReleaseArtifactCheckpoint(aliased.input)).rejects.toThrow(
+      "unexpected or duplicate artifact name",
+    );
+  });
+
+  it("rejects the x86_64 Linux feed name on an arm64 checkpoint", async () => {
+    const { input, changeManifest } = checkpoint("linux", "production", "arm64");
+    renameSync(
+      join(input.assetsDirectory, "latest-linux-arm64.yml"),
+      join(input.assetsDirectory, "latest-linux.yml"),
+    );
+    changeManifest((manifest) => {
+      manifest.artifacts[1].fileName = "latest-linux.yml";
+    });
+    await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow(
+      "unexpected or duplicate artifact name",
+    );
+  });
+
+  it("rejects architectures that this platform does not package", async () => {
+    for (const { input } of [
+      checkpoint("win", "production", "arm64"),
+      checkpoint("linux", "remote", "arm64"),
+    ]) {
+      await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow(
+        "Invalid expected release checkpoint identity",
+      );
+    }
+  });
+
+  it.each([
+    ["source commit", { sourceCommit: "c".repeat(40) }],
+    ["lockfile", { lockfileSha256: "d".repeat(64) }],
+    ["publication", { publication: false }],
+    ["source tag", { sourceTag: null, publication: false }],
+  ])("rejects a checkpoint from a different %s", async (field, change) => {
+    const { input, changeManifest } = checkpoint();
+    // Keep publication equal for the tag case so it reaches the tag contract.
+    if (field === "source tag")
+      changeManifest((manifest) => {
+        manifest.publication = false;
+      });
+    await expect(verifyReleaseArtifactCheckpoint({ ...input, ...change })).rejects.toThrow(
+      `Checkpoint ${field}`,
+    );
+  });
+
+  it("rejects changed bytes even when the file size is unchanged", async () => {
+    const { input, payloadPath } = checkpoint();
+    writeFileSync(payloadPath, "modified package bytes");
+    await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow("checksum");
+  });
+
+  it.each(["extra", "missing", "symlink", "extra provenance"])(
+    "rejects a %s entry at the filesystem boundary",
+    async (kind) => {
+      const { input, payloadPath } = checkpoint();
+      if (kind === "extra") writeFileSync(join(input.assetsDirectory, "unlisted.exe"), "unlisted");
+      if (kind === "extra provenance")
+        writeFileSync(join(input.assetsDirectory, "other.provenance.json"), "{}");
+      if (kind === "missing" || kind === "symlink") rmSync(payloadPath);
+      if (kind === "symlink") symlinkSync("latest-linux.yml", payloadPath);
+      await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow(
+        kind === "symlink" ? "regular file" : kind === "missing" ? "ENOENT" : "inventory",
+      );
+    },
+  );
+
+  it.each(["../outside.exe", "C:\\outside.exe", "/outside.exe"])(
+    "rejects manifest path %s before reading it",
+    async (fileName) => {
+      const { input, changeManifest } = checkpoint();
+      changeManifest((manifest) => {
+        manifest.artifacts[0].fileName = fileName;
+      });
+      await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow(
+        "unexpected or duplicate artifact name",
+      );
+    },
+  );
+
+  it("rejects a duplicate inventory entry and an omitted required payload", async () => {
+    const { input, changeManifest } = checkpoint();
+    changeManifest((manifest) => {
+      manifest.artifacts.push(manifest.artifacts[0]);
+    });
+    await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow("duplicate artifact name");
+    changeManifest((manifest) => {
+      manifest.artifacts = [manifest.artifacts[1]];
+    });
+    await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow("missing required asset");
+  });
+
+  it("rejects Stable payload names when qualifying the Beta flavor", async () => {
+    const { input } = checkpoint();
+    await expect(verifyReleaseArtifactCheckpoint({ ...input, flavor: "beta" })).rejects.toThrow(
+      "unexpected or duplicate artifact name",
+    );
+  });
+
+  it("requires the current version-scoped Windows exception on every qualification", async () => {
+    const { input } = checkpoint("win");
+    await expect(
+      verifyReleaseArtifactCheckpoint({ ...input, allowUnsignedWindowsPublication: false }),
+    ).rejects.toThrow("requires verified signing");
+  });
+
+  it("rechecks the current subject DN even when the Windows publisher is unchanged", async () => {
+    const { input } = signedWindowsCheckpoint();
+    // The existing normalizer accepts the reordered fields from native certificate output.
+    await expect(verifyReleaseArtifactCheckpoint(input)).resolves.toMatchObject({
+      signing: { status: "verified" },
+    });
+    await expect(
+      verifyReleaseArtifactCheckpoint({
+        ...input,
+        expectedWindowsSubjectDn: "CN=Acme, O=Different Organization, C=IT",
+      }),
+    ).rejects.toThrow("Windows subject DN");
+  });
+
+  it.each([
+    ["expectedMacTeamId", "mac", "expected team ID"],
+    ["expectedWindowsPublisher", "win", "expected publisher"],
+    ["expectedWindowsSubjectDn", "win", "expected subject DN"],
+  ] as const)("requires %s for a retained signed receipt", async (key, platform, message) => {
+    const fixture = platform === "mac" ? checkpoint("mac") : signedWindowsCheckpoint();
+    const missing: ReleaseArtifactCheckpointInput = { ...fixture.input };
+    const { [key]: _omitted, ...withoutIdentity } = missing;
+    await expect(verifyReleaseArtifactCheckpoint(withoutIdentity)).rejects.toThrow(message);
+    await expect(verifyReleaseArtifactCheckpoint({ ...missing, [key]: "   " })).rejects.toThrow(
+      message,
+    );
+  });
+
+  it("rejects unsigned macOS publication and signing receipts from another team", async () => {
+    const { input, changeManifest } = checkpoint("mac");
+    await expect(
+      verifyReleaseArtifactCheckpoint({ ...input, expectedMacTeamId: "OTHERTEAM" }),
+    ).rejects.toThrow("macOS team");
+    changeManifest((manifest) => {
+      manifest.signing = {
+        status: "unsigned-build-only",
+        scheme: "none",
+        identity: null,
+        checks: ["publication disabled"],
+      };
+    });
+    await expect(verifyReleaseArtifactCheckpoint(input)).rejects.toThrow(
+      "requires verified signing",
+    );
+  });
+});

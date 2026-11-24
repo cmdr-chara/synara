@@ -1,0 +1,114 @@
+// FILE: ProviderHandoffDivider.tsx
+// Purpose: Mark where a thread was handed off to another provider, account or model, in place.
+// Layer: Chat transcript UI
+// Why: A handoff changes who answers from this point on, so it reads as a
+//      transcript boundary (like ForkSourceDivider) rather than a work row
+//      folded into the previous turn. Clicking it reveals the transferred context.
+
+import { memo, useMemo, useState } from "react";
+
+import { getProviderInstanceOptions, useAppSettings } from "~/appSettings";
+import type { FastModeNotice } from "~/lib/fastModeState";
+import { ArrowRightIcon, CircleAlertIcon, HandoffIcon } from "~/lib/icons";
+import { cn } from "~/lib/utils";
+import { resolveThreadModelSummary } from "~/lib/threadModelSummary";
+import type { ProviderHandoffInfo } from "~/workLog";
+import { ProviderIcon } from "../ProviderIcon";
+import { DisclosureRegion } from "../ui/DisclosureRegion";
+import { FastModeBadgeIcon } from "./FastModeBadgeIcon";
+import { TranscriptDividerRule } from "./TranscriptDividerRule";
+import { ProviderHandoffDetails } from "./TimelineWorkEntryRow";
+import { useTranslation } from "~/i18n";
+
+// Same reading order as the composer's model trigger and the thread hover card:
+// provider glyph, model name, fast-mode bolt, then the effort label.
+function HandoffEndpoint(props: {
+  readonly selection: ProviderHandoffInfo["sourceModelSelection"];
+  /** Set when both ends share a provider: the account is what changed. */
+  readonly accountLabel?: string | undefined;
+  readonly fastModeNotice?: FastModeNotice | null | undefined;
+  readonly className?: string;
+}) {
+  const { t } = useTranslation();
+  const summary = resolveThreadModelSummary(props.selection, undefined, t);
+  return (
+    <span className={cn("inline-flex min-w-0 items-center gap-1.5", props.className)}>
+      <ProviderIcon provider={props.selection.provider} className="size-3.5 shrink-0" />
+      {props.accountLabel ? <span className="shrink-0">{props.accountLabel}</span> : null}
+      <span className="truncate">{summary?.modelLabel ?? props.selection.model}</span>
+      {summary?.fastMode ? (
+        <FastModeBadgeIcon notice={props.fastModeNotice} className="size-3 shrink-0 opacity-75" />
+      ) : null}
+      {summary?.statusLabel ? (
+        <span className="shrink-0 opacity-70">{summary.statusLabel}</span>
+      ) : null}
+    </span>
+  );
+}
+
+export const ProviderHandoffDivider = memo(function ProviderHandoffDivider({
+  info,
+}: {
+  readonly info: ProviderHandoffInfo;
+}) {
+  const { t } = useTranslation();
+  const { settings } = useAppSettings();
+
+  const [open, setOpen] = useState(false);
+  const failed = info.status === "failed";
+  const source = info.sourceModelSelection;
+  const target = info.targetModelSelection;
+  const switchesAccount =
+    source.provider === target.provider &&
+    (source.instanceId ?? source.provider) !== (target.instanceId ?? target.provider);
+  const accountLabelFor = useMemo(() => {
+    if (!switchesAccount) return () => undefined;
+    const accounts = getProviderInstanceOptions(settings);
+    return (selection: typeof source) =>
+      accounts.find(
+        (account) => account.instanceId === (selection.instanceId ?? selection.provider),
+      )?.label ?? selection.instanceId;
+  }, [settings, switchesAccount]);
+
+  return (
+    <div data-provider-handoff-divider="true" className="w-full py-3 font-system-ui">
+      <div className="flex w-full items-center gap-4">
+        <TranscriptDividerRule />
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((value) => !value)}
+          className={cn(
+            "inline-flex min-w-0 shrink items-center gap-2 rounded-sm text-ui-sm transition-opacity duration-150 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-border-focus)]/60",
+            failed ? "text-destructive" : "text-muted-foreground",
+          )}
+        >
+          {failed ? (
+            <CircleAlertIcon className="size-3.5 shrink-0" aria-hidden />
+          ) : (
+            <HandoffIcon className="size-3.5 shrink-0" aria-hidden />
+          )}
+          <span className="shrink-0">
+            {failed ? t("chat:handoffFailed") : t("chat:contextHandoff")}
+          </span>
+          <HandoffEndpoint
+            selection={source}
+            accountLabel={accountLabelFor(source)}
+            fastModeNotice={info.sourceFastModeNotice}
+          />
+          <ArrowRightIcon className="size-3 shrink-0 opacity-70" aria-hidden />
+          <HandoffEndpoint
+            selection={target}
+            accountLabel={accountLabelFor(target)}
+            fastModeNotice={info.targetFastModeNotice}
+            className={failed ? "line-through" : "text-foreground/84"}
+          />
+        </button>
+        <TranscriptDividerRule />
+      </div>
+      <DisclosureRegion open={open} contentClassName="pt-3">
+        <ProviderHandoffDetails info={info} />
+      </DisclosureRegion>
+    </div>
+  );
+});

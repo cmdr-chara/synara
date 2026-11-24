@@ -1,0 +1,346 @@
+// FILE: SubagentsDockPane.tsx
+// Purpose: Right-dock list of every subagent the host thread spawned (opened from the
+//          Environment panel summary). "Active" rows show what each run is doing with a
+//          model/effort, ticking time and stop/background on hover; "Done" rows retain
+//          the model/effort and show when they finished,
+//          with totals and the result in the tooltip. From a subagent thread it lists the
+//          siblings plus a row back to the parent. Selecting a subagent opens it in a
+//          split beside this chat; the parent row returns to the parent with this list.
+// Layer: Chat right-dock UI
+// Exports: SubagentsDockPane, SubagentsList (the presentational list it renders)
+
+import type { ThreadId } from "@synara/contracts";
+import { useNavigate } from "@tanstack/react-router";
+
+import { IconButton } from "~/components/ui/icon-button";
+import { stripDiffSearchParams } from "~/diffRouteSearch";
+import { useNowMs } from "~/hooks/useNowMs";
+import { BackgroundTrayIcon, BackToParentIcon, StopIcon } from "~/lib/icons";
+import { formatRelativeTimeAgo } from "~/lib/relativeTime";
+import { subagentStatusTextToneClassName } from "~/lib/subagentPresentation";
+import { cn } from "~/lib/utils";
+import { useRightDockStore } from "~/rightDockStore";
+
+import { formatClockDuration } from "../../session-logic";
+import {
+  DOCK_LIST_CLASS_NAME,
+  DOCK_LIST_SECONDARY_TEXT_CLASS_NAME as SECONDARY_TEXT_CLASS_NAME,
+  DockListCappedSection,
+  DockListHeading,
+} from "./DockList";
+import { ENVIRONMENT_ROW_ICON_CLASS_NAME, EnvironmentRow } from "./environment/EnvironmentRow";
+import {
+  environmentSubagentElapsedMs,
+  formatEnvironmentSubagentMeta,
+  type EnvironmentSubagentRoster,
+  type EnvironmentSubagentRosterItem,
+} from "./environment/EnvironmentSubagentsSection.logic";
+import { PanelStateMessage } from "./PanelStateMessage";
+import { SubagentAvatar } from "./SubagentAvatar";
+import { useOpenSubagentThread } from "./useOpenSubagentThread";
+import { useSubagentRunControls } from "./useSubagentRunControls";
+import { type SubagentParentRow, useThreadSubagentRoster } from "./useSubagentStripSource";
+import { useTranslation, t } from "~/i18n";
+
+// Done rows shown before "Show more"; active rows always render.
+const DONE_VISIBLE_LIMIT = 10;
+const SUMMARY_TOOLTIP_MAX_CHARS = 280;
+
+function rowTooltip(item: EnvironmentSubagentRosterItem): string {
+  const summary =
+    item.summary && item.summary.length > SUMMARY_TOOLTIP_MAX_CHARS
+      ? t("chat:symbol4", { value0: item.summary.slice(0, SUMMARY_TOOLTIP_MAX_CHARS - 1) })
+      : item.summary;
+  const stats = formatEnvironmentSubagentMeta(item, false);
+  return [[item.fullLabel, item.modelLabel].filter(Boolean).join(" · "), stats, summary]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function finishedAgoLabel(
+  item: EnvironmentSubagentRosterItem,
+  nowMs: number,
+  translate: typeof t,
+  formatLocale: string,
+): string | null {
+  const at = item.settledAt;
+  if (!at) return null;
+  return formatRelativeTimeAgo(at, nowMs, formatLocale, translate);
+}
+
+function ActiveSubagentRow({
+  item,
+  nowMs,
+  onOpen,
+  onBackground,
+  onStop,
+}: {
+  item: EnvironmentSubagentRosterItem;
+  nowMs: number;
+  onOpen: (threadId: ThreadId) => void;
+  onBackground: (item: EnvironmentSubagentRosterItem) => void;
+  onStop: (item: EnvironmentSubagentRosterItem) => void;
+}) {
+  const { t } = useTranslation();
+
+  const elapsedMs = environmentSubagentElapsedMs(item, nowMs);
+  const meta = formatEnvironmentSubagentMeta(item);
+  const showBackground = item.isActive && !item.isBackground;
+  const showStop = item.isActive;
+  const actionCount = Number(showBackground) + Number(showStop);
+
+  // The actions overlay the first line instead of nesting inside the row (a button cannot
+  // contain a button); on hover the time gives way to a spacer that reserves their slot.
+  return (
+    <div className="group/subagent relative">
+      <EnvironmentRow
+        compact
+        icon={<SubagentAvatar seed={item.key} accentColor={item.accentColor} className="size-5" />}
+        label={
+          <span className="flex min-w-0 flex-col">
+            <span className="flex min-w-0 items-baseline gap-2">
+              <span className="min-w-0 flex-1 truncate">{item.primaryLabel}</span>
+              {elapsedMs !== null ? (
+                <span
+                  className={cn(
+                    "shrink-0 text-ui-sm tabular-nums",
+                    SECONDARY_TEXT_CLASS_NAME,
+                    actionCount > 0 &&
+                      "group-focus-within/subagent:hidden group-hover/subagent:hidden",
+                  )}
+                >
+                  {formatClockDuration(elapsedMs)}
+                </span>
+              ) : null}
+              {actionCount > 0 ? (
+                <span
+                  aria-hidden
+                  className={cn(
+                    "hidden shrink-0 group-focus-within/subagent:block group-hover/subagent:block",
+                    actionCount === 2 ? "w-12" : "w-6",
+                  )}
+                />
+              ) : null}
+            </span>
+            <span className={cn("truncate text-ui-sm", SECONDARY_TEXT_CLASS_NAME)}>
+              <span className={subagentStatusTextToneClassName(item.statusKind)}>
+                {item.statusLabel ?? t("chat:runStatus_running")}
+              </span>
+              {item.modelLabel ? t("chat:symbol6", { value0: item.modelLabel }) : null}
+              {meta ? t("chat:symbol6", { value0: meta }) : null}
+            </span>
+          </span>
+        }
+        className={cn(
+          "items-start",
+          item.isViewed && "bg-[var(--color-background-elevated-secondary)]",
+        )}
+        title={rowTooltip(item)}
+        aria-label={t("chat:openSubagent", {
+          value0: item.fullLabel,
+          value1: item.statusLabel ? ` (${item.statusLabel})` : "",
+        })}
+        aria-current={item.isViewed ? "page" : undefined}
+        data-testid="subagents-pane-active-row"
+        onClick={() => onOpen(item.threadId)}
+      />
+      {actionCount > 0 ? (
+        <div className="pointer-events-none invisible absolute top-0.5 right-2 flex items-center opacity-0 transition-opacity group-focus-within/subagent:pointer-events-auto group-focus-within/subagent:visible group-focus-within/subagent:opacity-100 group-hover/subagent:pointer-events-auto group-hover/subagent:visible group-hover/subagent:opacity-100">
+          {showBackground ? (
+            <IconButton
+              label={t("chat:runInBackground", { value0: item.primaryLabel })}
+              tooltip={t("chat:runInBackgroundCtrlB")}
+              onClick={() => onBackground(item)}
+            >
+              <BackgroundTrayIcon className="size-3.5" />
+            </IconButton>
+          ) : null}
+          {showStop ? (
+            <IconButton
+              label={t("chat:stopSubagent2", { value0: item.primaryLabel })}
+              tooltip={t("chat:stopSubagent")}
+              onClick={() => onStop(item)}
+            >
+              <StopIcon className="size-3.5" />
+            </IconButton>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function DoneSubagentRow({
+  item,
+  nowMs,
+  onOpen,
+}: {
+  item: EnvironmentSubagentRosterItem;
+  nowMs: number;
+  onOpen: (threadId: ThreadId) => void;
+}) {
+  const { t, formatLocale } = useTranslation();
+
+  // A finished run reads as done; only failures and stops name their outcome.
+  const outcome =
+    item.statusKind === "failed" || item.statusKind === "stopped" ? item.statusLabel : null;
+  const finishedAgo = finishedAgoLabel(item, nowMs, t, formatLocale);
+  return (
+    <EnvironmentRow
+      compact
+      icon={<SubagentAvatar seed={item.key} accentColor={item.accentColor} className="size-5" />}
+      label={
+        <span className="flex min-w-0 flex-col">
+          <span className="flex min-w-0 items-baseline gap-2">
+            <span className="min-w-0 truncate">{item.primaryLabel}</span>
+            {outcome ? (
+              <span
+                className={cn(
+                  "shrink-0 text-ui-sm",
+                  subagentStatusTextToneClassName(item.statusKind),
+                )}
+              >
+                {outcome}
+              </span>
+            ) : null}
+          </span>
+          {item.modelLabel ? (
+            <span className={cn("truncate text-ui-sm", SECONDARY_TEXT_CLASS_NAME)}>
+              {item.modelLabel}
+            </span>
+          ) : null}
+        </span>
+      }
+      trailing={
+        finishedAgo ? (
+          <span className={cn("text-ui-sm", SECONDARY_TEXT_CLASS_NAME)}>{finishedAgo}</span>
+        ) : null
+      }
+      className={cn(item.isViewed && "bg-[var(--color-background-elevated-secondary)]")}
+      title={rowTooltip(item)}
+      aria-label={t("chat:openSubagent", {
+        value0: item.fullLabel,
+        value1: item.statusLabel ? ` (${item.statusLabel})` : "",
+      })}
+      aria-current={item.isViewed ? "page" : undefined}
+      data-testid="subagents-pane-done-row"
+      onClick={() => onOpen(item.threadId)}
+    />
+  );
+}
+
+export function SubagentsList({
+  roster,
+  parent,
+  nowMs,
+  onOpen,
+  onBackground,
+  onStop,
+}: {
+  roster: EnvironmentSubagentRoster;
+  parent: SubagentParentRow | null;
+  nowMs: number;
+  onOpen: (threadId: ThreadId) => void;
+  onBackground: (item: EnvironmentSubagentRosterItem) => void;
+  onStop: (item: EnvironmentSubagentRosterItem) => void;
+}) {
+  const { t } = useTranslation();
+
+  const { active, previous } = roster;
+
+  return (
+    <div className={DOCK_LIST_CLASS_NAME} data-testid="subagents-dock-pane">
+      {parent ? (
+        <EnvironmentRow
+          icon={<BackToParentIcon className={ENVIRONMENT_ROW_ICON_CLASS_NAME} aria-hidden />}
+          label={<span className="truncate">{parent.label ?? t("chat:mainThread")}</span>}
+          aria-label={t("chat:backTo", { value0: parent.label ?? t("chat:mainThread2") })}
+          className="mb-2"
+          onClick={() => onOpen(parent.threadId)}
+        />
+      ) : null}
+      {active.length === 0 && previous.length === 0 ? (
+        <PanelStateMessage>{t("chat:noSubagentsInThisChatYet")}</PanelStateMessage>
+      ) : null}
+      {active.length > 0 ? (
+        <>
+          <DockListHeading label={t("automation:detail_active")} count={active.length} />
+          {active.map((item) => (
+            <ActiveSubagentRow
+              key={item.key}
+              item={item}
+              nowMs={nowMs}
+              onOpen={onOpen}
+              onBackground={onBackground}
+              onStop={onStop}
+            />
+          ))}
+        </>
+      ) : null}
+      <DockListCappedSection
+        label={t("git:detail_done")}
+        items={previous}
+        limit={DONE_VISIBLE_LIMIT}
+        renderItem={(item) => (
+          <DoneSubagentRow key={item.key} item={item} nowMs={nowMs} onOpen={onOpen} />
+        )}
+      />
+    </div>
+  );
+}
+
+export function SubagentsDockPane({
+  hostThreadId,
+  splitViewId = null,
+  onOpenThread,
+}: {
+  hostThreadId: ThreadId;
+  /** The split view this dock sits in, so subagents open beside the host pane. */
+  splitViewId?: string | null;
+  onOpenThread?: (threadId: ThreadId) => void;
+}) {
+  const { roster, source } = useThreadSubagentRoster(hostThreadId);
+  const { backgroundSubagent, stopSubagent } = useSubagentRunControls(source.stripSourceThreadId);
+  const navigate = useNavigate();
+  const openRightDockPane = useRightDockStore((store) => store.openPane);
+  const setDockOpen = useRightDockStore((store) => store.setDockOpen);
+  const nowMs = useNowMs(
+    roster.active.length > 0 || roster.previous.some((item) => item.settledAt !== null),
+    roster.active.length > 0 ? 1_000 : 60_000,
+  );
+
+  // A subagent opens in a split to the right of this chat, taking the list's
+  // place so the chat keeps its width; the Environment panel reopens the list.
+  // Anything else (the row back to the parent) replaces this chat: open the list
+  // in the destination's dock too so it stays beside the transcript.
+  const openSubagentThread = useOpenSubagentThread({
+    hostThreadId,
+    splitViewId,
+    onNavigate: (threadId) => {
+      openRightDockPane(threadId, { kind: "subagents" });
+      if (onOpenThread) {
+        onOpenThread(threadId);
+        return;
+      }
+      void navigate({
+        to: "/$threadId",
+        params: { threadId },
+        search: (previousSearch) => stripDiffSearchParams(previousSearch),
+      });
+    },
+  });
+  const openThread = (threadId: ThreadId) => {
+    if (openSubagentThread(threadId) !== "navigate") setDockOpen(hostThreadId, false);
+  };
+
+  return (
+    <SubagentsList
+      roster={roster}
+      parent={source.subagentParentRow}
+      nowMs={nowMs}
+      onOpen={openThread}
+      onBackground={(item) => void backgroundSubagent(item)}
+      onStop={(item) => void stopSubagent(item)}
+    />
+  );
+}

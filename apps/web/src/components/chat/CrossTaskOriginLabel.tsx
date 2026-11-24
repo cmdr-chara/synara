@@ -1,0 +1,79 @@
+// FILE: CrossTaskOriginLabel.tsx
+// Purpose: Identify the source thread for conversations created by another Synara agent.
+// Layer: Chat transcript UI
+
+import { type ProviderKind, type ThreadId } from "@synara/contracts";
+import { memo, type ReactNode } from "react";
+
+import { SynaraLogo } from "@synara/profile-ui/logo";
+import { cn } from "~/lib/utils";
+import { useTranslation, t } from "~/i18n";
+
+export interface CrossTaskOrigin {
+  readonly sourceThreadId: ThreadId;
+  readonly sourceProvider: ProviderKind | null;
+  /** Set when the source is a group coordinator, so the label names the group. */
+  readonly coordinatorGroupName?: string | null | undefined;
+}
+
+// A single, app-level attribution: the message reached this thread from another
+// Synara thread, so it reads as "Sent by Synara" with the Synara mark (the origin
+// provider is not surfaced here to keep one consistent label). A group
+// coordinator's brief names the group instead, so a worker thread says who
+// handed it the task and where the result goes back to.
+function crossTaskOriginText(origin: CrossTaskOrigin): string {
+  const groupName = origin.coordinatorGroupName?.trim();
+  return groupName
+    ? t("chat:sentByTheCoordinator", { value0: groupName })
+    : t("chat:sentBySynaraFromAnotherThread");
+}
+
+function OriginContent({ text }: { readonly text: string }): ReactNode {
+  return (
+    <>
+      <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground/70">
+        <SynaraLogo className="h-4 w-auto" aria-label="Synara" />
+      </span>
+      <span className="truncate">{text}</span>
+    </>
+  );
+}
+
+export const CrossTaskOriginLabel = memo(function CrossTaskOriginLabel({
+  origin,
+  onOpenSourceThread,
+}: {
+  readonly origin: CrossTaskOrigin;
+  readonly onOpenSourceThread?: (threadId: ThreadId) => void;
+}) {
+  const { t } = useTranslation();
+
+  const className = cn(
+    "inline-flex max-w-full items-center gap-2 self-end rounded-md py-1",
+    "font-system-ui text-ui font-normal text-muted-foreground/72",
+    onOpenSourceThread &&
+      "cursor-pointer transition-colors duration-150 hover:text-foreground/82 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+  );
+
+  if (onOpenSourceThread) {
+    return (
+      <button
+        type="button"
+        className={className}
+        data-cross-task-origin="true"
+        aria-label={
+          origin.coordinatorGroupName ? t("chat:openCoordinator") : t("chat:openSourceThread")
+        }
+        onClick={() => onOpenSourceThread(origin.sourceThreadId)}
+      >
+        <OriginContent text={crossTaskOriginText(origin)} />
+      </button>
+    );
+  }
+
+  return (
+    <div className={className} data-cross-task-origin="true">
+      <OriginContent text={crossTaskOriginText(origin)} />
+    </div>
+  );
+});

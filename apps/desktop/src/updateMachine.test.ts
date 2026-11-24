@@ -1,0 +1,318 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  createInitialDesktopUpdateState,
+  reduceDesktopUpdateStateOnCheckFailure,
+  reduceDesktopUpdateStateOnCheckStart,
+  reduceDesktopUpdateStateOnDownloadComplete,
+  reduceDesktopUpdateStateOnDownloadFailure,
+  reduceDesktopUpdateStateOnDownloadProgress,
+  reduceDesktopUpdateStateOnDownloadStart,
+  reduceDesktopUpdateStateOnInstallFailure,
+  reduceDesktopUpdateStateOnInstallRestartFailure,
+  reduceDesktopUpdateStateOnInstallStart,
+  reduceDesktopUpdateStateOnNoUpdate,
+  reduceDesktopUpdateStateOnUpdateAvailable,
+} from "./updateMachine";
+
+const runtimeInfo = {
+  hostArch: "x64",
+  appArch: "x64",
+  runningUnderArm64Translation: false,
+} as const;
+
+// Exercises pending-update replacement at the desktop updater's state boundary.
+describe("updateMachine", () => {
+  const pendingRemoteUpdate = {
+    ...createInitialDesktopUpdateState("1.0.7-remote.16", runtimeInfo, "remote"),
+    enabled: true,
+    status: "downloaded",
+    availableVersion: "1.0.7-remote.18",
+    downloadedVersion: "1.0.7-remote.18",
+    downloadPercent: 100,
+    canRetry: true,
+  } as const;
+
+  it.each(["1.0.7-remote.18", "1.0.7-remote.17"])(
+    "keeps the staged update when a recheck offers %s",
+    (version) => {
+      const checking = reduceDesktopUpdateStateOnCheckStart(
+        pendingRemoteUpdate,
+        "2026-10-17T10:00:00.000Z",
+      );
+      const result = reduceDesktopUpdateStateOnUpdateAvailable(
+        checking,
+        version,
+        "2026-10-17T10:00:01.000Z",
+      );
+
+      expect(result).toMatchObject({
+        status: "downloaded",
+        availableVersion: "1.0.7-remote.18",
+        downloadedVersion: "1.0.7-remote.18",
+        checkedAt: "2026-10-17T10:00:01.000Z",
+        canRetry: true,
+      });
+    },
+  );
+
+  it("keeps the staged update after a missing release or failed background check", () => {
+    const checking = reduceDesktopUpdateStateOnCheckStart(
+      pendingRemoteUpdate,
+      "2026-10-17T10:00:00.000Z",
+    );
+
+    for (const result of [
+      reduceDesktopUpdateStateOnNoUpdate(checking, "2026-10-17T10:00:01.000Z"),
+      reduceDesktopUpdateStateOnCheckFailure(
+        checking,
+        "network unavailable",
+        "2026-10-17T10:00:01.000Z",
+      ),
+    ]) {
+      expect(result).toMatchObject({
+        status: "downloaded",
+        availableVersion: "1.0.7-remote.18",
+        downloadedVersion: "1.0.7-remote.18",
+        canRetry: true,
+      });
+    }
+  });
+
+  it("replaces a staged update with a newer release and ignores old download completions", () => {
+    const available = reduceDesktopUpdateStateOnUpdateAvailable(
+      reduceDesktopUpdateStateOnCheckStart(pendingRemoteUpdate, "2026-10-17T10:00:00.000Z"),
+      "1.0.7-remote.20",
+      "2026-10-17T10:00:01.000Z",
+    );
+    const downloading = reduceDesktopUpdateStateOnDownloadStart(available);
+    const staleDownload = reduceDesktopUpdateStateOnDownloadComplete(
+      downloading,
+      "1.0.7-remote.18",
+    );
+    const downloaded = reduceDesktopUpdateStateOnDownloadComplete(staleDownload, "1.0.7-remote.20");
+
+    expect(available).toMatchObject({
+      status: "available",
+      availableVersion: "1.0.7-remote.20",
+      downloadedVersion: null,
+    });
+    expect(staleDownload).toEqual(downloading);
+    expect(downloaded).toMatchObject({
+      status: "downloaded",
+      availableVersion: "1.0.7-remote.20",
+      downloadedVersion: "1.0.7-remote.20",
+    });
+    expect(reduceDesktopUpdateStateOnDownloadComplete(downloaded, "1.0.7-remote.18")).toEqual(
+      downloaded,
+    );
+  });
+  it("clears transient errors when a check starts", () => {
+    const state = reduceDesktopUpdateStateOnCheckStart(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "error",
+        message: "network",
+        errorContext: "check",
+        canRetry: true,
+      },
+      "2026-03-04T00:00:00.000Z",
+    );
+
+    expect(state.status).toBe("checking");
+    expect(state.message).toBeNull();
+    expect(state.errorContext).toBeNull();
+    expect(state.canRetry).toBe(false);
+  });
+
+  it("records a check failure without exposing an action", () => {
+    const state = reduceDesktopUpdateStateOnCheckFailure(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "checking",
+      },
+      "network unavailable",
+      "2026-03-04T00:00:00.000Z",
+    );
+
+    expect(state.status).toBe("error");
+    expect(state.errorContext).toBe("check");
+    expect(state.canRetry).toBe(true);
+  });
+
+  it("preserves available version on download failure for retry", () => {
+    const state = reduceDesktopUpdateStateOnDownloadFailure(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "downloaded",
+        availableVersion: "1.1.0",
+        downloadedVersion: "1.1.0",
+        downloadPercent: 100,
+      },
+      "checksum mismatch",
+    );
+
+    expect(state.status).toBe("available");
+    expect(state.availableVersion).toBe("1.1.0");
+    expect(state.downloadedVersion).toBeNull();
+    expect(state.errorContext).toBe("download");
+    expect(state.canRetry).toBe(true);
+  });
+
+  it("transitions to downloaded and then preserves install retry state", () => {
+    const downloaded = reduceDesktopUpdateStateOnDownloadComplete(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "downloading",
+        availableVersion: "1.1.0",
+      },
+      "1.1.0",
+    );
+    const failedInstall = reduceDesktopUpdateStateOnInstallFailure(
+      downloaded,
+      "backend shutdown timed out",
+    );
+
+    expect(downloaded.status).toBe("downloaded");
+    expect(downloaded.downloadedVersion).toBe("1.1.0");
+    expect(failedInstall.status).toBe("downloaded");
+    expect(failedInstall.errorContext).toBe("install");
+    expect(failedInstall.canRetry).toBe(true);
+  });
+
+  it("clears the previous failure for a retry without discarding the artifact or failure count", () => {
+    const failed = reduceDesktopUpdateStateOnInstallFailure(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "downloaded",
+        availableVersion: "1.1.0",
+        downloadedVersion: "1.1.0",
+        installFailureCount: 2,
+      },
+      "The update could not be installed automatically",
+    );
+    const retry = reduceDesktopUpdateStateOnInstallStart(failed);
+    expect(retry).toMatchObject({
+      status: "downloaded",
+      downloadedVersion: "1.1.0",
+      availableVersion: "1.1.0",
+      installFailureCount: 2,
+      errorContext: null,
+      message: null,
+      canRetry: false,
+    });
+  });
+
+  it("restores a durable restart failure without stale downloaded state", () => {
+    const state = reduceDesktopUpdateStateOnInstallRestartFailure(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+      },
+      "1.1.0",
+      2,
+      "Synara restarted before the update was installed.",
+    );
+
+    expect(state).toMatchObject({
+      status: "error",
+      availableVersion: "1.1.0",
+      downloadedVersion: null,
+      installFailureCount: 2,
+      message: "Synara restarted before the update was installed.",
+      errorContext: "install",
+      canRetry: true,
+    });
+  });
+
+  it("clears stale download state when no update is available", () => {
+    const state = reduceDesktopUpdateStateOnNoUpdate(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "error",
+        availableVersion: "1.1.0",
+        downloadedVersion: "1.0.0",
+        message: "old failure",
+        errorContext: "download",
+        canRetry: true,
+        installFailureCount: 2,
+      },
+      "2026-03-04T00:00:00.000Z",
+    );
+
+    expect(state.status).toBe("up-to-date");
+    expect(state.availableVersion).toBeNull();
+    expect(state.downloadedVersion).toBeNull();
+    expect(state.message).toBeNull();
+    expect(state.errorContext).toBeNull();
+    expect(state.installFailureCount).toBe(0);
+  });
+
+  it("tracks available, download start, and progress cleanly", () => {
+    const available = reduceDesktopUpdateStateOnUpdateAvailable(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "checking",
+      },
+      "1.1.0",
+      "2026-03-04T00:00:00.000Z",
+    );
+    const downloading = reduceDesktopUpdateStateOnDownloadStart(available);
+    const progress = reduceDesktopUpdateStateOnDownloadProgress(downloading, 55.5);
+
+    expect(available.status).toBe("available");
+    expect(downloading.status).toBe("downloading");
+    expect(downloading.downloadPercent).toBeNull();
+    expect(progress.downloadPercent).toBe(55.5);
+    expect(progress.errorContext).toBeNull();
+  });
+
+  it("preserves install failure count across a retry for the same version", () => {
+    const failed = reduceDesktopUpdateStateOnInstallRestartFailure(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+      },
+      "1.1.0",
+      2,
+      "Install failed",
+    );
+    const checking = reduceDesktopUpdateStateOnCheckStart(failed, "2026-03-04T00:00:00.000Z");
+    const available = reduceDesktopUpdateStateOnUpdateAvailable(
+      checking,
+      "1.1.0",
+      "2026-03-04T00:00:01.000Z",
+    );
+    const downloaded = reduceDesktopUpdateStateOnDownloadComplete(
+      reduceDesktopUpdateStateOnDownloadStart(available),
+      "1.1.0",
+    );
+
+    expect(checking.installFailureCount).toBe(2);
+    expect(available.installFailureCount).toBe(2);
+    expect(downloaded.installFailureCount).toBe(2);
+  });
+
+  it("resets install failure count when a different update appears", () => {
+    const state = reduceDesktopUpdateStateOnUpdateAvailable(
+      {
+        ...createInitialDesktopUpdateState("1.0.0", runtimeInfo),
+        enabled: true,
+        status: "error",
+        availableVersion: "1.1.0",
+        installFailureCount: 2,
+      },
+      "1.2.0",
+      "2026-03-04T00:00:00.000Z",
+    );
+
+    expect(state.installFailureCount).toBe(0);
+  });
+});

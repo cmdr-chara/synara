@@ -1,0 +1,156 @@
+// FILE: ExpandedImageOverlay.tsx
+// Purpose: Shared fullscreen image preview overlay.
+// Layer: Chat and composer UI component
+// Exports: ExpandedImageOverlay
+
+import { useLayoutEffect, useState } from "react";
+
+import { LocalImageErrorCard, useLocalImageDownloadClick } from "~/components/LocalImagePreview";
+import { Button } from "~/components/ui/button";
+import { useExecutionImageSource } from "~/hooks/useExecutionImageSource";
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "~/lib/icons";
+import { notifyNativeSurfaceOcclusionChange } from "~/lib/nativeSurfaceOcclusion";
+import type { ExpandedImagePreview } from "./ExpandedImagePreview";
+import { useTranslation } from "~/i18n";
+
+interface ExpandedImageOverlayProps {
+  readonly expandedImage: ExpandedImagePreview | null;
+  readonly onClose: () => void;
+  readonly onNavigate: (direction: -1 | 1) => void;
+}
+
+/** Retry remounts only this image, preserving the overlay and its navigation. */
+function ExpandedImageContent({
+  source,
+  name,
+  onRetry,
+}: {
+  source: string;
+  name: string;
+  onRetry: () => void;
+}) {
+  const {
+    ref: imageRef,
+    src: imageSrc,
+    error: imageError,
+    onError: onImageError,
+  } = useExecutionImageSource(source, false);
+  const [decodeFailed, setDecodeFailed] = useState(false);
+  const onDownloadClick = useLocalImageDownloadClick({ downloadUrl: source, downloadName: name });
+
+  if (imageError || decodeFailed) {
+    return (
+      <LocalImageErrorCard
+        downloadUrl={source}
+        downloadName={name}
+        onDownloadClick={onDownloadClick}
+        onRetry={onRetry}
+      />
+    );
+  }
+
+  return (
+    <img
+      ref={imageRef}
+      src={imageSrc}
+      alt={name}
+      className="max-h-[86vh] max-w-[92vw] select-none rounded-lg border border-[color:var(--color-border)] bg-[var(--color-background-elevated-primary-opaque)] object-contain shadow-2xl"
+      draggable={false}
+      onError={(event) => {
+        if (onImageError(event)) setDecodeFailed(true);
+      }}
+    />
+  );
+}
+
+export function ExpandedImageOverlay({
+  expandedImage,
+  onClose,
+  onNavigate,
+}: ExpandedImageOverlayProps) {
+  const { t } = useTranslation();
+
+  const expandedImageItem = expandedImage ? expandedImage.images[expandedImage.index] : null;
+  const [retryRevision, setRetryRevision] = useState(0);
+  const open = expandedImageItem !== null;
+
+  useLayoutEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    notifyNativeSurfaceOcclusionChange();
+    return notifyNativeSurfaceOcclusionChange;
+  }, [open]);
+
+  if (!expandedImage || !expandedImageItem) {
+    return null;
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4 py-6 [-webkit-app-region:no-drag]"
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("chat:imagePreview_expandedPreview")}
+    >
+      <button
+        type="button"
+        className="absolute inset-0 z-0 cursor-zoom-out"
+        aria-label={t("chat:imagePreview_closePreview")}
+        onClick={onClose}
+      />
+      {expandedImage.images.length > 1 ? (
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          className="absolute left-2 top-1/2 z-20 -translate-y-1/2 text-white/90 hover:bg-white/10 hover:text-white sm:left-6"
+          aria-label={t("chat:imagePreview_previousImage")}
+          onClick={() => onNavigate(-1)}
+        >
+          <ChevronLeftIcon className="size-5" />
+        </Button>
+      ) : null}
+      <div className="relative isolate z-10 max-h-[92vh] max-w-[92vw]">
+        <Button
+          type="button"
+          size="icon-xs"
+          variant="ghost"
+          className="absolute right-2 top-2"
+          onClick={onClose}
+          aria-label={t("chat:imagePreview_closePreview")}
+        >
+          <XIcon />
+        </Button>
+        <ExpandedImageContent
+          key={`${expandedImageItem.src}:${retryRevision}`}
+          source={expandedImageItem.src}
+          name={expandedImageItem.name}
+          onRetry={() => setRetryRevision((revision) => revision + 1)}
+        />
+        <p className="mt-2 max-w-[92vw] truncate text-center text-ui leading-snug text-muted-foreground/80">
+          {expandedImageItem.name}
+          {expandedImage.images.length > 1
+            ? t("chat:symbol10", {
+                value0: expandedImage.index + 1,
+                value1: expandedImage.images.length,
+              })
+            : ""}
+        </p>
+      </div>
+      {expandedImage.images.length > 1 ? (
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          className="absolute right-2 top-1/2 z-20 -translate-y-1/2 text-white/90 hover:bg-white/10 hover:text-white sm:right-6"
+          aria-label={t("chat:imagePreview_nextImage")}
+          onClick={() => onNavigate(1)}
+        >
+          <ChevronRightIcon className="size-5" />
+        </Button>
+      ) : null}
+    </div>
+  );
+}

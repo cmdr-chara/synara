@@ -1,0 +1,173 @@
+import { t } from "~/i18n";
+// FILE: useComposerImageIntake.ts
+// Purpose: Serializes image preparation, exposes pending UI state, and cancels stale draft work.
+// Layer: Web composer hook
+
+import { PROVIDER_SEND_TURN_MAX_ATTACHMENTS, type ThreadId } from "@synara/contracts";
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from "react";
+
+import type { ComposerImageAttachment } from "../composerDraftStore";
+import {
+  prepareComposerImageAttachmentsFromFiles,
+  type ComposerImageBuildResult,
+} from "../lib/composerSend";
+
+const ATTACHMENT_LIMIT_ERROR = "You can attach up to {{value0}} references per message.";
+
+function revokePreparedImages(images: readonly ComposerImageAttachment[]): void {
+  if (typeof URL === "undefined") return;
+  for (const image of images) {
+    if (image.previewUrl.startsWith("blob:")) URL.revokeObjectURL(image.previewUrl);
+  }
+}
+
+export interface ComposerImageIntakeJob {
+  readonly files: readonly File[];
+  readonly existingAttachmentCount: () => number;
+  readonly commitImages: (images: ComposerImageAttachment[]) => number;
+  readonly onError: (error: string | null) => void;
+  readonly prepareFiles?:
+    | ((input: {
+        files: readonly File[];
+        existingAttachmentCount: number;
+      }) => Promise<ComposerImageBuildResult>)
+    | undefined;
+}
+
+export class ComposerImageIntakeQueue {
+  readonly #listeners = new Set<() => void>();
+  #generation = 0;
+  #pendingCount = 0;
+  #failureCount = 0;
+  #batchFailureCount: number | null = null;
+  #tail: Promise<void> = Promise.resolve();
+  #disposed = false;
+
+  readonly subscribe = (listener: () => void): (() => void) => {
+    this.#listeners.add(listener);
+    return () => this.#listeners.delete(listener);
+  };
+
+  readonly pendingCount = (): number => this.#pendingCount;
+
+  enqueue(job: ComposerImageIntakeJob): Promise<void> {
+    if (this.#disposed || job.files.length === 0) return Promise.resolve();
+    const generation = this.#generation;
+    if (this.#pendingCount === 0) this.#batchFailureCount = this.#failureCount;
+    this.#setPendingCount(this.#pendingCount + job.files.length);
+    const prepareFiles = job.prepareFiles ?? prepareComposerImageAttachmentsFromFiles;
+    const task = this.#tail
+      .catch(() => undefined)
+      .then(async () => {
+        if (this.#isStale(generation)) return;
+        const result = await prepareFiles({
+          files: job.files,
+          existingAttachmentCount: job.existingAttachmentCount(),
+        });
+        if (this.#isStale(generation)) {
+          revokePreparedImages(result.images);
+          return;
+        }
+        const acceptedCount = job.commitImages(result.images);
+        const rejectedAtCapacity =
+          acceptedCount < result.images.length &&
+          job.existingAttachmentCount() >= PROVIDER_SEND_TURN_MAX_ATTACHMENTS;
+        const error = rejectedAtCapacity
+          ? t(ATTACHMENT_LIMIT_ERROR, { value0: PROVIDER_SEND_TURN_MAX_ATTACHMENTS })
+          : result.error;
+        if (error !== null) this.#failureCount += 1;
+        if (error !== null || this.#failureCount === this.#batchFailureCount) job.onError(error);
+      })
+      .catch((cause) => {
+        if (this.#isStale(generation)) return;
+        this.#failureCount += 1;
+        job.onError(
+          cause instanceof Error ? cause.message : t("common:synaraCouldNotPrepareImage"),
+        );
+      })
+      .finally(() => {
+        if (this.#isStale(generation)) return;
+        this.#setPendingCount(Math.max(0, this.#pendingCount - job.files.length));
+      });
+    this.#tail = task;
+    return task;
+  }
+
+  async waitForPending(): Promise<boolean> {
+    const generation = this.#generation;
+    const failureCount = this.#batchFailureCount ?? this.#failureCount;
+    while (this.#pendingCount > 0) {
+      const tail = this.#tail;
+      await tail.catch(() => undefined);
+      if (tail === this.#tail && this.#pendingCount === 0) break;
+    }
+    if (!this.#isStale(generation) && this.#pendingCount === 0) this.#batchFailureCount = null;
+    // A failed or retired intake cannot silently turn a waiting send into text-only.
+    // Snapshotting each wait keeps later explicit sends independent of older failures.
+    return !this.#isStale(generation) && this.#failureCount === failureCount;
+  }
+
+  activate(): void {
+    this.#disposed = false;
+  }
+
+  dispose(): void {
+    if (this.#disposed) return;
+    this.#disposed = true;
+    this.#generation += 1;
+    this.#batchFailureCount = null;
+    this.#tail = Promise.resolve();
+    this.#setPendingCount(0);
+  }
+
+  #isStale(generation: number): boolean {
+    return this.#disposed || generation !== this.#generation;
+  }
+
+  #setPendingCount(nextCount: number): void {
+    if (nextCount === this.#pendingCount) return;
+    this.#pendingCount = nextCount;
+    for (const listener of this.#listeners) listener();
+  }
+}
+
+export function useComposerImageIntake(input: {
+  readonly threadId: ThreadId;
+  readonly existingAttachmentCount: () => number;
+  readonly commitImages: (images: ComposerImageAttachment[]) => number;
+  readonly onError: (error: string | null) => void;
+}) {
+  const queue = useMemo(() => new ComposerImageIntakeQueue(), [input.threadId]);
+  useEffect(() => {
+    // StrictMode replays effect cleanup/setup with the same memoized queue.
+    // Reactivate intake while keeping preparations from the previous lifetime stale.
+    queue.activate();
+    return () => queue.dispose();
+  }, [queue]);
+  const pendingCount = useSyncExternalStore(
+    queue.subscribe,
+    queue.pendingCount,
+    queue.pendingCount,
+  );
+
+  const addImages = useCallback(
+    (files: readonly File[]) => {
+      void queue.enqueue({
+        files,
+        existingAttachmentCount: input.existingAttachmentCount,
+        commitImages: input.commitImages,
+        onError: input.onError,
+      });
+    },
+    [input.commitImages, input.existingAttachmentCount, input.onError, queue],
+  );
+
+  const waitForPending = useCallback(() => queue.waitForPending(), [queue]);
+
+  return {
+    addImages,
+    isPreparingImages: pendingCount > 0,
+    pendingImageCount: pendingCount,
+    waitForPending,
+  };
+}

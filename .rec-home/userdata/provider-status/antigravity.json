@@ -1,0 +1,23 @@
+{
+  "provider": "antigravity",
+  "instanceId": "antigravity",
+  "driver": "antigravity",
+  "status": "error",
+  "available": false,
+  "installed": false,
+  "authStatus": "unknown",
+  "checkedAt": "2026-11-23T22:04:51Z",
+  "message": "Antigravity CLI (`agy`) is not installed or not on PATH.",
+  "displayName": "Antigravity",
+  "enabled": true,
+  "versionAdvisory": {
+    "status": "unknown",
+    "currentVersion": null,
+    "latestVersion": null,
+    "latestVersionKnowable": false,
+    "updateCommand": "agy update",
+    "canUpdate": true,
+    "checkedAt": "2026-11-22T12:46:55.171Z",
+    "message": null
+  }
+}

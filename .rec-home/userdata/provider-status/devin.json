@@ -1,0 +1,24 @@
+{
+  "provider": "devin",
+  "instanceId": "devin",
+  "driver": "devin",
+  "status": "ready",
+  "available": true,
+  "authStatus": "authenticated",
+  "version": "3000.14.30821",
+  "checkedAt": "2026-11-22T12:46:55.167Z",
+  "authType": "apiKey",
+  "authLabel": "Devin API Key",
+  "displayName": "Devin",
+  "enabled": true,
+  "versionAdvisory": {
+    "status": "unknown",
+    "currentVersion": "3000.14.30821",
+    "latestVersion": null,
+    "latestVersionKnowable": false,
+    "updateCommand": null,
+    "canUpdate": false,
+    "checkedAt": "2026-11-22T12:46:55.244Z",
+    "message": null
+  }
+}

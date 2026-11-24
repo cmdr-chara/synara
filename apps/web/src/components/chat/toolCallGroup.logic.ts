@@ -1,0 +1,388 @@
+// FILE: toolCallGroup.logic.ts
+// Purpose: Summarizes a settled run of tool-call work entries into one compact
+//          verb label ("Read 2 files, ran 3 commands") plus failed and running
+//          counts for the collapsed tool-group disclosure in the transcript.
+// Layer: Web chat presentation helpers
+// Exports: MIN_COLLAPSIBLE_TOOL_GROUP_SIZE, workEntryRowCount,
+//          multiFileEditLabel, ToolCallSummaryCategory,
+//          ToolCallGroupSummary, isSummarizableToolCallEntry,
+//          classifyToolCallSummaryCategory, summarizeToolCallGroup
+
+import { pluralize } from "~/i18n/pluralize";
+import { t } from "~/i18n";
+import { isFileChangeWorkLogEntry, type WorkLogEntry } from "../../session-logic";
+import { extractToolArgumentField } from "../../lib/toolArgumentSummary";
+import {
+  deriveCommandReadTargets,
+  deriveReadableCommandDisplay,
+  extractWebFetchUrl,
+  resolveCommandVisualKind,
+} from "../../lib/toolCallLabel";
+import { isReasoningUpdateWorkEntry } from "./agentActivity.logic";
+
+// A single tool row collapses into nothing useful; only runs of 2+ rows fold.
+export const MIN_COLLAPSIBLE_TOOL_GROUP_SIZE = 2;
+
+// Rows an entry occupies when listed: a file-change call renders one
+// "Edited <file>" row per changed file, so one patch can be a whole column.
+// Fold thresholds count these rows, not calls.
+export function workEntryRowCount(entry: WorkLogEntry): number {
+  return isFileChangeWorkLogEntry(entry) ? Math.max(1, entry.changedFiles?.length ?? 0) : 1;
+}
+
+// One-line label for a call that would list several edited-file rows.
+export function multiFileEditLabel(entry: WorkLogEntry, translate: typeof t = t): string | null {
+  const rowCount = workEntryRowCount(entry);
+  return rowCount > 1
+    ? capitalizeFirst(summaryPartPhrase("edit", rowCount, true, translate))
+    : null;
+}
+
+export type ToolCallSummaryCategory =
+  | "read"
+  | "edit"
+  | "search"
+  | "web-search"
+  | "command"
+  | "fetch"
+  | "agent"
+  | "background"
+  | "tool"
+  | "other";
+
+export interface ToolCallGroupSummaryPart {
+  category: ToolCallSummaryCategory;
+  count: number;
+}
+
+export interface ToolCallGroupSummary {
+  // Verb summary in the order the work happened: "Read 2 files, ran 3 commands".
+  label: string;
+  parts: ReadonlyArray<ToolCallGroupSummaryPart>;
+  // Calls that failed; the row appends `failedLabel` in the error tone.
+  failedCount: number;
+  failedLabel: string | null;
+  // Calls still in flight; the row appends `runningLabel` so a folded group
+  // with live work never reads as settled.
+  runningCount: number;
+  runningLabel: string | null;
+  entryCount: number;
+  // The one kind every summarized call shares, or "mixed": the collapsed row
+  // wears that kind's glyph instead of borrowing an arbitrary entry's.
+  iconCategory: ToolCallSummaryCategory | "mixed";
+  // First summarized entry, for kinds whose glyph is per entry (MCP servers,
+  // fetched sites).
+  iconEntry: WorkLogEntry;
+}
+
+// Rich rows (subagent strips, automation cards, thread-creation recaps) and
+// non-tool tones (errors, approvals, info) must stay individually visible, so
+// they never fold into a summary group. Background task launches fold like any
+// command: their live state lives in the Environment panel, not the transcript.
+export function isSummarizableToolCallEntry(entry: WorkLogEntry): boolean {
+  return (
+    (entry.tone === "tool" ||
+      (entry.tone === "error" &&
+        entry.toolStatus === "failed" &&
+        entry.activityKind?.startsWith("tool.") === true)) &&
+    !(entry.toolCallId && isReasoningUpdateWorkEntry(entry)) &&
+    !entry.synaraThreadCreation &&
+    !entry.automation &&
+    !entry.connectorProposalId &&
+    !entry.subagentAction &&
+    (entry.subagents?.length ?? 0) === 0
+  );
+}
+
+const READ_VERBS = new Set(["Read", "Reading"]);
+const SEARCH_VERBS = new Set(["Searched", "Searching", "Found", "Finding"]);
+// Provider tools that only read or search, named the way Claude and ACP agents
+// report them (`Read`, `read_file`, `view`, `Grep`, `Glob`, `search`, `find`).
+// Keep in sync with the icon matchers in TimelineWorkEntryRow.tsx.
+const READ_TOOL_NAMES = new Set([
+  "read",
+  "reading",
+  "readfile",
+  "readfiles",
+  "readtextfile",
+  "view",
+  "viewfile",
+  "viewtextfile",
+  "hashlineread",
+]);
+const SEARCH_TOOL_NAMES = new Set([
+  "grep",
+  "glob",
+  "search",
+  "searching",
+  "searched",
+  "find",
+  "finding",
+  "found",
+  "findfiles",
+  "searchfiles",
+  "searchtool",
+  "hashlinegrep",
+]);
+
+function normalizedToolName(entry: WorkLogEntry): string {
+  // toolName wins; the title's first word is the fallback for ACP calls that
+  // arrive with only a `kind` and no native name ("Read /home/x").
+  const title = entry.command || entry.rawCommand ? undefined : entry.toolTitle;
+  const name = entry.toolName ?? title?.trim().split(/\s+/, 1)[0] ?? "";
+  return name.toLowerCase().replace(/[^a-z]/g, "");
+}
+
+function classifyCommandVerb(verb: string): ToolCallSummaryCategory {
+  if (READ_VERBS.has(verb)) return "read";
+  if (SEARCH_VERBS.has(verb)) return "search";
+  return "command";
+}
+
+export function classifyToolCallSummaryCategory(entry: WorkLogEntry): ToolCallSummaryCategory {
+  if (entry.backgroundTask) {
+    return "background";
+  }
+  if (isFileChangeWorkLogEntry(entry)) {
+    return "edit";
+  }
+  const toolName = normalizedToolName(entry);
+  if (entry.requestKind === "file-read" || READ_TOOL_NAMES.has(toolName)) {
+    return "read";
+  }
+  // Web searches read differently from code searches. Some agents report their
+  // native grep/find as a web_search item, so a code-search name wins.
+  if (
+    toolName === "websearch" ||
+    (entry.itemType === "web_search" && !SEARCH_TOOL_NAMES.has(toolName))
+  ) {
+    return "web-search";
+  }
+  if (entry.itemType === "web_search" || SEARCH_TOOL_NAMES.has(toolName)) {
+    return "search";
+  }
+  if (extractWebFetchUrl(entry)) {
+    return "fetch";
+  }
+  if (entry.requestKind === "tool") {
+    return "tool";
+  }
+  const command = entry.command ?? entry.rawCommand;
+  if (entry.itemType === "command_execution" || entry.requestKind === "command" || command) {
+    if (command) {
+      const kind = resolveCommandVisualKind(command);
+      return kind === "read" ? "read" : kind === "search" ? "search" : "command";
+    }
+    // Structured command actions (e.g. Codex read/search) carry the verb as the
+    // derived tool title without any shell command string.
+    const titleVerb = entry.toolTitle?.trim().split(/\s+/, 1)[0] ?? "";
+    return classifyCommandVerb(titleVerb);
+  }
+  if (entry.itemType === "collab_agent_tool_call") {
+    return "agent";
+  }
+  if (entry.itemType === "mcp_tool_call" || entry.itemType === "dynamic_tool_call") {
+    return "tool";
+  }
+  if (entry.toolName) {
+    return "tool";
+  }
+  return "other";
+}
+
+// Distinct-file identity for an edit/read entry. Entries with no file info
+// count as one unit each so the total never under-reports work.
+function entryFileKeys(entry: WorkLogEntry): ReadonlyArray<string> {
+  if (entry.changedFiles && entry.changedFiles.length > 0) {
+    return entry.changedFiles;
+  }
+  const detailFiles = entry.toolDetails?.files;
+  if (detailFiles && detailFiles.length > 0) {
+    return detailFiles;
+  }
+  const command = entry.command ?? entry.rawCommand;
+  if (command) {
+    const readTargets = deriveCommandReadTargets(command);
+    if (readTargets) {
+      return readTargets;
+    }
+    const target = deriveReadableCommandDisplay(command).target.trim();
+    if (target.length > 0) {
+      return [target];
+    }
+  }
+  const argumentPath = entry.detail
+    ? extractToolArgumentField(entry.detail, ["file_path", "filePath", "path"], {
+        fallbackScan: "whenUnparsed",
+      })
+    : null;
+  if (argumentPath) {
+    return [argumentPath];
+  }
+  if (entry.preview?.trim()) {
+    return [entry.preview.trim()];
+  }
+  return [];
+}
+
+// Every kind is named so the line says exactly what happened. Only a run of
+// more than five kinds folds its tail into one "N other actions" part, keeping
+// the line to five phrases.
+const MAX_NAMED_SUMMARY_PARTS = 5;
+const NAMED_PARTS_BEFORE_OVERFLOW = 4;
+
+function countPhrase(count: number, noun: string): string {
+  return `${count} ${pluralize(count, noun)}`;
+}
+
+function searchPhrase(count: number, translate: typeof t): string {
+  if (count === 1) return translate("chat:searchedOnce");
+  if (count === 2) return translate("chat:searchedTwice");
+  return translate("chat:searchedTimes", { value0: count });
+}
+
+function webSearchPhrase(count: number, translate: typeof t): string {
+  if (count === 1) return translate("chat:searchedTheWebOnce");
+  if (count === 2) return translate("chat:searchedTheWebTwice");
+  return translate("chat:searchedTheWebTimes", { value0: count });
+}
+
+// Lowercase verb phrase; the label capitalizes only its first part.
+function summaryPartPhrase(
+  category: ToolCallSummaryCategory,
+  count: number,
+  isSolePart: boolean,
+  translate: typeof t,
+): string {
+  switch (category) {
+    case "read":
+      return translate("chat:read", { value0: countPhrase(count, "file") });
+    case "edit":
+      return translate("chat:edited", { value0: countPhrase(count, "file") });
+    case "search":
+      return searchPhrase(count, translate);
+    case "web-search":
+      return webSearchPhrase(count, translate);
+    case "command":
+      return translate("chat:ran2", { value0: countPhrase(count, "command") });
+    case "fetch":
+      return translate("chat:fetched", { value0: countPhrase(count, "page") });
+    case "agent":
+      return translate("chat:ranAgent", {
+        value0: count,
+        value1: pluralize(count, "task"),
+      });
+    case "background":
+      return translate("chat:inBackground", { count });
+    case "tool":
+      return translate("chat:used", { value0: countPhrase(count, "tool") });
+    case "other":
+      return isSolePart
+        ? translate("chat:ranTool", {
+            value0: count,
+            value1: pluralize(count, "call"),
+          })
+        : translate("chat:other2", {
+            value0: count,
+            value1: pluralize(count, "action"),
+          });
+  }
+}
+
+function capitalizeFirst(value: string): string {
+  return value.length === 0 ? value : `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+}
+
+function joinSummaryParts(
+  parts: ReadonlyArray<ToolCallGroupSummaryPart>,
+  translate: typeof t,
+): string {
+  const named =
+    parts.length > MAX_NAMED_SUMMARY_PARTS ? parts.slice(0, NAMED_PARTS_BEFORE_OVERFLOW) : parts;
+  const overflowCount = parts.slice(named.length).reduce((total, part) => total + part.count, 0);
+  const phrases = named.map((part) =>
+    summaryPartPhrase(part.category, part.count, parts.length === 1, translate),
+  );
+  if (overflowCount > 0) {
+    phrases.push(
+      translate("chat:other2", {
+        value0: overflowCount,
+        value1: pluralize(overflowCount, "action"),
+      }),
+    );
+  }
+  return capitalizeFirst(phrases.join(", "));
+}
+
+export function summarizeToolCallGroup(
+  entries: ReadonlyArray<WorkLogEntry>,
+  translate: typeof t = t,
+): ToolCallGroupSummary | null {
+  const summarizable = entries.filter(isSummarizableToolCallEntry);
+  const rowCount = summarizable.reduce((total, entry) => total + workEntryRowCount(entry), 0);
+  if (rowCount < MIN_COLLAPSIBLE_TOOL_GROUP_SIZE) {
+    return null;
+  }
+
+  // Map insertion order is first appearance, so parts read in the order the
+  // agent did the work.
+  const countByCategory = new Map<ToolCallSummaryCategory, number>();
+  const distinctFilesByCategory = new Map<ToolCallSummaryCategory, Set<string>>();
+  let runningCount = 0;
+  let failedCount = 0;
+
+  for (const entry of summarizable) {
+    if (entry.toolStatus === "running") {
+      runningCount += 1;
+    }
+    if (entry.toolStatus === "failed" || entry.backgroundTask?.status === "failed") {
+      failedCount += 1;
+    }
+    const category = classifyToolCallSummaryCategory(entry);
+    const count = countByCategory.get(category) ?? 0;
+    if (category === "edit" || category === "read") {
+      const fileKeys = entryFileKeys(entry);
+      if (fileKeys.length === 0) {
+        countByCategory.set(category, count + 1);
+        continue;
+      }
+      countByCategory.set(category, count);
+      const distinctFiles =
+        distinctFilesByCategory.get(category) ??
+        distinctFilesByCategory.set(category, new Set()).get(category)!;
+      for (const fileKey of fileKeys) {
+        distinctFiles.add(fileKey);
+      }
+      continue;
+    }
+    countByCategory.set(category, count + 1);
+  }
+
+  for (const [category, distinctFiles] of distinctFilesByCategory) {
+    countByCategory.set(category, (countByCategory.get(category) ?? 0) + distinctFiles.size);
+  }
+
+  // "Other" calls always trail the named kinds.
+  const parts = [...countByCategory.entries()]
+    .filter(([, count]) => count > 0)
+    .toSorted(([left], [right]) => Number(left === "other") - Number(right === "other"))
+    .map(([category, count]) => ({ category, count }));
+
+  return {
+    label: joinSummaryParts(parts, translate),
+    parts,
+    failedCount,
+    failedLabel:
+      failedCount > 0
+        ? translate("chat:failed", { value0: failedCount, count: failedCount })
+        : null,
+    runningCount,
+    runningLabel:
+      runningCount > 0
+        ? translate("chat:toolsRunning", { value0: runningCount, count: runningCount })
+        : null,
+    entryCount: summarizable.length,
+    iconCategory: parts.length === 1 ? parts[0]!.category : "mixed",
+    iconEntry: summarizable[0]!,
+  };
+}

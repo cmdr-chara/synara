@@ -1,0 +1,369 @@
+// FILE: mac-update-zip-finalize.ts
+// Purpose: Rebuilds and validates macOS Squirrel update zip artifacts before publishing.
+// Layer: Release/build helper
+// Exports: finalizeMacUpdateZip for build scripts and smoke checks.
+
+import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import {
+  createReadStream,
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, dirname, join } from "node:path";
+
+import {
+  MAC_MINIMUM_DARWIN_VERSION,
+  MAC_MINIMUM_SYSTEM_VERSION,
+} from "./desktop-platform-build-config.ts";
+
+import { serializeMacUpdateManifest } from "./mac-update-manifest.ts";
+import { resolveSingleMacDmgFileName } from "./mac-dmg-finalize.ts";
+
+import {
+  buildMacUpdateZipSymlinkEntries,
+  isZipInfoSymlink,
+  resolveMacUpdateManifestFileNames,
+  resolveSingleMacUpdateZipFileName,
+  resolveSingleTopLevelMacAppBundle,
+  updateMacUpdateManifestZipEntry,
+} from "./mac-update-zip.ts";
+
+export interface FinalizeMacUpdateZipOptions {
+  readonly stageDistDir: string;
+  readonly signed: boolean;
+  readonly verbose?: boolean;
+  /** Scripted-update flavors have no updater feed; artifact checks still run. */
+  readonly requireUpdateManifest?: boolean;
+  /** Also require a sealed app with this code and Info.plist identity. */
+  readonly expectedBundleIdentifier?: string;
+}
+
+export interface FinalizedMacUpdateZip {
+  readonly zipPath: string;
+  readonly zipFileName: string;
+  readonly sha512: string;
+  readonly size: number;
+  readonly updatedManifestPaths: ReadonlyArray<string>;
+  readonly removedZipBlockmapPath: string | null;
+}
+
+function readDirectoryEntries(path: string): string[] {
+  try {
+    return readdirSync(path);
+  } catch {
+    return [];
+  }
+}
+
+function findFirstMacAppBundle(root: string): string | null {
+  const pending = [root];
+  while (pending.length > 0) {
+    const current = pending.shift();
+    if (!current) {
+      continue;
+    }
+    for (const entry of readDirectoryEntries(current)) {
+      const candidate = join(current, entry);
+      let stat;
+      try {
+        stat = statSync(candidate);
+      } catch {
+        continue;
+      }
+      if (!stat.isDirectory()) {
+        continue;
+      }
+      if (entry.endsWith(".app")) {
+        return candidate;
+      }
+      pending.push(candidate);
+    }
+  }
+  return null;
+}
+
+// Keep signature verification output well past spawnSync's 1 MB default to
+// avoid spurious ENOBUFS failures. The archive listing below is streamed.
+const COMMAND_OUTPUT_MAX_BUFFER_BYTES = 64 * 1024 * 1024;
+
+function runTextCommand(
+  command: string,
+  args: ReadonlyArray<string>,
+  options: { readonly cwd?: string; readonly verbose?: boolean } = {},
+): string {
+  const result = spawnSync(command, [...args], {
+    cwd: options.cwd,
+    encoding: "utf8",
+    maxBuffer: COMMAND_OUTPUT_MAX_BUFFER_BYTES,
+  });
+  if (options.verbose && result.stdout) {
+    process.stdout.write(result.stdout);
+  }
+  if (options.verbose && result.stderr) {
+    process.stderr.write(result.stderr);
+  }
+  if (result.status !== 0) {
+    throw new Error(
+      `${command} ${args.join(" ")} failed: ${(result.stderr || result.stdout || "").trim()}`,
+    );
+  }
+  return result.stdout;
+}
+
+// Archive commands run asynchronously and stream a listing of thousands of
+// entries: the release build packs this ZIP while it awaits DMG notarization,
+// whose wait must not be blocked by a long ditto.
+function runArchiveCommand(
+  command: string,
+  args: ReadonlyArray<string>,
+  options: { readonly cwd?: string; readonly verbose?: boolean } = {},
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, [...args], {
+      cwd: options.cwd,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const stdout: Buffer[] = [];
+    const stderr: Buffer[] = [];
+    child.stdout.on("data", (chunk: Buffer) => stdout.push(chunk));
+    child.stderr.on("data", (chunk: Buffer) => stderr.push(chunk));
+    child.once("error", reject);
+    child.once("close", (status) => {
+      const output = Buffer.concat(stdout).toString("utf8");
+      const errors = Buffer.concat(stderr).toString("utf8");
+      if (options.verbose && output) process.stdout.write(output);
+      if (options.verbose && errors) process.stderr.write(errors);
+      if (status !== 0) {
+        reject(new Error(`${command} ${args.join(" ")} failed: ${(errors || output).trim()}`));
+        return;
+      }
+      resolve(output);
+    });
+  });
+}
+
+async function listZipEntries(zipPath: string): Promise<string[]> {
+  return (await runArchiveCommand("unzip", ["-Z", "-1", zipPath]))
+    .split(/\r?\n/)
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+}
+
+async function assertMacZipFrameworkSymlinks(zipPath: string): Promise<string> {
+  const appBundleName = resolveSingleTopLevelMacAppBundle(await listZipEntries(zipPath));
+  for (const entry of buildMacUpdateZipSymlinkEntries(appBundleName)) {
+    const zipInfo = await runArchiveCommand("unzip", ["-Z", "-v", zipPath, entry]);
+    if (!isZipInfoSymlink(zipInfo)) {
+      throw new Error(`macOS update zip entry must be a symlink: ${entry}`);
+    }
+  }
+  return appBundleName;
+}
+
+export function verifyMacAppSignature(
+  appBundlePath: string,
+  requireSignature: boolean,
+  expectedBundleIdentifier?: string,
+): void {
+  const codeResourcesPath = join(appBundlePath, "Contents", "_CodeSignature", "CodeResources");
+  if (expectedBundleIdentifier && !existsSync(codeResourcesPath)) {
+    throw new Error(`Expected a sealed macOS app signature for ${expectedBundleIdentifier}.`);
+  }
+  if (!requireSignature && !existsSync(codeResourcesPath)) {
+    return;
+  }
+  const identityRequirement = expectedBundleIdentifier
+    ? [
+        "--test-requirement",
+        `=identifier ${JSON.stringify(expectedBundleIdentifier)} and info[CFBundleIdentifier] = ${JSON.stringify(expectedBundleIdentifier)}`,
+      ]
+    : [];
+  runTextCommand("codesign", [
+    "--verify",
+    "--deep",
+    "--strict",
+    "--verbose=4",
+    ...identityRequirement,
+    appBundlePath,
+  ]);
+}
+
+function computeSha512Base64(filePath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hash = createHash("sha512");
+    const stream = createReadStream(filePath);
+    stream.on("error", reject);
+    stream.on("data", (chunk) => hash.update(chunk));
+    stream.on("end", () => resolve(hash.digest("base64")));
+  });
+}
+
+function readMacPackagingStage(stageDistDir: string) {
+  // The retained stage owns the package identity, including recovery after a
+  // failed DMG notarization or an interrupted ZIP/manifest finalization.
+  // Legacy ZIP stages cannot reconstruct a missing manifest from this identity.
+  const packagePath = join(dirname(stageDistDir), "package.json");
+  if (!existsSync(packagePath)) return undefined;
+  return JSON.parse(readFileSync(packagePath, "utf8")) as {
+    version?: unknown;
+    productName?: unknown;
+    build?: { mac?: { target?: unknown; minimumSystemVersion?: unknown }; publish?: unknown };
+  };
+}
+
+function resolveDmgUpdateZip(
+  stagedPackage: ReturnType<typeof readMacPackagingStage>,
+  entries: ReadonlyArray<string>,
+) {
+  if (!stagedPackage) return undefined;
+  const targets = stagedPackage.build?.mac?.target;
+  if (!Array.isArray(targets) || targets.length !== 1 || targets[0] !== "dmg") return undefined;
+  const version = stagedPackage.version;
+  if (
+    typeof version !== "string" ||
+    typeof stagedPackage.productName !== "string" ||
+    !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(version)
+  ) {
+    throw new Error("Creating a macOS update ZIP requires a versioned DMG-only packaging stage.");
+  }
+  const dmgFileName = resolveSingleMacDmgFileName(entries);
+  const artifactPrefix = `${stagedPackage.productName.replaceAll(" ", "-")}-${version}-`;
+  if (!dmgFileName.startsWith(artifactPrefix)) {
+    throw new Error("macOS DMG filename does not match its staged package identity.");
+  }
+  const publish = stagedPackage.build?.publish;
+  return {
+    zipFileName: `${dmgFileName.slice(0, -4)}.zip`,
+    version,
+    hasUpdaterFeed: Array.isArray(publish) && publish.length > 0,
+  };
+}
+
+// Recreates the update zip with macOS-native metadata, then validates the same
+// extracted app shape Squirrel.Mac will hand to ShipIt during installation.
+export async function finalizeMacUpdateZip(
+  options: FinalizeMacUpdateZipOptions,
+): Promise<FinalizedMacUpdateZip> {
+  const verbose = options.verbose === true;
+  if (process.platform !== "darwin") {
+    throw new Error(
+      "macOS update zip finalization must run on macOS so ditto/codesign are available.",
+    );
+  }
+
+  const appBundlePath = findFirstMacAppBundle(options.stageDistDir);
+  if (!appBundlePath) {
+    throw new Error(`Could not find packaged .app bundle inside ${options.stageDistDir}`);
+  }
+
+  const distEntries = readdirSync(options.stageDistDir);
+  const manifestNames = resolveMacUpdateManifestFileNames(distEntries, { required: false });
+  const existingZipFileName = distEntries.some((entry) => entry.endsWith(".zip"))
+    ? resolveSingleMacUpdateZipFileName(distEntries)
+    : undefined;
+  const stagedPackage = readMacPackagingStage(options.stageDistDir);
+  const dmgUpdateZip =
+    !existingZipFileName || (options.requireUpdateManifest !== false && manifestNames.length === 0)
+      ? resolveDmgUpdateZip(stagedPackage, distEntries)
+      : undefined;
+  if (existingZipFileName && dmgUpdateZip && existingZipFileName !== dmgUpdateZip.zipFileName) {
+    throw new Error("macOS update ZIP filename does not match its staged package identity.");
+  }
+  const zipFileName =
+    existingZipFileName ??
+    dmgUpdateZip?.zipFileName ??
+    resolveSingleMacUpdateZipFileName(distEntries);
+  const zipPath = join(options.stageDistDir, zipFileName);
+  const appBundleName = basename(appBundlePath);
+  const appBundleParent = dirname(appBundlePath);
+
+  verifyMacAppSignature(appBundlePath, options.signed, options.expectedBundleIdentifier);
+  rmSync(zipPath, { force: true });
+  await runArchiveCommand(
+    "ditto",
+    ["-c", "-k", "--sequesterRsrc", "--keepParent", appBundleName, zipPath],
+    { cwd: appBundleParent, verbose },
+  );
+
+  const zippedAppBundleName = await assertMacZipFrameworkSymlinks(zipPath);
+
+  const extractedZipRoot = mkdtempSync(join(tmpdir(), "synara-mac-update-zip-"));
+  try {
+    await runArchiveCommand("ditto", ["-x", "-k", zipPath, extractedZipRoot], { verbose });
+    verifyMacAppSignature(
+      join(extractedZipRoot, zippedAppBundleName),
+      options.signed,
+      options.expectedBundleIdentifier,
+    );
+  } finally {
+    rmSync(extractedZipRoot, { force: true, recursive: true });
+  }
+
+  const zipStat = statSync(zipPath);
+  if (!zipStat.isFile()) {
+    throw new Error(`Repacked macOS update zip was not created at ${zipPath}`);
+  }
+  const sha512 = await computeSha512Base64(zipPath);
+
+  const minimumDarwinVersion =
+    stagedPackage?.build?.mac?.minimumSystemVersion === MAC_MINIMUM_SYSTEM_VERSION
+      ? MAC_MINIMUM_DARWIN_VERSION
+      : undefined;
+  const updatedManifestPaths: string[] = [];
+  if (
+    dmgUpdateZip?.hasUpdaterFeed &&
+    options.requireUpdateManifest !== false &&
+    manifestNames.length === 0
+  ) {
+    const manifestPath = join(options.stageDistDir, "latest-mac.yml");
+    writeFileSync(
+      manifestPath,
+      serializeMacUpdateManifest({
+        version: dmgUpdateZip.version,
+        releaseDate: new Date().toISOString(),
+        files: [{ url: zipFileName, sha512, size: zipStat.size }],
+        extras: {
+          path: zipFileName,
+          sha512,
+          ...(minimumDarwinVersion ? { minimumSystemVersion: minimumDarwinVersion } : {}),
+        },
+      }),
+    );
+    updatedManifestPaths.push(manifestPath);
+  } else if (manifestNames.length === 0 && options.requireUpdateManifest !== false) {
+    throw new Error("Expected at least one macOS update manifest, found 0.");
+  }
+  for (const manifestName of manifestNames) {
+    const manifestPath = join(options.stageDistDir, manifestName);
+    const manifest = readFileSync(manifestPath, "utf8");
+    const nextManifest = updateMacUpdateManifestZipEntry(manifest, zipFileName, {
+      sha512,
+      size: zipStat.size,
+      ...(minimumDarwinVersion ? { minimumSystemVersion: minimumDarwinVersion } : {}),
+    });
+    writeFileSync(manifestPath, nextManifest);
+    updatedManifestPaths.push(manifestPath);
+  }
+
+  const staleZipBlockmapPath = `${zipPath}.blockmap`;
+  const removedZipBlockmapPath = existsSync(staleZipBlockmapPath) ? staleZipBlockmapPath : null;
+  if (removedZipBlockmapPath) {
+    rmSync(removedZipBlockmapPath, { force: true });
+  }
+
+  return {
+    zipPath,
+    zipFileName,
+    sha512,
+    size: zipStat.size,
+    updatedManifestPaths,
+    removedZipBlockmapPath,
+  };
+}

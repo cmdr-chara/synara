@@ -1,0 +1,182 @@
+# Contributing
+
+## Read This First
+
+We are accepting focused contributions, especially small bug fixes, reliability fixes, performance improvements, and maintenance work.
+
+You can open an issue or PR, but please do so knowing that Synara is still early and we are keeping scope, quality, and direction tight.
+
+Large, unfocused, or direction-changing PRs may still be closed quickly.
+
+PRs are automatically labeled with a `vouch:*` trust status and a `size:*` diff size based on changed lines.
+
+If you are an external contributor, expect `vouch:unvouched` until we explicitly add you to [.github/VOUCHED.td](.github/VOUCHED.td).
+
+## What We Are Most Likely To Accept
+
+Small, focused bug fixes.
+
+Small reliability fixes.
+
+Small performance improvements.
+
+Tightly scoped maintenance work that clearly improves the project without changing its direction.
+
+## What We Are Least Likely To Accept
+
+Large PRs.
+
+Drive-by feature work.
+
+Opinionated rewrites.
+
+Anything that expands product scope without us asking for it first.
+
+If you open a 1,000+ line PR full of new features, we will probably close it quickly and remember that you ignored the clearly written instructions.
+
+## If You Still Want To Open A PR
+
+Keep it small.
+
+Explain exactly what changed.
+
+Explain exactly why the change should exist.
+
+Do not mix unrelated fixes together.
+
+If the PR makes anything resembling a UI change, include clear before/after images.
+
+For interface copy, follow [the interface text guide](docs/internationalization.md). Add stable semantic keys to the English catalogs, preserve user/provider data, and run the catalog and extraction checks.
+
+If the change depends on motion, timing, transitions, or interaction details, include a short video.
+
+If we have to guess what changed, we are much less likely to review it.
+
+## Issues First
+
+If you are thinking about a non-trivial change, open an issue first.
+
+That gives you a chance to check whether the direction fits before spending time on a larger patch.
+
+## Pre-push Check
+
+`bun install` adds a pre-push launcher in Git's default hooks directory. It runs
+`.githooks/pre-push` from the current worktree when that file exists. The hook
+(`scripts/pre-push-check.ts`) checks only the files the push changes, compared
+with what the remote already has (or the default branch, for a new branch):
+
+- formatting with `oxfmt --check`
+- lint errors with `oxlint --quiet`
+- types with `tsrs`, for the projects that own those files and the scripts that
+  import server or desktop sources. Changes to shared code (`packages/`,
+  `scripts/lib/`), root TypeScript config or the lockfile check every project.
+  Deleted files count for project selection.
+
+`tsrs` keeps incremental build info under each workspace's
+`node_modules/.cache`, so a repeat check usually takes about a second; a first
+check of every project took about 7 seconds. It checks the working tree, so
+uncommitted edits to those files count too. Very large pushes format-check and
+lint the full tree to stay within platform argument limits. Run `bun run fmt`
+to fix formatting.
+CI still checks the whole tree and also runs the Effect language-service
+diagnostics, which are too slow for a hook. To skip the check once, push with
+`git push --no-verify`. Pushes that only delete branches skip it.
+
+The setup preserves existing hooks and skips installation when `core.hooksPath`
+is already configured, in CI, during `--ignore-scripts` installs, and in copies
+outside a repository root. To opt out across installs, configure the clone to
+use its existing hooks directory:
+
+```bash
+git config --local core.hooksPath "$(git rev-parse --path-format=absolute --git-path hooks)"
+```
+
+If Synara already installed a launcher, remove that file from the configured
+directory. It contains the comment `Installed by Synara`.
+
+The hook is a POSIX `sh` script and also runs under Git for Windows (Git Bash).
+
+## Testing
+
+Run the full workspace test suite from the repository root with:
+
+```bash
+bun run test
+```
+
+For focused web tests, pass paths relative to `apps/web` through the dedicated root command:
+
+```bash
+bun run test:web:focused src/path/to/example.test.ts
+```
+
+The pinned `@pierre/diffs` patch refreshes file-editor rows after line insertions
+and deletions. When upgrading the dependency, verify repeated Enter, subsequent
+typing, undo, and redo with the real editor browser tests before removing it:
+
+```bash
+bun run --cwd apps/web test:browser src/components/codeEditor/CodeEditorPane.browser.tsx
+```
+
+The pinned `@effect/platform-node-shared` patch preserves Windows spawn options
+and rejects invalid PIDs before converting child handles into process-group
+signals. Windows group cleanup must launch `taskkill` directly with
+`windowsHide: true`, so teardown does not open a console beneath the desktop app.
+Valid groups may outlive their leader; cleanup must continue to reach those descendants. When updating Effect, keep these behaviors and run
+`apps/server/src/platform/effectProcessSignals.test.ts` against the installed
+runtime, including its Windows cases.
+
+The same patch makes writable stream errors fail the owning Effect sink, waits
+for accepted writes before completing, and removes drain/finish listeners on
+cancellation. Pending writes retain an error listener until they settle so a
+late broken pipe cannot become an uncaught process exception. Keep the source
+and compiled runtime changes together and run
+`apps/server/src/platform/effectWritableSink.test.ts` after updating Effect.
+
+Process-tree teardown captures POSIX start times and Windows creation times for
+checking descendants during delayed cleanup and exit verification. Start times
+add evidence to the existing command-line comparison. POSIX start times have
+second resolution and observation followed by signaling is not atomic;
+these checks are not proof of arbitrary PID ownership. Root signaling still
+requires the caller to own the live process lifecycle. Direct owned-child
+cancellation must work even when external process-table tools are unavailable.
+
+Desktop Node fetch uses the pinned Undici dispatcher initialized by `httpRuntime.ts`.
+Electron 43's bundled Undici can crash in `setTypeOfService` on macOS; the upstream
+fix belongs in the HTTP writer, not an uncaught-exception handler. When updating
+Electron or Undici, run `apps/desktop/src/httpRuntime.test.ts` under both Node and
+Electron with `ELECTRON_RUN_AS_NODE=1`. The test performs real loopback HTTP
+requests while injecting the socket error and also checks ordinary request failures.
+
+Packaged desktop API requests must reach the HTTP backend; the static protocol
+serves only GET/HEAD navigation and assets. An attachment upload needs a valid
+JSON receipt even when HTTP reports success. Preserve drafts on upload failure
+and observe pending upload rejections while workspace preparation is awaiting RPCs.
+
+The pinned BetterWright patch exposes its existing guard proxy for the dedicated
+browser session. Keep this transport alive across call-scoped CDP workers; switching
+or draining proxies after each `browser_run` aborts the page's pending requests.
+Only a trusted worker settlement receipt permits graceful cleanup of a failed
+snippet; cancellation, timeout, and transport loss still revoke execution. After
+updating BetterWright, run `bun run --cwd apps/desktop smoke:browser-lifecycle`
+with an isolated Electron profile; the fixture creates one automatically.
+
+Desktop stdio MCP proxies reuse Electron's executable and must explicitly set
+`ELECTRON_RUN_AS_NODE=1` in their launch configuration. Provider child environments
+strip that inherited flag, so relying on inheritance can launch the desktop GUI
+instead of the proxy. Keep the provider environment filtering intact.
+
+Database lifecycle locks publish their owner metadata atomically. Startup may
+recover an empty lock directory or one containing only Finder's `.DS_Store`,
+including the stale-lock recovery guard. It must preserve live owners, malformed
+owner metadata, links, and unrecognized files. An unknown owner is not proof of
+another running server; the desktop lock dialog provides **Open logs** to inspect
+the underlying error. Never remove a populated lock to work around a startup block.
+
+## Be Realistic
+
+Opening a PR does not create an obligation on our side.
+
+We may close it. We may ignore it. We may ask you to shrink it. We may reimplement the idea ourselves later.
+
+If you are fine with that, proceed.

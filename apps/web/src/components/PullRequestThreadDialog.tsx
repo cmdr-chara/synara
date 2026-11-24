@@ -1,0 +1,363 @@
+import type { GitResolvePullRequestResult } from "@synara/contracts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDebouncedValue } from "@tanstack/react-pacer";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  gitPreparePullRequestThreadMutationOptions,
+  gitResolvePullRequestQueryOptions,
+} from "~/lib/gitReactQuery";
+import { cn } from "~/lib/utils";
+import { parsePullRequestReference } from "~/pullRequestReference";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Spinner } from "./ui/spinner";
+import { useTranslation } from "~/i18n";
+
+type ResolvedPullRequest = NonNullable<GitResolvePullRequestResult["pullRequest"]>;
+
+type PullRequestThreadDialogProps = {
+  open: boolean;
+  cwd: string | null;
+  initialReference: string | null;
+  onOpenChange: (open: boolean) => void;
+} & (
+  | {
+      /** Check the PR out into a new draft thread (local branch or worktree). */
+      mode?: "checkout";
+      onPrepared: (input: {
+        branch: string;
+        worktreePath: string | null;
+        pullRequest: ResolvedPullRequest;
+      }) => Promise<void> | void;
+    }
+  | {
+      /** Only associate the PR with the current thread; nothing is checked out. */
+      mode: "link";
+      onLink: (pullRequest: ResolvedPullRequest) => Promise<void> | void;
+    }
+);
+
+export function PullRequestThreadDialog(props: PullRequestThreadDialogProps) {
+  const { open, onOpenChange } = props;
+  // Mirrors the content's prepare-in-flight state so the close guard can live
+  // up here while all form state resets by unmounting below DialogPopup.
+  const [busy, setBusy] = useState(false);
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!busy) {
+          onOpenChange(nextOpen);
+        }
+      }}
+    >
+      <DialogPopup className="max-w-xl">
+        <PullRequestThreadDialogContent {...props} onBusyChange={setBusy} />
+      </DialogPopup>
+    </Dialog>
+  );
+}
+
+function PullRequestThreadDialogContent(
+  props: PullRequestThreadDialogProps & {
+    onBusyChange: (busy: boolean) => void;
+  },
+) {
+  const { cwd, initialReference, onOpenChange, onBusyChange } = props;
+  const linkMode = props.mode === "link";
+  const { t } = useTranslation();
+
+  const queryClient = useQueryClient();
+  const referenceInputRef = useRef<HTMLInputElement>(null);
+  const [reference, setReference] = useState(initialReference ?? "");
+  const [referenceDirty, setReferenceDirty] = useState(false);
+  const [preparingMode, setPreparingMode] = useState<"local" | "worktree" | null>(null);
+  const [linking, setLinking] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
+  const [debouncedReference, referenceDebouncer] = useDebouncedValue(
+    reference,
+    { wait: 450 },
+    (debouncerState) => ({ isPending: debouncerState.isPending }),
+  );
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      referenceInputRef.current?.focus();
+      referenceInputRef.current?.select();
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [open]);
+
+  const parsedReference = parsePullRequestReference(reference);
+  const parsedDebouncedReference = parsePullRequestReference(debouncedReference);
+  const resolvePullRequestQuery = useQuery(
+    gitResolvePullRequestQueryOptions({
+      cwd,
+      reference: parsedDebouncedReference,
+    }),
+  );
+  const cachedPullRequest =
+    cwd && parsedReference
+      ? (queryClient.getQueryData<GitResolvePullRequestResult>([
+          "git",
+          "pull-request",
+          cwd,
+          parsedReference,
+        ])?.pullRequest ?? null)
+      : null;
+  const preparePullRequestThreadMutation = useMutation(
+    gitPreparePullRequestThreadMutationOptions({ cwd, queryClient }),
+  );
+
+  const liveResolvedPullRequest =
+    parsedReference !== null && parsedReference === parsedDebouncedReference
+      ? (resolvePullRequestQuery.data?.pullRequest ?? null)
+      : null;
+  const resolvedPullRequest = liveResolvedPullRequest ?? cachedPullRequest;
+  const isResolving =
+    parsedReference !== null &&
+    resolvedPullRequest === null &&
+    (referenceDebouncer.state.isPending ||
+      parsedReference !== parsedDebouncedReference ||
+      resolvePullRequestQuery.isPending ||
+      resolvePullRequestQuery.isFetching);
+  let statusTone: string;
+  switch (resolvedPullRequest?.state) {
+    case "merged":
+      statusTone = "text-indigo-600 dark:text-indigo-300/90";
+      break;
+    case "closed":
+      statusTone = "text-zinc-500 dark:text-zinc-400/80";
+      break;
+    case "open":
+      statusTone = "text-emerald-600 dark:text-emerald-300/90";
+      break;
+    default:
+      statusTone = "text-muted-foreground";
+  }
+
+  // Promise chain instead of async/try-finally: React Compiler does not yet
+  // support try/finally, and it would skip optimizing this whole component.
+  const handleLink = () => {
+    if (!parsedReference) {
+      setReferenceDirty(true);
+      return;
+    }
+    if (props.mode !== "link" || !resolvedPullRequest || linking) {
+      return;
+    }
+    setLinking(true);
+    setLinkError(null);
+    onBusyChange(true);
+    void Promise.resolve(props.onLink(resolvedPullRequest))
+      .then(() => {
+        onOpenChange(false);
+      })
+      .catch((error: unknown) => {
+        setLinkError(error instanceof Error ? error.message : t("git:prDialog_linkFailed"));
+      })
+      .finally(() => {
+        setLinking(false);
+        onBusyChange(false);
+      });
+  };
+
+  const handleConfirm = (mode: "local" | "worktree") => {
+    if (!parsedReference) {
+      setReferenceDirty(true);
+      return;
+    }
+    if (props.mode === "link" || !parsedReference || !resolvedPullRequest || !cwd) {
+      return;
+    }
+    const { onPrepared } = props;
+    setPreparingMode(mode);
+    onBusyChange(true);
+    void preparePullRequestThreadMutation
+      .mutateAsync({
+        reference: parsedReference,
+        mode,
+      })
+      .then((result) =>
+        Promise.resolve(
+          onPrepared({
+            branch: result.branch,
+            worktreePath: result.worktreePath,
+            pullRequest: resolvedPullRequest,
+          }),
+        ).then(() => {
+          onOpenChange(false);
+        }),
+      )
+      .catch(() => undefined)
+      .finally(() => {
+        setPreparingMode(null);
+        onBusyChange(false);
+      });
+  };
+
+  const validationMessage = !referenceDirty
+    ? null
+    : reference.trim().length === 0
+      ? t("git:pasteAGitHubPullRequestURLOrEnter123")
+      : parsedReference === null
+        ? t("git:useAGitHubPullRequestURL123Or123")
+        : null;
+  const errorMessage =
+    validationMessage ??
+    linkError ??
+    (resolvedPullRequest === null && resolvePullRequestQuery.isError
+      ? resolvePullRequestQuery.error instanceof Error
+        ? resolvePullRequestQuery.error.message
+        : t("git:prDialog_resolveFailed")
+      : preparePullRequestThreadMutation.error instanceof Error
+        ? preparePullRequestThreadMutation.error.message
+        : preparePullRequestThreadMutation.error
+          ? t("git:failedToPreparePullRequestThread")
+          : null);
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle>
+          {linkMode ? t("git:prDialog_linkTitle") : t("common:checkoutPullRequest")}
+        </DialogTitle>
+        <DialogDescription>
+          {linkMode
+            ? t("git:prDialog_linkDescription")
+            : t("git:resolveAGitHubPullRequestThenCreateTheDraft")}
+        </DialogDescription>
+      </DialogHeader>
+      <DialogPanel className="space-y-4">
+        <label className="grid gap-1.5">
+          <span className="text-ui leading-snug font-medium text-foreground">
+            {t("git:general_environmentPullRequest")}
+          </span>
+          <Input
+            ref={referenceInputRef}
+            placeholder={t("git:pullRequestReferencePlaceholder")}
+            value={reference}
+            onChange={(event) => {
+              setReferenceDirty(true);
+              setReference(event.target.value);
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter") {
+                return;
+              }
+              event.preventDefault();
+              if (linkMode) {
+                if (!isResolving) handleLink();
+                return;
+              }
+              if (!isResolving && !preparePullRequestThreadMutation.isPending) {
+                void handleConfirm("local");
+              }
+            }}
+          />
+        </label>
+
+        {resolvedPullRequest ? (
+          <div className="rounded-xl border border-border/70 bg-muted/24 p-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate font-medium text-ui-lg leading-snug">
+                  {resolvedPullRequest.title}
+                </p>
+                <p className="truncate text-muted-foreground text-ui leading-snug">
+                  #{resolvedPullRequest.number} · {resolvedPullRequest.headBranch} {t("git:to")}{" "}
+                  {resolvedPullRequest.baseBranch}
+                </p>
+              </div>
+              <span className={cn("shrink-0 text-ui leading-snug capitalize", statusTone)}>
+                {resolvedPullRequest.state}
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+        {isResolving ? (
+          <div className="flex items-center gap-2 text-muted-foreground text-ui leading-snug">
+            <Spinner className="size-3.5" />
+            {t("git:prDialog_resolving")}
+          </div>
+        ) : null}
+
+        {errorMessage ? (
+          <p className="text-destructive text-ui leading-snug">{errorMessage}</p>
+        ) : null}
+      </DialogPanel>
+      <DialogFooter>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => onOpenChange(false)}
+          disabled={preparePullRequestThreadMutation.isPending || linking}
+        >
+          {t("common:form_cancel")}
+        </Button>
+        {linkMode ? (
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleLink}
+            disabled={!resolvedPullRequest || isResolving || linking}
+          >
+            {linking ? t("git:prDialog_linking") : t("git:prDialog_link")}
+          </Button>
+        ) : (
+          <>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                void handleConfirm("local");
+              }}
+              disabled={
+                !cwd ||
+                !resolvedPullRequest ||
+                isResolving ||
+                preparePullRequestThreadMutation.isPending
+              }
+            >
+              {preparingMode === "local"
+                ? t("git:prDialog_preparingLocal")
+                : t("computer:worktreeMode_local")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                void handleConfirm("worktree");
+              }}
+              disabled={
+                !cwd ||
+                !resolvedPullRequest ||
+                isResolving ||
+                preparePullRequestThreadMutation.isPending
+              }
+            >
+              {preparingMode === "worktree"
+                ? t("git:timeline_preparingWorktree")
+                : t("common:worktreeMode_worktree")}
+            </Button>
+          </>
+        )}
+      </DialogFooter>
+    </>
+  );
+}

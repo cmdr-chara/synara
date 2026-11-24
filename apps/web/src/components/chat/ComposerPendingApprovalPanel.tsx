@@ -1,0 +1,540 @@
+// FILE: ComposerPendingApprovalPanel.tsx
+// Purpose: Detached card, floating just above the composer, that surfaces a pending
+// tool approval — the command / file context plus approve / decline / cancel actions
+// rendered as list-style choice rows. Mirrors ComposerPendingUserInputPanel (same
+// surface, spacing, chips, and scoped keyboard shortcuts) so approvals and AskUserQuestion
+// prompts read as one coherent decision surface instead of the old fused-banner look.
+// Layer: Chat composer UI
+// Exports: ComposerPendingApprovalPanel
+
+import { type ApprovalRequestId, type ProviderApprovalDecision } from "@synara/contracts";
+import { pendingRequestInstanceKey } from "@synara/shared/threadSummary";
+import { type KeyboardEvent, useRef } from "react";
+import { type PendingApproval } from "../../session-logic";
+import { cn } from "~/lib/utils";
+import { ComposerChoiceRow, type ComposerChoiceTone } from "./ComposerChoiceRow";
+import { COMPOSER_INPUT_SURFACE_CLASS_NAME } from "./composerPickerStyles";
+import { useTranslation } from "~/i18n";
+
+interface ComposerPendingApprovalPanelProps {
+  approval: PendingApproval;
+  pendingCount: number;
+  isResponding: boolean;
+  onRespond: (
+    requestId: ApprovalRequestId,
+    decision: ProviderApprovalDecision,
+    lifecycleGeneration?: string,
+    requestKind?: PendingApproval["requestKind"],
+  ) => Promise<void>;
+}
+
+type ParsedApproval = {
+  tool: string | null;
+  fileName: string | null;
+  fileDir: string | null;
+  command: string | null;
+  fallback: string | null;
+};
+
+type ApprovalAction = {
+  decision: ProviderApprovalDecision;
+  labelKey: string;
+  descriptionKey: string;
+  tone: ComposerChoiceTone;
+};
+
+// Order is the card-local shortcut order (1-4): recommended action first, stop-everything last.
+const APPROVAL_ACTIONS: ReadonlyArray<ApprovalAction> = [
+  {
+    decision: "accept",
+    labelKey: "chat:approvalActions_approveOnce",
+    descriptionKey: "chat:approvalActions_approveOnceDesc",
+    tone: "primary",
+  },
+  {
+    decision: "acceptForSession",
+    labelKey: "chat:approvalActions_alwaysAllow",
+    descriptionKey: "chat:approvalActions_alwaysAllowDesc",
+    tone: "neutral",
+  },
+  {
+    decision: "decline",
+    labelKey: "chat:approvalActions_decline",
+    descriptionKey: "chat:approvalActions_declineDesc",
+    tone: "destructive",
+  },
+  {
+    decision: "cancel",
+    labelKey: "chat:approvalActions_cancelTurn",
+    descriptionKey: "chat:approvalActions_cancelTurnDesc",
+    tone: "neutral",
+  },
+];
+
+const WITHOUT_SESSION_APPROVAL = APPROVAL_ACTIONS.filter(
+  (action) => action.decision !== "acceptForSession",
+);
+
+// Synara-owned Computer consent: never session-wide, and each scope names its
+// own decision. Visible use is separate from routine consent: allowing desktop
+// actions never covers taking the user's screen.
+const COMPUTER_SCOPES: Record<
+  NonNullable<PendingApproval["approvalScope"]>,
+  { readonly promptKey: string; readonly actions: ReadonlyArray<ApprovalAction> }
+> = {
+  "computer-task": {
+    promptKey: "chat:allowComputerForThisTask2",
+    actions: WITHOUT_SESSION_APPROVAL.map((action) =>
+      action.decision === "accept"
+        ? {
+            ...action,
+            labelKey: "chat:allowComputerForThisTask",
+            descriptionKey: "chat:continueRoutineDesktopActionsUntilThisResponseEndsStop",
+          }
+        : action.decision === "decline"
+          ? { ...action, descriptionKey: "chat:stopDesktopForThisTurnAgentContinuesWithoutTools" }
+          : {
+              ...action,
+              labelKey: "chat:cancelThisRequest",
+              descriptionKey: "chat:denyThisRequestUseStopToEndTheAgent",
+            },
+    ),
+  },
+  "computer-foreground": {
+    promptKey: "chat:showThisOnYourScreen",
+    actions: WITHOUT_SESSION_APPROVAL.map((action) =>
+      action.decision === "accept"
+        ? {
+            ...action,
+            labelKey: "chat:showOnScreenForThisTask",
+            descriptionKey: "chat:computerMayBringWindowsToTheFrontUntilThis",
+          }
+        : action.decision === "decline"
+          ? {
+              ...action,
+              labelKey: "chat:keepItInTheBackground",
+              descriptionKey: "chat:noWindowIsRaisedTheAgentContinuesInThe",
+            }
+          : {
+              ...action,
+              labelKey: "chat:cancelThisRequest",
+              descriptionKey: "chat:useStopToEndTheAgentTurn",
+            },
+    ),
+  },
+  "device-task": {
+    promptKey: "chat:allowDeviceForThisTask2",
+    actions: WITHOUT_SESSION_APPROVAL.map((action) =>
+      action.decision === "accept"
+        ? {
+            ...action,
+            labelKey: "chat:allowDeviceForThisTask",
+            descriptionKey: "chat:continueRoutineDeviceActionsUntilThisResponseEndsStop",
+          }
+        : action.decision === "decline"
+          ? {
+              ...action,
+              descriptionKey: "chat:stopDeviceControlForThisTurnAgentContinuesWithout",
+            }
+          : {
+              ...action,
+              labelKey: "chat:cancelThisRequest",
+              descriptionKey: "chat:useStopToEndTheAgentTurn",
+            },
+    ),
+  },
+};
+
+const KIND_PROMPT: Record<PendingApproval["requestKind"], string> = {
+  command: "chat:approvalActions_promptCommand",
+  "file-read": "chat:approvalActions_promptFileRead",
+  "file-change": "chat:approvalActions_promptFileChange",
+  permissions: "chat:grantThesePermissions",
+  tool: "chat:approveThisToolCall",
+};
+
+export const ComposerPendingApprovalPanel = function ComposerPendingApprovalPanel({
+  approval,
+  pendingCount,
+  isResponding,
+  onRespond,
+}: ComposerPendingApprovalPanelProps) {
+  const { t } = useTranslation();
+  const parsed = parseApprovalDetail(approval.detail);
+  const requestId = approval.requestId;
+  const requestKey = pendingRequestInstanceKey(requestId, approval.lifecycleGeneration);
+  const submissionKey = JSON.stringify([requestKey, approval.responseAttemptKey ?? null]);
+  const submittedRequestKeyRef = useRef<string | null>(null);
+  const computerScope = approval.approvalScope
+    ? COMPUTER_SCOPES[approval.approvalScope]
+    : undefined;
+  const actions =
+    computerScope?.actions ??
+    (approval.sessionApprovalAvailable === false ? WITHOUT_SESSION_APPROVAL : APPROVAL_ACTIONS);
+
+  const respondOnce = (action: ApprovalAction) => {
+    if (isResponding || submittedRequestKeyRef.current === submissionKey) return;
+    submittedRequestKeyRef.current = submissionKey;
+    void onRespond(
+      requestId,
+      action.decision,
+      approval.lifecycleGeneration,
+      approval.requestKind,
+    ).catch(() => {
+      // Immediate command failures remain retryable. A successful dispatch keeps
+      // the claim until the request disappears or a newer durable retry attempt
+      // changes `submissionKey`.
+      if (submittedRequestKeyRef.current === submissionKey) {
+        submittedRequestKeyRef.current = null;
+      }
+    });
+  };
+
+  // Digit shortcuts bubble from focused controls inside this card only; a bare
+  // number key elsewhere in the app must never approve a tool request.
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (isResponding || event.metaKey || event.ctrlKey || event.altKey) return;
+    const target = event.target;
+    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return;
+    if (
+      target instanceof HTMLElement &&
+      target.closest('[contenteditable]:not([contenteditable="false"])')
+    ) {
+      return;
+    }
+    const digit = Number.parseInt(event.key, 10);
+    if (Number.isNaN(digit) || digit < 1 || digit > actions.length) return;
+    const action = actions[digit - 1];
+    if (!action) return;
+    event.preventDefault();
+    respondOnce(action);
+  };
+
+  return (
+    <div
+      onKeyDown={handleKeyDown}
+      className={cn(COMPOSER_INPUT_SURFACE_CLASS_NAME, "overflow-hidden px-3.5 py-3")}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <p className="min-w-0 text-ui-lg font-medium leading-snug text-foreground/90">
+          {t(computerScope?.promptKey ?? KIND_PROMPT[approval.requestKind])}
+          {!computerScope && (approval.toolName ?? parsed.tool) ? (
+            <span className="ml-1.5 text-ui-sm font-normal text-muted-foreground/50">
+              {approval.toolName ?? parsed.tool}
+            </span>
+          ) : null}
+        </p>
+        {pendingCount > 1 ? (
+          <span className="flex h-4 shrink-0 items-center rounded bg-[var(--color-background-elevated-secondary)] px-1 text-ui-2xs font-medium tabular-nums text-[var(--color-text-foreground-secondary)]">
+            1/{pendingCount}
+          </span>
+        ) : null}
+      </div>
+      <ApprovalDetail
+        parsed={parsed}
+        {...(approval.permissionProfile ? { permissionProfile: approval.permissionProfile } : {})}
+        {...(approval.toolName ? { toolName: approval.toolName } : {})}
+        {...(approval.toolParamsDisplay ? { toolParamsDisplay: approval.toolParamsDisplay } : {})}
+      />
+      <div className="mt-2.5 space-y-0.5">
+        {actions.map((action, index) => (
+          <ComposerChoiceRow
+            key={action.decision}
+            shortcut={index + 1}
+            label={t(action.labelKey)}
+            description={t(action.descriptionKey)}
+            tone={action.tone}
+            disabled={isResponding}
+            onSelect={() => respondOnce(action)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+function ApprovalDetail({
+  parsed,
+  permissionProfile,
+  toolName,
+  toolParamsDisplay,
+}: {
+  parsed: ParsedApproval;
+  permissionProfile?: Record<string, unknown>;
+  toolName?: string;
+  toolParamsDisplay?: PendingApproval["toolParamsDisplay"];
+}) {
+  const { t } = useTranslation();
+
+  if (permissionProfile) {
+    return (
+      <div className="mt-2">
+        {parsed.fallback ? (
+          <p className="mb-1.5 text-ui-sm leading-snug text-muted-foreground/70">
+            {parsed.fallback}
+          </p>
+        ) : null}
+        <pre
+          className="max-h-36 overflow-auto whitespace-pre-wrap break-words rounded-md bg-[var(--color-background-elevated-secondary)] px-2.5 py-2 font-mono text-ui-sm leading-relaxed text-foreground/85"
+          title={t("chat:requestedPermissionProfile")}
+        >
+          <code>{JSON.stringify(permissionProfile, null, 2)}</code>
+        </pre>
+      </div>
+    );
+  }
+
+  if (toolName || (toolParamsDisplay?.length ?? 0) > 0) {
+    return (
+      <div className="mt-2">
+        {parsed.fallback ? (
+          <p className="text-ui-sm leading-snug text-muted-foreground/70">{parsed.fallback}</p>
+        ) : null}
+        {toolParamsDisplay && toolParamsDisplay.length > 0 ? (
+          <dl className="mt-2 space-y-1 rounded-md bg-[var(--color-background-elevated-secondary)] px-2.5 py-2 text-ui-xs leading-snug">
+            {toolParamsDisplay.map((parameter) => (
+              <div className="grid grid-cols-[auto_1fr] gap-x-2" key={parameter.name}>
+                <dt className="font-medium text-muted-foreground/65">
+                  {parameter.displayName ?? parameter.name}
+                </dt>
+                <dd className="min-w-0 break-words font-mono text-foreground/80">
+                  {formatToolParameterValue(parameter.value)}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (parsed.fileName) {
+    return (
+      <div className="mt-2">
+        <p
+          className="truncate text-ui-lg font-medium leading-tight text-foreground/85"
+          title={
+            parsed.fileDir
+              ? t("chat:symbol8", { value0: parsed.fileDir, value1: parsed.fileName })
+              : parsed.fileName
+          }
+        >
+          {parsed.fileName}
+        </p>
+        {parsed.fileDir ? (
+          <p
+            className="mt-0.5 truncate font-mono text-ui-xs leading-tight text-muted-foreground/55"
+            title={parsed.fileDir}
+          >
+            {shortenPath(parsed.fileDir)}
+          </p>
+        ) : null}
+      </div>
+    );
+  }
+
+  const code = parsed.command ?? parsed.fallback;
+  if (code) {
+    return (
+      <pre
+        className="mt-2 overflow-hidden rounded-md bg-[var(--color-background-elevated-secondary)] px-2.5 py-1.5 font-mono text-ui-sm leading-snug text-foreground/85"
+        title={code}
+      >
+        <code className="block truncate">{code}</code>
+      </pre>
+    );
+  }
+
+  return (
+    <p className="mt-2 text-ui text-muted-foreground/65">
+      {t("chat:approvalActions_reviewRequest")}
+    </p>
+  );
+}
+
+function formatToolParameterValue(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (value === null) {
+    return "null";
+  }
+  try {
+    return JSON.stringify(value) ?? String(value);
+  } catch {
+    return String(value);
+  }
+}
+
+/**
+ * Parses the approval `detail` string into structured fields.
+ *
+ * Detail is produced server-side by `summarizeToolRequest` as
+ * `"${toolName}: ${JSON.stringify(input)}"` and is clamped to ~400 characters.
+ * That means JSON.parse often fails on truncated payloads like
+ * `{"file_path":"/long/path","old_string":" .fo...`. We therefore try JSON
+ * first and fall back to targeted regex extraction so we can still surface the
+ * file path / command even from a chopped-off string.
+ */
+function parseApprovalDetail(detail: string | undefined): ParsedApproval {
+  const empty: ParsedApproval = {
+    tool: null,
+    fileName: null,
+    fileDir: null,
+    command: null,
+    fallback: null,
+  };
+  if (!detail || detail.length === 0) return empty;
+
+  const colonIdx = detail.indexOf(": ");
+  const tool = colonIdx === -1 ? null : detail.slice(0, colonIdx).trim() || null;
+  const rawPayload = colonIdx === -1 ? detail : detail.slice(colonIdx + 2);
+  const payload = stripTrailingEllipsis(rawPayload);
+
+  const filePath =
+    extractJsonString(payload, ["file_path", "path", "notebook_path", "filepath"]) ?? null;
+  if (filePath) {
+    const { name, parent } = splitPath(filePath);
+    return { tool, fileName: name, fileDir: parent, command: null, fallback: null };
+  }
+
+  const command = extractJsonString(payload, ["command", "cmd"]) ?? null;
+  if (command) {
+    return {
+      tool,
+      fileName: null,
+      fileDir: null,
+      command: collapseWhitespace(command),
+      fallback: null,
+    };
+  }
+
+  const pattern = extractJsonString(payload, ["pattern", "query"]);
+  if (pattern) {
+    return {
+      tool,
+      fileName: null,
+      fileDir: null,
+      command: pattern,
+      fallback: null,
+    };
+  }
+
+  const url = extractJsonString(payload, ["url"]);
+  if (url) {
+    return { tool, fileName: null, fileDir: null, command: url, fallback: null };
+  }
+
+  // Payload is not a recognized JSON shape — treat it as a raw command/text.
+  const fallback = collapseWhitespace(payload);
+  return {
+    tool,
+    fileName: null,
+    fileDir: null,
+    command: null,
+    fallback: fallback.length > 0 ? fallback : null,
+  };
+}
+
+/**
+ * Extracts the first matching string field from a (possibly truncated) JSON
+ * object. Prefers a real JSON.parse when it succeeds, otherwise falls back to
+ * a permissive regex that tolerates truncation mid-value.
+ */
+function extractJsonString(payload: string, keys: ReadonlyArray<string>): string | null {
+  const parsed = tryParseJson(payload);
+  if (parsed && typeof parsed === "object") {
+    const record = parsed as Record<string, unknown>;
+    for (const key of keys) {
+      const value = record[key];
+      if (typeof value === "string" && value.length > 0) {
+        return value;
+      }
+    }
+  }
+
+  for (const key of keys) {
+    const value = regexExtractString(payload, key);
+    if (value && value.length > 0) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function tryParseJson(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Pulls a JSON string value for `key` out of a possibly truncated JSON-ish
+ * payload. Handles the common `\"` and `\\` escapes inside the string body.
+ * If the value is unterminated (truncation), returns whatever was captured.
+ */
+function regexExtractString(payload: string, key: string): string | null {
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Anchored to `"key"` followed by a colon and an opening quote.
+  const pattern = new RegExp(`"${escapedKey}"\\s*:\\s*"`, "g");
+  const match = pattern.exec(payload);
+  if (!match) return null;
+
+  const start = match.index + match[0].length;
+  let out = "";
+  for (let i = start; i < payload.length; i++) {
+    const ch = payload[i];
+    if (ch === "\\") {
+      const next = payload[i + 1];
+      if (next === undefined) break;
+      if (next === "n") out += "\n";
+      else if (next === "t") out += "\t";
+      else if (next === "r") out += "\r";
+      else out += next;
+      i += 1;
+      continue;
+    }
+    if (ch === '"') {
+      return out;
+    }
+    out += ch;
+  }
+  // Truncated before closing quote — return partial value if we got anything.
+  return out.length > 0 ? out : null;
+}
+
+function stripTrailingEllipsis(value: string): string {
+  return value.replace(/\.{3}$/u, "").replace(/…$/u, "");
+}
+
+function splitPath(path: string): { name: string; parent: string | null } {
+  const normalized = path.replace(/\\/g, "/");
+  const trimmed = normalized.replace(/\/+$/, "");
+  const lastSep = trimmed.lastIndexOf("/");
+  if (lastSep === -1) {
+    return { name: trimmed, parent: null };
+  }
+  return {
+    name: trimmed.slice(lastSep + 1) || trimmed,
+    parent: trimmed.slice(0, lastSep) || null,
+  };
+}
+
+function shortenPath(path: string): string {
+  const normalized = path.replace(/\\/g, "/");
+  const homeMatch = normalized.match(/^\/(?:Users|home)\/[^/]+(?=\/|$)/);
+  const withoutHome = homeMatch ? `~${normalized.slice(homeMatch[0].length)}` : normalized;
+  const segments = withoutHome.split("/").filter((s) => s.length > 0);
+  if (segments.length <= 3) {
+    return withoutHome;
+  }
+  const leading = withoutHome.startsWith("~") ? "~" : "";
+  const tail = segments.slice(-2).join("/");
+  return `${leading}/…/${tail}`.replace(/^\/…/, "…");
+}
+
+function collapseWhitespace(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
+}

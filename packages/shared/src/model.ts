@@ -1,0 +1,974 @@
+import {
+  CLAUDE_CODE_EFFORT_OPTIONS,
+  DEFAULT_MODEL_BY_PROVIDER,
+  MODEL_CAPABILITIES_INDEX,
+  MODEL_OPTIONS_BY_PROVIDER,
+  MODEL_SLUG_ALIASES_BY_PROVIDER,
+  OMP_THINKING_LEVEL_OPTIONS,
+  type AntigravityModelOptions,
+  type ClaudeApiEffort,
+  type ClaudeModelOptions,
+  type ClaudeCodeEffort,
+  type CursorModelOptions,
+  type GrokModelOptions,
+  type GrokReasoningEffort,
+  type ModelCapabilities,
+  type ModelSelection,
+  type ModelSlug,
+  type OpenCodeModelOptions,
+  type ProviderModelDescriptor,
+  type ProviderModelVariantDescriptor,
+  type ProviderOptionDescriptor,
+  type ProviderOptionSelection,
+  type PiModelOptions,
+  type PiThinkingLevel,
+  type OmpModelOptions,
+  type OmpThinkingLevel,
+  type ProviderKind,
+  type ProviderWithDefaultModel,
+} from "@synara/contracts";
+import { humanizeModelSlug } from "./modelName";
+
+export { humanizeModelSlug, normalizeModelDisplayName } from "./modelName";
+
+const MODEL_SLUG_SET_BY_PROVIDER: Record<ProviderKind, ReadonlySet<ModelSlug>> = {
+  claudeAgent: new Set(MODEL_OPTIONS_BY_PROVIDER.claudeAgent.map((option) => option.slug)),
+  codex: new Set(MODEL_OPTIONS_BY_PROVIDER.codex.map((option) => option.slug)),
+  cursor: new Set(MODEL_OPTIONS_BY_PROVIDER.cursor.map((option) => option.slug)),
+  antigravity: new Set<ModelSlug>(),
+  grok: new Set(MODEL_OPTIONS_BY_PROVIDER.grok.map((option) => option.slug)),
+  droid: new Set(MODEL_OPTIONS_BY_PROVIDER.droid.map((option) => option.slug)),
+  opencode: new Set(MODEL_OPTIONS_BY_PROVIDER.opencode.map((option) => option.slug)),
+  pi: new Set<ModelSlug>(),
+  // Devin's built-in list is intentionally empty; its CLI supplies the live catalog.
+  devin: new Set<ModelSlug>(),
+  omp: new Set<ModelSlug>(),
+};
+
+export interface SelectableModelOption {
+  slug: string;
+  name: string;
+}
+
+const CLAUDE_CODE_EFFORT_SET: ReadonlySet<string> = new Set(CLAUDE_CODE_EFFORT_OPTIONS);
+const PI_THINKING_LEVEL_SET = new Set<PiThinkingLevel>([
+  "off",
+  "minimal",
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max",
+]);
+const OMP_THINKING_LEVEL_SET = new Set<OmpThinkingLevel>(OMP_THINKING_LEVEL_OPTIONS);
+export const EMPTY_MODEL_CAPABILITIES: ModelCapabilities = {
+  reasoningEffortLevels: [],
+  supportsFastMode: false,
+  supportsThinkingToggle: false,
+  promptInjectedEffortLevels: [],
+  contextWindowOptions: [],
+};
+
+function isClaudeCodeEffort(value: string): value is ClaudeCodeEffort {
+  return CLAUDE_CODE_EFFORT_SET.has(value);
+}
+
+export function getModelOptions(provider: ProviderKind = "codex") {
+  return MODEL_OPTIONS_BY_PROVIDER[provider];
+}
+
+function hasDefaultModel(provider: ProviderKind): provider is ProviderWithDefaultModel {
+  return provider !== "pi" && provider !== "omp";
+}
+
+export function getDefaultModel(provider: "pi"): null;
+export function getDefaultModel(provider?: ProviderWithDefaultModel): ModelSlug;
+export function getDefaultModel(provider: ProviderKind): ModelSlug | null;
+export function getDefaultModel(provider: ProviderKind = "codex"): ModelSlug | null {
+  return hasDefaultModel(provider) ? DEFAULT_MODEL_BY_PROVIDER[provider] : null;
+}
+
+const MODEL_NAME_BY_SLUG = new Map(
+  Object.values(MODEL_OPTIONS_BY_PROVIDER)
+    .flat()
+    .map((option) => [option.slug.toLowerCase(), option.name] as const),
+);
+
+export function formatModelDisplayName(model: string | null | undefined): string | undefined {
+  const normalized = trimOrNull(model);
+  if (!normalized) {
+    return undefined;
+  }
+
+  return MODEL_NAME_BY_SLUG.get(normalized.toLowerCase()) ?? humanizeModelSlug(normalized);
+}
+
+// ── Effort helpers ────────────────────────────────────────────────────
+
+export function parseCursorCliReasoningEffort(model: string): string | undefined {
+  const tokens = model.trim().toLowerCase().split("-");
+  for (let index = tokens.length - 1; index >= 0; index -= 1) {
+    const token = tokens[index];
+    if (!token) {
+      continue;
+    }
+    if (token === "xhigh") {
+      return "xhigh";
+    }
+    if (token === "high" && tokens[index - 1] === "extra") {
+      return "xhigh";
+    }
+    if (
+      token === "max" ||
+      token === "none" ||
+      token === "low" ||
+      token === "medium" ||
+      token === "high"
+    ) {
+      return token;
+    }
+  }
+  return undefined;
+}
+
+export function hasEffortLevel(caps: ModelCapabilities, value: string): boolean {
+  return caps.reasoningEffortLevels.some((l) => l.value === value);
+}
+
+export function getDefaultEffort(caps: ModelCapabilities): string | null {
+  return caps.reasoningEffortLevels.find((l) => l.isDefault)?.value ?? null;
+}
+
+export function hasContextWindowOption(caps: ModelCapabilities, value: string): boolean {
+  return caps.contextWindowOptions.some((option) => option.value === value);
+}
+
+export function getDefaultContextWindow(caps: ModelCapabilities): string | null {
+  return caps.contextWindowOptions.find((option) => option.isDefault)?.value ?? null;
+}
+
+const DEVIN_STATIC_MODEL_VARIANTS: Readonly<
+  Record<string, ReadonlyArray<ProviderModelVariantDescriptor>>
+> = {
+  "swe-1-6": [
+    { model: "swe-1-6", fastMode: false },
+    { model: "swe-1-6-fast", fastMode: true },
+  ],
+  "swe-1-7": [
+    { model: "swe-1-7", fastMode: false },
+    { model: "swe-1-7-lightning", fastMode: true },
+  ],
+};
+
+export function getDevinStaticModelVariants(
+  model: string | null | undefined,
+): ReadonlyArray<ProviderModelVariantDescriptor> | undefined {
+  const normalizedModel = normalizeModelSlug(model, "devin");
+  return normalizedModel ? DEVIN_STATIC_MODEL_VARIANTS[normalizedModel] : undefined;
+}
+
+export function resolveDevinModelVariant(input: {
+  readonly model?: string | null | undefined;
+  readonly runtimeModel?: ProviderModelDescriptor | undefined;
+  readonly modelVariant?: string | null | undefined;
+  readonly reasoningEffort?: string | null | undefined;
+  readonly fastMode?: boolean | undefined;
+  readonly thinking?: boolean | null | undefined;
+  readonly contextWindow?: string | null | undefined;
+}): string | undefined {
+  const variants = input.runtimeModel?.modelVariants ?? getDevinStaticModelVariants(input.model);
+  const explicitVariant = trimOrNull(input.modelVariant) ?? undefined;
+  if (!variants?.length) {
+    return explicitVariant;
+  }
+
+  const reasoningEffort = trimOrNull(input.reasoningEffort);
+  const contextWindow = trimOrNull(input.contextWindow);
+  const mapsReasoningEffort =
+    reasoningEffort !== null && variants.some((variant) => variant.reasoningEffort !== undefined);
+  const mapsFastMode =
+    input.fastMode !== undefined && variants.some((variant) => variant.fastMode !== undefined);
+  const mapsThinking =
+    input.thinking !== null &&
+    input.thinking !== undefined &&
+    variants.some((variant) => variant.thinking !== undefined);
+  const mapsContextWindow =
+    contextWindow !== null && variants.some((variant) => variant.contextWindow !== undefined);
+  if (!mapsReasoningEffort && !mapsFastMode && !mapsThinking && !mapsContextWindow) {
+    return explicitVariant;
+  }
+
+  const effectiveReasoningEffort =
+    reasoningEffort ?? trimOrNull(input.runtimeModel?.defaultReasoningEffort);
+  const effectiveContextWindow =
+    contextWindow ?? trimOrNull(input.runtimeModel?.defaultContextWindow);
+  // Thinking is on by default for Devin families that expose a thinking
+  // toggle. Keep the persisted option sparse, but use the effective
+  // default when resolving a non-default context window to its concrete
+  // process-start variant.
+  const effectiveThinking =
+    input.thinking ?? (input.runtimeModel?.supportsThinkingToggle === true ? true : undefined);
+  const matches = (variant: ProviderModelVariantDescriptor): boolean => {
+    if (effectiveReasoningEffort && variant.reasoningEffort !== effectiveReasoningEffort) {
+      return false;
+    }
+    if (effectiveContextWindow && variant.contextWindow !== effectiveContextWindow) {
+      return false;
+    }
+    if (input.fastMode === true && variant.fastMode !== true) {
+      return false;
+    }
+    if (input.fastMode !== true && variant.fastMode === true) {
+      return false;
+    }
+    if (
+      effectiveThinking !== null &&
+      effectiveThinking !== undefined &&
+      variant.thinking !== undefined
+    ) {
+      return variant.thinking === effectiveThinking;
+    }
+    return true;
+  };
+
+  const preferred = variants.filter(matches);
+  const withDefaultContext =
+    !contextWindow && effectiveContextWindow
+      ? preferred.filter((variant) => variant.contextWindow === effectiveContextWindow)
+      : preferred;
+  return (withDefaultContext[0] ?? preferred[0])?.model;
+}
+
+export function hasAutoCompactWindowOption(caps: ModelCapabilities, value: string): boolean {
+  return caps.autoCompactWindowOptions?.some((option) => option.value === value) ?? false;
+}
+
+// Claude model ids may carry a context-window qualifier, e.g. `claude-fable-5-1[1m]`.
+const CLAUDE_CONTEXT_WINDOW_SUFFIX_PATTERN = /\[([^\]]+)\]$/u;
+
+export function getClaudeContextWindowSuffix(model: string | null | undefined): string | null {
+  if (typeof model !== "string") return null;
+  return CLAUDE_CONTEXT_WINDOW_SUFFIX_PATTERN.exec(model)?.[1]?.toLowerCase() ?? null;
+}
+
+export function stripClaudeContextWindowSuffix(model: string): string {
+  return model.replace(CLAUDE_CONTEXT_WINDOW_SUFFIX_PATTERN, "");
+}
+
+export function getDefaultAutoCompactWindow(caps: ModelCapabilities): string | null {
+  return caps.autoCompactWindowOptions?.find((option) => option.isDefault)?.value ?? null;
+}
+
+export function resolveLabeledOptionValue(
+  options: ReadonlyArray<{ value: string; isDefault?: boolean | undefined }> | undefined,
+  rawValue: string | null | undefined,
+): string | null {
+  const trimmedValue = trimOrNull(rawValue);
+  if (!options || options.length === 0) {
+    return trimmedValue;
+  }
+  if (trimmedValue && options.some((option) => option.value === trimmedValue)) {
+    return trimmedValue;
+  }
+  return options.find((option) => option.isDefault)?.value ?? options[0]?.value ?? null;
+}
+
+type ProviderOptionSelectionsInput =
+  | ReadonlyArray<ProviderOptionSelection>
+  | Record<string, unknown>
+  | null
+  | undefined;
+
+function cloneProviderOptionDescriptor(
+  descriptor: ProviderOptionDescriptor,
+): ProviderOptionDescriptor {
+  if (descriptor.type === "select") {
+    return {
+      ...descriptor,
+      options: descriptor.options.map((option) => ({ ...option })),
+      ...(descriptor.promptInjectedValues
+        ? { promptInjectedValues: [...descriptor.promptInjectedValues] }
+        : {}),
+    };
+  }
+  return { ...descriptor };
+}
+
+function providerOptionSelectionValue(
+  selections: ProviderOptionSelectionsInput,
+  id: string,
+): string | boolean | undefined {
+  if (!selections) {
+    return undefined;
+  }
+  if (Array.isArray(selections)) {
+    return selections.find((selection) => selection.id === id)?.value;
+  }
+  const selectionRecord = selections as Record<string, unknown>;
+  const value = selectionRecord[id];
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return String(value);
+  }
+  return typeof value === "string" || typeof value === "boolean" ? value : undefined;
+}
+
+export function getProviderOptionBooleanSelectionValue(
+  selections: ProviderOptionSelectionsInput,
+  id: string,
+): boolean | undefined {
+  const value = providerOptionSelectionValue(selections, id);
+  return typeof value === "boolean" ? value : undefined;
+}
+
+export function getModelSelectionStringOptionValue(
+  modelSelection: ModelSelection | null | undefined,
+  id: string,
+): string | undefined {
+  const value = providerOptionSelectionValue(
+    modelSelection?.options as ProviderOptionSelectionsInput,
+    id,
+  );
+  return typeof value === "string" ? value : undefined;
+}
+
+export function getModelSelectionBooleanOptionValue(
+  modelSelection: ModelSelection | null | undefined,
+  id: string,
+): boolean | undefined {
+  return getProviderOptionBooleanSelectionValue(
+    modelSelection?.options as ProviderOptionSelectionsInput,
+    id,
+  );
+}
+
+function resolveDescriptorChoiceValue(
+  descriptor: Extract<ProviderOptionDescriptor, { type: "select" }>,
+  rawValue: string | null | undefined,
+): string | undefined {
+  const trimmed = trimOrNull(rawValue);
+  if (trimmed && descriptor.options.some((option) => option.id === trimmed)) {
+    return trimmed;
+  }
+  return descriptor.currentValue ?? descriptor.options.find((option) => option.isDefault)?.id;
+}
+
+function withProviderOptionCurrentValue(
+  descriptor: ProviderOptionDescriptor,
+  rawValue: string | boolean | undefined,
+): ProviderOptionDescriptor {
+  if (descriptor.type === "boolean") {
+    return typeof rawValue === "boolean" ? { ...descriptor, currentValue: rawValue } : descriptor;
+  }
+  const currentValue =
+    typeof rawValue === "string"
+      ? resolveDescriptorChoiceValue(descriptor, rawValue)
+      : resolveDescriptorChoiceValue(descriptor, descriptor.currentValue);
+  if (!currentValue) {
+    const { currentValue: _currentValue, ...rest } = descriptor;
+    return rest;
+  }
+  return { ...descriptor, currentValue };
+}
+
+function reasoningDescriptorId(provider: ProviderKind): string {
+  if (provider === "claudeAgent") {
+    return "effort";
+  }
+  if (provider === "opencode") {
+    return "variant";
+  }
+  if (provider === "pi" || provider === "omp") {
+    return "thinkingLevel";
+  }
+  return "reasoningEffort";
+}
+
+function legacyCapabilityDescriptors(
+  provider: ProviderKind,
+  caps: ModelCapabilities,
+): ProviderOptionDescriptor[] {
+  const primaryOptions =
+    provider === "opencode" ? (caps.variantOptions ?? []) : caps.reasoningEffortLevels;
+  const descriptors: ProviderOptionDescriptor[] = [];
+  if (primaryOptions.length > 0) {
+    const defaultPrimaryOption = primaryOptions.find((option) => option.isDefault);
+    descriptors.push({
+      id: reasoningDescriptorId(provider),
+      label: provider === "opencode" ? "Variant" : "Reasoning",
+      type: "select",
+      options: primaryOptions.map((option) => ({
+        id: option.value,
+        label: option.label,
+        ...(option.description ? { description: option.description } : {}),
+        ...(option.isDefault ? { isDefault: true as const } : {}),
+      })),
+      ...(defaultPrimaryOption ? { currentValue: defaultPrimaryOption.value } : {}),
+      ...(caps.promptInjectedEffortLevels.length > 0
+        ? { promptInjectedValues: [...caps.promptInjectedEffortLevels] }
+        : {}),
+    });
+  }
+  if (caps.contextWindowOptions.length > 0) {
+    const defaultContextWindowOption = caps.contextWindowOptions.find((option) => option.isDefault);
+    descriptors.push({
+      id: "contextWindow",
+      label: "Context Window",
+      type: "select",
+      options: caps.contextWindowOptions.map((option) => ({
+        id: option.value,
+        label: option.label,
+        ...(option.isDefault ? { isDefault: true as const } : {}),
+      })),
+      ...(defaultContextWindowOption ? { currentValue: defaultContextWindowOption.value } : {}),
+    });
+  }
+  if (caps.autoCompactWindowOptions && caps.autoCompactWindowOptions.length > 0) {
+    const defaultOption = caps.autoCompactWindowOptions.find((option) => option.isDefault);
+    descriptors.push({
+      id: "autoCompactWindow",
+      label: "Auto-compact",
+      type: "select",
+      options: caps.autoCompactWindowOptions.map((option) => ({
+        id: option.value,
+        label: option.label,
+        ...(option.isDefault ? { isDefault: true as const } : {}),
+      })),
+      ...(defaultOption ? { currentValue: defaultOption.value } : {}),
+    });
+  }
+  if (caps.supportsFastMode) {
+    descriptors.push({ id: "fastMode", label: "Fast Mode", type: "boolean" });
+  }
+  if (caps.supportsThinkingToggle) {
+    descriptors.push({ id: "thinking", label: "Thinking", type: "boolean", currentValue: true });
+  }
+  return descriptors;
+}
+
+export function getProviderOptionDescriptors(input: {
+  provider: ProviderKind;
+  caps: ModelCapabilities;
+  selections?: ProviderOptionSelectionsInput;
+}): ReadonlyArray<ProviderOptionDescriptor> {
+  const descriptors =
+    input.caps.optionDescriptors?.map(cloneProviderOptionDescriptor) ??
+    legacyCapabilityDescriptors(input.provider, input.caps);
+  return descriptors.map((descriptor) => {
+    let resolvedDescriptor = descriptor;
+    // Remove the synthetic default also from catalogs cached by the old Claude adapter.
+    if (
+      input.provider === "claudeAgent" &&
+      descriptor.type === "select" &&
+      descriptor.id === "effort"
+    ) {
+      const { currentValue, ...rest } = descriptor;
+      resolvedDescriptor = {
+        ...rest,
+        options: descriptor.options.filter((option) => option.id !== "default"),
+        ...(currentValue && currentValue !== "default" ? { currentValue } : {}),
+      };
+    }
+    return withProviderOptionCurrentValue(
+      resolvedDescriptor,
+      providerOptionSelectionValue(input.selections, descriptor.id),
+    );
+  });
+}
+
+export function getProviderOptionCurrentValue(
+  descriptor: ProviderOptionDescriptor | null | undefined,
+): string | boolean | undefined {
+  if (!descriptor) {
+    return undefined;
+  }
+  if (descriptor.type === "boolean") {
+    return descriptor.currentValue;
+  }
+  return descriptor.currentValue ?? descriptor.options.find((option) => option.isDefault)?.id;
+}
+
+// ── Data-driven capability resolver ───────────────────────────────────
+
+export function getModelCapabilities(
+  provider: ProviderKind,
+  model: string | null | undefined,
+): ModelCapabilities {
+  const normalizedSlug = normalizeModelSlug(model, provider);
+  const slug =
+    provider === "claudeAgent" && normalizedSlug
+      ? stripClaudeContextWindowSuffix(normalizedSlug)
+      : normalizedSlug;
+  if (slug && MODEL_CAPABILITIES_INDEX[provider]?.[slug]) {
+    return MODEL_CAPABILITIES_INDEX[provider][slug];
+  }
+  if (provider === "grok" && slug) {
+    // Grok exposes reasoning effort as a provider-level CLI option, while its
+    // runtime model catalog contains only model ids. New models inherit the
+    // matching CLI ladder (grok-build vs Grok 4.5 vs Grok 4.6+) before discovery
+    // returns a descriptor.
+    return grokCapabilitiesForFamily(resolveGrokEffortFamily(slug));
+  }
+  if (provider === "claudeAgent" && slug) {
+    const newestKnown = resolveNewestKnownClaudeFamilyModel(slug);
+    if (newestKnown) {
+      return MODEL_CAPABILITIES_INDEX.claudeAgent[newestKnown] ?? EMPTY_MODEL_CAPABILITIES;
+    }
+  }
+  return EMPTY_MODEL_CAPABILITIES;
+}
+
+// Claude Code ships new models before Synara's catalog lists them. Catalog
+// entries always win; only an id that is newer than every catalog model of its
+// family borrows that family's newest capabilities. Older or unrecognized ids
+// keep the empty fallback so custom and legacy selections do not gain options.
+const CLAUDE_FAMILY_MODEL_PATTERN =
+  /^claude-(fable|opus|sonnet|haiku)-(\d{1,2})(?:-(\d{1,2}))?(?:-\d{8})?$/u;
+
+type ClaudeFamilyModelVersion = {
+  readonly family: string;
+  readonly major: number;
+  readonly minor: number;
+};
+
+function parseClaudeFamilyModelVersion(slug: string): ClaudeFamilyModelVersion | null {
+  const match = CLAUDE_FAMILY_MODEL_PATTERN.exec(slug.trim().toLowerCase());
+  if (!match?.[1] || !match[2]) {
+    return null;
+  }
+  return { family: match[1], major: Number(match[2]), minor: Number(match[3] ?? 0) };
+}
+
+function compareClaudeFamilyModelVersions(
+  left: ClaudeFamilyModelVersion,
+  right: ClaudeFamilyModelVersion,
+): number {
+  return left.major - right.major || left.minor - right.minor;
+}
+
+const NEWEST_CLAUDE_CATALOG_MODEL_BY_FAMILY = (() => {
+  const newest = new Map<string, { slug: ModelSlug; version: ClaudeFamilyModelVersion }>();
+  for (const model of MODEL_OPTIONS_BY_PROVIDER.claudeAgent) {
+    const version = parseClaudeFamilyModelVersion(model.slug);
+    const current = version ? newest.get(version.family) : undefined;
+    if (version && (!current || compareClaudeFamilyModelVersions(version, current.version) > 0)) {
+      newest.set(version.family, { slug: model.slug, version });
+    }
+  }
+  return newest;
+})();
+
+/**
+ * Returns the newest catalog model of `slug`'s Claude family when `slug` is a
+ * newer release the catalog does not list yet (e.g. `claude-opus-6` → the
+ * newest catalog Opus). Catalog, older, and unrecognized ids return `null`.
+ */
+export function resolveNewestKnownClaudeFamilyModel(
+  model: string | null | undefined,
+): ModelSlug | null {
+  const normalized = normalizeModelSlug(model, "claudeAgent");
+  if (!normalized) {
+    return null;
+  }
+  const slug = stripClaudeContextWindowSuffix(normalized) as ModelSlug;
+  if (MODEL_SLUG_SET_BY_PROVIDER.claudeAgent.has(slug)) {
+    return null;
+  }
+  const version = parseClaudeFamilyModelVersion(slug);
+  const newest = version ? NEWEST_CLAUDE_CATALOG_MODEL_BY_FAMILY.get(version.family) : undefined;
+  return version && newest && compareClaudeFamilyModelVersions(version, newest.version) > 0
+    ? newest.slug
+    : null;
+}
+
+export function resolveGrokEffortFamily(model: string): "build" | "4.5" | "4.6" {
+  const slug = model.trim().toLowerCase();
+  const version = /grok-(\d+)\.(\d+)/u.exec(slug);
+  const major = version ? Number(version[1]) : null;
+  const minor = version ? Number(version[2]) : null;
+  // grok-4.7-build-fast is the fast tier of Grok 4.7, not the retired
+  // grok-build product. A Grok 4.5+ id keeps that generation's ladder even
+  // when the slug also contains "build" or "code-fast".
+  const versionedGeneration =
+    major !== null && minor !== null && (major > 4 || (major === 4 && minor >= 5));
+  if (
+    !versionedGeneration &&
+    (slug.includes("build") ||
+      slug.includes("code-fast") ||
+      slug === "grok-4" ||
+      slug === "grok-4.3" ||
+      slug.startsWith("grok-4.3-"))
+  ) {
+    return "build";
+  }
+
+  if (major === null || minor === null) {
+    // Preserve the legacy Grok Build ladder for custom or future aliases we
+    // cannot classify. Discovery can still opt known versioned models into
+    // the newer ladders without silently changing persisted custom models.
+    return "build";
+  }
+  if (major < 4 || (major === 4 && minor <= 3)) {
+    return "build";
+  }
+  if (major === 4 && minor === 5) {
+    return "4.5";
+  }
+  return "4.6";
+}
+
+function grokCapabilitiesForFamily(family: "build" | "4.5" | "4.6"): ModelCapabilities {
+  const grokCaps = MODEL_CAPABILITIES_INDEX.grok;
+  if (family === "build") {
+    return grokCaps["grok-build"] ?? EMPTY_MODEL_CAPABILITIES;
+  }
+  if (family === "4.5") {
+    return grokCaps["grok-4.5"] ?? grokCaps["grok-4.6"] ?? EMPTY_MODEL_CAPABILITIES;
+  }
+  return grokCaps["grok-4.6"] ?? EMPTY_MODEL_CAPABILITIES;
+}
+
+export function isClaudeUltrathinkPrompt(text: string | null | undefined): boolean {
+  return typeof text === "string" && /\bultrathink\b/i.test(text);
+}
+
+export function normalizeModelSlug(
+  model: string | null | undefined,
+  provider: ProviderKind = "codex",
+): ModelSlug | null {
+  if (typeof model !== "string") {
+    return null;
+  }
+
+  const trimmed = model.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const providerScopedModel =
+    provider === "claudeAgent"
+      ? stripClaudeContextWindowSuffix(trimmed)
+      : provider === "devin" && trimmed === trimmed.toLowerCase() && trimmed.endsWith("-medium")
+        ? trimmed.slice(0, -"-medium".length)
+        : trimmed;
+  const aliases = MODEL_SLUG_ALIASES_BY_PROVIDER[provider] as Record<string, ModelSlug>;
+  const aliasKey = providerScopedModel.toLowerCase();
+  const aliased = Object.prototype.hasOwnProperty.call(aliases, aliasKey)
+    ? aliases[aliasKey]
+    : undefined;
+  const normalized = typeof aliased === "string" ? aliased : providerScopedModel;
+  return (
+    provider === "claudeAgent" && getClaudeContextWindowSuffix(trimmed) === "1m"
+      ? `${normalized}[1m]`
+      : normalized
+  ) as ModelSlug;
+}
+
+export function resolveSelectableModel(
+  provider: ProviderKind,
+  value: string | null | undefined,
+  options: ReadonlyArray<SelectableModelOption>,
+): ModelSlug | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const direct = options.find((option) => option.slug === trimmed);
+  if (direct) {
+    return direct.slug;
+  }
+
+  const byName = options.find((option) => option.name.toLowerCase() === trimmed.toLowerCase());
+  if (byName) {
+    return byName.slug;
+  }
+
+  const normalized = normalizeModelSlug(trimmed, provider);
+  if (!normalized) {
+    return null;
+  }
+
+  const resolved = options.find((option) => option.slug === normalized);
+  if (resolved) {
+    return resolved.slug;
+  }
+
+  // Scoped providers (omp/pi/opencode) surface catalog slugs as
+  // `<upstream-provider>/<model>`, while saved selections and custom entries
+  // can hold the bare model id. Resolve a bare slug to a uniquely matching
+  // scoped option; ambiguity across upstream providers resolves to nothing.
+  if (
+    (provider === "omp" || provider === "pi" || provider === "opencode") &&
+    !normalized.includes("/")
+  ) {
+    const scoped = options.filter((option) => option.slug.endsWith(`/${normalized}`));
+    if (scoped.length === 1) {
+      return scoped[0]!.slug;
+    }
+  }
+
+  return null;
+}
+
+export function resolveModelSlug(
+  model: string | null | undefined,
+  provider: ProviderKind = "codex",
+): ModelSlug | null {
+  const normalizedModel = normalizeModelSlug(model, provider);
+  const normalized =
+    provider === "claudeAgent" && normalizedModel
+      ? (stripClaudeContextWindowSuffix(normalizedModel) as ModelSlug)
+      : normalizedModel;
+  if (provider === "devin" || provider === "pi" || provider === "omp") {
+    return normalized;
+  }
+  if (!normalized) {
+    return DEFAULT_MODEL_BY_PROVIDER[provider];
+  }
+
+  return MODEL_SLUG_SET_BY_PROVIDER[provider].has(normalized)
+    ? normalized
+    : DEFAULT_MODEL_BY_PROVIDER[provider];
+}
+
+export function resolveModelSlugForProvider(
+  provider: ProviderKind,
+  model: string | null | undefined,
+): ModelSlug | null {
+  return resolveModelSlug(model, provider);
+}
+
+export function trimOrNull<T extends string>(value: T | null | undefined): T | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim() as T;
+  return trimmed || null;
+}
+
+/**
+ * Keeps only explicit Claude option overrides. The model-native auto-compact
+ * window stays unset so Claude Code can apply server tuning, settings.json,
+ * and CLAUDE_CODE_AUTO_COMPACT_WINDOW.
+ */
+export function normalizeClaudeModelOptions(
+  model: string | null | undefined,
+  modelOptions: ClaudeModelOptions | null | undefined,
+  caps: ModelCapabilities = getModelCapabilities("claudeAgent", model),
+): ClaudeModelOptions | undefined {
+  const defaultReasoningEffort = getDefaultEffort(caps);
+  const defaultAutoCompactWindow = getDefaultAutoCompactWindow(caps);
+  const resolvedEffort = trimOrNull(modelOptions?.effort);
+  const resolvedAutoCompactWindow =
+    trimOrNull(modelOptions?.autoCompactWindow) ?? trimOrNull(modelOptions?.contextWindow);
+  const isPromptInjected = caps.promptInjectedEffortLevels.includes(resolvedEffort ?? "");
+  const effort =
+    resolvedEffort &&
+    !isPromptInjected &&
+    hasEffortLevel(caps, resolvedEffort) &&
+    resolvedEffort !== defaultReasoningEffort
+      ? resolvedEffort
+      : undefined;
+  const autoCompactWindow =
+    resolvedAutoCompactWindow &&
+    hasAutoCompactWindowOption(caps, resolvedAutoCompactWindow) &&
+    resolvedAutoCompactWindow !== defaultAutoCompactWindow
+      ? resolvedAutoCompactWindow
+      : undefined;
+  const thinking =
+    caps.supportsThinkingToggle && modelOptions?.thinking === false ? false : undefined;
+  const fastMode = caps.supportsFastMode && modelOptions?.fastMode === true ? true : undefined;
+  const nextOptions: ClaudeModelOptions = {
+    ...(thinking === false ? { thinking: false } : {}),
+    ...(effort ? { effort } : {}),
+    ...(fastMode ? { fastMode: true } : {}),
+    ...(autoCompactWindow ? { autoCompactWindow } : {}),
+  };
+  return Object.keys(nextOptions).length > 0 ? nextOptions : undefined;
+}
+
+export function resolveApiModelId(modelSelection: ModelSelection): string {
+  if (
+    modelSelection.provider === "claudeAgent" &&
+    normalizeClaudeModelOptions(modelSelection.model, modelSelection.options)?.autoCompactWindow ===
+      "1m" &&
+    getClaudeContextWindowSuffix(modelSelection.model) === null
+  ) {
+    return `${modelSelection.model}[1m]`;
+  }
+  return modelSelection.model;
+}
+
+/**
+ * Map a requested Claude Code effort to the API effort passed at session spawn.
+ * `ultrathink` is prompt-injected (no API effort); `ultracode` runs as xhigh plus
+ * the `ultracode` session setting.
+ */
+export function getEffectiveClaudeCodeEffort(
+  effort: ClaudeCodeEffort | null | undefined,
+): ClaudeApiEffort | null {
+  if (!effort || effort === "ultrathink") {
+    return null;
+  }
+  return effort === "ultracode" ? "xhigh" : effort;
+}
+
+interface ClaudeSpawnProfile {
+  readonly maxEffort: boolean;
+  readonly autoCompactWindow: string | undefined;
+}
+
+// Claude's live flag settings do not refresh the runtime auto-compaction window.
+// Keep this profile aligned with the adapter's normalized spawn settings.
+function claudeSpawnProfile(selection: Extract<ModelSelection, { provider: "claudeAgent" }>) {
+  // Max is spawn-fixed even for models first discovered by a newer CLI.
+  // The adapter/CLI validates support; the static catalog must not hide a restart.
+  const requestedEffort = trimOrNull(selection.options?.effort ?? null);
+  const effort = requestedEffort && isClaudeCodeEffort(requestedEffort) ? requestedEffort : null;
+  return {
+    maxEffort: getEffectiveClaudeCodeEffort(effort) === "max",
+    autoCompactWindow: normalizeClaudeModelOptions(selection.model, selection.options)
+      ?.autoCompactWindow,
+  } satisfies ClaudeSpawnProfile;
+}
+
+/** Restart only for spawn-fixed settings; resume preserves identity, not guaranteed cache hits. */
+export function claudeSelectionRequiresRestart(
+  previous: ModelSelection | undefined,
+  next: ModelSelection,
+): boolean {
+  if (next.provider !== "claudeAgent") {
+    return false;
+  }
+  if (previous === undefined) {
+    // First observation in this process: the live session was started from the
+    // same selection source, so treat it as unchanged rather than replaying.
+    return false;
+  }
+  if (previous.provider !== "claudeAgent") {
+    return true;
+  }
+  // Normalize against each model before deciding a model-only switch is live:
+  // a persisted `max` request may become spawn-fixed (or stop being so) as the
+  // selected model's capabilities change.
+  const prev = claudeSpawnProfile(previous);
+  const desired = claudeSpawnProfile(next);
+  return (
+    prev.maxEffort !== desired.maxEffort || prev.autoCompactWindow !== desired.autoCompactWindow
+  );
+}
+
+export function normalizeCursorModelOptions(
+  model: string | null | undefined,
+  modelOptions: CursorModelOptions | null | undefined,
+  capabilities: ModelCapabilities = getModelCapabilities("cursor", model),
+): CursorModelOptions | undefined {
+  const defaultReasoningEffort = getDefaultEffort(capabilities);
+  const rawEffort = trimOrNull(modelOptions?.reasoningEffort);
+  // Cursor's fast variants use a different implicit default (Grok fast → low).
+  // Always send the UI-selected effort, including the composer default.
+  const reasoningEffort =
+    rawEffort && hasEffortLevel(capabilities, rawEffort)
+      ? rawEffort
+      : defaultReasoningEffort && hasEffortLevel(capabilities, defaultReasoningEffort)
+        ? defaultReasoningEffort
+        : undefined;
+  const rawContextWindow = trimOrNull(modelOptions?.contextWindow);
+  const defaultContextWindow = getDefaultContextWindow(capabilities);
+  const contextWindow =
+    rawContextWindow &&
+    hasContextWindowOption(capabilities, rawContextWindow) &&
+    rawContextWindow !== defaultContextWindow
+      ? rawContextWindow
+      : undefined;
+  const fastMode = capabilities.supportsFastMode ? modelOptions?.fastMode === true : undefined;
+  const thinking =
+    capabilities.supportsThinkingToggle && modelOptions?.thinking !== undefined
+      ? modelOptions.thinking
+      : undefined;
+  const nextOptions: CursorModelOptions = {
+    ...(reasoningEffort ? { reasoningEffort } : {}),
+    ...(fastMode !== undefined ? { fastMode } : {}),
+    ...(thinking !== undefined ? { thinking } : {}),
+    ...(contextWindow ? { contextWindow } : {}),
+  };
+  return Object.keys(nextOptions).length > 0 ? nextOptions : undefined;
+}
+
+export function normalizeGrokModelOptions(
+  model: string | null | undefined,
+  modelOptions: GrokModelOptions | null | undefined,
+): GrokModelOptions | undefined {
+  const caps = getModelCapabilities("grok", model);
+  const reasoningEffort = trimOrNull(modelOptions?.reasoningEffort);
+  if (!reasoningEffort || !hasEffortLevel(caps, reasoningEffort)) {
+    return undefined;
+  }
+  if (reasoningEffort === getDefaultEffort(caps)) {
+    return undefined;
+  }
+  return { reasoningEffort: reasoningEffort as GrokReasoningEffort };
+}
+
+export function normalizeAntigravityModelOptions(
+  model: string | null | undefined,
+  modelOptions: AntigravityModelOptions | null | undefined,
+  capabilities: ModelCapabilities = getModelCapabilities("antigravity", model),
+): AntigravityModelOptions | undefined {
+  const reasoningEffort = trimOrNull(modelOptions?.reasoningEffort);
+  if (!reasoningEffort || !hasEffortLevel(capabilities, reasoningEffort)) {
+    return undefined;
+  }
+  if (reasoningEffort === getDefaultEffort(capabilities)) {
+    return undefined;
+  }
+  return { reasoningEffort };
+}
+
+export function normalizePiModelOptions(
+  modelOptions: PiModelOptions | null | undefined,
+): PiModelOptions | undefined {
+  const thinkingLevel = trimOrNull(modelOptions?.thinkingLevel);
+  return thinkingLevel && PI_THINKING_LEVEL_SET.has(thinkingLevel as PiThinkingLevel)
+    ? { thinkingLevel: thinkingLevel as PiThinkingLevel }
+    : undefined;
+}
+export function normalizeOmpModelOptions(
+  modelOptions: OmpModelOptions | null | undefined,
+): OmpModelOptions | undefined {
+  const thinkingLevel = trimOrNull(modelOptions?.thinkingLevel);
+  return thinkingLevel && OMP_THINKING_LEVEL_SET.has(thinkingLevel as OmpThinkingLevel)
+    ? { thinkingLevel: thinkingLevel as OmpThinkingLevel }
+    : undefined;
+}
+
+export function normalizeOpenCodeModelOptions(
+  modelOptions: OpenCodeModelOptions | null | undefined,
+): OpenCodeModelOptions | undefined {
+  const variant = trimOrNull(modelOptions?.variant);
+  const agent = trimOrNull(modelOptions?.agent);
+  const nextOptions: OpenCodeModelOptions = {
+    ...(variant ? { variant } : {}),
+    ...(agent ? { agent } : {}),
+  };
+  return Object.keys(nextOptions).length > 0 ? nextOptions : undefined;
+}
+
+export function applyClaudePromptEffortPrefix(
+  text: string,
+  effort: ClaudeCodeEffort | null | undefined,
+): string {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+  if (effort !== "ultrathink") {
+    return trimmed;
+  }
+  if (trimmed.startsWith("Ultrathink:")) {
+    return trimmed;
+  }
+  return `Ultrathink:\n${trimmed}`;
+}

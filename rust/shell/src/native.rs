@@ -989,6 +989,9 @@ pub struct Native {
     /// popover search input (created lazily on open).
     project_picker_open: bool,
     landing_project_id: Option<String>,
+    /// Composer "Temporary" toggle for the empty landing (upstream
+    /// draftThreadContext.isTemporary; the marker stays client-side).
+    landing_temporary: bool,
     project_picker_input: Option<Entity<InputState>>,
     /// Upstream ThreadErrorBanner: thread ids whose session error was
     /// dismissed this session, the Show-details toggle for the current
@@ -2335,6 +2338,7 @@ impl Native {
                 flags_menu_open: false,
                 project_picker_open: false,
                 landing_project_id: None,
+            landing_temporary: false,
                 project_picker_input: None,
                 dismissed_thread_errors: std::collections::HashSet::new(),
                 error_details_open: false,
@@ -11106,8 +11110,13 @@ impl Render for Native {
                 self.ascii_cell_w = (f32::from(measured) + 1.).round().max(1.);
             }
             let cw = self.ascii_cell_w;
-            let cols = (avail_w / cw).ceil() as usize;
-            let rows = (avail_h / ASCII_CELL_H).ceil() as usize;
+            // Size the grid to the whole viewport, not the estimated pane
+            // offsets: the canvas clips the overflow, so glyphs always reach
+            // the field's real edges like upstream's cols*cellW tiling.
+            let cols = (window.viewport_size().width.as_f32() / cw).ceil() as usize + 1;
+            let rows =
+                (window.viewport_size().height.as_f32() / ASCII_CELL_H).ceil() as usize + 1;
+            let _ = (avail_w, avail_h);
             let n_cells = cols * rows;
             if self.ascii_fresh || self.ascii_cells.len() != n_cells {
                 self.ascii_t0 = std::time::Instant::now();
@@ -13965,41 +13974,88 @@ impl Render for Native {
                         })
                 })
                 .unwrap_or_else(|| "Work in a project".to_string());
-            composer_col = composer_col.child(
-                h_flex().w_full().items_center().pb(px(4.)).child(
-                    div()
-                        .id("landing-project-picker")
-                        .px_2()
-                        .py(px(4.))
-                        .rounded(px(999.))
-                        .cursor_pointer()
-                        .hover(|s| s.bg(theme.muted))
-                        .on_mouse_down(
-                            MouseButton::Left,
-                            cx.listener(|this, _e, _w, cx| {
-                                this.project_picker_open = !this.project_picker_open;
-                                cx.notify();
-                            }),
-                        )
-                        .child(
-                            h_flex()
-                                .gap_1()
-                                .items_center()
-                                .child(
-                                    div()
-                                        .text_size(px(11.))
-                                        .text_color(theme.muted_foreground)
-                                        .child("\u{1f4c1}"),
-                                )
-                                .child(
-                                    div()
-                                        .text_size(px(12.))
-                                        .text_color(theme.muted_foreground)
-                                        .child(chip_label),
-                                ),
-                        ),
-                ),
+            // Upstream empty-landing controls tray: the workspace folder
+            // chip hugs the left edge and the "Temporary" toggle the right.
+            let mut controls = h_flex().w_full().items_center().pb(px(4.)).child(
+                div()
+                    .id("landing-project-picker")
+                    .px_2()
+                    .py(px(4.))
+                    .rounded(px(999.))
+                    .cursor_pointer()
+                    .hover(|s| s.bg(theme.muted))
+                    .on_mouse_down(
+                        MouseButton::Left,
+                        cx.listener(|this, _e, _w, cx| {
+                            this.project_picker_open = !this.project_picker_open;
+                            cx.notify();
+                        }),
+                    )
+                    .child(
+                        h_flex()
+                            .gap_1()
+                            .items_center()
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("\u{1f4c1}"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(chip_label),
+                            ),
+                    ),
             );
+            if self.landing_project_id.is_some() {
+                let temp_active = self.landing_temporary;
+                controls = controls
+                    .child(div().flex_1())
+                    .child(
+                        div()
+                            .id("landing-temporary")
+                            .px_2()
+                            .py(px(4.))
+                            .rounded(px(999.))
+                            .cursor_pointer()
+                            .hover(|s| s.bg(theme.muted))
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(|this, _e, _w, cx| {
+                                    this.landing_temporary = !this.landing_temporary;
+                                    cx.notify();
+                                }),
+                            )
+                            .child(
+                                h_flex()
+                                    .gap(px(6.))
+                                    .items_center()
+                                    .child(
+                                        div()
+                                            .text_size(px(11.))
+                                            .text_color(if temp_active {
+                                                theme.accent
+                                            } else {
+                                                theme.muted_foreground
+                                            })
+                                            .child("\u{25d4}"),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(12.))
+                                            .text_color(if temp_active {
+                                                theme.accent
+                                            } else {
+                                                theme.muted_foreground
+                                            })
+                                            .child("Temporary"),
+                                    ),
+                            ),
+                    );
+            }
+            composer_col = composer_col.child(controls);
         }
         // Upstream status banners sit at the top of the chat column: the
         // provider-health alert above everything and the thread error first

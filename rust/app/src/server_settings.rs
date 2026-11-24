@@ -129,6 +129,8 @@ const PATCH_KEYS: &[&str] = &[
     "skills",
     "newThreadDefaults",
     "onboardingCompletedAt",
+    "appearance",
+    "railShortcuts",
 ];
 
 /// Patch merge where every top-level key is a field patch; `providers` and

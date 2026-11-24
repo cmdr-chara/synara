@@ -626,6 +626,12 @@ pub struct Native {
     transcript_scroll: ScrollHandle,
     editing_message_id: Option<String>,
     pending_revert: Option<(String, i64)>,
+    /// Appearance settings (upstream appSettings, persisted under
+    /// settings.appearance via server.updateSettings).
+    appearance_mode: u8,
+    ui_density: u8,
+    chat_width_mode: u8,
+    show_ascii_bg: bool,
     renaming: bool,
     rename_input: Option<Entity<InputState>>,
     view_changes: bool,
@@ -1017,6 +1023,10 @@ impl Native {
             transcript_scroll: ScrollHandle::new(),
             editing_message_id: None,
             pending_revert: None,
+    appearance_mode: 0,
+    ui_density: 1,
+    chat_width_mode: 0,
+    show_ascii_bg: true,
             split_open: false,
             split_thread: None,
             split_detail: None,
@@ -1111,6 +1121,9 @@ impl Native {
                         this.snapshot = Some(s);
                     }
                     this.fetch_git_status(cx);
+                    if this.settings_data.is_null() {
+                        this.fetch_settings(cx);
+                    }
                     cx.notify();
                 });
                 // Live updates: subscribeShell streams shell-domain events; on
@@ -3120,10 +3133,143 @@ impl Native {
                 }
                 this.settings_loading = false;
                 this.settings_data = bundle;
+                // Appearance (upstream appSettings, server-side mirror):
+                // mode / uiDensity / chatWidth / showAsciiBackground.
+                let app = get(&this.settings_data, "settings");
+                let ap = get(app, "appearance");
+                if ap.is_object() {
+                    this.appearance_mode = match str_at(ap, "mode") {
+                        "light" => 1,
+                        "dark" => 2,
+                        _ => 0,
+                    };
+                    this.ui_density = match str_at(ap, "uiDensity") {
+                        "compact" => 0,
+                        "spacious" => 2,
+                        _ => 1,
+                    };
+                    this.chat_width_mode = match str_at(ap, "chatWidth") {
+                        "wide" => 1,
+                        "full" => 2,
+                        _ => 0,
+                    };
+                    this.show_ascii_bg = ap
+                        .get("showAsciiBackground")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(true);
+                    this.apply_appearance_mode(None, cx);
+                }
                 cx.notify();
             });
         })
         .detach();
+    }
+
+    fn density_scale(&self) -> f32 {
+        [0.85_f32, 1.0, 1.15][self.ui_density as usize]
+    }
+
+    /// Upstream CHAT_MAX_WIDTH_BY_MODE: standard 46rem, wide 72rem, full 100%.
+    fn chat_max_w(&self) -> Pixels {
+        match self.chat_width_mode {
+            0 => px(726.),
+            1 => px(1152.),
+            _ => px(100_000.),
+        }
+    }
+
+    /// Persists the appearance map under settings.appearance, like
+    /// upstream's appSettings write-through (server.updateSettings patch).
+    fn persist_appearance(&mut self, cx: &mut Context<Self>) {
+        let mode = ["system", "light", "dark"][self.appearance_mode as usize];
+        let dens = ["compact", "comfortable", "spacious"][self.ui_density as usize];
+        let width = ["standard", "wide", "full"][self.chat_width_mode as usize];
+        let appearance = json!({
+            "mode": mode,
+            "uiDensity": dens,
+            "chatWidth": width,
+            "showAsciiBackground": self.show_ascii_bg,
+        });
+        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
+            .and_then(|s| s.as_object_mut())
+        {
+            obj.insert("appearance".to_string(), appearance.clone());
+        }
+        cx.notify();
+        let cell = self.client.clone();
+        let payload = json!({"appearance": appearance});
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .spawn(async move {
+                    let _ = ensure_client(&cell)
+                        .and_then(|c| c.call("server.updateSettings", payload));
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    fn apply_appearance_mode(&mut self, w: Option<&mut Window>, cx: &mut Context<Self>) {
+        let mode = match self.appearance_mode {
+            1 => gpui_kit::component::ThemeMode::Light,
+            2 => gpui_kit::component::ThemeMode::Dark,
+            _ => gpui_kit::component::ThemeMode::from(cx.window_appearance()),
+        };
+        gpui_kit::component::Theme::change(mode, w, cx);
+    }
+
+    fn set_appearance_mode(&mut self, mode: u8, w: &mut Window, cx: &mut Context<Self>) {
+        self.appearance_mode = mode;
+        self.apply_appearance_mode(Some(w), cx);
+        self.persist_appearance(cx);
+    }
+
+    fn set_ui_density(&mut self, ix: usize, cx: &mut Context<Self>) {
+        self.ui_density = ix as u8;
+        self.persist_appearance(cx);
+    }
+
+    fn set_chat_width(&mut self, ix: usize, cx: &mut Context<Self>) {
+        self.chat_width_mode = ix as u8;
+        self.persist_appearance(cx);
+    }
+
+    fn toggle_ascii_bg(&mut self, cx: &mut Context<Self>) {
+        self.show_ascii_bg = !self.show_ascii_bg;
+        self.persist_appearance(cx);
+    }
+
+    /// Segmented control with real selection (the static `seg` renders the
+    /// same visual; this one drives `act(ix)` on click).
+    fn seg_pick(
+        cx: &mut Context<Self>,
+        idp: &'static str,
+        opts: &[&'static str],
+        active: usize,
+        theme: &gpui_kit::component::Theme,
+        act: fn(&mut Self, usize, &mut Context<Self>),
+    ) -> gpui::AnyElement {
+        let mut s = h_flex().items_center().gap(px(4.));
+        for (i, o) in opts.iter().enumerate() {
+            let is_active = i == active;
+            let mut c = div()
+                .id(ElementId::Name(format!("{idp}-{i}").into()))
+                .h(px(32.))
+                .px(px(11.))
+                .flex()
+                .items_center()
+                .rounded(px(8.))
+                .cursor_pointer();
+            if is_active {
+                c = c.bg(rgb(0xf2f2f2));
+            }
+            let tc = if is_active { theme.foreground } else { theme.muted_foreground };
+            s = s.child(
+                c.child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(tc).child(*o))
+                    .on_click(cx.listener(move |this, _ev, _w, cx| act(this, i, cx))),
+            );
+        }
+        s.into_any_element()
     }
 
     /// Upstream rail "…" checkbox: toggles `key` inside
@@ -3842,10 +3988,11 @@ impl Native {
         let thread_v = get(detail, "thread");
         let messages = arr(thread_v, "messages");
         let find_q = self.find_query.to_lowercase();
+        let chat_mw = self.chat_max_w();
         if messages.is_empty() && has_thread && !show_landing {
             col = col.child(
                 h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(px(726.)).child(
+                    div().w_full().max_w(chat_mw).child(
                         div()
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
@@ -4079,7 +4226,7 @@ impl Native {
                 }
                 col = col.child(
                     h_flex().w_full().justify_center().child(
-                        div().w_full().max_w(px(726.)).child(card),
+                        div().w_full().max_w(chat_mw).child(card),
                     ),
                 );
                 continue;
@@ -4228,7 +4375,7 @@ impl Native {
                 }
                 col = col.child(
                     h_flex().w_full().justify_center().child(
-                        h_flex().w_full().max_w(px(726.)).justify_end().child(
+                        h_flex().w_full().max_w(chat_mw).justify_end().child(
                             v_flex()
                                 .items_end()
                                 .child(pill.child(
@@ -4347,7 +4494,7 @@ impl Native {
                 }
                 col = col.child(
                     h_flex().w_full().justify_center().child(
-                        div().w_full().max_w(px(726.)).child(
+                        div().w_full().max_w(chat_mw).child(
                             v_flex()
                                 .child(wrap.child(
                                     TextView::markdown(
@@ -4430,7 +4577,7 @@ impl Native {
         if activities.len() == 1 {
             col = col.child(
                 h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(px(726.)).child(activity_row(&activities[0])),
+                    div().w_full().max_w(chat_mw).child(activity_row(&activities[0])),
                 ),
             );
         } else if activities.len() > 1 {
@@ -4470,7 +4617,7 @@ impl Native {
             }
             col = col.child(
                 h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(px(726.)).child(card),
+                    div().w_full().max_w(chat_mw).child(card),
                 ),
             );
         }
@@ -4483,7 +4630,7 @@ impl Native {
             }
             col = col.child(
                 h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(px(726.)).child(
+                    div().w_full().max_w(chat_mw).child(
                         div()
                             .text_xs()
                             .text_color(theme.primary)
@@ -4526,7 +4673,7 @@ impl Native {
             );
             col = col.child(
                 h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(px(726.)).child(card),
+                    div().w_full().max_w(chat_mw).child(card),
                 ),
             );
         }
@@ -4562,7 +4709,7 @@ impl Native {
             }
             col = col.child(
                 h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(px(726.)).child(row_el),
+                    div().w_full().max_w(chat_mw).child(row_el),
                 ),
             );
         }
@@ -5132,7 +5279,7 @@ impl Render for Native {
             let mut el = h_flex()
                 .id(ElementId::Name(format!("thread-{tid}").into()))
                 .w_full()
-                .h(px(28.))
+                .h(px(28. * self.density_scale()))
                 .pl(px(indent))
                 .pr_2()
                 .gap(px(6.))
@@ -5495,10 +5642,14 @@ impl Render for Native {
                         .child(line),
                 );
             }
-            let wm = div()
-                .size_full()
-                .overflow_hidden()
-                .child(field);
+            let wm = if self.show_ascii_bg {
+                div()
+                    .size_full()
+                    .overflow_hidden()
+                    .child(field)
+            } else {
+                div().size_full()
+            };
             let mut home = v_flex()
                 .relative()
                 .flex_1()
@@ -6443,8 +6594,9 @@ impl Render for Native {
                         .child(send_btn),
                 )
         };
+        let chat_mw = self.chat_max_w();
         let mut composer_col = v_flex()
-            .w_full().max_w(px(726.))
+            .w_full().max_w(chat_mw)
             .gap_0()
             // Thread rows drop here as an @mention (upstream
             // useComposerThreadMentionDrop); the current thread can't
@@ -6958,10 +7110,11 @@ impl Render for Native {
                                     })),
                             ),
                     );
+                let chat_mw = self.chat_max_w();
                 split_bar = split_bar.child(
                     div().w_full().pb(px(18.)).child(
                         h_flex().w_full().justify_center().pr(px(4.)).child(
-                            v_flex().w_full().max_w(px(726.)).gap_0().child(card),
+                            v_flex().w_full().max_w(chat_mw).gap_0().child(card),
                         ),
                     ),
                 );
@@ -7024,6 +7177,7 @@ impl Render for Native {
                 .child(rows)
         };
         // One row: title + description left, control right.
+        let dscale = self.density_scale();
         let srow = |title: &'static str, desc: &'static str, ctrl: gpui::AnyElement| {
             h_flex()
                 .w_full()
@@ -7031,7 +7185,7 @@ impl Render for Native {
                 .justify_between()
                 .gap_3()
                 .px_3()
-                .py(px(10.))
+                .py(px(10. * dscale))
                 .child(
                     v_flex()
                         .flex_1()
@@ -9049,7 +9203,7 @@ impl Render for Native {
                         .items_center()
                         .justify_between()
                         .px_3()
-                        .py(px(10.))
+                        .py(px(10. * dscale))
                         .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(label))
                         .child(ctrl)
                         .into_any_element()
@@ -9061,9 +9215,21 @@ impl Render for Native {
                         .child(
                             h_flex()
                                 .gap_3()
-                                .child(theme_card(0, "System", true))
-                                .child(theme_card(1, "Light", false))
-                                .child(theme_card(2, "Dark", false)),
+                                .child(
+                                    div().id("theme-card-system").cursor_pointer()
+                                        .child(theme_card(0, "System", self.appearance_mode == 0))
+                                        .on_click(cx.listener(|this, _ev, w, cx| this.set_appearance_mode(0, w, cx))),
+                                )
+                                .child(
+                                    div().id("theme-card-light").cursor_pointer()
+                                        .child(theme_card(1, "Light", self.appearance_mode == 1))
+                                        .on_click(cx.listener(|this, _ev, w, cx| this.set_appearance_mode(1, w, cx))),
+                                )
+                                .child(
+                                    div().id("theme-card-dark").cursor_pointer()
+                                        .child(theme_card(2, "Dark", self.appearance_mode == 2))
+                                        .on_click(cx.listener(|this, _ev, w, cx| this.set_appearance_mode(2, w, cx))),
+                                ),
                         ),
                 );
                 for dark in [false, true] {
@@ -9132,10 +9298,16 @@ impl Render for Native {
                                     .when(dark, |d| {
                                         d.child(
                                             h_flex()
+                                                .id("use-dark-theme")
                                                 .items_center()
                                                 .gap_2()
+                                                .cursor_pointer()
                                                 .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Use dark theme"))
-                                                .child(toggle(true)),
+                                                .child(toggle(self.appearance_mode == 2))
+                                                .on_click(cx.listener(|this, _ev, w, cx| {
+                                                    let next = if this.appearance_mode == 2 { 0 } else { 2 };
+                                                    this.set_appearance_mode(next, w, cx);
+                                                })),
                                         )
                                     }),
                             )
@@ -9193,7 +9365,10 @@ impl Render for Native {
                                     .child(srow(
                                         "ASCII background",
                                         "Show the animated ASCII field on empty chats. Reduced motion keeps the field still.",
-                                        toggle(true),
+                                        div().id("ascii-bg-toggle").cursor_pointer()
+                                            .child(toggle(self.show_ascii_bg))
+                                            .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_ascii_bg(cx)))
+                                            .into_any_element(),
                                     ))
                                     .into_any_element(),
                             )),
@@ -9213,13 +9388,13 @@ impl Render for Native {
                                     .child(srow(
                                         "UI density",
                                         "Control spacing in the sidebar, composer, chat gutters, and settings rows without changing font size.",
-                                        seg(&["Compact", "Comfortable", "Spacious"], 1),
+                                        Self::seg_pick(cx, "seg-density", &["Compact", "Comfortable", "Spacious"], self.ui_density as usize, &theme, Self::set_ui_density),
                                     ))
                                     .child(divider())
                                     .child(srow(
                                         "Chat width",
                                         "Control how wide the chat column grows. Wide and Full give tables and wide content more room.",
-                                        seg(&["Standard", "Wide", "Full"], 0),
+                                        Self::seg_pick(cx, "seg-chatw", &["Standard", "Wide", "Full"], self.chat_width_mode as usize, &theme, Self::set_chat_width),
                                     ))
                                     .child(divider())
                                     .child(srow(

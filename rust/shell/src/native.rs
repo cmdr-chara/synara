@@ -623,6 +623,9 @@ pub struct Native {
     split_composer: Option<Entity<InputState>>,
     /// True while a thread drag hovers the composer (ring highlight).
     composer_thread_over: bool,
+    transcript_scroll: ScrollHandle,
+    editing_message_id: Option<String>,
+    pending_revert: Option<(String, i64)>,
     renaming: bool,
     rename_input: Option<Entity<InputState>>,
     view_changes: bool,
@@ -1011,6 +1014,9 @@ impl Native {
                 pinned_threads: Vec::new(),
             tab_drop_target: None,
             composer_thread_over: false,
+            transcript_scroll: ScrollHandle::new(),
+            editing_message_id: None,
+            pending_revert: None,
             split_open: false,
             split_thread: None,
             split_detail: None,
@@ -1175,6 +1181,7 @@ impl Native {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 if this.selected_thread.as_deref() == Some(tid.as_str()) {
                     this.detail = detail;
+                    this.transcript_scroll.scroll_to_bottom();
                 }
                 cx.notify();
             });
@@ -1214,7 +1221,16 @@ impl Native {
                     .await;
                 let _ = this.update(cx, |this: &mut Self, cx| {
                     if this.selected_thread.as_deref() == Some(tid.as_str()) {
+                        // Keep end-follow while the reader is at the bottom
+                        // (upstream tail anchor); releasing upward keeps the
+                        // position and shows the scroll-to-bottom button.
+                        let off = this.transcript_scroll.offset();
+                        let max = this.transcript_scroll.max_offset();
+                        let at_bottom = max.y + off.y <= px(120.);
                         this.detail = d;
+                        if at_bottom {
+                            this.transcript_scroll.scroll_to_bottom();
+                        }
                     }
                     cx.notify();
                 });
@@ -4101,12 +4117,67 @@ impl Native {
                             .child(uts),
                     );
                 }
-                for (iid, data) in [
-                    ("umsg-copy", icons::COPY),
-                    ("umsg-edit", icons::NEW_THREAD),
-                    ("umsg-revert", icons::UNDO),
-                ] {
-                    let msg_id = str_at(m, "id").to_string();
+                let msg_id = str_at(m, "id").to_string();
+                // Upstream revert target: the checkpoint of the turn the
+                // next assistant message belongs to, minus one.
+                let revert_tc: Option<i64> = (|| {
+                    let turn_id = messages
+                        .iter()
+                        .skip(i + 1)
+                        .find(|nm| str_at(nm, "role") == "assistant")
+                        .map(|nm| str_at(nm, "turnId").to_string())
+                        .filter(|t| !t.is_empty())?;
+                    arr(thread_v, "checkpoints")
+                        .iter()
+                        .find(|c| str_at(c, "turnId") == turn_id)
+                        .and_then(|c| {
+                            c.get("checkpointTurnCount").and_then(Value::as_i64)
+                        })
+                        .map(|tc| (tc - 1).max(0))
+                })();
+                // Upstream shows the pencil only when
+                // resolveTailUserMessageEditTarget would allow it: the
+                // latest native-source user message whose tail spans at
+                // most one turn (or carries the currently running turn).
+                let msg_editable = {
+                    let src = str_at(m, "source");
+                    let native_src = src.is_empty() || src == "native";
+                    let answered = messages.iter().any(|nm| {
+                        str_at(get(get(nm, "asyncUserInput"), "response"), "messageId")
+                            == msg_id
+                    });
+                    let latest = messages.iter().rposition(|nm| {
+                        str_at(nm, "role") == "user" && {
+                            let s = str_at(nm, "source");
+                            s.is_empty() || s == "native"
+                        }
+                    });
+                    let sess = get(detail, "session");
+                    let active_turn = str_at(sess, "status") == "running"
+                        && !str_at(sess, "activeTurnId").is_empty();
+                    let mut tail: Vec<&str> = Vec::new();
+                    for nm in &messages[i..] {
+                        let t = str_at(nm, "turnId");
+                        if !t.is_empty() && !tail.contains(&t) {
+                            tail.push(t);
+                        }
+                    }
+                    native_src
+                        && !answered
+                        && latest == Some(i)
+                        && (tail.len() == 1 || (tail.is_empty() && active_turn))
+                };
+                let mut uicons: Vec<(&'static str, &'static [u8])> = vec![("umsg-copy", icons::COPY)];
+                if msg_editable {
+                    uicons.push(("umsg-edit", icons::NEW_THREAD));
+                }
+                if revert_tc.is_some() {
+                    uicons.push(("umsg-revert", icons::UNDO));
+                }
+                for (iid, data) in uicons {
+                    let msg_id2 = msg_id.clone();
+                    let text2 = text.clone();
+                    let tc = revert_tc;
                     ufooter = ufooter.child(
                         div()
                             .id(ElementId::Name(
@@ -4119,6 +4190,35 @@ impl Native {
                             .rounded(px(6.))
                             .cursor_pointer()
                             .hover(|d| d.bg(rgba(0x00000008)))
+                            .on_click(cx.listener(
+                                move |this, _ev, w, cx| match iid {
+                                    "umsg-edit" => {
+                                        this.editing_message_id =
+                                            Some(msg_id2.clone());
+                                        this.composer.update(cx, |s, cx| {
+                                            s.set_value(text2.clone(), w, cx);
+                                        });
+                                        let f =
+                                            this.composer.read(cx).focus_handle(cx);
+                                        w.focus(&f, cx);
+                                        cx.notify();
+                                    }
+                                    "umsg-revert" => {
+                                        if let Some(tc) = tc {
+                                            this.pending_revert =
+                                                Some((msg_id2.clone(), tc));
+                                            cx.notify();
+                                        }
+                                    }
+                                    _ => {
+                                        cx.write_to_clipboard(
+                                            ClipboardItem::new_string(
+                                                text2.clone(),
+                                            ),
+                                        );
+                                    }
+                                },
+                            ))
                             .child(
                                 svg_icon(data)
                                     .size(px(13.))
@@ -4149,12 +4249,19 @@ impl Native {
                     .mt(px(4.))
                     .gap(px(2.))
                     .items_center();
+                let msg_id = str_at(m, "id").to_string();
+                let pinned_ids: Vec<String> = arr(thread_v, "pinnedMessages")
+                    .iter()
+                    .map(|p| str_at(p, "messageId").to_string())
+                    .collect();
                 for (iid, data) in [
                     ("msg-copy", icons::COPY),
                     ("msg-fork", icons::BRANCH_SIMPLE),
                     ("msg-pin", icons::PIN),
                 ] {
-                    let msg_id = str_at(m, "id").to_string();
+                    let msg_id2 = msg_id.clone();
+                    let text2 = text.clone();
+                    let is_pinned = pinned_ids.contains(&msg_id2);
                     footer = footer.child(
                         div()
                             .id(ElementId::Name(
@@ -4167,10 +4274,64 @@ impl Native {
                             .rounded(px(6.))
                             .cursor_pointer()
                             .hover(|d| d.bg(rgba(0x00000008)))
+                            .on_click(cx.listener(
+                                move |this, _ev, _w, cx| match iid {
+                                    "msg-fork" => {
+                                        if let Some(tid) =
+                                            this.selected_thread.clone()
+                                        {
+                                            this.lineage(tid, false, None, cx);
+                                        }
+                                    }
+                                    "msg-pin" => {
+                                        if let Some(tid) =
+                                            this.selected_thread.clone()
+                                        {
+                                            let op = if is_pinned {
+                                                "thread.pinned-message.remove"
+                                            } else {
+                                                "thread.pinned-message.add"
+                                            };
+                                            let cell = this.client.clone();
+                                            let mid = msg_id2.clone();
+                                            cx.background_executor()
+                                                .spawn(async move {
+                                                    let Some(client) =
+                                                        ensure_client(&cell)
+                                                    else {
+                                                        return;
+                                                    };
+                                                    client.call(
+                                                        "orchestration.dispatchCommand",
+                                                        json!({
+                                                            "type": op,
+                                                            "commandId": uuid(),
+                                                            "threadId": tid,
+                                                            "messageId": mid,
+                                                            "createdAt": now_iso(),
+                                                        }),
+                                                    );
+                                                })
+                                                .detach();
+                                        }
+                                    }
+                                    _ => {
+                                        cx.write_to_clipboard(
+                                            ClipboardItem::new_string(
+                                                text2.clone(),
+                                            ),
+                                        );
+                                    }
+                                },
+                            ))
                             .child(
                                 svg_icon(data)
                                     .size(px(13.))
-                                    .text_color(theme.muted_foreground),
+                                    .text_color(if is_pinned && iid == "msg-pin" {
+                                        theme.foreground
+                                    } else {
+                                        theme.muted_foreground
+                                    }),
                             ),
                     );
                 }
@@ -4573,6 +4734,67 @@ impl Native {
         let text = text.trim().to_string();
         if text.is_empty() || self.sending {
             return;
+        }
+        // Edit & resend (upstream thread.message.edit-and-resend): the pencil
+        // on a user message reloads it into the composer; sending replaces
+        // the original turn instead of appending a new one.
+        if let Some(edit_id) = self.editing_message_id.take() {
+            if self.selected_thread.is_some() {
+                let tid = self.selected_thread.clone().unwrap_or_default();
+                self.sending = true;
+                self.composer.update(cx, |s, cx| s.clean(window, cx));
+                let cell = self.client.clone();
+                let mode = self.runtime_mode;
+                let imode = self.interaction_mode;
+                cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                    let cell2 = cell.clone();
+                    let client = cx
+                        .background_executor()
+                        .spawn(async move { ensure_client(&cell2) })
+                        .await;
+                    let Some(client) = client else {
+                        let _ = this.update(cx, |this: &mut Self, cx| {
+                            this.sending = false;
+                            cx.notify();
+                        });
+                        return;
+                    };
+                    let cmd = json!({
+                        "type": "thread.message.edit-and-resend",
+                        "commandId": uuid(),
+                        "threadId": tid,
+                        "messageId": edit_id,
+                        "text": text,
+                        "runtimeMode": mode,
+                        "interactionMode": imode,
+                        "createdAt": now_iso(),
+                    });
+                    let c = client.clone();
+                    let _ = cx
+                        .background_executor()
+                        .spawn(async move {
+                            c.call("orchestration.dispatchCommand", cmd)
+                        })
+                        .await;
+                    let p = json!({"threadId": tid});
+                    let c = client.clone();
+                    let d = cx
+                        .background_executor()
+                        .spawn(async move {
+                            c.call("orchestration.getThreadDetailSnapshot", p)
+                        })
+                        .await;
+                    let _ = this.update(cx, |this: &mut Self, cx| {
+                        this.sending = false;
+                        if let Some(d) = d {
+                            this.detail = Some(d);
+                        }
+                        cx.notify();
+                    });
+                })
+                .detach();
+                return;
+            }
         }
         // While a turn is live, upstream enqueues the follow-up instead of
         // sending it (the queued pills render above the composer).
@@ -10123,7 +10345,12 @@ impl Render for Native {
                             this.open_thread(drag.0.clone(), cx);
                         },
                     ))
-                    .child(div().flex_1().child(pane.overflow_y_scrollbar()))
+                    .child(div().flex_1().child(
+                        pane.id("transcript-scroll")
+                            .track_scroll(&self.transcript_scroll)
+                            .overflow_y_scroll()
+                            .vertical_scrollbar(&self.transcript_scroll),
+                    ))
                     .child(composer_bar);
                 // 9px hit strip drawn as a centered 1px line over the
                 // boundary (Zed divider affordance).
@@ -10171,11 +10398,148 @@ impl Render for Native {
                     );
                 }
             } else {
-                main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
+                main = main.child(div().flex_1().child(
+                    pane.id("transcript-scroll")
+                        .track_scroll(&self.transcript_scroll)
+                        .overflow_y_scroll()
+                        .vertical_scrollbar(&self.transcript_scroll),
+                ));
                 main = main.child(composer_bar);
+                // Floating scroll-to-bottom (upstream ChatTranscriptPane):
+                // appears once the transcript is scrolled up, sits above the
+                // composer centered in the chat column.
+                if has_thread {
+                    let off = self.transcript_scroll.offset();
+                    let max = self.transcript_scroll.max_offset();
+                    // offset.y is negative: 0 at the top, -max at the bottom.
+                    if max.y + off.y > px(24.) {
+                        main = main.child(
+                            h_flex()
+                                .w_full()
+                                .absolute()
+                                .bottom(px(84.))
+                                .justify_center()
+                                .child(
+                                    div()
+                                        .id("scroll-to-bottom")
+                                        .size(px(32.))
+                                        .rounded_full()
+                                        .border_1()
+                                        .border_color(theme.border)
+                                        .bg(theme.popover)
+                                        .cursor_pointer()
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .on_click(cx.listener(
+                                            |this, _ev, _w, cx| {
+                                                this.transcript_scroll
+                                                    .scroll_to_bottom();
+                                                cx.notify();
+                                            },
+                                        ))
+                                        .child(
+                                            svg_icon(icons::ARROW_DOWN)
+                                                .size(px(14.))
+                                                .text_color(theme.foreground),
+                                        ),
+                                ),
+                        );
+                    }
+                }
                 if self.find_open {
                     main = main.child(
                         div().absolute().top(px(8.)).right(px(8.)).child(find_bar),
+                    );
+                }
+                // Inline revert confirmation (upstream native confirm dialog):
+                // "Revert this thread to checkpoint N?"
+                if let Some((_mid, tc)) = self.pending_revert.clone() {
+                    main = main.child(
+                        h_flex()
+                            .w_full()
+                            .absolute()
+                            .bottom(px(140.))
+                            .justify_center()
+                            .child(
+                                h_flex()
+                                    .gap_2()
+                                    .items_center()
+                                    .rounded_lg()
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .bg(theme.popover)
+                                    .px_3()
+                                    .py_2()
+                                    .child(
+                                        div().text_xs().child(format!(
+                                            "Revert this thread to checkpoint {tc}? This discards newer messages and turn diffs."
+                                        )),
+                                    )
+                                    .child(
+                                        div()
+                                            .id("revert-cancel")
+                                            .cursor_pointer()
+                                            .rounded_md()
+                                            .px_2()
+                                            .py_1()
+                                            .text_xs()
+                                            .hover(|d| d.bg(theme.list_active))
+                                            .on_click(cx.listener(
+                                                |this, _ev, _w, cx| {
+                                                    this.pending_revert = None;
+                                                    cx.notify();
+                                                },
+                                            ))
+                                            .child("Cancel"),
+                                    )
+                                    .child(
+                                        div()
+                                            .id("revert-confirm")
+                                            .cursor_pointer()
+                                            .rounded_md()
+                                            .px_2()
+                                            .py_1()
+                                            .text_xs()
+                                            .text_color(theme.primary_foreground)
+                                            .bg(theme.primary)
+                                            .on_click(cx.listener(
+                                                move |this, _ev, _w, cx| {
+                                                    this.pending_revert = None;
+                                                    let Some(tid) = this
+                                                        .selected_thread
+                                                        .clone()
+                                                    else {
+                                                        return;
+                                                    };
+                                                    let cell =
+                                                        this.client.clone();
+                                                    cx.background_executor()
+                                                        .spawn(async move {
+                                                            let Some(client) =
+                                                                ensure_client(&cell)
+                                                            else {
+                                                                return;
+                                                            };
+                                                            client.call(
+                                                                "orchestration.dispatchCommand",
+                                                                json!({
+                                                                    "type": "thread.checkpoint.revert",
+                                                                    "commandId": uuid(),
+                                                                    "threadId": tid,
+                                                                    "turnCount": tc,
+                                                                    "scope": "thread",
+                                                                    "createdAt": now_iso(),
+                                                                }),
+                                                            );
+                                                        })
+                                                        .detach();
+                                                    cx.notify();
+                                                },
+                                            ))
+                                            .child("Revert"),
+                                    ),
+                            ),
                     );
                 }
             }

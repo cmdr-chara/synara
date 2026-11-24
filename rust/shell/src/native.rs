@@ -823,6 +823,10 @@ fn gh_visible_items(
 
 fn gh_actor_label(item: &Value) -> String {
     let author = get(item, "author");
+    let name = str_at(author, "name").trim();
+    if !name.is_empty() {
+        return name.to_string();
+    }
     let login = str_at(author, "login");
     if login.is_empty() {
         "unknown".to_string()
@@ -21857,6 +21861,12 @@ impl Render for Native {
                     };
                     let when = gh_relative_time(stamp);
                     let author = gh_actor_label(item);
+                    let author_initial = author
+                        .chars()
+                        .next()
+                        .unwrap_or('?')
+                        .to_ascii_uppercase()
+                        .to_string();
                     let row_item = item.clone();
                     let pin_item = item.clone();
                     pr_rows = pr_rows.child(
@@ -21898,6 +21908,25 @@ impl Render for Native {
                                             .gap_1p5()
                                             .min_w_0()
                                             .child(glyph)
+                                            .child(
+                                                div()
+                                                    .size(px(16.))
+                                                    .flex_shrink_0()
+                                                    .flex()
+                                                    .items_center()
+                                                    .justify_center()
+                                                    .rounded_full()
+                                                    .bg(theme.secondary)
+                                                    .border_1()
+                                                    .border_color(theme.border.opacity(0.5))
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(8.))
+                                                            .font_weight(FontWeight::MEDIUM)
+                                                            .text_color(theme.muted_foreground)
+                                                            .child(author_initial),
+                                                    ),
+                                            )
                                             .child(
                                                 div()
                                                     .text_size(px(12.))
@@ -22086,6 +22115,7 @@ impl Render for Native {
         let cur_state = self.gh_state_filter;
         let gh_sort_weak = cx.weak_entity();
         let gh_filter_weak = gh_sort_weak.clone();
+        let gh_actions_weak = gh_sort_weak.clone();
 
         let pullreq_panel = v_flex()
             .flex_1()
@@ -22105,26 +22135,6 @@ impl Render for Native {
                             .child("Code review"),
                     )
                     .child(div().flex_1())
-                    .child(
-                        div()
-                            .id("gh-refresh")
-                            .size(px(26.))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .rounded(px(6.))
-                            .cursor_pointer()
-                            .hover(|d| d.bg(theme.secondary))
-                            .on_click(cx.listener(|this, _e, _w, cx| {
-                                this.fetch_github_inbox(cx);
-                            }))
-                            .child(
-                                svg_icon(icons::REFRESH)
-                                    .size(px(14.))
-                                    .text_color(theme.muted_foreground),
-                            ),
-                    )
-                    .child(div().w(px(4.)))
                     .child(
                         Button::new("gh-sort-menu")
                             .ghost()
@@ -22172,6 +22182,23 @@ impl Render for Native {
                                     );
                                 }
                                 m
+                            }),
+                    )
+                    .child(div().w(px(4.)))
+                    .child(
+                        Button::new("gh-more-menu")
+                            .ghost()
+                            .compact()
+                            .icon(svg_icon(icons::MORE).size(px(14.)))
+                            .dropdown_menu(move |menu, _, _| {
+                                let weak = gh_actions_weak.clone();
+                                menu.min_w(px(150.)).item(
+                                    PopupMenuItem::new("Refresh").on_click(move |_, _w, cx| {
+                                        let _ = weak.update(cx, |this, cx| {
+                                            this.fetch_github_inbox(cx);
+                                        });
+                                    }),
+                                )
                             }),
                     ),
             )

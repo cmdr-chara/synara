@@ -1173,6 +1173,89 @@ fn pi_build_answers(
     Some(Value::Object(out))
 }
 
+/// Upstream withUserInputExchanges pairing: each `user-input.resolved`
+/// activity joins the newest still-open `user-input.requested` sharing its
+/// requestId + lifecycleGeneration. Returns resolved-id -> (questions,
+/// answers) plus the consumed requested ids the transcript drops.
+fn derive_ui_exchanges(
+    activities: &[Value],
+) -> (
+    std::collections::HashMap<String, (Vec<Value>, Option<Value>)>,
+    std::collections::HashSet<String>,
+) {
+    let mut open: Vec<(String, String, String, Vec<Value>)> = Vec::new();
+    let mut pairs: std::collections::HashMap<String, (Vec<Value>, Option<Value>)> =
+        std::collections::HashMap::new();
+    let mut consumed = std::collections::HashSet::new();
+    for a in activities {
+        let kind = str_at(a, "kind");
+        if kind != "user-input.requested" && kind != "user-input.resolved" {
+            continue;
+        }
+        let payload = get(a, "payload");
+        let rid = str_at(payload, "requestId").to_string();
+        if rid.is_empty() {
+            continue;
+        }
+        let gen = str_at(payload, "lifecycleGeneration").to_string();
+        if kind == "user-input.requested" {
+            // An invalid replacement must not leave an earlier question open.
+            open.retain(|(r, g, _, _)| !(r == &rid && g == &gen));
+            let qs: Vec<Value> = arr(payload, "questions")
+                .iter()
+                .filter(|q| {
+                    !str_at(q, "id").is_empty()
+                        && !str_at(q, "header").is_empty()
+                        && !str_at(q, "question").is_empty()
+                        && get(q, "options").is_array()
+                })
+                .cloned()
+                .collect();
+            if !qs.is_empty() {
+                open.push((rid, gen, str_at(a, "id").to_string(), qs));
+            }
+        } else if let Some(pos) = open
+            .iter()
+            .rposition(|(r, g, _, _)| r == &rid && g == &gen)
+        {
+            let (_, _, req_id, qs) = open.remove(pos);
+            consumed.insert(req_id);
+            let answers = get(payload, "answers").clone();
+            pairs.insert(
+                str_at(a, "id").to_string(),
+                (qs, (!answers.is_null()).then_some(answers)),
+            );
+        }
+    }
+    (pairs, consumed)
+}
+
+/// Upstream formatUserInputAnswer: answers[qid] or answers[question text],
+/// string / string[] / {answers:[]}, joined ", ", None when empty.
+fn ui_answer_text(answers: Option<&Value>, q: &Value) -> Option<String> {
+    let answers = answers?;
+    let value = answers
+        .get(str_at(q, "id"))
+        .or_else(|| answers.get(str_at(q, "question")))?;
+    let parts: Vec<&str> = if let Some(s) = value.as_str() {
+        vec![s]
+    } else if let Some(list) = value.as_array() {
+        list.iter().filter_map(|v| v.as_str()).collect()
+    } else {
+        arr(value, "answers")
+            .iter()
+            .filter_map(|v| v.as_str())
+            .collect()
+    };
+    let text = parts
+        .iter()
+        .map(|p| p.trim())
+        .filter(|p| !p.is_empty())
+        .collect::<Vec<_>>()
+        .join(", ");
+    (!text.is_empty()).then_some(text)
+}
+
 /// One PTY session backing a terminal tab (upstream TerminalWorkspaceTabs).
 struct TermTab {
     id: String,
@@ -7553,55 +7636,159 @@ impl Native {
                 )
                 .child(div().text_xs().text_color(color).child(label))
         };
-        if activities.len() == 1 {
-            col = col.child(
-                h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(chat_mw).child(activity_row(&activities[0])),
-                ),
-            );
-        } else if activities.len() > 1 {
-            let mut card = v_flex()
-                .border_1()
-                .border_color(theme.border)
-                .rounded_lg()
-                .p_2()
-                .gap_1()
-                .child(
-                    h_flex()
-                        .id("tools-card")
-                        .cursor_pointer()
-                        .gap_2()
-                        .items_center()
-                        .on_click(cx.listener(|this, _ev, _w, cx| {
-                            this.tools_expanded = !this.tools_expanded;
-                            cx.notify();
-                        }))
+        // Upstream withUserInputExchanges: resolved userInput pairs render as
+        // Q→A bubble exchanges and consume their requested row.
+        let (ui_exchanges, ui_consumed) = derive_ui_exchanges(&activities);
+        let activities: Vec<Value> = activities
+            .into_iter()
+            .filter(|a| !ui_consumed.contains(str_at(a, "id")))
+            .collect();
+        // Runs of plain activities group into the collapsible actions card;
+        // a resolved userInput pair breaks the run and renders its bubbles.
+        let mut segments: Vec<Vec<Value>> = Vec::new();
+        let mut run: Vec<Value> = Vec::new();
+        for a in activities {
+            if ui_exchanges.contains_key(str_at(&a, "id")) {
+                if !run.is_empty() {
+                    segments.push(std::mem::take(&mut run));
+                }
+                segments.push(vec![a]);
+            } else {
+                run.push(a);
+            }
+        }
+        if !run.is_empty() {
+            segments.push(run);
+        }
+        let n_plain_cards = segments.iter().filter(|s| s.len() > 1).count();
+        let mut seen_cards = 0usize;
+        for seg in &segments {
+            let is_exchange = seg.len() == 1
+                && ui_exchanges.contains_key(str_at(&seg[0], "id"));
+            if is_exchange {
+                let aid = str_at(&seg[0], "id");
+                let (qs, answers) = ui_exchanges.get(aid).unwrap();
+                let mut exch = v_flex().w_full().max_w(chat_mw).gap_2().py(px(2.));
+                for q in qs {
+                    let opts: Vec<String> = arr(q, "options")
+                        .iter()
+                        .map(|o| str_at(o, "label").to_string())
+                        .collect();
+                    let answer =
+                        ui_answer_text(answers.as_ref(), q).unwrap_or_else(|| "No answer".into());
+                    exch = exch
                         .child(
-                            Icon::new(AssetIcon::Wrench)
-                                .size(px(12.))
-                                .text_color(theme.muted_foreground),
+                            h_flex().w_full().justify_start().child(
+                                v_flex()
+                                    .max_w(chat_mw * 0.85)
+                                    .px(px(14.))
+                                    .py(px(10.))
+                                    .gap_1()
+                                    .rounded(px(16.))
+                                    .border_1()
+                                    .border_dashed()
+                                    .border_color(theme.border)
+                                    .child(
+                                        div()
+                                            .text_xs()
+                                            .text_color(theme.muted_foreground)
+                                            .child(str_at(q, "header").to_string()),
+                                    )
+                                    .child(
+                                        div().text_sm().child(
+                                            str_at(q, "question").to_string(),
+                                        ),
+                                    )
+                                    .when(!opts.is_empty(), |d| {
+                                        d.child(
+                                            div()
+                                                .text_xs()
+                                                .text_color(theme.muted_foreground)
+                                                .child(opts.join(" · ")),
+                                        )
+                                    }),
+                            ),
                         )
                         .child(
-                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
-                                "{} actions {}",
-                                activities.len(),
-                                if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" }
-                            )),
-                        ),
+                            h_flex().w_full().justify_end().child(
+                                v_flex()
+                                    .max_w(chat_mw * 0.85)
+                                    .px(px(14.))
+                                    .py(px(10.))
+                                    .gap_1()
+                                    .rounded(px(16.))
+                                    .border_1()
+                                    .border_dashed()
+                                    .border_color(theme.border)
+                                    .child(
+                                        div()
+                                            .text_xs()
+                                            .text_color(theme.muted_foreground)
+                                            .child("Answer"),
+                                    )
+                                    .child(div().text_sm().child(answer)),
+                            ),
+                        );
+                }
+                col = col.child(
+                    h_flex().w_full().justify_center().child(exch),
                 );
-            if self.tools_expanded {
-                for a in &activities {
-                    card = card.child(activity_row(a));
+            } else if seg.len() == 1 {
+                col = col.child(
+                    h_flex().w_full().justify_center().child(
+                        div()
+                            .w_full()
+                            .max_w(chat_mw)
+                            .child(activity_row(&seg[0])),
+                    ),
+                );
+            } else {
+                let mut card = v_flex()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg()
+                    .p_2()
+                    .gap_1()
+                    .child(
+                        h_flex()
+                            .id("tools-card")
+                            .cursor_pointer()
+                            .gap_2()
+                            .items_center()
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.tools_expanded = !this.tools_expanded;
+                                cx.notify();
+                            }))
+                            .child(
+                                Icon::new(AssetIcon::Wrench)
+                                    .size(px(12.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
+                                    "{} actions {}",
+                                    seg.len(),
+                                    if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" }
+                                )),
+                            ),
+                    );
+                seen_cards += 1;
+                if self.tools_expanded {
+                    for a in seg {
+                        card = card.child(activity_row(a));
+                    }
+                    if seen_cards == n_plain_cards {
+                        for t in &bg_tasks {
+                            card = card.child(bg_task_row(t));
+                        }
+                    }
                 }
-                for t in &bg_tasks {
-                    card = card.child(bg_task_row(t));
-                }
+                col = col.child(
+                    h_flex().w_full().justify_center().child(
+                        div().w_full().max_w(chat_mw).child(card),
+                    ),
+                );
             }
-            col = col.child(
-                h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(chat_mw).child(card),
-                ),
-            );
         }
 
         // SubagentRunCard: the thread's child threads fold into one

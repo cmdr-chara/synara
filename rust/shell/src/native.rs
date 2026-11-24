@@ -866,6 +866,9 @@ pub struct Native {
     staged_files: Vec<Value>,
     unstaged_files: Vec<Value>,
     changes_diff: Option<(String, String)>,
+    /// Diff-line blame popover (upstream DiffLineBlamePopover):
+    /// (`git.blameLine` result, x, y).
+    blame_pop: Option<(Value, f32, f32)>,
     changes_loading: bool,
     changes_unavailable: bool,
     view_terminal: bool,
@@ -1437,6 +1440,7 @@ impl Native {
                 staged_files: Vec::new(),
                 unstaged_files: Vec::new(),
                 changes_diff: None,
+                blame_pop: None,
                 changes_loading: false,
                 changes_unavailable: false,
                 view_terminal: false,
@@ -2164,6 +2168,7 @@ impl Native {
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 if let Some(v) = res {
+                    this.blame_pop = None;
                     this.changes_diff = Some((path.clone(), str_at(&v, "patch").to_string()));
                 }
                 cx.notify();
@@ -2174,6 +2179,49 @@ impl Native {
 
     /// Cmd+F: transcript find-bar. Highlights matching messages with an accent
     /// bar and shows the match count, like the web find-in-thread bar.
+    /// Click on a diff line -> `git.blameLine` then the blame popover
+    /// (upstream DiffLineBlamePopover). Deleted lines blame the base
+    /// tree (base:"branch"); everything else blames the working tree.
+    fn fetch_blame(
+        &mut self,
+        path: String,
+        line: u32,
+        base: bool,
+        x: f32,
+        y: f32,
+        cx: &mut Context<Self>,
+    ) {
+        let Some(cwd) = self.files_root() else {
+            return;
+        };
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else {
+                return;
+            };
+            let mut p = json!({"cwd": cwd, "filePath": path, "line": line});
+            if base {
+                p["base"] = json!("branch");
+            }
+            let res = cx
+                .background_executor()
+                .spawn(async move { client.call("git.blameLine", p) })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(v) = res {
+                    this.blame_pop = Some((v, x, y));
+                    cx.notify();
+                }
+            });
+        })
+        .detach();
+    }
+
     fn toggle_find(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         self.find_open = !self.find_open;
         if self.find_open {
@@ -12712,6 +12760,7 @@ impl Render for Native {
                         )
                         .on_click(cx.listener(|this, _ev, _w, cx| {
                             this.view_changes = false;
+                            this.blame_pop = None;
                             cx.notify();
                         })),
                 ),
@@ -12952,8 +13001,10 @@ impl Render for Native {
             .w_full()
             .border_t_1()
             .border_color(theme.border.opacity(0.7));
-        if let Some((_path, patch)) = &self.changes_diff {
+        if let Some((dpath, patch)) = self.changes_diff.clone() {
             let mut diff_view = v_flex().gap_0().px_2().py_2();
+            let mut old_n: u32 = 0;
+            let mut new_n: u32 = 0;
             for line in patch.lines().take(400) {
                 let color = if line.starts_with('+') && !line.starts_with("+++") {
                     theme.success
@@ -12964,13 +13015,59 @@ impl Render for Native {
                 } else {
                     theme.muted_foreground
                 };
-                diff_view = diff_view.child(
-                    div()
-                        .text_xs()
-                        .font_family(theme.mono_font_family.clone())
-                        .text_color(color)
-                        .child(line.to_string()),
-                );
+                // Hunk headers reset the blame-side line counters;
+                // upstream blames deleted lines in the base tree.
+                let mut blame: Option<(u32, bool)> = None;
+                if line.starts_with("@@") {
+                    if let Some(h) = line.split_whitespace().nth(1) {
+                        let mut it = h.split(',');
+                        if let Some(a) = it.next().and_then(|v| v.trim_start_matches('-').parse::<u32>().ok()) {
+                            old_n = a.saturating_sub(1);
+                        }
+                    }
+                    if let Some(h) = line.split_whitespace().nth(2) {
+                        let mut it = h.split(',');
+                        if let Some(a) = it.next().and_then(|v| v.trim_start_matches('+').parse::<u32>().ok()) {
+                            new_n = a.saturating_sub(1);
+                        }
+                    }
+                } else if line.starts_with('+') && !line.starts_with("+++") {
+                    new_n += 1;
+                    blame = Some((new_n, false));
+                } else if line.starts_with('-') && !line.starts_with("---") {
+                    old_n += 1;
+                    blame = Some((old_n, true));
+                } else if line.starts_with(' ') {
+                    old_n += 1;
+                    new_n += 1;
+                    blame = Some((new_n, false));
+                }
+                let row = div()
+                    .text_xs()
+                    .font_family(theme.mono_font_family.clone())
+                    .text_color(color)
+                    .child(line.to_string());
+                if let Some((ln, base)) = blame {
+                    let pth = dpath.clone();
+                    diff_view = diff_view.child(
+                        row.id(ElementId::Name(
+                            format!("dline-{}-{}-{}", if base { 'o' } else { 'n' }, ln, line.len()).into(),
+                        ))
+                        .cursor_pointer()
+                        .on_click(cx.listener(move |this, ev: &gpui::ClickEvent, _w, cx| {
+                            this.fetch_blame(
+                                pth.clone(),
+                                ln,
+                                base,
+                                ev.position().x.as_f32(),
+                                ev.position().y.as_f32(),
+                                cx,
+                            );
+                        })),
+                    );
+                } else {
+                    diff_view = diff_view.child(row);
+                }
             }
             viewport = viewport.child(
                 div()
@@ -14638,6 +14735,76 @@ impl Render for Native {
         // ---- shared RenameDialog (upstream RenameDialog): centered card with
         // a single field and Cancel/Save — covers the thread rename (mounted
         // for the first time here) and the project "Edit project" action.
+        // Diff-line blame popover (upstream DiffLineBlamePopover):
+        // summary + author + date card at the clicked diff line.
+        let mut bp_overlay = div().absolute().inset_0().size_full();
+        if let Some((bv, bx, by)) = self.blame_pop.clone() {
+            bp_overlay = bp_overlay.child(
+                div()
+                    .size_full()
+                    .on_mouse_down(gpui::MouseButton::Left, cx.listener(
+                        |this, _ev, _w, cx| {
+                            this.blame_pop = None;
+                            cx.notify();
+                        },
+                    )),
+            );
+            let uncommitted = get(&bv, "uncommitted").as_bool().unwrap_or(false);
+            let summary = {
+                let t = str_at(&bv, "summary");
+                if t.is_empty() && uncommitted { "Uncommitted changes".to_string() } else { t.to_string() }
+            };
+            let author = str_at(&bv, "author").to_string();
+            let when = str_at(&bv, "authorTime").to_string();
+            let sha = str_at(&bv, "shortSha").to_string();
+            let vs = window.viewport_size();
+            let card = v_flex()
+                .w(px(264.))
+                .gap_1()
+                .p_2()
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .shadow_md()
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child(if uncommitted { "Uncommitted changes".to_string() } else { summary }),
+                )
+                .child(
+                    h_flex()
+                        .gap_2()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child(
+                            div()
+                                .overflow_hidden()
+                                .whitespace_nowrap()
+                                .flex_1()
+                                .child(if uncommitted { "Local edit".to_string() } else { author }),
+                        )
+                        .child(if uncommitted { "".to_string() } else { when }),
+                )
+                .when(!sha.is_empty() && !uncommitted, |d| {
+                    d.child(
+                        div()
+                            .text_size(px(11.))
+                            .font_family(theme.mono_font_family.clone())
+                            .text_color(theme.muted_foreground)
+                            .child(sha),
+                    )
+                });
+            bp_overlay = bp_overlay.child(
+                div()
+                    .absolute()
+                    .left(px((bx + 8.).min(f32::from(vs.width) - 280.)))
+                    .top(px((by + 8.).min(f32::from(vs.height) - 120.)))
+                    .child(card),
+            );
+        }
+
         let mut ren_overlay = div().absolute().inset_0().size_full();
         if self.renaming || self.proj_rename.is_some() {
             let is_project = self.proj_rename.is_some();
@@ -16009,6 +16176,7 @@ impl Render for Native {
             )
             .when(self.hover_card.is_some(), |d| d.child(hc_overlay))
             .when(self.project_card.is_some(), |d| d.child(pc_overlay))
+            .when(self.blame_pop.is_some(), |d| d.child(bp_overlay))
             .when(
                 self.renaming || self.proj_rename.is_some(),
                 |d| d.child(ren_overlay),

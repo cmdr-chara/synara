@@ -27,7 +27,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | File editor | EditorWorkspaceView, WorkspaceFileEditorPane, codeEditor/* (Monaco) | `Editor` + `EditorState` (gpui native editor) | 🔶 (view/edit/save + syntax lang detection; no diff editor) |
 | Dev servers | (dev-server UI in server surfaces) | DEV SERVERS pane list/run/stop | ✅ |
 | Settings | settings/* (44 comps), SettingsSidebarNav, ThemePackEditor, DebugFeatureFlagsMenu | all 18+ sections w/ verbatim copy, interactive keybind rebinding | 🔶 (no ThemePackEditor, no debug flags) |
-| Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del), staged/unstaged split + colored patch view | 🔶 (no blame popover, fuzzy file search ported) |
+| Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del), staged/unstaged split + colored patch view | ✅ (blame popover on diff-line click + fuzzy file search) |
 | Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | bottom TERMINAL drawer: PTY via terminal.open, subscribeEvents stream (ANSI-stripped), $ input -> terminal.write, restart/close | 🔶 (no tabs/multi-session, no search, no true tty rendering) |
 | Inbox | inbox/* (InboxTasks, InboxTaskList, Recap/Usage tiles), githubInbox/* (4) | Inbox pane: greeting + "N need you", Today's tasks tile w/ todo rows (check toggle, due chips), thread groups Needs you / In progress / Ready for review / Failed (inbox.logic port), recap + usage tiles, sign-in, provider-update toast | 🔶 (no GitHub inbox rows, no dismissal pills) |
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |

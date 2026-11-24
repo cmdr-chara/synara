@@ -873,13 +873,13 @@ pub struct Native {
     changes_unavailable: bool,
     view_terminal: bool,
     term_active: bool,
-    term_id: String,
-    term_buf: String,
+    // TerminalWorkspaceTabs: one PTY session per tab; events route by id.
+    term_tabs: Vec<TermTab>,
+    term_sel: usize,
     settings_scroll: ScrollHandle,
     settings_nav_scroll: ScrollHandle,
     settings_data: Value,
     settings_loading: bool,
-    term_status: Option<String>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
     // Working directory "Open Path in Terminal" seeds the next terminal.open
@@ -970,6 +970,23 @@ pub struct Native {
 enum GitDialog {
     Commit,
     Pr,
+}
+
+/// One PTY session backing a terminal tab (upstream TerminalWorkspaceTabs).
+struct TermTab {
+    id: String,
+    buf: String,
+    status: Option<String>,
+}
+
+impl Default for TermTab {
+    fn default() -> Self {
+        Self {
+            id: uuid(),
+            buf: String::new(),
+            status: None,
+        }
+    }
 }
 
 struct AutomForm {
@@ -1468,9 +1485,8 @@ impl Native {
                 changes_unavailable: false,
                 view_terminal: false,
                 term_active: false,
-                term_id: String::new(),
-                term_buf: String::new(),
-                term_status: None,
+                term_tabs: Vec::new(),
+                term_sel: 0,
                 term_input: None,
                 term_events: false,
                 term_pending_cwd: None,
@@ -3214,25 +3230,96 @@ impl Native {
         self.view_terminal = !self.view_terminal;
         self.term_active = self.view_terminal;
         if self.view_terminal {
-            self.term_id = uuid();
-            self.term_buf.clear();
-            self.term_status = None;
-            let input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("type a command")
-            });
-            cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, w, cx| {
-                if let InputEvent::PressEnter { .. } = ev {
-                    this.term_send(w, cx);
-                }
-            })
-            .detach();
-            self.term_input = Some(input);
+            if self.term_tabs.is_empty() {
+                self.term_tabs.push(TermTab::default());
+            }
+            self.term_sel = self.term_tabs.len() - 1;
+            if self.term_input.is_none() {
+                let input = cx.new(|cx| {
+                    InputState::new(window, cx).placeholder("type a command")
+                });
+                cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, w, cx| {
+                    if let InputEvent::PressEnter { .. } = ev {
+                        this.term_send(w, cx);
+                    }
+                })
+                .detach();
+                self.term_input = Some(input);
+            }
             self.ensure_terminal_events(cx);
             self.open_terminal(cx);
         } else {
-            self.close_terminal(cx);
+            self.close_all_terminals(cx);
         }
         cx.notify();
+    }
+
+    /// "+" chip in the terminal sub-strip: spawn a sibling PTY session.
+    fn term_new_tab(&mut self, cx: &mut Context<Self>) {
+        self.term_tabs.push(TermTab::default());
+        self.term_sel = self.term_tabs.len() - 1;
+        self.open_terminal(cx);
+        cx.notify();
+    }
+
+    /// "x" on a tab: kill that PTY; when the last one dies the input row
+    /// goes away (the surface itself is closed by the strip's ×).
+    fn term_close_tab(&mut self, idx: usize, cx: &mut Context<Self>) {
+        if idx >= self.term_tabs.len() {
+            return;
+        }
+        let tab = self.term_tabs.remove(idx);
+        if self.term_sel > idx {
+            self.term_sel -= 1;
+        } else if self.term_sel >= self.term_tabs.len() {
+            self.term_sel = self.term_tabs.len().saturating_sub(1);
+        }
+        if self.term_tabs.is_empty() {
+            self.term_input = None;
+            self.term_search_input = None;
+            self.term_search_query.clear();
+        }
+        let client = self.client.clone();
+        let terminal_id = tab.id;
+        let thread_id = self.term_thread_id();
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let _ = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "terminal.close",
+                        json!({
+                            "threadId": thread_id,
+                            "terminalId": terminal_id,
+                            "deleteHistory": true,
+                        }),
+                    )
+                })
+                .await;
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn term_select_tab(&mut self, idx: usize, cx: &mut Context<Self>) {
+        if idx < self.term_tabs.len() {
+            self.term_sel = idx;
+            cx.notify();
+        }
+    }
+
+    /// Strip ×: kill every PTY session (the surface itself closes via
+    /// toggle_terminal, which calls this).
+    fn close_all_terminals(&mut self, cx: &mut Context<Self>) {
+        for i in (0..self.term_tabs.len()).rev() {
+            self.term_close_tab(i, cx);
+        }
     }
 
     /// Magnifier in the terminal sub-strip: toggle the in-buffer find bar
@@ -3258,6 +3345,10 @@ impl Native {
         cx.notify();
     }
 
+    fn term_active(&self) -> &TermTab {
+        &self.term_tabs[self.term_sel]
+    }
+
     fn term_thread_id(&self) -> String {
         self.selected_thread
             .clone()
@@ -3265,8 +3356,12 @@ impl Native {
     }
 
     fn open_terminal(&mut self, cx: &mut Context<Self>) {
+        if self.term_tabs.is_empty() {
+            self.term_tabs.push(TermTab::default());
+            self.term_sel = 0;
+        }
         let client = self.client.clone();
-        let terminal_id = self.term_id.clone();
+        let terminal_id = self.term_active().id.clone();
         let thread_id = self.term_thread_id();
         let cwd = self
             .term_pending_cwd
@@ -3302,10 +3397,14 @@ impl Native {
 
     fn close_terminal(&mut self, cx: &mut Context<Self>) {
         self.term_input = None;
-        self.term_status = None;
-        self.term_buf.clear();
+        if let Some(tab) = self.term_tabs.get_mut(self.term_sel) {
+            tab.status = None;
+            tab.buf.clear();
+        }
         let client = self.client.clone();
-        let terminal_id = self.term_id.clone();
+        let Some(terminal_id) = self.term_tabs.get(self.term_sel).map(|t| t.id.clone()) else {
+            return;
+        };
         let thread_id = self.term_thread_id();
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
@@ -3333,7 +3432,7 @@ impl Native {
 
     fn term_restart(&mut self, cx: &mut Context<Self>) {
         let client = self.client.clone();
-        let terminal_id = self.term_id.clone();
+        let terminal_id = self.term_active().id.clone();
         let thread_id = self.term_thread_id();
         let cwd = self.files_root().unwrap_or_else(|| "/".to_string());
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
@@ -3377,7 +3476,7 @@ impl Native {
     /// Send raw input to the open PTY session via terminal.write.
     fn term_write(&mut self, data: String, cx: &mut Context<Self>) {
         let client = self.client.clone();
-        let terminal_id = self.term_id.clone();
+        let terminal_id = self.term_active().id.clone();
         let thread_id = self.term_thread_id();
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
@@ -3459,35 +3558,37 @@ impl Native {
     }
 
     fn on_terminal_event(&mut self, ev: Value) {
-        if str_at(&ev, "terminalId") != self.term_id
-            || str_at(&ev, "threadId") != self.term_thread_id()
-        {
+        if str_at(&ev, "threadId") != self.term_thread_id() {
             return;
         }
+        let id = str_at(&ev, "terminalId");
+        let Some(tab) = self.term_tabs.iter_mut().find(|t| t.id == id) else {
+            return;
+        };
         match str_at(&ev, "type") {
             "started" | "restarted" => {
                 let snap = get(&ev, "snapshot");
-                self.term_buf = strip_ansi(str_at(snap, "history"));
-                self.term_status = Some(str_at(snap, "status").to_string());
+                tab.buf = strip_ansi(str_at(snap, "history"));
+                tab.status = Some(str_at(snap, "status").to_string());
             }
             "output" => {
-                self.term_buf.push_str(&strip_ansi(str_at(&ev, "data")));
-                if self.term_buf.len() > 200_000 {
-                    let mut cut = self.term_buf.len() - 100_000;
-                    while !self.term_buf.is_char_boundary(cut) {
+                tab.buf.push_str(&strip_ansi(str_at(&ev, "data")));
+                if tab.buf.len() > 200_000 {
+                    let mut cut = tab.buf.len() - 100_000;
+                    while !tab.buf.is_char_boundary(cut) {
                         cut += 1;
                     }
-                    self.term_buf.drain(..cut);
+                    tab.buf.drain(..cut);
                 }
             }
-            "cleared" => self.term_buf.clear(),
+            "cleared" => tab.buf.clear(),
             "exited" => {
-                self.term_status = Some("exited".to_string());
+                tab.status = Some("exited".to_string());
                 let suffix = get(&ev, "exitCode")
                     .as_i64()
                     .map(|c| format!(" code {c}"))
                     .unwrap_or_default();
-                self.term_buf.push_str(&format!("\n[process exited{suffix}]\n"));
+                tab.buf.push_str(&format!("\n[process exited{suffix}]\n"));
             }
             _ => {}
         }
@@ -12857,28 +12958,75 @@ impl Render for Native {
 
         // ---- terminal surface (upstream workspace mode: the Terminal surface
         // replaces transcript + composer; TerminalWorkspaceTabs switches surfaces) ----
-        let term_sub_strip = h_flex()
+        let mut term_sub_strip = h_flex()
             .px(px(20.))
             .pt(px(6.))
             .gap(px(6.))
             .items_end()
             .border_b_1()
-            .border_color(rgba(0x00000012))
+            .border_color(rgba(0x00000012));
+        for (ti, tab) in self.term_tabs.iter().enumerate() {
+            let is_sel = ti == self.term_sel;
+            let mut chip = div()
+                .id(SharedString::from(format!("term-tab-{ti}")))
+                .h(px(28.))
+                .mb(px(-1.))
+                .px_3()
+                .flex()
+                .items_center()
+                .gap_2()
+                .rounded_t(px(10.))
+                .cursor_pointer()
+                .font_family(theme.mono_font_family.clone())
+                .text_size(px(13.))
+                .when(is_sel, |d| {
+                    d.border_1()
+                        .border_b_0()
+                        .border_color(rgba(0x00000012))
+                        .bg(theme.background)
+                })
+                .when(!is_sel, |d| {
+                    d.text_color(theme.muted_foreground)
+                        .hover(|d| d.bg(subtle))
+                })
+                .child(format!("Terminal {}", ti + 1))
+                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                    this.term_select_tab(ti, cx)
+                }));
+            if self.term_tabs.len() > 1 {
+                chip = chip.child(
+                    div()
+                        .id(SharedString::from(format!("term-tab-x-{ti}")))
+                        .size(px(14.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .rounded(px(3.))
+                        .text_size(px(11.))
+                        .text_color(theme.muted_foreground)
+                        .hover(|d| d.bg(subtle))
+                        .child("\u{00d7}")
+                        .on_click(cx.listener(move |this, _ev: &gpui::ClickEvent, _w, cx| {
+                            this.term_close_tab(ti, cx)
+                        })),
+                );
+            }
+            term_sub_strip = term_sub_strip.child(chip);
+        }
+        term_sub_strip = term_sub_strip
             .child(
                 div()
+                    .id("term-new-tab")
                     .h(px(28.))
                     .mb(px(-1.))
-                    .px_3()
+                    .px_2()
                     .flex()
                     .items_center()
-                    .rounded_t(px(10.))
-                    .border_1()
-                    .border_b_0()
-                    .border_color(rgba(0x00000012))
-                    .bg(theme.background)
-                    .font_family(theme.mono_font_family.clone())
-                    .text_size(px(13.))
-                    .child("Terminal"),
+                    .cursor_pointer()
+                    .text_color(theme.muted_foreground)
+                    .hover(|d| d.bg(subtle))
+                    .child("+")
+                    .on_click(cx.listener(|this, _ev, _w, cx| this.term_new_tab(cx))),
             )
             .child(
                 div()
@@ -12936,7 +13084,10 @@ impl Render for Native {
                 let matches = if q.is_empty() {
                     0
                 } else {
-                    self.term_buf
+                    self.term_tabs
+                        .get(self.term_sel)
+                        .map(|t| &t.buf[..])
+                        .unwrap_or("")
                         .lines()
                         .filter(|l| l.to_lowercase().contains(&q))
                         .count()
@@ -12986,7 +13137,12 @@ impl Render for Native {
                     .when(!self.term_search_query.is_empty(), |d| {
                         let q = self.term_search_query.to_lowercase();
                         let mut col = v_flex().w_full();
-                        for line in self.term_buf.lines() {
+                        let buf: &str = self
+                            .term_tabs
+                            .get(self.term_sel)
+                            .map(|t| &t.buf[..])
+                            .unwrap_or("");
+                        for line in buf.lines() {
                             let hit = line.to_lowercase().contains(&q);
                             col = col.child(
                                 div()
@@ -12998,10 +13154,15 @@ impl Render for Native {
                         d.child(col)
                     })
                     .when(self.term_search_query.is_empty(), |d| {
-                        d.child(if self.term_buf.is_empty() {
+                        let buf = self
+                            .term_tabs
+                            .get(self.term_sel)
+                            .map(|t| t.buf.clone())
+                            .unwrap_or_default();
+                        d.child(if buf.is_empty() {
                             "Starting terminal\u{2026}".to_string()
                         } else {
-                            self.term_buf.clone()
+                            buf
                         })
                     })
                     .when_some(self.term_input.clone(), |d, inp| {

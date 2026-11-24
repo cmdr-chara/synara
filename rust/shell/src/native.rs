@@ -264,6 +264,9 @@ pub struct Native {
     term_status: Option<String>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
+    // Working directory "Open Path in Terminal" seeds the next terminal.open
+    // with when the drawer is currently closed.
+    term_pending_cwd: Option<String>,
     find_open: bool,
     find_input: Option<Entity<InputState>>,
     find_query: String,
@@ -274,6 +277,10 @@ pub struct Native {
     // (message_id, question_index) -> chosen option label draft.
     user_input_open: Vec<String>,
     ctx_menu: Option<(String, f32, f32)>,
+    // Context-menu flyout submenu: (parent row id, flyout top y) while open,
+    // and the thread id awaiting inline delete confirmation.
+    ctx_sub: Option<(String, f32)>,
+    ctx_confirm_delete: Option<String>,
     // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
     // mode, input entity, last async result rows, highlighted row, and a
     // sequence counter that drops stale search responses.
@@ -618,6 +625,7 @@ impl Native {
                 term_status: None,
                 term_input: None,
                 term_events: false,
+                term_pending_cwd: None,
                 settings_scroll: ScrollHandle::new(),
                 settings_nav_scroll: ScrollHandle::new(),
                 settings_data: Value::Null,
@@ -627,6 +635,8 @@ impl Native {
             sidebar_collapsed: false,
             user_input_open: Vec::new(),
             ctx_menu: None,
+            ctx_sub: None,
+            ctx_confirm_delete: None,
             palette_mode: None,
             palette_input: None,
             palette_rows: Vec::new(),
@@ -1608,7 +1618,13 @@ impl Native {
     /// Context-menu actions: fork or hand off a thread. Both dispatch the
     /// lineage command upstream's threadContextMenu sends, then refetch the
     /// snapshot so the new row appears in the sidebar.
-    fn lineage(&mut self, tid: String, is_handoff: bool, cx: &mut Context<Self>) {
+    fn lineage(
+        &mut self,
+        tid: String,
+        is_handoff: bool,
+        env_mode: Option<&'static str>,
+        cx: &mut Context<Self>,
+    ) {
         let project_id = self
             .snapshot
             .as_ref()
@@ -1633,7 +1649,7 @@ impl Native {
                 let Some(client) = ensure_client(&client) else {
                     return;
                 };
-                let payload = json!({
+                let mut payload = json!({
                     "type": ctype,
                     "commandId": uuid(),
                     "threadId": uuid(),
@@ -1641,9 +1657,78 @@ impl Native {
                     "sourceThreadId": tid,
                     "createdAt": now_iso(),
                 });
+                if let Some(mode) = env_mode {
+                    payload["envMode"] = json!(mode);
+                }
                 client.call("orchestration.dispatchCommand", payload);
             })
             .detach();
+    }
+
+    /// Upstream resolveThreadWorkspaceCwd: worktree threads resolve to their
+    /// worktreePath (or a workingDirectory inside it); local threads resolve
+    /// to workingDirectory or the project's workspaceRoot.
+    fn thread_workspace_cwd(&self, tid: &str) -> Option<String> {
+        let s = self.snapshot.as_ref()?;
+        let t = arr(s, "threads").iter().find(|t| str_at(t, "id") == tid)?;
+        let env_mode = str_at(t, "envMode");
+        let wt = str_at(t, "worktreePath");
+        let wd = str_at(t, "workingDirectory");
+        if env_mode == "worktree" {
+            if !wt.is_empty() && !wd.is_empty() && wd.starts_with(wt) {
+                return Some(wd.to_string());
+            }
+            return (!wt.is_empty()).then(|| wt.to_string());
+        }
+        if !wd.is_empty() {
+            return Some(wd.to_string());
+        }
+        let pid = str_at(t, "projectId");
+        arr(s, "projects").iter().find_map(|p| {
+            if str_at(p, "id") != pid {
+                return None;
+            }
+            let r = str_at(p, "workspaceRoot");
+            let r = if r.is_empty() { str_at(p, "workspace_root") } else { r };
+            (!r.is_empty()).then(|| r.to_string())
+        })
+    }
+
+    /// Context-menu "Open Path in Terminal": when the drawer is open send a
+    /// `cd`, otherwise seed the next terminal.open with the path and open it.
+    fn open_terminal_at(&mut self, path: String, window: &mut Window, cx: &mut Context<Self>) {
+        if self.view_terminal {
+            self.term_write(format!("cd '{}'\r", path.replace('\'', "'\\''")), cx);
+        } else {
+            self.term_pending_cwd = Some(path);
+            self.toggle_terminal(window, cx);
+        }
+    }
+
+    /// Context-menu Delete: dispatch thread.delete, unpin the row and close
+    /// its tab, like upstream deleteThread.
+    fn delete_thread(&mut self, tid: String, cx: &mut Context<Self>) {
+        self.pinned_threads.retain(|p| p != &tid);
+        let client = self.client.clone();
+        let tid_cmd = tid.clone();
+        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let payload = json!({
+                "type": "thread.delete",
+                "commandId": uuid(),
+                "threadId": tid_cmd,
+            });
+            cx.background_executor()
+                .spawn(async move { client.call("orchestration.dispatchCommand", payload) })
+                .detach();
+        })
+        .detach();
+        self.close_tab(tid, cx);
     }
 
     /// Rail button: toggle the bottom terminal drawer. Opening spawns a PTY
@@ -1684,7 +1769,11 @@ impl Native {
         let client = self.client.clone();
         let terminal_id = self.term_id.clone();
         let thread_id = self.term_thread_id();
-        let cwd = self.files_root().unwrap_or_else(|| "/".to_string());
+        let cwd = self
+            .term_pending_cwd
+            .take()
+            .or_else(|| self.files_root())
+            .unwrap_or_else(|| "/".to_string());
         cx.spawn(async move |_this, cx: &mut AsyncApp| {
             let cell = client.clone();
             let client = cx
@@ -1783,6 +1872,11 @@ impl Native {
             return;
         }
         input.update(cx, |s, cx| s.clean(window, cx));
+        self.term_write(format!("{text}\r"), cx);
+    }
+
+    /// Send raw input to the open PTY session via terminal.write.
+    fn term_write(&mut self, data: String, cx: &mut Context<Self>) {
         let client = self.client.clone();
         let terminal_id = self.term_id.clone();
         let thread_id = self.term_thread_id();
@@ -1801,7 +1895,7 @@ impl Native {
                         json!({
                             "threadId": thread_id,
                             "terminalId": terminal_id,
-                            "data": format!("{text}\r"),
+                            "data": data,
                         }),
                     )
                 })
@@ -3276,6 +3370,8 @@ impl Render for Native {
             let tid_ctx = tid.clone();
             el.on_click(cx.listener(move |this, _ev, _w, cx| {
                 this.ctx_menu = None;
+                this.ctx_sub = None;
+                this.ctx_confirm_delete = None;
                 this.open_thread(tid.clone(), cx)
             }))
             .on_mouse_down(
@@ -3286,6 +3382,8 @@ impl Render for Native {
                         ev.position.x.as_f32(),
                         ev.position.y.as_f32(),
                     ));
+                    this.ctx_sub = None;
+                    this.ctx_confirm_delete = None;
                     cx.notify();
                     cx.stop_propagation();
                 }),
@@ -9796,7 +9894,9 @@ impl Render for Native {
         }
 
         // Thread context menu (right-click on a sidebar thread row): upstream
-        // threadContextMenu — rename, pin, copy thread id, archive, close tab.
+        // handleThreadContextMenu — rename, pin, handoff, fork/copy variant
+        // submenus (contextMenuGroup), open-path-in-terminal, close tab,
+        // archive, delete.
         let mut ctx_overlay = div().absolute().inset_0().size_full();
         if let Some((menu_tid, mx, my)) = self.ctx_menu.clone() {
             let menu_title = self
@@ -9813,6 +9913,7 @@ impl Render for Native {
                 })
                 .unwrap_or_default();
             let is_pinned = self.pinned_threads.contains(&menu_tid);
+            let ws_path = self.thread_workspace_cwd(&menu_tid);
             let row = |id: &'static str,
                        label: String,
                        cb: Box<dyn Fn(&mut Self, &mut Window, &mut Context<Self>) + 'static>| {
@@ -9825,88 +9926,285 @@ impl Render for Native {
                     .label(label)
                     .on_click(cx.listener(move |this, _ev, w, cx| {
                         this.ctx_menu = None;
+                        this.ctx_sub = None;
+                        this.ctx_confirm_delete = None;
                         cb(this, w, cx);
                         cx.notify();
                     }))
                     .into_any_element()
             };
+            // Submenu parent row (upstream contextMenuGroup): one compact line
+            // with a chevron that opens a flyout aligned to this row's top.
+            let prow = |id: &'static str, sub: &'static str, label: &'static str, top: f32| {
+                h_flex()
+                    .id(id)
+                    .w_full()
+                    .h(px(30.))
+                    .px_2()
+                    .items_center()
+                    .justify_between()
+                    .rounded_md()
+                    .text_sm()
+                    .cursor_pointer()
+                    .hover(|d| d.bg(theme.secondary))
+                    .child(label)
+                    .child(div().text_color(theme.muted_foreground).child("›"))
+                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                        this.ctx_sub = if this.ctx_sub.as_ref().map(|s| s.0.as_str()) == Some(sub) {
+                            None
+                        } else {
+                            Some((sub.to_string(), top))
+                        };
+                        cx.notify();
+                    }))
+                    .into_any_element()
+            };
+            let sep = || div().h(px(1.)).w_full().bg(theme.border).into_any_element();
             let tid_rename = menu_tid.clone();
             let title_rename = menu_title.clone();
             let tid_pin = menu_tid.clone();
-            let tid_copy = menu_tid.clone();
             let tid_arch = menu_tid.clone();
             let tid_close = menu_tid.clone();
-            let tid_fork = menu_tid.clone();
             let tid_hand = menu_tid.clone();
-            let pin_label = if is_pinned { "Unpin" } else { "Pin" };
-            ctx_overlay = ctx_overlay
-                .child(
-                    div()
-                        .absolute()
-                        .inset_0()
-                        .size_full()
-                        .on_mouse_down(
-                            gpui::MouseButton::Left,
-                            cx.listener(|this, _ev, _w, cx| {
+            let tid_del = menu_tid.clone();
+            let tid_del_flag = menu_tid.clone();
+            let pin_label = if is_pinned { "Unpin thread" } else { "Pin thread" };
+            let mut menu = v_flex()
+                .absolute()
+                .left(px(mx))
+                .top(px(my))
+                .w(px(180.))
+                .p_1()
+                .gap_y(px(1.))
+                .bg(theme.popover)
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .shadow_md();
+            if self.ctx_confirm_delete.is_some() {
+                // Inline confirm like upstream confirmAndDeleteThread.
+                menu = menu
+                    .child(
+                        div()
+                            .px_2()
+                            .pt_1()
+                            .pb(px(2.))
+                            .text_sm()
+                            .child(format!("Delete thread \"{menu_title}\"?")),
+                    )
+                    .child(
+                        div()
+                            .px_2()
+                            .pb_1()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(
+                                "This permanently clears conversation history for this thread.",
+                            ),
+                    )
+                    .child(
+                        h_flex()
+                            .id("ctx-del-go")
+                            .w_full()
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .rounded_md()
+                            .text_sm()
+                            .text_color(theme.danger)
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child("Delete")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 this.ctx_menu = None;
+                                this.ctx_sub = None;
+                                this.ctx_confirm_delete = None;
+                                this.delete_thread(tid_del.clone(), cx);
                                 cx.notify();
-                            }),
-                        )
-                        .on_mouse_down(
-                            gpui::MouseButton::Right,
-                            cx.listener(|this, _ev, _w, cx| {
-                                this.ctx_menu = None;
+                            })),
+                    )
+                    .child(
+                        h_flex()
+                            .id("ctx-del-cancel")
+                            .w_full()
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .rounded_md()
+                            .text_sm()
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child("Cancel")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.ctx_confirm_delete = None;
                                 cx.notify();
-                            }),
-                        ),
+                            })),
+                    );
+            } else {
+                let mut y = my + 4.0;
+                menu = menu
+                    .child(row("ctx-rename", "Rename thread".to_string(), Box::new(move |this, w, cx| {
+                        this.open_thread(tid_rename.clone(), cx);
+                        let input = cx.new(|cx| {
+                            InputState::new(w, cx).placeholder("Thread title")
+                        });
+                        input.update(cx, |s, cx| {
+                            s.set_value(title_rename.clone(), w, cx);
+                        });
+                        this.rename_input = Some(input);
+                        this.renaming = true;
+                    })))
+                    .child(row("ctx-pin", pin_label.to_string(), Box::new(move |this, _w, cx| {
+                        this.toggle_pin(tid_pin.clone(), cx);
+                    })))
+                    .child(row("ctx-handoff", "Handoff".to_string(), Box::new(move |this, _w, cx| {
+                        this.lineage(tid_hand.clone(), true, None, cx);
+                    })));
+                y += 93.0;
+                menu = menu.child(prow("ctx-fork", "fork", "Fork", y));
+                y += 34.0;
+                // Copy group has separatorBefore:true upstream.
+                menu = menu.child(sep()).child(prow("ctx-copy", "copy", "Copy", y));
+                if let Some(path) = ws_path.clone() {
+                    menu = menu.child(
+                        row("ctx-open-term", "Open Path in Terminal".to_string(), Box::new(
+                            move |this, w, cx| this.open_terminal_at(path.clone(), w, cx),
+                        )),
+                    );
+                }
+                menu = menu
+                    .child(row("ctx-close", "Close tab".to_string(), Box::new(move |this, _w, cx| {
+                        this.close_tab(tid_close.clone(), cx);
+                    })))
+                    .child(sep())
+                    .child(row("ctx-archive", "Archive".to_string(), Box::new(move |this, _w, cx| {
+                        this.open_thread(tid_arch.clone(), cx);
+                        this.archive_selected(cx);
+                    })))
+                    .child(
+                        h_flex()
+                            .id("ctx-del")
+                            .w_full()
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .rounded_md()
+                            .text_sm()
+                            .text_color(theme.danger)
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child("Delete")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.ctx_confirm_delete = Some(tid_del_flag.clone());
+                                cx.notify();
+                            })),
+                    );
+            }
+            // Backdrop as ancestor + stop-propagation shield around the popup
+            // (same pattern as the palette overlay): clicks inside the menu or
+            // its flyout never reach the dismiss listener.
+            let mut inner = div()
+                .size_full()
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                 )
-                .child(
-                    v_flex()
+                .on_mouse_down(
+                    gpui::MouseButton::Right,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                )
+                .child(menu);
+            // Submenu flyout: renders next to the popup, aligned to the
+            // parent row that opened it.
+            if self.ctx_confirm_delete.is_none() {
+                if let Some((sub, sub_y)) = self.ctx_sub.clone() {
+                    let mut fly = v_flex()
                         .absolute()
-                        .left(px(mx))
-                        .top(px(my))
-                        .w(px(180.))
+                        .left(px(mx + 179.))
+                        .top(px(sub_y))
+                        .w(px(200.))
                         .p_1()
                         .gap_y(px(1.))
                         .bg(theme.popover)
                         .border_1()
                         .border_color(theme.border)
                         .rounded_lg()
-                        .shadow_md()
-                        .child(row("ctx-rename", "Rename".to_string(), Box::new(move |this, w, cx| {
-                            this.open_thread(tid_rename.clone(), cx);
-                            let input = cx.new(|cx| {
-                                InputState::new(w, cx).placeholder("Thread title")
-                            });
-                            input.update(cx, |s, cx| {
-                                s.set_value(title_rename.clone(), w, cx);
-                            });
-                            this.rename_input = Some(input);
-                            this.renaming = true;
-                        })))
-                        .child(row("ctx-pin", pin_label.to_string(), Box::new(move |this, _w, cx| {
-                            this.toggle_pin(tid_pin.clone(), cx);
-                        })))
-                        .child(row("ctx-copy", "Copy thread ID".to_string(), Box::new(move |_this, _w, cx| {
-                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(
-                                tid_copy.clone(),
-                            ));
-                        })))
-                        .child(row("ctx-fork", "Fork".to_string(), Box::new(move |this, _w, cx| {
-                            this.lineage(tid_fork.clone(), false, cx);
-                        })))
-                        .child(row("ctx-handoff", "Handoff".to_string(), Box::new(move |this, _w, cx| {
-                            this.lineage(tid_hand.clone(), true, cx);
-                        })))
-                        .child(div().h(px(1.)).w_full().bg(theme.border))
-                        .child(row("ctx-archive", "Archive".to_string(), Box::new(move |this, _w, cx| {
-                            this.open_thread(tid_arch.clone(), cx);
-                            this.archive_selected(cx);
-                        })))
-                        .child(row("ctx-close", "Close tab".to_string(), Box::new(move |this, _w, cx| {
-                            this.close_tab(tid_close.clone(), cx);
-                        }))),
-                );
+                        .shadow_md();
+                    match sub.as_str() {
+                        "fork" => {
+                            let t_local = menu_tid.clone();
+                            let t_wt = menu_tid.clone();
+                            fly = fly
+                                .child(row("ctx-fork-local", "Fork Into Local".to_string(), Box::new(
+                                    move |this, _w, cx| {
+                                        this.lineage(t_local.clone(), false, Some("local"), cx);
+                                    },
+                                )))
+                                .child(row("ctx-fork-wt", "Fork Into New Worktree".to_string(), Box::new(
+                                    move |this, _w, cx| {
+                                        this.lineage(t_wt.clone(), false, Some("worktree"), cx);
+                                    },
+                                )));
+                        }
+                        "copy" => {
+                            if let Some(path) = ws_path.clone() {
+                                fly = fly.child(row("ctx-copy-path", "Path".to_string(), Box::new(
+                                    move |_this, _w, cx| {
+                                        cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+                                            path.clone(),
+                                        ));
+                                    },
+                                )));
+                            } else {
+                                fly = fly.child(
+                                    div()
+                                        .w_full()
+                                        .h(px(30.))
+                                        .px_2()
+                                        .flex()
+                                        .items_center()
+                                        .text_sm()
+                                        .text_color(theme.muted_foreground)
+                                        .child("Path"),
+                                );
+                            }
+                            let t_id = menu_tid.clone();
+                            fly = fly.child(row("ctx-copy-id", "Thread ID".to_string(), Box::new(
+                                move |_this, _w, cx| {
+                                    cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+                                        t_id.clone(),
+                                    ));
+                                },
+                            )));
+                        }
+                        _ => {}
+                    }
+                    inner = inner.child(fly);
+                }
+            }
+            ctx_overlay = ctx_overlay.child(
+                v_flex()
+                    .size_full()
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.ctx_menu = None;
+                            this.ctx_sub = None;
+                            this.ctx_confirm_delete = None;
+                            cx.notify();
+                        }),
+                    )
+                    .on_mouse_down(
+                        gpui::MouseButton::Right,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.ctx_menu = None;
+                            this.ctx_sub = None;
+                            this.ctx_confirm_delete = None;
+                            cx.notify();
+                        }),
+                    )
+                    .child(inner),
+            );
         }
 
         // ---- workspace search palette (⌘K / ⌘P / ⇧⌘F): upstream

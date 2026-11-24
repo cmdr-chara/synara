@@ -274,6 +274,14 @@ pub struct Native {
     // (message_id, question_index) -> chosen option label draft.
     user_input_open: Vec<String>,
     ctx_menu: Option<(String, f32, f32)>,
+    // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
+    // mode, input entity, last async result rows, highlighted row, and a
+    // sequence counter that drops stale search responses.
+    palette_mode: Option<&'static str>,
+    palette_input: Option<Entity<InputState>>,
+    palette_rows: Vec<Value>,
+    palette_sel: usize,
+    palette_seq: u64,
     user_input_draft: Vec<(String, usize, String)>,
 }
 
@@ -619,6 +627,11 @@ impl Native {
             sidebar_collapsed: false,
             user_input_open: Vec::new(),
             ctx_menu: None,
+            palette_mode: None,
+            palette_input: None,
+            palette_rows: Vec::new(),
+            palette_sel: 0,
+            palette_seq: 0,
             user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
@@ -922,23 +935,21 @@ impl Native {
         cx.notify();
     }
 
-    /// Workspace root of the first project — the file browser starts there.
+    /// Workspace root of the first project that still exists on disk — the
+    /// file browser starts there. Seeded/stale projects are skipped.
     fn files_root(&self) -> Option<String> {
-        let p = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
-            .first()?;
-        let root = {
+        for p in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
             let r = str_at(p, "workspaceRoot");
-            if r.is_empty() {
+            let root = if r.is_empty() {
                 str_at(p, "workspace_root")
             } else {
                 r
+            };
+            if !root.is_empty() && std::path::Path::new(root).is_dir() {
+                return Some(root.to_string());
             }
-        };
-        if root.is_empty() {
-            None
-        } else {
-            Some(root.to_string())
         }
+        None
     }
 
     fn toggle_files(&mut self, cx: &mut Context<Self>) {
@@ -1190,6 +1201,256 @@ impl Native {
         cx.notify();
     }
 
+    /// Open the workspace search palette: "search" = ⌘K chats+projects
+    /// (upstream SidebarSearchPalette), "files" = ⌘P projects.searchEntries,
+    /// "snippets" = ⇧⌘F projects.searchContent (WorkspaceSearchPalette).
+    fn open_palette(&mut self, mode: &'static str, window: &mut Window, cx: &mut Context<Self>) {
+        if self.palette_mode == Some(mode) && mode != "search" {
+            return;
+        }
+        self.palette_mode = Some(mode);
+        self.palette_rows = Vec::new();
+        self.palette_sel = 0;
+        self.palette_seq += 1;
+        let placeholder = match mode {
+            "files" => "Search files",
+            "snippets" => "Search code",
+            _ => "Search chats or run a command",
+        };
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder(placeholder));
+        cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, _w, cx| match ev {
+            InputEvent::Change => this.palette_query_changed(cx),
+            InputEvent::PressEnter { .. } => this.palette_activate(_w, cx),
+            _ => {}
+        })
+        .detach();
+        // Focus on the next frame: during key dispatch gpui can restore focus
+        // to the dispatch target, swallowing an immediate focus() call.
+        window.defer(cx, {
+            let input = input.clone();
+            move |window, cx| {
+                input.update(cx, |s, cx| s.focus_handle(cx).focus(window, cx));
+            }
+        });
+        self.palette_input = Some(input);
+        if mode != "search" {
+            // Prewarm like upstream so the first keystroke hits a warm index.
+            if let Some(cwd) = self.files_root() {
+                let client = self.client.clone();
+                cx.background_executor()
+                    .spawn(async move {
+                        if let Some(c) = ensure_client(&client) {
+                            c.call("projects.prewarmSearchIndex", json!({"cwd": cwd}));
+                        }
+                    })
+                    .detach();
+            }
+        }
+        cx.notify();
+    }
+
+    fn close_palette(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.palette_mode = None;
+        self.palette_input = None;
+        self.palette_rows = Vec::new();
+        self.palette_sel = 0;
+        // The input's focus handle unmounts with the popup; give focus back
+        // to the root or subsequent key events dispatch to a dead handle.
+        let f = self.focus_handle.clone();
+        window.focus(&f, cx);
+        cx.notify();
+    }
+
+    /// Re-query on input change: RPC rows for files/snippets, a notify for
+    /// chats mode (its rows are computed from the snapshot at render).
+    fn palette_query_changed(&mut self, cx: &mut Context<Self>) {
+        let Some(mode) = self.palette_mode else {
+            return;
+        };
+        self.palette_sel = 0;
+        if mode == "search" {
+            cx.notify();
+            return;
+        }
+        let Some(input) = self.palette_input.clone() else {
+            return;
+        };
+        let query = input.read(cx).value().to_string();
+        let min = if mode == "files" { 1 } else { 2 };
+        if query.trim().len() < min {
+            self.palette_rows = Vec::new();
+            self.palette_seq += 1;
+            cx.notify();
+            return;
+        }
+        let Some(cwd) = self.files_root() else {
+            return;
+        };
+        self.palette_seq += 1;
+        let seq = self.palette_seq;
+        let tag = if mode == "files" {
+            "projects.searchEntries"
+        } else {
+            "projects.searchContent"
+        };
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(tag, json!({"cwd": cwd, "query": query, "limit": 30}))
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.palette_seq != seq {
+                    return;
+                }
+                let key = if this.palette_mode == Some("files") {
+                    "entries"
+                } else {
+                    "matches"
+                };
+                this.palette_rows = v.map(|v| arr(&v, key).to_vec()).unwrap_or_default();
+                if this.palette_sel >= this.palette_rows.len() {
+                    this.palette_sel = 0;
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Current palette rows as (kind, label, sub, payload): kind picks the
+    /// row icon and the activate action; file/directory/snippet payloads are
+    /// cwd-relative paths, project/thread payloads are ids.
+    fn palette_items(&self, query: &str) -> Vec<(String, String, String, String)> {
+        let q = query.trim().to_lowercase();
+        match self.palette_mode {
+            Some("files") => self
+                .palette_rows
+                .iter()
+                .map(|e| {
+                    let rel = str_at(e, "path").to_string();
+                    let base = rel.rsplit('/').next().unwrap_or(&rel).to_string();
+                    (
+                        str_at(e, "kind").to_string(),
+                        base,
+                        str_at(e, "parentPath").to_string(),
+                        rel,
+                    )
+                })
+                .collect(),
+            Some("snippets") => self
+                .palette_rows
+                .iter()
+                .map(|m| {
+                    let rel = str_at(m, "path").to_string();
+                    let line = get(m, "lineNumber").as_i64().unwrap_or(0);
+                    (
+                        "snippet".to_string(),
+                        format!("{rel}:{line}"),
+                        str_at(m, "lineText").trim().to_string(),
+                        rel,
+                    )
+                })
+                .collect(),
+            _ => {
+                let snap = self.snapshot.as_ref().unwrap_or(&Value::Null);
+                let mut items: Vec<(String, String, String, String)> = Vec::new();
+                for p in arr(snap, "projects") {
+                    let title = str_at(p, "title").to_string();
+                    if !q.is_empty() && !title.to_lowercase().contains(&q) {
+                        continue;
+                    }
+                    items.push((
+                        "project".to_string(),
+                        title,
+                        str_at(p, "kind").to_string(),
+                        str_at(p, "id").to_string(),
+                    ));
+                }
+                for t in arr(snap, "threads") {
+                    if !(get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()) {
+                        continue;
+                    }
+                    let title = str_at(t, "title").to_string();
+                    if !q.is_empty()
+                        && !title.to_lowercase().contains(&q)
+                        && !str_at(t, "latestReplyPreview").to_lowercase().contains(&q)
+                    {
+                        continue;
+                    }
+                    items.push((
+                        "thread".to_string(),
+                        title,
+                        String::new(),
+                        str_at(t, "id").to_string(),
+                    ));
+                }
+                items.truncate(30);
+                items
+            }
+        }
+    }
+
+    /// Activate the highlighted row: file/snippet rows open the file viewer,
+    /// directories open the explorer there, projects open their workspace
+    /// explorer, threads open their transcript.
+    fn palette_activate(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let query = self
+            .palette_input
+            .as_ref()
+            .map(|i| i.read(cx).value().to_string())
+            .unwrap_or_default();
+        let items = self.palette_items(&query);
+        let Some((kind, _label, _sub, payload)) = items.get(self.palette_sel).cloned() else {
+            self.close_palette(window, cx);
+            return;
+        };
+        let cwd = self.files_root().unwrap_or_default();
+        self.close_palette(window, cx);
+        match kind.as_str() {
+            "directory" => {
+                self.clear_views();
+                self.view_files = true;
+                self.load_dir(format!("{cwd}/{payload}"), cx);
+            }
+            "file" | "snippet" => {
+                self.clear_views();
+                self.view_files = true;
+                self.open_entry(
+                    json!({"kind": "file", "path": format!("{cwd}/{payload}")}),
+                    cx,
+                );
+            }
+            "project" => {
+                self.clear_views();
+                self.view_files = true;
+                let root = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                    .iter()
+                    .find(|p| str_at(p, "id") == payload)
+                    .map(|p| {
+                        let r = str_at(p, "workspaceRoot");
+                        if r.is_empty() {
+                            str_at(p, "workspace_root").to_string()
+                        } else {
+                            r.to_string()
+                        }
+                    })
+                    .filter(|r: &String| !r.is_empty());
+                if let Some(root) = root {
+                    self.load_dir(root, cx);
+                }
+            }
+            "thread" => self.open_thread(payload, cx),
+            _ => {}
+        }
+        cx.notify();
+    }
+
     /// Global keymap: the upstream DEFAULT_SHORTCUT_FALLBACKS chords whose
     /// targets exist on the native surface. cmd-f / cmd-j stay declared
     /// KeyBindings (chat.find / terminal.toggle); the rest is dispatched here.
@@ -1218,15 +1479,18 @@ impl Native {
                 let f = self.composer.read(cx).focus_handle(cx);
                 window.focus(&f, cx);
             }
-            // ⌘P — search.files; ⌘⇧F — search.content (same surface here).
-            // The bar lives in the sidebar: expand it when opening.
-            (false, false, false, "p") | (false, false, true, "f") => {
-                self.search_open = !self.search_open;
-                if self.search_open {
-                    self.sidebar_collapsed = false;
+            // ⌘K — sidebar.search: chats+projects palette (toggles).
+            (false, false, false, "k") => {
+                if self.palette_mode == Some("search") {
+                    self.close_palette(window, cx);
+                } else {
+                    self.open_palette("search", window, cx);
                 }
-                cx.notify();
             }
+            // ⌘P — search.files: workspace file-name palette.
+            (false, false, false, "p") => self.open_palette("files", window, cx),
+            // ⌘⇧F — search.content: workspace code-snippet palette.
+            (false, false, true, "f") => self.open_palette("snippets", window, cx),
             // ⌘B — sidebar collapse
             (false, false, false, "b") => {
                 self.sidebar_collapsed = !self.sidebar_collapsed;
@@ -9645,6 +9909,214 @@ impl Render for Native {
                 );
         }
 
+        // ---- workspace search palette (⌘K / ⌘P / ⇧⌘F): upstream
+        // SidebarSearchPalette + WorkspaceSearchPalette — bare h-11 input,
+        // max-w-lg popup anchored near the top, 28px result rows grouped by
+        // section, arrows+enter keyboard navigation, backdrop/Esc dismiss.
+        let mut palette_overlay = div().absolute().inset_0().size_full();
+        if let Some(mode) = self.palette_mode {
+            let query = self
+                .palette_input
+                .as_ref()
+                .map(|i| i.read(cx).value().to_string())
+                .unwrap_or_default();
+            let items = self.palette_items(&query);
+            let sel = self.palette_sel;
+            let mut popup = v_flex()
+                .w(px(512.))
+                .mt(px(120.))
+                .bg(theme.popover)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(12.))
+                .shadow_md()
+                .overflow_hidden()
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, window, cx| {
+                    match ev.keystroke.key.as_str() {
+                        "escape" => this.close_palette(window, cx),
+                        "down" => {
+                            let q = this
+                                .palette_input
+                                .as_ref()
+                                .map(|i| i.read(cx).value().to_string())
+                                .unwrap_or_default();
+                            let len = this.palette_items(&q).len();
+                            this.palette_sel = (this.palette_sel + 1).min(len.saturating_sub(1));
+                            cx.notify();
+                        }
+                        "up" => {
+                            this.palette_sel = this.palette_sel.saturating_sub(1);
+                            cx.notify();
+                        }
+                        "backspace" => {
+                            if let Some(input) = this.palette_input.clone() {
+                                let mut q = input.read(cx).value().to_string();
+                                if q.pop().is_some() {
+                                    input.update(cx, |s, cx| {
+                                        s.set_value(q.clone(), window, cx)
+                                    });
+                                    this.palette_query_changed(cx);
+                                }
+                            }
+                        }
+                        _ => {
+                            // Printable characters: insert manually — the
+                            // platform input handler is not reliably bound for
+                            // late-mounted palette inputs, so key_char chars
+                            // would bubble up unconsumed.
+                            if let Some(ch) = ev.keystroke.key_char.as_ref() {
+                                let m = ev.keystroke.modifiers;
+                                if !m.control && !m.platform && !m.function {
+                                    if let Some(input) = this.palette_input.clone() {
+                                        let mut q =
+                                            input.read(cx).value().to_string();
+                                        q.push_str(ch);
+                                        input.update(cx, |s, cx| {
+                                            s.set_value(q, window, cx)
+                                        });
+                                        this.palette_query_changed(cx);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    cx.stop_propagation();
+                }));
+            if let Some(input) = self.palette_input.clone() {
+                popup = popup.child(
+                    div()
+                        .h(px(44.))
+                        .px(px(14.))
+                        .border_b_1()
+                        .border_color(theme.border)
+                        .child(Input::new(&input).appearance(false)),
+                );
+            }
+            let mut list = v_flex()
+                .id("palette-list")
+                .max_h(px(448.))
+                .overflow_y_scroll()
+                .p_1()
+                .gap_y(px(1.));
+            let mut last_group = "";
+            let group_label = |kind: &str, query_empty: bool| -> &'static str {
+                match kind {
+                    "project" => "Projects",
+                    "thread" => {
+                        if query_empty {
+                            "Recent chats"
+                        } else {
+                            "Threads"
+                        }
+                    }
+                    "snippet" => "Matches",
+                    _ => "Files",
+                }
+            };
+            for (i, (kind, label, sub, _payload)) in items.iter().enumerate() {
+                let group = group_label(kind, query.trim().is_empty());
+                if group != last_group {
+                    last_group = group;
+                    list = list.child(
+                        div()
+                            .px(px(10.))
+                            .pt(px(6.))
+                            .pb(px(4.))
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child(group),
+                    );
+                }
+                let icon_data: &[u8] = match kind.as_str() {
+                    "directory" | "project" => icons::FOLDER,
+                    "thread" => icons::S_CHAT_BUBBLES,
+                    "snippet" => icons::SEARCH,
+                    _ => icons::FILE_TEXT,
+                };
+                let mut r = h_flex()
+                    .id(ElementId::Name(format!("pal-{i}").into()))
+                    .w_full()
+                    .h(px(28.))
+                    .px(px(10.))
+                    .items_center()
+                    .gap_2()
+                    .rounded_lg()
+                    .cursor_pointer()
+                    .child(svg_icon(icon_data).size(px(14.)).text_color(theme.muted_foreground))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .overflow_hidden()
+                            .text_size(px(13.))
+                            .child(label.clone()),
+                    );
+                if !sub.is_empty() {
+                    r = r.child(
+                        div()
+                            .max_w(px(220.))
+                            .overflow_hidden()
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child(sub.clone()),
+                    );
+                }
+                if i == sel {
+                    r = r.bg(theme.secondary);
+                }
+                r = r.on_click(cx.listener(move |this, _ev, window, cx| {
+                    this.palette_sel = i;
+                    this.palette_activate(window, cx);
+                }));
+                list = list.child(r);
+            }
+            if items.is_empty() {
+                let msg = match mode {
+                    "files" => {
+                        if query.trim().is_empty() {
+                            "Type to search for files"
+                        } else {
+                            "No matching files"
+                        }
+                    }
+                    "snippets" => {
+                        if query.trim().len() < 2 {
+                            "Type at least 2 characters to search code"
+                        } else {
+                            "No matches"
+                        }
+                    }
+                    _ => "No results.",
+                };
+                list = list.child(
+                    div()
+                        .px(px(10.))
+                        .py(px(8.))
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child(msg),
+                );
+            }
+            popup = popup.child(list);
+            palette_overlay = palette_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, window, cx| this.close_palette(window, cx)),
+                    )
+                    .child(
+                        div()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            )
+                            .child(popup),
+                    ),
+            );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -9664,5 +10136,6 @@ impl Render for Native {
             .child(strip)
             .child(body)
             .child(ctx_overlay)
+            .child(palette_overlay)
     }
 }

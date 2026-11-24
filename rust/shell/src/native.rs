@@ -712,6 +712,20 @@ pub struct Native {
     /// App tour walkthrough (upstream AppTour): current step index.
     tour_step: Option<usize>,
     user_input_draft: Vec<(String, usize, String)>,
+    // Git actions (upstream GitActionsControl + GitCommitDialog/GitCreatePrDialog).
+    git_dialog: Option<GitDialog>,
+    git_msg_input: Option<Entity<InputState>>,
+    git_pr_title_input: Option<Entity<InputState>>,
+    git_pr_body_input: Option<Entity<InputState>>,
+    git_pr_draft: bool,
+    git_commit_action: String,
+    git_action_running: bool,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum GitDialog {
+    Commit,
+    Pr,
 }
 
 const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
@@ -1187,6 +1201,13 @@ impl Native {
             feedback_toast: None,
             sc_dialog_open: false,
             sc_dialog_input: None,
+            git_dialog: None,
+            git_msg_input: None,
+            git_pr_title_input: None,
+            git_pr_body_input: None,
+            git_pr_draft: false,
+            git_commit_action: "commit".to_string(),
+            git_action_running: false,
             tour_step: None,
             user_input_draft: Vec::new(),
             find_open: false,
@@ -3103,6 +3124,168 @@ impl Native {
         let focus = input.read(cx).focus_handle(cx);
         window.focus(&focus, cx);
         cx.notify();
+    }
+
+    fn git_cwd(&self) -> Option<String> {
+        self.thread_project_root().or_else(|| self.files_root())
+    }
+
+    fn open_git_dialog(
+        &mut self,
+        kind: GitDialog,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let ph = match kind {
+            GitDialog::Commit => "Commit message",
+            GitDialog::Pr => "Pull request title",
+        };
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder(ph));
+        cx.subscribe_in(&input, window, |_this, _s, event, _w, cx| {
+            if let InputEvent::Change = event {
+                cx.notify();
+            }
+        })
+        .detach();
+        match kind {
+            GitDialog::Commit => {
+                self.git_msg_input = Some(input.clone());
+                self.git_commit_action = "commit".to_string();
+            }
+            GitDialog::Pr => {
+                self.git_pr_title_input = Some(input.clone());
+                let body = cx.new(|cx| {
+                    InputState::new(window, cx).placeholder("Pull request body")
+                });
+                cx.subscribe_in(&body, window, |_this, _s, event, _w, cx| {
+                    if let InputEvent::Change = event {
+                        cx.notify();
+                    }
+                })
+                .detach();
+                self.git_pr_body_input = Some(body);
+                self.git_pr_draft = false;
+            }
+        }
+        self.git_dialog = Some(kind);
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        cx.notify();
+    }
+
+    fn close_git_dialog(&mut self, cx: &mut Context<Self>) {
+        self.git_dialog = None;
+        cx.notify();
+    }
+
+    /// git.runStackedAction: action in commit|commit_push|push|create_pr;
+    /// dialog "commit_new_branch" maps to action=commit + featureBranch=true.
+    fn run_git_action(&mut self, action: &str, cx: &mut Context<Self>) {
+        if self.git_action_running {
+            return;
+        }
+        let Some(cwd) = self.git_cwd() else {
+            self.feedback_toast =
+                Some(("No repository for this thread.".to_string(), true));
+            cx.notify();
+            return;
+        };
+        let mut payload = json!({"cwd": cwd, "action": action});
+        let mut effective = action.to_string();
+        if self.git_dialog == Some(GitDialog::Commit) {
+            let msg = self
+                .git_msg_input
+                .as_ref()
+                .map(|i| i.read(cx).value().to_string())
+                .unwrap_or_default();
+            if !msg.trim().is_empty() {
+                payload["commitMessage"] = json!(msg.trim());
+            }
+            if action == "commit_new_branch" {
+                effective = "commit".to_string();
+                payload["action"] = json!("commit");
+                payload["featureBranch"] = json!(true);
+            }
+        } else if self.git_dialog == Some(GitDialog::Pr) {
+            let title = self
+                .git_pr_title_input
+                .as_ref()
+                .map(|i| i.read(cx).value().to_string())
+                .unwrap_or_default();
+            let body = self
+                .git_pr_body_input
+                .as_ref()
+                .map(|i| i.read(cx).value().to_string())
+                .unwrap_or_default();
+            if !title.trim().is_empty() {
+                payload["prTitle"] = json!(title.trim());
+            }
+            if !body.trim().is_empty() {
+                payload["prBody"] = json!(body);
+            }
+            if self.git_pr_draft {
+                payload["prDraft"] = json!(true);
+            }
+            payload["action"] = json!("create_pr");
+            effective = "create_pr".to_string();
+        }
+        self.git_dialog = None;
+        self.git_action_running = true;
+        let cell = self.client.clone();
+        cx.spawn(
+            async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                let v = cx
+                    .background_executor()
+                    .spawn(async move {
+                        ensure_client(&cell)
+                            .and_then(|c| c.call("git.runStackedAction", payload))
+                    })
+                    .await;
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    this.git_action_running = false;
+                    match &v {
+                        Some(r) => {
+                            let c = get(r, "commit");
+                            let p = get(r, "push");
+                            let pr = get(r, "pr");
+                            let msg = if str_at(&pr, "status") == "created"
+                                || str_at(&pr, "status") == "opened_existing"
+                            {
+                                let n = pr
+                                    .get("number")
+                                    .and_then(Value::as_u64)
+                                    .map(|n| format!(" #{n}"))
+                                    .unwrap_or_default();
+                                format!("Created PR{n}")
+                            } else if str_at(&c, "status") == "created" {
+                                let sha =
+                                    str_at(&c, "commitSha").chars().take(7).collect::<String>();
+                                if str_at(&p, "status") == "pushed" {
+                                    format!("Committed {sha} and pushed")
+                                } else {
+                                    format!("Committed {sha}")
+                                }
+                            } else if str_at(&p, "status") == "pushed" {
+                                "Pushed".to_string()
+                            } else if str_at(&c, "status") == "skipped_no_changes" {
+                                "No changes to commit.".to_string()
+                            } else {
+                                "Done".to_string()
+                            };
+                            this.feedback_toast = Some((msg, false));
+                            this.fetch_git_status(cx);
+                            this.fetch_changes(cx);
+                        }
+                        None => {
+                            this.feedback_toast = Some(("Git action failed.".to_string(), true));
+                        }
+                    }
+                    cx.notify();
+                });
+                let _ = effective;
+            },
+        )
+        .detach();
     }
 
     /// Effective kbd label for a SHORTCUT_ROWS entry: the resolved binding
@@ -12304,6 +12487,74 @@ impl Render for Native {
             .child(
                 rail_btn("nav-handoff", icons::HANDOFF, false, cx),
             )
+            .child({
+                // Upstream GitActionsControl: git quick-action menu. Commit
+                // items open the commit dialog (AI-drafted messages need a
+                // provider runtime); Push/Create PR map to the dialogs too.
+                let weak = cx.weak_entity();
+                let gs = self.git_status.clone().unwrap_or(Value::Null);
+                let has_repo = self.git_cwd().is_some();
+                let dirty = get(&gs, "hasWorkingTreeChanges")
+                    .as_bool()
+                    .unwrap_or(false);
+                let has_upstream =
+                    get(&gs, "hasUpstream").as_bool().unwrap_or(false);
+                let ahead =
+                    get(&gs, "aheadCount").as_u64().unwrap_or(0);
+                let running = self.git_action_running;
+                let mk = {
+                    let weak = weak.clone();
+                    move |label: &'static str, enabled: bool, act: &'static str| {
+                        let weak = weak.clone();
+                        PopupMenuItem::new(label)
+                            .disabled(!enabled || running)
+                            .on_click(move |_, w, cx| {
+                                let _ = weak.update(cx, |this, cx| match act {
+                                    "pull" => {
+                                        let cell = this.client.clone();
+                                        let cwd = this.git_cwd();
+                                        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                                            if let Some(cwd) = cwd {
+                                                let _ = cx.background_executor().spawn(async move {
+                                                    ensure_client(&cell).and_then(|c| c.call("git.pull", json!({"cwd": cwd})))
+                                                }).await;
+                                                let _ = this.update(cx, |this: &mut Self, cx| {
+                                                    this.fetch_git_status(cx);
+                                                    this.fetch_changes(cx);
+                                                    cx.notify();
+                                                });
+                                            }
+                                        }).detach();
+                                    }
+                                    "push" => this.run_git_action("push", cx),
+                                    "create_pr" => this.open_git_dialog(GitDialog::Pr, w, cx),
+                                    "commit_push" => {
+                                        this.open_git_dialog(GitDialog::Commit, w, cx);
+                                        this.git_commit_action = "commit_push".to_string();
+                                    }
+                                    _ => this.open_git_dialog(GitDialog::Commit, w, cx),
+                                });
+                            })
+                    }
+                };
+                Button::new("nav-git")
+                    .ghost()
+                    .compact()
+                    .icon(
+                        svg_icon(icons::S_BRANCH_SIMPLE)
+                            .size(px(18.))
+                            .text_color(glyph_idle),
+                    )
+                    .dropdown_menu(move |menu, _, _| {
+                        menu.item(mk("Pull", has_repo && has_upstream, "pull"))
+                            .item(PopupMenuItem::separator())
+                            .item(mk("Commit…", has_repo && dirty, "commit"))
+                            .item(mk("Commit & push…", has_repo && dirty, "commit_push"))
+                            .item(mk("Push", has_repo && has_upstream && (ahead > 0 || dirty == false) , "push"))
+                            .item(PopupMenuItem::separator())
+                            .item(mk("Create PR…", has_repo && has_upstream, "create_pr"))
+                    })
+            })
             .child(
                 div()
                     .w(px(1.))
@@ -13613,6 +13864,292 @@ impl Render for Native {
             tour_overlay = tour_overlay.child(stage);
         }
 
+        // ---- git action dialog (upstream GitCommitDialog/GitCreatePrDialog):
+        // centered card over a dim backdrop; Escape/backdrop close; the
+        // commit variant also picks which stacked action to run.
+        let mut git_overlay = div().absolute().inset_0().size_full();
+        if let Some(gkind) = self.git_dialog {
+            let mut card = v_flex()
+                .w(px(420.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .overflow_hidden()
+                .p(px(16.))
+                .gap_2()
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    if ev.keystroke.key == "escape" {
+                        this.close_git_dialog(cx);
+                        cx.stop_propagation();
+                    }
+                }))
+                .child(
+                    h_flex()
+                        .w_full()
+                        .items_center()
+                        .child(
+                            div()
+                                .flex_1()
+                                .text_size(px(15.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(match gkind {
+                                    GitDialog::Commit => "Commit changes",
+                                    GitDialog::Pr => "Create pull request",
+                                }),
+                        )
+                        .child(
+                            div()
+                                .id("gitdlg-close")
+                                .cursor_pointer()
+                                .text_color(theme.muted_foreground)
+                                .hover(|d| d.text_color(theme.foreground))
+                                .child(svg_icon(icons::X).size(px(16.)))
+                                .on_click(cx.listener(|this, _e, _w, cx| {
+                                    this.close_git_dialog(cx);
+                                })),
+                        ),
+                );
+            let branch = get(&self.git_status.clone().unwrap_or(Value::Null), "branch")
+                .as_str()
+                .unwrap_or("")
+                .to_string();
+            if !branch.is_empty() {
+                card = card.child(
+                    h_flex()
+                        .items_center()
+                        .gap_1()
+                        .child(
+                            svg_icon(icons::S_BRANCH_SIMPLE)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(branch),
+                        ),
+                );
+            }
+            if gkind == GitDialog::Commit {
+                if let Some(input) = self.git_msg_input.clone() {
+                    card = card.child(
+                        div()
+                            .w_full()
+                            .h(px(36.))
+                            .px_3()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .child(Input::new(&input).appearance(false)),
+                    );
+                }
+                let actions: [(&str, &str, &str); 4] = [
+                    ("commit", "Commit", "Commit staged changes on this branch."),
+                    ("commit_push", "Commit & push", "Commit, then push to the upstream branch."),
+                    ("commit_new_branch", "Commit on new branch", "Create a feature branch, then commit there."),
+                    ("create_pr", "Create PR", "Commit, push, and open a pull request."),
+                ];
+                for (id, label, desc) in actions {
+                    let sel = self.git_commit_action == id;
+                    let act = id.to_string();
+                    card = card.child(
+                        h_flex()
+                            .id(ElementId::Name(format!("gitact-{id}").into()))
+                            .w_full()
+                            .items_center()
+                            .gap_2()
+                            .rounded(px(8.))
+                            .px_2()
+                            .py_1p5()
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                this.git_commit_action = act.clone();
+                                cx.notify();
+                            }))
+                            .child(
+                                div()
+                                    .w(px(14.))
+                                    .h(px(14.))
+                                    .rounded_full()
+                                    .border_1()
+                                    .border_color(if sel { theme.primary } else { theme.border })
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .when(sel, |d| {
+                                        d.child(
+                                            div().w(px(8.)).h(px(8.)).rounded_full().bg(theme.primary),
+                                        )
+                                    }),
+                            )
+                            .child(
+                                v_flex()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .child(
+                                        div().text_size(px(13.)).child(label),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(11.))
+                                            .text_color(theme.muted_foreground)
+                                            .child(desc),
+                                    ),
+                            ),
+                    );
+                }
+            } else {
+                if let Some(input) = self.git_pr_title_input.clone() {
+                    card = card.child(
+                        div()
+                            .w_full()
+                            .h(px(36.))
+                            .px_3()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .child(Input::new(&input).appearance(false)),
+                    );
+                }
+                if let Some(input) = self.git_pr_body_input.clone() {
+                    card = card.child(
+                        div()
+                            .w_full()
+                            .h(px(80.))
+                            .px_3()
+                            .py_2()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .child(Input::new(&input).appearance(false)),
+                    );
+                }
+                let draft = self.git_pr_draft;
+                card = card.child(
+                    h_flex()
+                        .id("gitdlg-draft")
+                        .items_center()
+                        .gap_2()
+                        .cursor_pointer()
+                        .on_click(cx.listener(|this, _e, _w, cx| {
+                            this.git_pr_draft = !this.git_pr_draft;
+                            cx.notify();
+                        }))
+                        .child(
+                            div()
+                                .w(px(14.))
+                                .h(px(14.))
+                                .rounded(px(4.))
+                                .border_1()
+                                .border_color(if draft { theme.primary } else { theme.border })
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .when(draft, |d| {
+                                    d.child(
+                                        svg_icon(icons::CHECK)
+                                            .size(px(10.))
+                                            .text_color(theme.primary),
+                                    )
+                                }),
+                        )
+                        .child(div().text_size(px(13.)).child("Create as draft")),
+                );
+            }
+            let run_action = if gkind == GitDialog::Commit {
+                self.git_commit_action.clone()
+            } else {
+                "create_pr".to_string()
+            };
+            let run_label: &str = match run_action.as_str() {
+                "commit_push" => "Commit & push",
+                "commit_new_branch" => "Commit on new branch",
+                "create_pr" => "Create PR",
+                _ => "Commit",
+            };
+            card = card.child(
+                h_flex()
+                    .w_full()
+                    .justify_end()
+                    .gap_2()
+                    .pt_1()
+                    .child(
+                        div()
+                            .id("gitdlg-cancel")
+                            .cursor_pointer()
+                            .rounded_md()
+                            .px_3()
+                            .py_1p5()
+                            .text_size(px(13.))
+                            .hover(|d| d.bg(theme.secondary))
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                this.close_git_dialog(cx);
+                            }))
+                            .child("Cancel"),
+                    )
+                    .child(
+                        div()
+                            .id("gitdlg-run")
+                            .cursor_pointer()
+                            .rounded_md()
+                            .px_3()
+                            .py_1p5()
+                            .text_size(px(13.))
+                            .text_color(theme.primary_foreground)
+                            .bg(theme.primary)
+                            .when(self.git_action_running, |d| d.opacity(0.6))
+                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                let a = run_action.clone();
+                                this.run_git_action(&a, cx);
+                            }))
+                            .child(if self.git_action_running {
+                                "Running…"
+                            } else {
+                                run_label
+                            }),
+                    ),
+            );
+            git_overlay = git_overlay
+                .child(
+                    div()
+                        .absolute()
+                        .inset_0()
+                        .size_full()
+                        .bg(rgba(0x00000080))
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|this, _e, _w, cx| {
+                                this.close_git_dialog(cx);
+                            }),
+                        ),
+                )
+                .child(
+                    div()
+                        .absolute()
+                        .inset_0()
+                        .size_full()
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .child(
+                            div()
+                                .on_mouse_down(
+                                    gpui::MouseButton::Left,
+                                    |_e, _w, cx| cx.stop_propagation(),
+                                )
+                                .child(card),
+                        ),
+                );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -13669,5 +14206,6 @@ impl Render for Native {
             .when(self.feedback_open, |d| d.child(fb_overlay))
             .when(self.sc_dialog_open, |d| d.child(scd_overlay))
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
+            .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
     }
 }

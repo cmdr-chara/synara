@@ -15,7 +15,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | App rail | AppRail, AppRailMoreMenu, AppRailUsage, DesktopUpdateRailButton | 44px v_flex icon column, outline-when-active ghost Buttons | ✅ |
 | Sidebar header | SidebarHeaderNavigationControls, "Synara ▾" app menu | DropdownMenu w/ PopupMenuItem → open_url | ✅ |
 | Sidebar search | SidebarSearchPalette, WorkspaceSearchPalette | palette overlay: client filter + `searchThreads`, ⌘P files, ⇧⌘F content | ✅ |
-| Sidebar projects | ProjectFolderList, SidebarProjectRowContent, ProjectMenuPicker, ProjectHoverCardContent | clickable rows w/ branch+dirty badge + expand/collapse toggle (toggleProject) | 🔶 (no hover card) |
+| Sidebar projects | ProjectFolderList, SidebarProjectRowContent, ProjectMenuPicker, ProjectHoverCardContent | clickable rows w/ branch+dirty badge + expand/collapse toggle + context menu (Finder/kanban/copy/edit/pin/archive/delete/remove) + hover card | ✅ |
 | Sidebar chats | SidebarThreadRowContent, ThreadRowQuickActions, ThreadPinToggleButton, ThreadRunningSpinner, SidebarListSection | collapsible `row()` list + pin markers + context menu (rename/pin/fork/archive/copy/close) + drag between projects + hover quick actions + hover card | ✅ |
 | Empty home | ChatEmptyStateHero, ChatShell, SponsorLandingBanner | watermark columns + Υ + Support card | ✅ |
 | Composer | ComposerCapsule, ComposerInputBanners, ComposerModelPicker*, ComposerEffortSliderCard, ComposerExtrasPanel, ComposerCommandMenu, ComposerQueuedHeader | composer card; attachments (+picker/upload/chips), runtime-mode dropdown, slash menu, @-mention fs browser | 🔶 (model picker blocked: needs provider CLI installed; no effort) |

@@ -906,6 +906,18 @@ pub struct Native {
     hover_card: Option<(String, f32, f32)>,
     hover_card_seq: u64,
     ctx_confirm_delete: Option<String>,
+    /// Project context menu (upstream handleProjectContextMenu):
+    /// (project id, x, y); `proj_ctx_confirm` arms the inline remove confirm.
+    proj_ctx_menu: Option<(String, f32, f32)>,
+    proj_ctx_confirm: bool,
+    /// Project hover card (upstream ProjectHoverCardContent): hovered id and
+    /// the delayed card (id, x, y).
+    hover_project: Option<String>,
+    project_card: Option<(String, f32, f32)>,
+    project_card_seq: u64,
+    /// Project rename dialog (upstream EditProjectDialog): id + input entity.
+    proj_rename: Option<String>,
+    proj_rename_input: Option<Entity<InputState>>,
     // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
     // mode, input entity, last async result rows, highlighted row, and a
     // sequence counter that drops stale search responses.
@@ -1450,6 +1462,13 @@ impl Native {
             hover_card: None,
             hover_card_seq: 0,
             ctx_confirm_delete: None,
+            proj_ctx_menu: None,
+            proj_ctx_confirm: false,
+            hover_project: None,
+            project_card: None,
+            project_card_seq: 0,
+            proj_rename: None,
+            proj_rename_input: None,
             palette_mode: None,
             palette_input: None,
             palette_rows: Vec::new(),
@@ -1797,6 +1816,101 @@ impl Native {
                 .detach();
         })
         .detach();
+        cx.notify();
+    }
+
+    /// Upstream toggleProjectPinned: flips isPinned via project.meta.update.
+    fn toggle_project_pin(&mut self, project_id: String, pinned: bool, cx: &mut Context<Self>) {
+        self.dispatch_cmd(
+            json!({
+                "type": "project.meta.update",
+                "commandId": uuid(),
+                "projectId": project_id,
+                "isPinned": !pinned,
+            }),
+            cx,
+        );
+    }
+
+    /// Upstream archiveAllThreadsInProject / deleteProjectThreads: one
+    /// command per live thread filed under the project.
+    fn project_threads_cmd(&mut self, project_id: String, kind: &str, cx: &mut Context<Self>) {
+        let Some(snapshot) = self.snapshot.as_ref() else {
+            return;
+        };
+        let ids: Vec<String> = arr(snapshot, "threads")
+            .iter()
+            .filter(|t| {
+                str_at(t, "projectId") == project_id
+                    && get(t, "deletedAt").is_null()
+                    && get(t, "archivedAt").is_null()
+            })
+            .map(|t| str_at(t, "id").to_string())
+            .collect();
+        for tid in ids {
+            self.dispatch_cmd(
+                json!({
+                    "type": kind,
+                    "commandId": uuid(),
+                    "threadId": tid,
+                }),
+                cx,
+            );
+        }
+    }
+
+    /// Upstream removeProject: threads are deleted first (project.delete
+    /// refuses non-empty folders), then the project row itself.
+    fn delete_project(&mut self, project_id: String, cx: &mut Context<Self>) {
+        self.project_threads_cmd(project_id.clone(), "thread.delete", cx);
+        self.dispatch_cmd(
+            json!({
+                "type": "project.delete",
+                "commandId": uuid(),
+                "projectId": project_id,
+            }),
+            cx,
+        );
+    }
+
+    /// Shared RenameDialog for projects (the "Edit project" menu action).
+    fn start_project_rename(
+        &mut self,
+        project_id: String,
+        current: String,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder("Project name"));
+        input.update(cx, |s, cx| {
+            s.set_value(current, window, cx);
+        });
+        self.proj_rename_input = Some(input);
+        self.proj_rename = Some(project_id);
+        cx.notify();
+    }
+
+    fn commit_project_rename(&mut self, cx: &mut Context<Self>) {
+        let Some(input) = self.proj_rename_input.take() else {
+            return;
+        };
+        let title = input.read(cx).value().trim().to_string();
+        let Some(pid) = self.proj_rename.take() else {
+            return;
+        };
+        if title.is_empty() {
+            cx.notify();
+            return;
+        }
+        self.dispatch_cmd(
+            json!({
+                "type": "project.meta.update",
+                "commandId": uuid(),
+                "projectId": pid,
+                "title": title,
+            }),
+            cx,
+        );
         cx.notify();
     }
 
@@ -6662,6 +6776,9 @@ impl Render for Native {
                         .bg(gpui_kit::rgb(0x22c55e)),
                 );
             }
+            let pid_ctx = pid.clone();
+            let pid_hover = pid.clone();
+            let pid_hover2 = pid.clone();
             let proj_head = v_flex()
                 .gap_0()
                 .mt(if project_index == 0 { px(8.) } else { px(14.) })
@@ -6673,6 +6790,8 @@ impl Render for Native {
                 .px_2()
                 .child(row_head)
                 .on_click(cx.listener(move |this, _ev, _w, cx| {
+                    this.proj_ctx_menu = None;
+                    this.proj_ctx_confirm = false;
                     // Upstream toggleProject: the row click expands/collapses
                     // the folder's thread list.
                     if this.collapsed_projects.contains(&pid) {
@@ -6682,6 +6801,61 @@ impl Render for Native {
                     }
                     this.view_files = false;
                     cx.notify();
+                }))
+                .on_mouse_down(
+                    gpui::MouseButton::Right,
+                    cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
+                        this.proj_ctx_menu = Some((
+                            pid_ctx.clone(),
+                            ev.position.x.as_f32(),
+                            ev.position.y.as_f32(),
+                        ));
+                        this.proj_ctx_confirm = false;
+                        // The menu replaces the hover card (upstream's
+                        // PreviewCard closes as the menu opens).
+                        this.hover_project = None;
+                        this.project_card = None;
+                        this.project_card_seq += 1;
+                        cx.notify();
+                        cx.stop_propagation();
+                    }),
+                )
+                .on_hover(cx.listener(move |this, hovered: &bool, w, cx| {
+                    if *hovered {
+                        if this.hover_project.as_deref() != Some(pid_hover.as_str()) {
+                            this.hover_project = Some(pid_hover.clone());
+                            cx.notify();
+                        }
+                        // Upstream PreviewCard: short delay, then info popup.
+                        this.project_card_seq += 1;
+                        let seq = this.project_card_seq;
+                        let pos = w.mouse_position();
+                        let (px_, py_) = (f32::from(pos.x), f32::from(pos.y));
+                        let pidc = pid_hover2.clone();
+                        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                            cx.background_executor()
+                                .timer(std::time::Duration::from_millis(450))
+                                .await;
+                            let _ = this.update(cx, |this: &mut Self, cx| {
+                                if seq == this.project_card_seq
+                                    && this.hover_project.as_deref() == Some(pidc.as_str())
+                                {
+                                    this.project_card = Some((pidc.clone(), px_, py_));
+                                    cx.notify();
+                                }
+                            });
+                        })
+                        .detach();
+                    } else if this.hover_project.as_deref() == Some(pid_hover.as_str()) {
+                        this.hover_project = None;
+                        this.project_card_seq += 1;
+                        if this.project_card.as_ref().map(|c| c.0.as_str())
+                            == Some(pid_hover.as_str())
+                        {
+                            this.project_card = None;
+                        }
+                        cx.notify();
+                    }
                 }));
             sidebar = sidebar.child(proj_head);
             if !expanded {
@@ -13958,6 +14132,242 @@ impl Render for Native {
             );
         }
 
+        // ---- project context menu (upstream handleProjectContextMenu):
+        // Finder / kanban / copy path, edit + pin, then thread cleanup and
+        // the guarded project removal row.
+        if let Some((menu_pid, mx, my)) = self.proj_ctx_menu.clone() {
+            let mrow = |id: &'static str,
+                        label: String,
+                        cb: Box<dyn Fn(&mut Self, &mut Window, &mut Context<Self>) + 'static>| {
+                Button::new(id)
+                    .ghost()
+                    .w_full()
+                    .h(px(30.))
+                    .justify_start()
+                    .px_2()
+                    .label(label)
+                    .on_click(cx.listener(move |this, _ev, w, cx| {
+                        this.proj_ctx_menu = None;
+                        this.proj_ctx_confirm = false;
+                        cb(this, w, cx);
+                        cx.notify();
+                    }))
+                    .into_any_element()
+            };
+            let msep = || div().h(px(1.)).w_full().bg(theme.border).into_any_element();
+            let proj = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                .iter()
+                .find(|p| str_at(p, "id") == menu_pid)
+                .cloned()
+                .unwrap_or(Value::Null);
+            let proj_title = str_at(&proj, "title").to_string();
+            let proj_root = {
+                let r = str_at(&proj, "workspaceRoot");
+                if r.is_empty() {
+                    str_at(&proj, "workspace_root").to_string()
+                } else {
+                    r.to_string()
+                }
+            };
+            let proj_pinned = get(&proj, "isPinned").as_bool().unwrap_or(false);
+            let has_kids = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                .iter()
+                .any(|t| {
+                    str_at(t, "projectId") == menu_pid
+                        && get(t, "deletedAt").is_null()
+                        && get(t, "archivedAt").is_null()
+                });
+            let mut menu = v_flex()
+                .absolute()
+                .left(px(mx))
+                .top(px(my))
+                .w(px(200.))
+                .p_1()
+                .gap_y(px(1.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .shadow_md()
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                )
+                .on_mouse_down(
+                    gpui::MouseButton::Right,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                );
+            if self.proj_ctx_confirm {
+                // Inline confirm mirroring the thread delete branch: upstream
+                // confirms before removeProject clears threads + folder.
+                let pid_del = menu_pid.clone();
+                menu = menu
+                    .child(
+                        div()
+                            .px_2()
+                            .pt_1()
+                            .pb(px(2.))
+                            .text_sm()
+                            .child(format!("Remove project \"{proj_title}\"?")),
+                    )
+                    .child(
+                        div()
+                            .px_2()
+                            .pb_1()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(if has_kids {
+                                "Threads in this folder are deleted first."
+                            } else {
+                                "This removes the project from the sidebar."
+                            }),
+                    )
+                    .child(
+                        h_flex()
+                            .id("pctx-del-go")
+                            .w_full()
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .rounded_md()
+                            .text_sm()
+                            .text_color(theme.danger)
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child("Remove")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.proj_ctx_menu = None;
+                                this.proj_ctx_confirm = false;
+                                this.delete_project(pid_del.clone(), cx);
+                                cx.notify();
+                            })),
+                    )
+                    .child(
+                        h_flex()
+                            .id("pctx-del-cancel")
+                            .w_full()
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .rounded_md()
+                            .text_sm()
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child("Cancel")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.proj_ctx_confirm = false;
+                                cx.notify();
+                            })),
+                    );
+            } else {
+                let p_reveal = proj_root.clone();
+                let p_copy = proj_root.clone();
+                let pid_pin = menu_pid.clone();
+                let pid_edit = menu_pid.clone();
+                let title_edit = proj_title.clone();
+                let pid_arch = menu_pid.clone();
+                let pid_del_t = menu_pid.clone();
+                menu = menu
+                    .child(mrow("pctx-finder", "Open in Finder".into(), Box::new(
+                        move |_this, _w, _cx| {
+                            if !p_reveal.is_empty() {
+                                let _ = std::process::Command::new("open")
+                                    .arg("-R")
+                                    .arg(&p_reveal)
+                                    .spawn();
+                            }
+                        },
+                    )))
+                    .child(mrow("pctx-kanban", "Open in kanban".into(), Box::new(
+                        move |this, _w, cx| {
+                            this.view_files = false;
+                            this.view_dev = false;
+                            this.view_inbox = false;
+                            this.view_tasks = false;
+                            this.view_pullreq = false;
+                            this.view_autom = false;
+                            this.view_studio = false;
+                            this.view_spaces = false;
+                            this.view_kanban = true;
+                            cx.notify();
+                        },
+                    )))
+                    .child(mrow("pctx-copy", "Copy path".into(), Box::new(
+                        move |_this, _w, cx| {
+                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+                                p_copy.clone(),
+                            ));
+                        },
+                    )))
+                    .child(msep())
+                    .child(mrow("pctx-edit", "Edit project".into(), Box::new(
+                        move |this, w, cx| {
+                            this.start_project_rename(pid_edit.clone(), title_edit.clone(), w, cx);
+                        },
+                    )))
+                    .child(mrow("pctx-pin", if proj_pinned {
+                        "Unpin project".to_string()
+                    } else {
+                        "Pin project".to_string()
+                    }, Box::new(move |this, _w, cx| {
+                        this.toggle_project_pin(pid_pin.clone(), proj_pinned, cx);
+                    })));
+                if has_kids {
+                    menu = menu
+                        .child(msep())
+                        .child(mrow("pctx-arch", "Archive all threads".into(), Box::new(
+                            move |this, _w, cx| {
+                                this.project_threads_cmd(pid_arch.clone(), "thread.archive", cx);
+                            },
+                        )))
+                        .child(mrow("pctx-delt", "Delete all threads".into(), Box::new(
+                            move |this, _w, cx| {
+                                this.project_threads_cmd(pid_del_t.clone(), "thread.delete", cx);
+                            },
+                        )));
+                }
+                menu = menu.child(msep()).child(
+                    h_flex()
+                        .id("pctx-remove")
+                        .w_full()
+                        .h(px(30.))
+                        .px_2()
+                        .items_center()
+                        .rounded_md()
+                        .text_sm()
+                        .text_color(theme.danger)
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .child("Remove")
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.proj_ctx_confirm = true;
+                            cx.notify();
+                        })),
+                );
+            }
+            ctx_overlay = ctx_overlay.child(
+                v_flex()
+                    .size_full()
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.proj_ctx_menu = None;
+                            this.proj_ctx_confirm = false;
+                            cx.notify();
+                        }),
+                    )
+                    .on_mouse_down(
+                        gpui::MouseButton::Right,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.proj_ctx_menu = None;
+                            this.proj_ctx_confirm = false;
+                            cx.notify();
+                        }),
+                    )
+                    .child(menu),
+            );
+        }
+
         // ---- thread hover card (upstream ThreadHoverCardContent): title +
         // relative time header, then status / project / cwd / model rows.
         // Zero-size anchor: absolute children position from window origin
@@ -14044,6 +14454,272 @@ impl Render for Native {
         // SidebarSearchPalette + WorkspaceSearchPalette — bare h-11 input,
         // max-w-lg popup anchored near the top, 28px result rows grouped by
         // section, arrows+enter keyboard navigation, backdrop/Esc dismiss.
+        // ---- project hover card (upstream ProjectHoverCardContent): icon +
+        // name + pin toggle header, chat count, path, "Edit project" row.
+        let mut pc_overlay = div().absolute().left_0().top_0().w_0().h_0();
+        if let Some((pc_pid, pcx, pcy)) = self.project_card.clone() {
+            let projects_arr = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+            if let Some(p) = projects_arr
+                .iter()
+                .find(|p| str_at(p, "id") == pc_pid)
+                .cloned()
+            {
+                let name = {
+                    let t = str_at(&p, "title");
+                    if t.is_empty() { "Untitled project".to_string() } else { t.to_string() }
+                };
+                let pinned = get(&p, "isPinned").as_bool().unwrap_or(false);
+                let root = {
+                    let r = str_at(&p, "workspaceRoot");
+                    if r.is_empty() {
+                        str_at(&p, "workspace_root").to_string()
+                    } else {
+                        r.to_string()
+                    }
+                };
+                let n_chats = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                    .iter()
+                    .filter(|t| {
+                        str_at(t, "projectId") == pc_pid
+                            && get(t, "deletedAt").is_null()
+                            && get(t, "archivedAt").is_null()
+                    })
+                    .count();
+                let pid_pin = pc_pid.clone();
+                let pid_edit = pc_pid.clone();
+                let name_edit = name.clone();
+                let pin_icon = if pinned { icons::PIN_FILL } else { icons::PIN };
+                let divider = |d: Div| d;
+                let _ = divider;
+                let card = v_flex()
+                    .w(px(300.))
+                    .p_1()
+                    .bg(popover_bg)
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg()
+                    .shadow_md()
+                    .child(
+                        h_flex()
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .gap_2()
+                            .child(
+                                div()
+                                    .overflow_hidden()
+                                    .whitespace_nowrap()
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .text_size(px(13.))
+                                    .flex_1()
+                                    .child(name),
+                            )
+                            .child(
+                                div()
+                                    .id("pc-pin")
+                                    .cursor_pointer()
+                                    .rounded_sm()
+                                    .p_1()
+                                    .text_color(if pinned {
+                                        theme.foreground
+                                    } else {
+                                        theme.muted_foreground
+                                    })
+                                    .hover(|d| d.text_color(theme.foreground))
+                                    .child(svg_icon(pin_icon).size(px(12.)))
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        this.project_card = None;
+                                        this.toggle_project_pin(pid_pin.clone(), pinned, cx);
+                                        cx.notify();
+                                    })),
+                            ),
+                    )
+                    .child(
+                        h_flex()
+                            .h(px(28.))
+                            .px_2()
+                            .items_center()
+                            .gap_2()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child(format!(
+                                "{n_chats} {}",
+                                if n_chats == 1 { "chat" } else { "chats" }
+                            )),
+                    )
+                    .child(div().h(px(1.)).w_full().bg(theme.border));
+                let mut card = card.child(
+                    h_flex()
+                        .h(px(28.))
+                        .px_2()
+                        .items_center()
+                        .gap_2()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child(
+                            div()
+                                .overflow_hidden()
+                                .whitespace_nowrap()
+                                .child(if root.is_empty() {
+                                    "No workspace folder".to_string()
+                                } else {
+                                    root
+                                }),
+                        ),
+                );
+                card = card
+                    .child(div().h(px(1.)).w_full().bg(theme.border))
+                    .child(
+                        h_flex()
+                            .id("pc-edit")
+                            .h(px(30.))
+                            .px_2()
+                            .items_center()
+                            .gap_2()
+                            .rounded_md()
+                            .text_size(px(12.))
+                            .text_color(theme.foreground)
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child("Edit project")
+                            .on_click(cx.listener(move |this, _ev, w, cx| {
+                                this.project_card = None;
+                                this.start_project_rename(
+                                    pid_edit.clone(),
+                                    name_edit.clone(),
+                                    w,
+                                    cx,
+                                );
+                            })),
+                    );
+                let vs = window.viewport_size();
+                pc_overlay = pc_overlay.child(
+                    div()
+                        .absolute()
+                        .left(px((pcx + 14.).min(f32::from(vs.width) - 320.)))
+                        .top(px(pcy.min(f32::from(vs.height) - 180.)))
+                        .child(card),
+                );
+            }
+        }
+
+        // ---- shared RenameDialog (upstream RenameDialog): centered card with
+        // a single field and Cancel/Save — covers the thread rename (mounted
+        // for the first time here) and the project "Edit project" action.
+        let mut ren_overlay = div().absolute().inset_0().size_full();
+        if self.renaming || self.proj_rename.is_some() {
+            let is_project = self.proj_rename.is_some();
+            let dlg_title = if is_project { "Edit project" } else { "Rename chat" };
+            let input = if is_project {
+                self.proj_rename_input.clone()
+            } else {
+                self.rename_input.clone()
+            };
+            let can_save = input
+                .as_ref()
+                .map(|i| !i.read(cx).value().trim().is_empty())
+                .unwrap_or(false);
+            let mut dlg = v_flex()
+                .w(px(448.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .overflow_hidden()
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                )
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    if ev.keystroke.key == "escape" {
+                        this.renaming = false;
+                        this.rename_input = None;
+                        this.proj_rename = None;
+                        this.proj_rename_input = None;
+                        cx.stop_propagation();
+                        cx.notify();
+                    } else if ev.keystroke.key == "enter" {
+                        if this.proj_rename.is_some() {
+                            this.commit_project_rename(cx);
+                        } else {
+                            this.commit_rename(cx);
+                        }
+                        cx.stop_propagation();
+                    }
+                }))
+                .child(
+                    div()
+                        .px(px(20.))
+                        .pt(px(20.))
+                        .pb(px(8.))
+                        .text_size(px(20.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child(dlg_title),
+                );
+            if let Some(inp) = input {
+                dlg = dlg.child(
+                    div()
+                        .mx(px(20.))
+                        .my(px(8.))
+                        .child(Input::new(&inp)),
+                );
+            }
+            dlg = dlg.child(
+                h_flex()
+                    .w_full()
+                    .px(px(20.))
+                    .py(px(16.))
+                    .gap_2()
+                    .justify_end()
+                    .child(
+                        Button::new("ren-cancel")
+                            .ghost()
+                            .label("Cancel")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.renaming = false;
+                                this.rename_input = None;
+                                this.proj_rename = None;
+                                this.proj_rename_input = None;
+                                cx.notify();
+                            })),
+                    )
+                    .child(
+                        Button::new("ren-save")
+                            .primary()
+                            .label("Save")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if !can_save {
+                                    return;
+                                }
+                                if this.proj_rename.is_some() {
+                                    this.commit_project_rename(cx);
+                                } else {
+                                    this.commit_rename(cx);
+                                }
+                            })),
+                    ),
+            );
+            ren_overlay = ren_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .justify_center()
+                    .bg(gpui::black().opacity(0.3))
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.renaming = false;
+                            this.rename_input = None;
+                            this.proj_rename = None;
+                            this.proj_rename_input = None;
+                            cx.notify();
+                        }),
+                    )
+                    .child(dlg),
+            );
+        }
+
         let mut palette_overlay = div().absolute().inset_0().size_full();
         if let Some(mode) = self.palette_mode {
             let query = self
@@ -15294,10 +15970,17 @@ impl Render for Native {
             // Overlays mount only while active — an empty full-size overlay
             // would otherwise sit on top and eat every click.
             .when(
-                self.ctx_menu.is_some() || self.file_ctx_menu.is_some(),
+                self.ctx_menu.is_some()
+                    || self.file_ctx_menu.is_some()
+                    || self.proj_ctx_menu.is_some(),
                 |d| d.child(ctx_overlay),
             )
             .when(self.hover_card.is_some(), |d| d.child(hc_overlay))
+            .when(self.project_card.is_some(), |d| d.child(pc_overlay))
+            .when(
+                self.renaming || self.proj_rename.is_some(),
+                |d| d.child(ren_overlay),
+            )
             .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
             .when(self.feedback_open, |d| d.child(fb_overlay))

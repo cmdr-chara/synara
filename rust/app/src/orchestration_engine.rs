@@ -104,14 +104,14 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.approval.respond" => {
             // Resolve the pending approval row like upstream's projection:
             // the response settles the card with the given decision.
+            // Upstream deletes the pending interaction row on resolve; the
+            // status column has no 'resolved' value in its schema.
             if let (Some(tid), Some(rid)) = (s(command, "threadId"), s(command, "requestId")) {
                 let conn = open_state_rw()?;
-                let decision = s(command, "decision").unwrap_or_else(|| "responded".into());
                 conn.execute(
-                    "UPDATE projection_pending_interactions \
-                     SET status='resolved', decision=?3, resolved_at=?4 \
-                     WHERE thread_id=?1 AND request_id=?2 AND status='pending'",
-                    params![tid, rid, decision, iso_now_ms()],
+                    "DELETE FROM projection_pending_interactions \
+                     WHERE thread_id=?1 AND request_id=?2",
+                    params![tid, rid],
                 )
                 .map_err(|e| err(format!("resolve approval: {e}")))?;
             }
@@ -120,12 +120,10 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.user-input.respond" => {
             if let (Some(tid), Some(rid)) = (s(command, "threadId"), s(command, "requestId")) {
                 let conn = open_state_rw()?;
-                let decision = s(command, "decision").unwrap_or_else(|| "responded".into());
                 conn.execute(
-                    "UPDATE projection_pending_interactions \
-                     SET status='resolved', decision=?3, resolved_at=?4 \
-                     WHERE thread_id=?1 AND request_id=?2 AND status='pending'",
-                    params![tid, rid, decision, iso_now_ms()],
+                    "DELETE FROM projection_pending_interactions \
+                     WHERE thread_id=?1 AND request_id=?2",
+                    params![tid, rid],
                 )
                 .map_err(|e| err(format!("resolve user-input: {e}")))?;
             }
@@ -522,7 +520,7 @@ fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     copy_field(&mut ep, &mut sets, "subagentNickname", "subagent_nickname");
     copy_field(&mut ep, &mut sets, "subagentRole", "subagent_role");
     copy_field(&mut ep, &mut sets, "notes", "notes");
-    if let Some(v) = command.get("modelSelection") {
+    if let Some(v) = command.get("modelSelection").filter(|v| v.is_object()) {
         ep.insert("modelSelection".into(), v.clone());
         sets.push(("model_selection_json", json!(v.to_string())));
     }
@@ -770,8 +768,20 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
     put(&mut ep, "threadId", json!(thread_id));
     put(&mut ep, "projectId", json!(project_id));
     put(&mut ep, "title", json!(title));
-    put(&mut ep, "modelSelection", opt(command, "modelSelection"));
-    put(&mut ep, "runtimeMode", opt(command, "runtimeMode"));
+    // Upstream ThreadCreatedPayload requires modelSelection as a real object
+    // and runtimeMode as a RuntimeMode string; a null key fails schema decode
+    // during replay on the upstream reader.
+    let model_selection = command
+        .get("modelSelection")
+        .filter(|v| v.is_object())
+        .cloned()
+        .unwrap_or_else(|| json!({"provider": "codex", "model": "gpt-6-astra"}));
+    let runtime_mode = command
+        .get("runtimeMode")
+        .and_then(|v| v.as_str())
+        .unwrap_or("full-access");
+    put(&mut ep, "modelSelection", model_selection);
+    put(&mut ep, "runtimeMode", json!(runtime_mode));
     put(&mut ep, "interactionMode", json!(interaction_mode));
     put(&mut ep, "envMode", json!(env_mode));
     put(&mut ep, "branch", branch.clone());
@@ -1076,10 +1086,9 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
             )
             .map_err(|e| err(format!("record async-user-input response: {e}")))?;
             conn.execute(
-                "UPDATE projection_pending_interactions \
-                 SET status='resolved', decision='responded', resolved_at=?2 \
+                "DELETE FROM projection_pending_interactions \
                  WHERE thread_id=?1 AND status='pending' AND interaction_kind='userInput'",
-                params![thread_id, iso_now_ms()],
+                params![thread_id],
             )
             .map_err(|e| err(format!("resolve pending interaction: {e}")))?;
         }
@@ -1139,7 +1148,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
     // Fresh thread (no turn, no session): adopt the requested model selection.
     if row.latest_turn_id.is_none()
-        && let Some(ms) = command.get("modelSelection")
+        && let Some(ms) = command.get("modelSelection").filter(|v| v.is_object())
     {
         sets.push(("model_selection_json", json!(ms.to_string())));
     }
@@ -5410,8 +5419,20 @@ fn lineage_create(command: &Map<String, Value>, is_handoff: bool) -> Result<Valu
     put(&mut ep, "threadId", json!(thread_id));
     put(&mut ep, "projectId", json!(project_id));
     put(&mut ep, "title", json!(title));
-    put(&mut ep, "modelSelection", opt(command, "modelSelection"));
-    put(&mut ep, "runtimeMode", opt(command, "runtimeMode"));
+    // Upstream ThreadCreatedPayload requires modelSelection as a real object
+    // and runtimeMode as a RuntimeMode string; a null key fails schema decode
+    // during replay on the upstream reader.
+    let model_selection = command
+        .get("modelSelection")
+        .filter(|v| v.is_object())
+        .cloned()
+        .unwrap_or_else(|| json!({"provider": "codex", "model": "gpt-6-astra"}));
+    let runtime_mode = command
+        .get("runtimeMode")
+        .and_then(|v| v.as_str())
+        .unwrap_or("full-access");
+    put(&mut ep, "modelSelection", model_selection);
+    put(&mut ep, "runtimeMode", json!(runtime_mode));
     put(
         &mut ep,
         "interactionMode",

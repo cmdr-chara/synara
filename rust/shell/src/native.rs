@@ -10053,6 +10053,29 @@ impl Render for Native {
             let mut rng = (elapsed_ms as u32)
                 .wrapping_mul(747_796_405)
                 .wrapping_add(2_891_336_453);
+            // Upstream samples the noise on a FIELD_STEP=2 lattice and
+            // bilinearly interpolates per cell, giving smoother blotch edges.
+            const FIELD_STEP: usize = 2;
+            let lat_cols = cols / FIELD_STEP + 1;
+            let lat_rows = rows / FIELD_STEP + 1;
+            let mut patch_lat = vec![0f32; lat_cols * lat_rows];
+            let mut wave_lat = vec![0f32; lat_cols * lat_rows];
+            for ly in 0..lat_rows {
+                let y = ((ly * FIELD_STEP) as f32 + 0.5) * ASCII_CELL_H;
+                for lx in 0..lat_cols {
+                    let x = ((lx * FIELD_STEP) as f32 + 0.5) * ASCII_CELL_W;
+                    let (mut patch, mut wave) =
+                        ascii_sample(pat, x, y, fcx, fcy, t);
+                    if let Some(np) = next_pat {
+                        let (np_patch, np_wave) =
+                            ascii_sample(np, x, y, fcx, fcy, t);
+                        patch += (np_patch - patch) * mix;
+                        wave += (np_wave - wave) * mix;
+                    }
+                    patch_lat[ly * lat_cols + lx] = patch;
+                    wave_lat[ly * lat_cols + lx] = wave;
+                }
+            }
             for r in 0..rows {
                 let mut ink_line: [String; 5] =
                     std::array::from_fn(|_| String::with_capacity(cols));
@@ -10061,12 +10084,24 @@ impl Render for Native {
                     let idx = r * cols + c;
                     let x = (c as f32 + 0.5) * ASCII_CELL_W;
                     let y = (r as f32 + 0.5) * ASCII_CELL_H;
-                    let (mut patch, mut wave) = ascii_sample(pat, x, y, fcx, fcy, t);
-                    if let Some(np) = next_pat {
-                        let (np_patch, np_wave) = ascii_sample(np, x, y, fcx, fcy, t);
-                        patch += (np_patch - patch) * mix;
-                        wave += (np_wave - wave) * mix;
-                    }
+                    // Bilinear lookup into the subsampled lattice.
+                    let lx = (c / FIELD_STEP).min(lat_cols - 2);
+                    let ly = (r / FIELD_STEP).min(lat_rows - 2);
+                    let fx = (c % FIELD_STEP) as f32 / FIELD_STEP as f32;
+                    let fy = (r % FIELD_STEP) as f32 / FIELD_STEP as f32;
+                    let top = ly * lat_cols + lx;
+                    let bot = top + lat_cols;
+                    let lerp = |a: f32, b: f32, f: f32| a + (b - a) * f;
+                    let patch = lerp(
+                        lerp(patch_lat[top], patch_lat[top + 1], fx),
+                        lerp(patch_lat[bot], patch_lat[bot + 1], fx),
+                        fy,
+                    );
+                    let wave = lerp(
+                        lerp(wave_lat[top], wave_lat[top + 1], fx),
+                        lerp(wave_lat[bot], wave_lat[bot + 1], fx),
+                        fy,
+                    );
                     let dx = (x - fcx) / (fw * 0.3);
                     let dy = (y - fcy) / (fh * 0.3);
                     let center_fade = (0.45 + 0.55 * (dx * dx + dy * dy).sqrt()).min(1.);
@@ -10158,10 +10193,15 @@ impl Render for Native {
                     .overflow_hidden()
                     .relative();
                 for (bi, rws) in ink_rows.into_iter().enumerate() {
-                    // Bucket alpha ~ bucket center / upstream 0.18 ink max.
+                    // Bucket alpha = the bucket's representative ink alpha;
+                    // upstream draws a continuous 0..0.18 ramp, so the faint
+                    // tail must stay near-invisible instead of at 0.18.
                     field = field.child(layer(
                         rws,
-                        subtle.opacity(0.18 + 0.2 * bi as f32).into(),
+                        theme
+                            .foreground
+                            .opacity(0.036 * (bi as f32 + 1.))
+                            .into(),
                     ));
                 }
                 field.child(layer(rows_accent, theme.primary.opacity(0.75).into()))

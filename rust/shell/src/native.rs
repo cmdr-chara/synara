@@ -1038,6 +1038,9 @@ pub struct Native {
     // (message_id, question_index) -> chosen option label draft.
     user_input_open: Vec<String>,
     ctx_menu: Option<(String, f32, f32)>,
+    // True when ctx_menu was opened from an open-thread tab: upstream appends
+    // "close tabs" scope rows on top of the usual thread menu.
+    ctx_menu_tab: bool,
     // Context-menu flyout submenu: (parent row id, flyout top y) while open,
     // and the thread id awaiting inline delete confirmation.
     ctx_sub: Option<(String, f32)>,
@@ -2366,6 +2369,7 @@ impl Native {
             sidebar_collapsed: false,
             user_input_open: Vec::new(),
             ctx_menu: None,
+            ctx_menu_tab: false,
             ctx_sub: None,
             file_ctx_menu: None,
             hover_thread: None,
@@ -2759,6 +2763,35 @@ impl Native {
             }
         } else {
             cx.notify();
+        }
+    }
+
+    /// Upstream closeTabsInScope: close every open tab in one scope of the
+    /// tab whose menu was used ("left" | "right" | "others").
+    fn close_tabs_scope(&mut self, thread_id: &str, scope: &str, cx: &mut Context<Self>) {
+        let Some(idx) = self.open_threads.iter().position(|t| t == thread_id) else {
+            return;
+        };
+        let keep = |i: usize, t: &String| match scope {
+            "left" => i >= idx,
+            "right" => i <= idx,
+            _ => t == thread_id,
+        };
+        self.open_threads = self
+            .open_threads
+            .iter()
+            .enumerate()
+            .filter(|(i, t)| keep(*i, *t))
+            .map(|(_, t)| t.clone())
+            .collect();
+        match self.selected_thread.as_deref() {
+            Some(sel) if !self.open_threads.iter().any(|t| t == sel) => {
+                self.open_thread(thread_id.to_string(), cx);
+            }
+            None => {
+                self.open_thread(thread_id.to_string(), cx);
+            }
+            _ => cx.notify(),
         }
     }
 
@@ -10432,6 +10465,7 @@ impl Render for Native {
                             ev.position.x.as_f32(),
                             ev.position.y.as_f32(),
                         ));
+                        this.ctx_menu_tab = false;
                         this.ctx_sub = None;
                         this.ctx_confirm_delete = None;
                         this.hover_card = None;
@@ -20479,6 +20513,7 @@ impl Render for Native {
                         let ghost_title = ot_title.clone();
                         let sel = ot.clone();
                         let close = ot.clone();
+                        let ctx_tid = ot.clone();
                         let mut pill = h_flex()
                             .id(ElementId::Name(format!("strip-tab-{ot}").into()))
                             .h(px(28.))
@@ -20546,6 +20581,24 @@ impl Render for Native {
                                     this.open_thread(sel.clone(), cx);
                                 }
                             }))
+                            .on_mouse_down(
+                                gpui::MouseButton::Right,
+                                cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
+                                    this.ctx_menu = Some((
+                                        ctx_tid.clone(),
+                                        ev.position.x.as_f32(),
+                                        ev.position.y.as_f32(),
+                                    ));
+                                    this.ctx_menu_tab = true;
+                                    this.ctx_sub = None;
+                                    this.ctx_confirm_delete = None;
+                                    this.hover_card = None;
+                                    this.hover_thread = None;
+                                    this.hover_card_seq += 1;
+                                    cx.notify();
+                                    cx.stop_propagation();
+                                }),
+                            )
                             // Drag the pill to reorder open-thread tabs; the
                             // half of the pill under the pointer picks the
                             // insertion side.
@@ -21019,6 +21072,53 @@ impl Render for Native {
                     );
             } else {
                 let mut y = my + 4.0;
+                // Tab-menu extras (upstream OpenThreadTabStrip): scope rows
+                // first, then a separator, then the usual thread actions.
+                if self.ctx_menu_tab {
+                    if let Some(idx) =
+                        self.open_threads.iter().position(|t| t == &menu_tid)
+                    {
+                        let n = self.open_threads.len();
+                        let mut extra = 0.0f32;
+                        if idx > 0 {
+                            let tid_l = menu_tid.clone();
+                            menu = menu.child(row(
+                                "ctx-cl-left",
+                                "Close tabs to the left".to_string(),
+                                Box::new(move |this, _w, cx| {
+                                    this.close_tabs_scope(&tid_l, "left", cx);
+                                }),
+                            ));
+                            extra += 30.0;
+                        }
+                        if idx + 1 < n {
+                            let tid_r = menu_tid.clone();
+                            menu = menu.child(row(
+                                "ctx-cl-right",
+                                "Close tabs to the right".to_string(),
+                                Box::new(move |this, _w, cx| {
+                                    this.close_tabs_scope(&tid_r, "right", cx);
+                                }),
+                            ));
+                            extra += 30.0;
+                        }
+                        if n > 1 {
+                            let tid_o = menu_tid.clone();
+                            menu = menu.child(row(
+                                "ctx-cl-others",
+                                "Close other tabs".to_string(),
+                                Box::new(move |this, _w, cx| {
+                                    this.close_tabs_scope(&tid_o, "others", cx);
+                                }),
+                            ));
+                            extra += 30.0;
+                        }
+                        if extra > 0.0 {
+                            menu = menu.child(sep());
+                            y += extra + 5.0;
+                        }
+                    }
+                }
                 menu = menu
                     .child(row("ctx-rename", "Rename thread".to_string(), Box::new(move |this, w, cx| {
                         this.open_thread(tid_rename.clone(), cx);

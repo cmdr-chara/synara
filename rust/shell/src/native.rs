@@ -959,6 +959,10 @@ pub struct Native {
     visited_threads: std::collections::HashMap<String, String>,
     /// Upstream keepAwakeMode setting: 0 on, 1 agent, 2 off.
     keep_awake_mode: usize,
+    /// Upstream OneTimeCoachmark: seen keys persisted under
+    /// settings.sidebarUi.coachmarks; `coachmark` is the one showing.
+    coachmarks_seen: std::collections::HashSet<String>,
+    coachmark: Option<&'static str>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
     // Working directory "Open Path in Terminal" seeds the next terminal.open
@@ -1902,6 +1906,8 @@ impl Native {
                 dismissed_status: std::collections::HashMap::new(),
                 visited_threads: std::collections::HashMap::new(),
                 keep_awake_mode: 2,
+                coachmarks_seen: std::collections::HashSet::new(),
+                coachmark: None,
                 sponsor_dismissed: false,
             search_open: false,
             sidebar_collapsed: false,
@@ -5047,6 +5053,10 @@ impl Native {
                         .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
                         .collect();
                 }
+                if let Some(m) = get(&su, "coachmarks").as_object() {
+                    this.coachmarks_seen = m.keys().cloned().collect();
+                }
+                this.show_next_coachmark(cx);
                 cx.notify();
             });
         })
@@ -5135,12 +5145,60 @@ impl Native {
         )
     }
 
+    /// Upstream OneTimeCoachmark: a single accent hint at a time, seen-keyed,
+    /// marked seen the moment it opens, auto-hidden after 8s.
+    fn show_next_coachmark(&mut self, cx: &mut Context<Self>) {
+        if self.coachmark.is_some() {
+            return;
+        }
+        let next = if !self.coachmarks_seen.contains("activity") {
+            "activity"
+        } else if !self.coachmarks_seen.contains("tasks") {
+            "tasks"
+        } else {
+            return;
+        };
+        self.coachmark = Some(next);
+        self.coachmarks_seen.insert(next.to_string());
+        self.persist_sidebar_ui(cx);
+        cx.notify();
+        let weak = cx.weak_entity();
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .timer(std::time::Duration::from_secs(8))
+                .await;
+            let _ = weak.update(cx, |this: &mut Self, cx| {
+                if this.coachmark == Some(next) {
+                    this.coachmark = None;
+                    this.show_next_coachmark(cx);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Clicking the wrapped control dismisses its hint (upstream marks it
+    /// seen at open, so no extra write is needed here).
+    fn dismiss_coachmark(&mut self, key: &'static str, cx: &mut Context<Self>) {
+        if self.coachmark == Some(key) {
+            self.coachmark = None;
+            self.show_next_coachmark(cx);
+            cx.notify();
+        }
+    }
+
     /// Persists dismissal/visited maps under settings.sidebarUi, like
     /// upstream's localStorage write-through on dismiss / mark-visited.
     fn persist_sidebar_ui(&mut self, cx: &mut Context<Self>) {
         let sidebar_ui = json!({
             "dismissedStatusKeyByThreadId": self.dismissed_status,
             "lastVisitedAtByThreadId": self.visited_threads,
+            "coachmarks": self
+                .coachmarks_seen
+                .iter()
+                .map(|k| (k.clone(), json!("seen")))
+                .collect::<serde_json::Map<String, Value>>(),
         });
         if let Some(obj) = get_mut(&mut self.settings_data, "settings")
             .and_then(|s| s.as_object_mut())
@@ -15266,6 +15324,7 @@ impl Render for Native {
             .child(
                 rail_btn("nav-inbox", icons::INBOX, self.view_inbox, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
+                        this.dismiss_coachmark("activity", cx);
                         this.toggle_inbox(cx);
                     }),
                 ),
@@ -15280,6 +15339,7 @@ impl Render for Native {
             .child(
                 rail_btn("nav-tasks", icons::TASKS, self.view_tasks, cx).on_click(
                     cx.listener(|this, _ev, _w, cx| {
+                        this.dismiss_coachmark("tasks", cx);
                         this.open_route(1, cx);
                     }),
                 ),
@@ -15933,6 +15993,49 @@ impl Render for Native {
                     .rounded(px(10.))
                     .overflow_hidden()
                     .child(side),
+            );
+        }
+        // Upstream OneTimeCoachmark: accent tooltip anchored right of the
+        // rail on the wrapped button (activity = inbox, tasks). Painted last
+        // so the sidebar card never covers it.
+        if let Some(cm) = self.coachmark {
+            let (top, title, desc) = match cm {
+                "tasks" => (
+                    133.0_f32,
+                    "Tasks",
+                    "Keep your to-dos in one place and hand them to an agent when you\u{2019}re ready.",
+                ),
+                _ => (
+                    49.0,
+                    "Activity",
+                    "See running tasks, completed work, and anything that needs your attention.",
+                ),
+            };
+            left_well = left_well.child(
+                div()
+                    .absolute()
+                    .left(px(59.))
+                    .top(px(top))
+                    .w(px(240.))
+                    .rounded(px(10.))
+                    .bg(rgb(0xc74614))
+                    .px(px(12.))
+                    .py(px(10.))
+                    .shadow_lg()
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(rgb(0xffffff))
+                            .child(title),
+                    )
+                    .child(
+                        div()
+                            .mt(px(2.))
+                            .text_size(px(12.))
+                            .text_color(hsla(0., 0., 1., 0.85))
+                            .child(desc),
+                    ),
             );
         }
 

@@ -37,7 +37,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | Automation | automation/* (5), RailAutomationsPanel, ComposerAutomationSetupBanner | rail pane + definition list + detail pane (runs) + create/edit dialog + runNow/delete | ✅ |
 | Hosts/device | hosts/* (11), device/* (3), account/* (6), profile/* (5) | — | ⬜ |
 | Dialogs/sheets | ~20 dialogs (RenameDialog, ShortcutsDialog, WhatsNewDialog, FeatureTourDialog, …) | ShortcutsDialog ⌘/, FeedbackDialog (live POST), RenameThread, GitCommit/GitCreatePr, tour | 🔶 (core set done) |
-| Misc chrome | SplashScreen, AppShellTopStrip, AppSnapCoordinator, RouteSurface, KeepAwakeControls, AnnouncementSheet, OneTimeCoachmark | feature tour overlay | 🔶 (tour only) |
+| Misc chrome | SplashScreen, AppShellTopStrip, AppSnapCoordinator, RouteSurface, KeepAwakeControls, AnnouncementSheet, OneTimeCoachmark | feature tour overlay + keep-awake segmented (keepAwakeMode) + one-time coachmarks (accent hint, seen-persisted, 8s auto-hide) | 🔶 (no AnnouncementSheet) |
 
 ## Port order (by user-visible value)
 

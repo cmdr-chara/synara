@@ -3300,6 +3300,45 @@ impl Native {
                     )
                 })
                 .collect(),
+            // Second palette page (upstream mode "import-projects"): pick a
+            // provider source, then a fetched importable project.
+            Some("import-sources") => {
+                let sources: [(&str, &str); 3] = [
+                    ("claudeAgent", "From Claude Code"),
+                    ("codex", "From Codex"),
+                    ("all", "From Claude Code & Codex"),
+                ];
+                sources
+                    .iter()
+                    .filter(|(_, l)| q.is_empty() || l.to_lowercase().contains(&q))
+                    .map(|(id, l)| {
+                        (
+                            "import-src".to_string(),
+                            (*l).to_string(),
+                            String::new(),
+                            (*id).to_string(),
+                        )
+                    })
+                    .collect()
+            }
+            Some("import-projs") => self
+                .palette_rows
+                .iter()
+                .filter(|p| {
+                    q.is_empty()
+                        || str_at(p, "title").to_lowercase().contains(&q)
+                        || str_at(p, "workspaceRoot").to_lowercase().contains(&q)
+                })
+                .map(|p| {
+                    (
+                        "import-proj".to_string(),
+                        str_at(p, "title").to_string(),
+                        str_at(p, "workspaceRoot").to_string(),
+                        str_at(p, "key").to_string(),
+                    )
+                })
+                .collect(),
+            Some("import-thread") => Vec::new(),
             _ => {
                 let snap = self.snapshot.as_ref().unwrap_or(&Value::Null);
                 let mut items: Vec<(String, String, String, String)> = Vec::new();
@@ -3329,10 +3368,18 @@ impl Native {
                         str_at(t, "id").to_string(),
                     ));
                 }
-                let actions: [(&str, &str, &str); 3] = [
+                // Upstream Sidebar searchPaletteActions + navigation actions,
+                // in order (Sidebar.tsx:7590-7710, 8036-8060).
+                let actions: [(&str, &str, &str); 9] = [
                     ("new-chat", "New chat", "\u{2325}\u{2318}N"),
                     ("new-thread", "New thread", "\u{2318}N"),
-                    ("go-inbox", "Go to Inbox", "\u{2325}\u{2318}U"),
+                    ("add-project", "Add project", "\u{21e7}\u{2318}O"),
+                    ("import-projects", "Import projects from\u{2026}", ""),
+                    ("import-thread", "Import thread from\u{2026}", "\u{2318}I"),
+                    ("feedback", "Feedback", ""),
+                    ("settings", "Settings", ""),
+                    ("usage-settings", "Usage", "\u{21e7}\u{2318}U"),
+                    ("new-space", "New space", ""),
                 ];
                 for (id, label, kbd) in actions {
                     if q.is_empty() || label.to_lowercase().contains(&q) {
@@ -3343,6 +3390,32 @@ impl Native {
                             id.to_string(),
                         ));
                     }
+                }
+                let navs: [(&str, &str, &str); 4] = [
+                    ("go-inbox", "Go to Inbox", ""),
+                    ("go-kanban", "Go to Kanban", ""),
+                    ("go-studio", "Go to Studio", ""),
+                    ("go-automations", "Go to Automations", ""),
+                ];
+                for (id, label, kbd) in navs {
+                    if q.is_empty() || label.to_lowercase().contains(&q) {
+                        items.push((
+                            "action".to_string(),
+                            label.to_string(),
+                            kbd.to_string(),
+                            id.to_string(),
+                        ));
+                    }
+                }
+                if !arr(snap, "projects").is_empty()
+                    && (q.is_empty() || "new automation".contains(&q))
+                {
+                    items.push((
+                        "action".to_string(),
+                        "New automation".to_string(),
+                        String::new(),
+                        "new-automation".to_string(),
+                    ));
                 }
                 for p in arr(snap, "projects") {
                     let title = str_at(p, "title").to_string();
@@ -3373,9 +3446,36 @@ impl Native {
             .unwrap_or_default();
         let items = self.palette_items(&query);
         let Some((kind, _label, _sub, payload)) = items.get(self.palette_sel).cloned() else {
-            self.close_palette(window, cx);
+            // import-thread has no rows: Enter submits the typed session id.
+            if self.palette_mode == Some("import-thread") && !query.trim().is_empty() {
+                let ext = query.trim().to_string();
+                self.close_palette(window, cx);
+                self.start_import_thread(ext, cx);
+            } else {
+                self.close_palette(window, cx);
+            }
             return;
         };
+        // Sub-page transitions keep the palette open (upstream mode switch).
+        match (kind.as_str(), payload.as_str()) {
+            ("action", "import-projects") => {
+                self.set_palette_mode("import-sources", window, cx);
+                return;
+            }
+            ("action", "import-thread") => {
+                self.set_palette_mode("import-thread", window, cx);
+                return;
+            }
+            ("import-src", _) => {
+                self.palette_fetch_imports(payload.clone(), cx);
+                return;
+            }
+            ("import-proj", _) => {
+                self.palette_run_import_project(payload.clone(), cx);
+                return;
+            }
+            _ => {}
+        }
         let cwd = self.files_root().unwrap_or_default();
         self.close_palette(window, cx);
         match kind.as_str() {
@@ -3414,16 +3514,277 @@ impl Native {
             "thread" => self.open_thread(payload, cx),
             "action" => match payload.as_str() {
                 "new-chat" | "new-thread" => self.new_thread(cx),
+                "add-project" => self.start_add_project(window, cx),
+                "feedback" => self.open_feedback(window, cx),
+                "settings" => {
+                    self.clear_views();
+                    self.view_settings = true;
+                    if self.settings_data.is_null() {
+                        self.fetch_settings(cx);
+                    }
+                }
+                "usage-settings" => {
+                    self.clear_views();
+                    self.view_settings = true;
+                    self.settings_section = "usage";
+                    if self.settings_data.is_null() {
+                        self.fetch_settings(cx);
+                    }
+                }
+                "new-space" => {
+                    self.clear_views();
+                    self.view_spaces = true;
+                }
                 "go-inbox" => {
                     self.clear_views();
                     self.view_inbox = true;
                     self.fetch_inbox(cx);
+                }
+                "go-kanban" => self.open_route(2, cx),
+                "go-studio" => self.open_route(5, cx),
+                "go-automations" => self.open_route(4, cx),
+                "new-automation" => {
+                    self.open_route(4, cx);
+                    self.open_autom_dialog(None, window, cx);
                 }
                 _ => {}
             },
             _ => {}
         }
         cx.notify();
+    }
+
+    /// Switch palette page while open (upstream mode switch): new input with
+    /// the page's placeholder, rows reset.
+    fn set_palette_mode(&mut self, mode: &'static str, window: &mut Window, cx: &mut Context<Self>) {
+        self.palette_mode = Some(mode);
+        self.palette_rows = Vec::new();
+        self.palette_sel = 0;
+        self.palette_seq += 1;
+        let placeholder = match mode {
+            "files" => "Search files",
+            "snippets" => "Search code",
+            "import-sources" | "import-projs" => "Import projects from\u{2026}",
+            "import-thread" => "Import thread from\u{2026}",
+            _ => "Search chats or run a command",
+        };
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder(placeholder));
+        cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, _w, cx| match ev {
+            InputEvent::Change => this.palette_query_changed(cx),
+            InputEvent::PressEnter { .. } => this.palette_activate(_w, cx),
+            _ => {}
+        })
+        .detach();
+        window.defer(cx, {
+            let input = input.clone();
+            move |window, cx| {
+                input.update(cx, |s, cx| s.focus_handle(cx).focus(window, cx));
+            }
+        });
+        self.palette_input = Some(input);
+        cx.notify();
+    }
+
+    /// Add project (upstream CreateProjectDialog entry): native folder
+    /// picker, then `project.create` with the folder name as title.
+    fn start_add_project(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let rx = cx.prompt_for_paths(gpui::PathPromptOptions {
+            files: false,
+            directories: true,
+            multiple: false,
+            prompt: None,
+        });
+        let client = self.client.clone();
+        cx.spawn_in(window, async move |this: WeakEntity<Self>, cx: &mut AsyncWindowContext| {
+            let Ok(Ok(Some(paths))) = rx.await else { return };
+            let Some(dir) = paths.first().cloned() else { return };
+            let title = dir
+                .file_name()
+                .map(|n| n.to_string_lossy().into_owned())
+                .unwrap_or_else(|| "Project".to_string());
+            let root = dir.to_string_lossy().into_owned();
+            let cell = client.clone();
+            let r = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "orchestration.dispatchCommand",
+                            json!({
+                                "type": "project.create",
+                                "commandId": uuid(),
+                                "projectId": uuid(),
+                                "title": title,
+                                "workspaceRoot": root,
+                                "kind": "project",
+                                "createdAt": now_iso(),
+                            }),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if r.is_none() {
+                    this.feedback_toast = Some(("Failed to add the project.".to_string(), true));
+                }
+            });
+        })
+        .detach();
+    }
+
+    /// Palette second page → orchestration.listProjectImports for the picked
+    /// provider source; results list in the palette (kind "import-proj").
+    fn palette_fetch_imports(&mut self, source: String, cx: &mut Context<Self>) {
+        let providers: Vec<&str> = match source.as_str() {
+            "all" => vec!["claudeAgent", "codex"],
+            s => vec![match s {
+                "claudeAgent" => "claudeAgent",
+                _ => "codex",
+            }],
+        };
+        self.palette_mode = Some("import-projs");
+        self.palette_rows = Vec::new();
+        self.palette_sel = 0;
+        self.palette_seq += 1;
+        let seq = self.palette_seq;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "orchestration.listProjectImports",
+                            json!({"providers": providers}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.palette_seq != seq || this.palette_mode != Some("import-projs") {
+                    return;
+                }
+                this.palette_rows = v.map(|v| arr(&v, "projects").to_vec()).unwrap_or_default();
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    /// Import the picked catalog project (orchestration.importProject with
+    /// its projectKey), then refresh the shell snapshot.
+    fn palette_run_import_project(&mut self, key: String, cx: &mut Context<Self>) {
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let r = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call("orchestration.importProject", json!({"projectKey": key}))
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                match r {
+                    Some(_) => {
+                        this.palette_mode = None;
+                        this.palette_input = None;
+                        this.feedback_toast = Some(("Project imported.".to_string(), false));
+                    }
+                    None => {
+                        this.feedback_toast =
+                            Some(("Failed to import the project.".to_string(), true));
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Import thread (upstream onImportThread): create a thread in the
+    /// current project, then orchestration.importThread with the pasted
+    /// session id; the thread is deleted when the import fails.
+    fn start_import_thread(&mut self, external_id: String, cx: &mut Context<Self>) {
+        let Some(project) = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+            .first()
+            .cloned()
+        else {
+            self.feedback_toast =
+                Some(("Add a project before importing a thread.".to_string(), true));
+            return;
+        };
+        let thread_id = uuid();
+        let title = "Imported thread";
+        let cmd = json!({
+            "type": "thread.create",
+            "commandId": uuid(),
+            "threadId": thread_id,
+            "projectId": str_at(&project, "id"),
+            "title": title,
+            "runtimeMode": "full-access",
+            "interactionMode": "default",
+            "envMode": "local",
+            "branch": Value::Null,
+            "worktreePath": Value::Null,
+            "createdAt": now_iso(),
+        });
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let created = cx
+                .background_executor()
+                .spawn({
+                    let cell = cell.clone();
+                    let cmd = cmd.clone();
+                    async move { ensure_client(&cell).and_then(|c| c.call("orchestration.dispatchCommand", cmd)) }
+                })
+                .await;
+            let imported = if created.is_some() {
+                let cell = cell.clone();
+                let tid = thread_id.clone();
+                let ext = external_id.clone();
+                cx.background_executor()
+                    .spawn(async move {
+                        ensure_client(&cell).and_then(|c| {
+                            c.call(
+                                "orchestration.importThread",
+                                json!({"threadId": tid, "externalId": ext}),
+                            )
+                        })
+                    })
+                    .await
+            } else {
+                None
+            };
+            if created.is_some() && imported.is_none() {
+                let cell = cell.clone();
+                let tid = thread_id.clone();
+                let _ = cx
+                    .background_executor()
+                    .spawn(async move {
+                        ensure_client(&cell).map(|c| {
+                            c.call(
+                                "orchestration.dispatchCommand",
+                                json!({"type": "thread.delete", "commandId": uuid(), "threadId": tid}),
+                            )
+                        })
+                    })
+                    .await;
+            }
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if imported.is_some() {
+                    this.open_thread(thread_id.clone(), cx);
+                } else {
+                    this.feedback_toast =
+                        Some(("Failed to import the thread.".to_string(), true));
+                }
+            });
+        })
+        .detach();
     }
 
     /// Global keymap: the upstream DEFAULT_SHORTCUT_FALLBACKS chords whose
@@ -20492,7 +20853,16 @@ impl Render for Native {
                             cx.notify();
                         }
                         "backspace" => {
-                            if let Some(input) = this.palette_input.clone() {
+                            let empty = this
+                                .palette_input
+                                .as_ref()
+                                .map(|i| i.read(cx).value().is_empty())
+                                .unwrap_or(true);
+                            if empty && !matches!(this.palette_mode, None | Some("search" | "files" | "snippets")) {
+                                // Upstream: Backspace on an empty sub-page
+                                // query goes back to the search page.
+                                this.set_palette_mode("search", window, cx);
+                            } else if let Some(input) = this.palette_input.clone() {
                                 let mut q = input.read(cx).value().to_string();
                                 if q.pop().is_some() {
                                     input.update(cx, |s, cx| {
@@ -20526,13 +20896,45 @@ impl Render for Native {
                     cx.stop_propagation();
                 }));
             if let Some(input) = self.palette_input.clone() {
+                let mut input_row = h_flex()
+                    .h(px(44.))
+                    .px(px(14.))
+                    .items_center()
+                    .gap_2()
+                    .border_b_1()
+                    .border_color(theme.border);
+                if matches!(
+                    mode,
+                    "import-sources" | "import-projs" | "import-thread"
+                ) {
+                    input_row = input_row.child(
+                        div()
+                            .id("palette-back")
+                            .w(px(20.))
+                            .h(px(20.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded_md()
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child(
+                                svg_icon(icons::CHEVRON_LEFT)
+                                    .size(px(14.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .on_click(cx.listener(|this, _ev, window, cx| {
+                                this.set_palette_mode("search", window, cx);
+                            })),
+                    );
+                }
                 popup = popup.child(
-                    div()
-                        .h(px(44.))
-                        .px(px(14.))
-                        .border_b_1()
-                        .border_color(theme.border)
-                        .child(Input::new(&input).appearance(false)),
+                    input_row.child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .child(Input::new(&input).appearance(false)),
+                    ),
                 );
             }
             let mut list = v_flex()
@@ -20554,10 +20956,11 @@ impl Render for Native {
                     }
                     "snippet" => "Matches",
                     "action" => "Quick actions",
+                    "import-src" | "import-proj" => "Import projects",
                     _ => "Files",
                 }
             };
-            for (i, (kind, label, sub, _payload)) in items.iter().enumerate() {
+            for (i, (kind, label, sub, payload)) in items.iter().enumerate() {
                 let group = group_label(kind, query.trim().is_empty());
                 if group != last_group {
                     last_group = group;
@@ -20575,7 +20978,28 @@ impl Render for Native {
                     "directory" | "project" => icons::FOLDER,
                     "thread" => icons::S_CHAT_BUBBLES,
                     "snippet" => icons::SEARCH,
-                    "action" => icons::ZAP,
+                    "import-proj" => icons::FOLDER_OPEN,
+                    "import-src" => match payload.as_str() {
+                        "claudeAgent" => icons::P_CLAUDE,
+                        "codex" => icons::CODEX,
+                        _ => icons::ARROW_DOWN,
+                    },
+                    "action" => match payload.as_str() {
+                        "new-chat" => icons::SIDECHAT,
+                        "new-thread" => icons::NEW_THREAD,
+                        "add-project" => icons::FOLDER,
+                        "import-projects" | "import-thread" => icons::ARROW_DOWN,
+                        "feedback" => icons::BUG,
+                        "settings" => icons::S_GEAR,
+                        "usage-settings" => icons::S_GAUGE,
+                        "new-space" => icons::PLUS,
+                        "go-inbox" => icons::INBOX,
+                        "go-kanban" => icons::KANBAN,
+                        "go-studio" => icons::STUDIO,
+                        "go-automations" => icons::AUTOMATIONS,
+                        "new-automation" => icons::PLUS_MED,
+                        _ => icons::ZAP,
+                    },
                     _ => icons::FILE_TEXT,
                 };
                 let mut r = h_flex()
@@ -20606,6 +21030,15 @@ impl Render for Native {
                             .child(sub.clone()),
                     );
                 }
+                // Rows that enter a palette page get the trailing ▸ (upstream
+                // ChevronRightIcon).
+                if kind == "action" && matches!(payload.as_str(), "import-projects" | "import-thread") {
+                    r = r.child(
+                        svg_icon(icons::CHEVRON_RIGHT)
+                            .size(px(12.))
+                            .text_color(theme.muted_foreground),
+                    );
+                }
                 if i == sel {
                     r = r.bg(theme.secondary);
                 }
@@ -20631,6 +21064,8 @@ impl Render for Native {
                             "No matches"
                         }
                     }
+                    "import-projs" => "No importable projects",
+                    "import-thread" => "Paste a session id to import",
                     _ => "No results.",
                 };
                 list = list.child(

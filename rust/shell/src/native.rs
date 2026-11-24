@@ -10169,33 +10169,6 @@ impl Render for Native {
                 .child(div().text_size(px(13.)).child("New thread"))
                 .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
         );
-        sidebar = sidebar.child(
-            div()
-                .mt(px(15.))
-                .text_size(px(13.))
-                .text_color(theme.muted_foreground)
-                .child(if self.view_spaces {
-                    // spaces — upstream navigates INTO the space: same sidebar
-                    // chrome, the section label is the space name.
-                    arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces")
-                        .first()
-                        .map(|s| str_at(s, "name").to_string())
-                        .filter(|n: &String| !n.is_empty())
-                        .unwrap_or_else(|| "Void".to_string())
-                } else {
-                    "Projects".to_string()
-                }),
-        );
-        if arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects").is_empty() {
-            sidebar = sidebar.child(
-                div()
-                    .w_full()
-                    .py_2()
-                    .text_size(px(13.))
-                    .text_color(theme.muted_foreground)
-                    .child(div().text_center().child("No projects yet")),
-            );
-        }
         let all_threads: Vec<Value> =
             arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads").to_vec();
         let live_thread = |t: &Value| {
@@ -10204,6 +10177,9 @@ impl Render for Native {
             get(t, "deletedAt").is_null()
                 && get(t, "archivedAt").is_null()
                 && get(t, "parentThreadId").is_null()
+                // Upstream hides snoozed threads from the sidebar until the
+                // snooze fires (snoozeReminderAt) and the engine clears it.
+                && get(t, "snoozedUntil").is_null()
         };
         let matches_query = |t: &Value| {
             query.is_empty()
@@ -10385,6 +10361,9 @@ impl Render for Native {
                         ));
                         this.ctx_sub = None;
                         this.ctx_confirm_delete = None;
+                        this.hover_card = None;
+                        this.hover_thread = None;
+                        this.hover_card_seq += 1;
                         cx.notify();
                         cx.stop_propagation();
                     }),
@@ -10394,6 +10373,9 @@ impl Render for Native {
             let tid_hover = tid.clone();
             let tid_hover2 = tid.clone();
             el = el.on_hover(cx.listener(move |this, hovered: &bool, w, cx| {
+                if this.ctx_menu.is_some() {
+                    return;
+                }
                 if *hovered {
                     if this.hover_thread.as_deref() != Some(tid_hover.as_str()) {
                         this.hover_thread = Some(tid_hover.clone());
@@ -10435,6 +10417,63 @@ impl Render for Native {
                 move |_d, _pos, _w, cx| cx.new(|_| DragGhost(title_drag.clone())),
             )
         };
+        // Upstream "Pinned" section: pinned threads listed under their own
+        // header above the project groups (they still appear in Chats too).
+        let pinned_rows: Vec<Value> = all_threads
+            .iter()
+            .filter(|t| {
+                live_thread(t)
+                    && matches_query(t)
+                    && pinned_ids.contains(&str_at(t, "id").to_string())
+            })
+            .cloned()
+            .collect();
+        if !pinned_rows.is_empty() {
+            sidebar = sidebar.child(
+                div()
+                    .mt(px(15.))
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .child("Pinned"),
+            );
+            for t in &pinned_rows {
+                sidebar = sidebar.child(thread_row(
+                    t,
+                    &theme,
+                    &pinned_ids,
+                    selected_tid.as_deref(),
+                    8.,
+                    cx,
+                ));
+            }
+        }
+        sidebar = sidebar.child(
+            div()
+                .mt(px(15.))
+                .text_size(px(13.))
+                .text_color(theme.muted_foreground)
+                .child(if self.view_spaces {
+                    // spaces — upstream navigates INTO the space: same sidebar
+                    // chrome, the section label is the space name.
+                    arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces")
+                        .first()
+                        .map(|s| str_at(s, "name").to_string())
+                        .filter(|n: &String| !n.is_empty())
+                        .unwrap_or_else(|| "Void".to_string())
+                } else {
+                    "Projects".to_string()
+                }),
+        );
+        if arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects").is_empty() {
+            sidebar = sidebar.child(
+                div()
+                    .w_full()
+                    .py_2()
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .child(div().text_center().child("No projects yet")),
+            );
+        }
         // Projects: only real (non-chat) projects appear here — chat-kind
         // projects (Home) surface only via the "Chats" section. Pinned first,
         // then creation order, matching the web sidebar.
@@ -20621,6 +20660,26 @@ impl Render for Native {
                             })
                         })
                 });
+            let menu_thread = self
+                .snapshot
+                .as_ref()
+                .and_then(|s| {
+                    arr(s, "threads")
+                        .iter()
+                        .find(|t| str_at(t, "id") == menu_tid)
+                        .cloned()
+                })
+                .unwrap_or(Value::Null);
+            let is_snoozed = !get(&menu_thread, "snoozedUntil").is_null();
+            let unread_stamp = chrono::DateTime::parse_from_rfc3339(str_at(
+                get(&menu_thread, "latestTurn"),
+                "completedAt",
+            ))
+            .ok()
+            .map(|d| {
+                (d - chrono::Duration::milliseconds(1))
+                    .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+            });
             let pin_label = if is_pinned { "Unpin thread" } else { "Pin thread" };
             let mut menu = v_flex()
                 .absolute()
@@ -20739,10 +20798,50 @@ impl Render for Native {
                             },
                         )))
                     })
+                    .when_some(unread_stamp.clone(), |m, stamp| {
+                        let tid_u = menu_tid.clone();
+                        m.child(row("ctx-markunread", "Mark unread".to_string(), Box::new(
+                            move |this, _w, cx| {
+                                this.visited_threads.insert(tid_u.clone(), stamp.clone());
+                                this.persist_sidebar_ui(cx);
+                            },
+                        )))
+                    })
+                    .when(is_snoozed, |m| {
+                        let tid_sc = menu_tid.clone();
+                        m.child(row("ctx-snooze-cancel", "Return now".to_string(), Box::new(
+                            move |this, _w, cx| {
+                                this.dispatch_cmd(
+                                    json!({
+                                        "type": "thread.meta.update",
+                                        "commandId": uuid(),
+                                        "threadId": tid_sc,
+                                        "snoozedUntil": Value::Null,
+                                    }),
+                                    cx,
+                                );
+                            },
+                        )))
+                    })
+                    .child(prow(
+                        "ctx-snooze",
+                        "snooze",
+                        if is_snoozed { "Reschedule" } else { "Snooze" },
+                        {
+                            let mut yy = y;
+                            yy += 90.0 + if clear.is_some() { 30.0 } else { 0.0 }
+                                + if unread_stamp.is_some() { 30.0 } else { 0.0 }
+                                + if is_snoozed { 30.0 } else { 0.0 };
+                            yy
+                        },
+                    ))
                     .child(row("ctx-handoff", "Handoff".to_string(), Box::new(move |this, _w, cx| {
                         this.lineage(tid_hand.clone(), true, None, cx);
                     })));
-                y += 93.0 + if clear.is_some() { 30.0 } else { 0.0 };
+                y += 93.0 + if clear.is_some() { 30.0 } else { 0.0 }
+                    + if unread_stamp.is_some() { 30.0 } else { 0.0 }
+                    + 30.0
+                    + if is_snoozed { 30.0 } else { 0.0 };
                 menu = menu.child(prow("ctx-fork", "fork", "Fork", y));
                 y += 34.0;
                 // Copy group has separatorBefore:true upstream.
@@ -20828,6 +20927,58 @@ impl Render for Native {
                                         this.lineage(t_wt.clone(), false, Some("worktree"), cx);
                                     },
                                 )));
+                        }
+                        "snooze" => {
+                            let mk = |id: &'static str, label: &'static str, mins: i64| {
+                                let tid_s = menu_tid.clone();
+                                row(id, label.to_string(), Box::new(move |this, _w, cx| {
+                                    let until = (chrono::Utc::now()
+                                        + chrono::Duration::minutes(mins))
+                                    .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+                                    this.dispatch_cmd(
+                                        json!({
+                                            "type": "thread.meta.update",
+                                            "commandId": uuid(),
+                                            "threadId": tid_s,
+                                            "snoozedUntil": until,
+                                        }),
+                                        cx,
+                                    );
+                                }))
+                            };
+                            fly = fly
+                                .child(mk("ctx-snooze-30", "For 30 minutes", 30))
+                                .child(mk("ctx-snooze-60", "For 1 hour", 60))
+                                .child(mk("ctx-snooze-120", "For 2 hours", 120))
+                                .child({
+                                    let tid_s = menu_tid.clone();
+                                    row("ctx-snooze-tomorrow", "Until tomorrow at 9am".to_string(), Box::new(
+                                        move |this, _w, cx| {
+                                            let now = chrono::Local::now();
+                                            let mut d = now + chrono::Duration::days(1);
+                                            if let Some(nine) = d
+                                                .date_naive()
+                                                .and_hms_opt(9, 0, 0)
+                                                .and_then(|t| {
+                                                    t.and_local_timezone(chrono::Local).earliest()
+                                                })
+                                            {
+                                                d = nine;
+                                            }
+                                            this.dispatch_cmd(
+                                                json!({
+                                                    "type": "thread.meta.update",
+                                                    "commandId": uuid(),
+                                                    "threadId": tid_s,
+                                                    "snoozedUntil": d.to_rfc3339_opts(
+                                                        chrono::SecondsFormat::Millis, true,
+                                                    ),
+                                                }),
+                                                cx,
+                                            );
+                                        },
+                                    ))
+                                });
                         }
                         "copy" => {
                             if let Some(path) = ws_path.clone() {

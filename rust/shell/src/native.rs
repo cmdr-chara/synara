@@ -13840,9 +13840,11 @@ impl Render for Native {
                 .child(
                     div()
                         .flex_1()
+                        .min_w_0()
                         .overflow_hidden()
                         .text_size(px(13.))
                         .whitespace_nowrap()
+                        .text_ellipsis()
                         .text_color(if is_sel {
                             theme.foreground
                         } else {
@@ -14177,8 +14179,10 @@ impl Render for Native {
                 .child(glyph_el)
                 .child(
                     div()
+                        .min_w_0()
                         .overflow_hidden()
                         .whitespace_nowrap()
+                        .text_ellipsis()
                         .text_size(px(13.))
                         .child(str_at(project, "title").to_string()),
                 );

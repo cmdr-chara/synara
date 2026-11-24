@@ -871,6 +871,9 @@ pub struct Native {
     blame_pop: Option<(Value, f32, f32)>,
     changes_loading: bool,
     changes_unavailable: bool,
+    // Right dock pane tabs (upstream RightDock): 0 = Source control (GitPanel),
+    // 1 = Subagents.
+    dock_tab: usize,
     view_terminal: bool,
     term_active: bool,
     // TerminalWorkspaceTabs: one PTY session per tab; events route by id.
@@ -1483,6 +1486,7 @@ impl Native {
                 blame_pop: None,
                 changes_loading: false,
                 changes_unavailable: false,
+                dock_tab: 0,
                 view_terminal: false,
                 term_active: false,
                 term_tabs: Vec::new(),
@@ -13593,12 +13597,48 @@ impl Render for Native {
                 .pb_1()
                 .gap(px(6.))
                 .child(
-                    div()
-                        .text_size(px(16.))
-                        .font_weight(FontWeight::MEDIUM)
+                    h_flex()
                         .flex_1()
                         .min_w_0()
-                        .child("Source control"),
+                        .gap_1()
+                        .child(
+                            div()
+                                .id("dock-tab-git")
+                                .px_2()
+                                .py(px(2.))
+                                .rounded(px(6.))
+                                .cursor_pointer()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .when(self.dock_tab == 0, |d| d.bg(subtle))
+                                .when(self.dock_tab == 1, |d| {
+                                    d.text_color(theme.muted_foreground)
+                                })
+                                .child("Source control")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.dock_tab = 0;
+                                    cx.notify();
+                                })),
+                        )
+                        .child(
+                            div()
+                                .id("dock-tab-sub")
+                                .px_2()
+                                .py(px(2.))
+                                .rounded(px(6.))
+                                .cursor_pointer()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .when(self.dock_tab == 1, |d| d.bg(subtle))
+                                .when(self.dock_tab == 0, |d| {
+                                    d.text_color(theme.muted_foreground)
+                                })
+                                .child("Subagents")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.dock_tab = 1;
+                                    cx.notify();
+                                })),
+                        ),
                 )
                 .child(
                     Button::new("changes-refresh")
@@ -13628,6 +13668,89 @@ impl Render for Native {
         );
         // -- sections (top, capped height, scrollable) --
         let selected_path = self.changes_diff.as_ref().map(|(p, _)| p.clone());
+        if self.dock_tab == 1 {
+            // SubagentsDockPane: threads created as children of another thread
+            // (parentThreadId set) — nickname/role when present.
+            let mut sub_area = v_flex()
+                .w_full()
+                .flex_1()
+                .min_h_0()
+                .id("subagents-scroll")
+                .overflow_y_scrollbar()
+                .px(px(6.))
+                .py_2()
+                .gap_1();
+            let subs: Vec<&Value> = arr(
+                self.snapshot.as_ref().unwrap_or(&Value::Null),
+                "threads",
+            )
+            .iter()
+            .filter(|t| {
+                !get(t, "parentThreadId").is_null()
+                    && get(t, "deletedAt").is_null()
+            })
+            .collect();
+            if subs.is_empty() {
+                sub_area = sub_area.child(
+                    div()
+                        .px(px(8.))
+                        .py_2()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("No subagents yet"),
+                );
+            } else {
+                for (si, t) in subs.iter().enumerate() {
+                    let tid = str_at(t, "id").to_string();
+                    let name = {
+                        let n = str_at(t, "subagentNickname");
+                        if n.is_empty() {
+                            let ti = str_at(t, "title");
+                            if ti.is_empty() { "Subagent".to_string() } else { ti.to_string() }
+                        } else {
+                            n.to_string()
+                        }
+                    };
+                    let role = str_at(t, "subagentRole").to_string();
+                    sub_area = sub_area.child(
+                        div()
+                            .id(SharedString::from(format!("subag-{si}")))
+                            .w_full()
+                            .px_2()
+                            .py(px(5.))
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(subtle))
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.open_thread(tid.clone(), cx)
+                            }))
+                            .child(
+                                h_flex()
+                                    .gap_2()
+                                    .items_center()
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .flex_1()
+                                            .min_w_0()
+                                            .overflow_hidden()
+                                            .whitespace_nowrap()
+                                            .child(name),
+                                    )
+                                    .when(!role.is_empty(), |d| {
+                                        d.child(
+                                            div()
+                                                .text_size(px(11.))
+                                                .text_color(theme.muted_foreground)
+                                                .child(role.clone()),
+                                        )
+                                    }),
+                            ),
+                    );
+                }
+            }
+            changes_pane = changes_pane.child(sub_area);
+        } else {
         let mut files_area = v_flex()
             .w_full()
             .flex_none()
@@ -13951,6 +14074,7 @@ impl Render for Native {
             );
         }
         changes_pane = changes_pane.child(viewport);
+        }
 
         // ---- icon rail ----
         // --app-rail-width: 51px; 36px buttons on 8px radius, 6px gap,

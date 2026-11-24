@@ -31,7 +31,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | bottom TERMINAL drawer: PTY via terminal.open, subscribeEvents stream (ANSI-stripped), $ input -> terminal.write, restart/close | 🔶 (multi-session tabs + in-buffer search ✅; no true tty rendering) |
 | Inbox | inbox/* (InboxTasks, InboxTaskList, Recap/Usage tiles), githubInbox/* (4) | Inbox pane: greeting + "N need you", Today's tasks tile w/ todo rows (check toggle, due chips), thread groups Needs you / In progress / Ready for review / Failed (inbox.logic port), recap + usage tiles, sign-in, provider-update toast | 🔶 (no GitHub inbox rows, no dismissal pills) |
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |
-| Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock container w/ CHANGES pane | 🔶 (only changes pane; no subagents/tasks/sidechat) |
+| Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock container w/ CHANGES pane | 🔶 (changes + subagents panes; no tasks/sidechat) |
 | Kanban | kanban/* (11) | rail pane: per-project columns, cards ordered updatedAt desc | ✅ |
 | Pull requests | pullRequest/* (34), PullRequestThreadDialog, GitCreatePrDialog | Code review rail pane + header git menu (Pull/Commit/Push/Create PR) + commit/PR dialogs via git.runStackedAction | 🔶 (pane is list-only; no PR detail thread) |
 | Automation | automation/* (5), RailAutomationsPanel, ComposerAutomationSetupBanner | rail pane + definition list + detail pane (runs) + create/edit dialog + runNow/delete | ✅ |

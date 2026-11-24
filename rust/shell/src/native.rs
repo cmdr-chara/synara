@@ -6932,6 +6932,7 @@ impl Render for Native {
             let mut menu_card = v_flex()
                 .w_full()
                 .max_h(px(300.))
+                .overflow_y_scrollbar()
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))

@@ -697,12 +697,14 @@ fn iso_date_parse(s: &str) -> f64 {
         None => 0.0,
         Some(b'Z') if idx == b.len() - 1 => 0.0,
         Some(sign @ (b'+' | b'-')) => {
-            let (oh, om) = match (num_at(idx + 1, 2), b.get(idx + 3), num_at(idx + 4, 2)) {
-                (Some(h), Some(b':'), Some(m)) => (h, m),
-                (Some(h), None, _) if idx + 3 == b.len() => (h, 0),
-                _ => return f64::NAN,
-            };
-            if idx + 3 + b.get(idx + 3).map_or(0, |_| 2) != b.len() && b.get(idx + 3).is_some() {
+            let (oh, om, consumed) =
+                match (num_at(idx + 1, 2), b.get(idx + 3), num_at(idx + 4, 2)) {
+                    // "+HH:MM" consumes 6 bytes; "+HH" consumes 3.
+                    (Some(h), Some(b':'), Some(m)) => (h, m, 6usize),
+                    (Some(h), None, _) if idx + 3 == b.len() => (h, 0, 3usize),
+                    _ => return f64::NAN,
+                };
+            if idx + consumed != b.len() {
                 return f64::NAN;
             }
             let total = (oh * 60 + om) as f64 * 60_000.0;

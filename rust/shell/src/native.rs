@@ -132,6 +132,10 @@ mod icons {
     pub const COPY: &[u8] = include_bytes!("../assets/icons/copy.svg");
     pub const TEXT_WRAP: &[u8] = include_bytes!("../assets/icons/text-wrap.svg");
     pub const BRANCH_SIMPLE: &[u8] = include_bytes!("../assets/icons/branch-simple.svg");
+    pub const GIT_COMMIT: &[u8] = include_bytes!("../assets/icons/commits.svg");
+    pub const ROBOT: &[u8] = include_bytes!("../assets/icons/robot-3.svg");
+    pub const DOWN_WALL: &[u8] = include_bytes!("../assets/icons/arrow-down-wall.svg");
+    pub const SIDECHAT: &[u8] = include_bytes!("../assets/icons/sidechat.svg");
     pub const S_TOOLBOX: &[u8] = include_bytes!("../assets/icons/toolbox.svg");
     pub const S_CIRCLE_INFO: &[u8] =
         include_bytes!("../assets/icons/circle-info.svg");
@@ -860,6 +864,16 @@ pub struct Native {
     ui_density: u8,
     chat_width_mode: u8,
     show_ascii_bg: bool,
+    /// AsciiWaveBackground (upstream): ambient field clock. `ascii_cells`
+    /// holds the per-cell glyph indices so scrambling is incremental, and
+    /// `ascii_ripples` the live click ripples (x, y, phaseA, phaseB, start).
+    ascii_t0: std::time::Instant,
+    ascii_seed: f32,
+    ascii_cells: Vec<u8>,
+    ascii_ripples: Vec<(f32, f32, f32, f32, std::time::Instant)>,
+    /// Set when the landing leaves the screen; the next landing mounts a
+    /// fresh field (upstream remounts AsciiWaveBackground).
+    ascii_fresh: bool,
     renaming: bool,
     rename_input: Option<Entity<InputState>>,
     view_changes: bool,
@@ -871,8 +885,8 @@ pub struct Native {
     blame_pop: Option<(Value, f32, f32)>,
     changes_loading: bool,
     changes_unavailable: bool,
-    // Right dock pane tabs (upstream RightDock): 0 = Source control (GitPanel),
-    // 1 = Subagents.
+    // Right dock pane tabs (upstream RightDock/SurfaceContentTabs):
+    // 0 = Git, 1 = Subagents, 2 = Background tasks, 3 = Side chats.
     dock_tab: usize,
     view_terminal: bool,
     term_active: bool,
@@ -881,6 +895,7 @@ pub struct Native {
     term_sel: usize,
     settings_scroll: ScrollHandle,
     settings_nav_scroll: ScrollHandle,
+    dock_tabs_scroll: ScrollHandle,
     settings_data: Value,
     settings_loading: bool,
     term_input: Option<Entity<InputState>>,
@@ -1110,6 +1125,323 @@ fn session_phase(detail: Option<&Value>) -> &'static str {
 
 fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
     get(v, k).as_array().map(Vec::as_slice).unwrap_or(&[])
+}
+
+// ── AsciiWaveBackground (upstream ambient field) ────────────────────────────
+// Port of apps/web/src/components/chat/AsciiWaveBackground.tsx: three cycling
+// noise patterns, per-cell glyph scramble, and accent click ripples.
+
+const ASCII_GLYPHS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const ASCII_COLS: usize = 160;
+const ASCII_ROWS: usize = 72;
+// Cell pitch in px, matching upstream FONT_SIZE_PX/LINE_HEIGHT_PX metrics.
+const ASCII_CELL_W: f32 = 6.0;
+const ASCII_CELL_H: f32 = 13.0;
+const ASCII_PATTERN_MS: u64 = 20_000;
+const ASCII_CROSSFADE_MS: u64 = 4_000;
+const ASCII_REVEAL_MS: u64 = 1_200;
+const ASCII_RIPPLE_LIFE_MS: u64 = 2_600;
+const ASCII_RIPPLE_MAX: usize = 6;
+
+// (scaleX, scaleY, driftX, driftY, waveX, waveY, waveLength, waveSpeed, radial)
+type AsciiPattern = (f32, f32, f32, f32, f32, f32, f32, f32, bool);
+const ASCII_PATTERNS: [AsciiPattern; 3] = [
+    (190., 150., 0.1, -0.06, 0.8, 0.6, 70., 1.3, false), // Blotches
+    (360., 80., 0.16, 0.01, 0.25, 1., 38., 1.8, false),  // Currents
+    (150., 150., -0.06, 0.09, 0., 0., 55., 1.5, true),   // Rings
+];
+
+fn ascii_hash3(x: i64, y: i64, z: i64) -> f32 {
+    // hash3(): Math.imul mixes, exact u32 arithmetic.
+    let h = (x as i32)
+        .wrapping_mul(374761393)
+        .wrapping_add((y as i32).wrapping_mul(668265263))
+        .wrapping_add((z as i32).wrapping_mul(1274126177));
+    let h = (h ^ ((h as u32 >> 13) as i32)).wrapping_mul(1274126177);
+    ((h as u32) ^ ((h as u32) >> 16)) as f32 / 4294967296.0
+}
+
+fn smoothstep(edge0: f32, edge1: f32, v: f32) -> f32 {
+    let t = ((v - edge0) / (edge1 - edge0)).clamp(0., 1.);
+    t * t * (3. - 2. * t)
+}
+
+fn lerp_f(a: f32, b: f32, t: f32) -> f32 {
+    a + (b - a) * t
+}
+
+fn noise_plane(x0: i64, y0: i64, z: i64, fx: f32, fy: f32) -> f32 {
+    lerp_f(
+        lerp_f(
+            ascii_hash3(x0, y0, z),
+            ascii_hash3(x0 + 1, y0, z),
+            fx,
+        ),
+        lerp_f(
+            ascii_hash3(x0, y0 + 1, z),
+            ascii_hash3(x0 + 1, y0 + 1, z),
+            fx,
+        ),
+        fy,
+    )
+}
+
+fn value_noise3(x: f32, y: f32, z: f32) -> f32 {
+    let x0 = x.floor() as i64;
+    let y0 = y.floor() as i64;
+    let z0 = z.floor() as i64;
+    let fx = smoothstep(0., 1., x - x0 as f32);
+    let fy = smoothstep(0., 1., y - y0 as f32);
+    lerp_f(
+        noise_plane(x0, y0, z0, fx, fy),
+        noise_plane(x0, y0, z0 + 1, fx, fy),
+        smoothstep(0., 1., z - z0 as f32),
+    )
+}
+
+fn ascii_sample(p: &AsciiPattern, x: f32, y: f32, cx: f32, cy: f32, t: f32) -> (f32, f32) {
+    let (sx, sy, dx, dy, wx, wy, wl, ws, radial) = *p;
+    let noise = 0.68
+        * value_noise3(x / sx + t * dx, y / sy + t * dy, t * 0.18)
+        + 0.32 * value_noise3(x / 70. - t * 0.08, y / 52., t * 0.35 + 17.);
+    let band = if radial {
+        ((x - cx) * (x - cx) + (y - cy) * (y - cy)).sqrt()
+    } else {
+        x * wx + y * wy
+    };
+    let wave = 0.5 + 0.5 * (band / wl - t * ws + noise * 5.).sin();
+    let patch = smoothstep(0.4, 0.78, noise + 0.1 * (wave - 0.5));
+    (patch, wave)
+}
+
+/// One derived background task for the right-dock Tasks pane — the port of
+/// upstream `deriveThreadBackgroundTasks` (workLog.ts): a task becomes a
+/// background task on a "Moved to background" notice or a backgrounded update;
+/// task.started links the launching call, task.updated/completed settle it.
+struct BgTask {
+    task_id: String,
+    title: String,
+    status: String,
+    started_at: String,
+    completed_at: Option<String>,
+    exit_code: Option<i64>,
+}
+
+fn bg_task_outcome(status: &str) -> Option<&'static str> {
+    match status {
+        "finished" => Some("finished"),
+        "failed" => Some("failed"),
+        "stopped" => Some("stopped"),
+        _ => None,
+    }
+}
+
+fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
+    use std::collections::HashMap;
+    struct Launch {
+        tool_use_id: Option<String>,
+        task_type: Option<String>,
+        description: Option<String>,
+        started_at: String,
+    }
+    struct State {
+        description: Option<String>,
+        command: Option<String>,
+        status: String,
+        started_at: String,
+        completed_at: Option<String>,
+        exit_code: Option<i64>,
+        tool_use_id: Option<String>,
+    }
+    let mut tasks: HashMap<String, State> = HashMap::new();
+    let mut order: Vec<String> = Vec::new();
+    let mut started: HashMap<String, Launch> = HashMap::new();
+    let admit = |tasks: &mut HashMap<String, State>,
+                     order: &mut Vec<String>,
+                     started: &HashMap<String, Launch>,
+                     task_id: &str,
+                     task_type: Option<String>,
+                     description: Option<String>,
+                     created_at: &str| {
+        let launch = started.get(task_id);
+        let task_type = task_type.or_else(|| launch.and_then(|l| l.task_type.clone()));
+        // Subagents keep their own transcript row; monitors are excluded upstream.
+        if task_type.as_deref() == Some("monitor") || task_type.as_deref() == Some("local_agent") {
+            tasks.remove(task_id);
+            order.retain(|id| id != task_id);
+            return;
+        }
+        if tasks.contains_key(task_id) {
+            return;
+        }
+        order.push(task_id.to_string());
+        tasks.insert(
+            task_id.to_string(),
+            State {
+                description: description.or_else(|| launch.and_then(|l| l.description.clone())),
+                command: None,
+                status: "running".to_string(),
+                started_at: launch
+                    .map(|l| l.started_at.clone())
+                    .unwrap_or_else(|| created_at.to_string()),
+                completed_at: None,
+                exit_code: None,
+                tool_use_id: launch.and_then(|l| l.tool_use_id.clone()),
+            },
+        );
+    };
+
+    let activities = arr(thread, "activities");
+    for a in activities {
+        let kind = str_at(a, "kind");
+        let payload = get(a, "payload");
+        let created_at = str_at(a, "createdAt").to_string();
+        if kind == "runtime.warning"
+            && str_at(payload, "nativeEventType") == "background_tasks_changed"
+        {
+            for t in arr(get(payload, "data"), "tasks") {
+                let tid = str_at(t, "task_id").to_string();
+                if tid.is_empty() {
+                    continue;
+                }
+                let ty = {
+                    let s = str_at(t, "task_type");
+                    if s.is_empty() { None } else { Some(s.to_string()) }
+                };
+                let desc = {
+                    let s = str_at(t, "description");
+                    if s.is_empty() { None } else { Some(s.to_string()) }
+                };
+                admit(&mut tasks, &mut order, &started, &tid, ty, desc, &created_at);
+            }
+            continue;
+        }
+        let tid = str_at(payload, "taskId").to_string();
+        if tid.is_empty() {
+            continue;
+        }
+        if kind == "task.started" {
+            started.insert(
+                tid.clone(),
+                Launch {
+                    tool_use_id: {
+                        let s = str_at(payload, "toolUseId");
+                        if s.is_empty() { None } else { Some(s.to_string()) }
+                    },
+                    task_type: {
+                        let s = str_at(payload, "taskType");
+                        if s.is_empty() { None } else { Some(s.to_string()) }
+                    },
+                    description: {
+                        let s = str_at(payload, "detail");
+                        if s.is_empty() { None } else { Some(s.to_string()) }
+                    },
+                    started_at: created_at.clone(),
+                },
+            );
+            let is_agent = started
+                .get(&tid)
+                .and_then(|l| l.task_type.as_deref())
+                == Some("local_agent");
+            if is_agent {
+                admit(&mut tasks, &mut order, &started, &tid, Some("local_agent".into()), None, &created_at);
+            } else if let Some(task) = tasks.get_mut(&tid) {
+                if task.tool_use_id.is_none() {
+                    task.tool_use_id = started.get(&tid).and_then(|l| l.tool_use_id.clone());
+                }
+                if task.description.is_none() {
+                    let d = str_at(payload, "detail");
+                    if !d.is_empty() {
+                        task.description = Some(d.to_string());
+                    }
+                }
+            }
+            continue;
+        }
+        if kind == "task.updated" && get(payload, "isBackgrounded").as_bool() == Some(true) {
+            let ty = {
+                let s = str_at(payload, "taskType");
+                if s.is_empty() { None } else { Some(s.to_string()) }
+            };
+            let desc = {
+                let s = str_at(payload, "detail");
+                if s.is_empty() { None } else { Some(s.to_string()) }
+            };
+            admit(&mut tasks, &mut order, &started, &tid, ty, desc, &created_at);
+        }
+        let outcome = bg_task_outcome(str_at(payload, "status"));
+        let reconciles_stop = get(payload, "reconcilesStop").as_bool() == Some(true)
+            && tasks.get(&tid).map(|t| t.status.as_str()) == Some("stopped");
+        let Some(task) = tasks.get_mut(&tid) else { continue };
+        if !(task.status == "running" || reconciles_stop) {
+            continue;
+        }
+        if reconciles_stop && kind == "task.updated" && str_at(payload, "status") == "running" {
+            task.status = "running".to_string();
+            task.completed_at = None;
+            task.exit_code = None;
+            continue;
+        }
+        if kind == "task.updated" || kind == "task.completed" {
+            let Some(oc) = outcome else { continue };
+            task.status = oc.to_string();
+            task.completed_at = Some(created_at.clone());
+            let detail = str_at(payload, "detail");
+            task.exit_code = detail
+                .to_lowercase()
+                .find("exit code ")
+                .and_then(|i| detail[i + 10..].split_whitespace().next()?.parse::<i64>().ok());
+        }
+    }
+    // The launching call's command wins when it names one (upstream merges the
+    // launch notice with the tool-call command line).
+    let launch_ids: std::collections::HashSet<String> = tasks
+        .values()
+        .filter_map(|t| t.tool_use_id.clone())
+        .collect();
+    if !launch_ids.is_empty() {
+        for a in activities {
+            let payload = get(a, "payload");
+            let call_id = {
+                let s = str_at(payload, "toolCallId");
+                if s.is_empty() { str_at(payload, "toolUseId") } else { s }
+            };
+            if call_id.is_empty() || !launch_ids.contains(call_id) {
+                continue;
+            }
+            let data = get(payload, "data");
+            let item = get(data, "item");
+            let candidates = [
+                str_at(get(item, "input"), "command"),
+                str_at(get(data, "input"), "command"),
+                str_at(get(get(data, "rawInput"), ""), "command"),
+                str_at(payload, "command"),
+            ];
+            if let Some(cmd) = candidates.iter().find(|c| !c.is_empty()) {
+                for task in tasks.values_mut() {
+                    if task.tool_use_id.as_deref() == Some(call_id) {
+                        task.command = Some(cmd.to_string());
+                    }
+                }
+            }
+        }
+    }
+    order
+        .iter()
+        .filter_map(|id| tasks.get(id).map(|t| (id.clone(), t)))
+        .map(|(id, t)| BgTask {
+            task_id: id,
+            title: t
+                .command
+                .clone()
+                .or_else(|| t.description.clone())
+                .unwrap_or_else(|| "Background task".to_string()),
+            status: t.status.clone(),
+            started_at: t.started_at.clone(),
+            completed_at: t.completed_at.clone(),
+            exit_code: t.exit_code,
+        })
+        .collect()
 }
 
 /// The "@" token the draft ends in, if the composer is in a mention trigger:
@@ -1469,6 +1801,11 @@ impl Native {
     ui_density: 1,
     chat_width_mode: 0,
     show_ascii_bg: true,
+            ascii_t0: std::time::Instant::now(),
+            ascii_seed: 0.0,
+            ascii_cells: Vec::new(),
+            ascii_ripples: Vec::new(),
+            ascii_fresh: true,
             split_open: false,
             split_thread: None,
             split_detail: None,
@@ -1498,6 +1835,7 @@ impl Native {
                 term_search_query: String::new(),
                 settings_scroll: ScrollHandle::new(),
                 settings_nav_scroll: ScrollHandle::new(),
+                dock_tabs_scroll: ScrollHandle::new(),
                 settings_data: Value::Null,
                 settings_loading: false,
                 sponsor_dismissed: false,
@@ -1553,8 +1891,57 @@ impl Native {
             // Give the root view initial focus so global chords dispatch even
             // before an input takes focus (chords bubble from inputs anyway).
             this.focus_handle.focus(window, cx);
+            // AsciiWaveBackground ambient clock: ~15fps repaints while the
+            // landing field is on screen (upstream AMBIENT_FRAME_INTERVAL_MS).
+            cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                loop {
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_millis(66))
+                        .await;
+                    let keep = this
+                        .update(cx, |this: &mut Self, cx| {
+                            if this.show_ascii_bg && this.landing_active() {
+                                cx.notify();
+                            }
+                        })
+                        .is_ok();
+                    if !keep {
+                        break;
+                    }
+                }
+            })
+            .detach();
             this
         })
+    }
+
+    /// The new-chat landing is the transcript pane when no rail surface is
+    /// open and the selected thread is empty (mirrors the render branch).
+    fn landing_active(&self) -> bool {
+        if self.view_settings
+            || self.view_dev
+            || self.view_files
+            || self.view_inbox
+            || self.view_tasks
+            || self.view_kanban
+            || self.view_pullreq
+            || self.view_autom
+            || self.view_studio
+            || self.view_changes
+        {
+            return false;
+        }
+        if self.view_terminal && self.term_active {
+            return false;
+        }
+        if self.selected_thread.is_none() {
+            return true;
+        }
+        arr(
+            get(self.detail.as_ref().unwrap_or(&Value::Null), "thread"),
+            "messages",
+        )
+        .is_empty()
     }
 
     /// (Re)fetch the shell snapshot, then keep it live via subscribeShell.
@@ -4482,7 +4869,41 @@ impl Native {
                     let wts = c.call("server.listWorktrees", json!({})).unwrap_or(Value::Null);
                     let prof = c.call("stats.getProfileStats", json!({})).unwrap_or(Value::Null);
                     let toks = c.call("stats.getProfileTokenStats", json!({})).unwrap_or(Value::Null);
-                    let ana = c.call("stats.getUsageAnalytics", json!({})).unwrap_or(Value::Null);
+                    // Upstream default "30d" range, previous period included
+                    // (usageAnalyticsWindow): from = local midnight today-59,
+                    // to = local midnight tomorrow, scope "synara".
+                    let today = chrono::Local::now().date_naive();
+                    // Upstream serializes with Date.toISOString(): UTC "Z"
+                    // (usageAnalyticsWindow), not a local-offset RFC3339.
+                    let ana_from = today
+                        .checked_sub_days(chrono::Days::new(59))
+                        .map(|d| d.and_hms_opt(0, 0, 0).unwrap())
+                        .map(|d| {
+                            d.and_local_timezone(chrono::Local)
+                                .unwrap()
+                                .with_timezone(&chrono::Utc)
+                                .format("%Y-%m-%dT%H:%M:%S%.3fZ")
+                                .to_string()
+                        });
+                    let ana_to = today
+                        .checked_add_days(chrono::Days::new(1))
+                        .map(|d| d.and_hms_opt(0, 0, 0).unwrap())
+                        .map(|d| {
+                            d.and_local_timezone(chrono::Local)
+                                .unwrap()
+                                .with_timezone(&chrono::Utc)
+                                .format("%Y-%m-%dT%H:%M:%S%.3fZ")
+                                .to_string()
+                        });
+                    let ana = match (ana_from, ana_to) {
+                        (Some(f), Some(t)) => c
+                            .call(
+                                "stats.getUsageAnalytics",
+                                json!({"from": f, "to": t, "scope": "synara"}),
+                            )
+                            .unwrap_or(Value::Null),
+                        _ => Value::Null,
+                    };
                     let comp = c.call("computer.getStatus", json!({})).unwrap_or(Value::Null);
                     let snap = c.call("orchestration.getShellSnapshot", json!({})).unwrap_or(Value::Null);
                     let acct = c.call("account.status", json!({})).unwrap_or(Value::Null);
@@ -7492,57 +7913,221 @@ impl Render for Native {
             None
         };
         let show_landing = landing_title.is_some();
+        // Landing unmounted: the next landing gets a fresh field (upstream
+        // remounts AsciiWaveBackground each time).
+        if !show_landing {
+            self.ascii_fresh = true;
+        }
         if self.selected_thread.is_some() && !show_landing {
             pane = pane.p_4();
         }
         if show_landing {
-            const WM_CHARS: &[u8] =
-                b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            // AsciiWaveBackground parity: 10px glyphs on a 13px grid over the
-            // whole pane, inked only inside drifting noise blotches
-            // (PATCH_THRESHOLD 0.4..0.78); a static deterministic field.
-            let mut field = v_flex().gap_0();
-            for r in 0..72usize {
-                let mut line = String::with_capacity(160);
-                for c in 0..160usize {
-                    let nx = c as f32;
-                    let ny = r as f32;
-                    let noise = ((nx * 0.045).sin() * (ny * 0.06).cos()
-                        + (nx * 0.012 + ny * 0.017).sin() * 0.5
-                        + (nx * 0.003 * ny).cos() * 0.3)
-                        / 1.8
-                        + 0.5;
-                    if noise > 0.55 && noise < 0.85 && (r * 7 + c * 13) % 4 < 1 {
-                        let g = (r * 131 + c * 17 + r * c * 3 + c) % WM_CHARS.len();
-                        line.push(WM_CHARS[g] as char);
+            // AsciiWaveBackground parity: animated glyph field — three
+            // cycling noise patterns with crossfade, per-cell scramble,
+            // center fade, and accent ripples on click. Three alpha layers
+            // (dim ink, bright ink, accent) are stacked absolutely; a cell
+            // contributes its glyph to exactly one layer per frame.
+            if self.ascii_fresh || self.ascii_cells.len() != ASCII_COLS * ASCII_ROWS {
+                self.ascii_t0 = std::time::Instant::now();
+                self.ascii_seed = {
+                    let n = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .map(|d| d.subsec_nanos() as u64 ^ d.as_secs())
+                        .unwrap_or(0);
+                    (n % 1000) as f32
+                };
+                let mut cells = vec![0u8; ASCII_COLS * ASCII_ROWS];
+                let mut rng = (self.ascii_seed as u32) ^ 0x9e37_79b9;
+                for cell in cells.iter_mut() {
+                    rng ^= rng << 13;
+                    rng ^= rng >> 17;
+                    rng ^= rng << 5;
+                    *cell = (rng as usize % ASCII_GLYPHS.len()) as u8;
+                }
+                self.ascii_cells = cells;
+                self.ascii_ripples.clear();
+                self.ascii_fresh = false;
+            }
+            let now = std::time::Instant::now();
+            let elapsed_ms =
+                now.saturating_duration_since(self.ascii_t0).as_millis() as u64;
+            let t = elapsed_ms as f32 / 1000.0 + self.ascii_seed;
+            let reveal = smoothstep(0., ASCII_REVEAL_MS as f32, elapsed_ms as f32);
+            let cycle = (elapsed_ms / ASCII_PATTERN_MS) as usize;
+            let mix = smoothstep(
+                (ASCII_PATTERN_MS - ASCII_CROSSFADE_MS) as f32,
+                ASCII_PATTERN_MS as f32,
+                (elapsed_ms % ASCII_PATTERN_MS) as f32,
+            );
+            let pat = &ASCII_PATTERNS[cycle % ASCII_PATTERNS.len()];
+            let next_pat = if mix > 0. {
+                Some(&ASCII_PATTERNS[(cycle + 1) % ASCII_PATTERNS.len()])
+            } else {
+                None
+            };
+            let fw = ASCII_COLS as f32 * ASCII_CELL_W;
+            let fh = ASCII_ROWS as f32 * ASCII_CELL_H;
+            let (fcx, fcy) = (fw / 2., fh / 2.);
+            self.ascii_ripples.retain(|r| {
+                now.saturating_duration_since(r.4).as_millis()
+                    < ASCII_RIPPLE_LIFE_MS as u128
+            });
+            let ripples = self.ascii_ripples.clone();
+            let mut rows_dim: Vec<String> = Vec::with_capacity(ASCII_ROWS);
+            let mut rows_bright: Vec<String> = Vec::with_capacity(ASCII_ROWS);
+            let mut rows_accent: Vec<String> = Vec::with_capacity(ASCII_ROWS);
+            let mut rng = (elapsed_ms as u32)
+                .wrapping_mul(747_796_405)
+                .wrapping_add(2_891_336_453);
+            for r in 0..ASCII_ROWS {
+                let mut dim = String::with_capacity(ASCII_COLS);
+                let mut bright = String::with_capacity(ASCII_COLS);
+                let mut acc = String::with_capacity(ASCII_COLS);
+                for c in 0..ASCII_COLS {
+                    let idx = r * ASCII_COLS + c;
+                    let x = (c as f32 + 0.5) * ASCII_CELL_W;
+                    let y = (r as f32 + 0.5) * ASCII_CELL_H;
+                    let (mut patch, mut wave) = ascii_sample(pat, x, y, fcx, fcy, t);
+                    if let Some(np) = next_pat {
+                        let (np_patch, np_wave) = ascii_sample(np, x, y, fcx, fcy, t);
+                        patch += (np_patch - patch) * mix;
+                        wave += (np_wave - wave) * mix;
+                    }
+                    let dx = (x - fcx) / (fw * 0.3);
+                    let dy = (y - fcy) / (fh * 0.3);
+                    let center_fade = (0.45 + 0.55 * (dx * dx + dy * dy).sqrt()).min(1.);
+                    let ink_alpha =
+                        0.18 * patch * patch * (0.4 + 0.6 * wave) * center_fade * reveal;
+                    let mut strength = 0.0f32;
+                    if !ripples.is_empty() {
+                        let warp =
+                            (value_noise3(x / 60., y / 60., t * 0.6) - 0.5) * 34.;
+                        for (rx, ry, pa, pb, start) in &ripples {
+                            let age =
+                                now.saturating_duration_since(*start).as_millis() as f32;
+                            let ddx = x - rx;
+                            let ddy = y - ry;
+                            let dist = (ddx * ddx + ddy * ddy).sqrt();
+                            let radius = age * 0.55;
+                            if (dist - radius).abs() > 2. * 30. + 34. + 0.1 * radius {
+                                continue;
+                            }
+                            let ang = ddy.atan2(ddx);
+                            let lobes = radius
+                                * (0.06 * (3. * ang + pa + t).sin()
+                                    + 0.04 * (5. * ang + pb - t * 1.3).sin());
+                            let off = (dist - radius - lobes - warp) / 30.;
+                            if off > -2. && off < 2. {
+                                let fade = 1. - age / ASCII_RIPPLE_LIFE_MS as f32;
+                                strength += (-off * off).exp() * fade * fade;
+                            }
+                        }
+                        strength = strength.min(1.);
+                    }
+                    let use_accent = strength > 0.08;
+                    // Scramble: visible cells re-roll their glyph.
+                    rng ^= rng << 13;
+                    rng ^= rng >> 17;
+                    rng ^= rng << 5;
+                    let roll = rng as f32 / 4294967296.0;
+                    if (ink_alpha >= 0.01 || use_accent)
+                        && roll < 0.025 + 0.35 * strength
+                    {
+                        self.ascii_cells[idx] =
+                            (rng as usize % ASCII_GLYPHS.len()) as u8;
+                    }
+                    let ch = self.ascii_cells[idx] as char;
+                    if use_accent {
+                        acc.push(ch);
+                        dim.push(' ');
+                        bright.push(' ');
+                    } else if ink_alpha < 0.02 {
+                        dim.push(' ');
+                        bright.push(' ');
+                        acc.push(' ');
+                    } else if ink_alpha < 0.09 {
+                        dim.push(ch);
+                        bright.push(' ');
+                        acc.push(' ');
                     } else {
-                        line.push(' ');
+                        bright.push(ch);
+                        dim.push(' ');
+                        acc.push(' ');
                     }
                 }
-                field = field.child(
-                    div()
-                        .text_size(px(10.))
-                        .line_height(px(13.))
-                        .whitespace_nowrap()
-                        .text_color(subtle)
-                        .child(line),
-                );
+                rows_dim.push(dim);
+                rows_bright.push(bright);
+                rows_accent.push(acc);
             }
+            let layer = |rows: Vec<String>, color: gpui::Hsla| {
+                let mut col = v_flex().gap_0();
+                for line in rows {
+                    col = col.child(
+                        div()
+                            .text_size(px(10.))
+                            .line_height(px(13.))
+                            .whitespace_nowrap()
+                            .text_color(color)
+                            .child(line),
+                    );
+                }
+                div()
+                    .absolute()
+                    .inset_0()
+                    .overflow_hidden()
+                    .child(col)
+            };
             let wm = if self.show_ascii_bg {
                 div()
                     .size_full()
                     .overflow_hidden()
-                    .child(field)
+                    .relative()
+                    .child(layer(rows_dim, subtle.opacity(0.65).into()))
+                    .child(layer(rows_bright, subtle.into()))
+                    .child(layer(rows_accent, theme.primary.opacity(0.75).into()))
             } else {
                 div().size_full()
             };
+            // Clicks on empty landing space spawn accent ripples
+            // (upstream AsciiWaveBackground pointer handler; interactive
+            // children consume their own clicks first).
+            let pane_ox = 51. + if self.sidebar_collapsed { 0. } else { 257. };
             let mut home = v_flex()
+                .id("home-landing")
                 .relative()
                 .flex_1()
                 .h_full()
                 .items_center()
                 .justify_center()
                 .gap_4()
+                .on_click(cx.listener(move |this, ev: &ClickEvent, _w, cx| {
+                    let fx = ev.position().x.as_f32() - pane_ox;
+                    let fy = ev.position().y.as_f32() - 47.;
+                    if fx < 0. || fy < 0. {
+                        return;
+                    }
+                    let mut rng = ev.position().x.as_f32() as u32
+                        ^ (ev.position().y.as_f32() as u32) << 16;
+                    rng ^= rng << 13;
+                    rng ^= rng >> 17;
+                    rng ^= rng << 5;
+                    let phase_a = (rng as f32 / 4294967296.0) * 6.2831855;
+                    rng ^= rng << 13;
+                    rng ^= rng >> 17;
+                    rng ^= rng << 5;
+                    let phase_b = (rng as f32 / 4294967296.0) * 6.2831855;
+                    this.ascii_ripples.push((
+                        fx,
+                        fy,
+                        phase_a,
+                        phase_b,
+                        std::time::Instant::now(),
+                    ));
+                    if this.ascii_ripples.len() > ASCII_RIPPLE_MAX {
+                        this.ascii_ripples.remove(0);
+                    }
+                    cx.notify();
+                }))
                 .child(div().absolute().inset_0().overflow_hidden().child(wm));
             if !self.sponsor_dismissed {
                 // Upstream SponsorLandingBanner: centered, max-w-520, borderless
@@ -13596,49 +14181,99 @@ impl Render for Native {
                 .pt(px(9.))
                 .pb_1()
                 .gap(px(6.))
+                // gpui scroll offsets go negative toward the end of content.
+                .when(self.dock_tabs_scroll.offset().x < px(0.), |row| {
+                    // Overflow chevron (upstream SurfaceContentTabs
+                    // affordance) — scrolls the tab strip back to start.
+                    row.child(
+                        div()
+                            .id("dock-tabs-left")
+                            .px(px(1.))
+                            .cursor_pointer()
+                            .text_color(theme.muted_foreground)
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.dock_tabs_scroll
+                                    .set_offset(gpui::point(px(0.), px(0.)));
+                                cx.notify();
+                            }))
+                            .child(Icon::new(IconName::ChevronLeft).size(px(14.))),
+                    )
+                })
                 .child(
-                    h_flex()
+                    // Upstream SurfaceContentTabs: icon + label per pane,
+                    // the strip scrolls horizontally past its width floor.
+                    div()
+                        .id("dock-tabs")
                         .flex_1()
                         .min_w_0()
-                        .gap_1()
+                        .track_scroll(&self.dock_tabs_scroll)
+                        .overflow_x_scroll()
                         .child(
-                            div()
-                                .id("dock-tab-git")
-                                .px_2()
-                                .py(px(2.))
-                                .rounded(px(6.))
-                                .cursor_pointer()
-                                .text_size(px(13.))
-                                .font_weight(FontWeight::MEDIUM)
-                                .when(self.dock_tab == 0, |d| d.bg(subtle))
-                                .when(self.dock_tab == 1, |d| {
-                                    d.text_color(theme.muted_foreground)
-                                })
-                                .child("Source control")
-                                .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    this.dock_tab = 0;
-                                    cx.notify();
-                                })),
-                        )
-                        .child(
-                            div()
-                                .id("dock-tab-sub")
-                                .px_2()
-                                .py(px(2.))
-                                .rounded(px(6.))
-                                .cursor_pointer()
-                                .text_size(px(13.))
-                                .font_weight(FontWeight::MEDIUM)
-                                .when(self.dock_tab == 1, |d| d.bg(subtle))
-                                .when(self.dock_tab == 0, |d| {
-                                    d.text_color(theme.muted_foreground)
-                                })
-                                .child("Subagents")
-                                .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    this.dock_tab = 1;
-                                    cx.notify();
-                                })),
+                            // Fixed natural width so Taffy reports real
+                            // overflow for the scroll range (tabs ~430px).
+                            h_flex()
+                                .gap_1()
+                                .w(px(430.))
+                                .children(
+                                    [
+                                        (0usize, "dock-tab-git", "Git", icons::GIT_COMMIT),
+                                        (1usize, "dock-tab-sub", "Subagents", icons::ROBOT),
+                                        (2usize, "dock-tab-tasks", "Background tasks", icons::DOWN_WALL),
+                                        (3usize, "dock-tab-side", "Side chats", icons::SIDECHAT),
+                                    ]
+                                    .into_iter()
+                                    .map(|(tab, id, label, icon)| {
+                                        div()
+                                            .id(id)
+                                            .px_2()
+                                            .py(px(2.))
+                                            .rounded(px(6.))
+                                            .cursor_pointer()
+                                            .flex()
+                                            .items_center()
+                                            .gap(px(6.))
+                                            .flex_none()
+                                            .whitespace_nowrap()
+                                            .text_size(px(13.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .when(self.dock_tab == tab, |d| d.bg(subtle))
+                                            .when(self.dock_tab != tab, |d| {
+                                                d.text_color(theme.muted_foreground)
+                                            })
+                                            .child(
+                                                svg_icon(icon)
+                                                    .size(px(14.))
+                                                    .text_color(
+                                                        theme.muted_foreground,
+                                                    ),
+                                            )
+                                            .child(label)
+                                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                this.dock_tab = tab;
+                                                cx.notify();
+                                            }))
+                                    }),
+                                ),
                         ),
+                )
+                .when(
+                    self.dock_tabs_scroll.offset().x > -self.dock_tabs_scroll.max_offset().x,
+                    |row| {
+                        row.child(
+                            div()
+                                .id("dock-tabs-right")
+                                .px(px(1.))
+                                .cursor_pointer()
+                                .text_color(theme.muted_foreground)
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    let max = this.dock_tabs_scroll.max_offset();
+                                    this.dock_tabs_scroll
+                                        .set_offset(gpui::point(-max.x, px(0.)));
+                                    cx.notify();
+                                }))
+                                .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.))),
+                        )
+                    },
                 )
                 .child(
                     Button::new("changes-refresh")
@@ -13750,6 +14385,308 @@ impl Render for Native {
                 }
             }
             changes_pane = changes_pane.child(sub_area);
+        } else if self.dock_tab == 2 {
+            // BackgroundTasksDockPane: the thread's background tasks, derived
+            // from its activities like upstream's workLog. Running rows show a
+            // Stop action dispatching thread.task.stop.
+            let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread").clone();
+            let tasks = derive_bg_tasks(&thread_v);
+            let mut task_area = v_flex()
+                .w_full()
+                .flex_1()
+                .min_h_0()
+                .id("tasks-scroll")
+                .overflow_y_scrollbar()
+                .px(px(6.))
+                .py_2()
+                .gap_1();
+            if tasks.is_empty() {
+                task_area = task_area.child(
+                    div()
+                        .px(px(8.))
+                        .py_2()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("No background tasks in this chat yet"),
+                );
+            } else {
+                let running: Vec<&BgTask> =
+                    tasks.iter().filter(|t| t.status == "running").rev().collect();
+                let finished: Vec<&BgTask> =
+                    tasks.iter().filter(|t| t.status != "running").rev().collect();
+                let row = |t: &BgTask, on_stop: bool, this_tid: &str| {
+                    let status_label = match t.status.as_str() {
+                        "running" => "running".to_string(),
+                        "finished" => "finished".to_string(),
+                        "failed" => match t.exit_code {
+                            Some(c) => format!("failed · exit {c}"),
+                            None => "failed".to_string(),
+                        },
+                        "stopped" => "stopped".to_string(),
+                        _ => t.status.clone(),
+                    };
+                    let when = rel_time(t.completed_at.as_deref().unwrap_or(t.started_at.as_str()));
+                    let stop_tid = t.task_id.clone();
+                    let stop_thread = this_tid.to_string();
+                    div()
+                        .id(SharedString::from(format!("bgtask-{}", t.task_id)))
+                        .w_full()
+                        .px_2()
+                        .py(px(5.))
+                        .rounded(px(6.))
+                        .child(
+                            h_flex()
+                                .gap_2()
+                                .items_center()
+                                .child(
+                                    svg_icon(icons::TERMINAL)
+                                        .size(px(14.))
+                                        .text_color(if t.status == "running" {
+                                            theme.foreground
+                                        } else {
+                                            theme.muted_foreground
+                                        }),
+                                )
+                                .child(
+                                    v_flex()
+                                        .flex_1()
+                                        .min_w_0()
+                                        .child(
+                                            div()
+                                                .text_size(px(13.))
+                                                .overflow_hidden()
+                                                .whitespace_nowrap()
+                                                .child(t.title.clone()),
+                                        )
+                                        .child(
+                                            div()
+                                                .text_size(px(11.))
+                                                .text_color(if t.status == "failed" {
+                                                    theme.danger
+                                                } else {
+                                                    theme.muted_foreground
+                                                })
+                                                .child(status_label),
+                                        ),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(11.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(when),
+                                )
+                                .when(on_stop, |d| {
+                                    d.child(
+                                        div()
+                                            .id(SharedString::from(format!(
+                                                "bgtask-stop-{}",
+                                                t.task_id
+                                            )))
+                                            .px_1()
+                                            .rounded(px(4.))
+                                            .cursor_pointer()
+                                            .hover(|h| h.bg(theme.border))
+                                            .child(
+                                                svg_icon(icons::X)
+                                                    .size(px(12.))
+                                                    .text_color(theme.muted_foreground),
+                                            )
+                                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                this.dispatch_cmd(
+                                                    json!({
+                                                        "type": "thread.task.stop",
+                                                        "commandId": uuid(),
+                                                        "threadId": stop_thread,
+                                                        "taskId": stop_tid,
+                                                        "createdAt": chrono::Utc::now()
+                                                            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true),
+                                                    }),
+                                                    cx,
+                                                );
+                                            })),
+                                    )
+                                }),
+                        )
+                        .into_any_element()
+                };
+                let tid = self.selected_thread.clone().unwrap_or_default();
+                if !running.is_empty() {
+                    task_area = task_area.child(
+                        div()
+                            .px(px(8.))
+                            .pt(px(4.))
+                            .pb(px(2.))
+                            .text_size(px(11.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(theme.muted_foreground)
+                            .child(format!("Active · {}", running.len())),
+                    );
+                    for t in running {
+                        task_area = task_area.child(row(t, true, &tid));
+                    }
+                }
+                if !finished.is_empty() {
+                    task_area = task_area.child(
+                        div()
+                            .px(px(8.))
+                            .pt(px(4.))
+                            .pb(px(2.))
+                            .text_size(px(11.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(theme.muted_foreground)
+                            .child(format!("Done · {}", finished.len())),
+                    );
+                    for t in finished.into_iter().take(10) {
+                        task_area = task_area.child(row(t, false, &tid));
+                    }
+                }
+            }
+            changes_pane = changes_pane.child(task_area);
+        } else if self.dock_tab == 3 {
+            // SidechatDockPane: side chats forked from this thread
+            // (sidechatSourceThreadId), plus a "New side chat" action that
+            // dispatches thread.fork.create like upstream's sidechatCreation.
+            let cur_tid = self.selected_thread.clone().unwrap_or_default();
+            let mut side_area = v_flex()
+                .w_full()
+                .flex_1()
+                .min_h_0()
+                .id("sidechat-scroll")
+                .overflow_y_scrollbar()
+                .px(px(6.))
+                .py_2()
+                .gap_1();
+            side_area = side_area.child(
+                div()
+                    .id("sidechat-new")
+                    .w_full()
+                    .px_2()
+                    .py(px(5.))
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .hover(|d| d.bg(subtle))
+                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                        let detail = this.detail.clone().unwrap_or(Value::Null);
+                        let tv = get(&detail, "thread");
+                        let Some(src) = this.selected_thread.clone() else { return };
+                        let title_seed = str_at(tv, "title");
+                        let imported: Vec<Value> = arr(tv, "messages")
+                            .iter()
+                            .filter(|m| {
+                                !str_at(m, "text").is_empty()
+                                    && get(m, "streaming").as_bool() != Some(true)
+                            })
+                            .map(|m| {
+                                json!({
+                                    "messageId": uuid(),
+                                    "role": str_at(m, "role"),
+                                    "text": str_at(m, "text"),
+                                    "createdAt": str_at(m, "createdAt"),
+                                    "updatedAt": str_at(m, "updatedAt"),
+                                })
+                            })
+                            .collect();
+                        this.dispatch_cmd(
+                            json!({
+                                "type": "thread.fork.create",
+                                "commandId": uuid(),
+                                "threadId": uuid(),
+                                "sourceThreadId": src,
+                                "sidechatSourceThreadId": src,
+                                "projectId": str_at(tv, "projectId"),
+                                "title": format!("Sidechat: {title_seed}"),
+                                "modelSelection": get(tv, "modelSelection"),
+                                "runtimeMode": str_at(tv, "runtimeMode"),
+                                "interactionMode": "default",
+                                "envMode": str_at(tv, "envMode"),
+                                "branch": get(tv, "branch"),
+                                "worktreePath": get(tv, "worktreePath"),
+                                "workingDirectory": get(tv, "workingDirectory"),
+                                "associatedWorktreePath": get(tv, "associatedWorktreePath"),
+                                "associatedWorktreeBranch": get(tv, "associatedWorktreeBranch"),
+                                "associatedWorktreeRef": get(tv, "associatedWorktreeRef"),
+                                "importedMessages": imported,
+                                "createdAt": chrono::Utc::now()
+                                    .to_rfc3339_opts(chrono::SecondsFormat::Millis, true),
+                            }),
+                            cx,
+                        );
+                    }))
+                    .child(
+                        h_flex()
+                            .gap_2()
+                            .items_center()
+                            .child(
+                                svg_icon(icons::PLUS)
+                                    .size(px(13.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(div().text_size(px(13.)).child("New side chat")),
+                    ),
+            );
+            let sides: Vec<&Value> = arr(
+                self.snapshot.as_ref().unwrap_or(&Value::Null),
+                "threads",
+            )
+            .iter()
+            .filter(|t| {
+                str_at(t, "sidechatSourceThreadId") == cur_tid
+                    && get(t, "deletedAt").is_null()
+            })
+            .collect();
+            if sides.is_empty() {
+                side_area = side_area.child(
+                    div()
+                        .px(px(8.))
+                        .py_2()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("No side chats yet"),
+                );
+            } else {
+                for (si, t) in sides.iter().enumerate() {
+                    let tid = str_at(t, "id").to_string();
+                    let title = {
+                        let s = str_at(t, "title");
+                        if s.is_empty() { "Side chat".to_string() } else { s.to_string() }
+                    };
+                    let when = rel_time(str_at(t, "updatedAt"));
+                    side_area = side_area.child(
+                        div()
+                            .id(SharedString::from(format!("sidechat-{si}")))
+                            .w_full()
+                            .px_2()
+                            .py(px(5.))
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(subtle))
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.open_thread(tid.clone(), cx)
+                            }))
+                            .child(
+                                h_flex()
+                                    .gap_2()
+                                    .items_center()
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .flex_1()
+                                            .min_w_0()
+                                            .overflow_hidden()
+                                            .whitespace_nowrap()
+                                            .child(title),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(11.))
+                                            .text_color(theme.muted_foreground)
+                                            .child(when),
+                                    ),
+                            ),
+                    );
+                }
+            }
+            changes_pane = changes_pane.child(side_area);
         } else {
         let mut files_area = v_flex()
             .w_full()

@@ -1064,6 +1064,9 @@ pub struct Native {
     /// Project rename dialog (upstream EditProjectDialog): id + input entity.
     proj_rename: Option<String>,
     proj_rename_input: Option<Entity<InputState>>,
+    /// RelocateProjectDialog: (project id, previous workspace root).
+    proj_relocate: Option<(String, String)>,
+    proj_relocate_input: Option<Entity<InputState>>,
     // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
     // mode, input entity, last async result rows, highlighted row, and a
     // sequence counter that drops stale search responses.
@@ -2376,6 +2379,8 @@ impl Native {
             project_card_seq: 0,
             proj_rename: None,
             proj_rename_input: None,
+            proj_relocate: None,
+            proj_relocate_input: None,
             palette_mode: None,
             palette_input: None,
             palette_rows: Vec::new(),
@@ -2927,6 +2932,57 @@ impl Native {
                 "commandId": uuid(),
                 "projectId": pid,
                 "title": title,
+            }),
+            cx,
+        );
+        cx.notify();
+    }
+
+    /// Upstream RelocateProjectDialog: text input prefilled with the
+    /// current root; commits `project.meta.update` with the new
+    /// `workspaceRoot` (no implicit mkdir, like upstream).
+    fn start_project_relocate(
+        &mut self,
+        project_id: String,
+        current_root: String,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder("/path/to/project"));
+        input.update(cx, |s, cx| {
+            s.set_value(current_root, window, cx);
+        });
+        cx.subscribe_in(&input, window, |this: &mut Self, _s, event, _w, cx| {
+            if let InputEvent::PressEnter { .. } = event {
+                this.commit_project_relocate(cx);
+            }
+        })
+        .detach();
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        self.proj_relocate_input = Some(input);
+        cx.notify();
+    }
+
+    fn commit_project_relocate(&mut self, cx: &mut Context<Self>) {
+        let Some(input) = self.proj_relocate_input.take() else {
+            return;
+        };
+        let root = input.read(cx).value().trim().to_string();
+        let Some((pid, prev_root)) = self.proj_relocate.take() else {
+            return;
+        };
+        if root.is_empty() || root == prev_root {
+            cx.notify();
+            return;
+        }
+        self.dispatch_cmd(
+            json!({
+                "type": "project.meta.update",
+                "commandId": uuid(),
+                "projectId": pid,
+                "workspaceRoot": root,
+                "createWorkspaceRootIfMissing": false,
             }),
             cx,
         );
@@ -21476,6 +21532,8 @@ impl Render for Native {
                 let title_edit = proj_title.clone();
                 let pid_arch = menu_pid.clone();
                 let pid_del_t = menu_pid.clone();
+                let pid_reloc = menu_pid.clone();
+                let root_reloc = proj_root.clone();
                 menu = menu
                     .child(mrow("pctx-finder", "Open in Finder".into(), Box::new(
                         move |_this, _w, _cx| {
@@ -21556,6 +21614,13 @@ impl Render for Native {
                     .child(mrow("pctx-edit", "Edit project".into(), Box::new(
                         move |this, w, cx| {
                             this.start_project_rename(pid_edit.clone(), title_edit.clone(), w, cx);
+                        },
+                    )))
+                    .child(mrow("pctx-reloc", "Change project path".into(), Box::new(
+                        move |this, w, cx| {
+                            let pid = pid_reloc.clone();
+                            this.proj_relocate = Some((pid.clone(), root_reloc.clone()));
+                            this.start_project_relocate(pid, root_reloc.clone(), w, cx);
                         },
                     )))
                     .child(mrow("pctx-pin", if proj_pinned {
@@ -22051,10 +22116,19 @@ impl Render for Native {
         }
 
         let mut ren_overlay = div().absolute().inset_0().size_full();
-        if self.renaming || self.proj_rename.is_some() {
+        if self.renaming || self.proj_rename.is_some() || self.proj_relocate.is_some() {
+            let is_relocate = self.proj_relocate.is_some();
             let is_project = self.proj_rename.is_some();
-            let dlg_title = if is_project { "Edit project" } else { "Rename chat" };
-            let input = if is_project {
+            let dlg_title = if is_relocate {
+                "Change project path"
+            } else if is_project {
+                "Edit project"
+            } else {
+                "Rename chat"
+            };
+            let input = if is_relocate {
+                self.proj_relocate_input.clone()
+            } else if is_project {
                 self.proj_rename_input.clone()
             } else {
                 self.rename_input.clone()
@@ -22081,10 +22155,14 @@ impl Render for Native {
                         this.rename_input = None;
                         this.proj_rename = None;
                         this.proj_rename_input = None;
+                        this.proj_relocate = None;
+                        this.proj_relocate_input = None;
                         cx.stop_propagation();
                         cx.notify();
                     } else if ev.keystroke.key == "enter" {
-                        if this.proj_rename.is_some() {
+                        if this.proj_relocate.is_some() {
+                            this.commit_project_relocate(cx);
+                        } else if this.proj_rename.is_some() {
                             this.commit_project_rename(cx);
                         } else {
                             this.commit_rename(cx);
@@ -22102,11 +22180,43 @@ impl Render for Native {
                         .child(dlg_title),
                 );
             if let Some(inp) = input {
+                let inp2 = inp.clone();
                 dlg = dlg.child(
-                    div()
+                    h_flex()
                         .mx(px(20.))
                         .my(px(8.))
-                        .child(Input::new(&inp)),
+                        .gap_2()
+                        .items_center()
+                        .child(div().flex_1().child(Input::new(&inp)))
+                        .when(is_relocate, |d| {
+                            d.child(
+                                Button::new("reloc-browse")
+                                    .ghost()
+                                    .label("Browse\u{2026}")
+                                    .on_click(cx.listener(move |_this, _ev, w, cx| {
+                                        let rx = cx.prompt_for_paths(gpui::PathPromptOptions {
+                                            files: false,
+                                            directories: true,
+                                            multiple: false,
+                                            prompt: None,
+                                        });
+                                        let inp3 = inp2.clone();
+                                        cx.spawn_in(w, async move |_this, cx| {
+                                            if let Ok(Ok(Some(paths))) = rx.await {
+                                                if let Some(dir) = paths.first() {
+                                                    let p = dir.to_string_lossy().into_owned();
+                                                    let _ = cx.update(|window, app| {
+                                                        let _ = inp3.update(app, |s, cx| {
+                                                            s.set_value(p, window, cx);
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                        })
+                                        .detach();
+                                    })),
+                            )
+                        }),
                 );
             }
             dlg = dlg.child(
@@ -22125,18 +22235,22 @@ impl Render for Native {
                                 this.rename_input = None;
                                 this.proj_rename = None;
                                 this.proj_rename_input = None;
+                                this.proj_relocate = None;
+                                this.proj_relocate_input = None;
                                 cx.notify();
                             })),
                     )
                     .child(
                         Button::new("ren-save")
                             .primary()
-                            .label("Save")
+                            .label(if is_relocate { "Change path" } else { "Save" })
                             .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 if !can_save {
                                     return;
                                 }
-                                if this.proj_rename.is_some() {
+                                if this.proj_relocate.is_some() {
+                                    this.commit_project_relocate(cx);
+                                } else if this.proj_rename.is_some() {
                                     this.commit_project_rename(cx);
                                 } else {
                                     this.commit_rename(cx);
@@ -22157,6 +22271,8 @@ impl Render for Native {
                             this.rename_input = None;
                             this.proj_rename = None;
                             this.proj_rename_input = None;
+                            this.proj_relocate = None;
+                            this.proj_relocate_input = None;
                             cx.notify();
                         }),
                     )
@@ -24673,7 +24789,7 @@ impl Render for Native {
             .when(self.project_card.is_some(), |d| d.child(pc_overlay))
             .when(self.blame_pop.is_some(), |d| d.child(bp_overlay))
             .when(
-                self.renaming || self.proj_rename.is_some(),
+                self.renaming || self.proj_rename.is_some() || self.proj_relocate.is_some(),
                 |d| d.child(ren_overlay),
             )
             .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))

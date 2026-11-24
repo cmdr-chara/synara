@@ -2805,6 +2805,14 @@ impl Native {
                     }
                 }
             }
+            // Stream ended (socket dropped): clear the id so the next send or
+            // reopen re-subscribes instead of leaving a dead stream marker.
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.selected_thread.as_deref() == Some(tid.as_str()) {
+                    this.thread_stream_id = None;
+                    cx.notify();
+                }
+            });
         })
         .detach();
         cx.notify();
@@ -10372,9 +10380,17 @@ impl Native {
                 if let Some(s) = s {
                     this.snapshot = Some(s);
                 }
-                this.selected_thread = Some(tid.clone());
+                // A new (or stream-less) thread needs open_thread to install
+                // the live subscribeThread stream; a plain detail assignment
+                // leaves the transcript frozen until re-click.
+                if this.selected_thread.as_deref() != Some(tid.as_str())
+                    || this.thread_stream_id.is_none()
+                {
+                    this.open_thread(tid.clone(), cx);
+                }
                 if let Some(d) = d {
                     this.detail = Some(d);
+                    this.transcript_scroll.scroll_to_bottom();
                 }
                 cx.notify();
             });
@@ -21205,7 +21221,7 @@ impl Render for Native {
 
         let mut body = h_flex()
             .flex_1()
-            .h_full()
+            .min_h_0()
             .child(left_well)
             .child(main);
         if self.view_changes {

@@ -166,7 +166,7 @@ pub fn make_persisted_server_runtime_state(
 }
 
 // The corpus was recorded against a shim freezing `pid`, `startedAt` and
-// `externalMcpRuntimeSecret` (see rust/DECISIONS.md); the env vars below replay
+// `externalMcpRuntimeSecret`; the env vars below replay
 // those frozen values. Production wiring leaves them unset → real values.
 fn env_f64(name: &str) -> Option<f64> {
     std::env::var(name).ok().and_then(|s| s.parse().ok())

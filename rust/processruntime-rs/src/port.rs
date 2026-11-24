@@ -33,8 +33,8 @@ fn buffer(bytes: &[u8]) -> Value {
     json!({ "$buffer": bytes })
 }
 
-// The corpus was recorded with the volatile child `pid` frozen to 424242 (see
-// rust/DECISIONS.md); SYNARA_SPAWN_PID replays that value. Unset → the real pid.
+// The corpus was recorded with the volatile child `pid` frozen to 424242;
+// SYNARA_SPAWN_PID replays that value. Unset → the real pid.
 fn volatile_spawn_pid(real: u32) -> f64 {
     std::env::var("SYNARA_SPAWN_PID")
         .ok()

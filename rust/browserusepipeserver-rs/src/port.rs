@@ -11,7 +11,7 @@ const CAPABILITY_ENV: &str = "SYNARA_BROWSER_HOST_CAPABILITY";
 const CAPABILITY_FD_ENV: &str = "SYNARA_BROWSER_HOST_CAPABILITY_FD";
 
 // The corpus was recorded with `process.pid`, `process.getuid()` and
-// `Crypto.randomUUID()` frozen (see rust/DECISIONS.md ADR-004); the env vars
+// `Crypto.randomUUID()` frozen; the env vars
 // replay those frozen constants. Production leaves them unset → real values.
 fn volatile_pid() -> f64 {
     std::env::var("SYNARA_PIPE_PID")

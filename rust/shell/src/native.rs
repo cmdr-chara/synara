@@ -10,6 +10,7 @@ use gpui_kit::component::{
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
+    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
     spinner::Spinner,
     text::TextView,
@@ -1245,6 +1246,10 @@ pub struct Native {
     tp_input: Option<Entity<InputState>>,
     /// Import dialog for a theme pack: (dark, multiline JSON input).
     tp_import: Option<bool>,
+    /// Per-variant slider states for the theme pack editor (upstream
+    /// ThemePackEditor's opacity/blur/contrast rows). Keys:
+    /// "dark-opacity" | "dark-blur" | "dark-contrast" and "light-*".
+    tp_sliders: std::collections::HashMap<String, Entity<SliderState>>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -2331,6 +2336,36 @@ impl Native {
                 KeyBinding::new("cmd-f", ToggleFind, Some("native")),
                 KeyBinding::new("cmd-j", ToggleTerminal, Some("native")),
             ]);
+            // Theme pack editor sliders (upstream ThemePackEditor): one
+            // SliderState per variant x {opacity, blur, contrast}; slider
+            // writes land in themePacks[variant] via tp_slider_change.
+            let mut tp_sliders: std::collections::HashMap<String, Entity<SliderState>> =
+                std::collections::HashMap::new();
+            for (variant, key, min, max, init) in [
+                ("dark", "opacity", 15., 100., 90.),
+                ("dark", "blur", 1., 64., 64.),
+                ("dark", "contrast", 0., 100., 0.),
+                ("light", "opacity", 15., 100., 90.),
+                ("light", "blur", 1., 64., 64.),
+                ("light", "contrast", 0., 100., 0.),
+            ] {
+                let st = cx.new(|_| {
+                    SliderState::new()
+                        .min(min)
+                        .max(max)
+                        .step(1.)
+                        .default_value(init)
+                });
+                let id = format!("{variant}-{key}");
+                let id2 = id.clone();
+                cx.subscribe(&st, move |this, _st, ev: &SliderEvent, cx| {
+                    if let SliderEvent::Change(v) = ev {
+                        this.tp_slider_change(&id2, v.start(), cx);
+                    }
+                })
+                .detach();
+                tp_sliders.insert(id, st);
+            }
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -2534,6 +2569,7 @@ impl Native {
             tp_edit: None,
             tp_input: None,
             tp_import: None,
+            tp_sliders,
             git_dialog: None,
             git_msg_input: None,
             git_pr_title_input: None,
@@ -6632,12 +6668,43 @@ impl Native {
             .get(if dark { "dark" } else { "light" })
             .cloned()
             .unwrap_or_else(|| json!({}));
+        // Contrast (upstream theme.contrast 0-100): pushes the resolved
+        // surface toward the variant's extreme and the ink the opposite
+        // way. The effective swatches are always emitted at contrast > 0 so
+        // the slider acts on default packs too.
+        let contrast = pack
+            .get("contrast")
+            .and_then(Value::as_f64)
+            .unwrap_or(0.)
+            .clamp(0., 100.)
+            / 100.;
+        let mix_hex = |hex: &str, toward: u32, t: f64| -> String {
+            let c = u32::from_str_radix(hex.trim_start_matches('#'), 16).unwrap_or(0);
+            let m = |a: u32, b: u32| -> u32 { (a as f64 + (b as f64 - a as f64) * t).round() as u32 };
+            format!(
+                "#{:02X}{:02X}{:02X}",
+                m((c >> 16) & 0xff, (toward >> 16) & 0xff),
+                m((c >> 8) & 0xff, (toward >> 8) & 0xff),
+                m(c & 0xff, toward & 0xff)
+            )
+        };
         let mut colors = serde_json::Map::new();
-        for k in ["background", "foreground"] {
-            if let Some(v) = pack.get(k).and_then(Value::as_str) {
-                if v.len() == 7 && v.starts_with('#') {
-                    colors.insert(k.to_string(), json!(v));
-                }
+        for (k, fallback, extreme) in [
+            ("background", if dark { "#111111" } else { "#FFFFFF" }, if dark { 0x000000u32 } else { 0xffffffu32 }),
+            ("foreground", if dark { "#FCFCFC" } else { "#0D0D0D" }, if dark { 0xffffffu32 } else { 0x000000u32 }),
+        ] {
+            let v = pack
+                .get(k)
+                .and_then(Value::as_str)
+                .filter(|s| s.len() == 7 && s.starts_with('#'));
+            let eff = match (v, contrast > 0.) {
+                (Some(hex), true) => Some(mix_hex(hex, extreme, contrast)),
+                (Some(hex), false) => Some(hex.to_string()),
+                (None, true) => Some(mix_hex(fallback, extreme, contrast)),
+                (None, false) => None,
+            };
+            if let Some(eff) = eff {
+                colors.insert(k.to_string(), json!(eff));
             }
         }
         // Upstream's Accent is the brand color: it drives both accent and
@@ -6672,8 +6739,30 @@ impl Native {
             colors.insert("primary_foreground".to_string(), json!(fg));
             colors.insert("accent_foreground".to_string(), json!(fg));
         }
-        if !colors.is_empty() {
-            let cfg = json!({"tokens": {"colors": Value::Object(colors)}}).to_string();
+        // Upstream theme fonts: pack.fonts.ui drives the UI family,
+        // pack.fonts.code the monospace family (empty = default).
+        let font_of = |sub: &str| -> Option<String> {
+            pack.get("fonts")
+                .and_then(|f| f.get(sub))
+                .and_then(Value::as_str)
+                .filter(|s| !s.trim().is_empty())
+                .map(|s| s.trim().to_string())
+        };
+        let mut typography = serde_json::Map::new();
+        if let Some(f) = font_of("ui") {
+            typography.insert("sans".to_string(), json!(f));
+        }
+        if let Some(f) = font_of("code") {
+            typography.insert("mono".to_string(), json!(f));
+        }
+        if !colors.is_empty() || !typography.is_empty() {
+            let cfg = json!({
+                "tokens": {
+                    "colors": Value::Object(colors),
+                    "typography": Value::Object(typography),
+                }
+            })
+            .to_string();
             let _ = gpui_kit::component::Theme::global_mut(cx)
                 .apply_semantic_config_str(&cfg);
         }
@@ -6689,31 +6778,111 @@ impl Native {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let cur = self
+        let pack = self
             .theme_packs
             .get(if dark { "dark" } else { "light" })
-            .and_then(|p| p.get(key))
-            .and_then(Value::as_str)
-            .map(|v| v.to_string())
-            .unwrap_or_else(|| {
-                // Effective value = the built-in swatch of that variant.
-                match (dark, key) {
-                    (true, "accent") => "#F2612D",
-                    (true, "background") => "#111111",
-                    (true, _) => "#FCFCFC",
-                    (false, "accent") => "#C74614",
-                    (false, "background") => "#FFFFFF",
-                    (false, _) => "#0D0D0D",
-                }
-                .to_string()
-            });
-        let input = cx.new(|cx| InputState::new(window, cx).placeholder("#RRGGBB"));
+            .cloned()
+            .unwrap_or_else(|| json!({}));
+        let cur = match key {
+            // Upstream FontInput rows edit pack.fonts.ui / pack.fonts.code;
+            // empty means "use the default family".
+            "fontUi" | "fontCode" => pack
+                .get("fonts")
+                .and_then(|f| f.get(if key == "fontUi" { "ui" } else { "code" }))
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string(),
+            _ => pack
+                .get(key)
+                .and_then(Value::as_str)
+                .map(|v| v.to_string())
+                .unwrap_or_else(|| {
+                    // Effective value = the built-in swatch of that variant.
+                    match (dark, key) {
+                        (true, "accent") => "#F2612D",
+                        (true, "background") => "#111111",
+                        (true, _) => "#FCFCFC",
+                        (false, "accent") => "#C74614",
+                        (false, "background") => "#FFFFFF",
+                        (false, _) => "#0D0D0D",
+                    }
+                    .to_string()
+                }),
+        };
+        let placeholder = match key {
+            "fontUi" => "System default",
+            "fontCode" => "JetBrains Mono",
+            _ => "#RRGGBB",
+        };
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder(placeholder));
         let _ = input.update(cx, |i, cx| {
             i.set_value(&cur, window, cx);
         });
         self.tp_input = Some(input);
         self.tp_edit = Some((dark, key.to_string()));
         cx.notify();
+    }
+
+    /// Writes one theme pack field for a variant (upstream
+    /// updateThemePack/setWindowTranslucency/setCodeThemeId) and persists.
+    fn tp_set_pack(&mut self, dark: bool, key: &str, value: Value, cx: &mut Context<Self>) {
+        let variant = if dark { "dark" } else { "light" };
+        if !self.theme_packs.is_object() {
+            self.theme_packs = json!({});
+        }
+        let packs = self.theme_packs.as_object_mut().unwrap();
+        let pack = packs
+            .entry(variant.to_string())
+            .or_insert_with(|| json!({}));
+        if let Some(o) = pack.as_object_mut() {
+            o.insert(key.to_string(), value);
+        }
+        self.persist_appearance(cx);
+        self.apply_theme_pack(cx);
+    }
+
+    /// Upstream resetThemeVariant: drop every override of one variant pack.
+    fn tp_reset_pack(&mut self, dark: bool, cx: &mut Context<Self>) {
+        let variant = if dark { "dark" } else { "light" };
+        if let Some(o) = self.theme_packs.as_object_mut() {
+            o.remove(variant);
+        }
+        self.persist_appearance(cx);
+        self.apply_theme_pack(cx);
+    }
+
+    /// Slider write-back for opacity/blur/contrast (upstream
+    /// setWindowTranslucency / updateThemePack contrast).
+    fn tp_slider_change(&mut self, key: &str, v: f32, cx: &mut Context<Self>) {
+        let Some((variant, what)) = key.split_once('-') else {
+            return;
+        };
+        let variant = if variant == "dark" { "dark" } else { "light" };
+        if !self.theme_packs.is_object() {
+            self.theme_packs = json!({});
+        }
+        let packs = self.theme_packs.as_object_mut().unwrap();
+        let pack = packs
+            .entry(variant.to_string())
+            .or_insert_with(|| json!({}));
+        if let Some(o) = pack.as_object_mut() {
+            match what {
+                "contrast" => {
+                    o.insert("contrast".to_string(), json!(v.round() as i64));
+                }
+                "opacity" | "blur" => {
+                    let t = o
+                        .entry("translucency".to_string())
+                        .or_insert_with(|| json!({}));
+                    if let Some(t) = t.as_object_mut() {
+                        t.insert(what.to_string(), json!(v.round() as i64));
+                    }
+                }
+                _ => {}
+            }
+        }
+        self.persist_appearance(cx);
+        self.apply_theme_pack(cx);
     }
 
     fn commit_theme_pack_edit(&mut self, reset: bool, cx: &mut Context<Self>) {
@@ -6728,7 +6897,31 @@ impl Native {
         let pack = packs
             .entry(variant.to_string())
             .or_insert_with(|| json!({}));
-        if reset {
+        if key == "fontUi" || key == "fontCode" {
+            // Upstream FontInput: empty input clears the override back to
+            // the default family; non-empty stores the family name as-is.
+            let sub = if key == "fontUi" { "ui" } else { "code" };
+            let v = if reset {
+                String::new()
+            } else {
+                self.tp_input
+                    .as_ref()
+                    .map(|i| i.read(cx).value().to_string())
+                    .unwrap_or_default()
+                    .trim()
+                    .to_string()
+            };
+            if let Some(o) = pack.as_object_mut() {
+                let fonts = o.entry("fonts".to_string()).or_insert_with(|| json!({}));
+                if let Some(f) = fonts.as_object_mut() {
+                    if v.is_empty() {
+                        f.remove(sub);
+                    } else {
+                        f.insert(sub.to_string(), json!(v));
+                    }
+                }
+            }
+        } else if reset {
             if let Some(o) = pack.as_object_mut() {
                 o.remove(&key);
             }
@@ -15663,42 +15856,6 @@ impl Render for Native {
                 .child(div().text_size(px(13.)).text_color(ink).child(hex_label.to_string()))
                 .into_any_element()
         };
-        // Thin track slider + value label.
-        let slider = |frac: f32, val: &'static str| {
-            h_flex()
-                .items_center()
-                .gap_2()
-                .child(
-                    div()
-                        .relative()
-                        .w(px(110.))
-                        .h(px(14.))
-                        .child(
-                            div()
-                                .absolute()
-                                .top(px(6.))
-                                .left_0()
-                                .w_full()
-                                .h(px(2.))
-                                .rounded_full()
-                                .bg(theme.foreground),
-                        )
-                        .child(
-                            div()
-                                .absolute()
-                                .top(px(1.))
-                                .left(px(110f32 * frac - 6.))
-                                .w(px(12.))
-                                .h(px(12.))
-                                .rounded_full()
-                                .bg(gpui::white())
-                                .border_1()
-                                .border_color(theme.foreground),
-                        ),
-                )
-                .child(div().text_xs().text_color(theme.muted_foreground).child(val))
-                .into_any_element()
-        };
         // Bordered number field + "px" suffix.
         let num_field = |v: &'static str| {
             h_flex()
@@ -17603,7 +17760,49 @@ impl Render for Native {
                                 ),
                         ),
                 );
-                for dark in [false, true] {
+                // Upstream CODE_THEME_OPTIONS (theme.logic.ts): id, label,
+                // supported variants.
+                const CODE_THEMES: &[(&str, &str, &[&str])] = &[
+                    ("absolutely", "Absolutely", &["light", "dark"]),
+                    ("ayu", "Ayu", &["dark"]),
+                    ("catppuccin", "Catppuccin", &["light", "dark"]),
+                    ("codex", "Codex", &["light", "dark"]),
+                    ("synara", "Synara", &["light", "dark"]),
+                    ("dracula", "Dracula", &["dark"]),
+                    ("everforest", "Everforest", &["light", "dark"]),
+                    ("github", "GitHub", &["light", "dark"]),
+                    ("gruvbox", "Gruvbox", &["light", "dark"]),
+                    ("linear", "Linear", &["light", "dark"]),
+                    ("lobster", "Lobster", &["dark"]),
+                    ("material", "Material", &["dark"]),
+                    ("matrix", "Matrix", &["dark"]),
+                    ("monokai", "Monokai", &["dark"]),
+                    ("night-owl", "Night Owl", &["dark"]),
+                    ("nord", "Nord", &["dark"]),
+                    ("notion", "Notion", &["light", "dark"]),
+                    ("one", "One", &["light", "dark"]),
+                    ("oscurange", "Oscurange", &["dark"]),
+                    ("proof", "Proof", &["light"]),
+                    ("raycast", "Raycast", &["light", "dark"]),
+                    ("rose-pine", "Rose Pine", &["light", "dark"]),
+                    ("sentry", "Sentry", &["dark"]),
+                    ("solarized", "Solarized", &["light", "dark"]),
+                    ("temple", "Temple", &["dark"]),
+                    ("tokyo-night", "Tokyo Night", &["dark"]),
+                    ("vercel", "Vercel", &["light", "dark"]),
+                    ("vscode-plus", "VS Code Plus", &["light", "dark"]),
+                ];
+                // Upstream shows the resolved variant's card first
+                // (AppearanceSettingsView: resolved theme first).
+                let resolved_dark = {
+                    let m = if self.appearance_mode == 0 {
+                        2
+                    } else {
+                        self.appearance_mode
+                    };
+                    m == 2
+                };
+                for dark in [resolved_dark, !resolved_dark] {
                     let (name, desc, mut acc, mut bgc, mut fgc, mut al, mut bl, mut fl) = if dark {
                         ("Dark theme", "Used when your system switches to dark.", 0xf2612d, 0x111111, 0xfcfcfc, "#F2612D".to_string(), "#111111".to_string(), "#FCFCFC".to_string())
                     } else {
@@ -17615,6 +17814,62 @@ impl Render for Native {
                         .get(if dark { "dark" } else { "light" })
                         .cloned()
                         .unwrap_or_else(|| json!({}));
+                    let var_key = if dark { "dark" } else { "light" };
+                    // Upstream ThemePackEditor state for this variant.
+                    let pristine = pk
+                        .as_object()
+                        .map(|o| o.is_empty())
+                        .unwrap_or(true);
+                    let opaque = pk
+                        .get("opaqueWindows")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
+                    let sidebar_only = pk
+                        .pointer("/translucency/sidebarOnly")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
+                    let opacity_v = pk
+                        .pointer("/translucency/opacity")
+                        .and_then(Value::as_f64)
+                        .unwrap_or(90.)
+                        .clamp(15., 100.) as f32;
+                    let blur_null = pk
+                        .pointer("/translucency/blur")
+                        .and_then(Value::as_f64);
+                    // Null blur = "Auto": upstream drives macOS vibrancy
+                    // (radius 30 equivalent).
+                    let blur_v = blur_null.unwrap_or(30.).clamp(1., 64.) as f32;
+                    let contrast_v = pk
+                        .get("contrast")
+                        .and_then(Value::as_f64)
+                        .unwrap_or(0.)
+                        .clamp(0., 100.) as f32;
+                    let code_theme = pk
+                        .get("codeThemeId")
+                        .and_then(Value::as_str)
+                        .unwrap_or("synara")
+                        .to_string();
+                    let code_theme_label = CODE_THEMES
+                        .iter()
+                        .find(|(id, _, _)| *id == code_theme)
+                        .map(|(_, l, _)| l.to_string())
+                        .unwrap_or_else(|| {
+                            let mut c = code_theme.chars();
+                            match c.next() {
+                                Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+                                None => code_theme.clone(),
+                            }
+                        });
+                    let font_ui = pk
+                        .pointer("/fonts/ui")
+                        .and_then(Value::as_str)
+                        .unwrap_or("")
+                        .to_string();
+                    let font_code = pk
+                        .pointer("/fonts/code")
+                        .and_then(Value::as_str)
+                        .unwrap_or("")
+                        .to_string();
                     let parse_hex = |v: &str| -> Option<u32> {
                         let h = v.trim_start_matches('#');
                         u32::from_str_radix(h, 16).ok()
@@ -17637,6 +17892,62 @@ impl Render for Native {
                             fl = v.to_string();
                         }
                     }
+                    // Controls that need the entity before the card chain
+                    // builds: weak handle for menu callbacks, current code
+                    // theme id, and the slider row builder. Runs before the
+                    // `swatch_click` closure below starts borrowing `cx`.
+                    let this_weak = cx.weak_entity();
+                    let cur_theme = code_theme.clone();
+                    let mk_slider_row = |key: &str,
+                                         want: f32,
+                                         label: String,
+                                         window: &mut Window,
+                                         cx: &mut App| {
+                        let st = match self.tp_sliders.get(key) {
+                            Some(st) => st.clone(),
+                            None => return div().into_any_element(),
+                        };
+                        let cur = st.read(cx).value().start();
+                        if (cur - want).abs() > 0.5 {
+                            st.update(cx, |s, cx| s.set_value(want, window, cx));
+                        }
+                        h_flex()
+                            .items_center()
+                            .gap_2()
+                            .child(Slider::new(&st).w(px(120.)))
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .w(px(40.))
+                                    .text_right()
+                                    .child(label),
+                            )
+                            .into_any_element()
+                    };
+                    let opacity_row = mk_slider_row(
+                        &format!("{var_key}-opacity"),
+                        opacity_v,
+                        format!("{}%", opacity_v.round() as i64),
+                        window,
+                        cx,
+                    );
+                    let blur_row = mk_slider_row(
+                        &format!("{var_key}-blur"),
+                        blur_v,
+                        blur_null
+                            .map(|b| format!("{}", b.round() as i64))
+                            .unwrap_or_else(|| "Auto".to_string()),
+                        window,
+                        cx,
+                    );
+                    let contrast_row = mk_slider_row(
+                        &format!("{var_key}-contrast"),
+                        contrast_v,
+                        format!("{}", contrast_v.round() as i64),
+                        window,
+                        cx,
+                    );
                     let swatch_click = |dark: bool, key: &'static str, pill: gpui::AnyElement| {
                         div()
                             .id(SharedString::from(format!(
@@ -17658,8 +17969,7 @@ impl Render for Native {
                         .rounded(px(6.))
                         .border_1().border_color(theme.border)
                         .bg(rgb(bgc))
-                        .child(div().text_xs().font_weight(FontWeight::SEMIBOLD).text_color(rgb(acc)).child("Aa"))
-                        .into_any_element();
+                        .child(div().text_xs().font_weight(FontWeight::SEMIBOLD).text_color(rgb(acc)).child("Aa"));
                     let mut sel = h_flex()
                         .w_full()
                         .mt_1()
@@ -17674,6 +17984,67 @@ impl Render for Native {
                     sel = sel.bg(rgb(bgc)).child(
                         div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(rgb(fgc)).child("Synara"),
                     );
+                    // Upstream Window segmented control: Solid =
+                    // opaqueWindows, Translucent = vibrancy/translucency.
+                    let seg_opt = |active: bool,
+                                   label: &'static str,
+                                   id: SharedString,
+                                   opaque_value: bool| {
+                        div()
+                            .id(id)
+                            .h(px(24.))
+                            .px_2p5()
+                            .flex()
+                            .items_center()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .when(active, |d| d.bg(theme.secondary))
+                            .text_size(px(12.))
+                            .text_color(if active {
+                                theme.foreground
+                            } else {
+                                theme.muted_foreground
+                            })
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.tp_set_pack(dark, "opaqueWindows", json!(opaque_value), cx);
+                            }))
+                            .child(label)
+                    };
+                    let window_seg = h_flex()
+                        .items_center()
+                        .h(px(28.))
+                        .p(px(2.))
+                        .gap(px(2.))
+                        .rounded(px(7.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(seg_opt(
+                            opaque,
+                            "Solid",
+                            SharedString::from(format!("tp-solid-{var_key}")),
+                            true,
+                        ))
+                        .child(seg_opt(
+                            !opaque,
+                            "Translucent",
+                            SharedString::from(format!("tp-trans-{var_key}")),
+                            false,
+                        ));
+                    let sidebar_toggle = div()
+                        .id(SharedString::from(format!("tp-side-{var_key}")))
+                        .cursor_pointer()
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            let mut t = this
+                                .theme_packs
+                                .get(var_key)
+                                .and_then(|p| p.get("translucency"))
+                                .and_then(|v| v.as_object().cloned())
+                                .unwrap_or_default();
+                            t.insert("sidebarOnly".to_string(), json!(!sidebar_only));
+                            this.tp_set_pack(dark, "translucency", Value::Object(t), cx);
+                        }))
+                        .child(toggle(sidebar_only))
+                        .into_any_element();
                     settings_pane = settings_pane.child(card(
                         v_flex()
                             .child(
@@ -17684,7 +18055,32 @@ impl Render for Native {
                                     .px_3()
                                     .pt_3()
                                     .pb_1()
-                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name))
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_2()
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name))
+                                            // Upstream Reset shows only on a
+                                            // pack with overrides.
+                                            .when(!pristine, |d| {
+                                                d.child(
+                                                    div()
+                                                        .id(SharedString::from(format!(
+                                                            "tp-reset-{var_key}"
+                                                        )))
+                                                        .cursor_pointer()
+                                                        .text_size(px(12.))
+                                                        .text_color(theme.muted_foreground)
+                                                        .hover(|h| h.text_color(theme.foreground))
+                                                        .on_click(cx.listener(
+                                                            move |this, _ev, _w, cx| {
+                                                                this.tp_reset_pack(dark, cx);
+                                                            },
+                                                        ))
+                                                        .child("Reset"),
+                                                )
+                                            }),
+                                    )
                                     .child(
                                         h_flex()
                                             .items_center()
@@ -17728,16 +18124,52 @@ impl Render for Native {
                                             )
                                             .child(
                                                 h_flex()
-                                                    .h(px(28.))
-                                                    .px(px(10.))
-                                                    .gap_1p5()
                                                     .items_center()
+                                                    .h(px(28.))
+                                                    .pl(px(6.))
+                                                    .pr(px(2.))
                                                     .rounded(px(8.))
                                                     .border_1()
                                                     .border_color(theme.border)
                                                     .child(aa_chip)
-                                                    .child(div().text_size(px(13.)).whitespace_nowrap().child("Synara"))
-                                                    .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(theme.muted_foreground)),
+                                                    .child(
+                                                        Button::new(SharedString::from(format!(
+                                                            "tp-code-{var_key}"
+                                                        )))
+                                                        .ghost()
+                                                        .compact()
+                                                        .h(px(26.))
+                                                        .label(code_theme_label.clone())
+                                                        .dropdown_caret(true)
+                                                        .dropdown_menu(move |menu, _w, _cx| {
+                                                    let mut m = menu.min_w(px(200.));
+                                                    for (id, label, _) in CODE_THEMES
+                                                        .iter()
+                                                        .filter(|(_, _, vs)| vs.contains(&var_key))
+                                                    {
+                                                        let id = *id;
+                                                        let weak = this_weak.clone();
+                                                        m = m.item(
+                                                            PopupMenuItem::new(*label)
+                                                                .checked(cur_theme == id)
+                                                                .on_click(move |_, _w, cx| {
+                                                                    let _ = weak.update(
+                                                                        cx,
+                                                                        |this, cx| {
+                                                                            this.tp_set_pack(
+                                                                                dark,
+                                                                                "codeThemeId",
+                                                                                json!(id),
+                                                                                cx,
+                                                                            );
+                                                                        },
+                                                                    );
+                                                                }),
+                                                        );
+                                                    }
+                                                    m
+                                                }),
+                                                ),
                                             ),
                                     ),
                             )
@@ -17802,33 +18234,49 @@ impl Render for Native {
                             .child(divider())
                             .child(prow(
                                 "UI font",
-                                v_flex()
-                                    .items_end()
-                                    .gap_1()
-                                    .child(select_pill("System default".to_string(), None))
-                                    .child(div().text_xs().text_color(theme.muted_foreground).child("Use system UI font is on; theme fonts are not applied."))
-                                    .into_any_element(),
+                                swatch_click(
+                                    dark,
+                                    "fontUi",
+                                    select_pill(
+                                        if font_ui.is_empty() {
+                                            "System default".to_string()
+                                        } else {
+                                            font_ui.clone()
+                                        },
+                                        None,
+                                    ),
+                                ),
                             ))
-                            .child(divider())
-                            .child(prow("Code font", select_pill("\"JetBrains Mono\"".to_string(), None)))
-                            .child(divider())
-                            .child(prow("Window", seg(&["Solid", "Translucent"], 1)))
-                            .child(divider())
-                            .child(prow("Sidebar only", toggle(false)))
-                            .child(divider())
-                            .child(prow("Opacity", slider(0.98, "98%")))
                             .child(divider())
                             .child(prow(
-                                "Blur",
-                                h_flex()
-                                    .items_center()
-                                    .gap_2()
-                                    .child(div().text_xs().text_color(theme.muted_foreground).child("Auto"))
-                                    .child(slider(0.64, "64"))
-                                    .into_any_element(),
+                                "Code font",
+                                swatch_click(
+                                    dark,
+                                    "fontCode",
+                                    select_pill(
+                                        if font_code.is_empty() {
+                                            "JetBrains Mono".to_string()
+                                        } else {
+                                            font_code.clone()
+                                        },
+                                        None,
+                                    ),
+                                ),
                             ))
                             .child(divider())
-                            .child(prow("Contrast", slider(0.0, "0")))
+                            .child(prow("Window", window_seg.into_any_element()))
+                            // Sidebar only / Opacity / Blur show only on the
+                            // Translucent path (upstream conditional).
+                            .when(!opaque, |v| {
+                                v.child(divider())
+                                    .child(prow("Sidebar only", sidebar_toggle))
+                                    .child(divider())
+                                    .child(prow("Opacity", opacity_row))
+                                    .child(divider())
+                                    .child(prow("Blur", blur_row))
+                            })
+                            .child(divider())
+                            .child(prow("Contrast", contrast_row))
                             .into_any_element(),
                     ));
                 }
@@ -25168,9 +25616,12 @@ impl Render for Native {
         let mut tp_overlay = div().absolute().inset_0().size_full();
         if let Some((dark, key)) = self.tp_edit.clone() {
             if let Some(input) = self.tp_input.clone() {
+                let is_font = key == "fontUi" || key == "fontCode";
                 let label = match key.as_str() {
                     "accent" => "Accent",
                     "background" => "Background",
+                    "fontUi" => "UI font",
+                    "fontCode" => "Code font",
                     _ => "Foreground",
                 };
                 let variant = if dark { "Dark theme" } else { "Light theme" };
@@ -25180,8 +25631,11 @@ impl Render for Native {
                 } else {
                     format!("#{}", cur.trim())
                 };
-                let valid = norm.len() == 7
-                    && norm[1..].chars().all(|c| c.is_ascii_hexdigit());
+                // Font fields accept any family name; empty resets to the
+                // default (upstream FontInput).
+                let valid = is_font
+                    || (norm.len() == 7
+                        && norm[1..].chars().all(|c| c.is_ascii_hexdigit()));
                 let swatch_hex = if valid {
                     u32::from_str_radix(&norm[1..], 16).unwrap_or(0)
                 } else {
@@ -25199,14 +25653,16 @@ impl Render for Native {
                             .p(px(16.))
                             .gap_3()
                             .items_center()
-                            .child(
-                                div()
-                                    .size(px(28.))
-                                    .rounded(px(8.))
-                                    .border_1()
-                                    .border_color(theme.border)
-                                    .when(valid, |d| d.bg(rgb(swatch_hex))),
-                            )
+                            .when(!is_font, |d| {
+                                d.child(
+                                    div()
+                                        .size(px(28.))
+                                        .rounded(px(8.))
+                                        .border_1()
+                                        .border_color(theme.border)
+                                        .when(valid, |d| d.bg(rgb(swatch_hex))),
+                                )
+                            })
                             .child(
                                 v_flex()
                                     .child(

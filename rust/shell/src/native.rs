@@ -3099,6 +3099,14 @@ impl Native {
                 find_query: String::new(),
             };
             this.refresh(cx);
+            // Keep the component theme in step with the system appearance, not
+            // only when settings load: the chrome follows it (`dark_ui`), so a
+            // late or changed appearance left theme text dark-on-dark.
+            cx.observe_window_appearance(window, |this: &mut Self, window, cx| {
+                this.apply_appearance_mode(Some(window), cx);
+                this.apply_theme_pack(cx);
+            })
+            .detach();
             // Give the root view initial focus so global chords dispatch even
             // before an input takes focus (chords bubble from inputs anyway).
             this.focus_handle.focus(window, cx);

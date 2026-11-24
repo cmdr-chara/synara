@@ -4012,6 +4012,18 @@ impl Native {
             ),
         };
         let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
+        // Upstream fills are neutral, not the navy of gpui's default
+        // list_active: selected rows = white 4%, user bubble = #181818.
+        let sel_fill: gpui::Hsla = if dark_ui {
+            rgba(0xffffff0a).into()
+        } else {
+            theme.list_active
+        };
+        let user_bubble: gpui::Hsla = if dark_ui {
+            rgb(0x181818).into()
+        } else {
+            theme.list_active
+        };
         let mut col = v_flex().gap_2();
         let thread_v = get(detail, "thread");
         let messages = arr(thread_v, "messages");
@@ -4168,7 +4180,7 @@ impl Native {
                                 if chosen {
                                     ob = ob
                                         .border_color(theme.foreground)
-                                        .bg(theme.list_active)
+                                        .bg(sel_fill)
                                         .text_color(theme.foreground);
                                 } else {
                                     ob = ob
@@ -4267,7 +4279,7 @@ impl Native {
 
             if role == "user" {
                 let mut pill = div()
-                    .bg(theme.list_active)
+                    .bg(user_bubble)
                     .rounded(px(16.))
                     .px_4()
                     .py(px(10.))
@@ -4678,7 +4690,7 @@ impl Native {
             let mut card = v_flex()
                 .gap_1()
                 .w_full()
-                .bg(theme.list_active)
+                .bg(sel_fill)
                 .rounded_md()
                 .p_2()
                 .child(
@@ -5124,7 +5136,15 @@ fn row(
         .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).child(title))
         .child(div().text_xs().text_color(theme.muted_foreground).child(subtitle));
     if selected {
-        el = el.bg(theme.list_active);
+        let dark_ui = matches!(
+            cx.window_appearance(),
+            gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
+        );
+        el = el.bg(if dark_ui {
+            rgba(0xffffff0a).into()
+        } else {
+            theme.list_active
+        });
     }
     el.on_click(cx.listener(on_click))
 }
@@ -5150,6 +5170,12 @@ impl Render for Native {
             rgba(0xffffff0a).into()
         } else {
             rgb(0xf7f7f7).into()
+        };
+        // Upstream selection fills are neutral, not gpui's navy list_active.
+        let sel_fill: gpui::Hsla = if dark_ui {
+            rgba(0xffffff0a).into()
+        } else {
+            theme.list_active
         };
         let content_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
@@ -5378,7 +5404,7 @@ impl Render for Native {
                 );
             }
             if is_sel {
-                el = el.bg(theme.list_active);
+                el = el.bg(sel_fill);
             } else {
                 el = el.hover(|d| d.bg(theme.secondary));
             }
@@ -7224,7 +7250,7 @@ impl Render for Native {
                     } else {
                         row = row
                             .cursor_pointer()
-                            .hover(|s| s.bg(theme.list_active))
+                            .hover(|s| s.bg(subtle))
                             .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 this.open_split_thread(tid.clone(), cx);
                             }));
@@ -9666,7 +9692,7 @@ impl Render for Native {
                 );
             }
             if active {
-                row = row.bg(theme.list_active);
+                row = row.bg(sel_fill);
             }
             row.on_click(cx.listener(move |this, _ev, w, cx| {
                 this.settings_section = id;
@@ -10825,7 +10851,7 @@ impl Render for Native {
                                             .px_2()
                                             .py_1()
                                             .text_xs()
-                                            .hover(|d| d.bg(theme.list_active))
+                                            .hover(|d| d.bg(subtle))
                                             .on_click(cx.listener(
                                                 |this, _ev, _w, cx| {
                                                     this.pending_revert = None;

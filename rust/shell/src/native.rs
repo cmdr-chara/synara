@@ -577,6 +577,13 @@ pub struct Native {
     view_files: bool,
     files_dir: String,
     files: Vec<Value>,
+    /// Composer "@" mention browser (upstream local-folder mentions):
+    /// entries of the directory the current @query points into.
+    mention_dir: String,
+    mention_entries: Vec<Value>,
+    /// Drop stale `projects.listDirectories` replies: fast typing issues
+    /// one browse per keystroke and replies can land out of order.
+    mention_seq: u64,
     open_file: Option<(String, String)>,
     open_file_meta: Option<(String, String, String)>,
     file_editor: Option<Entity<EditorState>>,
@@ -764,6 +771,43 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
     get(v, k).as_array().map(Vec::as_slice).unwrap_or(&[])
 }
 
+/// The "@" token the draft ends in, if the composer is in a mention trigger:
+/// "@" must start a word (preceded by whitespace or at index 0) and no
+/// whitespace may follow it — like upstream's composerTrigger "mention".
+fn mention_query(draft: &str) -> Option<String> {
+    let at = draft.rfind('@')?;
+    if at > 0 && !draft[..at].ends_with(char::is_whitespace) {
+        return None;
+    }
+    let q = &draft[at + 1..];
+    if q.contains(char::is_whitespace) {
+        return None;
+    }
+    Some(q.to_string())
+}
+
+/// Directory the mention browser should list for the current draft, or None
+/// when no mention trigger is active. Path-like queries (contain '/',
+/// upstream isLocalFolderMentionQuery) browse their dirname; plain queries
+/// browse the home directory.
+fn mention_browse_dir(draft: &str) -> Option<String> {
+    let q = mention_query(draft)?;
+    let home = std::env::var("HOME").unwrap_or_else(|_| "/".to_string());
+    if !q.contains('/') {
+        return Some(home);
+    }
+    let expanded = q
+        .strip_prefix("~/")
+        .map(|rest| format!("{home}/{rest}"))
+        .unwrap_or_else(|| q.clone());
+    let dir = expanded
+        .rsplit_once('/')
+        .map(|(d, _)| d.to_string())
+        .filter(|d| !d.is_empty())
+        .unwrap_or_else(|| "/".to_string());
+    Some(dir)
+}
+
 fn get_mut<'a>(v: &'a mut Value, k: &str) -> Option<&'a mut Value> {
     v.get_mut(k)
 }
@@ -903,10 +947,14 @@ impl Native {
                 &composer,
                 window,
                 |this: &mut Self, _state, event, window, cx| {
-                    if let InputEvent::PressEnter { shift, .. } = event {
-                        if !shift {
-                            this.send(window, cx);
+                    match event {
+                        InputEvent::PressEnter { shift, .. } => {
+                            if !shift {
+                                this.send(window, cx);
+                            }
                         }
+                        InputEvent::Change => this.on_composer_change(cx),
+                        _ => {}
                     }
                 },
             )
@@ -984,6 +1032,9 @@ impl Native {
                 view_files: false,
                 files_dir: String::new(),
                 files: Vec::new(),
+                mention_dir: String::new(),
+                mention_entries: Vec::new(),
+                mention_seq: 0,
                 open_file: None,
                 open_file_meta: None,
                 file_editor: None,
@@ -3495,6 +3546,60 @@ impl Native {
     }
 
     /// Blocking RPC: list one directory level (dirs + files).
+    /// Draft typing hook: keep the "@" mention browser pointed at the
+    /// directory the query resolves to (upstream useComposerDiscovery).
+    fn on_composer_change(&mut self, cx: &mut Context<Self>) {
+        let draft = self.composer.read(cx).value().to_string();
+        if let Some(dir) = mention_browse_dir(&draft) {
+            if dir != self.mention_dir {
+                self.load_mention_dir(dir, cx);
+            }
+        }
+        cx.notify();
+    }
+
+    /// `projects.listDirectories` into the mention browser state (kept
+    /// separate from the file-browser pane's `files`).
+    fn load_mention_dir(&mut self, dir: String, cx: &mut Context<Self>) {
+        self.mention_seq += 1;
+        let seq = self.mention_seq;
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let d = dir.clone();
+            let entries = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "projects.listDirectories",
+                            json!({"cwd": d, "depth": 1, "includeFiles": true}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if seq != this.mention_seq {
+                    return;
+                }
+                if let Some(v) = entries {
+                    let mut es = arr(&v, "entries").to_vec();
+                    es.sort_by_key(|e| {
+                        if str_at(e, "kind") == "directory" {
+                            0
+                        } else {
+                            1
+                        }
+                    });
+                    this.mention_entries = es;
+                    this.mention_dir = dir;
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     fn load_dir(&mut self, dir: String, cx: &mut Context<Self>) {
         self.files_loading = true;
         self.open_file = None;
@@ -7038,6 +7143,92 @@ impl Render for Native {
                         .text_size(px(13.))
                         .text_color(theme.muted_foreground)
                         .child("No matching command."),
+                );
+            }
+            composer_col = composer_col.child(menu_card);
+        } else if let Some(query) = mention_query(&draft_text) {
+            // Upstream local-folder mention: "@" browses the filesystem and
+            // inserts a @path token. Path-like queries list their dirname
+            // and filter on the basename; plain queries list $HOME and
+            // filter by substring. Directories descend (append "/").
+            let q_lower = query
+                .rsplit('/')
+                .next()
+                .unwrap_or("")
+                .to_lowercase();
+            let mut menu_card = v_flex()
+                .w_full()
+                .max_h(px(300.))
+                .overflow_y_scrollbar()
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(12.))
+                .bg(popover_bg)
+                .shadow_md()
+                .py_1()
+                .mb(px(6.));
+            let mut shown = 0;
+            for entry in self.mention_entries.iter() {
+                let name = str_at(entry, "name").to_string();
+                if name.starts_with('.')
+                    || (!q_lower.is_empty() && !name.to_lowercase().contains(&q_lower))
+                {
+                    continue;
+                }
+                shown += 1;
+                let is_dir = str_at(entry, "kind") == "directory";
+                let path = str_at(entry, "path").to_string();
+                let entry = entry.clone();
+                menu_card = menu_card.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("mention-{path}").into()))
+                        .w_full()
+                        .px_3()
+                        .py(px(6.))
+                        .items_center()
+                        .gap_1p5()
+                        .cursor_pointer()
+                        .rounded_md()
+                        .hover(|d| d.bg(theme.secondary))
+                        .on_click(cx.listener(move |this, _ev, w, cx| {
+                            let draft = this.composer.read(cx).value().to_string();
+                            let at = draft.rfind('@').unwrap_or(draft.len());
+                            let prefix = draft[..at].to_string();
+                            if str_at(&entry, "kind") == "directory" {
+                                let p = str_at(&entry, "path").to_string();
+                                this.set_draft(&format!("{prefix}@{p}/"), w, cx);
+                                this.load_mention_dir(p, cx);
+                            } else {
+                                let p = str_at(&entry, "path").to_string();
+                                this.set_draft(&format!("{prefix}@{p} "), w, cx);
+                            }
+                            cx.notify();
+                        }))
+                        .child(
+                            svg_icon(if is_dir { icons::FOLDER } else { icons::FILE_TEXT })
+                                .size(px(14.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .text_color(theme.foreground)
+                                .child(name),
+                        ),
+                );
+                if shown >= 50 {
+                    break;
+                }
+            }
+            if shown == 0 {
+                menu_card = menu_card.child(
+                    div()
+                        .px_3()
+                        .py_2()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("No matching files."),
                 );
             }
             composer_col = composer_col.child(menu_card);

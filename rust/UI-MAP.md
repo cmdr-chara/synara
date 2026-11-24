@@ -14,30 +14,30 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | --- | --- | --- | --- |
 | App rail | AppRail, AppRailMoreMenu, AppRailUsage, DesktopUpdateRailButton | 44px v_flex icon column, outline-when-active ghost Buttons | ✅ |
 | Sidebar header | SidebarHeaderNavigationControls, "Synara ▾" app menu | DropdownMenu w/ PopupMenuItem → open_url | ✅ |
-| Sidebar search | SidebarSearchPalette, WorkspaceSearchPalette | `Input` + client filter + `searchThreads` hits | 🔶 (palette overlay missing) |
-| Sidebar projects | ProjectFolderList, SidebarProjectRowContent, ProjectMenuPicker, ProjectHoverCardContent | clickable rows w/ branch+dirty badge | 🔶 (no hover card/context menu) |
-| Sidebar chats | SidebarThreadRowContent, ThreadRowQuickActions, ThreadPinToggleButton, ThreadRunningSpinner, SidebarListSection | collapsible `row()` list + pin markers | 🔶 (pin via header menu, local state; no quick-actions) |
+| Sidebar search | SidebarSearchPalette, WorkspaceSearchPalette | palette overlay: client filter + `searchThreads`, ⌘P files, ⇧⌘F content | ✅ |
+| Sidebar projects | ProjectFolderList, SidebarProjectRowContent, ProjectMenuPicker, ProjectHoverCardContent | clickable rows w/ branch+dirty badge | 🔶 (no hover card) |
+| Sidebar chats | SidebarThreadRowContent, ThreadRowQuickActions, ThreadPinToggleButton, ThreadRunningSpinner, SidebarListSection | collapsible `row()` list + pin markers + context menu (rename/pin/fork/archive/copy/close) + drag between projects | 🔶 (no quick-action hover buttons) |
 | Empty home | ChatEmptyStateHero, ChatShell, SponsorLandingBanner | watermark columns + Υ + Support card | ✅ |
-| Composer | ComposerCapsule, ComposerInputBanners, ComposerModelPicker*, ComposerEffortSliderCard, ComposerExtrasPanel, ComposerCommandMenu, ComposerQueuedHeader | composer card; attachments (+picker/upload/chips), runtime-mode dropdown | 🔶 (model picker blocked: needs provider CLI installed; no slash menu, no effort) |
-| Transcript | ChatTranscriptPane, MessagesTimeline, TurnHeaderLine, MessageTrail, ChatMarkdown*, ThreadErrorBanner | right-aligned user pills, `TextView::markdown` (tables/code/bold/lists, selectable), Cmd+F find-bar w/ live count + accent highlight | 🔶 (no selection actions, code highlighting) |
+| Composer | ComposerCapsule, ComposerInputBanners, ComposerModelPicker*, ComposerEffortSliderCard, ComposerExtrasPanel, ComposerCommandMenu, ComposerQueuedHeader | composer card; attachments (+picker/upload/chips), runtime-mode dropdown, slash menu, @-mention fs browser | 🔶 (model picker blocked: needs provider CLI installed; no effort) |
+| Transcript | ChatTranscriptPane, MessagesTimeline, TurnHeaderLine, MessageTrail, ChatMarkdown*, ThreadErrorBanner | right-aligned user pills, `TextView::markdown` (tables/code/bold/lists, selectable), Cmd+F find-bar w/ live count + accent highlight, copy/retry actions | 🔶 (no code syntax highlighting) |
 | Activities | MessageTrail, ToolCallGroupSummaryRow, SubagentRunCard, BackgroundTaskRow, WorkflowRunCard, ProposedPlanCard, TaskProgressSteps | collapsible tool-call cards ("N actions ▸") + plan cards | 🔶 (no subagent/background-task cards) |
 | Approvals | ComposerPendingApprovalPanel, AsyncUserInputCard, UserInputQuestionForm | approve/decline buttons | 🔶 (no form-type questions) |
 | Thread chrome | OpenThreadTabStrip, ChatHeader, ThreadStatusPillChip, ThreadArchiveActionButton, RenameThreadDialog | multi-tab strip, ⋯ menu (Rename inline → thread.meta.update, Pin/Unpin local), Spinner + status chips, Stop/Archive | ✅ |
-| Files pane | ProjectFolderList, workspaceExplorer, WorkspaceFilePreview* | dir list + viewer | 🔶 (flat dir listing, no tree) |
+| Files pane | ProjectFolderList, workspaceExplorer, WorkspaceFilePreview* | lazy expand/collapse dir tree (indent 8+12·depth, chevrons, hidden-dir filter) + viewer | 🔶 (no search box, no drag-to-chat, no ctx menu) |
 | File editor | EditorWorkspaceView, WorkspaceFileEditorPane, codeEditor/* (Monaco) | `Editor` + `EditorState` (gpui native editor) | 🔶 (view/edit/save; no diff editor, no syntax lang detection) |
 | Dev servers | (dev-server UI in server surfaces) | DEV SERVERS pane list/run/stop | ✅ |
-| Settings | settings/* (44 comps), SettingsSidebarNav, ThemePackEditor, DebugFeatureFlagsMenu | Settings pane: appearance + about | 🔶 (theme+about only) |
+| Settings | settings/* (44 comps), SettingsSidebarNav, ThemePackEditor, DebugFeatureFlagsMenu | all 18+ sections w/ verbatim copy, interactive keybind rebinding | 🔶 (no ThemePackEditor, no debug flags) |
 | Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del) + colored patch view | 🔶 (no blame, no staged/unstaged split) |
 | Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | bottom TERMINAL drawer: PTY via terminal.open, subscribeEvents stream (ANSI-stripped), $ input -> terminal.write, restart/close | 🔶 (no tabs/multi-session, no search, no true tty rendering) |
 | Inbox | inbox/*, githubInbox/* (4) | INBOX pane: PR/issue rows (icon, #, repo, author, rel time), opens URL | 🔶 (no filters/actions) |
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |
 | Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock container w/ CHANGES pane | 🔶 (only changes pane; no subagents/tasks/sidechat) |
-| Kanban | kanban/* (11) | — | ⬜ |
-| Pull requests | pullRequest/* (34), PullRequestThreadDialog, GitCreatePrDialog | — | ⬜ |
-| Automation | automation/* (5), RailAutomationsPanel, ComposerAutomationSetupBanner | — | ⬜ |
+| Kanban | kanban/* (11) | rail pane: per-project columns, cards ordered updatedAt desc | ✅ |
+| Pull requests | pullRequest/* (34), PullRequestThreadDialog, GitCreatePrDialog | Code review rail pane + header git menu (Pull/Commit/Push/Create PR) + commit/PR dialogs via git.runStackedAction | 🔶 (pane is list-only; no PR detail thread) |
+| Automation | automation/* (5), RailAutomationsPanel, ComposerAutomationSetupBanner | rail pane + empty state + refresh | 🔶 (no create/edit flows) |
 | Hosts/device | hosts/* (11), device/* (3), account/* (6), profile/* (5) | — | ⬜ |
-| Dialogs/sheets | ~20 dialogs (RenameDialog, ShortcutsDialog, WhatsNewDialog, FeatureTourDialog, …) | — | ⬜ (Dialog component exists in kit) |
-| Misc chrome | SplashScreen, AppShellTopStrip, AppSnapCoordinator, RouteSurface, KeepAwakeControls, AnnouncementSheet, OneTimeCoachmark | — | ⬜ |
+| Dialogs/sheets | ~20 dialogs (RenameDialog, ShortcutsDialog, WhatsNewDialog, FeatureTourDialog, …) | ShortcutsDialog ⌘/, FeedbackDialog (live POST), RenameThread, GitCommit/GitCreatePr, tour | 🔶 (core set done) |
+| Misc chrome | SplashScreen, AppShellTopStrip, AppSnapCoordinator, RouteSurface, KeepAwakeControls, AnnouncementSheet, OneTimeCoachmark | feature tour overlay | 🔶 (tour only) |
 
 ## Port order (by user-visible value)
 

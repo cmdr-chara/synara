@@ -407,6 +407,24 @@ fn sc_chip(label: impl Into<SharedString>, theme: &Theme) -> Div {
 }
 
 // Small ghost icon button matching the web sidebar-icon-button affordance.
+/// Directories the explorer tree never expands (upstream
+/// EXPLORER_HIDDEN_DIRECTORY_NAMES + `.synara*`). Files are always shown.
+fn explorer_entry_visible(entry: &Value) -> bool {
+    const HIDDEN_DIRS: &[&str] = &[
+        ".cache", ".next", ".nuxt", ".parcel-cache", ".pnpm-store",
+        ".svelte-kit", ".turbo", ".vite", ".yarn", "build", "coverage",
+        "dist", "node_modules", "out", "target",
+    ];
+    if str_at(entry, "kind") != "directory" {
+        return true;
+    }
+    let name = str_at(entry, "name");
+    if name.starts_with(".synara") {
+        return false;
+    }
+    !HIDDEN_DIRS.contains(&name)
+}
+
 fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: Hsla) -> Stateful<Div> {
     icon_btn_pad(id, data, size, 16., hover, ink)
 }
@@ -577,6 +595,14 @@ pub struct Native {
     view_files: bool,
     files_dir: String,
     files: Vec<Value>,
+    /// Explorer tree children per directory path (upstream WorkspaceDirectory:
+    /// each expanded directory lazily fetches its own listing, cached here so
+    /// collapse/expand never refetches).
+    tree_entries: std::collections::HashMap<String, Vec<Value>>,
+    /// Expanded directory paths in the explorer tree.
+    expanded_dirs: std::collections::HashSet<String>,
+    /// Directory listings currently in flight for the tree.
+    tree_loading: std::collections::HashSet<String>,
     /// Composer "@" mention browser (upstream local-folder mentions):
     /// entries of the directory the current @query points into.
     mention_dir: String,
@@ -1094,6 +1120,9 @@ impl Native {
                 view_files: false,
                 files_dir: String::new(),
                 files: Vec::new(),
+                tree_entries: std::collections::HashMap::new(),
+                expanded_dirs: std::collections::HashSet::new(),
+                tree_loading: std::collections::HashSet::new(),
                 mention_dir: String::new(),
                 mention_entries: Vec::new(),
                 mention_seq: 0,
@@ -3995,6 +4024,9 @@ impl Native {
     fn load_dir(&mut self, dir: String, cx: &mut Context<Self>) {
         self.files_loading = true;
         self.open_file = None;
+        self.tree_entries.clear();
+        self.expanded_dirs.clear();
+        self.tree_loading.clear();
         let client = self.client.clone();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
@@ -4077,6 +4109,150 @@ impl Native {
             });
         })
         .detach();
+    }
+
+    /// Expand/collapse a directory row in the explorer tree (upstream
+    /// onToggleDirectory). The first expand lazily fetches the listing;
+    /// later toggles reuse the cached `tree_entries`.
+    fn toggle_tree_dir(&mut self, path: String, cx: &mut Context<Self>) {
+        if !self.expanded_dirs.remove(&path) {
+            self.expanded_dirs.insert(path.clone());
+            if !self.tree_entries.contains_key(&path) {
+                self.load_tree_dir(path, cx);
+            }
+        }
+        cx.notify();
+    }
+
+    /// Lazy-load one directory level for the explorer tree (upstream
+    /// WorkspaceDirectory → projects.listDirectories).
+    fn load_tree_dir(&mut self, dir: String, cx: &mut Context<Self>) {
+        if !self.tree_loading.insert(dir.clone()) {
+            return;
+        }
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let d = dir.clone();
+            let entries = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "projects.listDirectories",
+                            json!({"cwd": d, "depth": 1, "includeFiles": true}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.tree_loading.remove(&dir);
+                if let Some(v) = entries {
+                    let mut es = arr(&v, "entries").to_vec();
+                    es.sort_by_key(|e| {
+                        if str_at(e, "kind") == "directory" {
+                            0
+                        } else {
+                            1
+                        }
+                    });
+                    this.tree_entries.insert(dir, es);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    /// Rows of one level of the explorer tree (upstream WorkspaceDirectory +
+    /// ExplorerRow): h-7 rows indented 8+12·depth px, disclosure chevron on
+    /// directories, selected block on the open file, lazy expanded children.
+    fn file_tree_rows(
+        &self,
+        entries: &[Value],
+        depth: usize,
+        theme: &Theme,
+        subtle: Hsla,
+        out: &mut Vec<gpui::AnyElement>,
+        cx: &mut Context<Self>,
+    ) {
+        for entry in entries {
+            if !explorer_entry_visible(entry) {
+                continue;
+            }
+            let name = str_at(entry, "name").to_string();
+            let path = str_at(entry, "path").to_string();
+            let is_dir = str_at(entry, "kind") == "directory";
+            let expanded = is_dir && self.expanded_dirs.contains(&path);
+            let selected = !is_dir
+                && self
+                    .open_file
+                    .as_ref()
+                    .map(|(p, _)| p == &path)
+                    .unwrap_or(false);
+            let indent = px(8. + depth as f32 * 12.);
+            let entry_c = entry.clone();
+            let path_c = path.clone();
+            let mut row = h_flex()
+                .id(ElementId::Name(format!("file-{path}").into()))
+                .cursor_pointer()
+                .h(px(28.))
+                .items_center()
+                .gap_1p5()
+                .pl(indent)
+                .pr_2()
+                .rounded_md()
+                .child(
+                    svg_icon(if is_dir {
+                        if expanded {
+                            icons::CHEVRON_DOWN
+                        } else {
+                            icons::CHEVRON_RIGHT
+                        }
+                    } else {
+                        icons::FILE_TEXT
+                    })
+                    .size(px(14.))
+                    .text_color(theme.muted_foreground),
+                )
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .text_color(theme.foreground)
+                        .child(name),
+                );
+            if selected {
+                row = row.bg(theme.secondary);
+            } else {
+                row = row.hover(move |d| d.bg(subtle));
+            }
+            row = row.on_click(cx.listener(move |this, _ev, _w, cx| {
+                if is_dir {
+                    this.toggle_tree_dir(path_c.clone(), cx);
+                } else {
+                    this.open_entry(entry_c.clone(), cx);
+                }
+            }));
+            out.push(row.into_any_element());
+            if expanded {
+                if let Some(children) = self.tree_entries.get(&path) {
+                    let kids = children.clone();
+                    self.file_tree_rows(&kids, depth + 1, theme, subtle, out, cx);
+                } else if self.tree_loading.contains(&path) {
+                    out.push(
+                        div()
+                            .pl(px(8. + (depth + 1) as f32 * 12.))
+                            .py(px(4.))
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child("loading\u{2026}")
+                            .into_any_element(),
+                    );
+                }
+            }
+        }
     }
 
     /// Subscribe to change events for the currently open file; each event
@@ -6573,42 +6749,12 @@ impl Render for Native {
                             .child("loading\u{2026}"),
                     );
                 }
-                for entry in self.files.clone() {
-                    let name = str_at(&entry, "name").to_string();
-                    let is_dir = str_at(&entry, "kind") == "directory";
-                    // Upstream explorer row: h-8 px-2, entry icon, medium name —
-                    // the icon (not the color) distinguishes directories.
-                    files_pane = files_pane.child(
-                        h_flex()
-                            .id(ElementId::Name(format!("file-{name}").into()))
-                            .cursor_pointer()
-                            .h(px(32.))
-                            .items_center()
-                            .gap_1p5()
-                            .px_2()
-                            .rounded_md()
-                            .child(
-                                svg_icon(if is_dir {
-                                    icons::FOLDER
-                                } else {
-                                    icons::FILE_TEXT
-                                })
-                                .size(px(14.))
-                                .text_color(theme.muted_foreground),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .font_weight(FontWeight::MEDIUM)
-                                    .text_color(theme.foreground)
-                                    .child(name),
-                            )
-                            .hover(|d| d.bg(subtle))
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                this.open_entry(entry.clone(), cx)
-                            })),
-                    );
-                }
+                // Explorer tree (upstream WorkspaceFilesTreeBody): lazy
+                // expand/collapse directories under the workspace root.
+                let mut rows: Vec<gpui::AnyElement> = Vec::new();
+                let root_entries = self.files.clone();
+                self.file_tree_rows(&root_entries, 0, &theme, subtle.into(), &mut rows, cx);
+                files_pane = files_pane.child(v_flex().gap_0p5().children(rows));
             }
         }
 

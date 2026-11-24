@@ -33,7 +33,7 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |
 | Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock: 4 panes (Git/Subagents/Background tasks/Side chats) w/ scrollable icon+label tab strip + overflow chevrons | ✅ |
 | Kanban | kanban/* (11) | rail pane: per-project columns, cards ordered updatedAt desc | ✅ |
-| Pull requests | pullRequest/* (34), PullRequestThreadDialog, GitCreatePrDialog | Code review rail pane + header git menu (Pull/Commit/Push/Create PR) + commit/PR dialogs via git.runStackedAction | 🔶 (pane is list-only; no PR detail thread) |
+| Pull requests | pullRequest/* (34), PullRequestThreadDialog, GitCreatePrDialog | Code review rail pane + PullRequestThreadDialog (resolve → Local/Worktree checkout → draft thread) + header git menu (Pull/Commit/Push/Create PR) + commit/PR dialogs via git.runStackedAction | 🔶 (no PR detail thread view) |
 | Automation | automation/* (5), RailAutomationsPanel, ComposerAutomationSetupBanner | rail pane + definition list + detail pane (runs) + create/edit dialog + runNow/delete | ✅ |
 | Hosts/device | hosts/* (11), device/* (3), account/* (6), profile/* (5) | — | ⬜ |
 | Dialogs/sheets | ~20 dialogs (RenameDialog, ShortcutsDialog, WhatsNewDialog, FeatureTourDialog, …) | ShortcutsDialog ⌘/, FeedbackDialog (live POST), RenameThread, GitCommit/GitCreatePr, tour | 🔶 (core set done) |

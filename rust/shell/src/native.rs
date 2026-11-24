@@ -967,6 +967,15 @@ pub struct Native {
     // show-debug-task-banner]; sidebar footer popup, dev-only surface.
     feature_flags: [bool; 3],
     flags_menu_open: bool,
+    // Upstream PullRequestThreadDialog (checkout mode): resolve a GitHub PR
+    // reference, preview it, then check it out into a new thread.
+    pr_dialog_open: bool,
+    pr_dialog_input: Option<Entity<InputState>>,
+    pr_resolved: Option<Value>,
+    pr_resolving: bool,
+    pr_dialog_error: Option<String>,
+    pr_busy: bool,
+    pr_resolve_epoch: usize,
     coachmark: Option<&'static str>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
@@ -1914,6 +1923,13 @@ impl Native {
                 coachmarks_seen: std::collections::HashSet::new(),
                 feature_flags: [false; 3],
                 flags_menu_open: false,
+                pr_dialog_open: false,
+                pr_dialog_input: None,
+                pr_resolved: None,
+                pr_resolving: false,
+                pr_dialog_error: None,
+                pr_busy: false,
+                pr_resolve_epoch: 0,
                 coachmark: None,
                 sponsor_dismissed: false,
             search_open: false,
@@ -5219,6 +5235,217 @@ impl Native {
             };
         }
         self.persist_sidebar_ui(cx);
+    }
+
+    /// Upstream PullRequestThreadDialog (checkout mode) — opened from the
+    /// Code review panel's "Search or paste a PR link" field.
+    fn open_pr_dialog(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let input = cx.new(|cx| {
+            InputState::new(window, cx)
+                .placeholder("Paste a GitHub pull request URL or enter #123")
+        });
+        cx.subscribe_in(&input, window, |this: &mut Self, _s, event, _w, cx| {
+            match event {
+                InputEvent::Change => this.pr_input_changed(cx),
+                InputEvent::PressEnter { .. } => this.confirm_pr_checkout("local", cx),
+                _ => {}
+            }
+        })
+        .detach();
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        self.pr_dialog_input = Some(input);
+        self.pr_resolved = None;
+        self.pr_resolving = false;
+        self.pr_dialog_error = None;
+        self.pr_busy = false;
+        self.pr_dialog_open = true;
+        cx.notify();
+    }
+
+    /// Upstream parsePullRequestReference: `#123`, `123`, or a
+    /// github.com/<owner>/<repo>/pull/<n> URL.
+    fn pr_ref_number(&self, cx: &App) -> Option<String> {
+        let raw = self
+            .pr_dialog_input
+            .as_ref()?
+            .read(cx)
+            .value()
+            .trim()
+            .to_string();
+        if raw.is_empty() {
+            return None;
+        }
+        if let Some(rest) = raw.strip_prefix('#') {
+            return if !rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()) {
+                Some(rest.to_string())
+            } else {
+                None
+            };
+        }
+        if raw.chars().all(|c| c.is_ascii_digit()) {
+            return Some(raw);
+        }
+        if raw.contains("github.com") && raw.contains("/pull/") {
+            let tail = raw.rsplit("/pull/").next().unwrap_or("");
+            let digits: String =
+                tail.chars().take_while(|c| c.is_ascii_digit()).collect();
+            return if digits.is_empty() { None } else { Some(digits) };
+        }
+        None
+    }
+
+    /// Debounced resolve — upstream waits 450ms then calls
+    /// git.resolvePullRequest.
+    fn pr_input_changed(&mut self, cx: &mut Context<Self>) {
+        self.pr_resolved = None;
+        self.pr_dialog_error = None;
+        self.pr_resolve_epoch += 1;
+        let epoch = self.pr_resolve_epoch;
+        let Some(n) = self.pr_ref_number(cx) else {
+            self.pr_resolving = false;
+            cx.notify();
+            return;
+        };
+        self.pr_resolving = true;
+        cx.notify();
+        let cell = self.client.clone();
+        let cwd = self.git_cwd();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .timer(std::time::Duration::from_millis(450))
+                .await;
+            let Some(client) = ensure_client(&cell) else { return };
+            let Some(cwd) = cwd else { return };
+            let res = client.call(
+                "git.resolvePullRequest",
+                json!({"cwd": cwd, "reference": n}),
+            );
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.pr_resolve_epoch != epoch {
+                    return;
+                }
+                this.pr_resolving = false;
+                match res {
+                    Some(v) if !get(&v, "pullRequest").is_null() => {
+                        this.pr_resolved = Some(get(&v, "pullRequest").clone());
+                    }
+                    Some(_) => {
+                        this.pr_dialog_error =
+                            Some("Could not resolve that pull request.".to_string());
+                    }
+                    None => {
+                        this.pr_dialog_error =
+                            Some("Could not resolve that pull request.".to_string());
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// git.preparePullRequestThread then a draft thread bound to the checked
+    /// out branch/worktree — upstream's onPrepared flow.
+    fn confirm_pr_checkout(&mut self, mode: &'static str, cx: &mut Context<Self>) {
+        if self.pr_busy || self.pr_resolving {
+            return;
+        }
+        let Some(pr) = self.pr_resolved.clone() else {
+            return;
+        };
+        let Some(n) = self.pr_ref_number(cx) else {
+            return;
+        };
+        let Some(cwd) = self.git_cwd() else {
+            self.pr_dialog_error =
+                Some("No repository for this thread.".to_string());
+            cx.notify();
+            return;
+        };
+        self.pr_busy = true;
+        cx.notify();
+        let cell = self.client.clone();
+        let pid = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+            .iter()
+            .find(|p| {
+                let root = str_at(p, "repoPath");
+                !root.is_empty() && cwd.starts_with(root)
+            })
+            .or_else(|| {
+                arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                    .first()
+            })
+            .map(|p| str_at(p, "id").to_string())
+            .unwrap_or_default();
+        let title = format!(
+            "PR #{}: {}",
+            get(&pr, "number").as_i64().unwrap_or(0),
+            str_at(&pr, "title")
+        );
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let Some(client) = ensure_client(&cell) else {
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    this.pr_busy = false;
+                    this.pr_dialog_error =
+                        Some("Not connected.".to_string());
+                    cx.notify();
+                });
+                return;
+            };
+            let res = client.call(
+                "git.preparePullRequestThread",
+                json!({"cwd": cwd, "reference": n, "mode": mode}),
+            );
+            let Some(v) = res else {
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    this.pr_busy = false;
+                    this.pr_dialog_error =
+                        Some("Failed to prepare pull request thread.".to_string());
+                    cx.notify();
+                });
+                return;
+            };
+            let branch = str_at(&v, "branch").to_string();
+            let worktree = get(&v, "worktreePath").clone();
+            let tid = uuid();
+            let cmd = json!({
+                "type": "thread.create",
+                "commandId": uuid(),
+                "threadId": tid,
+                "projectId": pid,
+                "title": title,
+                "modelSelection": {
+                    "provider": "codex",
+                    "instanceId": "codex",
+                    "model": "gpt-6-astra",
+                },
+                "runtimeMode": "fullAccess",
+                "interactionMode": "chat",
+                "envMode": "local",
+                "branch": if branch.is_empty() { Value::Null } else { json!(branch) },
+                "worktreePath": worktree,
+                "createdAt": now_iso(),
+            });
+            let c = client.clone();
+            cx.background_executor()
+                .spawn(async move {
+                    c.call("orchestration.dispatchCommand", cmd)
+                })
+                .await;
+            let s = client.call("orchestration.getShellSnapshot", json!({}));
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.pr_busy = false;
+                this.pr_dialog_open = false;
+                this.pr_dialog_input = None;
+                if let Some(s) = s {
+                    this.snapshot = Some(s);
+                }
+                this.open_thread(tid, cx);
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// Upstream "Trigger action failed toasts" — fires stacked Git-failure
@@ -13459,6 +13686,7 @@ impl Render for Native {
             )
             .child(
                 h_flex()
+                    .id("pr-search-open")
                     .mx_1()
                     .mb_2()
                     .h(px(30.))
@@ -13469,6 +13697,7 @@ impl Render for Native {
                     .border_1()
                     .border_color(theme.border)
                     .bg(popover_bg)
+                    .cursor_pointer()
                     .child(
                         svg_icon(icons::SEARCH)
                             .size(px(14.))
@@ -13479,7 +13708,10 @@ impl Render for Native {
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Search or paste a PR link"),
-                    ),
+                    )
+                    .on_click(cx.listener(|this, _ev, w, cx| {
+                        this.open_pr_dialog(w, cx);
+                    })),
             )
             .child(
                 h_flex()
@@ -18955,6 +19187,221 @@ impl Render for Native {
                 );
         }
 
+        // PullRequestThreadDialog (upstream checkout mode): reference input,
+        // resolved PR card, Local/Worktree confirm buttons.
+        let mut pr_overlay = div().absolute().inset_0().size_full();
+        if self.pr_dialog_open {
+            let mut card = v_flex()
+                .w(px(576.))
+                .rounded(px(12.))
+                .border_1()
+                .border_color(theme.border)
+                .bg(theme.popover)
+                .shadow_lg()
+                .p(px(20.))
+                .gap(px(12.));
+            card = card.child(
+                div()
+                    .text_size(px(15.))
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .child("Checkout pull request"),
+            );
+            card = card.child(
+                div()
+                    .mt(px(-6.))
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .child(
+                        "Resolve a GitHub pull request, then create the draft \
+                         thread checked out to its branch.",
+                    ),
+            );
+            card = card.child(
+                div()
+                    .text_size(px(13.))
+                    .font_weight(FontWeight::MEDIUM)
+                    .child("Pull request"),
+            );
+            if let Some(input) = self.pr_dialog_input.clone() {
+                card = card.child(
+                    div()
+                        .h(px(34.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(8.))
+                        .px_2()
+                        .child(Input::new(&input).appearance(false)),
+                );
+            }
+            if let Some(pr) = &self.pr_resolved {
+                let state = str_at(pr, "state").to_string();
+                let state_color = match state.as_str() {
+                    "merged" => rgb(0x6366f1),
+                    "open" => rgb(0x059669),
+                    _ => rgb(0x71717a),
+                };
+                card = card.child(
+                    div()
+                        .rounded(px(12.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .bg(theme.muted)
+                        .p(px(12.))
+                        .child(
+                            h_flex()
+                                .items_start()
+                                .gap_3()
+                                .child(
+                                    v_flex()
+                                        .flex_1()
+                                        .min_w_0()
+                                        .child(
+                                            div()
+                                                .text_size(px(14.))
+                                                .font_weight(FontWeight::MEDIUM)
+                                                .child(
+                                                    str_at(pr, "title").to_string(),
+                                                ),
+                                        )
+                                        .child(
+                                            div()
+                                                .mt(px(2.))
+                                                .text_size(px(13.))
+                                                .text_color(theme.muted_foreground)
+                                                .child(format!(
+                                                    "#{} · {} to {}",
+                                                    get(pr, "number")
+                                                        .as_i64()
+                                                        .unwrap_or(0),
+                                                    str_at(pr, "headBranch"),
+                                                    str_at(pr, "baseBranch"),
+                                                )),
+                                        ),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .text_color(state_color)
+                                        .child(state),
+                                ),
+                        ),
+                );
+            }
+            if self.pr_resolving {
+                card = card.child(
+                    div()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("Resolving pull request\u{2026}"),
+                );
+            }
+            if let Some(err) = &self.pr_dialog_error {
+                card = card.child(
+                    div()
+                        .text_size(px(13.))
+                        .text_color(rgb(0xdc2626))
+                        .child(err.clone()),
+                );
+            }
+            let can_confirm = self.pr_resolved.is_some() && !self.pr_busy;
+            let btn = |id: &'static str,
+                       label: &'static str,
+                       primary: bool,
+                       cx: &mut Context<Self>| {
+                let mut b = div()
+                    .id(id)
+                    .h(px(32.))
+                    .px_3()
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(8.))
+                    .text_size(px(13.))
+                    .cursor_pointer();
+                if primary {
+                    b = b
+                        .bg(if can_confirm {
+                            theme.foreground
+                        } else {
+                            theme.muted
+                        })
+                        .text_color(theme.background);
+                } else {
+                    b = b
+                        .border_1()
+                        .border_color(theme.border)
+                        .text_color(theme.foreground);
+                }
+                b.child(label)
+            };
+            card = card.child(
+                h_flex()
+                    .mt(px(4.))
+                    .justify_end()
+                    .gap_2()
+                    .child(
+                        div()
+                            .id("pr-cancel")
+                            .h(px(32.))
+                            .px_3()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .text_size(px(13.))
+                            .cursor_pointer()
+                            .child("Cancel")
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                if !this.pr_busy {
+                                    this.pr_dialog_open = false;
+                                    this.pr_dialog_input = None;
+                                }
+                                cx.notify();
+                            })),
+                    )
+                    .child(
+                        btn("pr-local", "Local", false, cx).on_click(cx.listener(
+                            |this, _e, _w, cx| {
+                                this.confirm_pr_checkout("local", cx);
+                            },
+                        )),
+                    )
+                    .child(
+                        btn("pr-worktree", "Worktree", true, cx).on_click(
+                            cx.listener(|this, _e, _w, cx| {
+                                this.confirm_pr_checkout("worktree", cx);
+                            }),
+                        ),
+                    ),
+            );
+            pr_overlay = pr_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .justify_center()
+                    .bg(rgba(0x00000080))
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            if !this.pr_busy {
+                                this.pr_dialog_open = false;
+                                this.pr_dialog_input = None;
+                            }
+                            cx.notify();
+                        }),
+                    )
+                    .child(
+                        div()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                |_e, _w, cx| cx.stop_propagation(),
+                            )
+                            .child(card),
+                    ),
+            );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -19025,5 +19472,6 @@ impl Render for Native {
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
             .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))
+            .when(self.pr_dialog_open, |d| d.child(pr_overlay))
     }
 }

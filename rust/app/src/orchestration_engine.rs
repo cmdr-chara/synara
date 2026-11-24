@@ -1059,6 +1059,64 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let message_event_id = message_event.event_id.clone();
     events.push(message_event);
 
+    // A non-queued turn moves the session to 'starting' and applies the
+    // turn's runtimeMode to the session row — upstream's starting
+    // session-set. The ACP runner reads it back for session/set_mode and
+    // re-emits it on its own session-set events; queued turns do the same
+    // when dispatch-queued runs them.
+    let start_provider: Option<String> = if should_queue {
+        None
+    } else {
+        command
+            .get("modelSelection")
+            .and_then(|m| m.get("provider"))
+            .and_then(Value::as_str)
+            .map(String::from)
+            .or_else(|| {
+                conn.query_row(
+                    "SELECT provider_name FROM projection_thread_sessions \
+                     WHERE thread_id = ?1",
+                    params![thread_id],
+                    |r| r.get::<_, Option<String>>(0),
+                )
+                .ok()
+                .flatten()
+            })
+            .or_else(|| {
+                conn.query_row(
+                    "SELECT json_extract(model_selection_json, '$.provider') \
+                     FROM projection_threads WHERE thread_id = ?1",
+                    params![thread_id],
+                    |r| r.get::<_, Option<String>>(0),
+                )
+                .ok()
+                .flatten()
+            })
+    };
+    let starting_ev = if should_queue {
+        None
+    } else {
+        let mut ev = out_event(
+            "thread.session-set",
+            &thread_id,
+            &created_at,
+            json!({
+                "threadId": thread_id,
+                "session": {
+                    "threadId": thread_id,
+                    "status": "starting",
+                    "providerName": start_provider.as_deref(),
+                    "runtimeMode": command.get("runtimeMode").cloned().unwrap_or(Value::Null),
+                    "activeTurnId": null,
+                    "lastError": null,
+                    "updatedAt": created_at,
+                }
+            }),
+        );
+        ev.causation_event_id = Some(message_event_id.clone());
+        Some(ev)
+    };
+
     let mut tp = Map::new();
     tp.insert("threadId".into(), json!(thread_id));
     tp.insert("messageId".into(), json!(message_id));
@@ -1093,7 +1151,13 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         &created_at,
         Value::Object(tp),
     );
-    turn_event.causation_event_id = Some(message_event_id);
+    turn_event.causation_event_id = starting_ev
+        .as_ref()
+        .map(|e| e.event_id.clone())
+        .or(Some(message_event_id));
+    if let Some(ev) = starting_ev {
+        events.push(ev);
+    }
     events.push(turn_event);
 
     // Record the async-user-input answer on the referenced question message so
@@ -1185,31 +1249,20 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
 
     // Drive a real provider turn: Devin threads run through `devin acp`.
     if !should_queue {
-        let provider = command
-            .get("modelSelection")
-            .and_then(|m| m.get("provider"))
-            .and_then(Value::as_str)
-            .map(String::from)
-            .or_else(|| {
-                conn.query_row(
-                    "SELECT provider_name FROM projection_thread_sessions \
-                     WHERE thread_id = ?1",
-                    params![thread_id],
-                    |r| r.get::<_, Option<String>>(0),
-                )
-                .ok()
-                .flatten()
-            })
-            .or_else(|| {
-                conn.query_row(
-                    "SELECT json_extract(model_selection_json, '$.provider') \
-                     FROM projection_threads WHERE thread_id = ?1",
-                    params![thread_id],
-                    |r| r.get::<_, Option<String>>(0),
-                )
-                .ok()
-                .flatten()
-            });
+        conn.execute(
+            "INSERT OR REPLACE INTO projection_thread_sessions \
+             (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
+              active_turn_id, last_error, updated_at, runtime_mode) \
+             VALUES (?1, 'starting', ?2, NULL, NULL, NULL, NULL, ?3, ?4)",
+            params![
+                thread_id,
+                start_provider,
+                created_at,
+                s(command, "runtimeMode").unwrap_or_else(|| "full-access".into())
+            ],
+        )
+        .map_err(|e| err(e.to_string()))?;
+        let provider = start_provider;
         if provider.as_deref() == Some("devin") {
             let cwd: Option<String> = conn
                 .query_row(

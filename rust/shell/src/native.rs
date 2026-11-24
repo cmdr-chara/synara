@@ -400,7 +400,7 @@ fn sc_chip(label: impl Into<SharedString>, theme: &Theme) -> Div {
         .px(px(7.))
         .py(px(1.5))
         .rounded(px(10.))
-        .bg(gpui::rgba(0x00000008))
+        .bg(theme.secondary)
         .text_size(px(13.))
         .text_color(theme.muted_foreground)
         .child(label.into())
@@ -3277,7 +3277,7 @@ impl Native {
                 .rounded(px(8.))
                 .cursor_pointer();
             if is_active {
-                c = c.bg(rgb(0xf2f2f2));
+                c = c.bg(theme.secondary);
             }
             let tc = if is_active { theme.foreground } else { theme.muted_foreground };
             s = s.child(
@@ -4003,6 +4003,15 @@ impl Native {
         cx: &mut Context<Self>,
     ) -> Div {
         let theme = cx.theme().clone();
+        let dark_ui = match self.appearance_mode {
+            2 => true,
+            1 => false,
+            _ => matches!(
+                cx.window_appearance(),
+                gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
+            ),
+        };
+        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
         let mut col = v_flex().gap_2();
         let thread_v = get(detail, "thread");
         let messages = arr(thread_v, "messages");
@@ -4355,7 +4364,7 @@ impl Native {
                             .justify_center()
                             .rounded(px(6.))
                             .cursor_pointer()
-                            .hover(|d| d.bg(rgba(0x00000008)))
+                            .hover(|d| d.bg(subtle))
                             .on_click(cx.listener(
                                 move |this, _ev, w, cx| match iid {
                                     "umsg-edit" => {
@@ -4439,7 +4448,7 @@ impl Native {
                             .justify_center()
                             .rounded(px(6.))
                             .cursor_pointer()
-                            .hover(|d| d.bg(rgba(0x00000008)))
+                            .hover(|d| d.bg(subtle))
                             .on_click(cx.listener(
                                 move |this, _ev, _w, cx| match iid {
                                     "msg-fork" => {
@@ -5123,6 +5132,31 @@ fn row(
 impl Render for Native {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let theme = cx.theme().clone();
+        // Dark-aware chrome colors: upstream paints the top strip, rail well
+        // and hairlines from the theme, not fixed light grays.
+        let dark_ui = match self.appearance_mode {
+            2 => true,
+            1 => false,
+            _ => matches!(
+                cx.window_appearance(),
+                gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
+            ),
+        };
+        let well_bg = if dark_ui { rgb(0x1d1d1d) } else { rgb(0xf7f7f7) };
+        let hairline = if dark_ui { rgb(0x2e2e2e) } else { rgb(0xe5e5e5) };
+        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
+        let chip_bg = if dark_ui { rgba(0xffffff12) } else { rgba(0x00000008) };
+        let soft_bg = if dark_ui { rgb(0x242424) } else { rgb(0xf7f7f7) };
+        let content_bg: gpui::Hsla = if dark_ui {
+            rgb(0x111111).into()
+        } else {
+            theme.background
+        };
+        let sidebar_bg: gpui::Hsla = if dark_ui {
+            rgb(0x151515).into()
+        } else {
+            theme.background
+        };
 
         // ---- sidebar ----
         let mut sidebar = v_flex()
@@ -5657,7 +5691,7 @@ impl Render for Native {
                         .text_size(px(10.))
                         .line_height(px(13.))
                         .whitespace_nowrap()
-                        .text_color(rgba(0x00000014))
+                        .text_color(subtle)
                         .child(line),
                 );
             }
@@ -6125,7 +6159,7 @@ impl Render for Native {
                 format!("{n} thing{} need{} you.", if n == 1 { "" } else { "s" }, if n == 1 { "s" } else { "" })
             };
             let tile = |children: gpui::AnyElement| {
-                div().rounded(px(16.)).bg(rgb(0xf6f6f6)).child(children)
+                div().rounded(px(16.)).bg(soft_bg).child(children)
             };
 
             let header = h_flex()
@@ -6309,7 +6343,7 @@ impl Render for Native {
                     .gap_2()
                     .items_start()
                     .rounded(px(12.))
-                    .bg(rgb(0xffffff))
+                    .bg(theme.popover)
                     .border_1()
                     .border_color(theme.border)
                     .p(px(14.))
@@ -6400,9 +6434,9 @@ impl Render for Native {
             .rounded(ButtonRounded::Size(px(14.)))
             .with_variant(ButtonVariant::Custom(
                 ButtonCustomVariant::new(cx)
-                    .color(rgba(0x00000008).into())
+                    .color(chip_bg.into())
                     .foreground(theme.foreground)
-                    .hover(rgba(0x00000010).into()),
+                    .hover(subtle.into()),
             ))
             .w(px(28.))
             .h(px(28.))
@@ -6680,7 +6714,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(composer_border)
                 .rounded(px(19.))
-                .bg(theme.popover)
+                .bg(sidebar_bg)
                 .shadow_md()
                 .px_2()
                 .py(px(4.))
@@ -6699,7 +6733,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(composer_border)
                 .rounded(px(19.))
-                .bg(theme.popover)
+                .bg(sidebar_bg)
                 .shadow_md()
                 .px_2()
                 .pt(px(4.))
@@ -7296,7 +7330,7 @@ impl Render for Native {
                 .rounded(px(12.))
                 .border_1()
                 .border_color(theme.border)
-                .bg(rgb(0xfafafa))
+                .bg(theme.popover)
                 .child(rows)
         };
         // One row: title + description left, control right.
@@ -7394,7 +7428,7 @@ impl Render for Native {
                     .items_center()
                     .rounded(px(8.));
                 if i == active {
-                    c = c.bg(rgb(0xf2f2f2));
+                    c = c.bg(theme.secondary);
                 }
                 let tc = if i == active { theme.foreground } else { theme.muted_foreground };
                 s = s.child(
@@ -8174,7 +8208,7 @@ impl Render for Native {
                     v_flex()
                         .gap(px(3.))
                         .children((0..7).map(|_| {
-                            div().w(px(9.)).h(px(9.)).rounded(px(2.)).bg(rgb(0xededed)).into_any_element()
+                            div().w(px(9.)).h(px(9.)).rounded(px(2.)).bg(chip_bg).into_any_element()
                         }))
                         .into_any_element()
                 };
@@ -8610,7 +8644,7 @@ impl Render for Native {
                                     .px_2()
                                     .py_1()
                                     .rounded(px(6.))
-                                    .bg(rgb(0xeeeeee))
+                                    .bg(chip_bg)
                                     .text_xs()
                                     .font_weight(FontWeight::MEDIUM)
                                     .child("Overview"),
@@ -8680,7 +8714,7 @@ impl Render for Native {
                     .rounded_full()
                     .border_1()
                     .border_color(theme.border)
-                    .bg(rgb(0xf7f7f7))
+                    .bg(soft_bg)
                     .items_center()
                     .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
                     .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Search connectors"))
@@ -9582,7 +9616,7 @@ impl Render for Native {
                 .rounded_full()
                 .border_1()
                 .border_color(theme.border)
-                .bg(rgb(0xf7f7f7))
+                .bg(soft_bg)
                 .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
                 .child(
                     div()
@@ -9716,7 +9750,7 @@ impl Render for Native {
                             .gap(px(2.))
                             .p(px(2.))
                             .rounded(px(8.))
-                            .bg(rgb(0xf0f0f0))
+                            .bg(soft_bg)
                             .child(seg_chip("seg-tasks-list", "List", true).on_click(cx.listener(
                                 |this, _e, _w, cx| this.open_route(1, cx),
                             )))
@@ -9958,7 +9992,7 @@ impl Render for Native {
                             .gap(px(2.))
                             .p(px(2.))
                             .rounded(px(8.))
-                            .bg(rgb(0xf0f0f0))
+                            .bg(soft_bg)
                             .child(seg_chip("seg-kb-list", "List", false).on_click(cx.listener(
                                 |this, _e, _w, cx| this.open_route(1, cx),
                             )))
@@ -9971,7 +10005,7 @@ impl Render for Native {
                             .gap(px(2.))
                             .p(px(2.))
                             .rounded(px(8.))
-                            .bg(rgb(0xf0f0f0))
+                            .bg(soft_bg)
                             .child(seg_chip("seg-kb-att", "Attention", true))
                             .child(seg_chip("seg-kb-classic", "Classic", false)),
                     )
@@ -10049,8 +10083,8 @@ impl Render for Native {
                     .mt(px(35.))
                     .rounded(px(8.))
                     .border_1()
-                    .border_color(rgb(0xf0d9a8))
-                    .bg(rgb(0xfdf6e8))
+                    .border_color(if dark_ui { rgb(0x6b5423) } else { rgb(0xf0d9a8) })
+                    .bg(if dark_ui { rgb(0x2e2512) } else { rgb(0xfdf6e8) })
                     .px_3()
                     .py_2()
                     .text_size(px(12.))
@@ -10104,7 +10138,7 @@ impl Render for Native {
                     .rounded(px(8.))
                     .border_1()
                     .border_color(theme.border)
-                    .bg(rgb(0xfafafa))
+                    .bg(theme.popover)
                     .child(
                         svg_icon(icons::SEARCH)
                             .size(px(14.))
@@ -10132,7 +10166,7 @@ impl Render for Native {
                             .rounded(px(6.))
                             .border_1()
                             .border_color(theme.border)
-                            .bg(rgb(0xf5f5f5))
+                            .bg(soft_bg)
                             .child(
                                 div()
                                     .text_size(px(13.))
@@ -10428,7 +10462,7 @@ impl Render for Native {
                     .font_family(theme.mono_font_family.clone())
                     .text_size(px(13.))
                     .text_color(theme.muted_foreground)
-                    .hover(|d| d.bg(rgba(0xffffff8c)))
+                    .hover(|d| d.bg(subtle))
                     .child("Chat")
                     .on_click(cx.listener(|this, _ev, _w, cx| {
                         this.term_active = false;
@@ -10445,11 +10479,11 @@ impl Render for Native {
                     .rounded(px(4.))
                     .cursor_pointer()
                     .text_color(theme.muted_foreground)
-                    .hover(|d| d.bg(rgba(0x0000000d)))
+                    .hover(|d| d.bg(subtle))
                     .child("\u{00d7}")
                     .on_click(cx.listener(|this, _ev, w, cx| this.toggle_terminal(w, cx))),
             );
-        let mut term_surface = v_flex().flex_1().min_h_0().w_full().bg(theme.background);
+        let mut term_surface = v_flex().flex_1().min_h_0().w_full().bg(content_bg);
         term_surface = term_surface
             .child(term_sub_strip)
             .child(
@@ -11565,7 +11599,7 @@ impl Render for Native {
         let strip = h_flex()
             .w_full()
             .h(px(47.))
-            .bg(rgb(0xf7f7f7))
+            .bg(well_bg)
             .items_center()
             .pr(px(19.))
             .child(
@@ -11631,6 +11665,11 @@ impl Render for Native {
                             .rounded(px(8.))
                             .cursor_pointer()
                             .border_1()
+                            .bg(if active {
+                                content_bg
+                            } else {
+                                gpui::transparent_black()
+                            })
                             .border_color(if active {
                                 theme.border
                             } else {
@@ -11665,7 +11704,7 @@ impl Render for Native {
                                     .justify_center()
                                     .rounded(px(4.))
                                     .cursor_pointer()
-                                    .hover(|d| d.bg(rgba(0x0000000d)))
+                                    .hover(|d| d.bg(subtle))
                                     .child(
                                         div()
                                             .text_size(px(13.))
@@ -11708,7 +11747,7 @@ impl Render for Native {
                                 },
                             ));
                         if !active {
-                            pill = pill.hover(|d| d.bg(rgba(0x00000008)));
+                            pill = pill.hover(|d| d.bg(subtle));
                         }
                         tabs = tabs.child(pill);
                     }
@@ -11774,7 +11813,7 @@ impl Render for Native {
                     .w(px(1.))
                     .h(px(18.))
                     .mx(px(6.))
-                    .bg(rgba(0x00000014)),
+                    .bg(hairline),
             )
             .child(
                 rail_btn("nav-env", icons::PANEL_TOP_OPEN, self.view_files, cx).on_click(
@@ -11796,8 +11835,8 @@ impl Render for Native {
         // bottom inset) exactly like upstream's app-rail-panel.
         let mut left_well = h_flex()
             .h_full()
-            .bg(rgb(0xf7f7f7))
-            .child(rail.border_r_1().border_color(rgb(0xe5e5e5)));
+            .bg(well_bg)
+            .child(rail.border_r_1().border_color(hairline));
         if !self.sidebar_collapsed
             && !self.view_inbox
             && !self.view_tasks
@@ -11819,10 +11858,10 @@ impl Render for Native {
                     .w(px(257.))
                     .h_full()
                     .mb(px(4.))
-                    .bg(theme.background)
+                    .bg(sidebar_bg)
                     .border_r_1()
                     .border_b_1()
-                    .border_color(rgb(0xe5e5e5))
+                    .border_color(hairline)
                     .rounded(px(10.))
                     .overflow_hidden()
                     .child(side),
@@ -12616,7 +12655,7 @@ impl Render for Native {
             .on_action(cx.listener(|this, _: &ToggleTerminal, w, cx| {
                 this.toggle_terminal(w, cx);
             }))
-            .bg(theme.background)
+            .bg(content_bg)
             .text_color(theme.foreground)
             .child(strip)
             .child(body)

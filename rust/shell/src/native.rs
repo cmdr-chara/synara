@@ -15578,8 +15578,8 @@ impl Render for Native {
                                             .rounded(px(6.))
                                             .px(px(12.))
                                             .py(px(4.))
-                                            .bg(rgb(acc))
-                                            .child(div().text_size(px(13.)).text_color(gpui::white()).child("Accent preview")),
+                                            .bg(gpui::rgba((acc << 8) | 0x1f))
+                                            .child(div().text_size(px(13.)).text_color(rgb(acc)).child("Accent preview")),
                                     ),
                                 ),
                             )

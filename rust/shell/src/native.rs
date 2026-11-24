@@ -8488,6 +8488,74 @@ impl Native {
                         }),
                 );
             }
+            // Export (native save dialog).
+            {
+                let md2 = format!("{}\n", md.trim_end());
+                let slug2 = {
+                    let s = title
+                        .to_lowercase()
+                        .replace(
+                            |c: char| "`'\".,!?()[]{}".contains(c),
+                            "",
+                        )
+                        .replace(
+                            |c: char| !(c.is_ascii_alphanumeric()),
+                            "-",
+                        )
+                        .trim_matches('-')
+                        .to_string();
+                    if s.is_empty() { "plan".to_string() } else { s }
+                };
+                actions = actions.child(
+                    div()
+                        .id(ElementId::Name(format!("plan-ex-{plan_id}").into()))
+                        .size(px(20.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(5.))
+                        .text_size(px(11.))
+                        .text_color(theme.muted_foreground)
+                        .cursor_pointer()
+                        .hover(|s| s.text_color(theme.foreground))
+                        .child("\u{2191}")
+                        .on_mouse_down(MouseButton::Left, {
+                            let tid = str_at(thread_v, "id").to_string();
+                            cx.listener(move |this, _e, _w, cx| {
+                                let dir = this
+                                    .thread_workspace_cwd(&tid)
+                                    .map(std::path::PathBuf::from)
+                                    .unwrap_or_else(|| std::env::temp_dir());
+                                let rx = cx.prompt_for_new_path(
+                                    &dir,
+                                    Some(&format!("{slug2}.md")),
+                                );
+                                let md3 = md2.clone();
+                                cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                                    let path = rx.await.ok().and_then(|r| r.ok()).flatten();
+                                    let ok = match &path {
+                                        Some(p) => std::fs::write(p, &md3).is_ok(),
+                                        None => return,
+                                    };
+                                    let _ = this.update(cx, |this, cx| {
+                                        this.feedback_toast = Some((
+                                            if ok {
+                                                "Plan exported.".to_string()
+                                            } else {
+                                                "Could not export the plan.".to_string()
+                                            },
+                                            !ok,
+                                        ));
+                                        cx.notify();
+                                    });
+                                })
+                                .detach();
+                            })
+                        }),
+                );
+            }
             // Copy as markdown.
             {
                 let md2 = format!("{}\n", md.trim_end());

@@ -940,6 +940,9 @@ pub struct Native {
     ascii_seed: f32,
     ascii_cells: Vec<u8>,
     ascii_ripples: Vec<(f32, f32, f32, f32, std::time::Instant)>,
+    /// Cell pitch measured like upstream (`measureText("M").width + 1` in the
+    /// UI font); 0 until first measured.
+    ascii_cell_w: f32,
     /// Set when the landing leaves the screen; the next landing mounts a
     /// fresh field (upstream remounts AsciiWaveBackground).
     ascii_fresh: bool,
@@ -1495,7 +1498,9 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
 
 const ASCII_GLYPHS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 // Cell pitch in px, matching upstream FONT_SIZE_PX/LINE_HEIGHT_PX metrics.
-const ASCII_CELL_W: f32 = 6.0;
+// Upstream cellW = measureText("M").width + 1 in the UI font (~8.5px for
+// SF Pro at 10px); narrower cells packed the field too densely.
+const ASCII_CELL_W: f32 = 8.5;
 const ASCII_CELL_H: f32 = 13.0;
 const ASCII_PATTERN_MS: u64 = 20_000;
 const ASCII_CROSSFADE_MS: u64 = 4_000;
@@ -2287,6 +2292,7 @@ impl Native {
             ascii_seed: 0.0,
             ascii_cells: Vec::new(),
             ascii_ripples: Vec::new(),
+            ascii_cell_w: 0.0,
             ascii_fresh: true,
             split_open: false,
             split_thread: None,
@@ -11080,7 +11086,27 @@ impl Render for Native {
                 (window.viewport_size().width.as_f32() - pane_ox).max(60.);
             let avail_h =
                 (window.viewport_size().height.as_f32() - 47.).max(60.);
-            let cols = (avail_w / ASCII_CELL_W).ceil() as usize;
+            if self.ascii_cell_w <= 0. {
+                let measured = window
+                    .text_system()
+                    .shape_line(
+                        "M".into(),
+                        px(10.),
+                        &[TextRun {
+                            len: 1,
+                            font: gpui::font(theme.font_family.clone()),
+                            color: theme.foreground,
+                            background_color: None,
+                            underline: None,
+                            strikethrough: None,
+                        }],
+                        None,
+                    )
+                    .width();
+                self.ascii_cell_w = (f32::from(measured) + 1.).round().max(1.);
+            }
+            let cw = self.ascii_cell_w;
+            let cols = (avail_w / cw).ceil() as usize;
             let rows = (avail_h / ASCII_CELL_H).ceil() as usize;
             let n_cells = cols * rows;
             if self.ascii_fresh || self.ascii_cells.len() != n_cells {
@@ -11121,7 +11147,7 @@ impl Render for Native {
             } else {
                 None
             };
-            let fw = cols as f32 * ASCII_CELL_W;
+            let fw = cols as f32 * cw;
             let fh = rows as f32 * ASCII_CELL_H;
             let (fcx, fcy) = (fw / 2., fh / 2.);
             self.ascii_ripples.retain(|r| {
@@ -11129,9 +11155,9 @@ impl Render for Native {
                     < ASCII_RIPPLE_LIFE_MS as u128
             });
             let ripples = self.ascii_ripples.clone();
-            let mut ink_rows: Vec<Vec<String>> =
-                (0..6).map(|_| Vec::with_capacity(rows)).collect();
-            let mut rows_accent: Vec<String> = Vec::with_capacity(rows);
+            // (col, row, glyph, alpha-key): ink alpha quantized to 2/255
+            // steps like the upstream 8-bit mask; 255 marks an accent cell.
+            let mut draws: Vec<(u16, u16, u8, u8)> = Vec::new();
             let mut rng = (elapsed_ms as u32)
                 .wrapping_mul(747_796_405)
                 .wrapping_add(2_891_336_453);
@@ -11145,7 +11171,7 @@ impl Render for Native {
             for ly in 0..lat_rows {
                 let y = ((ly * FIELD_STEP) as f32 + 0.5) * ASCII_CELL_H;
                 for lx in 0..lat_cols {
-                    let x = ((lx * FIELD_STEP) as f32 + 0.5) * ASCII_CELL_W;
+                    let x = ((lx * FIELD_STEP) as f32 + 0.5) * cw;
                     let (mut patch, mut wave) =
                         ascii_sample(pat, x, y, fcx, fcy, t);
                     if let Some(np) = next_pat {
@@ -11159,12 +11185,9 @@ impl Render for Native {
                 }
             }
             for r in 0..rows {
-                let mut ink_line: [String; 6] =
-                    std::array::from_fn(|_| String::with_capacity(cols));
-                let mut acc = String::with_capacity(cols);
                 for c in 0..cols {
                     let idx = r * cols + c;
-                    let x = (c as f32 + 0.5) * ASCII_CELL_W;
+                    let x = (c as f32 + 0.5) * cw;
                     let y = (r as f32 + 0.5) * ASCII_CELL_H;
                     // Bilinear lookup into the subsampled lattice.
                     let lx = (c / FIELD_STEP).min(lat_cols - 2);
@@ -11227,77 +11250,90 @@ impl Render for Native {
                         self.ascii_cells[idx] =
                             (rng as usize % ASCII_GLYPHS.len()) as u8;
                     }
-                    let ch = self.ascii_cells[idx] as char;
+                    let glyph = self.ascii_cells[idx];
                     if use_accent {
-                        acc.push(ch);
-                        for l in ink_line.iter_mut() {
-                            l.push(' ');
-                        }
-                    } else {
-                        acc.push(' ');
-                        // Continuous upstream alpha -> six ink buckets with
-                        // stochastic dithering: a cell lands in the bucket
-                        // below or above its alpha, weighted by the fraction,
-                        // so the field reads as a smooth ramp in aggregate.
-                        let pos = ink_alpha / 0.03;
-                        let base = pos.floor();
-                        rng ^= rng << 13;
-                        rng ^= rng >> 17;
-                        rng ^= rng << 5;
-                        let frac_roll = rng as f32 / 4294967296.0;
-                        let bucket = if ink_alpha < 0.004 {
-                            usize::MAX
-                        } else {
-                            ((base + if frac_roll < pos - base { 1. } else { 0. })
-                                as usize)
-                                .min(5)
-                        };
-                        for (bi, l) in ink_line.iter_mut().enumerate() {
-                            l.push(if bi == bucket { ch } else { ' ' });
-                        }
+                        draws.push((c as u16, r as u16, glyph, 255));
+                    } else if ink_alpha >= 0.004 {
+                        let aq = ((ink_alpha * 255. / 2.).round() as u8).clamp(1, 127);
+                        draws.push((c as u16, r as u16, glyph, aq));
                     }
                 }
-                for (bi, l) in ink_line.into_iter().enumerate() {
-                    ink_rows[bi].push(l);
-                }
-                rows_accent.push(acc);
             }
-            let layer = |rows: Vec<String>, color: gpui::Hsla| {
-                let mut col = v_flex().gap_0();
-                for line in rows {
-                    col = col.child(
-                        div()
-                            .text_size(px(10.))
-                            .line_height(px(13.))
-                            .whitespace_nowrap()
-                            .text_color(color)
-                            .child(line),
-                    );
-                }
-                div()
-                    .absolute()
-                    .inset_0()
-                    .overflow_hidden()
-                    .child(col)
-            };
             let wm = if self.show_ascii_bg {
-                let mut field = div()
+                let field = div()
                     .size_full()
                     .overflow_hidden()
                     .relative();
-                for (bi, rws) in ink_rows.into_iter().enumerate() {
-                    // Bucket alpha = the bucket's representative ink alpha;
-                    // upstream draws a continuous 0..0.18 ramp, so the faint
-                    // tail must stay near-invisible instead of at 0.18.
-                    field = field.child(layer(
-                        rws,
-                        theme
-                            .foreground
-                            .opacity(0.03 * (bi as f32 + 1.))
-                            .into(),
-                    ));
-                }
-                field.child(layer(rows_accent, theme.primary.opacity(0.75).into()))
+                // Per-cell glyph painting like the upstream canvas atlas:
+                // one shaped line per (glyph, alpha) pair, each drawn
+                // centered in its cell so the grid pitch stays exact.
+                let fg = theme.foreground;
+                let ac = theme.primary;
+                let fam = theme.font_family.clone();
+                let draws = std::rc::Rc::new(draws);
+                let draws_paint = draws.clone();
+                field.child(
+                    gpui::canvas(
+                        move |_bounds, window, _cx| {
+                            let font = gpui::font(fam.clone());
+                            let mut lines: std::collections::HashMap<
+                                (u8, u8),
+                                gpui::ShapedLine,
+                            > = std::collections::HashMap::with_capacity(
+                                draws.len().min(2048),
+                            );
+                            for &(_, _, g, a) in draws.iter() {
+                                lines.entry((g, a)).or_insert_with(|| {
+                                    let color = if a == 255 {
+                                        ac.opacity(0.75)
+                                    } else {
+                                        fg.opacity(a as f32 * 2. / 255.)
+                                    };
+                                    window.text_system().shape_line(
+                                        SharedString::from(
+                                            (ASCII_GLYPHS[g as usize] as char)
+                                                .to_string(),
+                                        ),
+                                        px(10.),
+                                        &[TextRun {
+                                            len: 1,
+                                            font: font.clone(),
+                                            color,
+                                            background_color: None,
+                                            underline: None,
+                                            strikethrough: None,
+                                        }],
+                                        None,
+                                    )
+                                });
+                            }
+                            lines
+                        },
+                        move |bounds, lines, window, cx| {
+                            let cw_px = px(cw);
+                            let lh = px(ASCII_CELL_H);
+                            for &(c, r, g, a) in draws_paint.iter() {
+                                if let Some(line) = lines.get(&(g, a)) {
+                                    let x = bounds.origin.x
+                                        + px(c as f32 * cw)
+                                        + (cw_px - line.width()) / 2.;
+                                    let y = bounds.origin.y
+                                        + px(r as f32 * ASCII_CELL_H);
+                                    let _ = line.paint(
+                                        gpui::point(x, y),
+                                        lh,
+                                        gpui::TextAlign::Left,
+                                        None,
+                                        window,
+                                        cx,
+                                    );
+                                }
+                            }
+                        },
+                    )
+                    .absolute()
+                    .inset_0(),
+                )
             } else {
                 div().size_full()
             };

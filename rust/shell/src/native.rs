@@ -885,6 +885,9 @@ pub struct Native {
     // Working directory "Open Path in Terminal" seeds the next terminal.open
     // with when the drawer is currently closed.
     term_pending_cwd: Option<String>,
+    // TerminalSearch: in-buffer find bar (magnifier toggles it).
+    term_search_input: Option<Entity<InputState>>,
+    term_search_query: String,
     find_open: bool,
     find_input: Option<Entity<InputState>>,
     find_query: String,
@@ -1471,6 +1474,8 @@ impl Native {
                 term_input: None,
                 term_events: false,
                 term_pending_cwd: None,
+                term_search_input: None,
+                term_search_query: String::new(),
                 settings_scroll: ScrollHandle::new(),
                 settings_nav_scroll: ScrollHandle::new(),
                 settings_data: Value::Null,
@@ -3226,6 +3231,29 @@ impl Native {
             self.open_terminal(cx);
         } else {
             self.close_terminal(cx);
+        }
+        cx.notify();
+    }
+
+    /// Magnifier in the terminal sub-strip: toggle the in-buffer find bar
+    /// (upstream TerminalSearch). Esc/× closes and clears the query.
+    fn toggle_term_search(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if self.term_search_input.is_some() {
+            self.term_search_input = None;
+            self.term_search_query.clear();
+        } else {
+            let input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("find in buffer")
+            });
+            cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, _w, cx| {
+                if let InputEvent::Change = ev {
+                    this.term_search_query = _s.read(cx).value().to_string();
+                    cx.notify();
+                }
+            })
+            .detach();
+            input.update(cx, |s, cx| s.focus_handle(cx).focus(window, cx));
+            self.term_search_input = Some(input);
         }
         cx.notify();
     }
@@ -12873,6 +12901,20 @@ impl Render for Native {
             )
             .child(
                 div()
+                    .id("term-search-btn")
+                    .size(px(20.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(4.))
+                    .cursor_pointer()
+                    .text_color(theme.muted_foreground)
+                    .hover(|d| d.bg(subtle))
+                    .child(svg_icon(icons::SEARCH).size(px(12.)))
+                    .on_click(cx.listener(|this, _ev, w, cx| this.toggle_term_search(w, cx))),
+            )
+            .child(
+                div()
                     .id("term-surface-close")
                     .size(px(20.))
                     .flex()
@@ -12888,6 +12930,49 @@ impl Render for Native {
         let mut term_surface = v_flex().flex_1().min_h_0().w_full().bg(content_bg);
         term_surface = term_surface
             .child(term_sub_strip)
+            .when(self.term_search_input.is_some(), |d| {
+                let inp = self.term_search_input.clone().unwrap();
+                let q = self.term_search_query.to_lowercase();
+                let matches = if q.is_empty() {
+                    0
+                } else {
+                    self.term_buf
+                        .lines()
+                        .filter(|l| l.to_lowercase().contains(&q))
+                        .count()
+                };
+                d.child(
+                    h_flex()
+                        .px(px(13.))
+                        .py(px(4.))
+                        .gap_2()
+                        .items_center()
+                        .border_b_1()
+                        .border_color(rgba(0x00000012))
+                        .child(
+                            div()
+                                .w(px(200.))
+                                .h(px(24.))
+                                .px_2()
+                                .flex()
+                                .items_center()
+                                .rounded(px(6.))
+                                .border_1()
+                                .border_color(theme.border)
+                                .child(Input::new(&inp).appearance(false)),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(if q.is_empty() {
+                                    String::new()
+                                } else {
+                                    format!("{matches} match{}", if matches == 1 { "" } else { "es" })
+                                }),
+                        ),
+                )
+            })
             .child(
                 div()
                     .flex_1()
@@ -12898,10 +12983,26 @@ impl Render for Native {
                     .py_2()
                     .font_family(theme.mono_font_family.clone())
                     .text_xs()
-                    .child(if self.term_buf.is_empty() {
-                        "Starting terminal\u{2026}".to_string()
-                    } else {
-                        self.term_buf.clone()
+                    .when(!self.term_search_query.is_empty(), |d| {
+                        let q = self.term_search_query.to_lowercase();
+                        let mut col = v_flex().w_full();
+                        for line in self.term_buf.lines() {
+                            let hit = line.to_lowercase().contains(&q);
+                            col = col.child(
+                                div()
+                                    .w_full()
+                                    .when(hit, |d| d.bg(theme.primary.opacity(0.14)))
+                                    .child(line.to_string()),
+                            );
+                        }
+                        d.child(col)
+                    })
+                    .when(self.term_search_query.is_empty(), |d| {
+                        d.child(if self.term_buf.is_empty() {
+                            "Starting terminal\u{2026}".to_string()
+                        } else {
+                            self.term_buf.clone()
+                        })
                     })
                     .when_some(self.term_input.clone(), |d, inp| {
                         // The command line renders as the next terminal line —

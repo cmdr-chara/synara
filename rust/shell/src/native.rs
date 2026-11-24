@@ -1773,6 +1773,14 @@ impl Native {
         input.update(cx, |s, cx| {
             s.set_value(title, window, cx);
         });
+        cx.subscribe_in(&input, window, |this: &mut Self, _s, event, _w, cx| {
+            if let InputEvent::PressEnter { .. } = event {
+                this.commit_rename(cx);
+            }
+        })
+        .detach();
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
         self.rename_input = Some(input);
         self.renaming = true;
         cx.notify();
@@ -1885,6 +1893,14 @@ impl Native {
         input.update(cx, |s, cx| {
             s.set_value(current, window, cx);
         });
+        cx.subscribe_in(&input, window, |this: &mut Self, _s, event, _w, cx| {
+            if let InputEvent::PressEnter { .. } = event {
+                this.commit_project_rename(cx);
+            }
+        })
+        .detach();
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
         self.proj_rename_input = Some(input);
         self.proj_rename = Some(project_id);
         cx.notify();
@@ -13877,6 +13893,14 @@ impl Render for Native {
                         input.update(cx, |s, cx| {
                             s.set_value(title_rename.clone(), w, cx);
                         });
+                        cx.subscribe_in(&input, w, |this: &mut Self, _s, event, _w, cx| {
+                            if let InputEvent::PressEnter { .. } = event {
+                                this.commit_rename(cx);
+                            }
+                        })
+                        .detach();
+                        let focus = input.read(cx).focus_handle(cx);
+                        w.focus(&focus, cx);
                         this.rename_input = Some(input);
                         this.renaming = true;
                     })))

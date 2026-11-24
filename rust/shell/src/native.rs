@@ -90,6 +90,8 @@ mod icons {
     pub const SHIELD_CODE: &[u8] = include_bytes!("../assets/icons/shield-code.svg");
     pub const CHEVRON_DOWN: &[u8] =
         include_bytes!("../assets/icons/chevron-down-small.svg");
+    pub const CHEVRON_LEFT: &[u8] =
+        include_bytes!("../assets/icons/chevron-left.svg");
     pub const CHEVRON_RIGHT: &[u8] =
         include_bytes!("../assets/icons/chevron-right.svg");
     pub const WORKTREE: &[u8] =
@@ -1049,6 +1051,12 @@ pub struct Native {
     /// App tour walkthrough (upstream AppTour): current step index.
     tour_step: Option<usize>,
     user_input_draft: Vec<(String, usize, String)>,
+    // Blocking pending userInput prompt (upstream UserInputQuestionForm +
+    // ComposerPendingUserInputPanel): drafts keyed requestId → questionId,
+    // the active question index per request, and an in-flight respond flag.
+    pi_drafts: std::collections::HashMap<String, std::collections::HashMap<String, PiDraft>>,
+    pi_qidx: std::collections::HashMap<String, usize>,
+    pi_responding: bool,
     // Git actions (upstream GitActionsControl + GitCommitDialog/GitCreatePrDialog).
     git_dialog: Option<GitDialog>,
     git_msg_input: Option<Entity<InputState>>,
@@ -1068,6 +1076,101 @@ pub struct Native {
 enum GitDialog {
     Commit,
     Pr,
+}
+
+/// Draft answer to one blocking userInput question (upstream
+/// PendingUserInputDraftAnswer): option labels selected and/or a custom
+/// free-text answer, the custom text winning when both exist.
+#[derive(Default, Clone)]
+struct PiDraft {
+    options: Vec<String>,
+    custom: String,
+}
+
+/// The first actionable blocking userInput prompt of a thread detail
+/// (upstream `pendingUserInputs[0]`): request id, optional lifecycle
+/// generation, and the provider-authored questions parsed out of the newest
+/// matching `user-input.requested` activity
+/// (`derivePendingUserInputs` + `parseUserInputQuestions`).
+fn active_pending_input(
+    thread_v: &Value,
+) -> Option<(String, Option<String>, Vec<Value>)> {
+    for p in arr(thread_v, "pendingInteractions") {
+        if str_at(p, "interactionKind") != "userInput" || str_at(p, "status") != "pending" {
+            continue;
+        }
+        let rid = str_at(p, "requestId").to_string();
+        if rid.is_empty() {
+            continue;
+        }
+        let gen = {
+            let g = str_at(p, "lifecycleGeneration").to_string();
+            (!g.is_empty()).then_some(g)
+        };
+        let mut questions: Vec<Value> = Vec::new();
+        for a in arr(thread_v, "activities").iter().rev() {
+            if str_at(a, "kind") != "user-input.requested" {
+                continue;
+            }
+            let payload = get(a, "payload");
+            if str_at(payload, "requestId") != rid {
+                continue;
+            }
+            questions = arr(payload, "questions")
+                .iter()
+                .filter(|q| {
+                    !str_at(q, "id").is_empty()
+                        && !str_at(q, "header").is_empty()
+                        && !str_at(q, "question").is_empty()
+                        && get(q, "options").is_array()
+                })
+                .cloned()
+                .collect();
+            if !questions.is_empty() {
+                break;
+            }
+        }
+        if !questions.is_empty() {
+            return Some((rid, gen, questions));
+        }
+    }
+    None
+}
+
+/// Resolved answer for one question (upstream resolvePendingUserInputAnswer):
+/// the custom answer, the selected list for multi-select, or the first label.
+fn pi_resolved(q: &Value, draft: Option<&PiDraft>) -> Option<Value> {
+    let draft = draft?;
+    let custom = draft.custom.trim();
+    if !custom.is_empty() {
+        return Some(json!(custom));
+    }
+    let sel: Vec<String> = draft
+        .options
+        .iter()
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect();
+    if get(q, "multiSelect").as_bool().unwrap_or(false) {
+        (!sel.is_empty()).then(|| json!(sel))
+    } else {
+        sel.first().map(|s| json!(s))
+    }
+}
+
+/// Complete answers record for `thread.user-input.respond`
+/// (upstream buildPendingUserInputAnswers): every question answered.
+fn pi_build_answers(
+    questions: &[Value],
+    drafts: Option<&std::collections::HashMap<String, PiDraft>>,
+) -> Option<Value> {
+    let mut out = serde_json::Map::new();
+    for q in questions {
+        let qid = str_at(q, "id");
+        let draft = drafts.and_then(|m| m.get(qid));
+        out.insert(qid.to_string(), pi_resolved(q, draft)?);
+    }
+    Some(Value::Object(out))
 }
 
 /// One PTY session backing a terminal tab (upstream TerminalWorkspaceTabs).
@@ -2016,6 +2119,9 @@ impl Native {
             git_action_running: false,
             tour_step: None,
             user_input_draft: Vec::new(),
+            pi_drafts: std::collections::HashMap::new(),
+            pi_qidx: std::collections::HashMap::new(),
+            pi_responding: false,
             find_open: false,
                 find_input: None,
                 find_query: String::new(),
@@ -3437,6 +3543,57 @@ impl Native {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
+        // A docked blocking userInput form owns plain digits (upstream
+        // global digit shortcuts pick option 1–9) and Enter advances or
+        // submits — but only while no input holds focus, where digits stay
+        // composer text (the custom answer).
+        let m = event.keystroke.modifiers;
+        if !m.platform && !m.control && !m.alt && !m.function {
+            let tv = self
+                .detail
+                .as_ref()
+                .map(|d| get(d, "thread"))
+                .cloned()
+                .unwrap_or(Value::Null);
+            if let Some((rid, gen, questions)) = active_pending_input(&tv) {
+                let other_focused = window
+                    .focused(cx)
+                    .map(|f| f != self.focus_handle)
+                    .unwrap_or(false);
+                if !other_focused {
+                    let key = event.keystroke.key.as_str();
+                    if key == "enter" || key == "return" {
+                        self.pi_advance(&rid, &questions, gen, cx);
+                        return;
+                    }
+                    if key.len() == 1 {
+                        let digit = key.as_bytes()[0];
+                        if digit.is_ascii_digit() && digit != b'0' {
+                            let oi = (digit - b'1') as usize;
+                            let qidx = *self.pi_qidx.get(&rid).unwrap_or(&0);
+                            if let Some(q) = questions.get(qidx) {
+                                let multi =
+                                    get(q, "multiSelect").as_bool().unwrap_or(false);
+                                if let Some(opt) =
+                                    arr(q, "options").get(oi)
+                                {
+                                    let qid = str_at(q, "id").to_string();
+                                    let label =
+                                        str_at(opt, "label").to_string();
+                                    self.pi_toggle(
+                                        &rid, &qid, &label, multi, cx,
+                                    );
+                                    if !multi {
+                                        self.pi_advance(&rid, &questions, gen, cx);
+                                    }
+                                }
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
         // ⌘S saves the open file while it is being edited (upstream
         // useCodeEditorSaveKeyDownHandler).
         if event.keystroke.modifiers.platform
@@ -6518,6 +6675,123 @@ impl Native {
         .detach();
     }
 
+    /// Toggle one option of a blocking userInput question (upstream
+    /// togglePendingUserInputOptionSelection): single-select replaces, a
+    /// multi-select question keeps a set.
+    fn pi_toggle(&mut self, rid: &str, qid: &str, label: &str, multi: bool, cx: &mut Context<Self>) {
+        if self.pi_responding {
+            return;
+        }
+        let draft = self
+            .pi_drafts
+            .entry(rid.to_string())
+            .or_default()
+            .entry(qid.to_string())
+            .or_default();
+        draft.custom.clear();
+        if multi {
+            if let Some(i) = draft.options.iter().position(|o| o == label) {
+                draft.options.remove(i);
+            } else {
+                draft.options.push(label.to_string());
+            }
+        } else {
+            draft.options = vec![label.to_string()];
+        }
+        cx.notify();
+    }
+
+    /// Advance the blocking userInput form (upstream
+    /// onAdvanceActivePendingUserInput): next question, or submit when the
+    /// last one resolves the whole answers record.
+    fn pi_advance(&mut self, rid: &str, questions: &[Value], gen: Option<String>, cx: &mut Context<Self>) {
+        if self.pi_responding {
+            return;
+        }
+        let idx = *self.pi_qidx.get(rid).unwrap_or(&0);
+        let last = idx + 1 >= questions.len();
+        if last {
+            let Some(answers) = pi_build_answers(questions, self.pi_drafts.get(rid)) else {
+                return;
+            };
+            self.pi_respond(rid.to_string(), gen, answers, cx);
+        } else {
+            // Upstream enables "next" only once the active question resolves.
+            let q = &questions[idx];
+            let draft = self
+                .pi_drafts
+                .get(rid)
+                .and_then(|m| m.get(str_at(q, "id")));
+            if pi_resolved(q, draft).is_none() {
+                return;
+            }
+            self.pi_qidx.insert(rid.to_string(), idx + 1);
+            cx.notify();
+        }
+    }
+
+    /// Respond to a blocking userInput prompt (upstream
+    /// onRespondToUserInput): dispatch thread.user-input.respond, then
+    /// refresh the thread detail so the settled interaction drops out.
+    fn pi_respond(
+        &mut self,
+        rid: String,
+        gen: Option<String>,
+        answers: Value,
+        cx: &mut Context<Self>,
+    ) {
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        if self.pi_responding {
+            return;
+        }
+        self.pi_responding = true;
+        cx.notify();
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let mut cmd = json!({
+                "type": "thread.user-input.respond",
+                "commandId": uuid(),
+                "threadId": tid,
+                "requestId": rid,
+                "answers": answers,
+                "createdAt": now_iso(),
+            });
+            if let Some(g) = gen {
+                cmd["lifecycleGeneration"] = json!(g);
+            }
+            let cell = client.clone();
+            let r = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                })
+                .await;
+            if r.is_none() {
+                eprintln!("native: thread.user-input.respond dispatch failed");
+            }
+            let cell = client.clone();
+            let p = json!({"threadId": tid});
+            let d = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("orchestration.getThreadDetailSnapshot", p))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.pi_responding = false;
+                if let Some(d) = d {
+                    this.detail = Some(d);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     /// Upstream stop affordance: dispatch thread.turn.interrupt and hold the
     /// queued follow-ups (upstream pauses the waiting queue on a user Stop).
     fn stop(&mut self, cx: &mut Context<Self>) {
@@ -7518,9 +7792,17 @@ impl Native {
             );
         }
 
+        // Blocking userInput prompt (upstream ComposerPendingUserInputPanel +
+        // UserInputQuestionForm): a form card for the first pending request.
+        let pending_input = active_pending_input(thread_v);
+
         // Pending interactions (approvals awaiting a decision).
         for p in arr(thread_v, "pendingInteractions") {
             if str_at(p, "status") != "pending" {
+                continue;
+            }
+            // userInput rows render as the form card below, not a pill.
+            if str_at(p, "interactionKind") == "userInput" {
                 continue;
             }
             let kind = str_at(p, "interactionKind").replace('_', " ");
@@ -7550,6 +7832,287 @@ impl Native {
             col = col.child(
                 h_flex().w_full().justify_center().child(
                     div().w_full().max_w(chat_mw).child(row_el),
+                ),
+            );
+        }
+
+        // Blocking userInput form card (upstream UserInputQuestionForm):
+        // question header, numbered option rows, ‹ n of N › navigation,
+        // key hints and a Cancel that submits empty answers.
+        if let Some((rid, gen, questions)) = pending_input {
+            let q_count = questions.len();
+            let qidx = (*self.pi_qidx.get(&rid).unwrap_or(&0)).min(q_count - 1);
+            let q = &questions[qidx];
+            let qid = str_at(q, "id").to_string();
+            let multi = get(q, "multiSelect").as_bool().unwrap_or(false);
+            let options = arr(q, "options");
+            let drafts = self.pi_drafts.get(&rid).cloned().unwrap_or_default();
+            let draft = drafts.get(&qid).cloned().unwrap_or_default();
+            let answered_count = questions
+                .iter()
+                .filter(|qq| pi_resolved(qq, drafts.get(str_at(qq, "id"))).is_some())
+                .count();
+            let is_last = qidx + 1 >= q_count;
+            let responding = self.pi_responding;
+
+            let mut card = v_flex()
+                .w_full()
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(12.))
+                .px(px(14.))
+                .pt(px(12.))
+                .pb(px(6.))
+                .gap_1();
+
+            // Header: question text + ‹ n of N › navigation.
+            let mut head = h_flex().items_start().justify_between().gap_3().child(
+                div()
+                    .text_size(px(14.))
+                    .font_weight(FontWeight::MEDIUM)
+                    .flex_1()
+                    .min_w_0()
+                    .child(str_at(q, "question").to_string()),
+            );
+            if q_count > 1 {
+                let can_back = qidx > 0 && !responding;
+                let can_fwd = !is_last && !responding;
+                let rid_b = rid.clone();
+                let rid_f = rid.clone();
+                head = head.child(
+                    h_flex()
+                        .gap_1()
+                        .items_center()
+                        .child(
+                            div()
+                                .id(ElementId::Name(format!("pi-prev-{rid}").into()))
+                                .px_1()
+                                .rounded(px(4.))
+                                .when(can_back, |d| {
+                                    d.cursor_pointer().hover(|h| h.bg(subtle)).on_click(
+                                        cx.listener(move |this, _ev, _w, cx| {
+                                            let i =
+                                                *this.pi_qidx.get(&rid_b).unwrap_or(&0);
+                                            this.pi_qidx
+                                                .insert(rid_b.clone(), i.saturating_sub(1));
+                                            cx.notify();
+                                        }),
+                                    )
+                                })
+                                .when(!can_back, |d| d.opacity(0.3))
+                                .child(
+                                    svg_icon(icons::CHEVRON_LEFT)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(format!("{} of {q_count}", qidx + 1)),
+                        )
+                        .child(
+                            div()
+                                .id(ElementId::Name(format!("pi-next-{rid}").into()))
+                                .px_1()
+                                .rounded(px(4.))
+                                .when(can_fwd, |d| {
+                                    d.cursor_pointer().hover(|h| h.bg(subtle))
+                                })
+                                .when(!can_fwd, |d| d.opacity(0.3))
+                                .child(
+                                    svg_icon(icons::CHEVRON_RIGHT)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                )
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    if !can_fwd {
+                                        return;
+                                    }
+                                    let i = *this.pi_qidx.get(&rid_f).unwrap_or(&0);
+                                    this.pi_qidx.insert(rid_f.clone(), i + 1);
+                                    cx.notify();
+                                })),
+                        ),
+                );
+            }
+            card = card.child(head);
+            if multi {
+                card = card.child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child("Select one or more"),
+                );
+            }
+
+            // Option rows (upstream ComposerChoiceRow "stacked"): number
+            // chip, label (+Recommended badge), description, trailing check.
+            if !options.is_empty() {
+                let mut optcol = v_flex().mt(px(4.)).gap_px();
+                for (oi, opt) in options.iter().enumerate() {
+                    let raw_label = str_at(opt, "label").to_string();
+                    // Split a trailing "(Recommended)" exactly like
+                    // upstream splitRecommendedOptionLabel.
+                    let (label, recommended) = {
+                        let suffix = " (recommended)";
+                        if raw_label.to_lowercase().ends_with(suffix) {
+                            (raw_label[..raw_label.len() - suffix.len()].to_string(), true)
+                        } else {
+                            (raw_label.clone(), false)
+                        }
+                    };
+                    let desc = str_at(opt, "description").to_string();
+                    let selected = draft.options.iter().any(|o| o == &raw_label);
+                    let rid_c = rid.clone();
+                    let qid_c = qid.clone();
+                    let label_c = raw_label.clone();
+                    let qs_c = questions.clone();
+                    let gen_c = gen.clone();
+                    let mut row = h_flex()
+                        .id(ElementId::Name(
+                            format!("pi-opt-{rid}-{qid}-{oi}").into(),
+                        ))
+                        .w_full()
+                        .items_start()
+                        .gap_2()
+                        .px(px(10.))
+                        .py(px(6.))
+                        .rounded(px(8.))
+                        .cursor_pointer();
+                    if !responding {
+                        row = row.hover(|h| h.bg(subtle)).on_click(cx.listener(
+                            move |this, _ev, _w, cx| {
+                                this.pi_toggle(&rid_c, &qid_c, &label_c, multi, cx);
+                                // Single-select auto-advances (upstream
+                                // autoAdvance after the pick).
+                                if !multi {
+                                    this.pi_advance(&rid_c, &qs_c, gen_c.clone(), cx);
+                                }
+                            },
+                        ));
+                    }
+                    if oi < 9 {
+                        row = row.child(
+                            div()
+                                .w(px(16.))
+                                .h(px(16.))
+                                .flex_none()
+                                .rounded(px(4.))
+                                .bg(theme.secondary)
+                                .text_size(px(10.))
+                                .text_color(theme.muted_foreground)
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .child(format!("{}", oi + 1)),
+                        );
+                    }
+                    let mut label_col = v_flex().flex_1().min_w_0().child(
+                        h_flex().gap_2().items_center().child(
+                            div().text_size(px(13.)).child(label),
+                        ),
+                    );
+                    if recommended {
+                        label_col = label_col.child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.accent)
+                                .child("Recommended"),
+                        );
+                    }
+                    if !desc.is_empty() {
+                        label_col = label_col.child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(desc),
+                        );
+                    }
+                    row = row.child(label_col);
+                    row = row.child(
+                        div()
+                            .w(px(16.))
+                            .flex_none()
+                            .when(selected, |d| {
+                                d.child(
+                                    svg_icon(icons::CHECK)
+                                        .size(px(13.))
+                                        .text_color(theme.foreground),
+                                )
+                            }),
+                    );
+                    optcol = optcol.child(row);
+                }
+                card = card.child(optcol);
+            }
+
+            // Footer: key hints + answered count + Cancel.
+            let shortcut_count = options.len().min(9);
+            let mut foot = h_flex()
+                .items_center()
+                .gap_3()
+                .mt(px(4.))
+                .child(
+                    h_flex().items_center().gap_1().child(
+                        sc_chip(
+                            if shortcut_count == 1 {
+                                "1".to_string()
+                            } else {
+                                format!("1–{shortcut_count}")
+                            },
+                            &theme,
+                        ),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child("to pick"),
+                    ),
+                )
+                .child(
+                    h_flex().items_center().gap_1().child(sc_chip("↵", &theme)).child(
+                        div()
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child(if is_last { "to submit" } else { "for next" }),
+                    ),
+                );
+            if answered_count > 0 {
+                foot = foot.child(
+                    div()
+                        .text_size(px(11.))
+                        .text_color(theme.muted_foreground)
+                        .child(format!("{answered_count}/{q_count} answered")),
+                );
+            }
+            let rid_x = rid.clone();
+            let gen_x = gen.clone();
+            foot = foot.child(
+                h_flex().flex_1().justify_end().child(
+                    div()
+                        .id(ElementId::Name(format!("pi-cancel-{rid}").into()))
+                        .px(px(8.))
+                        .py(px(4.))
+                        .rounded(px(6.))
+                        .cursor_pointer()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .hover(|h| h.bg(subtle).text_color(theme.foreground))
+                        .child("Cancel")
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            // Upstream cancel submits an empty answers record.
+                            this.pi_respond(rid_x.clone(), gen_x.clone(), json!({}), cx);
+                        })),
+                ),
+            );
+            card = card.child(foot);
+
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(chat_mw).child(card),
                 ),
             );
         }
@@ -7719,6 +8282,36 @@ impl Native {
     fn send(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let text = self.composer.read(cx).value().to_string();
         let text = text.trim().to_string();
+        // While a blocking userInput prompt is docked the composer holds the
+        // active question's custom answer and Enter advances/submits the
+        // form (upstream ComposerPendingUserInputPanel owns the composer).
+        {
+            let tv = self
+                .detail
+                .as_ref()
+                .map(|d| get(d, "thread"))
+                .cloned()
+                .unwrap_or(Value::Null);
+            if let Some((rid, gen, questions)) = active_pending_input(&tv) {
+                let qidx = *self.pi_qidx.get(&rid).unwrap_or(&0);
+                if let Some(q) = questions.get(qidx) {
+                    if !text.is_empty() {
+                        let qid = str_at(q, "id").to_string();
+                        let draft = self
+                            .pi_drafts
+                            .entry(rid.clone())
+                            .or_default()
+                            .entry(qid)
+                            .or_default();
+                        draft.custom = text.clone();
+                        draft.options.clear();
+                    }
+                    self.composer.update(cx, |s, cx| s.clean(window, cx));
+                    self.pi_advance(&rid, &questions, gen, cx);
+                }
+                return;
+            }
+        }
         if text.is_empty() || self.sending {
             return;
         }

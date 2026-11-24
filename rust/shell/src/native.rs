@@ -2899,6 +2899,9 @@ impl Native {
         self.view_autom = false;
         self.view_studio = false;
         self.view_spaces = false;
+        self.hover_thread = None;
+        self.hover_card = None;
+        self.hover_card_seq += 1;
     }
 
     /// Rail route toggle: open that surface (closing the others); clicking

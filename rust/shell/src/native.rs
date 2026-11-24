@@ -989,6 +989,7 @@ pub struct Native {
     // localStorage, capped at 50).
     provider_statuses: Vec<Value>,
     dismissed_provider_banner_keys: std::collections::HashSet<String>,
+    plan_expanded: std::collections::HashSet<String>,
     // ExpiredSidechatNotice start-new in flight.
     starting_sidechat: bool,
     // Upstream PullRequestThreadDialog (checkout mode): resolve a GitHub PR
@@ -2233,6 +2234,7 @@ impl Native {
                 unblocking_thread: false,
                 provider_statuses: Vec::new(),
                 dismissed_provider_banner_keys: std::collections::HashSet::new(),
+                plan_expanded: std::collections::HashSet::new(),
                 starting_sidechat: false,
                 pr_dialog_open: false,
                 pr_dialog_input: None,
@@ -7992,12 +7994,12 @@ impl Native {
                 "error" => theme.danger,
                 _ => theme.muted_foreground,
             };
+            // Upstream work rows render the activity summary only (the kind
+            // is an internal discriminator, never user-facing).
             let label = if summary.is_empty() {
                 kind.to_string()
-            } else if kind.is_empty() {
-                summary.to_string()
             } else {
-                format!("{kind} — {summary}")
+                summary.to_string()
             };
             h_flex()
                 .gap_2()
@@ -8308,43 +8310,261 @@ impl Native {
             );
         }
 
-        // Proposed plans (rendered as markdown cards).
+        // Proposed plans (upstream ProposedPlanCard): a 24px-rounded card with
+        // a "Plan" badge + first-heading title, download/copy icon buttons,
+        // and a collapsible markdown body (10-line preview + "..." when long).
         for p in arr(thread_v, "proposedPlans") {
-            let md = str_at(p, "plan_markdown");
+            let md = str_at(p, "planMarkdown").to_string();
             if md.trim().is_empty() {
                 continue;
             }
-            let implemented = !get(p, "implemented_at").is_null();
-            let mut card = v_flex()
-                .gap_1()
-                .w_full()
-                .bg(sel_fill)
-                .rounded_md()
-                .p_2()
-                .child(
+            let plan_id = str_at(p, "id").to_string();
+            // proposedPlanTitle: first markdown heading wins.
+            let title = md
+                .lines()
+                .find_map(|l| {
+                    let t = l.trim_start();
+                    let h = t.trim_start_matches('#');
+                    if h.len() < t.len() && h.starts_with(' ') {
+                        let v = h.trim().to_string();
+                        (!v.is_empty()).then_some(v)
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or_else(|| "Proposed plan".to_string());
+            // stripDisplayedPlanMarkdown: drop the first heading, then a
+            // leading "Summary" heading.
+            let mut body_lines: Vec<&str> = md.trim_end().lines().collect();
+            if body_lines
+                .first()
+                .map(|l| l.trim_start().starts_with('#'))
+                .unwrap_or(false)
+            {
+                body_lines.remove(0);
+            }
+            while body_lines.first().map(|l| l.trim().is_empty()).unwrap_or(false) {
+                body_lines.remove(0);
+            }
+            if body_lines
+                .first()
+                .map(|l| {
+                    let h = l.trim_start().trim_start_matches('#');
+                    h.len() < l.trim_start().len()
+                        && h.trim().eq_ignore_ascii_case("summary")
+                })
+                .unwrap_or(false)
+            {
+                body_lines.remove(0);
+                while body_lines.first().map(|l| l.trim().is_empty()).unwrap_or(false) {
+                    body_lines.remove(0);
+                }
+            }
+            let displayed = body_lines.join("\n");
+            let can_collapse = md.len() > 900 || md.lines().count() > 20;
+            let expanded = self.plan_expanded.contains(&plan_id);
+            let shown_md = if can_collapse && !expanded {
+                // buildCollapsedProposedPlanPreviewMarkdown: 10 visible lines.
+                let mut out: Vec<String> = Vec::new();
+                let mut visible = 0usize;
+                let mut more = false;
+                for line in displayed.trim_end().lines().map(|l| l.trim_end()) {
+                    if !line.trim().is_empty() && visible >= 10 {
+                        more = true;
+                        break;
+                    }
+                    out.push(line.to_string());
+                    if !line.trim().is_empty() {
+                        visible += 1;
+                    }
+                }
+                while out.last().map(|l| l.trim().is_empty()).unwrap_or(false) {
+                    out.pop();
+                }
+                if out.is_empty() {
+                    title.clone()
+                } else {
+                    if more {
+                        out.push(String::new());
+                        out.push("...".to_string());
+                    }
+                    out.join("\n")
+                }
+            } else {
+                displayed.clone()
+            };
+
+            let mut actions = h_flex().gap_1().flex_shrink_0();
+            // Download (writes <workspace>/.plan/<slug>.md).
+            {
+                let md2 = format!("{}\n", md.trim_end());
+                let slug = {
+                    let s = title
+                        .to_lowercase()
+                        .replace(
+                            |c: char| "`'\".,!?()[]{}".contains(c),
+                            "",
+                        )
+                        .replace(
+                            |c: char| !(c.is_ascii_alphanumeric()),
+                            "-",
+                        )
+                        .trim_matches('-')
+                        .to_string();
+                    if s.is_empty() { "plan".to_string() } else { s }
+                };
+                actions = actions.child(
                     div()
-                        .text_xs()
-                        .font_weight(FontWeight::SEMIBOLD)
-                        .text_color(theme.primary)
-                        .child(if implemented {
-                            "PROPOSED PLAN (implemented)".to_string()
-                        } else {
-                            "PROPOSED PLAN".to_string()
+                        .id(ElementId::Name(format!("plan-dl-{plan_id}").into()))
+                        .size(px(20.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(5.))
+                        .text_size(px(11.))
+                        .text_color(theme.muted_foreground)
+                        .cursor_pointer()
+                        .hover(|s| s.text_color(theme.foreground))
+                        .child("\u{2193}")
+                        .on_mouse_down(MouseButton::Left, {
+                            let tid = str_at(thread_v, "id").to_string();
+                            cx.listener(move |this, _e, _w, cx| {
+                                let Some(root) = this.thread_workspace_cwd(&tid) else {
+                                    this.feedback_toast = Some((
+                                        "Workspace unavailable for this plan.".to_string(),
+                                        true,
+                                    ));
+                                    cx.notify();
+                                    return;
+                                };
+                                let dir = std::path::Path::new(&root).join(".plan");
+                                let ok = std::fs::create_dir_all(&dir).is_ok()
+                                    && std::fs::write(dir.join(format!("{slug}.md")), &md2)
+                                        .is_ok();
+                                this.feedback_toast = Some((
+                                    if ok {
+                                        format!("Saved to .plan/{slug}.md")
+                                    } else {
+                                        "Could not save the plan.".to_string()
+                                    },
+                                    !ok,
+                                ));
+                                cx.notify();
+                            })
                         }),
                 );
-            card = card.child(
-                TextView::markdown(
-                    ElementId::Name(format!("plan-{}", str_at(p, "id")).into()),
-                    md.to_string(),
+            }
+            // Copy as markdown.
+            {
+                let md2 = format!("{}\n", md.trim_end());
+                actions = actions.child(
+                    div()
+                        .id(ElementId::Name(format!("plan-cp-{plan_id}").into()))
+                        .size(px(20.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(5.))
+                        .text_size(px(11.))
+                        .text_color(theme.muted_foreground)
+                        .cursor_pointer()
+                        .hover(|s| s.text_color(theme.foreground))
+                        .child("\u{2398}")
+                        .on_mouse_down(MouseButton::Left, move |_e, _w, cx| {
+                            cx.write_to_clipboard(ClipboardItem::new_string(md2.clone()));
+                        }),
+                );
+            }
+
+            let mut card = v_flex()
+                .w_full()
+                .gap_0()
+                .border_1()
+                .border_color(theme.border.opacity(0.8))
+                .bg(theme.popover)
+                .rounded(px(24.))
+                .p(px(16.))
+                .child(
+                    h_flex()
+                        .w_full()
+                        .items_center()
+                        .justify_between()
+                        .child(
+                            h_flex()
+                                .min_w_0()
+                                .items_center()
+                                .gap_2()
+                                .child(
+                                    div()
+                                        .text_size(px(11.))
+                                        .font_weight(FontWeight::MEDIUM)
+                                        .text_color(theme.foreground)
+                                        .bg(theme.secondary)
+                                        .rounded(px(6.))
+                                        .px(px(8.))
+                                        .py(px(2.))
+                                        .child("Plan"),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(14.))
+                                        .font_weight(FontWeight::MEDIUM)
+                                        .text_color(theme.foreground)
+                                        .child(title.clone()),
+                                ),
+                        )
+                        .child(actions),
                 )
-                .style({
-                    let mut s = gpui_kit::component::text::TextViewStyle::default();
-                    s.highlight_theme =
-                        gpui_kit::component::highlighter::HighlightTheme::default_dark();
-                    s
-                })
-                .selectable(true),
-            );
+                .child(
+                    div().mt(px(12.)).child(
+                        TextView::markdown(
+                            ElementId::Name(format!("plan-{plan_id}").into()),
+                            shown_md,
+                        )
+                        .style({
+                            let mut s = gpui_kit::component::text::TextViewStyle::default();
+                            s.highlight_theme =
+                                gpui_kit::component::highlighter::HighlightTheme::default_dark();
+                            s
+                        })
+                        .selectable(true),
+                    ),
+                );
+            if can_collapse {
+                let pid = plan_id.clone();
+                let was = expanded;
+                card = card.child(
+                    h_flex().w_full().justify_center().mt(px(12.)).child(
+                        div()
+                            .id(ElementId::Name(format!("plan-toggle-{pid}").into()))
+                            .text_size(px(11.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(theme.muted_foreground)
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded(px(7.))
+                            .px(px(10.))
+                            .py(px(3.))
+                            .cursor_pointer()
+                            .hover(|s| s.text_color(theme.foreground))
+                            .child(if expanded { "Collapse plan" } else { "Expand plan" })
+                            .on_mouse_down(MouseButton::Left, {
+                                cx.listener(move |this, _e, _w, cx| {
+                                    if was {
+                                        this.plan_expanded.remove(&pid);
+                                    } else {
+                                        this.plan_expanded.insert(pid.clone());
+                                    }
+                                    cx.notify();
+                                })
+                            }),
+                    ),
+                );
+            }
             col = col.child(
                 h_flex().w_full().justify_center().child(
                     div().w_full().max_w(chat_mw).child(card),
@@ -17127,7 +17347,7 @@ impl Render for Native {
                 if let Some(tb) = thread_error_banner {
                     main = main.child(tb);
                 }
-                main = main.child(div().flex_1().child(
+                main = main.child(div().flex_1().min_h_0().child(
                     pane.id("transcript-scroll")
                         .track_scroll(&self.transcript_scroll)
                         .overflow_y_scroll()

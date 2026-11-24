@@ -11969,7 +11969,15 @@ impl Render for Native {
                 .border_1()
                 .border_color(theme.border)
                 .rounded_lg()
-                .shadow_md();
+                .shadow_md()
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                )
+                .on_mouse_down(
+                    gpui::MouseButton::Right,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                );
             if self.ctx_confirm_delete.is_some() {
                 // Inline confirm like upstream confirmAndDeleteThread.
                 menu = menu
@@ -12092,17 +12100,10 @@ impl Render for Native {
             // Backdrop as ancestor + stop-propagation shield around the popup
             // (same pattern as the palette overlay): clicks inside the menu or
             // its flyout never reach the dismiss listener.
-            let mut inner = div()
-                .size_full()
-                .on_mouse_down(
-                    gpui::MouseButton::Left,
-                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
-                )
-                .on_mouse_down(
-                    gpui::MouseButton::Right,
-                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
-                )
-                .child(menu);
+            // The shield lives on the menu/flyout elements themselves — a
+            // full-size stop-propagation wrapper would eat the backdrop clicks
+            // that dismiss the menu.
+            let mut inner = div().child(menu);
             // Submenu flyout: renders next to the popup, aligned to the
             // parent row that opened it.
             if self.ctx_confirm_delete.is_none() {
@@ -12118,7 +12119,15 @@ impl Render for Native {
                         .border_1()
                         .border_color(theme.border)
                         .rounded_lg()
-                        .shadow_md();
+                        .shadow_md()
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                        )
+                        .on_mouse_down(
+                            gpui::MouseButton::Right,
+                            cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                        );
                     match sub.as_str() {
                         "fork" => {
                             let t_local = menu_tid.clone();
@@ -12664,8 +12673,10 @@ impl Render for Native {
             .text_color(theme.foreground)
             .child(strip)
             .child(body)
-            .child(ctx_overlay)
-            .child(palette_overlay)
-            .child(sc_overlay)
+            // Overlays mount only while active — an empty full-size overlay
+            // would otherwise sit on top and eat every click.
+            .when(self.ctx_menu.is_some(), |d| d.child(ctx_overlay))
+            .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))
+            .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
     }
 }

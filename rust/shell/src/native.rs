@@ -890,6 +890,7 @@ pub struct Native {
     inbox_signed_in: Option<bool>,
     inbox_updates: Vec<Value>,
     tools_expanded: bool,
+    subagents_expanded: bool,
     pending_attachments: Vec<Value>,
     composer_thread_id: Option<String>,
     uploading: bool,
@@ -1624,6 +1625,44 @@ fn rel_time(iso: &str) -> String {
     }
 }
 
+/// Upstream formatClockElapsed + formatClockDuration: "20s", "3m", "1h 2m",
+/// "2d 5h" between two ISO stamps; None when unparseable or inverted.
+fn clock_elapsed(start_iso: &str, end_iso: &str) -> Option<String> {
+    let s = chrono::DateTime::parse_from_rfc3339(start_iso).ok()?;
+    let e = chrono::DateTime::parse_from_rfc3339(end_iso).ok()?;
+    let secs = e.signed_duration_since(s).num_seconds();
+    if secs < 0 {
+        return None;
+    }
+    if secs < 60 {
+        return Some(format!("{secs}s"));
+    }
+    let days = secs / 86_400;
+    let hours = (secs % 86_400) / 3_600;
+    if days > 0 {
+        return Some(if hours > 0 {
+            format!("{days}d {hours}h")
+        } else {
+            format!("{days}d")
+        });
+    }
+    let minutes = (secs % 3_600) / 60;
+    let seconds = secs % 60;
+    if hours > 0 {
+        Some(if minutes > 0 {
+            format!("{hours}h {minutes}m")
+        } else {
+            format!("{hours}h")
+        })
+    } else {
+        Some(if seconds > 0 {
+            format!("{minutes}m {seconds}s")
+        } else {
+            format!("{minutes}m")
+        })
+    }
+}
+
 // Local wall-clock time "h:mm AM/PM" like the upstream message footer.
 fn clock_time(iso: &str) -> String {
     let Ok(t) = chrono::DateTime::parse_from_rfc3339(iso) else {
@@ -1862,6 +1901,7 @@ impl Native {
                 inbox_signed_in: None,
                 inbox_updates: Vec::new(),
                 tools_expanded: false,
+                subagents_expanded: false,
                 pending_attachments: Vec::new(),
                 interaction_mode: "default",
                 fast_mode: false,
@@ -7126,6 +7166,95 @@ impl Native {
             .filter(|a| !str_at(a, "kind").is_empty() || !str_at(a, "summary").is_empty())
             .cloned()
             .collect();
+        // Background tasks owned by this transcript (upstream workLog fold).
+        let bg_tasks = derive_bg_tasks(&thread_v);
+        let this_tid = str_at(thread_v, "id").to_string();
+        // Upstream BackgroundTaskRow: tray icon + subject + status + elapsed,
+        // Stop for running rows.
+        let bg_task_row = |t: &BgTask| {
+            let status_label = match t.status.as_str() {
+                "running" => "running".to_string(),
+                "finished" => "finished".to_string(),
+                "failed" => match t.exit_code {
+                    Some(c) => format!("failed · exit {c}"),
+                    None => "failed".to_string(),
+                },
+                "stopped" => "stopped".to_string(),
+                _ => t.status.clone(),
+            };
+            let elapsed = clock_elapsed(
+                &t.started_at,
+                t.completed_at.as_deref().unwrap_or(""),
+            );
+            let running = t.status == "running";
+            let stop_tid = t.task_id.clone();
+            let stop_thread = this_tid.clone();
+            h_flex()
+                .w_full()
+                .gap_2()
+                .items_center()
+                .py(px(2.))
+                .child(
+                    svg_icon(icons::TERMINAL)
+                        .size(px(14.))
+                        .text_color(theme.muted_foreground),
+                )
+                .child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .flex_1()
+                        .min_w_0()
+                        .overflow_hidden()
+                        .whitespace_nowrap()
+                        .child(t.title.clone()),
+                )
+                .child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(if t.status == "failed" {
+                            theme.danger
+                        } else {
+                            theme.muted_foreground
+                        })
+                        .child(status_label),
+                )
+                .when_some(elapsed, |d, e| {
+                    d.child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child(e),
+                    )
+                })
+                .when(running, |d| {
+                    d.child(
+                        div()
+                            .id(SharedString::from(format!("tr-bgtask-stop-{}", stop_tid)))
+                            .px_1()
+                            .rounded(px(4.))
+                            .cursor_pointer()
+                            .hover(|h| h.bg(theme.border))
+                            .child(
+                                svg_icon(icons::X)
+                                    .size(px(11.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.dispatch_cmd(
+                                    json!({
+                                        "type": "thread.task.stop",
+                                        "commandId": uuid(),
+                                        "threadId": stop_thread,
+                                        "taskId": stop_tid,
+                                        "createdAt": now_iso(),
+                                    }),
+                                    cx,
+                                );
+                            })),
+                    )
+                })
+        };
         let activity_row = |a: &Value| {
             let kind = str_at(a, "kind");
             let summary = str_at(a, "summary");
@@ -7189,6 +7318,135 @@ impl Native {
             if self.tools_expanded {
                 for a in &activities {
                     card = card.child(activity_row(a));
+                }
+                for t in &bg_tasks {
+                    card = card.child(bg_task_row(t));
+                }
+            }
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(chat_mw).child(card),
+                ),
+            );
+        }
+
+        // SubagentRunCard: the thread's child threads fold into one
+        // collapsible card — "N agents" header, per-agent rows when expanded.
+        let subagents: Vec<Value> = arr(
+            self.snapshot.as_ref().unwrap_or(&Value::Null),
+            "threads",
+        )
+        .iter()
+        .filter(|t| {
+            !this_tid.is_empty()
+                && str_at(t, "parentThreadId") == this_tid
+                && get(t, "deletedAt").is_null()
+        })
+        .cloned()
+        .collect();
+        if !subagents.is_empty() {
+            let running_n = subagents
+                .iter()
+                .filter(|t| thread_running_for_activity(t))
+                .count();
+            let mut card = v_flex()
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .p_2()
+                .gap_1()
+                .child(
+                    h_flex()
+                        .id("subagents-card")
+                        .cursor_pointer()
+                        .gap_2()
+                        .items_center()
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.subagents_expanded = !this.subagents_expanded;
+                            cx.notify();
+                        }))
+                        .child(
+                            Icon::new(AssetIcon::Bot)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
+                                "{} {} {}{}",
+                                subagents.len(),
+                                if subagents.len() == 1 { "agent" } else { "agents" },
+                                if self.subagents_expanded { "\u{25be}" } else { "\u{25b8}" },
+                                if running_n > 0 {
+                                    format!(" · {running_n} running")
+                                } else {
+                                    String::new()
+                                },
+                            )),
+                        ),
+                );
+            if self.subagents_expanded {
+                for (si, t) in subagents.iter().enumerate() {
+                    let tid = str_at(t, "id").to_string();
+                    let name = {
+                        let n = str_at(t, "subagentNickname");
+                        if n.is_empty() {
+                            let ti = str_at(t, "title");
+                            if ti.is_empty() { "Subagent".to_string() } else { ti.to_string() }
+                        } else {
+                            n.to_string()
+                        }
+                    };
+                    let (glyph, gcol) = if thread_running_for_activity(t) {
+                        ("\u{25cf}", theme.primary)
+                    } else if sess_str(t, "status") == "failed"
+                        || str_at(get(t, "session"), "status") == "failed"
+                    {
+                        ("\u{2717}", theme.danger)
+                    } else {
+                        ("\u{2713}", theme.muted_foreground)
+                    };
+                    let elapsed = clock_elapsed(
+                        str_at(t, "createdAt"),
+                        if thread_running_for_activity(t) {
+                            ""
+                        } else {
+                            str_at(t, "updatedAt")
+                        },
+                    );
+                    card = card.child(
+                        h_flex()
+                            .id(SharedString::from(format!("tr-sub-{si}")))
+                            .w_full()
+                            .gap_2()
+                            .items_center()
+                            .py(px(2.))
+                            .rounded(px(4.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(subtle))
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.open_thread(tid.clone(), cx)
+                            }))
+                            .child(
+                                div().text_xs().text_color(gcol).child(glyph),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .flex_1()
+                                    .min_w_0()
+                                    .overflow_hidden()
+                                    .whitespace_nowrap()
+                                    .child(name),
+                            )
+                            .when_some(elapsed, |d, e| {
+                                d.child(
+                                    div()
+                                        .text_size(px(12.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(e),
+                                )
+                            }),
+                    );
                 }
             }
             col = col.child(
@@ -7881,7 +8139,11 @@ impl Render for Native {
         let all_threads: Vec<Value> =
             arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads").to_vec();
         let live_thread = |t: &Value| {
-            get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()
+            // Subagent threads stay out of the sidebar lists upstream —
+            // they surface via the parent's SubagentRunCard and the dock.
+            get(t, "deletedAt").is_null()
+                && get(t, "archivedAt").is_null()
+                && get(t, "parentThreadId").is_null()
         };
         let matches_query = |t: &Value| {
             query.is_empty()
@@ -8346,6 +8608,7 @@ impl Render for Native {
                 .iter()
                 .filter(|t| {
                     chat_project_ids.iter().any(|id| id == str_at(t, "projectId"))
+                        && get(t, "parentThreadId").is_null()
                         && live_thread(t)
                         && matches_query(t)
                 })

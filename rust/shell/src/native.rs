@@ -69,6 +69,8 @@ mod icons {
     pub const STAGE: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
     pub const FOLDER: &[u8] = include_bytes!("../assets/icons/folder-closed.svg");
     pub const FOLDER_ADD: &[u8] = include_bytes!("../assets/icons/folder-add.svg");
+    pub const TEMPORARY: &[u8] =
+        include_bytes!("../assets/icons/bubble-annotation-5.svg");
     pub const DOWNLOAD: &[u8] = include_bytes!("../assets/icons/download.svg");
     pub const IMPORT: &[u8] = include_bytes!("../assets/icons/import.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../assets/icons/square-terminal.svg");
@@ -10630,6 +10632,8 @@ impl Render for Native {
                             ev.position.y.as_f32(),
                         ));
                         this.proj_ctx_confirm = false;
+                        this.ctx_sub = None;
+                        this.fetch_dev_servers(cx);
                         // The menu replaces the hover card (upstream's
                         // PreviewCard closes as the menu opens).
                         this.hover_project = None;
@@ -13996,10 +14000,9 @@ impl Render for Native {
                             .gap_1()
                             .items_center()
                             .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("\u{1f4c1}"),
+                                svg_icon(icons::FOLDER)
+                                    .size(px(12.))
+                                    .text_color(theme.muted_foreground),
                             )
                             .child(
                                 div()
@@ -14033,14 +14036,13 @@ impl Render for Native {
                                     .gap(px(6.))
                                     .items_center()
                                     .child(
-                                        div()
-                                            .text_size(px(11.))
+                                        svg_icon(icons::TEMPORARY)
+                                            .size(px(12.))
                                             .text_color(if temp_active {
                                                 theme.accent
                                             } else {
                                                 theme.muted_foreground
-                                            })
-                                            .child("\u{25d4}"),
+                                            }),
                                     )
                                     .child(
                                         div()
@@ -21355,6 +21357,7 @@ impl Render for Native {
                     .on_click(cx.listener(move |this, _ev, w, cx| {
                         this.proj_ctx_menu = None;
                         this.proj_ctx_confirm = false;
+                        this.ctx_sub = None;
                         cb(this, w, cx);
                         cx.notify();
                     }))
@@ -21505,6 +21508,50 @@ impl Render for Native {
                             ));
                         },
                     )))
+                    .child(msep());
+                // Upstream start-dev|stop-dev row (Sidebar.tsx:8890-8930):
+                // the start variant opens the run dialog — our equivalent
+                // is the dev-servers pane where the command is typed.
+                let dev_running = self
+                    .dev_servers
+                    .iter()
+                    .any(|srv| str_at(srv, "projectId") == menu_pid);
+                if dev_running {
+                    let pid_stop = menu_pid.clone();
+                    menu = menu.child(mrow("pctx-stop-dev", "Stop dev server".into(),
+                        Box::new(move |this, _w, cx| {
+                            this.dev_stop(pid_stop.clone(), cx);
+                        })));
+                } else {
+                    menu = menu.child(mrow("pctx-start-dev", "Start dev server".into(),
+                        Box::new(move |this, _w, cx| {
+                            this.clear_views();
+                            this.view_dev = true;
+                            this.fetch_dev_servers(cx);
+                        })));
+                }
+                // Upstream MoveProjectToSpaceMenu: parent row opens a submenu
+                // listing every space plus "New space".
+                menu = menu.child(
+                    h_flex()
+                        .id("pctx-space")
+                        .w_full()
+                        .h(px(30.))
+                        .px_2()
+                        .items_center()
+                        .rounded_md()
+                        .text_sm()
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .child(div().flex_1().child("Move to space"))
+                        .child(div().text_color(theme.muted_foreground).child("›"))
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.ctx_sub =
+                                Some(("pspace".to_string(), my + 130.));
+                            cx.notify();
+                        })),
+                );
+                menu = menu
                     .child(msep())
                     .child(mrow("pctx-edit", "Edit project".into(), Box::new(
                         move |this, w, cx| {
@@ -21551,6 +21598,125 @@ impl Render for Native {
                         })),
                 );
             }
+            let mut pinner = div().child(menu);
+            // Move-to-space flyout, mirroring the thread menu's submenu:
+            // renders right of the popup, aligned to its parent row.
+            if !self.proj_ctx_confirm {
+                if let Some((sub, sub_y)) = self.ctx_sub.clone() {
+                    if sub == "pspace" {
+                        let mut fly = v_flex()
+                            .absolute()
+                            .left(px(mx + 204.))
+                            .top(px(sub_y))
+                            .w(px(200.))
+                            .p_1()
+                            .gap_y(px(1.))
+                            .bg(popover_bg)
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded_lg()
+                            .shadow_md()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            )
+                            .on_mouse_down(
+                                gpui::MouseButton::Right,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            );
+                        let frow = |id: SharedString, label: String, sel: bool,
+                                    cb: Box<dyn Fn(&mut Self, &mut Context<Self>) + 'static>| {
+                            h_flex()
+                                .id(id)
+                                .w_full()
+                                .h(px(30.))
+                                .px_2()
+                                .items_center()
+                                .rounded_md()
+                                .text_sm()
+                                .text_color(if sel { theme.accent } else { theme.foreground })
+                                .cursor_pointer()
+                                .hover(|d| d.bg(theme.secondary))
+                                .child(label)
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.proj_ctx_menu = None;
+                                    this.proj_ctx_confirm = false;
+                                    this.ctx_sub = None;
+                                    cb(this, cx);
+                                    cx.notify();
+                                }))
+                                .into_any_element()
+                        };
+                        let cur_space = str_at(&proj, "spaceId").to_string();
+                        for space in arr(
+                            self.snapshot.as_ref().unwrap_or(&Value::Null),
+                            "spaces",
+                        ) {
+                            let sid = str_at(space, "spaceId").to_string();
+                            if sid.is_empty() {
+                                continue;
+                            }
+                            let icon = str_at(space, "icon").to_string();
+                            let name = str_at(space, "name").to_string();
+                            let label = if icon.is_empty() {
+                                name
+                            } else {
+                                format!("{icon} {name}")
+                            };
+                            let sel = sid == cur_space;
+                            let pid_s = menu_pid.clone();
+                            fly = fly.child(frow(
+                                SharedString::from(format!("pctx-space-{sid}")),
+                                label,
+                                sel,
+                                Box::new(move |this, cx| {
+                                    this.dispatch_cmd(
+                                        json!({
+                                            "type": "project.meta.update",
+                                            "commandId": uuid(),
+                                            "projectId": pid_s,
+                                            "spaceId": sid,
+                                        }),
+                                        cx,
+                                    );
+                                }),
+                            ));
+                        }
+                        if !cur_space.is_empty() {
+                            let pid_none = menu_pid.clone();
+                            fly = fly.child(frow(
+                                "pctx-space-none".into(),
+                                "No space".into(),
+                                false,
+                                Box::new(move |this, cx| {
+                                    this.dispatch_cmd(
+                                        json!({
+                                            "type": "project.meta.update",
+                                            "commandId": uuid(),
+                                            "projectId": pid_none,
+                                            "spaceId": Value::Null,
+                                        }),
+                                        cx,
+                                    );
+                                }),
+                            ));
+                        }
+                        fly = fly
+                            .child(div().h(px(1.)).w_full().bg(theme.border))
+                            .child(frow(
+                                "pctx-space-new".into(),
+                                "New space".into(),
+                                false,
+                                Box::new(move |this, cx| {
+                                    this.clear_views();
+                                    this.view_spaces = true;
+                                    cx.notify();
+                                }),
+                            ));
+                        pinner = pinner.child(fly);
+                    }
+                }
+            }
             ctx_overlay = ctx_overlay.child(
                 v_flex()
                     .size_full()
@@ -21559,6 +21725,7 @@ impl Render for Native {
                         cx.listener(|this, _ev, _w, cx| {
                             this.proj_ctx_menu = None;
                             this.proj_ctx_confirm = false;
+                            this.ctx_sub = None;
                             cx.notify();
                         }),
                     )
@@ -21567,10 +21734,11 @@ impl Render for Native {
                         cx.listener(|this, _ev, _w, cx| {
                             this.proj_ctx_menu = None;
                             this.proj_ctx_confirm = false;
+                            this.ctx_sub = None;
                             cx.notify();
                         }),
                     )
-                    .child(menu),
+                    .child(pinner),
             );
         }
 

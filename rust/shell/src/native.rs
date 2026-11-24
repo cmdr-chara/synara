@@ -699,6 +699,13 @@ pub struct Native {
     kb_rules: Vec<Value>,
     // Shortcut recorder dialog state (Settings > Keyboard shortcuts).
     sc_rec: Option<ScRec>,
+    // Feedback dialog (upstream FeedbackDialog): category pill index into
+    // FEEDBACK_CATEGORIES, details textarea, in-flight submit, result toast.
+    feedback_open: bool,
+    feedback_category: Option<usize>,
+    feedback_input: Option<Entity<InputState>>,
+    feedback_sending: bool,
+    feedback_toast: Option<(String, bool)>,
     user_input_draft: Vec<(String, usize, String)>,
 }
 
@@ -1132,6 +1139,11 @@ impl Native {
             palette_seq: 0,
             kb_rules: Vec::new(),
             sc_rec: None,
+            feedback_open: false,
+            feedback_category: None,
+            feedback_input: None,
+            feedback_sending: false,
+            feedback_toast: None,
             user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
@@ -3015,6 +3027,119 @@ impl Native {
                 .detach();
         })
         .detach();
+    }
+
+    /// Upstream FEEDBACK_CATEGORIES: (value, label, summary lead).
+    const FEEDBACK_CATEGORIES: [(&str, &str, &str); 6] = [
+        ("bug", "Bug", "I ran into a bug"),
+        ("session", "Session", "I hit a session problem"),
+        ("ui", "UI", "Something looked wrong"),
+        ("performance", "Performance", "Synara felt slow"),
+        ("idea", "Idea", "I have an idea"),
+        ("other", "Other", "I have some feedback"),
+    ];
+
+    fn open_feedback(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let input = cx.new(|cx| {
+            InputState::new(window, cx).placeholder("Share details (required)")
+        });
+        self.feedback_input = Some(input.clone());
+        self.feedback_category = None;
+        self.feedback_open = true;
+        self.feedback_sending = false;
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        cx.notify();
+    }
+
+    /// POST the dialog to upstream's public feedback endpoint
+    /// (feedback.ts submitFeedback → trysynara.com/api/feedback).
+    fn submit_feedback(&mut self, cx: &mut Context<Self>) {
+        let details = self
+            .feedback_input
+            .as_ref()
+            .map(|i| i.read(cx).value().to_string())
+            .unwrap_or_default();
+        if details.trim().is_empty() || self.feedback_sending {
+            return;
+        }
+        self.feedback_sending = true;
+        let cat = self
+            .feedback_category
+            .map(|i| Self::FEEDBACK_CATEGORIES[i]);
+        let detail = self.detail.clone().unwrap_or(Value::Null);
+        let thread_v = get(&detail, "thread");
+        let provider = str_at(thread_v, "providerName").to_string();
+        let messages_n = arr(thread_v, "messages").len();
+        let activities_n = arr(thread_v, "activities").len();
+        let session_status = session_phase(Some(&detail)).to_string();
+        let runtime_mode = self.runtime_mode.to_string();
+        let interaction_mode = self.interaction_mode.to_string();
+        let lead = cat.map(|c| c.2).unwrap_or("I have some feedback");
+        let body = json!({
+            "category": cat.map(|c| c.0),
+            "details": details.trim(),
+            "summary": format!("{lead} in Synara 1.0.0."),
+            "diagnostics": {
+                "appVersion": "1.0.0",
+                "submittedAt": now_iso(),
+                "userAgent": "synara-shell/1.0.0",
+                "platform": "macOS",
+                "language": "en-US",
+                "viewport": "0x0",
+                "provider": if provider.is_empty() { Value::Null } else { Value::String(provider) },
+                "model": Value::Null,
+                "projectKind": Value::Null,
+                "environmentMode": Value::Null,
+                "runtimeMode": runtime_mode,
+                "interactionMode": interaction_mode,
+                "sessionStatus": session_status,
+                "latestTurnState": Value::Null,
+                "messageCount": messages_n,
+                "activityCount": activities_n,
+                "hasPendingApproval": false,
+                "hasPendingUserInput": false,
+                "hasThreadError": false,
+            },
+        });
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    ureq::post("https://www.trysynara.com/api/feedback")
+                        .timeout(std::time::Duration::from_secs(20))
+                        .set("x-synara-feedback", "1")
+                        .send_json(body)
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.feedback_sending = false;
+                match res {
+                    Ok(_) => {
+                        this.feedback_open = false;
+                        this.feedback_toast =
+                            Some(("Feedback sent".to_string(), false));
+                    }
+                    Err(_) => {
+                        this.feedback_toast =
+                            Some(("Could not send feedback".to_string(), true));
+                    }
+                }
+                cx.spawn(async move |this2: WeakEntity<Self>, cx2: &mut AsyncApp| {
+                    cx2.background_executor()
+                        .timer(std::time::Duration::from_secs(4))
+                        .await;
+                    let _ = this2.update(cx2, |this2: &mut Self, cx2| {
+                        this2.feedback_toast = None;
+                        cx2.notify();
+                    });
+                })
+                .detach();
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
     }
 
     fn insert_goal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
@@ -7100,9 +7225,7 @@ impl Render for Native {
                                 "rename" => this.start_rename(w, cx),
                                 "feedback" => {
                                     this.set_draft("", w, cx);
-                                    cx.open_url(
-                                        "https://github.com/Emanuele-web04/synara/issues",
-                                    );
+                                    this.open_feedback(w, cx);
                                 }
                                 _ => this.set_draft(&format!("/{cmd} "), w, cx),
                             }
@@ -11121,6 +11244,41 @@ impl Render for Native {
                 }
             }
         }
+        if let Some((msg, is_err)) = self.feedback_toast.clone() {
+            toast_shown = true;
+            update_toast = update_toast.child(
+                h_flex()
+                    .w(px(364.))
+                    .gap_2()
+                    .items_center()
+                    .rounded(px(12.))
+                    .bg(popover_bg)
+                    .border_1()
+                    .border_color(theme.border)
+                    .p(px(14.))
+                    .child(
+                        Icon::new(if is_err {
+                            AssetIcon::TriangleAlert
+                        } else {
+                            AssetIcon::Check
+                        })
+                        .size(px(16.))
+                        .text_color(if is_err {
+                            let c: gpui::Hsla = rgb(0xc24904).into();
+                            c
+                        } else {
+                            let c: gpui::Hsla = rgb(0x2da44e).into();
+                            c
+                        }),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .child(msg),
+                    ),
+            );
+        }
         if toast_shown {
             main = main.child(update_toast);
         }
@@ -12865,6 +13023,180 @@ impl Render for Native {
             );
         }
 
+        // Feedback dialog (upstream FeedbackDialog): centered card over a
+        // dimmed backdrop — category pills, details textarea, diagnostics
+        // note, full-width Submit.
+        let mut fb_overlay = div().absolute().inset_0().size_full();
+        if self.feedback_open {
+            let can_submit = self
+                .feedback_input
+                .as_ref()
+                .map(|i| !i.read(cx).value().trim().is_empty())
+                .unwrap_or(false)
+                && !self.feedback_sending;
+            let mut pills = h_flex().w_full().px(px(20.)).gap_1p5().flex_wrap();
+            for (i, (_v, label, _lead)) in Self::FEEDBACK_CATEGORIES.iter().enumerate()
+            {
+                let sel = self.feedback_category == Some(i);
+                pills = pills.child(
+                    div()
+                        .id(ElementId::Name(format!("fb-cat-{i}").into()))
+                        .cursor_pointer()
+                        .rounded(px(999.))
+                        .px(px(14.))
+                        .py(px(5.))
+                        .text_size(px(13.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .text_color(if sel {
+                            theme.foreground
+                        } else {
+                            theme.muted_foreground
+                        })
+                        .bg(if sel {
+                            theme.secondary
+                        } else {
+                            gpui::transparent_black()
+                        })
+                        .child(format!("{} {}", if sel { "\u{2212}" } else { "+" }, label))
+                        .on_click(cx.listener(move |this, _e, _w, cx| {
+                            this.feedback_category =
+                                if this.feedback_category == Some(i) {
+                                    None
+                                } else {
+                                    Some(i)
+                                };
+                            cx.notify();
+                        })),
+                );
+            }
+            let mut card = v_flex()
+                .w(px(576.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .overflow_hidden()
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    if ev.keystroke.key == "escape" && !this.feedback_sending {
+                        this.feedback_open = false;
+                        cx.stop_propagation();
+                        cx.notify();
+                    }
+                }))
+                .child(
+                    h_flex()
+                        .w_full()
+                        .px(px(20.))
+                        .pt(px(20.))
+                        .pb(px(12.))
+                        .items_center()
+                        .child(
+                            div()
+                                .text_size(px(20.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .flex_1()
+                                .child("Share feedback"),
+                        )
+                        .child(
+                            div()
+                                .id("fb-close")
+                                .cursor_pointer()
+                                .text_color(theme.muted_foreground)
+                                .hover(|d| d.text_color(theme.foreground))
+                                .child(svg_icon(icons::X).size(px(16.)))
+                                .on_click(cx.listener(|this, _e, _w, cx| {
+                                    if !this.feedback_sending {
+                                        this.feedback_open = false;
+                                    }
+                                    cx.notify();
+                                })),
+                        ),
+                )
+                .child(pills);
+            if let Some(input) = self.feedback_input.clone() {
+                card = card.child(
+                    div()
+                        .mx(px(20.))
+                        .mt(px(12.))
+                        .min_h(px(128.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(8.))
+                        .px_2()
+                        .py_1()
+                        .child(Input::new(&input).appearance(false)),
+                );
+            }
+            card = card
+                .child(
+                    div()
+                        .px(px(20.))
+                        .pt(px(12.))
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child(
+                            "Diagnostics include app version, OS, provider/model, \
+                             modes, and session state — never prompts, messages, \
+                             paths, or logs.",
+                        ),
+                )
+                .child(
+                    div()
+                        .mx(px(20.))
+                        .my(px(16.))
+                        .h(px(36.))
+                        .id("fb-submit")
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .rounded(px(8.))
+                        .bg(if can_submit {
+                            theme.foreground
+                        } else {
+                            theme.muted
+                        })
+                        .text_color(theme.background)
+                        .text_size(px(13.))
+                        .cursor_pointer()
+                        .child(if self.feedback_sending {
+                            "Sending…"
+                        } else {
+                            "Submit"
+                        })
+                        .on_click(cx.listener(|this, _e, _w, cx| {
+                            this.submit_feedback(cx)
+                        })),
+                );
+            fb_overlay = fb_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .justify_center()
+                    .bg(rgba(0x00000080))
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            if !this.feedback_sending {
+                                this.feedback_open = false;
+                            }
+                            cx.notify();
+                        }),
+                    )
+                    .child(
+                        div()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| {
+                                    cx.stop_propagation()
+                                }),
+                            )
+                            .child(card),
+                    ),
+            );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -12918,5 +13250,6 @@ impl Render for Native {
             .when(self.ctx_menu.is_some(), |d| d.child(ctx_overlay))
             .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
+            .when(self.feedback_open, |d| d.child(fb_overlay))
     }
 }

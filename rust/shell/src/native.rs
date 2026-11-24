@@ -17271,16 +17271,16 @@ impl Render for Native {
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
         } else if self.view_dev {
-            main = main.child(div().flex_1().child(dev_pane.overflow_y_scrollbar()));
+            main = main.child(div().flex_1().min_h_0().child(dev_pane.overflow_y_scrollbar()));
         } else if self.view_files {
-            main = main.child(div().flex_1().child(files_pane.overflow_y_scrollbar()));
+            main = main.child(div().flex_1().min_h_0().child(files_pane.overflow_y_scrollbar()));
         } else if self.view_inbox {
-            main = main.child(div().flex_1().child(inbox_pane.overflow_y_scrollbar()));
+            main = main.child(div().flex_1().min_h_0().child(inbox_pane.overflow_y_scrollbar()));
         } else if self.view_tasks {
             main = main.child(div().flex_1().child(tasks_pane));
         } else if self.view_kanban {
             main = main
-                .child(div().flex_1().child(kanban_pane.overflow_y_scrollbar()));
+                .child(div().flex_1().min_h_0().child(kanban_pane.overflow_y_scrollbar()));
         } else if self.view_pullreq {
             main = main.child(div().flex_1().child(pullreq_pane));
         } else if self.view_autom {
@@ -17317,7 +17317,7 @@ impl Render for Native {
                             this.open_thread(drag.0.clone(), cx);
                         },
                     ))
-                    .child(div().flex_1().child(
+                    .child(div().flex_1().min_h_0().child(
                         pane.id("transcript-scroll")
                             .track_scroll(&self.transcript_scroll)
                             .overflow_y_scroll()
@@ -17354,7 +17354,7 @@ impl Render for Native {
                         this.focused_pane = 1;
                         cx.notify();
                     }))
-                    .child(div().flex_1().child(split_pane.overflow_y_scrollbar()))
+                    .child(div().flex_1().min_h_0().child(split_pane.overflow_y_scrollbar()))
                     .child(split_bar);
                 let cols = h_flex()
                     .id("split-cols")

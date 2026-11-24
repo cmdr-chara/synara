@@ -651,6 +651,9 @@ struct TabDrag(String);
 /// Drag payload for sidebar thread rows (drop on the composer as a mention).
 struct ThreadDrag(String);
 
+/// Drag payload for explorer file rows (absolute path).
+struct FileDrag(String);
+
 /// The floating drag image: a small chip with the dragged item's title.
 struct DragGhost(String);
 
@@ -4545,6 +4548,13 @@ impl Native {
                     cx.notify();
                 }),
             );
+            // Upstream drag-to-chat: dragging a file onto the composer
+            // references it.
+            let ghost_name = str_at(entry, "name").to_string();
+            let path_drag = path.clone();
+            row = row.on_drag(FileDrag(path_drag), move |_d, _pos, _w, cx| {
+                cx.new(|_| DragGhost(ghost_name.clone()))
+            });
             out.push(row.into_any_element());
             if expanded {
                 if let Some(children) = self.tree_entries.get(&path) {
@@ -8068,7 +8078,7 @@ impl Render for Native {
             // Thread rows drop here as an @mention (upstream
             // useComposerThreadMentionDrop); the current thread can't
             // mention itself.
-            .can_drop(|v, _w, _cx| v.is::<ThreadDrag>())
+            .can_drop(|v, _w, _cx| v.is::<ThreadDrag>() || v.is::<FileDrag>())
             .on_drag_move::<ThreadDrag>(cx.listener(
                 |this, _ev: &gpui::DragMoveEvent<ThreadDrag>, _w, cx| {
                     if !this.composer_thread_over {
@@ -8077,6 +8087,27 @@ impl Render for Native {
                     }
                 },
             ))
+            .on_drag_move::<FileDrag>(cx.listener(
+                |this, _ev: &gpui::DragMoveEvent<FileDrag>, _w, cx| {
+                    if !this.composer_thread_over {
+                        this.composer_thread_over = true;
+                        cx.notify();
+                    }
+                },
+            ))
+            .on_drop::<FileDrag>(cx.listener(|this, drag: &FileDrag, w, cx| {
+                this.composer_thread_over = false;
+                let name = drag
+                    .0
+                    .rsplit('/')
+                    .next()
+                    .unwrap_or(drag.0.as_str())
+                    .to_string();
+                let draft = this.composer.read(cx).value().to_string();
+                let sep = if draft.is_empty() || draft.ends_with(' ') { "" } else { " " };
+                this.set_draft(&format!("{draft}{sep}@{name} "), w, cx);
+                cx.notify();
+            }))
             .on_drop::<ThreadDrag>(cx.listener(
                 |this, drag: &ThreadDrag, w, cx| {
                     this.composer_thread_over = false;

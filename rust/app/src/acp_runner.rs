@@ -386,6 +386,47 @@ struct ApprovalCtx {
     cancelled: Arc<AtomicBool>,
     runtime_mode: String,
     interaction_mode: String,
+    tool_calls: Arc<Mutex<HashMap<String, Value>>>,
+}
+
+fn approval_request_kind(acp_kind: &str) -> &'static str {
+    match acp_kind {
+        "execute" => "command",
+        "read" => "file-read",
+        "edit" | "delete" | "move" => "file-change",
+        _ => "tool",
+    }
+}
+
+fn merge_tracked_tool_call(request: &mut Value, tracked: &Value) {
+    let (Some(request_obj), Some(tracked_obj)) =
+        (request.as_object_mut(), tracked.as_object())
+    else {
+        return;
+    };
+    let tracked_kind = tracked_obj.get("kind").and_then(Value::as_str);
+    let request_kind = request_obj.get("kind").and_then(Value::as_str);
+    if tracked_kind == Some("execute")
+        || request_kind.is_none()
+        || request_kind == Some("unknown")
+    {
+        if let Some(kind) = tracked_kind {
+            request_obj.insert("kind".to_string(), json!(kind));
+        }
+    }
+    let request_title = request_obj.get("title").and_then(Value::as_str);
+    if request_title.is_none() || matches!(request_title, Some("Tool" | "Tool call")) {
+        if let Some(title) = tracked_obj.get("title") {
+            request_obj.insert("title".to_string(), title.clone());
+        }
+    }
+    for key in ["rawInput", "rawOutput", "content", "locations"] {
+        if !request_obj.contains_key(key) {
+            if let Some(value) = tracked_obj.get(key) {
+                request_obj.insert(key.to_string(), value.clone());
+            }
+        }
+    }
 }
 
 impl Rpc {
@@ -544,7 +585,18 @@ impl Rpc {
     /// reply ACP `outcome: "cancelled"` unless a reject option exists.
     fn handle_permission(&mut self, v: &Value, ctx: &ApprovalCtx) {
         let params = v.get("params").cloned().unwrap_or(Value::Null);
-        let tool_call = params.get("toolCall").cloned().unwrap_or(Value::Null);
+        let mut tool_call = params.get("toolCall").cloned().unwrap_or(Value::Null);
+        if let Some(tool_call_id) = tool_call
+            .get("toolCallId")
+            .and_then(Value::as_str)
+            .map(str::to_string)
+        {
+            if let Ok(tool_calls) = ctx.tool_calls.lock() {
+                if let Some(tracked) = tool_calls.get(&tool_call_id) {
+                    merge_tracked_tool_call(&mut tool_call, tracked);
+                }
+            }
+        }
         let request_id = tool_call
             .get("toolCallId")
             .and_then(Value::as_str)
@@ -578,7 +630,9 @@ impl Rpc {
             }
             let payload = json!({
                 "requestId": request_id,
-                "requestKind": "tool",
+                "requestKind": approval_request_kind(
+                    tool_call.get("kind").and_then(Value::as_str).unwrap_or(""),
+                ),
                 "toolName": title,
                 "detail": title,
                 "sessionApprovalAvailable": true,
@@ -777,6 +831,12 @@ fn resolve_acp_mode(
     runtime_mode: &str,
     interaction_mode: &str,
 ) -> Result<Option<String>, String> {
+    if runtime_mode == "auto" {
+        return Err(
+            "Provider \"devin\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
+                .to_string(),
+        );
+    }
     let modes = mode_state
         .get("availableModes")
         .and_then(Value::as_array)
@@ -945,6 +1005,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     |r| r.get::<_, String>(0),
                 )
                 .unwrap_or_else(|_| "default".to_string()),
+            tool_calls: Arc::new(Mutex::new(HashMap::new())),
         }),
     };
 
@@ -1042,6 +1103,10 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         let tid = thread_id.to_string();
         let amsg = assistant_msg_id.clone();
         let t_id = turn_id.clone();
+        let approval_tool_calls = rpc
+            .approval_ctx
+            .as_ref()
+            .map(|ctx| ctx.tool_calls.clone());
         let result = rpc.call_streaming(
             "session/prompt",
             json!({
@@ -1070,6 +1135,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         }
                     }
                     "tool_call" => {
+                        if let (Some(tool_calls), Some(tool_call_id)) = (
+                            approval_tool_calls.as_ref(),
+                            update.get("toolCallId").and_then(Value::as_str),
+                        ) {
+                            if let Ok(mut map) = tool_calls.lock() {
+                                map.insert(tool_call_id.to_string(), update.clone());
+                            }
+                        }
                         let title = update
                             .get("title")
                             .and_then(Value::as_str)
@@ -1213,5 +1286,70 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             )?;
             Err(e)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn devin_auto_runtime_mode_fails_closed() {
+        let modes = json!({
+            "availableModes": [
+                {"id": "bypass", "name": "Bypass"},
+                {"id": "plan", "name": "Plan"},
+            ],
+            "currentModeId": "bypass",
+        });
+        let err = resolve_acp_mode(&modes, "auto", "").unwrap_err();
+        assert_eq!(
+            err,
+            "Provider \"devin\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
+        );
+    }
+
+
+
+    #[test]
+    fn acp_permission_kinds_map_to_projection_request_kinds() {
+        assert_eq!(approval_request_kind("execute"), "command");
+        assert_eq!(approval_request_kind("read"), "file-read");
+        assert_eq!(approval_request_kind("edit"), "file-change");
+        assert_eq!(approval_request_kind("delete"), "file-change");
+        assert_eq!(approval_request_kind("other"), "tool");
+    }
+
+    #[test]
+    fn sparse_permission_request_keeps_tracked_execute_kind() {
+        let mut request = json!({"toolCallId": "call-1", "kind": "unknown", "title": "Tool"});
+        let tracked = json!({
+            "toolCallId": "call-1",
+            "kind": "execute",
+            "title": "Run tests",
+            "rawInput": {"command": "cargo test"},
+        });
+        merge_tracked_tool_call(&mut request, &tracked);
+        assert_eq!(
+            request.get("kind").and_then(Value::as_str),
+            Some("execute")
+        );
+        assert_eq!(request.get("title").and_then(Value::as_str), Some("Run tests"));
+        assert_eq!(
+            request.pointer("/rawInput/command").and_then(Value::as_str),
+            Some("cargo test")
+        );
+    }
+
+    #[test]
+    fn devin_full_access_still_maps_to_bypass() {
+        let modes = json!({
+            "availableModes": [{"id": "bypass", "name": "Bypass"}],
+            "currentModeId": "code",
+        });
+        assert_eq!(
+            resolve_acp_mode(&modes, "full-access", "").unwrap(),
+            Some("bypass".to_string())
+        );
     }
 }

@@ -3298,18 +3298,14 @@ impl Native {
             _ => {
                 let snap = self.snapshot.as_ref().unwrap_or(&Value::Null);
                 let mut items: Vec<(String, String, String, String)> = Vec::new();
-                for p in arr(snap, "projects") {
-                    let title = str_at(p, "title").to_string();
-                    if !q.is_empty() && !title.to_lowercase().contains(&q) {
-                        continue;
-                    }
-                    items.push((
-                        "project".to_string(),
-                        title,
-                        str_at(p, "kind").to_string(),
-                        str_at(p, "id").to_string(),
-                    ));
-                }
+                let project_title = |pid: &str| -> String {
+                    arr(snap, "projects")
+                        .iter()
+                        .find(|p| str_at(p, "id") == pid)
+                        .map(|p| str_at(p, "title").to_string())
+                        .filter(|t| !t.is_empty())
+                        .unwrap_or_else(|| "Unknown project".to_string())
+                };
                 for t in arr(snap, "threads") {
                     if !(get(t, "deletedAt").is_null() && get(t, "archivedAt").is_null()) {
                         continue;
@@ -3324,8 +3320,35 @@ impl Native {
                     items.push((
                         "thread".to_string(),
                         title,
-                        String::new(),
+                        project_title(str_at(t, "projectId")),
                         str_at(t, "id").to_string(),
+                    ));
+                }
+                let actions: [(&str, &str, &str); 3] = [
+                    ("new-chat", "New chat", "\u{2325}\u{2318}N"),
+                    ("new-thread", "New thread", "\u{2318}N"),
+                    ("go-inbox", "Go to Inbox", "\u{2325}\u{2318}U"),
+                ];
+                for (id, label, kbd) in actions {
+                    if q.is_empty() || label.to_lowercase().contains(&q) {
+                        items.push((
+                            "action".to_string(),
+                            label.to_string(),
+                            kbd.to_string(),
+                            id.to_string(),
+                        ));
+                    }
+                }
+                for p in arr(snap, "projects") {
+                    let title = str_at(p, "title").to_string();
+                    if !q.is_empty() && !title.to_lowercase().contains(&q) {
+                        continue;
+                    }
+                    items.push((
+                        "project".to_string(),
+                        title,
+                        str_at(p, "kind").to_string(),
+                        str_at(p, "id").to_string(),
                     ));
                 }
                 items.truncate(30);
@@ -3384,6 +3407,15 @@ impl Native {
                 }
             }
             "thread" => self.open_thread(payload, cx),
+            "action" => match payload.as_str() {
+                "new-chat" | "new-thread" => self.new_thread(cx),
+                "go-inbox" => {
+                    self.clear_views();
+                    self.view_inbox = true;
+                    self.fetch_inbox(cx);
+                }
+                _ => {}
+            },
             _ => {}
         }
         cx.notify();
@@ -20469,6 +20501,7 @@ impl Render for Native {
                         }
                     }
                     "snippet" => "Matches",
+                    "action" => "Quick actions",
                     _ => "Files",
                 }
             };
@@ -20490,6 +20523,7 @@ impl Render for Native {
                     "directory" | "project" => icons::FOLDER,
                     "thread" => icons::S_CHAT_BUBBLES,
                     "snippet" => icons::SEARCH,
+                    "action" => icons::ZAP,
                     _ => icons::FILE_TEXT,
                 };
                 let mut r = h_flex()

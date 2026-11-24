@@ -3026,6 +3026,9 @@ impl Native {
         if self.view_autom {
             self.fetch_automations(cx);
         }
+        if self.view_tasks || self.view_kanban {
+            self.fetch_inbox(cx);
+        }
         cx.notify();
     }
 
@@ -17170,7 +17173,96 @@ impl Render for Native {
                                             .text_color(theme.muted_foreground)
                                             .child("Add a task, or press Tab to hand it to an agent"),
                                     ),
-                            ),
+                            )
+                            .child({
+                                let today = chrono::Local::now().format("%Y-%m-%d").to_string();
+                                let mut rows = v_flex().mt(px(8.)).gap(px(2.));
+                                for task in self.inbox_tasks.clone() {
+                                    let title = str_at(&task, "title").to_string();
+                                    if title.is_empty() {
+                                        continue;
+                                    }
+                                    let id = str_at(&task, "id").to_string().replace("null", "");
+                                    let done = !str_at(&task, "completedAt").is_empty()
+                                        && str_at(&task, "completedAt") != "null";
+                                    let due = str_at(&task, "dueDate").to_string();
+                                    let due_label = if due.is_empty() || due == "null" {
+                                        String::new()
+                                    } else if due < today {
+                                        "Overdue".to_string()
+                                    } else if due == today {
+                                        "Today".to_string()
+                                    } else {
+                                        due[..due.len().min(10)].to_string()
+                                    };
+                                    let tid = str_at(&task, "threadId").to_string();
+                                    let mut row = h_flex()
+                                        .id(ElementId::Name(format!("tasks-task-{id}").into()))
+                                        .w_full()
+                                        .items_center()
+                                        .gap_2()
+                                        .px_2()
+                                        .py(px(6.))
+                                        .rounded_md()
+                                        .child(
+                                            div()
+                                                .id(ElementId::Name(
+                                                    format!("tasks-task-check-{id}").into(),
+                                                ))
+                                                .cursor_pointer()
+                                                .child(
+                                                    Icon::new(if done {
+                                                        AssetIcon::CircleCheck
+                                                    } else {
+                                                        AssetIcon::CircleDot
+                                                    })
+                                                    .size(px(14.))
+                                                    .text_color(if done {
+                                                        theme.success
+                                                    } else {
+                                                        theme.muted_foreground
+                                                    }),
+                                                )
+                                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                    this.toggle_todo(id.clone(), !done, cx);
+                                                })),
+                                        )
+                                        .child(
+                                            div()
+                                                .flex_1()
+                                                .text_size(px(13.))
+                                                .text_color(if done {
+                                                    theme.muted_foreground
+                                                } else {
+                                                    theme.foreground
+                                                })
+                                                .child(title),
+                                        );
+                                    if !due_label.is_empty() {
+                                        row = row.child(
+                                            div()
+                                                .rounded_full()
+                                                .px(px(6.))
+                                                .py(px(1.))
+                                                .bg(theme.muted)
+                                                .text_size(px(11.))
+                                                .text_color(if due_label == "Overdue" {
+                                                    theme.danger
+                                                } else {
+                                                    theme.muted_foreground
+                                                })
+                                                .child(due_label),
+                                        );
+                                    }
+                                    if !tid.is_empty() && tid != "null" {
+                                        row = row.cursor_pointer().on_click(cx.listener(
+                                            move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
+                                        ));
+                                    }
+                                    rows = rows.child(row);
+                                }
+                                rows
+                            }),
                     ),
             );
 

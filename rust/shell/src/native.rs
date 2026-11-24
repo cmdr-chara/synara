@@ -162,6 +162,250 @@ fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
 
+// ---- keyboard-shortcut helpers (Settings > Keyboard shortcuts) ---------
+
+fn sc_flag(sc: &Value, f: &str) -> bool {
+    sc.get(f).and_then(Value::as_bool).unwrap_or(false)
+}
+
+/// `keybindingValueFromShortcut` equivalent: "mod+ctrl+meta+alt+shift+key".
+fn sc_enc_shortcut(sc: &Value) -> String {
+    let mut parts: Vec<String> = Vec::new();
+    if sc_flag(sc, "modKey") {
+        parts.push("mod".into());
+    }
+    if sc_flag(sc, "ctrlKey") {
+        parts.push("ctrl".into());
+    }
+    if sc_flag(sc, "metaKey") {
+        parts.push("meta".into());
+    }
+    if sc_flag(sc, "altKey") {
+        parts.push("alt".into());
+    }
+    if sc_flag(sc, "shiftKey") {
+        parts.push("shift".into());
+    }
+    let key = sc.get("key").and_then(Value::as_str).unwrap_or("");
+    parts.push(if key == " " { "space".into() } else { key.into() });
+    parts.join("+")
+}
+
+fn sc_enc_captured(c: &ScCaptured) -> String {
+    let mut parts: Vec<String> = Vec::new();
+    if c.m_mod {
+        parts.push("mod".into());
+    }
+    if c.m_ctrl {
+        parts.push("ctrl".into());
+    }
+    if c.m_alt {
+        parts.push("alt".into());
+    }
+    if c.m_shift {
+        parts.push("shift".into());
+    }
+    parts.push(c.key.clone());
+    parts.join("+")
+}
+
+/// Modifier-mask key used to group numbered-family bindings ("mod+alt").
+fn sc_mod_mask(sc: &Value) -> String {
+    let mut parts: Vec<String> = Vec::new();
+    if sc_flag(sc, "modKey") {
+        parts.push("mod".into());
+    }
+    if sc_flag(sc, "ctrlKey") {
+        parts.push("ctrl".into());
+    }
+    if sc_flag(sc, "metaKey") {
+        parts.push("meta".into());
+    }
+    if sc_flag(sc, "altKey") {
+        parts.push("alt".into());
+    }
+    if sc_flag(sc, "shiftKey") {
+        parts.push("shift".into());
+    }
+    parts.join("+")
+}
+
+/// The config-form rule ({command, key, when}) edits operate on, rebuilt
+/// from a resolved rule.
+fn sc_rule_from_resolved(r: &Value) -> Value {
+    let mut o = json!({
+        "command": r.get("command").cloned().unwrap_or(Value::Null),
+        "key": r
+            .get("shortcut")
+            .map(sc_enc_shortcut)
+            .unwrap_or_default(),
+    });
+    let when_ast = r.get("whenAst").cloned().unwrap_or(Value::Null);
+    if !when_ast.is_null() {
+        if let Some(w) = sc_encode_when(&when_ast) {
+            o["when"] = json!(w);
+        }
+    }
+    o
+}
+
+/// `encodeKeybindingWhen` equivalent: AST -> expression text with the same
+/// parenthesizing (left child wraps below precedence, right child at or
+/// below it).
+fn sc_encode_when(node: &Value) -> Option<String> {
+    match node.get("type").and_then(Value::as_str)? {
+        "identifier" => node.get("name").and_then(Value::as_str).map(|n| n.to_string()),
+        "not" => {
+            let child = node.get("node")?;
+            let encoded = sc_encode_when(child)?;
+            let needs_parens = matches!(
+                child.get("type").and_then(Value::as_str),
+                Some("and") | Some("or")
+            );
+            Some(if needs_parens {
+                format!("!({encoded})")
+            } else {
+                format!("!{encoded}")
+            })
+        }
+        kind @ ("and" | "or") => {
+            let joiner = if kind == "or" { " || " } else { " && " };
+            let parent_prec = if kind == "or" { 1 } else { 2 };
+            let mut text = String::new();
+            for side in ["left", "right"] {
+                let child = node.get(side)?;
+                let piece = sc_encode_when(child).unwrap_or_default();
+                let child_prec = match child.get("type").and_then(Value::as_str) {
+                    Some("or") => 1,
+                    Some("and") => 2,
+                    _ => 4,
+                };
+                let wrap = if side == "left" {
+                    child_prec < parent_prec
+                } else {
+                    child_prec <= parent_prec
+                };
+                let piece = if wrap { format!("({piece})") } else { piece };
+                if side == "right" {
+                    text.push_str(joiner);
+                }
+                text.push_str(&piece);
+            }
+            Some(text)
+        }
+        _ => None,
+    }
+}
+
+fn sc_key_label(key: &str) -> String {
+    match key {
+        " " | "space" => "Space".into(),
+        "escape" | "esc" => "Esc".into(),
+        "tab" => "Tab".into(),
+        "arrowleft" | "left" => "\u{2190}".into(),
+        "arrowright" | "right" => "\u{2192}".into(),
+        "arrowup" | "up" => "\u{2191}".into(),
+        "arrowdown" | "down" => "\u{2193}".into(),
+        "comma" => ",".into(),
+        "enter" | "return" => "\u{21a9}".into(),
+        "backspace" => "\u{232b}".into(),
+        "delete" | "forwarddelete" => "\u{2326}".into(),
+        k if k.len() == 1 => k.to_uppercase(),
+        k if k.starts_with('f') && k[1..].chars().all(|c| c.is_ascii_digit()) => {
+            k.to_uppercase()
+        }
+        k => {
+            let mut c = k.chars();
+            match c.next() {
+                Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+                None => k.into(),
+            }
+        }
+    }
+}
+
+/// macOS modifier order: ^ option shift cmd.
+fn sc_mod_label(sc: &Value) -> String {
+    let mut s = String::new();
+    if sc_flag(sc, "ctrlKey") {
+        s.push('\u{2303}');
+    }
+    if sc_flag(sc, "altKey") {
+        s.push('\u{2325}');
+    }
+    if sc_flag(sc, "shiftKey") {
+        s.push('\u{21e7}');
+    }
+    if sc_flag(sc, "modKey") || sc_flag(sc, "metaKey") {
+        s.push('\u{2318}');
+    }
+    s
+}
+
+fn sc_fmt_label(sc: &Value) -> String {
+    format!(
+        "{}{}",
+        sc_mod_label(sc),
+        sc_key_label(sc.get("key").and_then(Value::as_str).unwrap_or(""))
+    )
+}
+
+fn sc_fmt_captured(c: &ScCaptured) -> String {
+    let mut s = String::new();
+    if c.m_ctrl {
+        s.push('\u{2303}');
+    }
+    if c.m_alt {
+        s.push('\u{2325}');
+    }
+    if c.m_shift {
+        s.push('\u{21e7}');
+    }
+    if c.m_mod {
+        s.push('\u{2318}');
+    }
+    s.push_str(&sc_key_label(&c.key));
+    s
+}
+
+fn sc_is_fkey(key: &str) -> bool {
+    key.len() > 1
+        && key.starts_with('f')
+        && key[1..].chars().all(|c| c.is_ascii_digit())
+}
+
+/// Normalize rule-side key names to gpui's (`arrowleft` -> `left`,
+/// " " -> `space`).
+fn sc_norm_rule_key(k: &str) -> String {
+    let k = k.to_lowercase();
+    match k.as_str() {
+        " " => "space".into(),
+        "arrowleft" => "left".into(),
+        "arrowright" => "right".into(),
+        "arrowup" => "up".into(),
+        "arrowdown" => "down".into(),
+        _ => k,
+    }
+}
+
+/// `when` expressions we can't evaluate: skip rules upstream reserves for
+/// non-mac platforms; accept everything else (terminal focus is handled by
+/// focus routing).
+fn sc_when_ok(when: Option<&str>) -> bool {
+    !when.map(|w| w.contains("!isMac")).unwrap_or(false)
+}
+
+fn sc_chip(label: impl Into<SharedString>, theme: &Theme) -> Div {
+    div()
+        .px(px(7.))
+        .py(px(1.5))
+        .rounded(px(10.))
+        .bg(gpui::rgba(0x00000008))
+        .text_size(px(13.))
+        .text_color(theme.muted_foreground)
+        .child(label.into())
+}
+
 // Small ghost icon button matching the web sidebar-icon-button affordance.
 fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: Hsla) -> Stateful<Div> {
     icon_btn_pad(id, data, size, 16., hover, ink)
@@ -188,6 +432,102 @@ fn icon_btn_pad(
 }
 
 type SharedClient = Arc<Mutex<Option<Arc<Client>>>>;
+
+#[derive(Clone)]
+struct ScCaptured {
+    key: String,
+    m_mod: bool,
+    m_ctrl: bool,
+    m_alt: bool,
+    m_shift: bool,
+}
+
+/// Settings > Keyboard shortcuts recorder dialog state: the row being
+/// bound, the resolved rules it replaces (empty = adding a binding), and
+/// the chord captured so far.
+struct ScRec {
+    label: String,
+    commands: Vec<String>,
+    numbered: bool,
+    replacing: Vec<Value>,
+    captured: Option<ScCaptured>,
+}
+
+
+
+/// Settings > Keyboard shortcuts rows: (title, description, default kbd
+/// label, space-separated command ids) in upstream order.
+static SHORTCUT_ROWS: [(&str, &str, &str, &str); 69] = [
+    ("Toggle sidebar", "Collapse or reveal the sidebar shell.", "\u{2318}B", "sidebar.toggle"),
+    ("Add project", "Open the Create project dialog to import a local folder.", "\u{21e7}\u{2318}O", "sidebar.addProject"),
+    ("Search projects and threads", "Open the sidebar search palette from anywhere in the app.", "\u{2318}K", "sidebar.search"),
+    ("Toggle Activity", "Show or hide running tasks, completed work, and items that need attention.", "\u{2325}\u{2318}U", "sidebar.activity"),
+    ("Import thread", "Bring an existing conversation into the current workspace.", "\u{2318}I", "sidebar.importThread"),
+    ("Previous space", "Switch to the previous project space and restore its last working context.", "\u{2325}\u{2318}Left", "space.previous"),
+    ("Next space", "Switch to the next project space and restore its last working context.", "\u{2325}\u{2318}Right", "space.next"),
+    ("New thread", "Start a fresh thread in the current project, or the most recent one.", "\u{2318}N", "chat.new"),
+    ("New thread in latest project", "Jump back into the most recently used project with a new thread.", "\u{21e7}\u{2318}N", "chat.newLatestProject"),
+    ("New chat", "Open the empty chat landing view.", "\u{2325}\u{2318}N", "chat.newChat chat.newLocal"),
+    ("New terminal thread", "Create a thread that opens directly into terminal mode.", "\u{21e7}\u{2318}T", "chat.newTerminal"),
+    ("New Claude thread", "Start a fresh thread with Claude selected.", "\u{2325}\u{2318}C", "chat.newClaude"),
+    ("New Codex thread", "Start a fresh thread with Codex selected.", "\u{2325}\u{2318}X", "chat.newCodex"),
+    ("New Cursor thread", "Start a fresh thread with Cursor selected.", "\u{2325}\u{2318}R", "chat.newCursor"),
+    ("Split chat", "Open the current conversation in a second pane.", "\u{2318}\\", "chat.split"),
+    ("Previous recent view", "Cycle backward through recently opened primary views.", "\u{2303}\u{21e7}Tab", "view.recent.previous"),
+    ("Next recent view", "Cycle forward through recently opened primary views.", "\u{2303}Tab", "view.recent.next"),
+    ("Model picker", "Open the composer provider and model picker.", "\u{21e7}\u{2318}M", "modelPicker.toggle"),
+    ("Next model", "Cycle to the next model for the active provider (favorites first, then remaining models).", "\u{2325}]", "model.next"),
+    ("Previous model", "Cycle to the previous model for the active provider (favorites first, then remaining models).", "\u{2325}[", "model.previous"),
+    ("Next model effort", "Cycle the model's available effort levels and briefly show the selected level.", "\u{21e7}Tab", "model.effort.next"),
+    ("Reasoning picker", "Open the composer reasoning and trait controls.", "\u{21e7}\u{2318}E", "traitsPicker.toggle"),
+    ("Open usage settings", "Open Settings \u{2192} Usage for provider quota and token totals.", "\u{21e7}\u{2318}U", "settings.usage"),
+    ("Focus composer", "Focus or blur the chat prompt composer.", "\u{2318}L", "composer.focus.toggle"),
+    ("Find in thread", "Search the current transcript and jump to each matching message.", "\u{2318}F", "chat.find"),
+    ("Search files", "Open the workspace file-name search palette.", "\u{2318}P", "search.files"),
+    ("Search snippets", "Open the workspace content search palette across file snippets.", "\u{21e7}\u{2318}F", "search.content"),
+    ("Toggle terminal", "Show or hide the terminal surface for the active thread.", "\u{2318}J", "terminal.toggle"),
+    ("Focus terminal", "Open or focus the terminal panel for this thread.", "\u{2318}T", "terminal.new"),
+    ("Close terminal", "Close the terminal session for this thread.", "\u{2318}W", "terminal.close"),
+    ("Toggle diff", "Open or close the working tree diff panel.", "\u{2318}D", "diff.toggle"),
+    ("Next change", "Jump the diff viewport to the next changed file.", "\u{2325}Down", "diff.change.next"),
+    ("Previous change", "Jump the diff viewport to the previous changed file.", "\u{2325}Up", "diff.change.previous"),
+    ("Toggle side chat", "Open or hide a side chat beside the main conversation.", "\u{2325}\u{2318}S", "sidechat.toggle"),
+    ("Toggle browser", "Reveal the built-in browser panel for the active thread.", "\u{21e7}\u{2318}B", "browser.toggle"),
+    ("Toggle iOS Simulator", "Reveal the iOS Simulator panel for the active thread. macOS servers only.", "", "device.toggle"),
+    ("Copy thread ID", "Copy the active thread's ID to the clipboard.", "\u{21e7}\u{2318}C", "thread.copyId"),
+    ("Archive thread", "Archive the active chat, with the same confirmation and undo as the thread menu.", "\u{2325}\u{21e7}\u{2318}A", "thread.archive"),
+    ("Snooze thread", "Open the snooze date and time picker for the active chat.", "\u{2325}\u{21e7}\u{2318}S", "thread.snooze"),
+    ("Mark thread unread", "Mark the active chat unread and restore its dismissed notification.", "\u{2325}\u{21e7}\u{2318}U", "thread.markUnread"),
+    ("Previous visible thread", "Cycle to the previous thread that is currently visible in the sidebar.", "\u{21e7}\u{2318}[", "chat.visible.previous"),
+    ("Next visible thread", "Cycle to the next thread that is currently visible in the sidebar.", "\u{21e7}\u{2318}]", "chat.visible.next"),
+    ("Next chat needing attention", "Open the most urgent other chat: one waiting on you first, then unseen work, as Activity's Priority ranks them.", "\u{2325}\u{2318}A", "chat.attention.next"),
+    ("Previous tab", "Switch to the open thread tab on the left of the active one.", "\u{2303}\u{2318}Left", "threadTab.previous"),
+    ("Next tab", "Switch to the open thread tab on the right of the active one.", "\u{2303}\u{2318}Right", "threadTab.next"),
+    ("Close tab", "Close the active open-thread tab, like a browser tab.", "\u{2318}W", "threadTab.close"),
+    ("Open in favorite editor", "Send the current thread or workspace target to your preferred editor.", "\u{2318}O", "editor.openFavorite"),
+    ("Save file", "Write the focused editor's unsaved changes back to disk.", "\u{2318}S", "editor.file.save"),
+    ("Commit and push", "Commit pending changes and push the active thread's repo.", "\u{2303}\u{2318}P", "git.commitAndPush"),
+    ("Editor commands", "Open the editor command picker for the focused code editor.", "F1", "editor.commands"),
+    ("Rename symbol", "Rename the symbol under the cursor across the workspace.", "F2", "editor.rename"),
+    ("Go to definition", "Jump to the definition of the symbol under the cursor.", "F12", "editor.goToDefinition"),
+    ("Find references", "List references to the symbol under the cursor.", "\u{21e7}F12", "editor.findReferences"),
+    ("Go to symbol in file", "Jump to a symbol in the open file.", "", "editor.goToSymbol"),
+    ("Go to line", "Jump to a line, or line:column, in the open file.", "", "editor.goToLine"),
+    ("Show problems", "List diagnostics for the open file.", "", "editor.problems"),
+    ("Quick fix", "Show quick fixes and refactorings for the code at the cursor.", "\u{2318}.", "editor.quickFix"),
+    ("Start or continue debugging", "Launch the debugger for the open file, or continue a paused session.", "F5", "editor.debug.start"),
+    ("Stop debugging", "Stop the current debug session.", "\u{21e7}F5", "editor.debug.stop"),
+    ("Toggle breakpoint", "Add or remove a breakpoint on the cursor line.", "F9", "editor.debug.toggleBreakpoint"),
+    ("Step over", "Run the next statement without entering calls.", "F10", "editor.debug.stepOver"),
+    ("Step into", "Enter the next call.", "F11", "editor.debug.stepInto"),
+    ("Step out", "Run until the current call returns.", "\u{21e7}F11", "editor.debug.stepOut"),
+    ("Open full-width terminal workspace", "Expand the active thread into the workspace terminal layout.", "\u{21e7}\u{2318}J", "terminal.workspace.newFullWidth"),
+    ("Focus terminal tab", "Switch the workspace to the terminal tab.", "\u{2303}1", "terminal.workspace.terminal"),
+    ("Focus chat tab", "Switch the workspace back to the chat tab.", "\u{2303}2", "terminal.workspace.chat"),
+    ("Close active workspace panel", "Close the currently focused workspace panel or tab.", "\u{2318}W", "terminal.workspace.closeActive"),
+    ("Jump to visible thread 1\u{2013}9", "Focus a visible thread directly from the sidebar number row.", "\u{2318}1\u{2013}9", "thread.jump.1 thread.jump.2 thread.jump.3 thread.jump.4 thread.jump.5 thread.jump.6 thread.jump.7 thread.jump.8 thread.jump.9"),
+    ("Jump to space 1\u{2013}9", "Switch straight to a tab of the space switcher. 1 is always Void.", "\u{2325}\u{2318}1\u{2013}9", "space.jump.1 space.jump.2 space.jump.3 space.jump.4 space.jump.5 space.jump.6 space.jump.7 space.jump.8 space.jump.9"),
+];
 
 pub struct Native {
     focus_handle: FocusHandle,
@@ -289,6 +629,12 @@ pub struct Native {
     palette_rows: Vec<Value>,
     palette_sel: usize,
     palette_seq: u64,
+    // Resolved keybinding rules from `server.getConfig`
+    // ({command, shortcut:{key,*Key}, when}) — drives both live Settings
+    // rows and global shortcut dispatch once loaded.
+    kb_rules: Vec<Value>,
+    // Shortcut recorder dialog state (Settings > Keyboard shortcuts).
+    sc_rec: Option<ScRec>,
     user_input_draft: Vec<(String, usize, String)>,
 }
 
@@ -642,6 +988,8 @@ impl Native {
             palette_rows: Vec::new(),
             palette_sel: 0,
             palette_seq: 0,
+            kb_rules: Vec::new(),
+            sc_rec: None,
             user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
@@ -677,7 +1025,19 @@ impl Native {
                     .background_executor()
                     .spawn(async move { c.call("orchestration.getShellSnapshot", json!({})) })
                     .await;
+                let c2 = client.clone();
+                let cfg = cx
+                    .background_executor()
+                    .spawn(async move { c2.call("server.getConfig", json!({})) })
+                    .await;
                 let _ = this.update(cx, |this: &mut Self, cx| {
+                    if let Some(rules) = cfg.and_then(|v| {
+                        v.get("keybindings")
+                            .and_then(|k| k.as_array())
+                            .cloned()
+                    }) {
+                        this.kb_rules = rules;
+                    }
                     if let Some(s) = snapshot {
                         this.snapshot = Some(s);
                     }
@@ -1464,12 +1824,372 @@ impl Native {
     /// Global keymap: the upstream DEFAULT_SHORTCUT_FALLBACKS chords whose
     /// targets exist on the native surface. cmd-f / cmd-j stay declared
     /// KeyBindings (chat.find / terminal.toggle); the rest is dispatched here.
+    // ---- shortcut recorder + keybinding dispatch ------------------------
+
+    /// Open the recorder dialog for a shortcut row. `replacing` holds the
+    /// resolved rules of the binding being edited (empty when adding one).
+    fn sc_open(
+        &mut self,
+        label: String,
+        commands: Vec<String>,
+        numbered: bool,
+        replacing: Vec<Value>,
+        cx: &mut Context<Self>,
+    ) {
+        self.sc_rec = Some(ScRec {
+            label,
+            commands,
+            numbered,
+            replacing,
+            captured: None,
+        });
+        cx.notify();
+    }
+
+    /// `evaluateRecordedShortcut`: what saving `captured` would do.
+    /// Returns (problem_message, conflicts) — empty problem + empty
+    /// conflicts means "{chord} is available."
+    fn sc_evaluate(&self, rec: &ScRec) -> (Option<String>, Vec<(String, Value)>) {
+        let Some(cap) = &rec.captured else {
+            return (None, Vec::new());
+        };
+        let label = sc_fmt_captured(cap);
+        if rec.numbered
+            && !(cap.key.len() == 1
+                && cap.key.as_bytes()[0].is_ascii_digit()
+                && cap.key != "0")
+        {
+            return (
+                Some("Hold the modifiers and press a number key.".to_string()),
+                Vec::new(),
+            );
+        }
+        if !(cap.m_mod || cap.m_ctrl || cap.m_alt) && !sc_is_fkey(&cap.key) {
+            return (
+                Some(
+                    "Add \u{2318}, \u{2325} or \u{2303} to that key, or use an F-key on its own."
+                        .to_string(),
+                ),
+                Vec::new(),
+            );
+        }
+        let enc = sc_enc_captured(cap);
+        let mut conflicts: Vec<(String, Value)> = Vec::new();
+        for r in &self.kb_rules {
+            if rec
+                .replacing
+                .iter()
+                .any(|rep| std::ptr::eq(rep, r) || rep == r)
+            {
+                continue;
+            }
+            let sc = r.get("shortcut").cloned().unwrap_or(Value::Null);
+            if sc_enc_shortcut(&sc) != enc {
+                continue;
+            }
+            let rc = r
+                .get("command")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
+            if rec.commands.iter().any(|c| *c == rc) {
+                return (
+                    Some(format!("{label} is already a shortcut for this command.")),
+                    Vec::new(),
+                );
+            }
+            if !conflicts.iter().any(|(c, _)| *c == rc) {
+                conflicts.push((rc, r.clone()));
+            }
+        }
+        (None, conflicts)
+    }
+
+    /// Command label for a conflict message: the row title, else the raw
+    /// command id.
+    fn sc_command_label(cmd: &str) -> String {
+        for (title, _d, _k, commands) in &SHORTCUT_ROWS {
+            if commands.split(' ').any(|c| c == cmd) {
+                return title.to_string();
+            }
+        }
+        cmd.to_string()
+    }
+
+    /// `shortcutSaveEdits` equivalent: remove conflicts, then set the new
+    /// rule(s) replacing the edited binding.
+    fn sc_save(&mut self, cx: &mut Context<Self>) {
+        let Some(rec) = self.sc_rec.as_ref() else {
+            return;
+        };
+        let commands = rec.commands.clone();
+        let numbered = rec.numbered;
+        let replacing = rec.replacing.clone();
+        let Some(cap) = rec.captured.clone() else {
+            return;
+        };
+        let (problem, conflicts) = self.sc_evaluate(rec);
+        if problem.is_some() {
+            return;
+        }
+        let mut edits: Vec<Value> = Vec::new();
+        for (_cmd, rule) in &conflicts {
+            edits.push(json!({"type": "remove", "rule": sc_rule_from_resolved(rule)}));
+        }
+        let enc = sc_enc_captured(&cap);
+        if numbered {
+            // The family gets one rule per member on the captured modifiers.
+            let prefix = enc
+                .rsplit_once('+')
+                .map(|(p, _)| format!("{p}+"))
+                .unwrap_or_default();
+            for (i, cmd) in commands.iter().enumerate() {
+                let mut edit =
+                    json!({"type": "set", "rule": {"command": cmd, "key": format!("{prefix}{}", i + 1)}});
+                if let Some(rep) = replacing.iter().find(|r| {
+                    r.get("command").and_then(Value::as_str) == Some(cmd.as_str())
+                }) {
+                    edit["replacing"] = sc_rule_from_resolved(rep);
+                }
+                edits.push(edit);
+            }
+        } else {
+            for (i, cmd) in commands.iter().enumerate() {
+                let mut edit =
+                    json!({"type": "set", "rule": {"command": cmd, "key": enc}});
+                if let Some(rep) = replacing.get(i).or_else(|| replacing.first()) {
+                    edit["replacing"] = sc_rule_from_resolved(rep);
+                }
+                edits.push(edit);
+            }
+        }
+        self.apply_kb_edits(edits, cx);
+    }
+
+    fn sc_remove_binding(&mut self, rules: &[Value], cx: &mut Context<Self>) {
+        let edits: Vec<Value> = rules
+            .iter()
+            .map(|r| json!({"type": "remove", "rule": sc_rule_from_resolved(r)}))
+            .collect();
+        self.apply_kb_edits(edits, cx);
+    }
+
+    /// Apply a batch of keybinding edits through `server.editKeybindings`
+    /// and adopt the resolved rules it returns.
+    fn apply_kb_edits(&mut self, edits: Vec<Value>, cx: &mut Context<Self>) {
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else {
+                return;
+            };
+            let reply = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call("server.editKeybindings", json!({"edits": edits}))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(rules) = reply
+                    .and_then(|v| {
+                        v.get("keybindings")
+                            .and_then(|k| k.as_array())
+                            .cloned()
+                    })
+                {
+                    this.kb_rules = rules.clone();
+                    if !this.settings_data.is_null() {
+                        if let Some(cfg) = this.settings_data.get_mut("config") {
+                            cfg["keybindings"] = json!(rules);
+                        }
+                    }
+                }
+                this.sc_rec = None;
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Route a key event while the recorder is open: Escape cancels, Enter
+    /// saves, everything else is captured as the candidate chord.
+    fn sc_rec_key(
+        &mut self,
+        event: &KeyDownEvent,
+        _window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let m = event.keystroke.modifiers;
+        let key = event.keystroke.key.as_str().to_string();
+        match key.as_str() {
+            "escape" => {
+                self.sc_rec = None;
+                cx.notify();
+            }
+            "enter" => self.sc_save(cx),
+            "shift" | "control" | "alt" | "meta" | "caps_lock" | "tab" | "function" => {}
+            _ => {
+                if let Some(r) = &mut self.sc_rec {
+                    r.captured = Some(ScCaptured {
+                        key,
+                        m_mod: m.platform,
+                        m_ctrl: m.control,
+                        m_alt: m.alt,
+                        m_shift: m.shift,
+                    });
+                }
+                cx.notify();
+            }
+        }
+    }
+
+    /// Resolve a key event to a command using the resolved keybinding
+    /// rules (mac: `mod`/`meta` both mean the platform ⌘ key).
+    fn kb_command_for_event(&self, event: &KeyDownEvent) -> Option<String> {
+        let m = event.keystroke.modifiers;
+        let key = sc_norm_rule_key(&event.keystroke.key);
+        for r in &self.kb_rules {
+            if !sc_when_ok(r.get("when").and_then(Value::as_str)) {
+                continue;
+            }
+            let sc = r.get("shortcut").cloned().unwrap_or(Value::Null);
+            let cmd_key = sc.get("key").and_then(Value::as_str).unwrap_or("");
+            if cmd_key.is_empty() || sc_norm_rule_key(cmd_key) != key {
+                continue;
+            }
+            if (sc_flag(&sc, "modKey") || sc_flag(&sc, "metaKey")) != m.platform {
+                continue;
+            }
+            if sc_flag(&sc, "ctrlKey") != m.control
+                || sc_flag(&sc, "altKey") != m.alt
+                || sc_flag(&sc, "shiftKey") != m.shift
+            {
+                continue;
+            }
+            if let Some(c) = r.get("command").and_then(Value::as_str) {
+                return Some(c.to_string());
+            }
+        }
+        None
+    }
+
+    /// Run a keybinding command. Returns false for commands the shell has
+    /// no action for (model pickers, editor.*, snooze, …) so the caller can
+    /// try the next matching rule.
+    fn run_command(&mut self, cmd: &str, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        match cmd {
+            "chat.new" | "chat.newChat" | "chat.newLocal" | "chat.newClaude"
+            | "chat.newCodex" | "chat.newCursor" | "chat.newLatestProject" => {
+                self.new_thread(cx)
+            }
+            "threadTab.close" | "terminal.close" | "terminal.workspace.closeActive" => {
+                if let Some(t) = self.selected_thread.clone() {
+                    self.close_tab(t, cx);
+                }
+            }
+            "composer.focus.toggle" => {
+                let f = self.composer.read(cx).focus_handle(cx);
+                window.focus(&f, cx);
+            }
+            "sidebar.search" => {
+                if self.palette_mode == Some("search") {
+                    self.close_palette(window, cx);
+                } else {
+                    self.open_palette("search", window, cx);
+                }
+            }
+            "search.files" => self.open_palette("files", window, cx),
+            "search.content" => self.open_palette("snippets", window, cx),
+            "sidebar.toggle" => {
+                self.sidebar_collapsed = !self.sidebar_collapsed;
+                cx.notify();
+            }
+            "settings.usage" => {
+                self.clear_views();
+                self.view_settings = true;
+                self.settings_section = "usage";
+                if self.settings_data.is_null() {
+                    self.fetch_settings(cx);
+                }
+                cx.notify();
+            }
+            "chat.find" => self.toggle_find(window, cx),
+            "chat.newTerminal" | "terminal.new" | "terminal.toggle"
+            | "terminal.workspace.newFullWidth" | "terminal.workspace.terminal" => {
+                self.toggle_terminal(window, cx)
+            }
+            "terminal.workspace.chat" => {
+                if self.view_terminal {
+                    self.toggle_terminal(window, cx);
+                }
+            }
+            "sidebar.activity" => {
+                self.clear_views();
+                self.view_inbox = true;
+                self.fetch_inbox(cx);
+                cx.notify();
+            }
+            "thread.copyId" => {
+                if let Some(t) = self.selected_thread.clone() {
+                    cx.write_to_clipboard(ClipboardItem::new_string(t));
+                }
+            }
+            "thread.archive" => self.archive_selected(cx),
+            "chat.visible.previous" | "view.recent.previous" | "threadTab.previous"
+            | "space.previous" => self.cycle_tab(-1, cx),
+            "chat.visible.next" | "view.recent.next" | "threadTab.next"
+            | "chat.attention.next" | "space.next" => self.cycle_tab(1, cx),
+            "diff.toggle" | "git.commitAndPush" => self.toggle_changes(cx),
+            c if c.starts_with("thread.jump.") => {
+                if let Ok(i) = c["thread.jump.".len()..].parse::<usize>() {
+                    if let Some(t) = self.open_threads.get(i.saturating_sub(1)).cloned() {
+                        self.open_thread(t, cx);
+                    }
+                }
+            }
+            _ => return false,
+        }
+        true
+    }
+
     fn handle_chord(
         &mut self,
         event: &KeyDownEvent,
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
+        // While the recorder dialog is open every key is input for it.
+        if self.sc_rec.is_some() {
+            self.sc_rec_key(event, window, cx);
+            return;
+        }
+        // Once keybinding rules are loaded they own shortcut dispatch
+        // (they already include the defaults). ⌘, is not a server rule —
+        // keep it hardcoded.
+        if !self.kb_rules.is_empty() {
+            let m = event.keystroke.modifiers;
+            if m.function {
+                return;
+            }
+            if let Some(cmd) = self.kb_command_for_event(event) {
+                let _ = self.run_command(&cmd, window, cx);
+            } else {
+                let key = event.keystroke.key.as_str();
+                if m.platform && !m.control && !m.alt && !m.shift && key == "," {
+                    self.clear_views();
+                    self.view_settings = true;
+                    if self.settings_data.is_null() {
+                        self.fetch_settings(cx);
+                    }
+                    cx.notify();
+                }
+            }
+            return;
+        }
         let m = event.keystroke.modifiers;
         if !m.platform || m.function {
             return;
@@ -2276,6 +2996,14 @@ impl Native {
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(rules) = bundle
+                    .get("config")
+                    .and_then(|c| c.get("keybindings"))
+                    .and_then(|k| k.as_array())
+                    .cloned()
+                {
+                    this.kb_rules = rules;
+                }
                 this.settings_loading = false;
                 this.settings_data = bundle;
                 cx.notify();
@@ -5908,9 +6636,18 @@ impl Render for Native {
             }
             if self.settings_section == "profile" {
                 head = head.child(h_flex().gap_2().child(outline_btn("Share")).child(outline_btn("Edit")));
+            } else if self.settings_section == "shortcuts" {
+                head = head.child(
+                    h_flex()
+                        .id("sc-reset-all")
+                        .cursor_pointer()
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.apply_kb_edits(vec![json!({"type": "reset"})], cx);
+                        }))
+                        .child(outline_btn("\u{21ba} Reset all to defaults")),
+                );
             } else {
-                let reset_label = if self.settings_section == "shortcuts" { "\u{21ba} Reset all to defaults" } else { "\u{21ba} Restore defaults" };
-                head = head.child(outline_btn(reset_label));
+                head = head.child(outline_btn("\u{21ba} Restore defaults"));
             }
             settings_pane = settings_pane.child(head);
 
@@ -6199,215 +6936,12 @@ impl Render for Native {
                         v_flex()
                             .gap_1p5()
                             .child(section_label("Opens on its own"))
-                            .child(card(
-                                v_flex()
-                                    .child(srow(
-                                        "Automatically open simulator",
-                                        "Open the iOS Simulator pane when an agent uses a device. Turn this off to use Simulator.app without the mirrored pane reopening. You can still open the pane manually.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .into_any_element(),
-                            )),
-                    );
-            }
-
-            if self.settings_section == "chats" {
-                settings_pane = settings_pane
-                    .child(
-                        v_flex()
-                            .gap_1p5()
-                            .child(section_label("Conversation"))
-                            .child(card(
-                                v_flex()
-                                    .child(srow(
-                                        "Follow-up behavior",
-                                        "Choose whether messages sent during an active turn wait in the queue or steer the current run. Ctrl/Cmd+Enter uses the opposite behavior for one message.",
-                                        seg(&["Queue", "Steer"], 0),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Side chat expiry",
-                                        "Expire a side chat after it sits idle, unviewed and not running, for this long. Expired side chats are read-only and unload their provider session.",
-                                        seg(&["1 hour", "24 hours", "Never"], 0),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Enter while dictating",
-                                        "Choose what Enter does while a voice note is recording: stop and transcribe into the composer, or stop and send the message once it is transcribed.",
-                                        seg(&["Stop", "Stop and send"], 0),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Assistant output",
-                                        "Show token-by-token output while a response is in progress.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Fold finished turns",
-                                        "Hide a finished turn's tool calls and intermediate messages behind a single \"Worked for\u{2026}\" line. A turn stays open while it runs or while its background subagents are still working. Turn this off to keep every step visible.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Move sent messages to top",
-                                        "Move each sent message to the top of the conversation. Turn off to keep it at the bottom and follow replies as they stream.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Effort slider",
-                                        "Show effort as a slider at the bottom of the composer's model picker, with fast mode and reset alongside it, instead of separate Effort and Speed rows.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Show suggestions",
-                                        "After a reply finishes, show a predicted next message in the empty composer. Press Tab to insert it as a draft you can edit before sending.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .into_any_element(),
-                            )),
-                    )
-                    .child(
-                        v_flex()
-                            .gap_1p5()
-                            .child(section_label("Review"))
-                            .child(card(
-                                v_flex()
-                                    .child(srow(
-                                        "Diff layout",
-                                        "Default stacked or split layout for threads without a saved choice. Each thread remembers its review-panel changes independently.",
-                                        seg(&["Stacked", "Split"], 1),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Open pull requests and issues",
-                                        "Choose where a pull request or issue link in a chat opens: the built-in review view, the in-app browser, or your external browser. Ctrl/Cmd+click always opens the external browser.",
-                                        select_pill("In Synara".to_string(), None),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Pull request diff colors",
-                                        "Show additions in green and deletions in red in pull request summaries.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Include fork upstreams",
-                                        "Also list pull requests and issues from each project's other GitHub remotes, such as the repository a fork was made from. Off reads only the project's own repository.",
-                                        toggle(false).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Diff line wrapping",
-                                        "Set the default wrap state when the diff panel opens. The in-panel wrap toggle only affects the current diff session.",
-                                        toggle(false).into_any_element(),
-                                    ))
-                                    .into_any_element(),
-                            )),
-                    )
-                    .child(
-                        v_flex()
-                            .gap_1p5()
-                            .child(section_label("Safety confirmations"))
-                            .child(card(
-                                v_flex()
-                                    .child(srow(
-                                        "Delete confirmation",
-                                        "Ask before deleting a thread and its chat history.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Archive confirmation",
-                                        "Ask before archiving a thread.",
-                                        toggle(false).into_any_element(),
-                                    ))
-                                    .child(divider())
-                                    .child(srow(
-                                        "Terminal close confirmation",
-                                        "Ask before closing a terminal tab and clearing its history.",
-                                        toggle(true).into_any_element(),
-                                    ))
-                                    .into_any_element(),
-                            )),
-                    );
+                );
             }
 
 
             if self.settings_section == "shortcuts" {
-                let shortcut_rows: [(&'static str, &'static str, &'static str); 69] = [
-    ("Toggle sidebar", "Collapse or reveal the sidebar shell.", "\u{2318}B"),
-    ("Add project", "Open the Create project dialog to import a local folder.", "\u{21e7}\u{2318}O"),
-    ("Search projects and threads", "Open the sidebar search palette from anywhere in the app.", "\u{2318}K"),
-    ("Toggle Activity", "Show or hide running tasks, completed work, and items that need attention.", "\u{2325}\u{2318}U"),
-    ("Import thread", "Bring an existing conversation into the current workspace.", "\u{2318}I"),
-    ("Previous space", "Switch to the previous project space and restore its last working context.", "\u{2325}\u{2318}Left"),
-    ("Next space", "Switch to the next project space and restore its last working context.", "\u{2325}\u{2318}Right"),
-    ("New thread", "Start a fresh thread in the current project, or the most recent one.", "\u{2318}N"),
-    ("New thread in latest project", "Jump back into the most recently used project with a new thread.", "\u{21e7}\u{2318}N"),
-    ("New chat", "Open the empty chat landing view.", "\u{2325}\u{2318}N"),
-    ("New terminal thread", "Create a thread that opens directly into terminal mode.", "\u{21e7}\u{2318}T"),
-    ("New Claude thread", "Start a fresh thread with Claude selected.", "\u{2325}\u{2318}C"),
-    ("New Codex thread", "Start a fresh thread with Codex selected.", "\u{2325}\u{2318}X"),
-    ("New Cursor thread", "Start a fresh thread with Cursor selected.", "\u{2325}\u{2318}R"),
-    ("Split chat", "Open the current conversation in a second pane.", "\u{2318}\\"),
-    ("Previous recent view", "Cycle backward through recently opened primary views.", "\u{2303}\u{21e7}Tab"),
-    ("Next recent view", "Cycle forward through recently opened primary views.", "\u{2303}Tab"),
-    ("Model picker", "Open the composer provider and model picker.", "\u{21e7}\u{2318}M"),
-    ("Next model", "Cycle to the next model for the active provider (favorites first, then remaining models).", "\u{2325}]"),
-    ("Previous model", "Cycle to the previous model for the active provider (favorites first, then remaining models).", "\u{2325}["),
-    ("Next model effort", "Cycle the model's available effort levels and briefly show the selected level.", "\u{21e7}Tab"),
-    ("Reasoning picker", "Open the composer reasoning and trait controls.", "\u{21e7}\u{2318}E"),
-    ("Open usage settings", "Open Settings \u{2192} Usage for provider quota and token totals.", "\u{21e7}\u{2318}U"),
-    ("Focus composer", "Focus or blur the chat prompt composer.", "\u{2318}L"),
-    ("Find in thread", "Search the current transcript and jump to each matching message.", "\u{2318}F"),
-    ("Search files", "Open the workspace file-name search palette.", "\u{2318}P"),
-    ("Search snippets", "Open the workspace content search palette across file snippets.", "\u{21e7}\u{2318}F"),
-    ("Toggle terminal", "Show or hide the terminal surface for the active thread.", "\u{2318}J"),
-    ("Focus terminal", "Open or focus the terminal panel for this thread.", "\u{2318}T"),
-    ("Close terminal", "Close the terminal session for this thread.", "\u{2318}W"),
-    ("Toggle diff", "Open or close the working tree diff panel.", "\u{2318}D"),
-    ("Next change", "Jump the diff viewport to the next changed file.", "\u{2325}Down"),
-    ("Previous change", "Jump the diff viewport to the previous changed file.", "\u{2325}Up"),
-    ("Toggle side chat", "Open or hide a side chat beside the main conversation.", "\u{2325}\u{2318}S"),
-    ("Toggle browser", "Reveal the built-in browser panel for the active thread.", "\u{21e7}\u{2318}B"),
-    ("Toggle iOS Simulator", "Reveal the iOS Simulator panel for the active thread. macOS servers only.", ""),
-    ("Copy thread ID", "Copy the active thread's ID to the clipboard.", "\u{21e7}\u{2318}C"),
-    ("Archive thread", "Archive the active chat, with the same confirmation and undo as the thread menu.", "\u{2325}\u{21e7}\u{2318}A"),
-    ("Snooze thread", "Open the snooze date and time picker for the active chat.", "\u{2325}\u{21e7}\u{2318}S"),
-    ("Mark thread unread", "Mark the active chat unread and restore its dismissed notification.", "\u{2325}\u{21e7}\u{2318}U"),
-    ("Previous visible thread", "Cycle to the previous thread that is currently visible in the sidebar.", "\u{21e7}\u{2318}["),
-    ("Next visible thread", "Cycle to the next thread that is currently visible in the sidebar.", "\u{21e7}\u{2318}]"),
-    ("Next chat needing attention", "Open the most urgent other chat: one waiting on you first, then unseen work, as Activity's Priority ranks them.", "\u{2325}\u{2318}A"),
-    ("Previous tab", "Switch to the open thread tab on the left of the active one.", "\u{2303}\u{2318}Left"),
-    ("Next tab", "Switch to the open thread tab on the right of the active one.", "\u{2303}\u{2318}Right"),
-    ("Close tab", "Close the active open-thread tab, like a browser tab.", "\u{2318}W"),
-    ("Open in favorite editor", "Send the current thread or workspace target to your preferred editor.", "\u{2318}O"),
-    ("Save file", "Write the focused editor's unsaved changes back to disk.", "\u{2318}S"),
-    ("Commit and push", "Commit pending changes and push the active thread's repo.", "\u{2303}\u{2318}P"),
-    ("Editor commands", "Open the editor command picker for the focused code editor.", "F1"),
-    ("Rename symbol", "Rename the symbol under the cursor across the workspace.", "F2"),
-    ("Go to definition", "Jump to the definition of the symbol under the cursor.", "F12"),
-    ("Find references", "List references to the symbol under the cursor.", "\u{21e7}F12"),
-    ("Go to symbol in file", "Jump to a symbol in the open file.", ""),
-    ("Go to line", "Jump to a line, or line:column, in the open file.", ""),
-    ("Show problems", "List diagnostics for the open file.", ""),
-    ("Quick fix", "Show quick fixes and refactorings for the code at the cursor.", "\u{2318}."),
-    ("Start or continue debugging", "Launch the debugger for the open file, or continue a paused session.", "F5"),
-    ("Stop debugging", "Stop the current debug session.", "\u{21e7}F5"),
-    ("Toggle breakpoint", "Add or remove a breakpoint on the cursor line.", "F9"),
-    ("Step over", "Run the next statement without entering calls.", "F10"),
-    ("Step into", "Enter the next call.", "F11"),
-    ("Step out", "Run until the current call returns.", "\u{21e7}F11"),
-    ("Open full-width terminal workspace", "Expand the active thread into the workspace terminal layout.", "\u{21e7}\u{2318}J"),
-    ("Focus terminal tab", "Switch the workspace to the terminal tab.", "\u{2303}1"),
-    ("Focus chat tab", "Switch the workspace back to the chat tab.", "\u{2303}2"),
-    ("Close active workspace panel", "Close the currently focused workspace panel or tab.", "\u{2318}W"),
-    ("Jump to visible thread 1\u{2013}9", "Focus a visible thread directly from the sidebar number row.", "\u{2318}1\u{2013}9"),
-    ("Jump to space 1\u{2013}9", "Switch straight to a tab of the space switcher. 1 is always Void.", "\u{2325}\u{2318}1\u{2013}9"),
-];
+                let shortcut_rows = SHORTCUT_ROWS;
                 let search_field = h_flex()
                     .w_full()
                     .h(px(36.))
@@ -6422,29 +6956,147 @@ impl Render for Native {
                     .into_any_element();
                 let mut list = v_flex();
                 let mut first = true;
-                for (title, desc, kbd) in shortcut_rows {
+                for (row_idx, (title, desc, kbd, commands)) in shortcut_rows.iter().enumerate() {
                     if !first {
                         list = list.child(divider());
                     }
                     first = false;
+                    let title = *title;
+                    let desc = *desc;
+                    let numbered = commands.contains(".jump.");
+                    // Group the resolved rules of this row's commands into
+                    // bindings (shared chord for normal rows, shared modifier
+                    // mask for numbered families).
+                    let mut bindings: Vec<(String, Vec<Value>)> = Vec::new();
+                    if !self.kb_rules.is_empty() {
+                        for r in &self.kb_rules {
+                            let rc = r.get("command").and_then(Value::as_str).unwrap_or("");
+                            if !commands.split(' ').any(|c| c == rc) {
+                                continue;
+                            }
+                            let sc = r.get("shortcut").cloned().unwrap_or(Value::Null);
+                            let gk = if numbered {
+                                sc_mod_mask(&sc)
+                            } else {
+                                sc_enc_shortcut(&sc)
+                            };
+                            if let Some(b) = bindings.iter_mut().find(|(g, _)| *g == gk) {
+                                b.1.push(r.clone());
+                            } else {
+                                bindings.push((gk, vec![r.clone()]));
+                            }
+                        }
+                    }
                     let mut right = h_flex().items_center().gap_2();
-                    if !kbd.is_empty() {
+                    if self.kb_rules.is_empty() {
+                        if !kbd.is_empty() {
+                            right = right.child(sc_chip(*kbd, &theme));
+                        }
+                    } else if bindings.is_empty() {
                         right = right.child(
                             div()
-                                .px(px(7.))
-                                .py(px(1.5))
-                                .rounded(px(10.))
-                                .bg(gpui::rgba(0x00000008))
                                 .text_size(px(13.))
                                 .text_color(theme.muted_foreground)
-                                .child(kbd),
+                                .child("Unassigned"),
                         );
                     }
-                    right = right.child(
-                        div()
-                            .items_center()
-                            .child(svg_icon(icons::PENCIL).size(px(14.)).text_color(theme.muted_foreground)),
-                    );
+                    let nbind = bindings.len();
+                    for (bi, (_g, rules)) in bindings.iter().enumerate() {
+                        let label = if numbered {
+                            let sc = rules[0].get("shortcut").cloned().unwrap_or(Value::Null);
+                            format!("{}1\u{2013}9", sc_mod_label(&sc))
+                        } else {
+                            sc_fmt_label(
+                                &rules[0].get("shortcut").cloned().unwrap_or(Value::Null),
+                            )
+                        };
+                        right = right.child(sc_chip(label, &theme));
+                        let repl = rules.clone();
+                        let label2 = title.to_string();
+                        let cmds2: Vec<String> =
+                            commands.split(' ').map(|c| c.to_string()).collect();
+                        right = right.child(
+                            h_flex()
+                                .id(SharedString::from(format!("sc-edit-{row_idx}-{bi}")))
+                                .cursor_pointer()
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.sc_open(
+                                        label2.clone(),
+                                        cmds2.clone(),
+                                        numbered,
+                                        repl.clone(),
+                                        cx,
+                                    );
+                                }))
+                                .child(
+                                    svg_icon(icons::PENCIL)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                ),
+                        );
+                        let rm = rules.clone();
+                        right = right.child(
+                            h_flex()
+                                .id(SharedString::from(format!("sc-del-{row_idx}-{bi}")))
+                                .cursor_pointer()
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.sc_remove_binding(&rm, cx);
+                                }))
+                                .child(
+                                    svg_icon(icons::TRASH)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                ),
+                        );
+                        if bi + 1 == nbind {
+                            let label3 = title.to_string();
+                            let cmds3: Vec<String> =
+                                commands.split(' ').map(|c| c.to_string()).collect();
+                            right = right.child(
+                                h_flex()
+                                    .id(SharedString::from(format!("sc-add-{row_idx}")))
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        this.sc_open(
+                                            label3.clone(),
+                                            cmds3.clone(),
+                                            numbered,
+                                            Vec::new(),
+                                            cx,
+                                        );
+                                    }))
+                                    .child(
+                                        svg_icon(icons::PLUS)
+                                            .size(px(14.))
+                                            .text_color(theme.muted_foreground),
+                                    ),
+                            );
+                        }
+                    }
+                    if self.kb_rules.is_empty() || bindings.is_empty() {
+                        let label4 = title.to_string();
+                        let cmds4: Vec<String> =
+                            commands.split(' ').map(|c| c.to_string()).collect();
+                        right = right.child(
+                            h_flex()
+                                .id(SharedString::from(format!("sc-rec-{row_idx}")))
+                                .cursor_pointer()
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.sc_open(
+                                        label4.clone(),
+                                        cmds4.clone(),
+                                        numbered,
+                                        Vec::new(),
+                                        cx,
+                                    );
+                                }))
+                                .child(
+                                    svg_icon(icons::PENCIL)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                ),
+                        );
+                    }
                     list = list.child(
                         h_flex()
                             .w_full()
@@ -10415,6 +11067,218 @@ impl Render for Native {
             );
         }
 
+        // Shortcut recorder dialog (Settings > Keyboard shortcuts).
+        let mut sc_overlay = div().absolute().inset_0().size_full();
+        if let Some(rec) = self.sc_rec.as_ref().map(|r| ScRec {
+            label: r.label.clone(),
+            commands: r.commands.clone(),
+            numbered: r.numbered,
+            replacing: r.replacing.clone(),
+            captured: r.captured.clone(),
+        }) {
+            let (problem, conflicts) = self.sc_evaluate(&rec);
+            let captured_label = rec.captured.as_ref().map(sc_fmt_captured);
+            let ready = rec.captured.is_some() && problem.is_none();
+            let has_conflicts = !conflicts.is_empty();
+            let can_save = ready;
+            let status_text = if let Some(p) = &problem {
+                p.clone()
+            } else if ready {
+                if has_conflicts {
+                    let names: Vec<String> = conflicts
+                        .iter()
+                        .map(|(c, _)| Self::sc_command_label(c))
+                        .collect();
+                    format!(
+                        "{} already runs \"{}\". Saving moves it here.",
+                        captured_label.clone().unwrap_or_default(),
+                        names.join("\" and \""),
+                    )
+                } else {
+                    format!(
+                        "{} is available.",
+                        captured_label.clone().unwrap_or_default()
+                    )
+                }
+            } else if rec.numbered {
+                "Hold the modifiers then press any number key.".to_string()
+            } else {
+                "Use \u{2318}, \u{2325} or \u{2303} with any key, or an F-key on its own."
+                    .to_string()
+            };
+            let status_color: Hsla = if problem.is_some() {
+                gpui::hsla(0.0, 0.72, 0.51, 1.0)
+            } else if has_conflicts {
+                gpui::hsla(0.09, 0.85, 0.47, 1.0)
+            } else {
+                theme.muted_foreground
+            };
+            let desc = if rec.replacing.is_empty() {
+                "Choose the keys that run it."
+            } else {
+                "Press new keys to change its shortcut."
+            };
+            sc_overlay = sc_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .justify_center()
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.sc_rec = None;
+                            cx.notify();
+                        }),
+                    )
+                    .child(
+                        div()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            )
+                            .child(
+                                v_flex()
+                                    .w(px(400.))
+                                    .gap_3()
+                                    .px_4()
+                                    .pt_4()
+                                    .pb_3()
+                                    .rounded_xl()
+                                    .bg(theme.popover)
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_3()
+                                            .child(
+                                                div()
+                                                    .w(px(36.))
+                                                    .h(px(36.))
+                                                    .flex_shrink_0()
+                                                    .items_center()
+                                                    .justify_center()
+                                                    .rounded(px(9.))
+                                                    .border_1()
+                                                    .border_color(theme.border)
+                                                    .bg(theme.muted)
+                                                    .child(
+                                                        svg_icon(icons::SEARCH)
+                                                            .size(px(16.))
+                                                            .text_color(theme.foreground),
+                                                    ),
+                                            )
+                                            .child(
+                                                v_flex()
+                                                    .min_w_0()
+                                                    .gap(px(2.))
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(15.))
+                                                            .font_weight(FontWeight::MEDIUM)
+                                                            .child(rec.label.clone()),
+                                                    )
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(12.))
+                                                            .text_color(theme.muted_foreground)
+                                                            .child(desc),
+                                                    ),
+                                            ),
+                                    )
+                                    .child(
+                                        div()
+                                            .w_full()
+                                            .min_h(px(88.))
+                                            .flex()
+                                            .items_center()
+                                            .justify_center()
+                                            .rounded_xl()
+                                            .border_1()
+                                            .border_color(theme.border)
+                                            .bg(theme.muted)
+                                            .px_3()
+                                            .child(if let Some(l) = &captured_label {
+                                                sc_chip(l.clone(), &theme).into_any_element()
+                                            } else {
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .font_weight(FontWeight::MEDIUM)
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(if rec.numbered {
+                                                        "1\u{2013}9"
+                                                    } else {
+                                                        "Type a shortcut"
+                                                    })
+                                                    .into_any_element()
+                                            }),
+                                    )
+                                    .child(
+                                        div()
+                                            .min_h(px(32.))
+                                            .text_size(px(12.))
+                                            .line_height(px(16.))
+                                            .text_color(status_color)
+                                            .child(status_text),
+                                    )
+                                    .child(
+                                        h_flex()
+                                            .items_center()
+                                            .gap_2()
+                                            .child(div().flex_1())
+                                            .child(
+                                                h_flex()
+                                                    .id("sc-cancel")
+                                                    .cursor_pointer()
+                                                    .on_click(cx.listener(
+                                                        |this, _ev, _w, cx| {
+                                                            this.sc_rec = None;
+                                                            cx.notify();
+                                                        },
+                                                    ))
+                                                    .child(
+                                                        div()
+                                                            .px_3()
+                                                            .h(px(32.))
+                                                            .items_center()
+                                                            .rounded(px(8.))
+                                                            .border_1()
+                                                            .border_color(theme.border)
+                                                            .text_size(px(13.))
+                                                            .child("Cancel"),
+                                                    ),
+                                            )
+                                            .child(
+                                                h_flex()
+                                                    .id("sc-save")
+                                                    .cursor_pointer()
+                                                    .on_click(cx.listener(
+                                                        |this, _ev, _w, cx| {
+                                                            this.sc_save(cx);
+                                                        },
+                                                    ))
+                                                    .child(
+                                                        div()
+                                                            .px_3()
+                                                            .h(px(32.))
+                                                            .items_center()
+                                                            .rounded(px(8.))
+                                                            .bg(if can_save {
+                                                                theme.foreground
+                                                            } else {
+                                                                theme.muted
+                                                            })
+                                                            .text_size(px(13.))
+                                                            .text_color(theme.background)
+                                                            .child("Save"),
+                                                    ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -10435,5 +11299,6 @@ impl Render for Native {
             .child(body)
             .child(ctx_overlay)
             .child(palette_overlay)
+            .child(sc_overlay)
     }
 }

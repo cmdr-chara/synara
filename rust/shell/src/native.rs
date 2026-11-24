@@ -5157,6 +5157,11 @@ impl Render for Native {
         } else {
             theme.background
         };
+        let popover_bg: gpui::Hsla = if dark_ui {
+            rgb(0x161616).into()
+        } else {
+            theme.popover
+        };
 
         // ---- sidebar ----
         let mut sidebar = v_flex()
@@ -5994,7 +5999,7 @@ impl Render for Native {
                             .rounded_lg()
                             .border_1()
                             .border_color(theme.border)
-                            .bg(theme.popover)
+                            .bg(popover_bg)
                             .child(menu),
                     );
                 }
@@ -6343,7 +6348,7 @@ impl Render for Native {
                     .gap_2()
                     .items_start()
                     .rounded(px(12.))
-                    .bg(theme.popover)
+                    .bg(popover_bg)
                     .border_1()
                     .border_color(theme.border)
                     .p(px(14.))
@@ -6843,7 +6848,7 @@ impl Render for Native {
                     .px(px(8.))
                     .py(px(2.))
                     .rounded(px(6.))
-                    .bg(theme.popover)
+                    .bg(popover_bg)
                     .border_1()
                     .border_color(theme.border)
                     .text_size(px(11.))
@@ -6890,7 +6895,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))
-                .bg(theme.popover)
+                .bg(popover_bg)
                 .shadow_md()
                 .py_1()
                 .mb(px(6.));
@@ -6996,7 +7001,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))
-                .bg(theme.popover)
+                .bg(popover_bg)
                 .mb(px(6.))
                 .py_1();
             if self.queue_paused {
@@ -7330,7 +7335,7 @@ impl Render for Native {
                 .rounded(px(12.))
                 .border_1()
                 .border_color(theme.border)
-                .bg(theme.popover)
+                .bg(popover_bg)
                 .child(rows)
         };
         // One row: title + description left, control right.
@@ -10138,7 +10143,7 @@ impl Render for Native {
                     .rounded(px(8.))
                     .border_1()
                     .border_color(theme.border)
-                    .bg(theme.popover)
+                    .bg(popover_bg)
                     .child(
                         svg_icon(icons::SEARCH)
                             .size(px(14.))
@@ -10552,7 +10557,7 @@ impl Render for Native {
                 .rounded(px(24.))
                 .border_1()
                 .border_color(theme.border.opacity(0.6))
-                .bg(theme.popover)
+                .bg(popover_bg)
                 .shadow_lg()
                 .child(
                     h_flex()
@@ -10758,7 +10763,7 @@ impl Render for Native {
                                         .rounded_full()
                                         .border_1()
                                         .border_color(theme.border)
-                                        .bg(theme.popover)
+                                        .bg(popover_bg)
                                         .cursor_pointer()
                                         .flex()
                                         .items_center()
@@ -10800,7 +10805,7 @@ impl Render for Native {
                                     .rounded_lg()
                                     .border_1()
                                     .border_color(theme.border)
-                                    .bg(theme.popover)
+                                    .bg(popover_bg)
                                     .px_3()
                                     .py_2()
                                     .child(
@@ -11960,7 +11965,7 @@ impl Render for Native {
                 .w(px(180.))
                 .p_1()
                 .gap_y(px(1.))
-                .bg(theme.popover)
+                .bg(popover_bg)
                 .border_1()
                 .border_color(theme.border)
                 .rounded_lg()
@@ -12109,7 +12114,7 @@ impl Render for Native {
                         .w(px(200.))
                         .p_1()
                         .gap_y(px(1.))
-                        .bg(theme.popover)
+                        .bg(popover_bg)
                         .border_1()
                         .border_color(theme.border)
                         .rounded_lg()
@@ -12207,7 +12212,7 @@ impl Render for Native {
             let mut popup = v_flex()
                 .w(px(512.))
                 .mt(px(120.))
-                .bg(theme.popover)
+                .bg(popover_bg)
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))
@@ -12476,7 +12481,7 @@ impl Render for Native {
                                     .pt_4()
                                     .pb_3()
                                     .rounded_xl()
-                                    .bg(theme.popover)
+                                    .bg(popover_bg)
                                     .border_1()
                                     .border_color(theme.border)
                                     .child(

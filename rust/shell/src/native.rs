@@ -1205,6 +1205,9 @@ pub struct Native {
     // Global keybindings reference dialog (upstream ShortcutsDialog, mod+/).
     sc_dialog_open: bool,
     sc_dialog_input: Option<Entity<InputState>>,
+    /// Custom snooze date-time dialog (upstream SnoozeUntilDialog).
+    snooze_dlg_tid: Option<String>,
+    snooze_dlg_input: Option<Entity<InputState>>,
     /// App tour walkthrough (upstream AppTour): current step index.
     tour_step: Option<usize>,
     user_input_draft: Vec<(String, usize, String)>,
@@ -2517,6 +2520,8 @@ impl Native {
             feedback_toast: None,
             sc_dialog_open: false,
             sc_dialog_input: None,
+            snooze_dlg_tid: None,
+            snooze_dlg_input: None,
             autom_defs: Vec::new(),
             autom_runs: Vec::new(),
             autom_sel: None,
@@ -5582,6 +5587,81 @@ impl Native {
         let focus = input.read(cx).focus_handle(cx);
         window.focus(&focus, cx);
         cx.notify();
+    }
+
+    /// Upstream SnoozeUntilDialog: free-form "YYYY-MM-DD HH:MM" entry,
+    /// prefilled with the current snooze deadline or now+1h.
+    fn open_snooze_dialog(
+        &mut self,
+        thread_id: String,
+        current: Option<String>,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let initial = current
+            .and_then(|s| {
+                chrono::DateTime::parse_from_rfc3339(&s)
+                    .ok()
+                    .map(|d| d.with_timezone(&chrono::Local))
+            })
+            .unwrap_or_else(|| chrono::Local::now() + chrono::Duration::hours(1))
+            .format("%Y-%m-%d %H:%M")
+            .to_string();
+        let input =
+            cx.new(|cx| InputState::new(window, cx).placeholder("YYYY-MM-DD HH:MM"));
+        input.update(cx, |s, cx| s.set_value(initial, window, cx));
+        cx.subscribe_in(&input, window, |_this, _s, event, _w, cx| {
+            if let InputEvent::Change = event {
+                cx.notify();
+            }
+        })
+        .detach();
+        self.snooze_dlg_tid = Some(thread_id);
+        self.snooze_dlg_input = Some(input.clone());
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        cx.notify();
+    }
+
+    fn close_snooze_dialog(&mut self, cx: &mut Context<Self>) {
+        self.snooze_dlg_tid = None;
+        self.snooze_dlg_input = None;
+        cx.notify();
+    }
+
+    /// Accepts "YYYY-MM-DD HH:MM" (or with 'T'); must be a future time
+    /// (upstream parseFutureDateTimeLocalValue).
+    fn commit_snooze_dialog(&mut self, cx: &mut Context<Self>) {
+        let Some(tid) = self.snooze_dlg_tid.clone() else {
+            return;
+        };
+        let raw = self
+            .snooze_dlg_input
+            .as_ref()
+            .map(|i| i.read(cx).value().trim().replace('T', " "))
+            .unwrap_or_default();
+        let Some(naive) =
+            chrono::NaiveDateTime::parse_from_str(&raw, "%Y-%m-%d %H:%M").ok()
+        else {
+            return;
+        };
+        let Some(local) = naive.and_local_timezone(chrono::Local).earliest() else {
+            return;
+        };
+        if local <= chrono::Local::now() {
+            return;
+        }
+        let until = local.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+        self.dispatch_cmd(
+            json!({
+                "type": "thread.meta.update",
+                "commandId": uuid(),
+                "threadId": tid,
+                "snoozedUntil": until,
+            }),
+            cx,
+        );
+        self.close_snooze_dialog(cx);
     }
 
     fn git_cwd(&self) -> Option<String> {
@@ -21814,6 +21894,21 @@ impl Render for Native {
                                             );
                                         },
                                     ))
+                                })
+                                .child({
+                                    let tid_s = menu_tid.clone();
+                                    let cur = str_at(&menu_thread, "snoozedUntil")
+                                        .to_string();
+                                    row("ctx-snooze-custom", "Pick a date & time…".to_string(), Box::new(
+                                        move |this, w, cx| {
+                                            this.open_snooze_dialog(
+                                                tid_s.clone(),
+                                                (!cur.is_empty()).then(|| cur.clone()),
+                                                w,
+                                                cx,
+                                            );
+                                        },
+                                    ))
                                 });
                         }
                         "copy" => {
@@ -23692,6 +23787,111 @@ impl Render for Native {
 
         // App tour (upstream AppTour): dimmed workspace, accent ring on the
         // anchored control, step card beside it, dots + Back/Next, ✕/Escape.
+        // Custom snooze date-time dialog (upstream SnoozeUntilDialog —
+        // reuses the RenameDialog shape with a datetime entry).
+        let mut snz_overlay = div().absolute().inset_0().size_full();
+        if self.snooze_dlg_tid.is_some() {
+            let can_save = self
+                .snooze_dlg_input
+                .as_ref()
+                .and_then(|i| {
+                    let raw = i.read(cx).value().trim().replace('T', " ");
+                    chrono::NaiveDateTime::parse_from_str(&raw, "%Y-%m-%d %H:%M")
+                        .ok()
+                        .and_then(|n| n.and_local_timezone(chrono::Local).earliest())
+                })
+                .map(|d| d > chrono::Local::now())
+                .unwrap_or(false);
+            let mut dlg = v_flex()
+                .w(px(448.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .overflow_hidden()
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                )
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    if ev.keystroke.key == "escape" {
+                        this.close_snooze_dialog(cx);
+                        cx.stop_propagation();
+                    } else if ev.keystroke.key == "enter" {
+                        this.commit_snooze_dialog(cx);
+                        cx.stop_propagation();
+                    }
+                }))
+                .child(
+                    div()
+                        .px(px(20.))
+                        .pt(px(20.))
+                        .pb(px(4.))
+                        .text_size(px(20.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child("Snooze until"),
+                )
+                .child(
+                    div()
+                        .px(px(20.))
+                        .pb(px(8.))
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child("The chat returns with a reminder at this time."),
+                );
+            if let Some(inp) = self.snooze_dlg_input.clone() {
+                dlg = dlg.child(
+                    h_flex()
+                        .mx(px(20.))
+                        .my(px(8.))
+                        .gap_2()
+                        .items_center()
+                        .child(div().flex_1().child(Input::new(&inp))),
+                );
+            }
+            dlg = dlg.child(
+                h_flex()
+                    .w_full()
+                    .px(px(20.))
+                    .py(px(16.))
+                    .gap_2()
+                    .justify_end()
+                    .child(
+                        Button::new("snz-cancel")
+                            .ghost()
+                            .label("Cancel")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.close_snooze_dialog(cx);
+                            })),
+                    )
+                    .child(
+                        Button::new("snz-save")
+                            .primary()
+                            .label("Snooze")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if can_save {
+                                    this.commit_snooze_dialog(cx);
+                                }
+                            })),
+                    ),
+            );
+            snz_overlay = snz_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .justify_center()
+                    .bg(gpui::black().opacity(0.3))
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.close_snooze_dialog(cx);
+                        }),
+                    )
+                    .child(dlg),
+            );
+        }
+
         let mut tour_overlay = div().absolute().inset_0().size_full();
         if let Some(step_idx) = self.tour_step.filter(|i| *i < TOUR_STEPS.len()) {
             let (place, title, desc, anchor) = TOUR_STEPS[step_idx];
@@ -26206,6 +26406,7 @@ impl Render for Native {
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
             .when(self.feedback_open, |d| d.child(fb_overlay))
             .when(self.sc_dialog_open, |d| d.child(scd_overlay))
+            .when(self.snooze_dlg_tid.is_some(), |d| d.child(snz_overlay))
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
             .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))

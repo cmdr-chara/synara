@@ -11912,56 +11912,6 @@ impl Render for Native {
         let thread_detail = self.detail.clone().unwrap_or(Value::Null);
         let thread_v = get(&thread_detail, "thread");
         let has_thread = self.selected_thread.is_some();
-        // Upstream "Show debug task banner" flag: a local sample
-        // ActiveTaskList for UI testing (1 in-progress, 1 pending, 1 done).
-        if self.feature_flags[2] && has_thread {
-            let sample_tasks: [(&'static str, u8); 3] = [
-                ("Inspect banner layout without overlapping transcript text", 0),
-                ("Confirm compact task banner width", 1),
-                ("Verify sidebar task controls", 2),
-            ];
-            let mut banner = v_flex()
-                .mx(px(16.))
-                .mt(px(8.))
-                .w(px(280.))
-                .rounded(px(10.))
-                .border_1()
-                .border_color(theme.border)
-                .bg(theme.popover)
-                .shadow_md()
-                .px(px(10.))
-                .py(px(8.))
-                .gap(px(4.));
-            for (task, status) in sample_tasks {
-                let (glyph, color) = match status {
-                    0 => ("\u{25cf}", theme.accent),          // inProgress
-                    1 => ("\u{25cb}", theme.muted_foreground), // pending
-                    _ => ("\u{2713}", theme.muted_foreground), // completed
-                };
-                banner = banner.child(
-                    h_flex()
-                        .gap_2()
-                        .items_center()
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(color)
-                                .child(glyph),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(12.))
-                                .text_color(if status == 2 {
-                                    theme.muted_foreground
-                                } else {
-                                    theme.foreground
-                                })
-                                .child(task),
-                        ),
-                );
-            }
-            pane = pane.child(banner);
-        }
         pane = pane.child(self.transcript_body(&thread_detail, has_thread, show_landing, cx));
         // ---- files browser / viewer ----
         let mut files_pane = v_flex().flex_1().h_full().p_4().gap_1();
@@ -15033,6 +14983,57 @@ impl Render for Native {
                         ),
                 ),
             );
+        }
+        // Upstream "Show debug task banner" flag: a local sample
+        // ActiveTaskList for UI testing (1 in-progress, 1 pending, 1 done).
+        // Rendered as ComposerActiveTaskListCard inside the composer stack,
+        // right above the composer card — not in the transcript scroll.
+        if self.feature_flags[2] && has_thread {
+            let sample_tasks: [(&'static str, u8); 3] = [
+                ("Inspect banner layout without overlapping transcript text", 0),
+                ("Confirm compact task banner width", 1),
+                ("Verify sidebar task controls", 2),
+            ];
+            let mut banner = v_flex()
+                .w_full()
+                .mb(px(6.))
+                .rounded(px(10.))
+                .border_1()
+                .border_color(theme.border)
+                .bg(theme.popover)
+                .shadow_md()
+                .px(px(10.))
+                .py(px(8.))
+                .gap(px(4.));
+            for (task, status) in sample_tasks {
+                let (glyph, color) = match status {
+                    0 => ("●", theme.accent),          // inProgress
+                    1 => ("○", theme.muted_foreground), // pending
+                    _ => ("✓", theme.muted_foreground), // completed
+                };
+                banner = banner.child(
+                    h_flex()
+                        .gap_2()
+                        .items_center()
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(color)
+                                .child(glyph),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(if status == 2 {
+                                    theme.muted_foreground
+                                } else {
+                                    theme.foreground
+                                })
+                                .child(task),
+                        ),
+                );
+            }
+            composer_col = composer_col.child(banner);
         }
         composer_col = composer_col.child(composer_card);
         if row_composer {

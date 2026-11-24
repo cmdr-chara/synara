@@ -276,7 +276,10 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
     let mut threads = query_objects(
         conn,
         &sql,
-        &[("pending_approval_count", ""), ("pending_user_input_count", "")],
+        // Keep the raw counts in the output (pendingApprovalCount /
+        // pendingUserInputCount) — the loop below derives hasPendingApprovals /
+        // hasPendingUserInput from them, and the shell can show the numbers.
+        &[],
         &[],
         &[
             "is_pinned",

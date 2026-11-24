@@ -425,6 +425,179 @@ fn explorer_entry_visible(entry: &Value) -> bool {
     !HIDDEN_DIRS.contains(&name)
 }
 
+// ── Inbox thread grouping (upstream inbox.logic.ts groupInboxThreads +
+// Sidebar.logic.ts resolveThreadStatusPill). dismissedStatusKey and
+// lastVisitedAt are not tracked natively yet: absent lastVisitedAt counts as
+// unseen, matching upstream's fallback branch. ────────────────────────────
+
+fn sess_str<'a>(t: &'a Value, key: &str) -> &'a str {
+    str_at(get(t, "session"), key)
+}
+
+fn is_latest_turn_settled(lt: &Value, session: &Value) -> bool {
+    if str_at(lt, "startedAt").is_empty() || str_at(lt, "completedAt").is_empty() {
+        return false;
+    }
+    let st = str_at(lt, "state");
+    if st == "interrupted" || st == "error" {
+        return true;
+    }
+    if session.is_null() {
+        return true;
+    }
+    str_at(session, "orchestrationStatus") != "running" && str_at(session, "status") != "running"
+}
+
+/// Upstream isThreadActivelyWorking.
+fn thread_actively_working(t: &Value) -> bool {
+    if get(t, "hasLiveTailWork").as_bool() == Some(true) {
+        return true;
+    }
+    let session = get(t, "session");
+    let lt = get(t, "latestTurn");
+    str_at(session, "status") == "running"
+        && (lt.is_null()
+            || (!str_at(lt, "startedAt").is_empty() && !is_latest_turn_settled(lt, session)))
+}
+
+fn thread_running_for_activity(t: &Value) -> bool {
+    thread_actively_working(t) || sess_str(t, "status") == "connecting"
+}
+
+/// Upstream isActivityThread: top-level, not archived, ran at least once
+/// (or explicitly snoozed/reminded).
+fn is_activity_thread(t: &Value) -> bool {
+    if !get(t, "archivedAt").is_null() || !get(t, "parentThreadId").is_null() {
+        return false;
+    }
+    !get(t, "snoozedUntil").is_null()
+        || !get(t, "snoozeReminderAt").is_null()
+        || !get(t, "latestTurn").is_null()
+        || thread_running_for_activity(t)
+}
+
+fn has_unseen_completion(t: &Value) -> bool {
+    let completed = str_at(get(t, "latestTurn"), "completedAt");
+    if completed.is_empty() {
+        return false;
+    }
+    let visited = str_at(t, "lastVisitedAt");
+    visited.is_empty() || completed > visited
+}
+
+fn has_unseen_snooze_return(t: &Value) -> bool {
+    if !get(t, "snoozedUntil").is_null() {
+        return false;
+    }
+    let reminder = str_at(t, "snoozeReminderAt");
+    if reminder.is_empty() {
+        return false;
+    }
+    let visited = str_at(t, "lastVisitedAt");
+    visited.is_empty() || reminder > visited
+}
+
+fn can_answer_pending(t: &Value) -> bool {
+    let session = get(t, "session");
+    session.is_null()
+        || (sess_str(t, "status") != "closed" && sess_str(t, "status") != "error")
+}
+
+/// Upstream needsYouKind: "approval" | "input" | "plan" | "failed" | "unread".
+fn inbox_needs_you_kind(t: &Value) -> Option<&'static str> {
+    let can = can_answer_pending(t);
+    let pending_approvals = get(t, "hasPendingApprovals").as_bool() == Some(true);
+    let pending_input = get(t, "hasPendingUserInput").as_bool() == Some(true);
+    if can && pending_approvals {
+        return Some("approval");
+    }
+    if can && pending_input {
+        return Some("input");
+    }
+    if thread_actively_working(t) || sess_str(t, "status") == "connecting" {
+        return None;
+    }
+    if get(t, "pendingBackgroundWorkCount").as_i64().unwrap_or(0) > 0 {
+        return None;
+    }
+    let plan_ready = !(can && pending_input)
+        && str_at(t, "interactionMode") == "plan"
+        && is_latest_turn_settled(get(t, "latestTurn"), get(t, "session"))
+        && get(t, "hasActionableProposedPlan").as_bool() == Some(true);
+    if plan_ready {
+        return Some("plan");
+    }
+    if has_unseen_snooze_return(t) {
+        return Some("unread");
+    }
+    if has_unseen_completion(t) {
+        return Some(if str_at(get(t, "latestTurn"), "state") == "error" {
+            "failed"
+        } else {
+            "unread"
+        });
+    }
+    None
+}
+
+/// Upstream groupInboxThreads: (needs_you kind+thread, working, finished, failed).
+/// Sort order: kind rank (approval<input<plan<failed<unread) then updatedAt desc.
+fn inbox_groups(
+    threads: &[Value],
+) -> (Vec<(&'static str, Value)>, Vec<Value>, Vec<Value>, Vec<Value>) {
+    let mut items: Vec<(u8, &'static str, Value)> = Vec::new();
+    let mut listed = std::collections::HashSet::new();
+    for t in threads {
+        if !get(t, "snoozedUntil").is_null() || !is_activity_thread(t) {
+            continue;
+        }
+        if let Some(kind) = inbox_needs_you_kind(t) {
+            let rank = match kind {
+                "approval" => 0,
+                "input" => 1,
+                "plan" => 2,
+                "failed" => 3,
+                _ => 4,
+            };
+            listed.insert(str_at(t, "id").to_string());
+            items.push((rank, kind, t.clone()));
+        }
+    }
+    let by_updated = |a: &Value, b: &Value| {
+        str_at(b, "updatedAt")
+            .cmp(str_at(a, "updatedAt"))
+            .then(str_at(a, "id").cmp(str_at(b, "id")))
+    };
+    items.sort_by(|a, b| a.0.cmp(&b.0).then(by_updated(&a.2, &b.2)));
+    let needs_you: Vec<(&'static str, Value)> = items
+        .iter()
+        .filter(|(_, k, _)| matches!(*k, "approval" | "input" | "plan"))
+        .map(|(_, k, t)| (*k, t.clone()))
+        .collect();
+    let failed: Vec<Value> = items
+        .iter()
+        .filter(|(_, k, _)| *k == "failed")
+        .map(|(_, _, t)| t.clone())
+        .collect();
+    let finished: Vec<Value> = items
+        .iter()
+        .filter(|(_, k, _)| *k == "unread")
+        .map(|(_, _, t)| t.clone())
+        .collect();
+    let mut working: Vec<Value> = threads
+        .iter()
+        .filter(|t| {
+            get(t, "snoozedUntil").is_null()
+                && is_activity_thread(t)
+                && !listed.contains(str_at(t, "id"))
+                && thread_running_for_activity(t)
+        })
+        .cloned()
+        .collect();
+    working.sort_by(|a, b| by_updated(a, b));
+    (needs_you, working, finished, failed)
+}
+
 fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: Hsla) -> Stateful<Div> {
     icon_btn_pad(id, data, size, 16., hover, ink)
 }
@@ -6881,10 +7054,16 @@ impl Render for Native {
                 _ => "Good evening",
             };
             let greeting = format!("{}. {}.", slot, now.format("%A, %B %-d"));
-            let sub = if self.inbox_tasks.is_empty() {
+            // Upstream InboxTaskList groups over the activity threads —
+            // computed here so the greeting sub and the list share the result.
+            let activity_threads: Vec<Value> =
+                arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads").to_vec();
+            let (needs_you, working, finished, failed) = inbox_groups(&activity_threads);
+            let needs_count = needs_you.len();
+            let sub = if needs_count == 0 {
                 "You're all caught up.".to_string()
             } else {
-                let n = self.inbox_tasks.len();
+                let n = needs_count;
                 format!("{n} thing{} need{} you.", if n == 1 { "" } else { "s" }, if n == 1 { "s" } else { "" })
             };
             let tile = |children: gpui::AnyElement| {
@@ -7108,6 +7287,101 @@ impl Render for Native {
                 .gap_4()
                 .child(header)
                 .child(grid);
+
+            // Upstream InboxTaskList groups (computed above for the greeting).
+            if !(needs_you.is_empty()
+                && working.is_empty()
+                && finished.is_empty()
+                && failed.is_empty())
+            {
+                let reason = |k: &str| match k {
+                    "approval" => "approve a command",
+                    "input" => "has a question",
+                    _ => "plan ready",
+                };
+                let mut specs: Vec<(&str, AssetIcon, Hsla, Vec<(Value, String)>)> = Vec::new();
+                if !needs_you.is_empty() {
+                    specs.push((
+                        "Needs you",
+                        AssetIcon::TriangleAlert,
+                        theme.warning,
+                        needs_you
+                            .iter()
+                            .map(|(k, t)| (t.clone(), reason(k).to_string()))
+                            .collect(),
+                    ));
+                }
+                if !working.is_empty() {
+                    specs.push((
+                        "In progress",
+                        AssetIcon::CircleDot,
+                        theme.accent,
+                        working.iter().map(|t| (t.clone(), "working".to_string())).collect(),
+                    ));
+                }
+                if !finished.is_empty() {
+                    specs.push((
+                        "Ready for review",
+                        AssetIcon::CircleCheck,
+                        theme.success,
+                        finished.iter().map(|t| (t.clone(), "finished".to_string())).collect(),
+                    ));
+                }
+                if !failed.is_empty() {
+                    specs.push((
+                        "Failed",
+                        AssetIcon::X,
+                        theme.danger,
+                        failed.iter().map(|t| (t.clone(), "failed".to_string())).collect(),
+                    ));
+                }
+                let mut tcard = v_flex().w_full().p_4().gap_3();
+                for (label, ic, color, group_rows) in specs {
+                    let mut sec = v_flex().w_full().gap_1().child(
+                        div()
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(theme.muted_foreground)
+                            .child(format!("{label} {}", group_rows.len())),
+                    );
+                    for (t, note) in group_rows {
+                        let tid = str_at(&t, "id").to_string();
+                        let title = str_at(&t, "title").to_string();
+                        sec = sec.child(
+                            h_flex()
+                                .id(ElementId::Name(format!("inbox-thr-{tid}").into()))
+                                .w_full()
+                                .items_center()
+                                .gap_2()
+                                .px_2()
+                                .py(px(6.))
+                                .rounded_md()
+                                .cursor_pointer()
+                                .hover(|d| d.bg(theme.muted))
+                                .child(Icon::new(ic).size(px(14.)).text_color(color))
+                                .child(
+                                    div()
+                                        .flex_1()
+                                        .overflow_hidden()
+                                        .whitespace_nowrap()
+                                        .text_size(px(13.))
+                                        .child(title),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(12.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(note),
+                                )
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.open_thread(tid.clone(), cx);
+                                })),
+                        );
+                    }
+                    tcard = tcard.child(sec);
+                }
+                page = page.child(tile(tcard.into_any_element()));
+            }
             if self.inbox_signed_in != Some(true) {
                 page = page.child(
                     h_flex()

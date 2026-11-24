@@ -1,4 +1,6 @@
-# ai-rs
+# aitxt-rs
+
+AI text endpoint.
 
 napi-rs bridge for `apps/marketing/src/app/ai.txt/`.
 

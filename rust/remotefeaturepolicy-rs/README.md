@@ -1,5 +1,7 @@
 # remotefeaturepolicy-rs
 
+Remote feature policy.
+
 napi-rs bridge for `apps/server/src/remoteFeaturePolicy.ts`.
 
 ## Functions

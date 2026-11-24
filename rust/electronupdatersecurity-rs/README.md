@@ -1,5 +1,7 @@
 # electronupdatersecurity-rs
 
+FILE: electronUpdaterSecurity.ts Purpose: Hardens electron-updater Windows process calls against Node deprecations. Layer: Desktop update runtime Exports: updater patching, shell-free PowerShell signature verification helpers.
+
 napi-rs bridge for `apps/desktop/src/electronUpdaterSecurity.ts`.
 
 ## Functions

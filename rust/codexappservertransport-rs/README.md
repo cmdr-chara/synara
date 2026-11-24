@@ -1,5 +1,7 @@
 # codexappservertransport-rs
 
+Codex app server transport.
+
 napi-rs bridge for `apps/server/src/codexAppServerTransport.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # chatrouterestore-rs
 
+FILE: chatRouteRestore.ts Purpose: Validates saved chat routes before restoring them from startup or sidebar navigation. Layer: Route helper Exports: last-thread route resolver plus empty-startup fallback policy helpers.
+
 napi-rs bridge for `apps/web/src/chatRouteRestore.ts`.
 
 ## Functions

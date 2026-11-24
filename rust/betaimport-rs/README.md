@@ -1,5 +1,7 @@
 # betaimport-rs
 
+Beta import.
+
 napi-rs bridge for `apps/server/src/betaImport.ts`.
 
 ## Functions

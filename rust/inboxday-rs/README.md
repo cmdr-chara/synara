@@ -1,5 +1,7 @@
 # inboxday-rs
 
+Inbox day.
+
 napi-rs bridge for `packages/shared/src/inboxDay.ts`.
 
 ## Functions

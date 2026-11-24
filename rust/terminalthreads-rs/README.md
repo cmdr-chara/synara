@@ -1,5 +1,7 @@
 # terminalthreads-rs
 
+FILE: terminalThreads.ts Purpose: Shared terminal identity helpers for naming, provider attribution, and run state. Layer: Shared terminal metadata utilities Exports: command parsing plus resolved terminal presentation metadata for web/server consumers.
+
 napi-rs bridge for `packages/shared/src/terminalThreads.ts`.
 
 ## Functions

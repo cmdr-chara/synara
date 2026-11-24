@@ -1,5 +1,7 @@
 # storenormalization-rs
 
+FILE: storeNormalization.ts Purpose: Normalizes orchestration projects, threads, messages, and activities with stable identity. Exports: Pure normalization and equality helpers consumed by projection and event reduction.
+
 napi-rs bridge for `apps/web/src/storeNormalization.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # serversettings-rs
 
+Server settings.
+
 napi-rs bridge for `packages/shared/src/serverSettings.ts`.
 
 ## Functions

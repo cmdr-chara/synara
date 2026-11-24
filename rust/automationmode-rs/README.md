@@ -1,5 +1,7 @@
 # automationmode-rs
 
+FILE: automationMode.ts Purpose: Single source for what an AutomationMode implies about thread ownership. Layer: Shared runtime utility (server dispatch/scheduling + web forms) Exports: mode predicates and the continuation-thread resolver.
+
 napi-rs bridge for `packages/shared/src/automationMode.ts`.
 
 ## Functions

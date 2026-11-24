@@ -1,5 +1,7 @@
 # orchestration-rs
 
+Orchestration.
+
 napi-rs bridge for `apps/server/src/orchestration/`.
 
 ## Functions

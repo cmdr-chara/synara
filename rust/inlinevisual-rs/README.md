@@ -1,5 +1,7 @@
 # inlinevisual-rs
 
+FILE: inlineVisual.ts Purpose: Builds the sandboxed frame document for an inline visual and reads the          messages its bootstrap posts back to the host. Layer: Shared runtime (consumed by the web transcript; contracts own the payload schema) Exports: INLINE_VISUAL_CONTENT_SECURITY_POLICY, buildInlineVisualDocument,          readInlineVisualFrameMessage, inlineVisualThemeMessage, inlineVisualLinkResult,          clampInlineVisualHeight, INLINE_VISUAL_SERIES_COLORS, readInlineVisualEmbedIds
+
 napi-rs bridge for `packages/shared/src/inlineVisual.ts`.
 
 ## Functions

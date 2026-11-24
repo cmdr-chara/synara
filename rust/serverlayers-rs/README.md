@@ -1,5 +1,7 @@
 # serverlayers-rs
 
+Server layers.
+
 napi-rs bridge for `apps/server/src/serverLayers.ts`.
 
 ## Functions

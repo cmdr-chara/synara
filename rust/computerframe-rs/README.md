@@ -1,5 +1,7 @@
 # computerframe-rs
 
+Computer frame.
+
 napi-rs bridge for `packages/shared/src/computerFrame.ts`.
 
 ## Functions

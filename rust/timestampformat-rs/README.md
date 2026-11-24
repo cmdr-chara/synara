@@ -1,5 +1,7 @@
 # timestampformat-rs
 
+Timestamp format.
+
 napi-rs bridge for `apps/web/src/timestampFormat.ts`.
 
 ## Functions

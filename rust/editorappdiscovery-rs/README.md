@@ -1,5 +1,7 @@
 # editorappdiscovery-rs
 
+FILE: editorAppDiscovery.ts Purpose: Shared helpers for resolving installed editor apps/packages without          duplicating platform-specific search rules across launch and icons. Layer: Server runtime utility Exports: app/package search helpers used by open.ts and editorAppIcons.ts Depends on: EDITORS metadata plus filesystem stat checks.
+
 napi-rs bridge for `apps/server/src/editorAppDiscovery.ts`.
 
 ## Functions

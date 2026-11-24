@@ -1,5 +1,7 @@
 # worktreehandoff-rs
 
+Worktree handoff.
+
 napi-rs bridge for `packages/shared/src/worktreeHandoff.ts`.
 
 ## Functions

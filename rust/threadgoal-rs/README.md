@@ -1,5 +1,7 @@
 # threadgoal-rs
 
+Thread goal.
+
 napi-rs bridge for `apps/web/src/threadGoal.ts`.
 
 ## Functions

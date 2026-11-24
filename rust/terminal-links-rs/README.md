@@ -1,5 +1,7 @@
 # terminal-links-rs
 
+Terminal links.
+
 napi-rs bridge for `apps/web/src/terminal-links.ts`.
 
 ## Functions

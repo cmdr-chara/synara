@@ -1,5 +1,7 @@
 # githubrepository-rs
 
+Conservative validation for the `owner/repository` form accepted by GitHub CLI.
+
 napi-rs bridge for `packages/shared/src/githubRepository.ts`.
 
 ## Functions

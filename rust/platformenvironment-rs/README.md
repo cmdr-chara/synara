@@ -1,5 +1,7 @@
 # platformenvironment-rs
 
+FILE: platformEnvironment.ts Purpose: Resolves platform-owned executable locations from an already hydrated environment. Layer: Shared platform runtime
+
 napi-rs bridge for `packages/shared/src/platformEnvironment.ts`.
 
 ## Functions

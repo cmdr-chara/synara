@@ -1,5 +1,7 @@
 # config-rs
 
+Config.
+
 napi-rs bridge for `apps/api/src/config.ts`.
 
 ## Functions

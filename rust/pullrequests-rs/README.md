@@ -1,5 +1,7 @@
 # pullrequests-rs
 
+Pull requests.logic.
+
 napi-rs bridge for `apps/server/src/pullRequests.logic.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # account-rs
 
+Account.
+
 napi-rs bridge for `packages/shared/src/account.ts`.
 
 ## Functions

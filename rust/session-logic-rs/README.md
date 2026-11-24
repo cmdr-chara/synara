@@ -1,5 +1,7 @@
 # session-logic-rs
 
+Session logic.
+
 napi-rs bridge for `apps/web/src/session-logic.ts`.
 
 ## Functions

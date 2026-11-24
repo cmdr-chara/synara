@@ -1,5 +1,7 @@
 # cuadriverprotocol-rs
 
+Cua driver protocol.
+
 napi-rs bridge for `packages/shared/src/cuaDriverProtocol.ts`.
 
 ## Functions

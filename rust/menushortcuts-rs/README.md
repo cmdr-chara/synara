@@ -1,5 +1,7 @@
 # menushortcuts-rs
 
+FILE: menuShortcuts.ts Purpose: Keeps native desktop menu accelerators consistent across operating systems. Layer: Desktop main-process helper Exports: menu accelerator resolvers
+
 napi-rs bridge for `apps/desktop/src/menuShortcuts.ts`.
 
 ## Functions

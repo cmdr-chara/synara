@@ -1,5 +1,7 @@
 # remoteresources-rs
 
+Remote resources.
+
 napi-rs bridge for `packages/shared/src/remoteResources.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # storepersistence-rs
 
+Store persistence.
+
 napi-rs bridge for `apps/web/src/storePersistence.ts`.
 
 ## Functions

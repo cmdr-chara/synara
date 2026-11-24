@@ -1,5 +1,7 @@
 # runtimemode-rs
 
+Runtime mode.
+
 napi-rs bridge for `packages/shared/src/runtimeMode.ts`.
 
 ## Functions

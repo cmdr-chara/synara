@@ -1,5 +1,7 @@
 # agentcursorpreference-rs
 
+FILE: agentCursorPreference.ts Purpose: Persist the agent cursor colors mirrored from the renderer, so the          Cua driver host can push them at every session open. Layer: Desktop main process Depends on: filesystem.
+
 napi-rs bridge for `apps/desktop/src/agentCursorPreference.ts`.
 
 ## Functions

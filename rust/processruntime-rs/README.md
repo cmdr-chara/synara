@@ -1,5 +1,7 @@
 # processruntime-rs
 
+FILE: processRuntime.ts Purpose: Spawns Node child processes from platform-neutral launch requests. Layer: Shared platform runtime
+
 napi-rs bridge for `packages/shared/src/processRuntime.ts`.
 
 ## Functions

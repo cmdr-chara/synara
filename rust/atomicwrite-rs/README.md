@@ -1,5 +1,7 @@
 # atomicwrite-rs
 
+Atomic write.
+
 napi-rs bridge for `apps/server/src/atomicWrite.ts`.
 
 ## Functions

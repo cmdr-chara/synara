@@ -1,5 +1,7 @@
 # projectscripts-rs
 
+Project scripts.
+
 napi-rs bridge for `apps/web/src/projectScripts.ts`.
 
 ## Functions

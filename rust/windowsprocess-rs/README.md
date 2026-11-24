@@ -1,5 +1,7 @@
 # windowsprocess-rs
 
+FILE: windowsProcess.ts Purpose: Prepares Windows child-process launches without Node's `shell: true`. Layer: Shared Node runtime utility Exports: command resolution plus safe spawn/spawnSync argument preparation.
+
 napi-rs bridge for `packages/shared/src/windowsProcess.ts`.
 
 ## Functions

@@ -1,5 +1,8 @@
 # cuafixtures-rs
 
+and
+
+`apps/desktop/src/cuaFixtures/live.ts`.
 napi-rs bridge for `apps/desktop/src/cuaFixtures/`.
 
 ## Functions

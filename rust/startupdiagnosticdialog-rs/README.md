@@ -1,5 +1,7 @@
 # startupdiagnosticdialog-rs
 
+Startup diagnostic dialog.
+
 napi-rs bridge for `apps/desktop/src/startupDiagnosticDialog.ts`.
 
 ## Functions

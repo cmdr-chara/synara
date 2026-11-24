@@ -1,5 +1,7 @@
 # settingsnavigation-rs
 
+FILE: settingsNavigation.ts Purpose: Share the settings topic taxonomy between the main sidebar and the settings screen. Layer: Route/UI support Exports: section ids, nav items, and search normalization helper
+
 napi-rs bridge for `apps/web/src/settingsNavigation.ts`.
 
 ## Functions

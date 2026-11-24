@@ -1,5 +1,7 @@
 # sidechatexpiry-rs
 
+Sidechat expiry.
+
 napi-rs bridge for `packages/shared/src/sidechatExpiry.ts`.
 
 ## Functions

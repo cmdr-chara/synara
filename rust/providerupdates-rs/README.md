@@ -1,5 +1,7 @@
 # providerupdates-rs
 
+FILE: providerUpdates.ts Purpose: Shared provider-update filtering and refresh cadence for global toasts and settings. Layer: Web settings/notification utility Exports: update candidate helpers, notification keys, and auto-refresh timing.
+
 napi-rs bridge for `apps/web/src/providerUpdates.ts`.
 
 ## Functions

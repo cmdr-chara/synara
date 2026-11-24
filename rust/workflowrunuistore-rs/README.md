@@ -1,5 +1,7 @@
 # workflowrunuistore-rs
 
+Workflow run ui store.
+
 napi-rs bridge for `apps/web/src/workflowRunUiStore.ts`.
 
 ## Functions

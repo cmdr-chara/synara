@@ -1,4 +1,6 @@
-# installer-count-rs
+# installercount-rs
+
+Installer count.
 
 napi-rs bridge for `apps/marketing/src/app/api/installer-count/`.
 

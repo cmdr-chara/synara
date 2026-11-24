@@ -1,5 +1,7 @@
 # taskssurface-rs
 
+FILE: tasksSurface.ts Purpose: Tasks takes Kanban's place unless the connected server refuses it. Older servers may not offer Tasks; refusal restores Kanban for the session.
+
 napi-rs bridge for `apps/web/src/tasksSurface.ts`.
 
 ## Functions

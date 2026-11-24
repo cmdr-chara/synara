@@ -1,5 +1,7 @@
 # threaddetailresumecursors-rs
 
+FILE: threadDetailResumeCursors.ts Purpose: Per-thread resume cursors so resubscribes replay only the event gap. Layer: Web subscription utility Exports: Cursor read/advance/clear helpers and the subscribe-input builder.
+
 napi-rs bridge for `apps/web/src/threadDetailResumeCursors.ts`.
 
 ## Functions

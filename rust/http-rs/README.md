@@ -1,5 +1,7 @@
 # http-rs
 
+Http.
+
 napi-rs bridge for `apps/server/src/http.ts`.
 
 ## Functions

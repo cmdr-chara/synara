@@ -1,5 +1,7 @@
 # mcpconnectors-rs
 
+FILE: mcpConnectors.ts Purpose: The Connectors catalog plus the URL and server-name rules shared by server and web. Layer: Shared runtime utility Exports: MCP_CONNECTOR_CATEGORIES, MCP_CONNECTOR_PRESETS, findMcpConnectorPreset,   normalizeMcpConnectorUrl, defaultMcpConnectorName, mcpConnectorSlug, mcpConnectorServerName
+
 napi-rs bridge for `packages/shared/src/mcpConnectors.ts`.
 
 ## Functions

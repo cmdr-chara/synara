@@ -1,5 +1,7 @@
 # projectcontainers-rs
 
+FILE: projectContainers.ts Purpose: Classify system-managed project containers versus ordinary projects. Managed          chat and Studio containers carry their own kind, but the legacy Home chat          container kept `kind: "project"` and is recognized by its row shape: the          canonical "Home" title plus the reserved chat/home workspace root.
+
 napi-rs bridge for `packages/shared/src/projectContainers.ts`.
 
 ## Functions

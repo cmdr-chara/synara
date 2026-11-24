@@ -1,5 +1,7 @@
 # composerdraftstoretestfixtures-rs
 
+Composer draft store test fixtures.
+
 napi-rs bridge for `apps/web/src/composerDraftStoreTestFixtures.ts`.
 
 ## Functions

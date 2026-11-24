@@ -1,5 +1,7 @@
 # terminal-rs
 
+Terminal.
+
 napi-rs bridge for `apps/server/src/terminal/`.
 
 ## Functions

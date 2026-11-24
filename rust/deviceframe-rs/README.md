@@ -1,5 +1,7 @@
 # deviceframe-rs
 
+Device frame.
+
 napi-rs bridge for `packages/shared/src/deviceFrame.ts`.
 
 ## Functions

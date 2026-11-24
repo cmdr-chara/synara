@@ -1,5 +1,7 @@
 # codexconfig-rs
 
+Codex config helpers. Parses the small subset of `CODEX_HOME/config.toml` we need for provider discovery without pulling in a full TOML dependency.
+
 napi-rs bridge for `packages/shared/src/codexConfig.ts`.
 
 ## Functions

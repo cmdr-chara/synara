@@ -1,5 +1,7 @@
 # auth-rs
 
+Auth.
+
 napi-rs bridge for `apps/server/src/auth/`.
 
 ## Functions

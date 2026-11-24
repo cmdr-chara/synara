@@ -1,6 +1,8 @@
 # productanalytics-rs
 
-`packages/contracts/src/productAnalytics.ts`., bridged with wasm-bindgen.
+Product analytics.
+
+wasm-bindgen bridge for `packages/contracts/src/productAnalytics.ts`.
 
 ## Functions
 

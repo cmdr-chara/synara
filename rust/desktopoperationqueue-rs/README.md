@@ -1,5 +1,7 @@
 # desktopoperationqueue-rs
 
+Desktop operation queue.
+
 napi-rs bridge for `packages/shared/src/desktopOperationQueue.ts`.
 
 ## Functions

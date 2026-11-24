@@ -1,5 +1,7 @@
 # editorpreferences-rs
 
+Editor preferences.
+
 napi-rs bridge for `apps/web/src/editorPreferences.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # worktreesetup-rs
 
+Worktree setup.
+
 napi-rs bridge for `apps/server/src/worktreeSetup.ts`.
 
 ## Functions

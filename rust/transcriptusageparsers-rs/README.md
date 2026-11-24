@@ -1,5 +1,7 @@
 # transcriptusageparsers-rs
 
+FILE: transcriptUsageParsers.ts Purpose: Pure line parsers for the usage Claude Code and Codex write to their own session files, so Usage → Analytics can count sessions run anywhere on this Mac (the "This Mac" scope), not only Synara's chats. Layer: server usage parsing (pure, no filesystem).
+
 napi-rs bridge for `apps/server/src/transcriptUsageParsers.ts`.
 
 ## Functions

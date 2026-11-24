@@ -1,5 +1,7 @@
 # claudecache-rs
 
+Claude cache.
+
 napi-rs bridge for `packages/shared/src/claudeCache.ts`.
 
 ## Functions

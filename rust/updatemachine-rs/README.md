@@ -1,5 +1,7 @@
 # updatemachine-rs
 
+Owns desktop updater transitions, including staged updates retained across later checks. main.ts owns transfers and artifact verification before publishing download completion.
+
 napi-rs bridge for `apps/desktop/src/updateMachine.ts`.
 
 ## Functions

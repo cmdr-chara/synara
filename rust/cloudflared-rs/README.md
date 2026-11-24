@@ -1,5 +1,7 @@
 # cloudflared-rs
 
+Cloudflared.
+
 napi-rs bridge for `packages/shared/src/cloudflared.ts`.
 
 ## Functions

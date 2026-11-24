@@ -1,5 +1,7 @@
 # editor-rs
 
+Editor.
+
 napi-rs bridge for `apps/server/src/editor/`.
 
 ## Functions

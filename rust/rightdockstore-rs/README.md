@@ -1,5 +1,7 @@
 # rightdockstore-rs
 
+FILE: rightDockStore.logic.ts Purpose: Pure, testable transitions for the right dock (tabbed multi-pane right sidebar). Layer: UI state helpers Exports: dock pane types, default-state factory, and immutable open/close/activate helpers.
+
 napi-rs bridge for `apps/web/src/rightDockStore.logic.ts`.
 
 ## Functions

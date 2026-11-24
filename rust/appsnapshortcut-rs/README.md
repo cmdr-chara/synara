@@ -1,5 +1,7 @@
 # appsnapshortcut-rs
 
+FILE: appSnapShortcut.ts Purpose: Normalize AppSnap's portable two-key shortcut model for desktop and web clients.
+
 napi-rs bridge for `packages/shared/src/appSnapShortcut.ts`.
 
 ## Functions

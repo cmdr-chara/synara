@@ -1,6 +1,8 @@
 # baseschemas-rs
 
-`packages/contracts/src/baseSchemas.ts`., bridged with wasm-bindgen.
+Base schemas.
+
+wasm-bindgen bridge for `packages/contracts/src/baseSchemas.ts`.
 
 ## Functions
 

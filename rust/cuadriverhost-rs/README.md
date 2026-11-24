@@ -1,6 +1,6 @@
 # cuadriverhost-rs
 
-napi-rs bridge for `apps/desktop/src/cuaDriverHost.ts`.
+Bridgeable exports of `apps/desktop/src/cuaDriverHost.ts`: the orphaned CUA driver sweep, reimplementing `reapOrphanedCuaDrivers` and the parts of `cuaRuntimeOwnership.ts` it reaches.
 
 ## Functions
 

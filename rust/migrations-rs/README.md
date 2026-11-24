@@ -1,5 +1,7 @@
 # migrations-rs
 
+Migrations.
+
 napi-rs bridge for `apps/server/src/persistence/Migrations/`.
 
 ## Functions

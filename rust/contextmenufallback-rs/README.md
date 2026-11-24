@@ -1,5 +1,7 @@
 # contextmenufallback-rs
 
+Context menu fallback.
+
 napi-rs bridge for `apps/web/src/contextMenuFallback.ts`.
 
 ## Functions

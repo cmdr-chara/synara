@@ -1,5 +1,7 @@
 # pendinginteractionderivation-rs
 
+Pending interaction derivation.
+
 napi-rs bridge for `apps/web/src/pendingInteractionDerivation.ts`.
 
 ## Functions

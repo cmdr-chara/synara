@@ -1,5 +1,7 @@
 # betachannel-rs
 
+FILE: betaChannel.ts Purpose: Stable-side probe + handoff into a parallel Synara Beta install. Layer: Desktop platform adapter (no Electron imports; every path is injectable for tests).
+
 napi-rs bridge for `apps/desktop/src/betaChannel.ts`.
 
 ## Functions

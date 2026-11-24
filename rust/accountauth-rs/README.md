@@ -1,5 +1,7 @@
 # accountauth-rs
 
+accountAuth - the credential file, token refresh, host linking, and the `synara auth` (host link) / `synara status` CLI flows. Sign-in itself is app-only.
+
 napi-rs bridge for `apps/server/src/accountAuth.ts`.
 
 ## Functions

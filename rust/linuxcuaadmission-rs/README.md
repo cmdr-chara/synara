@@ -1,5 +1,7 @@
 # linuxcuaadmission-rs
 
+Linux cua admission.
+
 napi-rs bridge for `apps/desktop/src/linuxCuaAdmission.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # routes-rs
 
+Routes.
+
 napi-rs bridge for `apps/api/src/routes/`.
 
 ## Functions

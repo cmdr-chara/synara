@@ -1,5 +1,7 @@
 # wsownerauthorization-rs
 
+Ws owner authorization.
+
 napi-rs bridge for `apps/server/src/wsOwnerAuthorization.ts`.
 
 ## Functions

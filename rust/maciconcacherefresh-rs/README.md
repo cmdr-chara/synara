@@ -1,5 +1,7 @@
 # maciconcacherefresh-rs
 
+Mac icon cache refresh.
+
 napi-rs bridge for `apps/desktop/src/macIconCacheRefresh.ts`.
 
 ## Functions

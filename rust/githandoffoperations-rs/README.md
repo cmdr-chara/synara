@@ -1,5 +1,7 @@
 # githandoffoperations-rs
 
+Git handoff operations.
+
 napi-rs bridge for `apps/server/src/gitHandoffOperations.ts`.
 
 ## Functions

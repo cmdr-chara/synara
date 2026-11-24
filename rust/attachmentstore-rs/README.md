@@ -1,5 +1,7 @@
 # attachmentstore-rs
 
+Attachment store.
+
 napi-rs bridge for `apps/server/src/attachmentStore.ts`.
 
 ## Functions

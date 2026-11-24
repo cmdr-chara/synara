@@ -1,5 +1,7 @@
 # pinning-rs
 
+FILE: pinning.logic.ts Purpose: Shared immutable helpers for sidebar pin id order, pruning, and optimistic merges. Layer: UI state logic Exports: pinned id normalization, mutation helpers, and pinned item derivation.
+
 napi-rs bridge for `apps/web/src/pinning.logic.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # desktopmigrationrecovery-rs
 
+FILE: desktopMigrationRecovery.ts Purpose: Detects pending desktop migration recovery and invokes the server-owned restore CLI. Layer: Desktop startup utility
+
 napi-rs bridge for `apps/desktop/src/desktopMigrationRecovery.ts`.
 
 ## Functions

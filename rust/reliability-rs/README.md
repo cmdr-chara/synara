@@ -1,6 +1,8 @@
 # reliability-rs
 
-`apps/analytics/reliability.ts`., bridged with wasm-bindgen.
+Both functions are Cloudflare-D1-bound: every JSON-representable input ends
+in the same TypeError the original raises before reaching the database.
+wasm-bindgen bridge for `apps/analytics/reliability.ts`.
 
 ## Functions
 

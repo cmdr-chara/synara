@@ -1,5 +1,7 @@
 # model-rs
 
+Port of the model selection / capability helpers.
+
 napi-rs bridge for `packages/shared/src/model.ts`.
 
 ## Functions

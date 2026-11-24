@@ -1,5 +1,7 @@
 # device-rs
 
+Device.
+
 napi-rs bridge for `apps/server/src/device/`.
 
 ## Functions

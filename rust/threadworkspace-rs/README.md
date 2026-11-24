@@ -1,5 +1,7 @@
 # threadworkspace-rs
 
+FILE: threadWorkspace.ts Purpose: Share worktree and workspace-root helpers used across web and server flows. Layer: Shared util Exports: associated worktree helpers plus workspace-root comparison helpers
+
 napi-rs bridge for `packages/shared/src/threadWorkspace.ts`.
 
 ## Functions

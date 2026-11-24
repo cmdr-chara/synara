@@ -1,5 +1,7 @@
 # verify-packaged-desktop-startup-rs
 
+Verify packaged desktop startup.
+
 napi-rs bridge for `scripts/verify-packaged-desktop-startup.ts`.
 
 ## Functions

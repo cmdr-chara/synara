@@ -1,5 +1,7 @@
 # executable-rs
 
+FILE: executable.ts Purpose: Defines how a command name becomes a concrete executable on every platform. Layer: Shared platform runtime Depends on: node:fs and node:path only.
+
 napi-rs bridge for `packages/shared/src/executable.ts`.
 
 ## Functions

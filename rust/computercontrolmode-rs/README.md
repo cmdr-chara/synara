@@ -1,5 +1,7 @@
 # computercontrolmode-rs
 
+Computer control mode.
+
 napi-rs bridge for `apps/web/src/computerControlMode.ts`.
 
 ## Functions

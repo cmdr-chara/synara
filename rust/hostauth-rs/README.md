@@ -1,5 +1,7 @@
 # hostauth-rs
 
+Host auth.
+
 napi-rs bridge for `apps/server/src/hostAuth/`.
 
 ## Functions

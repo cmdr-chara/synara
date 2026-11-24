@@ -1,5 +1,7 @@
 # privatepathpermissions-rs
 
+Port of `apps/server/src/privatePathPermissions.ts` — port units only.
+
 napi-rs bridge for `apps/server/src/privatePathPermissions.ts`.
 
 ## Functions

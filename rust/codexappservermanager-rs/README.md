@@ -1,5 +1,7 @@
 # codexappservermanager-rs
 
+Codex app server manager.
+
 napi-rs bridge for `apps/server/src/codexAppServerManager.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # startupaccess-rs
 
+Startup access.
+
 napi-rs bridge for `apps/server/src/startupAccess.ts`.
 
 ## Functions

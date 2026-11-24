@@ -1,5 +1,7 @@
 # turnstopactivity-rs
 
+Turn stop activity.
+
 napi-rs bridge for `packages/shared/src/turnStopActivity.ts`.
 
 ## Functions

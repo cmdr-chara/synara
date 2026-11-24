@@ -1,5 +1,7 @@
 # persistence-rs
 
+Persistence.
+
 napi-rs bridge for `apps/server/src/persistence/`.
 
 ## Functions

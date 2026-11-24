@@ -1,5 +1,7 @@
 # storeprojection-rs
 
+FILE: storeProjection.ts Purpose: Owns normalized slice writes, sidebar projections, and snapshot integration. Exports: Pure projection transitions used by the facade and orchestration reducer.
+
 napi-rs bridge for `apps/web/src/storeProjection.ts`.
 
 ## Functions

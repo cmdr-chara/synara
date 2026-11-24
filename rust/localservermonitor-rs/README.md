@@ -1,5 +1,7 @@
 # localservermonitor-rs
 
+FILE: localServerMonitor.ts Purpose: Finds local development servers listening on localhost/private ports and          stops a selected server process after re-validating it is still a dev listener. Layer: Server runtime utility used by the WebSocket RPC layer.
+
 napi-rs bridge for `apps/server/src/localServerMonitor.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # threadpullrequestlinks-rs
 
+FILE: threadPullRequestLinks.ts Purpose: Pure rules for the pull requests linked to a thread: identity, provenance precedence,          tombstones, and which link is the thread's current PR (`lastKnownPr`). Layer: Shared domain logic (server decider/projections, web rendering) Exports: link/unlink/sync transforms, current-PR resolution, legacy replay helpers
+
 napi-rs bridge for `packages/shared/src/threadPullRequestLinks.ts`.
 
 ## Functions

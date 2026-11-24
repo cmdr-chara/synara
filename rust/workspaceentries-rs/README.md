@@ -1,5 +1,7 @@
 # workspaceentries-rs
 
+Workspace entries.
+
 napi-rs bridge for `apps/server/src/workspaceEntries.ts`.
 
 ## Functions

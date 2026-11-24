@@ -1,5 +1,7 @@
 # migrationbundleidentity-rs
 
+Migration bundle identity.
+
 napi-rs bridge for `apps/server/src/migrationBundleIdentity.ts`.
 
 ## Functions

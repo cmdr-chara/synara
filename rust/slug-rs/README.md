@@ -1,4 +1,6 @@
-# -rs
+# slug-rs
+
+[[...
 
 napi-rs bridge for `apps/marketing/src/app/llms.mdx/docs/[[...slug]]/`.
 

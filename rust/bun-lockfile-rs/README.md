@@ -1,5 +1,7 @@
 # bun-lockfile-rs
 
+Bun lockfile metadata shared by the install and compiler cache keys.
+
 napi-rs bridge for `scripts/bun-lockfile.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # wsstreambackpressure-rs
 
+Ws stream backpressure.
+
 napi-rs bridge for `apps/server/src/wsStreamBackpressure.ts`.
 
 ## Functions

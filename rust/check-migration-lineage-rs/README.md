@@ -1,5 +1,7 @@
 # check-migration-lineage-rs
 
+Check migration lineage.
+
 napi-rs bridge for `scripts/check-migration-lineage.ts`.
 
 ## Functions

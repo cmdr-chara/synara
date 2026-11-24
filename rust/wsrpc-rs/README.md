@@ -1,5 +1,7 @@
 # wsrpc-rs
 
+Ws rpc.
+
 napi-rs bridge for `apps/server/src/wsRpc.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # uilocale-rs
 
+Ui locale.
+
 napi-rs bridge for `packages/shared/src/uiLocale.ts`.
 
 ## Functions

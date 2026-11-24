@@ -1,5 +1,7 @@
 # providermodeloptions-rs
 
+Provider model options.
+
 napi-rs bridge for `apps/web/src/providerModelOptions.ts`.
 
 ## Functions

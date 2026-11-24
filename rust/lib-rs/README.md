@@ -1,5 +1,7 @@
 # lib-rs
 
+Each export mirrors the `.mjs` source: JS coercion, error paths and side effects included. Values cross the bridge as JSON with the usual markers (`{"$undefined":true}`, `{"$num":..}`).
+
 napi-rs bridge for `benchmarks/desktop-perf/lib/`.
 
 ## Functions

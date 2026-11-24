@@ -1,5 +1,7 @@
 # nodehttpserver-rs
 
+Port of `apps/server/src/nodeHttpServer.ts` — port units only.
+
 napi-rs bridge for `apps/server/src/nodeHttpServer.ts`.
 
 ## Functions

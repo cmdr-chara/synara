@@ -1,5 +1,7 @@
 # filesystemplatform-rs
 
+FILE: filesystemPlatform.ts Purpose: Centralizes filesystem operations whose durability or identity semantics differ by OS. Layer: Shared platform runtime
+
 napi-rs bridge for `packages/shared/src/filesystemPlatform.ts`.
 
 ## Functions

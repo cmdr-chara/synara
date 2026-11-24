@@ -1,5 +1,7 @@
 # desktoptitlebar-rs
 
+FILE: desktopTitleBar.ts Purpose: Resolve whether Electron should use a frameless custom title bar on          Windows/Linux. Shared by the desktop main process and the web renderer.
+
 napi-rs bridge for `packages/shared/src/desktopTitleBar.ts`.
 
 ## Functions

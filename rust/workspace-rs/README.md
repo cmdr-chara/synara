@@ -1,5 +1,9 @@
 # workspace-rs
 
+— path containment,
+managed-worktree parsing, local preview roots, and out-of-root reference
+recovery.
+
 napi-rs bridge for `apps/server/src/workspace/`.
 
 ## Functions

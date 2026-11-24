@@ -1,5 +1,7 @@
 # check-server-sync-fs-rs
 
+Prevent new main-thread filesystem blocking without banning harmless Node builtins.
+
 napi-rs bridge for `scripts/check-server-sync-fs.ts`.
 
 ## Functions

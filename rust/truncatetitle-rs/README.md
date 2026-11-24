@@ -1,5 +1,7 @@
 # truncatetitle-rs
 
+Truncate title.
+
 napi-rs bridge for `apps/web/src/truncateTitle.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # threadsummary-rs
 
+Thread summary.
+
 napi-rs bridge for `packages/shared/src/threadSummary.ts`.
 
 ## Functions

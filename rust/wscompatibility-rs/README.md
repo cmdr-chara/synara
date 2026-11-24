@@ -1,5 +1,7 @@
 # wscompatibility-rs
 
+Ws compatibility.
+
 napi-rs bridge for `apps/server/src/wsCompatibility.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # providerinstances-rs
 
+FILE: providerInstances.ts Purpose: Shared provider-instance resolution from legacy and generic settings. Layer: Shared runtime utility Exports: provider instance derivation and start-option helpers
+
 napi-rs bridge for `packages/shared/src/providerInstances.ts`.
 
 ## Functions

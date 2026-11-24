@@ -1,6 +1,8 @@
 # cn-rs
 
-`packages/profile-ui/src/cn.ts`., bridged with wasm-bindgen.
+Class-name (cn) utility.
+
+wasm-bindgen bridge for `packages/profile-ui/src/cn.ts`.
 
 ## Functions
 

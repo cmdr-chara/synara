@@ -1,5 +1,7 @@
 # updateinstallmarker-rs
 
+FILE: updateInstallMarker.ts Purpose: Persists and resolves durable desktop update install attempts across app restarts. Layer: Desktop update utility
+
 napi-rs bridge for `apps/desktop/src/updateInstallMarker.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # splitviewstore-rs
 
+Split view store.
+
 napi-rs bridge for `apps/web/src/splitViewStore.ts`.
 
 ## Functions

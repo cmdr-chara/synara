@@ -1,5 +1,7 @@
 # environment-rs
 
+Environment.
+
 napi-rs bridge for `apps/server/src/environment/`.
 
 ## Functions

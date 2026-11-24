@@ -1,5 +1,7 @@
 # confirmedcustombinarypathstore-rs
 
+Confirmed custom binary path store.
+
 napi-rs bridge for `apps/web/src/confirmedCustomBinaryPathStore.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # terminalstatestore-rs
 
+Terminal state store.
+
 napi-rs bridge for `apps/web/src/terminalStateStore.ts`.
 
 ## Functions

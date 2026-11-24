@@ -1,5 +1,7 @@
 # providerchildenvironment-rs
 
+FILE: providerChildEnvironment.ts Purpose: Builds provider child environments without Synara control-plane authority. Layer: Server provider process security
+
 napi-rs bridge for `apps/server/src/providerChildEnvironment.ts`.
 
 ## Functions

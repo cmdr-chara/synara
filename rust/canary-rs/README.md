@@ -1,5 +1,7 @@
 # canary-rs
 
+FILE: canary.ts Purpose: Maintains and launches an isolated, frozen Synara Canary checkout. Layer: Local developer tooling
+
 napi-rs bridge for `scripts/canary.ts`.
 
 ## Functions

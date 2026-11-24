@@ -1,5 +1,7 @@
 # browserautomationcatalogue-rs
 
+Browser automation catalogue.
+
 napi-rs bridge for `packages/shared/src/browserAutomationCatalogue.ts`.
 
 ## Functions

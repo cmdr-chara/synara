@@ -1,5 +1,7 @@
 # hostconnections-rs
 
+Host connections.
+
 napi-rs bridge for `apps/server/src/hostConnections/`.
 
 ## Functions

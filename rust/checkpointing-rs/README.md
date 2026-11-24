@@ -1,5 +1,7 @@
 # checkpointing-rs
 
+Checkpointing.
+
 napi-rs bridge for `apps/server/src/checkpointing/`.
 
 ## Functions

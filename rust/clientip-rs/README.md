@@ -1,5 +1,7 @@
 # clientip-rs
 
+FILE: clientIp.ts Purpose: Best-effort caller identity for rate limiting. Layer: API support Depends on: @hono/node-server conninfo (socket address behind no proxy).
+
 napi-rs bridge for `apps/api/src/clientIp.ts`.
 
 ## Functions

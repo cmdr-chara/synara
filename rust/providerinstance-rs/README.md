@@ -1,6 +1,8 @@
 # providerinstance-rs
 
-`packages/contracts/src/providerInstance.ts`., bridged with wasm-bindgen.
+Provider instance.
+
+wasm-bindgen bridge for `packages/contracts/src/providerInstance.ts`.
 
 ## Functions
 

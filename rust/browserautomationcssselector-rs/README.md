@@ -1,6 +1,8 @@
 # browserautomationcssselector-rs
 
-`packages/contracts/src/browserAutomationCssSelector.ts`., bridged with wasm-bindgen.
+Browser automation css selector.
+
+wasm-bindgen bridge for `packages/contracts/src/browserAutomationCssSelector.ts`.
 
 ## Functions
 

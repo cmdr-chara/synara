@@ -1,5 +1,7 @@
 # accountusagereporter-rs
 
+Account usage reporter.
+
 napi-rs bridge for `apps/server/src/accountUsageReporter.ts`.
 
 ## Functions

@@ -1,6 +1,8 @@
 # hubwork-rs
 
-`packages/contracts/src/hubWork.ts`., bridged with wasm-bindgen.
+Hub work.
+
+wasm-bindgen bridge for `packages/contracts/src/hubWork.ts`.
 
 ## Functions
 

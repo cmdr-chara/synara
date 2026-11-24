@@ -1,5 +1,7 @@
 # pinnedmessages-rs
 
+FILE: pinnedMessages.ts Purpose: Shared pure transforms for per-thread pinned-message lists and note limits. Layer: Shared runtime domain helper used by server projections and the web store.
+
 napi-rs bridge for `packages/shared/src/pinnedMessages.ts`.
 
 ## Functions

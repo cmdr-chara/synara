@@ -1,5 +1,7 @@
 # kanban-rs
 
+Shared kanban vocabulary and v2 column derivation (Draft / In Progress / Awaiting you / Done), one derivation serving both the web board and the server read tool. Staleness consults an injected epoch-ms `now`; no wall-clock calls here.
+
 napi-rs bridge for `packages/shared/src/kanban.ts`.
 
 ## Functions

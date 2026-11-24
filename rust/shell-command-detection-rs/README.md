@@ -1,5 +1,7 @@
 # shell-command-detection-rs
 
+Shell command detection.
+
 napi-rs bridge for `apps/server/src/shell-command-detection.ts`.
 
 ## Functions

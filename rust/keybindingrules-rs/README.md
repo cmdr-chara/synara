@@ -1,5 +1,7 @@
 # keybindingrules-rs
 
+FILE: keybindingRules.ts Purpose: The keybinding rule grammar both the server and the web read and write: parsing   `key` and `when` strings, writing them back, rule identity, and the unassigned marker. Layer: Shared runtime utility Depends on: keybinding contracts only
+
 napi-rs bridge for `packages/shared/src/keybindingRules.ts`.
 
 ## Functions

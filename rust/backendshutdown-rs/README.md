@@ -1,5 +1,7 @@
 # backendshutdown-rs
 
+Backend shutdown.
+
 napi-rs bridge for `apps/desktop/src/backendShutdown.ts`.
 
 ## Functions

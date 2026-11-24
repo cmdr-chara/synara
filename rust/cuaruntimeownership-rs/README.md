@@ -1,5 +1,7 @@
 # cuaruntimeownership-rs
 
+Cua runtime ownership.
+
 napi-rs bridge for `apps/desktop/src/cuaRuntimeOwnership.ts`.
 
 ## Functions

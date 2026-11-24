@@ -1,5 +1,7 @@
 # localservers-rs
 
+FILE: localServers.ts Purpose: Shared presentation helpers for detected local dev servers. Layer: Shared runtime utility (consumed by web UI surfaces).
+
 napi-rs bridge for `packages/shared/src/localServers.ts`.
 
 ## Functions

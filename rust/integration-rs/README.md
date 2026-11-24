@@ -1,5 +1,7 @@
 # integration-rs
 
+Integration.
+
 napi-rs bridge for `apps/server/integration/`.
 
 ## Functions

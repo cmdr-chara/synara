@@ -1,5 +1,7 @@
 # composerprediction-rs
 
+Composer prediction.
+
 napi-rs bridge for `apps/server/src/composerPrediction/`.
 
 ## Functions

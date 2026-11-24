@@ -1,6 +1,8 @@
 # browserautomationbounds-rs
 
-`packages/contracts/src/browserAutomationBounds.ts`., bridged with wasm-bindgen.
+Browser automation bounds.
+
+wasm-bindgen bridge for `packages/contracts/src/browserAutomationBounds.ts`.
 
 ## Functions
 

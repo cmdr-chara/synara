@@ -1,5 +1,7 @@
 # remotecapabilities-rs
 
+Remote capabilities.
+
 napi-rs bridge for `packages/shared/src/remoteCapabilities.ts`.
 
 ## Functions

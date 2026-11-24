@@ -1,5 +1,7 @@
 # worker-rs
 
+FILE: apps/analytics/worker.ts Purpose: Cloudflare Worker ingest + dashboard API for Synara Beta diagnostics. Endpoints:   POST /v1/events   — NDJSON diagnostics events -> D1 `events` table   POST /v1/reliability-events — anonymous reliability receipts -> D1 daily totals   POST /v1/crash    — permanently retired; body is never consumed   POST /api/login   — password login -> signed session cookie   GET  /api/*       — dashboard reads (session cookie required)   GET  /healthz     — liveness   GET  /*           — dashboard SPA (session required; /login is public)  The worker is deliberately allowlist-shaped: unknown event names, unexpected field types, and oversized payloads are dropped rather than stored.
+
 napi-rs bridge for `apps/analytics/worker.ts`.
 
 ## Functions

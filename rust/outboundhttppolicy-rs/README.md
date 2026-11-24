@@ -1,5 +1,7 @@
 # outboundhttppolicy-rs
 
+FILE: outboundHttpPolicy.ts Purpose: Defines runtime-neutral outbound URL, address, redirect, and JSON safety policy. Layer: Shared security policy used by server and desktop transports
+
 napi-rs bridge for `packages/shared/src/outboundHttpPolicy.ts`.
 
 ## Functions

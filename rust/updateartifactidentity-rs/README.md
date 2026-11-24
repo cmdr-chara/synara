@@ -1,5 +1,7 @@
 # updateartifactidentity-rs
 
+FILE: updateArtifactIdentity.ts Purpose: Fingerprints a downloaded updater payload and detects path/byte replacement. Layer: Desktop update utility
+
 napi-rs bridge for `apps/desktop/src/updateArtifactIdentity.ts`.
 
 ## Functions

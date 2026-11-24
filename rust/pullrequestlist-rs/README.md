@@ -1,5 +1,7 @@
 # pullrequestlist-rs
 
+Pull request list.
+
 napi-rs bridge for `packages/shared/src/pullRequestList.ts`.
 
 ## Functions

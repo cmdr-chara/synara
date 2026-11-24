@@ -1,5 +1,7 @@
 # proposedplan-rs
 
+Proposed plan.
+
 napi-rs bridge for `apps/web/src/proposedPlan.ts`.
 
 ## Functions

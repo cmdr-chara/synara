@@ -1,5 +1,7 @@
 # devicekey-rs
 
+Device identity: the client half of the host-auth handshake. A device proves who it is with a keypair that never leaves the platform keystore.
+
 napi-rs bridge for `packages/shared/src/deviceKey.ts`.
 
 ## Functions

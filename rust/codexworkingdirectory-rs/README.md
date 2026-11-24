@@ -1,5 +1,7 @@
 # codexworkingdirectory-rs
 
+Codex working directory.
+
 napi-rs bridge for `apps/server/src/codexWorkingDirectory.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # openthreadtabs-rs
 
+FILE: openThreadTabs.logic.ts Purpose: Pure helpers for the open-thread tabs: maintaining the ordered open list,          deciding which open threads render as tabs, how each tab is labelled, and          which tab takes over when the active one closes. Layer: UI state logic Exports: open-list transitions, persisted-list normalization, tab derivation, close flow
+
 napi-rs bridge for `apps/web/src/openThreadTabs.logic.ts`.
 
 ## Functions

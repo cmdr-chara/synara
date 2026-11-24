@@ -1,6 +1,6 @@
 # main-rs
 
-napi-rs bridge for `apps/server/src/main.ts`.
+Bridgeable exports of `apps/server/src/main.ts` — napi-rs bridge for `apps/server/src/main.ts`.
 
 ## Functions
 

@@ -1,5 +1,7 @@
 # diagnosticsredaction-rs
 
+FILE: diagnosticsRedaction.ts Purpose: Technical-only diagnostics payloads and local free-text redaction. Telemetry uses the fixed-category helpers; text redaction alone is not a content boundary.
+
 napi-rs bridge for `packages/shared/src/diagnosticsRedaction.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # logger-rs
 
+Logger.
+
 napi-rs bridge for `apps/server/src/logger.ts`.
 
 ## Functions

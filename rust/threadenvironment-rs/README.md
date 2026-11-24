@@ -1,5 +1,7 @@
 # threadenvironment-rs
 
+Thread environment.
+
 napi-rs bridge for `packages/shared/src/threadEnvironment.ts`.
 
 ## Functions

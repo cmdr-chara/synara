@@ -1,5 +1,7 @@
 # worktreecleanup-rs
 
+Worktree cleanup.
+
 napi-rs bridge for `apps/web/src/worktreeCleanup.ts`.
 
 ## Functions

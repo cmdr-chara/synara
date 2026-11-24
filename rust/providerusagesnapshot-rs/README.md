@@ -1,5 +1,7 @@
 # providerusagesnapshot-rs
 
+FILE: providerUsageSnapshot.ts Purpose: Read provider-specific local usage archives for recent usage snapshots.
+
 napi-rs bridge for `apps/server/src/providerUsageSnapshot.ts`.
 
 ## Functions

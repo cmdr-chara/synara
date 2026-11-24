@@ -1,5 +1,7 @@
 # apprail-rs
 
+FILE: appRail.logic.ts Purpose: Pure rules for the rail layout's tab strip: item ids, route item order, and          which item is active for a pathname, plus the Spaces panel's section list. Layer: Web shell logic Exports: rail item ids/types, rail item order and visibility, railItemForPathname,          reconcileActiveRailItem, buildRailSpacesSections
+
 napi-rs bridge for `apps/web/src/appRail.logic.ts`.
 
 ## Functions

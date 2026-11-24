@@ -1,5 +1,7 @@
 # usageanalyticsstats-rs
 
+FILE: usageAnalyticsStats.ts Purpose: Usage analytics for Settings → Usage → Analytics from Synara's local projection DB: token deltas, turns, and cost at API rates as UTC-hour rows by provider, model, project, and origin. Cost is the provider's own figure when it reports one (Claude's SDK, Cursor, OpenCode); otherwise (Codex) the tokens are priced at API list prices (usagePricing.ts).
+
 napi-rs bridge for `apps/server/src/usageAnalyticsStats.ts`.
 
 ## Functions

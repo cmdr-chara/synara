@@ -1,5 +1,7 @@
 # git-rs
 
+Sanitize an arbitrary string into a valid, lowercase git branch fragment. Strips quotes, collapses separators, limits to 64 chars.
+
 napi-rs bridge for `packages/shared/src/git.ts`.
 
 ## Functions

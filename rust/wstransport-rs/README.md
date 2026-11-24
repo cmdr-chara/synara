@@ -1,5 +1,7 @@
 # wstransport-rs
 
+Ws transport.
+
 napi-rs bridge for `apps/web/src/wsTransport.ts`.
 
 ## Functions

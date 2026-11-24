@@ -1,5 +1,7 @@
 # pullrequestautofix-rs
 
+Pull request auto fix.
+
 napi-rs bridge for `apps/server/src/pullRequestAutoFix/`.
 
 ## Functions

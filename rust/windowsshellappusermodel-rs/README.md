@@ -1,5 +1,7 @@
 # windowsshellappusermodel-rs
 
+FILE: windowsShellAppUserModel.ts Purpose: Set AppUserModel relaunch properties on Windows shortcuts and windows          in Microsoft's required order, bypassing Electron's AppId-first write. Layer: Desktop-native Windows shell integration
+
 napi-rs bridge for `apps/desktop/src/windowsShellAppUserModel.ts`.
 
 ## Functions

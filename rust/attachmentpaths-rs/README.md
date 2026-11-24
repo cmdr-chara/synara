@@ -1,5 +1,7 @@
 # attachmentpaths-rs
 
+Attachment paths.
+
 napi-rs bridge for `apps/server/src/attachmentPaths.ts`.
 
 ## Functions

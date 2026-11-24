@@ -1,5 +1,7 @@
 # agentgateway-rs
 
+Port of apps/server/src/agentGateway/ exports.
+
 napi-rs bridge for `apps/server/src/agentGateway/`.
 
 ## Functions

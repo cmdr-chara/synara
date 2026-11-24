@@ -1,5 +1,7 @@
 # platform-rs
 
+Platform.
+
 napi-rs bridge for `apps/server/src/platform/`.
 
 ## Functions

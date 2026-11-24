@@ -1,5 +1,7 @@
 # composer-editor-mentions-rs
 
+Composer editor mentions.
+
 napi-rs bridge for `apps/web/src/composer-editor-mentions.ts`.
 
 ## Functions

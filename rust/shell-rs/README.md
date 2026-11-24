@@ -1,5 +1,7 @@
 # shell-rs
 
+FILE: shell.ts Purpose: Shared helpers for probing login-shell environment values safely. Exports: shell candidate resolution plus PATH/environment capture utilities.
+
 napi-rs bridge for `packages/shared/src/shell.ts`.
 
 ## Functions

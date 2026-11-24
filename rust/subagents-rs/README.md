@@ -1,5 +1,7 @@
 # subagents-rs
 
+FILE: subagents.ts Purpose: Shared parsing helpers for subagent runtime payloads used by server ingestion and web UI. Exports: Payload decoders for receiver ids, receiver agents, agent states, and identity hints.
+
 napi-rs bridge for `packages/shared/src/subagents.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # browserautomationerrors-rs
 
+Browser automation errors.
+
 napi-rs bridge for `packages/shared/src/browserAutomationErrors.ts`.
 
 ## Functions

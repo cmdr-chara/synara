@@ -1,5 +1,7 @@
 # browserstatestore-rs
 
+Browser state store.
+
 napi-rs bridge for `apps/web/src/browserStateStore.ts`.
 
 ## Functions

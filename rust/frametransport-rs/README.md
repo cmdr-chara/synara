@@ -1,5 +1,10 @@
 # frametransport-rs
 
+Frame transport.
+
+`FrameTransport` and `makeFrameSink` stay in TypeScript: they are class /
+callback-shaped APIs that do not cross the bridge.
+
 napi-rs bridge for `packages/shared/src/frameTransport.ts`.
 
 ## Functions

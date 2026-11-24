@@ -1,5 +1,7 @@
 # identity-rs
 
+Identity.
+
 napi-rs bridge for `apps/api/src/identity/`.
 
 ## Functions

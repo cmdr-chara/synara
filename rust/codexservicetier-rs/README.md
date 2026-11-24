@@ -1,5 +1,7 @@
 # codexservicetier-rs
 
+Codex service tier.
+
 napi-rs bridge for `apps/server/src/codexServiceTier.ts`.
 
 ## Functions

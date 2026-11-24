@@ -1,5 +1,7 @@
 # browserusepipeserver-rs
 
+FILE: browserUsePipeServer.ts Purpose: Exposes the canonical high-level browser host over a private local RPC pipe. Layer: Desktop browser automation bridge
+
 napi-rs bridge for `apps/desktop/src/browserUsePipeServer.ts`.
 
 ## Functions

@@ -1,6 +1,8 @@
 # formatting-rs
 
-`packages/profile-ui/src/formatting.ts`., bridged with wasm-bindgen.
+Formatting.
+
+wasm-bindgen bridge for `packages/profile-ui/src/formatting.ts`.
 
 ## Functions
 

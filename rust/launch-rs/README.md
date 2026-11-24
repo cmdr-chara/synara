@@ -1,5 +1,7 @@
 # launch-rs
 
+Launches a source desktop build against an isolated data home and Electron profile. Never points at ~/.synara or ~/.synara-beta: the home must live under the bench root.
+
 napi-rs bridge for `benchmarks/desktop-perf/lib/launch.mjs`.
 
 ## Functions

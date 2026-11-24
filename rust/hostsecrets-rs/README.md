@@ -1,5 +1,7 @@
 # hostsecrets-rs
 
+FILE: hostSecrets.ts Purpose: The client-side cryptographic core of Host Secrets sync (ADR 0004, ADR 0015). Per-host configuration — SSH destination, launcher config, host-key verification policy — syncs across the owner's devices through the account service, which stores opaque bytes and can never read them.
+
 napi-rs bridge for `packages/shared/src/hostSecrets.ts`.
 
 ## Functions

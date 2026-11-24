@@ -1,5 +1,7 @@
 # desktopcustomtitlebar-rs
 
+FILE: desktopCustomTitleBar.ts Purpose: Persist the Windows/Linux custom title bar preference for Electron boot. Layer: Desktop main process Depends on: filesystem; preference must be readable before BrowserWindow creation.
+
 napi-rs bridge for `apps/desktop/src/desktopCustomTitleBar.ts`.
 
 ## Functions

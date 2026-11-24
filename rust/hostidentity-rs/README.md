@@ -1,5 +1,7 @@
 # hostidentity-rs
 
+Host identity.
+
 napi-rs bridge for `apps/server/src/hostIdentity/`.
 
 ## Functions

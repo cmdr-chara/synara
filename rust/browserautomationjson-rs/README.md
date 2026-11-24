@@ -1,6 +1,8 @@
 # browserautomationjson-rs
 
-`packages/contracts/src/browserAutomationJson.ts`., bridged with wasm-bindgen.
+Browser automation json.
+
+wasm-bindgen bridge for `packages/contracts/src/browserAutomationJson.ts`.
 
 ## Functions
 

@@ -1,5 +1,7 @@
 # automation-rs
 
+Automation.
+
 napi-rs bridge for `apps/server/src/automation/`.
 
 ## Functions

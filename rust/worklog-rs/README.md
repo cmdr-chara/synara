@@ -1,5 +1,7 @@
 # worklog-rs
 
+Work log.
+
 napi-rs bridge for `apps/web/src/workLog.ts`.
 
 ## Functions

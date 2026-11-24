@@ -1,5 +1,7 @@
 # projectcatalog-rs
 
+Project catalog.
+
 napi-rs bridge for `apps/web/src/lib/projectCatalog/`.
 
 ## Functions

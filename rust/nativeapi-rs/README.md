@@ -1,6 +1,6 @@
 # nativeapi-rs
 
-napi-rs bridge for `apps/web/src/nativeApi.ts`.
+Bridgeable exports of `apps/web/src/nativeApi.ts` — napi-rs bridge for `apps/web/src/nativeApi.ts`.
 
 ## Functions
 

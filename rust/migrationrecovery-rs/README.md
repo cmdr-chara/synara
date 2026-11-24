@@ -1,5 +1,7 @@
 # migrationrecovery-rs
 
+Migration recovery.
+
 napi-rs bridge for `packages/shared/src/migrationRecovery.ts`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # markdown-links-rs
 
+Markdown links.
+
 napi-rs bridge for `apps/web/src/markdown-links.ts`.
 
 ## Functions

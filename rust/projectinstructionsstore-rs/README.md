@@ -1,6 +1,6 @@
 # projectinstructionsstore-rs
 
-napi-rs bridge for `apps/web/src/projectInstructionsStore.ts`.
+Bridgeable exports of `apps/web/src/projectInstructionsStore.ts` — napi-rs bridge for `apps/web/src/projectInstructionsStore.ts`.
 
 ## Functions
 

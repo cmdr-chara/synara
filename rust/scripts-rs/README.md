@@ -1,5 +1,7 @@
 # scripts-rs
 
+Scripts.
+
 napi-rs bridge for `apps/marketing/scripts/`.
 
 ## Functions

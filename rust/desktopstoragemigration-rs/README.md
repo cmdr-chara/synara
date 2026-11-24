@@ -1,5 +1,7 @@
 # desktopstoragemigration-rs
 
+FILE: desktopStorageMigration.ts Purpose: Reads and acknowledges a validated browser-storage handoff from older desktop builds. Layer: Desktop main-process utility
+
 napi-rs bridge for `apps/desktop/src/desktopStorageMigration.ts`.
 
 ## Functions

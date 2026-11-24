@@ -1,5 +1,7 @@
 # theme-rs
 
+Theme.
+
 napi-rs bridge for `apps/web/src/theme/`.
 
 ## Functions

@@ -1,5 +1,7 @@
 # codexstderr-rs
 
+FILE: codexStderr.ts Purpose: Classify Codex text/JSON diagnostics consistently at ingestion and historical rendering. Layer: Shared runtime utility; no logging or process ownership.
+
 napi-rs bridge for `packages/shared/src/codexStderr.ts`.
 
 ## Functions

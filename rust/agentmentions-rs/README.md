@@ -1,5 +1,7 @@
 # agentmentions-rs
 
+Agent mentions.
+
 napi-rs bridge for `packages/shared/src/agentMentions.ts`.
 
 ## Functions

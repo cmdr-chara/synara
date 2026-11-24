@@ -1,6 +1,8 @@
 # browserautomationtoolcommon-rs
 
-`packages/contracts/src/browserAutomationToolCommon.ts`., bridged with wasm-bindgen.
+Browser automation tool common.
+
+wasm-bindgen bridge for `packages/contracts/src/browserAutomationToolCommon.ts`.
 
 ## Functions
 

@@ -1,5 +1,7 @@
 # computerinvocation-rs
 
+Computer invocation.
+
 napi-rs bridge for `packages/shared/src/computerInvocation.ts`.
 
 ## Functions

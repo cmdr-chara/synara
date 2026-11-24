@@ -1,5 +1,7 @@
 # codexprocessenv-rs
 
+FILE: codexProcessEnv.ts Purpose: Builds the exact environment used when Synara launches Codex subprocesses. Layer: Server runtime utility Exports: Codex process env builder and browser-plugin overlay helpers.
+
 napi-rs bridge for `apps/server/src/codexProcessEnv.ts`.
 
 ## Functions

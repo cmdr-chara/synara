@@ -1,5 +1,7 @@
 # codexgeneratedimages-rs
 
+FILE: codexGeneratedImages.ts Purpose: Normalizes Codex generated-image events into durable local-file references. Layer: Server provider utilities Exports: Codex image path, payload sanitization, and markdown helpers Depends on: node path/os, image MIME allowlist, provider runtime artifact contract
+
 napi-rs bridge for `apps/server/src/codexGeneratedImages.ts`.
 
 ## Functions

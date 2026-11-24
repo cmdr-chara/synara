@@ -1,5 +1,7 @@
 # updatestate-rs
 
+Owns updater admission and progress policy; package lanes must never replace one another.
+
 napi-rs bridge for `apps/desktop/src/updateState.ts`.
 
 ## Functions

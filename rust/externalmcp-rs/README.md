@@ -1,5 +1,7 @@
 # externalmcp-rs
 
+External mcp.
+
 napi-rs bridge for `apps/server/src/externalMcp/`.
 
 ## Functions

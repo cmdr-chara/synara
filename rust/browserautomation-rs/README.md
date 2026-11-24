@@ -1,5 +1,7 @@
 # browserautomation-rs
 
+Browser automation.
+
 napi-rs bridge for `apps/server/src/browserAutomation/`.
 
 ## Functions

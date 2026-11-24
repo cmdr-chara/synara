@@ -1,5 +1,7 @@
 # projectagent-rs
 
+FILE: projectAgent.ts Purpose: Path, graph, and context-budget helpers for the Project Coordinator domain. Layer: Shared domain helper (schema-only contracts live in @synara/contracts)
+
 napi-rs bridge for `packages/shared/src/projectAgent.ts`.
 
 ## Functions

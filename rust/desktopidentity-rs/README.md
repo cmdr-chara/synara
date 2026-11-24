@@ -1,5 +1,7 @@
 # desktopidentity-rs
 
+FILE: desktopIdentity.ts Purpose: Defines the canonical desktop application identity across packaging and runtime.
+
 napi-rs bridge for `packages/shared/src/desktopIdentity.ts`.
 
 ## Functions

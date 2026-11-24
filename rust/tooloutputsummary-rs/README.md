@@ -1,5 +1,7 @@
 # tooloutputsummary-rs
 
+FILE: toolOutputSummary.ts Purpose: Produces compact display summaries from provider tool rawOutput payloads. Layer: Shared runtime utility Exports: summarizeToolRawOutput, countTextLines, stripTrailingToolExitCode
+
 napi-rs bridge for `packages/shared/src/toolOutputSummary.ts`.
 
 ## Functions

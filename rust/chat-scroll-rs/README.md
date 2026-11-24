@@ -1,5 +1,7 @@
 # chat-scroll-rs
 
+Chat scroll.
+
 napi-rs bridge for `apps/web/src/chat-scroll.ts`.
 
 ## Functions

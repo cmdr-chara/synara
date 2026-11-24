@@ -1,5 +1,7 @@
 # diagnosticsprivacysql-rs
 
+Historical diagnostics use the same closed metadata before grouping, filtering or limits.
+
 napi-rs bridge for `apps/analytics/diagnosticsPrivacySql.ts`.
 
 ## Functions

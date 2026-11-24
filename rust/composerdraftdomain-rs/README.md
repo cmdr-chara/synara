@@ -1,5 +1,7 @@
 # composerdraftdomain-rs
 
+Composer draft domain.
+
 napi-rs bridge for `apps/web/src/composerDraftDomain.ts`.
 
 ## Functions

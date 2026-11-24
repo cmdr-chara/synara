@@ -1,5 +1,7 @@
 # keybindingeditor-rs
 
+FILE: keybindingEditor.ts Purpose: Model behind Settings → Keybindings: the rows it lists, what a recorded          shortcut would collide with, and the server edits each action sends. Layer: UI helper Depends on: the shortcut definitions, the keybinding matcher, and key capture.
+
 napi-rs bridge for `apps/web/src/keybindingEditor.ts`.
 
 ## Functions

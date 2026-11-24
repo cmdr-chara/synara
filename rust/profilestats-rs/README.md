@@ -1,5 +1,7 @@
 # profilestats-rs
 
+FILE: profileStats.ts Purpose: Compute Profile-page stats from Synara's local projection DB only. The share card never reads provider archives or cloud services for metrics.
+
 napi-rs bridge for `apps/server/src/profileStats.ts`.
 
 ## Functions

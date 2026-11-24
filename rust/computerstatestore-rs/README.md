@@ -1,5 +1,7 @@
 # computerstatestore-rs
 
+Computer state store.
+
 napi-rs bridge for `apps/web/src/computerStateStore.ts`.
 
 ## Functions

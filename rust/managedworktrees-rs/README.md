@@ -1,5 +1,7 @@
 # managedworktrees-rs
 
+Managed worktrees.
+
 napi-rs bridge for `apps/server/src/managedWorktrees.ts`.
 
 ## Functions

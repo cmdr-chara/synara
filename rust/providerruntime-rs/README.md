@@ -1,6 +1,8 @@
 # providerruntime-rs
 
-`packages/contracts/src/providerRuntime.ts`., bridged with wasm-bindgen.
+Provider runtime.
+
+wasm-bindgen bridge for `packages/contracts/src/providerRuntime.ts`.
 
 ## Functions
 

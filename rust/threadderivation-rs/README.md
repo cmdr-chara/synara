@@ -1,5 +1,7 @@
 # threadderivation-rs
 
+FILE: threadDerivation.ts Purpose: Rebuild stable Thread objects from normalized shell/detail slices. Exports: cached collection helpers and thread derivation for the web store hot path.
+
 napi-rs bridge for `apps/web/src/threadDerivation.ts`.
 
 ## Functions

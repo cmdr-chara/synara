@@ -1,5 +1,7 @@
 # codexturninput-rs
 
+Codex turn input.
+
 napi-rs bridge for `apps/server/src/codexTurnInput.ts`.
 
 ## Functions

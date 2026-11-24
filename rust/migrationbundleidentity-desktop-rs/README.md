@@ -1,5 +1,7 @@
 # migrationbundleidentity-desktop-rs
 
+Migrationbundleidentity desktop.
+
 napi-rs bridge for `apps/desktop/src/migrationBundleIdentity.ts`.
 
 ## Functions

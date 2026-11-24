@@ -1,5 +1,7 @@
 # windowstaskbaricon-rs
 
+FILE: windowsTaskbarIcon.ts Purpose: Bind a shell-visible ICO to the Windows taskbar and force Explorer to re-read it. Layer: Desktop-native preference logic
+
 napi-rs bridge for `apps/desktop/src/windowsTaskbarIcon.ts`.
 
 ## Functions

@@ -1,4 +1,6 @@
-# llms-full-rs
+# llmsfulltxt-rs
+
+Llms full.
 
 napi-rs bridge for `apps/marketing/src/app/llms-full.txt/`.
 

@@ -1,5 +1,7 @@
 # staticassets-rs
 
+Serving policy for the built web bundle (GET * static route): precompressed sidecar negotiation and cache headers. Sidecars (.br/.gz) are emitted at build time by apps/web's Vite precompress plugin — the server never compresses on the request path.
+
 napi-rs bridge for `apps/server/src/staticAssets.ts`.
 
 ## Functions

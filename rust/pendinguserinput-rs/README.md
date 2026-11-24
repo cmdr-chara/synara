@@ -1,5 +1,7 @@
 # pendinguserinput-rs
 
+FILE: pendingUserInput.ts Purpose: Normalize draft answers and progress for pending user input prompts. Layer: Web chat state utility Exports: Draft answer helpers and progress derivation used by ChatView/composer panels.
+
 napi-rs bridge for `apps/web/src/pendingUserInput.ts`.
 
 ## Functions

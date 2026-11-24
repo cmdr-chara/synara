@@ -1,5 +1,7 @@
 # recentviews-rs
 
+FILE: recentViews.logic.ts Purpose: Pure helpers for the Ctrl+Tab recent primary-view switcher. Layer: UI state logic Exports: recent view types plus MRU update, pruning, and display derivation helpers
+
 napi-rs bridge for `apps/web/src/recentViews.logic.ts`.
 
 ## Functions

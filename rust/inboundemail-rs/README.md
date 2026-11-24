@@ -1,4 +1,6 @@
-# inbound-email-rs
+# inboundemail-rs
+
+Inbound email.
 
 napi-rs bridge for `apps/marketing/src/app/api/inbound-email/`.
 

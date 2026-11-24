@@ -1,5 +1,7 @@
 # resumableupdatedownloadpolicy-rs
 
+FILE: resumableUpdateDownloadPolicy.ts Purpose: Defines the synchronous HTTP, retry, progress, and checksum policy for resumable updates. Layer: Desktop updater policy Depends on: URL and plain data only; no filesystem, socket, Electron, or updater lifecycle.
+
 napi-rs bridge for `apps/desktop/src/resumableUpdateDownloadPolicy.ts`.
 
 ## Functions

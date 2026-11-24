@@ -1,5 +1,7 @@
 # wsnativeapi-rs
 
+Ws native api.
+
 napi-rs bridge for `apps/web/src/wsNativeApi.ts`.
 
 ## Functions

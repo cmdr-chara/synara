@@ -1,5 +1,7 @@
 # runtimearch-rs
 
+Port of the desktop runtime-arch helpers.
+
 napi-rs bridge for `apps/desktop/src/runtimeArch.ts`.
 
 ## Functions

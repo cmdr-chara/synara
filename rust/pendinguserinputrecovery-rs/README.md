@@ -1,5 +1,7 @@
 # pendinguserinputrecovery-rs
 
+Pending user input recovery.
+
 napi-rs bridge for `apps/web/src/pendingUserInputRecovery.ts`.
 
 ## Functions

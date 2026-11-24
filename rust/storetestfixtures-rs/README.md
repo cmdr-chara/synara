@@ -1,5 +1,7 @@
 # storetestfixtures-rs
 
+FILE: storeTestFixtures.ts Purpose: Shared builders for store facade, projection, and event reducer tests. Exports: Minimal normalized-state and orchestration payload fixtures.
+
 napi-rs bridge for `apps/web/src/storeTestFixtures.ts`.
 
 ## Functions

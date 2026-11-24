@@ -1,6 +1,8 @@
 # api-rs
 
-`apps/analytics/src/api.ts`., bridged with wasm-bindgen.
+API.
+
+wasm-bindgen bridge for `apps/analytics/src/api.ts`.
 
 ## Functions
 

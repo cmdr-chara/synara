@@ -1,4 +1,6 @@
-# computer-use-fixtures-rs
+# computerusefixtures-rs
+
+Computer use fixtures.
 
 napi-rs bridge for `scripts/computer-use-fixtures/`.
 

@@ -1,5 +1,7 @@
 # keybindings-rs
 
+Keybindings.
+
 napi-rs bridge for `apps/web/src/keybindings.ts`.
 
 ## Functions

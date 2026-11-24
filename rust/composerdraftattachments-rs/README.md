@@ -1,5 +1,7 @@
 # composerdraftattachments-rs
 
+Composer draft attachments.
+
 napi-rs bridge for `apps/web/src/composerDraftAttachments.ts`.
 
 ## Functions

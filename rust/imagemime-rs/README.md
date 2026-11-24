@@ -1,5 +1,7 @@
 # imagemime-rs
 
+Image mime.
+
 napi-rs bridge for `apps/server/src/imageMime.ts`.
 
 ## Functions

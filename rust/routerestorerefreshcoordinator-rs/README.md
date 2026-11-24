@@ -1,5 +1,7 @@
 # routerestorerefreshcoordinator-rs
 
+Route restore refresh coordinator.
+
 napi-rs bridge for `apps/web/src/routeRestoreRefreshCoordinator.ts`.
 
 ## Functions

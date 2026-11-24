@@ -1,5 +1,7 @@
 # billing-rs
 
+Billing.
+
 napi-rs bridge for `apps/api/src/billing/`.
 
 ## Functions

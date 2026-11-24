@@ -1,5 +1,7 @@
 # cli-rs
 
+Cli.
+
 napi-rs bridge for `packages/shared/src/cli.ts`.
 
 ## Functions

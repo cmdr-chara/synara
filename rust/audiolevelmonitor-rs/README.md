@@ -1,5 +1,7 @@
 # audiolevelmonitor-rs
 
+Audio level monitor.
+
 napi-rs bridge for `apps/desktop/src/audioLevelMonitor.ts`.
 
 ## Functions

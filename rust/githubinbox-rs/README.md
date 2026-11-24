@@ -1,5 +1,7 @@
 # githubinbox-rs
 
+Github inbox.
+
 napi-rs bridge for `apps/server/src/githubInbox/`.
 
 ## Functions

@@ -809,6 +809,9 @@ pub struct Native {
     dev_cmd: Entity<InputState>,
     runtime_mode: &'static str,
     chats_collapsed: bool,
+    /// Project folders the user collapsed in the sidebar (upstream
+    /// toggleProject). Projects start expanded.
+    collapsed_projects: std::collections::HashSet<String>,
     view_settings: bool,
     settings_section: &'static str,
     view_inbox: bool,
@@ -1371,6 +1374,7 @@ impl Native {
                 }),
                 runtime_mode: "full-access",
                 chats_collapsed: true,
+                collapsed_projects: std::collections::HashSet::new(),
                 view_settings: false,
                 settings_section: "general",
                 view_inbox: false,
@@ -6593,7 +6597,7 @@ impl Render for Native {
                     std::cmp::Reverse(str_at(t, "createdAt").to_string()),
                 )
             });
-            let expanded = !kids.is_empty();
+            let expanded = !kids.is_empty() && !self.collapsed_projects.contains(&pid);
             let pinned_proj = get(project, "isPinned").as_bool().unwrap_or(false);
             // A project whose workspace carries a favicon (here: the synara
             // checkout) shows its logo in a hairline frame; the pin glyph wins
@@ -6646,7 +6650,7 @@ impl Render for Native {
                     div()
                         .text_size(px(10.))
                         .text_color(theme.muted_foreground)
-                        .child(if expanded { "\u{2228}" } else { "\u{2228}" }),
+                        .child(if expanded { "\u{2228}" } else { "\u{203a}" }),
                 );
             }
             row_head = row_head.child(div().flex_1());
@@ -6668,13 +6672,21 @@ impl Render for Native {
                 .rounded_md()
                 .px_2()
                 .child(row_head)
-                .on_click(cx.listener(|this, _ev, _w, cx| {
-                    // Upstream: clicking a project row selects it and shows
-                    // the project surface; it never opens the files browser.
+                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                    // Upstream toggleProject: the row click expands/collapses
+                    // the folder's thread list.
+                    if this.collapsed_projects.contains(&pid) {
+                        this.collapsed_projects.remove(&pid);
+                    } else {
+                        this.collapsed_projects.insert(pid.clone());
+                    }
                     this.view_files = false;
                     cx.notify();
                 }));
             sidebar = sidebar.child(proj_head);
+            if !expanded {
+                continue;
+            }
             for thread in &kids {
                 sidebar = sidebar.child(thread_row(
                     thread,

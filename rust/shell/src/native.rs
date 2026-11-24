@@ -12246,13 +12246,13 @@ impl Render for Native {
                         if let Some(p) = icon {
                             el = el.child(
                                 svg_icon(provider_icon(p))
-                                    .size(px(15.))
+                                    .size(px(19.))
                                     .text_color(theme.foreground),
                             );
                         }
                         el = el.child(
                             div()
-                                .text_size(px(15.))
+                                .text_size(px(19.))
                                 .when(*strong, |d| d.font_weight(FontWeight::MEDIUM))
                                 .text_color(match *tone {
                                     "good" => theme.success,
@@ -12312,14 +12312,14 @@ impl Render for Native {
                                         h_flex()
                                             .child(
                                                 div()
-                                                    .text_size(px(12.))
+                                                    .text_size(px(13.))
                                                     .text_color(theme.muted_foreground)
                                                     .child(label.to_string()),
                                             )
                                             .when(*is_now, |e| {
                                                 e.child(
                                                     div()
-                                                        .text_size(px(12.))
+                                                        .text_size(px(13.))
                                                         .text_color(theme.foreground)
                                                         .child(", now"),
                                                 )
@@ -12327,7 +12327,7 @@ impl Render for Native {
                                     )
                                     .child(
                                         div()
-                                            .text_size(px(12.))
+                                            .text_size(px(13.))
                                             .text_color(if *is_now {
                                                 theme.foreground
                                             } else {
@@ -12402,13 +12402,13 @@ impl Render for Native {
                         .gap_2()
                         .px(px(14.))
                         .py(px(12.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("Your best model was"))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Your best model was"))
                         .child(
                             h_flex().items_center().gap_2()
                                 .child(svg_icon(provider_icon(str_at(bm, "provider"))).size(px(18.)).text_color(theme.foreground))
-                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(str_at(bm, "model").to_string())),
+                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(str_at(bm, "model").to_string())),
                         )
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(detail))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(detail))
                         .into_any_element())
                     .flex_1(),
                 );
@@ -12431,13 +12431,13 @@ impl Render for Native {
                         .gap_2()
                         .px(px(14.))
                         .py(px(12.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("You worked most on"))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("You worked most on"))
                         .child(
                             h_flex().items_center().gap_2()
                                 .child(svg_icon(icons::FOLDER).size(px(18.)).text_color(theme.foreground))
-                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(str_at(pj, "title").to_string())),
+                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(str_at(pj, "title").to_string())),
                         )
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(detail))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(detail))
                         .into_any_element())
                     .flex_1(),
                 );
@@ -12464,9 +12464,9 @@ impl Render for Native {
                         .gap_2()
                         .px(px(14.))
                         .py(px(12.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("You used"))
-                        .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(tokens))))
-                        .child(div().text_size(px(12.)).text_color(if tone == "good" { theme.success } else { theme.muted_foreground }).child(detail))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("You used"))
+                        .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(tokens))))
+                        .child(div().text_size(px(13.)).text_color(if tone == "good" { theme.success } else { theme.muted_foreground }).child(detail))
                         .into_any_element())
                     .flex_1(),
                 );
@@ -12494,9 +12494,9 @@ impl Render for Native {
                         .gap_2()
                         .px(px(14.))
                         .py(px(12.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("Your agents worked for"))
-                        .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(fmt_dur_ms(work_ms)))
-                        .child(div().text_size(px(12.)).text_color(if tone == "bad" { theme.danger } else { theme.muted_foreground }).child(detail))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Your agents worked for"))
+                        .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(fmt_dur_ms(work_ms)))
+                        .child(div().text_size(px(13.)).text_color(if tone == "bad" { theme.danger } else { theme.muted_foreground }).child(detail))
                         .into_any_element())
                     .flex_1(),
                 );
@@ -12523,15 +12523,15 @@ impl Render for Native {
                         .gap_2()
                         .px(px(14.))
                         .py(px(12.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("Yesterday you used"))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Yesterday you used"))
                         .child(
                             h_flex().items_center().gap_2()
                                 .when_some(pm.map(|m| str_at(m, "provider").to_string()).filter(|s| !s.is_empty()), |e, p| {
                                     e.child(svg_icon(provider_icon(&p)).size(px(18.)).text_color(theme.foreground))
                                 })
-                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(prev_tokens)))),
+                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(prev_tokens)))),
                         )
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(detail))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(detail))
                         .into_any_element())
                     .flex_1(),
                 );
@@ -12564,11 +12564,11 @@ impl Render for Native {
                         .gap_2()
                         .px(px(14.))
                         .py(px(12.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(format!("Left on {provider}, {window}")))
+                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Left on {provider}, {window}")))
                         .child(
                             h_flex().items_center().gap_2()
                                 .child(svg_icon(provider_icon(&provider)).size(px(18.)).text_color(theme.foreground))
-                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(format!("{pct:.0}%"))),
+                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(format!("{pct:.0}%"))),
                         )
                         .child(
                             h_flex().items_center().gap_2()
@@ -12576,7 +12576,7 @@ impl Render for Native {
                                     div().w(px(56.)).h(px(4.)).rounded(px(2.)).bg(theme.muted)
                                         .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(2.)).bg(theme.success)),
                                 )
-                                .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(if resets.is_empty() { "Your tightest limit".to_string() } else { format!("Resets in {resets}") })),
+                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(if resets.is_empty() { "Your tightest limit".to_string() } else { format!("Resets in {resets}") })),
                         )
                         .into_any_element())
                     .flex_1(),

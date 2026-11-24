@@ -778,19 +778,25 @@ fn detail(payload: &Value) -> Result<Value, WsErr> {
     let repo = validate_project_repository(&project, &str_field(payload, "repository")?)?;
     let number = int_field(payload, "number")?;
     let cwd = project.workspace_root.clone();
-    let d = gh_json_v(
-        &[
-            "pr".into(),
-            "view".into(),
-            number.to_string(),
-            "--repo".into(),
-            selector(&repo),
-            "--json".into(),
-            DETAIL_FIELDS.into(),
-        ],
-        &cwd,
-        "Failed to load pull request",
-    )?;
+    let pr_view = |fields: &str| {
+        gh_json_v(
+            &[
+                "pr".into(),
+                "view".into(),
+                number.to_string(),
+                "--repo".into(),
+                selector(&repo),
+                "--json".into(),
+                fields.into(),
+            ],
+            &cwd,
+            "Failed to load pull request",
+        )
+    };
+    // `reviewRequests` pulls Team nodes which need `read:org`; tokens without it
+    // make the whole `gh pr view` fail. Retry with the org-scoped field dropped.
+    let d = pr_view(DETAIL_FIELDS)
+        .or_else(|_| pr_view(&DETAIL_FIELDS.replace(",reviewRequests", "")))?;
     let (owner, name) = repo.split_once('/').unwrap();
     let caps = read_merge_caps(&repo, &cwd)?;
     let (mut comments, incomplete) =
@@ -990,7 +996,6 @@ fn diff(payload: &Value) -> Result<Value, WsErr> {
         selector(&repo),
         "--color".into(),
         "never".into(),
-        "--patch".into(),
     ];
     let out = gh_run(&args, &cwd).map_err(gh_spawn)?;
     let patch = if out.code == 0 {

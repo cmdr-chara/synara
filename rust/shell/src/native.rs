@@ -463,6 +463,49 @@ fn is_latest_turn_settled(lt: &Value, session: &Value) -> bool {
     str_at(session, "orchestrationStatus") != "running" && str_at(session, "status") != "running"
 }
 
+/// Upstream deriveActiveTaskListState: the latest `turn.tasks.updated`
+/// snapshot wins — the current turn's non-empty list, else the newest
+/// unfinished prior-turn list. Empty snapshots clear the card.
+fn derive_active_task_list(thread_v: &Value) -> Option<Vec<(String, u8)>> {
+    let latest_turn_id = str_at(get(thread_v, "latestTurn"), "turnId").to_string();
+    let lists: Vec<(String, Vec<(String, u8)>)> = arr(thread_v, "activities")
+        .iter()
+        .filter(|a| str_at(a, "kind") == "turn.tasks.updated")
+        .filter_map(|a| {
+            let payload = get(a, "payload");
+            if !get(payload, "tasks").is_array() {
+                return None;
+            }
+            let tasks: Vec<(String, u8)> = arr(payload, "tasks")
+                .iter()
+                .filter_map(|t| {
+                    let task = str_at(t, "task").to_string();
+                    if task.is_empty() {
+                        return None;
+                    }
+                    let status = match str_at(t, "status") {
+                        "inProgress" => 0u8,
+                        "completed" => 2u8,
+                        _ => 1u8,
+                    };
+                    Some((task, status))
+                })
+                .collect();
+            Some((str_at(a, "turnId").to_string(), tasks))
+        })
+        .collect();
+    if !latest_turn_id.is_empty() {
+        if let Some((_, tasks)) = lists.iter().rev().find(|(t, _)| *t == latest_turn_id) {
+            return (!tasks.is_empty()).then(|| tasks.clone());
+        }
+    }
+    let (_, tasks) = lists.last()?;
+    if tasks.is_empty() || tasks.iter().all(|(_, s)| *s == 2) {
+        return None;
+    }
+    Some(tasks.clone())
+}
+
 /// Upstream isThreadActivelyWorking.
 fn thread_actively_working(t: &Value) -> bool {
     if get(t, "hasLiveTailWork").as_bool() == Some(true) {
@@ -14987,18 +15030,29 @@ impl Render for Native {
                 ),
             );
         }
-        // Upstream "Show debug task banner" flag: a local sample
-        // ActiveTaskList for UI testing (1 in-progress, 1 pending, 1 done).
-        // Rendered as ComposerActiveTaskListCard: a compact capsule
+        // Upstream ComposerActiveTaskListCard: a compact capsule
         // ("1/3 tasks") above the composer card that opens the task
-        // list panel on click.
-        if self.feature_flags[2] && has_thread {
-            let sample_tasks: [(&'static str, u8); 3] = [
-                ("Inspect banner layout without overlapping transcript text", 0),
-                ("Confirm compact task banner width", 1),
-                ("Verify sidebar task controls", 2),
-            ];
-            let completed = sample_tasks.iter().filter(|(_, s)| *s == 2).count();
+        // list panel on click. The "Show debug task banner" flag injects
+        // upstream's sample list; otherwise the list is derived from the
+        // thread's `turn.tasks.updated` activities while a turn is live.
+        let task_list: Option<Vec<(String, u8)>> = if self.feature_flags[2] && has_thread {
+            Some(vec![
+                (
+                    "Inspect banner layout without overlapping transcript text".to_string(),
+                    0,
+                ),
+                ("Confirm compact task banner width".to_string(), 1),
+                ("Verify sidebar task controls".to_string(), 2),
+            ])
+        } else if has_thread
+            && !is_latest_turn_settled(get(&thread_v, "latestTurn"), get(&thread_v, "session"))
+        {
+            derive_active_task_list(&thread_v)
+        } else {
+            None
+        };
+        if let Some(task_list) = task_list {
+            let completed = task_list.iter().filter(|(_, s)| *s == 2).count();
             if self.task_card_open {
                 // Popover card (upstream ActiveTaskListCard): header row with
                 // progress + the per-task status list.
@@ -15029,11 +15083,11 @@ impl Render for Native {
                                 .text_color(theme.muted_foreground)
                                 .child(format!(
                                     "{completed} out of {total} tasks completed",
-                                    total = sample_tasks.len()
+                                    total = task_list.len()
                                 )),
                         ),
                 );
-                for (task, status) in sample_tasks {
+                for (task, status) in task_list.iter() {
                     let (glyph, color) = match status {
                         0 => ("●", theme.accent),           // inProgress
                         1 => ("○", theme.muted_foreground), // pending
@@ -15054,12 +15108,12 @@ impl Render for Native {
                             .child(
                                 div()
                                     .text_size(px(12.))
-                                    .text_color(if status == 2 {
+                                    .text_color(if *status == 2 {
                                         theme.muted_foreground
                                     } else {
                                         theme.foreground
                                     })
-                                    .child(task),
+                                    .child(task.clone()),
                             ),
                     );
                 }
@@ -15091,7 +15145,7 @@ impl Render for Native {
                             div()
                                 .text_size(px(12.))
                                 .text_color(theme.foreground)
-                                .child(format!("{completed}/{} tasks", sample_tasks.len())),
+                                .child(format!("{completed}/{} tasks", task_list.len())),
                         ),
                 ),
             );

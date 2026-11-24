@@ -715,6 +715,43 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                             if let Err(e) = append_activity(&c, &tid, &t_id, "tool", kind_name, title, &update) { eprintln!("acp_runner: activity failed: {}", e.0); }
                         }
                     }
+                    "plan" => {
+                        // ACP plan snapshot → upstream `turn.tasks.updated`
+                        // activity ({tasks:[{task,status}]}); statuses map
+                        // pending/in_progress/completed → pending/inProgress/
+                        // completed. Snapshots are cumulative, one row per turn.
+                        if let Some(entries) =
+                            update.get("entries").and_then(Value::as_array)
+                        {
+                            let tasks: Vec<Value> = entries
+                                .iter()
+                                .filter_map(|e| {
+                                    let task = e
+                                        .get("content")
+                                        .and_then(Value::as_str)
+                                        .unwrap_or("")
+                                        .to_string();
+                                    if task.is_empty() {
+                                        return None;
+                                    }
+                                    let status = match e
+                                        .get("status")
+                                        .and_then(Value::as_str)
+                                        .unwrap_or("pending")
+                                    {
+                                        "in_progress" => "inProgress",
+                                        "completed" => "completed",
+                                        _ => "pending",
+                                    };
+                                    Some(json!({ "task": task, "status": status }))
+                                })
+                                .collect();
+                            let payload = json!({ "tasks": tasks });
+                            if let Ok(c) = open_state_rw() {
+                                if let Err(e) = append_activity(&c, &tid, &t_id, "info", "turn.tasks.updated", "Task list updated", &payload) { eprintln!("acp_runner: plan activity failed: {}", e.0); }
+                            }
+                        }
+                    }
                     "tool_call_update" => {
                         let status = update
                             .get("status")

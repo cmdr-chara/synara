@@ -1010,7 +1010,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     };
 
     let result = (|| -> Result<String, WsErr> {
-        rpc.call(
+        let initialize_result = rpc.call(
             "initialize",
             json!({
                 "protocolVersion": 1,
@@ -1021,12 +1021,32 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 "clientInfo": {"name": "synara", "version": "1.0.0"},
             }),
         )?;
+        let mcp_servers = if initialize_result
+            .pointer("/agentCapabilities/mcpCapabilities/http")
+            .and_then(Value::as_bool)
+            == Some(true)
+        {
+            json!([{
+                "type": "http",
+                "name": "synara",
+                "url": crate::agent_gateway_mcp::agent_gateway_url(),
+                "headers": [{
+                    "name": "Authorization",
+                    "value": format!(
+                        "Bearer {}",
+                        crate::agent_gateway_mcp::agent_gateway_token()
+                    ),
+                }],
+            }])
+        } else {
+            json!([])
+        };
 
         let mut mode_state = Value::Null;
         let session_id = if let Some(sid) = stored_session.as_deref() {
             match rpc.call(
                 "session/load",
-                json!({"sessionId": sid, "cwd": cwd, "mcpServers": []}),
+                json!({"sessionId": sid, "cwd": cwd, "mcpServers": mcp_servers}),
             ) {
                 Ok(res) => {
                     mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
@@ -1034,7 +1054,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 }
                 Err(_) => {
                     let res =
-                        rpc.call("session/new", json!({"cwd": cwd, "mcpServers": []}))?;
+                        rpc.call("session/new", json!({"cwd": cwd, "mcpServers": mcp_servers}))?;
                     mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
                     res.get("sessionId")
                         .and_then(Value::as_str)
@@ -1043,7 +1063,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 }
             }
         } else {
-            let res = rpc.call("session/new", json!({"cwd": cwd, "mcpServers": []}))?;
+            let res = rpc.call("session/new", json!({"cwd": cwd, "mcpServers": mcp_servers}))?;
             mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
             res.get("sessionId")
                 .and_then(Value::as_str)

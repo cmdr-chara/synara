@@ -162,19 +162,28 @@ func flatWalk(_ el: AXUIElement, path: [Int], walk: inout AxWalk,
     }
 }
 
+func normalizeExactLabel(_ s: String) -> String {
+    s.replacingOccurrences(of: "\u{00a0}", with: " ")
+        .replacingOccurrences(of: "\u{2007}", with: " ")
+        .replacingOccurrences(of: "\u{202f}", with: " ")
+}
+
 func roleMatches(_ have: String, _ want: String) -> Bool {
-    func norm(_ s: String) -> String {
-        var t = s.lowercased()
-        if t.hasPrefix("ax") { t = String(t.dropFirst(2)) }
-        return t.replacingOccurrences(of: " ", with: "")
-    }
-    return norm(have) == norm(want)
+    // Desktop roles are a fixed accessibility vocabulary. A near miss is a
+    // wrong target, not a spelling to forgive.
+    have == want
+}
+
+func exactLabelMatches(_ el: AXUIElement, _ want: String) -> Bool {
+    let wanted = normalizeExactLabel(want)
+    let cands = [axLabel(el), axValueString(el), axStr(el, kAXHelpAttribute)].compactMap { $0 }
+    return cands.contains { normalizeExactLabel($0) == wanted }
 }
 
 func labelMatches(_ el: AXUIElement, _ want: String) -> Bool {
+    let wanted = normalizeExactLabel(want).lowercased()
     let cands = [axLabel(el), axValueString(el), axStr(el, kAXHelpAttribute)].compactMap { $0 }
-    return cands.contains { $0.caseInsensitiveCompare(want) == .orderedSame }
-        || cands.contains { $0.lowercased().contains(want.lowercased()) }
+    return cands.contains { normalizeExactLabel($0).lowercased().contains(wanted) }
 }
 
 func axParseWindowId(_ s: String?) -> (pid: Int, wid: Int)? {
@@ -350,12 +359,26 @@ case "axaction":
     } else {
         let wantRole = a["role"] as? String
         let wantLabel = a["label"] as? String
-        let matches = flat.filter { item in
+        func baseMatch(_ item: (el: AXUIElement, path: [Int]), exactOnly: Bool) -> Bool {
             if let r = wantRole, !roleMatches(axStr(item.el, kAXRoleAttribute) ?? "", r) {
                 return false
             }
-            if let l = wantLabel, !labelMatches(item.el, l) { return false }
+            if let l = wantLabel {
+                return exactOnly ? exactLabelMatches(item.el, l) : labelMatches(item.el, l)
+            }
             return wantRole != nil || wantLabel != nil
+        }
+        var matches = flat.filter { baseMatch($0, exactOnly: true) }
+        if wantLabel != nil && matches.isEmpty {
+            // An exact label wins outright over a longer label that merely
+            // contains it; substring is only the fallback when nothing exact exists.
+            matches = flat.filter { baseMatch($0, exactOnly: false) }
+        }
+        if let ordinal = a["refOrdinal"] as? Int, wantLabel != nil {
+            // Digest ordinals refer to the exact listed identity, never to a
+            // substring sibling that happens to share a prefix.
+            matches = flat.filter { baseMatch($0, exactOnly: true) }
+            _ = ordinal
         }
         if let ref = a["ref"] as? Int {
             // ref indexes the preorder walk itself; it may also be filtered.

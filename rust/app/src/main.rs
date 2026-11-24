@@ -1,4 +1,5 @@
 mod account;
+mod agent_gateway_mcp;
 mod acp_runner;
 mod device;
 mod editor;
@@ -58,6 +59,7 @@ async fn main() {
     let app = units::router()
         .merge(native_ws::router())
         .merge(ws_relay::router())
+        .merge(agent_gateway_mcp::router())
         .route("/__tap_client", axum::routing::post(original::tap_client))
         .with_state(original.clone());
     let port = std::env::var("PORT")

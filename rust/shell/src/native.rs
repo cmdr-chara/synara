@@ -971,6 +971,12 @@ pub struct Native {
     // show-debug-task-banner]; sidebar footer popup, dev-only surface.
     feature_flags: [bool; 3],
     flags_menu_open: bool,
+    /// Home-landing "Work in a project" picker (upstream ProjectPicker):
+    /// popover open state, the project the next thread draft targets, and the
+    /// popover search input (created lazily on open).
+    project_picker_open: bool,
+    landing_project_id: Option<String>,
+    project_picker_input: Option<Entity<InputState>>,
     // Upstream PullRequestThreadDialog (checkout mode): resolve a GitHub PR
     // reference, preview it, then check it out into a new thread.
     pr_dialog_open: bool,
@@ -2204,6 +2210,9 @@ impl Native {
                 coachmarks_seen: std::collections::HashSet::new(),
                 feature_flags: [false; 3],
                 flags_menu_open: false,
+                project_picker_open: false,
+                landing_project_id: None,
+                project_picker_input: None,
                 pr_dialog_open: false,
                 pr_dialog_input: None,
                 pr_resolved: None,
@@ -8911,11 +8920,16 @@ impl Native {
         self.sending = true;
         self.composer.update(cx, |s, cx| s.clean(window, cx));
         let selected = self.selected_thread.clone();
-        let project_id = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
-            .first()
-            .and_then(|p| p.get("id"))
-            .and_then(Value::as_str)
-            .map(str::to_owned);
+        let project_id = self
+            .landing_project_id
+            .clone()
+            .or_else(|| {
+                arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                    .first()
+                    .and_then(|p| p.get("id"))
+                    .and_then(Value::as_str)
+                    .map(str::to_owned)
+            });
         let client = self.client.clone();
         let mode = self.runtime_mode;
         let imode = self.interaction_mode;
@@ -9960,7 +9974,9 @@ impl Render for Native {
             )
             .is_empty();
         let landing_title: Option<String> = if self.selected_thread.is_none() {
-            Some("What should we do in this folder?".to_string())
+            // Home scope: upstream global copy; project drafts use the
+            // folder-specific variant below.
+            Some("What should we work on?".to_string())
         } else if thread_msgs_empty {
             let tid = self.selected_thread.as_deref().unwrap_or("");
             let snap = self.snapshot.as_ref().unwrap_or(&Value::Null);
@@ -12061,6 +12077,197 @@ impl Render for Native {
                 );
             }
             composer_col = composer_col.child(panel);
+        }
+        // Upstream empty-landing controls tray: on the home landing a row of
+        // unfilled chips floats directly above the composer, led by the
+        // ProjectPicker trigger ("Work in a project" / the chosen folder).
+        if !in_thread {
+            if self.project_picker_open {
+                if self.project_picker_input.is_none() {
+                    let input = cx.new(|cx| {
+                        InputState::new(window, cx).placeholder("Search projects")
+                    });
+                    self.project_picker_input = Some(input);
+                }
+                let query = self
+                    .project_picker_input
+                    .as_ref()
+                    .map(|i| i.read(cx).value().to_string().to_lowercase())
+                    .unwrap_or_default();
+                let mut card = v_flex()
+                    .w(px(280.))
+                    .max_h(px(280.))
+                    .overflow_y_scrollbar()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded(px(12.))
+                    .bg(popover_bg)
+                    .shadow_md()
+                    .py_1()
+                    .mb(px(4.));
+                if let Some(input) = self.project_picker_input.clone() {
+                    card = card.child(
+                        div().px_2().py_1().child(Input::new(&input).appearance(false)),
+                    );
+                }
+                if self.landing_project_id.is_some() {
+                    card = card.child(
+                        div()
+                            .id("project-picker-reset")
+                            .mx_1()
+                            .px_2()
+                            .py(px(6.))
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|s| s.bg(theme.muted))
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(|this, _e, _w, cx| {
+                                    this.landing_project_id = None;
+                                    this.project_picker_open = false;
+                                    cx.notify();
+                                }),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.foreground)
+                                    .child("Don't work in a project"),
+                            ),
+                    );
+                }
+                for p in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects") {
+                    // Upstream activeFolderOptions: ordinary projects only.
+                    if str_at(p, "kind") != "project" {
+                        continue;
+                    }
+                    let pid = str_at(p, "id").to_string();
+                    if pid.is_empty() {
+                        continue;
+                    }
+                    let cwd = str_at(p, "cwd").to_string();
+                    let folder = cwd
+                        .rsplit('/')
+                        .find(|s| !s.is_empty())
+                        .map(str::to_owned)
+                        .or_else(|| {
+                            let t = str_at(p, "folderName").to_string();
+                            if t.is_empty() { None } else { Some(t) }
+                        })
+                        .unwrap_or_else(|| str_at(p, "title").to_string());
+                    let local = str_at(p, "localName").to_string();
+                    let primary = if local.is_empty() { folder.clone() } else { local };
+                    if !query.is_empty()
+                        && !primary.to_lowercase().contains(query.as_str())
+                        && !folder.to_lowercase().contains(query.as_str())
+                    {
+                        continue;
+                    }
+                    let selected = self.landing_project_id.as_deref() == Some(pid.as_str());
+                    card = card.child(
+                        div()
+                            .id(SharedString::from(format!("pp-{pid}")))
+                            .mx_1()
+                            .px_2()
+                            .py(px(6.))
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|s| s.bg(theme.muted))
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(move |this, _e, _w, cx| {
+                                    this.landing_project_id = Some(pid.clone());
+                                    this.project_picker_open = false;
+                                    cx.notify();
+                                }),
+                            )
+                            .child(
+                                h_flex()
+                                    .gap_2()
+                                    .items_center()
+                                    .child(
+                                        div()
+                                            .text_size(px(12.))
+                                            .text_color(theme.muted_foreground)
+                                            .child("\u{1f4c1}"),
+                                    )
+                                    .child(
+                                        div()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .text_size(px(12.))
+                                            .text_color(theme.foreground)
+                                            .child(primary),
+                                    )
+                                    .when(selected, |d| {
+                                        d.child(
+                                            div()
+                                                .text_size(px(12.))
+                                                .text_color(theme.accent)
+                                                .child("\u{2713}"),
+                                        )
+                                    }),
+                            ),
+                    );
+                }
+                composer_col = composer_col.child(card);
+            }
+            let chip_label = self
+                .landing_project_id
+                .as_ref()
+                .and_then(|pid| {
+                    arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                        .iter()
+                        .find(|p| str_at(p, "id") == pid.as_str())
+                        .map(|p| {
+                            let cwd = str_at(p, "cwd").to_string();
+                            let local = str_at(p, "localName").to_string();
+                            if !local.is_empty() {
+                                local
+                            } else {
+                                cwd.rsplit('/')
+                                    .find(|s| !s.is_empty())
+                                    .map(str::to_owned)
+                                    .unwrap_or_else(|| str_at(p, "title").to_string())
+                            }
+                        })
+                })
+                .unwrap_or_else(|| "Work in a project".to_string());
+            composer_col = composer_col.child(
+                h_flex().w_full().items_center().pb(px(4.)).child(
+                    div()
+                        .id("landing-project-picker")
+                        .px_2()
+                        .py(px(4.))
+                        .rounded(px(999.))
+                        .cursor_pointer()
+                        .hover(|s| s.bg(theme.muted))
+                        .on_mouse_down(
+                            MouseButton::Left,
+                            cx.listener(|this, _e, _w, cx| {
+                                this.project_picker_open = !this.project_picker_open;
+                                cx.notify();
+                            }),
+                        )
+                        .child(
+                            h_flex()
+                                .gap_1()
+                                .items_center()
+                                .child(
+                                    div()
+                                        .text_size(px(11.))
+                                        .text_color(theme.muted_foreground)
+                                        .child("\u{1f4c1}"),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(12.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(chip_label),
+                                ),
+                        ),
+                ),
+            );
         }
         composer_col = composer_col.child(composer_card);
         if row_composer {

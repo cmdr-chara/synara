@@ -2,18 +2,73 @@
 
 The required check remains **Format, Lint, Typecheck, Test, Browser Test, Build**.
 It aggregates results only. Static checks start independently. Normal code
-changes run typechecking, five unit partitions, six stable browser partitions,
-desktop build, native Windows regression and migration lineage. Docs-only
-detection and nightly geometry ownership are unchanged.
+changes run typechecking, five unit partitions, nine stable browser jobs,
+desktop build, native Windows regression and migration lineage. Nightly geometry
+ownership is unchanged.
 
-The PR change detector sends its inline filter to `dorny/paths-filter`,
-which reads changed files from the GitHub API. Pushes retain a Git checkout
-for commit comparisons. Across 12 archived hosted runs, the PR checkout step
-took 4–10 s with a median of 7.5 s. A local replay of the action verified
-docs-only changes, code changes, renames, API failure, and push detection.
-The combined hosted trial completed change detection in 3 s with checkout
-skipped. [Filter implementation](https://github.com/dorny/paths-filter/blob/0e4a8c6effa4802afeda77dc8d303f8176d7dfad/src/main.ts#L69),
-[Hosted trial](https://github.com/Emanuele-web04/synara/actions/runs/44307004109)
+No lane waits on another. Each heavy lane runs
+`.github/scripts/detect-code-changes.mjs` right after checkout and skips its
+remaining steps on a docs-only change. The script lists the pull request's files
+(or the pushed commit range) through the GitHub API and applies the same
+code-free rules as before: Markdown/MDX, the root `docs/` tree, marketing content
+and images under `.github/`. A renamed file counts under both names. An API
+error, an empty or possibly truncated list, a forced or first push and any other
+event run every lane. The gate requires every lane to succeed and to report the
+same decision.
+
+The separate `Detect code changes` job this replaces held every heavy lane back
+until it had been scheduled and finished. In the 59 first-attempt runs on the
+current workflow (November 18–21) the heavy lanes were created 13 s after the run
+at the median and 58 s at p95. `Static Checks (fast)`, which never waited, was
+created after 1 s and 29 s.
+
+## Job budgets
+
+Every execution lane records its start right after checkout and ends with
+`.github/scripts/job-budget.mjs`, which fails the job when it took longer than
+its budget. Only a job that passed everything else reaches that step, so a
+budget failure always means "green but too slow". `timeout-minutes` sits one to
+four minutes above the budget and only catches a hang.
+
+The initial budgets use 58 runs from November 18–21 before the browser
+lanes were redistributed (successful jobs): the larger of 1.25 × p95 and 1.1 × the slowest
+observed job, rounded up to 15 s. They hold today's speed; they are not the
+targets. Lower a budget in the same change that makes its job faster. Raise one
+only with a new measurement from `ci-audit.mjs`.
+
+```text
+Job                           p50   p95   max   Budget   Target
+Static Checks (fast)           42    50    58       75
+Static Checks (typecheck)      88    99   106      135
+Unit Tests (core)             148   182   193      240       35
+Unit Tests (web)              147   184   191      240       35
+Unit Tests (server, each)     134   164   174      210       35
+Browser (chat-follow)         135   226   253      285       35
+Browser (chat-projects)       175   250   267      315       35
+Browser (chat-workflows)      174   258   356      405       35
+Browser (components, each)    178   261   288      330       35
+Desktop Build                 120   196   254      285       35
+Windows Process Regression    104   150   171      195       35
+```
+
+The nine-lane browser matrix keeps the ceilings for the matching lanes.
+The mixed lane inherits the workflow ceiling because it runs workflow and
+project slices, and all five component lanes share the component ceiling.
+Seven successful runs with the nine-lane matrix, including
+[main after #2252](https://github.com/Emanuele-web04/synara/actions/runs/44955553345),
+had post-checkout maxima of 133 s for follow, 111 s for projects, 134 s for
+workflows, 263 s for mixed and 207 s across the component lanes.
+
+The clock starts after checkout because a clone can stall on GitHub's side: 2 of
+2,314 checkout steps in the November 17–21 window took 45 s or more, and one in
+this change's own [first run](https://github.com/Emanuele-web04/synara/actions/runs/44937536474)
+took 161 s with 119 s of tests behind it. The job timeout still bounds a stalled
+clone.
+
+A lane that misses its exact `node_modules` archive (a lockfile or install-input
+change) reinstalls from scratch. Setup marks that run `CI_COLD_CACHE`, and the
+budget step reports the time without failing: the run measures the install, not
+the lane. A missing clock or budget value fails the job.
 
 After workspace setup and CI contract validation, `static-fast` uses GitHub
 Actions' native `parallel` group for identity, Windows boundary, formatting,
@@ -401,6 +456,40 @@ and workflows 55.72 s and 44.36 s. The slowest ChatView lane fell from
 quarantined cases still run in the geometry lane. GitHub schedules six
 browser jobs. The final layout has yet to run on hosted Linux.
 
+### Nine browser jobs
+
+The six browser jobs were the slowest lanes of every run: 170–178 s at the
+median in the 58 most recent runs, against 147–148 s for the next lanes. In
+[run 44935499084](https://github.com/Emanuele-web04/synara/actions/runs/44935499084)
+the twelve browser processes took 77–167 s each. A component process spent
+47–87 s on per-file module loading and 51–65 s in tests for about 42 files. A
+ChatView process spent 60–101 s in tests.
+
+The browser lane is now nine jobs of two processes each. The component files run
+as ten native Vitest shards on five runners instead of six shards on three. The six-shard pins are gone because they were
+measured for that layout. In the first two runs of the new layout shard 9/10
+took 109–110 s beside 51–52 s for 10/10: native placement puts
+`EventRouter.browser.tsx` (40 s of tests) on 9. Five files now move from 9 to
+10, which evens the estimated load of the pair at about 72 s each. ChatView
+keeps its three projects and runs as eight processes instead of six.
+
+Each ChatView project is split by the length of the full test name modulo its
+slice count (`VITEST_BROWSER_CHAT_SLICE=2/3`), replacing the keyword pairs. Every
+name has exactly one remainder, so the slices of a project are complete and
+disjoint by construction and a new case needs no keyword. With the per-test
+times of that run the slices hold 56 and 71 s of tests for `chat-follow`,
+62, 50 and 56 s for `chat-projects` and 80, 50 and 56 s for `chat-workflows`,
+against 60–101 s before. `scripts/browser-ci-partitions.test.ts` checks every
+example case against exactly one process and rejects a malformed slice; the CI
+contract test checks that the matrix runs each slice and each shard once.
+
+A run now needs 18 runners at once (nine browser jobs and nine other lanes) of
+the account's 20, up from 15. Two overlapping runs already queued before; they
+queue for longer now. The first three ChatView jobs and the first two component
+jobs keep the compiler archive names main already saves. The other four jobs
+borrow the component donor archive on a pull request and seed their own on
+main.
+
 ### Desktop lifecycle smoke during the build
 
 The lifecycle smoke bundles its own fixture. The Desktop Build job verifies it
@@ -526,6 +615,116 @@ workers, against 37.8 s for the single file and 44.7 s for both files on one
 worker. ChatView's own compile sets the floor. Hosted, the guard took 123 s
 and 95 s with two workers in runs 44383201899 and 44384792991, and Core took
 170 s and 146 s.
+
+### Hot-path compiler event cache
+
+A CPU profile of the single `ChatView.tsx` compile on the Mac mini spent
+about 92% of its time inside React Compiler's `inferMutationAliasingEffects`
+fixed-point pass (`merge` and `clone` of its abstract state), plus GC. Parsing,
+code generation and the event logger were each under 2%, and skipping code
+generation (`code: false`) did not change the time. The guard already passes
+the same parser options as the production build, so there is nothing avoidable
+on the harness side; the compiler itself was left unpatched.
+
+The guard's result is a pure function of the module's bytes and the
+toolchain, so the Core lane now replays it for unchanged modules.
+`apps/web/src/test/compilerEventCache.ts` stores the events the guard reads
+(kind, function name, bailout reason and description, PipelineError text),
+keyed by:
+
+- the transform cache's fingerprint (`compiler-cache-key.ts`: Node version,
+  normalized lockfile, patches, compiler plugin definition and its Vite adapter),
+- the three harness files,
+- the installed `babel-plugin-react-compiler` and `@babel/core` versions and
+  entry bytes,
+- `BABEL_ENV` and `NODE_ENV`,
+- the module's absolute path and exact source.
+
+A fresh compile and a replay both pass through the same projection and JSON
+round trip, so a hit returns exactly what the compile it recorded returned.
+The cache holds compile results, not verdicts: a recorded bailout fails the
+guard again. An entry whose stored key differs from its file name, whose
+format is unknown, or whose events do not have the expected types is
+recompiled and rewritten. Without `SYNARA_WEB_TRANSFORM_CACHE_DIR` (local runs,
+Web Unit) every call compiles. `compilerEventCache.test.ts` covers edits,
+plugin version and code changes, malformed entries, and real compiler events.
+
+The Core lane owns the `unit-core-compiler` archive under the existing
+ownership rules: pull requests restore the newest matching archive and seed it
+only on a miss, and pushes to `main` save one entry per commit.
+
+Mac mini, both guard files, `--maxWorkers=2`:
+
+```text
+State                                    Wall (s)   User CPU (s)
+No cache directory                         22.60        39.03
+Empty cache (compiles, writes 49 entries)  22.63        38.10
+Warm cache                                  0.66         1.00
+```
+
+With the cache warm, adding a default value to a destructured parameter in
+`chat/useChatWorkLog.ts` failed the guard on that run and the next one
+(`AssignmentPattern`). Restoring the file passed from the cache. The 49 entries
+take 196 KB. A pull request that edits `ChatView.tsx` still compiles it for
+real and keeps the old critical path for that step.
+
+### Cua host test teardown
+
+`apps/desktop/src/cuaDriverHost.test.ts` waits on real child processes, and
+its fake driver models a 30 ms cleanup acknowledgement and a 150 ms graceful
+exit. Every test paid both again in `afterEach` (about 190 ms each), after its
+assertions had run. The fixture now writes a teardown flag before
+`host.dispose()`, and from then on the fake driver answers and exits without
+those delays. Dispose still takes the same cancel, acknowledgement and exit
+path, and a dispose error still fails the test. Test bodies keep every modeled
+delay, including the exit-before-replacement ordering checks.
+
+Mac mini, same 157 cases: the file took 68.4 s and 51.5 s (three runs:
+51.60 / 51.49 / 51.61 s), and the whole Desktop suite 72.7 s and 49.7 s (1,655
+passed, 6 skipped both times). The remaining local per-test time is mostly
+macOS's first-exec check of each freshly written fake driver (about 0.2 s,
+measured with `process.uptime()` in the child), which hosted Linux does not
+have. `browserVault.test.ts` deliberately uses the production scrypt cost and
+is left as it is.
+
+### Web Unit pre-bundles Effect and contracts
+
+Each Web Unit test file used to evaluate Effect and `@synara/contracts`
+module by module. The `web` and `web-local-time` projects now load both from
+a Vite optimizer bundle built once per run (`deps.optimizer.ssr`). The
+`web-compiler` project in the Core lane is unchanged.
+`apps/web/scripts/unit-test-deps.ts` builds the include list on each run from
+the contracts `exports` map and every `effect` or `effect/…` path imported
+under `apps/web`, `packages/shared` and `packages/profile-ui`.
+
+A module in the bundle must not also load from source, because a second
+copy keeps separate module state. The guard plugin fails the importing test
+file when an `effect`, `@effect/*` or `@synara/contracts` import would
+resolve to source beside the bundle. It also drops Vite's `?v=` query from
+bundle entries. Without that, `@synara/contracts/uiLocale` loaded once under
+the query URL and once more through the bundled index, which gave two
+different `UI_LOCALES` arrays. `scripts/unit-test-deps.test.ts` covers both
+failures. With the plugin removed, its three guard cases fail.
+
+Mac mini timings used 4 workers, the CI config and the two projects. Each
+row compares runs with the same shuffle seed:
+
+| Shuffle seed    |  Before |   After | Vitest import sum |
+| --------------- | ------: | ------: | ----------------: |
+| `3113`          | 39.49 s | 28.45 s |   98.6 s → 66.1 s |
+| `7301`          | 38.47 s | 28.58 s |   98.0 s → 65.4 s |
+| `1795008673311` | 36.44 s | 27.43 s |   93.0 s → 63.2 s |
+
+For each seed, all 6,279 previous cases matched by name, outcome and
+multiplicity (6,271 passed, 8 skipped). The 7 new guard cases also passed.
+
+`force: true` rebuilds the bundle on every run, because Vite's optimizer hash
+does not cover linked workspace source and could otherwise serve stale
+contracts. The two project bundles build at the same time in 83–90 ms each.
+Scanning for the include list takes 53–67 ms. Under seed `3113`, two runs that
+reused the bundle took 27.51 s and 27.31 s, and two forced runs took 27.58 s
+and 28.06 s. That difference is within run-to-run noise, so the measured
+saving is net of the rebuild. Hosted timing is unverified.
 
 ## November 2026 critical-path rebalance
 
@@ -1197,6 +1396,50 @@ Uploads took 23.1 s and 25.5 s, compared with 23.8 s and 22.4 s. Both macOS
 legs passed and the unrelated Windows startup smoke stalled, so the run
 did not measure a complete release.
 
+## November 21 audit: where a run's time goes
+
+`node .github/scripts/ci-audit.mjs` reads the most recent `ci.yml` runs through
+`gh` and splits every job into blocked (run created to job created), waiting
+(job created to started), setup (checkout, workspace, caches, browser runtime;
+overlapping background steps count once) and running (the rest of the job).
+`--runs=N` sets the window, `--steps` adds per-step times and `--json` prints
+the raw result. Rerun it before and after any CI change instead of reusing the
+tables in this file.
+
+The last 150 runs (November 17–21), seconds at p50 / p95:
+
+```text
+Job                                                     n     Blocked     Waiting       Setup     Running       Total
+Browser Tests (chat-workflows 1/1)                    130    15 / 166     2 / 158     33 / 62   226 / 418   263 / 460
+Browser Tests (components 3/3)                        132    15 / 165     2 / 193     35 / 61   203 / 371   242 / 409
+Browser Tests (components 1/3)                        132    15 / 165     2 / 148     34 / 59   200 / 287   234 / 338
+Browser Tests (components 2/3)                        131    15 / 166     3 / 197     34 / 60   180 / 542   216 / 587
+Browser Tests (chat-projects 1/1)                     131    15 / 166     2 / 151     35 / 59   172 / 267   206 / 306
+Unit Tests (web)                                      133    15 / 165     2 / 174     30 / 50   163 / 262   195 / 292
+Desktop Build                                         135    15 / 165     2 / 116     43 / 65   140 / 203   186 / 252
+Browser Tests (chat-follow 1/1)                       134    15 / 165     2 / 127     35 / 59   113 / 230   160 / 271
+Unit Tests (server 2/3)                               136    15 / 164     2 / 184     33 / 49    97 / 179   139 / 222
+Unit Tests (server 1/3)                               136    15 / 164     2 / 155     34 / 49    95 / 137   135 / 180
+Unit Tests (server 3/3)                               136    15 / 164     2 / 158     35 / 49    91 / 137   132 / 170
+Unit Tests (core)                                     136    15 / 164     3 / 163     37 / 50    73 / 133   108 / 171
+Windows Process Regression                            138    15 / 164      2 / 34     57 / 80     46 / 63   103 / 138
+Static Checks (typecheck)                             138    15 / 164      2 / 82     39 / 59     38 / 58     84 / 96
+Static Checks (fast)                                  140      1 / 44      2 / 46     23 / 33     18 / 25     42 / 52
+Migration Lineage                                      76    17 / 178     3 / 227     17 / 23     14 / 18     30 / 38
+Detect code changes                                   139      1 / 45      2 / 33      7 / 13       4 / 8     11 / 17
+Format, Lint, Typecheck, Test, Browser Test, Build    142   313 / 836      2 / 29       0 / 1       4 / 6       4 / 6
+```
+
+A successful pull request run took 269 s at the median and 754 s at p95; a
+successful run used 2,317 runner-seconds at the median. The window spans three
+workflow shapes. The 60 newest runs took 217 s and 303 s for pull requests and
+2,021 runner-seconds.
+
+Running is the largest bucket in every lane above `Static Checks`: 113–226 s at
+the median in the browser lanes against 33–35 s of setup and 2 s of waiting.
+Waiting is 2–3 s at the median in every lane; its p95 comes from overlapping
+runs reaching the account's 20 concurrent jobs, as in the November 16 audit.
+
 ## Rejected experiments and external-service limits
 
 Intra-runner component `fileParallelism` with four workers failed in all three
@@ -1341,3 +1584,28 @@ or linking backend, so the 101.42- and 223.63-second samples do not isolate copy
 as their cause. Fresh native Windows checks and installation timing are recorded
 in the PR verification; a same-runner paired comparison is needed to attribute a
 repeatable percentage to cache placement alone.
+
+### Independent Cua provisioning during desktop packaging
+
+In v1.6.6 the shared Cua preparation matrix delayed every installer. The
+Apple Silicon job was cancelled after 15 minutes without a runner, and even
+the completed Linux preparation jobs could not proceed to packaging. The
+release now provisions Cua inside each macOS or Linux packaging job after
+portable outputs and any required icon catalog are ready. This removes a
+runner allocation and the same-run artifact transfer per platform. The
+separate native-only workflow stage still supports targeted qualification
+and benchmarks. Publication still requires all applicable native jobs and
+the full quality and server test gates.
+
+The packaging change in #2288 also invalidated Linux's Cua cache when only
+macOS symbol stripping changed. Future edits to the macOS strip script affect
+only the macOS key. The refactor changes shared provisioning code once, so it
+requires a fresh exact cache for each target before it has warm-run timings.
+
+Build-only dispatches use a separate concurrency group from publication.
+Tag-triggered and manual publication continue to share one serialized queue.
+
+The web compiler cache tracks the compiler plugin and its adapter separately
+from the rest of the Vite configuration. Packaging and bundling edits can
+reuse compiled modules when the compiler input bytes, module identity,
+toolchain and mode still match.

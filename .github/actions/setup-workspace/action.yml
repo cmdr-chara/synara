@@ -83,6 +83,13 @@ runs:
           scripts/node_modules
         key: ${{ runner.os }}-${{ runner.arch }}-bun-modules-v3-electron-false-${{ inputs.scope != 'full' && format('{0}-', inputs.scope) || '' }}${{ steps.modules-key.outputs.fingerprint }}
 
+    # A lane that rebuilds its dependency archive measures the install, so its
+    # job budget is reported without being enforced (.github/scripts/job-budget.mjs).
+    - name: Mark cold dependency cache
+      if: ${{ steps.modules.outcome == 'success' && steps.modules.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: echo "CI_COLD_CACHE=node_modules" >> "$GITHUB_ENV"
+
     # Tests and typechecks remain cache:false. OS/architecture boundaries prevent
     # native build products from crossing platforms. Browser/Windows/static jobs
     # do not consume Turbo outputs and must not restore or save this archive.
@@ -112,10 +119,11 @@ runs:
           ${{ runner.os }}-${{ runner.arch }}-turbo-v2-${{ hashFiles('bun.lock') }}-${{ github.job }}-${{ strategy.job-index || 0 }}-
           ${{ runner.os }}-${{ runner.arch }}-turbo-v2-${{ hashFiles('bun.lock') }}-
 
-    # Browser tests and Desktop CI use separate cache namespaces.
-    # apps/web/scripts/transform-cache.ts keys each result by
-    # the exact module source, so an archive only ever supplies output for
-    # unchanged modules; a changed module is always recompiled. The key prefix
+    # Browser tests, Desktop CI and the Core unit lane use separate cache
+    # namespaces. apps/web/scripts/transform-cache.ts (and, for the Core
+    # lane's compiler guard, apps/web/src/test/compilerEventCache.ts) keys each
+    # result by the exact module source, so an archive only ever supplies output
+    # for unchanged modules; a changed module is always recompiled. The key prefix
     # hashes the dependency graph, toolchain, config and patches. Workspace
     # release-version metadata does not change the graph. Pull requests
     # restore the newest accessible archive for their lane and seed that lane

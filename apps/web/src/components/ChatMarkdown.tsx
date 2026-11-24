@@ -20,7 +20,6 @@ import {
 } from "@synara/contracts";
 import { isLocalAbsolutePath } from "@synara/shared/path";
 import type { ChatAttachment } from "~/types";
-import "katex/dist/katex.min.css";
 import { matchWikiLinkAt, remarkWikiLinks } from "../lib/remarkWikiLinks";
 import { remarkGithubAlerts, type GithubAlertKind } from "../lib/remarkGithubAlerts";
 import { remarkHtmlBreaks } from "../lib/remarkHtmlBreaks";
@@ -46,14 +45,10 @@ import React, {
 import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 import { defaultUrlTransform } from "react-markdown";
-import rehypeKatex from "rehype-katex";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
 import { copyTextToClipboard, useCopyToClipboard } from "../hooks/useCopyToClipboard";
-import { resolveDiffThemeName, type DiffThemeName } from "../lib/diffRendering";
+import { resolveDiffThemeName, type DiffThemeName } from "../lib/diffTheme";
 import { LRUCache } from "../lib/lruCache";
 import { dedentCode, parseCodeFenceInfo, type CodeFenceInfo } from "../lib/codeFence";
 import { MAX_SYNTAX_HIGHLIGHT_INPUT_CHARS } from "../lib/syntaxHighlightingLimits";
@@ -65,6 +60,7 @@ import {
   normalizeMarkdownImagePath,
 } from "../lib/localImageUrls";
 import { repairMarkdownTableDelimiters } from "../lib/markdownTableRepair";
+import { resolveMarkdownTextDirection, scriptDirection } from "../lib/markdownDirection";
 import { extractTableMarkdown, rehypeTableLayout } from "../lib/markdownTableLayout";
 import { showFileReferenceContextMenu } from "../lib/fileReferenceContextMenu";
 import {
@@ -171,9 +167,13 @@ interface ChatMarkdownProps {
   imageAttachments?: ReadonlyArray<ChatAttachment> | undefined;
   wikiLinkRoot?: string | undefined;
   /**
-   * Assigns native bidi ownership to transcript markdown blocks. The default
-   * keeps the shared renderer's existing direction behavior for previews,
-   * plans, and other non-transcript consumers.
+   * Opts a transcript message into direction detection. The message takes a base
+   * direction from its dominant script, and every prose block overrides it from
+   * its own dominant script (see `markdownDirection`), so a Persian reply stays
+   * RTL even when a paragraph opens with a Latin name or a code chip, and an
+   * English paragraph in the same reply stays LTR. The default keeps the shared
+   * renderer's existing direction behavior for previews, plans, and other
+   * non-transcript consumers.
    */
   directionMode?: "off" | "auto-blocks";
   isStreaming?: boolean;
@@ -388,9 +388,106 @@ const ParsedMarkdown = memo(function ParsedMarkdown({
   return <>{children}</>;
 });
 
-const MARKDOWN_REMARK_PLUGINS: MarkdownRemarkPlugins = [
+const CHAT_FIND_TEXT_TAG_NAME = "chat-find-text";
+const CHAT_FIND_TEXT_START_ATTRIBUTE = "data-chat-find-text-start";
+
+// Lazy-load KaTeX (~280 KB JS + 28 KB CSS + fonts) and authored-HTML plugins
+// (`rehype-raw` + `rehype-sanitize`) in production so the default chat chunk
+// avoids downloading and parsing them until a message actually uses math (`$`)
+// or authored HTML preview (`parseHtml`). In test mode, keep them loaded upfront
+// so synchronous unit/browser assertions stay deterministic.
+type MathPluginsBundle = {
+  readonly remarkMath: MarkdownRemarkPlugins[number];
+  readonly rehypeKatex: MarkdownRehypePlugins[number];
+};
+type AuthoredHtmlPluginsBundle = {
+  readonly plugins: MarkdownRehypePlugins;
+};
+
+let cachedMathPlugins: MathPluginsBundle | null = null;
+let mathPluginsPromise: Promise<MathPluginsBundle> | null = null;
+let cachedAuthoredHtmlPlugins: AuthoredHtmlPluginsBundle | null = null;
+let authoredHtmlPluginsPromise: Promise<AuthoredHtmlPluginsBundle> | null = null;
+
+type RehypeSanitizeSchema = (typeof import("rehype-sanitize"))["defaultSchema"];
+
+function buildAuthoredHtmlPlugins(
+  rehypeRawPlugin: unknown,
+  rehypeSanitizePlugin: unknown,
+  baseSchema: RehypeSanitizeSchema,
+): AuthoredHtmlPluginsBundle {
+  // Keep the renderer's generated metadata through the authored-HTML sanitizer.
+  // KaTeX runs afterward so its generated MathML/styles do not widen this allowlist.
+  const authoredHtmlSchema = {
+    ...baseSchema,
+    tagNames: [...(baseSchema.tagNames ?? []), CHAT_FIND_TEXT_TAG_NAME],
+    attributes: {
+      ...baseSchema.attributes,
+      [CHAT_FIND_TEXT_TAG_NAME]: ["dataChatFindTextStart"],
+      blockquote: [
+        ...(baseSchema.attributes?.blockquote ?? []),
+        ["dataGithubAlert", "note", "tip", "important", "warning", "caution"],
+      ],
+      span: [...(baseSchema.attributes?.span ?? []), ["className", MARKDOWN_IMAGE_ROW_CLASS_NAME]],
+    },
+    protocols: {
+      ...baseSchema.protocols,
+      href: [...(baseSchema.protocols?.href ?? []), "file", "thread", "synara"],
+    },
+  };
+  return {
+    plugins: [
+      rehypeRawPlugin as MarkdownRehypePlugins[number],
+      [rehypeSanitizePlugin, authoredHtmlSchema] as MarkdownRehypePlugins[number],
+    ],
+  };
+}
+
+function loadMathPlugins(): Promise<MathPluginsBundle> {
+  if (cachedMathPlugins) return Promise.resolve(cachedMathPlugins);
+  if (!mathPluginsPromise) {
+    mathPluginsPromise = Promise.all([
+      import("remark-math"),
+      import("rehype-katex"),
+      import("katex/dist/katex.min.css"),
+    ]).then(([remarkMathMod, rehypeKatexMod]) => {
+      cachedMathPlugins = {
+        remarkMath: [remarkMathMod.default, { singleDollarTextMath: true }],
+        rehypeKatex: [
+          rehypeKatexMod.default,
+          { output: "htmlAndMathml", strict: false, throwOnError: false },
+        ],
+      };
+      return cachedMathPlugins;
+    });
+  }
+  return mathPluginsPromise;
+}
+
+function loadAuthoredHtmlPlugins(): Promise<AuthoredHtmlPluginsBundle> {
+  if (cachedAuthoredHtmlPlugins) return Promise.resolve(cachedAuthoredHtmlPlugins);
+  if (!authoredHtmlPluginsPromise) {
+    authoredHtmlPluginsPromise = Promise.all([
+      import("rehype-raw"),
+      import("rehype-sanitize"),
+    ]).then(([rehypeRawMod, rehypeSanitizeMod]) => {
+      cachedAuthoredHtmlPlugins = buildAuthoredHtmlPlugins(
+        rehypeRawMod.default,
+        rehypeSanitizeMod.default,
+        rehypeSanitizeMod.defaultSchema,
+      );
+      return cachedAuthoredHtmlPlugins;
+    });
+  }
+  return authoredHtmlPluginsPromise;
+}
+
+if (import.meta.env.MODE === "test") {
+  await Promise.all([loadMathPlugins(), loadAuthoredHtmlPlugins()]);
+}
+
+const BASE_MARKDOWN_REMARK_PLUGINS: MarkdownRemarkPlugins = [
   remarkGfm,
-  [remarkMath, { singleDollarTextMath: true }],
   remarkGithubAlerts,
   remarkHtmlBreaks,
   remarkImageRows,
@@ -457,10 +554,9 @@ function rehypeRestoreLiteralDollars() {
   };
 }
 
-const MARKDOWN_REHYPE_PLUGINS: MarkdownRehypePlugins = [
+const BASE_MARKDOWN_REHYPE_PLUGINS: MarkdownRehypePlugins = [
   // Classify literal dollars while leaving the math nodes and source offsets for KaTeX.
   [rehypeTableLayout, restoreLiteralDollarPlaceholders],
-  [rehypeKatex, { output: "htmlAndMathml", strict: false, throwOnError: false }],
   rehypeRestoreLiteralDollars,
 ];
 
@@ -468,55 +564,126 @@ type BidiHastNode = {
   type?: string;
   tagName?: string;
   properties?: Record<string, unknown>;
+  value?: string;
   children?: BidiHastNode[];
 };
 
-const TOP_LEVEL_BIDI_OWNER_TAGS = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6"]);
-const NESTED_BIDI_OWNER_TAGS = new Set(["li", "blockquote", "th", "td"]);
+const BIDI_OWNER_TAGS = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "th", "td"]);
+const BIDI_CONTAINER_TAGS = new Set(["ul", "ol", "blockquote"]);
+const BIDI_OPAQUE_TAGS = new Set(["pre", "code", "script", "style"]);
 
-function setBidiDirection(node: BidiHastNode, direction: "auto" | "ltr"): void {
-  node.properties = { ...node.properties, dir: direction };
+function isBidiOpaque(node: BidiHastNode): boolean {
+  if (!node.tagName) return false;
+  if (BIDI_OPAQUE_TAGS.has(node.tagName)) return true;
+  const className = node.properties?.className;
+  return className === "katex" || (Array.isArray(className) && className.includes("katex"));
 }
 
-function applyNestedBidiOwners(node: BidiHastNode): void {
-  if (node.type === "element" && node.tagName) {
-    if (NESTED_BIDI_OWNER_TAGS.has(node.tagName)) {
-      setBidiDirection(node, "auto");
-    } else if (
-      node.tagName === "pre" ||
-      node.tagName === "table" ||
-      (Array.isArray(node.properties?.className) && node.properties.className.includes("katex")) ||
-      node.properties?.className === "katex"
-    ) {
-      // Code, tables, and rendered math retain source/LTR ordering and must
-      // not contribute their Latin text to an enclosing prose block's scan.
-      setBidiDirection(node, "ltr");
-    }
-  }
+function ownsItsDirection(node: BidiHastNode): boolean {
+  return Boolean(
+    node.tagName &&
+    (BIDI_OWNER_TAGS.has(node.tagName) ||
+      BIDI_CONTAINER_TAGS.has(node.tagName) ||
+      node.tagName === "table"),
+  );
+}
 
-  for (const child of node.children ?? []) {
-    applyNestedBidiOwners(child);
+/** GFM links named after their address carry no additional prose. */
+function isAutomaticBidiLink(node: BidiHastNode): boolean {
+  const href = node.properties?.href;
+  if (node.tagName !== "a" || typeof href !== "string" || node.children?.length !== 1) {
+    return false;
   }
+  let labelNode = node.children[0];
+  // Transcript search wraps plain labels in a source-position node.
+  if (labelNode?.tagName === CHAT_FIND_TEXT_TAG_NAME && labelNode.children?.length === 1) {
+    labelNode = labelNode.children[0];
+  }
+  const label = labelNode?.type === "text" ? labelNode.value : undefined;
+  if (!label) return false;
+  return (
+    (href === label && /^[a-z][a-z0-9+.-]*:\/\//i.test(label)) ||
+    (/^www\./i.test(label) && href === `http://${label}`) ||
+    href === `mailto:${label}`
+  );
 }
 
 /**
- * Let the browser's Unicode bidi algorithm choose each prose block's first
- * strong direction. Regular anchors intentionally remain direction-neutral:
- * a link label is part of its paragraph's content, so setting dir=auto on the
- * anchor would isolate it and make a link-only Arabic paragraph resolve LTR.
+ * Collects a block's own prose, joined with spaces so identifiers that sit in
+ * separate inline nodes stay separate words. Nested blocks (a list inside a list
+ * item, a paragraph inside a quote) resolve their own direction, so they are
+ * skipped, as are code, math, and other non-prose runs.
+ */
+function collectBlockText(node: BidiHastNode): string {
+  const parts: string[] = [];
+
+  const walk = (child: BidiHastNode) => {
+    if (child.type === "text") {
+      parts.push(child.value ?? "");
+      return;
+    }
+    if (isBidiOpaque(child) || ownsItsDirection(child) || isAutomaticBidiLink(child)) return;
+    for (const grandchild of child.children ?? []) walk(grandchild);
+  };
+
+  for (const child of node.children ?? []) walk(child);
+  return parts.join(" ");
+}
+
+function majorityDirection(directions: ReadonlyArray<"rtl" | "ltr">): "rtl" | "ltr" | undefined {
+  let rtl = 0;
+  let ltr = 0;
+  for (const direction of directions) {
+    if (direction === "rtl") rtl += 1;
+    else ltr += 1;
+  }
+  if (rtl + ltr === 0) return undefined;
+  return rtl > ltr ? "rtl" : "ltr";
+}
+
+function setBidiDirection(node: BidiHastNode, direction: "rtl" | "ltr"): void {
+  node.properties = { ...node.properties, dir: direction };
+}
+
+function resolveBidiDirections(node: BidiHastNode): "rtl" | "ltr" | undefined {
+  if (node.type === "text" || isBidiOpaque(node)) return undefined;
+
+  const childDirections: Array<"rtl" | "ltr"> = [];
+  for (const child of node.children ?? []) {
+    const direction = resolveBidiDirections(child);
+    if (direction) childDirections.push(direction);
+  }
+
+  if (node.type !== "element" || !node.tagName) {
+    return majorityDirection(childDirections);
+  }
+  if (BIDI_OWNER_TAGS.has(node.tagName)) {
+    // Loose list items and table cells hold nested paragraphs; when they carry no
+    // inline text of their own, follow the blocks they contain.
+    const direction =
+      scriptDirection(collectBlockText(node)) ?? majorityDirection(childDirections) ?? undefined;
+    if (direction) setBidiDirection(node, direction);
+    return direction;
+  }
+  if (BIDI_CONTAINER_TAGS.has(node.tagName)) {
+    const direction = majorityDirection(childDirections);
+    if (direction) setBidiDirection(node, direction);
+    return direction;
+  }
+  return undefined;
+}
+
+/**
+ * Gives every prose block its own direction from the dominant script of that
+ * block. First-strong (`dir="auto"`) is not enough in technical Persian: a
+ * paragraph that opens with `netkeep`, `**Stripe، Linear:**`, or `*.github.com`
+ * would otherwise be laid out in logical LTR order. Containers follow the
+ * majority of their items so list markers, gutters, and quote borders stay on
+ * the same side as the text they decorate.
  */
 function rehypeBidiBlockDirection() {
   return (tree: BidiHastNode) => {
-    for (const child of tree.children ?? []) {
-      if (
-        child.type === "element" &&
-        child.tagName &&
-        TOP_LEVEL_BIDI_OWNER_TAGS.has(child.tagName)
-      ) {
-        setBidiDirection(child, "auto");
-      }
-      applyNestedBidiOwners(child);
-    }
+    resolveBidiDirections(tree);
   };
 }
 
@@ -533,27 +700,6 @@ type MarkdownParentNode = {
   children?: MarkdownNode[];
 };
 type MarkdownNode = MarkdownTextNode | MarkdownParentNode | Record<string, unknown>;
-const CHAT_FIND_TEXT_TAG_NAME = "chat-find-text";
-const CHAT_FIND_TEXT_START_ATTRIBUTE = "data-chat-find-text-start";
-// Keep the renderer's generated metadata through the authored-HTML sanitizer.
-// KaTeX runs afterward so its generated MathML/styles do not widen this allowlist.
-const AUTHORED_HTML_SCHEMA = {
-  ...defaultSchema,
-  tagNames: [...(defaultSchema.tagNames ?? []), CHAT_FIND_TEXT_TAG_NAME],
-  attributes: {
-    ...defaultSchema.attributes,
-    [CHAT_FIND_TEXT_TAG_NAME]: ["dataChatFindTextStart"],
-    blockquote: [
-      ...(defaultSchema.attributes?.blockquote ?? []),
-      ["dataGithubAlert", "note", "tip", "important", "warning", "caution"],
-    ],
-    span: [...(defaultSchema.attributes?.span ?? []), ["className", MARKDOWN_IMAGE_ROW_CLASS_NAME]],
-  },
-  protocols: {
-    ...defaultSchema.protocols,
-    href: [...(defaultSchema.protocols?.href ?? []), "file", "thread", "synara"],
-  },
-};
 function remarkFindableText() {
   return (tree: MarkdownNode) => wrapFindableTextNodes(tree);
 }
@@ -715,7 +861,7 @@ function findInlineCodeEndIndex(value: string, index: number, length: number): n
     cursor = markerEnd;
   }
 
-  return value.length;
+  return -1;
 }
 
 function looksLikeInlineMath(content: string): boolean {
@@ -911,8 +1057,12 @@ function findInlineMarkdownLinkEnd(value: string, index: number): number {
 }
 
 // Tighten single-dollar math so currency and escaped dollars stay literal without touching code spans.
-function protectLiteralMarkdownDollars(value: string): string {
+function protectLiteralMarkdownDollars(value: string): {
+  readonly text: string;
+  readonly hasMath: boolean;
+} {
   let result = "";
+  let hasMath = false;
   let cursor = 0;
 
   while (cursor < value.length) {
@@ -935,6 +1085,12 @@ function protectLiteralMarkdownDollars(value: string): string {
         markerEnd += 1;
       }
       const inlineCodeEndIndex = findInlineCodeEndIndex(value, cursor, markerEnd - cursor);
+      if (inlineCodeEndIndex === -1) {
+        // An unmatched backtick is ordinary Markdown text. Preserve the raw
+        // tail and let remark-math interpret any delimiters there.
+        const remainder = value.slice(cursor);
+        return { text: result + remainder, hasMath: hasMath || remainder.includes("$") };
+      }
       result += value.slice(cursor, inlineCodeEndIndex);
       cursor = inlineCodeEndIndex;
       continue;
@@ -948,11 +1104,13 @@ function protectLiteralMarkdownDollars(value: string): string {
       nextCodeIndex += 1;
     }
 
-    result += protectLiteralDollarsInMarkdownLinks(value.slice(cursor, nextCodeIndex));
+    const prose = protectLiteralDollarsInMarkdownLinks(value.slice(cursor, nextCodeIndex));
+    hasMath ||= prose.includes("$");
+    result += prose;
     cursor = nextCodeIndex;
   }
 
-  return result;
+  return { text: result, hasMath };
 }
 
 // Returns the raw fence info string (the token after ```), e.g. "ts" or the
@@ -1450,6 +1608,10 @@ function TechnicalBidiIsolate(props: { active: boolean; children: ReactNode }) {
   );
 }
 
+/**
+ * A table keeps its columns in source order (`dir="ltr"` on the table), so cells
+ * get their own direction from the rehype plugin instead of inheriting it.
+ */
 const MARKDOWN_COMPONENTS: Components = {
   blockquote: function MarkdownBlockquote({ node: _node, children, ...props }) {
     const { t } = useTranslation();
@@ -1580,6 +1742,7 @@ const MARKDOWN_COMPONENTS: Components = {
     );
   },
   table: function MarkdownTableElement({ node, children, ...props }) {
+    const { usesAutomaticBlockDirection } = useContext(MarkdownRenderContext)!;
     const start = node?.position?.start;
     const end = node?.position?.end;
     const source =
@@ -1587,7 +1750,14 @@ const MARKDOWN_COMPONENTS: Components = {
         ? null
         : { start: start.offset, end: end.offset, column: start.column };
     return (
-      <MarkdownTable source={source} {...props}>
+      // Column order follows the table's own direction, not the prose around
+      // it, so an RTL message keeps its columns in source order. Cells carry
+      // their own direction instead.
+      <MarkdownTable
+        source={source}
+        {...props}
+        dir={usesAutomaticBlockDirection ? "ltr" : undefined}
+      >
         {children}
       </MarkdownTable>
     );
@@ -1599,7 +1769,11 @@ const MARKDOWN_COMPONENTS: Components = {
     const renderInlineVisual = useContext(InlineVisualEmbedContext);
     const codeBlock = extractCodeBlock(children);
     if (!codeBlock) {
-      return <pre {...props}>{children}</pre>;
+      return (
+        <pre {...props} dir={usesAutomaticBlockDirection ? "ltr" : undefined}>
+          {children}
+        </pre>
+      );
     }
 
     const rawFenceInfo = extractRawFenceInfo(codeBlock.className);
@@ -1868,6 +2042,14 @@ function ChatMarkdown({
   const variant = variantProp ?? "assistant";
   const directionMode = directionModeProp ?? "off";
   const usesAutomaticBlockDirection = directionMode === "auto-blocks";
+  // The message's own direction is the inherited default (bare text, images, and
+  // blocks with no letters of their own); each prose block then overrides it from
+  // its own dominant script, so a bilingual reply keeps Persian paragraphs RTL
+  // and English paragraphs LTR in the same message.
+  const textDirection = useMemo(
+    () => (usesAutomaticBlockDirection ? resolveMarkdownTextDirection(text) : undefined),
+    [text, usesAutomaticBlockDirection],
+  );
   const parseHtml = parseHtmlProp ?? false;
   const findQuery = findQueryProp ?? "";
   const findActiveRange = findActiveRangeProp ?? null;
@@ -1910,29 +2092,64 @@ function ChatMarkdown({
   // variant has no math, so its text must stay byte-for-byte what was typed.
   // Table repair runs first so find offsets use the same normalized text.
   const sourceText = useMemo(
-    () => (isUserVariant ? text : repairMarkdownTableDelimiters(text)),
+    () => (isUserVariant || !text.includes("|") ? text : repairMarkdownTableDelimiters(text)),
     [isUserVariant, text],
   );
-  const normalizedText = useMemo(() => {
-    if (isUserVariant) return smoothedText;
+  const normalizedMarkdown = useMemo(() => {
+    if (isUserVariant) return { text: smoothedText, hasMath: false };
     // Once the reveal has caught up (and always outside streaming) the smoothed
     // text is the raw text, whose repair is already done above.
     const repairedText =
-      smoothedText === text ? sourceText : repairMarkdownTableDelimiters(smoothedText);
-    return protectLiteralMarkdownDollars(repairedText);
+      smoothedText === text
+        ? sourceText
+        : smoothedText.includes("|")
+          ? repairMarkdownTableDelimiters(smoothedText)
+          : smoothedText;
+    return repairedText.includes("$") ||
+      repairedText.includes("\\(") ||
+      repairedText.includes("\\[")
+      ? protectLiteralMarkdownDollars(repairedText)
+      : { text: repairedText, hasMath: false };
   }, [isUserVariant, smoothedText, text, sourceText]);
   // While streaming, let React deprioritize and coalesce the markdown re-parse so a
   // fast token stream (one flush per ~100ms) doesn't re-render the full ReactMarkdown
   // tree on every flush. The deferred value always converges to the latest text, and
   // completed messages render the exact current text immediately (no visual change).
-  const deferredNormalizedText = useDeferredValue(normalizedText);
-  const renderedText = isStreaming ? deferredNormalizedText : normalizedText;
+  const deferredMarkdown = useDeferredValue(normalizedMarkdown);
+  const { text: renderedText, hasMath: needsMathPlugins } = isStreaming
+    ? deferredMarkdown
+    : normalizedMarkdown;
   // Only streaming assistant markdown is split; authored HTML previews go
   // through rehype-raw, which re-parses positions, and are never streamed.
   const splitBlocks = isStreaming && !isUserVariant && !parseHtml;
+  const [mathPlugins, setMathPlugins] = useState<MathPluginsBundle | null>(() => cachedMathPlugins);
+  const [authoredHtmlPlugins, setAuthoredHtmlPlugins] = useState<AuthoredHtmlPluginsBundle | null>(
+    () => cachedAuthoredHtmlPlugins,
+  );
+  useEffect(() => {
+    if (!needsMathPlugins || mathPlugins !== null) return;
+    let cancelled = false;
+    void loadMathPlugins().then((loaded) => {
+      if (!cancelled) setMathPlugins(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [needsMathPlugins, mathPlugins]);
+  useEffect(() => {
+    if (!parseHtml || isUserVariant || authoredHtmlPlugins !== null) return;
+    let cancelled = false;
+    void loadAuthoredHtmlPlugins().then((loaded) => {
+      if (!cancelled) setAuthoredHtmlPlugins(loaded);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [parseHtml, isUserVariant, authoredHtmlPlugins]);
   // Find ranges are empty without a query; keep the provider's value stable
   // then instead of recomputing it (and every text node) per streamed token.
-  const findSourceText = normalizeFindQuery(findQuery).length > 0 ? sourceText : "";
+  const normalizedFindQuery = normalizeFindQuery(findQuery);
+  const findSourceText = normalizedFindQuery.length > 0 ? sourceText : "";
   const readSourceText = useStableCallback(() => sourceText);
   const composerChipsRemarkPlugin = useMemo(
     () =>
@@ -1947,38 +2164,60 @@ function ChatMarkdown({
         : null,
     [isUserVariant, mentionReferences, terminalContexts],
   );
+  const activeMathPlugin = needsMathPlugins ? mathPlugins : null;
   const remarkPlugins = useMemo<MarkdownRemarkPlugins>(() => {
     if (composerChipsRemarkPlugin) {
       return [...USER_MARKDOWN_REMARK_PLUGINS, composerChipsRemarkPlugin, remarkFindableText];
     }
     return [
-      ...MARKDOWN_REMARK_PLUGINS,
+      ...(activeMathPlugin
+        ? [
+            remarkGfm,
+            activeMathPlugin.remarkMath,
+            remarkGithubAlerts,
+            remarkHtmlBreaks,
+            remarkImageRows,
+          ]
+        : BASE_MARKDOWN_REMARK_PLUGINS),
       [remarkWikiLinks, { root: wikiLinkRoot ?? cwd }],
       remarkFindableText,
     ];
-  }, [composerChipsRemarkPlugin, wikiLinkRoot, cwd]);
+  }, [composerChipsRemarkPlugin, activeMathPlugin, wikiLinkRoot, cwd]);
+  const activeAuthoredHtmlPlugins =
+    !isUserVariant && parseHtml ? (authoredHtmlPlugins?.plugins ?? null) : null;
   const rehypePlugins = useMemo<MarkdownRehypePlugins>(() => {
     // Raw HTML is only enabled for authored local-file previews. Sanitize
     // immediately after parsing so scripts, event handlers, and unsafe URL
     // schemes never reach React's renderer.
+    const mathAndLiteralRehype: MarkdownRehypePlugins = activeMathPlugin
+      ? [
+          [rehypeTableLayout, restoreLiteralDollarPlaceholders],
+          activeMathPlugin.rehypeKatex,
+          rehypeRestoreLiteralDollars,
+        ]
+      : BASE_MARKDOWN_REHYPE_PLUGINS;
     const basePlugins: MarkdownRehypePlugins = isUserVariant
       ? USER_MARKDOWN_REHYPE_PLUGINS
-      : parseHtml
-        ? [rehypeRaw, [rehypeSanitize, AUTHORED_HTML_SCHEMA], ...MARKDOWN_REHYPE_PLUGINS]
-        : MARKDOWN_REHYPE_PLUGINS;
+      : activeAuthoredHtmlPlugins
+        ? [...activeAuthoredHtmlPlugins, ...mathAndLiteralRehype]
+        : mathAndLiteralRehype;
     return usesAutomaticBlockDirection ? [...basePlugins, rehypeBidiBlockDirection] : basePlugins;
-  }, [isUserVariant, parseHtml, usesAutomaticBlockDirection]);
+  }, [isUserVariant, activeAuthoredHtmlPlugins, activeMathPlugin, usesAutomaticBlockDirection]);
   // The parse depends on the text plus exactly these inputs (see remarkPlugins and
   // rehypePlugins above). User messages carry per-message chip plugins and are not shared.
   // Only opted-in callers share (see `parsedMarkdownCache`).
   const parseCacheScope =
     !shareParseProp || isStreaming || composerChipsRemarkPlugin
       ? null
-      : `${parseHtml ? 1 : 0}${usesAutomaticBlockDirection ? 1 : 0}:${wikiLinkRoot ?? cwd ?? ""}`;
+      : `${activeAuthoredHtmlPlugins ? 1 : 0}${activeMathPlugin ? 1 : 0}${usesAutomaticBlockDirection ? 1 : 0}:${wikiLinkRoot ?? cwd ?? ""}`;
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const hadFindHighlightRef = useRef(false);
   useLayoutEffect(() => {
+    const hasFind = normalizedFindQuery.length > 0 || findActiveRange !== null;
+    if (!hasFind && !hadFindHighlightRef.current) return;
+    hadFindHighlightRef.current = hasFind;
     applyActiveChatFindMatch(rootRef.current, findActiveRange);
-  }, [findActiveRange, findQuery, renderedText]);
+  }, [findActiveRange, normalizedFindQuery, renderedText]);
   const renderContext = useMemo<MarkdownRenderContextValue>(
     () => ({
       isInsideLink: false,
@@ -2020,6 +2259,7 @@ function ChatMarkdown({
       ref={rootRef}
       className={`chat-markdown ${isUserVariant ? "chat-markdown--user " : ""}w-full min-w-0 ${className} text-foreground`}
       {...(usesAutomaticBlockDirection ? { "data-direction-mode": "auto-blocks" } : {})}
+      dir={textDirection}
       style={style}
     >
       <ChatFindRenderProvider
@@ -2028,7 +2268,7 @@ function ChatMarkdown({
         activeRange={findActiveRange}
       >
         <MarkdownRenderContext.Provider value={renderContext}>
-          <MarkdownSourceTextContext.Provider value={sourceText}>
+          <MarkdownSourceTextContext.Provider value={findSourceText}>
             <MarkdownSourceTextReaderContext.Provider value={readSourceText}>
               <ParsedMarkdown
                 text={renderedText}

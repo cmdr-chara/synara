@@ -7,6 +7,8 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 import { compilerCacheFingerprint } from "../../apps/web/scripts/compiler-cache-key.ts";
+import { changedPaths, hasCodeChanges, isDocsPath } from "./detect-code-changes.mjs";
+import { checkBudget } from "./job-budget.mjs";
 import { lockfilePackageFingerprint } from "./lockfile-package-key.mjs";
 import { workspaceInstallFingerprint } from "../../scripts/ci-install-key.ts";
 
@@ -24,55 +26,187 @@ const code = gate
   .map((line) => line.replace(/^          /, ""))
   .join("\n");
 const lanes = ["TYPECHECK", "UNIT", "BROWSER", "BUILD", "WINDOWS_PROCESS"];
+const heavyJobs = ["static-typecheck", "unit", "browser", "build", "windows_process"];
+const decisions = (code) => Object.fromEntries(lanes.map((lane) => [`CODE_${lane}`, code]));
 const runGate = (overrides = {}) =>
   spawnSync("bash", ["-e", "-c", code], {
     encoding: "utf8",
     env: {
       ...process.env,
-      CHANGES: "success",
-      CODE: "true",
       STATIC_FAST: "success",
       ...Object.fromEntries(lanes.map((lane) => [lane, "success"])),
+      ...decisions("true"),
       ...overrides,
     },
   }).status;
 
-test("full validation and deliberate docs-only skips pass the exact aggregate", () => {
+test("full validation and docs-only runs pass the exact aggregate", () => {
   assert.equal(runGate(), 0);
-  assert.equal(
-    runGate({ CODE: "false", ...Object.fromEntries(lanes.map((lane) => [lane, "skipped"])) }),
-    0,
-  );
+  assert.equal(runGate(decisions("false")), 0);
 });
 for (const lane of lanes) {
-  test(`${lane}: failure, cancellation and unexpected skip cannot pass`, () => {
-    for (const status of ["failure", "cancelled", "skipped", ""])
+  test(`${lane}: failure, cancellation and skip cannot pass, docs-only or not`, () => {
+    for (const status of ["failure", "cancelled", "skipped", ""]) {
       assert.notEqual(runGate({ [lane]: status }), 0);
+      assert.notEqual(runGate({ ...decisions("false"), [lane]: status }), 0);
+    }
+  });
+  test(`${lane}: a missing, invalid or disagreeing docs-only decision fails closed`, () => {
+    for (const value of ["", "undefined", "TRUE", "false"])
+      assert.notEqual(runGate({ [`CODE_${lane}`]: value }), 0);
+    assert.notEqual(runGate({ ...decisions("false"), [`CODE_${lane}`]: "true" }), 0);
   });
 }
-test("planning failures, invalid output and static failures fail closed", () => {
-  for (const status of ["failure", "cancelled", "skipped", ""]) {
-    assert.notEqual(runGate({ CHANGES: status }), 0);
+test("static failures fail closed", () => {
+  for (const status of ["failure", "cancelled", "skipped", ""])
     assert.notEqual(runGate({ STATIC_FAST: status }), 0);
+});
+test("no lane waits on another; each detects docs-only changes before any work", () => {
+  assert.equal(jobs.changes, undefined);
+  for (const [name, job] of Object.entries(jobs)) {
+    if (name === "quality") continue;
+    assert.equal(job.needs, undefined, name);
+    assert.equal(job.if, undefined, name);
   }
-  for (const value of ["", "undefined", "TRUE"]) assert.notEqual(runGate({ CODE: value }), 0);
+  assert.deepEqual(jobs.quality.needs, ["static-fast", ...heavyJobs]);
+  const condition = "steps.changes.outputs.code == 'true'";
+  for (const name of heavyJobs) {
+    const { steps, outputs } = jobs[name];
+    assert.deepEqual(outputs, { code: "${{ steps.changes.outputs.code }}" }, name);
+    assert.ok(steps[0].uses.startsWith("actions/checkout@"), name);
+    assert.equal(steps[0].if, undefined, name);
+    assert.equal(steps[1].name, "Start job clock", name);
+    assert.equal(steps[2].id, "changes", name);
+    assert.equal(steps[2].run, "node .github/scripts/detect-code-changes.mjs", name);
+    assert.equal(steps[2].if, undefined, name);
+    // Every later step, including each member of a parallel group, is skipped
+    // only by this lane's own decision. A wait step takes no condition: it
+    // joins a background step that carries one.
+    const later = steps.slice(3, -1).flatMap((step) => step.parallel ?? [step]);
+    for (const step of later) {
+      if (step.wait) {
+        assert.equal(step.if, undefined, `${name}: ${step.name}`);
+        assert.ok(String(steps.find((other) => other.id === step.wait)?.if).startsWith(condition));
+        continue;
+      }
+      assert.ok(
+        String(step.if).replaceAll(/\s+/g, " ").startsWith(condition),
+        `${name}: ${step.name}`,
+      );
+    }
+    const lane = lanes[heavyJobs.indexOf(name)];
+    assert.equal(jobs.quality.steps[0].env[`CODE_${lane}`], `\${{ needs.${name}.outputs.code }}`);
+  }
 });
-test("PR change detection uses inline rules and retains Git checkout for pushes", () => {
-  const { steps, permissions } = jobs.changes;
-  const checkout = steps.find((step) => step.uses?.startsWith("actions/checkout@"));
-  const filter = steps.find((step) => step.id === "filter");
-  assert.equal(checkout?.if, "github.event_name != 'pull_request'");
-  assert.equal(permissions["pull-requests"], "read");
-  assert.equal(filter?.if, undefined);
-  const rules = filter?.with?.filters;
-  assert.equal(typeof rules, "string");
-  assert.ok(Array.isArray(requireFromScripts("yaml").parse(rules)?.code));
+test("every job starts a clock after checkout and ends by enforcing a budget inside its timeout", () => {
+  for (const [name, job] of Object.entries(jobs)) {
+    if (name === "quality") continue;
+    const { steps } = job;
+    // Checkout comes first; the clock starts right after it.
+    assert.ok(steps[0].uses.startsWith("actions/checkout@"), name);
+    assert.deepEqual(
+      steps[1],
+      {
+        name: "Start job clock",
+        shell: "bash",
+        run: 'echo "CI_JOB_STARTED=$(date +%s)" >> "$GITHUB_ENV"',
+      },
+      name,
+    );
+    const last = steps.at(-1);
+    assert.equal(last.name, "Enforce job budget", name);
+    assert.equal(last.run, "node .github/scripts/job-budget.mjs", name);
+    // Only a job that passed everything else is judged on time, and nothing may excuse it.
+    assert.equal(last.if, undefined, name);
+    assert.equal(last["continue-on-error"], undefined, name);
+    const budget = last.env.CI_JOB_BUDGET_SECONDS;
+    const budgets =
+      budget === "${{ matrix.budget }}"
+        ? job.strategy.matrix.include.map((lane) => lane.budget)
+        : [Number(budget)];
+    for (const seconds of budgets)
+      assert.ok(Number.isInteger(seconds) && seconds > 0, `${name}: ${seconds}`);
+    // The timeout only catches a hang: the budget step must be reachable first,
+    // and the timeout must not drift far above the slowest lane's budget.
+    const slowest = Math.max(...budgets);
+    assert.ok(job["timeout-minutes"] * 60 >= slowest + 60, name);
+    assert.ok(job["timeout-minutes"] * 60 <= slowest + 240, name);
+  }
 });
-test("docs-only cannot hide a failing or unexpectedly executed heavy lane", () => {
-  const docs = { CODE: "false", ...Object.fromEntries(lanes.map((lane) => [lane, "skipped"])) };
-  for (const lane of lanes)
-    for (const status of ["success", "failure", "cancelled", ""])
-      assert.notEqual(runGate({ ...docs, [lane]: status }), 0);
+test("a budget fails when exceeded or unreadable and reports a cold dependency cache", () => {
+  const check = (overrides) =>
+    checkBudget({ started: 1000, budget: 60, now: 1050, coldCache: "", ...overrides });
+  assert.deepEqual(check({}), {
+    ok: true,
+    elapsed: 50,
+    message: "Within budget: 50 s of a 60 s budget.",
+  });
+  assert.equal(check({ now: 1060 }).ok, true);
+  assert.equal(check({ now: 1061 }).ok, false);
+  assert.match(check({ now: 1061 }).message, /Over budget: 61 s of a 60 s budget/);
+  const cold = check({ now: 1100, coldCache: "node_modules" });
+  assert.equal(cold.ok, true);
+  assert.match(cold.message, /cold node_modules cache, not enforced/);
+  for (const broken of [
+    { started: Number.NaN },
+    { started: 0 },
+    { budget: Number.NaN },
+    { budget: 0 },
+  ])
+    assert.equal(check(broken).ok, false);
+  const coldStep = requireFromScripts("yaml")
+    .parse(setup)
+    .runs.steps.find((step) => step.name === "Mark cold dependency cache");
+  assert.equal(
+    coldStep.if,
+    "${{ steps.modules.outcome == 'success' && steps.modules.outputs.cache-hit != 'true' }}",
+  );
+});
+test("docs-only detection keeps code in docs-like trees on the code path", () => {
+  for (const path of [
+    "README.md",
+    "docs/release.md",
+    "docs/img/a.png",
+    "apps/web/notes.mdx",
+    "apps/marketing/content/post.json",
+    ".github/evidence/shot.png",
+  ])
+    assert.ok(isDocsPath(path), path);
+  for (const path of [
+    "apps/marketing/src/docs/page.tsx",
+    "apps/web/src/assets/icons.ts",
+    "apps/web/public/icon.png",
+    ".github/workflows/ci.yml",
+    "README.md.ts",
+    "package.json",
+  ])
+    assert.ok(!isDocsPath(path), path);
+  assert.equal(hasCodeChanges(["README.md", "docs/a.md"]), false);
+  assert.equal(hasCodeChanges(["README.md", "apps/web/src/a.ts"]), true);
+  assert.equal(hasCodeChanges([]), true);
+});
+test("change lists that are unavailable or may be truncated run every lane", async () => {
+  const pull = { eventName: "pull_request", event: { pull_request: { number: 7 } } };
+  const page = (count, filename) => Array.from({ length: count }, () => ({ filename }));
+  assert.deepEqual(
+    await changedPaths({
+      ...pull,
+      request: async (_api, path) =>
+        path.endsWith("page=1")
+          ? page(100, "a.md")
+          : [{ filename: "b.md", previous_filename: "b.ts" }],
+    }),
+    [...page(100, "a.md").map((file) => file.filename), "b.md", "b.ts"],
+  );
+  assert.equal(await changedPaths({ ...pull, request: async () => page(100, "a.md") }), null);
+  const push = (event, files) =>
+    changedPaths({ eventName: "push", event, request: async () => ({ files }) });
+  assert.deepEqual(await push({ before: "abc", after: "def" }, page(1, "a.md")), ["a.md"]);
+  assert.equal(await push({ before: "abc", after: "def" }, page(300, "a.md")), null);
+  assert.equal(await push({ before: "0000000", after: "def" }, page(1, "a.md")), null);
+  assert.equal(await push({ before: "abc", after: "def", forced: true }, page(1, "a.md")), null);
+  for (const eventName of ["merge_group", "workflow_dispatch", "schedule"])
+    assert.equal(await changedPaths({ eventName, event: {}, request: async () => [] }), null);
 });
 test("required check and independent static lane stay intact", () => {
   assert.ok(workflow.includes("name: Format, Lint, Typecheck, Test, Browser Test, Build"));
@@ -92,7 +226,8 @@ test("the required Typecheck lane also fails on missing release tags or broken m
   assert.ok(!jobs.migration_lineage);
   const lineage = checks.find((step) => step.name === "Verify released migration lineage");
   assert.ok(lineage);
-  assert.equal(lineage.if, undefined);
+  // Skipped only by the lane's own docs-only decision, never by another condition.
+  assert.equal(lineage.if, "steps.changes.outputs.code == 'true'");
   assert.ok(lineage.run.includes("git tag --list 'v[0-9]*'"));
   assert.ok(lineage.run.includes("node scripts/check-migration-lineage.ts"));
   const run = (gitBody, nodeBody) =>
@@ -212,6 +347,7 @@ test("caches restore in every consumer and save from one owner per key", () => {
   assert.deepEqual(unitSetup.with, {
     scope: "${{ matrix.scope || 'full' }}",
     "save-modules": "${{ matrix.save-modules || 'false' }}",
+    "web-transform-cache": "${{ matrix.web-transform-cache || '' }}",
   });
   assert.deepEqual(
     jobs.unit.strategy.matrix.include.filter((lane) => lane.scope || lane["save-modules"]),
@@ -222,6 +358,7 @@ test("caches restore in every consumer and save from one owner per key", () => {
         "test-args": "--config=vitest.unit.ci.config.ts --project=web --project=web-local-time",
         scope: "web",
         "save-modules": "true",
+        budget: 240,
       },
       {
         pkg: "server 1/3",
@@ -229,18 +366,21 @@ test("caches restore in every consumer and save from one owner per key", () => {
         "test-args": "--shard=1/3",
         scope: "server",
         "save-modules": "true",
+        budget: 210,
       },
       {
         pkg: "server 2/3",
         filters: "--filter=@synara/cli",
         "test-args": "--shard=2/3",
         scope: "server",
+        budget: 210,
       },
       {
         pkg: "server 3/3",
         filters: "--filter=@synara/cli",
         "test-args": "--shard=3/3",
         scope: "server",
+        budget: 210,
       },
     ],
   );
@@ -264,7 +404,7 @@ test("caches restore in every consumer and save from one owner per key", () => {
     "Cache Electron runtime",
   ]);
 });
-test("compiler cache survives workspace release bumps and invalidates dependency and patch changes", () => {
+test("compiler cache tracks compiler inputs and survives workspace bumps and bundler-only edits", () => {
   const scratch = mkdtempSync(join(tmpdir(), "synara-compiler-key-"));
   try {
     mkdirSync(join(scratch, "apps/web"), { recursive: true });
@@ -295,6 +435,20 @@ test("compiler cache survives workspace release bumps and invalidates dependency
     };
     const baseline = fingerprint(lockfile);
     assert.equal(fingerprint(lockfile.replace("1.5.4", "1.6.2")), baseline);
+    const bundler = join(scratch, "apps/web/vite.config.ts");
+    const bundlerSource = readFileSync(bundler, "utf8");
+    writeFileSync(
+      bundler,
+      bundlerSource.replace("autoCodeSplitting: true", "autoCodeSplitting: false"),
+    );
+    assert.notEqual(readFileSync(bundler, "utf8"), bundlerSource);
+    assert.equal(fingerprint(lockfile), baseline);
+    const compiler = join(scratch, "apps/web/scripts/react-compiler-vite.ts");
+    const compilerSource = readFileSync(compiler, "utf8");
+    writeFileSync(compiler, compilerSource.replace("!productionBuild &&", "productionBuild &&"));
+    assert.notEqual(readFileSync(compiler, "utf8"), compilerSource);
+    assert.notEqual(fingerprint(lockfile), baseline);
+    writeFileSync(compiler, compilerSource);
     assert.notEqual(fingerprint(lockfile.replace("^2.0.0", "^2.1.0")), baseline);
     assert.notEqual(fingerprint(lockfile.replace("version@2.0.0", "version@2.1.0")), baseline);
     assert.notEqual(fingerprint(lockfile.replace("fixture,]", "fixture]")), baseline);
@@ -402,32 +556,40 @@ test("browser tests and Desktop CI use separate compiler cache namespaces", () =
   assert.ok(!restore.includes(fallback));
   // The Vite salt and the archive key begin with the same input fingerprint.
   const viteConfig = read("../../apps/web/vite.config.ts");
-  assert.ok(viteConfig.includes(".update(compilerCacheFingerprint("));
+  assert.ok(viteConfig.includes("createViteReactCompilerPlugin(buildSourcemap)"));
+  const compilerAdapter = read("../../apps/web/scripts/react-compiler-vite.ts");
+  assert.ok(compilerAdapter.includes(".update(compilerCacheFingerprint("));
   // Workers must compile with the plugin definition the main thread uses.
   const worker = read("../../apps/web/scripts/parallel-transform.worker.mjs");
   assert.ok(worker.includes('from "./react-compiler-plugin.mjs"'));
-  assert.ok(viteConfig.includes('from "./scripts/react-compiler-plugin.mjs"'));
+  assert.ok(compilerAdapter.includes('from "./react-compiler-plugin.mjs"'));
   assert.ok(!viteConfig.includes("reactCompilerPreset"), "one definition of the compiler plugin");
   const pool = read("../../apps/web/scripts/parallel-transform.ts");
   for (const relaxed of ["retry", "setTimeout"])
     assert.ok(!pool.includes(relaxed), `the transform pool must not ${relaxed}`);
-  assert.ok(viteConfig.includes('command === "build" && mode === "production"'));
-  assert.ok(viteConfig.includes('process.env.VITEST === "true"'));
-  assert.ok(viteConfig.includes("transformCacheSalt(productionBuild)"));
-  assert.equal(workflow.match(/web-transform-cache:/g)?.length, 2);
+  assert.ok(compilerAdapter.includes('command === "build" && mode === "production"'));
+  assert.ok(compilerAdapter.includes('process.env.VITEST === "true"'));
+  assert.ok(compilerAdapter.includes("transformCacheSalt(productionBuild, buildSourcemap)"));
+  // Browser lanes, Desktop Build, and the Core unit lane's matrix entry and setup.
+  assert.equal(workflow.match(/web-transform-cache:/g)?.length, 4);
   assert.equal(workflow.match(/web-transform-fallback:/g)?.length, 1);
   const browserSetup = jobs.browser.steps.find((step) => step.name === "Setup workspace").with;
   assert.equal(
     browserSetup["web-transform-cache"],
-    "browser-${{ matrix.project }}-${{ strategy.job-index }}",
+    "browser-${{ matrix.cache }}-${{ strategy.job-index }}",
   );
   assert.equal(
     browserSetup["web-transform-fallback"],
     "${{ github.event_name == 'pull_request' && strategy.job-index != 5 && 'browser-components-5' || '' }}",
   );
-  const donor = jobs.browser.strategy.matrix.include[5];
-  assert.equal(donor.project, "components");
-  assert.equal(donor.shard, "3/3");
+  // The donor index must stay a components job; the first three ChatView jobs
+  // keep the archive names main already saves.
+  const browserLanes = jobs.browser.strategy.matrix.include;
+  assert.equal(browserLanes[5].cache, "components");
+  assert.deepEqual(
+    browserLanes.slice(0, 3).map(({ cache }) => cache),
+    ["chat-follow", "chat-projects", "chat-workflows"],
+  );
   assert.equal(
     jobs.build.steps.find((step) => step.name === "Setup workspace").with["web-transform-cache"],
     "desktop-production",
@@ -454,6 +616,33 @@ test("browser tests and Desktop CI use separate compiler cache namespaces", () =
     assert.ok(!text.includes("SYNARA_WEB_TRANSFORM_CACHE_DIR"), other);
     assert.ok(!text.includes("SYNARA_WEB_BUILD_TRANSFORM_CACHE_DIR"), other);
   }
+});
+test("only the Core lane replays hot-path compiler events, keyed by source and toolchain", () => {
+  const cached = jobs.unit.strategy.matrix.include.filter((lane) => lane["web-transform-cache"]);
+  assert.deepEqual(
+    cached.map((lane) => [lane.pkg, lane["web-transform-cache"]]),
+    [["core", "unit-core-compiler"]],
+  );
+  const setupWith = jobs.unit.steps.find((step) => step.name === "Setup workspace").with;
+  assert.equal(setupWith["web-transform-fallback"], undefined);
+  const compiler = jobs.unit.steps
+    .find((step) => step.parallel)
+    .parallel.find(({ name }) => name === "Verify chat hot-path compiler");
+  // The guard reads the directory the setup action exports; nothing overrides it.
+  assert.equal(compiler.env, undefined);
+  const cache = read("../../apps/web/src/test/compilerEventCache.ts");
+  assert.ok(cache.includes("env.SYNARA_WEB_TRANSFORM_CACHE_DIR?.trim()"));
+  assert.ok(cache.includes('path.join(root, "hot-path-compiler")'));
+  assert.ok(cache.includes(".update(compilerCacheFingerprint(repositoryRoot))"));
+  for (const input of ["toolchain", "path.resolve(input.filePath)", "input.source"])
+    assert.ok(cache.includes(`.update(${input})`), input);
+  for (const file of ["compilerEventCache.ts", "hotPathCompiler.ts", "reactCompiler.ts"])
+    assert.ok(cache.includes(`"src/test/${file}"`), file);
+  for (const name of ["babel-plugin-react-compiler", "@babel/core"])
+    assert.ok(cache.includes(`"${name}"`), name);
+  const guard = read("../../apps/web/src/test/hotPathCompiler.ts");
+  assert.ok(guard.includes("cachedCompilerEvents({"));
+  assert.ok(guard.includes("compile: () => compileReactSource(filePath, source)"));
 });
 test("the Electron runtime cache keys on its own lockfile resolution", () => {
   const steps = Object.fromEntries(
@@ -643,7 +832,7 @@ test("measured critical-path distribution stays three-way and skips redundant ap
   const compiler = unitSteps.find(({ name }) => name === "Verify chat hot-path compiler");
   // Web Unit selects the two other projects. A missing compiler file must
   // therefore fail the Core lane instead of silently passing the required gate.
-  assert.equal(compiler?.if, "matrix.pkg == 'core'");
+  assert.equal(compiler?.if, "steps.changes.outputs.code == 'true' && matrix.pkg == 'core'");
   assert.ok(compiler.run.includes("--project=web-compiler --no-passWithNoTests --maxWorkers=2"));
   // ChatView compiles in its own file so both files can run at once.
   const unitConfig = read("../../apps/web/vitest.unit.ci.config.ts");
@@ -664,31 +853,42 @@ test("measured critical-path distribution stays three-way and skips redundant ap
   assert.ok(serverConfig.includes("maxWorkers: availableParallelism()"));
   assert.ok(serverConfig.includes("sequence: { sequencer: PinnedShardSequencer }"));
   const browserMatrix = jobs.browser.strategy.matrix.include;
-  const components = browserMatrix.filter(({ project }) => project === "components");
-  assert.deepEqual(components.map(({ shard }) => shard).sort(), ["1/3", "2/3", "3/3"]);
-  // Duplicating a child shard would leave its sibling's tests out of a green gate.
-  assert.deepEqual(components.flatMap(({ shardA, shardB }) => [shardA, shardB]).sort(), [
-    "1/6",
-    "2/6",
-    "3/6",
-    "4/6",
-    "5/6",
-    "6/6",
+  // Nine browser jobs plus the nine other lanes stay inside the account's 20 concurrent jobs.
+  assert.equal(browserMatrix.length, 9);
+  assert.equal(new Set(browserMatrix.map(({ name }) => name)).size, 9);
+  const processes = browserMatrix.flatMap((lane) => [
+    { project: lane.projectA, slice: lane.sliceA, shard: lane.shardA },
+    { project: lane.projectB, slice: lane.sliceB, shard: lane.shardB },
   ]);
+  const owned = (project) => processes.filter((process) => process.project === project);
+  // Duplicating a shard or slice would leave its sibling's tests out of a green gate.
   assert.deepEqual(
-    browserMatrix
-      .filter(({ project }) => project !== "components")
-      .map(({ project, shardA, shardB }) => [project, shardA, shardB]),
-    [
-      ["chat-follow", "1/1", "1/1"],
-      ["chat-projects", "1/1", "1/1"],
-      ["chat-workflows", "1/1", "1/1"],
-    ],
+    owned("components").map(({ shard, slice }) => [shard, slice]),
+    Array.from({ length: 10 }, (_, index) => [`${index + 1}/10`, ""]),
   );
+  const chatConfig = read("../../apps/web/vitest.browser.ci.config.ts");
+  for (const [project, count] of [
+    ["chat-follow", 2],
+    ["chat-projects", 3],
+    ["chat-workflows", 3],
+  ]) {
+    assert.ok(chatConfig.includes(`"${project}": ${count},`), project);
+    assert.deepEqual(
+      owned(project)
+        .map(({ slice, shard }) => [slice, shard])
+        .toSorted(),
+      Array.from({ length: count }, (_, index) => [`${index + 1}/${count}`, "1/1"]),
+      project,
+    );
+  }
+  assert.equal(processes.length, 18);
   const browserPair = jobs.browser.steps.find((step) => step.parallel)?.parallel;
   assert.deepEqual(
-    browserPair?.map((step) => step.env.VITEST_BROWSER_CHAT_SLICE),
-    ["a", "b"],
+    browserPair?.map((step) => [step.env.VITEST_BROWSER_CHAT_SLICE, step.run]),
+    ["A", "B"].map((half) => [
+      `\${{ matrix.slice${half} }}`,
+      `bun run --cwd apps/web test:browser:ci -- --project=\${{ matrix.project${half} }} --shard=\${{ matrix.shard${half} }}`,
+    ]),
   );
   assert.deepEqual(
     browserPair?.map((step) => step.env.SYNARA_WEB_TRANSFORM_CACHE_SHARED),
@@ -715,7 +915,7 @@ test("measured critical-path distribution stays three-way and skips redundant ap
   assert.equal(save.uses, "actions/cache/save@v5");
   assert.equal(save.with.path, cache.with.path);
   assert.equal(save.with.key, "${{ steps.chromium-cache.outputs.cache-primary-key }}");
-  assert.match(save.if, /matrix\.project == 'chat-follow'/);
+  assert.match(save.if, /matrix\.name == 'chat-follow'/);
   assert.match(save.if, /steps\.chromium-cache\.outputs\.cache-hit != 'true'/);
   assert.match(save.if, /steps\.chromium-cache\.outputs\.cache-primary-key != ''/);
   assert.ok(runtime.run.includes("./node_modules/.bin/playwright install chromium --only-shell"));

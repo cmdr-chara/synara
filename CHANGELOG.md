@@ -1,5 +1,55 @@
 # Changelog
 
+## 1.6.6 — 2026-11-24
+
+**Smaller desktop downloads, faster startup, and more control in Antigravity.**
+
+### Added
+
+- Antigravity supports projects with additional folders and shows account quota pools and reset times in **Settings → Usage** using the official CLI. The primary project or worktree remains the working directory. WSL projects require roots that the selected distribution can access. ([#2261](https://github.com/Emanuele-web04/synara/pull/2261), [#2270](https://github.com/Emanuele-web04/synara/pull/2270))
+- Antigravity surfaces native questions and recognized subagents in chat and supports steering when the active session advertises it. Interactive **Approval required** mode routes native tool requests through Synara’s approval cards. **Full access** can grant permission for an individual request, and persistent grants require an explicit response. ([#2263](https://github.com/Emanuele-web04/synara/pull/2263), [#2271](https://github.com/Emanuele-web04/synara/pull/2271))
+
+### Changed
+
+- Desktop packaging removes duplicate dependencies and unused assets and adds release size budgets. In a local unsigned macOS Apple Silicon packaging comparison, the DMG was **22% smaller**, the updater ZIP **21% smaller**, and the installed app used **27% fewer bytes**. These measurements compare two local builds and vary by platform. ([#2288](https://github.com/Emanuele-web04/synara/pull/2288))
+- The web client loads fewer assets at startup, and the server does less work during streaming. In a headless Chromium benchmark on an Apple M5 Pro with 83 seeded chats, startup used **61 HTTP requests instead of 315** and transferred **22.5% less HTTP data**. On an emulated slow link, median splash dismissal fell from **1.58 s to 0.71 s**. In a separate SQLite benchmark with two streaming chats, median persistence time fell from **1.80 s to 1.66 s**. ([#2266](https://github.com/Emanuele-web04/synara/pull/2266))
+- The agent gateway checks delegated targets against the chosen provider profile, available models, and compatible execution modes. It supports multiple batches within the turn’s existing budget and can resume the parent after the children settle when explicitly requested and the original turn context still matches. ([#2269](https://github.com/Emanuele-web04/synara/pull/2269))
+- Stable desktop now shares product analytics by default and shows a one-time notice about the data it sends. Change the preference in **Settings → Privacy**. Events exclude prompts, chats, files, project names, and identity. Stable still excludes Beta and Remote technical diagnostics. ([#2290](https://github.com/Emanuele-web04/synara/pull/2290))
+
+### Fixed
+
+- Devin preserves its native CLI sign-in, passes granted connectors to new and reopened chats, and tracks the process tree on Windows so Stop can retire the session before a restart. Its ACP integration validates permission modes and retains per-command approval when later updates omit the tool kind. ([#2268](https://github.com/Emanuele-web04/synara/pull/2268), [#2287](https://github.com/Emanuele-web04/synara/pull/2287), [#2289](https://github.com/Emanuele-web04/synara/pull/2289))
+- Claude Code honors the selected profile’s native Auto-compact setting and still receives an explicit context window when one is selected. ([#2272](https://github.com/Emanuele-web04/synara/pull/2272))
+- Usage Analytics labels the local device **This Device** on Windows and Linux. ([#2260](https://github.com/Emanuele-web04/synara/pull/2260))
+
+### Verification
+
+Publication requires workspace and server checks, native packaging, artifact provenance, and packaged startup. The Windows x64 installer uses a version-scoped unsigned exception and requires Microsoft Defender scanning. macOS requires signing and notarization. Manual installation, installed-app upgrades, and live provider sessions fall outside these automated checks.
+
+## 1.6.5 — 2026-11-22
+
+**Better multilingual transcripts, retained OpenCode reasoning, and more predictable Antigravity resume.**
+
+### Added
+
+- The analytics receiver can group Remote connection failures by stage, network kind, and connection path when updated iPhone and iPad clients send those categories. Desktop Beta adds six consent-gated reliability codes for admission, authorization, tunnel provisioning, and connector exits. Payloads use fixed categories without hostnames, IP addresses, network names, or free-form errors. The receiver migration and deployment are separate from this Stable desktop release. ([#2257](https://github.com/Emanuele-web04/synara/pull/2257))
+
+### Changed
+
+- Desktop refreshes the recorded app version for existing Remote links when reporting endpoints. The account service also gains maintenance logic to retire stale pre-Stable Remote 1.0.6 preview identities after a grace period. That cleanup runs through account service maintenance. ([#2256](https://github.com/Emanuele-web04/synara/pull/2256))
+- Browser CI runs across nine jobs, up from six, and the 666 provider-orchestration tests from a single file now run across seven files with the same test inventory. CI starts its heavy jobs immediately, reports timing by phase, enforces per-job time budgets on warm installs, reuses React Compiler results for unchanged inputs, and removes timer waits from selected browser fixtures. ([#2241](https://github.com/Emanuele-web04/synara/pull/2241), [#2244](https://github.com/Emanuele-web04/synara/pull/2244), [#2247](https://github.com/Emanuele-web04/synara/pull/2247), [#2249](https://github.com/Emanuele-web04/synara/pull/2249), [#2251](https://github.com/Emanuele-web04/synara/pull/2251), [#2252](https://github.com/Emanuele-web04/synara/pull/2252), [#2253](https://github.com/Emanuele-web04/synara/pull/2253))
+- Web Unit CI pre-bundles Effect and Synara contracts while keeping test isolation. Across three shuffle seeds on a Mac mini with four workers, the measured suite took 27.4–28.6 s, down from 36.4–39.5 s. This measures test runtime. ([#2255](https://github.com/Emanuele-web04/synara/pull/2255))
+
+### Fixed
+
+- Transcript paragraphs, headings, lists, quotes, and table cells follow the dominant script of each block. Mixed Persian or Hebrew and English text gets the appropriate reading direction even when a paragraph starts with a Latin product name. Code stays left to right, and tables retain column order. ([#2239](https://github.com/Emanuele-web04/synara/pull/2239))
+- OpenCode reasoning streamed as text deltas is retained in the activity log as a **Reasoning trace** when a turn settles. ([#2250](https://github.com/Emanuele-web04/synara/pull/2250))
+- Antigravity requires a matching planner for explicit Orchestrator selections such as Carbon or Neon. A legacy bare Orchestrator selection can resolve automatically when the session exposes exactly one planner. ([#2240](https://github.com/Emanuele-web04/synara/pull/2240))
+
+### Verification
+
+Publication requires workspace and server checks, native packaging, provenance, and packaged startup. The Windows x64 installer uses the version-scoped unsigned exception and requires Microsoft Defender scanning. macOS requires signing and notarization. Manual installation, installed-app upgrades, and live provider sessions fall outside these automated checks.
+
 ## 1.6.4 — 2026-11-20
 
 **Antigravity connectors, lighter Remote reconnects, and more usable narrow chats.**

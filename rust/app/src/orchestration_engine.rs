@@ -4078,6 +4078,46 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
         Value::Object(payload),
     )];
     let seq = commit_events(&conn, &events, &command_id)?;
+
+    // A queued Devin turn starts the same runner once dispatched.
+    let provider = model_sel
+        .get("provider")
+        .and_then(Value::as_str)
+        .map(String::from)
+        .or_else(|| {
+            conn.query_row(
+                "SELECT provider_name FROM projection_thread_sessions \
+                 WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .ok()
+            .flatten()
+        });
+    if provider.as_deref() == Some("devin") {
+        let message = conn
+            .query_row(
+                "SELECT message_id, text FROM projection_thread_messages \
+                 WHERE thread_id = ?1 AND role = 'user' \
+                 ORDER BY created_at DESC LIMIT 1",
+                params![thread_id],
+                |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)),
+            )
+            .ok();
+        let cwd: Option<String> = conn
+            .query_row(
+                "SELECT p.workspace_root FROM projection_projects p \
+                 JOIN projection_threads t ON t.project_id = p.project_id \
+                 WHERE t.thread_id = ?1",
+                params![thread_id],
+                |r| r.get(0),
+            )
+            .ok();
+        if let (Some((message_id, text)), Some(cwd)) = (message, cwd) {
+            crate::acp_runner::start_turn(thread_id.clone(), message_id, text, cwd);
+        }
+    }
+
     Ok(json!({ "sequence": seq }))
 }
 

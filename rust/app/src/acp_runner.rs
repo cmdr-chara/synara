@@ -9,6 +9,7 @@
 
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
+use std::path::PathBuf;
 use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
@@ -300,6 +301,47 @@ pub fn cancel_turn(thread_id: &str) {
     }
 }
 
+/// Resolve the `devin` CLI: explicit override, PATH, then the usual install
+/// locations (the backend may run under a minimal service PATH).
+fn devin_binary() -> String {
+    if let Ok(p) = std::env::var("SYNARA_DEVIN_CLI") {
+        if !p.is_empty() {
+            return p;
+        }
+    }
+    if let Ok(p) = std::env::var("DEVIN_BINARY_PATH") {
+        if !p.is_empty() {
+            return p;
+        }
+    }
+    if Command::new("devin")
+        .arg("--version")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+    {
+        return "devin".to_string();
+    }
+    if let Some(home) = std::env::var_os("HOME") {
+        for cand in [
+            PathBuf::from(&home).join(".local/bin/devin"),
+            PathBuf::from(&home).join(".devin/bin/devin"),
+        ] {
+            if cand.exists() {
+                return cand.to_string_lossy().into_owned();
+            }
+        }
+    }
+    for cand in ["/opt/homebrew/bin/devin", "/usr/local/bin/devin"] {
+        if std::path::Path::new(cand).exists() {
+            return cand.to_string();
+        }
+    }
+    "devin".to_string()
+}
+
 /// Called after a `thread.turn-start-requested` event is committed for a
 /// Devin thread. Spawns the runner thread that drives the ACP session.
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
@@ -535,9 +577,20 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         }),
     )?;
 
-    let spawn_result = Command::new("devin")
+    let cwd = if !cwd.is_empty() && !std::path::Path::new(&cwd).is_dir() {
+        eprintln!("acp_runner: workspace missing on disk: {cwd} — falling back to home");
+        std::env::var("HOME").unwrap_or_default()
+    } else {
+        cwd.to_string()
+    };
+    let cwd = if cwd.is_empty() {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    } else {
+        cwd
+    };
+    let spawn_result = Command::new(devin_binary())
         .arg("acp")
-        .current_dir(cwd)
+        .current_dir(&cwd)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())

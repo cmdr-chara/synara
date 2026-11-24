@@ -706,6 +706,9 @@ pub struct Native {
     feedback_input: Option<Entity<InputState>>,
     feedback_sending: bool,
     feedback_toast: Option<(String, bool)>,
+    // Global keybindings reference dialog (upstream ShortcutsDialog, mod+/).
+    sc_dialog_open: bool,
+    sc_dialog_input: Option<Entity<InputState>>,
     user_input_draft: Vec<(String, usize, String)>,
 }
 
@@ -1144,6 +1147,8 @@ impl Native {
             feedback_input: None,
             feedback_sending: false,
             feedback_toast: None,
+            sc_dialog_open: false,
+            sc_dialog_input: None,
             user_input_draft: Vec::new(),
             find_open: false,
                 find_input: None,
@@ -2382,6 +2387,8 @@ impl Native {
                         self.fetch_settings(cx);
                     }
                     cx.notify();
+                } else if m.platform && !m.control && !m.alt && !m.shift && key == "/" {
+                    self.open_sc_dialog(window, cx);
                 }
             }
             return;
@@ -2433,6 +2440,8 @@ impl Native {
             }
             // ⌘P — search.files: workspace file-name palette.
             (false, false, false, "p") => self.open_palette("files", window, cx),
+            // ⌘/ — upstream keyboard-shortcuts-help dialog.
+            (false, false, false, "/") => self.open_sc_dialog(window, cx),
             // ⌘⇧F — search.content: workspace code-snippet palette.
             (false, false, true, "f") => self.open_palette("snippets", window, cx),
             // ⌘B — sidebar collapse
@@ -3038,6 +3047,42 @@ impl Native {
         ("idea", "Idea", "I have an idea"),
         ("other", "Other", "I have some feedback"),
     ];
+
+    /// Upstream ShortcutsDialog (isKeyboardShortcutsHelpShortcut, mod+/).
+    fn open_sc_dialog(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let input = cx.new(|cx| {
+            InputState::new(window, cx).placeholder("Search shortcuts...")
+        });
+        cx.subscribe_in(&input, window, |_this, _s, event, _w, cx| {
+            if let InputEvent::Change = event {
+                cx.notify();
+            }
+        })
+        .detach();
+        self.sc_dialog_input = Some(input.clone());
+        self.sc_dialog_open = true;
+        let focus = input.read(cx).focus_handle(cx);
+        window.focus(&focus, cx);
+        cx.notify();
+    }
+
+    /// Effective kbd label for a SHORTCUT_ROWS entry: the resolved binding
+    /// when rules loaded, else the documented default.
+    fn sc_row_label(&self, commands: &str, fallback: &str) -> String {
+        if !self.kb_rules.is_empty() {
+            for r in &self.kb_rules {
+                let rc = r.get("command").and_then(Value::as_str).unwrap_or("");
+                if commands.split(' ').any(|c| c == rc) {
+                    let lbl = sc_fmt_label(&r.get("shortcut").cloned().unwrap_or(Value::Null));
+                    if !lbl.is_empty() {
+                        return lbl;
+                    }
+                }
+            }
+            return String::new();
+        }
+        fallback.to_string()
+    }
 
     fn open_feedback(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let input = cx.new(|cx| {
@@ -13197,6 +13242,147 @@ impl Render for Native {
             );
         }
 
+        // Keybindings reference dialog (upstream ShortcutsDialog): search
+        // field + filtered title/shortcut rows over a dimmed backdrop.
+        let mut scd_overlay = div().absolute().inset_0().size_full();
+        if self.sc_dialog_open {
+            let query = self
+                .sc_dialog_input
+                .as_ref()
+                .map(|i| i.read(cx).value().to_lowercase())
+                .unwrap_or_default();
+            let mut list = v_flex()
+                .id("scd-list")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .px(px(12.))
+                .pb(px(12.));
+            let mut shown = 0;
+            for (title, _desc, kbd, commands) in SHORTCUT_ROWS.iter() {
+                if !query.trim().is_empty()
+                    && !title.to_lowercase().contains(query.trim())
+                {
+                    continue;
+                }
+                shown += 1;
+                let label = self.sc_row_label(commands, kbd);
+                list = list.child(
+                    h_flex()
+                        .w_full()
+                        .items_center()
+                        .justify_between()
+                        .gap_4()
+                        .rounded_md()
+                        .px_3()
+                        .py_1p5()
+                        .child(div().text_size(px(13.)).child(*title))
+                        .child(if label.is_empty() {
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("—")
+                                .into_any_element()
+                        } else {
+                            sc_chip(label, &theme).into_any_element()
+                        }),
+                );
+            }
+            if shown == 0 {
+                list = list.child(
+                    div()
+                        .px_3()
+                        .py_2()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child(format!("No shortcuts match \u{201c}{query}\u{201d}")),
+                );
+            }
+            let mut card = v_flex()
+                .w(px(560.))
+                .h(px(520.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .overflow_hidden()
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    if ev.keystroke.key == "escape" {
+                        this.sc_dialog_open = false;
+                        cx.stop_propagation();
+                        cx.notify();
+                    }
+                }))
+                .child(
+                    h_flex()
+                        .w_full()
+                        .px(px(16.))
+                        .pt(px(16.))
+                        .pb(px(8.))
+                        .items_center()
+                        .child(
+                            div()
+                                .text_size(px(15.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .flex_1()
+                                .child("Keybindings"),
+                        )
+                        .child(
+                            div()
+                                .id("scd-close")
+                                .cursor_pointer()
+                                .text_color(theme.muted_foreground)
+                                .hover(|d| d.text_color(theme.foreground))
+                                .child(svg_icon(icons::X).size(px(16.)))
+                                .on_click(cx.listener(|this, _e, _w, cx| {
+                                    this.sc_dialog_open = false;
+                                    cx.notify();
+                                })),
+                        ),
+                );
+            if let Some(input) = self.sc_dialog_input.clone() {
+                card = card.child(
+                    div()
+                        .mx(px(16.))
+                        .mb(px(8.))
+                        .h(px(36.))
+                        .px_3()
+                        .flex()
+                        .items_center()
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(8.))
+                        .child(Input::new(&input).appearance(false)),
+                );
+            }
+            card = card.child(list);
+            scd_overlay = scd_overlay.child(
+                v_flex()
+                    .size_full()
+                    .items_center()
+                    .justify_center()
+                    .bg(rgba(0x00000080))
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.sc_dialog_open = false;
+                            cx.notify();
+                        }),
+                    )
+                    .child(
+                        div()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| {
+                                    cx.stop_propagation()
+                                }),
+                            )
+                            .child(card),
+                    ),
+            );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -13251,5 +13437,6 @@ impl Render for Native {
             .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
             .when(self.feedback_open, |d| d.child(fb_overlay))
+            .when(self.sc_dialog_open, |d| d.child(scd_overlay))
     }
 }

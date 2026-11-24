@@ -41,6 +41,7 @@ pub fn handles(tag: &str) -> bool {
         "orchestration.dispatchCommand"
             | "orchestration.settleTurnDispatch"
             | "orchestration.prepareQuitResume"
+            | "orchestration.reconcileProviderDelivery"
             | "orchestration.repairState"
     ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
 }
@@ -68,6 +69,9 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     }
     if tag == "orchestration.repairState" {
         return repair_state();
+    }
+    if tag == "orchestration.reconcileProviderDelivery" {
+        return reconcile_provider_delivery(payload);
     }
     if tag == "orchestration.settleTurnDispatch" {
         let command = payload
@@ -6299,4 +6303,140 @@ fn repair_state() -> Result<Value, WsErr> {
 
     // Return the refreshed read model (same shape as orchestration.getSnapshot).
     crate::orchestration_snapshot::get_snapshot()
+}
+
+/// `orchestration.reconcileProviderDelivery` (upstream
+/// providerCommandReactor.reconcileDelivery, simplified): settle a dead or
+/// uncertain provider-command-reactor delivery. `safe_retry` returns the
+/// delivery to 'retry'; `accepted`/`abandon` mark it 'succeeded' and lift the
+/// thread's quarantined error by clearing session.last_error and appending a
+/// `thread.session-set` event with lastError null.
+fn reconcile_provider_delivery(payload: &Value) -> Result<Value, WsErr> {
+    let event_sequence = payload
+        .get("eventSequence")
+        .and_then(Value::as_i64)
+        .ok_or_else(|| err("reconcileProviderDelivery expects eventSequence"))?;
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("reconcileProviderDelivery expects threadId"))?;
+    let expected_state = payload
+        .get("expectedState")
+        .and_then(Value::as_str)
+        .unwrap_or("dead");
+    let outcome = payload
+        .get("outcome")
+        .and_then(Value::as_str)
+        .unwrap_or("abandon");
+    let note = payload.get("note").and_then(Value::as_str);
+    if !matches!(expected_state, "dead" | "uncertain") {
+        return Err(err("expectedState must be 'dead' or 'uncertain'"));
+    }
+    if !matches!(outcome, "accepted" | "safe_retry" | "abandon") {
+        return Err(err("outcome must be accepted, safe_retry or abandon"));
+    }
+
+    let conn = open_state_rw()?;
+    let (delivery_thread, delivery_state): (String, String) = conn
+        .query_row(
+            "SELECT thread_id, state FROM orchestration_event_deliveries \
+             WHERE consumer_name = 'provider-command-reactor.v1' AND event_sequence = ?1",
+            params![event_sequence],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .map_err(|_| WsErr(
+            "Provider delivery no longer matches the requested thread and blocking state."
+                .to_string(),
+            Some("PROVIDER_DELIVERY_RECONCILIATION_CONFLICT"),
+        ))?;
+    if delivery_thread != thread_id || delivery_state != expected_state {
+        return Err(WsErr(
+            "Provider delivery no longer matches the requested thread and blocking state."
+                .to_string(),
+            Some("PROVIDER_DELIVERY_RECONCILIATION_CONFLICT"),
+        ));
+    }
+
+    let reconciled_at = iso_now_ms();
+    let new_state = if outcome == "safe_retry" { "retry" } else { "succeeded" };
+    conn.execute(
+        "INSERT INTO provider_delivery_reconciliations \
+         (reconciliation_id, consumer_name, event_sequence, thread_id, previous_state, \
+          outcome, reconciled_by, note, reconciled_at) \
+         VALUES (?1, 'provider-command-reactor.v1', ?2, ?3, ?4, ?5, 'native:shell', ?6, ?7)",
+        params![
+            uuid_v4(),
+            event_sequence,
+            thread_id,
+            expected_state,
+            outcome,
+            note,
+            reconciled_at,
+        ],
+    )
+    .map_err(|e| err(format!("write reconciliation: {e}")))?;
+    conn.execute(
+        "UPDATE orchestration_event_deliveries SET state = ?1, updated_at = ?2, \
+         completed_at = CASE WHEN ?1 = 'succeeded' THEN ?2 ELSE completed_at END \
+         WHERE consumer_name = 'provider-command-reactor.v1' AND event_sequence = ?3",
+        params![new_state, reconciled_at, event_sequence],
+    )
+    .map_err(|e| err(format!("update delivery: {e}")))?;
+
+    if outcome != "safe_retry" {
+        // Lift the quarantine: clear the session error in the projection and
+        // append a session-set event so replays and live snapshots agree.
+        conn.execute(
+            "UPDATE projection_thread_sessions SET last_error = NULL, updated_at = ?1 \
+             WHERE thread_id = ?2",
+            params![reconciled_at, thread_id],
+        )
+        .map_err(|e| err(format!("clear session error: {e}")))?;
+        let session_row: Option<(String, Option<String>, Option<String>, String)> = conn
+            .query_row(
+                "SELECT status, active_turn_id, provider_name, runtime_mode \
+                 FROM projection_thread_sessions WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+            )
+            .ok();
+        if let Some((status, active_turn_id, provider_name, runtime_mode)) = session_row {
+            let event_payload = json!({
+                "threadId": thread_id,
+                "session": {
+                    "status": status,
+                    "activeTurnId": active_turn_id,
+                    "providerName": provider_name,
+                    "runtimeMode": runtime_mode,
+                    "updatedAt": reconciled_at,
+                    "threadId": thread_id,
+                    "lastError": null,
+                },
+            });
+            let stream_version: i64 = conn
+                .query_row(
+                    "SELECT COALESCE(MAX(stream_version), 0) + 1 \
+                     FROM orchestration_events WHERE aggregate_kind = 'thread' AND stream_id = ?1",
+                    params![thread_id],
+                    |r| r.get(0),
+                )
+                .map_err(|e| err(e.to_string()))?;
+            conn.execute(
+                "INSERT INTO orchestration_events \
+                 (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
+                  command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
+                 VALUES (?1, 'thread', ?2, ?3, 'thread.session-set', ?4, NULL, NULL, NULL, 'client', ?5, '{}')",
+                params![uuid_v4(), thread_id, stream_version, reconciled_at, event_payload.to_string()],
+            )
+            .map_err(|e| err(format!("append session-set event: {e}")))?;
+        }
+    }
+
+    Ok(json!({
+        "eventSequence": event_sequence,
+        "threadId": thread_id,
+        "outcome": outcome,
+        "state": new_state,
+        "reconciledAt": reconciled_at,
+    }))
 }

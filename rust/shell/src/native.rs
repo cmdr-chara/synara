@@ -977,6 +977,13 @@ pub struct Native {
     project_picker_open: bool,
     landing_project_id: Option<String>,
     project_picker_input: Option<Entity<InputState>>,
+    /// Upstream ThreadErrorBanner: thread ids whose session error was
+    /// dismissed this session, the Show-details toggle for the current
+    /// banner text, and the in-flight unblock flag.
+    dismissed_thread_errors: std::collections::HashSet<String>,
+    error_details_open: bool,
+    error_details_for: Option<String>,
+    unblocking_thread: bool,
     // Upstream PullRequestThreadDialog (checkout mode): resolve a GitHub PR
     // reference, preview it, then check it out into a new thread.
     pr_dialog_open: bool,
@@ -2213,6 +2220,10 @@ impl Native {
                 project_picker_open: false,
                 landing_project_id: None,
                 project_picker_input: None,
+                dismissed_thread_errors: std::collections::HashSet::new(),
+                error_details_open: false,
+                error_details_for: None,
+                unblocking_thread: false,
                 pr_dialog_open: false,
                 pr_dialog_input: None,
                 pr_resolved: None,
@@ -12268,6 +12279,253 @@ impl Render for Native {
                         ),
                 ),
             );
+        }
+        // Upstream ThreadErrorBanner: a red alert centered above the composer
+        // carries a quarantined/failed thread's session error, with a details
+        // toggle, copy, an Unblock action for provider-delivery quarantines,
+        // and a session-local dismiss.
+        if in_thread {
+            let session_err = str_at(get(thread_v, "session"), "lastError").to_string();
+            let tid_s = self.selected_thread.clone().unwrap_or_default();
+            if !session_err.is_empty() && !self.dismissed_thread_errors.contains(&tid_s) {
+                if self.error_details_for.as_deref() != Some(session_err.as_str()) {
+                    self.error_details_for = Some(session_err.clone());
+                    self.error_details_open = false;
+                }
+                let expanded = self.error_details_open;
+                let can_unblock = session_err
+                    .starts_with("Thread is blocked by an earlier provider failure");
+                let clamped = session_err.len() > 160 || session_err.contains('\n');
+                let shown: String = if expanded || !clamped {
+                    session_err.clone()
+                } else {
+                    let mut cut: String = session_err.chars().take(160).collect();
+                    cut.push_str("\u{2026}");
+                    cut
+                };
+                let err_for_copy = session_err.clone();
+                let unblocking = self.unblocking_thread;
+                composer_col = composer_col.child(
+                    h_flex().w_full().justify_center().child(
+                        div()
+                            .w_full()
+                            .max_w(px(576.))
+                            .mb(px(6.))
+                            .border_1()
+                            .border_color(theme.danger.opacity(0.5))
+                            .rounded(px(10.))
+                            .bg(theme.danger.opacity(0.08))
+                            .px_3()
+                            .py_2()
+                            .child(
+                                h_flex()
+                                    .gap_2()
+                                    .items_start()
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .text_color(theme.danger)
+                                            .child("\u{26a0}"),
+                                    )
+                                    .child(
+                                        v_flex().flex_1().min_w_0().gap_1().child(
+                                            div()
+                                                .text_size(px(12.))
+                                                .text_color(theme.danger)
+                                                .child(shown),
+                                        )
+                                        .child(
+                                            h_flex()
+                                                .gap_2()
+                                                .items_center()
+                                                .when(clamped, |d| {
+                                                    d.child(
+                                                        div()
+                                                            .id("err-details")
+                                                            .text_size(px(11.))
+                                                            .text_color(theme.muted_foreground)
+                                                            .cursor_pointer()
+                                                            .hover(|s| s.text_color(theme.foreground))
+                                                            .on_mouse_down(
+                                                                MouseButton::Left,
+                                                                cx.listener(|this, _e, _w, cx| {
+                                                                    this.error_details_open =
+                                                                        !this.error_details_open;
+                                                                    cx.notify();
+                                                                }),
+                                                            )
+                                                            .child(if expanded {
+                                                                "\u{25be} Hide details"
+                                                            } else {
+                                                                "\u{25b8} Show details"
+                                                            }),
+                                                    )
+                                                })
+                                                .child(
+                                                    div()
+                                                        .id("err-copy")
+                                                        .text_size(px(11.))
+                                                        .text_color(theme.muted_foreground)
+                                                        .cursor_pointer()
+                                                        .hover(|s| s.text_color(theme.foreground))
+                                                        .on_mouse_down(
+                                                            MouseButton::Left,
+                                                            cx.listener(move |_this, _e, _w, cx| {
+                                                                cx.write_to_clipboard(
+                                                                    ClipboardItem::new_string(
+                                                                        err_for_copy.clone(),
+                                                                    ),
+                                                                );
+                                                            }),
+                                                        )
+                                                        .child("Copy error"),
+                                                )
+                                                .when(can_unblock, |d| {
+                                                    d.child(
+                                                        div()
+                                                            .id("err-unblock")
+                                                            .text_size(px(11.))
+                                                            .text_color(theme.danger)
+                                                            .cursor_pointer()
+                                                            .when(!unblocking, |b| {
+                                                                b.hover(|s| {
+                                                                    s.text_color(theme.foreground)
+                                                                })
+                                                            })
+                                                            .on_mouse_down(
+                                                                MouseButton::Left,
+                                                                cx.listener(|this, _e, _w, cx| {
+                                                                    if this.unblocking_thread {
+                                                                        return;
+                                                                    }
+                                                                    let tid = this
+                                                                        .selected_thread
+                                                                        .clone()
+                                                                        .unwrap_or_default();
+                                                                    let cell = this.client.clone();
+                                                                    this.unblocking_thread = true;
+                                                                    cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                                                                        let client = cx
+                                                                            .background_executor()
+                                                                            .spawn(async move {
+                                                                                ensure_client(&cell)
+                                                                            })
+                                                                            .await;
+                                                                        let Some(client) = client else {
+                                                                            let _ = this.update(cx, |t: &mut Self, cx| {
+                                                                                t.unblocking_thread = false;
+                                                                                cx.notify();
+                                                                            });
+                                                                            return;
+                                                                        };
+                                                                        let blockers = cx
+                                                                            .background_executor()
+                                                                            .spawn({
+                                                                                let c = client.clone();
+                                                                                let tid = tid.clone();
+                                                                                async move {
+                                                                                    c.call(
+                                                                                        "orchestration.listProviderDeliveryBlockers",
+                                                                                        json!({"threadId": tid, "limit": 50}),
+                                                                                    )
+                                                                                }
+                                                                            })
+                                                                            .await;
+                                                                        for b in blockers
+                                                                            .and_then(|v| v.as_array().cloned())
+                                                                            .unwrap_or_default()
+                                                                        {
+                                                                            let seq = b
+                                                                                .get("eventSequence")
+                                                                                .and_then(Value::as_i64)
+                                                                                .unwrap_or(0);
+                                                                            let st = str_at(&b, "state")
+                                                                                .to_string();
+                                                                            let c = client.clone();
+                                                                            let tid = tid.clone();
+                                                                            let _ = cx
+                                                                                .background_executor()
+                                                                                .spawn(async move {
+                                                                                    c.call(
+                                                                                        "orchestration.reconcileProviderDelivery",
+                                                                                        json!({
+                                                                                            "eventSequence": seq,
+                                                                                            "threadId": tid,
+                                                                                            "expectedState": st,
+                                                                                            "outcome": "abandon",
+                                                                                            "note": "Unblocked from the native shell",
+                                                                                        }),
+                                                                                    )
+                                                                                })
+                                                                                .await;
+                                                                        }
+                                                                        let p = json!({"threadId": tid});
+                                                                        let detail = cx
+                                                                            .background_executor()
+                                                                            .spawn({
+                                                                                let c = client.clone();
+                                                                                async move {
+                                                                                    c.call(
+                                                                                        "orchestration.getThreadDetailSnapshot",
+                                                                                        p,
+                                                                                    )
+                                                                                }
+                                                                            })
+                                                                            .await;
+                                                                        let snap = cx
+                                                                            .background_executor()
+                                                                            .spawn(async move {
+                                                                                client.call(
+                                                                                    "orchestration.getShellSnapshot",
+                                                                                    json!({}),
+                                                                                )
+                                                                            })
+                                                                            .await;
+                                                                        let _ = this.update(cx, |this: &mut Self, cx| {
+                                                                            this.unblocking_thread = false;
+                                                                            if detail.is_some() {
+                                                                                this.detail = detail;
+                                                                            }
+                                                                            if let Some(s) = snap {
+                                                                                this.snapshot = Some(s);
+                                                                            }
+                                                                            cx.notify();
+                                                                        });
+                                                                    })
+                                                                    .detach();
+                                                                }),
+                                                            )
+                                                            .child(if unblocking {
+                                                                "Unblocking\u{2026}"
+                                                            } else {
+                                                                "Unblock thread"
+                                                            }),
+                                                    )
+                                                }),
+                                        ),
+                                    )
+                                    .child(
+                                        div()
+                                            .id("err-dismiss")
+                                            .text_size(px(12.))
+                                            .text_color(theme.muted_foreground)
+                                            .cursor_pointer()
+                                            .hover(|s| s.text_color(theme.foreground))
+                                            .on_mouse_down(
+                                                MouseButton::Left,
+                                                cx.listener(|this, _e, _w, cx| {
+                                                    if let Some(t) = this.selected_thread.clone() {
+                                                        this.dismissed_thread_errors.insert(t);
+                                                    }
+                                                    cx.notify();
+                                                }),
+                                            )
+                                            .child("\u{2715}"),
+                                    ),
+                            ),
+                    ),
+                );
+            }
         }
         composer_col = composer_col.child(composer_card);
         if row_composer {

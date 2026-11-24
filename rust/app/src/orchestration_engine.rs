@@ -4082,16 +4082,10 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
             .unwrap_or(Value::Null),
     );
     payload.insert("createdAt".into(), json!(created_at));
-    let events = vec![out_event(
-        "thread.turn-start-requested",
-        &thread_id,
-        &created_at,
-        Value::Object(payload),
-    )];
-    let seq = commit_events(&conn, &events, &command_id)?;
-
-    // A queued Devin turn starts the same runner once dispatched.
-    let provider = model_sel
+    // Same starting session-set the immediate path emits: it applies the
+    // turn's runtimeMode to the session row (the ACP runner reads it back
+    // for session/set_mode and re-emits it on its own session-set events).
+    let provider_for_start = model_sel
         .get("provider")
         .and_then(Value::as_str)
         .map(String::from)
@@ -4105,6 +4099,48 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
             .ok()
             .flatten()
         });
+    let starting = out_event(
+        "thread.session-set",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "session": {
+                "threadId": thread_id,
+                "status": "starting",
+                "providerName": provider_for_start,
+                "runtimeMode": command.get("runtimeMode").cloned().unwrap_or(Value::Null),
+                "activeTurnId": null,
+                "lastError": null,
+                "updatedAt": created_at,
+            }
+        }),
+    );
+    let mut requested = out_event(
+        "thread.turn-start-requested",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    );
+    requested.causation_event_id = Some(starting.event_id.clone());
+    let events = vec![starting, requested];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_sessions \
+         (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
+          active_turn_id, last_error, updated_at, runtime_mode) \
+         VALUES (?1, 'starting', ?2, NULL, NULL, NULL, NULL, ?3, ?4)",
+        params![
+            thread_id,
+            provider_for_start,
+            created_at,
+            s(command, "runtimeMode").unwrap_or_else(|| "full-access".into())
+        ],
+    )
+    .map_err(|e| err(e.to_string()))?;
+
+    // A queued Devin turn starts the same runner once dispatched.
+    let provider = provider_for_start;
     if provider.as_deref() == Some("devin") {
         let message = conn
             .query_row(

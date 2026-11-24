@@ -2806,55 +2806,7 @@ impl Native {
                 });
                 // Queued follow-ups drain once the turn settles (upstream's
                 // queuedComposerDrain; a user Stop holds them instead).
-                let next = this
-                    .update(cx, |this: &mut Self, _| {
-                        if this.queue_paused
-                            || this.sending
-                            || this.queued_turns.is_empty()
-                            || session_phase(this.detail.as_ref()) != "ready"
-                        {
-                            return None;
-                        }
-                        this.selected_thread.clone().map(|t| {
-                            (
-                                t,
-                                this.queued_turns.first().cloned().unwrap_or_default(),
-                                this.runtime_mode,
-                                this.interaction_mode,
-                            )
-                        })
-                    })
-                    .ok()
-                    .flatten();
-                if let Some((qtid, qtext, qmode, qimode)) = next {
-                    let cmd = json!({
-                        "type": "thread.turn.start",
-                        "commandId": uuid(),
-                        "threadId": qtid,
-                        "message": {
-                            "messageId": uuid(),
-                            "role": "user",
-                            "text": qtext,
-                            "attachments": [],
-                        },
-                        "runtimeMode": qmode,
-                        "interactionMode": qimode,
-                        "createdAt": now_iso(),
-                    });
-                    let c = client.clone();
-                    let r = cx
-                        .background_executor()
-                        .spawn(async move { c.call("orchestration.dispatchCommand", cmd) })
-                        .await;
-                    if r.is_some() {
-                        let _ = this.update(cx, |this: &mut Self, cx| {
-                            if !this.queued_turns.is_empty() {
-                                this.queued_turns.remove(0);
-                            }
-                            cx.notify();
-                        });
-                    }
-                }
+                let _ = this.update(cx, |this: &mut Self, cx| this.drain_queued(cx));
             }
             // Stream ended (socket dropped): clear the id so the next send or
             // reopen re-subscribes instead of leaving a dead stream marker.
@@ -2867,6 +2819,63 @@ impl Native {
         })
         .detach();
         cx.notify();
+    }
+
+    /// Send the first queued follow-up when the session is ready —
+    /// upstream's queuedComposerDrain. Callers: the thread stream loop
+    /// (after each event batch) and send() when a pill was just queued
+    /// against a possibly stale "running" detail.
+    fn drain_queued(&mut self, cx: &mut Context<Self>) {
+        if self.queue_paused
+            || self.sending
+            || self.queued_turns.is_empty()
+            || session_phase(self.detail.as_ref()) != "ready"
+        {
+            return;
+        }
+        let Some(tid) = self.selected_thread.clone() else {
+            return;
+        };
+        let qtext = self.queued_turns.first().cloned().unwrap_or_default();
+        let qmode = self.runtime_mode;
+        let qimode = self.interaction_mode;
+        let Some(client) = self
+            .client
+            .lock()
+            .ok()
+            .and_then(|guard| guard.as_ref().cloned())
+        else {
+            return;
+        };
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cmd = json!({
+                "type": "thread.turn.start",
+                "commandId": uuid(),
+                "threadId": tid,
+                "message": {
+                    "messageId": uuid(),
+                    "role": "user",
+                    "text": qtext,
+                    "attachments": [],
+                },
+                "runtimeMode": qmode,
+                "interactionMode": qimode,
+                "createdAt": now_iso(),
+            });
+            let r = cx
+                .background_executor()
+                .spawn(async move { client.call("orchestration.dispatchCommand", cmd) })
+                .await;
+            if r.is_some() {
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    if !this.queued_turns.is_empty() {
+                        this.queued_turns.remove(0);
+                    }
+                    cx.notify();
+                });
+            }
+        })
+        .detach();
     }
 
     /// Deselect the current thread so the composer starts a new one.
@@ -10419,6 +10428,30 @@ impl Native {
             self.queued_turns.push(text);
             self.composer.update(cx, |s, cx| s.clean(window, cx));
             cx.notify();
+            // `detail` may be a stale "running" left over after the stream
+            // ended — refresh it and drain right away if the session has
+            // actually settled, otherwise the pill waits for the next
+            // stream event that may never come.
+            let cell = self.client.clone();
+            let tid = self.selected_thread.clone().unwrap_or_default();
+            cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                let p = json!({"threadId": tid});
+                let d = cx
+                    .background_executor()
+                    .spawn(async move {
+                        let client = ensure_client(&cell)?;
+                        client.call("orchestration.getThreadDetailSnapshot", p)
+                    })
+                    .await;
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    if let Some(d) = d {
+                        this.detail = Some(d);
+                    }
+                    this.drain_queued(cx);
+                    cx.notify();
+                });
+            })
+            .detach();
             return;
         }
         self.sending = true;

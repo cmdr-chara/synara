@@ -893,6 +893,7 @@ pub struct Native {
     inbox_loading: bool,
     inbox_tasks: Vec<Value>,
     inbox_recap: Option<Value>,
+    inbox_recap_prev: Option<Value>,
     inbox_usage: Vec<Value>,
     inbox_signed_in: Option<bool>,
     inbox_updates: Vec<Value>,
@@ -1454,6 +1455,15 @@ fn str_at<'a>(v: &'a Value, k: &str) -> &'a str {
     get(v, k).as_str().unwrap_or("")
 }
 
+/// serde number-or-numeric-string → f64, 0 on anything else.
+fn num(v: Option<&Value>) -> f64 {
+    v.and_then(|v| {
+        v.as_f64()
+            .or_else(|| v.as_str().and_then(|s| s.parse().ok()))
+    })
+    .unwrap_or(0.0)
+}
+
 /// Upstream derivePhase(session): closed->disconnected, connecting->connecting,
 /// running->running, otherwise ready.
 fn session_phase(detail: Option<&Value>) -> &'static str {
@@ -1937,6 +1947,87 @@ fn clock_time(iso: &str) -> String {
     t.with_timezone(&chrono::Local).format("%-I:%M %p").to_string()
 }
 
+// Epoch-ms → RFC3339 (upstream toISOString, accepted by stats.getRecap).
+fn ms_to_iso(ms: f64) -> String {
+    chrono::DateTime::from_timestamp_millis(ms as i64)
+        .map(|d| d.to_rfc3339_opts(chrono::SecondsFormat::Millis, true))
+        .unwrap_or_else(now_iso)
+}
+
+/// Upstream resolveInboxDay (`packages/shared/src/inboxDay.ts`): the working
+/// day containing `now_ms` runs 4:00→4:00 local, split at 12:00 and 18:00
+/// (Morning / Afternoon / Evening). Returns (fromMs, toMs, slotBoundaries).
+fn inbox_day_range_at(now_ms: f64) -> (f64, f64, Vec<f64>) {
+    let local = chrono::Local::now();
+    let mut day = local
+        .date_naive()
+        .and_hms_opt(4, 0, 0)
+        .and_then(|d| d.and_local_timezone(chrono::Local).earliest())
+        .unwrap_or(local);
+    // Walk back until the 4:00 window covers `now_ms` (yesterday's range).
+    while day.timestamp_millis() as f64 > now_ms {
+        day = day - chrono::Duration::days(1);
+    }
+    let noon = day + chrono::Duration::hours(8);
+    let evening = day + chrono::Duration::hours(14);
+    let end = day + chrono::Duration::days(1);
+    (
+        day.timestamp_millis() as f64,
+        end.timestamp_millis() as f64,
+        vec![
+            noon.timestamp_millis() as f64,
+            evening.timestamp_millis() as f64,
+        ],
+    )
+}
+
+fn inbox_day_range() -> (f64, f64, Vec<f64>) {
+    inbox_day_range_at(chrono::Local::now().timestamp_millis() as f64)
+}
+
+/// Upstream plural(): "1 chat" / "2 chats".
+fn plural(n: f64, one: &str, many: &str) -> String {
+    if n == 1.0 {
+        format!("1 {one}")
+    } else {
+        format!("{} {many}", n as i64)
+    }
+}
+
+/// Upstream formatCompact for token counts: 990 → "990", 8_400 → "8.4K",
+/// 3_550_000 → "3.6M".
+fn fmt_compact(n: f64) -> String {
+    if n < 1_000.0 {
+        format!("{}", n as i64)
+    } else if n < 1_000_000.0 {
+        format!("{:.1}K", n / 1_000.0)
+    } else {
+        format!("{:.1}M", n / 1_000_000.0)
+    }
+}
+
+/// recap.tokens = {user, automation, agent} → sum.
+fn recap_tokens(v: &Value) -> f64 {
+    let t = v.get("tokens");
+    num(t.and_then(|t| t.get("user")))
+        + num(t.and_then(|t| t.get("automation")))
+        + num(t.and_then(|t| t.get("agent")))
+}
+
+/// "13h 48m" / "3m" / "45s" from milliseconds (upstream formatDuration).
+fn fmt_dur_ms(ms: f64) -> String {
+    let s = (ms / 1000.0) as i64;
+    if s < 60 {
+        format!("{s}s")
+    } else if s < 3600 {
+        format!("{}m", s / 60)
+    } else {
+        let h = s / 3600;
+        let m = (s % 3600) / 60;
+        if m > 0 { format!("{h}h {m}m") } else { format!("{h}h") }
+    }
+}
+
 fn uuid() -> String {
     uuid::Uuid::new_v4().to_string()
 }
@@ -2163,6 +2254,7 @@ impl Native {
                 inbox_loading: false,
                 inbox_tasks: Vec::new(),
                 inbox_recap: None,
+                inbox_recap_prev: None,
                 inbox_usage: Vec::new(),
                 inbox_signed_in: None,
                 inbox_updates: Vec::new(),
@@ -5394,7 +5486,22 @@ impl Native {
                         return Value::Null;
                     };
                     let tasks = c.call("todo.list", json!({})).unwrap_or(Value::Null);
-                    let recap = c.call("stats.getRecap", json!({})).unwrap_or(Value::Null);
+                    // Upstream: today's working day (4am→4am, slots at 12/18)
+                    // plus the previous one for the "this time yesterday" bits.
+                    let (from_ms, to_ms, bounds) = inbox_day_range();
+                    let today_in = json!({
+                        "from": ms_to_iso(from_ms),
+                        "to": ms_to_iso(to_ms),
+                        "slotBoundaries": bounds.iter().map(|b| ms_to_iso(*b)).collect::<Vec<_>>(),
+                    });
+                    let (pfrom, pto, pbounds) = inbox_day_range_at(from_ms - 1.0);
+                    let prev_in = json!({
+                        "from": ms_to_iso(pfrom),
+                        "to": ms_to_iso(pto),
+                        "slotBoundaries": pbounds.iter().map(|b| ms_to_iso(*b)).collect::<Vec<_>>(),
+                    });
+                    let recap = c.call("stats.getRecap", today_in).unwrap_or(Value::Null);
+                    let prev_recap = c.call("stats.getRecap", prev_in).unwrap_or(Value::Null);
                     let usage = c
                         .call("server.listProviderUsage", json!({}))
                         .unwrap_or(Value::Null);
@@ -5402,7 +5509,7 @@ impl Native {
                     let provs = c
                         .call_first_chunk("server.subscribeProviderStatuses", json!({}))
                         .unwrap_or(Value::Null);
-                    json!({"tasks": tasks, "recap": recap, "usage": usage, "account": acct, "providers": provs})
+                    json!({"tasks": tasks, "recap": recap, "prevRecap": prev_recap, "usage": usage, "account": acct, "providers": provs})
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
@@ -5418,6 +5525,7 @@ impl Native {
                     })
                     .collect();
                 this.inbox_recap = Some(get(&bundle, "recap").clone());
+                this.inbox_recap_prev = Some(get(&bundle, "prevRecap").clone());
                 this.inbox_usage = arr(get(&bundle, "usage"), "snapshots")
                     .to_vec()
                     .into_iter()
@@ -11811,17 +11919,294 @@ impl Render for Native {
             }
             let tasks_card = tasks_card.child(rows);
 
-            // Right column: recap + usage tiles
+            // Right column: upstream DigestCard ("Your day so far") + tile grid
+            // (model / project / tokens / agents / yesterday / quota).
             let mut right_col = v_flex().flex_1().gap_3();
-            let recap_text = self
-                .inbox_recap
-                .as_ref()
-                .map(|r| str_at(r, "text").to_string())
-                .filter(|s: &String| !s.is_empty())
-                .unwrap_or_else(|| "Nothing ran yet today. This fills in as your agents work.".to_string());
+            let recap = self.inbox_recap.clone().unwrap_or(Value::Null);
+            let prev = self.inbox_recap_prev.clone().unwrap_or(Value::Null);
+            let totals = get(&recap, "totals").clone();
+            let prev_totals = get(&prev, "totals").clone();
+            let sent_prompts = num(totals.get("prompts"));
+            let chats = num(totals.get("chats"));
+            let work_ms = num(totals.get("agentWorkMs"));
+            let turns = num(totals.get("turns"));
+            let tokens = recap_tokens(&totals);
+            let cache_read = num(totals.get("cacheReadTokens"));
+            let prev_prompts = num(prev_totals.get("prompts"));
+            let prev_tokens = recap_tokens(&prev_totals);
+            let updated = str_at(&recap, "generatedAt");
+            let updated_label = if updated.is_empty() {
+                String::new()
+            } else {
+                format!("Updated {}", clock_time(updated))
+            };
+
+            // buildInboxDigest: one sentence per non-empty stat.
+            let mut sentences: Vec<String> = Vec::new();
+            if sent_prompts > 0.0 {
+                sentences.push(format!(
+                    "You sent {} across {}.",
+                    plural(sent_prompts, "prompt", "prompts"),
+                    plural(chats, "chat", "chats")
+                ));
+            }
+            if work_ms > 0.0 {
+                sentences.push(format!("Your agents ran for {}.", fmt_dur_ms(work_ms)));
+            }
+            if turns > 0.0 {
+                sentences.push(format!(
+                    "They finished {} for you.",
+                    plural(turns, "turn", "turns")
+                ));
+            }
+            if prev_prompts > 0.0 {
+                sentences.push(format!(
+                    "By this time yesterday you had sent {}.",
+                    plural(prev_prompts, "prompt", "prompts")
+                ));
+            }
+            if sentences.is_empty() {
+                sentences.push(
+                    "Nothing ran yet today. This fills in as your agents work.".to_string(),
+                );
+            }
+            let mut digest_body = v_flex().gap_1();
+            for s in sentences {
+                digest_body = digest_body.child(div().text_size(px(13.)).child(s));
+            }
+
+            // Slot strip: Morning / Afternoon / Evening with prompt counts.
+            let slots = get(&recap, "slots")
+                .as_array()
+                .cloned()
+                .unwrap_or_default();
+            let slot_names = ["Morning", "Afternoon", "Evening"];
+            let mut strip = h_flex().w_full().gap_2();
+            for (i, name) in slot_names.iter().enumerate() {
+                let slot = slots.get(i).cloned().unwrap_or(Value::Null);
+                let prompts = num(slot.get("prompts"));
+                let stokens = recap_tokens(&slot);
+                strip = strip.child(
+                    v_flex()
+                        .flex_1()
+                        .gap(px(1.))
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(*name),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .child(plural(prompts, "prompt", "prompts")),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(format!("{} tokens", fmt_compact(stokens))),
+                        ),
+                );
+            }
+
             right_col = right_col.child(tile(
-                div().p_4().text_size(px(13.)).child(recap_text).into_any_element(),
+                v_flex()
+                    .p_4()
+                    .gap_3()
+                    .child(
+                        h_flex()
+                            .justify_between()
+                            .items_baseline()
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child("Your day so far"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(updated_label),
+                            ),
+                    )
+                    .child(digest_body)
+                    .child(strip)
+                    .into_any_element(),
             ));
+
+            // Tile grid (upstream grid-cols-2 @2xl:grid-cols-3 in the right col):
+            // each tile is label / big value / sub.
+            let mut stat_tiles: Vec<gpui::Div> = Vec::new();
+            let push_tile = |tiles: &mut Vec<gpui::Div>, el: gpui::AnyElement| {
+                tiles.push(tile(el).flex_1());
+            };
+            // Best model by tokens.
+            let models = get(&recap, "models")
+                .as_array()
+                .cloned()
+                .unwrap_or_default();
+            if let Some(top) = models.iter().max_by(|a, b| {
+                num(a.get("tokens"))
+                    .partial_cmp(&num(b.get("tokens")))
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            }) {
+                if num(top.get("tokens")) > 0.0 {
+                    let model = str_at(top, "model").to_string();
+                    let provider = str_at(top, "provider").to_string();
+                    push_tile(&mut stat_tiles,
+                        v_flex()
+                            .p_3()
+                            .gap_1()
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Your best model was"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(15.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child(model),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(provider),
+                            )
+                            .into_any_element(),
+                        );
+                }
+            }
+            // Most-worked project.
+            let projects = get(&recap, "projects")
+                .as_array()
+                .cloned()
+                .unwrap_or_default();
+            if let Some(top) = projects.iter().max_by(|a, b| {
+                num(a.get("prompts"))
+                    .partial_cmp(&num(b.get("prompts")))
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            }) {
+                if num(top.get("prompts")) > 0.0 {
+                    let title = str_at(top, "title").to_string();
+                    let sub = plural(num(top.get("prompts")), "prompt", "prompts");
+                    push_tile(&mut stat_tiles,
+                        v_flex()
+                            .p_3()
+                            .gap_1()
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("You worked most on"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(15.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child(title),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(sub),
+                            )
+                            .into_any_element(),
+                        );
+                }
+            }
+            // Tokens used today.
+            if tokens > 0.0 {
+                let sub = if cache_read > 0.0 {
+                    format!("{} from cache", fmt_compact(cache_read))
+                } else {
+                    String::new()
+                };
+                push_tile(&mut stat_tiles,
+                    v_flex()
+                        .p_3()
+                        .gap_1()
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("You used"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(15.))
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child(format!("{} tokens", fmt_compact(tokens))),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(sub),
+                        )
+                        .into_any_element(),
+                    );
+            }
+            // Agent work time.
+            if work_ms > 0.0 {
+                push_tile(&mut stat_tiles,
+                    v_flex()
+                        .p_3()
+                        .gap_1()
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("Your agents worked for"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(15.))
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child(fmt_dur_ms(work_ms)),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(format!("across {}", plural(turns, "turn", "turns"))),
+                        )
+                        .into_any_element(),
+                    );
+            }
+            // Yesterday's tokens by this time.
+            if prev_tokens > 0.0 {
+                push_tile(&mut stat_tiles,
+                    v_flex()
+                        .p_3()
+                        .gap_1()
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("Yesterday you used"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(15.))
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child(format!("{} tokens", fmt_compact(prev_tokens))),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("by this time"),
+                        )
+                        .into_any_element(),
+                    );
+            }
+            // Quota tile (upstream "Left on {name}, {window}").
             let provider = self
                 .inbox_usage
                 .first()
@@ -11840,11 +12225,16 @@ impl Render for Native {
                 .map(|u| str_at(u, "resetsIn").to_string())
                 .filter(|s: &String| !s.is_empty())
                 .unwrap_or_else(|| "5d 18h".to_string());
-            right_col = right_col.child(tile(
+            push_tile(&mut stat_tiles,
                 v_flex()
-                    .p_4()
-                    .gap_2()
-                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Left on {provider}, weekly")))
+                    .p_3()
+                    .gap_1()
+                    .child(
+                        div()
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child(format!("Left on {provider}, weekly")),
+                    )
                     .child(
                         h_flex()
                             .items_center()
@@ -11852,7 +12242,7 @@ impl Render for Native {
                             .child(svg_icon(icons::CODEX).size(px(18.)).text_color(theme.foreground))
                             .child(
                                 div()
-                                    .text_size(px(20.))
+                                    .text_size(px(15.))
                                     .font_weight(FontWeight::SEMIBOLD)
                                     .child(format!("{pct:.0}%")),
                             ),
@@ -11869,10 +12259,39 @@ impl Render for Native {
                                     .bg(theme.border)
                                     .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(3.)).bg(rgb(0x22a865))),
                             )
-                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Resets in {resets}"))),
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(format!("Resets in {resets}")),
+                            ),
                     )
                     .into_any_element(),
-            ));
+                );
+            let mut tile_rows = v_flex().w_full().gap_2();
+            let mut it = stat_tiles.into_iter();
+            loop {
+                let mut r = h_flex().w_full().gap_2();
+                let mut c = 0;
+                for _ in 0..3 {
+                    if let Some(t) = it.next() {
+                        r = r.child(t);
+                        c += 1;
+                    }
+                }
+                if c == 0 {
+                    break;
+                }
+                // Upstream keeps tiles at one grid-column width.
+                for _ in c..3 {
+                    r = r.child(div().flex_1());
+                }
+                tile_rows = tile_rows.child(r);
+                if c < 3 {
+                    break;
+                }
+            }
+            right_col = right_col.child(tile_rows);
 
             let grid = h_flex()
                 .gap(px(16.))

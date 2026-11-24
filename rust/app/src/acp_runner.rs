@@ -384,6 +384,8 @@ struct ApprovalCtx {
     thread_id: String,
     turn_id: String,
     cancelled: Arc<AtomicBool>,
+    runtime_mode: String,
+    interaction_mode: String,
 }
 
 impl Rpc {
@@ -489,21 +491,20 @@ impl Rpc {
         let method = v.get("method").and_then(Value::as_str).unwrap_or("");
         match method {
             "session/request_permission" => {
-                // Upstream gates these behind an approval card. With a
-                // turn context the request becomes a pending interaction
-                // and the runner blocks on the user's decision; without
-                // one (replay) fall back to auto-approving.
+                // Upstream gates these behind an approval card except in
+                // full-access mode, which resolves them automatically
+                // (resolveAcpFullAccessPermissionOutcome). With a turn
+                // context the request becomes a pending interaction and
+                // the runner blocks on the user's decision; without one
+                // (replay) fall back to auto-approving.
                 if let Some(ctx) = self.approval_ctx.clone() {
-                    self.handle_permission(v, &ctx);
-                } else if let Some(rid) = v.get("id").cloned() {
-                    let option_id = auto_pick_option(v)
-                        .map(|o| o.get("optionId").cloned().unwrap_or(Value::Null))
-                        .unwrap_or(Value::Null);
-                    let _ = self.write_raw(&json!({
-                        "jsonrpc": "2.0",
-                        "id": rid,
-                        "result": {"outcome": {"outcome": "selected", "optionId": option_id}},
-                    }));
+                    if ctx.runtime_mode == "full-access" {
+                        self.reply_auto(v);
+                    } else {
+                        self.handle_permission(v, &ctx);
+                    }
+                } else {
+                    self.reply_auto(v);
                 }
             }
             "fs/read_text_file" | "fs/write_text_file" | "terminal/create"
@@ -518,6 +519,21 @@ impl Rpc {
                 }
             }
             _ => on_notify(v),
+        }
+    }
+
+    /// Reply to a request_permission picking the most permissive option —
+    /// upstream's full-access auto-approval and the replay fallback.
+    fn reply_auto(&mut self, v: &Value) {
+        if let Some(rid) = v.get("id").cloned() {
+            let option_id = auto_pick_option(v)
+                .map(|o| o.get("optionId").cloned().unwrap_or(Value::Null))
+                .unwrap_or(Value::Null);
+            let _ = self.write_raw(&json!({
+                "jsonrpc": "2.0",
+                "id": rid,
+                "result": {"outcome": {"outcome": "selected", "optionId": option_id}},
+            }));
         }
     }
 
@@ -725,6 +741,103 @@ fn auto_pick_option(v: &Value) -> Option<Value> {
         .cloned()
 }
 
+// Port of upstream resolveRequestedModeId (DevinAdapter): pick the ACP
+// session mode matching the thread's runtime/interaction mode.
+// plan -> ["plan", "architect"], approval-required -> ["accept-edits",
+// "code"] with an "ask everytime" fallback, otherwise -> ["bypass",
+// "full access"]. Exact normalized match first, then whole-token;
+// plan only ever takes the exact match (fail-closed).
+fn acp_mode_norm(s: &str) -> String {
+    s.to_lowercase()
+        .split(|c: char| !c.is_alphanumeric())
+        .filter(|t| !t.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn acp_mode_matches<'a>(modes: &'a [Value], aliases: &[&str], whole_token: bool) -> Option<&'a Value> {
+    modes.iter().find(|m| {
+        let id = acp_mode_norm(m.get("id").and_then(Value::as_str).unwrap_or(""));
+        let name = acp_mode_norm(m.get("name").and_then(Value::as_str).unwrap_or(""));
+        aliases.iter().any(|a| {
+            let a = acp_mode_norm(a);
+            if id == a || name == a {
+                return true;
+            }
+            whole_token
+                && a
+                    .split(' ')
+                    .all(|tok| id.split(' ').any(|t| t == tok) || name.split(' ').any(|t| t == tok))
+        })
+    })
+}
+
+fn resolve_acp_mode(
+    mode_state: &Value,
+    runtime_mode: &str,
+    interaction_mode: &str,
+) -> Result<Option<String>, String> {
+    let modes = mode_state
+        .get("availableModes")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let current = mode_state
+        .get("currentModeId")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let required_by = if interaction_mode == "plan" {
+        Some("plan interaction mode")
+    } else if runtime_mode == "approval-required" {
+        Some("runtime mode \"approval-required\"")
+    } else {
+        None
+    };
+    if modes.is_empty() {
+        return match required_by {
+            Some(r) => Err(format!(
+                "Requested {r} requires the ACP session to expose modes, but none were reported."
+            )),
+            None => Ok(None),
+        };
+    }
+    let target = if interaction_mode == "plan" {
+        acp_mode_matches(&modes, &["plan", "architect"], false)
+    } else if runtime_mode == "approval-required" {
+        acp_mode_matches(&modes, &["accept-edits", "code"], true).or_else(|| {
+            acp_mode_matches(&modes, &["ask everytime", "ask every time"], true)
+        })
+    } else {
+        acp_mode_matches(&modes, &["bypass", "full access"], true)
+    };
+    match target {
+        Some(m) => {
+            let id = m.get("id").and_then(Value::as_str).unwrap_or("").to_string();
+            if id == current {
+                Ok(None)
+            } else {
+                Ok(Some(id))
+            }
+        }
+        None => match required_by {
+            Some(r) => Err(format!(
+                "Requested {r} does not match any available ACP mode. Available modes: {}",
+                modes
+                    .iter()
+                    .map(|m| format!(
+                        "{} ({})",
+                        m.get("id").and_then(Value::as_str).unwrap_or("?"),
+                        m.get("name").and_then(Value::as_str).unwrap_or("?")
+                    ))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )),
+            None => Ok(None),
+        },
+    }
+}
+
 fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
@@ -750,6 +863,17 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         params![thread_id, turn_id, message_id, assistant_msg_id, now],
     )
     .map_err(|e| err(format!("insert turn: {e}")))?;
+    // The turn-start event already persisted the command's runtimeMode on
+    // the session row; reuse it for every session-set event this turn
+    // emits so replay_session_projection keeps the value (an event
+    // without runtimeMode would erase the column).
+    let turn_runtime_mode: String = conn
+        .query_row(
+            "SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "full-access".to_string());
     conn.execute(
         "INSERT OR REPLACE INTO projection_thread_sessions \
          (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
@@ -767,6 +891,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             "status": "running",
             "providerName": "devin",
             "activeTurnId": turn_id,
+            "runtimeMode": turn_runtime_mode,
             "lastError": null,
             "updatedAt": now,
         }),
@@ -812,6 +937,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             thread_id: thread_id.to_string(),
             turn_id: turn_id.clone(),
             cancelled: cancelled.clone(),
+            runtime_mode: turn_runtime_mode.clone(),
+            interaction_mode: conn
+                .query_row(
+                    "SELECT interaction_mode FROM projection_threads WHERE thread_id = ?1",
+                    params![thread_id],
+                    |r| r.get::<_, String>(0),
+                )
+                .unwrap_or_else(|_| "default".to_string()),
         }),
     };
 
@@ -828,26 +961,60 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             }),
         )?;
 
+        let mut mode_state = Value::Null;
         let session_id = if let Some(sid) = stored_session.as_deref() {
             match rpc.call(
                 "session/load",
                 json!({"sessionId": sid, "cwd": cwd, "mcpServers": []}),
             ) {
-                Ok(_) => sid.to_string(),
-                Err(_) => rpc
-                    .call("session/new", json!({"cwd": cwd, "mcpServers": []}))?
-                    .get("sessionId")
-                    .and_then(Value::as_str)
-                    .ok_or_else(|| err("session/new returned no sessionId"))?
-                    .to_string(),
+                Ok(res) => {
+                    mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
+                    sid.to_string()
+                }
+                Err(_) => {
+                    let res =
+                        rpc.call("session/new", json!({"cwd": cwd, "mcpServers": []}))?;
+                    mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
+                    res.get("sessionId")
+                        .and_then(Value::as_str)
+                        .ok_or_else(|| err("session/new returned no sessionId"))?
+                        .to_string()
+                }
             }
         } else {
-            rpc.call("session/new", json!({"cwd": cwd, "mcpServers": []}))?
-                .get("sessionId")
+            let res = rpc.call("session/new", json!({"cwd": cwd, "mcpServers": []}))?;
+            mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
+            res.get("sessionId")
                 .and_then(Value::as_str)
                 .ok_or_else(|| err("session/new returned no sessionId"))?
                 .to_string()
         };
+
+        // Upstream applyDevinSessionConfiguration: translate the thread's
+        // runtime/interaction mode into an ACP session mode before the
+        // first prompt (plan -> plan/architect, approval-required ->
+        // accept-edits/code/"ask everytime", otherwise bypass/full access).
+        let ctx_mode = rpc
+            .approval_ctx
+            .as_ref()
+            .map(|c| (c.runtime_mode.clone(), c.interaction_mode.clone()))
+            .unwrap_or_default();
+        match resolve_acp_mode(&mode_state, &ctx_mode.0, &ctx_mode.1) {
+            Ok(Some(mode_id)) => {
+                if let Err(e) = rpc.call(
+                    "session/set_mode",
+                    json!({"sessionId": session_id, "modeId": mode_id}),
+                ) {
+                    eprintln!("acp_runner: session/set_mode failed: {}", e.0);
+                }
+            }
+            Ok(None) => {}
+            Err(issue) => {
+                let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                let _ = set_session(&conn, thread_id, "error", Some(""), Some(&issue), None);
+                return Err(err(issue));
+            }
+        }
 
         {
             let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
@@ -1016,6 +1183,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     "status": status,
                     "providerName": "devin",
                     "activeTurnId": null,
+                    "runtimeMode": turn_runtime_mode,
                     "lastError": null,
                     "updatedAt": iso_now_ms(),
                 }),
@@ -1038,6 +1206,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     "status": status,
                     "providerName": "devin",
                     "activeTurnId": null,
+                    "runtimeMode": turn_runtime_mode,
                     "lastError": e.0,
                     "updatedAt": iso_now_ms(),
                 }),

@@ -13065,7 +13065,7 @@ impl Render for Native {
                                 .min_w_0()
                                 .text_size(px(12.))
                                 .text_color(theme.muted_foreground)
-                                .child("This side chat expired after a period of inactivity."),
+                                .child("This side chat expired after a period of inactivity. Start a new side chat."),
                         )
                         .child(
                             div()

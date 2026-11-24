@@ -90,7 +90,7 @@ pub fn get_config() -> Value {
         "keybindings": kb.get("keybindings").cloned().unwrap_or(Value::Array(vec![])),
         "defaultKeybindings": crate::server_keybindings::default_resolved(),
         "issues": kb.get("issues").cloned().unwrap_or(Value::Array(vec![])),
-        "providers": [],
+        "providers": crate::provider_cache::provider_statuses(),
         "availableEditors": crate::shell_editor::available_editors(),
     })
 }

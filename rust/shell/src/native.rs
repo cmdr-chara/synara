@@ -984,6 +984,13 @@ pub struct Native {
     error_details_open: bool,
     error_details_for: Option<String>,
     unblocking_thread: bool,
+    // Upstream ProviderHealthBanner: `server.getConfig.providers` statuses
+    // plus the session-local dismissal keys (upstream persists them in
+    // localStorage, capped at 50).
+    provider_statuses: Vec<Value>,
+    dismissed_provider_banner_keys: std::collections::HashSet<String>,
+    // ExpiredSidechatNotice start-new in flight.
+    starting_sidechat: bool,
     // Upstream PullRequestThreadDialog (checkout mode): resolve a GitHub PR
     // reference, preview it, then check it out into a new thread.
     pr_dialog_open: bool,
@@ -2224,6 +2231,9 @@ impl Native {
                 error_details_open: false,
                 error_details_for: None,
                 unblocking_thread: false,
+                provider_statuses: Vec::new(),
+                dismissed_provider_banner_keys: std::collections::HashSet::new(),
+                starting_sidechat: false,
                 pr_dialog_open: false,
                 pr_dialog_input: None,
                 pr_resolved: None,
@@ -2388,6 +2398,14 @@ impl Native {
                     .spawn(async move { c2.call("server.getConfig", json!({})) })
                     .await;
                 let _ = this.update(cx, |this: &mut Self, cx| {
+                    if let Some(providers) = cfg
+                        .as_ref()
+                        .and_then(|v| v.get("providers"))
+                        .and_then(|p| p.as_array())
+                        .cloned()
+                    {
+                        this.provider_statuses = providers;
+                    }
                     if let Some(rules) = cfg.and_then(|v| {
                         v.get("keybindings")
                             .and_then(|k| k.as_array())
@@ -8857,6 +8875,19 @@ impl Native {
         if text.is_empty() || self.sending {
             return;
         }
+        // Expired side chats keep the composer read-only (upstream
+        // submission.expired); a replacement starts from the notice bar.
+        {
+            let tv = self
+                .detail
+                .as_ref()
+                .map(|d| get(d, "thread"))
+                .cloned()
+                .unwrap_or(Value::Null);
+            if !get(&tv, "sidechatExpiredAt").is_null() {
+                return;
+            }
+        }
         // Edit & resend (upstream thread.message.edit-and-resend): the pencil
         // on a user message reloads it into the composer; sending replaces
         // the original turn instead of appending a new one.
@@ -11557,6 +11588,9 @@ impl Render for Native {
         // button for a prominent dark stop square (thread.turn.interrupt).
         let turn_live = in_thread
             && matches!(session_phase(self.detail.as_ref()), "running" | "connecting");
+        // Expired side chats disable the send control (upstream
+        // submission.expired → muted circle like an empty draft).
+        let composer_expired = in_thread && !get(thread_v, "sidechatExpiredAt").is_null();
         let send_btn = if turn_live {
             div()
                 .id("send")
@@ -11582,7 +11616,7 @@ impl Render for Native {
                 .items_center()
                 .justify_center()
                 .rounded_full()
-                .bg(if draft_empty {
+                .bg(if draft_empty || composer_expired {
                     theme.foreground.opacity(0.2)
                 } else {
                     theme.foreground
@@ -12280,10 +12314,16 @@ impl Render for Native {
                 ),
             );
         }
-        // Upstream ThreadErrorBanner: a red alert centered above the composer
-        // carries a quarantined/failed thread's session error, with a details
-        // toggle, copy, an Unblock action for provider-delivery quarantines,
-        // and a session-local dismiss.
+        // Upstream status banners sit at the top of the chat column: the
+        // provider-health alert above everything and the thread error first
+        // inside the transcript pane (ChatColumnBannerFrame +
+        // ChatTranscriptPane), not above the composer.
+        let mut thread_error_banner: Option<gpui::AnyElement> = None;
+        let mut provider_banner: Option<gpui::AnyElement> = None;
+        // Upstream ThreadErrorBanner: a red alert carries a quarantined/failed
+        // thread's session error, with a details toggle, copy, an Unblock
+        // action for provider-delivery quarantines, and a session-local
+        // dismiss.
         if in_thread {
             let session_err = str_at(get(thread_v, "session"), "lastError").to_string();
             let tid_s = self.selected_thread.clone().unwrap_or_default();
@@ -12305,7 +12345,7 @@ impl Render for Native {
                 };
                 let err_for_copy = session_err.clone();
                 let unblocking = self.unblocking_thread;
-                composer_col = composer_col.child(
+                thread_error_banner = Some(
                     h_flex().w_full().justify_center().child(
                         div()
                             .w_full()
@@ -12523,9 +12563,278 @@ impl Render for Native {
                                             .child("\u{2715}"),
                                     ),
                             ),
-                    ),
+                    )
+                    .into_any_element(),
                 );
             }
+        }
+        // Upstream ProviderHealthBanner: the selected thread's provider
+        // status surfaces as a warning/error alert above the chat column
+        // until dismissed (ready providers render nothing). Dismissal keys
+        // carry every field that would make the next banner a new one.
+        if in_thread {
+            let sess = get(thread_v, "session");
+            let prov = str_at(sess, "providerName").to_string();
+            let pinst = str_at(sess, "providerInstanceId").to_string();
+            let status_v = self
+                .provider_statuses
+                .iter()
+                .find(|st| {
+                    let drv = {
+                        let d = str_at(st, "driver").to_string();
+                        if d.is_empty() {
+                            str_at(st, "provider").to_string()
+                        } else {
+                            d
+                        }
+                    };
+                    let matches_provider = drv.eq_ignore_ascii_case(&prov)
+                        || str_at(st, "displayName").eq_ignore_ascii_case(&prov)
+                        || str_at(st, "provider").eq_ignore_ascii_case(&prov);
+                    let matches_instance = pinst.is_empty()
+                        || str_at(st, "instanceId") == pinst
+                        || str_at(st, "provider") == pinst;
+                    matches_provider && matches_instance
+                })
+                .cloned();
+            if let Some(st) = status_v {
+                let s_state = str_at(&st, "status").to_string();
+                if s_state != "ready" {
+                    let label = {
+                        let d = str_at(&st, "displayName").to_string();
+                        if d.is_empty() {
+                            str_at(&st, "provider").to_string()
+                        } else {
+                            d
+                        }
+                    };
+                    let dkey = [
+                        str_at(&st, "provider").to_string(),
+                        {
+                            let i = str_at(&st, "instanceId").to_string();
+                            if i.is_empty() {
+                                str_at(&st, "provider").to_string()
+                            } else {
+                                i
+                            }
+                        },
+                        s_state.clone(),
+                        if st.get("available").and_then(Value::as_bool).unwrap_or(false) {
+                            "available".to_string()
+                        } else {
+                            "unavailable".to_string()
+                        },
+                        str_at(&st, "authStatus").to_string(),
+                        str_at(&st, "message").to_string(),
+                    ]
+                    .join("\u{1f}");
+                    if !self.dismissed_provider_banner_keys.contains(&dkey) {
+                        let is_err = s_state == "error";
+                        let accent = if is_err { theme.danger } else { theme.warning };
+                        let msg = {
+                            let m = str_at(&st, "message").to_string();
+                            if m.is_empty() {
+                                if is_err {
+                                    format!("{label} provider is unavailable.")
+                                } else {
+                                    format!("{label} provider has limited availability.")
+                                }
+                            } else {
+                                m
+                            }
+                        };
+                        provider_banner = Some(
+                            h_flex()
+                                .w_full()
+                                .justify_center()
+                                .pt(px(12.))
+                                .child(
+                                    div()
+                                        .w_full()
+                                        .max_w(px(576.))
+                                        .mb(px(6.))
+                                        .relative()
+                                        .border_1()
+                                        .border_color(accent.opacity(0.5))
+                                        .rounded(px(10.))
+                                        .bg(accent.opacity(0.08))
+                                        .px_3()
+                                        .py_2()
+                                        .child(
+                                            h_flex()
+                                                .gap_2()
+                                                .items_start()
+                                                .child(
+                                                    div()
+                                                        .text_size(px(13.))
+                                                        .text_color(accent)
+                                                        .child(if is_err { "\u{2298}" } else { "\u{26a0}" }),
+                                                )
+                                                .child(
+                                                    v_flex()
+                                                        .flex_1()
+                                                        .min_w_0()
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(12.))
+                                                                .text_color(accent)
+                                                                .child(format!("{label} provider status")),
+                                                        )
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(11.))
+                                                                .text_color(accent.opacity(0.72))
+                                                                .child(msg),
+                                                        ),
+                                                ),
+                                        )
+                                        .child(
+                                            div()
+                                                .id("provider-banner-dismiss")
+                                                .absolute()
+                                                .top(px(6.))
+                                                .right(px(8.))
+                                                .size(px(20.))
+                                                .flex()
+                                                .items_center()
+                                                .justify_center()
+                                                .rounded_full()
+                                                .text_size(px(11.))
+                                                .text_color(accent.opacity(0.65))
+                                                .cursor_pointer()
+                                                .hover(|s| s.text_color(accent))
+                                                .on_mouse_down(
+                                                    MouseButton::Left,
+                                                    cx.listener(move |this, _e, _w, cx| {
+                                                        this.dismissed_provider_banner_keys
+                                                            .insert(dkey.clone());
+                                                        cx.notify();
+                                                    }),
+                                                )
+                                                .child("\u{2715}"),
+                                        ),
+                                )
+                                .into_any_element(),
+                        );
+                    }
+                }
+            }
+        }
+        // Upstream ExpiredSidechatNotice: an expired side chat keeps its
+        // transcript but the composer is gated behind a start-new bar that
+        // creates the replacement side chat under the same context.
+        if in_thread && !get(thread_v, "sidechatExpiredAt").is_null() {
+            composer_col = composer_col.child(
+                h_flex().w_full().justify_center().child(
+                    h_flex()
+                        .w_full()
+                        .max_w(px(576.))
+                        .mb(px(8.))
+                        .items_center()
+                        .justify_between()
+                        .gap_3()
+                        .border_1()
+                        .border_color(theme.border)
+                        .rounded(px(12.))
+                        .bg(theme.popover)
+                        .px_3()
+                        .py_2()
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w_0()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child("This side chat expired after a period of inactivity."),
+                        )
+                        .child(
+                            div()
+                                .id("sidechat-start-new")
+                                .flex_none()
+                                .text_size(px(11.))
+                                .text_color(theme.foreground)
+                                .border_1()
+                                .border_color(theme.border)
+                                .rounded(px(6.))
+                                .px_2()
+                                .py(px(3.))
+                                .cursor_pointer()
+                                .hover(|s| s.bg(theme.muted))
+                                .when(self.starting_sidechat, |b| {
+                                    b.text_color(theme.muted_foreground)
+                                })
+                                .on_mouse_down(
+                                    MouseButton::Left,
+                                    cx.listener(|this, _e, _w, cx| {
+                                        if this.starting_sidechat {
+                                            return;
+                                        }
+                                        let tv = this
+                                            .detail
+                                            .as_ref()
+                                            .map(|d| get(d, "thread"))
+                                            .cloned()
+                                            .unwrap_or(Value::Null);
+                                        let cell = this.client.clone();
+                                        this.starting_sidechat = true;
+                                        cx.notify();
+                                        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                                            let client = cx
+                                                .background_executor()
+                                                .spawn(async move { ensure_client(&cell) })
+                                                .await;
+                                            let Some(client) = client else {
+                                                let _ = this.update(cx, |t: &mut Self, cx| {
+                                                    t.starting_sidechat = false;
+                                                    cx.notify();
+                                                });
+                                                return;
+                                            };
+                                            let new_id = uuid();
+                                            let src = str_at(&tv, "sidechatSourceThreadId");
+                                            let cmd = json!({
+                                                "type": "thread.create",
+                                                "commandId": uuid(),
+                                                "threadId": new_id,
+                                                "projectId": str_at(&tv, "projectId"),
+                                                "title": str_at(&tv, "title"),
+                                                "sidechatContext": get(&tv, "sidechatContext").clone(),
+                                                "sidechatSourceThreadId": if src.is_empty() { Value::Null } else { json!(src) },
+                                                "createdAt": now_iso(),
+                                            });
+                                            let c = client.clone();
+                                            let _ = cx
+                                                .background_executor()
+                                                .spawn(async move {
+                                                    c.call("orchestration.dispatchCommand", cmd)
+                                                })
+                                                .await;
+                                            let snap = cx
+                                                .background_executor()
+                                                .spawn(async move {
+                                                    client.call("orchestration.getShellSnapshot", json!({}))
+                                                })
+                                                .await;
+                                            let _ = this.update(cx, |t: &mut Self, cx| {
+                                                t.starting_sidechat = false;
+                                                if let Some(s) = snap {
+                                                    t.snapshot = Some(s);
+                                                }
+                                                t.open_thread(new_id, cx);
+                                                cx.notify();
+                                            });
+                                        })
+                                        .detach();
+                                    }),
+                                )
+                                .child(if self.starting_sidechat {
+                                    "Starting\u{2026}"
+                                } else {
+                                    "Start new"
+                                }),
+                        ),
+                ),
+            );
         }
         composer_col = composer_col.child(composer_card);
         if row_composer {
@@ -16809,6 +17118,15 @@ impl Render for Native {
                     );
                 }
             } else {
+                // Status banners anchor the top of the chat column, ahead of
+                // the transcript scroll (upstream ChatColumnBannerFrame order:
+                // provider health, then the thread error).
+                if let Some(pb) = provider_banner {
+                    main = main.child(pb);
+                }
+                if let Some(tb) = thread_error_banner {
+                    main = main.child(tb);
+                }
                 main = main.child(div().flex_1().child(
                     pane.id("transcript-scroll")
                         .track_scroll(&self.transcript_scroll)

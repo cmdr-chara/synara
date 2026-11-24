@@ -60,6 +60,7 @@ mod icons {
     pub const TODOS: &[u8] = include_bytes!("../assets/icons/todos.svg");
     pub const BUG: &[u8] = include_bytes!("../assets/icons/bug.svg");
     pub const ZAP: &[u8] = include_bytes!("../assets/icons/zap.svg");
+    pub const FLAG: &[u8] = include_bytes!("../assets/icons/flag.svg");
     pub const CHECK: &[u8] = include_bytes!("../assets/icons/checkmark-1.svg");
     pub const UNSTAGE: &[u8] =
         include_bytes!("../assets/icons/arrow-rotate-counter-clockwise.svg");
@@ -962,6 +963,10 @@ pub struct Native {
     /// Upstream OneTimeCoachmark: seen keys persisted under
     /// settings.sidebarUi.coachmarks; `coachmark` is the one showing.
     coachmarks_seen: std::collections::HashSet<String>,
+    // Upstream DebugFeatureFlagsMenu: [persist-toasts, pin-git-progress,
+    // show-debug-task-banner]; sidebar footer popup, dev-only surface.
+    feature_flags: [bool; 3],
+    flags_menu_open: bool,
     coachmark: Option<&'static str>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
@@ -1907,6 +1912,8 @@ impl Native {
                 visited_threads: std::collections::HashMap::new(),
                 keep_awake_mode: 2,
                 coachmarks_seen: std::collections::HashSet::new(),
+                feature_flags: [false; 3],
+                flags_menu_open: false,
                 coachmark: None,
                 sponsor_dismissed: false,
             search_open: false,
@@ -5056,6 +5063,17 @@ impl Native {
                 if let Some(m) = get(&su, "coachmarks").as_object() {
                     this.coachmarks_seen = m.keys().cloned().collect();
                 }
+                if let Some(m) = get(&su, "featureFlags").as_object() {
+                    const FF_KEYS: [&str; 3] = [
+                        "persist-action-failed-debug-toasts",
+                        "pin-git-progress-toast-preview",
+                        "show-debug-task-banner",
+                    ];
+                    for (i, k) in FF_KEYS.iter().enumerate() {
+                        this.feature_flags[i] =
+                            m.get(*k).and_then(|v| v.as_bool()).unwrap_or(false);
+                    }
+                }
                 this.show_next_coachmark(cx);
                 cx.notify();
             });
@@ -5188,6 +5206,28 @@ impl Native {
         }
     }
 
+    /// Upstream DebugFeatureFlagsMenu toggle — flips flag `i` and persists
+    /// the whole map under settings.sidebarUi.featureFlags.
+    fn toggle_feature_flag(&mut self, i: usize, cx: &mut Context<Self>) {
+        self.feature_flags[i] = !self.feature_flags[i];
+        // "Pin git progress toast" keeps a visible progress toast while on.
+        if i == 1 {
+            self.feedback_toast = if self.feature_flags[1] {
+                Some(("Pushing changes\u{2026}".to_string(), false))
+            } else {
+                None
+            };
+        }
+        self.persist_sidebar_ui(cx);
+    }
+
+    /// Upstream "Trigger action failed toasts" — fires stacked Git-failure
+    /// error toasts for local UI testing.
+    fn trigger_debug_toasts(&mut self, cx: &mut Context<Self>) {
+        self.feedback_toast = Some(("Git action failed.".to_string(), true));
+        cx.notify();
+    }
+
     /// Persists dismissal/visited maps under settings.sidebarUi, like
     /// upstream's localStorage write-through on dismiss / mark-visited.
     fn persist_sidebar_ui(&mut self, cx: &mut Context<Self>) {
@@ -5199,6 +5239,11 @@ impl Native {
                 .iter()
                 .map(|k| (k.clone(), json!("seen")))
                 .collect::<serde_json::Map<String, Value>>(),
+            "featureFlags": {
+                "persist-action-failed-debug-toasts": self.feature_flags[0],
+                "pin-git-progress-toast-preview": self.feature_flags[1],
+                "show-debug-task-banner": self.feature_flags[2],
+            },
         });
         if let Some(obj) = get_mut(&mut self.settings_data, "settings")
             .and_then(|s| s.as_object_mut())
@@ -8123,6 +8168,175 @@ impl Render for Native {
                 ));
             }
         }
+        // ---- SidebarFooter: DebugFeatureFlagsMenu (upstream dev tool) ----
+        // The flyout opens upward above the footer row, like upstream's
+        // ComposerPickerMenuPopup side="top".
+        {
+            const FLAG_ROWS: [(&'static str, &'static str); 3] = [
+                (
+                    "Keep debug error toasts open",
+                    "Disable auto-dismiss for locally triggered error toasts.",
+                ),
+                (
+                    "Pin git progress toast",
+                    "Keep a looping git progress toast visible for styling.",
+                ),
+                (
+                    "Show debug task banner",
+                    "Render a local sample active task banner for UI testing.",
+                ),
+            ];
+            let mut footer = v_flex().mt_auto();
+            if self.flags_menu_open {
+                let mut menu = v_flex()
+                    .mx(px(4.))
+                    .mb(px(4.))
+                    .rounded(px(10.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(theme.popover)
+                    .shadow_lg()
+                    .py(px(6.));
+                menu = menu.child(
+                    div()
+                        .px(px(10.))
+                        .pt(px(4.))
+                        .pb(px(6.))
+                        .text_size(px(11.))
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_color(theme.muted_foreground)
+                        .child("Local feature flags"),
+                );
+                // Action row — fires stacked Git-failure toasts.
+                menu = menu.child(
+                    div()
+                        .id("ff-trigger-toasts")
+                        .mx(px(4.))
+                        .px(px(8.))
+                        .py(px(8.))
+                        .rounded(px(6.))
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.foreground)
+                                .child("Trigger action failed toasts"),
+                        )
+                        .child(
+                            div()
+                                .mt(px(1.))
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(
+                                    "Show stacked Git action failure toasts for local UI testing.",
+                                ),
+                        )
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.trigger_debug_toasts(cx);
+                        })),
+                );
+                for (i, (label, desc)) in FLAG_ROWS.iter().enumerate() {
+                    let on = self.feature_flags[i];
+                    let mut track = div()
+                        .w(px(28.))
+                        .h(px(16.))
+                        .rounded_full()
+                        .flex()
+                        .items_center();
+                    track = if on {
+                        track.bg(rgb(0xc74614)).justify_end()
+                    } else {
+                        track.bg(rgb(0xd9d9d9)).justify_start()
+                    };
+                    menu = menu.child(
+                        div()
+                            .id(ElementId::Name(format!("ff-row-{i}").into()))
+                            .mx(px(4.))
+                            .px(px(8.))
+                            .py(px(8.))
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .text_color(theme.foreground)
+                                                    .child(*label),
+                                            )
+                                            .child(
+                                                div()
+                                                    .mt(px(1.))
+                                                    .text_size(px(11.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(*desc),
+                                            ),
+                                    )
+                                    .child(track.child(
+                                        div()
+                                            .w(px(12.))
+                                            .h(px(12.))
+                                            .rounded_full()
+                                            .bg(gpui::white())
+                                            .mx(px(2.)),
+                                    )),
+                            )
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.toggle_feature_flag(i, cx);
+                            })),
+                    );
+                }
+                menu = menu.child(
+                    div()
+                        .mt(px(4.))
+                        .border_t_1()
+                        .border_color(theme.border)
+                        .px(px(10.))
+                        .pt(px(6.))
+                        .pb(px(4.))
+                        .text_size(px(11.))
+                        .text_color(theme.muted_foreground)
+                        .child("Stored only in this browser profile."),
+                );
+                footer = footer.child(menu);
+            }
+            footer = footer.child(
+                h_flex()
+                    .id("ff-footer")
+                    .mx(px(4.))
+                    .px(px(8.))
+                    .h(px(32.))
+                    .gap(px(10.))
+                    .items_center()
+                    .rounded(px(8.))
+                    .cursor_pointer()
+                    .hover(|d| d.bg(theme.secondary))
+                    .child(
+                        svg_icon(icons::FLAG)
+                            .size(px(15.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("Feature flags"),
+                    )
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.flags_menu_open = !this.flags_menu_open;
+                        cx.notify();
+                    })),
+            );
+            sidebar = sidebar.child(footer);
+        }
         // ---- transcript ----
         let mut pane = v_flex().flex_1().h_full().gap_2().on_drag_move::<ThreadDrag>(
             cx.listener(|this, _ev: &gpui::DragMoveEvent<ThreadDrag>, _w, cx| {
@@ -8480,6 +8694,56 @@ impl Render for Native {
         let thread_detail = self.detail.clone().unwrap_or(Value::Null);
         let thread_v = get(&thread_detail, "thread");
         let has_thread = self.selected_thread.is_some();
+        // Upstream "Show debug task banner" flag: a local sample
+        // ActiveTaskList for UI testing (1 in-progress, 1 pending, 1 done).
+        if self.feature_flags[2] && has_thread {
+            let sample_tasks: [(&'static str, u8); 3] = [
+                ("Inspect banner layout without overlapping transcript text", 0),
+                ("Confirm compact task banner width", 1),
+                ("Verify sidebar task controls", 2),
+            ];
+            let mut banner = v_flex()
+                .mx(px(16.))
+                .mt(px(8.))
+                .w(px(280.))
+                .rounded(px(10.))
+                .border_1()
+                .border_color(theme.border)
+                .bg(theme.popover)
+                .shadow_md()
+                .px(px(10.))
+                .py(px(8.))
+                .gap(px(4.));
+            for (task, status) in sample_tasks {
+                let (glyph, color) = match status {
+                    0 => ("\u{25cf}", theme.accent),          // inProgress
+                    1 => ("\u{25cb}", theme.muted_foreground), // pending
+                    _ => ("\u{2713}", theme.muted_foreground), // completed
+                };
+                banner = banner.child(
+                    h_flex()
+                        .gap_2()
+                        .items_center()
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(color)
+                                .child(glyph),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(if status == 2 {
+                                    theme.muted_foreground
+                                } else {
+                                    theme.foreground
+                                })
+                                .child(task),
+                        ),
+                );
+            }
+            pane = pane.child(banner);
+        }
         pane = pane.child(self.transcript_body(&thread_detail, has_thread, show_landing, cx));
         // ---- files browser / viewer ----
         let mut files_pane = v_flex().flex_1().h_full().p_4().gap_1();

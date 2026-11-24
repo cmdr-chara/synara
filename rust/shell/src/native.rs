@@ -15450,13 +15450,15 @@ impl Render for Native {
                             }))
                             .into_any_element()
                     };
-                    let aa_chip = if dark {
-                        div().rounded(px(4.)).bg(rgb(0x111111)).px(px(3.))
-                            .child(div().text_xs().text_color(gpui::white()).child("Aa"))
-                            .into_any_element()
-                    } else {
-                        div().text_size(px(13.)).text_color(accent_c).child("Aa").into_any_element()
-                    };
+                    // CodeThemeBadge: 20px bordered box, accent text on the slot surface.
+                    let aa_chip = div()
+                        .w(px(20.)).h(px(20.))
+                        .flex().items_center().justify_center()
+                        .rounded(px(6.))
+                        .border_1().border_color(theme.border)
+                        .bg(rgb(bgc))
+                        .child(div().text_xs().font_weight(FontWeight::SEMIBOLD).text_color(rgb(acc)).child("Aa"))
+                        .into_any_element();
                     let mut sel = h_flex()
                         .w_full()
                         .mt_1()
@@ -15468,11 +15470,9 @@ impl Render for Native {
                         .rounded(px(8.))
                         .border_1()
                         .border_color(theme.border);
-                    if dark {
-                        sel = sel.bg(rgb(0x111111)).child(div().text_size(px(13.)).text_color(gpui::white()).child("Synara"));
-                    } else {
-                        sel = sel.child(div().text_size(px(13.)).child("Synara"));
-                    }
+                    sel = sel.bg(rgb(bgc)).child(
+                        div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(rgb(fgc)).child("Synara"),
+                    );
                     settings_pane = settings_pane.child(card(
                         v_flex()
                             .child(
@@ -15527,10 +15527,16 @@ impl Render for Native {
                                             )
                                             .child(
                                                 h_flex()
+                                                    .h(px(28.))
+                                                    .px(px(10.))
+                                                    .gap_1p5()
                                                     .items_center()
-                                                    .gap_1()
+                                                    .rounded(px(8.))
+                                                    .border_1()
+                                                    .border_color(theme.border)
                                                     .child(aa_chip)
-                                                    .child(div().text_size(px(13.)).child("Synara")),
+                                                    .child(div().text_size(px(13.)).whitespace_nowrap().child("Synara"))
+                                                    .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(theme.muted_foreground)),
                                             ),
                                     ),
                             )
@@ -15542,25 +15548,39 @@ impl Render for Native {
                                     .px_3()
                                     .pb_2()
                                     .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(desc))
-                                    .when(dark, |d| {
+                                    // Outline "Use {light|dark} theme" button on the inactive slot card.
+                                    // Active slot = resolved theme (system resolves dark in this shell).
+                                    .when((if self.appearance_mode == 0 { 2 } else { self.appearance_mode }) != (if dark { 2 } else { 1 }), |d| {
                                         d.child(
                                             h_flex()
-                                                .id("use-dark-theme")
+                                                .id(SharedString::from(format!(
+                                                    "use-{}-theme",
+                                                    if dark { "dark" } else { "light" }
+                                                )))
+                                                .h(px(24.))
+                                                .px_2p5()
                                                 .items_center()
-                                                .gap_2()
+                                                .rounded(px(6.))
+                                                .border_1()
+                                                .border_color(theme.border)
                                                 .cursor_pointer()
-                                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Use dark theme"))
-                                                .child(toggle(self.appearance_mode == 2))
-                                                .on_click(cx.listener(|this, _ev, w, cx| {
-                                                    let next = if this.appearance_mode == 2 { 0 } else { 2 };
-                                                    this.set_appearance_mode(next, w, cx);
+                                                .child(div().text_size(px(12.)).whitespace_nowrap().child(if dark { "Use dark theme" } else { "Use light theme" }))
+                                                .on_click(cx.listener(move |this, _ev, w, cx| {
+                                                    this.set_appearance_mode(if dark { 2 } else { 1 }, w, cx);
                                                 })),
                                         )
                                     }),
                             )
                             .child(
                                 div().w_full().px_3().child(
-                                    sel.child(div().text_size(px(13.)).text_color(rgb(acc)).child("Accent preview")),
+                                    sel.child(
+                                        div()
+                                            .rounded(px(6.))
+                                            .px(px(12.))
+                                            .py(px(4.))
+                                            .bg(rgb(acc))
+                                            .child(div().text_size(px(13.)).text_color(gpui::white()).child("Accent preview")),
+                                    ),
                                 ),
                             )
                             .child(divider())

@@ -131,6 +131,7 @@ const PATCH_KEYS: &[&str] = &[
     "onboardingCompletedAt",
     "appearance",
     "railShortcuts",
+    "sidebarUi",
 ];
 
 /// Patch merge where every top-level key is a field patch; `providers` and

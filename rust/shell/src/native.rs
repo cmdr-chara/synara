@@ -136,6 +136,7 @@ mod icons {
     pub const ROBOT: &[u8] = include_bytes!("../assets/icons/robot-3.svg");
     pub const DOWN_WALL: &[u8] = include_bytes!("../assets/icons/arrow-down-wall.svg");
     pub const SIDECHAT: &[u8] = include_bytes!("../assets/icons/sidechat.svg");
+    pub const CLOCK: &[u8] = include_bytes!("../assets/icons/clock.svg");
     pub const S_TOOLBOX: &[u8] = include_bytes!("../assets/icons/toolbox.svg");
     pub const S_CIRCLE_INFO: &[u8] =
         include_bytes!("../assets/icons/circle-info.svg");
@@ -480,16 +481,44 @@ fn is_activity_thread(t: &Value) -> bool {
         || thread_running_for_activity(t)
 }
 
-fn has_unseen_completion(t: &Value) -> bool {
+/// Effective lastVisitedAt: max of the thread field and the locally
+/// persisted map (upstream keeps both; markThreadVisited never regresses).
+fn eff_visited(t: &Value, visited: &std::collections::HashMap<String, String>) -> String {
+    let m = visited.get(str_at(t, "id")).map(|s| s.as_str()).unwrap_or("");
+    let v = str_at(t, "lastVisitedAt");
+    if m > v { m.to_string() } else { v.to_string() }
+}
+
+/// Upstream createThreadStatusDismissalKey:
+/// [label, updatedAt, turnId, completedAt, session.updatedAt].join(":").
+fn dismissal_key(label: &str, t: &Value) -> String {
+    format!(
+        "{}:{}:{}:{}:{}",
+        label,
+        str_at(t, "updatedAt"),
+        str_at(get(t, "latestTurn"), "turnId"),
+        str_at(get(t, "latestTurn"), "completedAt"),
+        str_at(get(t, "session"), "updatedAt")
+    )
+}
+
+fn is_dismissed(label: &str, t: &Value, dismissed: &std::collections::HashMap<String, String>) -> bool {
+    dismissed
+        .get(str_at(t, "id"))
+        .map(|k| *k == dismissal_key(label, t))
+        .unwrap_or(false)
+}
+
+fn has_unseen_completion(t: &Value, visited: &std::collections::HashMap<String, String>) -> bool {
     let completed = str_at(get(t, "latestTurn"), "completedAt");
     if completed.is_empty() {
         return false;
     }
-    let visited = str_at(t, "lastVisitedAt");
-    visited.is_empty() || completed > visited
+    let visited = eff_visited(t, visited);
+    visited.is_empty() || completed > visited.as_str()
 }
 
-fn has_unseen_snooze_return(t: &Value) -> bool {
+fn has_unseen_snooze_return(t: &Value, visited: &std::collections::HashMap<String, String>) -> bool {
     if !get(t, "snoozedUntil").is_null() {
         return false;
     }
@@ -497,8 +526,8 @@ fn has_unseen_snooze_return(t: &Value) -> bool {
     if reminder.is_empty() {
         return false;
     }
-    let visited = str_at(t, "lastVisitedAt");
-    visited.is_empty() || reminder > visited
+    let visited = eff_visited(t, visited);
+    visited.is_empty() || reminder > visited.as_str()
 }
 
 fn can_answer_pending(t: &Value) -> bool {
@@ -508,14 +537,19 @@ fn can_answer_pending(t: &Value) -> bool {
 }
 
 /// Upstream needsYouKind: "approval" | "input" | "plan" | "failed" | "unread".
-fn inbox_needs_you_kind(t: &Value) -> Option<&'static str> {
+/// A dismissed pill is skipped and resolution continues to the next status.
+fn inbox_needs_you_kind(
+    t: &Value,
+    dismissed: &std::collections::HashMap<String, String>,
+    visited: &std::collections::HashMap<String, String>,
+) -> Option<&'static str> {
     let can = can_answer_pending(t);
     let pending_approvals = get(t, "hasPendingApprovals").as_bool() == Some(true);
     let pending_input = get(t, "hasPendingUserInput").as_bool() == Some(true);
-    if can && pending_approvals {
+    if can && pending_approvals && !is_dismissed("Pending Approval", t, dismissed) {
         return Some("approval");
     }
-    if can && pending_input {
+    if can && pending_input && !is_dismissed("Awaiting Input", t, dismissed) {
         return Some("input");
     }
     if thread_actively_working(t) || sess_str(t, "status") == "connecting" {
@@ -528,13 +562,13 @@ fn inbox_needs_you_kind(t: &Value) -> Option<&'static str> {
         && str_at(t, "interactionMode") == "plan"
         && is_latest_turn_settled(get(t, "latestTurn"), get(t, "session"))
         && get(t, "hasActionableProposedPlan").as_bool() == Some(true);
-    if plan_ready {
+    if plan_ready && !is_dismissed("Plan Ready", t, dismissed) {
         return Some("plan");
     }
-    if has_unseen_snooze_return(t) {
+    if has_unseen_snooze_return(t, visited) {
         return Some("unread");
     }
-    if has_unseen_completion(t) {
+    if has_unseen_completion(t, visited) {
         return Some(if str_at(get(t, "latestTurn"), "state") == "error" {
             "failed"
         } else {
@@ -544,10 +578,31 @@ fn inbox_needs_you_kind(t: &Value) -> Option<&'static str> {
     None
 }
 
+/// The status label upstream shows on the pill for a needs-you kind
+/// (used for the dismissal key and the hover-card row).
+fn needs_you_label(t: &Value, kind: &str) -> &'static str {
+    match kind {
+        "approval" => "Pending Approval",
+        "input" => "Awaiting Input",
+        "plan" => "Plan Ready",
+        _ => {
+            if !str_at(t, "snoozeReminderAt").is_empty()
+                && str_at(get(t, "latestTurn"), "completedAt") <= str_at(t, "snoozeReminderAt")
+            {
+                "Reminder"
+            } else {
+                "Completed"
+            }
+        }
+    }
+}
+
 /// Upstream groupInboxThreads: (needs_you kind+thread, working, finished, failed).
 /// Sort order: kind rank (approval<input<plan<failed<unread) then updatedAt desc.
 fn inbox_groups(
     threads: &[Value],
+    dismissed: &std::collections::HashMap<String, String>,
+    visited: &std::collections::HashMap<String, String>,
 ) -> (Vec<(&'static str, Value)>, Vec<Value>, Vec<Value>, Vec<Value>) {
     let mut items: Vec<(u8, &'static str, Value)> = Vec::new();
     let mut listed = std::collections::HashSet::new();
@@ -555,7 +610,7 @@ fn inbox_groups(
         if !get(t, "snoozedUntil").is_null() || !is_activity_thread(t) {
             continue;
         }
-        if let Some(kind) = inbox_needs_you_kind(t) {
+        if let Some(kind) = inbox_needs_you_kind(t, dismissed, visited) {
             let rank = match kind {
                 "approval" => 0,
                 "input" => 1,
@@ -898,6 +953,10 @@ pub struct Native {
     dock_tabs_scroll: ScrollHandle,
     settings_data: Value,
     settings_loading: bool,
+    /// Upstream dismissedThreadStatusKeyByThreadId (thread_id -> dismissalKey).
+    dismissed_status: std::collections::HashMap<String, String>,
+    /// Upstream lastVisitedAtByThreadId (thread_id -> ISO timestamp).
+    visited_threads: std::collections::HashMap<String, String>,
     term_input: Option<Entity<InputState>>,
     term_events: bool,
     // Working directory "Open Path in Terminal" seeds the next terminal.open
@@ -1838,6 +1897,8 @@ impl Native {
                 dock_tabs_scroll: ScrollHandle::new(),
                 settings_data: Value::Null,
                 settings_loading: false,
+                dismissed_status: std::collections::HashMap::new(),
+                visited_threads: std::collections::HashMap::new(),
                 sponsor_dismissed: false,
             search_open: false,
             sidebar_collapsed: false,
@@ -2026,6 +2087,19 @@ impl Native {
         // Close the previous thread stream if any.
         let old = self.thread_stream_id.take();
         self.selected_thread = Some(thread_id.clone());
+        // Upstream markThreadVisited: lastVisitedAt is monotonic.
+        {
+            let prev = self
+                .visited_threads
+                .get(&thread_id)
+                .cloned()
+                .unwrap_or_default();
+            let now = now_iso();
+            if now > prev {
+                self.visited_threads.insert(thread_id.clone(), now);
+                self.persist_sidebar_ui(cx);
+            }
+        }
         self.renaming = false;
         // Selecting a thread always returns to the transcript surface.
         self.clear_views();
@@ -4948,7 +5022,22 @@ impl Native {
                         .get("showAsciiBackground")
                         .and_then(Value::as_bool)
                         .unwrap_or(true);
-                    this.apply_appearance_mode(None, cx);
+                }
+                // Sidebar UI state (upstream localStorage mirrors): dismissed
+                // status keys + last-visited stamps drive pill suppression.
+                let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
+                this.apply_appearance_mode(None, cx);
+                if let Some(m) = get(&su, "dismissedStatusKeyByThreadId").as_object() {
+                    this.dismissed_status = m
+                        .iter()
+                        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
+                        .collect();
+                }
+                if let Some(m) = get(&su, "lastVisitedAtByThreadId").as_object() {
+                    this.visited_threads = m
+                        .iter()
+                        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
+                        .collect();
                 }
                 cx.notify();
             });
@@ -4989,6 +5078,32 @@ impl Native {
         cx.notify();
         let cell = self.client.clone();
         let payload = json!({"appearance": appearance});
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .spawn(async move {
+                    let _ = ensure_client(&cell)
+                        .and_then(|c| c.call("server.updateSettings", payload));
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    /// Persists dismissal/visited maps under settings.sidebarUi, like
+    /// upstream's localStorage write-through on dismiss / mark-visited.
+    fn persist_sidebar_ui(&mut self, cx: &mut Context<Self>) {
+        let sidebar_ui = json!({
+            "dismissedStatusKeyByThreadId": self.dismissed_status,
+            "lastVisitedAtByThreadId": self.visited_threads,
+        });
+        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
+            .and_then(|s| s.as_object_mut())
+        {
+            obj.insert("sidebarUi".to_string(), sidebar_ui.clone());
+        }
+        cx.notify();
+        let cell = self.client.clone();
+        let payload = json!({"sidebarUi": sidebar_ui});
         cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
             cx.background_executor()
                 .spawn(async move {
@@ -7506,12 +7621,41 @@ impl Render for Native {
                     );
                 }
                 el = el.child(qa);
-            } else if is_pinned {
-                el = el.child(
-                    svg_icon(icons::PIN_FILL)
-                        .size(px(11.))
-                        .text_color(theme.muted_foreground),
-                );
+            } else {
+                // Upstream trailing slot: status glyph (SidebarStatusTrailingGlyph)
+                // then the pin affordance. Completed -> accent dot, Reminder ->
+                // clock, approval/input/plan -> colored status dot.
+                if let Some(k) = inbox_needs_you_kind(
+                    thread,
+                    &self.dismissed_status,
+                    &self.visited_threads,
+                ) {
+                    let label = needs_you_label(thread, k);
+                    el = el.child(if label == "Reminder" {
+                        svg_icon(icons::CLOCK)
+                            .size(px(11.))
+                            .text_color(rgb(0x38bdf8))
+                            .into_any_element()
+                    } else {
+                        div()
+                            .size(px(7.))
+                            .rounded_full()
+                            .bg(match label {
+                                "Pending Approval" => theme.warning,
+                                "Awaiting Input" => rgb(0x6366f1).into(),
+                                "Plan Ready" => rgb(0x8b5cf6).into(),
+                                _ => theme.accent,
+                            })
+                            .into_any_element()
+                    });
+                }
+                if is_pinned {
+                    el = el.child(
+                        svg_icon(icons::PIN_FILL)
+                            .size(px(11.))
+                            .text_color(theme.muted_foreground),
+                    );
+                }
             }
             if is_sel {
                 el = el.bg(sel_fill);
@@ -8666,7 +8810,8 @@ impl Render for Native {
             // computed here so the greeting sub and the list share the result.
             let activity_threads: Vec<Value> =
                 arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads").to_vec();
-            let (needs_you, working, finished, failed) = inbox_groups(&activity_threads);
+            let (needs_you, working, finished, failed) =
+                inbox_groups(&activity_threads, &self.dismissed_status, &self.visited_threads);
             let needs_count = needs_you.len();
             let sub = if needs_count == 0 {
                 "You're all caught up.".to_string()
@@ -15829,6 +15974,36 @@ impl Render for Native {
             let tid_hand = menu_tid.clone();
             let tid_del = menu_tid.clone();
             let tid_del_flag = menu_tid.clone();
+            // Upstream "Clear notification" row: shown when the thread has a
+            // dismissible status pill. Keyed statuses store the dismissalKey;
+            // Completed/Reminder store a lastVisitedAt stamp instead.
+            let clear: Option<(bool, String)> = self
+                .snapshot
+                .as_ref()
+                .and_then(|s| {
+                    arr(s, "threads")
+                        .iter()
+                        .find(|t| str_at(t, "id") == menu_tid)
+                        .and_then(|t| {
+                            inbox_needs_you_kind(
+                                t,
+                                &self.dismissed_status,
+                                &self.visited_threads,
+                            )
+                            .map(|k| {
+                                if matches!(k, "approval" | "input" | "plan") {
+                                    (true, dismissal_key(needs_you_label(t, k), t))
+                                } else {
+                                    let a = str_at(get(t, "latestTurn"), "completedAt");
+                                    let b = str_at(t, "snoozeReminderAt");
+                                    (
+                                        false,
+                                        if a >= b { a.to_string() } else { b.to_string() },
+                                    )
+                                }
+                            })
+                        })
+                });
             let pin_label = if is_pinned { "Unpin thread" } else { "Pin thread" };
             let mut menu = v_flex()
                 .absolute()
@@ -15934,10 +16109,23 @@ impl Render for Native {
                     .child(row("ctx-pin", pin_label.to_string(), Box::new(move |this, _w, cx| {
                         this.toggle_pin(tid_pin.clone(), cx);
                     })))
+                    .when_some(clear.clone(), |m, (is_key, val)| {
+                        let tid_c = menu_tid.clone();
+                        m.child(row("ctx-clearnotif", "Clear notification".to_string(), Box::new(
+                            move |this, _w, cx| {
+                                if is_key {
+                                    this.dismissed_status.insert(tid_c.clone(), val.clone());
+                                } else {
+                                    this.visited_threads.insert(tid_c.clone(), val.clone());
+                                }
+                                this.persist_sidebar_ui(cx);
+                            },
+                        )))
+                    })
                     .child(row("ctx-handoff", "Handoff".to_string(), Box::new(move |this, _w, cx| {
                         this.lineage(tid_hand.clone(), true, None, cx);
                     })));
-                y += 93.0;
+                y += 93.0 + if clear.is_some() { 30.0 } else { 0.0 };
                 menu = menu.child(prow("ctx-fork", "fork", "Fork", y));
                 y += 34.0;
                 // Copy group has separatorBefore:true upstream.
@@ -16430,7 +16618,7 @@ impl Render for Native {
                 let title = str_at(&t, "title");
                 let title = if title.is_empty() { "(untitled)".to_string() } else { title.to_string() };
                 let rel = rel_time(str_at(&t, "updatedAt"));
-                let status = inbox_needs_you_kind(&t)
+                let status = inbox_needs_you_kind(&t, &self.dismissed_status, &self.visited_threads)
                     .map(|k| match k {
                         "approval" => "Needs approval",
                         "input" => "Awaiting input",

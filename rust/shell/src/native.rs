@@ -5690,6 +5690,8 @@ impl Native {
                                         let mut s =
                                             gpui_kit::component::text::TextViewStyle::default();
                                         s.code_block.padding.top = Some(px(28.).into());
+                                        s.highlight_theme =
+                                            gpui_kit::component::highlighter::HighlightTheme::default_dark();
                                         s
                                     })
                                     .code_block_actions(|cb, _w, _cx| {
@@ -5854,6 +5856,12 @@ impl Native {
                     ElementId::Name(format!("plan-{}", str_at(p, "id")).into()),
                     md.to_string(),
                 )
+                .style({
+                    let mut s = gpui_kit::component::text::TextViewStyle::default();
+                    s.highlight_theme =
+                        gpui_kit::component::highlighter::HighlightTheme::default_dark();
+                    s
+                })
                 .selectable(true),
             );
             col = col.child(

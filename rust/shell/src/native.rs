@@ -3234,6 +3234,9 @@ impl Native {
         self.hover_thread = None;
         self.hover_card = None;
         self.hover_card_seq += 1;
+        self.hover_project = None;
+        self.project_card = None;
+        self.project_card_seq += 1;
     }
 
     /// Rail route toggle: open that surface (closing the others); clicking
@@ -9801,17 +9804,40 @@ impl Native {
             if str_at(p, "interactionKind") == "userInput" {
                 continue;
             }
-            let kind = str_at(p, "interactionKind").replace('_', " ");
             let rid = str_at(p, "requestId").to_string();
+            // The matching approval.requested activity carries the
+            // human-readable detail (tool name / command) upstream shows
+            // on the card, plus whether a session-scoped allow exists.
+            let req_act = arr(thread_v, "activities").iter().rev().find(|a| {
+                str_at(a, "kind") == "approval.requested"
+                    && str_at(get(a, "payload"), "requestId") == rid
+            });
+            let payload = req_act.map(|a| get(a, "payload").clone()).unwrap_or(Value::Null);
+            let detail = {
+                let d = str_at(&payload, "detail");
+                if d.is_empty() {
+                    let t = str_at(&payload, "toolName");
+                    if t.is_empty() { "approval" } else { t }
+                } else {
+                    d
+                }
+            };
+            let session_ok =
+                get(&payload, "sessionApprovalAvailable").as_bool().unwrap_or(false);
             let mut row_el = h_flex().gap_2().child(
                 div()
                     .text_xs()
                     .font_weight(FontWeight::SEMIBOLD)
                     .text_color(theme.warning)
-                    .child(format!("approval pending: {kind}")),
+                    .child(format!("approve {detail}?")),
             );
             if !rid.is_empty() {
-                for (label, decision) in [("Approve", "accept"), ("Decline", "decline")] {
+                let mut buttons: Vec<(&str, &str)> =
+                    vec![("Approve", "accept"), ("Decline", "decline")];
+                if session_ok {
+                    buttons.insert(1, ("Always allow", "acceptForSession"));
+                }
+                for (label, decision) in buttons {
                     let r = rid.clone();
                     row_el = row_el.child(
                         Button::new(ElementId::Name(
@@ -22571,6 +22597,39 @@ impl Render for Native {
         // name + pin toggle header, chat count, path, "Edit project" row.
         let mut pc_overlay = div().absolute().left_0().top_0().w_0().h_0();
         if let Some((pc_pid, pcx, pcy)) = self.project_card.clone() {
+            // Transparent backdrop: a click anywhere outside the card
+            // dismisses it, and moving off both the row and the card
+            // closes it like upstream's PreviewCard does. The overlay
+            // wrapper is 0×0 so the backdrop needs explicit viewport size.
+            let pc_vs = window.viewport_size();
+            pc_overlay = pc_overlay.child(
+                div()
+                    .absolute()
+                    .left_0()
+                    .top_0()
+                    .w(pc_vs.width)
+                    .h(pc_vs.height)
+                    .on_mouse_down(gpui::MouseButton::Left, cx.listener(
+                        |this, _ev, _w, cx| {
+                            this.project_card = None;
+                            this.hover_project = None;
+                            cx.notify();
+                        },
+                    ))
+                    .on_mouse_down(gpui::MouseButton::Right, cx.listener(
+                        |this, _ev, _w, cx| {
+                            this.project_card = None;
+                            this.hover_project = None;
+                            cx.notify();
+                        },
+                    ))
+                    .on_mouse_move(cx.listener(|this, _ev, _w, cx| {
+                        if this.hover_project.is_none() && this.project_card.is_some() {
+                            this.project_card = None;
+                            cx.notify();
+                        }
+                    })),
+            );
             let projects_arr = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
             if let Some(p) = projects_arr
                 .iter()

@@ -4483,11 +4483,12 @@ impl Native {
                         ),
                 );
             }
+            let _ = (mx, my);
             pane = pane.child(deferred(
                 div()
                     .absolute()
-                    .top(px(my))
-                    .left(px(mx - 260.0))
+                    .top(px(52.))
+                    .right(px(160.))
                     .w(px(280.))
                     .max_h(px(320.))
                     .overflow_y_hidden()
@@ -4683,11 +4684,12 @@ impl Native {
                     ),
                 );
             }
+            let _ = (mx, my);
             pane = pane.child(deferred(
                 div()
                     .absolute()
-                    .top(px(my))
-                    .left(px(mx - 200.0))
+                    .top(px(52.))
+                    .right(px(130.))
                     .w(px(220.))
                     .rounded(px(8.))
                     .border_1()
@@ -22143,7 +22145,7 @@ impl Render for Native {
 
         // ---- main column under the strip: panes + composer ----
         // .relative() hosts the provider-update toast overlay.
-        let mut main = v_flex().flex_1().h_full().relative();
+        let mut main = v_flex().flex_1().min_w_0().h_full().relative();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
         } else if self.view_dev {

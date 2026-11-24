@@ -956,6 +956,11 @@ pub struct Native {
     git_pr_draft: bool,
     git_commit_action: String,
     git_action_running: bool,
+    // Automations rail pane (upstream RailAutomationsPanel + automation form).
+    autom_defs: Vec<Value>,
+    autom_runs: Vec<Value>,
+    autom_sel: Option<String>,
+    autom_dialog: Option<AutomForm>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -963,6 +968,21 @@ enum GitDialog {
     Commit,
     Pr,
 }
+
+struct AutomForm {
+    edit_id: Option<String>,
+    name: Entity<InputState>,
+    prompt: Entity<InputState>,
+    time: Entity<InputState>,
+    extra: Entity<InputState>,
+    kind: usize,
+    day: usize,
+    proj: usize,
+    enabled: bool,
+}
+
+const AUTOM_KINDS: &[&str] = &["Once", "Interval", "Daily", "Weekdays", "Weekly", "Cron"];
+const AUTOM_DAYS: &[&str] = &["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
     ("profile", "Profile"),
@@ -1487,6 +1507,10 @@ impl Native {
             feedback_toast: None,
             sc_dialog_open: false,
             sc_dialog_input: None,
+            autom_defs: Vec::new(),
+            autom_runs: Vec::new(),
+            autom_sel: None,
+            autom_dialog: None,
             git_dialog: None,
             git_msg_input: None,
             git_pr_title_input: None,
@@ -2037,6 +2061,9 @@ impl Native {
                 6 => self.view_spaces = true,
                 _ => {}
             }
+        }
+        if self.view_autom {
+            self.fetch_automations(cx);
         }
         cx.notify();
     }
@@ -3992,6 +4019,275 @@ impl Native {
             });
         })
         .detach();
+    }
+
+    // ── Automations ─────────────────────────────────────────────────────
+
+    /// automation.list → definitions + runs (upstream RailAutomationsPanel).
+    fn fetch_automations(&self, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let bundle = cx
+                .background_executor()
+                .spawn(async move {
+                    let Some(c) = ensure_client(&cell) else {
+                        return Value::Null;
+                    };
+                    c.call("automation.list", json!({})).unwrap_or(Value::Null)
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.autom_defs = arr(&bundle, "definitions").to_vec();
+                this.autom_runs = arr(&bundle, "runs").to_vec();
+                if let Some(sel) = &this.autom_sel {
+                    if !this
+                        .autom_defs
+                        .iter()
+                        .any(|d| str_at(d, "id") == sel.as_str())
+                    {
+                        this.autom_sel = None;
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    fn autom_summary(schedule: &Value) -> String {
+        let ty = str_at(schedule, "type");
+        let time = str_at(schedule, "timeOfDay").to_string();
+        match ty {
+            "once" => format!("Once · {}", str_at(schedule, "runAt")),
+            "interval" => {
+                let s = schedule["everySeconds"].as_i64().unwrap_or(0);
+                if s % 60 == 0 && s >= 60 {
+                    format!("Every {} min", s / 60)
+                } else {
+                    format!("Every {}s", s)
+                }
+            }
+            "daily" => format!("Daily at {time}"),
+            "weekdays" => format!("Weekdays at {time}"),
+            "weekly" => {
+                let d = schedule["dayOfWeek"].as_i64().unwrap_or(0).clamp(0, 6) as usize;
+                format!("Weekly {} at {}", AUTOM_DAYS[d], time)
+            }
+            "cron" => str_at(schedule, "expression").to_string(),
+            "project-event" => "On project events".to_string(),
+            other => other.to_string(),
+        }
+    }
+
+    fn open_autom_dialog(
+        &mut self,
+        edit: Option<Value>,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let mut mk = |cx: &mut Context<Self>, ph: &'static str, val: &str| {
+            let input = cx.new(|cx| InputState::new(window, cx).placeholder(ph));
+            if !val.is_empty() {
+                let v = val.to_string();
+                input.update(cx, |s, cx| s.set_value(v, window, cx));
+            }
+            input
+        };
+        let (mut edit_id, mut kind, mut day, mut enabled, mut time_v, mut extra_v) =
+            (None, 2usize, 1usize, true, String::new(), String::new());
+        let (mut name_v, mut prompt_v, mut proj_id) =
+            (String::new(), String::new(), String::new());
+        if let Some(def) = &edit {
+            edit_id = Some(str_at(def, "id").to_string());
+            name_v = str_at(def, "name").to_string();
+            prompt_v = str_at(def, "prompt").to_string();
+            enabled = get(def, "enabled").as_bool().unwrap_or(true);
+            proj_id = str_at(def, "projectId").to_string();
+            let sched = get(def, "schedule");
+            match str_at(sched, "type") {
+                "once" => {
+                    kind = 0;
+                    extra_v = str_at(sched, "runAt").to_string();
+                }
+                "interval" => {
+                    kind = 1;
+                    extra_v = (sched["everySeconds"].as_i64().unwrap_or(0) / 60).to_string();
+                }
+                "daily" => {
+                    kind = 2;
+                    time_v = str_at(sched, "timeOfDay").to_string();
+                }
+                "weekdays" => {
+                    kind = 3;
+                    time_v = str_at(sched, "timeOfDay").to_string();
+                }
+                "weekly" => {
+                    kind = 4;
+                    day = sched["dayOfWeek"].as_i64().unwrap_or(1).clamp(0, 6) as usize;
+                    time_v = str_at(sched, "timeOfDay").to_string();
+                }
+                "cron" => {
+                    kind = 5;
+                    extra_v = str_at(sched, "expression").to_string();
+                }
+                _ => {}
+            }
+        }
+        let projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+        let mut proj = 0usize;
+        if !proj_id.is_empty() {
+            if let Some(i) = projects
+                .iter()
+                .position(|p| str_at(p, "id") == proj_id.as_str())
+            {
+                proj = i;
+            }
+        }
+        let name = mk(cx, "Automation name", &name_v);
+        let prompt = mk(cx, "What should this automation do?", &prompt_v);
+        let time = mk(cx, "HH:MM", &time_v);
+        let extra_ph = match kind {
+            0 => "Run at (YYYY-MM-DD HH:MM)",
+            1 => "Every N minutes",
+            5 => "Cron expression",
+            _ => "Value",
+        };
+        let extra = mk(cx, extra_ph, &extra_v);
+        self.autom_dialog = Some(AutomForm {
+            edit_id,
+            name,
+            prompt,
+            time,
+            extra,
+            kind,
+            day,
+            proj,
+            enabled,
+        });
+        if let Some(f) = &self.autom_dialog {
+            let focus = f.name.read(cx).focus_handle(cx);
+            window.focus(&focus, cx);
+        }
+        cx.notify();
+    }
+
+    fn close_autom_dialog(&mut self, cx: &mut Context<Self>) {
+        self.autom_dialog = None;
+        cx.notify();
+    }
+
+    fn autom_run_now(&mut self, id: String, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let c = client.clone();
+            cx.background_executor()
+                .spawn(async move { c.call("automation.runNow", json!({"automationId": id})) })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.fetch_automations(cx);
+            });
+        })
+        .detach();
+    }
+
+    fn autom_delete(&mut self, id: String, cx: &mut Context<Self>) {
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let c = client.clone();
+            cx.background_executor()
+                .spawn(async move { c.call("automation.delete", json!({"automationId": id})) })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.autom_sel = None;
+                this.fetch_automations(cx);
+            });
+        })
+        .detach();
+    }
+
+    fn submit_autom_dialog(&mut self, cx: &mut Context<Self>) {
+        let Some(form) = self.autom_dialog.take() else {
+            return;
+        };
+        let name = form.name.read(cx).value().trim().to_string();
+        let prompt = form.prompt.read(cx).value().trim().to_string();
+        let time = form.time.read(cx).value().trim().to_string();
+        let extra = form.extra.read(cx).value().trim().to_string();
+        let projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+        let project_id = projects
+            .get(form.proj)
+            .map(|p| str_at(p, "id").to_string())
+            .unwrap_or_default();
+        if name.is_empty() || prompt.is_empty() || project_id.is_empty() {
+            self.autom_dialog = Some(form);
+            cx.notify();
+            return;
+        }
+        let time_of_day = if time.is_empty() {
+            "09:00".to_string()
+        } else {
+            time
+        };
+        let schedule = match form.kind {
+            0 => {
+                let mut at = extra.replace(' ', "T");
+                if at.len() == 16 {
+                    at.push_str(":00Z");
+                } else if !at.ends_with('Z') && !at.contains('+') {
+                    at.push('Z');
+                }
+                json!({"type":"once","runAt":at})
+            }
+            1 => json!({
+                "type":"interval",
+                "everySeconds": extra.parse::<i64>().unwrap_or(60).max(1) * 60,
+            }),
+            2 => json!({"type":"daily","timeOfDay":time_of_day}),
+            3 => json!({"type":"weekdays","timeOfDay":time_of_day}),
+            4 => json!({"type":"weekly","dayOfWeek":form.day,"timeOfDay":time_of_day}),
+            _ => json!({"type":"cron","expression":extra,"timezone":"UTC"}),
+        };
+        let payload = json!({
+            "projectId": project_id,
+            "name": name,
+            "prompt": prompt,
+            "schedule": schedule,
+            "enabled": form.enabled,
+        });
+        let (tag, payload) = if let Some(id) = &form.edit_id {
+            let mut p = payload;
+            p["id"] = json!(id);
+            ("automation.update", p)
+        } else {
+            ("automation.create", payload)
+        };
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let c = client.clone();
+            cx.background_executor()
+                .spawn(async move { c.call(tag, payload) })
+                .detach();
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.fetch_automations(cx);
+            });
+        })
+        .detach();
+        cx.notify();
     }
 
     /// Toggle a task's completed state from the Inbox tile (upstream
@@ -12042,8 +12338,9 @@ impl Render for Native {
                     .child("Choose one from the sidebar to review it"),
             );
 
-        // /automations — list panel + empty detail pane w/ refresh affordance.
-        let autom_panel = v_flex()
+        // /automations — definition list panel + selected detail pane
+        // (upstream RailAutomationsPanel + automation runs view).
+        let mut autom_panel = v_flex()
             .flex_1()
             .h_full()
             .px(px(6.))
@@ -12059,19 +12356,76 @@ impl Render for Native {
             )
             .child(
                 h_flex()
+                    .id("autom-new")
                     .h(px(28.))
                     .px_2()
                     .gap_2()
                     .items_center()
                     .rounded(px(6.))
+                    .cursor_pointer()
+                    .hover(|d| d.bg(theme.secondary))
+                    .on_click(cx.listener(|this, _e, w, cx| {
+                        this.open_autom_dialog(None, w, cx);
+                    }))
                     .child(
                         svg_icon(icons::PLUS_MED)
                             .size(px(14.))
                             .text_color(theme.foreground),
                     )
                     .child(div().text_size(px(13.)).child("New automation")),
-            )
-            .child(
+            );
+        for def in self.autom_defs.clone() {
+            let id = str_at(&def, "id").to_string();
+            let sel = self.autom_sel.as_deref() == Some(id.as_str());
+            let enabled = get(&def, "enabled").as_bool().unwrap_or(false);
+            autom_panel = autom_panel.child(
+                h_flex()
+                    .id(ElementId::Name(format!("autom-{id}").into()))
+                    .px_2()
+                    .py_1p5()
+                    .gap_2()
+                    .items_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .when(sel, |d| d.bg(theme.secondary))
+                    .when(!sel, |d| d.hover(|d| d.bg(theme.secondary)))
+                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                        this.autom_sel = Some(id.clone());
+                        cx.notify();
+                    }))
+                    .child(
+                        div()
+                            .w(px(6.))
+                            .h(px(6.))
+                            .rounded_full()
+                            .flex_shrink_0()
+                            .bg(if enabled {
+                                Hsla::from(rgb(0x34c759))
+                            } else {
+                                theme.muted_foreground
+                            }),
+                    )
+                    .child(
+                        v_flex()
+                            .flex_1()
+                            .min_w_0()
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .overflow_hidden()
+                                    .child(str_at(&def, "name").to_string()),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(Self::autom_summary(get(&def, "schedule"))),
+                            ),
+                    ),
+            );
+        }
+        if self.autom_defs.is_empty() {
+            autom_panel = autom_panel.child(
                 div()
                     .mt(px(26.))
                     .w_full()
@@ -12080,7 +12434,17 @@ impl Render for Native {
                     .text_color(theme.muted_foreground)
                     .child("No automations yet"),
             );
-        let autom_pane = v_flex()
+        }
+        let autom_sel_def = self
+            .autom_sel
+            .as_ref()
+            .and_then(|sel| {
+                self.autom_defs
+                    .iter()
+                    .find(|d| str_at(d, "id") == sel.as_str())
+                    .cloned()
+            });
+        let mut autom_pane = v_flex()
             .flex_1()
             .h_full()
             .child(
@@ -12090,12 +12454,241 @@ impl Render for Native {
                     .pr(px(19.))
                     .child(div().flex_1())
                     .child(
-                        svg_icon(icons::REFRESH)
-                            .size(px(18.))
-                            .text_color(theme.muted_foreground),
+                        div()
+                            .id("autom-refresh")
+                            .cursor_pointer()
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                this.fetch_automations(cx);
+                            }))
+                            .child(
+                                svg_icon(icons::REFRESH)
+                                    .size(px(18.))
+                                    .text_color(theme.muted_foreground),
+                            ),
                     ),
-            )
-            .child(
+            );
+        if let Some(def) = autom_sel_def.clone() {
+            let def_id = str_at(&def, "id").to_string();
+            let enabled = get(&def, "enabled").as_bool().unwrap_or(false);
+            let proj_name = self
+                .snapshot
+                .as_ref()
+                .and_then(|s| {
+                    arr(s, "projects")
+                        .iter()
+                        .find(|p| str_at(p, "id") == str_at(&def, "projectId"))
+                        .map(|p| str_at(p, "title").to_string())
+                })
+                .unwrap_or_default();
+            let mut detail = v_flex().flex_1().px_4().gap_3().min_h_0();
+            detail = detail.child(
+                h_flex()
+                    .items_center()
+                    .gap_2()
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .text_base()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .overflow_hidden()
+                            .child(str_at(&def, "name").to_string()),
+                    )
+                    .child(
+                        div()
+                            .px_2()
+                            .h(px(20.))
+                            .flex()
+                            .items_center()
+                            .rounded_full()
+                            .bg(if enabled {
+                                Hsla::from(rgb(0x34c759)).opacity(0.15)
+                            } else {
+                                theme.secondary
+                            })
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(if enabled {
+                                        Hsla::from(rgb(0x34c759))
+                                    } else {
+                                        theme.muted_foreground
+                                    })
+                                    .child(if enabled { "Enabled" } else { "Disabled" }),
+                            ),
+                    ),
+            );
+            let meta_rows: Vec<(String, String)> = vec![
+                ("Schedule".into(), Self::autom_summary(get(&def, "schedule"))),
+                ("Project".into(), proj_name),
+                (
+                    "Next run".into(),
+                    str_at(&def, "nextRunAt").to_string().replace('T', " ").trim_end_matches('Z').to_string(),
+                ),
+                (
+                    "Mode".into(),
+                    str_at(&def, "mode").to_string(),
+                ),
+            ];
+            for (k, v) in meta_rows {
+                if v.is_empty() {
+                    continue;
+                }
+                detail = detail.child(
+                    h_flex()
+                        .text_size(px(12.))
+                        .child(
+                            div()
+                                .w(px(90.))
+                                .text_color(theme.muted_foreground)
+                                .child(k),
+                        )
+                        .child(div().flex_1().min_w_0().child(v)),
+                );
+            }
+            let prompt_txt = str_at(&def, "prompt").to_string();
+            if !prompt_txt.is_empty() {
+                detail = detail.child(
+                    div()
+                        .w_full()
+                        .p_2()
+                        .rounded(px(8.))
+                        .bg(theme.secondary)
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child(prompt_txt),
+                );
+            }
+            let runs: Vec<Value> = self
+                .autom_runs
+                .iter()
+                .filter(|r| str_at(r, "automationId") == def_id.as_str())
+                .cloned()
+                .collect();
+            detail = detail.child(
+                div()
+                    .text_size(px(12.))
+                    .font_weight(FontWeight::MEDIUM)
+                    .child("Runs"),
+            );
+            if runs.is_empty() {
+                detail = detail.child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child("No runs yet"),
+                );
+            }
+            let mut run_list = v_flex().gap_1();
+            for run in runs.iter().take(10) {
+                run_list = run_list.child(
+                    h_flex()
+                        .items_center()
+                        .gap_2()
+                        .text_size(px(12.))
+                        .child(
+                            div()
+                                .w(px(64.))
+                                .text_color(theme.muted_foreground)
+                                .child(str_at(run, "status").to_string()),
+                        )
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w_0()
+                                .overflow_hidden()
+                                .child(
+                                    str_at(run, "scheduledFor")
+                                        .to_string()
+                                        .replace('T', " ")
+                                        .trim_end_matches('Z')
+                                        .to_string(),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .text_color(theme.muted_foreground)
+                                .child(
+                                    get(run, "trigger")
+                                        .get("type")
+                                        .and_then(|v| v.as_str())
+                                        .map(str::to_string)
+                                        .unwrap_or_else(|| str_at(run, "trigger").to_string()),
+                                ),
+                        ),
+                );
+            }
+            detail = detail.child(run_list);
+            let id_run = def_id.clone();
+            let id_del = def_id.clone();
+            let def_edit = def.clone();
+            detail = detail.child(
+                h_flex()
+                    .mt_2()
+                    .gap_2()
+                    .child(
+                        div()
+                            .id("autom-runnow")
+                            .h(px(28.))
+                            .px_3()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .bg(theme.foreground)
+                            .cursor_pointer()
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.background)
+                                    .child("Run now"),
+                            )
+                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                this.autom_run_now(id_run.clone(), cx);
+                            })),
+                    )
+                    .child(
+                        div()
+                            .id("autom-edit")
+                            .h(px(28.))
+                            .px_3()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child(div().text_size(px(12.)).child("Edit"))
+                            .on_click(cx.listener(move |this, _e, w, cx| {
+                                this.open_autom_dialog(Some(def_edit.clone()), w, cx);
+                            })),
+                    )
+                    .child(
+                        div()
+                            .id("autom-delete")
+                            .h(px(28.))
+                            .px_3()
+                            .flex()
+                            .items_center()
+                            .rounded(px(8.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.secondary))
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(rgb(0xff453a))
+                                    .child("Delete"),
+                            )
+                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                this.autom_delete(id_del.clone(), cx);
+                            })),
+                    ),
+            );
+            autom_pane = autom_pane.child(detail);
+        } else {
+            autom_pane = autom_pane.child(
                 v_flex()
                     .flex_1()
                     .items_center()
@@ -12127,6 +12720,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
+                            .id("autom-new2")
                             .mt_2()
                             .h(px(30.))
                             .px_4()
@@ -12134,6 +12728,10 @@ impl Render for Native {
                             .items_center()
                             .rounded(px(8.))
                             .bg(theme.foreground)
+                            .cursor_pointer()
+                            .on_click(cx.listener(|this, _e, w, cx| {
+                                this.open_autom_dialog(None, w, cx);
+                            }))
                             .child(
                                 div()
                                     .text_size(px(13.))
@@ -12142,6 +12740,7 @@ impl Render for Native {
                             ),
                     ),
             );
+        }
 
         // /hubs (studio rail icon) — hubs list panel + empty pane.
         let studio_panel = v_flex()
@@ -16118,6 +16717,320 @@ impl Render for Native {
                 );
         }
 
+        // Automation create/edit dialog (upstream automation form).
+        let mut autom_overlay = div().absolute().inset_0().size_full();
+        if let Some(form) = self.autom_dialog.as_ref() {
+            let editing = form.edit_id.is_some();
+            let name_in = form.name.clone();
+            let prompt_in = form.prompt.clone();
+            let time_in = form.time.clone();
+            let extra_in = form.extra.clone();
+            let kind = form.kind;
+            let mut card = v_flex()
+                .w(px(440.))
+                .bg(popover_bg)
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(14.))
+                .shadow_md()
+                .p(px(16.))
+                .gap_2()
+                .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
+                    if ev.keystroke.key == "escape" {
+                        this.close_autom_dialog(cx);
+                        cx.stop_propagation();
+                    }
+                }))
+                .child(
+                    div()
+                        .text_size(px(15.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child(if editing {
+                            "Edit automation"
+                        } else {
+                            "New automation"
+                        }),
+                )
+                .child(
+                    div()
+                        .w_full()
+                        .h(px(34.))
+                        .px_3()
+                        .flex()
+                        .items_center()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(Input::new(&name_in).appearance(false)),
+                )
+                .child(
+                    div()
+                        .w_full()
+                        .h(px(56.))
+                        .px_3()
+                        .py_2()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(Input::new(&prompt_in).appearance(false)),
+                );
+            // Project picker (radio list, upstream AutomationHeadingFields).
+            let projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+            card = card.child(
+                div()
+                    .text_size(px(11.))
+                    .text_color(theme.muted_foreground)
+                    .child("Project"),
+            );
+            for (i, p) in projects.iter().enumerate().take(6) {
+                let sel = form.proj == i;
+                card = card.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("autproj-{i}").into()))
+                        .items_center()
+                        .gap_2()
+                        .rounded(px(6.))
+                        .px_2()
+                        .py_1()
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .on_click(cx.listener(move |this, _e, _w, cx| {
+                            if let Some(f) = this.autom_dialog.as_mut() {
+                                f.proj = i;
+                            }
+                            cx.notify();
+                        }))
+                        .child(
+                            div()
+                                .w(px(12.))
+                                .h(px(12.))
+                                .rounded_full()
+                                .border_1()
+                                .border_color(if sel { theme.primary } else { theme.border })
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .when(sel, |d| {
+                                    d.child(
+                                        div()
+                                            .w(px(6.))
+                                            .h(px(6.))
+                                            .rounded_full()
+                                            .bg(theme.primary),
+                                    )
+                                }),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .overflow_hidden()
+                                .child(str_at(p, "title").to_string()),
+                        ),
+                );
+            }
+            // Schedule kind chips.
+            card = card.child(
+                div()
+                    .text_size(px(11.))
+                    .text_color(theme.muted_foreground)
+                    .child("Schedule"),
+            );
+            let mut chip_row = h_flex().gap_1().flex_wrap();
+            for (i, label) in AUTOM_KINDS.iter().enumerate() {
+                let sel = kind == i;
+                chip_row = chip_row.child(
+                    div()
+                        .id(ElementId::Name(format!("autkind-{i}").into()))
+                        .h(px(24.))
+                        .px_2()
+                        .flex()
+                        .items_center()
+                        .rounded(px(6.))
+                        .border_1()
+                        .border_color(if sel { theme.primary } else { theme.border })
+                        .cursor_pointer()
+                        .when(sel, |d| d.bg(theme.primary.opacity(0.12)))
+                        .on_click(cx.listener(move |this, _e, _w, cx| {
+                            if let Some(f) = this.autom_dialog.as_mut() {
+                                f.kind = i;
+                            }
+                            cx.notify();
+                        }))
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(if sel { theme.primary } else { theme.foreground })
+                                .child(*label),
+                        ),
+                );
+            }
+            card = card.child(chip_row);
+            // Per-kind fields.
+            if matches!(kind, 2 | 3 | 4) {
+                card = card.child(
+                    div()
+                        .w(px(140.))
+                        .h(px(32.))
+                        .px_3()
+                        .flex()
+                        .items_center()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(Input::new(&time_in).appearance(false)),
+                );
+            }
+            if kind == 4 {
+                let mut day_row = h_flex().gap_1();
+                for (i, d) in AUTOM_DAYS.iter().enumerate() {
+                    let sel = form.day == i;
+                    day_row = day_row.child(
+                        div()
+                            .id(ElementId::Name(format!("autday-{i}").into()))
+                            .w(px(34.))
+                            .h(px(24.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(6.))
+                            .border_1()
+                            .border_color(if sel { theme.primary } else { theme.border })
+                            .cursor_pointer()
+                            .when(sel, |d| d.bg(theme.primary.opacity(0.12)))
+                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                if let Some(f) = this.autom_dialog.as_mut() {
+                                    f.day = i;
+                                }
+                                cx.notify();
+                            }))
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(if sel {
+                                        theme.primary
+                                    } else {
+                                        theme.foreground
+                                    })
+                                    .child(*d),
+                            ),
+                    );
+                }
+                card = card.child(day_row);
+            }
+            if matches!(kind, 0 | 1 | 5) {
+                card = card.child(
+                    div()
+                        .w_full()
+                        .h(px(32.))
+                        .px_3()
+                        .flex()
+                        .items_center()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .child(Input::new(&extra_in).appearance(false)),
+                );
+            }
+            // Enabled toggle row.
+            let en = form.enabled;
+            card = card.child(
+                h_flex()
+                    .id("autmenabled")
+                    .items_center()
+                    .gap_2()
+                    .cursor_pointer()
+                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                        if let Some(f) = this.autom_dialog.as_mut() {
+                            f.enabled = !f.enabled;
+                        }
+                        cx.notify();
+                    }))
+                    .child(
+                        div()
+                            .w(px(14.))
+                            .h(px(14.))
+                            .rounded(px(3.))
+                            .border_1()
+                            .border_color(if en { theme.primary } else { theme.border })
+                            .when(en, |d| d.bg(theme.primary))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .when(en, |d| {
+                                d.child(div().text_size(px(9.)).text_color(theme.primary_foreground).child("✓"))
+                            }),
+                    )
+                    .child(div().text_size(px(12.)).child("Enabled")),
+            );
+            card = card.child(
+                h_flex()
+                    .w_full()
+                    .justify_end()
+                    .gap_2()
+                    .mt_1()
+                    .child(
+                        div()
+                            .id("autom-cancel")
+                            .cursor_pointer()
+                            .rounded_md()
+                            .px_3()
+                            .py_1p5()
+                            .text_size(px(13.))
+                            .hover(|d| d.bg(theme.secondary))
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                this.close_autom_dialog(cx);
+                            }))
+                            .child("Cancel"),
+                    )
+                    .child(
+                        div()
+                            .id("autom-save")
+                            .cursor_pointer()
+                            .rounded_md()
+                            .px_3()
+                            .py_1p5()
+                            .text_size(px(13.))
+                            .text_color(theme.primary_foreground)
+                            .bg(theme.primary)
+                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                this.submit_autom_dialog(cx);
+                            }))
+                            .child(if editing { "Save" } else { "Create automation" }),
+                    ),
+            );
+            autom_overlay = autom_overlay
+                .child(
+                    div()
+                        .absolute()
+                        .inset_0()
+                        .size_full()
+                        .bg(rgba(0x00000080))
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|this, _e, _w, cx| {
+                                this.close_autom_dialog(cx);
+                            }),
+                        ),
+                )
+                .child(
+                    div()
+                        .absolute()
+                        .inset_0()
+                        .size_full()
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .child(
+                            div()
+                                .on_mouse_down(
+                                    gpui::MouseButton::Left,
+                                    |_e, _w, cx| cx.stop_propagation(),
+                                )
+                                .child(card),
+                        ),
+                );
+        }
+
         v_flex()
             .size_full()
             .key_context("native")
@@ -16187,5 +17100,6 @@ impl Render for Native {
             .when(self.sc_dialog_open, |d| d.child(scd_overlay))
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
+            .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))
     }
 }

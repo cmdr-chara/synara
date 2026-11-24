@@ -7374,19 +7374,22 @@ impl Native {
                     .collect();
                 let answered = !done.is_empty();
                 let n = questions.len();
+                // Upstream CollapsibleTrigger: standalone rounded-full pill,
+                // panel only after a click (default closed for both states).
+                let open = self.user_input_open.contains(&msg_id);
 
-                let mut card = v_flex()
-                    .w_full()
-                    .gap_3()
-                    .border_1()
-                    .border_color(theme.border)
-                    .rounded(px(12.))
-                    .px(px(14.))
-                    .py(px(14.));
-                // Header pill: "? N question(s)" (+ "✓ Answered").
+                let mut card = v_flex().w_full().gap(px(8.));
                 let mut head = h_flex()
+                    .id(ElementId::Name(format!("aui-pill-{msg_id}").into()))
                     .gap_2()
                     .items_center()
+                    .flex_shrink_0()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_full()
+                    .px(px(10.))
+                    .py(px(4.))
+                    .cursor_pointer()
                     .child(
                         svg_icon(icons::HELP)
                             .size(px(14.))
@@ -7396,11 +7399,23 @@ impl Native {
                         div()
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
+                            .whitespace_nowrap()
                             .child(format!(
                                 "{n} {}",
                                 if n == 1 { "question" } else { "questions" }
                             )),
-                    );
+                    )
+                    .on_mouse_down(MouseButton::Left, {
+                        let mid = msg_id.clone();
+                        cx.listener(move |this, _e, _w, cx| {
+                            if this.user_input_open.contains(&mid) {
+                                this.user_input_open.retain(|i| i != &mid);
+                            } else {
+                                this.user_input_open.push(mid.clone());
+                            }
+                            cx.notify();
+                        })
+                    });
                 if answered {
                     head = head
                         .child(
@@ -7415,7 +7430,23 @@ impl Native {
                                 .child("Answered"),
                         );
                 }
-                card = card.child(head);
+                card = card.child(h_flex().child(head).child(div().flex_1()));
+                if !open {
+                    col = col.child(
+                        h_flex().w_full().justify_center().child(
+                            div().w_full().max_w(chat_mw).child(card),
+                        ),
+                    );
+                    continue;
+                }
+                let mut panel = v_flex()
+                    .w_full()
+                    .gap_3()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded(px(12.))
+                    .px(px(14.))
+                    .py(px(14.));
 
                 if answered {
                     for (qi, q) in questions.iter().enumerate() {
@@ -7433,7 +7464,7 @@ impl Native {
                                     .child(a.clone()),
                             );
                         }
-                        card = card.child(qa);
+                        panel = panel.child(qa);
                     }
                 } else {
                     // Effective pick per question: draft override, else the
@@ -7508,7 +7539,7 @@ impl Native {
                             }
                             qv = qv.child(orow);
                         }
-                        card = card.child(qv);
+                        panel = panel.child(qv);
                     }
                     // Footer: hint + Send (disabled until every question's
                     // effective pick exists).
@@ -7568,8 +7599,9 @@ impl Native {
                                 .child("Send answer"),
                         );
                     }
-                    card = card.child(foot);
+                    panel = panel.child(foot);
                 }
+                card = card.child(panel);
                 col = col.child(
                     h_flex().w_full().justify_center().child(
                         div().w_full().max_w(chat_mw).child(card),

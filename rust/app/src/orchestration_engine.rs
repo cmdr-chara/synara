@@ -102,7 +102,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         }
         "thread.meta.update" => thread_meta_update(command),
         "thread.turn.start" => thread_turn_start(command),
-        "thread.turn.interrupt" => thread_simple(command, "thread.turn-interrupt-requested"),
+        "thread.turn.interrupt" => {
+            if let Some(t) = s(command, "threadId") {
+                crate::acp_runner::cancel_turn(&t);
+            }
+            thread_simple(command, "thread.turn-interrupt-requested")
+        }
         "thread.task.stop" => thread_simple(command, "thread.task-stop-requested"),
         "thread.task.background" => thread_simple(command, "thread.task-background-requested"),
         "thread.approval.respond" => {
@@ -148,7 +153,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "space.delete" => space_delete(command),
         "space.projects.assign" => space_projects_assign(command),
         "thread.message.edit-and-resend" => message_edit_resend(command),
-        "thread.session.stop" => session_stop(command),
+        "thread.session.stop" => {
+            if let Some(t) = s(command, "threadId") {
+                crate::acp_runner::cancel_turn(&t);
+            }
+            session_stop(command)
+        }
         "thread.session.set" => session_set(command),
         "thread.goal.continue" => goal_continue(command),
         "thread.turn.resume" => turn_resume(command),
@@ -1161,6 +1171,54 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         sets.push(("snooze_reminder_at", Value::Null));
     }
     update_projection(&conn, &thread_id, &sets)?;
+
+    // Drive a real provider turn: Devin threads run through `devin acp`.
+    if !should_queue {
+        let provider = command
+            .get("modelSelection")
+            .and_then(|m| m.get("provider"))
+            .and_then(Value::as_str)
+            .map(String::from)
+            .or_else(|| {
+                conn.query_row(
+                    "SELECT provider_name FROM projection_thread_sessions \
+                     WHERE thread_id = ?1",
+                    params![thread_id],
+                    |r| r.get::<_, Option<String>>(0),
+                )
+                .ok()
+                .flatten()
+            })
+            .or_else(|| {
+                conn.query_row(
+                    "SELECT json_extract(model_selection_json, '$.provider') \
+                     FROM projection_threads WHERE thread_id = ?1",
+                    params![thread_id],
+                    |r| r.get::<_, Option<String>>(0),
+                )
+                .ok()
+                .flatten()
+            });
+        if provider.as_deref() == Some("devin") {
+            let cwd: Option<String> = conn
+                .query_row(
+                    "SELECT p.workspace_root FROM projection_projects p \
+                     JOIN projection_threads t ON t.project_id = p.project_id \
+                     WHERE t.thread_id = ?1",
+                    params![thread_id],
+                    |r| r.get(0),
+                )
+                .ok();
+            if let Some(cwd) = cwd {
+                crate::acp_runner::start_turn(
+                    thread_id.clone(),
+                    message_id.clone(),
+                    text.clone(),
+                    cwd,
+                );
+            }
+        }
+    }
 
     Ok(json!({ "sequence": seq }))
 }

@@ -972,6 +972,8 @@ pub struct Native {
     uploading: bool,
     interaction_mode: &'static str,
     fast_mode: bool,
+    /// Composer model selection: (provider, model slug, display label).
+    composer_model: (String, String, String),
     queued_turns: Vec<String>,
     queue_paused: bool,
     open_threads: Vec<String>,
@@ -2348,6 +2350,11 @@ impl Native {
                 pending_attachments: Vec::new(),
                 interaction_mode: "default",
                 fast_mode: false,
+                composer_model: (
+                    "codex".to_string(),
+                    "gpt-6-astra".to_string(),
+                    "GPT-6 Astra".to_string(),
+                ),
                 queued_turns: Vec::new(),
                 queue_paused: false,
                 composer_thread_id: None,
@@ -10270,6 +10277,7 @@ impl Native {
         let client = self.client.clone();
         let mode = self.runtime_mode;
         let imode = self.interaction_mode;
+        let composer_model = self.composer_model.clone();
         // Attachments uploaded earlier keep the thread id they were staged
         // under (a fresh thread adopts it as its id).
         if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
@@ -10296,9 +10304,9 @@ impl Native {
                 return;
             };
             let model_selection = json!({
-                "provider": "codex",
-                "instanceId": "codex",
-                "model": "gpt-6-astra",
+                "provider": composer_model.0,
+                "instanceId": composer_model.0,
+                "model": composer_model.1,
             });
             let tid = selected.clone().unwrap_or_else(|| {
                 att_thread.clone().unwrap_or_else(uuid)
@@ -13666,17 +13674,51 @@ impl Render for Native {
                 thread_model
             }
         } else {
-            "GPT-6 Astra".to_string()
+            self.composer_model.2.clone()
+        };
+        let model_weak = cx.weak_entity();
+        let model_cur = self.composer_model.clone();
+        let model_icon = if self.composer_model.0 == "devin" {
+            icons::P_DEVIN
+        } else {
+            icons::CODEX
         };
         let build_model_chip = move || {
+            let cur = model_cur.clone();
+            let weak = model_weak.clone();
             Button::new("composer-model")
                 .ghost()
                 .compact()
-                .icon(svg_icon(icons::CODEX))
+                .icon(svg_icon(model_icon))
                 .label(model_label.clone())
                 .dropdown_caret(true)
-                .dropdown_menu(|menu, _, _| {
-                    menu.item(PopupMenuItem::new("\u{2713} GPT-6 Astra (codex)"))
+                .dropdown_menu(move |menu, _, _| {
+                    let mut menu = menu.min_w(px(220.));
+                    for (slug, label, prov) in [
+                        ("gpt-6-astra", "GPT-6 Astra", "codex"),
+                        ("adaptive", "Adaptive", "devin"),
+                        ("swe-1-7", "SWE 1.7", "devin"),
+                        ("swe-2", "SWE 2", "devin"),
+                    ] {
+                        let mark = if cur.1 == slug { "\u{2713} " } else { "  " };
+                        let weak = weak.clone();
+                        let label = label.to_string();
+                        let prov = prov.to_string();
+                        let slug = slug.to_string();
+                        menu = menu.item(
+                            PopupMenuItem::new(format!("{mark}{label} ({prov})"))
+                                .on_click(move |_, _w, cx| {
+                                    let slug = slug.clone();
+                                    let prov = prov.clone();
+                                    let label = label.clone();
+                                    let _ = weak.update(cx, |this, cx| {
+                                        this.composer_model = (prov, slug, label);
+                                        cx.notify();
+                                    });
+                                }),
+                        );
+                    }
+                    menu
                 })
         };
         // While the selected thread's turn is live, upstream swaps the send
@@ -25083,51 +25125,55 @@ impl Render for Native {
                     cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                 )
                 .child(
-                    h_flex().px(px(20.)).pt(px(20.)).items_start().child(
-                        v_flex()
-                            .gap(px(4.))
-                            .flex_1()
-                            .child(
-                                div()
-                                    .text_size(px(16.))
-                                    .font_weight(FontWeight::SEMIBOLD)
-                                    .child("Import projects"),
-                            )
-                            .child(
-                                div()
-                                    .text_sm()
-                                    .text_color(theme.muted_foreground)
-                                    .child(
-                                        "Continue your Codex and Claude Code \
-                                         projects in Synara.",
-                                    ),
-                            ),
-                    ),
-                )
-                .child(
-                    div()
-                        .id("imp-close")
-                        .size(px(26.))
-                        .flex_none()
-                        .flex()
-                        .items_center()
-                        .justify_center()
-                        .rounded_md()
-                        .cursor_pointer()
-                        .text_color(theme.muted_foreground)
-                        .hover(|s| s.bg(theme.secondary))
-                        .child(svg_icon(icons::X).size(px(12.)))
-                        .on_click(cx.listener(|this, _ev, _w, cx| {
-                            if this
-                                .import_dlg
-                                .as_ref()
-                                .map(|d| !d.running)
-                                .unwrap_or(true)
-                            {
-                                this.import_dlg = None;
-                            }
-                            cx.notify();
-                        })),
+                    h_flex()
+                        .px(px(20.))
+                        .pt(px(20.))
+                        .items_start()
+                        .child(
+                            v_flex()
+                                .gap(px(4.))
+                                .flex_1()
+                                .child(
+                                    div()
+                                        .text_size(px(16.))
+                                        .font_weight(FontWeight::SEMIBOLD)
+                                        .child("Import projects"),
+                                )
+                                .child(
+                                    div()
+                                        .text_sm()
+                                        .text_color(theme.muted_foreground)
+                                        .child(
+                                            "Continue your Codex and Claude Code \
+                                             projects in Synara.",
+                                        ),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .id("imp-close")
+                                .size(px(26.))
+                                .flex_none()
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .rounded_md()
+                                .cursor_pointer()
+                                .text_color(theme.muted_foreground)
+                                .hover(|s| s.bg(theme.secondary))
+                                .child(svg_icon(icons::X).size(px(12.)))
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    if this
+                                        .import_dlg
+                                        .as_ref()
+                                        .map(|d| !d.running)
+                                        .unwrap_or(true)
+                                    {
+                                        this.import_dlg = None;
+                                    }
+                                    cx.notify();
+                                })),
+                        ),
                 );
 
             let mut body = v_flex()

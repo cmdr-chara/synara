@@ -5486,19 +5486,29 @@ impl Native {
                         return Value::Null;
                     };
                     let tasks = c.call("todo.list", json!({})).unwrap_or(Value::Null);
-                    // Upstream: today's working day (4am→4am, slots at 12/18)
-                    // plus the previous one for the "this time yesterday" bits.
-                    let (from_ms, to_ms, bounds) = inbox_day_range();
+                    // Upstream recapInputForRange: the day's working window
+                    // (4am→4am) with HOURLY boundaries — the recap's slots are
+                    // per-hour buckets the slot columns and sparkline group.
+                    let (from_ms, to_ms, _b) = inbox_day_range();
+                    let hourly = |from: f64, to: f64| -> Vec<String> {
+                        let mut v = Vec::new();
+                        let mut h = from + 3_600_000.0;
+                        while h < to {
+                            v.push(ms_to_iso(h));
+                            h += 3_600_000.0;
+                        }
+                        v
+                    };
                     let today_in = json!({
                         "from": ms_to_iso(from_ms),
                         "to": ms_to_iso(to_ms),
-                        "slotBoundaries": bounds.iter().map(|b| ms_to_iso(*b)).collect::<Vec<_>>(),
+                        "slotBoundaries": hourly(from_ms, to_ms),
                     });
-                    let (pfrom, pto, pbounds) = inbox_day_range_at(from_ms - 1.0);
+                    let (pfrom, pto, _pb) = inbox_day_range_at(from_ms - 1.0);
                     let prev_in = json!({
                         "from": ms_to_iso(pfrom),
                         "to": ms_to_iso(pto),
-                        "slotBoundaries": pbounds.iter().map(|b| ms_to_iso(*b)).collect::<Vec<_>>(),
+                        "slotBoundaries": hourly(pfrom, pto),
                     });
                     let recap = c.call("stats.getRecap", today_in).unwrap_or(Value::Null);
                     let prev_recap = c.call("stats.getRecap", prev_in).unwrap_or(Value::Null);
@@ -11919,361 +11929,667 @@ impl Render for Native {
             }
             let tasks_card = tasks_card.child(rows);
 
-            // Right column: upstream DigestCard ("Your day so far") + tile grid
-            // (model / project / tokens / agents / yesterday / quota).
+            // Right column: upstream RecapDigest — DigestCard (part-styled
+            // sentences + hourly slot columns) and the compact tile grid.
             let mut right_col = v_flex().flex_1().gap_3();
             let recap = self.inbox_recap.clone().unwrap_or(Value::Null);
             let prev = self.inbox_recap_prev.clone().unwrap_or(Value::Null);
+            let now_ms = chrono::Local::now().timestamp_millis() as f64;
+            let hour_ms = 3_600_000.0;
+            let (day_from, day_to, _b) = inbox_day_range();
+            let (pfrom, pto, _pb) = inbox_day_range_at(day_from - 1.0);
+            let as_of_ms = chrono::DateTime::parse_from_rfc3339(str_at(&recap, "generatedAt"))
+                .map(|d| d.timestamp_millis() as f64)
+                .unwrap_or(now_ms);
+            let updated_label = if str_at(&recap, "generatedAt").is_empty() {
+                String::new()
+            } else {
+                format!("Updated {}", clock_time(str_at(&recap, "generatedAt")))
+            };
+            // Hourly buckets keyed by start ms (upstream recapBucketsByStart).
+            let hours_of = |rc: &Value| -> Vec<(f64, Value)> {
+                arr(rc, "slots")
+                    .iter()
+                    .filter_map(|b| {
+                        chrono::DateTime::parse_from_rfc3339(str_at(b, "from"))
+                            .ok()
+                            .map(|d| (d.timestamp_millis() as f64, b.clone()))
+                    })
+                    .collect()
+            };
+            let buckets = hours_of(&recap);
+            let prev_buckets = hours_of(&prev);
+            fn bucket_at<'b>(list: &'b [(f64, Value)], from: f64) -> Option<&'b Value> {
+                list.iter()
+                    .find(|(f, _)| (*f - from).abs() < 1.0)
+                    .map(|(_, b)| b)
+            }
+            // sumRecapBefore: yesterday's totals up to "this time" pro rata.
+            let cutoff = as_of_ms - 24.0 * hour_ms;
+            let mut yest = (0.0f64, 0.0f64, 0.0f64, 0.0f64); // prompts, turns, tokens, work
+            {
+                let mut h = pfrom;
+                while h < pto {
+                    let hto = (h + hour_ms).min(pto);
+                    if let Some(b) = bucket_at(&prev_buckets[..], h) {
+                        if h < cutoff {
+                            let share = ((cutoff - h) / (hto - h)).min(1.0);
+                            yest.0 += num(b.get("prompts")) * share;
+                            yest.1 += num(b.get("turns")) * share;
+                            yest.2 += recap_tokens(b) * share;
+                            yest.3 += num(b.get("agentWorkMs")) * share;
+                        }
+                    }
+                    h = hto;
+                }
+            }
+            // summarizeInboxSlots: started slots only; idle past slots hidden.
+            let slot_ranges = [
+                ("Morning", day_from, day_from + 8.0 * hour_ms),
+                ("Afternoon", day_from + 8.0 * hour_ms, day_from + 14.0 * hour_ms),
+                ("Evening", day_from + 14.0 * hour_ms, day_to),
+            ];
+            // (label, is_now, prompts, agentWorkMs, hours[(tokens, future)])
+            let mut slot_sums: Vec<(&'static str, bool, f64, f64, Vec<(f64, bool)>)> =
+                Vec::new();
+            for (label, from, to) in slot_ranges {
+                if from > now_ms {
+                    continue;
+                }
+                let mut hours: Vec<(f64, bool)> = Vec::new();
+                let mut prompts = 0.0;
+                let mut turns = 0.0;
+                let mut tokens = 0.0;
+                let mut work = 0.0;
+                let mut h = from;
+                while h < to && h < day_to {
+                    if let Some(b) = bucket_at(&buckets[..], h) {
+                        prompts += num(b.get("prompts"));
+                        turns += num(b.get("turns"));
+                        tokens += recap_tokens(b);
+                        work += num(b.get("agentWorkMs"));
+                        hours.push((recap_tokens(b), h > now_ms));
+                    }
+                    h += hour_ms;
+                }
+                let is_now = now_ms < to;
+                let idle = prompts == 0.0 && turns == 0.0 && tokens == 0.0 && work == 0.0;
+                if is_now || !idle {
+                    slot_sums.push((label, is_now, prompts, work, hours));
+                }
+            }
             let totals = get(&recap, "totals").clone();
             let prev_totals = get(&prev, "totals").clone();
             let sent_prompts = num(totals.get("prompts"));
             let chats = num(totals.get("chats"));
             let work_ms = num(totals.get("agentWorkMs"));
             let turns = num(totals.get("turns"));
+            let failed_turns = num(totals.get("failedTurns"));
             let tokens = recap_tokens(&totals);
-            let cache_read = num(totals.get("cacheReadTokens"));
+            let cache_read = num(totals.get("cacheReadTokens")).min(tokens);
             let prev_prompts = num(prev_totals.get("prompts"));
+            let prev_turns = num(prev_totals.get("turns"));
             let prev_tokens = recap_tokens(&prev_totals);
-            let updated = str_at(&recap, "generatedAt");
-            let updated_label = if updated.is_empty() {
-                String::new()
-            } else {
-                format!("Updated {}", clock_time(updated))
-            };
-
-            // buildInboxDigest: one sentence per non-empty stat.
-            let mut sentences: Vec<String> = Vec::new();
+            let models = arr(&recap, "models").to_vec();
+            let projects = arr(&recap, "projects").to_vec();
+            let prev_models = arr(&prev, "models").to_vec();
+            let busiest = slot_sums
+                .iter()
+                .filter(|s| slot_sums.len() >= 2)
+                .max_by(|a, b| a.3.partial_cmp(&b.3).unwrap_or(std::cmp::Ordering::Equal))
+                .map(|s| s.0);
+            // changeAmount: "17% more" / "20% fewer" vs yesterday (tone good/bad).
+            let change_amount =
+                |today: f64, yesterday: f64, fewer: &str| -> Option<(String, &'static str)> {
+                    if yesterday < 1.0 {
+                        return None;
+                    }
+                    let change = ((today - yesterday) / yesterday * 100.0).round();
+                    if change == 0.0 {
+                        return None;
+                    }
+                    if change > 0.0 {
+                        Some((format!("{change:.0}% more"), "good"))
+                    } else {
+                        Some((format!("{:.0}% {}", change.abs(), fewer), "bad"))
+                    }
+                };
+            // Digest parts: (text, strong, tone, provider-icon-key).
+            type Part = (String, bool, &'static str, Option<&'static str>);
+            let txt = |t: String| -> Part { (t, false, "", None) };
+            let stg = |t: String| -> Part { (t, true, "", None) };
+            let stg_t = |t: String, tone: &'static str| -> Part { (t, true, tone, None) };
+            let stg_i = |t: String, p: &'static str| -> Part { (t, true, "", Some(p)) };
+            let mut sentences: Vec<Vec<Part>> = Vec::new();
             if sent_prompts > 0.0 {
-                sentences.push(format!(
-                    "You sent {} across {}.",
-                    plural(sent_prompts, "prompt", "prompts"),
-                    plural(chats, "chat", "chats")
-                ));
+                let mut parts = vec![
+                    txt("You sent ".into()),
+                    stg(plural(sent_prompts, "prompt", "prompts")),
+                    txt(" across ".into()),
+                    stg(plural(chats, "chat", "chats")),
+                ];
+                if let Some((words, tone)) = change_amount(sent_prompts, yest.0, "fewer") {
+                    parts.push(txt(", ".into()));
+                    parts.push(stg_t(words, tone));
+                    parts.push(txt(" than this time yesterday.".into()));
+                } else {
+                    parts.push(txt(".".into()));
+                }
+                sentences.push(parts);
+            } else if turns > 0.0 {
+                sentences.push(vec![
+                    txt("Your automations and agents ran ".into()),
+                    stg(plural(turns, "turn", "turns")),
+                    txt(" so far today.".into()),
+                ]);
             }
-            if work_ms > 0.0 {
-                sentences.push(format!("Your agents ran for {}.", fmt_dur_ms(work_ms)));
+            let top_project = projects.first();
+            let best_model = models.first();
+            let next_model = models.get(1);
+            if top_project.is_some() || best_model.is_some() {
+                let mut parts: Vec<Part> = Vec::new();
+                if let Some(pj) = top_project {
+                    parts.push(txt("Most of it went into ".into()));
+                    parts.push(stg(str_at(pj, "title").to_string()));
+                }
+                if let Some(bm) = best_model {
+                    let bprov = match str_at(bm, "provider") {
+                        "pi" => "pi",
+                        "claude" => "claude",
+                        "devin" => "devin",
+                        "cursor" => "cursor",
+                        "opencode" => "opencode",
+                        "grok" => "grok",
+                        _ => "codex",
+                    };
+                    let m = stg_i(str_at(bm, "model").to_string(), bprov);
+                    if top_project.is_some() {
+                        parts.push(txt(", with ".into()));
+                    }
+                    parts.push(m);
+                    let share = if num(bm.get("tokens")) > 0.0 && tokens > 0.0 {
+                        Some((num(bm.get("tokens")) / tokens * 100.0).round() as i64)
+                    } else {
+                        None
+                    };
+                    if let Some(share) = share.filter(|s| *s < 100) {
+                        parts.push(txt(" carrying ".into()));
+                        parts.push(stg(format!("{share}%")));
+                        parts.push(txt(" of the tokens".into()));
+                        if let Some(nm) = next_model {
+                            let only_two = models.len() == 2;
+                            parts.push(txt(if only_two { " and ".into() } else { ", ahead of ".into() }));
+                            parts.push(stg(str_at(nm, "model").to_string()));
+                            if only_two {
+                                parts.push(txt(" the rest".into()));
+                            }
+                        }
+                    } else if next_model.is_some() {
+                        parts.push(txt(if top_project.is_some() {
+                            " doing most of the work".into()
+                        } else {
+                            " did most of the work".into()
+                        }));
+                    } else {
+                        parts.push(txt(if top_project.is_some() {
+                            " doing the work".into()
+                        } else {
+                            " did all the work".into()
+                        }));
+                    }
+                }
+                parts.push(txt(".".into()));
+                sentences.push(parts);
             }
-            if turns > 0.0 {
-                sentences.push(format!(
-                    "They finished {} for you.",
-                    plural(turns, "turn", "turns")
-                ));
+            if work_ms >= 1_000.0 {
+                let mut parts = vec![
+                    txt("Your agents ran for ".into()),
+                    stg(fmt_dur_ms(work_ms)),
+                ];
+                if let Some(b) = busiest {
+                    parts.push(txt(format!(", mostly in the {}", b.to_lowercase())));
+                }
+                if failed_turns > 0.0 {
+                    parts.push(txt(", and ".into()));
+                    parts.push(stg_t(
+                        format!("{} failed", plural(failed_turns, "turn", "turns")),
+                        "bad",
+                    ));
+                }
+                parts.push(txt(".".into()));
+                sentences.push(parts);
             }
-            if prev_prompts > 0.0 {
-                sentences.push(format!(
-                    "By this time yesterday you had sent {}.",
-                    plural(prev_prompts, "prompt", "prompts")
-                ));
+            if sentences.is_empty() && (prev_prompts > 0.0 || prev_tokens > 0.0) {
+                let mut parts: Vec<Part> = Vec::new();
+                if prev_prompts > 0.0 {
+                    parts.push(txt("Nothing ran yet today. Yesterday you sent ".into()));
+                    parts.push(stg(plural(prev_prompts, "prompt", "prompts")));
+                    parts.push(txt(" and used ".into()));
+                } else {
+                    parts.push(txt("Nothing ran yet today. Yesterday your agents used ".into()));
+                }
+                parts.push(stg(format!("{} tokens", fmt_compact(prev_tokens))));
+                if let Some(bm) = prev_models.first() {
+                    parts.push(txt(", mostly with ".into()));
+                    parts.push(stg(str_at(bm, "model").to_string()));
+                }
+                parts.push(txt(".".into()));
+                sentences.push(parts);
             }
+            // Task digest sentence (upstream buildTaskDigest).
+            {
+                let today_str = chrono::Local::now().format("%Y-%m-%d").to_string();
+                let mut open = 0.0;
+                let mut done = 0.0;
+                let mut overdue = 0.0;
+                for t in &self.inbox_tasks {
+                    let ca = str_at(t, "completedAt");
+                    if !ca.is_empty() && ca != "null" {
+                        done += 1.0;
+                    } else {
+                        open += 1.0;
+                        let due = str_at(t, "dueDate");
+                        if !due.is_empty() && due != "null" && due < today_str.as_str() {
+                            overdue += 1.0;
+                        }
+                    }
+                }
+                if open > 0.0 || done > 0.0 {
+                    let mut parts: Vec<Part> = Vec::new();
+                    if open == 0.0 {
+                        parts.push(txt(if done == 1.0 {
+                            "You finished your ".into()
+                        } else {
+                            "You finished all ".into()
+                        }));
+                        parts.push(stg(plural(done, "task", "tasks")));
+                        parts.push(txt(" for today.".into()));
+                    } else {
+                        if done > 0.0 {
+                            parts.push(txt("You finished ".into()));
+                            parts.push(stg(plural(done, "task", "tasks")));
+                            parts.push(txt(" today, ".into()));
+                            parts.push(stg(format!("{} to go", open as i64)));
+                        } else {
+                            parts.push(txt("You have ".into()));
+                            parts.push(stg(plural(open, "task", "tasks")));
+                            parts.push(txt(" to do today".into()));
+                        }
+                        if overdue > 0.0 {
+                            parts.push(txt(", ".into()));
+                            parts.push(stg_t(format!("{} overdue", overdue as i64), "bad"));
+                        }
+                        parts.push(txt(".".into()));
+                    }
+                    sentences.push(parts);
+                }
+            }
+
             if sentences.is_empty() {
-                sentences.push(
-                    "Nothing ran yet today. This fills in as your agents work.".to_string(),
-                );
-            }
-            let mut digest_body = v_flex().gap_1();
-            for s in sentences {
-                digest_body = digest_body.child(div().text_size(px(13.)).child(s));
-            }
-
-            // Slot strip: Morning / Afternoon / Evening with prompt counts.
-            let slots = get(&recap, "slots")
-                .as_array()
-                .cloned()
-                .unwrap_or_default();
-            let slot_names = ["Morning", "Afternoon", "Evening"];
-            let mut strip = h_flex().w_full().gap_2();
-            for (i, name) in slot_names.iter().enumerate() {
-                let slot = slots.get(i).cloned().unwrap_or(Value::Null);
-                let prompts = num(slot.get("prompts"));
-                let stokens = recap_tokens(&slot);
-                strip = strip.child(
+                right_col = right_col.child(tile(
+                    div()
+                        .p_5()
+                        .text_size(px(15.))
+                        .text_color(theme.muted_foreground)
+                        .child("Nothing ran yet today. This fills in as your agents work.")
+                        .into_any_element(),
+                ));
+            } else {
+                // One flowing paragraph: muted ui-xl text, facts in medium fg.
+                let mut para = h_flex().w_full().flex_wrap().gap_y(px(2.));
+                for (i, sentence) in sentences.iter().enumerate() {
+                    if i > 0 {
+                        para = para.child(div().child(" "));
+                    }
+                    for (text, strong, tone, icon) in sentence {
+                        let mut el = h_flex().items_baseline();
+                        if let Some(p) = icon {
+                            el = el.child(
+                                svg_icon(provider_icon(p))
+                                    .size(px(15.))
+                                    .text_color(theme.foreground),
+                            );
+                        }
+                        el = el.child(
+                            div()
+                                .text_size(px(15.))
+                                .when(*strong, |d| d.font_weight(FontWeight::MEDIUM))
+                                .text_color(match *tone {
+                                    "good" => theme.success,
+                                    "bad" => theme.danger,
+                                    _ => {
+                                        if *strong {
+                                            theme.foreground
+                                        } else {
+                                            theme.muted_foreground
+                                        }
+                                    }
+                                })
+                                .child(text.clone()),
+                        );
+                        para = para.child(el);
+                    }
+                }
+                // Slot columns with hourly bars (upstream SlotColumns).
+                let mut strip = h_flex().w_full().gap_4();
+                let max_tokens = slot_sums
+                    .iter()
+                    .flat_map(|s| s.4.iter().map(|h| h.0))
+                    .fold(1.0f64, f64::max);
+                for (label, is_now, prompts, _work, hours) in &slot_sums {
+                    let mut bars = h_flex()
+                        .w_full()
+                        .h(px(28.))
+                        .items_end()
+                        .justify_between()
+                        .gap(px(3.));
+                    for (tok, future) in hours {
+                        let hgt = ((*tok / max_tokens) * 28.0).max(3.0);
+                        bars = bars.child(
+                            div()
+                                .w_full()
+                                .max_w(px(8.))
+                                .h(px(hgt as f32))
+                                .rounded(px(2.))
+                                .bg(if *future || *tok == 0.0 {
+                                    theme.muted
+                                } else if *is_now {
+                                    theme.foreground
+                                } else {
+                                    theme.muted_foreground
+                                }),
+                        );
+                    }
+                    strip = strip.child(
+                        v_flex()
+                            .flex_1()
+                            .gap_2()
+                            .child(
+                                h_flex()
+                                    .items_baseline()
+                                    .justify_between()
+                                    .child(
+                                        h_flex()
+                                            .child(
+                                                div()
+                                                    .text_size(px(12.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(label.to_string()),
+                                            )
+                                            .when(*is_now, |e| {
+                                                e.child(
+                                                    div()
+                                                        .text_size(px(12.))
+                                                        .text_color(theme.foreground)
+                                                        .child(", now"),
+                                                )
+                                            }),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(12.))
+                                            .text_color(if *is_now {
+                                                theme.foreground
+                                            } else {
+                                                theme.muted_foreground
+                                            })
+                                            .child(plural(*prompts, "prompt", "prompts")),
+                                    ),
+                            )
+                            .child(bars),
+                    );
+                }
+                right_col = right_col.child(tile(
                     v_flex()
-                        .flex_1()
-                        .gap(px(1.))
+                        .p_5()
+                        .gap_4()
                         .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child(*name),
+                            h_flex()
+                                .justify_between()
+                                .items_baseline()
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .text_color(theme.muted_foreground)
+                                        .child("Your day so far"),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(updated_label),
+                                ),
                         )
+                        .child(para)
+                        .when(!slot_sums.is_empty(), |c| {
+                            c.child(
+                                v_flex()
+                                    .pt_4()
+                                    .border_t_1()
+                                    .border_color(theme.border)
+                                    .child(strip),
+                            )
+                        })
+                        .into_any_element(),
+                ));
+            }
+
+            // Compact tiles (upstream buildInboxTiles order).
+            let mut stat_tiles: Vec<gpui::Div> = Vec::new();
+            if let Some(bm) = best_model {
+                let share = if num(bm.get("tokens")) > 0.0 && tokens > 0.0 {
+                    Some((num(bm.get("tokens")) / tokens * 100.0).round() as i64)
+                } else {
+                    None
+                };
+                let detail = if let Some(s) = share {
+                    format!("{s}% of tokens, {}", plural(num(bm.get("turns")), "turn", "turns"))
+                } else {
+                    format!(
+                        "{}{}",
+                        plural(num(bm.get("turns")), "turn", "turns"),
+                        if str_at(bm, "provider") == "unknown" || str_at(bm, "provider").is_empty() {
+                            String::new()
+                        } else {
+                            format!(" through {}", str_at(bm, "provider"))
+                        }
+                    )
+                };
+                stat_tiles.push(
+                    tile(v_flex()
+                        .min_h(px(104.))
+                        .justify_between()
+                        .gap_2()
+                        .px(px(14.))
+                        .py(px(12.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("Your best model was"))
                         .child(
-                            div()
-                                .text_size(px(12.))
-                                .child(plural(prompts, "prompt", "prompts")),
+                            h_flex().items_center().gap_2()
+                                .child(svg_icon(provider_icon(str_at(bm, "provider"))).size(px(18.)).text_color(theme.foreground))
+                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(str_at(bm, "model").to_string())),
                         )
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child(format!("{} tokens", fmt_compact(stokens))),
-                        ),
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(detail))
+                        .into_any_element())
+                    .flex_1(),
                 );
             }
-
-            right_col = right_col.child(tile(
-                v_flex()
-                    .p_4()
-                    .gap_3()
-                    .child(
-                        h_flex()
-                            .justify_between()
-                            .items_baseline()
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .font_weight(FontWeight::MEDIUM)
-                                    .child("Your day so far"),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(updated_label),
-                            ),
-                    )
-                    .child(digest_body)
-                    .child(strip)
-                    .into_any_element(),
-            ));
-
-            // Tile grid (upstream grid-cols-2 @2xl:grid-cols-3 in the right col):
-            // each tile is label / big value / sub.
-            let mut stat_tiles: Vec<gpui::Div> = Vec::new();
-            let push_tile = |tiles: &mut Vec<gpui::Div>, el: gpui::AnyElement| {
-                tiles.push(tile(el).flex_1());
-            };
-            // Best model by tokens.
-            let models = get(&recap, "models")
-                .as_array()
-                .cloned()
-                .unwrap_or_default();
-            if let Some(top) = models.iter().max_by(|a, b| {
-                num(a.get("tokens"))
-                    .partial_cmp(&num(b.get("tokens")))
-                    .unwrap_or(std::cmp::Ordering::Equal)
-            }) {
-                if num(top.get("tokens")) > 0.0 {
-                    let model = str_at(top, "model").to_string();
-                    let provider = str_at(top, "provider").to_string();
-                    push_tile(&mut stat_tiles,
-                        v_flex()
-                            .p_3()
-                            .gap_1()
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("Your best model was"),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(15.))
-                                    .font_weight(FontWeight::SEMIBOLD)
-                                    .child(model),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(provider),
-                            )
-                            .into_any_element(),
-                        );
-                }
+            if let Some(pj) = top_project {
+                let np = projects.get(1);
+                let detail = format!(
+                    "{}{}",
+                    plural(num(pj.get("prompts")), "prompt", "prompts"),
+                    if let Some(np) = np {
+                        format!(", then {}", str_at(np, "title"))
+                    } else {
+                        format!(", {} tokens", fmt_compact(num(pj.get("tokens"))))
+                    }
+                );
+                stat_tiles.push(
+                    tile(v_flex()
+                        .min_h(px(104.))
+                        .justify_between()
+                        .gap_2()
+                        .px(px(14.))
+                        .py(px(12.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("You worked most on"))
+                        .child(
+                            h_flex().items_center().gap_2()
+                                .child(svg_icon(icons::FOLDER).size(px(18.)).text_color(theme.foreground))
+                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(str_at(pj, "title").to_string())),
+                        )
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(detail))
+                        .into_any_element())
+                    .flex_1(),
+                );
             }
-            // Most-worked project.
-            let projects = get(&recap, "projects")
-                .as_array()
-                .cloned()
-                .unwrap_or_default();
-            if let Some(top) = projects.iter().max_by(|a, b| {
-                num(a.get("prompts"))
-                    .partial_cmp(&num(b.get("prompts")))
-                    .unwrap_or(std::cmp::Ordering::Equal)
-            }) {
-                if num(top.get("prompts")) > 0.0 {
-                    let title = str_at(top, "title").to_string();
-                    let sub = plural(num(top.get("prompts")), "prompt", "prompts");
-                    push_tile(&mut stat_tiles,
-                        v_flex()
-                            .p_3()
-                            .gap_1()
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("You worked most on"),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(15.))
-                                    .font_weight(FontWeight::SEMIBOLD)
-                                    .child(title),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(sub),
-                            )
-                            .into_any_element(),
-                        );
-                }
-            }
-            // Tokens used today.
             if tokens > 0.0 {
-                let sub = if cache_read > 0.0 {
-                    format!("{} from cache", fmt_compact(cache_read))
+                let (detail, tone) = if cache_read > 0.0 {
+                    (
+                        format!(
+                            "{} other \u{00b7} {} from cache",
+                            fmt_compact(tokens - cache_read),
+                            fmt_compact(cache_read)
+                        ),
+                        "",
+                    )
+                } else if let Some((w, t)) = change_amount(tokens, yest.2, "less") {
+                    (format!("{w} than this time yesterday"), t)
+                } else {
+                    ("Cache reads included".to_string(), "")
+                };
+                stat_tiles.push(
+                    tile(v_flex()
+                        .min_h(px(104.))
+                        .justify_between()
+                        .gap_2()
+                        .px(px(14.))
+                        .py(px(12.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("You used"))
+                        .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(tokens))))
+                        .child(div().text_size(px(12.)).text_color(if tone == "good" { theme.success } else { theme.muted_foreground }).child(detail))
+                        .into_any_element())
+                    .flex_1(),
+                );
+            }
+            if work_ms >= 1_000.0 {
+                let (detail, tone) = if failed_turns > 0.0 {
+                    (
+                        format!("{} failed", failed_turns as i64),
+                        "bad",
+                    )
+                } else if let Some(b) = busiest {
+                    (format!("Mostly {}", b.to_lowercase()), "")
+                } else {
+                    ("Nothing failed".to_string(), "")
+                };
+                let detail = if failed_turns > 0.0 && busiest.is_some() {
+                    format!("{}, {}", busiest.unwrap().to_lowercase().replacen("m", "M", 1), detail)
+                } else {
+                    detail
+                };
+                stat_tiles.push(
+                    tile(v_flex()
+                        .min_h(px(104.))
+                        .justify_between()
+                        .gap_2()
+                        .px(px(14.))
+                        .py(px(12.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("Your agents worked for"))
+                        .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(fmt_dur_ms(work_ms)))
+                        .child(div().text_size(px(12.)).text_color(if tone == "bad" { theme.danger } else { theme.muted_foreground }).child(detail))
+                        .into_any_element())
+                    .flex_1(),
+                );
+            }
+            if prev_tokens > 0.0 || prev_prompts > 0.0 {
+                let activity = if prev_prompts > 0.0 {
+                    plural(prev_prompts, "prompt", "prompts")
+                } else if prev_turns > 0.0 {
+                    plural(prev_turns, "turn", "turns")
                 } else {
                     String::new()
                 };
-                push_tile(&mut stat_tiles,
-                    v_flex()
-                        .p_3()
-                        .gap_1()
+                let pm = prev_models.first();
+                let detail = match (activity.is_empty(), pm) {
+                    (false, Some(m)) => format!("{}, mostly {}", activity, str_at(m, "model")),
+                    (false, None) => activity,
+                    (true, Some(m)) => format!("Mostly {}", str_at(m, "model")),
+                    (true, None) => "Cache reads included".to_string(),
+                };
+                stat_tiles.push(
+                    tile(v_flex()
+                        .min_h(px(104.))
+                        .justify_between()
+                        .gap_2()
+                        .px(px(14.))
+                        .py(px(12.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child("Yesterday you used"))
                         .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child("You used"),
+                            h_flex().items_center().gap_2()
+                                .when_some(pm.map(|m| str_at(m, "provider").to_string()).filter(|s| !s.is_empty()), |e, p| {
+                                    e.child(svg_icon(provider_icon(&p)).size(px(18.)).text_color(theme.foreground))
+                                })
+                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(prev_tokens)))),
                         )
-                        .child(
-                            div()
-                                .text_size(px(15.))
-                                .font_weight(FontWeight::SEMIBOLD)
-                                .child(format!("{} tokens", fmt_compact(tokens))),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child(sub),
-                        )
-                        .into_any_element(),
-                    );
-            }
-            // Agent work time.
-            if work_ms > 0.0 {
-                push_tile(&mut stat_tiles,
-                    v_flex()
-                        .p_3()
-                        .gap_1()
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child("Your agents worked for"),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(15.))
-                                .font_weight(FontWeight::SEMIBOLD)
-                                .child(fmt_dur_ms(work_ms)),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child(format!("across {}", plural(turns, "turn", "turns"))),
-                        )
-                        .into_any_element(),
-                    );
-            }
-            // Yesterday's tokens by this time.
-            if prev_tokens > 0.0 {
-                push_tile(&mut stat_tiles,
-                    v_flex()
-                        .p_3()
-                        .gap_1()
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child("Yesterday you used"),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(15.))
-                                .font_weight(FontWeight::SEMIBOLD)
-                                .child(format!("{} tokens", fmt_compact(prev_tokens))),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child("by this time"),
-                        )
-                        .into_any_element(),
-                    );
-            }
-            // Quota tile (upstream "Left on {name}, {window}").
-            let provider = self
-                .inbox_usage
-                .first()
-                .map(|u| str_at(u, "provider").to_string())
-                .filter(|s: &String| !s.is_empty())
-                .unwrap_or_else(|| "Devin".to_string());
-            let pct = self
-                .inbox_usage
-                .first()
-                .and_then(|u| get(u, "usedPct").as_f64().or_else(|| get(u, "remainingPct").as_f64()))
-                .map(|p| if get(self.inbox_usage.first().unwrap_or(&Value::Null), "usedPct").is_f64() { 100.0 - p } else { p })
-                .unwrap_or(93.0);
-            let resets = self
-                .inbox_usage
-                .first()
-                .map(|u| str_at(u, "resetsIn").to_string())
-                .filter(|s: &String| !s.is_empty())
-                .unwrap_or_else(|| "5d 18h".to_string());
-            push_tile(&mut stat_tiles,
-                v_flex()
-                    .p_3()
-                    .gap_1()
-                    .child(
-                        div()
-                            .text_size(px(11.))
-                            .text_color(theme.muted_foreground)
-                            .child(format!("Left on {provider}, weekly")),
-                    )
-                    .child(
-                        h_flex()
-                            .items_center()
-                            .gap_1p5()
-                            .child(svg_icon(icons::CODEX).size(px(18.)).text_color(theme.foreground))
-                            .child(
-                                div()
-                                    .text_size(px(15.))
-                                    .font_weight(FontWeight::SEMIBOLD)
-                                    .child(format!("{pct:.0}%")),
-                            ),
-                    )
-                    .child(
-                        h_flex()
-                            .items_center()
-                            .gap_2()
-                            .child(
-                                div()
-                                    .w(px(48.))
-                                    .h(px(6.))
-                                    .rounded(px(3.))
-                                    .bg(theme.border)
-                                    .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(3.)).bg(rgb(0x22a865))),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(format!("Resets in {resets}")),
-                            ),
-                    )
-                    .into_any_element(),
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(detail))
+                        .into_any_element())
+                    .flex_1(),
                 );
-            let mut tile_rows = v_flex().w_full().gap_2();
+            }
+            // Quota: tightest window across snapshots (upstream sorts by
+            // remainingPercent and keeps the first).
+            let tightest = self
+                .inbox_usage
+                .iter()
+                .min_by(|a, b| {
+                    let ra = get(a, "remainingPct").as_f64().unwrap_or(100.0);
+                    let rb = get(b, "remainingPct").as_f64().unwrap_or(100.0);
+                    ra.partial_cmp(&rb).unwrap_or(std::cmp::Ordering::Equal)
+                })
+                .cloned();
+            if let Some(u) = tightest {
+                let provider = str_at(&u, "provider").to_string();
+                let window = str_at(&u, "window").to_string();
+                let window = if window.is_empty() { "weekly".to_string() } else { window.to_lowercase() };
+                let pct = get(&u, "remainingPct")
+                    .as_f64()
+                    .or_else(|| get(&u, "usedPct").as_f64().map(|p| 100.0 - p))
+                    .unwrap_or(93.0)
+                    .round();
+                let resets = str_at(&u, "resetsIn").to_string();
+                stat_tiles.push(
+                    tile(v_flex()
+                        .min_h(px(104.))
+                        .justify_between()
+                        .gap_2()
+                        .px(px(14.))
+                        .py(px(12.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(format!("Left on {provider}, {window}")))
+                        .child(
+                            h_flex().items_center().gap_2()
+                                .child(svg_icon(provider_icon(&provider)).size(px(18.)).text_color(theme.foreground))
+                                .child(div().text_size(px(15.)).font_weight(FontWeight::MEDIUM).child(format!("{pct:.0}%"))),
+                        )
+                        .child(
+                            h_flex().items_center().gap_2()
+                                .child(
+                                    div().w(px(56.)).h(px(4.)).rounded(px(2.)).bg(theme.muted)
+                                        .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(2.)).bg(theme.success)),
+                                )
+                                .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(if resets.is_empty() { "Your tightest limit".to_string() } else { format!("Resets in {resets}") })),
+                        )
+                        .into_any_element())
+                    .flex_1(),
+                );
+            }
+            // tileSpanClassName: 4 tiles pack 2-per-row, everything else 3.
+            let per_row = if stat_tiles.len() == 4 { 2 } else { 3 };
+            let mut tile_rows = v_flex().w_full().gap_3();
             let mut it = stat_tiles.into_iter();
             loop {
-                let mut r = h_flex().w_full().gap_2();
+                let mut r = h_flex().w_full().gap_3();
                 let mut c = 0;
-                for _ in 0..3 {
+                for _ in 0..per_row {
                     if let Some(t) = it.next() {
                         r = r.child(t);
                         c += 1;
@@ -12282,12 +12598,11 @@ impl Render for Native {
                 if c == 0 {
                     break;
                 }
-                // Upstream keeps tiles at one grid-column width.
-                for _ in c..3 {
+                for _ in c..per_row {
                     r = r.child(div().flex_1());
                 }
                 tile_rows = tile_rows.child(r);
-                if c < 3 {
+                if c < per_row {
                     break;
                 }
             }

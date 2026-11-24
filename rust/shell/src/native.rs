@@ -1084,6 +1084,8 @@ pub struct Native {
     theme_packs: Value,
     tp_edit: Option<(bool, String)>,
     tp_input: Option<Entity<InputState>>,
+    /// Import dialog for a theme pack: (dark, multiline JSON input).
+    tp_import: Option<bool>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -2255,6 +2257,7 @@ impl Native {
             theme_packs: json!({}),
             tp_edit: None,
             tp_input: None,
+            tp_import: None,
             git_dialog: None,
             git_msg_input: None,
             git_pr_title_input: None,
@@ -5619,6 +5622,79 @@ impl Native {
             }
         }
         self.tp_edit = None;
+        self.tp_input = None;
+        self.persist_appearance(cx);
+        self.apply_theme_pack(cx);
+    }
+
+    /// Exports the variant's effective pack as upstream's theme JSON string.
+    fn copy_theme_pack(&self, dark: bool, cx: &mut App) {
+        let pack = self
+            .theme_packs
+            .get(if dark { "dark" } else { "light" })
+            .cloned()
+            .unwrap_or_else(|| json!({}));
+        let get_hex = |k: &str, fallback: &str| -> String {
+            pack.get(k)
+                .and_then(Value::as_str)
+                .map(|v| v.to_string())
+                .unwrap_or_else(|| fallback.to_string())
+        };
+        let (da, db, df) = if dark {
+            ("#F2612D", "#111111", "#FCFCFC")
+        } else {
+            ("#C74614", "#FFFFFF", "#0D0D0D")
+        };
+        let out = json!({
+            "tokens": {
+                "colors": {
+                    "accent": get_hex("accent", da),
+                    "background": get_hex("background", db),
+                    "foreground": get_hex("foreground", df),
+                }
+            }
+        });
+        cx.write_to_clipboard(ClipboardItem::new_string(
+            serde_json::to_string_pretty(&out).unwrap_or_default(),
+        ));
+    }
+
+    /// Imports a `{"tokens":{"colors":{...}}}` string into the variant pack:
+    /// accent/background/foreground land in settings.appearance.themePacks.
+    fn commit_theme_pack_import(&mut self, dark: bool, cx: &mut Context<Self>) {
+        let text = self
+            .tp_input
+            .as_ref()
+            .map(|i| i.read(cx).value().to_string())
+            .unwrap_or_default();
+        let Ok(v) = serde_json::from_str::<Value>(&text) else {
+            self.tp_import = None;
+            self.tp_input = None;
+            cx.notify();
+            return;
+        };
+        let colors = v
+            .get("tokens")
+            .and_then(|t| t.get("colors"))
+            .cloned()
+            .unwrap_or_else(|| v.clone());
+        if !self.theme_packs.is_object() {
+            self.theme_packs = json!({});
+        }
+        let packs = self.theme_packs.as_object_mut().unwrap();
+        let pack = packs
+            .entry(if dark { "dark" } else { "light" }.to_string())
+            .or_insert_with(|| json!({}));
+        if let Some(o) = pack.as_object_mut() {
+            for k in ["accent", "background", "foreground"] {
+                if let Some(hex) = colors.get(k).and_then(Value::as_str) {
+                    if hex.len() == 7 && hex.starts_with('#') {
+                        o.insert(k.to_string(), json!(hex));
+                    }
+                }
+            }
+        }
+        self.tp_import = None;
         self.tp_input = None;
         self.persist_appearance(cx);
         self.apply_theme_pack(cx);
@@ -14325,8 +14401,43 @@ impl Render for Native {
                                         h_flex()
                                             .items_center()
                                             .gap_3()
-                                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Import"))
-                                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Copy"))
+                                            .child(
+                                                div()
+                                                    .id(SharedString::from(format!(
+                                                        "tp-import-{}",
+                                                        if dark { "dark" } else { "light" }
+                                                    )))
+                                                    .cursor_pointer()
+                                                    .text_size(px(13.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .hover(|h| h.text_color(theme.foreground))
+                                                    .on_click(cx.listener(move |this, _ev, w, cx| {
+                                                        let input = cx.new(|cx| {
+                                                            InputState::new(w, cx).placeholder(
+                                                                "{\"tokens\":{\"colors\":{…}}}",
+                                                            )
+                                                        });
+                                                        this.tp_input = Some(input);
+                                                        this.tp_import = Some(dark);
+                                                        cx.notify();
+                                                    }))
+                                                    .child("Import"),
+                                            )
+                                            .child(
+                                                div()
+                                                    .id(SharedString::from(format!(
+                                                        "tp-copy-{}",
+                                                        if dark { "dark" } else { "light" }
+                                                    )))
+                                                    .cursor_pointer()
+                                                    .text_size(px(13.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .hover(|h| h.text_color(theme.foreground))
+                                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                        this.copy_theme_pack(dark, cx);
+                                                    }))
+                                                    .child("Copy"),
+                                            )
                                             .child(
                                                 h_flex()
                                                     .items_center()
@@ -21032,6 +21143,87 @@ impl Render for Native {
             }
         }
 
+        if let Some(dark) = self.tp_import {
+            if let Some(input) = self.tp_input.clone() {
+                let card = v_flex()
+                    .w(px(480.))
+                    .rounded(px(12.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(theme.popover)
+                    .shadow_lg()
+                    .child(
+                        div()
+                            .p(px(16.))
+                            .text_base()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .child(format!(
+                                "Import {} theme pack",
+                                if dark { "dark" } else { "light" }
+                            )),
+                    )
+                    .child(
+                        div()
+                            .mx(px(16.))
+                            .mb(px(12.))
+                            .h(px(32.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded(px(8.))
+                            .px_2()
+                            .child(Input::new(&input).appearance(false)),
+                    )
+                    .child(
+                        h_flex()
+                            .p(px(12.))
+                            .justify_end()
+                            .items_center()
+                            .child(
+                                div()
+                                    .id("tp-import-apply")
+                                    .h(px(32.))
+                                    .px_3()
+                                    .flex()
+                                    .items_center()
+                                    .rounded(px(8.))
+                                    .bg(theme.foreground)
+                                    .text_color(theme.background)
+                                    .text_sm()
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(move |this, _e, _w, cx| {
+                                        this.commit_theme_pack_import(dark, cx);
+                                    }))
+                                    .child("Import"),
+                            ),
+                    );
+                tp_overlay = tp_overlay.child(
+                    v_flex()
+                        .size_full()
+                        .items_center()
+                        .justify_center()
+                        .bg(rgba(0x00000080))
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.tp_import = None;
+                                this.tp_input = None;
+                                cx.notify();
+                            }),
+                        )
+                        .child(
+                            div()
+                                .on_mouse_down(
+                                    gpui::MouseButton::Left,
+                                    cx.listener(|_this, _ev, _w, cx| {
+                                        cx.stop_propagation()
+                                    }),
+                                )
+                                .child(card),
+                        ),
+                );
+            }
+        }
+
         let mut pr_overlay = div().absolute().inset_0().size_full();
         if self.pr_dialog_open {
             let mut card = v_flex()
@@ -21315,7 +21507,10 @@ impl Render for Native {
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
             .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))
-            .when(self.tp_edit.is_some(), |d| d.child(tp_overlay))
+            .when(
+                self.tp_edit.is_some() || self.tp_import.is_some(),
+                |d| d.child(tp_overlay),
+            )
             .when(self.pr_dialog_open, |d| d.child(pr_overlay))
             .when(self.wn_popout && self.wn_view == 0, |d| {
                 d.child(wn_pop_overlay)

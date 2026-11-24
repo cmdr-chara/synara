@@ -15053,56 +15053,156 @@ impl Render for Native {
             )
             .child(kanban_cols);
 
-        // /pull-requests — "Code review" list panel + empty detail pane.
-        // Upstream empty list: centered Empty block then per-repo warning callouts.
-        let pr_rows = v_flex()
-            .px_2()
-            .pt(px(50.))
-            .gap(px(12.))
-            .child(
-                v_flex()
-                    .w_full()
-                    .items_center()
-                    .gap(px(6.))
-                    .child(
+        // /pull-requests — "Code review" list panel + detail pane.
+        // Rows come from non-dismissed pullRequests links on live threads,
+        // grouped by the repository parsed out of the PR URL.
+        let mut pr_groups: Vec<(String, Vec<(String, u64, String, String, bool)>)> = Vec::new();
+        for t in &all_threads {
+            if !live_thread(t) {
+                continue;
+            }
+            let tid = str_at(t, "threadId").to_string();
+            for l in arr(t, "pullRequests") {
+                if !get(l, "dismissedAt").is_null() {
+                    continue;
+                }
+                let pr = get(l, "pullRequest");
+                let url = str_at(pr, "url").to_string();
+                let repo = url
+                    .split("github.com/")
+                    .nth(1)
+                    .and_then(|r| r.split("/pull/").next())
+                    .unwrap_or("")
+                    .to_string();
+                let entry = (
+                    tid.clone(),
+                    pr.get("number").and_then(Value::as_u64).unwrap_or(0),
+                    str_at(pr, "title").to_string(),
+                    str_at(pr, "state").to_string(),
+                    pr.get("isDraft").and_then(Value::as_bool).unwrap_or(false),
+                );
+                if let Some(g) = pr_groups.iter_mut().find(|(r, _)| *r == repo) {
+                    g.1.push(entry);
+                } else {
+                    pr_groups.push((repo, vec![entry]));
+                }
+            }
+        }
+        let pr_count: usize = pr_groups.iter().map(|(_, v)| v.len()).sum();
+        let mut pr_rows = v_flex().px_2().pt(px(50.)).gap(px(12.)).child(
+            v_flex()
+                .w_full()
+                .items_center()
+                .gap(px(6.))
+                .child(
+                    div()
+                        .text_size(px(14.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child("No pull requests"),
+                )
+                .child(
+                    div()
+                        .text_size(px(14.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .child("and issues found"),
+                )
+                .child(
+                    div()
+                        .pt(px(4.))
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child("Nothing here in the"),
+                )
+                .child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(theme.muted_foreground)
+                        .child("repositories of your projects."),
+                ),
+        );
+        if pr_count > 0 {
+            pr_rows = v_flex().px_2().pt_2().gap(px(4.));
+            for (repo, prs) in &pr_groups {
+                if !repo.is_empty() {
+                    pr_rows = pr_rows.child(
                         div()
-                            .text_size(px(14.))
-                            .font_weight(FontWeight::MEDIUM)
-                            .child("No pull requests"),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(14.))
-                            .font_weight(FontWeight::MEDIUM)
-                            .child("and issues found"),
-                    )
-                    .child(
-                        div()
-                            .pt(px(4.))
+                            .px_2()
+                            .pb_1()
                             .text_size(px(12.))
                             .text_color(theme.muted_foreground)
-                            .child("Nothing here in the"),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(12.))
-                            .text_color(theme.muted_foreground)
-                            .child("repositories of your projects."),
-                    ),
-            )
-            .child(
-                div()
-                    .mt(px(35.))
-                    .rounded(px(8.))
-                    .border_1()
-                    .border_color(if dark_ui { rgb(0x6b5423) } else { rgb(0xf0d9a8) })
-                    .bg(if dark_ui { rgb(0x2e2512) } else { rgb(0xfdf6e8) })
-                    .px_3()
-                    .py_2()
-                    .text_size(px(12.))
-                    .text_color(theme.foreground)
-                    .child("1 project repository was unavailable. Healthy repositories are still shown."),
-            );
+                            .child(repo.clone()),
+                    );
+                }
+                for (tid, num, title, state, draft) in prs {
+                    let open_state = state == "open";
+                    let tid = tid.clone();
+                    pr_rows = pr_rows.child(
+                        h_flex()
+                            .id(SharedString::from(format!("pr-row-{num}")))
+                            .mx_1()
+                            .px_2()
+                            .h(px(34.))
+                            .items_center()
+                            .gap_2()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|h| h.bg(theme.secondary))
+                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                this.open_thread(tid.clone(), cx);
+                            }))
+                            .child(
+                                svg_icon(icons::PULL_REQUESTS)
+                                    .size(px(14.))
+                                    .text_color(if open_state {
+                                        rgb(0x2da44e).into()
+                                    } else {
+                                        theme.muted_foreground
+                                    }),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(format!("#{num}")),
+                            )
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .overflow_hidden()
+                                    .text_size(px(13.))
+                                    .text_color(theme.foreground)
+                                    .child(title.clone()),
+                            )
+                            .when(*draft, |d| {
+                                d.child(
+                                    div()
+                                        .px(px(6.))
+                                        .py(px(1.))
+                                        .rounded(px(6.))
+                                        .border_1()
+                                        .border_color(theme.border)
+                                        .text_size(px(11.))
+                                        .text_color(theme.muted_foreground)
+                                        .child("Draft"),
+                                )
+                            }),
+                    );
+                }
+            }
+        }
+        let pr_rows = pr_rows.child(
+            div()
+                .mt(px(35.))
+                .rounded(px(8.))
+                .border_1()
+                .border_color(if dark_ui { rgb(0x6b5423) } else { rgb(0xf0d9a8) })
+                .bg(if dark_ui { rgb(0x2e2512) } else { rgb(0xfdf6e8) })
+                .px_3()
+                .py_2()
+                .text_size(px(12.))
+                .text_color(theme.foreground)
+                .child("1 project repository was unavailable. Healthy repositories are still shown."),
+        );
         let pullreq_panel = v_flex()
             .flex_1()
             .h_full()
@@ -15193,7 +15293,7 @@ impl Render for Native {
                                 div()
                                     .text_size(px(12.))
                                     .text_color(theme.muted_foreground)
-                                    .child("0"),
+                                    .child(pr_count.to_string()),
                             ),
                     )
                     .child(
@@ -15210,7 +15310,7 @@ impl Render for Native {
                                 div()
                                     .text_size(px(12.))
                                     .text_color(theme.muted_foreground)
-                                    .child("0"),
+                                    .child(pr_count.to_string()),
                             ),
                     )
                     .child(

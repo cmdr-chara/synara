@@ -3582,6 +3582,39 @@ impl Native {
         .detach();
     }
 
+    /// Toggle a task's completed state from the Inbox tile (upstream
+    /// TaskListItem checkbox → todo.update {completed}).
+    fn toggle_todo(&mut self, id: String, done: bool, cx: &mut Context<Self>) {
+        // Optimistic flip so the row repaints before the round-trip lands.
+        for task in self.inbox_tasks.iter_mut() {
+            if str_at(task, "id") == id {
+                if let Some(m) = task.as_object_mut() {
+                    m.insert(
+                        "completedAt".into(),
+                        if done {
+                            json!(chrono::Utc::now().to_rfc3339())
+                        } else {
+                            Value::Null
+                        },
+                    );
+                }
+            }
+        }
+        let cell = self.client.clone();
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let id = id.clone();
+            let _ = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell)
+                        .and_then(|c| c.call("todo.update", json!({"id": id, "completed": done})))
+                })
+                .await;
+        })
+        .detach();
+        cx.notify();
+    }
+
     /// Blocking RPC bundle for the settings panes: provider statuses,
     /// usage quotas, skills, connectors, integrations, worktrees,
     /// profile stats, computer backend status, archived thread count.
@@ -6903,6 +6936,97 @@ impl Render for Native {
                                 .child("Add a task for today, or press Tab to hand it to an agent"),
                         ),
                 );
+            // Task rows (upstream InboxTasks TaskListItem): check toggle,
+            // title, due-day chip; rows linked to a thread open it on click.
+            let today = now.format("%Y-%m-%d").to_string();
+            let mut rows = v_flex().w_full().gap_1();
+            for task in self.inbox_tasks.clone() {
+                let title = str_at(&task, "title").to_string();
+                if title.is_empty() {
+                    continue;
+                }
+                let id = str_at(&task, "id")
+                    .to_string()
+                    .replace("null", "");
+                let done = !str_at(&task, "completedAt").is_empty()
+                    && str_at(&task, "completedAt") != "null";
+                let due = str_at(&task, "dueDate").to_string();
+                let due_label = if due.is_empty() || due == "null" {
+                    String::new()
+                } else if due < today {
+                    "Overdue".to_string()
+                } else if due == today {
+                    "Today".to_string()
+                } else {
+                    due[..due.len().min(10)].to_string()
+                };
+                let tid = str_at(&task, "threadId").to_string();
+                let mut row = h_flex()
+                    .id(ElementId::Name(format!("inbox-task-{id}").into()))
+                    .w_full()
+                    .items_center()
+                    .gap_2()
+                    .px_2()
+                    .py(px(6.))
+                    .rounded_md()
+                    .child(
+                        div()
+                            .id(ElementId::Name(
+                                format!("inbox-task-check-{id}").into(),
+                            ))
+                            .cursor_pointer()
+                            .child(
+                                Icon::new(if done {
+                                    AssetIcon::CircleCheck
+                                } else {
+                                    AssetIcon::CircleDot
+                                })
+                                .size(px(14.))
+                                .text_color(if done {
+                                    theme.success
+                                } else {
+                                    theme.muted_foreground
+                                }),
+                            )
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.toggle_todo(id.clone(), !done, cx);
+                            })),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .text_size(px(13.))
+                            .text_color(if done {
+                                theme.muted_foreground
+                            } else {
+                                theme.foreground
+                            })
+                            .child(title),
+                    );
+                if !due_label.is_empty() {
+                    row = row.child(
+                        div()
+                            .rounded_full()
+                            .px(px(6.))
+                            .py(px(1.))
+                            .bg(theme.muted)
+                            .text_size(px(11.))
+                            .text_color(if due_label == "Overdue" {
+                                theme.danger
+                            } else {
+                                theme.muted_foreground
+                            })
+                            .child(due_label),
+                    );
+                }
+                if !tid.is_empty() && tid != "null" {
+                    row = row.cursor_pointer().on_click(cx.listener(
+                        move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
+                    ));
+                }
+                rows = rows.child(row);
+            }
+            let tasks_card = tasks_card.child(rows);
 
             // Right column: recap + usage tiles
             let mut right_col = v_flex().flex_1().gap_3();

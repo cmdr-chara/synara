@@ -27,9 +27,9 @@ Source of truth for web components: `apps/web/src/components/**.tsx`
 | File editor | EditorWorkspaceView, WorkspaceFileEditorPane, codeEditor/* (Monaco) | `Editor` + `EditorState` (gpui native editor) | 🔶 (view/edit/save; no diff editor, no syntax lang detection) |
 | Dev servers | (dev-server UI in server surfaces) | DEV SERVERS pane list/run/stop | ✅ |
 | Settings | settings/* (44 comps), SettingsSidebarNav, ThemePackEditor, DebugFeatureFlagsMenu | all 18+ sections w/ verbatim copy, interactive keybind rebinding | 🔶 (no ThemePackEditor, no debug flags) |
-| Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del) + colored patch view | 🔶 (no blame, no staged/unstaged split) |
+| Diff panel | DiffPanel* (9 comps), DiffLineBlamePopover, DiffWorkerPoolProvider | CHANGES dock: git.status file list (+ins/-del), staged/unstaged split + colored patch view | 🔶 (no blame popover) |
 | Terminal | terminal/*, TerminalWorkspaceTabs, ThreadTerminalDrawer, TerminalSearch | bottom TERMINAL drawer: PTY via terminal.open, subscribeEvents stream (ANSI-stripped), $ input -> terminal.write, restart/close | 🔶 (no tabs/multi-session, no search, no true tty rendering) |
-| Inbox | inbox/*, githubInbox/* (4) | INBOX pane: PR/issue rows (icon, #, repo, author, rel time), opens URL | 🔶 (no filters/actions) |
+| Inbox | inbox/* (InboxTasks, InboxTaskList, Recap/Usage tiles), githubInbox/* (4) | Inbox pane: greeting + "N need you", Today's tasks tile w/ todo rows (check toggle, due chips) + add row, recap + usage tiles, sign-in, provider-update toast | 🔶 (task rows done; no thread grouping Needs-you/In-progress/Ready-for-review/Failed, no GitHub inbox rows) |
 | Browser | BrowserPanel, BrowserTabStrip, BrowserVault* | — | ⬜ (wry webview only as fallback) |
 | Right dock | RightDock, SubagentsDockPane, BackgroundTasksDockPane, SidechatDockPane, PlanSidebar | right-side dock container w/ CHANGES pane | 🔶 (only changes pane; no subagents/tasks/sidechat) |
 | Kanban | kanban/* (11) | rail pane: per-project columns, cards ordered updatedAt desc | ✅ |

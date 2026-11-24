@@ -713,6 +713,68 @@ struct ScRec {
     captured: Option<ScCaptured>,
 }
 
+/// Import projects dialog state (upstream ProjectImportDialog +
+/// ProjectImportPanel): chosen provider sources, the scanned catalog,
+/// per-item selection and run progress. `stop` is shared with the async
+/// import loop so "Stop after current" halts between items.
+struct ImportDlg {
+    providers: Vec<String>,
+    catalog: Option<Value>,
+    scanning: bool,
+    running: bool,
+    error: Option<String>,
+    selected: std::collections::HashSet<String>,
+    roots: std::collections::HashMap<String, String>,
+    include_archived: bool,
+    search: Entity<InputState>,
+    outcomes: std::collections::HashMap<String, Option<String>>,
+    progress: Option<(usize, usize, String)>,
+    stop: Arc<std::sync::atomic::AtomicBool>,
+    expanded: std::collections::HashSet<String>,
+    root_inputs: std::collections::HashMap<String, Entity<InputState>>,
+}
+
+/// projectImportItemKey: JSON [projectKey, threadKey|null].
+fn import_item_key(project_key: &str, thread_key: Option<&str>) -> String {
+    match thread_key {
+        Some(tk) => json!([project_key, tk]).to_string(),
+        None => json!([project_key, Value::Null]).to_string(),
+    }
+}
+
+/// selectableProjectImportKeys: a threadless project is selectable only
+/// when it would create a new project; threads skip imported and,
+/// unless enabled, archived items.
+fn import_selectable_keys(project: &Value, include_archived: bool) -> Vec<String> {
+    let pk = str_at(project, "key");
+    let threads = arr(project, "threads");
+    if threads.is_empty() {
+        return if get(project, "existingProjectId").is_null() {
+            vec![import_item_key(pk, None)]
+        } else {
+            Vec::new()
+        };
+    }
+    threads
+        .iter()
+        .filter(|t| {
+            !t["alreadyImported"].as_bool().unwrap_or(false)
+                && (include_archived || !t["archived"].as_bool().unwrap_or(false))
+        })
+        .map(|t| import_item_key(pk, Some(str_at(t, "key"))))
+        .collect()
+}
+
+/// Import providers use kind names ("claudeAgent"); map them onto the
+/// brand icons before falling back to the session provider map.
+fn import_provider_icon(provider: &str) -> &'static [u8] {
+    match provider {
+        "claudeAgent" => icons::P_CLAUDE,
+        "codex" => icons::CODEX,
+        other => provider_icon(other),
+    }
+}
+
 
 
 /// Drag payload for open-thread tab pills (reorder).
@@ -1070,6 +1132,8 @@ pub struct Native {
     /// RelocateProjectDialog: (project id, previous workspace root).
     proj_relocate: Option<(String, String)>,
     proj_relocate_input: Option<Entity<InputState>>,
+    /// Import projects dialog (upstream ProjectImportDialog).
+    import_dlg: Option<ImportDlg>,
     // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
     // mode, input entity, last async result rows, highlighted row, and a
     // sequence counter that drops stale search responses.
@@ -2385,6 +2449,7 @@ impl Native {
             proj_rename_input: None,
             proj_relocate: None,
             proj_relocate_input: None,
+            import_dlg: None,
             palette_mode: None,
             palette_input: None,
             palette_rows: Vec::new(),
@@ -3671,7 +3736,16 @@ impl Native {
                 return;
             }
             ("import-src", _) => {
-                self.palette_fetch_imports(payload.clone(), cx);
+                // Upstream openProjectImportDialog: pick the provider set
+                // ("all" = Codex + Claude Code), close the palette and open
+                // the full dialog with an immediate scan.
+                let providers = if payload == "all" {
+                    vec!["codex".to_string(), "claudeAgent".to_string()]
+                } else {
+                    vec![payload.clone()]
+                };
+                self.close_palette(window, cx);
+                self.open_import_dialog(providers, window, cx);
                 return;
             }
             ("import-proj", _) => {
@@ -3870,6 +3944,232 @@ impl Native {
                     return;
                 }
                 this.palette_rows = v.map(|v| arr(&v, "projects").to_vec()).unwrap_or_default();
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    /// Open the full Import projects dialog (upstream
+    /// useProjectImportDialogStore.openDialog): fresh state, then an
+    /// immediate scan for the chosen providers.
+    fn open_import_dialog(
+        &mut self,
+        providers: Vec<String>,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let search = cx.new(|cx| {
+            InputState::new(window, cx).placeholder("Search projects or folders")
+        });
+        cx.subscribe_in(&search, window, |_this: &mut Self, _s, ev, _w, cx| {
+            if let InputEvent::Change = ev {
+                cx.notify();
+            }
+        })
+        .detach();
+        self.import_dlg = Some(ImportDlg {
+            providers,
+            catalog: None,
+            scanning: false,
+            running: false,
+            error: None,
+            selected: std::collections::HashSet::new(),
+            roots: std::collections::HashMap::new(),
+            include_archived: false,
+            search,
+            outcomes: std::collections::HashMap::new(),
+            progress: None,
+            stop: Arc::new(std::sync::atomic::AtomicBool::new(false)),
+            expanded: std::collections::HashSet::new(),
+            root_inputs: std::collections::HashMap::new(),
+        });
+        self.import_scan(cx);
+        cx.notify();
+    }
+
+    /// "Find projects" / "Scan again": orchestration.listProjectImports for
+    /// the enabled providers, then preselect every selectable item.
+    fn import_scan(&mut self, cx: &mut Context<Self>) {
+        let Some(d) = self.import_dlg.as_mut() else { return };
+        if d.providers.is_empty() {
+            return;
+        }
+        d.scanning = true;
+        d.error = None;
+        d.catalog = None;
+        d.outcomes.clear();
+        d.progress = None;
+        d.expanded.clear();
+        d.root_inputs.clear();
+        let providers = d.providers.clone();
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "orchestration.listProjectImports",
+                            json!({"providers": providers}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                let Some(d) = this.import_dlg.as_mut() else { return };
+                d.scanning = false;
+                match v {
+                    Some(cat) => {
+                        let mut sel = std::collections::HashSet::new();
+                        for p in arr(&cat, "projects") {
+                            for k in import_selectable_keys(p, d.include_archived) {
+                                sel.insert(k);
+                            }
+                        }
+                        d.selected = sel;
+                        d.catalog = Some(cat);
+                    }
+                    None => {
+                        d.error = Some("Could not find local projects.".to_string());
+                    }
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
+
+    /// buildProjectImportQueue: selected, selectable items not yet imported
+    /// — (item key, display title, importProject input).
+    fn import_queue(d: &ImportDlg) -> Vec<(String, String, Value)> {
+        let mut queue = Vec::new();
+        let Some(cat) = d.catalog.as_ref() else { return queue };
+        for p in arr(cat, "projects") {
+            let pk = str_at(p, "key");
+            let ptitle = str_at(p, "title");
+            let root_override = d
+                .roots
+                .get(pk)
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty());
+            let selectable: std::collections::HashSet<String> =
+                import_selectable_keys(p, d.include_archived)
+                    .into_iter()
+                    .collect();
+            let threads = arr(p, "threads");
+            if threads.is_empty() {
+                let key = import_item_key(pk, None);
+                if selectable.contains(&key)
+                    && d.selected.contains(&key)
+                    && !matches!(d.outcomes.get(&key), Some(None))
+                {
+                    let mut input =
+                        json!({"projectKey": pk, "threadKey": Value::Null, "spaceId": Value::Null});
+                    if let Some(r) = &root_override {
+                        input["workspaceRoot"] = json!(r);
+                    }
+                    queue.push((key, ptitle.to_string(), input));
+                }
+            } else {
+                for t in threads {
+                    let key = import_item_key(pk, Some(str_at(t, "key")));
+                    if !selectable.contains(&key)
+                        || !d.selected.contains(&key)
+                        || matches!(d.outcomes.get(&key), Some(None))
+                    {
+                        continue;
+                    }
+                    let mut input = json!({"projectKey": pk,
+                        "threadKey": str_at(t, "key"), "spaceId": Value::Null});
+                    if let Some(r) = &root_override {
+                        input["workspaceRoot"] = json!(r);
+                    }
+                    let ttitle = str_at(t, "title");
+                    let label = if ttitle.is_empty() {
+                        format!("{ptitle} · Untitled conversation")
+                    } else {
+                        format!("{ptitle} · {ttitle}")
+                    };
+                    queue.push((key, label, input));
+                }
+            }
+        }
+        queue
+    }
+
+    /// "Import selected" / "Retry failed": sequential
+    /// orchestration.importProject per queued item, then a snapshot sync.
+    fn import_run(&mut self, retry_only: bool, cx: &mut Context<Self>) {
+        let Some(d) = self.import_dlg.as_mut() else { return };
+        if d.running {
+            return;
+        }
+        let queue: Vec<(String, String, Value)> = Self::import_queue(d)
+            .into_iter()
+            .filter(|(k, _, _)| {
+                !retry_only || matches!(d.outcomes.get(k), Some(Some(_)))
+            })
+            .collect();
+        if queue.is_empty() {
+            return;
+        }
+        d.stop.store(false, std::sync::atomic::Ordering::Relaxed);
+        d.running = true;
+        d.error = None;
+        let stop = d.stop.clone();
+        let total = queue.len();
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            for (i, (key, title, input)) in queue.into_iter().enumerate() {
+                if stop.load(std::sync::atomic::Ordering::Relaxed) {
+                    break;
+                }
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    if let Some(d) = this.import_dlg.as_mut() {
+                        d.progress = Some((i + 1, total, title.clone()));
+                        cx.notify();
+                    }
+                });
+                let cell2 = cell.clone();
+                let res = cx
+                    .background_executor()
+                    .spawn(async move {
+                        ensure_client(&cell2)
+                            .and_then(|c| c.call("orchestration.importProject", input))
+                    })
+                    .await;
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    if let Some(d) = this.import_dlg.as_mut() {
+                        d.outcomes.insert(
+                            key,
+                            match res {
+                                Some(_) => None,
+                                None => Some("Import failed. Try again.".to_string()),
+                            },
+                        );
+                        cx.notify();
+                    }
+                });
+            }
+            let cell3 = cell.clone();
+            let snap = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell3).and_then(|c| {
+                        c.call("orchestration.getShellSnapshot", json!({}))
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(d) = this.import_dlg.as_mut() {
+                    d.running = false;
+                }
+                if let Some(s) = snap {
+                    this.snapshot = Some(s);
+                }
                 cx.notify();
             });
         })
@@ -11478,7 +11778,12 @@ impl Render for Native {
                         this.ascii_ripples.remove(0);
                     }
                     cx.notify();
-                }))
+                }));
+            // Upstream mounts the field over the whole chat column (composer
+            // included); mounting it inside `home` stopped it above the
+            // composer tray. Attach it to the pane so it spans top to bottom.
+            pane = pane
+                .relative()
                 .child(div().absolute().inset_0().overflow_hidden().child(wm));
             if !self.sponsor_dismissed {
                 // Upstream SponsorLandingBanner: centered, max-w-520, borderless
@@ -24616,6 +24921,833 @@ impl Render for Native {
             }
         }
 
+        // ── Import projects dialog (upstream ProjectImportDialog +
+        // ProjectImportPanel): provider chips, a scrollable per-project
+        // checklist and a sequential import run with stop/retry. ─────────
+
+        // Seed folder-path inputs for scanned rows whose stored directory
+        // no longer exists (upstream ProjectImportFolderInput).
+        if let Some(cat) = self
+            .import_dlg
+            .as_ref()
+            .and_then(|d| d.catalog.clone())
+        {
+            let missing: Vec<(String, String)> = arr(&cat, "projects")
+                .iter()
+                .filter(|p| !p["directoryExists"].as_bool().unwrap_or(true))
+                .map(|p| {
+                    (
+                        str_at(p, "key").to_string(),
+                        str_at(p, "workspaceRoot").to_string(),
+                    )
+                })
+                .collect();
+            for (pk, root) in missing {
+                let exists = self
+                    .import_dlg
+                    .as_ref()
+                    .map(|d| d.root_inputs.contains_key(&pk))
+                    .unwrap_or(false);
+                if exists {
+                    continue;
+                }
+                let inp = cx.new(|cx| {
+                    InputState::new(window, cx)
+                        .placeholder("Optional existing folder path")
+                });
+                inp.update(cx, |s, cx| s.set_value(root, window, cx));
+                let pk2 = pk.clone();
+                let inp2 = inp.clone();
+                cx.subscribe_in(&inp, window, move |this: &mut Self, _s, ev, _w, cx| {
+                    if let InputEvent::Change = ev {
+                        let v = inp2.read(cx).value().to_string();
+                        if let Some(d) = this.import_dlg.as_mut() {
+                            d.roots.insert(pk2.clone(), v);
+                        }
+                        cx.notify();
+                    }
+                })
+                .detach();
+                if let Some(d) = self.import_dlg.as_mut() {
+                    d.root_inputs.insert(pk, inp);
+                }
+            }
+        }
+
+        let mut imp_overlay = div().absolute().inset_0().size_full();
+        if let Some(dlg) = self.import_dlg.as_ref() {
+            let cat = dlg.catalog.clone().unwrap_or(Value::Null);
+            let query = dlg.search.read(cx).value().to_string();
+            let query = query.trim().to_lowercase();
+            let projects = arr(&cat, "projects");
+            let visible: Vec<Value> = projects
+                .iter()
+                .filter(|p| {
+                    query.is_empty()
+                        || format!(
+                            "{} {}",
+                            str_at(p, "title"),
+                            str_at(p, "workspaceRoot")
+                        )
+                        .to_lowercase()
+                        .contains(&query)
+                })
+                .cloned()
+                .collect();
+            let selectable_all: Vec<String> = projects
+                .iter()
+                .flat_map(|p| import_selectable_keys(p, dlg.include_archived))
+                .filter(|k| !matches!(dlg.outcomes.get(k), Some(None)))
+                .collect();
+            let all_selected = !selectable_all.is_empty()
+                && selectable_all.iter().all(|k| dlg.selected.contains(k));
+            // item key → display title, reused by the failures list
+            let mut titles: std::collections::HashMap<String, String> =
+                std::collections::HashMap::new();
+            for p in projects.iter() {
+                let pk = str_at(p, "key");
+                let pt = str_at(p, "title");
+                let threads = arr(p, "threads");
+                if threads.is_empty() {
+                    titles.insert(import_item_key(pk, None), pt.to_string());
+                } else {
+                    for t in threads {
+                        let tt = str_at(t, "title");
+                        titles.insert(
+                            import_item_key(pk, Some(str_at(t, "key"))),
+                            if tt.is_empty() {
+                                format!("{pt} · Untitled conversation")
+                            } else {
+                                format!("{pt} · {tt}")
+                            },
+                        );
+                    }
+                }
+            }
+            // footer counts: conversations selected, projects touched
+            let mut conv_n = 0usize;
+            let mut proj_n = 0usize;
+            for p in projects.iter() {
+                let has_threads = !arr(p, "threads").is_empty();
+                let mut p_sel = false;
+                for k in import_selectable_keys(p, dlg.include_archived) {
+                    if dlg.selected.contains(&k) {
+                        p_sel = true;
+                        if has_threads {
+                            conv_n += 1;
+                        }
+                    }
+                }
+                if p_sel {
+                    proj_n += 1;
+                }
+            }
+
+            let cbox = |state: u8| {
+                div()
+                    .size(px(14.))
+                    .flex_none()
+                    .rounded(px(3.))
+                    .border_1()
+                    .border_color(if state > 0 { theme.accent } else { theme.border })
+                    .bg(if state > 0 {
+                        theme.accent
+                    } else {
+                        rgba(0x00000000).into()
+                    })
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .text_size(px(9.))
+                    .text_color(theme.accent_foreground)
+                    .child(if state == 2 {
+                        "\u{2713}"
+                    } else if state == 1 {
+                        "\u{2212}"
+                    } else {
+                        ""
+                    })
+            };
+
+            let mut card = v_flex()
+                .w(px(520.))
+                .max_h(px(640.))
+                .bg(theme.popover)
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .shadow_lg()
+                .overflow_hidden()
+                .on_mouse_down(
+                    gpui::MouseButton::Left,
+                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                )
+                .child(
+                    h_flex().px(px(20.)).pt(px(20.)).items_start().child(
+                        v_flex()
+                            .gap(px(4.))
+                            .flex_1()
+                            .child(
+                                div()
+                                    .text_size(px(16.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child("Import projects"),
+                            )
+                            .child(
+                                div()
+                                    .text_sm()
+                                    .text_color(theme.muted_foreground)
+                                    .child(
+                                        "Continue your Codex and Claude Code \
+                                         projects in Synara.",
+                                    ),
+                            ),
+                    ),
+                )
+                .child(
+                    div()
+                        .id("imp-close")
+                        .size(px(26.))
+                        .flex_none()
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .rounded_md()
+                        .cursor_pointer()
+                        .text_color(theme.muted_foreground)
+                        .hover(|s| s.bg(theme.secondary))
+                        .child(svg_icon(icons::X).size(px(12.)))
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            if this
+                                .import_dlg
+                                .as_ref()
+                                .map(|d| !d.running)
+                                .unwrap_or(true)
+                            {
+                                this.import_dlg = None;
+                            }
+                            cx.notify();
+                        })),
+                );
+
+            let mut body = v_flex()
+                .px(px(20.))
+                .pt(px(14.))
+                .pb(px(12.))
+                .gap(px(12.));
+            // provider chips + scan button
+            let mut chips = h_flex().gap(px(6.)).items_center();
+            for (pid, plabel) in [("codex", "Codex"), ("claudeAgent", "Claude Code")] {
+                let on = dlg.providers.iter().any(|p| p == pid);
+                let pid_s = pid.to_string();
+                chips = chips.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("imp-prov-{pid}").into()))
+                        .h(px(30.))
+                        .px(px(10.))
+                        .gap(px(7.))
+                        .items_center()
+                        .rounded(px(8.))
+                        .border_1()
+                        .border_color(theme.border)
+                        .when(on, |s| s.bg(theme.secondary))
+                        .text_color(if on {
+                            theme.foreground
+                        } else {
+                            theme.muted_foreground
+                        })
+                        .cursor_pointer()
+                        .child(cbox(if on { 2 } else { 0 }))
+                        .child(svg_icon(import_provider_icon(pid)).size(px(14.)))
+                        .child(div().text_sm().child(plabel))
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            if let Some(d) = this.import_dlg.as_mut() {
+                                if d.providers.iter().any(|p| p == &pid_s) {
+                                    d.providers.retain(|p| p != &pid_s);
+                                } else {
+                                    d.providers.push(pid_s.clone());
+                                }
+                                d.catalog = None;
+                                d.outcomes.clear();
+                                d.progress = None;
+                            }
+                            cx.notify();
+                        })),
+                );
+            }
+            chips = chips.child(div().flex_1());
+            chips = chips.child(
+                Button::new("imp-scan")
+                    .ghost()
+                    .label(if dlg.scanning {
+                        "Finding projects\u{2026}"
+                    } else if dlg.catalog.is_some() {
+                        "Scan again"
+                    } else {
+                        "Find projects"
+                    })
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        let ok = this
+                            .import_dlg
+                            .as_ref()
+                            .map(|d| {
+                                !d.running && !d.scanning && !d.providers.is_empty()
+                            })
+                            .unwrap_or(false);
+                        if ok {
+                            this.import_scan(cx);
+                        }
+                    })),
+            );
+            body = body.child(chips);
+            body = body.child(
+                div()
+                    .text_sm()
+                    .text_color(theme.muted_foreground)
+                    .child(
+                        "Projects keep their existing folders and conversations \
+                         are copied into Synara.",
+                    ),
+            );
+            if let Some(err) = dlg.error.clone() {
+                body = body.child(div().text_sm().text_color(theme.danger).child(err));
+            }
+            for src in arr(&cat, "sources") {
+                let serr = str_at(src, "error");
+                if !serr.is_empty() {
+                    let pname = if str_at(src, "provider") == "claudeAgent" {
+                        "Claude Code"
+                    } else {
+                        "Codex"
+                    };
+                    body = body.child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.danger)
+                            .child(format!("{pname}: {serr}")),
+                    );
+                }
+            }
+
+            if dlg.catalog.is_some() {
+                let sa = selectable_all.clone();
+                body = body.child(
+                    h_flex()
+                        .gap(px(10.))
+                        .items_center()
+                        .child(
+                            div()
+                                .flex_1()
+                                .min_w(px(140.))
+                                .border_1()
+                                .border_color(theme.border)
+                                .rounded(px(6.))
+                                .px_2()
+                                .h(px(28.))
+                                .child(Input::new(&dlg.search).appearance(false)),
+                        )
+                        .child(
+                            h_flex()
+                                .id("imp-archived")
+                                .gap(px(6.))
+                                .items_center()
+                                .cursor_pointer()
+                                .child(cbox(if dlg.include_archived { 2 } else { 0 }))
+                                .child(
+                                    div()
+                                        .text_sm()
+                                        .text_color(theme.muted_foreground)
+                                        .child("Include archived"),
+                                )
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    if let Some(d) = this.import_dlg.as_mut() {
+                                        d.include_archived = !d.include_archived;
+                                    }
+                                    cx.notify();
+                                })),
+                        )
+                        .child(
+                            Button::new("imp-selall")
+                                .ghost()
+                                .label(if all_selected {
+                                    "Remove all"
+                                } else {
+                                    "Select all"
+                                })
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    if let Some(d) = this.import_dlg.as_mut() {
+                                        if all_selected {
+                                            for k in &sa {
+                                                d.selected.remove(k);
+                                            }
+                                        } else {
+                                            for k in &sa {
+                                                d.selected.insert(k.clone());
+                                            }
+                                        }
+                                    }
+                                    cx.notify();
+                                })),
+                        ),
+                );
+
+                // scrollable project checklist
+                let mut list = v_flex()
+                    .id("imp-list")
+                    .min_h_0()
+                    .max_h(px(300.))
+                    .overflow_y_scroll()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg();
+                if visible.is_empty() {
+                    list = list.child(
+                        div()
+                            .px_3()
+                            .py_2()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child("No projects match."),
+                    );
+                }
+                for (pi, p) in visible.iter().enumerate() {
+                    let pk = str_at(p, "key").to_string();
+                    let pt = str_at(p, "title").to_string();
+                    let root = str_at(p, "workspaceRoot").to_string();
+                    let threads = arr(p, "threads");
+                    let expanded = dlg.expanded.contains(&pk);
+                    let available: Vec<String> =
+                        import_selectable_keys(p, dlg.include_archived)
+                            .into_iter()
+                            .filter(|k| !matches!(dlg.outcomes.get(k), Some(None)))
+                            .collect();
+                    let sel_n =
+                        available.iter().filter(|k| dlg.selected.contains(*k)).count();
+                    let state = if available.is_empty() {
+                        0u8
+                    } else if sel_n == available.len() {
+                        2
+                    } else if sel_n > 0 {
+                        1
+                    } else {
+                        0
+                    };
+                    let existing = !get(p, "existingProjectId").is_null();
+                    let dir_ok = p["directoryExists"].as_bool().unwrap_or(true);
+                    let nconv = if dlg.include_archived {
+                        threads.len()
+                    } else {
+                        threads
+                            .iter()
+                            .filter(|t| !t["archived"].as_bool().unwrap_or(false))
+                            .count()
+                    };
+
+                    let avail_c = available.clone();
+                    let pk_t = pk.clone();
+                    let mut row = h_flex()
+                        .id(ElementId::Name(format!("imp-proj-{pi}").into()))
+                        .px(px(12.))
+                        .py(px(9.))
+                        .gap(px(10.))
+                        .items_center()
+                        .cursor_pointer()
+                        .hover(|s| s.bg(theme.secondary))
+                        .child(
+                            div()
+                                .id(ElementId::Name(format!("imp-pcb-{pi}").into()))
+                                .child(cbox(state))
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    cx.stop_propagation();
+                                    if let Some(d) = this.import_dlg.as_mut() {
+                                        let all = !avail_c.is_empty()
+                                            && avail_c
+                                                .iter()
+                                                .all(|k| d.selected.contains(k));
+                                        if all {
+                                            for k in &avail_c {
+                                                d.selected.remove(k);
+                                            }
+                                        } else {
+                                            for k in &avail_c {
+                                                d.selected.insert(k.clone());
+                                            }
+                                        }
+                                    }
+                                    cx.notify();
+                                })),
+                        )
+                        .child(
+                            v_flex()
+                                .id(ElementId::Name(format!("imp-ptl-{pi}").into()))
+                                .flex_1()
+                                .gap(px(1.))
+                                .child(div().text_sm().child(pt))
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child(root),
+                                )
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    if let Some(d) = this.import_dlg.as_mut() {
+                                        if !d.expanded.remove(&pk_t) {
+                                            d.expanded.insert(pk_t.clone());
+                                        }
+                                    }
+                                    cx.notify();
+                                })),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(if dir_ok {
+                                    theme.muted_foreground
+                                } else {
+                                    theme.danger
+                                })
+                                .child(if !dir_ok {
+                                    "Folder missing".to_string()
+                                } else if existing {
+                                    "Already in Synara".to_string()
+                                } else {
+                                    format!(
+                                        "{nconv} conversation{}",
+                                        if nconv == 1 { "" } else { "s" }
+                                    )
+                                }),
+                        );
+                    for pv in arr(p, "providers") {
+                        if let Some(pvs) = pv.as_str() {
+                            row = row.child(
+                                svg_icon(import_provider_icon(pvs))
+                                    .size(px(14.))
+                                    .flex_none(),
+                            );
+                        }
+                    }
+                    row = row.child(
+                        svg_icon(if expanded {
+                            icons::CHEVRON_DOWN
+                        } else {
+                            icons::CHEVRON_RIGHT
+                        })
+                        .size(px(12.))
+                        .flex_none(),
+                    );
+
+                    let mut card_el = v_flex().child(row);
+                    if expanded {
+                        let mut tl = v_flex()
+                            .pb(px(8.))
+                            .pl(px(36.))
+                            .pr(px(12.))
+                            .gap(px(2.));
+                        for (ti, t) in threads.iter().enumerate() {
+                            let tk = str_at(t, "key");
+                            let key = import_item_key(&pk, Some(tk));
+                            let imported =
+                                t["alreadyImported"].as_bool().unwrap_or(false);
+                            let archived = t["archived"].as_bool().unwrap_or(false);
+                            let selectable =
+                                !imported && (dlg.include_archived || !archived);
+                            let done = matches!(dlg.outcomes.get(&key), Some(None));
+                            let sel = dlg.selected.contains(&key);
+                            let key_c = key.clone();
+                            let mut trow = h_flex()
+                                .id(ElementId::Name(
+                                    format!("imp-th-{pi}-{ti}").into(),
+                                ))
+                                .py(px(4.))
+                                .gap(px(8.))
+                                .items_center();
+                            if selectable && !done {
+                                trow = trow.child(
+                                    div()
+                                        .id(ElementId::Name(
+                                            format!("imp-tcb-{pi}-{ti}").into(),
+                                        ))
+                                        .child(cbox(if sel { 2 } else { 0 }))
+                                        .on_click(cx.listener(
+                                            move |this, _ev, _w, cx| {
+                                                cx.stop_propagation();
+                                                if let Some(d) =
+                                                    this.import_dlg.as_mut()
+                                                {
+                                                    if !d.selected.remove(&key_c)
+                                                    {
+                                                        d.selected
+                                                            .insert(key_c.clone());
+                                                    }
+                                                }
+                                                cx.notify();
+                                            },
+                                        )),
+                                );
+                            } else {
+                                trow = trow.child(cbox(2).opacity(0.4));
+                            }
+                            trow = trow.child(
+                                svg_icon(import_provider_icon(str_at(t, "provider")))
+                                    .size(px(14.))
+                                    .flex_none(),
+                            );
+                            trow = trow.child(
+                                div()
+                                    .flex_1()
+                                    .text_sm()
+                                    .when(done || imported, |s| {
+                                        s.text_color(theme.muted_foreground)
+                                    })
+                                    .child(if str_at(t, "title").is_empty() {
+                                        "Untitled conversation".to_string()
+                                    } else {
+                                        str_at(t, "title").to_string()
+                                    }),
+                            );
+                            let status = if imported {
+                                "Already present".to_string()
+                            } else if archived {
+                                "Archived".to_string()
+                            } else {
+                                rel_time(str_at(t, "updatedAt"))
+                            };
+                            if !status.is_empty() {
+                                trow = trow.child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child(status),
+                                );
+                            }
+                            tl = tl.child(trow);
+                        }
+                        if threads.is_empty() {
+                            tl = tl.child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child("No conversations in this project yet."),
+                            );
+                        }
+                        if !dir_ok {
+                            if let Some(inp) = dlg.root_inputs.get(&pk) {
+                                let inp3 = inp.clone();
+                                tl = tl.child(
+                                    h_flex()
+                                        .gap(px(6.))
+                                        .items_center()
+                                        .pt(px(6.))
+                                        .child(
+                                            div()
+                                                .flex_1()
+                                                .border_1()
+                                                .border_color(theme.border)
+                                                .rounded(px(6.))
+                                                .px_2()
+                                                .h(px(28.))
+                                                .child(
+                                                    Input::new(inp).appearance(false),
+                                                ),
+                                        )
+                                        .child(
+                                            Button::new(ElementId::Name(
+                                                format!("imp-browse-{pi}").into(),
+                                            ))
+                                            .ghost()
+                                            .label("Browse\u{2026}")
+                                            .on_click(cx.listener(
+                                                move |_this, _ev, w, cx| {
+                                                    let rx = cx.prompt_for_paths(
+                                                        gpui::PathPromptOptions {
+                                                            files: false,
+                                                            directories: true,
+                                                            multiple: false,
+                                                            prompt: None,
+                                                        },
+                                                    );
+                                                    let inp4 = inp3.clone();
+                                                    cx.spawn_in(
+                                                        w,
+                                                        async move |_this, cx| {
+                                                            if let Ok(Ok(Some(
+                                                                paths,
+                                                            ))) = rx.await
+                                                            {
+                                                                if let Some(dir) =
+                                                                    paths.first()
+                                                                {
+                                                                    let p = dir
+                                                                        .to_string_lossy()
+                                                                        .into_owned();
+                                                                    let _ = cx.update(
+                                                                        |window, app| {
+                                                                            let _ = inp4.update(
+                                                                                app,
+                                                                                |s, cx| {
+                                                                                    s.set_value(
+                                                                                        p, window,
+                                                                                        cx,
+                                                                                    );
+                                                                                },
+                                                                            );
+                                                                        },
+                                                                    );
+                                                                }
+                                                            }
+                                                        },
+                                                    )
+                                                    .detach();
+                                                },
+                                            )),
+                                        ),
+                                );
+                            }
+                        }
+                        card_el = card_el.child(tl);
+                    }
+                    list = list.child(card_el);
+                }
+                body = body.child(list);
+
+                // footer: counts, progress, failures, action buttons
+                let mut footer = v_flex().gap(px(8.)).pt(px(4.));
+                footer = footer.child(
+                    div()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child(format!(
+                            "{conv_n} conversation{} in {proj_n} project{} \
+                             selected · History shows text messages; tool \
+                             details may be incomplete.",
+                            if conv_n == 1 { "" } else { "s" },
+                            if proj_n == 1 { "" } else { "s" },
+                        )),
+                );
+                if let Some((i, total, title)) = dlg.progress.clone() {
+                    footer = footer.child(
+                        div()
+                            .text_sm()
+                            .text_color(theme.muted_foreground)
+                            .child(if dlg.running {
+                                format!("Importing {i} of {total}: {title}")
+                            } else {
+                                format!("\u{2713} {total} imported or already present.")
+                            }),
+                    );
+                }
+                let failed: Vec<String> = dlg
+                    .outcomes
+                    .iter()
+                    .filter_map(|(k, v)| {
+                        v.clone().map(|e| {
+                            format!(
+                                "{}: {e}",
+                                titles.get(k).cloned().unwrap_or_default()
+                            )
+                        })
+                    })
+                    .collect();
+                if !failed.is_empty() {
+                    let mut fl = v_flex().gap(px(2.)).child(
+                        div()
+                            .text_sm()
+                            .font_weight(FontWeight::MEDIUM)
+                            .child(format!(
+                                "{} import{} failed:",
+                                failed.len(),
+                                if failed.len() == 1 { "" } else { "s" }
+                            )),
+                    );
+                    for f in failed.iter().take(5) {
+                        fl = fl.child(
+                            div().text_xs().text_color(theme.danger).child(f.clone()),
+                        );
+                    }
+                    footer = footer.child(fl);
+                }
+                let has_failed = !failed.is_empty();
+                let mut btns = h_flex().gap(px(8.)).justify_end().pt(px(4.));
+                if dlg.running {
+                    btns = btns.child(
+                        Button::new("imp-stop")
+                            .outline()
+                            .label("Stop after current")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                if let Some(d) = this.import_dlg.as_mut() {
+                                    d.stop.store(
+                                        true,
+                                        std::sync::atomic::Ordering::Relaxed,
+                                    );
+                                }
+                                cx.notify();
+                            })),
+                    );
+                } else {
+                    if has_failed {
+                        btns = btns.child(
+                            Button::new("imp-retry")
+                                .ghost()
+                                .label("Retry failed")
+                                .on_click(cx.listener(|this, _ev, _w, cx| {
+                                    this.import_run(true, cx)
+                                })),
+                        );
+                    }
+                    btns = btns.child(
+                        Button::new("imp-run")
+                            .primary()
+                            .label(if dlg.progress.is_some() {
+                                "Import remaining"
+                            } else {
+                                "Import selected"
+                            })
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.import_run(false, cx)
+                            })),
+                    );
+                }
+                footer = footer.child(btns);
+                body = body.child(footer);
+            } else if dlg.scanning {
+                body = body.child(
+                    div()
+                        .py(px(24.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .text_sm()
+                        .text_color(theme.muted_foreground)
+                        .child("Scanning for projects\u{2026}"),
+                );
+            }
+
+            card = card.child(body);
+            imp_overlay = imp_overlay.child(
+                div()
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .size_full()
+                    .bg(rgba(0x00000080))
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            if this
+                                .import_dlg
+                                .as_ref()
+                                .map(|d| !d.running)
+                                .unwrap_or(true)
+                            {
+                                this.import_dlg = None;
+                            }
+                            cx.notify();
+                        }),
+                    )
+                    .child(card),
+            );
+        }
+
         let mut pr_overlay = div().absolute().inset_0().size_full();
         if self.pr_dialog_open {
             let mut card = v_flex()
@@ -24903,6 +26035,7 @@ impl Render for Native {
                 self.tp_edit.is_some() || self.tp_import.is_some(),
                 |d| d.child(tp_overlay),
             )
+            .when(self.import_dlg.is_some(), |d| d.child(imp_overlay))
             .when(self.pr_dialog_open, |d| d.child(pr_overlay))
             .when(self.wn_popout && self.wn_view == 0, |d| {
                 d.child(wn_pop_overlay)

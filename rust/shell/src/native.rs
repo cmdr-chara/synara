@@ -895,6 +895,13 @@ pub struct Native {
     /// File-row context menu (upstream showFileReferenceContextMenu):
     /// (absolute path, x, y).
     file_ctx_menu: Option<(String, f32, f32)>,
+    /// Sidebar thread row the pointer is over — reveals the hover
+    /// quick-actions (upstream ThreadRowQuickActions).
+    hover_thread: Option<String>,
+    /// Hover-card popup: (thread id, x, y) after a short hover delay
+    /// (upstream ThreadHoverCardContent tooltip).
+    hover_card: Option<(String, f32, f32)>,
+    hover_card_seq: u64,
     ctx_confirm_delete: Option<String>,
     // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
     // mode, input entity, last async result rows, highlighted row, and a
@@ -1435,6 +1442,9 @@ impl Native {
             ctx_menu: None,
             ctx_sub: None,
             file_ctx_menu: None,
+            hover_thread: None,
+            hover_card: None,
+            hover_card_seq: 0,
             ctx_confirm_delete: None,
             palette_mode: None,
             palette_input: None,
@@ -6397,7 +6407,66 @@ impl Render for Native {
                             title.to_string()
                         }),
                 );
-            if is_pinned {
+            // Upstream ThreadRowQuickActions: hovering a row reveals
+            // pin / archive / done icon buttons at its trailing edge.
+            let hovered = self.hover_thread.as_deref() == Some(tid.as_str());
+            let settled = !str_at(thread, "settledAt").is_empty();
+            if hovered {
+                let mut qa = h_flex().items_center().gap_1();
+                for (aid, icon, act) in [
+                    ("qa-pin", if is_pinned { icons::PIN_FILL } else { icons::PIN }, "pin"),
+                    ("qa-archive", icons::S_ARCHIVE, "archive"),
+                    ("qa-done", if settled { icons::UNDO } else { icons::CHECK }, "done"),
+                ] {
+                    let tid_q = tid.clone();
+                    qa = qa.child(
+                        div()
+                            .id(ElementId::Name(format!("{aid}-{tid_q}").into()))
+                            .size(px(18.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded_sm()
+                            .cursor_pointer()
+                            .hover(|d| d.bg(theme.muted.opacity(0.35)))
+                            .child(
+                                svg_icon(icon)
+                                    .size(px(11.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                cx.stop_propagation();
+                                match act {
+                                    "pin" => this.toggle_pin(tid_q.clone(), cx),
+                                    "archive" => {
+                                        let c = tid_q.clone();
+                                        this.dispatch_cmd(
+                                            json!({
+                                                "type": "thread.archive",
+                                                "commandId": uuid(),
+                                                "threadId": c,
+                                            }),
+                                            cx,
+                                        );
+                                    }
+                                    _ => {
+                                        let c = tid_q.clone();
+                                        this.dispatch_cmd(
+                                            json!({
+                                                "type": "thread.meta.update",
+                                                "commandId": uuid(),
+                                                "threadId": c,
+                                                "isSettled": !settled,
+                                            }),
+                                            cx,
+                                        );
+                                    }
+                                }
+                            })),
+                    );
+                }
+                el = el.child(qa);
+            } else if is_pinned {
                 el = el.child(
                     svg_icon(icons::PIN_FILL)
                         .size(px(11.))
@@ -6416,29 +6485,70 @@ impl Render for Native {
             } else {
                 title.to_string()
             };
-            el.on_click(cx.listener(move |this, _ev, _w, cx| {
-                this.ctx_menu = None;
-                this.ctx_sub = None;
-                this.ctx_confirm_delete = None;
-                this.open_thread(tid.clone(), cx)
-            }))
-            .on_mouse_down(
-                gpui::MouseButton::Right,
-                cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
-                    this.ctx_menu = Some((
-                        tid_ctx.clone(),
-                        ev.position.x.as_f32(),
-                        ev.position.y.as_f32(),
-                    ));
+            let tid_click = tid.clone();
+            el = el
+                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                    this.ctx_menu = None;
                     this.ctx_sub = None;
                     this.ctx_confirm_delete = None;
+                    this.open_thread(tid_click.clone(), cx)
+                }))
+                .on_mouse_down(
+                    gpui::MouseButton::Right,
+                    cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
+                        this.ctx_menu = Some((
+                            tid_ctx.clone(),
+                            ev.position.x.as_f32(),
+                            ev.position.y.as_f32(),
+                        ));
+                        this.ctx_sub = None;
+                        this.ctx_confirm_delete = None;
+                        cx.notify();
+                        cx.stop_propagation();
+                    }),
+                );
+            // Upstream hover: quick-action icons appear and a delayed hover
+            // card shows title/status/project/model.
+            let tid_hover = tid.clone();
+            let tid_hover2 = tid.clone();
+            el = el.on_hover(cx.listener(move |this, hovered: &bool, w, cx| {
+                if *hovered {
+                    if this.hover_thread.as_deref() != Some(tid_hover.as_str()) {
+                        this.hover_thread = Some(tid_hover.clone());
+                        cx.notify();
+                    }
+                    // Upstream hover card: short delay, then info popup.
+                    this.hover_card_seq += 1;
+                    let seq = this.hover_card_seq;
+                    let pos = w.mouse_position();
+                    let (px_, py_) = (f32::from(pos.x), f32::from(pos.y));
+                    let tidc = tid_hover2.clone();
+                    cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                        cx.background_executor()
+                            .timer(std::time::Duration::from_millis(450))
+                            .await;
+                        let _ = this.update(cx, |this: &mut Self, cx| {
+                            if seq == this.hover_card_seq
+                                && this.hover_thread.as_deref() == Some(tidc.as_str())
+                            {
+                                this.hover_card = Some((tidc.clone(), px_, py_));
+                                cx.notify();
+                            }
+                        });
+                    })
+                    .detach();
+                } else if this.hover_thread.as_deref() == Some(tid_hover.as_str()) {
+                    this.hover_thread = None;
+                    this.hover_card_seq += 1;
+                    if this.hover_card.as_ref().map(|c| c.0.as_str()) == Some(tid_hover.as_str()) {
+                        this.hover_card = None;
+                    }
                     cx.notify();
-                    cx.stop_propagation();
-                }),
-            )
+                }
+            }));
             // Upstream beginThreadDrag: the row drags onto the composer
             // as an @mention (and onto chat panes as a split).
-            .on_drag(
+            el.on_drag(
                 ThreadDrag(tid_drag.clone()),
                 move |_d, _pos, _w, cx| cx.new(|_| DragGhost(title_drag.clone())),
             )
@@ -13836,6 +13946,88 @@ impl Render for Native {
             );
         }
 
+        // ---- thread hover card (upstream ThreadHoverCardContent): title +
+        // relative time header, then status / project / cwd / model rows.
+        // Zero-size anchor: absolute children position from window origin
+        // without the container itself intercepting pointer events.
+        let mut hc_overlay = div().absolute().left_0().top_0().w_0().h_0();
+        if let Some((hc_tid, hx, hy)) = self.hover_card.clone() {
+            let threads_arr = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads");
+            if let Some(t) = threads_arr.iter().find(|t| str_at(t, "id") == hc_tid).cloned() {
+                let title = str_at(&t, "title");
+                let title = if title.is_empty() { "(untitled)".to_string() } else { title.to_string() };
+                let rel = rel_time(str_at(&t, "updatedAt"));
+                let status = inbox_needs_you_kind(&t)
+                    .map(|k| match k {
+                        "approval" => "Needs approval",
+                        "input" => "Awaiting input",
+                        "plan" => "Plan ready",
+                        "failed" => "Failed",
+                        _ => "Unread",
+                    })
+                    .or_else(|| if thread_actively_working(&t) { Some("Working") } else { None })
+                    .unwrap_or("Idle");
+                let pid = str_at(&t, "projectId");
+                let pname = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                    .iter()
+                    .find(|p| str_at(p, "id") == pid)
+                    .map(|p| str_at(p, "name").to_string())
+                    .unwrap_or_default();
+                let cwd = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                    .iter()
+                    .find(|p| str_at(p, "id") == pid)
+                    .map(|p| {
+                        let r = str_at(p, "workspaceRoot");
+                        if r.is_empty() { str_at(p, "root").to_string() } else { r.to_string() }
+                    })
+                    .unwrap_or_default();
+                let model = {
+                    let s = get(&t, "session");
+                    let m = str_at(s, "modelName");
+                    let m2 = str_at(s, "model");
+                    let p = str_at(s, "providerName");
+                    let pick = if !m.is_empty() { m } else { m2 };
+                    if pick.is_empty() && p.is_empty() { String::new() } else { format!("{p} {pick}").trim().to_string() }
+                };
+                let mut card = v_flex()
+                    .w(px(300.))
+                    .p_2()
+                    .gap_1()
+                    .bg(popover_bg)
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg()
+                    .shadow_md()
+                    .child(
+                        h_flex()
+                            .items_baseline()
+                            .justify_between()
+                            .child(div().font_weight(FontWeight::SEMIBOLD).text_size(px(13.)).child(title))
+                            .child(div().text_size(px(11.)).text_color(theme.muted_foreground).child(rel)),
+                    )
+                    .child(div().text_size(px(12.)).text_color(theme.accent).child(status));
+                if !pname.is_empty() {
+                    card = card.child(div().text_size(px(12.)).text_color(theme.foreground).child(pname));
+                }
+                if !cwd.is_empty() {
+                    card = card.child(div().text_size(px(11.)).text_color(theme.muted_foreground).whitespace_nowrap().overflow_hidden().child(cwd));
+                }
+                if !model.is_empty() {
+                    card = card.child(div().text_size(px(11.)).text_color(theme.muted_foreground).child(model));
+                }
+                let vs = window.viewport_size();
+                // Mounted separately (small box only) — a full-size overlay
+                // would swallow the pointer events the card depends on.
+                hc_overlay = hc_overlay.child(
+                    div()
+                        .absolute()
+                        .left(px((hx + 14.).min(f32::from(vs.width) - 320.)))
+                        .top(px(hy.min(f32::from(vs.height) - 220.)))
+                        .child(card),
+                );
+            }
+        }
+
         // ---- workspace search palette (⌘K / ⌘P / ⇧⌘F): upstream
         // SidebarSearchPalette + WorkspaceSearchPalette — bare h-11 input,
         // max-w-lg popup anchored near the top, 28px result rows grouped by
@@ -15093,6 +15285,7 @@ impl Render for Native {
                 self.ctx_menu.is_some() || self.file_ctx_menu.is_some(),
                 |d| d.child(ctx_overlay),
             )
+            .when(self.hover_card.is_some(), |d| d.child(hc_overlay))
             .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
             .when(self.feedback_open, |d| d.child(fb_overlay))

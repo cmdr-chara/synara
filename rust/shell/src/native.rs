@@ -1454,8 +1454,6 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
 // noise patterns, per-cell glyph scramble, and accent click ripples.
 
 const ASCII_GLYPHS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-const ASCII_COLS: usize = 160;
-const ASCII_ROWS: usize = 72;
 // Cell pitch in px, matching upstream FONT_SIZE_PX/LINE_HEIGHT_PX metrics.
 const ASCII_CELL_W: f32 = 6.0;
 const ASCII_CELL_H: f32 = 13.0;
@@ -2282,8 +2280,19 @@ impl Native {
             // landing field is on screen (upstream AMBIENT_FRAME_INTERVAL_MS).
             cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
                 loop {
+                    // Upstream cadence: 15fps ambient while ripples run, 5fps
+                    // once the field is idle (IDLE_FRAME_INTERVAL_MS).
+                    let ripples = this
+                        .update(cx, |this: &mut Self, _cx| {
+                            this.show_ascii_bg
+                                && this.landing_active()
+                                && !this.ascii_ripples.is_empty()
+                        })
+                        .unwrap_or(false);
                     cx.background_executor()
-                        .timer(std::time::Duration::from_millis(66))
+                        .timer(std::time::Duration::from_millis(
+                            if ripples { 66 } else { 200 },
+                        ))
                         .await;
                     let keep = this
                         .update(cx, |this: &mut Self, cx| {
@@ -9982,10 +9991,17 @@ impl Render for Native {
         if show_landing {
             // AsciiWaveBackground parity: animated glyph field — three
             // cycling noise patterns with crossfade, per-cell scramble,
-            // center fade, and accent ripples on click. Three alpha layers
-            // (dim ink, bright ink, accent) are stacked absolutely; a cell
-            // contributes its glyph to exactly one layer per frame.
-            if self.ascii_fresh || self.ascii_cells.len() != ASCII_COLS * ASCII_ROWS {
+            // center fade, and accent ripples on click. Ink alpha is bucketed
+            // into five layers (upstream draws a continuous 0..0.18 alpha).
+            let pane_ox = 51. + if self.sidebar_collapsed { 0. } else { 257. };
+            let avail_w =
+                (window.viewport_size().width.as_f32() - pane_ox).max(60.);
+            let avail_h =
+                (window.viewport_size().height.as_f32() - 47.).max(60.);
+            let cols = (avail_w / ASCII_CELL_W).ceil() as usize;
+            let rows = (avail_h / ASCII_CELL_H).ceil() as usize;
+            let n_cells = cols * rows;
+            if self.ascii_fresh || self.ascii_cells.len() != n_cells {
                 self.ascii_t0 = std::time::Instant::now();
                 self.ascii_seed = {
                     let n = std::time::SystemTime::now()
@@ -9994,7 +10010,7 @@ impl Render for Native {
                         .unwrap_or(0);
                     (n % 1000) as f32
                 };
-                let mut cells = vec![0u8; ASCII_COLS * ASCII_ROWS];
+                let mut cells = vec![0u8; n_cells];
                 let mut rng = (self.ascii_seed as u32) ^ 0x9e37_79b9;
                 for cell in cells.iter_mut() {
                     rng ^= rng << 13;
@@ -10023,26 +10039,26 @@ impl Render for Native {
             } else {
                 None
             };
-            let fw = ASCII_COLS as f32 * ASCII_CELL_W;
-            let fh = ASCII_ROWS as f32 * ASCII_CELL_H;
+            let fw = cols as f32 * ASCII_CELL_W;
+            let fh = rows as f32 * ASCII_CELL_H;
             let (fcx, fcy) = (fw / 2., fh / 2.);
             self.ascii_ripples.retain(|r| {
                 now.saturating_duration_since(r.4).as_millis()
                     < ASCII_RIPPLE_LIFE_MS as u128
             });
             let ripples = self.ascii_ripples.clone();
-            let mut rows_dim: Vec<String> = Vec::with_capacity(ASCII_ROWS);
-            let mut rows_bright: Vec<String> = Vec::with_capacity(ASCII_ROWS);
-            let mut rows_accent: Vec<String> = Vec::with_capacity(ASCII_ROWS);
+            let mut ink_rows: Vec<Vec<String>> =
+                (0..5).map(|_| Vec::with_capacity(rows)).collect();
+            let mut rows_accent: Vec<String> = Vec::with_capacity(rows);
             let mut rng = (elapsed_ms as u32)
                 .wrapping_mul(747_796_405)
                 .wrapping_add(2_891_336_453);
-            for r in 0..ASCII_ROWS {
-                let mut dim = String::with_capacity(ASCII_COLS);
-                let mut bright = String::with_capacity(ASCII_COLS);
-                let mut acc = String::with_capacity(ASCII_COLS);
-                for c in 0..ASCII_COLS {
-                    let idx = r * ASCII_COLS + c;
+            for r in 0..rows {
+                let mut ink_line: [String; 5] =
+                    std::array::from_fn(|_| String::with_capacity(cols));
+                let mut acc = String::with_capacity(cols);
+                for c in 0..cols {
+                    let idx = r * cols + c;
                     let x = (c as f32 + 0.5) * ASCII_CELL_W;
                     let y = (r as f32 + 0.5) * ASCII_CELL_H;
                     let (mut patch, mut wave) = ascii_sample(pat, x, y, fcx, fcy, t);
@@ -10097,24 +10113,25 @@ impl Render for Native {
                     let ch = self.ascii_cells[idx] as char;
                     if use_accent {
                         acc.push(ch);
-                        dim.push(' ');
-                        bright.push(' ');
-                    } else if ink_alpha < 0.02 {
-                        dim.push(' ');
-                        bright.push(' ');
-                        acc.push(' ');
-                    } else if ink_alpha < 0.09 {
-                        dim.push(ch);
-                        bright.push(' ');
-                        acc.push(' ');
+                        for l in ink_line.iter_mut() {
+                            l.push(' ');
+                        }
                     } else {
-                        bright.push(ch);
-                        dim.push(' ');
                         acc.push(' ');
+                        // Continuous upstream alpha -> five ink buckets.
+                        let bucket = if ink_alpha < 0.015 {
+                            usize::MAX
+                        } else {
+                            ((ink_alpha / 0.036) as usize).min(4)
+                        };
+                        for (bi, l) in ink_line.iter_mut().enumerate() {
+                            l.push(if bi == bucket { ch } else { ' ' });
+                        }
                     }
                 }
-                rows_dim.push(dim);
-                rows_bright.push(bright);
+                for (bi, l) in ink_line.into_iter().enumerate() {
+                    ink_rows[bi].push(l);
+                }
                 rows_accent.push(acc);
             }
             let layer = |rows: Vec<String>, color: gpui::Hsla| {
@@ -10136,20 +10153,24 @@ impl Render for Native {
                     .child(col)
             };
             let wm = if self.show_ascii_bg {
-                div()
+                let mut field = div()
                     .size_full()
                     .overflow_hidden()
-                    .relative()
-                    .child(layer(rows_dim, subtle.opacity(0.65).into()))
-                    .child(layer(rows_bright, subtle.into()))
-                    .child(layer(rows_accent, theme.primary.opacity(0.75).into()))
+                    .relative();
+                for (bi, rws) in ink_rows.into_iter().enumerate() {
+                    // Bucket alpha ~ bucket center / upstream 0.18 ink max.
+                    field = field.child(layer(
+                        rws,
+                        subtle.opacity(0.18 + 0.2 * bi as f32).into(),
+                    ));
+                }
+                field.child(layer(rows_accent, theme.primary.opacity(0.75).into()))
             } else {
                 div().size_full()
             };
             // Clicks on empty landing space spawn accent ripples
             // (upstream AsciiWaveBackground pointer handler; interactive
             // children consume their own clicks first).
-            let pane_ox = 51. + if self.sidebar_collapsed { 0. } else { 257. };
             let mut home = v_flex()
                 .id("home-landing")
                 .relative()

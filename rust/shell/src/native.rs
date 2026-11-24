@@ -889,6 +889,9 @@ pub struct Native {
     // Context-menu flyout submenu: (parent row id, flyout top y) while open,
     // and the thread id awaiting inline delete confirmation.
     ctx_sub: Option<(String, f32)>,
+    /// File-row context menu (upstream showFileReferenceContextMenu):
+    /// (absolute path, x, y).
+    file_ctx_menu: Option<(String, f32, f32)>,
     ctx_confirm_delete: Option<String>,
     // Workspace search palette (⌘K chats / ⌘P files / ⇧⌘F snippets): open
     // mode, input entity, last async result rows, highlighted row, and a
@@ -1428,6 +1431,7 @@ impl Native {
             user_input_open: Vec::new(),
             ctx_menu: None,
             ctx_sub: None,
+            file_ctx_menu: None,
             ctx_confirm_delete: None,
             palette_mode: None,
             palette_input: None,
@@ -4530,6 +4534,17 @@ impl Native {
                     this.open_entry(entry_c.clone(), cx);
                 }
             }));
+            let path_rc = path.clone();
+            row = row.on_mouse_down(
+                gpui::MouseButton::Right,
+                cx.listener(move |this, ev: &MouseDownEvent, _w, cx| {
+                    this.ctx_menu = None;
+                    this.file_ctx_menu =
+                        Some((path_rc.clone(), ev.position.x.into(), ev.position.y.into()));
+                    cx.stop_propagation();
+                    cx.notify();
+                }),
+            );
             out.push(row.into_any_element());
             if expanded {
                 if let Some(children) = self.tree_entries.get(&path) {
@@ -7129,7 +7144,20 @@ impl Render for Native {
                                         .update(cx, |s, cx| s.set_value("", _w, cx));
                                     this.file_search_results.clear();
                                     this.open_entry(e2.clone(), cx);
-                                })),
+                                }))
+                                .on_mouse_down(
+                                    gpui::MouseButton::Right,
+                                    cx.listener(move |this, ev: &MouseDownEvent, _w, cx| {
+                                        this.ctx_menu = None;
+                                        this.file_ctx_menu = Some((
+                                            abs.clone(),
+                                            ev.position.x.into(),
+                                            ev.position.y.into(),
+                                        ));
+                                        cx.stop_propagation();
+                                        cx.notify();
+                                    }),
+                                ),
                         );
                     }
                     files_pane = files_pane.child(srows);
@@ -13679,6 +13707,104 @@ impl Render for Native {
             );
         }
 
+        // ---- file-row context menu (upstream fileReferenceContextMenu):
+        // Reference file in chat / Reveal in Finder / Copy path.
+        if let Some((fpath, fx, fy)) = self.file_ctx_menu.clone() {
+            let frow = |id: &'static str,
+                        label: &'static str,
+                        cb: Box<dyn Fn(&mut Self, &mut Window, &mut Context<Self>) + 'static>| {
+                Button::new(id)
+                    .ghost()
+                    .w_full()
+                    .h(px(30.))
+                    .justify_start()
+                    .px_2()
+                    .label(label)
+                    .on_click(cx.listener(move |this, _ev, w, cx| {
+                        this.file_ctx_menu = None;
+                        cb(this, w, cx);
+                        cx.notify();
+                    }))
+                    .into_any_element()
+            };
+            let p_ref = fpath.clone();
+            let p_reveal = fpath.clone();
+            let p_copy = fpath.clone();
+            ctx_overlay = ctx_overlay.child(
+                v_flex()
+                    .size_full()
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.file_ctx_menu = None;
+                            cx.notify();
+                        }),
+                    )
+                    .on_mouse_down(
+                        gpui::MouseButton::Right,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.file_ctx_menu = None;
+                            cx.notify();
+                        }),
+                    )
+                    .child(
+                        v_flex()
+                            .absolute()
+                            .left(px(fx))
+                            .top(px(fy))
+                            .w(px(210.))
+                            .p_1()
+                            .gap_y(px(1.))
+                            .bg(popover_bg)
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded_lg()
+                            .shadow_md()
+                            .on_mouse_down(
+                                gpui::MouseButton::Left,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            )
+                            .on_mouse_down(
+                                gpui::MouseButton::Right,
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
+                            )
+                            .child(frow("fctx-ref", "Reference file in chat", Box::new(
+                                move |this, w, cx| {
+                                    let name = p_ref
+                                        .rsplit('/')
+                                        .next()
+                                        .unwrap_or(p_ref.as_str())
+                                        .to_string();
+                                    let draft = this.composer.read(cx).value().to_string();
+                                    let next = if draft.trim().is_empty() {
+                                        format!("@{name} ")
+                                    } else {
+                                        format!("{draft} @{name} ")
+                                    };
+                                    this.composer.update(cx, |s, cx| {
+                                        s.set_value(next, w, cx)
+                                    });
+                                },
+                            )))
+                            .child(frow("fctx-reveal", "Reveal in Finder", Box::new(
+                                move |_this, _w, _cx| {
+                                    let _ = std::process::Command::new("open")
+                                        .arg("-R")
+                                        .arg(&p_reveal)
+                                        .spawn();
+                                },
+                            )))
+                            .child(frow("fctx-copy", "Copy path", Box::new(
+                                move |_this, _w, cx| {
+                                    cx.write_to_clipboard(gpui::ClipboardItem::new_string(
+                                        p_copy.clone(),
+                                    ));
+                                },
+                            ))),
+                    ),
+            );
+        }
+
         // ---- workspace search palette (⌘K / ⌘P / ⇧⌘F): upstream
         // SidebarSearchPalette + WorkspaceSearchPalette — bare h-11 input,
         // max-w-lg popup anchored near the top, 28px result rows grouped by
@@ -14932,7 +15058,10 @@ impl Render for Native {
             .child(body)
             // Overlays mount only while active — an empty full-size overlay
             // would otherwise sit on top and eat every click.
-            .when(self.ctx_menu.is_some(), |d| d.child(ctx_overlay))
+            .when(
+                self.ctx_menu.is_some() || self.file_ctx_menu.is_some(),
+                |d| d.child(ctx_overlay),
+            )
             .when(self.palette_mode.is_some(), |d| d.child(palette_overlay))
             .when(self.sc_rec.is_some(), |d| d.child(sc_overlay))
             .when(self.feedback_open, |d| d.child(fb_overlay))

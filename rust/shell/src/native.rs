@@ -53,6 +53,8 @@ mod icons {
     pub const ARROW_DOWN: &[u8] = include_bytes!("../assets/icons/arrow-down.svg");
     pub const X: &[u8] = include_bytes!("../assets/icons/x.svg");
     pub const UNDO: &[u8] = include_bytes!("../assets/icons/arrow-undo-up.svg");
+    pub const STEER: &[u8] = include_bytes!("../assets/icons/corner-down-right.svg");
+    pub const BOT: &[u8] = include_bytes!("../assets/icons/robot-3.svg");
     pub const FILE_TEXT: &[u8] = include_bytes!("../assets/icons/file-text.svg");
     pub const PAPERCLIP: &[u8] = include_bytes!("../assets/icons/paperclip-1.svg");
     pub const WINDOW: &[u8] = include_bytes!("../assets/icons/window.svg");
@@ -7783,11 +7785,44 @@ impl Native {
                             ),
                     );
                 }
+                // Upstream UserDispatchModeChip: the marker sits above the
+                // sent-message stack, right aligned (automation > agent >
+                // steer precedence).
+                let marker = match str_at(m, "dispatchOrigin") {
+                    "automation" => Some(("Sent via Automation", icons::CLOCK)),
+                    "agent" => Some(("Sent by agent", icons::BOT)),
+                    _ => {
+                        if str_at(m, "dispatchMode") == "steer" {
+                            Some(("Steering conversation", icons::STEER))
+                        } else {
+                            None
+                        }
+                    }
+                };
+                let mut stack = v_flex().items_end();
+                if let Some((mlabel, micon)) = marker {
+                    stack = stack.child(
+                        h_flex()
+                            .mb(px(6.))
+                            .gap(px(6.))
+                            .items_center()
+                            .child(
+                                svg_icon(micon)
+                                    .size(px(12.))
+                                    .text_color(theme.muted_foreground.opacity(0.75)),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground.opacity(0.78))
+                                    .child(mlabel),
+                            ),
+                    );
+                }
                 col = col.child(
                     h_flex().w_full().justify_center().child(
                         h_flex().w_full().max_w(chat_mw).justify_end().child(
-                            v_flex()
-                                .items_end()
+                            stack
                                 .child(pill.child(
                                     div().text_size(px(13.)).child(text),
                                 ))
@@ -8065,7 +8100,10 @@ impl Native {
             } else {
                 summary.to_string()
             };
-            h_flex()
+            // Upstream appends payload.detail after the summary (one muted
+            // line, clipped at the card edge).
+            let detail = str_at(get(a, "payload"), "detail").to_string();
+            let mut row = h_flex()
                 .gap_2()
                 .child(
                     div()
@@ -8073,7 +8111,18 @@ impl Native {
                         .text_color(theme.muted_foreground)
                         .child("\u{25e6}"),
                 )
-                .child(div().text_xs().text_color(color).child(label))
+                .child(div().text_xs().text_color(color).child(label));
+            if !detail.is_empty() {
+                row = row.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .overflow_hidden()
+                        .whitespace_nowrap()
+                        .child(detail),
+                );
+            }
+            row
         };
         // Upstream withUserInputExchanges: resolved userInput pairs render as
         // Q→A bubble exchanges and consume their requested row.

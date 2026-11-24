@@ -455,6 +455,32 @@ struct ScRec {
 
 
 
+/// Drag payload for open-thread tab pills (reorder).
+struct TabDrag(String);
+/// Drag payload for sidebar thread rows (drop on the composer as a mention).
+struct ThreadDrag(String);
+
+/// The floating drag image: a small chip with the dragged item's title.
+struct DragGhost(String);
+
+impl Render for DragGhost {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = cx.theme();
+        div()
+            .px_2()
+            .py_1()
+            .rounded_md()
+            .bg(theme.popover)
+            .border_1()
+            .border_color(theme.border)
+            .text_xs()
+            .max_w(px(200.))
+            .overflow_hidden()
+            .whitespace_nowrap()
+            .child(self.0.clone())
+    }
+}
+
 /// Settings > Keyboard shortcuts rows: (title, description, default kbd
 /// label, space-separated command ids) in upstream order.
 static SHORTCUT_ROWS: [(&str, &str, &str, &str); 69] = [
@@ -585,6 +611,10 @@ pub struct Native {
     queue_paused: bool,
     open_threads: Vec<String>,
     pinned_threads: Vec<String>,
+    /// Insertion index for an in-flight tab-pill drag (0..=len), or None.
+    tab_drop_target: Option<usize>,
+    /// True while a thread drag hovers the composer (ring highlight).
+    composer_thread_over: bool,
     renaming: bool,
     rename_input: Option<Entity<InputState>>,
     view_changes: bool,
@@ -956,6 +986,8 @@ impl Native {
                 uploading: false,
                 open_threads: Vec::new(),
                 pinned_threads: Vec::new(),
+            tab_drop_target: None,
+            composer_thread_over: false,
                 renaming: false,
                 rename_input: None,
                 view_changes: false,
@@ -4096,6 +4128,12 @@ impl Render for Native {
                 el = el.hover(|d| d.bg(theme.secondary));
             }
             let tid_ctx = tid.clone();
+            let tid_drag = tid.clone();
+            let title_drag = if title.is_empty() {
+                "(untitled)".to_string()
+            } else {
+                title.to_string()
+            };
             el.on_click(cx.listener(move |this, _ev, _w, cx| {
                 this.ctx_menu = None;
                 this.ctx_sub = None;
@@ -4115,6 +4153,12 @@ impl Render for Native {
                     cx.notify();
                     cx.stop_propagation();
                 }),
+            )
+            // Upstream beginThreadDrag: the row drags onto the composer
+            // as an @mention (and onto chat panes as a split).
+            .on_drag(
+                ThreadDrag(tid_drag.clone()),
+                move |_d, _pos, _w, cx| cx.new(|_| DragGhost(title_drag.clone())),
             )
         };
         // Projects: only real (non-chat) projects appear here — chat-kind
@@ -4332,7 +4376,14 @@ impl Render for Native {
             }
         }
         // ---- transcript ----
-        let mut pane = v_flex().flex_1().h_full().gap_2();
+        let mut pane = v_flex().flex_1().h_full().gap_2().on_drag_move::<ThreadDrag>(
+            cx.listener(|this, _ev: &gpui::DragMoveEvent<ThreadDrag>, _w, cx| {
+                if this.composer_thread_over {
+                    this.composer_thread_over = false;
+                    cx.notify();
+                }
+            }),
+        );
         // Upstream shows the new-chat landing inside the thread pane when the
         // thread has no messages yet (same logo + heading + watermark + banner).
         let thread_msgs_empty = self.selected_thread.is_some()
@@ -5876,12 +5927,17 @@ impl Render for Native {
         // move to a row under the card. Multi-line drafts and the home composer
         // keep the block layout with controls inside.
         let row_composer = in_thread && !draft_text.contains('\n');
+        let composer_border = if self.composer_thread_over {
+            theme.accent
+        } else {
+            theme.border
+        };
         let composer_card: Div = if row_composer {
             div()
                 .w_full()
                 .max_w(px(755.))
                 .border_1()
-                .border_color(theme.border)
+                .border_color(composer_border)
                 .rounded(px(19.))
                 .bg(theme.popover)
                 .shadow_md()
@@ -5900,7 +5956,7 @@ impl Render for Native {
                 .w_full()
                 .max_w(px(755.))
                 .border_1()
-                .border_color(theme.border)
+                .border_color(composer_border)
                 .rounded(px(19.))
                 .bg(theme.popover)
                 .shadow_md()
@@ -5920,7 +5976,40 @@ impl Render for Native {
                         .child(send_btn),
                 )
         };
-        let mut composer_col = v_flex().w(px(726.)).gap_0();
+        let mut composer_col = v_flex()
+            .w(px(726.))
+            .gap_0()
+            // Thread rows drop here as an @mention (upstream
+            // useComposerThreadMentionDrop); the current thread can't
+            // mention itself.
+            .can_drop(|v, _w, _cx| v.is::<ThreadDrag>())
+            .on_drag_move::<ThreadDrag>(cx.listener(
+                |this, _ev: &gpui::DragMoveEvent<ThreadDrag>, _w, cx| {
+                    if !this.composer_thread_over {
+                        this.composer_thread_over = true;
+                        cx.notify();
+                    }
+                },
+            ))
+            .on_drop::<ThreadDrag>(cx.listener(
+                |this, drag: &ThreadDrag, w, cx| {
+                    this.composer_thread_over = false;
+                    if this.selected_thread.as_deref() == Some(drag.0.as_str()) {
+                        cx.notify();
+                        return;
+                    }
+                    let title = arr(this.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                        .iter()
+                        .find(|t| str_at(t, "id") == drag.0)
+                        .map(|t| str_at(t, "title").to_string())
+                        .filter(|t| !t.is_empty())
+                        .unwrap_or_else(|| drag.0.chars().take(8).collect());
+                    let draft = this.composer.read(cx).value().to_string();
+                    let sep = if draft.is_empty() || draft.ends_with(' ') { "" } else { " " };
+                    this.set_draft(&format!("{draft}{sep}@{title} "), w, cx);
+                    cx.notify();
+                },
+            ));
         if !self.pending_attachments.is_empty() || self.uploading {
             let mut chips = h_flex().gap_1().flex_wrap().pb_1();
             if self.uploading {
@@ -10358,10 +10447,21 @@ impl Render for Native {
                 // threadTabs): bordered pill with icon + title + x per open tab,
                 // then a "+" that opens a new thread.
                 let mut tabs = h_flex().gap_1().items_center();
+                let n_tabs = self.open_threads.len();
                 if !self.open_threads.is_empty() {
                     let snap_threads =
                         arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads");
-                    for ot in self.open_threads.clone() {
+                    let indicator = || {
+                        div()
+                            .w(px(2.))
+                            .h(px(18.))
+                            .rounded_full()
+                            .bg(theme.accent)
+                    };
+                    for (ti, ot) in self.open_threads.clone().into_iter().enumerate() {
+                        if self.tab_drop_target == Some(ti) {
+                            tabs = tabs.child(indicator());
+                        }
                         let active =
                             self.selected_thread.as_deref() == Some(ot.as_str());
                         let ot_title = snap_threads
@@ -10370,6 +10470,7 @@ impl Render for Native {
                             .map(|t| str_at(t, "title").to_string())
                             .filter(|t| !t.is_empty())
                             .unwrap_or_else(|| ot.chars().take(8).collect());
+                        let ghost_title = ot_title.clone();
                         let sel = ot.clone();
                         let close = ot.clone();
                         let mut pill = h_flex()
@@ -10433,13 +10534,57 @@ impl Render for Native {
                                 if this.selected_thread.as_deref() != Some(sel.as_str()) {
                                     this.open_thread(sel.clone(), cx);
                                 }
-                            }));
+                            }))
+                            // Drag the pill to reorder open-thread tabs; the
+                            // half of the pill under the pointer picks the
+                            // insertion side.
+                            .on_drag(
+                                TabDrag(ot.clone()),
+                                move |_d, _pos, _w, cx| {
+                                    cx.new(|_| DragGhost(ghost_title.clone()))
+                                },
+                            )
+                            .on_drag_move::<TabDrag>(cx.listener(
+                                move |this, ev: &gpui::DragMoveEvent<TabDrag>, _w, cx| {
+                                    let mid = ev.bounds.origin.x
+                                        + ev.bounds.size.width / 2.;
+                                    let idx = if ev.event.position.x < mid {
+                                        ti
+                                    } else {
+                                        ti + 1
+                                    };
+                                    if this.tab_drop_target != Some(idx) {
+                                        this.tab_drop_target = Some(idx);
+                                        cx.notify();
+                                    }
+                                },
+                            ));
                         if !active {
                             pill = pill.hover(|d| d.bg(rgba(0x00000008)));
                         }
                         tabs = tabs.child(pill);
                     }
+                    if self.tab_drop_target == Some(n_tabs) {
+                        tabs = tabs.child(indicator());
+                    }
                 }
+                tabs = tabs.on_drop::<TabDrag>(cx.listener(
+                    |this, drag: &TabDrag, _w, cx| {
+                        let to = this
+                            .tab_drop_target
+                            .unwrap_or_else(|| this.open_threads.len());
+                        if let Some(from) =
+                            this.open_threads.iter().position(|t| t == &drag.0)
+                        {
+                            let id = this.open_threads.remove(from);
+                            let to = if to > from { to - 1 } else { to }
+                                .min(this.open_threads.len());
+                            this.open_threads.insert(to, id);
+                        }
+                        this.tab_drop_target = None;
+                        cx.notify();
+                    },
+                ));
                 tabs = tabs.child({
                     // Upstream "+" opens a menu with New chat / New terminal.
                     let weak_chat = cx.weak_entity();

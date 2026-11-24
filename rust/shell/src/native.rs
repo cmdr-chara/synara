@@ -764,6 +764,12 @@ pub struct Native {
     composer: Entity<InputState>,
     search: Entity<InputState>,
     settings_search: Entity<InputState>,
+    /// Files-pane fuzzy search box (upstream WorkspaceSearchInputHeader).
+    file_search: Entity<InputState>,
+    /// Latest `projects.searchEntries` result rows (path is relative to files_dir).
+    file_search_results: Vec<Value>,
+    /// Monotonic guard dropping stale debounced search replies.
+    file_search_seq: u64,
     sending: bool,
     view_files: bool,
     files_dir: String,
@@ -1275,6 +1281,37 @@ impl Native {
                 },
             )
             .detach();
+            let file_search = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Search files")
+            });
+            cx.subscribe_in(
+                &file_search,
+                window,
+                |this: &mut Self, _state, event, window, cx| match event {
+                    InputEvent::Change => this.on_file_search_change(cx),
+                    InputEvent::PressEnter { .. } => {
+                        // Upstream: Enter picks the top match.
+                        if let Some(top) = this.file_search_results.first().cloned() {
+                            let dir = this.files_dir.clone();
+                            let rel = str_at(&top, "path").to_string();
+                            let abs = if rel.starts_with('/') {
+                                rel
+                            } else {
+                                format!("{dir}/{rel}")
+                            };
+                            let mut entry = top;
+                            if let Some(m) = entry.as_object_mut() {
+                                m.insert("path".into(), json!(abs));
+                            }
+                            this.file_search.update(cx, |s, cx| s.set_value("", window, cx));
+                            this.file_search_results.clear();
+                            this.open_entry(entry, cx);
+                        }
+                    }
+                    _ => {}
+                },
+            )
+            .detach();
             cx.bind_keys([
                 KeyBinding::new("cmd-f", ToggleFind, Some("native")),
                 KeyBinding::new("cmd-j", ToggleTerminal, Some("native")),
@@ -1289,6 +1326,9 @@ impl Native {
                 composer,
                 search,
                 settings_search,
+                file_search,
+                file_search_results: Vec::new(),
+                file_search_seq: 0,
                 sending: false,
                 view_files: false,
                 files_dir: String::new(),
@@ -4227,6 +4267,55 @@ impl Native {
         .detach();
     }
 
+    /// Files-pane fuzzy search: 120ms debounce into `projects.searchEntries`
+    /// (upstream useWorkspaceFileSearch), limit 80, files only.
+    fn on_file_search_change(&mut self, cx: &mut Context<Self>) {
+        self.file_search_seq += 1;
+        let seq = self.file_search_seq;
+        let query = self.file_search.read(cx).value().trim().to_string();
+        if query.is_empty() {
+            self.file_search_results.clear();
+            cx.notify();
+            return;
+        }
+        let dir = self.files_dir.clone();
+        let cell = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .timer(std::time::Duration::from_millis(120))
+                .await;
+            if this
+                .update(cx, |this: &mut Self, _cx| seq != this.file_search_seq)
+                .unwrap_or(true)
+            {
+                return;
+            }
+            let q = query.clone();
+            let d = dir.clone();
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| {
+                        c.call(
+                            "projects.searchEntries",
+                            json!({"cwd": d, "query": q, "limit": 80, "kind": "file"}),
+                        )
+                    })
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if seq != this.file_search_seq {
+                    return;
+                }
+                this.file_search_results = res
+                    .map(|v| arr(&v, "entries").to_vec())
+                    .unwrap_or_default();
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     fn load_dir(&mut self, dir: String, cx: &mut Context<Self>) {
         self.files_loading = true;
         self.open_file = None;
@@ -6947,20 +7036,119 @@ impl Render for Native {
                     );
                 }
                 files_pane = files_pane.child(header);
-                if self.files_loading {
-                    files_pane = files_pane.child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("loading\u{2026}"),
-                    );
+                // Upstream WorkspaceSearchInputHeader: fuzzy file search over
+                // the workspace; empty query shows the tree, non-empty the
+                // flat result rows.
+                files_pane = files_pane.child(
+                    h_flex()
+                        .items_center()
+                        .gap_1p5()
+                        .px_2()
+                        .h(px(30.))
+                        .rounded_md()
+                        .bg(subtle)
+                        .child(
+                            svg_icon(icons::SEARCH)
+                                .size(px(13.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div().flex_1().child(
+                                Input::new(&self.file_search).appearance(false),
+                            ),
+                        ),
+                );
+                let fs_query = self.file_search.read(cx).value().trim().to_string();
+                if !fs_query.is_empty() {
+                    if self.file_search_results.is_empty() {
+                        files_pane = files_pane.child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("loading\u{2026}"),
+                        );
+                    }
+                    let mut srows = v_flex().gap_0p5();
+                    for entry in self.file_search_results.clone() {
+                        let rel = str_at(&entry, "path").to_string();
+                        let name = rel
+                            .rsplit('/')
+                            .next()
+                            .unwrap_or(rel.as_str())
+                            .to_string();
+                        let dir_part = rel
+                            .rsplit_once('/')
+                            .map(|(d, _)| d.to_string())
+                            .unwrap_or_default();
+                        let dir = self.files_dir.clone();
+                        let abs = if rel.starts_with('/') {
+                            rel.clone()
+                        } else {
+                            format!("{dir}/{rel}")
+                        };
+                        let mut e2 = entry.clone();
+                        if let Some(m) = e2.as_object_mut() {
+                            m.insert("path".into(), json!(abs));
+                        }
+                        srows = srows.child(
+                            h_flex()
+                                .id(ElementId::Name(
+                                    format!("fs-{rel}").into(),
+                                ))
+                                .w_full()
+                                .h(px(32.))
+                                .items_center()
+                                .gap_1p5()
+                                .px_2()
+                                .rounded_md()
+                                .cursor_pointer()
+                                .hover(|d| d.bg(subtle))
+                                .child(
+                                    svg_icon(icons::FILE_TEXT)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .font_weight(FontWeight::MEDIUM)
+                                        .whitespace_nowrap()
+                                        .child(name),
+                                )
+                                .child(
+                                    div()
+                                        .flex_1()
+                                        .overflow_hidden()
+                                        .whitespace_nowrap()
+                                        .text_size(px(12.))
+                                        .text_color(theme.muted_foreground)
+                                        .child(dir_part),
+                                )
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.file_search
+                                        .update(cx, |s, cx| s.set_value("", _w, cx));
+                                    this.file_search_results.clear();
+                                    this.open_entry(e2.clone(), cx);
+                                })),
+                        );
+                    }
+                    files_pane = files_pane.child(srows);
+                } else {
+                    if self.files_loading {
+                        files_pane = files_pane.child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("loading\u{2026}"),
+                        );
+                    }
+                    // Explorer tree (upstream WorkspaceFilesTreeBody): lazy
+                    // expand/collapse directories under the workspace root.
+                    let mut rows: Vec<gpui::AnyElement> = Vec::new();
+                    let root_entries = self.files.clone();
+                    self.file_tree_rows(&root_entries, 0, &theme, subtle.into(), &mut rows, cx);
+                    files_pane = files_pane.child(v_flex().gap_0p5().children(rows));
                 }
-                // Explorer tree (upstream WorkspaceFilesTreeBody): lazy
-                // expand/collapse directories under the workspace root.
-                let mut rows: Vec<gpui::AnyElement> = Vec::new();
-                let root_entries = self.files.clone();
-                self.file_tree_rows(&root_entries, 0, &theme, subtle.into(), &mut rows, cx);
-                files_pane = files_pane.child(v_flex().gap_0p5().children(rows));
             }
         }
 

@@ -1079,6 +1079,11 @@ pub struct Native {
     /// settings.sidebarUi.whatsNewLastSeenVersion (NullOr sentinel: None =
     /// never dismissed, treated as fresh install on first launch).
     wn_seen: Option<String>,
+    /// Per-variant theme pack overrides (accent/background/foreground hexes),
+    /// persisted under settings.appearance.themePacks (upstream ThemePackEditor).
+    theme_packs: Value,
+    tp_edit: Option<(bool, String)>,
+    tp_input: Option<Entity<InputState>>,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -2247,6 +2252,9 @@ impl Native {
             wn_view: 0,
             wn_changelog_open: std::collections::HashSet::new(),
             wn_seen: None,
+            theme_packs: json!({}),
+            tp_edit: None,
+            tp_input: None,
             git_dialog: None,
             git_msg_input: None,
             git_pr_title_input: None,
@@ -5395,6 +5403,7 @@ impl Native {
                         .get("showAsciiBackground")
                         .and_then(Value::as_bool)
                         .unwrap_or(true);
+                    this.theme_packs = get(ap, "themePacks").clone();
                 }
                 this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
                     "on" => 0,
@@ -5405,6 +5414,7 @@ impl Native {
                 // status keys + last-visited stamps drive pill suppression.
                 let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
                 this.apply_appearance_mode(None, cx);
+                this.apply_theme_pack(cx);
                 if let Some(m) = get(&su, "dismissedStatusKeyByThreadId").as_object() {
                     this.dismissed_status = m
                         .iter()
@@ -5470,6 +5480,150 @@ impl Native {
         self.persist_sidebar_ui(cx);
     }
 
+    /// Applies the stored theme-pack overrides (upstream ThemePackEditor's
+    /// per-variant pack) for the currently resolved variant: reset the
+    /// registered theme, then layer accent/background/foreground on top.
+    fn apply_theme_pack(&mut self, cx: &mut Context<Self>) {
+        let mode = match self.appearance_mode {
+            1 => gpui_kit::component::ThemeMode::Light,
+            2 => gpui_kit::component::ThemeMode::Dark,
+            _ => gpui_kit::component::ThemeMode::from(cx.window_appearance()),
+        };
+        gpui_kit::component::Theme::change(mode, None, cx);
+        let dark = matches!(
+            gpui_kit::component::Theme::global(cx).mode,
+            gpui_kit::component::ThemeMode::Dark
+        );
+        let pack = self
+            .theme_packs
+            .get(if dark { "dark" } else { "light" })
+            .cloned()
+            .unwrap_or_else(|| json!({}));
+        let mut colors = serde_json::Map::new();
+        for k in ["background", "foreground"] {
+            if let Some(v) = pack.get(k).and_then(Value::as_str) {
+                if v.len() == 7 && v.starts_with('#') {
+                    colors.insert(k.to_string(), json!(v));
+                }
+            }
+        }
+        // Upstream's Accent is the brand color: it drives both accent and
+        // primary surfaces (toggles/buttons read `primary`), with a
+        // luminance-picked foreground. Falls back to Synara's brand accent so
+        // `theme.primary` always means "the accent the user sees".
+        let acc_override = pack.get("accent").and_then(Value::as_str);
+        let acc = match acc_override {
+            Some(v) if v.len() == 7 && v.starts_with('#') => v.to_string(),
+            _ => {
+                if dark {
+                    "#F2612D".to_string()
+                } else {
+                    "#C74614".to_string()
+                }
+            }
+        };
+        {
+            let c = u32::from_str_radix(&acc[1..], 16).unwrap_or(0);
+            let (r, g, b) = (
+                ((c >> 16) & 0xff) as f32,
+                ((c >> 8) & 0xff) as f32,
+                (c & 0xff) as f32,
+            );
+            let fg = if 0.2126 * r + 0.7152 * g + 0.0722 * b > 140. {
+                "#000000"
+            } else {
+                "#FFFFFF"
+            };
+            colors.insert("accent".to_string(), json!(acc));
+            colors.insert("primary".to_string(), json!(acc));
+            colors.insert("primary_foreground".to_string(), json!(fg));
+            colors.insert("accent_foreground".to_string(), json!(fg));
+        }
+        if !colors.is_empty() {
+            let cfg = json!({"tokens": {"colors": Value::Object(colors)}}).to_string();
+            let _ = gpui_kit::component::Theme::global_mut(cx)
+                .apply_semantic_config_str(&cfg);
+        }
+        gpui_kit::component::Theme::sync_base(cx);
+        cx.refresh_windows();
+    }
+
+    /// Opens the hex editor for one pack token (upstream's swatch popover).
+    fn open_theme_pack_edit(
+        &mut self,
+        dark: bool,
+        key: &str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let cur = self
+            .theme_packs
+            .get(if dark { "dark" } else { "light" })
+            .and_then(|p| p.get(key))
+            .and_then(Value::as_str)
+            .map(|v| v.to_string())
+            .unwrap_or_else(|| {
+                // Effective value = the built-in swatch of that variant.
+                match (dark, key) {
+                    (true, "accent") => "#F2612D",
+                    (true, "background") => "#111111",
+                    (true, _) => "#FCFCFC",
+                    (false, "accent") => "#C74614",
+                    (false, "background") => "#FFFFFF",
+                    (false, _) => "#0D0D0D",
+                }
+                .to_string()
+            });
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder("#RRGGBB"));
+        let _ = input.update(cx, |i, cx| {
+            i.set_value(&cur, window, cx);
+        });
+        self.tp_input = Some(input);
+        self.tp_edit = Some((dark, key.to_string()));
+        cx.notify();
+    }
+
+    fn commit_theme_pack_edit(&mut self, reset: bool, cx: &mut Context<Self>) {
+        let Some((dark, key)) = self.tp_edit.clone() else {
+            return;
+        };
+        let variant = if dark { "dark" } else { "light" };
+        if !self.theme_packs.is_object() {
+            self.theme_packs = json!({});
+        }
+        let packs = self.theme_packs.as_object_mut().unwrap();
+        let pack = packs
+            .entry(variant.to_string())
+            .or_insert_with(|| json!({}));
+        if reset {
+            if let Some(o) = pack.as_object_mut() {
+                o.remove(&key);
+            }
+        } else {
+            let v = self
+                .tp_input
+                .as_ref()
+                .map(|i| i.read(cx).value().to_string())
+                .unwrap_or_default()
+                .trim()
+                .to_string();
+            let norm = if v.starts_with('#') { v.clone() } else { format!("#{v}") };
+            if norm.len() == 7
+                && norm[1..].chars().all(|c| c.is_ascii_hexdigit())
+            {
+                if let Some(o) = pack.as_object_mut() {
+                    o.insert(key.clone(), json!(norm));
+                }
+            } else {
+                return;
+            }
+        }
+        self.tp_edit = None;
+        self.tp_input = None;
+        self.persist_appearance(cx);
+        self.apply_theme_pack(cx);
+    }
+
     fn density_scale(&self) -> f32 {
         [0.85_f32, 1.0, 1.15][self.ui_density as usize]
     }
@@ -5494,6 +5648,7 @@ impl Native {
             "uiDensity": dens,
             "chatWidth": width,
             "showAsciiBackground": self.show_ascii_bg,
+            "themePacks": self.theme_packs.clone(),
         });
         if let Some(obj) = get_mut(&mut self.settings_data, "settings")
             .and_then(|s| s.as_object_mut())
@@ -5877,6 +6032,7 @@ impl Native {
     fn set_appearance_mode(&mut self, mode: u8, w: &mut Window, cx: &mut Context<Self>) {
         self.appearance_mode = mode;
         self.apply_appearance_mode(Some(w), cx);
+        self.apply_theme_pack(cx);
         self.persist_appearance(cx);
     }
 
@@ -9609,7 +9765,7 @@ impl Render for Native {
                         .flex()
                         .items_center();
                     track = if on {
-                        track.bg(rgb(0xc74614)).justify_end()
+                        track.bg(theme.primary).justify_end()
                     } else {
                         track.bg(rgb(0xd9d9d9)).justify_start()
                     };
@@ -12079,7 +12235,7 @@ impl Render for Native {
         };
 
         // ---- shared controls for ported settings sections ----
-        let accent_c = rgb(0xc74614);
+        let accent_c = theme.primary;
         let toggle = move |on: bool| {
             let mut t = div()
                 .w(px(28.))
@@ -12124,7 +12280,7 @@ impl Render for Native {
         };
         // Color swatch pill: bordered pill with color box + hex label.
         // Color-filled pill with the hex label inside, like upstream's theme swatch.
-        let swatch_pill = |hex_label: &'static str, color: u32| {
+        let swatch_pill = |hex_label: SharedString, color: u32| {
             let r = ((color >> 16) & 0xff) as f32;
             let g = ((color >> 8) & 0xff) as f32;
             let b = (color & 0xff) as f32;
@@ -12140,7 +12296,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(theme.border)
                 .bg(rgb(color))
-                .child(div().text_size(px(13.)).text_color(ink).child(hex_label))
+                .child(div().text_size(px(13.)).text_color(ink).child(hex_label.to_string()))
                 .into_any_element()
         };
         // Thin track slider + value label.
@@ -14084,10 +14240,52 @@ impl Render for Native {
                         ),
                 );
                 for dark in [false, true] {
-                    let (name, desc, acc, bgc, fgc, al, bl, fl) = if dark {
-                        ("Dark theme", "Used when your system switches to dark.", 0xf2612d, 0x111111, 0xfcfcfc, "#F2612D", "#111111", "#FCFCFC")
+                    let (name, desc, mut acc, mut bgc, mut fgc, mut al, mut bl, mut fl) = if dark {
+                        ("Dark theme", "Used when your system switches to dark.", 0xf2612d, 0x111111, 0xfcfcfc, "#F2612D".to_string(), "#111111".to_string(), "#FCFCFC".to_string())
                     } else {
-                        ("Light theme", "System is currently using this light slot.", 0xc74614, 0xffffff, 0x0d0d0d, "#C74614", "#FFFFFF", "#0D0D0D")
+                        ("Light theme", "System is currently using this light slot.", 0xc74614, 0xffffff, 0x0d0d0d, "#C74614".to_string(), "#FFFFFF".to_string(), "#0D0D0D".to_string())
+                    };
+                    // Stored pack overrides win over the built-in swatches.
+                    let pk = self
+                        .theme_packs
+                        .get(if dark { "dark" } else { "light" })
+                        .cloned()
+                        .unwrap_or_else(|| json!({}));
+                    let parse_hex = |v: &str| -> Option<u32> {
+                        let h = v.trim_start_matches('#');
+                        u32::from_str_radix(h, 16).ok()
+                    };
+                    if let Some(v) = pk.get("accent").and_then(Value::as_str) {
+                        if let Some(c) = parse_hex(v) {
+                            acc = c;
+                            al = v.to_string();
+                        }
+                    }
+                    if let Some(v) = pk.get("background").and_then(Value::as_str) {
+                        if let Some(c) = parse_hex(v) {
+                            bgc = c;
+                            bl = v.to_string();
+                        }
+                    }
+                    if let Some(v) = pk.get("foreground").and_then(Value::as_str) {
+                        if let Some(c) = parse_hex(v) {
+                            fgc = c;
+                            fl = v.to_string();
+                        }
+                    }
+                    let swatch_click = |dark: bool, key: &'static str, pill: gpui::AnyElement| {
+                        div()
+                            .id(SharedString::from(format!(
+                                "tp-{}-{}",
+                                key,
+                                if dark { "dark" } else { "light" }
+                            )))
+                            .cursor_pointer()
+                            .child(pill)
+                            .on_click(cx.listener(move |this, _ev, w, cx| {
+                                this.open_theme_pack_edit(dark, key, w, cx);
+                            }))
+                            .into_any_element()
                     };
                     let aa_chip = if dark {
                         div().rounded(px(4.)).bg(rgb(0x111111)).px(px(3.))
@@ -14164,15 +14362,24 @@ impl Render for Native {
                             )
                             .child(
                                 div().w_full().px_3().child(
-                                    sel.child(div().text_size(px(13.)).text_color(accent_c).child("Accent preview")),
+                                    sel.child(div().text_size(px(13.)).text_color(rgb(acc)).child("Accent preview")),
                                 ),
                             )
                             .child(divider())
-                            .child(prow("Accent", swatch_pill(al, acc)))
+                            .child(prow(
+                                "Accent",
+                                swatch_click(dark, "accent", swatch_pill(SharedString::from(al.clone()), acc)),
+                            ))
                             .child(divider())
-                            .child(prow("Background", swatch_pill(bl, bgc)))
+                            .child(prow(
+                                "Background",
+                                swatch_click(dark, "background", swatch_pill(SharedString::from(bl.clone()), bgc)),
+                            ))
                             .child(divider())
-                            .child(prow("Foreground", swatch_pill(fl, fgc)))
+                            .child(prow(
+                                "Foreground",
+                                swatch_click(dark, "foreground", swatch_pill(SharedString::from(fl.clone()), fgc)),
+                            ))
                             .child(divider())
                             .child(prow(
                                 "UI font",
@@ -17610,7 +17817,7 @@ impl Render for Native {
                     .top(px(top))
                     .w(px(240.))
                     .rounded(px(10.))
-                    .bg(rgb(0xc74614))
+                    .bg(theme.primary)
                     .px(px(12.))
                     .py(px(10.))
                     .shadow_lg()
@@ -20681,6 +20888,150 @@ impl Render for Native {
             }
         }
 
+        // Theme-pack swatch editor (upstream ThemePackEditor popover): a
+        // small dialog with one hex input, Reset (clears the override) and
+        // Apply (writes settings.appearance.themePacks.<variant>.<token>).
+        let mut tp_overlay = div().absolute().inset_0().size_full();
+        if let Some((dark, key)) = self.tp_edit.clone() {
+            if let Some(input) = self.tp_input.clone() {
+                let label = match key.as_str() {
+                    "accent" => "Accent",
+                    "background" => "Background",
+                    _ => "Foreground",
+                };
+                let variant = if dark { "Dark theme" } else { "Light theme" };
+                let cur = input.read(cx).value().to_string();
+                let norm = if cur.trim().starts_with('#') {
+                    cur.trim().to_string()
+                } else {
+                    format!("#{}", cur.trim())
+                };
+                let valid = norm.len() == 7
+                    && norm[1..].chars().all(|c| c.is_ascii_hexdigit());
+                let swatch_hex = if valid {
+                    u32::from_str_radix(&norm[1..], 16).unwrap_or(0)
+                } else {
+                    0
+                };
+                let card = v_flex()
+                    .w(px(360.))
+                    .rounded(px(12.))
+                    .border_1()
+                    .border_color(theme.border)
+                    .bg(theme.popover)
+                    .shadow_lg()
+                    .child(
+                        h_flex()
+                            .p(px(16.))
+                            .gap_3()
+                            .items_center()
+                            .child(
+                                div()
+                                    .size(px(28.))
+                                    .rounded(px(8.))
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .when(valid, |d| d.bg(rgb(swatch_hex))),
+                            )
+                            .child(
+                                v_flex()
+                                    .child(
+                                        div()
+                                            .text_base()
+                                            .font_weight(FontWeight::SEMIBOLD)
+                                            .child(label.to_string()),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_sm()
+                                            .text_color(theme.muted_foreground)
+                                            .child(variant.to_string()),
+                                    ),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .mx(px(16.))
+                            .mb(px(12.))
+                            .h(px(32.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded(px(8.))
+                            .px_2()
+                            .child(Input::new(&input).appearance(false)),
+                    )
+                    .child(
+                        h_flex()
+                            .p(px(12.))
+                            .justify_between()
+                            .items_center()
+                            .child(
+                                div()
+                                    .id("tp-reset")
+                                    .px_2()
+                                    .h(px(28.))
+                                    .flex()
+                                    .items_center()
+                                    .rounded(px(6.))
+                                    .text_sm()
+                                    .text_color(theme.muted_foreground)
+                                    .cursor_pointer()
+                                    .hover(|h| h.bg(theme.secondary))
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.commit_theme_pack_edit(true, cx);
+                                    }))
+                                    .child("Reset"),
+                            )
+                            .child(
+                                div()
+                                    .id("tp-apply")
+                                    .h(px(32.))
+                                    .px_3()
+                                    .flex()
+                                    .items_center()
+                                    .rounded(px(8.))
+                                    .bg(if valid {
+                                        theme.foreground
+                                    } else {
+                                        theme.muted
+                                    })
+                                    .text_color(theme.background)
+                                    .text_sm()
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(|this, _e, _w, cx| {
+                                        this.commit_theme_pack_edit(false, cx);
+                                    }))
+                                    .child("Apply"),
+                            ),
+                    );
+                tp_overlay = tp_overlay.child(
+                    v_flex()
+                        .size_full()
+                        .items_center()
+                        .justify_center()
+                        .bg(rgba(0x00000080))
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.tp_edit = None;
+                                this.tp_input = None;
+                                cx.notify();
+                            }),
+                        )
+                        .child(
+                            div()
+                                .on_mouse_down(
+                                    gpui::MouseButton::Left,
+                                    cx.listener(|_this, _ev, _w, cx| {
+                                        cx.stop_propagation()
+                                    }),
+                                )
+                                .child(card),
+                        ),
+                );
+            }
+        }
+
         let mut pr_overlay = div().absolute().inset_0().size_full();
         if self.pr_dialog_open {
             let mut card = v_flex()
@@ -20964,6 +21315,7 @@ impl Render for Native {
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
             .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))
+            .when(self.tp_edit.is_some(), |d| d.child(tp_overlay))
             .when(self.pr_dialog_open, |d| d.child(pr_overlay))
             .when(self.wn_popout && self.wn_view == 0, |d| {
                 d.child(wn_pop_overlay)

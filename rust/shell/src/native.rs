@@ -613,6 +613,14 @@ pub struct Native {
     pinned_threads: Vec<String>,
     /// Insertion index for an in-flight tab-pill drag (0..=len), or None.
     tab_drop_target: Option<usize>,
+    split_open: bool,
+    split_thread: Option<String>,
+    split_detail: Option<Value>,
+    split_stream_id: Option<String>,
+    focused_pane: u8,
+    split_ratio: f32,
+    split_dragging: bool,
+    split_composer: Option<Entity<InputState>>,
     /// True while a thread drag hovers the composer (ring highlight).
     composer_thread_over: bool,
     renaming: bool,
@@ -884,6 +892,21 @@ impl Native {
                 },
             )
             .detach();
+            let split_composer = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("")
+            });
+            cx.subscribe_in(
+                &split_composer,
+                window,
+                |this: &mut Self, _state, event, window, cx| {
+                    if let InputEvent::PressEnter { shift, .. } = event {
+                        if !shift {
+                            this.send_split(window, cx);
+                        }
+                    }
+                },
+            )
+            .detach();
             let search = cx.new(|cx| {
                 InputState::new(window, cx).placeholder("Search threads")
             });
@@ -988,6 +1011,14 @@ impl Native {
                 pinned_threads: Vec::new(),
             tab_drop_target: None,
             composer_thread_over: false,
+            split_open: false,
+            split_thread: None,
+            split_detail: None,
+            split_stream_id: None,
+            focused_pane: 0,
+            split_ratio: 0.5,
+            split_dragging: false,
+            split_composer: Some(split_composer),
                 renaming: false,
                 rename_input: None,
                 view_changes: false,
@@ -2119,8 +2150,25 @@ impl Native {
                 self.new_thread(cx)
             }
             "threadTab.close" | "terminal.close" | "terminal.workspace.closeActive" => {
-                if let Some(t) = self.selected_thread.clone() {
+                if self.split_open && self.focused_pane == 1 {
+                    if self.split_thread.is_some() {
+                        self.split_thread = None;
+                        self.split_detail = None;
+                    } else {
+                        self.split_open = false;
+                    }
+                    self.focused_pane = 0;
+                    cx.notify();
+                } else if let Some(t) = self.selected_thread.clone() {
                     self.close_tab(t, cx);
+                }
+            }
+            "chat.split" => {
+                if self.split_open {
+                    self.close_split(cx);
+                } else if self.selected_thread.is_some() {
+                    self.split_open = true;
+                    cx.notify();
                 }
             }
             "composer.focus.toggle" => {
@@ -2230,10 +2278,28 @@ impl Native {
         match (m.control, m.alt, m.shift, key) {
             // ⌘ — chat.new / chat.newChat
             (false, false, false, "n") | (false, true, false, "n") => self.new_thread(cx),
-            // ⌘W — threadTab.close
+            // ⌘W — threadTab.close (split: closes the focused pane first)
             (false, false, false, "w") => {
-                if let Some(t) = self.selected_thread.clone() {
+                if self.split_open && self.focused_pane == 1 {
+                    if self.split_thread.is_some() {
+                        self.split_thread = None;
+                        self.split_detail = None;
+                    } else {
+                        self.split_open = false;
+                    }
+                    self.focused_pane = 0;
+                    cx.notify();
+                } else if let Some(t) = self.selected_thread.clone() {
                     self.close_tab(t, cx);
+                }
+            }
+            // ⌘\ — chat.split
+            (false, false, false, "\\") => {
+                if self.split_open {
+                    self.close_split(cx);
+                } else if self.selected_thread.is_some() {
+                    self.split_open = true;
+                    cx.notify();
                 }
             }
             // ⌘L — composer.focus.toggle
@@ -3744,6 +3810,764 @@ impl Native {
 
     /// Composer: send the draft as a turn on the selected thread, or create a
     /// thread in the first project then start the turn.
+
+    /// Transcript surface shared by the primary pane and the split pane.
+    /// `detail` is the thread detail snapshot (may be null); `has_thread`
+    /// and `show_landing` mirror the caller's state for the empty row.
+    fn transcript_body(
+        &self,
+        detail: &Value,
+        has_thread: bool,
+        show_landing: bool,
+        cx: &mut Context<Self>,
+    ) -> Div {
+        let theme = cx.theme().clone();
+        let mut col = v_flex().gap_2();
+        let thread_v = get(detail, "thread");
+        let messages = arr(thread_v, "messages");
+        let find_q = self.find_query.to_lowercase();
+        if messages.is_empty() && has_thread && !show_landing {
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(px(726.)).child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("Select a thread or type below"),
+                    ),
+                ),
+            );
+        }
+        for (i, m) in messages.iter().enumerate() {
+            let role = str_at(m, "role");
+            let mut text = str_at(m, "text").to_string();
+            if text.trim().is_empty() {
+                text = get(m, "textSegments")
+                    .as_array()
+                    .map(|segs| {
+                        segs.iter()
+                            .filter_map(|s| s.get("text").and_then(Value::as_str))
+                            .collect::<Vec<_>>()
+                            .join("")
+                    })
+                    .unwrap_or_default();
+            }
+            // Async user-input card (upstream AsyncUserInputCard): question
+            // rows with option picks, submitted as a steered turn.
+            let aui = get(m, "asyncUserInput");
+            let questions = arr(aui, "questions");
+            if !questions.is_empty() {
+                let msg_id = str_at(m, "id").to_string();
+                let done: Vec<String> = arr(get(aui, "response"), "answers")
+                    .iter()
+                    .filter_map(Value::as_str)
+                    .map(str::to_string)
+                    .collect();
+                let answered = !done.is_empty();
+                let n = questions.len();
+
+                let mut card = v_flex()
+                    .w_full()
+                    .gap_3()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded(px(12.))
+                    .px(px(14.))
+                    .py(px(14.));
+                // Header pill: "? N question(s)" (+ "✓ Answered").
+                let mut head = h_flex()
+                    .gap_2()
+                    .items_center()
+                    .child(
+                        svg_icon(icons::HELP)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(format!(
+                                "{n} {}",
+                                if n == 1 { "question" } else { "questions" }
+                            )),
+                    );
+                if answered {
+                    head = head
+                        .child(
+                            svg_icon(icons::CHECK)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Answered"),
+                        );
+                }
+                card = card.child(head);
+
+                if answered {
+                    for (qi, q) in questions.iter().enumerate() {
+                        let mut qa = v_flex().gap_1().child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(str_at(q, "title").to_string()),
+                        );
+                        if let Some(a) = done.get(qi) {
+                            qa = qa.child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(a.clone()),
+                            );
+                        }
+                        card = card.child(qa);
+                    }
+                } else {
+                    // Effective pick per question: draft override, else the
+                    // first option (upstream preselects options[0]).
+                    let mut all_answerable = true;
+                    for (qi, q) in questions.iter().enumerate() {
+                        let title = str_at(q, "title").to_string();
+                        let options: Vec<String> = arr(q, "options")
+                            .iter()
+                            .filter_map(Value::as_str)
+                            .map(str::to_string)
+                            .collect();
+                        let pick = self
+                            .user_input_draft
+                            .iter()
+                            .find(|(id, i, _)| id == &msg_id && *i == qi)
+                            .map(|(_, _, l)| l.clone())
+                            .or_else(|| options.first().cloned());
+                        let mut qv = v_flex().gap_2().child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(title),
+                        );
+                        if options.is_empty() {
+                            all_answerable = false;
+                            qv = qv.child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Type your answer in the composer below"),
+                            );
+                        } else {
+                            let mut orow = h_flex().gap_2().flex_wrap();
+                            for opt in options {
+                                let chosen = pick.as_deref() == Some(opt.as_str());
+                                let mid2 = msg_id.clone();
+                                let opt2 = opt.clone();
+                                let mut ob = div()
+                                    .id(ElementId::Name(
+                                        format!("uinput-{msg_id}-{qi}-{opt}").into(),
+                                    ))
+                                    .px(px(10.))
+                                    .py(px(4.))
+                                    .rounded(px(999.))
+                                    .border_1()
+                                    .cursor_pointer()
+                                    .text_size(px(12.))
+                                    .child(opt);
+                                if chosen {
+                                    ob = ob
+                                        .border_color(theme.foreground)
+                                        .bg(theme.list_active)
+                                        .text_color(theme.foreground);
+                                } else {
+                                    ob = ob
+                                        .border_color(theme.border)
+                                        .text_color(theme.muted_foreground)
+                                        .hover(|d| d.bg(rgba(0x00000005)));
+                                }
+                                ob = ob.on_click(cx.listener(
+                                    move |this, _ev, _w, cx| {
+                                        this.user_input_draft.retain(|(id, i, _)| {
+                                            !(id == &mid2 && *i == qi)
+                                        });
+                                        this.user_input_draft
+                                            .push((mid2.clone(), qi, opt2.clone()));
+                                        cx.notify();
+                                    },
+                                ));
+                                orow = orow.child(ob);
+                            }
+                            qv = qv.child(orow);
+                        }
+                        card = card.child(qv);
+                    }
+                    // Footer: hint + Send (disabled until every question's
+                    // effective pick exists).
+                    let sendable = all_answerable;
+                    let mut foot = h_flex().items_center().justify_between().child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child("The agent can keep working"),
+                    );
+                    if sendable {
+                        let mid3 = msg_id.clone();
+                        let qs: Vec<String> = questions
+                            .iter()
+                            .map(|q| str_at(q, "title").to_string())
+                            .collect();
+                        let answers: Vec<String> = questions
+                            .iter()
+                            .enumerate()
+                            .map(|(qi, q)| {
+                                self.user_input_draft
+                                    .iter()
+                                    .find(|(id, i, _)| id == &msg_id && *i == qi)
+                                    .map(|(_, _, l)| l.clone())
+                                    .or_else(|| {
+                                        arr(q, "options")
+                                            .first()
+                                            .and_then(Value::as_str)
+                                            .map(str::to_string)
+                                    })
+                                    .unwrap_or_default()
+                            })
+                            .collect();
+                        foot = foot.child(
+                            Button::new(ElementId::Name(
+                                format!("uinput-send-{mid3}").into(),
+                            ))
+                            .primary()
+                            .label("Send answer")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.respond_user_input(
+                                    mid3.clone(),
+                                    qs.clone(),
+                                    answers.clone(),
+                                    cx,
+                                );
+                            })),
+                        );
+                    } else {
+                        foot = foot.child(
+                            div()
+                                .px(px(10.))
+                                .py(px(4.))
+                                .rounded(px(8.))
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground.opacity(0.5))
+                                .child("Send answer"),
+                        );
+                    }
+                    card = card.child(foot);
+                }
+                col = col.child(
+                    h_flex().w_full().justify_center().child(
+                        div().w_full().max_w(px(726.)).child(card),
+                    ),
+                );
+                continue;
+            }
+
+            if text.trim().is_empty() {
+                continue;
+            }
+            let is_match = !find_q.is_empty() && text.to_lowercase().contains(&find_q);
+
+            if role == "user" {
+                let mut pill = div()
+                    .bg(theme.list_active)
+                    .rounded(px(16.))
+                    .px_4()
+                    .py(px(10.))
+                    .max_w(px(560.));
+                if is_match {
+                    pill = pill.border_1().border_color(theme.warning);
+                }
+                // Upstream user-message footer: right-aligned timestamp
+                // (hover-reveal) + copy / edit (pencil) / revert (undo).
+                let mut ufooter = h_flex()
+                    .mt(px(4.))
+                    .gap(px(2.))
+                    .items_center()
+                    .justify_end();
+                let uts = clock_time(str_at(m, "createdAt"));
+                if !uts.is_empty() {
+                    ufooter = ufooter.child(
+                        div()
+                            .mr(px(4.))
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground.opacity(0.45))
+                            .child(uts),
+                    );
+                }
+                for (iid, data) in [
+                    ("umsg-copy", icons::COPY),
+                    ("umsg-edit", icons::NEW_THREAD),
+                    ("umsg-revert", icons::UNDO),
+                ] {
+                    let msg_id = str_at(m, "id").to_string();
+                    ufooter = ufooter.child(
+                        div()
+                            .id(ElementId::Name(
+                                format!("{iid}-{msg_id}").into(),
+                            ))
+                            .size(px(22.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(rgba(0x00000008)))
+                            .child(
+                                svg_icon(data)
+                                    .size(px(13.))
+                                    .text_color(theme.muted_foreground.opacity(0.45)),
+                            ),
+                    );
+                }
+                col = col.child(
+                    h_flex().w_full().justify_center().child(
+                        h_flex().w_full().max_w(px(726.)).justify_end().child(
+                            v_flex()
+                                .items_end()
+                                .child(pill.child(
+                                    div().text_size(px(13.)).child(text),
+                                ))
+                                .child(ufooter),
+                        ),
+                    ),
+                );
+            } else {
+                let mut wrap = div();
+                if is_match {
+                    wrap = wrap.border_l_2().border_color(theme.warning).pl_2();
+                }
+                // Footer row under a settled assistant message (upstream):
+                // copy / fork / pin icon buttons followed by the wall-clock time.
+                let mut footer = h_flex()
+                    .mt(px(4.))
+                    .gap(px(2.))
+                    .items_center();
+                for (iid, data) in [
+                    ("msg-copy", icons::COPY),
+                    ("msg-fork", icons::BRANCH_SIMPLE),
+                    ("msg-pin", icons::PIN),
+                ] {
+                    let msg_id = str_at(m, "id").to_string();
+                    footer = footer.child(
+                        div()
+                            .id(ElementId::Name(
+                                format!("{iid}-{msg_id}").into(),
+                            ))
+                            .size(px(22.))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .hover(|d| d.bg(rgba(0x00000008)))
+                            .child(
+                                svg_icon(data)
+                                    .size(px(13.))
+                                    .text_color(theme.muted_foreground),
+                            ),
+                    );
+                }
+                let ts = clock_time(str_at(m, "createdAt"));
+                if !ts.is_empty() {
+                    footer = footer.child(
+                        div()
+                            .ml(px(4.))
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child(ts),
+                    );
+                }
+                col = col.child(
+                    h_flex().w_full().justify_center().child(
+                        div().w_full().max_w(px(726.)).child(
+                            v_flex()
+                                .child(wrap.child(
+                                    TextView::markdown(
+                                        ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
+                                        text,
+                                    )
+                                    .style({
+                                        let mut s =
+                                            gpui_kit::component::text::TextViewStyle::default();
+                                        s.code_block.padding.top = Some(px(28.).into());
+                                        s
+                                    })
+                                    .code_block_actions(|cb, _w, _cx| {
+                                        let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
+                                        h_flex()
+                                            .w(px(700.))
+                                            .items_center()
+                                            .justify_between()
+                                            .child(
+                                                div()
+                                                    .text_size(px(11.))
+                                                    .text_color(rgb(0x6e7781))
+                                                    .child(lang),
+                                            )
+                                            .child(
+                                                h_flex()
+                                                    .gap(px(2.))
+                                                    .child(
+                                                        svg_icon(icons::COPY)
+                                                            .size(px(14.))
+                                                            .text_color(rgb(0x6e7781)),
+                                                    )
+                                                    .child(
+                                                        svg_icon(icons::TEXT_WRAP)
+                                                            .size(px(14.))
+                                                            .text_color(rgb(0x6e7781)),
+                                                    ),
+                                            )
+                                    })
+                                    .selectable(true),
+                                ))
+                                .child(footer),
+                        ),
+                    ),
+                );
+            }
+        }
+
+        // Activities grouped in a collapsible tool-call card (web parity):
+        // a single activity stays a plain row; several collapse into a card.
+        let activities: Vec<Value> = arr(thread_v, "activities")
+            .iter()
+            .filter(|a| !str_at(a, "kind").is_empty() || !str_at(a, "summary").is_empty())
+            .cloned()
+            .collect();
+        let activity_row = |a: &Value| {
+            let kind = str_at(a, "kind");
+            let summary = str_at(a, "summary");
+            let color = match str_at(a, "tone") {
+                "error" => theme.danger,
+                _ => theme.muted_foreground,
+            };
+            let label = if summary.is_empty() {
+                kind.to_string()
+            } else if kind.is_empty() {
+                summary.to_string()
+            } else {
+                format!("{kind} — {summary}")
+            };
+            h_flex()
+                .gap_2()
+                .child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child("\u{25e6}"),
+                )
+                .child(div().text_xs().text_color(color).child(label))
+        };
+        if activities.len() == 1 {
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(px(726.)).child(activity_row(&activities[0])),
+                ),
+            );
+        } else if activities.len() > 1 {
+            let mut card = v_flex()
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .p_2()
+                .gap_1()
+                .child(
+                    h_flex()
+                        .id("tools-card")
+                        .cursor_pointer()
+                        .gap_2()
+                        .items_center()
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.tools_expanded = !this.tools_expanded;
+                            cx.notify();
+                        }))
+                        .child(
+                            Icon::new(AssetIcon::Wrench)
+                                .size(px(12.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
+                                "{} actions {}",
+                                activities.len(),
+                                if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" }
+                            )),
+                        ),
+                );
+            if self.tools_expanded {
+                for a in &activities {
+                    card = card.child(activity_row(a));
+                }
+            }
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(px(726.)).child(card),
+                ),
+            );
+        }
+
+        // Active tools currently running.
+        for t in arr(thread_v, "activeTools") {
+            let item = str_at(t, "item_id");
+            if item.is_empty() {
+                continue;
+            }
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(px(726.)).child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.primary)
+                            .child(format!("\u{25cf} tool running: {item}")),
+                    ),
+                ),
+            );
+        }
+
+        // Proposed plans (rendered as markdown cards).
+        for p in arr(thread_v, "proposedPlans") {
+            let md = str_at(p, "plan_markdown");
+            if md.trim().is_empty() {
+                continue;
+            }
+            let implemented = !get(p, "implemented_at").is_null();
+            let mut card = v_flex()
+                .gap_1()
+                .w_full()
+                .bg(theme.list_active)
+                .rounded_md()
+                .p_2()
+                .child(
+                    div()
+                        .text_xs()
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_color(theme.primary)
+                        .child(if implemented {
+                            "PROPOSED PLAN (implemented)".to_string()
+                        } else {
+                            "PROPOSED PLAN".to_string()
+                        }),
+                );
+            card = card.child(
+                TextView::markdown(
+                    ElementId::Name(format!("plan-{}", str_at(p, "id")).into()),
+                    md.to_string(),
+                )
+                .selectable(true),
+            );
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(px(726.)).child(card),
+                ),
+            );
+        }
+
+        // Pending interactions (approvals awaiting a decision).
+        for p in arr(thread_v, "pendingInteractions") {
+            if str_at(p, "status") != "pending" {
+                continue;
+            }
+            let kind = str_at(p, "interactionKind").replace('_', " ");
+            let rid = str_at(p, "requestId").to_string();
+            let mut row_el = h_flex().gap_2().child(
+                div()
+                    .text_xs()
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(theme.warning)
+                    .child(format!("approval pending: {kind}")),
+            );
+            if !rid.is_empty() {
+                for (label, decision) in [("Approve", "accept"), ("Decline", "decline")] {
+                    let r = rid.clone();
+                    row_el = row_el.child(
+                        Button::new(ElementId::Name(
+                            format!("approve-{decision}-{rid}").into(),
+                        ))
+                        .ghost()
+                        .label(label)
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.respond_approval(r.clone(), decision, cx)
+                        })),
+                    );
+                }
+            }
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(px(726.)).child(row_el),
+                ),
+            );
+        }
+
+        col
+    }
+
+    fn open_split_thread(&mut self, thread_id: String, cx: &mut Context<Self>) {
+        let old = self.split_stream_id.take();
+        self.split_thread = Some(thread_id.clone());
+        self.focused_pane = 1;
+        self.split_detail = None;
+        let client = self.client.clone();
+        let tid = thread_id;
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            if let Some(old) = old {
+                client.interrupt(&old);
+            }
+            let payload = json!({"threadId": tid});
+            let c = client.clone();
+            let p = payload.clone();
+            let detail = cx
+                .background_executor()
+                .spawn(async move { c.call("orchestration.getThreadDetailSnapshot", p) })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if this.split_thread.as_deref() == Some(tid.as_str()) {
+                    this.split_detail = detail;
+                }
+                cx.notify();
+            });
+            // Live transcript via subscribeThread (same pattern as the
+            // primary pane): each chunk triggers a detail refetch.
+            let c = client.clone();
+            let (rid, frames) = match c.request("orchestration.subscribeThread", payload.clone()) {
+                Some(v) => v,
+                None => return,
+            };
+            let rid_for_ui = rid.clone();
+            let _ = this.update(cx, |this: &mut Self, _| {
+                this.split_stream_id = Some(rid_for_ui);
+            });
+            let (tx, rx) = async_channel::unbounded::<()>();
+            let c = client.clone();
+            cx.background_executor()
+                .spawn(async move {
+                    while let Ok(msg) = frames.recv() {
+                        match msg.get("_tag").and_then(Value::as_str) {
+                            Some("Chunk") => {
+                                let _ = tx.send_blocking(());
+                            }
+                            Some("Exit") => break,
+                            _ => {}
+                        }
+                    }
+                    c.finish_request(&rid);
+                })
+                .detach();
+            while rx.recv().await.is_ok() {
+                let c = client.clone();
+                let p = payload.clone();
+                let d = cx
+                    .background_executor()
+                    .spawn(async move { c.call("orchestration.getThreadDetailSnapshot", p) })
+                    .await;
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    if this.split_thread.as_deref() == Some(tid.as_str()) {
+                        this.split_detail = d;
+                    }
+                    cx.notify();
+                });
+            }
+        })
+        .detach();
+        cx.notify();
+    }
+
+    fn close_split(&mut self, cx: &mut Context<Self>) {
+        if let Some(rid) = self.split_stream_id.take() {
+            let cell = self.client.clone();
+            cx.background_executor()
+                .spawn(async move {
+                    if let Some(c) = ensure_client(&cell) {
+                        c.interrupt(&rid);
+                    }
+                })
+                .detach();
+        }
+        self.split_open = false;
+        self.split_thread = None;
+        self.split_detail = None;
+        self.focused_pane = 0;
+        cx.notify();
+    }
+
+    fn send_split(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(input) = self.split_composer.clone() else {
+            return;
+        };
+        let text = input.read(cx).value().trim().to_string();
+        let Some(tid) = self.split_thread.clone() else {
+            return;
+        };
+        if text.is_empty() || self.sending {
+            return;
+        }
+        self.sending = true;
+        input.update(cx, |s, cx| s.clean(window, cx));
+        let client = self.client.clone();
+        let mode = self.runtime_mode;
+        let imode = self.interaction_mode;
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else {
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    this.sending = false;
+                    cx.notify();
+                });
+                return;
+            };
+            let cmd = json!({
+                "type": "thread.turn.start",
+                "commandId": uuid(),
+                "threadId": tid,
+                "message": {
+                    "messageId": uuid(),
+                    "role": "user",
+                    "text": text,
+                    "attachments": [],
+                },
+                "runtimeMode": mode,
+                "interactionMode": imode,
+                "createdAt": now_iso(),
+            });
+            let c = client.clone();
+            let _ = cx
+                .background_executor()
+                .spawn(async move { c.call("orchestration.dispatchCommand", cmd) })
+                .await;
+            let p = json!({"threadId": tid});
+            let c = client.clone();
+            let d = cx
+                .background_executor()
+                .spawn(async move { c.call("orchestration.getThreadDetailSnapshot", p) })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.sending = false;
+                if let Some(d) = d {
+                    this.split_detail = Some(d);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+        cx.notify();
+    }
     fn send(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let text = self.composer.read(cx).value().to_string();
         let text = text.trim().to_string();
@@ -4561,589 +5385,10 @@ impl Render for Native {
                     ),
             );
         }
-        let thread_v = get(self.detail.as_ref().unwrap_or(&Value::Null), "thread");
-        let messages = arr(thread_v, "messages");
-        let find_q = self.find_query.to_lowercase();
-        if messages.is_empty() && self.selected_thread.is_some() && !show_landing {
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(726.)).child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("Select a thread or type below"),
-                    ),
-                ),
-            );
-        }
-        for (i, m) in messages.iter().enumerate() {
-            let role = str_at(m, "role");
-            let mut text = str_at(m, "text").to_string();
-            if text.trim().is_empty() {
-                text = get(m, "textSegments")
-                    .as_array()
-                    .map(|segs| {
-                        segs.iter()
-                            .filter_map(|s| s.get("text").and_then(Value::as_str))
-                            .collect::<Vec<_>>()
-                            .join("")
-                    })
-                    .unwrap_or_default();
-            }
-            // Async user-input card (upstream AsyncUserInputCard): question
-            // rows with option picks, submitted as a steered turn.
-            let aui = get(m, "asyncUserInput");
-            let questions = arr(aui, "questions");
-            if !questions.is_empty() {
-                let msg_id = str_at(m, "id").to_string();
-                let done: Vec<String> = arr(get(aui, "response"), "answers")
-                    .iter()
-                    .filter_map(Value::as_str)
-                    .map(str::to_string)
-                    .collect();
-                let answered = !done.is_empty();
-                let n = questions.len();
-
-                let mut card = v_flex()
-                    .w_full()
-                    .gap_3()
-                    .border_1()
-                    .border_color(theme.border)
-                    .rounded(px(12.))
-                    .px(px(14.))
-                    .py(px(14.));
-                // Header pill: "? N question(s)" (+ "✓ Answered").
-                let mut head = h_flex()
-                    .gap_2()
-                    .items_center()
-                    .child(
-                        svg_icon(icons::HELP)
-                            .size(px(14.))
-                            .text_color(theme.muted_foreground),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child(format!(
-                                "{n} {}",
-                                if n == 1 { "question" } else { "questions" }
-                            )),
-                    );
-                if answered {
-                    head = head
-                        .child(
-                            svg_icon(icons::CHECK)
-                                .size(px(12.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(13.))
-                                .text_color(theme.muted_foreground)
-                                .child("Answered"),
-                        );
-                }
-                card = card.child(head);
-
-                if answered {
-                    for (qi, q) in questions.iter().enumerate() {
-                        let mut qa = v_flex().gap_1().child(
-                            div()
-                                .text_size(px(13.))
-                                .font_weight(FontWeight::MEDIUM)
-                                .child(str_at(q, "title").to_string()),
-                        );
-                        if let Some(a) = done.get(qi) {
-                            qa = qa.child(
-                                div()
-                                    .text_size(px(13.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(a.clone()),
-                            );
-                        }
-                        card = card.child(qa);
-                    }
-                } else {
-                    // Effective pick per question: draft override, else the
-                    // first option (upstream preselects options[0]).
-                    let mut all_answerable = true;
-                    for (qi, q) in questions.iter().enumerate() {
-                        let title = str_at(q, "title").to_string();
-                        let options: Vec<String> = arr(q, "options")
-                            .iter()
-                            .filter_map(Value::as_str)
-                            .map(str::to_string)
-                            .collect();
-                        let pick = self
-                            .user_input_draft
-                            .iter()
-                            .find(|(id, i, _)| id == &msg_id && *i == qi)
-                            .map(|(_, _, l)| l.clone())
-                            .or_else(|| options.first().cloned());
-                        let mut qv = v_flex().gap_2().child(
-                            div()
-                                .text_size(px(13.))
-                                .font_weight(FontWeight::MEDIUM)
-                                .child(title),
-                        );
-                        if options.is_empty() {
-                            all_answerable = false;
-                            qv = qv.child(
-                                div()
-                                    .text_size(px(12.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("Type your answer in the composer below"),
-                            );
-                        } else {
-                            let mut orow = h_flex().gap_2().flex_wrap();
-                            for opt in options {
-                                let chosen = pick.as_deref() == Some(opt.as_str());
-                                let mid2 = msg_id.clone();
-                                let opt2 = opt.clone();
-                                let mut ob = div()
-                                    .id(ElementId::Name(
-                                        format!("uinput-{msg_id}-{qi}-{opt}").into(),
-                                    ))
-                                    .px(px(10.))
-                                    .py(px(4.))
-                                    .rounded(px(999.))
-                                    .border_1()
-                                    .cursor_pointer()
-                                    .text_size(px(12.))
-                                    .child(opt);
-                                if chosen {
-                                    ob = ob
-                                        .border_color(theme.foreground)
-                                        .bg(theme.list_active)
-                                        .text_color(theme.foreground);
-                                } else {
-                                    ob = ob
-                                        .border_color(theme.border)
-                                        .text_color(theme.muted_foreground)
-                                        .hover(|d| d.bg(rgba(0x00000005)));
-                                }
-                                ob = ob.on_click(cx.listener(
-                                    move |this, _ev, _w, cx| {
-                                        this.user_input_draft.retain(|(id, i, _)| {
-                                            !(id == &mid2 && *i == qi)
-                                        });
-                                        this.user_input_draft
-                                            .push((mid2.clone(), qi, opt2.clone()));
-                                        cx.notify();
-                                    },
-                                ));
-                                orow = orow.child(ob);
-                            }
-                            qv = qv.child(orow);
-                        }
-                        card = card.child(qv);
-                    }
-                    // Footer: hint + Send (disabled until every question's
-                    // effective pick exists).
-                    let sendable = all_answerable;
-                    let mut foot = h_flex().items_center().justify_between().child(
-                        div()
-                            .text_size(px(12.))
-                            .text_color(theme.muted_foreground)
-                            .child("The agent can keep working"),
-                    );
-                    if sendable {
-                        let mid3 = msg_id.clone();
-                        let qs: Vec<String> = questions
-                            .iter()
-                            .map(|q| str_at(q, "title").to_string())
-                            .collect();
-                        let answers: Vec<String> = questions
-                            .iter()
-                            .enumerate()
-                            .map(|(qi, q)| {
-                                self.user_input_draft
-                                    .iter()
-                                    .find(|(id, i, _)| id == &msg_id && *i == qi)
-                                    .map(|(_, _, l)| l.clone())
-                                    .or_else(|| {
-                                        arr(q, "options")
-                                            .first()
-                                            .and_then(Value::as_str)
-                                            .map(str::to_string)
-                                    })
-                                    .unwrap_or_default()
-                            })
-                            .collect();
-                        foot = foot.child(
-                            Button::new(ElementId::Name(
-                                format!("uinput-send-{mid3}").into(),
-                            ))
-                            .primary()
-                            .label("Send answer")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                this.respond_user_input(
-                                    mid3.clone(),
-                                    qs.clone(),
-                                    answers.clone(),
-                                    cx,
-                                );
-                            })),
-                        );
-                    } else {
-                        foot = foot.child(
-                            div()
-                                .px(px(10.))
-                                .py(px(4.))
-                                .rounded(px(8.))
-                                .text_size(px(12.))
-                                .text_color(theme.muted_foreground.opacity(0.5))
-                                .child("Send answer"),
-                        );
-                    }
-                    card = card.child(foot);
-                }
-                pane = pane.child(
-                    h_flex().w_full().justify_center().child(
-                        div().w(px(726.)).child(card),
-                    ),
-                );
-                continue;
-            }
-
-            if text.trim().is_empty() {
-                continue;
-            }
-            let is_match = !find_q.is_empty() && text.to_lowercase().contains(&find_q);
-
-            if role == "user" {
-                let mut pill = div()
-                    .bg(theme.list_active)
-                    .rounded(px(16.))
-                    .px_4()
-                    .py(px(10.))
-                    .max_w(px(560.));
-                if is_match {
-                    pill = pill.border_1().border_color(theme.warning);
-                }
-                // Upstream user-message footer: right-aligned timestamp
-                // (hover-reveal) + copy / edit (pencil) / revert (undo).
-                let mut ufooter = h_flex()
-                    .mt(px(4.))
-                    .gap(px(2.))
-                    .items_center()
-                    .justify_end();
-                let uts = clock_time(str_at(m, "createdAt"));
-                if !uts.is_empty() {
-                    ufooter = ufooter.child(
-                        div()
-                            .mr(px(4.))
-                            .text_size(px(11.))
-                            .text_color(theme.muted_foreground.opacity(0.45))
-                            .child(uts),
-                    );
-                }
-                for (iid, data) in [
-                    ("umsg-copy", icons::COPY),
-                    ("umsg-edit", icons::NEW_THREAD),
-                    ("umsg-revert", icons::UNDO),
-                ] {
-                    let msg_id = str_at(m, "id").to_string();
-                    ufooter = ufooter.child(
-                        div()
-                            .id(ElementId::Name(
-                                format!("{iid}-{msg_id}").into(),
-                            ))
-                            .size(px(22.))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .rounded(px(6.))
-                            .cursor_pointer()
-                            .hover(|d| d.bg(rgba(0x00000008)))
-                            .child(
-                                svg_icon(data)
-                                    .size(px(13.))
-                                    .text_color(theme.muted_foreground.opacity(0.45)),
-                            ),
-                    );
-                }
-                pane = pane.child(
-                    h_flex().w_full().justify_center().child(
-                        h_flex().w(px(726.)).justify_end().child(
-                            v_flex()
-                                .items_end()
-                                .child(pill.child(
-                                    div().text_size(px(13.)).child(text),
-                                ))
-                                .child(ufooter),
-                        ),
-                    ),
-                );
-            } else {
-                let mut wrap = div();
-                if is_match {
-                    wrap = wrap.border_l_2().border_color(theme.warning).pl_2();
-                }
-                // Footer row under a settled assistant message (upstream):
-                // copy / fork / pin icon buttons followed by the wall-clock time.
-                let mut footer = h_flex()
-                    .mt(px(4.))
-                    .gap(px(2.))
-                    .items_center();
-                for (iid, data) in [
-                    ("msg-copy", icons::COPY),
-                    ("msg-fork", icons::BRANCH_SIMPLE),
-                    ("msg-pin", icons::PIN),
-                ] {
-                    let msg_id = str_at(m, "id").to_string();
-                    footer = footer.child(
-                        div()
-                            .id(ElementId::Name(
-                                format!("{iid}-{msg_id}").into(),
-                            ))
-                            .size(px(22.))
-                            .flex()
-                            .items_center()
-                            .justify_center()
-                            .rounded(px(6.))
-                            .cursor_pointer()
-                            .hover(|d| d.bg(rgba(0x00000008)))
-                            .child(
-                                svg_icon(data)
-                                    .size(px(13.))
-                                    .text_color(theme.muted_foreground),
-                            ),
-                    );
-                }
-                let ts = clock_time(str_at(m, "createdAt"));
-                if !ts.is_empty() {
-                    footer = footer.child(
-                        div()
-                            .ml(px(4.))
-                            .text_size(px(11.))
-                            .text_color(theme.muted_foreground)
-                            .child(ts),
-                    );
-                }
-                pane = pane.child(
-                    h_flex().w_full().justify_center().child(
-                        div().w(px(726.)).child(
-                            v_flex()
-                                .child(wrap.child(
-                                    TextView::markdown(
-                                        ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
-                                        text,
-                                    )
-                                    .style({
-                                        let mut s =
-                                            gpui_kit::component::text::TextViewStyle::default();
-                                        s.code_block.padding.top = Some(px(28.).into());
-                                        s
-                                    })
-                                    .code_block_actions(|cb, _w, _cx| {
-                                        let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
-                                        h_flex()
-                                            .w(px(700.))
-                                            .items_center()
-                                            .justify_between()
-                                            .child(
-                                                div()
-                                                    .text_size(px(11.))
-                                                    .text_color(rgb(0x6e7781))
-                                                    .child(lang),
-                                            )
-                                            .child(
-                                                h_flex()
-                                                    .gap(px(2.))
-                                                    .child(
-                                                        svg_icon(icons::COPY)
-                                                            .size(px(14.))
-                                                            .text_color(rgb(0x6e7781)),
-                                                    )
-                                                    .child(
-                                                        svg_icon(icons::TEXT_WRAP)
-                                                            .size(px(14.))
-                                                            .text_color(rgb(0x6e7781)),
-                                                    ),
-                                            )
-                                    })
-                                    .selectable(true),
-                                ))
-                                .child(footer),
-                        ),
-                    ),
-                );
-            }
-        }
-
-        // Activities grouped in a collapsible tool-call card (web parity):
-        // a single activity stays a plain row; several collapse into a card.
-        let activities: Vec<Value> = arr(thread_v, "activities")
-            .iter()
-            .filter(|a| !str_at(a, "kind").is_empty() || !str_at(a, "summary").is_empty())
-            .cloned()
-            .collect();
-        let activity_row = |a: &Value| {
-            let kind = str_at(a, "kind");
-            let summary = str_at(a, "summary");
-            let color = match str_at(a, "tone") {
-                "error" => theme.danger,
-                _ => theme.muted_foreground,
-            };
-            let label = if summary.is_empty() {
-                kind.to_string()
-            } else if kind.is_empty() {
-                summary.to_string()
-            } else {
-                format!("{kind} — {summary}")
-            };
-            h_flex()
-                .gap_2()
-                .child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.muted_foreground)
-                        .child("\u{25e6}"),
-                )
-                .child(div().text_xs().text_color(color).child(label))
-        };
-        if activities.len() == 1 {
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(726.)).child(activity_row(&activities[0])),
-                ),
-            );
-        } else if activities.len() > 1 {
-            let mut card = v_flex()
-                .border_1()
-                .border_color(theme.border)
-                .rounded_lg()
-                .p_2()
-                .gap_1()
-                .child(
-                    h_flex()
-                        .id("tools-card")
-                        .cursor_pointer()
-                        .gap_2()
-                        .items_center()
-                        .on_click(cx.listener(|this, _ev, _w, cx| {
-                            this.tools_expanded = !this.tools_expanded;
-                            cx.notify();
-                        }))
-                        .child(
-                            Icon::new(AssetIcon::Wrench)
-                                .size(px(12.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(
-                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
-                                "{} actions {}",
-                                activities.len(),
-                                if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" }
-                            )),
-                        ),
-                );
-            if self.tools_expanded {
-                for a in &activities {
-                    card = card.child(activity_row(a));
-                }
-            }
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(726.)).child(card),
-                ),
-            );
-        }
-
-        // Active tools currently running.
-        for t in arr(thread_v, "activeTools") {
-            let item = str_at(t, "item_id");
-            if item.is_empty() {
-                continue;
-            }
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(726.)).child(
-                        div()
-                            .text_xs()
-                            .text_color(theme.primary)
-                            .child(format!("\u{25cf} tool running: {item}")),
-                    ),
-                ),
-            );
-        }
-
-        // Proposed plans (rendered as markdown cards).
-        for p in arr(thread_v, "proposedPlans") {
-            let md = str_at(p, "plan_markdown");
-            if md.trim().is_empty() {
-                continue;
-            }
-            let implemented = !get(p, "implemented_at").is_null();
-            let mut card = v_flex()
-                .gap_1()
-                .w_full()
-                .bg(theme.list_active)
-                .rounded_md()
-                .p_2()
-                .child(
-                    div()
-                        .text_xs()
-                        .font_weight(FontWeight::SEMIBOLD)
-                        .text_color(theme.primary)
-                        .child(if implemented {
-                            "PROPOSED PLAN (implemented)".to_string()
-                        } else {
-                            "PROPOSED PLAN".to_string()
-                        }),
-                );
-            card = card.child(
-                TextView::markdown(
-                    ElementId::Name(format!("plan-{}", str_at(p, "id")).into()),
-                    md.to_string(),
-                )
-                .selectable(true),
-            );
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(726.)).child(card),
-                ),
-            );
-        }
-
-        // Pending interactions (approvals awaiting a decision).
-        for p in arr(thread_v, "pendingInteractions") {
-            if str_at(p, "status") != "pending" {
-                continue;
-            }
-            let kind = str_at(p, "interactionKind").replace('_', " ");
-            let rid = str_at(p, "requestId").to_string();
-            let mut row_el = h_flex().gap_2().child(
-                div()
-                    .text_xs()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(theme.warning)
-                    .child(format!("approval pending: {kind}")),
-            );
-            if !rid.is_empty() {
-                for (label, decision) in [("Approve", "accept"), ("Decline", "decline")] {
-                    let r = rid.clone();
-                    row_el = row_el.child(
-                        Button::new(ElementId::Name(
-                            format!("approve-{decision}-{rid}").into(),
-                        ))
-                        .ghost()
-                        .label(label)
-                        .on_click(cx.listener(move |this, _ev, _w, cx| {
-                            this.respond_approval(r.clone(), decision, cx)
-                        })),
-                    );
-                }
-            }
-            pane = pane.child(
-                h_flex().w_full().justify_center().child(
-                    div().w(px(726.)).child(row_el),
-                ),
-            );
-        }
-
+        let thread_detail = self.detail.clone().unwrap_or(Value::Null);
+        let thread_v = get(&thread_detail, "thread");
+        let has_thread = self.selected_thread.is_some();
+        pane = pane.child(self.transcript_body(&thread_detail, has_thread, show_landing, cx));
         // ---- files browser / viewer ----
         let mut files_pane = v_flex().flex_1().h_full().p_4().gap_1();
         if self.view_files {
@@ -5977,7 +6222,7 @@ impl Render for Native {
                 )
         };
         let mut composer_col = v_flex()
-            .w(px(726.))
+            .w_full().max_w(px(726.))
             .gap_0()
             // Thread rows drop here as an @mention (upstream
             // useComposerThreadMentionDrop); the current thread can't
@@ -6333,6 +6578,173 @@ impl Render for Native {
                     .pr(px(4.))
                     .child(composer_col),
             );
+
+        // ---- split pane (chat.split, cmd-\): right column with its own
+        // header, transcript surface, thread picker and composer ----
+        let mut split_pane = v_flex().flex_1().h_full().gap_2().p_4();
+        let mut split_bar = v_flex().w_full();
+        if self.split_open {
+            let st_detail = self.split_detail.clone().unwrap_or(Value::Null);
+            let pane_focused = self.focused_pane == 1;
+            let mut header = h_flex()
+                .w_full()
+                .h(px(32.))
+                .px_2()
+                .items_center()
+                .gap_2()
+                .border_b_1()
+                .border_color(if pane_focused {
+                    theme.primary
+                } else {
+                    theme.border
+                });
+            if self.split_thread.is_some() {
+                let title = str_at(get(&st_detail, "thread"), "title").to_string();
+                let provider = str_at(get(&st_detail, "session"), "providerName").to_string();
+                let focused = self.focused_pane == 1;
+                header = header
+                    .child(
+                        svg_icon(provider_icon(&provider))
+                            .size(px(13.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .text_xs()
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(if focused { theme.foreground } else { theme.muted_foreground })
+                            .child(title),
+                    )
+                    .child(
+                        div()
+                            .id("split-close")
+                            .cursor_pointer()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child("\u{2715}")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.split_thread = None;
+                                this.split_detail = None;
+                                cx.notify();
+                            })),
+                    );
+            }
+            split_pane = split_pane.child(header);
+            if self.split_thread.is_some() {
+                split_pane = split_pane.child(self.transcript_body(&st_detail, true, false, cx));
+            } else {
+                // Empty leaf: upstream SplitPaneEmptyState — centered label
+                // plus a scrollable list of threads not already shown.
+                split_pane = split_pane.child(
+                    v_flex()
+                        .w_full()
+                        .pt(px(64.))
+                        .items_center()
+                        .gap_1()
+                        .child(
+                            div()
+                                .text_size(px(14.))
+                                .text_color(theme.foreground)
+                                .child("Select a chat"),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child("Pick a thread to open in this pane"),
+                        ),
+                );
+                let mut list = v_flex().w_full().max_w(px(384.)).gap_y(px(1.));
+                for t in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads") {
+                    let tid = str_at(t, "id").to_string();
+                    if tid.is_empty() {
+                        continue;
+                    }
+                    let in_use = self.open_threads.contains(&tid)
+                        || self.split_thread.as_deref() == Some(tid.as_str());
+                    let title = str_at(t, "title").to_string();
+                    let provider = str_at(get(t, "session"), "providerName").to_string();
+                    let mut row = h_flex()
+                        .id(SharedString::from(format!("splitpick-{tid}")))
+                        .w_full()
+                        .px_2()
+                        .py_1p5()
+                        .rounded_md()
+                        .gap_2()
+                        .items_center()
+                        .child(
+                            svg_icon(provider_icon(&provider))
+                                .size(px(13.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(div().flex_1().text_xs().child(title));
+                    if in_use {
+                        row = row.opacity(0.35);
+                    } else {
+                        row = row
+                            .cursor_pointer()
+                            .hover(|s| s.bg(theme.list_active))
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.open_split_thread(tid.clone(), cx);
+                            }));
+                    }
+                    list = list.child(row);
+                }
+                split_pane = split_pane.child(
+                    div().flex_1().overflow_y_scrollbar().child(
+                        h_flex().w_full().justify_center().child(list),
+                    ),
+                );
+            }
+            // Dropping a dragged sidebar thread assigns it to this pane
+            // (upstream createFromDrop).
+            split_pane = split_pane
+                .can_drop(|v, _w, _cx| {
+                    v.is::<ThreadDrag>() || v.is::<TabDrag>()
+                })
+                .on_drop::<ThreadDrag>(cx.listener(|this, drag: &ThreadDrag, _w, cx| {
+                    this.open_split_thread(drag.0.clone(), cx);
+                }))
+                .on_drop::<TabDrag>(cx.listener(|this, drag: &TabDrag, _w, cx| {
+                    this.open_split_thread(drag.0.clone(), cx);
+                }));
+            if let Some(input) = self.split_composer.clone() {
+                let card = div()
+                    .w_full()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg()
+                    .px_3()
+                    .py_2()
+                    .child(
+                        h_flex()
+                            .gap_2()
+                            .items_center()
+                            .child(Input::new(&input).appearance(false).w_full())
+                            .child(
+                                div()
+                                    .id("split-send")
+                                    .cursor_pointer()
+                                    .child(
+                                        svg_icon(icons::SEND)
+                                            .size(px(14.))
+                                            .text_color(theme.muted_foreground),
+                                    )
+                                    .on_click(cx.listener(|this, _ev, w, cx| {
+                                        this.send_split(w, cx);
+                                    })),
+                            ),
+                    );
+                split_bar = split_bar.child(
+                    div().w_full().pb(px(18.)).child(
+                        h_flex().w_full().justify_center().pr(px(4.)).child(
+                            v_flex().w_full().max_w(px(726.)).gap_0().child(card),
+                        ),
+                    ),
+                );
+            }
+        }
 
         // ---- settings pane ----
         // ---- settings pane (upstream /settings layout) ----
@@ -9684,6 +10096,80 @@ impl Render for Native {
         } else {
             if self.view_terminal && self.term_active {
                 main = main.child(term_surface);
+            } else if self.split_open {
+                // Zed-style split: two ratio-sized panes + draggable divider.
+                let ratio = self.split_ratio.clamp(0.25, 0.75);
+                let left = v_flex()
+                    .id("split-left")
+                    .w(gpui::relative(ratio))
+                    .min_w_0()
+                    .h_full()
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.focused_pane = 0;
+                        cx.notify();
+                    }))
+                    .can_drop(|v, _w, _cx| {
+                        v.is::<ThreadDrag>() || v.is::<TabDrag>()
+                    })
+                    .on_drop::<ThreadDrag>(cx.listener(
+                        |this, drag: &ThreadDrag, _w, cx| {
+                            this.focused_pane = 0;
+                            this.open_thread(drag.0.clone(), cx);
+                        },
+                    ))
+                    .on_drop::<TabDrag>(cx.listener(
+                        |this, drag: &TabDrag, _w, cx| {
+                            this.focused_pane = 0;
+                            this.open_thread(drag.0.clone(), cx);
+                        },
+                    ))
+                    .child(div().flex_1().child(pane.overflow_y_scrollbar()))
+                    .child(composer_bar);
+                // 9px hit strip drawn as a centered 1px line over the
+                // boundary (Zed divider affordance).
+                let divider = div()
+                    .id("split-divider")
+                    .w(px(9.))
+                    .h_full()
+                    .ml(px(-4.))
+                    .mr(px(-4.))
+                    .cursor_col_resize()
+                    .child(
+                        div().w(px(1.)).h_full().ml(px(4.)).bg(theme.border),
+                    )
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.split_dragging = true;
+                            cx.notify();
+                        }),
+                    );
+                let right = v_flex()
+                    .id("split-right")
+                    .flex_1()
+                    .min_w_0()
+                    .h_full()
+                    .border_l_1()
+                    .border_color(theme.border)
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.focused_pane = 1;
+                        cx.notify();
+                    }))
+                    .child(div().flex_1().child(split_pane.overflow_y_scrollbar()))
+                    .child(split_bar);
+                let cols = h_flex()
+                    .id("split-cols")
+                    .flex_1()
+                    .h_full()
+                    .child(left)
+                    .child(divider)
+                    .child(right);
+                main = main.child(cols);
+                if self.find_open {
+                    main = main.child(
+                        div().absolute().top(px(8.)).right(px(8.)).child(find_bar),
+                    );
+                }
             } else {
                 main = main.child(div().flex_1().child(pane.overflow_y_scrollbar()));
                 main = main.child(composer_bar);
@@ -11432,6 +11918,36 @@ impl Render for Native {
             .on_key_down(cx.listener(|this, ev: &KeyDownEvent, w, cx| {
                 this.handle_chord(ev, w, cx);
             }))
+            .on_mouse_move(cx.listener(|this, ev: &MouseMoveEvent, _w, cx| {
+                if this.split_dragging {
+                    // Split area starts after the 51px rail plus the 257px
+                    // sidebar card (hidden when collapsed); the changes dock
+                    // (300px) takes from the right when open.
+                    let mut x0 = 51.0_f32;
+                    if !this.sidebar_collapsed
+                        && !this.view_inbox
+                        && !this.view_tasks
+                        && !this.view_kanban
+                    {
+                        x0 += 257.0;
+                    }
+                    let right = if this.view_changes { 300.0_f32 } else { 0.0 };
+                    let vw = f32::from(_w.viewport_size().width);
+                    let avail = (vw - x0 - right).max(1.0);
+                    let r = (f32::from(ev.position.x) - x0) / avail;
+                    this.split_ratio = r.clamp(0.25, 0.75);
+                    cx.notify();
+                }
+            }))
+            .on_mouse_up(
+                gpui::MouseButton::Left,
+                cx.listener(|this, _ev, _w, cx| {
+                    if this.split_dragging {
+                        this.split_dragging = false;
+                        cx.notify();
+                    }
+                }),
+            )
             .on_action(cx.listener(|this, _: &ToggleFind, w, cx| {
                 this.toggle_find(w, cx);
             }))

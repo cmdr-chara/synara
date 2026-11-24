@@ -5146,7 +5146,11 @@ impl Render for Native {
         let hairline = if dark_ui { rgb(0x2e2e2e) } else { rgb(0xe5e5e5) };
         let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
         let chip_bg = if dark_ui { rgba(0xffffff12) } else { rgba(0x00000008) };
-        let soft_bg = if dark_ui { rgb(0x242424) } else { rgb(0xf7f7f7) };
+        let soft_bg: gpui::Hsla = if dark_ui {
+            rgba(0xffffff0a).into()
+        } else {
+            rgb(0xf7f7f7).into()
+        };
         let content_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {

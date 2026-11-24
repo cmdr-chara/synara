@@ -574,6 +574,8 @@ pub struct Native {
     file_editor: Option<Entity<EditorState>>,
     editor_synced: Option<String>,
     editing_file: bool,
+    file_dirty: bool,
+    open_in_menu: bool,
     files_loading: bool,
     git_status: Option<Value>,
     file_stream_id: Option<String>,
@@ -979,6 +981,8 @@ impl Native {
                 file_editor: None,
                 editor_synced: None,
                 editing_file: false,
+                file_dirty: false,
+                open_in_menu: false,
                 files_loading: false,
                 git_status: None,
                 file_stream_id: None,
@@ -2271,6 +2275,18 @@ impl Native {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
+        // ⌘S saves the open file while it is being edited (upstream
+        // useCodeEditorSaveKeyDownHandler).
+        if event.keystroke.modifiers.platform
+            && event.keystroke.key.as_str() == "s"
+            && !event.keystroke.modifiers.shift
+            && !event.keystroke.modifiers.control
+            && !event.keystroke.modifiers.alt
+            && self.editing_file
+        {
+            self.save_file(cx);
+            return;
+        }
         // While the recorder dialog is open every key is input for it.
         if self.sc_rec.is_some() {
             self.sc_rec_key(event, window, cx);
@@ -3663,6 +3679,8 @@ impl Native {
     }
 
     fn close_file(&mut self, cx: &mut Context<Self>) {
+        self.file_dirty = false;
+        self.open_in_menu = false;
         self.stop_file_watch();
         self.open_file = None;
         self.open_file_meta = None;
@@ -3745,6 +3763,7 @@ impl Native {
                         this.editor_synced = Some(ver.to_string());
                     }
                     this.editing_file = false;
+                    this.file_dirty = false;
                 }
                 cx.notify();
             });
@@ -5767,7 +5786,19 @@ impl Render for Native {
         if self.view_files {
             if let Some((path, text)) = self.open_file.clone() {
                 if self.file_editor.is_none() {
-                    self.file_editor = Some(cx.new(|cx| EditorState::new(window, cx)));
+                    let ed = cx.new(|cx| EditorState::new(window, cx));
+                    cx.subscribe_in(
+                        &ed,
+                        window,
+                        |this: &mut Self, _state, event, _w, cx| {
+                            if let InputEvent::Change = event {
+                                this.file_dirty = true;
+                                cx.notify();
+                            }
+                        },
+                    )
+                    .detach();
+                    self.file_editor = Some(ed);
                 }
                 let editor = self.file_editor.clone().unwrap();
                 let sync_key = format!(
@@ -5805,6 +5836,14 @@ impl Render for Native {
                             .child(p),
                     );
                 if editing {
+                    if self.file_dirty {
+                        header = header.child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child("Unsaved"),
+                        );
+                    }
                     header = header
                         .child(
                             Button::new("save-file")
@@ -5824,6 +5863,15 @@ impl Render for Native {
                         );
                 } else {
                     header = header.child(
+                        Button::new("open-in-editor")
+                            .ghost()
+                            .label("Open in\u{2026}")
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.open_in_menu = !this.open_in_menu;
+                                cx.notify();
+                            })),
+                    );
+                    header = header.child(
                         Button::new("edit-file")
                             .ghost()
                             .label("Edit")
@@ -5841,6 +5889,81 @@ impl Render for Native {
                             .h_full()
                             .child(Editor::new(&editor).readonly(!editing)),
                     );
+                if self.open_in_menu {
+                    // Upstream "Open in editor" (EditorActionPicker): launches
+                    // the file in an installed external editor app.
+                    const EDITOR_APPS: &[(&str, &str)] = &[
+                        ("Cursor", "Cursor"),
+                        ("VS Code", "Visual Studio Code"),
+                        ("VSCodium", "VSCodium"),
+                        ("Zed", "Zed"),
+                        ("Windsurf", "Windsurf"),
+                        ("Sublime Text", "Sublime Text"),
+                    ];
+                    let file_path = path.clone();
+                    let mut menu = v_flex().gap_0p5().py_1();
+                    let mut any_app = false;
+                    for (label, app) in EDITOR_APPS {
+                        if !std::path::Path::new(&format!(
+                            "/Applications/{app}.app"
+                        ))
+                        .exists()
+                        {
+                            continue;
+                        }
+                        any_app = true;
+                        let app_name = (*app).to_string();
+                        let p = file_path.clone();
+                        menu = menu.child(
+                            div()
+                                .id(ElementId::Name(
+                                    format!("open-in-{label}").into(),
+                                ))
+                                .cursor_pointer()
+                                .px_3()
+                                .py(px(6.))
+                                .rounded_md()
+                                .text_size(px(13.))
+                                .text_color(theme.foreground)
+                                .child((*label).to_string())
+                                .on_click(cx.listener(
+                                    move |this, _ev, _w, cx| {
+                                        this.open_in_menu = false;
+                                        let app = app_name.clone();
+                                        let path = p.clone();
+                                        std::thread::spawn(move || {
+                                            let _ = std::process::Command::new(
+                                                "open",
+                                            )
+                                            .args(["-a", &app, &path])
+                                            .spawn();
+                                        });
+                                        cx.notify();
+                                    },
+                                )),
+                        );
+                    }
+                    if !any_app {
+                        menu = menu.child(
+                            div()
+                                .px_3()
+                                .py(px(6.))
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child("No external editors found"),
+                        );
+                    }
+                    files_pane = files_pane.child(
+                        div()
+                            .mx_2()
+                            .mb_2()
+                            .rounded_lg()
+                            .border_1()
+                            .border_color(theme.border)
+                            .bg(theme.popover)
+                            .child(menu),
+                    );
+                }
             } else {
                 let parent = self
                     .files_dir

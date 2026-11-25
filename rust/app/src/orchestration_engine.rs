@@ -4637,6 +4637,117 @@ fn revert_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     Ok(json!({ "sequence": seq }))
 }
 
+
+fn apply_conversation_rollback_projection(
+    conn: &Connection,
+    thread_id: &str,
+    message_id: &str,
+    removed_turn_ids: &[String],
+    event_sequence: i64,
+    occurred_at: &str,
+) -> Result<(), WsErr> {
+    let target: Option<(String, String)> = conn
+        .query_row(
+            "SELECT created_at, message_id FROM projection_thread_messages \
+             WHERE thread_id=?1 AND message_id=?2 AND role='user'",
+            params![thread_id, message_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .ok();
+    if let Some((target_created, target_id)) = target {
+        conn.execute(
+            "DELETE FROM projection_thread_messages \
+             WHERE thread_id=?1 AND (created_at > ?2 OR (created_at = ?2 AND message_id >= ?3))",
+            params![thread_id, target_created, target_id],
+        )
+        .map_err(|e| err(format!("rollback messages: {e}")))?;
+        conn.execute(
+            "DELETE FROM message_text_chunks \
+             WHERE thread_id=?1 AND message_id NOT IN (SELECT message_id FROM projection_thread_messages WHERE thread_id=?1)",
+            params![thread_id],
+        )
+        .ok();
+        conn.execute(
+            "DELETE FROM message_text_segments \
+             WHERE thread_id=?1 AND message_id NOT IN (SELECT message_id FROM projection_thread_messages WHERE thread_id=?1)",
+            params![thread_id],
+        )
+        .ok();
+    }
+    for turn_id in removed_turn_ids {
+        conn.execute(
+            "DELETE FROM projection_turns WHERE thread_id=?1 AND turn_id=?2",
+            params![thread_id, turn_id],
+        )
+        .map_err(|e| err(format!("rollback turns: {e}")))?;
+        conn.execute(
+            "DELETE FROM projection_thread_activities WHERE thread_id=?1 AND turn_id=?2",
+            params![thread_id, turn_id],
+        )
+        .map_err(|e| err(format!("rollback activities: {e}")))?;
+        conn.execute(
+            "DELETE FROM projection_thread_proposed_plans WHERE thread_id=?1 AND turn_id=?2",
+            params![thread_id, turn_id],
+        )
+        .map_err(|e| err(format!("rollback plans: {e}")))?;
+        conn.execute(
+            "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND turn_id=?2",
+            params![thread_id, turn_id],
+        )
+        .map_err(|e| err(format!("rollback pending interactions: {e}")))?;
+    }
+    conn.execute(
+        "UPDATE projection_thread_messages SET text_event_sequence=?2 WHERE thread_id=?1",
+        params![thread_id, event_sequence],
+    )
+    .ok();
+    let latest_user: Option<String> = conn
+        .query_row(
+            "SELECT MAX(created_at) FROM projection_thread_messages WHERE thread_id=?1 AND role='user'",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let latest_turn: Option<String> = conn
+        .query_row(
+            "SELECT turn_id FROM projection_turns WHERE thread_id=?1 ORDER BY requested_at DESC LIMIT 1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let actionable: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_thread_proposed_plans WHERE thread_id=?1 AND implemented_at IS NULL",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    let pending_approvals: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_pending_interactions WHERE thread_id=?1 AND status='pending' AND interaction_kind='approval'",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    let pending_inputs: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_pending_interactions WHERE thread_id=?1 AND status='pending' AND interaction_kind='userInput'",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    conn.execute(
+        "UPDATE projection_threads SET latest_turn_id=?2, latest_user_message_at=?3, latest_human_message_at=?3, \
+         has_actionable_proposed_plan=?4, pending_approval_count=?5, pending_user_input_count=?6, updated_at=?7 \
+         WHERE thread_id=?1",
+        params![thread_id, latest_turn, latest_user, actionable > 0, pending_approvals, pending_inputs, occurred_at],
+    )
+    .map_err(|e| err(format!("rollback thread summary: {e}")))?;
+    Ok(())
+}
+
 fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
@@ -4652,6 +4763,7 @@ fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value,
             payload.insert(k.to_string(), v.clone());
         }
     }
+    let rollback_payload = payload.clone();
     let events = vec![out_event(
         "thread.conversation-rolled-back",
         &thread_id,
@@ -4659,6 +4771,21 @@ fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value,
         Value::Object(payload),
     )];
     let seq = commit_events(&conn, &events, &command_id)?;
+    let removed_turn_ids: Vec<String> = rollback_payload
+        .get("removedTurnIds")
+        .and_then(Value::as_array)
+        .map(|items| items.iter().filter_map(Value::as_str).map(str::to_string).collect())
+        .unwrap_or_default();
+    if let Some(message_id) = rollback_payload.get("messageId").and_then(Value::as_str) {
+        apply_conversation_rollback_projection(
+            &conn,
+            &thread_id,
+            message_id,
+            &removed_turn_ids,
+            seq,
+            &created_at,
+        )?;
+    }
     Ok(json!({ "sequence": seq }))
 }
 
@@ -6661,6 +6788,23 @@ fn replay_projection_event(
             let activity = pg("activity");
             if !activity.is_null() {
                 append_activity_projection(conn, stream_id, &activity, sequence)?;
+            }
+        }
+        "thread.conversation-rolled-back" => {
+            let removed_turn_ids: Vec<String> = payload
+                .get("removedTurnIds")
+                .and_then(Value::as_array)
+                .map(|items| items.iter().filter_map(Value::as_str).map(str::to_string).collect())
+                .unwrap_or_default();
+            if !ps("messageId").is_empty() {
+                apply_conversation_rollback_projection(
+                    conn,
+                    stream_id,
+                    ps("messageId"),
+                    &removed_turn_ids,
+                    sequence,
+                    occurred_at,
+                )?;
             }
         }
         "thread.proposed-plan-upserted" => {

@@ -1514,6 +1514,86 @@ pub(crate) fn discover_cursor_models(cwd: &str) -> Result<Value, WsErr> {
     result
 }
 
+/// Discover provider-native slash commands advertised by an ACP session.
+pub(crate) fn discover_acp_commands(provider: &str, cwd: &str) -> Result<Vec<Value>, WsErr> {
+    let launch = acp_launch_profile_ex(provider, "full-access", None, None, &[])
+        .ok_or_else(|| err(format!("{provider} does not support ACP command discovery")))?;
+    let mut command = Command::new(&launch.binary);
+    command
+        .args(&launch.args)
+        .current_dir(if cwd.is_empty() { "." } else { cwd })
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    for (key, value) in &launch.env {
+        command.env(key, value);
+    }
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `{}` for {provider} command discovery: {e}", launch.binary)))?;
+    let result = (|| -> Result<Vec<Value>, WsErr> {
+        let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
+        let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
+        let mut rpc = Rpc {
+            stdin: Arc::new(Mutex::new(stdin)),
+            reader: BufReader::new(stdout),
+            next_id: 1,
+            pending: Vec::new(),
+            approval_ctx: None,
+        };
+        let initialize_result = rpc.call(
+            "initialize",
+            json!({
+                "protocolVersion": 1,
+                "clientCapabilities": {"fs":{"readTextFile":false,"writeTextFile":false},"terminal":false},
+                "clientInfo": {"name":"synara","version":"1.0.0"},
+            }),
+        )?;
+        let auth_methods = initialize_result
+            .get("authMethods")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        let setup = |rpc: &mut Rpc| rpc.call(
+            "session/new",
+            json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
+        );
+        let setup_result = match setup(&mut rpc) {
+            Ok(result) => result,
+            Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
+                let Some(method) = select_auth_method(provider, &auth_methods) else { return Err(e) };
+                rpc.call("authenticate", json!({"methodId": method}))?;
+                setup(&mut rpc)?
+            }
+            Err(e) => return Err(e),
+        };
+        let commands = setup_result
+            .get("availableCommands")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .filter_map(|command| {
+                let name = command.get("name").and_then(Value::as_str)?.trim();
+                if name.is_empty() {
+                    return None;
+                }
+                let mut out = json!({"name": name});
+                if let Some(description) = command.get("description").and_then(Value::as_str) {
+                    if !description.trim().is_empty() {
+                        out["description"] = json!(description);
+                    }
+                }
+                Some(out)
+            })
+            .collect::<Vec<_>>();
+        Ok(commands)
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    result
+}
+
 pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
     discover_acp_config_models("droid", cwd, "reasoning_effort", "droid-acp")
 }

@@ -1265,7 +1265,7 @@ fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
         "antigravity" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":false}),
         "claudeAgent" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
         "codex" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
-        "cursorAgent" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
+        "cursor" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
         "devin" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
         "droid" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
         "grok" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
@@ -1341,6 +1341,14 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
             "commands": catalog.get("commands").cloned().unwrap_or(json!([])),
             "artifacts": "unavailable",
             "source": "sdk",
+            "cached": false,
+        }));
+    }
+    if matches!(provider, "devin" | "omp" | "droid") {
+        let source = format!("{provider}-acp");
+        return Ok(json!({
+            "commands": crate::acp_runner::discover_acp_commands(provider, cwd)?,
+            "source": source,
             "cached": false,
         }));
     }

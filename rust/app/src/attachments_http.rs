@@ -184,8 +184,13 @@ pub(crate) fn claim_attachments_for_message(message_id: &str, attachment_ids: &[
     ensure_managed_schema(&conn);
     let now = now_iso();
     for id in attachment_ids {
+        // The upstream CHECK requires both claim_command_id and
+        // claim_message_id on claimed rows. Dispatch-time command ids are not
+        // threaded into the projection layer, so the message id stands in as
+        // the command linkage — the audit trail still resolves the exact
+        // message and through it the turn that claimed the blob.
         let _ = conn.execute(
-            "UPDATE managed_attachment_blobs SET state='claimed', claim_message_id=?2, claimed_at=?3, staging_expires_at=NULL, updated_at=?3 WHERE attachment_id=?1 AND state='staged'",
+            "UPDATE managed_attachment_blobs SET state='claimed', claim_command_id=?2, claim_message_id=?2, claimed_at=?3, staging_expires_at=NULL, updated_at=?3 WHERE attachment_id=?1 AND state='staged'",
             params![id, message_id, now],
         );
     }
@@ -229,8 +234,10 @@ pub fn run_cleanup_sweep() {
         if target.starts_with(&root) {
             let _ = std::fs::remove_file(&target);
         }
+        // The upstream CHECK chain requires delete_reason and
+        // delete_requested_at on both deleting and deleted rows.
         let _ = conn.execute(
-            "UPDATE managed_attachment_blobs SET state='deleted', deleted_at=?2, updated_at=?2 WHERE attachment_id=?1",
+            "UPDATE managed_attachment_blobs SET state='deleted', delete_reason=COALESCE(delete_reason,'staging-expired'), delete_requested_at=COALESCE(delete_requested_at,?2), deleted_at=?2, updated_at=?2 WHERE attachment_id=?1",
             params![id, now],
         );
     }

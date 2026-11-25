@@ -18,6 +18,7 @@ mod host_auth_verify;
 mod host_identity;
 mod pairing_gateway;
 mod remote_pairing;
+mod remote_resource;
 mod remote_tls;
 mod remote_tunnel;
 mod hosts;

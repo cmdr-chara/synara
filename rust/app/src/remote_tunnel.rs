@@ -273,12 +273,27 @@ pub async fn serve_inner(
     todos: std::sync::Arc<crate::todo::TodoStore>,
 ) {
     use futures_util::{SinkExt, StreamExt};
-    let Some((path, key, authorization, dpop)) = read_upgrade_request(&mut tls).await else {
+    let Some(head) = crate::remote_resource::read_inner_head(&mut tls).await else {
         return;
     };
+    let path = head.path.split('?').next().unwrap_or("").to_string();
+    let listening_port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|value| value.parse().ok())
+        .unwrap_or(8080);
+    if path == crate::remote_resource::REMOTE_RESOURCE_PATH {
+        crate::remote_resource::serve_resource(&mut tls, head, listening_port).await;
+        return;
+    }
     if path != REMOTE_INNER_RPC_PATH && path != REMOTE_INNER_PAIRING_PATH {
         return;
     }
+    let key = head.header("sec-websocket-key").unwrap_or("").to_string();
+    if key.is_empty() {
+        return;
+    }
+    let authorization = head.header("authorization").unwrap_or("").to_string();
+    let dpop = head.header("dpop").unwrap_or("").to_string();
     // The rpc path is admission-gated exactly like upstream's admit(): a
     // device session credential plus its DPoP proof bound to this upgrade.
     // The pairing path stays open — pairing is how devices earn trust.

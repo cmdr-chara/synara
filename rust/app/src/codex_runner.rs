@@ -35,6 +35,40 @@ struct RunningTurn {
 static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
 
+/// A live Codex app-server parked after a clean turn. Keeping the process
+/// preserves authentication, thread state and MCP server startup cost; it is
+/// reused only for the same provider thread and launch-fixed settings.
+struct ParkedCodex {
+    child: Child,
+    rpc: Rpc,
+    provider_thread_id: String,
+    launch_key: String,
+}
+
+static PARKED: LazyLock<Mutex<HashMap<String, ParkedCodex>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+fn drop_parked(mut parked: ParkedCodex) {
+    let _ = parked.child.kill();
+    let _ = parked.child.wait();
+}
+
+fn take_parked(thread_id: &str, launch_key: &str) -> Option<ParkedCodex> {
+    let parked = PARKED.lock().ok()?.remove(thread_id)?;
+    if parked.launch_key != launch_key {
+        drop_parked(parked);
+        return None;
+    }
+    let mut parked = parked;
+    match parked.child.try_wait() {
+        Ok(None) => Some(parked),
+        _ => {
+            drop_parked(parked);
+            None
+        }
+    }
+}
+
 pub fn has_running_turn(thread_id: &str) -> bool {
     RUNNING
         .lock()
@@ -523,92 +557,116 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
         .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
 
-    let mut command = Command::new(codex_binary());
-    command
-        .arg("app-server")
-        .current_dir(&cwd)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null());
-    let mut child: Child = match command.spawn() {
-        Ok(c) => c,
-        Err(e) => {
-            let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-            let msg = format!("could not launch `codex app-server`: {e}");
-            let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
-            return Err(err(msg));
-        }
-    };
-    let stdin = child.stdin.take().ok_or_else(|| err("codex stdin"))?;
-    let stdout = child.stdout.take().ok_or_else(|| err("codex stdout"))?;
-    let stdin = Arc::new(Mutex::new(stdin));
+    let launch_key = format!(
+        "{}|{}|{}",
+        turn_runtime_mode,
+        selected_model.as_deref().unwrap_or(""),
+        cwd
+    );
     let cancelled = Arc::new(AtomicBool::new(false));
-    let mut rpc = Rpc {
-        stdin: stdin.clone(),
-        reader: BufReader::new(stdout),
-        next_id: 1,
-        approval_ctx: Some(CodexApprovalCtx {
-            thread_id: thread_id.to_string(),
-            turn_id: turn_id.clone(),
-            runtime_mode: turn_runtime_mode.clone(),
-            cancelled: cancelled.clone(),
-        }),
+    let approval_ctx = CodexApprovalCtx {
+        thread_id: thread_id.to_string(),
+        turn_id: turn_id.clone(),
+        runtime_mode: turn_runtime_mode.clone(),
+        cancelled: cancelled.clone(),
     };
+    let (mut child, mut rpc, reused_thread) = if let Some(mut parked) =
+        take_parked(thread_id, &launch_key)
+    {
+        parked.rpc.approval_ctx = Some(approval_ctx.clone());
+        let provider_thread_id = parked.provider_thread_id.clone();
+        (parked.child, parked.rpc, Some(provider_thread_id))
+    } else {
+        let mut command = Command::new(codex_binary());
+        command
+            .arg("app-server")
+            .current_dir(&cwd)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null());
+        let child: Child = match command.spawn() {
+            Ok(c) => c,
+            Err(e) => {
+                let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                let msg = format!("could not launch `codex app-server`: {e}");
+                let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
+                return Err(err(msg));
+            }
+        };
+        let mut child = child;
+        let child_stdin = child.stdin.take().ok_or_else(|| err("codex stdin"))?;
+        let stdout = child.stdout.take().ok_or_else(|| err("codex stdout"))?;
+        let stdin = Arc::new(Mutex::new(child_stdin));
+        let rpc = Rpc {
+            stdin,
+            reader: BufReader::new(stdout),
+            next_id: 1,
+            approval_ctx: Some(approval_ctx.clone()),
+        };
+        (child, rpc, None)
+    };
+    let stdin = rpc.stdin.clone();
 
+    let mut active_provider_thread_id: Option<String> = None;
     let result = (|| -> Result<String, WsErr> {
-        rpc.call(
-            "initialize",
-            json!({
-                "clientInfo": {"name": "synara_desktop", "title": "Synara Desktop", "version": "0.1.0"},
-                "capabilities": {"experimentalApi": true},
-            }),
-        )?;
-        rpc.write_raw(&json!({"jsonrpc": "2.0", "method": "initialized"}))?;
+        let provider_thread_id = if let Some(reused) = reused_thread.clone() {
+            reused
+        } else {
+            rpc.call(
+                "initialize",
+                json!({
+                    "clientInfo": {"name": "synara_desktop", "title": "Synara Desktop", "version": "0.1.0"},
+                    "capabilities": {"experimentalApi": true},
+                }),
+            )?;
+            rpc.write_raw(&json!({"jsonrpc": "2.0", "method": "initialized"}))?;
 
-        let overrides = runtime_overrides(&turn_runtime_mode);
-        let mcp_config = json!({
-            "mcpServers": {
-                "synara": {
-                    "url": crate::agent_gateway_mcp::agent_gateway_url(),
-                    "httpHeaders": {
-                        "Authorization": format!(
-                            "Bearer {}",
-                            crate::agent_gateway_mcp::agent_gateway_token()
-                        ),
+            let overrides = runtime_overrides(&turn_runtime_mode);
+            let mcp_config = json!({
+                "mcpServers": {
+                    "synara": {
+                        "url": crate::agent_gateway_mcp::agent_gateway_url(),
+                        "httpHeaders": {
+                            "Authorization": format!(
+                                "Bearer {}",
+                                crate::agent_gateway_mcp::agent_gateway_token()
+                            ),
+                        },
                     },
                 },
-            },
-        });
-        let mut open_params = json!({
-            "cwd": cwd,
-            "approvalPolicy": overrides["approvalPolicy"],
-            "approvalsReviewer": overrides["approvalsReviewer"],
-            "sandbox": overrides["sandbox"],
-            "config": mcp_config,
-        });
-        if let Some(model) = selected_model.as_deref() {
-            open_params["model"] = json!(model);
-        }
-        let (open_method, open_params) = if let Some(sid) = stored_thread.as_deref() {
-            open_params["threadId"] = json!(sid);
-            open_params["excludeTurns"] = json!(true);
-            ("thread/resume", open_params)
-        } else {
-            open_params["experimentalRawEvents"] = json!(false);
-            ("thread/start", open_params)
+            });
+            let mut open_params = json!({
+                "cwd": cwd,
+                "approvalPolicy": overrides["approvalPolicy"],
+                "approvalsReviewer": overrides["approvalsReviewer"],
+                "sandbox": overrides["sandbox"],
+                "config": mcp_config,
+            });
+            if let Some(model) = selected_model.as_deref() {
+                open_params["model"] = json!(model);
+            }
+            let (open_method, open_params) = if let Some(sid) = stored_thread.as_deref() {
+                open_params["threadId"] = json!(sid);
+                open_params["excludeTurns"] = json!(true);
+                ("thread/resume", open_params)
+            } else {
+                open_params["experimentalRawEvents"] = json!(false);
+                ("thread/start", open_params)
+            };
+            let open_res = rpc.call(open_method, open_params)?;
+            open_res
+                .pointer("/thread/id")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+                .or_else(|| {
+                    open_res
+                        .get("threadId")
+                        .and_then(Value::as_str)
+                        .map(str::to_string)
+                })
+                .ok_or_else(|| err(format!("{open_method} returned no thread id")))?
         };
-        let open_res = rpc.call(open_method, open_params)?;
-        let provider_thread_id = open_res
-            .pointer("/thread/id")
-            .and_then(Value::as_str)
-            .map(str::to_string)
-            .or_else(|| {
-                open_res
-                    .get("threadId")
-                    .and_then(Value::as_str)
-                    .map(str::to_string)
-            })
-            .ok_or_else(|| err(format!("{open_method} returned no thread id")))?;
+        active_provider_thread_id = Some(provider_thread_id.clone());
 
         // Fresh sessions get the host policy + browser routing rules
         // prepended to the first prompt; resumed threads already carry it.
@@ -723,10 +781,30 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     if let Ok(mut map) = RUNNING.lock() {
         map.remove(thread_id);
     }
-    let _ = child.kill();
-    let _ = child.wait();
-
     let cancelled_flag = cancelled.load(Ordering::SeqCst);
+    let parkable = matches!(result, Ok(ref reason) if reason == "completed")
+        && !cancelled_flag
+        && child.try_wait().ok().flatten().is_none();
+    if parkable {
+        if let (Some(provider_thread_id), Ok(mut parked_map)) =
+            (active_provider_thread_id.clone(), PARKED.lock())
+        {
+            rpc.approval_ctx = None;
+            parked_map.insert(
+                thread_id.to_string(),
+                ParkedCodex {
+                    child,
+                    rpc,
+                    provider_thread_id,
+                    launch_key,
+                },
+            );
+        }
+    } else {
+        let _ = child.kill();
+        let _ = child.wait();
+    }
+
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;

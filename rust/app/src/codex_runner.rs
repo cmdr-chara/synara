@@ -673,6 +673,148 @@ pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
 }
 
 
+
+/// Start Codex ahead of the first user prompt. The parked app-server already
+/// owns a provider thread, so the first real turn only sends `turn/start`.
+pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Ok(false);
+    }
+    if let Ok(parked_map) = PARKED.lock() {
+        if parked_map.contains_key(thread_id) {
+            return Ok(false);
+        }
+    }
+    let conn = open_state_rw()?;
+    let (raw_cwd, turn_runtime_mode, model_selection_json): (String, String, Option<String>) = conn
+        .query_row(
+            "SELECT COALESCE(NULLIF(working_directory, ''), NULLIF(worktree_path, ''), NULLIF(associated_worktree_path, ''), (SELECT workspace_root FROM projection_projects WHERE project_id=projection_threads.project_id), ''), \
+                    COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id=?1), 'full-access'), \
+                    model_selection_json \
+             FROM projection_threads WHERE thread_id=?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|e| err(format!("codex prewarm thread lookup: {e}")))?;
+    let stored_thread: Option<String> = conn
+        .query_row(
+            "SELECT provider_thread_id FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let cwd = if !raw_cwd.is_empty() && std::path::Path::new(&raw_cwd).is_dir() {
+        raw_cwd
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let selected_model = model_selection_json
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
+    let launch_key = format!(
+        "{}|{}|{}",
+        turn_runtime_mode,
+        selected_model.as_deref().unwrap_or(""),
+        cwd
+    );
+
+    let mut command = Command::new(codex_binary());
+    command
+        .arg("app-server")
+        .current_dir(&cwd)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `codex app-server`: {e}")))?;
+    let child_stdin = child.stdin.take().ok_or_else(|| err("codex stdin"))?;
+    let stdout = child.stdout.take().ok_or_else(|| err("codex stdout"))?;
+    let stdin = Arc::new(Mutex::new(child_stdin));
+    let mut rpc = Rpc {
+        stdin,
+        reader: BufReader::new(stdout),
+        next_id: 1,
+        approval_ctx: None,
+    };
+    let prepared = (|| -> Result<String, WsErr> {
+        rpc.call(
+            "initialize",
+            json!({
+                "clientInfo": {"name": "synara_desktop", "title": "Synara Desktop", "version": "0.1.0"},
+                "capabilities": {"experimentalApi": true},
+            }),
+        )?;
+        rpc.write_raw(&json!({"jsonrpc": "2.0", "method": "initialized"}))?;
+        let overrides = runtime_overrides(&turn_runtime_mode);
+        let mcp_config = json!({
+            "mcpServers": {
+                "synara": {
+                    "url": crate::agent_gateway_mcp::agent_gateway_url(),
+                    "httpHeaders": {
+                        "Authorization": format!(
+                            "Bearer {}",
+                            crate::agent_gateway_mcp::agent_gateway_token()
+                        ),
+                    },
+                },
+            },
+        });
+        let mut open_params = json!({
+            "cwd": cwd,
+            "approvalPolicy": overrides["approvalPolicy"],
+            "approvalsReviewer": overrides["approvalsReviewer"],
+            "sandbox": overrides["sandbox"],
+            "config": mcp_config,
+        });
+        if let Some(model) = selected_model.as_deref() {
+            open_params["model"] = json!(model);
+        }
+        let (open_method, open_params) = if let Some(sid) = stored_thread.as_deref() {
+            open_params["threadId"] = json!(sid);
+            open_params["excludeTurns"] = json!(true);
+            ("thread/resume", open_params)
+        } else {
+            open_params["experimentalRawEvents"] = json!(false);
+            ("thread/start", open_params)
+        };
+        let open_res = rpc.call(open_method, open_params)?;
+        open_res
+            .pointer("/thread/id")
+            .and_then(Value::as_str)
+            .map(str::to_string)
+            .or_else(|| {
+                open_res
+                    .get("threadId")
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
+            })
+            .ok_or_else(|| err(format!("{open_method} returned no thread id")))
+    })();
+    match prepared {
+        Ok(provider_thread_id) => {
+            if let Ok(mut parked_map) = PARKED.lock() {
+                parked_map.insert(
+                    thread_id.to_string(),
+                    ParkedCodex {
+                        child,
+                        rpc,
+                        provider_thread_id,
+                        launch_key,
+                    },
+                );
+            }
+            Ok(true)
+        }
+        Err(e) => {
+            let _ = child.kill();
+            let _ = child.wait();
+            Err(e)
+        }
+    }
+}
+
 /// Compact a warm Codex thread through the app-server's native control
 /// request. Unlike Pi/OpenCode there is no process-local transcript copy here:
 /// the official binary summarizes its own thread state and Synara only awaits

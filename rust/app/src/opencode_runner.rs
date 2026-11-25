@@ -1030,7 +1030,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         .unwrap_or_else(|_| "full-access".to_string());
     let (interaction_mode, model_selection_json, working_directory): (String, Option<String>, Option<String>) = conn
         .query_row(
-            "SELECT interaction_mode, model_selection_json, COALESCE(working_directory, worktree_path, associated_worktree_path) \
+            "SELECT interaction_mode, model_selection_json, COALESCE(NULLIF(working_directory, ''), NULLIF(worktree_path, ''), NULLIF(associated_worktree_path, ''), (SELECT workspace_root FROM projection_projects WHERE project_id=projection_threads.project_id)) \
              FROM projection_threads WHERE thread_id = ?1",
             params![thread_id],
             |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),

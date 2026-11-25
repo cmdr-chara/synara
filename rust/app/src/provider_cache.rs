@@ -399,6 +399,7 @@ fn prewarm_thread(payload: &Value) -> Result<Value, WsErr> {
     let started = match provider.as_str() {
         "opencode" => crate::opencode_runner::prewarm_thread(thread_id)?,
         "pi" => crate::pi_runner::prewarm_thread(thread_id)?,
+        "codex" => crate::codex_runner::prewarm_thread(thread_id)?,
         _ => false,
     };
     Ok(json!({"started": started}))

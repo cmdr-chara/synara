@@ -357,7 +357,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     let conn = open_state_rw()?;
     let (cwd, runtime_mode, model_selection_json): (String, String, Option<String>) = conn
         .query_row(
-            "SELECT COALESCE(working_directory, worktree_path, associated_worktree_path, ''), \
+            "SELECT COALESCE(NULLIF(working_directory, ''), NULLIF(worktree_path, ''), NULLIF(associated_worktree_path, ''), (SELECT workspace_root FROM projection_projects WHERE project_id=projection_threads.project_id), ''), \
                     COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id=?1), 'full-access'), \
                     model_selection_json \
              FROM projection_threads WHERE thread_id=?1",

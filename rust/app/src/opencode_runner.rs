@@ -1550,6 +1550,22 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         } else {
             text.to_string()
         };
+        let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
+        let prompt_text = crate::provider_attachments::append_file_attachments_prompt_block(
+            &prompt_text,
+            &attachments,
+            false,
+        );
+        let file_parts = crate::provider_attachments::opencode_image_file_parts(&attachments);
+        let files: Vec<Value> = file_parts
+            .iter()
+            .map(|part| {
+                json!({
+                    "uri": part.get("uri").cloned().unwrap_or(Value::Null),
+                    "name": part.get("name").cloned().unwrap_or(Value::Null),
+                })
+            })
+            .collect();
         let mut v2_command: Option<(String, String)> = None;
         if protocol == OpenCodeProtocol::V2 {
             let trimmed = prompt_text.trim();
@@ -1590,6 +1606,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     json!({
                         "name": name,
                         "text": argument,
+                        "files": files,
                         "delivery": "steer",
                     }),
                 )
@@ -1598,6 +1615,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     format!("/api/session/{session_id}/prompt"),
                     json!({
                         "text": prompt_text,
+                        "files": files,
                         "delivery": "steer",
                     }),
                 )
@@ -1606,7 +1624,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             (
                 format!("/session/{session_id}/prompt_async"),
                 json!({
-                    "parts": [{"type": "text", "text": prompt_text}],
+                    "parts": std::iter::once(json!({"type": "text", "text": prompt_text}))
+                        .chain(file_parts.iter().map(|part| json!({
+                            "type": "file",
+                            "mime": part.get("mime").cloned().unwrap_or(Value::Null),
+                            "filename": part.get("filename").cloned().unwrap_or(Value::Null),
+                            "url": part.get("url").cloned().unwrap_or(Value::Null),
+                        })))
+                        .collect::<Vec<_>>(),
                 }),
             )
         };

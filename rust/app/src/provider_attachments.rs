@@ -158,6 +158,43 @@ pub fn append_file_attachments_prompt_block(
     }
 }
 
+
+fn file_url(path: &std::path::Path) -> String {
+    let mut out = "file://".to_string();
+    for byte in path.to_string_lossy().as_bytes() {
+        match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' | b'/' => {
+                out.push(*byte as char)
+            }
+            _ => out.push_str(&format!("%{byte:02X}")),
+        }
+    }
+    out
+}
+
+/// OpenCode native file parts for image attachments. Regular files stay in
+/// the prompt block so the model chooses when to read them; images are also
+/// native inputs because OpenCode can consume them directly.
+pub fn opencode_image_file_parts(attachments: &[Value]) -> Vec<Value> {
+    attachments
+        .iter()
+        .filter(|attachment| attachment.get("type").and_then(Value::as_str) == Some("image"))
+        .filter_map(|attachment| {
+            let path = resolve_attachment_path(attachment)?;
+            if !path.is_file() {
+                return None;
+            }
+            Some(json!({
+                "uri": file_url(&path),
+                "name": attachment.get("name").and_then(Value::as_str).unwrap_or("image"),
+                "mime": attachment.get("mimeType").and_then(Value::as_str).unwrap_or("image/png"),
+                "filename": attachment.get("name").and_then(Value::as_str).unwrap_or("image"),
+                "url": file_url(&path),
+            }))
+        })
+        .collect()
+}
+
 fn base64_encode(data: &[u8]) -> String {
     const ALPHABET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::new();

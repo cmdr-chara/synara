@@ -376,18 +376,89 @@ fn executable_override(keys: &[&str]) -> Option<String> {
     })
 }
 
+fn is_executable_file(path: &std::path::Path) -> bool {
+    let Ok(metadata) = std::fs::metadata(path) else {
+        return false;
+    };
+    if !metadata.is_file() {
+        return false;
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        return metadata.permissions().mode() & 0o111 != 0;
+    }
+    #[cfg(not(unix))]
+    {
+        true
+    }
+}
+
 fn executable_on_path(binary: &str) -> bool {
     if binary.contains('/') {
-        return std::path::Path::new(binary).is_file();
+        return is_executable_file(std::path::Path::new(binary));
     }
     std::env::var_os("PATH")
         .map(|paths| {
-            std::env::split_paths(&paths).any(|dir| {
-                let candidate = dir.join(binary);
-                candidate.is_file()
-            })
+            std::env::split_paths(&paths).any(|dir| is_executable_file(&dir.join(binary)))
         })
         .unwrap_or(false)
+}
+
+/// Package-manager global bin locations used by provider CLIs when the shell
+/// that launched Synara did not export the user's interactive PATH.
+fn package_manager_binary_dirs() -> Vec<PathBuf> {
+    let mut dirs = vec![
+        PathBuf::from("/opt/homebrew/bin"),
+        PathBuf::from("/usr/local/bin"),
+        PathBuf::from("/home/linuxbrew/.linuxbrew/bin"),
+        PathBuf::from("/opt/local/bin"),
+    ];
+    let Some(home) = std::env::var_os("HOME").map(PathBuf::from) else {
+        return dirs;
+    };
+    for rel in [
+        ".bun/bin",
+        ".local/bin",
+        "bin",
+        ".npm-global/bin",
+        ".volta/bin",
+        ".asdf/shims",
+        ".local/share/mise/shims",
+        ".proto/shims",
+        ".deno/bin",
+        ".local/share/pnpm",
+        "Library/pnpm",
+        ".yarn/bin",
+    ] {
+        dirs.push(home.join(rel));
+    }
+    if let Ok(entries) = std::fs::read_dir(home.join(".nvm/versions/node")) {
+        for entry in entries.flatten() {
+            if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                dirs.push(entry.path().join("bin"));
+            }
+        }
+    }
+    for fnm_root in [
+        home.join("Library/Application Support/fnm/node-versions"),
+        home.join(".local/share/fnm/node-versions"),
+    ] {
+        if let Ok(entries) = std::fs::read_dir(fnm_root) {
+            for entry in entries.flatten() {
+                if entry.file_type().map(|t| t.is_dir()).unwrap_or(false) {
+                    dirs.push(entry.path().join("installation/bin"));
+                }
+            }
+        }
+    }
+    if let Some(pnpm_home) = std::env::var_os("PNPM_HOME") {
+        dirs.push(PathBuf::from(pnpm_home));
+    }
+    if let Some(prefix) = std::env::var_os("npm_config_prefix") {
+        dirs.push(PathBuf::from(prefix).join("bin"));
+    }
+    dirs
 }
 
 fn resolve_provider_binary(
@@ -404,15 +475,15 @@ fn resolve_provider_binary(
     if let Some(home) = std::env::var_os("HOME") {
         for relative in home_relative_candidates {
             let candidate = PathBuf::from(&home).join(relative);
-            if candidate.exists() {
+            if is_executable_file(&candidate) {
                 return candidate.to_string_lossy().into_owned();
             }
         }
     }
-    for prefix in ["/opt/homebrew/bin", "/usr/local/bin"] {
-        let candidate = format!("{prefix}/{default_binary}");
-        if std::path::Path::new(&candidate).exists() {
-            return candidate;
+    for dir in package_manager_binary_dirs() {
+        let candidate = dir.join(default_binary);
+        if is_executable_file(&candidate) {
+            return candidate.to_string_lossy().into_owned();
         }
     }
     default_binary.to_string()
@@ -1854,4 +1925,22 @@ mod tests {
             Some("bypass".to_string())
         );
     }
+    #[test]
+    fn executable_file_requires_unix_execute_bit() {
+        let path = std::env::temp_dir().join(format!(
+            "synara-acp-bin-test-{}",
+            std::process::id()
+        ));
+        std::fs::write(&path, "#!/bin/sh\nexit 0\n").unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o644)).unwrap();
+            assert!(!super::is_executable_file(&path));
+            std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
+            assert!(super::is_executable_file(&path));
+        }
+        let _ = std::fs::remove_file(path);
+    }
+
 }

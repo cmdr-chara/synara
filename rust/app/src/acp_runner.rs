@@ -511,10 +511,65 @@ fn resolve_provider_binary(
     default_binary.to_string()
 }
 
+fn devin_traits_requested(model_selection: &Value) -> bool {
+    model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str).is_some()
+        || model_selection.pointer("/options/fastMode").and_then(Value::as_bool).is_some()
+        || model_selection.pointer("/options/thinking").and_then(Value::as_bool).is_some()
+        || model_selection.pointer("/options/contextWindow").and_then(Value::as_str).is_some()
+}
+
+fn resolve_devin_runtime_variant(model: &str, model_selection: &Value) -> Option<String> {
+    if !devin_traits_requested(model_selection) {
+        return None;
+    }
+    let discovery = crate::provider_cache::devin_discovery_result();
+    let normalized_model = model.to_ascii_lowercase();
+    let family = discovery.get("models").and_then(Value::as_array)?.iter().find(|candidate| {
+        let slug = candidate.get("slug").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+        slug == normalized_model
+            || candidate
+                .get("modelVariants")
+                .and_then(Value::as_array)
+                .is_some_and(|variants| variants.iter().any(|variant| {
+                    variant.get("model").and_then(Value::as_str) == Some(model)
+                }))
+    })?;
+    let effort = model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str);
+    let fast = model_selection.pointer("/options/fastMode").and_then(Value::as_bool);
+    let thinking = model_selection.pointer("/options/thinking").and_then(Value::as_bool);
+    let context = model_selection.pointer("/options/contextWindow").and_then(Value::as_str);
+    family.get("modelVariants").and_then(Value::as_array)?.iter().find_map(|variant| {
+        if let Some(effort) = effort {
+            if variant.get("reasoningEffort").and_then(Value::as_str) != Some(effort) {
+                return None;
+            }
+        }
+        if let Some(fast) = fast {
+            if variant.get("fastMode").and_then(Value::as_bool) != Some(fast) {
+                return None;
+            }
+        }
+        if let Some(thinking) = thinking {
+            if variant.get("thinking").and_then(Value::as_bool) != Some(thinking) {
+                return None;
+            }
+        }
+        if let Some(context) = context {
+            if variant.get("contextWindow").and_then(Value::as_str) != Some(context) {
+                return None;
+            }
+        }
+        variant.get("model").and_then(Value::as_str).map(str::to_string)
+    })
+}
+
 fn resolve_devin_selected_model(model_selection: &Value) -> Option<String> {
     let model = model_selection.get("model").and_then(Value::as_str)?.trim();
     if model.is_empty() {
         return None;
+    }
+    if let Some(resolved) = resolve_devin_runtime_variant(model, model_selection) {
+        return Some(resolved);
     }
     let fast_mode = model_selection.pointer("/options/fastMode").and_then(Value::as_bool);
     let resolved = match (model, fast_mode) {
@@ -2180,6 +2235,41 @@ mod tests {
         )
         .unwrap();
         assert!(agy.args.windows(2).any(|w| w == ["--add-dir", "/extra/dir"]));
+    }
+
+    #[test]
+    fn devin_model_selection_resolves_discovered_runtime_variants() {
+        let script = std::env::temp_dir().join(format!(
+            "synara-devin-models-test-{}",
+            std::process::id()
+        ));
+        std::fs::write(
+            &script,
+            "#!/bin/sh\nprintf '%s' '{\"models\":[{\"family_uid\":\"swe-2\",\"variants\":[{\"model_uid\":\"swe-2-medium\",\"label\":\"Medium\"},{\"model_uid\":\"swe-2-high\",\"label\":\"High\"},{\"model_uid\":\"swe-2-lightning\",\"label\":\"Lightning\"}]}]}'\n",
+        )
+        .unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        unsafe {
+            std::env::set_var("SYNARA_DEVIN_CLI", &script);
+        }
+        let selection = json!({"model":"swe-2","options":{"reasoningEffort":"high"}});
+        assert_eq!(
+            resolve_devin_selected_model(&selection),
+            Some("swe-2-high".to_string())
+        );
+        let selection = json!({"model":"swe-2","options":{"fastMode":true}});
+        assert_eq!(
+            resolve_devin_selected_model(&selection),
+            Some("swe-2-lightning".to_string())
+        );
+        unsafe {
+            std::env::remove_var("SYNARA_DEVIN_CLI");
+        }
+        let _ = std::fs::remove_file(script);
     }
 
     #[test]

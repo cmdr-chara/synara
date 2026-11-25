@@ -560,7 +560,7 @@ fn devin_static_models() -> Vec<Value> {
     ]
 }
 
-fn devin_discovery_result() -> Value {
+pub(crate) fn devin_discovery_result() -> Value {
     let fallback = json!({"models": devin_static_models(), "source": "devin.static", "cached": false});
     let Some(binary) = crate::acp_runner::resolve_provider_cli("devin") else {
         return fallback;

@@ -154,10 +154,52 @@ fn realpath(path: &Path) -> Option<PathBuf> {
 /// workspaces root (sessions without a project), and every generated-images
 /// root this server can legitimately serve (default codex home, CODEX_HOME
 /// override, and the per-instance overlay beneath SYNARA_HOME).
+fn find_git_root(start: &Path) -> Option<PathBuf> {
+    let mut current = start.to_path_buf();
+    loop {
+        let marker = current.join(".git");
+        if marker.is_dir() || marker.is_file() {
+            return Some(current);
+        }
+        if !current.pop() {
+            return None;
+        }
+    }
+}
+
+fn temporary_roots() -> Vec<PathBuf> {
+    let mut roots = Vec::new();
+    let tmp = std::env::temp_dir();
+    if let Some(real) = realpath(&tmp) {
+        roots.push(real);
+    }
+    if cfg!(target_os = "macos") {
+        if let Some(real) = realpath(Path::new("/tmp")) {
+            if !roots.contains(&real) {
+                roots.push(real);
+            }
+        }
+    }
+    roots
+}
+
 fn allowlisted_roots(cwd: Option<&str>) -> Vec<PathBuf> {
     let mut roots = Vec::new();
     if let Some(cwd) = cwd {
         if let Some(real) = realpath(Path::new(cwd)) {
+            // Upstream resolves the workspace root as the git root of the cwd,
+            // so previews work anywhere in the enclosing checkout.
+            if let Some(git_root) = find_git_root(&real) {
+                if let Some(real_root) = realpath(&git_root) {
+                    roots.push(real_root);
+                }
+            }
+            roots.push(real);
+        }
+    }
+    for temp in temporary_roots() {
+        let scratch = temp.join("synara-scratch-workspaces");
+        if let Some(real) = realpath(&scratch) {
             roots.push(real);
         }
     }
@@ -185,11 +227,24 @@ fn allowlisted_roots(cwd: Option<&str>) -> Vec<PathBuf> {
     roots
 }
 
-fn resolve_allowed(requested: &str, cwd: Option<&str>) -> Option<(PathBuf, u64)> {
+fn is_video(path: &str) -> bool {
+    lower_extension(path).map(|e| VIDEO_EXTENSIONS.contains(&e.as_str())).unwrap_or(false)
+}
+
+fn is_image(path: &str) -> bool {
+    lower_extension(path).map(|e| IMAGE_EXTENSIONS.contains(&e.as_str())).unwrap_or(false)
+}
+
+fn resolve_allowed_with_grant(
+    requested: &str,
+    cwd: Option<&str>,
+    grant: Option<&str>,
+) -> Option<(PathBuf, u64)> {
     if requested.is_empty() || requested.contains('\0') || !is_supported_preview(requested) {
         return None;
     }
-    let resolved = if Path::new(requested).is_absolute() {
+    let is_absolute = Path::new(requested).is_absolute();
+    let resolved = if is_absolute {
         PathBuf::from(requested)
     } else {
         Path::new(cwd?).join(requested)
@@ -202,11 +257,34 @@ fn resolve_allowed(requested: &str, cwd: Option<&str>) -> Option<(PathBuf, u64)>
     if !meta.is_file() || meta.len() > MAX_PREVIEW_BYTES {
         return None;
     }
+    let real_str = real.to_str()?;
     let roots = allowlisted_roots(cwd);
     if roots.iter().any(|root| is_inside(&real, root)) {
         return Some((real, meta.len()));
     }
+    // Opt-in absolute local preview with a live grant — the file panel uses
+    // this for intentional previews outside the workspace (e.g. Downloads).
+    // Exact upstream shape: absolute path + grant bound to this realpath.
+    if is_absolute {
+        if let Some(token) = grant {
+            if crate::projects_fileops::resolve_grant_real_path(token).as_deref() == Some(real.as_path()) {
+                return Some((real, meta.len()));
+            }
+        }
+    }
+    // Temp roots serve images and videos (agent tools write recordings such
+    // as simulator-*.mp4 to the temp dir); they never serve documents.
+    if is_image(real_str) || is_video(real_str) {
+        let temp_roots = temporary_roots();
+        if temp_roots.iter().any(|root| is_inside(&real, root)) {
+            return Some((real, meta.len()));
+        }
+    }
     None
+}
+
+fn resolve_allowed(requested: &str, cwd: Option<&str>) -> Option<(PathBuf, u64)> {
+    resolve_allowed_with_grant(requested, cwd, None)
 }
 
 fn percent_decode(input: &str) -> String {
@@ -244,7 +322,10 @@ pub async fn local_image(RawQuery(query): RawQuery, headers: axum::http::HeaderM
     let Some(requested) = path_param.as_deref().map(str::trim).filter(|s| !s.is_empty()) else {
         return StatusCode::NOT_FOUND.into_response();
     };
-    let Some((real, _len)) = resolve_allowed(requested, cwd_param.as_deref()) else {
+    let grant_param = query_param(&query, "grant");
+    let Some((real, _len)) =
+        resolve_allowed_with_grant(requested, cwd_param.as_deref(), grant_param.as_deref())
+    else {
         return StatusCode::NOT_FOUND.into_response();
     };
     if !real.is_file() {

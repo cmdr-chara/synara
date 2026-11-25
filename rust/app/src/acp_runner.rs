@@ -1888,6 +1888,7 @@ impl Rpc {
                             "turn.proposed.completed",
                             "Plan proposed",
                             &json!({
+                                "planId": uuid_v4(),
                                 "planMarkdown": plan_markdown,
                                 "providerPayload": params,
                                 "source": "acp.cursor.extension",

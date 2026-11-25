@@ -13,7 +13,7 @@ fn err(message: &str) -> WsErr {
 }
 
 pub fn handles(tag: &str) -> bool {
-    tag == "server.generateThreadRecap"
+    matches!(tag, "server.generateThreadRecap" | "server.generateAutomationIntent")
 }
 
 /// Run one JSON-mode generation and return the structured output object.
@@ -189,6 +189,96 @@ fn build_thread_recap_prompt(payload: &Value) -> String {
     .join("\n")
 }
 
+
+fn build_automation_intent_prompt(payload: &Value) -> String {
+    let default_mode = payload
+        .get("defaultMode")
+        .and_then(Value::as_str)
+        .unwrap_or("heartbeat");
+    let now_iso = payload.get("nowIso").and_then(Value::as_str).unwrap_or("");
+    let message = payload.get("message").and_then(Value::as_str).unwrap_or("");
+    [
+        "You extract structured Synara automation creation intents.",
+        "Return a JSON object matching the requested schema.",
+        "Respond with only the JSON object, no prose and no code fences.",
+        "",
+        "Context:",
+        "- The user already invoked /automation or @automation in the chat composer.",
+        "- Still set isAutomation=false if the text is only asking a question about automations or does not request a scheduled task.",
+        "- Synara automations run a saved prompt on a schedule.",
+        &format!("- Current timestamp for relative timers: {now_iso}."),
+        "",
+        "Required output fields:",
+        "- isAutomation: true only when the user wants to create a scheduled automation.",
+        "- confidence: number from 0 to 1.",
+        "- language: detected user language, or null.",
+        "- name: short automation name, <= 160 chars, or null.",
+        "- taskPrompt: the detailed, self-contained recurring instruction to save, without /automation, @automation, schedule, stop, or run-count scaffolding.",
+        "- Expand terse tasks into a clear saved automation prompt only using facts the user provided.",
+        "- Preserve concrete user-provided workspace paths, commands, files, commit/push rules, verification steps, URLs, accounts, and constraints.",
+        "- Do not invent repo-specific files, commands, services, tests, tickets, product context, credentials, or success criteria.",
+        "- If the user only gave a tiny task, keep taskPrompt clear and short instead of padding it with fake details.",
+        "- schedule: automation cadence, or null when missing/ambiguous.",
+        "- mode: heartbeat, dedicated, or standalone.",
+        "- maxIterations: positive integer only when the user explicitly says for N times/runs/iterations/volte; otherwise null.",
+        "- completionPolicy: use {\"type\":\"ai-evaluated\",\"stopWhen\":\"...\",\"confidenceThreshold\":0.8} only when the user explicitly says until/stop when/if X stop/fino a quando/finche. Otherwise use {\"type\":\"none\"}.",
+        "- missingFields: include schedule, taskPrompt, name, or mode when that field is null or too unclear.",
+        "- needsConfirmation: true when schedule/task/mode is missing, ambiguous, or confidence < 0.75.",
+        "- reason: short explanation when isAutomation=false or needsConfirmation=true; otherwise null.",
+        "",
+        "Task prompt quality checklist:",
+        "- Objective: state the concrete recurring task.",
+        "- Source of truth: keep any user-provided URLs, accounts, APIs, commands, files, or public-source constraints.",
+        "- Scope: name files, directories, branches, or repositories only when the user provided them.",
+        "- Procedure: preserve user-provided commands and ordered steps.",
+        "- Publish rules: preserve explicit commit, push, branch, PR, or no-commit rules.",
+        "- Non-goals: preserve constraints like do not use APIs, do not change architecture, and do not stage unrelated files.",
+        "- Reporting: include concise output expectations when the user asked for them.",
+        "",
+        "Schedule rules:",
+        "- For 'in N seconds/minutes/hours/days', 'tra N secondi/minuti/ore/giorni', or 'fra ...', use {\"type\":\"once\",\"runAt\":\"<ISO timestamp>\"} calculated from the current timestamp.",
+        "- For 'every N seconds/minutes/hours/days' or equivalents in any language, use {\"type\":\"interval\",\"everySeconds\":N in seconds}.",
+        "- Recurring intervals under 60 seconds require explicit review; keep the interval schedule, set needsConfirmation=true, and explain the fast cadence in reason.",
+        "- For daily/weekdays/weekly, use HH:mm 24h timeOfDay. If the user gives no time, use 09:00.",
+        "- For weekly, dayOfWeek is 0=Sunday, 1=Monday, ... 6=Saturday.",
+        "- Do not invent a cadence or relative base time. If time is missing, approximate, or ambiguous, schedule=null and missingFields includes schedule.",
+        "",
+        "Mode rules:",
+        &format!("- Default mode is {default_mode}."),
+        "- heartbeat means continue/report in the current thread on each run.",
+        "- dedicated means the automation gets one thread of its own and every run continues it, so each run sees what the previous ones did.",
+        "- standalone means every run starts a brand new thread with no history.",
+        "- Use the default unless the user clearly asks for the other behavior.",
+        "- When the user wants work outside the current thread, prefer dedicated over standalone unless they explicitly want each run isolated.",
+        "- Stop clauses work in every mode; never downgrade completionPolicy because of the chosen mode.",
+        "",
+        "User message:",
+        &limit_section(message, 16_000),
+    ]
+    .join("\n")
+}
+
+fn automation_intent_schema() -> Value {
+    json!({
+        "type": "object",
+        "properties": {
+            "isAutomation": {"type": "boolean"},
+            "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+            "language": {"type": ["string", "null"]},
+            "name": {"type": ["string", "null"]},
+            "taskPrompt": {"type": ["string", "null"]},
+            "schedule": {"type": ["object", "null"]},
+            "mode": {"type": ["string", "null"], "enum": ["heartbeat", "dedicated", "standalone", null]},
+            "maxIterations": {"type": ["integer", "null"]},
+            "completionPolicy": {"type": "object"},
+            "missingFields": {"type": "array", "items": {"type": "string"}},
+            "needsConfirmation": {"type": "boolean"},
+            "reason": {"type": ["string", "null"]},
+        },
+        "required": ["isAutomation", "confidence", "missingFields", "needsConfirmation"],
+    })
+}
+
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "server.generateThreadRecap" => {
@@ -220,6 +310,36 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
                 payload.get("previousRecap").and_then(Value::as_str),
             );
             Ok(json!({"recap": recap}))
+        }
+        "server.generateAutomationIntent" => {
+            if payload
+                .get("message")
+                .and_then(Value::as_str)
+                .is_none_or(|s| s.is_empty())
+            {
+                return Err(err("server.generateAutomationIntent requires a message"));
+            }
+            let prompt = build_automation_intent_prompt(payload);
+            let schema = automation_intent_schema();
+            let model = payload
+                .get("textGenerationModel")
+                .and_then(Value::as_str)
+                .or_else(|| payload.pointer("/textGenerationModelSelection/model").and_then(Value::as_str));
+            let structured = claude_json_generate(&prompt, &schema, model)?;
+            let is_automation = structured
+                .get("isAutomation")
+                .and_then(Value::as_bool)
+                .ok_or_else(|| err("Claude generation did not return isAutomation"))?;
+            let mut result = structured;
+            // Contract defaults: maxIterations/completionPolicy fill in when absent.
+            if !result.as_object().is_some_and(|m| m.contains_key("maxIterations")) {
+                result["maxIterations"] = Value::Null;
+            }
+            if !result.as_object().is_some_and(|m| m.contains_key("completionPolicy")) {
+                result["completionPolicy"] = json!({"type": "none"});
+            }
+            result["isAutomation"] = json!(is_automation);
+            Ok(result)
         }
         _ => Err(err("unhandled text generation tag")),
     }

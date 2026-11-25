@@ -1,4 +1,5 @@
 mod account;
+mod migrations;
 mod agent_gateway_mcp;
 mod acp_runner;
 mod claude_runner;
@@ -95,6 +96,20 @@ async fn main() {
     // orchestration. With the upstream TS server active, its turns may be
     // legitimately in flight in the shared state and must not be touched.
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+        // Schema ownership: the native backend runs the full migration ledger
+        // once at startup so fresh homes get the complete schema and existing
+        // databases validate against the canonical lineage before any reader
+        // touches state.sqlite.
+        match migrations::run_state_migrations() {
+            Ok(applied) if !applied.is_empty() => {
+                eprintln!("migrations: applied {} migration(s) through {}", applied.len(), applied.last().copied().unwrap_or(0));
+            }
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("migrations failed: {} — refusing to serve orchestration against an unvalidated schema", e.0);
+                std::process::exit(1);
+            }
+        }
         let orphans = orchestration_engine::recover_orphaned_turns();
         if !orphans.is_empty() {
             let crash_resumed = orchestration_engine::resume_orphaned_turns(&orphans);

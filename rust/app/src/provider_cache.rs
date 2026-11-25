@@ -426,6 +426,7 @@ fn compact_thread(payload: &Value) -> Result<Value, WsErr> {
         "opencode" => crate::opencode_runner::compact_thread(thread_id)?,
         "pi" => crate::pi_runner::compact_thread(thread_id)?,
         "codex" => crate::codex_runner::compact_thread(thread_id)?,
+        "devin" | "grok" => crate::acp_runner::compact_thread(thread_id)?,
         _ => false,
     };
     Ok(json!({"compacted": compacted}))

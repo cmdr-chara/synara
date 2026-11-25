@@ -623,6 +623,45 @@ pub fn supports_provider(provider: &str) -> bool {
     )
 }
 
+
+/// Compact a warm ACP session by sending the provider-native `/compact`
+/// prompt. Devin and Grok expose compaction as a normal agent prompt rather
+/// than a dedicated RPC method; compaction output is intentionally left in the
+/// parked RPC pending queue so it cannot contaminate the next user turn.
+pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Err(err("cannot compact while a turn is running"));
+    }
+    let mut parked = {
+        let mut parked_map = PARKED.lock().map_err(|_| err("parked map"))?;
+        match parked_map.remove(thread_id) {
+            Some(parked) => parked,
+            None => return Ok(false),
+        }
+    };
+    let session_id = parked.session_id.clone();
+    let result = parked
+        .rpc
+        .call(
+            "session/prompt",
+            json!({
+                "sessionId": session_id,
+                "prompt": [{"type":"text","text":"/compact"}],
+            }),
+        )
+        .map(|_| true);
+    let alive = matches!(parked.child.try_wait(), Ok(None));
+    if alive {
+        if let Ok(mut parked_map) = PARKED.lock() {
+            parked.rpc.approval_ctx = None;
+            parked_map.insert(thread_id.to_string(), parked);
+        }
+    } else {
+        drop_parked(parked);
+    }
+    result
+}
+
 /// Called after a `thread.turn-start-requested` event is committed for an
 /// ACP-capable provider thread. Spawns the runner thread that drives the session.
 pub fn start_turn(provider: String, thread_id: String, message_id: String, text: String, cwd: String) {

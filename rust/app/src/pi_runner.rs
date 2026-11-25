@@ -410,7 +410,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let selected_model = conn
+    let model_selection = conn
         .query_row(
             "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
             params![thread_id],
@@ -419,7 +419,23 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .ok()
         .flatten()
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|v| v.get("model").and_then(Value::as_str).map(str::to_string));
+        .unwrap_or(Value::Null);
+    let selected_model = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_variant = model_selection
+        .pointer("/options/variant")
+        .or_else(|| model_selection.pointer("/options/reasoningEffort"))
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_model = selected_model.map(|model| {
+        selected_variant
+            .as_deref()
+            .filter(|variant| !variant.is_empty() && !model.contains(':'))
+            .map(|variant| format!("{model}:{variant}"))
+            .unwrap_or(model)
+    });
     let launch_key = format!("{}|{}|{}", cwd, turn_runtime_mode, selected_model.as_deref().unwrap_or(""));
     let cancelled = Arc::new(AtomicBool::new(false));
 

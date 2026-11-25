@@ -4,9 +4,11 @@
 //! bytes and answers the ChatAttachment metadata JSON ({type,id,name,
 //! mimeType,sizeBytes}); serving is GET /attachments/{id} resolving the
 //! extension by scan, exactly like upstream resolveAttachmentPathById.
-//! Ids embed the sanitized thread segment ({threadSegment}-{uuid}) so
-//! per-thread cleanup stays possible; the inline-visuals folder layout and
-//! upload cancellation are documented gaps.
+//! The storage lifecycle follows upstream managedAttachmentStore.ts: ids are
+//! att_v2_{32hex}, bytes live at objects/{hex-prefix}/{id}{ext}, every upload
+//! is tracked in managed_attachment_blobs (staged with a 1h TTL, claimed once
+//! a turn message references it), and a sweep worker reclaims expired staging
+//! plus rows marked for deletion. Upload cancellation is a documented gap.
 
 use axum::{
     body::Bytes,
@@ -14,7 +16,9 @@ use axum::{
     http::{header, StatusCode},
     response::{IntoResponse, Response},
 };
+use rusqlite::params;
 use serde_json::{json, Value};
+use sha2::Digest;
 use std::path::PathBuf;
 
 use crate::todo::state_dir;
@@ -113,6 +117,159 @@ fn json_error(status: StatusCode, message: &str) -> Response {
     (status, axum::Json(json!({ "error": message }))).into_response()
 }
 
+
+/// Exact upstream migration 055 shape, created lazily so the server never
+/// depends on the gate schema being fresh.
+pub(crate) fn ensure_managed_schema(conn: &rusqlite::Connection) {
+    let _ = conn.execute_batch(
+        "CREATE TABLE IF NOT EXISTS managed_attachment_blobs (
+          attachment_id TEXT PRIMARY KEY,
+          owner_thread_id TEXT NOT NULL,
+          owner_kind TEXT NOT NULL,
+          owner_id TEXT NOT NULL,
+          kind TEXT NOT NULL,
+          original_name TEXT NOT NULL,
+          mime_type TEXT NOT NULL,
+          reserved_bytes INTEGER NOT NULL,
+          size_bytes INTEGER,
+          sha256 TEXT,
+          relative_path TEXT NOT NULL UNIQUE,
+          state TEXT NOT NULL,
+          staging_expires_at TEXT,
+          claim_command_id TEXT,
+          claim_message_id TEXT,
+          claimed_at TEXT,
+          delete_reason TEXT,
+          delete_requested_at TEXT,
+          deleted_at TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        )",
+    );
+}
+
+fn now_iso() -> String {
+    let secs = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0);
+    crate::projects_fileops::iso8601(secs)
+}
+
+fn iso_in(seconds: u64) -> String {
+    let secs = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0)
+        + seconds;
+    crate::projects_fileops::iso8601(secs)
+}
+
+fn sha256_hex(bytes: &[u8]) -> String {
+    let mut h = sha2::Sha256::new();
+    h.update(bytes);
+    h.finalize().iter().map(|b| format!("{b:02x}")).collect()
+}
+
+/// Claims staged attachments referenced by a persisted turn message, mirroring
+/// upstream claim semantics: the blob survives past its staging TTL once a
+/// message actually carries it.
+pub(crate) fn claim_attachments_for_message(message_id: &str, attachment_ids: &[String]) {
+    if attachment_ids.is_empty() {
+        return;
+    }
+    let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+        return;
+    };
+    ensure_managed_schema(&conn);
+    let now = now_iso();
+    for id in attachment_ids {
+        let _ = conn.execute(
+            "UPDATE managed_attachment_blobs SET state='claimed', claim_message_id=?2, claimed_at=?3, staging_expires_at=NULL, updated_at=?3 WHERE attachment_id=?1 AND state='staged'",
+            params![id, message_id, now],
+        );
+    }
+}
+
+fn lookup_relative_path(id: &str) -> Option<String> {
+    let conn = crate::orchestration_engine::open_state_rw().ok()?;
+    ensure_managed_schema(&conn);
+    conn.query_row(
+        "SELECT relative_path FROM managed_attachment_blobs WHERE attachment_id=?1 AND state IN ('staged','claimed')",
+        params![id],
+        |r| r.get::<_, String>(0),
+    )
+    .ok()
+}
+
+/// Cleanup sweep, lean port of managedAttachmentCleanup.ts: staged rows past
+/// their TTL and rows in deleting state get their object file removed and end
+/// tombstoned; tombstones are purged after 30 days. The lease/backoff
+/// machinery upstream uses for multi-instance safety is unnecessary here
+/// because this server runs a single writer.
+pub fn run_cleanup_sweep() {
+    let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+        return;
+    };
+    ensure_managed_schema(&conn);
+    let now = now_iso();
+    let root = attachments_root();
+    let mut stmt = match conn.prepare(
+        "SELECT attachment_id, relative_path FROM managed_attachment_blobs WHERE (state='staged' AND staging_expires_at IS NOT NULL AND staging_expires_at < ?1) OR state='deleting'",
+    ) {
+        Ok(s) => s,
+        Err(_) => return,
+    };
+    let victims: Vec<(String, String)> = stmt
+        .query_map(params![now], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .map(|rows| rows.filter_map(|r| r.ok()).collect())
+        .unwrap_or_default();
+    for (id, rel) in victims {
+        let target = root.join(&rel);
+        if target.starts_with(&root) {
+            let _ = std::fs::remove_file(&target);
+        }
+        let _ = conn.execute(
+            "UPDATE managed_attachment_blobs SET state='deleted', deleted_at=?2, updated_at=?2 WHERE attachment_id=?1",
+            params![id, now],
+        );
+    }
+    // Tombstone retention: 30 days, exact upstream constant.
+    let purge_before = iso_in_now_minus(30 * 24 * 60 * 60);
+    let mut purged_files: Vec<String> = Vec::new();
+    if let Ok(mut st) = conn.prepare(
+        "SELECT relative_path FROM managed_attachment_blobs WHERE state='deleted' AND deleted_at IS NOT NULL AND deleted_at < ?1",
+    ) {
+        if let Ok(rows) = st.query_map(params![purge_before], |r| r.get::<_, String>(0)) {
+            purged_files = rows.filter_map(|r| r.ok()).collect();
+        }
+    }
+    let _ = conn.execute(
+        "DELETE FROM managed_attachment_blobs WHERE state='deleted' AND deleted_at IS NOT NULL AND deleted_at < ?1",
+        params![purge_before],
+    );
+}
+
+fn iso_in_now_minus(seconds: u64) -> String {
+    let secs = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0)
+        .saturating_sub(seconds);
+    crate::projects_fileops::iso8601(secs)
+}
+
+/// Starts the 5-minute sweep loop behind the same single-writer assumption as
+/// the rest of the native server.
+pub fn start_cleanup_worker() {
+    tokio::spawn(async move {
+        loop {
+            tokio::time::sleep(std::time::Duration::from_secs(300)).await;
+            run_cleanup_sweep();
+        }
+    });
+}
+
 pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
     let query = query.unwrap_or_default();
     let thread_id = query_param(&query, "threadId").unwrap_or_default();
@@ -137,16 +294,23 @@ pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
         return json_error(StatusCode::BAD_REQUEST, "attachment body is empty");
     }
 
-    let id = format!("{segment}-{}", crate::orchestration_engine::uuid_v4());
+    let hex: String = crate::orchestration_engine::uuid_v4().replace('-', "");
+    let id = format!("att_v2_{hex}");
     let ext = extension_for(&mime, &name);
     let root = attachments_root();
-    if let Err(e) = std::fs::create_dir_all(&root) {
-        return json_error(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            &format!("failed to prepare attachment storage: {e}"),
-        );
+    // Upstream object layout: objects/{first two hex chars}/{id}{ext}, so one
+    // directory never accumulates every blob.
+    let prefix = &hex[..2.min(hex.len())];
+    let relative = format!("objects/{prefix}/{id}{ext}");
+    let path = root.join(&relative);
+    if let Some(parent) = path.parent() {
+        if let Err(e) = std::fs::create_dir_all(parent) {
+            return json_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                &format!("failed to prepare attachment storage: {e}"),
+            );
+        }
     }
-    let path = root.join(format!("{id}{ext}"));
     if let Err(e) = std::fs::write(&path, &body) {
         return json_error(
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -155,17 +319,36 @@ pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
     }
     let size = body.len() as i64;
     let name_trimmed: String = name.trim().chars().take(255).collect();
-    let mut payload = json!({
+    // Lifecycle row: staged with a one-hour TTL. The blob is reclaimed by the
+    // sweep unless a turn message claims it — exact upstream semantics.
+    if let Ok(conn) = crate::orchestration_engine::open_state_rw() {
+        ensure_managed_schema(&conn);
+        let now = now_iso();
+        let _ = conn.execute(
+            "INSERT OR REPLACE INTO managed_attachment_blobs (attachment_id, owner_thread_id, owner_kind, owner_id, kind, original_name, mime_type, reserved_bytes, size_bytes, sha256, relative_path, state, staging_expires_at, created_at, updated_at) VALUES (?1,?2,'session','local',?3,?4,?5,?6,?6,?7,?8,'staged',?9,?10,?10)",
+            params![
+                id,
+                thread_id,
+                kind,
+                name_trimmed,
+                mime,
+                size,
+                sha256_hex(&body),
+                relative,
+                iso_in(3600),
+                now,
+            ],
+        );
+    }
+    let payload = json!({
         "type": kind,
         "id": id,
         "name": if name_trimmed.is_empty() { "attachment".to_string() } else { name_trimmed },
         "mimeType": mime,
         "sizeBytes": size,
+        "relativePath": relative,
     });
-    if let Value::Object(ref mut m) = payload {
-        m.insert("relativePath".into(), json!(format!("{id}{ext}")));
-    }
-    axum::Json(payload).into_response()
+    (StatusCode::CREATED, axum::Json(payload)).into_response()
 }
 
 /// Ids never carry an extension or path segments; the extension is resolved
@@ -181,6 +364,27 @@ pub async fn serve(Path(id): Path<String>, headers: axum::http::HeaderMap) -> Re
         return StatusCode::NOT_FOUND.into_response();
     }
     let root = attachments_root();
+    // Managed blobs resolve through their lifecycle row, so a deleted or
+    // tombstoned attachment stops serving even while the file remains.
+    if id.starts_with("att_v2_") {
+        if let Some(rel) = lookup_relative_path(&id) {
+            let candidate = root.join(&rel);
+            if let Ok(real) = candidate.canonicalize() {
+                let real_root = root.canonicalize().unwrap_or_else(|_| root.clone());
+                if real.starts_with(&real_root) && real.is_file() {
+                    let range = headers.get(header::RANGE).and_then(|v| v.to_str().ok());
+                    let mime = crate::local_image::local_image_mime_for(&real.to_string_lossy());
+                    return crate::local_image::file_response_with_range(
+                        &real,
+                        range,
+                        mime,
+                        "private, no-store",
+                    );
+                }
+            }
+        }
+        return StatusCode::NOT_FOUND.into_response();
+    }
     for ext in SERVE_EXTENSIONS {
         let candidate = root.join(format!("{id}{ext}"));
         if let Ok(real) = candidate.canonicalize() {

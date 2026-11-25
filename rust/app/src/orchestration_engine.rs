@@ -5935,6 +5935,21 @@ fn project_message_sent(
         ],
     )
     .map_err(|e| err(format!("message projection: {e}")))?;
+    // Managed attachment claim: a persisted message carrying attachment ids
+    // claims the staged blobs so the sweep never reclaims media a turn
+    // actually references — mirrors upstream claim semantics.
+    if let Some(arr) = g("attachments").as_array() {
+        let ids: Vec<String> = arr
+            .iter()
+            .filter_map(|a| a.get("id").and_then(Value::as_str).map(str::to_string))
+            .filter(|id| id.starts_with("att_v2_"))
+            .collect();
+        if !ids.is_empty() {
+            if let Some(mid) = message_id.as_str() {
+                crate::attachments_http::claim_attachments_for_message(mid, &ids);
+            }
+        }
+    }
     Ok(())
 }
 

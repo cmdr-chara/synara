@@ -781,6 +781,12 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         .and_then(Value::as_str)
         .or_else(|| model_value.get("reasoningEffort").and_then(Value::as_str))
         .map(str::to_string);
+    let omp_thinking_level = model_value
+        .pointer("/options/thinkingLevel")
+        .and_then(Value::as_str)
+        .or_else(|| model_value.get("thinkingLevel").and_then(Value::as_str))
+        .or(reasoning_effort.as_deref())
+        .map(str::to_string);
     let additional_dirs: Vec<String> = conn
         .query_row(
             "SELECT p.additional_folders_json FROM projection_projects p \
@@ -884,6 +890,14 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         if let Ok(Some(mode_id)) = resolve_acp_mode(provider, &mode_state, &turn_runtime_mode, &interaction_mode) {
             let _ = rpc.call("session/set_mode", json!({"sessionId":session_id,"modeId":mode_id}));
         }
+        if provider == "omp" {
+            apply_omp_session_configuration(
+                &mut rpc,
+                &session_id,
+                selected_model.as_deref(),
+                omp_thinking_level.as_deref(),
+            )?;
+        }
         Ok(session_id)
     })();
     match prepared {
@@ -899,6 +913,27 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
             Err(e)
         }
     }
+}
+
+fn apply_omp_session_configuration(
+    rpc: &mut Rpc,
+    session_id: &str,
+    model: Option<&str>,
+    thinking_level: Option<&str>,
+) -> Result<(), WsErr> {
+    if let Some(model) = model.map(str::trim).filter(|value| !value.is_empty()) {
+        rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "model", "value": model}),
+        )?;
+    }
+    if let Some(thinking) = thinking_level.map(str::trim).filter(|value| !value.is_empty()) {
+        rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "thinking", "value": thinking.to_ascii_lowercase()}),
+        )?;
+    }
+    Ok(())
 }
 
 /// Compact a warm ACP session by sending the provider-native `/compact`
@@ -1583,6 +1618,12 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
         .and_then(Value::as_str)
         .or_else(|| model_value.get("reasoningEffort").and_then(Value::as_str))
         .map(str::to_string);
+    let omp_thinking_level = model_value
+        .pointer("/options/thinkingLevel")
+        .and_then(Value::as_str)
+        .or_else(|| model_value.get("thinkingLevel").and_then(Value::as_str))
+        .or(reasoning_effort.as_deref())
+        .map(str::to_string);
     let additional_dirs: Vec<String> = conn
         .query_row(
             "SELECT p.additional_folders_json FROM projection_projects p              JOIN projection_threads t ON t.project_id = p.project_id              WHERE t.thread_id = ?1",
@@ -1827,6 +1868,14 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     let _ = set_session(&conn, thread_id, "error", Some(""), Some(&issue), None);
                     return Err(err(issue));
                 }
+            }
+            if provider == "omp" {
+                apply_omp_session_configuration(
+                    &mut rpc,
+                    &session_id,
+                    selected_model.as_deref(),
+                    omp_thinking_level.as_deref(),
+                )?;
             }
             session_id
         };

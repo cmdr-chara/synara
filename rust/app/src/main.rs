@@ -63,9 +63,14 @@ async fn main() {
     original::report_fallbacks();
     runtime_status::start_sampler();
     let original = original::Original::start().await;
-    let recovered = orchestration_engine::recover_orphaned_turns();
-    if recovered > 0 {
-        eprintln!("startup recovery: settled {recovered} orphaned thread(s) as interrupted");
+    // The sweep owns running turns only when the native engine serves
+    // orchestration. With the upstream TS server active, its turns may be
+    // legitimately in flight in the shared state and must not be touched.
+    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+        let recovered = orchestration_engine::recover_orphaned_turns();
+        if recovered > 0 {
+            eprintln!("startup recovery: settled {recovered} orphaned thread(s) as interrupted");
+        }
     }
     let app = units::router()
         .merge(native_ws::router())

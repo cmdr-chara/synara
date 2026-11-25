@@ -35,7 +35,7 @@ sqlite3 "$DB" "update projection_threads set pending_approval_count=0; delete fr
 echo "== booting gate server =="
 FIX="$GATE_DIR/fixtures"
 SYNARA_NO_UPSTREAM=1 GH_TOKEN=fake GIT_CONFIG_GLOBAL=/dev/null PORT=$PORT SYNARA_HOME="$HOME_DIR" \
-  SYNARA_CODEX_CLI="$FIX/fake-codex-rlimit" \
+  SYNARA_CLAUDE_EDGE_RETRY_DELAYS_MS=100 SYNARA_CODEX_CLI="$FIX/fake-codex-rlimit" \
   SYNARA_CLAUDE_CLI="$FIX/fake-claude-unified" \
   SYNARA_OMP_CLI="$FIX/fake-omp-acp" \
   GATE_FIXTURES="$FIX" \

@@ -49,5 +49,13 @@ for line in sys.stdin:
    if sub=='initialize':send({'type':'system','subtype':'init','session_id':'fake-claude-session'})
  elif v.get('type')=='user':
   with open('/tmp/fake-claude-user-log','a') as f:f.write(json.dumps(v)+'\n')
-  send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
-  send({'type':'result','subtype':'success','result':'done'})
+  body=json.dumps(v)
+  n=globals().setdefault('turns',0)+1;globals()['turns']=n
+  if 'edgeblock' in body and n==1:
+   send({'type':'result','subtype':'error','result':'API Error: 403 cloudflare edge blocked the request','isApiErrorMessage':True})
+  elif 'rlimit' in body and n==1:
+   send({'type':'rate_limit_info','rate_limit_info':{'status':'rejected','rateLimitType':'five_hour','resetsAt':4102444800}})
+   send({'type':'result','subtype':'error','result':'Claude usage limit reached','isApiErrorMessage':True})
+  else:
+   send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
+   send({'type':'result','subtype':'success','result':'done'})

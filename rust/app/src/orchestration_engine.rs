@@ -523,7 +523,7 @@ fn thread_mode_set(
     Ok(json!({ "sequence": seq }))
 }
 
-fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
+pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
     if command.contains_key("goal")

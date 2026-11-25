@@ -21936,88 +21936,121 @@ impl Render for Native {
                 kanban_cols = kanban_cols.child(col);
             }
         }
-        let kanban_pane = v_flex()
-            .flex_1()
-            .h_full()
+        // Upstream /kanban: title, count, view switches and New task live in
+        // the top bar (overlaid at upstream's position); an empty board shows
+        // a centered "Nothing on the board yet" block.
+        let kanban_header = h_flex()
+            .absolute()
+            .top(topbar_y)
+            .left(px(56.))
+            .right(px(19.))
+            .h(px(28.))
+            .items_center()
+            .child(
+                div()
+                    .text_size(px(14.))
+                    .font_weight(FontWeight::MEDIUM)
+                    .child("Kanban"),
+            )
+            .child(
+                div()
+                    .ml(px(8.))
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .child(format!("{kanban_count} tasks")),
+            )
             .child(
                 h_flex()
-                    .w_full()
-                    .px(px(12.))
-                    .pt(px(9.))
-                    .pb(px(6.))
-                    .gap(px(8.))
+                    .ml(px(8.))
+                    .gap(px(4.))
+                    .child(seg_chip("seg-kb-list", "List", false).on_click(cx.listener(
+                        |this, _e, _w, cx| this.open_route(1, cx),
+                    )))
+                    .child(seg_chip("seg-kb-kanban", "Kanban", true).on_click(
+                        cx.listener(|this, _e, _w, cx| this.open_route(2, cx)),
+                    )),
+            )
+            .child(
+                h_flex()
+                    .ml(px(8.))
+                    .gap(px(4.))
+                    .child(seg_chip("seg-kb-att", "Attention", true))
+                    .child(seg_chip("seg-kb-classic", "Classic", false)),
+            )
+            .child(div().flex_1())
+            .child(
+                h_flex()
+                    .h(px(28.))
+                    .px(px(10.))
+                    .gap(px(6.))
                     .items_center()
+                    .rounded(px(10.))
                     .child(
-                        svg_icon(icons::SIDEBAR_LEFT)
-                            .size(px(18.))
-                            .text_color(theme.muted_foreground),
-                    )
-                    .child(
-                        div()
-                            .text_base()
-                            .font_weight(FontWeight::SEMIBOLD)
-                            .child("Kanban"),
+                        svg_icon(icons::PLUS)
+                            .size(px(14.))
+                            .text_color(theme.foreground.opacity(0.58)),
                     )
                     .child(
                         div()
                             .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child(format!("{kanban_count} tasks")),
-                    )
-                    .child(div().flex_1())
-                    .child(
-                        h_flex()
-                            .gap(px(2.))
-                            .p(px(2.))
-                            .rounded(px(8.))
-                            .bg(soft_bg)
-                            .child(seg_chip("seg-kb-list", "List", false).on_click(cx.listener(
-                                |this, _e, _w, cx| this.open_route(1, cx),
-                            )))
-                            .child(seg_chip("seg-kb-kanban", "Kanban", true).on_click(
-                                cx.listener(|this, _e, _w, cx| this.open_route(2, cx)),
-                            )),
-                    )
-                    .child(
-                        h_flex()
-                            .gap(px(2.))
-                            .p(px(2.))
-                            .rounded(px(8.))
-                            .bg(soft_bg)
-                            .child(seg_chip("seg-kb-att", "Attention", true))
-                            .child(seg_chip("seg-kb-classic", "Classic", false)),
-                    )
-                    .child(
-                        div()
-                            .h(px(26.))
-                            .px(px(10.))
-                            .flex()
-                            .items_center()
-                            .child(div().text_size(px(13.)).child("+ New task")),
+                            .text_color(theme.foreground.opacity(0.58))
+                            .child("New task"),
                     ),
-            )
-            .child(
-                h_flex()
-                    .px(px(16.))
-                    .pt(px(12.))
-                    .pb(px(8.))
-                    .gap(px(6.))
-                    .items_center()
-                    .child(
-                        div()
-                            .size(px(12.))
-                            .rounded(px(3.))
-                            .border_1()
-                            .border_color(theme.muted_foreground),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(11.))
-                            .text_color(theme.muted_foreground)
-                            .child("Needs review"),
-                    ),
-            )
-            .child(kanban_cols);
+            );
+        let kanban_body = if kanban_count == 0 {
+            v_flex()
+                .flex_1()
+                .items_center()
+                .justify_center()
+                .child(
+                    div()
+                        .w(px(384.))
+                        .text_center()
+                        .text_size(px(14.))
+                        .line_height(px(21.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .text_color(theme.foreground.opacity(0.85))
+                        .child("Nothing on the board yet"),
+                )
+                .child(
+                    div()
+                        .w(px(384.))
+                        .mt(px(4.))
+                        .text_center()
+                        .text_size(px(13.))
+                        .line_height(px(18.))
+                        .text_color(theme.muted_foreground)
+                        .child("Drafted prompts, running turns, and completed chats will show up here automatically."),
+                )
+                .into_any_element()
+        } else {
+            v_flex()
+                .flex_1()
+                .child(
+                    h_flex()
+                        .px(px(16.))
+                        .pt(px(12.))
+                        .pb(px(8.))
+                        .gap(px(6.))
+                        .items_center()
+                        .child(
+                            div()
+                                .size(px(12.))
+                                .rounded(px(3.))
+                                .border_1()
+                                .border_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("Needs review"),
+                        ),
+                )
+                .child(kanban_cols)
+                .into_any_element()
+        };
+        let kanban_pane = v_flex().flex_1().h_full().child(kanban_body);
 
         // /pull-requests — upstream GitHubInbox: `githubInbox.list` rows
         // (pull requests + issues), pinned first, with kind/state/text filters
@@ -23418,7 +23451,16 @@ impl Render for Native {
             main = main.child(div().flex_1().child(tasks_pane));
         } else if self.view_kanban {
             main = main
-                .child(div().flex_1().min_h_0().child(kanban_pane.overflow_y_scrollbar()));
+                .child(
+                    // Header sits outside the scroll area so the top-bar
+                    // overlay isn't clipped.
+                    div()
+                        .flex_1()
+                        .min_h_0()
+                        .relative()
+                        .child(kanban_pane.overflow_y_scrollbar())
+                        .child(kanban_header),
+                );
         } else if self.view_pullreq {
             main = main.child(div().flex_1().child(pullreq_pane));
         } else if self.view_autom {
@@ -24934,7 +24976,9 @@ impl Render for Native {
                     .w(if self.sidebar_collapsed { px(0.) } else { px(257.) })
                     .flex_none(),
             )
-            .child({
+            // Upstream rail routes have no thread tabs in the top bar.
+            .when(!route_view, |d| {
+                d.child({
                 // Open-thread tabs live inside the top strip (upstream ChatHeader
                 // threadTabs): bordered pill with icon + title + x per open tab,
                 // then a "+" that opens a new thread.
@@ -25132,6 +25176,7 @@ impl Render for Native {
                         })
                 });
                 tabs
+            })
             })
             .child(div().flex_1())
             // Upstream rail routes (inbox, tasks, kanban, code review, automations,

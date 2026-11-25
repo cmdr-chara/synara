@@ -988,19 +988,54 @@ fn project_thread_created(conn: &Connection, p: &Map<String, Value>) -> Result<(
     Ok(())
 }
 
+/// Upstream threadResumePreconditionViolation: the precondition holds only
+/// while the thread's latest turn is exactly the recorded one. Checked inside
+/// the serialized dispatch so concurrent writers cannot slip past it.
+fn resume_precondition_violation(
+    conn: &rusqlite::Connection,
+    thread_id: &str,
+    precondition: &Value,
+) -> Option<&'static str> {
+    let recorded_turn = precondition.get("recordedTurnId").and_then(Value::as_str);
+    let latest: Option<String> = conn
+        .query_row(
+            "SELECT turn_id FROM projection_turns WHERE thread_id = ?1              ORDER BY requested_at DESC, rowid DESC LIMIT 1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok();
+    match (recorded_turn, latest.as_deref()) {
+        (Some(recorded), Some(latest)) if recorded == latest => None,
+        (None, _) => None,
+        (Some(_), None) => Some("resume precondition violated: recorded turn is missing"),
+        (Some(_), Some(_)) => {
+            Some("resume precondition violated: the thread moved on since the record")
+        }
+    }
+}
+
 fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
-    for k in [
-        "sourceProposedPlan",
-        "resumePrecondition",
-        "reviewTarget",
-    ] {
-        if command.contains_key(k) {
-            return Err(err(format!(
-                "thread.turn.start with {k} is not ported yet (native engine slice)"
-            )));
-        }
+    if command.contains_key("sourceProposedPlan") {
+        // Upstream resolves the source plan text from the source thread's
+        // proposed-plan store; that store is not yet part of the native
+        // projection, so plan-conversion turns stay rejected rather than
+        // silently dropping the plan content.
+        return Err(err(
+            "thread.turn.start with sourceProposedPlan is not ported yet (native engine slice)",
+        ));
+    }
+    // Native reviews never carry prompt attachments (upstream rejects before
+    // message acceptance so the caller can preserve the draft).
+    if command.get("reviewTarget").is_some()
+        && command
+            .get("message")
+            .and_then(|m| m.get("attachments"))
+            .and_then(Value::as_array)
+            .is_some_and(|a| !a.is_empty())
+    {
+        return Err(err("native review turns do not support attachments"));
     }
     // asyncUserInputResponse: upstream loads the referenced question message to
     // validate the answers, then steers the turn. With no provider runtime the
@@ -1023,10 +1058,36 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         .map_err(|e| err(e.to_string()))?;
     let row = require_thread(&conn, &thread_id)?;
 
+    // Quit-resume continuations started as regular turns must satisfy the
+    // same atomic precondition as thread.turn.resume, and they inherit the
+    // thread's current modes rather than the planner's stale snapshot.
+    let has_precondition = command.get("resumePrecondition").is_some();
+    if let Some(precondition) = command.get("resumePrecondition") {
+        if let Some(detail) = resume_precondition_violation(&conn, &thread_id, precondition) {
+            return Err(err(detail));
+        }
+    }
+
     let dispatch_mode = s(command, "dispatchMode").unwrap_or_else(|| "queue".into());
     let dispatch_origin = s(command, "dispatchOrigin").unwrap_or_else(|| "user".into());
-    let runtime_mode = opt(command, "runtimeMode");
-    let interaction_mode = opt(command, "interactionMode");
+    let runtime_mode = if has_precondition {
+        conn.query_row(
+            "SELECT runtime_mode FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .map(|m| json!(m))
+        .unwrap_or(Value::Null)
+    } else {
+        opt(command, "runtimeMode")
+    };
+    let interaction_mode = if has_precondition {
+        json!(row.interaction_mode.clone())
+    } else {
+        opt(command, "interactionMode")
+    };
     let active_provider: Option<String> = command
         .get("modelSelection")
         .and_then(|m| m.get("provider"))
@@ -1430,24 +1491,9 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
         return Err(err(format!("Thread '{thread_id}' already has a turn in flight.")));
     }
     // Precondition: the thread must not have moved on since the record.
-    if let Some(precondition) = command.get("resumePrecondition").and_then(Value::as_object) {
-        let recorded_turn = precondition.get("recordedTurnId").and_then(Value::as_str);
-        let latest: Option<String> = conn
-            .query_row(
-                "SELECT turn_id FROM projection_turns WHERE thread_id = ?1                  ORDER BY requested_at DESC, rowid DESC LIMIT 1",
-                params![thread_id],
-                |r| r.get(0),
-            )
-            .ok();
-        match (recorded_turn, latest.as_deref()) {
-            (Some(recorded), Some(latest)) if recorded == latest => {}
-            (None, None) | (None, Some(_)) => {}
-            (Some(_), None) => {
-                return Err(err("resume precondition violated: recorded turn is missing"))
-            }
-            (Some(_), Some(_)) => {
-                return Err(err("resume precondition violated: the thread moved on since the record"))
-            }
+    if let Some(precondition) = command.get("resumePrecondition") {
+        if let Some(detail) = resume_precondition_violation(&conn, &thread_id, precondition) {
+            return Err(err(detail));
         }
     }
     let runtime_mode = s(command, "runtimeMode")

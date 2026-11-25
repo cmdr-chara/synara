@@ -180,6 +180,53 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
     Ok((child, stdin, stdout))
 }
 
+
+/// Compact a warm Pi session using the documented RPC command. Pi performs the
+/// summarization inside the official CLI and returns the compact response on
+/// stdout, so no transcript or credential material crosses Synara's process.
+pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Err(err("cannot compact while a turn is running"));
+    }
+    let mut parked = {
+        let mut parked_map = PARKED.lock().map_err(|_| err("parked map"))?;
+        match parked_map.remove(thread_id) {
+            Some(parked) => parked,
+            None => return Ok(false),
+        }
+    };
+    let result = (|| -> Result<bool, WsErr> {
+        write_line(&parked.stdin, &json!({"type":"compact"}))?;
+        for _ in 0..1200 {
+            let Some(value) = read_json_line(&mut parked.reader)? else {
+                return Ok(false);
+            };
+            if value.get("type").and_then(Value::as_str) == Some("response")
+                && value.get("command").and_then(Value::as_str) == Some("compact")
+            {
+                if value.get("success").and_then(Value::as_bool) == Some(true) {
+                    return Ok(true);
+                }
+                let message = value
+                    .get("error")
+                    .and_then(Value::as_str)
+                    .unwrap_or("pi compact failed");
+                return Err(err(message));
+            }
+        }
+        Err(err("pi compact timed out"))
+    })();
+    let alive = matches!(parked.child.try_wait(), Ok(None));
+    if alive {
+        if let Ok(mut parked_map) = PARKED.lock() {
+            parked_map.insert(thread_id.to_string(), parked);
+        }
+    } else {
+        drop_parked(parked);
+    }
+    result
+}
+
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&thread_id, &message_id, &text, &cwd) {

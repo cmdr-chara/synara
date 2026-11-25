@@ -296,7 +296,22 @@ fn compact_thread(payload: &Value) -> Result<Value, WsErr> {
         .get("threadId")
         .and_then(Value::as_str)
         .ok_or_else(|| err("threadId is required"))?;
-    let compacted = crate::opencode_runner::compact_thread(thread_id)?;
+    let provider = {
+        let conn = crate::orchestration_engine::open_state_rw()?;
+        conn.query_row(
+            "SELECT provider_name FROM projection_thread_sessions WHERE thread_id=?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .unwrap_or_default()
+    };
+    let compacted = match provider.as_str() {
+        "opencode" => crate::opencode_runner::compact_thread(thread_id)?,
+        "pi" => crate::pi_runner::compact_thread(thread_id)?,
+        _ => false,
+    };
     Ok(json!({"compacted": compacted}))
 }
 

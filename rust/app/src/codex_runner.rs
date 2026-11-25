@@ -891,15 +891,21 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let selected_model = model_selection_json
-        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+    let model_selection_parsed = model_selection_json
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok());
+    let selected_model = model_selection_parsed
+        .as_ref()
         .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
     let launch_key = format!(
         "{}|{}|{}|{}",
         turn_runtime_mode,
         selected_model.as_deref().unwrap_or(""),
         cwd,
-        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+        model_selection_parsed
+            .as_ref()
+            .and_then(|v| v.get("instanceId"))
+            .and_then(Value::as_str)
+            .unwrap_or("")
     );
 
     let mut command = Command::new(codex_binary());

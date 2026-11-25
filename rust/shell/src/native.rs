@@ -19912,16 +19912,17 @@ impl Render for Native {
                     .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
                     .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Search connectors"))
                     .into_any_element();
+                // Upstream primary pill: foreground fill, background-colored text.
                 let dark_btn = |label: &'static str| {
                     h_flex()
-                        .h(px(36.))
-                        .px_4()
+                        .h(px(32.))
+                        .px(px(11.))
                         .gap_1p5()
                         .items_center()
                         .rounded_full()
-                        .bg(rgb(0x26251f))
-                        .child(svg_icon(icons::PLUS).size(px(16.)).text_color(gpui::white()))
-                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(gpui::white()).child(label))
+                        .bg(theme.foreground)
+                        .child(svg_icon(icons::PLUS).size(px(16.)).text_color(theme.background))
+                        .child(div().text_size(px(13.)).text_color(theme.background).child(label))
                         .into_any_element()
                 };
                 let catalog: [(&'static str, &'static str); 3] = [
@@ -19957,13 +19958,13 @@ impl Render for Native {
                             .child(dark_btn("Add custom"))
                             .child(
                                 h_flex()
-                                    .h(px(36.))
-                                    .px_4()
+                                    .h(px(32.))
+                                    .px(px(11.))
                                     .items_center()
                                     .rounded_full()
                                     .border_1()
                                     .border_color(theme.border)
-                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Add local server")),
+                                    .child(div().text_size(px(13.)).child("Add local server")),
                             ),
                     )
                     ;
@@ -20014,8 +20015,8 @@ impl Render for Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(1.))
-                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(*name))
-                                            .child(div().w_full().text_xs().text_color(theme.muted_foreground).child(*desc)),
+                                            .child(div().text_size(px(14.)).font_weight(FontWeight::MEDIUM).child(*name))
+                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(*desc)),
                                     )
                                     .child(div().px_2().text_size(px(13.)).text_color(theme.muted_foreground).child("+")),
                             );

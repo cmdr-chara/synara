@@ -12485,6 +12485,12 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 // and choreographed rows — staggered fade-in on expand, a pulsing
                 // dot on the live row while the thread is working.
                 let working = thread_actively_working(thread_v);
+                // Upstream "keep the running tool run inspectable while it
+                // runs": the live group renders expanded while the thread
+                // works, whatever the disclosure toggle says; it falls back
+                // to the toggle once the run settles.
+                let is_live_card = working && seen_cards + 1 == n_plain_cards;
+                let expanded = self.tools_expanded || is_live_card;
                 let n_failed = seg
                     .iter()
                     .filter(|a| str_at(a, "tone") == "error")
@@ -12496,7 +12502,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 if working {
                     summary.push_str(", 1 running");
                 }
-                let chevron = if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" };
+                let chevron = if expanded { "\u{25be}" } else { "\u{25b8}" };
                 let header = h_flex()
                     .id("tools-card")
                     .cursor_pointer()
@@ -12526,7 +12532,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     );
                 let mut card = v_flex().gap(px(1.)).child(header);
                 seen_cards += 1;
-                if self.tools_expanded {
+                if expanded {
                     let last_idx = seg.len().saturating_sub(1);
                     for (row_idx, a) in seg.iter().enumerate() {
                         // Staggered entrance: the easing holds at zero for a
@@ -12568,7 +12574,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                             SharedString::from(format!(
                                 "toolrow-{}-{}",
                                 str_at(a, "id"),
-                                if self.tools_expanded { "open" } else { "closed" }
+                                if expanded { "open" } else { "closed" }
                             )),
                             Animation::new(std::time::Duration::from_millis(650))
                                 .with_easing(move |t| {

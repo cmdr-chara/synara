@@ -44,6 +44,42 @@ pub fn has_running_turn(thread_id: &str) -> bool {
         .unwrap_or(false)
 }
 
+/// Inject user text into the live Codex turn. The app-server consumes the
+/// input at the model's next turn boundary; its response frame is read and
+/// ignored by the runner's notification loop, so this is intentionally a
+/// fire-and-forget write like upstream's steer delivery surface.
+pub fn steer_turn(thread_id: &str, text: &str) -> bool {
+    let (stdin, thread_ref, turn_ref) = match RUNNING.lock() {
+        Ok(m) => match m.get(thread_id) {
+            Some(rt) if !rt.turn_ref.is_empty() => (
+                rt.stdin.clone(),
+                rt.thread_ref.clone(),
+                rt.turn_ref.clone(),
+            ),
+            _ => return false,
+        },
+        Err(_) => return false,
+    };
+    let steer = json!({
+        "jsonrpc": "2.0",
+        "id": -2,
+        "method": "turn/steer",
+        "params": {
+            "threadId": thread_ref,
+            "input": [{"type": "text", "text": text, "text_elements": []}],
+            "expectedTurnId": turn_ref,
+        },
+    });
+    if let Ok(mut s) = stdin.lock() {
+        return s
+            .write_all(steer.to_string().as_bytes())
+            .and_then(|_| s.write_all(b"\n"))
+            .and_then(|_| s.flush())
+            .is_ok();
+    }
+    false
+}
+
 /// Interrupt the live turn through the app-server's own `turn/interrupt`
 /// request; the process itself stays owned by the runner thread.
 pub fn cancel_turn(thread_id: &str) {
@@ -508,6 +544,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     "updatedAt": iso_now_ms(),
                 }),
             )?;
+            if cancelled_flag {
+                crate::orchestration_engine::continue_queued_turn(thread_id);
+            }
             Err(e)
         }
     }

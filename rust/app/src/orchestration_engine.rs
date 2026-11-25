@@ -1005,16 +1005,43 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let dispatch_origin = s(command, "dispatchOrigin").unwrap_or_else(|| "user".into());
     let runtime_mode = opt(command, "runtimeMode");
     let interaction_mode = opt(command, "interactionMode");
-    // With no native provider sessions yet no turn can be running, so messages
-    // queue only for a claude-cache review gate, exactly like upstream.
+    let active_provider: Option<String> = command
+        .get("modelSelection")
+        .and_then(|m| m.get("provider"))
+        .and_then(Value::as_str)
+        .map(String::from)
+        .or_else(|| {
+            conn.query_row(
+                "SELECT provider_name FROM projection_thread_sessions                  WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .ok()
+            .flatten()
+        })
+        .or_else(|| {
+            conn.query_row(
+                "SELECT json_extract(model_selection_json, '$.provider')                  FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .ok()
+            .flatten()
+        });
     let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
         || crate::codex_runner::has_running_turn(&thread_id)
         || crate::claude_runner::has_running_turn(&thread_id)
         || crate::opencode_runner::has_running_turn(&thread_id);
-    // Upstream: a message arriving while the provider is mid-turn queues
-    // instead of starting a parallel turn on the same session.
-    let should_queue = (row.parent_thread_id.is_none() && row.claude_cache_review.is_some())
-        || (provider_turn_live && dispatch_mode != "steer");
+    // The Rust Claude runner uses one-shot headless CLI invocations, so only
+    // Codex accepts native mid-turn input here. Unsupported steers queue and
+    // interrupt the active turn instead of spawning a parallel provider turn.
+    let native_steer = dispatch_mode == "steer"
+        && provider_turn_live
+        && active_provider.as_deref() == Some("codex");
+    let should_queue = row.parent_thread_id.is_none()
+        && (row.claude_cache_review.is_some()
+            || (provider_turn_live && !native_steer));
+    let starts_new_turn = !native_steer;
 
     let mut events: Vec<OutEvent> = Vec::new();
     if dispatch_origin == "user"
@@ -1050,9 +1077,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
     mp.insert("dispatchMode".into(), json!(dispatch_mode));
     mp.insert("dispatchOrigin".into(), json!(dispatch_origin));
-    // isThreadRunning is always false without native sessions: startsNewTurn is
-    // `dispatchMode !== "steer" || !isThreadRunning || shouldQueue` => true.
-    mp.insert("startsNewTurn".into(), json!(true));
+    mp.insert("startsNewTurn".into(), json!(starts_new_turn));
     mp.insert("turnId".into(), Value::Null);
     mp.insert("streaming".into(), json!(false));
     mp.insert("source".into(), json!("native"));
@@ -1092,34 +1117,10 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     // session-set. The ACP runner reads it back for session/set_mode and
     // re-emits it on its own session-set events; queued turns do the same
     // when dispatch-queued runs them.
-    let start_provider: Option<String> = if should_queue {
+    let start_provider: Option<String> = if should_queue || native_steer {
         None
     } else {
-        command
-            .get("modelSelection")
-            .and_then(|m| m.get("provider"))
-            .and_then(Value::as_str)
-            .map(String::from)
-            .or_else(|| {
-                conn.query_row(
-                    "SELECT provider_name FROM projection_thread_sessions \
-                     WHERE thread_id = ?1",
-                    params![thread_id],
-                    |r| r.get::<_, Option<String>>(0),
-                )
-                .ok()
-                .flatten()
-            })
-            .or_else(|| {
-                conn.query_row(
-                    "SELECT json_extract(model_selection_json, '$.provider') \
-                     FROM projection_threads WHERE thread_id = ?1",
-                    params![thread_id],
-                    |r| r.get::<_, Option<String>>(0),
-                )
-                .ok()
-                .flatten()
-            })
+        active_provider.clone()
     };
     let starting_ev = if should_queue {
         None
@@ -1186,7 +1187,25 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if let Some(ev) = starting_ev {
         events.push(ev);
     }
+    let interrupt_after_queue = should_queue
+        && dispatch_mode == "steer"
+        && row.claude_cache_review.is_none()
+        && provider_turn_live;
+    let queued_turn_event_id = turn_event.event_id.clone();
     events.push(turn_event);
+    if interrupt_after_queue {
+        let mut interrupt_ev = out_event(
+            "thread.turn-interrupt-requested",
+            &thread_id,
+            &created_at,
+            json!({
+                "threadId": thread_id,
+                "createdAt": created_at,
+            }),
+        );
+        interrupt_ev.causation_event_id = Some(queued_turn_event_id);
+        events.push(interrupt_ev);
+    }
 
     // Record the async-user-input answer on the referenced question message so
     // the card settles as responded; resolve any open pending interaction too.
@@ -1228,7 +1247,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
          (message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at, \
           attachments_json, source, skills_json, mentions_json, dispatch_mode, dispatch_origin, \
           starts_new_turn) \
-         VALUES (?1, ?2, NULL, 'user', ?3, 0, ?4, ?4, ?5, 'native', ?6, ?7, ?8, ?9, 1)",
+         VALUES (?1, ?2, NULL, 'user', ?3, 0, ?4, ?4, ?5, 'native', ?6, ?7, ?8, ?9, ?10)",
         params![
             message_id,
             thread_id,
@@ -1239,6 +1258,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
             message.get("mentions").map(|v| v.to_string()),
             dispatch_mode,
             dispatch_origin,
+            starts_new_turn as i64,
         ],
     )
     .map_err(|e| err(format!("insert message: {e}")))?;
@@ -1283,8 +1303,15 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
     update_projection(&conn, &thread_id, &sets)?;
 
-    // Drive a real provider turn: Devin threads run through `devin acp`.
-    if !should_queue {
+    if interrupt_after_queue {
+        cancel_any_provider_turn(&thread_id);
+    }
+    if native_steer && !crate::codex_runner::steer_turn(&thread_id, &text) {
+        return Err(err("failed to deliver steering message to the active Codex turn"));
+    }
+
+    // Drive a real provider turn unless the message queued or rode the live turn.
+    if !should_queue && !native_steer {
         conn.execute(
             "INSERT OR REPLACE INTO projection_thread_sessions \
              (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
@@ -1357,7 +1384,7 @@ pub(crate) fn continue_queued_turn(thread_id: &str) {
     let _ = conn.execute_batch("PRAGMA busy_timeout = 5000;");
     let next: Option<(String, String)> = conn
         .query_row(
-            "SELECT message_id, text FROM projection_thread_messages              WHERE thread_id = ?1 AND role = 'user' AND dispatch_mode = 'queue'              AND message_id NOT IN (                SELECT COALESCE(pending_message_id, '') FROM projection_turns WHERE thread_id = ?1              )              ORDER BY created_at ASC LIMIT 1",
+            "SELECT message_id, text FROM projection_thread_messages              WHERE thread_id = ?1 AND role = 'user' AND dispatch_mode IN ('queue', 'steer') AND starts_new_turn = 1              AND message_id NOT IN (                SELECT COALESCE(pending_message_id, '') FROM projection_turns WHERE thread_id = ?1              )              ORDER BY created_at ASC LIMIT 1",
             params![thread_id],
             |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)),
         )

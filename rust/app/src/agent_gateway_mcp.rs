@@ -43,11 +43,13 @@ pub fn agent_gateway_token() -> &'static str {
                 return token;
             }
         }
-        let bytes = std::fs::read("/dev/urandom")
-            .ok()
-            .filter(|b| b.len() >= 32)
-            .map(|b| b[..32].to_vec())
-            .unwrap_or_else(|| {
+        let bytes = std::fs::File::open("/dev/urandom")
+            .and_then(|mut file| {
+                use std::io::Read;
+                let mut bytes = [0u8; 32];
+                file.read_exact(&mut bytes).map(|_| bytes.to_vec())
+            })
+            .unwrap_or_else(|_| {
                 let mut seed = format!(
                     "{}:{}:{}",
                     std::process::id(),

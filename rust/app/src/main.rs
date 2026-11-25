@@ -40,6 +40,7 @@ mod orchestration_reads;
 mod orchestration_snapshot;
 mod original;
 mod mcp_connectors;
+mod mcp_oauth;
 mod provider_usage;
 mod textgen;
 mod provider_attachments;
@@ -119,6 +120,7 @@ async fn main() {
         .route("/api/attachments/upload", axum::routing::post(attachments_http::upload))
         .route("/attachments/{id}", axum::routing::get(attachments_http::serve))
         .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
+        .route("/oauth/mcp/callback", axum::routing::get(oauth_mcp_callback))
         .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
         .route("/api/editor-icon", axum::routing::get(editor_icon::editor_icon))
@@ -166,4 +168,44 @@ async fn main() {
     crate::opencode_runner::drop_all_resources();
     crate::pi_runner::drop_all_resources();
     crate::browser_automation::shutdown_browser_automation().await;
+}
+
+/// GET /oauth/mcp/callback — completes an MCP connector OAuth sign-in: the
+/// token exchange runs here, tokens persist with the connector row in the
+/// connectors document, and the user gets a closable HTML result page.
+async fn oauth_mcp_callback(axum::extract::RawQuery(query): axum::extract::RawQuery) -> axum::response::Response {
+    let query = query.unwrap_or_default();
+    let result = tokio::task::spawn_blocking(move || {
+        mcp_oauth::complete_sign_in(&query)
+    })
+    .await;
+    let html = match result {
+        Ok(Ok((connector_input, tokens))) => {
+            match persist_oauth_connector(&connector_input, &tokens) {
+                Ok(()) => "<html><body><h2>Connector connected</h2><p>You can close this tab and return to Synara.</p></body></html>".to_string(),
+                Err(e) => format!("<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>", html_escape(&e)),
+            }
+        }
+        Ok(Err(e)) => format!("<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>", html_escape(&e.0)),
+        Err(e) => format!("<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>", html_escape(&e.to_string())),
+    };
+    axum::response::Response::builder()
+        .header("content-type", "text/html; charset=utf-8")
+        .body(axum::body::Body::from(html))
+        .unwrap()
+}
+
+fn html_escape(v: &str) -> String {
+    v.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
+}
+
+/// Persist the OAuth-completed HTTP connector: unique server name, tokens in
+/// the same secrets-backed document the stdio rows use (0600 by construction),
+/// deduped on url. Mirrors the stdio insertion in mcp_connectors.
+fn persist_oauth_connector(input: &serde_json::Value, tokens: &serde_json::Value) -> Result<(), String> {
+    use serde_json::json;
+    let url = input.get("url").and_then(serde_json::Value::as_str).ok_or("missing url")?;
+    let name = input.get("name").and_then(serde_json::Value::as_str).unwrap_or("Connector");
+    mcp_connectors::insert_http_connector(url, name, input, tokens).map_err(|e| e.0)
+        .map(|_| ())
 }

@@ -14,8 +14,11 @@ use std::path::PathBuf;
 
 use crate::todo::WsErr;
 
-fn err(message: &str) -> WsErr {
+pub fn err_usage(message: &str) -> WsErr {
     WsErr(message.to_string(), None)
+}
+fn err(message: &str) -> WsErr {
+    err_usage(message)
 }
 
 pub fn handles(tag: &str) -> bool {

@@ -52,6 +52,7 @@ mod computer_native;
 mod opencode_runner;
 mod pi_runner;
 mod pi_opencode_catalog;
+mod codex_usage;
 mod orchestration_engine;
 mod usage_limit;
 mod project_agent;

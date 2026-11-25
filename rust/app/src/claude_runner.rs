@@ -617,6 +617,7 @@ fn spawn_claude(
     effort: Option<&str>,
     settings: Option<&Value>,
     resume: Option<&str>,
+    thread_id: Option<&str>,
 ) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
     let mut args = vec![
         "--output-format".to_string(),
@@ -651,7 +652,10 @@ fn spawn_claude(
         "mcpServers": {"synara": {
             "type": "http",
             "url": crate::agent_gateway_mcp::agent_gateway_url(),
-            "headers": {"Authorization": format!("Bearer {}", crate::agent_gateway_mcp::agent_gateway_token())},
+            "headers": {"Authorization": format!("Bearer {}", match thread_id {
+                Some(tid) => crate::agent_gateway_mcp::issue_thread_token(tid),
+                None => crate::agent_gateway_mcp::agent_gateway_token().to_string(),
+            })},
         }}
     });
     args.push("--mcp-config".to_string());
@@ -831,7 +835,7 @@ pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None, None)?;
+    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None, None, None)?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
     let result = initialize_cli_response(&stdin, &mut reader).map(|init| claude_catalog_from_initialize(&init));
@@ -946,6 +950,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         selected_effort.as_deref(),
         Some(&selected_settings),
         stored_session.as_deref(),
+        Some(thread_id),
     )?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
@@ -1056,6 +1061,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             selected_effort.as_deref(),
             Some(&selected_settings),
             stored_session.as_deref(),
+            Some(thread_id),
         )?;
         let stdin = Arc::new(Mutex::new(stdin_raw));
         let mut reader = BufReader::new(stdout);

@@ -43,10 +43,19 @@ struct ObscuraProcess {
 }
 
 #[derive(Default)]
-struct BrowserState {
+struct ThreadBrowserScope {
     active_backend: Option<BrowserBackend>,
-    obscura: Option<ObscuraProcess>,
     ego_space_id: Option<i64>,
+}
+
+/// Upstream scopes browser tabs/targets per calling thread
+/// (computerBrowserTools keys knownTargets by threadId): parallel agents must
+/// never fight over one shared "active" browser. The Obscura child process
+/// itself stays shared — it is a headless backend, not user-visible state.
+#[derive(Default)]
+struct BrowserState {
+    scopes: std::collections::HashMap<String, ThreadBrowserScope>,
+    obscura: Option<ObscuraProcess>,
 }
 
 fn state() -> &'static Mutex<BrowserState> {
@@ -59,7 +68,7 @@ fn state() -> &'static Mutex<BrowserState> {
 /// intentionally leaves it alone.
 pub async fn shutdown_browser_automation() {
     let child = state().lock().ok().and_then(|mut state| {
-        state.active_backend = None;
+        state.scopes.clear();
         state.obscura.take().map(|mut process| {
             let _ = process.child.start_kill();
             process.child
@@ -321,7 +330,25 @@ fn arg_string(args: &Value, keys: &[&str]) -> Option<String> {
         .map(str::to_string)
 }
 
-fn current_backend(args: &Value, visible_default: bool) -> Result<BrowserBackend, String> {
+fn scope_key(thread: Option<&str>) -> String {
+    thread.unwrap_or("").to_string()
+}
+
+fn scope_backend(thread: Option<&str>) -> Option<BrowserBackend> {
+    state()
+        .lock()
+        .ok()
+        .and_then(|s| s.scopes.get(&scope_key(thread)).and_then(|sc| sc.active_backend))
+}
+
+fn scope_ego_space(thread: Option<&str>) -> Option<i64> {
+    state()
+        .lock()
+        .ok()
+        .and_then(|s| s.scopes.get(&scope_key(thread)).and_then(|sc| sc.ego_space_id))
+}
+
+fn current_backend_for(args: &Value, visible_default: bool, thread: Option<&str>) -> Result<BrowserBackend, String> {
     match args
         .get("backend")
         .and_then(Value::as_str)
@@ -340,15 +367,18 @@ fn current_backend(args: &Value, visible_default: bool) -> Result<BrowserBackend
     {
         return Ok(BrowserBackend::EgoLite);
     }
-    let active = state().lock().ok().and_then(|s| s.active_backend);
-    Ok(active.unwrap_or(BrowserBackend::Obscura))
+    Ok(scope_backend(thread).unwrap_or(BrowserBackend::Obscura))
 }
 
-fn set_active_backend(backend: BrowserBackend) {
+fn set_active_backend_for(backend: BrowserBackend, thread: Option<&str>) {
     if let Ok(mut s) = state().lock() {
-        s.active_backend = Some(backend);
+        s.scopes
+            .entry(scope_key(thread))
+            .or_default()
+            .active_backend = Some(backend);
     }
 }
+
 
 fn executable_path(env_key: &str, executable: &str, extra: &[PathBuf]) -> Option<String> {
     if let Ok(path) = std::env::var(env_key) {
@@ -722,8 +752,8 @@ fn json_string(value: &str) -> String {
     serde_json::to_string(value).unwrap_or_else(|_| "null".into())
 }
 
-fn ego_script(body: String) -> String {
-    let space_id = state().lock().ok().and_then(|s| s.ego_space_id);
+fn ego_script(body: String, thread: Option<&str>) -> String {
+    let space_id = scope_ego_space(thread);
     format!(
         "{}\n{}\nconst result = await (async () => {{ {} }})();\nconsole.log({} + JSON.stringify(result));",
         ego_connect_expression(space_id),
@@ -733,7 +763,7 @@ fn ego_script(body: String) -> String {
     )
 }
 
-async fn run_ego_script(script: String) -> Result<Value, String> {
+async fn run_ego_script(script: String, thread: Option<&str>) -> Result<Value, String> {
     let binary = ego_path().ok_or_else(|| backend_install_error(BrowserBackend::EgoLite))?;
     let mut child = Command::new(binary)
         .arg("nodejs")
@@ -773,7 +803,10 @@ async fn run_ego_script(script: String) -> Result<Value, String> {
         .or_else(|| value.get("spaceId").and_then(Value::as_i64))
     {
         if let Ok(mut s) = state().lock() {
-            s.ego_space_id = Some(id);
+            s.scopes
+                .entry(scope_key(thread))
+                .or_default()
+                .ego_space_id = Some(id);
         }
     }
     if let Value::Object(ref mut obj) = value {
@@ -787,12 +820,12 @@ fn ego_ref_or_selector(args: &Value) -> Result<String, String> {
         .ok_or_else(|| "browser target requires ref, selector or locator".to_string())
 }
 
-async fn call_ego_tool(name: &str, args: &Value) -> Result<Value, String> {
+async fn call_ego_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     if name == "browser_status" {
         return Ok(json!({
             "available": ego_path().is_some(),
             "backend": "ego-lite",
-            "taskSpaceId": state().lock().ok().and_then(|s| s.ego_space_id),
+            "taskSpaceId": scope_ego_space(thread),
         }));
     }
     let body = match name {
@@ -935,10 +968,14 @@ async fn call_ego_tool(name: &str, args: &Value) -> Result<Value, String> {
         }
         other => return Err(format!("browser tool {other} is not implemented for ego-lite")),
     };
-    run_ego_script(ego_script(body)).await
+    run_ego_script(ego_script(body, thread), thread).await
 }
 
-pub(crate) async fn call_browser_tool(name: &str, args: &Value) -> Result<Value, String> {
+pub(crate) async fn call_browser_tool(
+    name: &str,
+    args: &Value,
+    thread: Option<&str>,
+) -> Result<Value, String> {
     let required = match name {
         "browser_navigate" => Some("url"),
         "browser_evaluate" => Some("expression"),
@@ -965,16 +1002,12 @@ pub(crate) async fn call_browser_tool(name: &str, args: &Value) -> Result<Value,
         "browser_status" => {
             let obscura = obscura_path();
             let ego = ego_path();
-            let (active, ego_space_id, obscura_running) = state()
+            let obscura_running = state()
                 .lock()
-                .map(|s| {
-                    (
-                        s.active_backend.map(|b| b.name()),
-                        s.ego_space_id,
-                        s.obscura.as_ref().map(|p| (p.port, p.pid)),
-                    )
-                })
-                .unwrap_or((None, None, None));
+                .ok()
+                .and_then(|s| s.obscura.as_ref().map(|p| (p.port, p.pid)));
+            let active = scope_backend(thread).map(|b| b.name());
+            let ego_space_id = scope_ego_space(thread);
             return Ok(json!({
                 "available": obscura.is_some() || ego.is_some(),
                 "activeBackend": active,
@@ -986,11 +1019,11 @@ pub(crate) async fn call_browser_tool(name: &str, args: &Value) -> Result<Value,
             }));
         }
         "browser_open" => {
-            let backend = current_backend(args, true)?;
+            let backend = current_backend_for(args, true, thread)?;
             if backend == BrowserBackend::EgoLite && ego_path().is_none() {
                 return Err(backend_install_error(BrowserBackend::EgoLite));
             }
-            set_active_backend(backend);
+            set_active_backend_for(backend, thread);
             return match backend {
                 BrowserBackend::Obscura => call_obscura_tool(name, args).await.map(|mut v| {
                     if let Value::Object(ref mut obj) = v {
@@ -998,12 +1031,12 @@ pub(crate) async fn call_browser_tool(name: &str, args: &Value) -> Result<Value,
                     }
                     v
                 }),
-                BrowserBackend::EgoLite => call_ego_tool(name, args).await,
+                BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
             };
         }
         "browser_tabs" => {
-            let backend = current_backend(args, false)?;
-            set_active_backend(backend);
+            let backend = current_backend_for(args, false, thread)?;
+            set_active_backend_for(backend, thread);
             return match backend {
                 BrowserBackend::Obscura => {
                     call_obscura_tool("browser_snapshot", args)
@@ -1019,13 +1052,13 @@ pub(crate) async fn call_browser_tool(name: &str, args: &Value) -> Result<Value,
                             v
                         })
                 }
-                BrowserBackend::EgoLite => call_ego_tool(name, args).await,
+                BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
             };
         }
         _ => {}
     }
-    let backend = current_backend(args, false)?;
-    set_active_backend(backend);
+    let backend = current_backend_for(args, false, thread)?;
+    set_active_backend_for(backend, thread);
     match backend {
         BrowserBackend::Obscura => call_obscura_tool(name, args).await.map(|mut v| {
             if let Value::Object(ref mut obj) = v {
@@ -1033,6 +1066,6 @@ pub(crate) async fn call_browser_tool(name: &str, args: &Value) -> Result<Value,
             }
             v
         }),
-        BrowserBackend::EgoLite => call_ego_tool(name, args).await,
+        BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
     }
 }

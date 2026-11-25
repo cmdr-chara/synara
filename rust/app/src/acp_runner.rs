@@ -1045,7 +1045,7 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
             .and_then(Value::as_bool)
             == Some(true)
         {
-            json!([{"type":"http","name":"synara","url":crate::agent_gateway_mcp::agent_gateway_url(),"headers":[{"name":"Authorization","value":format!("Bearer {}",crate::agent_gateway_mcp::agent_gateway_token())}]}])
+            json!([{"type":"http","name":"synara","url":crate::agent_gateway_mcp::agent_gateway_url(),"headers":[{"name":"Authorization","value":format!("Bearer {}",crate::agent_gateway_mcp::issue_thread_token(&thread_id))}]}])
         } else {
             json!([])
         };
@@ -2686,7 +2686,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                         "name": "Authorization",
                         "value": format!(
                             "Bearer {}",
-                            crate::agent_gateway_mcp::agent_gateway_token()
+                            crate::agent_gateway_mcp::issue_thread_token(&thread_id)
                         ),
                     }],
                 }])

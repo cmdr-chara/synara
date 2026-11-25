@@ -1226,10 +1226,51 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             }
             match v.get("type").and_then(Value::as_str).unwrap_or("") {
                 "system" => {
-                    if v.get("subtype").and_then(Value::as_str) == Some("init") {
+                    let subtype = v.get("subtype").and_then(Value::as_str).unwrap_or("");
+                    if subtype == "init" {
                         if let Some(sid) = v.get("session_id").and_then(Value::as_str) {
                             session_id = Some(sid.to_string());
                             let _ = set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(sid));
+                        }
+                    } else if subtype == "task_progress" || subtype == "task_notification" {
+                        // Subagent progress/terminal, sliced from upstream
+                        // ClaudeAdapter: emit only when the event's tool_use_id
+                        // matches an in-flight tool call — unattributable events
+                        // are dropped exactly as upstream drops them. The deep
+                        // layer (SendMessage alias retirement, child-thread
+                        // mirroring, workflow pause/kill) is not ported yet.
+                        let tool_use_id = v.get("tool_use_id").and_then(Value::as_str).unwrap_or("");
+                        let task_id = v.get("task_id").and_then(Value::as_str).unwrap_or("");
+                        let attributable = !tool_use_id.is_empty() && pending_tools.contains_key(tool_use_id);
+                        if attributable && !task_id.is_empty() {
+                            let mut payload = serde_json::Map::new();
+                            payload.insert("taskId".into(), json!(task_id));
+                            if let Some(d) = v.get("description").and_then(Value::as_str) {
+                                if !d.trim().is_empty() {
+                                    payload.insert("description".into(), json!(d.trim()));
+                                }
+                            }
+                            if let Some(sum) = v.get("summary").and_then(Value::as_str) {
+                                if !sum.trim().is_empty() {
+                                    payload.insert("summary".into(), json!(sum.trim()));
+                                }
+                            }
+                            if let Some(u) = v.get("usage").filter(|u| u.is_object()) {
+                                payload.insert("usage".into(), u.clone());
+                            }
+                            if let Some(lt) = v.get("last_tool_name").and_then(Value::as_str) {
+                                if !lt.trim().is_empty() {
+                                    payload.insert("lastToolName".into(), json!(lt.trim()));
+                                }
+                            }
+                            if let Some(st) = v.get("status").and_then(Value::as_str) {
+                                payload.insert("status".into(), json!(st));
+                            }
+                            let kind = if subtype == "task_progress" { "task.progress" } else { "task.updated" };
+                            let summary = if subtype == "task_progress" { "Subagent progress" } else { "Subagent update" };
+                            if let Ok(c) = open_state_rw() {
+                                let _ = append_activity(&c, thread_id, &turn_id, "info", kind, summary, &Value::Object(payload));
+                            }
                         }
                     }
                 }

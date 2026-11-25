@@ -390,6 +390,24 @@ await scenario("claude workflow launch emits task.updated and task.progress", as
   assert(progress.includes("scanner"), "zipped label missing from progress");
 });
 
+// 18. claude subagent task_progress/task_notification attribution
+await scenario("claude subagent task progress attributed, unknown dropped", async () => {
+  const tid = await runTurn("claudeAgent", "claude-sonnet-4-5", "subagentdemo run", 3000);
+  const progress = sql(
+    `select payload_json from projection_thread_activities where thread_id='${tid}' and kind='task.progress' limit 1`,
+  );
+  assert(progress.includes("task-1"), "no attributed task.progress");
+  assert(progress.includes("Read"), "lastToolName missing");
+  const dropped = sql(
+    `select count(*) from projection_thread_activities where thread_id='${tid}' and payload_json like '%must be dropped%'`,
+  );
+  assert(Number(dropped) === 0, "unattributable event was not dropped");
+  const terminal = sql(
+    `select payload_json from projection_thread_activities where thread_id='${tid}' and kind='task.updated' and payload_json like '%found 12 files%' limit 1`,
+  );
+  assert(terminal.includes("completed"), "no terminal task.updated with status");
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

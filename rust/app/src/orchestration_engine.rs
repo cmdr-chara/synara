@@ -1294,6 +1294,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         let provider = start_provider;
         if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
             || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
+            || provider.as_deref().is_some_and(crate::opencode_runner::supports_provider)
             || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
         {
             let cwd: Option<String> = conn
@@ -1311,6 +1312,8 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
                     crate::codex_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
                 } else if crate::claude_runner::supports_provider(&pname) {
                     crate::claude_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                } else if crate::opencode_runner::supports_provider(&pname) {
+                    crate::opencode_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
                 } else {
                     crate::acp_runner::start_turn(
                         pname,
@@ -4301,6 +4304,7 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let provider = provider_for_start;
     if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
         || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
+        || provider.as_deref().is_some_and(crate::opencode_runner::supports_provider)
         || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
     {
         let message = conn
@@ -4327,6 +4331,8 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 crate::codex_runner::start_turn(thread_id.clone(), message_id, text, cwd);
             } else if crate::claude_runner::supports_provider(&pname) {
                 crate::claude_runner::start_turn(thread_id.clone(), message_id, text, cwd);
+            } else if crate::opencode_runner::supports_provider(&pname) {
+                crate::opencode_runner::start_turn(thread_id.clone(), message_id, text, cwd);
             } else {
                 crate::acp_runner::start_turn(pname, thread_id.clone(), message_id, text, cwd);
             }

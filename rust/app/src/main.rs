@@ -63,6 +63,10 @@ async fn main() {
     original::report_fallbacks();
     runtime_status::start_sampler();
     let original = original::Original::start().await;
+    let recovered = orchestration_engine::recover_orphaned_turns();
+    if recovered > 0 {
+        eprintln!("startup recovery: settled {recovered} orphaned thread(s) as interrupted");
+    }
     let app = units::router()
         .merge(native_ws::router())
         .merge(ws_relay::router())

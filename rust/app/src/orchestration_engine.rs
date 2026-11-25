@@ -6341,6 +6341,100 @@ fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
     }))
 }
 
+// ---- startup crash recovery ----
+//
+// At boot no provider process can be alive, so any turn still projected as
+// `running` (or any session still projected as active) belongs to a server
+// that died mid-turn. Upstream captures the same orphans through its crash
+// resume record; here we settle them as interrupted so threads do not stay
+// stuck in a running state forever. Auto-resume of the interrupted work is
+// the upstream `thread.turn.resume` continuation flow and is intentionally
+// not part of this sweep.
+pub fn recover_orphaned_turns() -> usize {
+    let Ok(conn) = open_state_rw() else { return 0 };
+    if conn.execute_batch("PRAGMA busy_timeout = 5000;").is_err() {
+        return 0;
+    }
+    let now = iso_now_ms();
+    let orphans: Vec<(String, String)> = conn
+        .prepare("SELECT thread_id, turn_id FROM projection_turns WHERE state = 'running'")
+        .and_then(|mut stmt| {
+            let rows = stmt
+                .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
+                .filter_map(|row| row.ok())
+                .collect::<Vec<_>>();
+            Ok(rows)
+        })
+        .unwrap_or_default();
+    let mut affected_threads: std::collections::HashSet<String> = std::collections::HashSet::new();
+    for (thread_id, turn_id) in &orphans {
+        let _ = conn.execute(
+            "UPDATE projection_turns SET state = 'interrupted', completed_at = ?3              WHERE thread_id = ?1 AND turn_id = ?2 AND state = 'running'",
+            params![thread_id, turn_id, now],
+        );
+        let _ = conn.execute(
+            "UPDATE projection_thread_messages SET is_streaming = 0, updated_at = ?3              WHERE thread_id = ?1 AND turn_id = ?2 AND is_streaming = 1",
+            params![thread_id, turn_id, now],
+        );
+        affected_threads.insert(thread_id.clone());
+    }
+
+    // Any session that still looks active is orphaned for the same reason,
+    // even when its turn row is missing or already settled (crash between
+    // finalize steps).
+    let stuck_sessions: Vec<(String, Option<String>)> = conn
+        .prepare(
+            "SELECT thread_id, runtime_mode FROM projection_thread_sessions              WHERE status IN ('starting', 'running')                 OR (status != 'error' AND active_turn_id IS NOT NULL)",
+        )
+        .and_then(|mut stmt| {
+            let rows = stmt
+                .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?)))?
+                .filter_map(|row| row.ok())
+                .collect::<Vec<_>>();
+            Ok(rows)
+        })
+        .unwrap_or_default();
+    let detail = "Synara restarted while this turn was running.";
+    for (thread_id, runtime_mode) in &stuck_sessions {
+        let _ = conn.execute(
+            "UPDATE projection_thread_sessions              SET status = 'interrupted', active_turn_id = NULL, last_error = ?2, updated_at = ?3              WHERE thread_id = ?1",
+            params![thread_id, detail, now],
+        );
+        affected_threads.insert(thread_id.clone());
+        let _ = crate::acp_runner::append_event(
+            &conn,
+            thread_id,
+            "thread.session-set",
+            &now,
+            json!({
+                "threadId": thread_id,
+                "session": {
+                    "threadId": thread_id,
+                    "status": "interrupted",
+                    "activeTurnId": null,
+                    "runtimeMode": runtime_mode,
+                    "lastError": detail,
+                    "updatedAt": now,
+                },
+            }),
+        );
+    }
+    for thread_id in &affected_threads {
+        let _ = crate::acp_runner::append_event(
+            &conn,
+            thread_id,
+            "thread.turn-interrupted",
+            &now,
+            json!({
+                "threadId": thread_id,
+                "reason": "server-restart",
+                "detail": detail,
+            }),
+        );
+    }
+    affected_threads.len()
+}
+
 // ---- orchestration.repairState ----
 //
 // Rebuilds the derived projection state from the event log, matching upstream

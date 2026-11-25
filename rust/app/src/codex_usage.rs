@@ -508,6 +508,42 @@ pub fn fetch_live_codex_usage() -> Result<Value, WsErr> {
     }))
 }
 
+// TTL cache mirroring upstream: 5 minutes for healthy snapshots, 60 seconds
+// for degraded ones. The mutex doubles as the in-flight join — concurrent
+// panel refreshes serialize instead of racing the rotating-token endpoint.
+static FETCH_CACHE: LazyLock<Mutex<Option<(i64, Result<Value, String>)>>> = LazyLock::new(|| Mutex::new(None));
+static FETCH_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
+const SNAPSHOT_CACHE_TTL_MS: i64 = 5 * 60 * 1000;
+const SNAPSHOT_CACHE_DEGRADED_TTL_MS: i64 = 60 * 1000;
+
+pub fn fetch_live_codex_usage_cached(now: i64) -> Result<Value, WsErr> {
+    {
+        if let Ok(cache) = FETCH_CACHE.lock() {
+            if let Some((fetched_at, outcome)) = cache.as_ref() {
+                let ttl = if outcome.is_ok() { SNAPSHOT_CACHE_TTL_MS } else { SNAPSHOT_CACHE_DEGRADED_TTL_MS };
+                if now - fetched_at < ttl {
+                    return outcome.clone().map_err(|e| err(&e));
+                }
+            }
+        }
+    }
+    let _guard = FETCH_LOCK.lock().map_err(|_| err("usage fetch lock"))?;
+    // Re-check inside the lock: a serialized predecessor may have just filled it.
+    if let Ok(cache) = FETCH_CACHE.lock() {
+        if let Some((fetched_at, outcome)) = cache.as_ref() {
+            let ttl = if outcome.is_ok() { SNAPSHOT_CACHE_TTL_MS } else { SNAPSHOT_CACHE_DEGRADED_TTL_MS };
+            if now - fetched_at < ttl {
+                return outcome.clone().map_err(|e| err(&e));
+            }
+        }
+    }
+    let outcome = fetch_live_codex_usage().map_err(|e| e.0);
+    if let Ok(mut cache) = FETCH_CACHE.lock() {
+        *cache = Some((now, outcome.clone()));
+    }
+    outcome.map_err(|e| err(&e))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

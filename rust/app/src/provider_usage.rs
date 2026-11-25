@@ -1,12 +1,11 @@
 //! Passive provider usage snapshots.
 //!
-//! Deliberately unlike upstream: upstream's live usage fetchers read provider
-//! OAuth tokens out of credential stores and replay them against provider web
-//! APIs, the pattern that gets user accounts banned. Synara never touches
-//! credential material: the only usage evidence served here is what the
-//! official provider CLIs emit themselves while running turns (Codex
-//! `account/rateLimits/updated`, Claude `rate_limit_info`). Runners persist the
-//! raw payloads per provider; this module shapes them into the shared
+//! Codex goes live through `codex_usage` (user-approved: Codex does not ban
+//! OAuth replay, and the rotating-token discipline is ported exactly). Claude
+//! and Antigravity tokens remain untouchable — those providers stay passive:
+//! the only usage evidence served for them is what the official CLIs emit
+//! themselves while running turns (Claude `rate_limit_info`). Runners persist
+//! the raw payloads per provider; this module shapes them into the shared
 //! `ServerProviderUsageSnapshot` contract.
 
 use serde_json::{json, Value};
@@ -164,6 +163,40 @@ fn snapshot_from(provider: &str, record: &Value) -> Value {
     snapshot
 }
 
+/// Merge the live Codex fetch into its snapshot, upstream-style: the live
+/// fetcher wins when it answers, passive CLI evidence carries the snapshot
+/// when it does not. The fetch itself is TTL-cached inside codex_usage so
+/// panel refreshes cannot hammer the endpoint — or burn rotating tokens.
+fn with_live_codex(mut snapshot: Value) -> Value {
+    let now_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0);
+    match crate::codex_usage::fetch_live_codex_usage_cached(now_ms) {
+        Ok(live) => {
+            snapshot["limits"] = live.get("limits").cloned().unwrap_or(json!([]));
+            snapshot["usageLines"] = live.get("usageLines").cloned().unwrap_or(json!([]));
+            if let Some(plan) = live.get("planName").and_then(|p| p.as_str()) {
+                snapshot["planName"] = json!(plan);
+            }
+            snapshot["source"] = json!("codex-wham-usage");
+            snapshot["status"] = json!("ok");
+            snapshot["updatedAt"] = json!(crate::todo::iso_from_ms(now_ms));
+            snapshot
+        }
+        Err(e) => {
+            if e.0.contains("auth required") && snapshot.get("limits").and_then(Value::as_array).map(|l| l.is_empty()).unwrap_or(true) {
+                snapshot["status"] = json!("needs-auth");
+                snapshot["detail"] = json!("Sign in with ChatGPT to see Codex usage.");
+            } else {
+                // Degraded live fetch: passive evidence still serves, marked stale.
+                snapshot["stale"] = json!(true);
+            }
+            snapshot
+        }
+    }
+}
+
 fn all_snapshots() -> Vec<Value> {
     let dir = usage_dir();
     let mut out = Vec::new();
@@ -177,9 +210,20 @@ fn all_snapshots() -> Vec<Value> {
                 continue;
             };
             if let Some(record) = load_record(&path) {
-                out.push(snapshot_from(provider, &record));
+                let mut snap = snapshot_from(provider, &record);
+                if provider == "codex" {
+                    snap = with_live_codex(snap);
+                }
+                out.push(snap);
             }
         }
+    }
+    if !out.iter().any(|snap| snap.get("provider").and_then(Value::as_str) == Some("codex")) {
+        out.push(with_live_codex(json!({
+            "provider": "codex",
+            "limits": [],
+            "usageLines": [],
+        })));
     }
     out.sort_by(|a, b| {
         a.get("provider")
@@ -218,12 +262,23 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
                 .and_then(Value::as_str)
                 .ok_or_else(|| err("server.getProviderUsageSnapshot requires a provider"))?;
             let path = usage_dir().join(format!("{provider}.json"));
-            let Some(record) = load_record(&path) else {
+            let base = load_record(&path).map(|record| snapshot_from(provider, &record));
+            if provider == "codex" {
+                // Live-first like upstream: passive evidence is the fallback,
+                // not a precondition.
+                let base = base.unwrap_or_else(|| json!({
+                    "provider": "codex",
+                    "limits": [],
+                    "usageLines": [],
+                }));
+                return Ok(with_live_codex(base));
+            }
+            let Some(snapshot) = base else {
                 return Err(err(&format!(
                     "No passive usage evidence captured for provider '{provider}' yet"
                 )));
             };
-            Ok(snapshot_from(provider, &record))
+            Ok(snapshot)
         }
         "server.consumeCodexResetCredit" => consume_codex_reset_credit(payload).map(|outcome| json!({"outcome": outcome})),
         _ => Err(err("unhandled provider usage tag")),

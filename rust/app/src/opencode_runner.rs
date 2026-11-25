@@ -1674,7 +1674,11 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .and_then(Value::as_str)
         .map(str::to_string);
 
-    let launch_key = cwd.clone();
+    let launch_key = format!(
+        "{}|{}",
+        cwd,
+        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+    );
     let cancelled = Arc::new(AtomicBool::new(false));
     let (child_shared, port, password, reused_session_id) = if let Some(parked) =
         take_parked(thread_id, &launch_key)
@@ -1694,7 +1698,11 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         let password = random_token();
         let mut command = Command::new(opencode_binary());
         crate::provider_env::sanitize_provider_child(&mut command);
-        crate::provider_instances::apply_instance_environment(&mut command, "opencode");
+        crate::provider_instances::apply_instance_environment_for(
+            &mut command,
+            "opencode",
+            model_selection.get("instanceId").and_then(Value::as_str),
+        );
         command
             .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
             .current_dir(&cwd)

@@ -1002,8 +1002,9 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
     )
     .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
     let launch_key = format!(
-        "{provider}|{}|{turn_runtime_mode}|{cwd}",
-        selected_model.as_deref().unwrap_or("")
+        "{provider}|{}|{turn_runtime_mode}|{cwd}|{}",
+        selected_model.as_deref().unwrap_or(""),
+        model_value.get("instanceId").and_then(Value::as_str).unwrap_or("")
     );
     let mut command = Command::new(&launch.binary);
     command
@@ -1013,7 +1014,11 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
     crate::provider_env::sanitize_provider_child(&mut command);
-    crate::provider_instances::apply_instance_environment(&mut command, provider);
+    crate::provider_instances::apply_instance_environment_for(
+        &mut command,
+        provider,
+        model_value.get("instanceId").and_then(Value::as_str),
+    );
     for (key, value) in &launch.env {
         command.env(key, value);
     }

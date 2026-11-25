@@ -156,7 +156,7 @@ fn read_json_line(reader: &mut BufReader<ChildStdout>) -> Result<Option<Value>, 
     }
 }
 
-fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
+fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str, instance_id: Option<&str>) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
     let session_id: String = thread_id
         .chars()
         .filter(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '-'))
@@ -183,7 +183,7 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
     }
     let mut __cmd = Command::new(pi_binary());
     crate::provider_env::sanitize_provider_child(&mut __cmd);
-    crate::provider_instances::apply_instance_environment(&mut __cmd, "pi");
+    crate::provider_instances::apply_instance_environment_for(&mut __cmd, "pi", instance_id);
     let mut child = __cmd
         .args(&args)
         .current_dir(cwd)
@@ -409,12 +409,13 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
     let launch_key = format!(
-        "{}|{}|{}",
+        "{}|{}|{}|{}",
         cwd,
         runtime_mode,
-        selected_model.as_deref().unwrap_or("")
+        selected_model.as_deref().unwrap_or(""),
+        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
     );
-    let (child, stdin, stdout) = spawn_pi(&cwd, &runtime_mode, selected_model.as_deref(), thread_id)?;
+    let (child, stdin, stdout) = spawn_pi(&cwd, &runtime_mode, selected_model.as_deref(), thread_id, model_selection.get("instanceId").and_then(Value::as_str))?;
     if let Ok(mut parked_map) = PARKED.lock() {
         parked_map.insert(
             thread_id.to_string(),
@@ -524,13 +525,19 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             .map(|variant| format!("{model}:{variant}"))
             .unwrap_or(model)
     });
-    let launch_key = format!("{}|{}|{}", cwd, turn_runtime_mode, selected_model.as_deref().unwrap_or(""));
+    let launch_key = format!(
+        "{}|{}|{}|{}",
+        cwd,
+        turn_runtime_mode,
+        selected_model.as_deref().unwrap_or(""),
+        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+    );
     let cancelled = Arc::new(AtomicBool::new(false));
 
     let (mut child, stdin, mut reader, reused) = if let Some(parked) = take_parked(thread_id, &launch_key) {
         (parked.child, parked.stdin, parked.reader, true)
     } else {
-        let (child, stdin, stdout) = spawn_pi(&cwd, &turn_runtime_mode, selected_model.as_deref(), thread_id)?;
+        let (child, stdin, stdout) = spawn_pi(&cwd, &turn_runtime_mode, selected_model.as_deref(), thread_id, model_selection.get("instanceId").and_then(Value::as_str))?;
         (child, Arc::new(Mutex::new(stdin)), BufReader::new(stdout), false)
     };
     {

@@ -62,6 +62,13 @@ for line in sys.stdin:
    send({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':'tu-2','content':json.dumps({'task':{'taskId':'1','subject':'implement parser'}})}]}})
    send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
    send({'type':'result','subtype':'success','result':'done'})
+  elif 'subagentdemo' in body:
+   send({'type':'assistant','message':{'content':[{'type':'tool_use','id':'tu-task','name':'Task','input':{'prompt':'explore the codebase','subagent_type':'Explore'}}]}})
+   send({'type':'system','subtype':'task_progress','task_id':'task-1','tool_use_id':'tu-task','description':'Explore: codebase','last_tool_name':'Read','usage':{'totalTokens':1200}})
+   send({'type':'system','subtype':'task_progress','task_id':'task-1','tool_use_id':'tu-unknown','description':'must be dropped'})
+   send({'type':'system','subtype':'task_notification','task_id':'task-1','tool_use_id':'tu-task','status':'completed','summary':'found 12 files'})
+   send({'type':'assistant','message':{'content':[{'type':'text','text':'subagent done'}]}})
+   send({'type':'result','subtype':'success','result':'done'})
   elif 'workflowdemo' in body:
    send({'type':'assistant','message':{'content':[{'type':'tool_use','id':'tu-wf','name':'Workflow','input':{'script':'export const meta={name:"demo"}'}}]}})
    launch={'taskType':'local_workflow','taskId':'wf-task-1','runId':'wf_gate123','scriptPath':'/tmp/gate-wf.js','transcriptDir':'/tmp/gate-wf-transcripts'}

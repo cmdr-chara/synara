@@ -857,11 +857,18 @@ fn m099(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 100 MessageTextChunks — PARTIAL
+// 100 MessageTextChunks — hand-ported: guarded column additions plus the
+// chunks table. The only interpolation was the constant table-name loop.
 fn m100(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages ADD COLUMN text_event_sequence INTEGER NOT NULL DEFAULT 0")?;
-    // MANUAL: dynamic sql with interpolation was here
-    execute(conn, "CREATE TABLE IF NOT EXISTS message_text_chunks (\n      thread_id TEXT NOT NULL,\n      message_id TEXT NOT NULL,\n      event_sequence INTEGER NOT NULL,\n      segment_sequence INTEGER,\n      text_json TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (thread_id, message_id, event_sequence),\n      FOREIGN KEY (thread_id, message_id)\n        REFERENCES projection_thread_messages(thread_id, message_id) ON DELETE CASCADE\n    ) WITHOUT ROWID")?;
+    if !column_exists(conn, "projection_thread_messages", "text_event_sequence") {
+        execute(conn, "ALTER TABLE projection_thread_messages ADD COLUMN text_event_sequence INTEGER NOT NULL DEFAULT 0")?;
+    }
+    for table in ["projection_thread_messages", "message_text_segments"] {
+        if !column_exists(conn, table, "text_json") {
+            execute(conn, &format!("ALTER TABLE {table} ADD COLUMN text_json TEXT"))?;
+        }
+    }
+    execute(conn, "CREATE TABLE IF NOT EXISTS message_text_chunks (thread_id TEXT NOT NULL, message_id TEXT NOT NULL, event_sequence INTEGER NOT NULL, segment_sequence INTEGER, text_json TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (thread_id, message_id, event_sequence), FOREIGN KEY (thread_id, message_id) REFERENCES projection_thread_messages(thread_id, message_id) ON DELETE CASCADE) WITHOUT ROWID")?;
     execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_message_text_chunks_segment ON message_text_chunks(thread_id, message_id, segment_sequence, event_sequence)")?;
     Ok(())
 }
@@ -1036,18 +1043,112 @@ fn m120(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 121 ClearAutomationDefinitionProviderOptions — PARTIAL
+// 121 ClearAutomationDefinitionProviderOptions — hand-ported: row-by-row
+// account identity migration. Safe rows keep their canonical selection; unsafe
+// rows fail closed: automation disabled, running rows interrupted.
 fn m121(conn: &Connection) -> Result<(), WsErr> {
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
+    use crate::migrations::automation_identity::{
+        make_unresolved_model_selection, resolve_automation_provider_identity, IdentityResolution,
+    };
+    let mut stmt = conn
+        .prepare("SELECT automation_id, model_selection_json, provider_options_json FROM automation_definitions WHERE provider_options_json IS NOT NULL")
+        .map_err(|e| err(format!("sql failed: {e}")))?;
+    let rows: Vec<(String, String, String)> = stmt
+        .query_map([], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))
+        .map_err(|e| err(format!("sql failed: {e}")))?
+        .filter_map(|r| r.ok())
+        .collect();
+    drop(stmt);
+    let migrated_at = chrono::Utc::now().to_rfc3339();
+    for (automation_id, model_json, options_json) in rows {
+        let model_value: serde_json::Value =
+            serde_json::from_str(&model_json).unwrap_or(serde_json::Value::Null);
+        let options_value: serde_json::Value =
+            serde_json::from_str(&options_json).unwrap_or(serde_json::Value::Null);
+        match resolve_automation_provider_identity(&model_value, Some(&options_value), None) {
+            IdentityResolution::Safe(selection) => {
+                conn.execute(
+                    "UPDATE automation_definitions SET model_selection_json = ?1, provider_options_json = NULL WHERE automation_id = ?2",
+                    rusqlite::params![serde_json::to_string(&selection).unwrap_or_default(), automation_id],
+                ).map_err(|e| err(format!("sql failed: {e}")))?;
+            }
+            IdentityResolution::Unsafe => {
+                let (_provider, unresolved) =
+                    make_unresolved_model_selection(&model_value, Some(&options_value), None);
+                conn.execute(
+                    "UPDATE automation_definitions SET enabled = 0, next_run_at = NULL, model_selection_json = ?1, provider_options_json = NULL WHERE automation_id = ?2",
+                    rusqlite::params![serde_json::to_string(&unresolved).unwrap_or_default(), automation_id],
+                ).map_err(|e| err(format!("sql failed: {e}")))?;
+                conn.execute(
+                    "UPDATE automation_runs SET status = 'interrupted', error = COALESCE(error, 'Automation stopped during provider account migration because its saved account could not be mapped safely.'), finished_at = ?1, updated_at = ?1, lease_expires_at = NULL, claimed_by = NULL WHERE automation_id = ?2 AND status IN ('pending', 'claimed', 'running', 'waiting-for-approval')",
+                    rusqlite::params![migrated_at, automation_id],
+                ).map_err(|e| err(format!("sql failed: {e}")))?;
+            }
+        }
+    }
     Ok(())
 }
 
-// 122 ClearAutomationRunProviderOptions — PARTIAL
+// 122 ClearAutomationRunProviderOptions — hand-ported: queued-run snapshots
+// get the same identity migration; unsafe or malformed rows become valid
+// redacted tombstones so neither secrets nor decode failures survive.
 fn m122(conn: &Connection) -> Result<(), WsErr> {
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
+    use crate::migrations::automation_identity::{
+        is_valid_permission_snapshot, make_unresolved_permission_snapshot,
+        resolve_automation_provider_identity, IdentityResolution,
+    };
+    let mut stmt = conn
+        .prepare("SELECT run_id, status, permission_snapshot_json, created_at FROM automation_runs WHERE NOT json_valid(permission_snapshot_json) OR json_type(permission_snapshot_json, '$.providerOptions') IS NOT NULL")
+        .map_err(|e| err(format!("sql failed: {e}")))?;
+    let rows: Vec<(String, String, String, String)> = stmt
+        .query_map([], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)))
+        .map_err(|e| err(format!("sql failed: {e}")))?
+        .filter_map(|r| r.ok())
+        .collect();
+    drop(stmt);
+    let migrated_at = chrono::Utc::now().to_rfc3339();
+    for (run_id, status, snapshot_json, created_at) in rows {
+        let snapshot: serde_json::Value =
+            serde_json::from_str(&snapshot_json).unwrap_or(serde_json::Value::Null);
+        let mut unsafe_snapshot = false;
+        let migrated: serde_json::Map<String, serde_json::Value> = if let Some(record) = snapshot.as_object() {
+            let resolution = resolve_automation_provider_identity(
+                record.get("modelSelection").unwrap_or(&serde_json::Value::Null),
+                record.get("providerOptions"),
+                record.get("provider"),
+            );
+            match resolution {
+                IdentityResolution::Safe(selection) => {
+                    let mut sanitized = record.clone();
+                    sanitized.insert("modelSelection".to_string(), serde_json::Value::Object(selection));
+                    sanitized.remove("providerOptions");
+                    if is_valid_permission_snapshot(&sanitized) {
+                        sanitized
+                    } else {
+                        unsafe_snapshot = true;
+                        make_unresolved_permission_snapshot(&snapshot, &created_at)
+                    }
+                }
+                IdentityResolution::Unsafe => {
+                    unsafe_snapshot = true;
+                    make_unresolved_permission_snapshot(&snapshot, &created_at)
+                }
+            }
+        } else {
+            unsafe_snapshot = true;
+            make_unresolved_permission_snapshot(&snapshot, &created_at)
+        };
+        conn.execute(
+            "UPDATE automation_runs SET permission_snapshot_json = ?1 WHERE run_id = ?2",
+            rusqlite::params![serde_json::to_string(&migrated).unwrap_or_default(), run_id],
+        ).map_err(|e| err(format!("sql failed: {e}")))?;
+        if unsafe_snapshot && matches!(status.as_str(), "pending" | "claimed" | "running" | "waiting-for-approval") {
+            conn.execute(
+                "UPDATE automation_runs SET status = 'interrupted', error = COALESCE(error, 'Automation stopped during provider account migration because its saved account could not be mapped safely.'), finished_at = ?1, updated_at = ?1, lease_expires_at = NULL, claimed_by = NULL WHERE run_id = ?2",
+                rusqlite::params![migrated_at, run_id],
+            ).map_err(|e| err(format!("sql failed: {e}")))?;
+        }
+    }
     Ok(())
 }
 

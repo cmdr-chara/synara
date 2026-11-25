@@ -460,6 +460,7 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     cancel_any_provider_turn(&thread_id);
     crate::acp_runner::drop_thread_resources(&thread_id);
     crate::codex_runner::drop_thread_resources(&thread_id);
+    crate::claude_runner::drop_thread_resources(&thread_id);
     crate::opencode_runner::drop_thread_resources(&thread_id);
     let seq = commit_events(&conn, &events, &command_id)?;
     let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
@@ -1036,12 +1037,12 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         || crate::codex_runner::has_running_turn(&thread_id)
         || crate::claude_runner::has_running_turn(&thread_id)
         || crate::opencode_runner::has_running_turn(&thread_id);
-    // The Rust Claude runner uses one-shot headless CLI invocations, so only
-    // Codex accepts native mid-turn input here. Unsupported steers queue and
-    // interrupt the active turn instead of spawning a parallel provider turn.
+    // Codex app-server and Claude streaming-input both accept native mid-turn
+    // input. Unsupported steers queue and interrupt the active turn instead
+    // of spawning a parallel provider turn.
     let native_steer = dispatch_mode == "steer"
         && provider_turn_live
-        && active_provider.as_deref() == Some("codex");
+        && matches!(active_provider.as_deref(), Some("codex" | "claudeAgent"));
     let should_queue = row.parent_thread_id.is_none()
         && (row.claude_cache_review.is_some()
             || (provider_turn_live && !native_steer));
@@ -1310,8 +1311,15 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if interrupt_after_queue {
         cancel_any_provider_turn(&thread_id);
     }
-    if native_steer && !crate::codex_runner::steer_turn(&thread_id, &text) {
-        return Err(err("failed to deliver steering message to the active Codex turn"));
+    if native_steer {
+        let delivered = if active_provider.as_deref() == Some("codex") {
+            crate::codex_runner::steer_turn(&thread_id, &text)
+        } else {
+            crate::claude_runner::steer_turn(&thread_id, &text)
+        };
+        if !delivered {
+            return Err(err("failed to deliver steering message to the active provider turn"));
+        }
     }
 
     // Drive a real provider turn unless the message queued or rode the live turn.

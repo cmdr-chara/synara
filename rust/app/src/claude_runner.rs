@@ -1,34 +1,73 @@
-//! Claude provider runtime: drives the official `claude` CLI in headless
-//! stream-json mode. Synara never reads Claude OAuth credentials or cookies:
-//! the official binary alone owns authentication, so account tokens are never
-//! extracted or replayed — the pattern that gets ADE users banned.
-//!
-//! v1 vertical slice: one headless process per turn with `--resume` for
-//! session continuity, assistant text streamed into the projection, terminal
-//! result handling. Missing vs upstream: SDK control protocol (permissions,
-//! hooks, slash commands), MCP injection, effort/model switching, subagent
-//! tracking, edge-block retry.
+//! Claude provider runtime: drives the official `claude` CLI through its
+//! bidirectional stream-json control protocol. Authentication never passes
+//! through Synara: only the official binary reads OAuth credentials, so
+//! tokens/cookies are never extracted or replayed outside it.
 
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
-use std::process::{Child, Command, Stdio};
+use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
 use rusqlite::params;
 use serde_json::{json, Value};
 
-use crate::acp_runner::{append_assistant_text, err, session_set_event, set_session, set_turn_state};
+use crate::acp_runner::{
+    append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state,
+};
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
 use crate::todo::{iso_now_ms, WsErr};
 
 struct RunningTurn {
-    child: Arc<Mutex<Child>>,
+    stdin: Arc<Mutex<ChildStdin>>,
     cancelled: Arc<AtomicBool>,
 }
 
 static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
+
+/// A live Claude CLI parked after a clean result. The process owns the SDK
+/// session loop, hooks, queued input and control protocol; reusing it avoids
+/// the one-shot `--resume` restart cost and preserves native mid-turn input.
+struct ParkedClaude {
+    child: Child,
+    stdin: Arc<Mutex<ChildStdin>>,
+    reader: BufReader<ChildStdout>,
+    session_id: Option<String>,
+    launch_key: String,
+}
+
+static PARKED: LazyLock<Mutex<HashMap<String, ParkedClaude>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+fn drop_parked(mut parked: ParkedClaude) {
+    let _ = parked.child.kill();
+    let _ = parked.child.wait();
+}
+
+fn take_parked(thread_id: &str, launch_key: &str) -> Option<ParkedClaude> {
+    let parked = PARKED.lock().ok()?.remove(thread_id)?;
+    if parked.launch_key != launch_key {
+        drop_parked(parked);
+        return None;
+    }
+    let mut parked = parked;
+    match parked.child.try_wait() {
+        Ok(None) => Some(parked),
+        _ => {
+            drop_parked(parked);
+            None
+        }
+    }
+}
+
+pub fn drop_thread_resources(thread_id: &str) {
+    if let Ok(mut parked_map) = PARKED.lock() {
+        if let Some(parked) = parked_map.remove(thread_id) {
+            drop_parked(parked);
+        }
+    }
+}
 
 pub fn has_running_turn(thread_id: &str) -> bool {
     RUNNING
@@ -38,21 +77,56 @@ pub fn has_running_turn(thread_id: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// Interrupt a live turn by killing the headless CLI process. The CLI is
-/// stateless across turns (`--resume` rebinds the session), so killing it
-/// is a clean cancellation unlike stateful app-servers.
-pub fn cancel_turn(thread_id: &str) {
-    let (child, flag) = match RUNNING.lock() {
+fn write_line(stdin: &Arc<Mutex<ChildStdin>>, value: &Value) -> Result<(), WsErr> {
+    let mut stdin = stdin.lock().map_err(|_| err("claude stdin lock"))?;
+    stdin
+        .write_all(value.to_string().as_bytes())
+        .and_then(|_| stdin.write_all(b"\n"))
+        .and_then(|_| stdin.flush())
+        .map_err(|e| err(format!("claude write: {e}")))
+}
+
+fn user_message(text: &str) -> Value {
+    json!({
+        "type": "user",
+        "session_id": "",
+        "message": {"role": "user", "content": [{"type": "text", "text": text}]},
+        "parent_tool_use_id": Value::Null,
+    })
+}
+
+/// Native steering: push the user message into the live streaming-input
+/// session. Claude consumes it inside the same agent loop instead of needing
+/// an interrupt plus a fresh process.
+pub fn steer_turn(thread_id: &str, text: &str) -> bool {
+    let stdin = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {
-            Some(rt) => (rt.child.clone(), rt.cancelled.clone()),
+            Some(rt) => rt.stdin.clone(),
+            None => return false,
+        },
+        Err(_) => return false,
+    };
+    write_line(&stdin, &user_message(text)).is_ok()
+}
+
+/// Interrupt through the CLI control protocol. The response is consumed by
+/// the runner's stdout loop; cancellation is therefore best-effort and does
+/// not require killing a stateful process.
+pub fn cancel_turn(thread_id: &str) {
+    let (stdin, flag) = match RUNNING.lock() {
+        Ok(m) => match m.get(thread_id) {
+            Some(rt) => (rt.stdin.clone(), rt.cancelled.clone()),
             None => return,
         },
         Err(_) => return,
     };
     flag.store(true, Ordering::SeqCst);
-    if let Ok(mut c) = child.lock() {
-        let _ = c.kill();
-    }
+    let request = json!({
+        "request_id": format!("interrupt-{}", uuid_v4()),
+        "type": "control_request",
+        "request": {"subtype": "interrupt"},
+    });
+    let _ = write_line(&stdin, &request);
 }
 
 fn claude_binary() -> String {
@@ -78,11 +152,234 @@ pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: Stri
     });
 }
 
+fn permission_kind(tool_name: &str) -> &'static str {
+    match tool_name {
+        "Bash" => "command",
+        "Read" | "Glob" | "Grep" => "file-read",
+        "Edit" | "Write" | "NotebookEdit" => "file-change",
+        _ => "tool",
+    }
+}
+
+fn handle_can_use_tool(
+    stdin: &Arc<Mutex<ChildStdin>>,
+    request: &Value,
+    request_id: &str,
+    thread_id: &str,
+    turn_id: &str,
+    runtime_mode: &str,
+    cancelled: &Arc<AtomicBool>,
+) -> Result<(), WsErr> {
+    let tool_name = request
+        .get("tool_name")
+        .and_then(Value::as_str)
+        .unwrap_or("tool");
+    let input = request.get("input").cloned().unwrap_or(json!({}));
+    let detail = serde_json::to_string(&input).unwrap_or_else(|_| tool_name.to_string());
+    let respond = |result: Value| -> Result<(), WsErr> {
+        write_line(
+            stdin,
+            &json!({
+                "type": "control_response",
+                "response": {
+                    "subtype": "success",
+                    "request_id": request_id,
+                    "response": result,
+                }
+            }),
+        )
+    };
+    if runtime_mode == "full-access" {
+        return respond(json!({"behavior": "allow", "updatedInput": input}));
+    }
+
+    if let Ok(c) = open_state_rw() {
+        let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+        let now = iso_now_ms();
+        let _ = c.execute(
+            "INSERT OR REPLACE INTO projection_pending_interactions \
+             (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision, response_command_id, response_requested_at, created_at, resolved_at) \
+             VALUES ('approval', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+            params![request_id, thread_id, turn_id, now],
+        );
+        let _ = append_activity(
+            &c,
+            thread_id,
+            turn_id,
+            "warn",
+            "approval.requested",
+            "Approval requested",
+            &json!({
+                "requestId": request_id,
+                "requestKind": permission_kind(tool_name),
+                "toolName": tool_name,
+                "detail": detail,
+                "providerMethod": "can_use_tool",
+                "providerPayload": request,
+                "sessionApprovalAvailable": request.get("permission_suggestions").is_some(),
+            }),
+        );
+    }
+
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+    let mut decision: Option<String> = None;
+    while decision.is_none() {
+        if cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+            decision = Some("cancel".to_string());
+            break;
+        }
+        if let Ok(c) = open_state_rw() {
+            match c.query_row(
+                "SELECT decision FROM projection_pending_interactions \
+                 WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='approval'",
+                params![thread_id, request_id],
+                |r| r.get::<_, Option<String>>(0),
+            ) {
+                Ok(Some(d)) => decision = Some(d),
+                Ok(None) => {}
+                Err(_) => decision = Some("cancel".to_string()),
+            }
+        }
+        if decision.is_none() {
+            std::thread::sleep(std::time::Duration::from_millis(250));
+        }
+    }
+    let decision = decision.unwrap_or_else(|| "cancel".to_string());
+    if let Ok(c) = open_state_rw() {
+        let _ = c.execute(
+            "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='approval'",
+            params![thread_id, request_id],
+        );
+        let _ = append_activity(
+            &c,
+            thread_id,
+            turn_id,
+            "info",
+            "approval.resolved",
+            "Approval resolved",
+            &json!({"requestId": request_id, "decision": decision}),
+        );
+    }
+    if decision == "accept" || decision == "acceptForSession" {
+        let mut result = json!({"behavior": "allow", "updatedInput": input});
+        if decision == "acceptForSession" {
+            if let Some(suggestions) = request.get("permission_suggestions").cloned() {
+                result["updatedPermissions"] = suggestions;
+            }
+        }
+        respond(result)
+    } else {
+        respond(json!({
+            "behavior": "deny",
+            "message": if decision == "cancel" { "User cancelled tool execution." } else { "User declined tool execution." },
+        }))
+    }
+}
+
+fn spawn_claude(
+    cwd: &str,
+    runtime_mode: &str,
+    model: Option<&str>,
+    resume: Option<&str>,
+) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
+    let mut args = vec![
+        "--output-format".to_string(),
+        "stream-json".to_string(),
+        "--verbose".to_string(),
+        "--input-format".to_string(),
+        "stream-json".to_string(),
+    ];
+    if runtime_mode == "full-access" {
+        args.push("--dangerously-skip-permissions".to_string());
+    } else if runtime_mode == "auto" {
+        args.push("--permission-mode".to_string());
+        args.push("auto".to_string());
+    }
+    if let Some(model) = model {
+        args.push("--model".to_string());
+        args.push(model.to_string());
+    }
+    if let Some(sid) = resume {
+        args.push("--resume".to_string());
+        args.push(sid.to_string());
+    }
+    let mcp_config = json!({
+        "mcpServers": {"synara": {
+            "type": "http",
+            "url": crate::agent_gateway_mcp::agent_gateway_url(),
+            "headers": {"Authorization": format!("Bearer {}", crate::agent_gateway_mcp::agent_gateway_token())},
+        }}
+    });
+    args.push("--mcp-config".to_string());
+    args.push(mcp_config.to_string());
+
+    let mut child = Command::new(claude_binary())
+        .args(&args)
+        .current_dir(cwd)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .map_err(|e| err(format!("could not launch `claude` CLI: {e}")))?;
+    let stdin = child.stdin.take().ok_or_else(|| err("claude stdin"))?;
+    let stdout = child.stdout.take().ok_or_else(|| err("claude stdout"))?;
+    Ok((child, stdin, stdout))
+}
+
+fn read_json_line(reader: &mut BufReader<ChildStdout>) -> Result<Option<Value>, WsErr> {
+    loop {
+        let mut line = String::new();
+        let n = reader
+            .read_line(&mut line)
+            .map_err(|e| err(format!("claude read: {e}")))?;
+        if n == 0 {
+            return Ok(None);
+        }
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        if let Ok(v) = serde_json::from_str::<Value>(trimmed) {
+            return Ok(Some(v));
+        }
+    }
+}
+
+fn initialize_cli(
+    stdin: &Arc<Mutex<ChildStdin>>,
+    reader: &mut BufReader<ChildStdout>,
+) -> Result<(), WsErr> {
+    write_line(
+        stdin,
+        &json!({
+            "request_id": "synara-initialize",
+            "type": "control_request",
+            "request": {"subtype": "initialize"},
+        }),
+    )?;
+    loop {
+        let Some(v) = read_json_line(reader)? else {
+            return Err(err("claude exited during initialize"));
+        };
+        if v.get("type").and_then(Value::as_str) == Some("control_response")
+            && v.pointer("/response/request_id").and_then(Value::as_str) == Some("synara-initialize")
+        {
+            if v.pointer("/response/subtype").and_then(Value::as_str) == Some("success") {
+                return Ok(());
+            }
+            let msg = v
+                .pointer("/response/error")
+                .and_then(Value::as_str)
+                .unwrap_or("claude initialize failed");
+            return Err(err(msg));
+        }
+    }
+}
+
 fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
-
     let stored_session: Option<String> = conn
         .query_row(
             "SELECT provider_thread_id FROM projection_thread_sessions WHERE thread_id = ?1",
@@ -91,18 +388,6 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         )
         .ok()
         .flatten();
-
-    let turn_id = uuid_v4();
-    let assistant_msg_id = uuid_v4();
-    let now = iso_now_ms();
-    conn.execute(
-        "INSERT INTO projection_turns \
-         (thread_id, turn_id, pending_message_id, assistant_message_id, state, \
-          requested_at, started_at, checkpoint_files_json) \
-         VALUES (?1, ?2, ?3, ?4, 'running', ?5, ?5, '[]')",
-        params![thread_id, turn_id, message_id, assistant_msg_id, now],
-    )
-    .map_err(|e| err(format!("insert turn: {e}")))?;
     let turn_runtime_mode: String = conn
         .query_row(
             "SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1",
@@ -110,34 +395,6 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             |r| r.get(0),
         )
         .unwrap_or_else(|_| "full-access".to_string());
-    conn.execute(
-        "INSERT OR REPLACE INTO projection_thread_sessions \
-         (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
-          active_turn_id, last_error, updated_at, runtime_mode) \
-         VALUES (?1, 'running', 'claudeAgent', NULL, ?2, ?3, NULL, ?4, \
-          COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'))",
-        params![thread_id, stored_session, turn_id, now],
-    )
-    .map_err(|e| err(format!("session start: {e}")))?;
-    session_set_event(
-        &conn,
-        thread_id,
-        &json!({
-            "threadId": thread_id,
-            "status": "running",
-            "providerName": "claudeAgent",
-            "activeTurnId": turn_id,
-            "runtimeMode": turn_runtime_mode,
-            "lastError": null,
-            "updatedAt": now,
-        }),
-    )?;
-
-    let cwd = if !cwd.is_empty() && std::path::Path::new(cwd).is_dir() {
-        cwd.to_string()
-    } else {
-        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
-    };
     let selected_model: Option<String> = conn
         .query_row(
             "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
@@ -147,118 +404,90 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .ok()
         .flatten()
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
-
-    let mut args: Vec<String> = vec![
-        "-p".into(),
-        "--output-format".into(),
-        "stream-json".into(),
-        "--verbose".into(),
-    ];
-    if turn_runtime_mode == "full-access" {
-        args.push("--dangerously-skip-permissions".into());
-    }
-    if let Some(model) = selected_model.as_deref() {
-        args.push("--model".into());
-        args.push(model.to_string());
-    }
-    if let Some(sid) = stored_session.as_deref() {
-        args.push("--resume".into());
-        args.push(sid.to_string());
-    }
-    // Expose the synara agent gateway (browser_*, computer_*, synara_*) to
-    // the CLI over HTTP MCP; auth rides in the bearer header, never in files.
-    let mcp_config = json!({
-        "mcpServers": {
-            "synara": {
-                "type": "http",
-                "url": crate::agent_gateway_mcp::agent_gateway_url(),
-                "headers": {
-                    "Authorization": format!(
-                        "Bearer {}",
-                        crate::agent_gateway_mcp::agent_gateway_token()
-                    ),
-                },
-            },
-        },
-    });
-    args.push("--mcp-config".into());
-    args.push(mcp_config.to_string());
-
-    let mut command = Command::new(claude_binary());
-    command
-        .args(&args)
-        .current_dir(&cwd)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null());
-    let mut child: Child = match command.spawn() {
-        Ok(c) => c,
-        Err(e) => {
-            let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-            let msg = format!("could not launch `claude` CLI: {e}");
-            let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
-            return Err(err(msg));
-        }
+        .and_then(|v| v.get("model").and_then(Value::as_str).map(str::to_string));
+    let cwd = if !cwd.is_empty() && std::path::Path::new(cwd).is_dir() {
+        cwd.to_string()
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let prompt_text = if stored_session.is_none() {
+    let launch_key = format!(
+        "{}|{}|{}|{}",
+        claude_binary(),
+        cwd,
+        turn_runtime_mode,
+        selected_model.as_deref().unwrap_or("")
+    );
+
+    let turn_id = uuid_v4();
+    let assistant_msg_id = uuid_v4();
+    let now = iso_now_ms();
+    conn.execute(
+        "INSERT INTO projection_turns (thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at, started_at, checkpoint_files_json) VALUES (?1, ?2, ?3, ?4, 'running', ?5, ?5, '[]')",
+        params![thread_id, turn_id, message_id, assistant_msg_id, now],
+    )
+    .map_err(|e| err(format!("insert turn: {e}")))?;
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_sessions (thread_id, status, provider_name, provider_session_id, provider_thread_id, active_turn_id, last_error, updated_at, runtime_mode) VALUES (?1, 'running', 'claudeAgent', NULL, ?2, ?3, NULL, ?4, COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'))",
+        params![thread_id, stored_session, turn_id, now],
+    )
+    .map_err(|e| err(format!("session start: {e}")))?;
+    session_set_event(
+        &conn,
+        thread_id,
+        &json!({"threadId": thread_id, "status": "running", "providerName": "claudeAgent", "activeTurnId": turn_id, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": now}),
+    )?;
+
+    let parked = take_parked(thread_id, &launch_key);
+    let fresh = parked.is_none();
+    let (mut child, stdin, mut reader, mut session_id) = if let Some(parked) = parked {
+        (
+            parked.child,
+            parked.stdin,
+            parked.reader,
+            parked.session_id.or_else(|| stored_session.clone()),
+        )
+    } else {
+        let (child, stdin_raw, stdout) = spawn_claude(
+            &cwd,
+            &turn_runtime_mode,
+            selected_model.as_deref(),
+            stored_session.as_deref(),
+        )?;
+        let stdin = Arc::new(Mutex::new(stdin_raw));
+        let mut reader = BufReader::new(stdout);
+        initialize_cli(&stdin, &mut reader)?;
+        (child, stdin, reader, stored_session.clone())
+    };
+
+    let prompt_text = if fresh && stored_session.is_none() {
         format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
     } else {
         text.to_string()
     };
-    if let Some(mut stdin) = child.stdin.take() {
-        let _ = stdin.write_all(prompt_text.as_bytes());
-        // Closing stdin starts the headless run.
-        drop(stdin);
-    }
-    let stdout = child.stdout.take().ok_or_else(|| err("claude stdout"))?;
+    write_line(&stdin, &user_message(&prompt_text))?;
     let cancelled = Arc::new(AtomicBool::new(false));
-    let child_shared = Arc::new(Mutex::new(child));
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
         map.insert(
             thread_id.to_string(),
             RunningTurn {
-                child: child_shared.clone(),
+                stdin: stdin.clone(),
                 cancelled: cancelled.clone(),
             },
         );
     }
-    set_session(&conn, thread_id, "running", Some(&turn_id), None, None)?;
 
-    let result = (|| -> Result<(String, Option<String>), WsErr> {
-        let mut reader = BufReader::new(stdout);
-        let mut session_id: Option<String> = stored_session.clone();
-        let mut terminal = "completed";
-        let mut fatal: Option<String> = None;
+    let result = (|| -> Result<String, WsErr> {
         loop {
-            let mut line = String::new();
-            let n = reader
-                .read_line(&mut line)
-                .map_err(|e| err(format!("claude read: {e}")))?;
-            if n == 0 {
-                break;
-            }
-            let trimmed = line.trim();
-            if trimmed.is_empty() {
-                continue;
-            }
-            let Ok(v) = serde_json::from_str::<Value>(trimmed) else {
-                continue;
+            let Some(v) = read_json_line(&mut reader)? else {
+                return Err(err("claude exited before turn result"));
             };
             match v.get("type").and_then(Value::as_str).unwrap_or("") {
                 "system" => {
                     if v.get("subtype").and_then(Value::as_str) == Some("init") {
                         if let Some(sid) = v.get("session_id").and_then(Value::as_str) {
                             session_id = Some(sid.to_string());
-                            let _ = set_session(
-                                &conn,
-                                thread_id,
-                                "running",
-                                Some(&turn_id),
-                                None,
-                                Some(sid),
-                            );
+                            let _ = set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(sid));
                         }
                     }
                 }
@@ -266,110 +495,88 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     let text_out: String = v
                         .pointer("/message/content")
                         .and_then(Value::as_array)
-                        .map(|parts| {
-                            parts
-                                .iter()
-                                .filter(|p| p.get("type").and_then(Value::as_str) == Some("text"))
-                                .filter_map(|p| p.get("text").and_then(Value::as_str))
-                                .collect::<Vec<_>>()
-                                .join("")
-                        })
+                        .map(|parts| parts.iter().filter(|p| p.get("type").and_then(Value::as_str) == Some("text")).filter_map(|p| p.get("text").and_then(Value::as_str)).collect::<Vec<_>>().join(""))
                         .unwrap_or_default();
                     if !text_out.is_empty() {
                         if let Ok(c) = open_state_rw() {
-                            let _ = append_assistant_text(
-                                &c,
-                                thread_id,
-                                &assistant_msg_id,
-                                &turn_id,
-                                &text_out,
-                                true,
-                            );
+                            let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, &text_out, true);
                         }
+                    }
+                }
+                "control_request" => {
+                    let request_id = v.get("request_id").and_then(Value::as_str).unwrap_or("").to_string();
+                    let subtype = v.pointer("/request/subtype").and_then(Value::as_str).unwrap_or("");
+                    if subtype == "can_use_tool" && !request_id.is_empty() {
+                        let request = v.get("request").cloned().unwrap_or(json!({}));
+                        handle_can_use_tool(&stdin, &request, &request_id, thread_id, &turn_id, &turn_runtime_mode, &cancelled)?;
                     }
                 }
                 "result" => {
                     let subtype = v.get("subtype").and_then(Value::as_str).unwrap_or("");
                     if subtype == "success" {
-                        terminal = "completed";
-                    } else {
-                        let msg = v
-                            .get("result")
-                            .and_then(Value::as_str)
-                            .or_else(|| v.pointer("/error/message").and_then(Value::as_str))
-                            .unwrap_or("claude turn error");
-                        fatal = Some(msg.to_string());
+                        break Ok("completed".to_string());
                     }
-                    break;
+                    let msg = v.get("result").and_then(Value::as_str)
+                        .or_else(|| v.pointer("/error/message").and_then(Value::as_str))
+                        .unwrap_or("claude turn error");
+                    break Err(err(msg));
                 }
                 _ => {}
             }
         }
-        if let Ok(c) = open_state_rw() {
-            let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, "", false);
-        }
-        if let Some(msg) = fatal {
-            return Err(err(msg));
-        }
-        Ok((terminal.to_string(), session_id))
     })();
 
     if let Ok(mut map) = RUNNING.lock() {
         map.remove(thread_id);
     }
-    if let Ok(mut c) = child_shared.lock() {
-        let _ = c.kill();
-        let _ = c.wait();
+    if let Ok(c) = open_state_rw() {
+        let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, "", false);
     }
 
     let cancelled_flag = cancelled.load(Ordering::SeqCst);
+    let clean = matches!(result, Ok(ref reason) if reason == "completed") && !cancelled_flag;
+    if clean {
+        if child.try_wait().ok().flatten().is_none() {
+            if let Ok(mut parked_map) = PARKED.lock() {
+                parked_map.insert(
+                    thread_id.to_string(),
+                    ParkedClaude {
+                        child,
+                        stdin,
+                        reader,
+                        session_id: session_id.clone(),
+                        launch_key,
+                    },
+                );
+            }
+        } else {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    } else {
+        let _ = child.kill();
+        let _ = child.wait();
+    }
+
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
     match result {
-        Ok((reason, session_id)) => {
-            let interrupted = cancelled_flag || reason == "cancelled";
+        Ok(_) => {
+            let interrupted = cancelled_flag;
             let state = if interrupted { "interrupted" } else { "completed" };
             let status = if interrupted { "interrupted" } else { "ready" };
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, session_id.as_deref())?;
-            session_set_event(
-                &conn,
-                thread_id,
-                &json!({
-                    "threadId": thread_id,
-                    "status": status,
-                    "providerName": "claudeAgent",
-                    "activeTurnId": null,
-                    "runtimeMode": turn_runtime_mode,
-                    "lastError": null,
-                    "updatedAt": iso_now_ms(),
-                }),
-            )?;
+            session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}))?;
             crate::orchestration_engine::continue_queued_turn(thread_id);
             Ok(())
         }
         Err(e) => {
-            let (state, status) = if cancelled_flag {
-                ("interrupted", "interrupted")
-            } else {
-                ("error", "error")
-            };
+            let (state, status) = if cancelled_flag { ("interrupted", "interrupted") } else { ("error", "error") };
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
-            set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;
-            session_set_event(
-                &conn,
-                thread_id,
-                &json!({
-                    "threadId": thread_id,
-                    "status": status,
-                    "providerName": "claudeAgent",
-                    "activeTurnId": null,
-                    "runtimeMode": turn_runtime_mode,
-                    "lastError": e.0,
-                    "updatedAt": iso_now_ms(),
-                }),
-            )?;
+            set_session(&conn, thread_id, status, Some(""), Some(&e.0), session_id.as_deref())?;
+            session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}))?;
             if cancelled_flag {
                 crate::orchestration_engine::continue_queued_turn(thread_id);
             }

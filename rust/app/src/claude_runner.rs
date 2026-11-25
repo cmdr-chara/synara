@@ -21,6 +21,11 @@ use crate::todo::{iso_now_ms, WsErr};
 struct RunningTurn {
     stdin: Arc<Mutex<ChildStdin>>,
     cancelled: Arc<AtomicBool>,
+    /// Command uuids of steers the CLI has not started reading yet, ported
+    /// from upstream `pendingSteers`: while one is pending, foreground work
+    /// is moved to the background so the CLI reaches the model request that
+    /// reads the steer instead of holding it for minutes.
+    pending_steers: Arc<Mutex<std::collections::HashSet<String>>>,
 }
 
 static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
@@ -185,14 +190,48 @@ fn claude_content_blocks(text: &str, attachments: &[Value]) -> Result<Vec<Value>
 /// session. Claude consumes it inside the same agent loop instead of needing
 /// an interrupt plus a fresh process.
 pub fn steer_turn(thread_id: &str, text: &str) -> bool {
-    let stdin = match RUNNING.lock() {
+    let (stdin, pending) = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {
-            Some(rt) => rt.stdin.clone(),
+            Some(rt) => (rt.stdin.clone(), rt.pending_steers.clone()),
             None => return false,
         },
         Err(_) => return false,
     };
-    write_line(&stdin, &user_message(vec![json!({"type":"text","text":text})])).is_ok()
+    // The uuid makes the CLI report through command_lifecycle when the model
+    // reads the steer, exactly as upstream.
+    let command_uuid = uuid_v4();
+    let mut message = user_message(vec![json!({"type":"text","text":text})]);
+    message["uuid"] = json!(command_uuid);
+    if write_line(&stdin, &message).is_err() {
+        return false;
+    }
+    if let Ok(mut set) = pending.lock() {
+        set.insert(command_uuid);
+    }
+    // Foreground work already running (a Bash call or a subagent) would hold
+    // the steer until it returns; move it aside so the CLI reaches the model
+    // request that reads the queued message.
+    background_foreground_work(&stdin, None);
+    true
+}
+
+
+/// Port of upstream `releaseForegroundWorkForSteer`: the CLI's Ctrl+B as a
+/// control request. Without a tool_use_id every foreground task moves; the
+/// response is consumed by the stdout loop, so the write is fire-and-forget
+/// exactly like upstream's forked effect.
+fn background_foreground_work(stdin: &Arc<Mutex<ChildStdin>>, tool_use_id: Option<&str>) {
+    let mut request = serde_json::Map::new();
+    request.insert("subtype".into(), json!("background_tasks"));
+    if let Some(id) = tool_use_id {
+        request.insert("tool_use_id".into(), json!(id));
+    }
+    let message = json!({
+        "request_id": format!("bg-{}", uuid_v4()),
+        "type": "control_request",
+        "request": Value::Object(request),
+    });
+    let _ = write_line(stdin, &message);
 }
 
 /// Interrupt through the CLI control protocol. The response is consumed by
@@ -1194,6 +1233,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let content = claude_content_blocks(&prompt_text, &attachments)?;
     write_line(&stdin, &user_message(content.clone()))?;
     let cancelled = Arc::new(AtomicBool::new(false));
+    let pending_steers = Arc::new(Mutex::new(std::collections::HashSet::<String>::new()));
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
         map.insert(
@@ -1201,6 +1241,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             RunningTurn {
                 stdin: stdin.clone(),
                 cancelled: cancelled.clone(),
+                pending_steers: pending_steers.clone(),
             },
         );
     }
@@ -1214,6 +1255,21 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let Some(v) = read_json_line(&mut reader)? else {
                 return Err(err("claude exited before turn result"));
             };
+            // Not in the SDK's declared message union; it carries no
+            // transcript content. Once a queued command leaves "queued" the
+            // model has the steer (or the CLI dropped it) — ported from
+            // upstream handleCommandLifecycleMessage.
+            if v.get("type").and_then(Value::as_str) == Some("command_lifecycle") {
+                let state = v.get("state").and_then(Value::as_str).unwrap_or("");
+                if state != "queued" {
+                    if let Some(uuid) = v.get("command_uuid").and_then(Value::as_str) {
+                        if let Ok(mut set) = pending_steers.lock() {
+                            set.remove(uuid);
+                        }
+                    }
+                }
+                continue;
+            }
             if v.get("rate_limit_info").is_some() || v.get("type").and_then(Value::as_str) == Some("rate_limit_info") {
                 let now_ms = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
@@ -1293,6 +1349,17 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                             let input = block.get("input").cloned().unwrap_or(json!({}));
                             if let Some(id) = block.get("id").and_then(Value::as_str) {
                                 pending_tools.insert(id.to_string(), (name.clone(), input.clone()));
+                                // Work that started after a steer was queued
+                                // would otherwise hold it until it returns
+                                // (upstream: releaseForegroundWorkForSteer on
+                                // task start while hasPendingSteer).
+                                let steer_pending = pending_steers
+                                    .lock()
+                                    .map(|set| !set.is_empty())
+                                    .unwrap_or(false);
+                                if steer_pending {
+                                    background_foreground_work(&stdin, Some(id));
+                                }
                             }
                             if name == "TodoWrite" {
                                 if let Some(payload) = crate::claude_tasks::todo_payload(&input) {
@@ -1399,6 +1466,12 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     }
                 }
                 "result" => {
+                    // Pending steers end with their turn: one the CLI still
+                    // holds runs as its own next turn, where foreground work
+                    // no longer delays it (upstream turn-end clear).
+                    if let Ok(mut set) = pending_steers.lock() {
+                        set.clear();
+                    }
                     // Monitor notifications never reach the SDK stream; read
                     // them back from the session transcript when this turn was
                     // woken by one, upstream emitMonitorEvents.

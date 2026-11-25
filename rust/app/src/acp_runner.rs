@@ -22,7 +22,7 @@ use serde_json::{json, Value};
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
 use crate::todo::{iso_now_ms, WsErr};
 
-fn err(msg: impl Into<String>) -> WsErr {
+pub(crate) fn err(msg: impl Into<String>) -> WsErr {
     WsErr(msg.into(), None)
 }
 
@@ -46,7 +46,7 @@ pub fn has_running_turn(thread_id: &str) -> bool {
 
 /// Append one event row (actor `provider`, no command receipt) so the
 /// subscribeThread poller picks it up and clients refetch the snapshot.
-fn append_event(
+pub(crate) fn append_event(
     conn: &Connection,
     thread_id: &str,
     event_type: &str,
@@ -79,7 +79,7 @@ fn append_event(
     Ok(())
 }
 
-fn session_set_event(conn: &Connection, thread_id: &str, session: &Value) -> Result<(), WsErr> {
+pub(crate) fn session_set_event(conn: &Connection, thread_id: &str, session: &Value) -> Result<(), WsErr> {
     append_event(
         conn,
         thread_id,
@@ -89,7 +89,7 @@ fn session_set_event(conn: &Connection, thread_id: &str, session: &Value) -> Res
     )
 }
 
-fn set_session(
+pub(crate) fn set_session(
     conn: &Connection,
     thread_id: &str,
     status: &str,
@@ -140,7 +140,7 @@ fn set_session(
     Ok(())
 }
 
-fn set_turn_state(
+pub(crate) fn set_turn_state(
     conn: &Connection,
     thread_id: &str,
     turn_id: &str,
@@ -170,7 +170,7 @@ fn set_turn_state(
 
 /// Append one assistant delta (or the final empty-delta settle) to the
 /// projection exactly like `project_message_sent`.
-fn append_assistant_text(
+pub(crate) fn append_assistant_text(
     conn: &Connection,
     thread_id: &str,
     message_id: &str,
@@ -222,7 +222,7 @@ fn append_assistant_text(
     Ok(())
 }
 
-fn append_activity(
+pub(crate) fn append_activity(
     conn: &Connection,
     thread_id: &str,
     turn_id: &str,

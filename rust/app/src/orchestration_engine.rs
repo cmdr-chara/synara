@@ -1292,7 +1292,10 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         )
         .map_err(|e| err(e.to_string()))?;
         let provider = start_provider;
-        if provider.as_deref().is_some_and(crate::acp_runner::supports_provider) {
+        if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
+            || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
+            || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
+        {
             let cwd: Option<String> = conn
                 .query_row(
                     "SELECT p.workspace_root FROM projection_projects p \
@@ -1303,13 +1306,20 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 )
                 .ok();
             if let Some(cwd) = cwd {
-                crate::acp_runner::start_turn(
-                    provider.clone().expect("supported ACP provider"),
-                    thread_id.clone(),
-                    message_id.clone(),
-                    text.clone(),
-                    cwd,
-                );
+                let pname = provider.clone().expect("supported provider");
+                if crate::codex_runner::supports_provider(&pname) {
+                    crate::codex_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                } else if crate::claude_runner::supports_provider(&pname) {
+                    crate::claude_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                } else {
+                    crate::acp_runner::start_turn(
+                        pname,
+                        thread_id.clone(),
+                        message_id.clone(),
+                        text.clone(),
+                        cwd,
+                    );
+                }
             }
         }
     }
@@ -4289,7 +4299,10 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
 
     // A queued provider turn starts the same runner once dispatched.
     let provider = provider_for_start;
-    if provider.as_deref().is_some_and(crate::acp_runner::supports_provider) {
+    if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
+        || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
+        || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
+    {
         let message = conn
             .query_row(
                 "SELECT message_id, text FROM projection_thread_messages \
@@ -4309,13 +4322,14 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
             )
             .ok();
         if let (Some((message_id, text)), Some(cwd)) = (message, cwd) {
-            crate::acp_runner::start_turn(
-                provider.clone().expect("supported ACP provider"),
-                thread_id.clone(),
-                message_id,
-                text,
-                cwd,
-            );
+            let pname = provider.clone().expect("supported provider");
+            if crate::codex_runner::supports_provider(&pname) {
+                crate::codex_runner::start_turn(thread_id.clone(), message_id, text, cwd);
+            } else if crate::claude_runner::supports_provider(&pname) {
+                crate::claude_runner::start_turn(thread_id.clone(), message_id, text, cwd);
+            } else {
+                crate::acp_runner::start_turn(pname, thread_id.clone(), message_id, text, cwd);
+            }
         }
     }
 

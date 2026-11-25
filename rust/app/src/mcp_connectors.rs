@@ -39,7 +39,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     }
 }
 
-fn server_port() -> u16 {
+pub fn server_port() -> u16 {
     std::env::var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())
@@ -449,8 +449,19 @@ fn probe_stdio(command: &str, args: &[Value], cwd: Option<&str>) -> bool {
 /// ported; they get an explicit error instead of a half-connect.
 fn connect(payload: &Value) -> Result<Value, WsErr> {
     let Some(command_v) = payload.get("command").cloned() else {
+        // HTTP connector inputs carry `url` instead of `command`: begin the
+        // OAuth sign-in dance (upstream runtime.connect). The connector row
+        // is only written when the callback completes with tokens.
+        if payload.get("url").and_then(Value::as_str).is_some() {
+            let redirect = format!(
+                "http://127.0.0.1:{}/oauth/mcp/callback",
+                server_port()
+            );
+            let authorize_url = crate::mcp_oauth::begin_sign_in(payload, &redirect)?;
+            return Ok(json!({ "authorizationUrl": authorize_url, "connector": Value::Null }));
+        }
         return Err(err(
-            "HTTP MCP connector connect (OAuth discovery) is not implemented yet; stdio connectors are supported",
+            "Connector input must carry either a stdio command or an HTTP url",
         ));
     };
     let command = command_v.clone();
@@ -554,4 +565,77 @@ fn connect(payload: &Value) -> Result<Value, WsErr> {
     let mut public = saved;
     public.as_object_mut().map(|o| o.remove("env"));
     Ok(json!({"authorizationUrl": Value::Null, "connector": public}))
+}
+
+/// Insert an OAuth-completed HTTP connector row into the connectors document.
+/// Tokens ride in the row's `oauth` block — the document already lives under
+/// the 0600 secrets file, and `list_connectors` strips the block before it
+/// reaches clients. Dedupe on url mirrors the stdio (command, cwd, args) key.
+pub fn insert_http_connector(
+    url: &str,
+    name: &str,
+    input: &Value,
+    tokens: &Value,
+) -> Result<Value, WsErr> {
+    let mut doc = document().unwrap_or_else(|| json!({"version": 1, "connectors": [], "stdio": []}));
+    let entries = doc
+        .get("connectors")
+        .and_then(|c| c.as_array())
+        .cloned()
+        .unwrap_or_default();
+    if let Some(existing) = entries.iter().find(|e| e.get("url").and_then(Value::as_str) == Some(url)) {
+        // Re-sign-in of a known connector refreshes its tokens in place.
+        let id = existing
+            .get("connectorId")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_string();
+        if let Some(arr) = doc.get_mut("connectors").and_then(|c| c.as_array_mut()) {
+            for e in arr.iter_mut() {
+                if e.get("connectorId").and_then(Value::as_str) == Some(id.as_str()) {
+                    e["oauth"] = json!({
+                        "accessToken": tokens.get("access_token").cloned().unwrap_or(Value::Null),
+                        "refreshToken": tokens.get("refresh_token").cloned().unwrap_or(Value::Null),
+                        "expiresIn": tokens.get("expires_in").cloned().unwrap_or(Value::Null),
+                        "userClient": false,
+                    });
+                }
+            }
+        }
+        write_document(&doc)?;
+        return Ok(json!({ "connectorId": id }));
+    }
+    let stdio_len = doc
+        .get("stdio")
+        .and_then(|c| c.as_array())
+        .map(|a| a.len())
+        .unwrap_or(0);
+    if entries.len() + stdio_len >= 30 {
+        return Err(err("Too many connectors."));
+    }
+    let id = format!("mcpc_{}", crate::orchestration_engine::uuid_v4().replace('-', ""));
+    let now = crate::projects_fileops::iso8601(
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs())
+            .unwrap_or(0),
+    );
+    let entry = json!({
+        "connectorId": id,
+        "serverName": name,
+        "url": url,
+        "headers": input.get("headers").cloned().unwrap_or(json!({})),
+        "oauth": {
+            "accessToken": tokens.get("access_token").cloned().unwrap_or(Value::Null),
+            "refreshToken": tokens.get("refresh_token").cloned().unwrap_or(Value::Null),
+            "expiresIn": tokens.get("expires_in").cloned().unwrap_or(Value::Null),
+            "userClient": false,
+        },
+        "createdAt": now,
+    });
+    doc.get_mut("connectors")
+        .and_then(|c| c.as_array_mut())
+        .map(|a| a.push(entry.clone()));
+    write_document(&doc)?;
+    Ok(json!({ "connectorId": id }))
 }

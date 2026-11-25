@@ -10,6 +10,7 @@
 use axum::Router;
 use axum::extract::State;
 use axum::extract::ws::{Message as ClientMessage, WebSocket, WebSocketUpgrade};
+use axum::response::IntoResponse;
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
 use axum::routing::get;
@@ -49,7 +50,32 @@ pub fn router() -> Router<Original> {
             "/ws/computer-frames",
             get(|s, w, u, h| upgrade(s, w, u, h, false)),
         )
-        .route("/ws/host/v2", get(|s, w, u, h| upgrade(s, w, u, h, false)))
+        .route("/ws/host/v2", get(remote_tunnel_upgrade))
+}
+
+
+/// Outer remote endpoint: never plaintext RPC — the upgraded socket carries
+/// the TLS tunnel exactly as upstream's RemoteTlsServer. Without a paired
+/// identity there is nothing to terminate TLS with, so the upgrade refuses.
+async fn remote_tunnel_upgrade(
+    State(original): State<Original>,
+    ws: WebSocketUpgrade,
+) -> Response {
+    let state_dir = crate::todo::state_dir();
+    let secrets_dir = format!("{state_dir}/secrets");
+    let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
+    let path = crate::remote_tls::remote_tls_identity_path(&secrets_dir);
+    let identity = match crate::remote_tls::load_remote_tls_identity(&path, &environment_id) {
+        Ok(identity) => identity,
+        Err(_) => return axum::http::StatusCode::SERVICE_UNAVAILABLE.into_response(),
+    };
+    let todos = original.todos.clone();
+    ws.on_upgrade(move |socket| async move {
+        crate::remote_tunnel::drive_tunnel(socket, &identity, move |tls| async move {
+            crate::remote_tunnel::serve_inner(tls, todos).await;
+        })
+        .await;
+    })
 }
 
 async fn upgrade(
@@ -65,6 +91,19 @@ async fn upgrade(
 /// `todo.*` requests served by the native store; the string check is a fast
 /// prefilter so ordinary traffic still takes the relay path unparsed.
 /// `Some(None)` marks a handled stream request (the reply is the chunk flow).
+/// Crate-visible wrapper so the remote tunnel serving loop reuses the exact
+/// native dispatch instead of duplicating three hundred lines of routing.
+pub(crate) async fn intercept_todo_pub(
+    text: &str,
+    todos: &std::sync::Arc<crate::todo::TodoStore>,
+    native_tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
+    streams: &std::sync::Arc<
+        std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
+    >,
+) -> Option<Option<ClientMessage>> {
+    intercept_todo(text, todos, native_tx, streams).await
+}
+
 async fn intercept_todo(
     text: &str,
     todos: &std::sync::Arc<crate::todo::TodoStore>,

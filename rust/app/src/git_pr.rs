@@ -53,6 +53,7 @@ pub fn handles(tag: &str) -> bool {
             | "git.createDetachedWorktree"
             | "git.preparePullRequestThread"
             | "git.runStackedAction"
+            | "git.handoffThread"
     )
 }
 
@@ -68,6 +69,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
             prepare_pull_request_thread(&cwd_of(payload)?, payload).map(Some)
         }
         "git.runStackedAction" => run_stacked_action(&cwd_of(payload)?, payload).map(Some),
+        "git.handoffThread" => handoff_thread(&cwd_of(payload)?, payload).map(Some),
         _ => Err(err(format!("unhandled git tag {tag}"))),
     }
 }
@@ -1430,4 +1432,594 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
             "title": pr_title,
         },
     }))
+}
+
+// ---------------------------------------------------------------------------------------------
+// git.handoffThread — transactional thread re-homing between Local and a worktree,
+// ported from upstream GitManager.handoffThread. The durable operation journal
+// (beginGitHandoff/completeGitHandoff crash recovery) is a documented gap: the
+// git state machine and its rollback paths are faithful.
+// ---------------------------------------------------------------------------------------------
+
+fn handoff_opt_str(payload: &Value, key: &str) -> Option<String> {
+    payload
+        .get(key)
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from)
+}
+
+fn read_head_ref(cwd: &str) -> Option<String> {
+    run(cwd, &["rev-parse", "HEAD"])
+        .ok()
+        .filter(|o| o.status.success())
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
+        .filter(|s| !s.is_empty())
+}
+
+fn read_stash_ref(cwd: &str) -> Option<String> {
+    run(cwd, &["rev-parse", "--verify", "--quiet", "refs/stash"])
+        .ok()
+        .filter(|o| o.status.success())
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
+        .filter(|s| !s.is_empty())
+}
+
+fn has_worktree_changes(cwd: &str) -> bool {
+    run(cwd, &["status", "--porcelain"])
+        .ok()
+        .map(|o| !String::from_utf8_lossy(&o.stdout).trim().is_empty())
+        .unwrap_or(false)
+}
+
+struct StashEntry {
+    had_changes: bool,
+    stash_ref: Option<String>,
+}
+
+fn stash_working_tree(cwd: &str, label: &str) -> Result<StashEntry, WsErr> {
+    if !has_worktree_changes(cwd) {
+        return Ok(StashEntry { had_changes: false, stash_ref: None });
+    }
+    let before = read_stash_ref(cwd);
+    let out = run(cwd, &["stash", "push", "--include-untracked", "-m", label])?;
+    if !out.status.success() {
+        return Err(err(format!(
+            "git stash push failed: {}",
+            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("git failed")
+        )));
+    }
+    let after = read_stash_ref(cwd);
+    if after == before {
+        return Err(err("Git did not create a stash entry while preparing the thread handoff."));
+    }
+    Ok(StashEntry { had_changes: true, stash_ref: after })
+}
+
+struct PopResult {
+    conflicts: bool,
+    message: Option<String>,
+}
+
+fn drop_stash_by_sha(cwd: &str, sha: &str) {
+    let Ok(out) = run(cwd, &["stash", "list", "--format=%H"]) else { return };
+    if !out.status.success() {
+        return;
+    }
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    let index = stdout
+        .lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty())
+        .position(|l| l == sha);
+    if let Some(i) = index {
+        let _ = run(cwd, &["stash", "drop", &format!("stash@{{{i}}}")]);
+    }
+}
+
+fn pop_stash(cwd: &str, stash_ref: Option<&str>) -> PopResult {
+    let Some(sha) = stash_ref else {
+        return PopResult { conflicts: false, message: None };
+    };
+    // Apply by SHA (accepted for any stash-shaped commit) then drop the matching
+    // list entry on success, upstream pop-style semantics.
+    let result = run(cwd, &["stash", "apply", "--index", sha]);
+    match result {
+        Ok(out) if out.status.success() => {
+            drop_stash_by_sha(cwd, sha);
+            PopResult { conflicts: false, message: None }
+        }
+        Ok(out) => {
+            let combined = format!(
+                "{}{}",
+                String::from_utf8_lossy(&out.stdout),
+                String::from_utf8_lossy(&out.stderr)
+            );
+            PopResult {
+                conflicts: true,
+                message: Some(
+                    combined
+                        .trim()
+                        .lines()
+                        .next()
+                        .unwrap_or("Git reported conflicts while applying the handed off changes.")
+                        .to_string(),
+                ),
+            }
+        }
+        Err(e) => PopResult {
+            conflicts: true,
+            message: Some(format!(
+                "Git reported conflicts while applying the handed off changes. ({})",
+                e.0
+            )),
+        },
+    }
+}
+
+fn checkout_detached(cwd: &str, refspec: &str) -> Result<(), WsErr> {
+    let out = run(cwd, &["checkout", "--detach", refspec])?;
+    if !out.status.success() {
+        return Err(err(format!(
+            "git checkout failed: {}",
+            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("git failed")
+        )));
+    }
+    Ok(())
+}
+
+fn checkout_branch(cwd: &str, branch: &str) -> Result<(), WsErr> {
+    let out = run(cwd, &["checkout", branch])?;
+    if !out.status.success() {
+        return Err(err(format!(
+            "git checkout failed: {}",
+            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("git failed")
+        )));
+    }
+    Ok(())
+}
+
+fn list_local_branches(cwd: &str) -> Vec<String> {
+    run(cwd, &["branch", "--format=%(refname:short)"])
+        .ok()
+        .filter(|o| o.status.success())
+        .map(|o| {
+            String::from_utf8_lossy(&o.stdout)
+                .lines()
+                .map(str::trim)
+                .filter(|l| !l.is_empty())
+                .map(String::from)
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+struct Recovery {
+    checkout_restored: bool,
+    stash_restored: bool,
+    worktree_recreated: bool,
+    worktree_removed: bool,
+    worktree_changes_restored: bool,
+    local_changes_restored: bool,
+    notes: Vec<String>,
+}
+
+impl Recovery {
+    fn new() -> Self {
+        Self {
+            checkout_restored: false,
+            stash_restored: false,
+            worktree_recreated: false,
+            worktree_removed: false,
+            worktree_changes_restored: false,
+            local_changes_restored: false,
+            notes: Vec::new(),
+        }
+    }
+}
+
+/// Restore the local checkout to its original branch (or detached HEAD) and
+/// reapply the preserved stash, upstream restoreLocalHandoffSource.
+fn restore_local_source(
+    cwd: &str,
+    original_branch: Option<&str>,
+    original_head: Option<&str>,
+    stash_ref: Option<&str>,
+) -> Recovery {
+    let mut rec = Recovery::new();
+    if let Some(branch) = original_branch {
+        rec.checkout_restored = checkout_branch(cwd, branch).is_ok();
+    } else if let Some(head) = original_head {
+        rec.checkout_restored = checkout_detached(cwd, head).is_ok();
+    }
+    if !rec.checkout_restored {
+        rec.notes.push("Restore the checkout manually before retrying.".to_string());
+    }
+    if stash_ref.is_some() {
+        rec.stash_restored = !pop_stash(cwd, stash_ref).conflicts;
+        rec.local_changes_restored = rec.stash_restored;
+    }
+    rec
+}
+
+/// Recreate a removed worktree at its branch or ref and reapply its stashed
+/// changes, shared by the local-handoff recovery paths.
+fn recreate_worktree(
+    cwd: &str,
+    worktree_path: Option<&str>,
+    branch: Option<&str>,
+    refspec: Option<&str>,
+    worktree_stash: Option<&str>,
+) -> (bool, bool) {
+    let Some(path) = worktree_path else {
+        return (false, false);
+    };
+    let target = branch.map(String::from).or_else(|| refspec.map(String::from));
+    let Some(target) = target else {
+        return (false, false);
+    };
+    let recreated = if branch.is_some() {
+        run(cwd, &["worktree", "add", path, &target])
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+    } else {
+        run(cwd, &["worktree", "add", "--detach", path, &target])
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+    };
+    if !recreated {
+        return (false, false);
+    }
+    let changes = if worktree_stash.is_some() {
+        !pop_stash(path, worktree_stash).conflicts
+    } else {
+        false
+    };
+    (true, changes)
+}
+
+fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
+    require_repo(cwd)?;
+    let target_mode = str_arg(payload, "targetMode")?;
+    let current_branch = handoff_opt_str(payload, "currentBranch");
+    let worktree_path = handoff_opt_str(payload, "worktreePath");
+    let assoc_path = handoff_opt_str(payload, "associatedWorktreePath");
+    let assoc_branch = handoff_opt_str(payload, "associatedWorktreeBranch");
+    let assoc_ref = handoff_opt_str(payload, "associatedWorktreeRef");
+    let preferred_local = handoff_opt_str(payload, "preferredLocalBranch");
+    let preferred_base = handoff_opt_str(payload, "preferredWorktreeBaseBranch");
+    let preferred_new_name = handoff_opt_str(payload, "preferredNewWorktreeName");
+
+    let local_branch_now = stdout(cwd, &["branch", "--show-current"], "git")
+        .map(|s| s.trim().to_string())
+        .ok()
+        .filter(|s| !s.is_empty());
+
+    if target_mode == "local" {
+        let Some(wt_path) = worktree_path.clone() else {
+            return Err(err(
+                "Cannot hand off to Local because this thread does not have a materialized worktree.",
+            ));
+        };
+        let wt_head = read_head_ref(&wt_path);
+        let target_local_branch = current_branch
+            .clone()
+            .or_else(|| assoc_branch.clone())
+            .or_else(|| preferred_local.clone());
+        if target_local_branch.is_none() && wt_head.is_none() {
+            return Err(err(
+                "Cannot hand off to Local because the worktree thread does not have a recoverable HEAD reference.",
+            ));
+        }
+        let associated_path = assoc_path.clone().or_else(|| Some(wt_path.clone()));
+        let associated_branch = assoc_branch.clone().or_else(|| current_branch.clone());
+        let associated_ref = assoc_ref.clone().or_else(|| wt_head.clone()).or_else(|| associated_branch.clone());
+        let original_local_branch = local_branch_now.clone();
+        let original_local_head = read_head_ref(cwd);
+
+        let preserved_local = stash_working_tree(cwd, &format!("synara preserve local handoff {}", uuid_short()))?;
+        let source_stash = stash_working_tree(&wt_path, &format!("synara handoff to local {}", uuid_short()))?;
+
+        // Remove the worktree; on failure restore both stashes before failing.
+        let removed = run(cwd, &["worktree", "remove", "--force", &wt_path])
+            .map(|o| o.status.success())
+            .unwrap_or(false);
+        if !removed {
+            let _ = pop_stash(&wt_path, source_stash.stash_ref.as_deref());
+            let _ = pop_stash(cwd, preserved_local.stash_ref.as_deref());
+            return Err(err("git worktree remove failed during the handoff; stashes were restored."));
+        }
+
+        // Move the local checkout onto the target branch (or detach at the worktree HEAD).
+        let mut checkout_failed: Option<WsErr> = None;
+        if let Some(tb) = &target_local_branch {
+            if local_branch_now.as_deref() != Some(tb.as_str()) {
+                if let Err(e) = checkout_branch(cwd, tb) {
+                    checkout_failed = Some(e);
+                }
+            }
+        } else if let Some(head) = &wt_head {
+            if let Err(e) = checkout_detached(cwd, head) {
+                checkout_failed = Some(e);
+            }
+        }
+        if let Some(e) = checkout_failed {
+            // Restore the removed worktree and both stashes, then fail.
+            let (recreated, wt_changes) = recreate_worktree(
+                cwd,
+                associated_path.as_deref(),
+                associated_branch.as_deref(),
+                associated_ref.as_deref(),
+                source_stash.stash_ref.as_deref(),
+            );
+            let local_restored = !pop_stash(cwd, preserved_local.stash_ref.as_deref()).conflicts;
+            let detail = format!(
+                "{} {} {} {}",
+                e.0,
+                if recreated { "The original worktree was recreated." } else { "The original worktree could not be recreated automatically." },
+                if wt_changes { "Recovered worktree changes were reapplied." } else { "Recovered worktree changes remain in the Git stash." },
+                if local_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash." },
+            );
+            return Err(err(detail));
+        }
+
+        // Apply the thread's changes onto Local.
+        let transfer = pop_stash(cwd, source_stash.stash_ref.as_deref());
+        if transfer.conflicts {
+            // Roll back: restore original checkout, recreate the worktree with its changes.
+            let rec = restore_local_source(
+                cwd,
+                original_local_branch.as_deref(),
+                original_local_head.as_deref(),
+                preserved_local.stash_ref.as_deref(),
+            );
+            let (recreated, wt_changes) = recreate_worktree(
+                cwd,
+                associated_path.as_deref(),
+                associated_branch.as_deref(),
+                associated_ref.as_deref(),
+                source_stash.stash_ref.as_deref(),
+            );
+            let detail = format!(
+                "{} The handoff was rolled back so the thread stays in its worktree. {} {} {} {}",
+                transfer.message.as_deref().unwrap_or("Git reported conflicts while applying the handed off changes."),
+                if recreated { "The original worktree was recreated." } else { "The original worktree could not be recreated automatically." },
+                if wt_changes { "The thread changes were restored to that worktree." } else { "The thread changes remain in the Git stash." },
+                if rec.checkout_restored { "Local checkout was restored." } else { "Local checkout could not be fully restored automatically." },
+                if rec.local_changes_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash." },
+            );
+            return Err(err(detail));
+        }
+
+        let local_transfer = pop_stash(cwd, preserved_local.stash_ref.as_deref());
+        let moved = source_stash.had_changes;
+        let restored = preserved_local.had_changes;
+        let label = target_local_branch
+            .as_ref()
+            .map(|b| format!("main local checkout on '{b}'"))
+            .unwrap_or_else(|| "local checkout in detached HEAD".to_string());
+        let base = match (moved, restored) {
+            (true, true) => format!("Moved the thread back to the {label}, carried its uncommitted work over, and restored your previous local changes."),
+            (true, false) => format!("Moved the thread back to the {label} and carried its uncommitted work over."),
+            (false, true) => format!("Moved the thread back to the {label} and restored your previous local changes."),
+            (false, false) => format!("Moved the thread back to the {label}."),
+        };
+        let message = if local_transfer.conflicts {
+            format!(
+                "{}\nYour previous local stash entry was kept for recovery.",
+                local_transfer.message.as_deref().unwrap_or("Git reported conflicts while restoring your previous local changes.")
+            )
+        } else {
+            base
+        };
+        return Ok(json!({
+            "targetMode": "local",
+            "branch": target_local_branch,
+            "worktreePath": null,
+            "associatedWorktreePath": associated_path,
+            "associatedWorktreeBranch": associated_branch,
+            "associatedWorktreeRef": associated_ref,
+            "changesTransferred": moved || restored,
+            "conflictsDetected": local_transfer.conflicts,
+            "message": message,
+        }));
+    }
+
+    // target_mode == "worktree"
+    let intent_name = preferred_new_name.clone();
+    let reuse = assoc_path.is_some() || assoc_branch.is_some() || assoc_ref.is_some();
+    if intent_name.is_none() && !reuse {
+        return Err(err("Cannot hand off to a worktree because no worktree target is available."));
+    }
+    let base_branch = preferred_base.clone().or_else(|| current_branch.clone()).or_else(|| local_branch_now.clone());
+    if base_branch.is_none() && assoc_branch.is_none() && assoc_ref.is_none() {
+        return Err(err("Select a base branch before handing off this thread to a worktree."));
+    }
+
+    let source_stash = stash_working_tree(cwd, &format!("synara handoff to worktree {}", uuid_short()))?;
+    let source_branch = local_branch_now.clone().or_else(|| current_branch.clone());
+    let source_head = read_head_ref(cwd);
+    let mut foreground_after = local_branch_now.clone();
+
+    // If Local is on the branch the worktree will take, move Local aside first.
+    if source_branch.is_some() && source_branch == assoc_branch {
+        let excluded = assoc_branch.clone().unwrap_or_default();
+        let fallback = list_local_branches(cwd).into_iter().find(|b| *b != excluded);
+        match fallback {
+            None => {
+                let Some(head) = source_head.clone() else {
+                    let _ = pop_stash(cwd, source_stash.stash_ref.as_deref());
+                    return Err(err(format!(
+                        "Cannot hand off '{excluded}' to a worktree because there is no recoverable local HEAD reference available."
+                    )));
+                };
+                if let Err(e) = checkout_detached(cwd, &head) {
+                    let _ = pop_stash(cwd, source_stash.stash_ref.as_deref());
+                    return Err(e);
+                }
+                foreground_after = None;
+            }
+            Some(fb) => {
+                if let Err(e) = checkout_branch(cwd, &fb) {
+                    let _ = pop_stash(cwd, source_stash.stash_ref.as_deref());
+                    return Err(e);
+                }
+                foreground_after = Some(fb);
+            }
+        }
+    }
+
+    // Materialize the worktree.
+    let created: Result<(String, Option<String>), WsErr> = (|| {
+        if let (Some(aref), None) = (assoc_ref.clone(), assoc_branch.clone()) {
+            let v = create_detached_worktree(
+                cwd,
+                &json!({"ref": aref, "path": assoc_path}),
+            )?;
+            let path = v.pointer("/worktree/path").and_then(Value::as_str).unwrap_or_default().to_string();
+            return Ok((path, None));
+        }
+        if let Some(name) = &intent_name {
+            let Some(base) = &base_branch else {
+                return Err(err("Select a base branch before creating a new worktree."));
+            };
+            let v = crate::git_domain::handle(
+                "git.createWorktree",
+                &json!({"cwd": cwd, "branch": base, "newBranch": name}),
+            )?;
+            let path = v
+                .as_ref()
+                .and_then(|v| v.pointer("/worktree/path"))
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string();
+            if path.is_empty() {
+                return Err(err("createWorktree did not return a path"));
+            }
+            return Ok((path, Some(name.clone())));
+        }
+        if let Some(ab) = &assoc_branch {
+            if list_local_branches(cwd).iter().any(|b| b == ab) {
+                let v = crate::git_domain::handle(
+                    "git.createWorktree",
+                    &json!({"cwd": cwd, "branch": ab, "path": assoc_path}),
+                )?;
+                let path = v
+                    .as_ref()
+                    .and_then(|v| v.pointer("/worktree/path"))
+                    .and_then(Value::as_str)
+                    .unwrap_or_default()
+                    .to_string();
+                return Ok((path, Some(ab.clone())));
+            }
+            if base_branch.is_none() {
+                let v = create_detached_worktree(cwd, &json!({"ref": ab, "path": assoc_path}))?;
+                let path = v.pointer("/worktree/path").and_then(Value::as_str).unwrap_or_default().to_string();
+                return Ok((path, None));
+            }
+            let v = crate::git_domain::handle(
+                "git.createWorktree",
+                &json!({"cwd": cwd, "branch": base_branch, "newBranch": ab, "path": assoc_path}),
+            )?;
+            let path = v
+                .as_ref()
+                .and_then(|v| v.pointer("/worktree/path"))
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string();
+            return Ok((path, Some(ab.clone())));
+        }
+        let target = base_branch.clone().or_else(|| assoc_ref.clone()).ok_or_else(|| err("no worktree target"))?;
+        let v = create_detached_worktree(cwd, &json!({"ref": target, "path": assoc_path}))?;
+        let path = v.pointer("/worktree/path").and_then(Value::as_str).unwrap_or_default().to_string();
+        Ok((path, None))
+    })();
+
+    let (wt_created_path, wt_created_branch) = match created {
+        Ok(v) => v,
+        Err(e) => {
+            let rec = restore_local_source(
+                cwd,
+                source_branch.as_deref(),
+                source_head.as_deref(),
+                source_stash.stash_ref.as_deref(),
+            );
+            let detail = format!(
+                "{} {} {}",
+                e.0,
+                if rec.checkout_restored { "Local checkout was restored." } else { "Local checkout could not be fully restored automatically." },
+                if rec.stash_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash." },
+            );
+            return Err(err(detail));
+        }
+    };
+
+    // Transfer the stashed changes into the worktree.
+    let transfer = pop_stash(&wt_created_path, source_stash.stash_ref.as_deref());
+    if transfer.conflicts {
+        let removed = run(cwd, &["worktree", "remove", "--force", &wt_created_path])
+            .map(|o| o.status.success())
+            .unwrap_or(false);
+        // The pop partially applied in the worktree; the stash entry itself
+        // survives because apply-by-sha only drops on success.
+        let rec = restore_local_source(
+            cwd,
+            source_branch.as_deref(),
+            source_head.as_deref(),
+            source_stash.stash_ref.as_deref(),
+        );
+        let detail = format!(
+            "{} The stash entry was kept for recovery. {} {} {}",
+            transfer.message.as_deref().unwrap_or("Git reported conflicts while applying the handed off changes."),
+            if removed { "The new worktree was removed." } else { "The new worktree could not be removed automatically." },
+            if rec.checkout_restored { "Local checkout was restored." } else { "Local checkout could not be fully restored automatically." },
+            if rec.stash_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash. Run `git stash list` in Local to recover them." },
+        );
+        return Err(err(detail));
+    }
+
+    let materialized_branch = stdout(&wt_created_path, &["branch", "--show-current"], "git")
+        .map(|s| s.trim().to_string())
+        .ok()
+        .filter(|s| !s.is_empty())
+        .or(wt_created_branch);
+    let materialized_ref = read_head_ref(&wt_created_path).or_else(|| materialized_branch.clone());
+    if let Some(branch) = &materialized_branch {
+        // Publishing is best-effort: local-only repositories still hand off fine.
+        let _ = run(&wt_created_path, &["push", "-u", "origin", branch]);
+    }
+
+    let moved = source_stash.had_changes;
+    let summary = if foreground_after.is_some() && foreground_after != source_branch {
+        format!(
+            "The thread moved into its worktree and Local returned to '{}'.",
+            foreground_after.as_deref().unwrap_or_default()
+        )
+    } else if foreground_after.is_none() && source_branch == assoc_branch {
+        "The thread moved into its worktree and Local returned to a detached HEAD.".to_string()
+    } else {
+        "The thread moved into its worktree.".to_string()
+    };
+    let message = if moved {
+        format!("{summary} Uncommitted local changes were carried over.")
+    } else {
+        summary
+    };
+
+    Ok(json!({
+        "targetMode": "worktree",
+        "branch": materialized_branch,
+        "worktreePath": wt_created_path,
+        "associatedWorktreePath": wt_created_path,
+        "associatedWorktreeBranch": materialized_branch,
+        "associatedWorktreeRef": materialized_ref,
+        "changesTransferred": moved,
+        "conflictsDetected": false,
+        "message": message,
+    }))
+}
+
+fn uuid_short() -> String {
+    crate::orchestration_engine::uuid_v4()
 }

@@ -77,6 +77,7 @@ async fn intercept_todo(
         && !text.contains("\"server.get")
         && !text.contains("\"shell.openInEditor\"")
         && !text.contains("\"git.")
+        && !text.contains("\"editor.intelligence")
         && !text.contains("\"agentGateway.call")
         && !text.contains("\"filesystem.browse")
         && !text.contains("server.listWorktrees")
@@ -211,6 +212,7 @@ async fn intercept_todo(
         && !crate::hosts::handles(tag)
         && !crate::device::handles(tag)
         && !crate::editor::handles(tag)
+        && !crate::editor_intelligence::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !crate::pull_requests::handles(tag)
         && !crate::automation::handles(tag)
@@ -1115,6 +1117,9 @@ async fn intercept_todo(
     } else if crate::mcp_connectors::handles(tag) {
         crate::mcp_connectors::handle(tag, &payload)
             .map(Some)
+            .map_err(error_json)
+    } else if crate::editor_intelligence::handles(tag) {
+        crate::editor_intelligence::handle(tag, &payload)
             .map_err(error_json)
     } else if tag == "agentGateway.call" {
         crate::agent_gateway_mcp::handle_ws_call(&payload)

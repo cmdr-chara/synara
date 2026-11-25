@@ -32,6 +32,8 @@ tokio-tungstenite = "0.26"
 http = "1"
 rusqlite = { version = "0.32", features = ["bundled"] }
 sha2 = "0.10"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+chrono-tz = "0.10"
 portable-pty = "0.9"
 sha1 = "0.10"
 

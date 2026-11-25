@@ -9,6 +9,7 @@ use gpui_kit::*;
 use gpui_webview::WebView;
 
 mod native;
+mod voice;
 mod ws_client;
 
 const DEFAULT_URL: &str = "http://127.0.0.1:4577";

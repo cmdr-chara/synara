@@ -70,6 +70,7 @@ mod icons {
     pub const MORE: &[u8] = include_bytes!("../assets/icons/dot-grid-1x3-horizontal.svg");
     pub const PLUS: &[u8] = include_bytes!("../assets/icons/plus-sign.svg");
     pub const SEND: &[u8] = include_bytes!("../assets/icons/arrow-up.svg");
+    pub const MIC: &[u8] = include_bytes!("../assets/icons/mic.svg");
     pub const ARROW_DOWN: &[u8] = include_bytes!("../assets/icons/arrow-down.svg");
     pub const X: &[u8] = include_bytes!("../assets/icons/x.svg");
     pub const UNDO: &[u8] = include_bytes!("../assets/icons/arrow-undo-up.svg");
@@ -1322,6 +1323,10 @@ pub struct Native {
     // Async user-input (pending question) cards: expanded ids and the
     // (message_id, question_index) -> chosen option label draft.
     user_input_open: Vec<String>,
+    /// Live voice-note capture while the composer mic is recording.
+    voice_capture: Option<crate::voice::VoiceCapture>,
+    /// True while a finished clip is with the transcription backend.
+    voice_transcribing: bool,
     ctx_menu: Option<(String, f32, f32)>,
     // True when ctx_menu was opened from an open-thread tab: upstream appends
     // "close tabs" scope rows on top of the usual thread menu.
@@ -3043,6 +3048,8 @@ impl Native {
             search_open: false,
             sidebar_collapsed: false,
             user_input_open: Vec::new(),
+            voice_capture: None,
+            voice_transcribing: false,
             ctx_menu: None,
             ctx_menu_tab: false,
             ctx_sub: None,
@@ -8400,6 +8407,105 @@ impl Native {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.uploading = false;
                 this.pending_attachments.extend(uploaded);
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
+    /// Composer mic: start capturing a voice note. Failure surfaces as a
+    /// toast; the button stays inert when a transcription is in flight.
+    fn start_voice(&mut self, cx: &mut Context<Self>) {
+        if self.voice_transcribing || self.voice_capture.is_some() {
+            return;
+        }
+        match crate::voice::VoiceCapture::start() {
+            Ok(capture) => {
+                self.voice_capture = Some(capture);
+            }
+            Err(e) => {
+                self.feedback_toast = Some((format!("Voice recording unavailable: {e}"), true));
+            }
+        }
+        cx.notify();
+    }
+
+    /// Stop the capture, hand the WAV clip to the transcription backend and
+    /// insert the returned text into the composer draft. The blocking WS call
+    /// runs on the background executor exactly like the snapshot fetches.
+    fn stop_voice(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(capture) = self.voice_capture.take() else {
+            return;
+        };
+        let wav = capture.finish();
+        if wav.is_empty() {
+            cx.notify();
+            return;
+        }
+        self.voice_transcribing = true;
+        cx.notify();
+        let client = self
+            .client
+            .lock()
+            .ok()
+            .and_then(|guard| guard.as_ref().cloned());
+        let Some(client) = client else {
+            self.voice_transcribing = false;
+            cx.notify();
+            return;
+        };
+        use base64::Engine as _;
+        let audio_base64 = base64::engine::general_purpose::STANDARD.encode(&wav);
+        let payload = json!({
+            "mimeType": "audio/wav",
+            "sampleRateHz": 24000,
+            "durationMs": (wav.len().saturating_sub(44) / 2 / 24) as u64,
+            "audioBase64": audio_base64,
+        });
+        let composer = self.composer.clone();
+        let window_handle = window.window_handle();
+        cx.spawn(async move |this, cx: &mut AsyncApp| {
+            let c = client.clone();
+            let result = cx
+                .background_executor()
+                .spawn(async move { c.call("server.transcribeVoice", payload) })
+                .await;
+            let text = result
+                .as_ref()
+                .and_then(|v| {
+                    v.get("text")
+                        .or_else(|| v.get("transcript"))
+                        .and_then(Value::as_str)
+                })
+                .unwrap_or("")
+                .trim()
+                .to_string();
+            if !text.is_empty() {
+                let text2 = text.clone();
+                let composer2 = composer.clone();
+                let _ = cx.update_window(window_handle, move |_, window, app| {
+                    composer.update(app, |state, cx| {
+                        let current = state.value().to_string();
+                        let merged = if current.trim().is_empty() {
+                            text2.clone()
+                        } else if current.ends_with(' ') || current.ends_with('\n') {
+                            format!("{current}{text2}")
+                        } else {
+                            format!("{current} {text2}")
+                        };
+                        state.set_value(merged, window, cx);
+                        let focus = composer2.read(cx).focus_handle(cx);
+                        window.focus(&focus, cx);
+                    });
+                });
+            }
+            let empty = text.is_empty();
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.voice_transcribing = false;
+                if empty {
+                    this.feedback_toast =
+                        Some(("Voice transcription returned no text".to_string(), true));
+                }
                 cx.notify();
             });
         })
@@ -17176,6 +17282,54 @@ impl Render for Native {
         // Expired side chats disable the send control (upstream
         // submission.expired → muted circle like an empty draft).
         let composer_expired = in_thread && !get(thread_v, "sidechatExpiredAt").is_null();
+        // Composer mic (upstream voice notes): idle starts the capture, the
+        // red recording state stops and transcribes into the draft. Muted and
+        // inert while a clip is with the transcription backend. Built through
+        // a closure because AnyElement is not Clone and the two composer
+        // layouts are mutually exclusive per render.
+        let make_mic_btn = |cx: &mut Context<Self>| {
+            let recording = self.voice_capture.is_some();
+            let busy = self.voice_transcribing;
+            let icon_color: gpui::Hsla = if recording {
+                rgb(0xef4444).into()
+            } else if busy {
+                theme.muted_foreground.opacity(0.4)
+            } else {
+                theme.muted_foreground
+            };
+            let base = div()
+                .id("mic")
+                .size(px(28.))
+                .flex()
+                .flex_none()
+                .items_center()
+                .justify_center()
+                .rounded_full()
+                .cursor_pointer()
+                .on_click(cx.listener(|this, _ev, w, cx| {
+                    if this.voice_capture.is_some() {
+                        this.stop_voice(w, cx);
+                    } else {
+                        this.start_voice(cx);
+                    }
+                }));
+            let icon = svg_icon(icons::MIC).size(px(15.)).text_color(icon_color);
+            if recording {
+                base.child(
+                    icon.with_animation(
+                        "voice-rec-pulse",
+                        Animation::new(std::time::Duration::from_millis(1200)).repeat_synced(),
+                        |this, delta| {
+                            let tri = 1.0 - (delta * 2.0 - 1.0).abs();
+                            this.opacity(0.45 + 0.55 * tri)
+                        },
+                    ),
+                )
+                .into_any_element()
+            } else {
+                base.child(icon).into_any_element()
+            }
+        };
         let send_btn = if turn_live {
             div()
                 .id("send")
@@ -17242,6 +17396,7 @@ impl Render for Native {
                         .items_center()
                         .child(plus_btn)
                         .child(div().flex_1().min_w_0().child(input_zone))
+                        .child(make_mic_btn(cx))
                         .child(send_btn),
                 )
         } else {
@@ -17266,6 +17421,7 @@ impl Render for Native {
                         .child(build_mode_chip(cx))
                         .child(div().flex_1())
                         .child(build_model_chip())
+                        .child(make_mic_btn(cx))
                         .child(send_btn),
                 )
         };

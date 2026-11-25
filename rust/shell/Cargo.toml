@@ -19,5 +19,7 @@ uuid = { version = "1", features = ["v4"] }
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
 async-channel = "2"
 urlencoding = "2"
+cpal = "0.15"
+base64 = "0.22"
 
 [workspace]

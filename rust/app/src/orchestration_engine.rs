@@ -104,7 +104,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.turn.start" => thread_turn_start(command),
         "thread.turn.interrupt" => {
             if let Some(t) = s(command, "threadId") {
-                crate::acp_runner::cancel_turn(&t);
+                cancel_any_provider_turn(&t);
             }
             thread_simple(command, "thread.turn-interrupt-requested")
         }
@@ -167,7 +167,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "thread.message.edit-and-resend" => message_edit_resend(command),
         "thread.session.stop" => {
             if let Some(t) = s(command, "threadId") {
-                crate::acp_runner::cancel_turn(&t);
+                cancel_any_provider_turn(&t);
             }
             session_stop(command)
         }
@@ -1328,6 +1328,13 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
 
     Ok(json!({ "sequence": seq }))
+}
+
+fn cancel_any_provider_turn(thread_id: &str) {
+    crate::acp_runner::cancel_turn(thread_id);
+    crate::codex_runner::cancel_turn(thread_id);
+    crate::claude_runner::cancel_turn(thread_id);
+    crate::opencode_runner::cancel_turn(thread_id);
 }
 
 /// Event-only commands: validate the thread exists, append one event whose

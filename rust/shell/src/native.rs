@@ -11540,8 +11540,9 @@ impl Native {
         } else {
             theme.list_active
         };
+        // Upstream --app-user-message-background (dark): foreground at 2.7%.
         let user_bubble: gpui::Hsla = if dark_ui {
-            rgb(0x181818).into()
+            theme.foreground.opacity(0.027)
         } else {
             theme.list_active
         };
@@ -11831,12 +11832,14 @@ impl Native {
             let is_match = !find_q.is_empty() && text.to_lowercase().contains(&find_q);
 
             if role == "user" {
+                // Upstream chat-user-message-bubble: 10/14 padding, radius 16,
+                // at most 80% of the chat column (max-w-[80%] wrapper).
                 let mut pill = div()
                     .bg(user_bubble)
                     .rounded(px(16.))
-                    .px_4()
+                    .px(px(14.))
                     .py(px(10.))
-                    .max_w(px(560.));
+                    .max_w(chat_mw * 0.8);
                 if is_match {
                     pill = pill.border_1().border_color(theme.warning);
                 }

@@ -515,6 +515,19 @@ pub fn create_local_file_preview_grant(payload: &Value) -> Result<Value, WsErr> 
     }))
 }
 
+/// Resolves a live preview grant token to its real path, pruning expired
+/// entries — mirrors upstream resolveLocalPreviewGrantRealPath (2-minute TTL).
+pub(crate) fn resolve_grant_real_path(token: &str) -> Option<PathBuf> {
+    let token = token.trim();
+    if token.is_empty() {
+        return None;
+    }
+    let mut grants = GRANTS.lock().ok()?;
+    let now = Instant::now();
+    grants.retain(|_, g| g.expires_at > now);
+    grants.get(token).map(|g| g.real_path.clone())
+}
+
 pub(crate) fn iso8601(secs: u64) -> String {
     let days = secs / 86_400;
     let tod = secs % 86_400;

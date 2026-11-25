@@ -1095,14 +1095,119 @@ fn opencode_variant_descriptors(model: &Value) -> Vec<Value> {
         .unwrap_or_default()
 }
 
+/// Credential provider ids, mirroring upstream loadOpenCodeCredentialProviderIDs
+/// auth-file fallback: keys of opencode's auth.json. Synara reads only the
+/// key NAMES (which providers are authenticated), never the credential values.
+fn opencode_credential_provider_ids() -> Vec<String> {
+    let home = std::env::var("HOME").unwrap_or_default();
+    let candidates = [
+        format!("{home}/.local/share/opencode/auth.json"),
+        format!("{home}/.opencode/auth.json"),
+    ];
+    for path in candidates {
+        if let Ok(content) = std::fs::read_to_string(&path) {
+            if let Ok(Value::Object(map)) = serde_json::from_str::<Value>(&content) {
+                return map.keys().cloned().collect();
+            }
+        }
+    }
+    Vec::new()
+}
+
+/// Upstream resolvePreferredOpenCodeModelProviders: prefer authenticated,
+/// console-managed or opencode-managed connected providers; otherwise drop
+/// env-sourced ones; otherwise all connected. Providers are filtered to
+/// connected when the inventory reports a connected list.
+fn preferred_opencode_providers<'a>(
+    providers: Vec<&'a Value>,
+    connected: &std::collections::HashSet<String>,
+    credentials: &std::collections::HashSet<String>,
+) -> Vec<&'a Value> {
+    let has_connected = !connected.is_empty();
+    let connected_providers: Vec<&Value> = providers
+        .iter()
+        .filter(|p| {
+            !has_connected
+                || connected.contains(p.get("id").and_then(Value::as_str).unwrap_or(""))
+        })
+        .copied()
+        .collect();
+    if connected_providers.is_empty() {
+        return Vec::new();
+    }
+    fn pid(p: &Value) -> &str {
+        p.get("id").and_then(Value::as_str).unwrap_or("")
+    }
+    let id = pid;
+    let inline_key = |p: &Value| {
+        p.pointer("/options/apiKey")
+            .or_else(|| p.pointer("/options/api_key"))
+            .and_then(Value::as_str)
+            .is_some_and(|k| !k.is_empty())
+    };
+    let preferred: std::collections::HashSet<String> = connected_providers
+        .iter()
+        .filter(|p| {
+            credentials.contains(id(p))
+                || inline_key(p)
+                || id(p).starts_with("opencode")
+                || id(p) == "opencode-zen"
+        })
+        .map(|p| id(p).to_string())
+        .collect();
+    if !preferred.is_empty() {
+        return connected_providers
+            .iter()
+            .filter(|p| preferred.contains(id(p)))
+            .copied()
+            .collect();
+    }
+    let non_env: Vec<&Value> = connected_providers
+        .iter()
+        .filter(|p| p.get("source").and_then(Value::as_str) != Some("env"))
+        .copied()
+        .collect();
+    if !non_env.is_empty() {
+        non_env
+    } else {
+        connected_providers
+    }
+}
+
 fn flatten_opencode_inventory_models(provider_list: &Value) -> Vec<Value> {
+    // OpenCode v2 returns {all, connected, default}; older shapes expose a
+    // bare array or nest it under data. Handle all three.
+    let root = provider_list.get("data").unwrap_or(provider_list);
+    let (providers_raw, connected_ids): (Vec<Value>, std::collections::HashSet<String>) =
+        if let Some(all) = root.get("all").and_then(Value::as_array) {
+            let connected = root
+                .get("connected")
+                .and_then(Value::as_array)
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|v| {
+                            v.as_str()
+                                .map(str::to_string)
+                                .or_else(|| v.get("id").and_then(Value::as_str).map(str::to_string))
+                        })
+                        .collect()
+                })
+                .unwrap_or_default();
+            (all.clone(), connected)
+        } else if let Some(arr) = root.as_array() {
+            (arr.clone(), std::collections::HashSet::new())
+        } else {
+            (Vec::new(), std::collections::HashSet::new())
+        };
+    let credentials: std::collections::HashSet<String> =
+        opencode_credential_provider_ids().into_iter().collect();
+    let provider_refs: Vec<&Value> = providers_raw.iter().collect();
+    let providers = preferred_opencode_providers(provider_refs, &connected_ids, &credentials);
     let mut models = Vec::new();
-    for provider in provider_list
-        .get("data")
-        .and_then(Value::as_array)
-        .cloned()
-        .unwrap_or_default()
+    for provider in providers
     {
+        let provider = provider.clone();
+
         let provider_id = provider.get("id").and_then(Value::as_str).unwrap_or("");
         if provider_id.is_empty() {
             continue;

@@ -178,8 +178,18 @@ pub(crate) fn instance_home_path(instance: &ResolvedInstance) -> Option<String> 
 /// configuration (Codex overlays, Claude instance homes) stays in the
 /// owning runner.
 pub(crate) fn apply_instance_environment(command: &mut std::process::Command, driver: &str) {
+    apply_instance_environment_for(command, driver, None);
+}
+
+/// Instance-id-aware variant: the thread's model selection carries the
+/// account when one was chosen, upstream modelSelection.instanceId.
+pub(crate) fn apply_instance_environment_for(
+    command: &mut std::process::Command,
+    driver: &str,
+    instance_id: Option<&str>,
+) {
     let settings = crate::server_settings::current();
-    if let Some(instance) = resolve_instance(&settings, None, Some(driver)) {
+    if let Some(instance) = resolve_instance(&settings, instance_id, Some(driver)) {
         for (key, value) in instance_start_environment(&instance) {
             command.env(key, value);
         }

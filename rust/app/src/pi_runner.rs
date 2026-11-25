@@ -142,8 +142,21 @@ fn read_json_line(reader: &mut BufReader<ChildStdout>) -> Result<Option<Value>, 
     }
 }
 
-fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
-    let mut args = vec!["--mode".to_string(), "rpc".to_string(), "--no-session".to_string()];
+fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
+    let session_id: String = thread_id
+        .chars()
+        .filter(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '-'))
+        .collect();
+    let session_dir = std::path::PathBuf::from(crate::todo::state_dir()).join("pi-sessions");
+    let _ = std::fs::create_dir_all(&session_dir);
+    let mut args = vec![
+        "--mode".to_string(),
+        "rpc".to_string(),
+        "--session-dir".to_string(),
+        session_dir.display().to_string(),
+        "--session-id".to_string(),
+        session_id,
+    ];
     if runtime_mode != "full-access" {
         // Pi RPC has no interactive permission callback. Keep supervised modes
         // read-only rather than letting bash/edit/write execute unchecked.
@@ -192,6 +205,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
+    let stored_session: Option<String> = conn
+        .query_row(
+            "SELECT provider_thread_id FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
     let turn_id = uuid_v4();
     let assistant_msg_id = uuid_v4();
     let now = iso_now_ms();
@@ -244,7 +265,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let (mut child, stdin, mut reader, reused) = if let Some(parked) = take_parked(thread_id, &launch_key) {
         (parked.child, parked.stdin, parked.reader, true)
     } else {
-        let (child, stdin, stdout) = spawn_pi(&cwd, &turn_runtime_mode, selected_model.as_deref())?;
+        let (child, stdin, stdout) = spawn_pi(&cwd, &turn_runtime_mode, selected_model.as_deref(), thread_id)?;
         (child, Arc::new(Mutex::new(stdin)), BufReader::new(stdout), false)
     };
     {
@@ -252,7 +273,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         map.insert(thread_id.to_string(), RunningTurn { stdin: stdin.clone(), cancelled: cancelled.clone() });
     }
 
-    let prompt_text = if reused {
+    let prompt_text = if reused || stored_session.is_some() {
         text.to_string()
     } else {
         format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)

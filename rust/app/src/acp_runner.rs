@@ -897,6 +897,7 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
                 selected_model.as_deref(),
                 omp_thinking_level.as_deref(),
             )?;
+            apply_omp_interaction_mode(&mut rpc, &session_id, &interaction_mode);
         }
         Ok(session_id)
     })();
@@ -934,6 +935,14 @@ fn apply_omp_session_configuration(
         )?;
     }
     Ok(())
+}
+
+fn apply_omp_interaction_mode(rpc: &mut Rpc, session_id: &str, interaction_mode: &str) {
+    let mode = if interaction_mode == "plan" { "plan" } else { "default" };
+    let _ = rpc.call(
+        "session/set_config_option",
+        json!({"sessionId": session_id, "configId": "mode", "value": mode}),
+    );
 }
 
 /// Compact a warm ACP session by sending the provider-native `/compact`
@@ -1876,6 +1885,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     selected_model.as_deref(),
                     omp_thinking_level.as_deref(),
                 )?;
+                apply_omp_interaction_mode(&mut rpc, &session_id, &ctx_mode.1);
             }
             session_id
         };

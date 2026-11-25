@@ -292,45 +292,6 @@ pub async fn serve_inner(
     if key.is_empty() {
         return;
     }
-    let authorization = head.header("authorization").unwrap_or("").to_string();
-    let dpop = head.header("dpop").unwrap_or("").to_string();
-    // The rpc path is admission-gated exactly like upstream's admit(): a
-    // device session credential plus its DPoP proof bound to this upgrade.
-    // The pairing path stays open — pairing is how devices earn trust.
-    if path == REMOTE_INNER_RPC_PATH {
-        let state_dir = crate::todo::state_dir();
-        let secrets_dir = format!("{state_dir}/secrets");
-        let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
-        let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
-        let admitted = (|| -> Result<(), String> {
-            let identity = crate::host_identity::read_host_identity(&identity_path)?
-                .ok_or_else(|| "host identity missing".to_string())?;
-            let credential = authorization
-                .strip_prefix("DPoP ")
-                .ok_or_else(|| "missing credential".to_string())?;
-            let verified = crate::host_auth_verify::verify_session_credential(
-                credential,
-                &dpop,
-                &identity,
-                &environment_id,
-                1,
-                REMOTE_INNER_RPC_PATH,
-                "GET",
-                None,
-            )?;
-            let conn = crate::remote_pairing::open()?;
-            let secrets_dir2 = format!("{state_dir}/secrets");
-            let scope = crate::remote_pairing::local_scope(&secrets_dir2, &environment_id)
-                .ok_or_else(|| "scope unavailable".to_string())?;
-            if !crate::remote_pairing::authorize_device(&conn, &scope, &verified.device_jkt)? {
-                return Err("device trust is not current".to_string());
-            }
-            Ok(())
-        })();
-        if admitted.is_err() {
-            return;
-        }
-    }
     use tokio::io::AsyncWriteExt;
     let response = format!(
         "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: {}\r\n\r\n",
@@ -354,7 +315,123 @@ pub async fn serve_inner(
         }
         return;
     }
+    // In-band session handshake, port of upstream remoteSessions/gateway.ts:
+    // the upgrade stays open and the first frames authenticate — a mint
+    // request (proof of possession of a trusted device key) earns a fresh
+    // short-lived credential, then session_authorize binds that credential
+    // to this socket with a DPoP proof before any RPC is bridged. Frames cap
+    // at 64 KiB and 8 messages with a 15 second deadline, exactly upstream.
     let (mut client_tx, mut client_rx) = ws.split();
+    {
+        use futures_util::SinkExt as _;
+        let state_dir = crate::todo::state_dir();
+        let secrets_dir = format!("{state_dir}/secrets");
+        let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
+        let deadline = tokio::time::Instant::now() + tokio::time::Duration::from_secs(15);
+        let mut state = "mint";
+        let mut frames_seen = 0u32;
+        let mut authed = false;
+        while !authed {
+            let frame = match tokio::time::timeout_at(deadline, client_rx.next()).await {
+                Ok(Some(Ok(tokio_tungstenite::tungstenite::Message::Text(text)))) => text.to_string(),
+                _ => return,
+            };
+            frames_seen += 1;
+            if frames_seen > 8 || frame.len() > 64 * 1024 {
+                let _ = client_tx
+                    .send(tokio_tungstenite::tungstenite::Message::Close(Some(
+                        tokio_tungstenite::tungstenite::protocol::CloseFrame {
+                            code: 1009u16.into(),
+                            reason: "Remote authorization frame limit exceeded".into(),
+                        },
+                    )))
+                    .await;
+                return;
+            }
+            let parsed: serde_json::Value = match serde_json::from_str(&frame) {
+                Ok(value) => value,
+                Err(_) => return,
+            };
+            let frame_type = parsed.get("type").and_then(|v| v.as_str()).unwrap_or("");
+            if state == "mint" && frame_type == "mint_request" {
+                let request = parsed.get("request").and_then(|v| v.as_str()).unwrap_or("");
+                let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
+                let minted = (|| -> Result<crate::host_auth_verify::MintedSessionCredential, String> {
+                    let identity = crate::host_identity::read_host_identity(&identity_path)?
+                        .ok_or_else(|| "host identity missing".to_string())?;
+                    let conn = crate::remote_pairing::open()?;
+                    let scope = crate::remote_pairing::local_scope(&secrets_dir, &environment_id)
+                        .ok_or_else(|| "scope unavailable".to_string())?;
+                    crate::host_auth_verify::mint_session_credential(
+                        request,
+                        &identity,
+                        &environment_id,
+                        1,
+                        |device_jkt| crate::remote_pairing::device_trust_generation(&conn, &scope, device_jkt),
+                    )
+                })();
+                let Ok(minted) = minted else { return };
+                let reply = serde_json::json!({
+                    "v": 1,
+                    "type": "session_credential",
+                    "credential": minted.credential,
+                    "expiresAtSeconds": minted.expires_at_seconds,
+                });
+                if client_tx
+                    .send(tokio_tungstenite::tungstenite::Message::Text(reply.to_string().into()))
+                    .await
+                    .is_err()
+                {
+                    return;
+                }
+                state = "authorize";
+                continue;
+            }
+            if frame_type != "session_authorize" {
+                return;
+            }
+            let credential = parsed.get("credential").and_then(|v| v.as_str()).unwrap_or("");
+            let dpop = parsed.get("dpop").and_then(|v| v.as_str()).unwrap_or("");
+            let verified = (|| -> Result<crate::host_auth_verify::VerifiedSessionCredential, String> {
+                let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
+                let identity = crate::host_identity::read_host_identity(&identity_path)?
+                    .ok_or_else(|| "host identity missing".to_string())?;
+                crate::host_auth_verify::verify_session_credential(
+                    credential,
+                    dpop,
+                    &identity,
+                    &environment_id,
+                    1,
+                    "synara://remote/session",
+                    "CONNECT",
+                    None,
+                )
+            })();
+            let Ok(verified) = verified else { return };
+            let trusted = (|| -> Result<bool, String> {
+                let conn = crate::remote_pairing::open()?;
+                let scope = crate::remote_pairing::local_scope(&secrets_dir, &environment_id)
+                    .ok_or_else(|| "scope unavailable".to_string())?;
+                crate::remote_pairing::authorize_device(&conn, &scope, &verified.device_jkt)
+            })();
+            if trusted != Ok(true) {
+                return;
+            }
+            let ready = serde_json::json!({
+                "v": 2,
+                "type": "session_ready",
+                "environmentId": environment_id,
+            });
+            if client_tx
+                .send(tokio_tungstenite::tungstenite::Message::Text(ready.to_string().into()))
+                .await
+                .is_err()
+            {
+                return;
+            }
+            authed = true;
+        }
+    }
     let (native_tx, mut native_rx) = tokio::sync::mpsc::unbounded_channel::<axum::extract::ws::Message>();
     let streams: std::sync::Arc<
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,

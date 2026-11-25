@@ -371,6 +371,19 @@ pub fn revoke_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) ->
 }
 
 /// Whether the device is trusted and unrevoked, upstream's trust.authorize.
+/// The credential-minting variant: generation proves the trust row is current
+/// and binds the minted credential to it, so a later revoke (which bumps or
+/// removes the row) invalidates every credential minted before it.
+pub fn device_trust_generation(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<u64, String> {
+    conn.query_row(
+        "SELECT generation FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2 AND device_jkt = ?3 AND revoked_at IS NULL",
+        params![scope.environment_id, scope.root_fingerprint, device_jkt],
+        |row| row.get::<_, i64>(0),
+    )
+    .map(|generation| generation.max(0) as u64)
+    .map_err(|_| "Device has no current local approval".to_string())
+}
+
 pub fn authorize_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<bool, String> {
     let found = conn.query_row(
         "SELECT 1 FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2 AND device_jkt = ?3 AND revoked_at IS NULL",

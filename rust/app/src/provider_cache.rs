@@ -21,6 +21,7 @@ pub fn handles(tag: &str) -> bool {
             | "provider.compactThread"
             | "provider.getComposerCapabilities"
             | "provider.listCommands"
+            | "provider.prewarmThread"
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
             | "server.updateProvider"
@@ -39,6 +40,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "provider.compactThread" => compact_thread(payload),
         "provider.getComposerCapabilities" => composer_capabilities(payload),
         "provider.listCommands" => list_commands(payload),
+        "provider.prewarmThread" => prewarm_thread(payload),
         "server.listExternalMcpIntegrations" => list_external_mcp_integrations(),
         "server.createExternalMcpIntegration" => create_external_mcp_integration(payload),
         "server.revokeExternalMcpIntegration" => revoke_external_mcp_integration(payload),
@@ -324,6 +326,30 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
         }));
     }
     Ok(json!({"commands": [], "source": "unsupported", "cached": false}))
+}
+
+
+fn prewarm_thread(payload: &Value) -> Result<Value, WsErr> {
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("threadId is required"))?;
+    let provider = {
+        let conn = crate::orchestration_engine::open_state_rw()?;
+        conn.query_row(
+            "SELECT provider_name FROM projection_thread_sessions WHERE thread_id=?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .unwrap_or_default()
+    };
+    let started = match provider.as_str() {
+        "pi" => crate::pi_runner::prewarm_thread(thread_id)?,
+        _ => false,
+    };
+    Ok(json!({"started": started}))
 }
 
 fn compact_thread(payload: &Value) -> Result<Value, WsErr> {

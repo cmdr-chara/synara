@@ -341,6 +341,75 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
     result
 }
 
+
+/// Start Pi ahead of the first user prompt. Pi owns the session file from
+/// process startup, so parking this process gives the next turn a warm RPC
+/// runtime without sending any model traffic.
+pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Ok(false);
+    }
+    if let Ok(parked_map) = PARKED.lock() {
+        if parked_map.contains_key(thread_id) {
+            return Ok(false);
+        }
+    }
+    let conn = open_state_rw()?;
+    let (cwd, runtime_mode, model_selection_json): (String, String, Option<String>) = conn
+        .query_row(
+            "SELECT COALESCE(working_directory, worktree_path, associated_worktree_path, ''), \
+                    COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id=?1), 'full-access'), \
+                    model_selection_json \
+             FROM projection_threads WHERE thread_id=?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|e| err(format!("pi prewarm thread lookup: {e}")))?;
+    let model_selection = model_selection_json
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .unwrap_or(Value::Null);
+    let selected_model = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_variant = model_selection
+        .pointer("/options/variant")
+        .or_else(|| model_selection.pointer("/options/reasoningEffort"))
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_model = selected_model.map(|model| {
+        selected_variant
+            .as_deref()
+            .filter(|variant| !variant.is_empty() && !model.contains(':'))
+            .map(|variant| format!("{model}:{variant}"))
+            .unwrap_or(model)
+    });
+    let cwd = if !cwd.is_empty() && std::path::Path::new(&cwd).is_dir() {
+        cwd
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let launch_key = format!(
+        "{}|{}|{}",
+        cwd,
+        runtime_mode,
+        selected_model.as_deref().unwrap_or("")
+    );
+    let (child, stdin, stdout) = spawn_pi(&cwd, &runtime_mode, selected_model.as_deref(), thread_id)?;
+    if let Ok(mut parked_map) = PARKED.lock() {
+        parked_map.insert(
+            thread_id.to_string(),
+            ParkedPi {
+                child,
+                stdin: Arc::new(Mutex::new(stdin)),
+                reader: BufReader::new(stdout),
+                launch_key,
+            },
+        );
+    }
+    Ok(true)
+}
+
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&thread_id, &message_id, &text, &cwd) {

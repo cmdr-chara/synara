@@ -164,6 +164,11 @@ fn main() {
 
     app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);
+        // Upstream display face for the wordmark (--font-display-family:
+        // "Cal Sans"; SIL OFL 1.1, see assets/fonts/CalSans-OFL.txt).
+        let _ = cx.text_system().add_fonts(vec![std::borrow::Cow::Borrowed(
+            include_bytes!("../assets/fonts/CalSans-Regular.ttf").as_slice(),
+        )]);
 
         let options = WindowOptions {
             window_bounds: Some(WindowBounds::Windowed(Bounds::centered(

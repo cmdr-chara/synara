@@ -279,6 +279,319 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
     models
 }
 
+fn devin_string_field<'a>(object: &'a Value, keys: &[&str]) -> Option<&'a str> {
+    keys.iter().find_map(|key| object.get(*key).and_then(Value::as_str).map(str::trim).filter(|value| !value.is_empty()))
+}
+
+fn devin_words(text: &str) -> Vec<String> {
+    text.to_ascii_lowercase()
+        .split(|ch: char| !ch.is_ascii_alphanumeric())
+        .filter(|part| !part.is_empty())
+        .map(str::to_string)
+        .collect()
+}
+
+fn infer_devin_effort(model: &str, label: Option<&str>) -> Option<&'static str> {
+    let words = devin_words(&format!("{} {}", model, label.unwrap_or("")));
+    let has = |needles: &[&str]| words.iter().any(|word| needles.contains(&word.as_str()));
+    if has(&["no", "none", "off"]) && (has(&["thinking"]) || has(&["none", "off"])) {
+        return Some("none");
+    }
+    if has(&["minimal"]) {
+        return Some("minimal");
+    }
+    if has(&["low"]) {
+        return Some("low");
+    }
+    if has(&["medium"]) {
+        return Some("medium");
+    }
+    if has(&["xhigh"]) || (has(&["extra"]) && has(&["high"])) {
+        return Some("xhigh");
+    }
+    if has(&["high"]) {
+        return Some("high");
+    }
+    if has(&["max"]) {
+        return Some("max");
+    }
+    None
+}
+
+fn is_devin_fast_variant(model: &str, label: Option<&str>) -> bool {
+    let words = devin_words(&format!("{} {}", model, label.unwrap_or("")));
+    words.iter().any(|word| matches!(word.as_str(), "fast" | "lightning" | "priority"))
+}
+
+fn is_devin_thinking_variant(model: &str, label: Option<&str>) -> bool {
+    let words = devin_words(&format!("{} {}", model, label.unwrap_or("")));
+    words.iter().any(|word| word == "thinking")
+        && !(words.iter().any(|word| word == "no") && words.iter().any(|word| word == "thinking"))
+        && infer_devin_effort(model, label).is_none()
+}
+
+fn devin_context_window(tokens: Option<i64>, model: &str) -> Option<String> {
+    if let Some(tokens) = tokens {
+        if tokens >= 1_000_000 && tokens % 1_000_000 == 0 {
+            return Some(format!("{}m", tokens / 1_000_000));
+        }
+        if tokens >= 1_000 && tokens % 1_000 == 0 {
+            return Some(format!("{}k", tokens / 1_000));
+        }
+        if tokens > 0 {
+            return Some(tokens.to_string());
+        }
+    }
+    let lower = model.to_ascii_lowercase();
+    for part in lower.split(|ch: char| ch == '-' || ch == '_') {
+        if part.ends_with('m') && part[..part.len() - 1].chars().all(|ch| ch.is_ascii_digit() || ch == '.') {
+            return Some(part.to_string());
+        }
+    }
+    None
+}
+
+fn parse_devin_variant(value: &Value) -> Option<Value> {
+    let object = value.as_object()?;
+    let model = devin_string_field(value, &["model_uid", "modelUid", "uid", "model"])?;
+    let label = devin_string_field(value, &["label", "name", "displayName", "title"]).map(str::to_string);
+    let tokens = object
+        .get("maxContextTokens")
+        .or_else(|| object.get("max_context_tokens"))
+        .or_else(|| object.get("contextWindowTokens"))
+        .or_else(|| object.get("context_tokens"))
+        .and_then(Value::as_i64);
+    Some(json!({"model": model, "label": label, "maxContextTokens": tokens}))
+}
+
+fn collect_devin_families(value: &Value, models: &mut Vec<Value>, depth: usize) {
+    if depth > 12 {
+        return;
+    }
+    if let Some(entries) = value.as_array() {
+        for entry in entries {
+            collect_devin_families(entry, models, depth + 1);
+        }
+        return;
+    }
+    let Some(object) = value.as_object() else {
+        return;
+    };
+    let has_variant_identity = devin_string_field(value, &["model_uid", "modelUid", "uid"]).is_some();
+    let slug = if has_variant_identity {
+        devin_string_field(value, &["family_uid", "familyUid", "slug"])
+    } else {
+        devin_string_field(value, &["slug", "family_uid", "familyUid", "id", "model"])
+    };
+    if let Some(slug) = slug {
+        let variants = value
+            .get("variants")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .filter_map(parse_devin_variant)
+            .collect::<Vec<_>>();
+        let mut model = json!({"slug": slug, "variants": variants});
+        if let Some(name) = devin_string_field(value, &["family_label", "name", "label", "displayName"]) {
+            model["name"] = json!(name);
+        }
+        if let Some(description) = devin_string_field(value, &["description", "details"]) {
+            model["description"] = json!(description);
+        }
+        models.push(model);
+    } else if let Some(model_uid) = devin_string_field(value, &["model_uid", "modelUid", "uid"]) {
+        let mut model = json!({"slug": model_uid, "variants": []});
+        if let Some(name) = devin_string_field(value, &["label", "name", "displayName", "title"]) {
+            model["name"] = json!(name);
+        }
+        models.push(model);
+    }
+    for (key, nested) in object {
+        if key != "variants" && (nested.is_object() || nested.is_array()) {
+            collect_devin_families(nested, models, depth + 1);
+        }
+    }
+}
+
+fn parse_devin_models_output(output: &str) -> Vec<Value> {
+    let trimmed = output.trim().trim_start_matches('\u{feff}');
+    let mut candidates = vec![trimmed.to_string()];
+    if let Some(first) = trimmed.find(|ch| ch == '[' || ch == '{') {
+        let last = trimmed.rfind('}').into_iter().chain(trimmed.rfind(']')).max();
+        if let Some(last) = last {
+            if last > first {
+                candidates.push(trimmed[first..=last].to_string());
+            }
+        }
+    }
+    for candidate in candidates {
+        let Ok(parsed) = serde_json::from_str::<Value>(&candidate) else {
+            continue;
+        };
+        let mut families = Vec::new();
+        collect_devin_families(&parsed, &mut families, 0);
+        if !families.is_empty() {
+            return families;
+        }
+    }
+    Vec::new()
+}
+
+fn devin_effort_label(value: &str) -> &'static str {
+    match value {
+        "none" => "None",
+        "minimal" => "Minimal",
+        "low" => "Low",
+        "medium" => "Medium",
+        "high" => "High",
+        "xhigh" => "Extra High",
+        "max" => "Max",
+        _ => "Low",
+    }
+}
+
+fn merge_devin_models(families: Vec<Value>) -> Vec<Value> {
+    let effort_order = ["none", "minimal", "low", "medium", "high", "xhigh", "max"];
+    let mut seen = std::collections::HashSet::new();
+    let mut models = Vec::new();
+    for family in families {
+        let slug = family.get("slug").and_then(Value::as_str).unwrap_or("").trim();
+        if slug.is_empty() || !seen.insert(slug.to_ascii_lowercase()) {
+            continue;
+        }
+        let variants = family.get("variants").and_then(Value::as_array).cloned().unwrap_or_default();
+        let mut efforts = variants
+            .iter()
+            .filter_map(|variant| infer_devin_effort(
+                variant.get("model").and_then(Value::as_str).unwrap_or(""),
+                variant.get("label").and_then(Value::as_str),
+            ))
+            .collect::<Vec<_>>();
+        efforts.sort_by_key(|effort| effort_order.iter().position(|candidate| candidate == effort).unwrap_or(effort_order.len()));
+        efforts.dedup();
+        let mut contexts = variants
+            .iter()
+            .filter_map(|variant| devin_context_window(
+                variant.get("maxContextTokens").and_then(Value::as_i64),
+                variant.get("model").and_then(Value::as_str).unwrap_or(""),
+            ))
+            .collect::<Vec<_>>();
+        contexts.sort();
+        contexts.dedup();
+        let context_values = if contexts.len() > 1 { contexts.clone() } else { Vec::new() };
+        let has_fast = variants.iter().any(|variant| is_devin_fast_variant(
+            variant.get("model").and_then(Value::as_str).unwrap_or(""),
+            variant.get("label").and_then(Value::as_str),
+        ));
+        let has_thinking = variants.iter().any(|variant| is_devin_thinking_variant(
+            variant.get("model").and_then(Value::as_str).unwrap_or(""),
+            variant.get("label").and_then(Value::as_str),
+        ));
+        let has_plain = variants.iter().any(|variant| {
+            let model = variant.get("model").and_then(Value::as_str).unwrap_or("");
+            let label = variant.get("label").and_then(Value::as_str);
+            !is_devin_thinking_variant(model, label) && infer_devin_effort(model, label).is_none()
+        });
+        let has_thinking_toggle = has_thinking && has_plain;
+        let mut model = json!({
+            "slug": slug,
+            "name": family.get("name").and_then(Value::as_str).unwrap_or(slug),
+        });
+        if let Some(description) = family.get("description").cloned() {
+            model["description"] = description;
+        }
+        if !efforts.is_empty() {
+            model["supportedReasoningEfforts"] = json!(efforts.iter().map(|effort| json!({"value": effort, "label": devin_effort_label(effort)})).collect::<Vec<_>>());
+            model["defaultReasoningEffort"] = json!(efforts[0]);
+        }
+        if has_fast {
+            model["supportsFastMode"] = json!(true);
+        }
+        if has_thinking_toggle {
+            model["supportsThinkingToggle"] = json!(true);
+        }
+        if context_values.len() > 1 {
+            model["contextWindowOptions"] = json!(context_values.iter().enumerate().map(|(index, value)| json!({"value": value, "label": value.to_ascii_uppercase(), "isDefault": index == 0})).collect::<Vec<_>>());
+            model["defaultContextWindow"] = json!(context_values[0]);
+        }
+        let variant_descriptors = variants
+            .iter()
+            .filter_map(|variant| {
+                let variant_model = variant.get("model").and_then(Value::as_str)?;
+                let label = variant.get("label").and_then(Value::as_str);
+                let mut object = json!({"model": variant_model});
+                if let Some(effort) = infer_devin_effort(variant_model, label) {
+                    object["reasoningEffort"] = json!(effort);
+                }
+                if !context_values.is_empty() {
+                    if let Some(context) = devin_context_window(variant.get("maxContextTokens").and_then(Value::as_i64), variant_model) {
+                        object["contextWindow"] = json!(context);
+                    }
+                }
+                if has_fast {
+                    object["fastMode"] = json!(is_devin_fast_variant(variant_model, label));
+                }
+                if has_thinking_toggle {
+                    object["thinking"] = json!(is_devin_thinking_variant(variant_model, label));
+                }
+                Some(object)
+            })
+            .collect::<Vec<_>>();
+        if !variant_descriptors.is_empty() {
+            model["modelVariants"] = json!(variant_descriptors);
+        }
+        models.push(model);
+    }
+    models
+}
+
+fn devin_static_models() -> Vec<Value> {
+    vec![
+        json!({"slug":"adaptive","name":"Adaptive"}),
+        json!({
+            "slug":"swe-1-6","name":"SWE 1.6","supportsFastMode":true,
+            "modelVariants":[{"model":"swe-1-6","fastMode":false},{"model":"swe-1-6-fast","fastMode":true}],
+        }),
+        json!({
+            "slug":"swe-1-7","name":"SWE 1.7","supportsFastMode":true,
+            "modelVariants":[{"model":"swe-1-7","fastMode":false},{"model":"swe-1-7-lightning","fastMode":true}],
+        }),
+    ]
+}
+
+fn devin_discovery_result() -> Value {
+    let fallback = json!({"models": devin_static_models(), "source": "devin.static", "cached": false});
+    let Some(binary) = crate::acp_runner::resolve_provider_cli("devin") else {
+        return fallback;
+    };
+    let output = match std::process::Command::new(&binary).args(["models", "list", "--format", "json"]).output() {
+        Ok(output) => output,
+        Err(error) => {
+            let mut result = fallback;
+            result["error"] = json!(format!("failed to execute devin models list: {error}"));
+            return result;
+        }
+    };
+    if !output.status.success() {
+        let mut result = fallback;
+        result["error"] = json!(format!(
+            "devin models list exited with {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+        return result;
+    }
+    let models = merge_devin_models(parse_devin_models_output(&String::from_utf8_lossy(&output.stdout)));
+    if models.is_empty() {
+        let mut result = fallback;
+        result["error"] = json!("devin models list returned no models");
+        result
+    } else {
+        json!({"models": models, "source": "devin-cli", "cached": false})
+    }
+}
+
 fn cursor_reasoning_label(value: &str) -> String {
     match value {
         "xhigh" => "Extra High".to_string(),
@@ -870,6 +1183,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         if provider == "codex" {
             return codex_discovery_result(payload);
         }
+        if provider == "devin" {
+            return Ok(devin_discovery_result());
+        }
         if provider == "omp" {
             return omp_discovery_result();
         }
@@ -881,6 +1197,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         }
         if provider == "cursor" {
             return cursor_discovery_result();
+        }
+        if provider == "devin" {
+            return Ok(devin_discovery_result());
         }
         if provider == "omp" {
             return omp_discovery_result();

@@ -19,6 +19,7 @@ pub fn handles(tag: &str) -> bool {
         tag,
         "provider.listModels"
             | "provider.compactThread"
+            | "provider.getComposerCapabilities"
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
             | "server.updateProvider"
@@ -35,6 +36,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "provider.listModels" => list_models(payload),
         "provider.compactThread" => compact_thread(payload),
+        "provider.getComposerCapabilities" => composer_capabilities(payload),
         "server.listExternalMcpIntegrations" => list_external_mcp_integrations(),
         "server.createExternalMcpIntegration" => create_external_mcp_integration(payload),
         "server.revokeExternalMcpIntegration" => revoke_external_mcp_integration(payload),
@@ -263,6 +265,31 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     )))
 }
 
+
+
+fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
+    let provider = payload
+        .get("provider")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("provider is required"))?;
+    // Mirrors the static capability declarations in the upstream provider
+    // adapters. Optional compaction/import fields are omitted by some older
+    // adapters upstream; exposing false here is equivalent for clients.
+    let caps = match provider {
+        "antigravity" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":false}),
+        "claudeAgent" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
+        "codex" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":false}),
+        "cursorAgent" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
+        "devin" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
+        "droid" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
+        "grok" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
+        "omp" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
+        "opencode" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
+        "pi" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
+        _ => return Err(err(format!("unsupported provider '{provider}'"))),
+    };
+    Ok(caps)
+}
 
 fn compact_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload

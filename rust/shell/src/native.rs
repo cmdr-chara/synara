@@ -18683,9 +18683,10 @@ impl Render for Native {
             .unwrap_or("General");
 
         // Settings card: rounded-xl, faint fill (foreground/2%), hairline border.
+        // Upstream settings card: rounded-xl (14px), border, bg-foreground/2.
         let card = |rows: gpui::AnyElement| {
             div()
-                .rounded(px(12.))
+                .rounded(px(14.))
                 .border_1()
                 .border_color(theme.border)
                 .bg(popover_bg)
@@ -18706,8 +18707,10 @@ impl Render for Native {
                         .flex_1()
                         .min_w_0()
                         .gap(px(2.))
-                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(title))
-                        .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(desc)),
+                        // Upstream SettingsRow: 13px / 19.5px title (medium) and
+                        // description, 2px apart.
+                        .child(div().text_size(px(13.)).line_height(px(19.5)).font_weight(FontWeight::MEDIUM).child(title))
+                        .child(div().w_full().text_size(px(13.)).line_height(px(19.5)).text_color(theme.muted_foreground).child(desc)),
                 )
                 .child(ctrl)
         };
@@ -18746,6 +18749,7 @@ impl Render for Native {
             div()
                 .px_2()
                 .py_1()
+                .line_height(px(19.5))
                 .text_size(px(13.))
                 .text_color(theme.muted_foreground)
                 .child(t)
@@ -18938,8 +18942,10 @@ impl Render for Native {
                             .items_center()
                             .gap_2()
                             .child(
+                                // Upstream h1: text-xl (20px / 28px) medium.
                                 div()
-                                    .text_xl()
+                                    .text_size(px(20.))
+                                    .line_height(px(28.))
                                     .font_weight(FontWeight::MEDIUM)
                                     .child(section_title.to_string()),
                             )
@@ -18957,11 +18963,13 @@ impl Render for Native {
                             }),
                     )
                     .child(
+                        // Upstream subtitle: mt-1.5, leading-relaxed (13px / 21.125px).
                         div()
                             .w_full()
+                            .mt(px(6.))
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
-                            .line_height(px(22.))
+                            .line_height(px(21.125))
                             .child(match &*self.settings_section {
                                 "general" => "Defaults for new chats, power, time, and getting started.".to_string(),
                                 "appearance" => "Customize the theme, typography, density, and time format.".to_string(),

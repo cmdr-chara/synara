@@ -19,6 +19,7 @@ mod automation_executor;
 mod automation_schedule;
 mod automation;
 mod browser_automation;
+mod browser_frame;
 mod browser_cdp;
 mod fs_browse;
 mod git_domain;
@@ -141,6 +142,7 @@ async fn main() {
         .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
         .route("/oauth/mcp/callback", axum::routing::get(oauth_mcp_callback))
         .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
+        .route("/api/browser/frame", axum::routing::get(browser_frame::browser_frame))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
         .route("/api/editor-icon", axum::routing::get(editor_icon::editor_icon))
         .route("/health", axum::routing::get(|| async { "ok" }))

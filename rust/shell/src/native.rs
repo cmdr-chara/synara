@@ -9886,6 +9886,110 @@ impl Native {
         .detach();
     }
 
+    /// Settings key read with the upstream default (ChatsSettingsView rows).
+    fn setting_bool(&self, key: &str, default: bool) -> bool {
+        get(get(&self.settings_data, "settings"), key)
+            .as_bool()
+            .unwrap_or(default)
+    }
+
+    fn setting_str(&self, key: &str, default: &'static str) -> String {
+        get(get(&self.settings_data, "settings"), key)
+            .as_str()
+            .unwrap_or(default)
+            .to_string()
+    }
+
+    /// One-key appSettings write-through (same path as set_keep_awake):
+    /// mirror locally, then server.updateSettings {key: value}.
+    fn set_setting_key(&mut self, key: &'static str, value: Value, cx: &mut Context<Self>) {
+        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
+            .and_then(|s| s.as_object_mut())
+        {
+            obj.insert(key.to_string(), value.clone());
+        }
+        cx.notify();
+        let cell = self.client.clone();
+        let payload = json!({ key: value });
+        cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            cx.background_executor()
+                .spawn(async move {
+                    let _ = ensure_client(&cell)
+                        .and_then(|c| c.call("server.updateSettings", payload));
+                })
+                .await;
+        })
+        .detach();
+    }
+
+    /// Settings switch bound to a boolean key (same visual as the shared
+    /// settings `toggle`).
+    fn setting_switch(
+        cx: &mut Context<Self>,
+        key: &'static str,
+        on: bool,
+        accent: gpui::Hsla,
+    ) -> gpui::AnyElement {
+        let mut t = div()
+            .id(ElementId::Name(format!("setting-switch-{key}").into()))
+            .w(px(28.))
+            .h(px(16.))
+            .rounded_full()
+            .flex()
+            .items_center()
+            .cursor_pointer();
+        t = if on {
+            t.bg(accent).justify_end()
+        } else {
+            t.bg(rgb(0xd9d9d9)).justify_start()
+        };
+        t.child(
+            div()
+                .w(px(12.))
+                .h(px(12.))
+                .rounded_full()
+                .bg(gpui::white())
+                .mx(px(2.)),
+        )
+        .on_click(cx.listener(move |this, _ev, _w, cx| {
+            this.set_setting_key(key, json!(!on), cx);
+        }))
+        .into_any_element()
+    }
+
+    /// Segmented control bound to a string key (same visual as `seg_pick`).
+    fn setting_seg(
+        cx: &mut Context<Self>,
+        key: &'static str,
+        opts: &[(&'static str, &'static str)],
+        current: &str,
+        theme: &gpui_kit::component::Theme,
+    ) -> gpui::AnyElement {
+        let mut s = h_flex().items_center().gap(px(4.));
+        for (value, label) in opts.iter().copied() {
+            let is_active = value == current;
+            let mut c = div()
+                .id(ElementId::Name(format!("setting-seg-{key}-{value}").into()))
+                .h(px(32.))
+                .px(px(11.))
+                .flex()
+                .items_center()
+                .rounded(px(8.))
+                .cursor_pointer();
+            if is_active {
+                c = c.bg(theme.secondary);
+            }
+            let tc = if is_active { theme.foreground } else { theme.muted_foreground };
+            s = s.child(
+                c.child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(tc).child(label))
+                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                        this.set_setting_key(key, json!(value), cx);
+                    })),
+            );
+        }
+        s.into_any_element()
+    }
+
     /// Upstream keep-awake segmented control: writes settings.keepAwakeMode
     /// ("on" | "agent" | "off"); the server turns that into caffeinate state.
     fn set_keep_awake(&mut self, i: usize, cx: &mut Context<Self>) {
@@ -19003,6 +19107,179 @@ impl Render for Native {
                                 ))
                                 .into_any_element(),
                         )),
+                );
+            }
+
+            // Upstream ChatsSettingsView (web section id "behavior"): Conversation,
+            // Review and Safety confirmations, same copy, controls and defaults.
+            if self.settings_section == "chats" {
+                let accent = theme.primary;
+                let sw = |cx: &mut Context<Self>, key: &'static str, default: bool| {
+                    let on = self.setting_bool(key, default);
+                    Self::setting_switch(cx, key, on, accent)
+                };
+                let follow_up = self.setting_str("followUpBehavior", "queue");
+                let sidechat = self.setting_str("sidechatExpiry", "1h");
+                let voice_enter = self.setting_str("voiceEnterBehavior", "stop");
+                let diff_mode = self.setting_str("diffRenderMode", "split");
+                let link_target = self.setting_str("githubLinkOpenTarget", "app");
+                let link_label = match link_target.as_str() {
+                    "browser" => "In-app browser",
+                    "external" => "External browser",
+                    _ => "In Synara",
+                };
+                let link_weak = cx.weak_entity();
+                let link_select = Button::new("setting-github-link-target")
+                    .ghost()
+                    .compact()
+                    .h(px(28.))
+                    .label(link_label)
+                    .dropdown_caret(true)
+                    .dropdown_menu(move |menu, _w, _cx| {
+                        let mut m = menu.min_w(px(160.));
+                        for (value, label) in [
+                            ("app", "In Synara"),
+                            ("browser", "In-app browser"),
+                            ("external", "External browser"),
+                        ] {
+                            let weak = link_weak.clone();
+                            m = m.item(
+                                PopupMenuItem::new(label)
+                                    .checked(link_target == value)
+                                    .on_click(move |_, _w, cx| {
+                                        let _ = weak.update(cx, |this, cx| {
+                                            this.set_setting_key(
+                                                "githubLinkOpenTarget",
+                                                json!(value),
+                                                cx,
+                                            );
+                                        });
+                                    }),
+                            );
+                        }
+                        m
+                    })
+                    .into_any_element();
+                let conversation = v_flex()
+                    .child(srow(
+                        "Follow-up behavior",
+                        "Choose whether messages sent during an active turn wait in the queue or steer the current run. Ctrl/Cmd+Enter uses the opposite behavior for one message.",
+                        Self::setting_seg(cx, "followUpBehavior", &[("queue", "Queue"), ("steer", "Steer")], &follow_up, &theme),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Side chat expiry",
+                        "Expire a side chat after it sits idle, unviewed and not running, for this long. Expired side chats are read-only and unload their provider session.",
+                        Self::setting_seg(cx, "sidechatExpiry", &[("1h", "1 hour"), ("24h", "24 hours"), ("never", "Never")], &sidechat, &theme),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Enter while dictating",
+                        "Choose what Enter does while a voice note is recording: stop and transcribe into the composer, or stop and send the message once it is transcribed.",
+                        Self::setting_seg(cx, "voiceEnterBehavior", &[("stop", "Stop"), ("send", "Stop and send")], &voice_enter, &theme),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Assistant output",
+                        "Show token-by-token output while a response is in progress.",
+                        sw(cx, "enableAssistantStreaming", true),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Fold finished turns",
+                        "Hide a finished turn's tool calls and intermediate messages behind a single \"Worked for…\" line. A turn stays open while it runs or while its background subagents are still working. Turn this off to keep every step visible.",
+                        sw(cx, "collapseFinishedTurns", true),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Move sent messages to top",
+                        "Move each sent message to the top of the conversation. Turn off to keep it at the bottom and follow replies as they stream.",
+                        sw(cx, "anchorSentMessagesToTop", true),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Effort slider",
+                        "Show effort as a slider at the bottom of the composer's model picker, with fast mode and reset alongside it, instead of separate Effort and Speed rows.",
+                        sw(cx, "composerEffortSlider", true),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Show suggestions",
+                        "After a reply finishes, show a predicted next message in the empty composer. Press Tab to insert it as a draft you can edit before sending.",
+                        sw(cx, "showComposerSuggestions", true),
+                    ))
+                    .into_any_element();
+                let review = v_flex()
+                    .child(srow(
+                        "Diff layout",
+                        "Default stacked or split layout for threads without a saved choice. Each thread remembers its review-panel changes independently.",
+                        Self::setting_seg(cx, "diffRenderMode", &[("stacked", "Stacked"), ("split", "Split")], &diff_mode, &theme),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Open pull requests and issues",
+                        "Choose where a pull request or issue link in a chat opens: the built-in review view, the in-app browser, or your external browser. Ctrl/Cmd+click always opens the external browser.",
+                        link_select,
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Pull request diff colors",
+                        "Show additions in green and deletions in red in pull request summaries.",
+                        sw(cx, "showPullRequestDiffColors", true),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Include fork upstreams",
+                        "Also list pull requests and issues from each project's other GitHub remotes, such as the repository a fork was made from. Off reads only the project's own repository.",
+                        sw(cx, "githubInboxIncludeUpstreams", false),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Diff line wrapping",
+                        "Set the default wrap state when the diff panel opens. The in-panel wrap toggle only affects the current diff session.",
+                        sw(cx, "diffWordWrap", false),
+                    ))
+                    .into_any_element();
+                let safety = v_flex()
+                    .child(srow(
+                        "Delete confirmation",
+                        "Ask before deleting a thread and its chat history.",
+                        sw(cx, "confirmThreadDelete", true),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Archive confirmation",
+                        "Ask before archiving a thread.",
+                        sw(cx, "confirmThreadArchive", false),
+                    ))
+                    .child(divider())
+                    .child(srow(
+                        "Terminal close confirmation",
+                        "Ask before closing a terminal tab and clearing its history.",
+                        sw(cx, "confirmTerminalTabClose", true),
+                    ))
+                    .into_any_element();
+                settings_pane = settings_pane.child(
+                    v_flex()
+                        .gap_6()
+                        .child(
+                            v_flex()
+                                .gap_1p5()
+                                .child(section_label("Conversation"))
+                                .child(card(conversation)),
+                        )
+                        .child(
+                            v_flex()
+                                .gap_1p5()
+                                .child(section_label("Review"))
+                                .child(card(review)),
+                        )
+                        .child(
+                            v_flex()
+                                .gap_1p5()
+                                .child(section_label("Safety confirmations"))
+                                .child(card(safety)),
+                        ),
                 );
             }
 

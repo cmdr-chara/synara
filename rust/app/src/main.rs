@@ -71,6 +71,10 @@ async fn main() {
         if recovered > 0 {
             eprintln!("startup recovery: settled {recovered} orphaned thread(s) as interrupted");
         }
+        let resumed = orchestration_engine::consume_quit_resume_record();
+        if resumed > 0 {
+            eprintln!("startup recovery: resumed {resumed} thread(s) from the quit-resume record");
+        }
     }
     let app = units::router()
         .merge(native_ws::router())

@@ -345,7 +345,7 @@ fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
     // adapters upstream; exposing false here is equivalent for clients.
     let caps = match provider {
         "antigravity" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":false}),
-        "claudeAgent" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
+        "claudeAgent" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
         "codex" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
         "cursorAgent" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
         "devin" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
@@ -475,6 +475,7 @@ fn compact_thread(payload: &Value) -> Result<Value, WsErr> {
         "opencode" => crate::opencode_runner::compact_thread(thread_id)?,
         "pi" => crate::pi_runner::compact_thread(thread_id)?,
         "codex" => crate::codex_runner::compact_thread(thread_id)?,
+        "claudeAgent" => crate::claude_runner::compact_thread(thread_id)?,
         "devin" | "grok" => crate::acp_runner::compact_thread(thread_id)?,
         _ => false,
     };

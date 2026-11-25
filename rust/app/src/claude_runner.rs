@@ -738,6 +738,55 @@ pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
     result
 }
 
+
+/// Compact a warm Claude session with the CLI's native `/compact` command.
+/// This is intentionally limited to idle parked sessions: compaction is a
+/// session mutation, not something to multiplex with a live turn.
+pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Err(err("cannot compact while a turn is running"));
+    }
+    let mut parked = {
+        let mut parked_map = PARKED.lock().map_err(|_| err("claude parked map"))?;
+        match parked_map.remove(thread_id) {
+            Some(parked) => parked,
+            None => return Ok(false),
+        }
+    };
+    let result = (|| -> Result<bool, WsErr> {
+        write_line(
+            &parked.stdin,
+            &user_message(vec![json!({"type":"text","text":"/compact"})]),
+        )?;
+        loop {
+            let Some(v) = read_json_line(&mut parked.reader)? else {
+                return Err(err("claude exited during compaction"));
+            };
+            if v.get("type").and_then(Value::as_str) == Some("result") {
+                let subtype = v.get("subtype").and_then(Value::as_str).unwrap_or("");
+                if subtype == "success" {
+                    return Ok(true);
+                }
+                return Err(err(format!("claude compaction failed: {subtype}")));
+            }
+        }
+    })();
+    match result {
+        Ok(value) => {
+            if let Ok(mut parked_map) = PARKED.lock() {
+                parked_map.insert(thread_id.to_string(), parked);
+            } else {
+                drop_parked(parked);
+            }
+            Ok(value)
+        }
+        Err(error) => {
+            drop_parked(parked);
+            Err(error)
+        }
+    }
+}
+
 /// Start Claude's streaming-input CLI before the first prompt and park it
 /// after the control initialize handshake. No user/model traffic is sent.
 pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {

@@ -12171,6 +12171,73 @@ impl Native {
             }
         }
 
+
+/// Verb-summary aggregation for a run of tool activities, in the grammar the
+/// web client's ToolCallGroupSummaryRow uses: verb phrases in the order the
+/// work happened ("searched 1 issue, read 2 files") with failed and running
+/// fragments appended. Kinds map to verbs loosely — the server owns the exact
+/// taxonomy, the shell only needs stable buckets.
+fn activity_verb(kind: &str) -> &'static str {
+    let k = kind.to_lowercase();
+    if k.contains("read") || k.contains("open") {
+        "read"
+    } else if k.contains("search") || k.contains("find") || k.contains("grep") {
+        "searched"
+    } else if k.contains("edit") || k.contains("write") || k.contains("patch") {
+        "edited"
+    } else if k.contains("command") || k.contains("shell") || k.contains("exec") || k.contains("terminal") || k.contains("run") {
+        "ran"
+    } else if k.contains("agent") || k.contains("task") {
+        "delegated"
+    } else if k.contains("fetch") || k.contains("web") || k.contains("http") {
+        "fetched"
+    } else if k.contains("think") || k.contains("reason") || k.contains("plan") {
+        "planned"
+    } else {
+        "used"
+    }
+}
+
+fn activity_noun(verb: &str, count: usize) -> String {
+    let noun = match verb {
+        "read" => if count == 1 { "file" } else { "files" },
+        "searched" => if count == 1 { "search" } else { "searches" },
+        "edited" => if count == 1 { "file" } else { "files" },
+        "ran" => if count == 1 { "command" } else { "commands" },
+        "delegated" => if count == 1 { "agent" } else { "agents" },
+        "fetched" => if count == 1 { "page" } else { "pages" },
+        "planned" => if count == 1 { "plan" } else { "plans" },
+        _ => if count == 1 { "tool" } else { "tools" },
+    };
+    format!("{count} {noun}")
+}
+
+/// "Searched 1 issue, read 2 files" — verb phrases in first-seen order.
+fn tool_group_verb_summary(activities: &[Value]) -> String {
+    let mut order: Vec<&'static str> = Vec::new();
+    let mut counts: std::collections::HashMap<&'static str, usize> = std::collections::HashMap::new();
+    for a in activities {
+        let verb = activity_verb(str_at(a, "kind"));
+        if !order.contains(&verb) {
+            order.push(verb);
+        }
+        *counts.entry(verb).or_insert(0) += 1;
+    }
+    let parts: Vec<String> = order
+        .iter()
+        .map(|verb| format!("{} {}", verb, activity_noun(verb, counts[verb])))
+        .collect();
+    if parts.is_empty() {
+        return format!("{} actions", activities.len());
+    }
+    let mut out = parts.join(", ");
+    if let Some(pos) = out.find(char::is_alphabetic) {
+        let upper: String = out[pos..].chars().next().unwrap().to_uppercase().collect();
+        out.replace_range(pos..pos + 1, &upper);
+    }
+    out
+}
+
         // Activities grouped in a collapsible tool-call card (web parity):
         // a single activity stays a plain row; several collapse into a card.
         let activities: Vec<Value> = arr(thread_v, "activities")
@@ -12412,39 +12479,110 @@ impl Native {
                     ),
                 );
             } else {
-                let mut card = v_flex()
-                    .border_1()
-                    .border_color(theme.border)
-                    .rounded_lg()
-                    .p_2()
-                    .gap_1()
+                // Modernized tool-call group (flat, no card chrome): a single
+                // verb-summary line ("Searched 1 issue, read 1 project, 1 failed,
+                // 1 running") with quiet hover brightening, a rotating chevron,
+                // and choreographed rows — staggered fade-in on expand, a pulsing
+                // dot on the live row while the thread is working.
+                let working = thread_actively_working(thread_v);
+                let n_failed = seg
+                    .iter()
+                    .filter(|a| str_at(a, "tone") == "error")
+                    .count();
+                let mut summary = tool_group_verb_summary(seg);
+                if n_failed > 0 {
+                    summary.push_str(&format!(", {} failed", n_failed));
+                }
+                if working {
+                    summary.push_str(", 1 running");
+                }
+                let chevron = if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" };
+                let header = h_flex()
+                    .id("tools-card")
+                    .cursor_pointer()
+                    .gap_2()
+                    .items_center()
+                    .py(px(2.))
+                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                        this.tools_expanded = !this.tools_expanded;
+                        cx.notify();
+                    }))
                     .child(
-                        h_flex()
-                            .id("tools-card")
-                            .cursor_pointer()
-                            .gap_2()
-                            .items_center()
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.tools_expanded = !this.tools_expanded;
-                                cx.notify();
-                            }))
-                            .child(
-                                Icon::new(AssetIcon::Wrench)
-                                    .size(px(12.))
-                                    .text_color(theme.muted_foreground),
-                            )
-                            .child(
-                                div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
-                                    "{} actions {}",
-                                    seg.len(),
-                                    if self.tools_expanded { "\u{25be}" } else { "\u{25b8}" }
-                                )),
-                            ),
+                        Icon::new(AssetIcon::Wrench)
+                            .size(px(12.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(summary),
+                    )
+                    .child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(chevron),
                     );
+                let mut card = v_flex().gap(px(1.)).child(header);
                 seen_cards += 1;
                 if self.tools_expanded {
-                    for a in seg {
-                        card = card.child(activity_row(a));
+                    let last_idx = seg.len().saturating_sub(1);
+                    for (row_idx, a) in seg.iter().enumerate() {
+                        // Staggered entrance: the easing holds at zero for a
+                        // slice of the duration that grows with the row index,
+                        // so rows cascade instead of popping in together.
+                        let base_row = activity_row(a);
+                        let row_with_live = if working && row_idx == last_idx {
+                            // Live row: a pulsing dot ahead of the activity,
+                            // phase-locked to the shared clock so all spinners
+                            // in the transcript breathe together.
+                            let pulse = div()
+                                .w(px(10.))
+                                .flex()
+                                .justify_center()
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child("\u{25cf}")
+                                        .with_animation(
+                                            SharedString::from(format!(
+                                                "toollive-{}",
+                                                str_at(a, "id")
+                                            )),
+                                            Animation::new(std::time::Duration::from_millis(1200))
+                                                .repeat_synced(),
+                                            |this, delta| {
+                                                let tri = 1.0 - (delta * 2.0 - 1.0).abs();
+                                                this.opacity(0.25 + 0.75 * tri)
+                                            },
+                                        ),
+                                );
+                            h_flex().gap_1().child(pulse).child(base_row)
+                        } else {
+                            h_flex().gap_1().child(base_row)
+                        };
+                        let stagger = (row_idx as f32 * 0.09).min(0.6);
+                        let animated = row_with_live.with_animation(
+                            SharedString::from(format!(
+                                "toolrow-{}-{}",
+                                str_at(a, "id"),
+                                if self.tools_expanded { "open" } else { "closed" }
+                            )),
+                            Animation::new(std::time::Duration::from_millis(650))
+                                .with_easing(move |t| {
+                                    let span = 1.0 - stagger;
+                                    if span <= 0.0 {
+                                        return 1.0;
+                                    }
+                                    let nt = ((t - stagger) / span).clamp(0.0, 1.0);
+                                    // ease-out cubic
+                                    1.0 - (1.0 - nt).powi(3)
+                                }),
+                            |this, delta| this.opacity(delta),
+                        );
+                        card = card.child(animated);
                     }
                     if seen_cards == n_plain_cards {
                         for t in &bg_tasks {

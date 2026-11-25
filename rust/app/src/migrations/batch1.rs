@@ -312,11 +312,109 @@ fn m034(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 035 NormalizeLegacyModelSelectionOptions — PARTIAL
+// 035 NormalizeLegacyModelSelectionOptions — hand-ported: paginated scan of
+// project defaults, thread selections, and event payloads, rewriting only rows
+// whose normalization actually changes the serialized shape.
 fn m035(conn: &Connection) -> Result<(), WsErr> {
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
+    use crate::migrations::model_selection_compat::{
+        normalize_model_selection_json, normalize_persisted_model_selection,
+    };
+    const PAGE: i64 = 128;
+
+    let mut project_cursor: Option<String> = None;
+    loop {
+        let mut stmt = conn
+            .prepare("SELECT project_id, default_model_selection_json FROM projection_projects WHERE default_model_selection_json IS NOT NULL AND (?1 IS NULL OR project_id > ?1) ORDER BY project_id ASC LIMIT ?2")
+            .map_err(|e| err(format!("sql failed: {e}")))?;
+        let rows: Vec<(String, String)> = stmt
+            .query_map(rusqlite::params![project_cursor, PAGE], |r| Ok((r.get(0)?, r.get(1)?)))
+            .map_err(|e| err(format!("sql failed: {e}")))?
+            .filter_map(|r| r.ok())
+            .collect();
+        drop(stmt);
+        if rows.is_empty() {
+            break;
+        }
+        for (project_id, json) in &rows {
+            if let Some(normalized) = normalize_model_selection_json(json) {
+                conn.execute(
+                    "UPDATE projection_projects SET default_model_selection_json = ?1 WHERE project_id = ?2",
+                    rusqlite::params![normalized, project_id],
+                ).map_err(|e| err(format!("sql failed: {e}")))?;
+            }
+        }
+        project_cursor = rows.last().map(|(id, _)| id.clone());
+    }
+
+    let mut thread_cursor: Option<String> = None;
+    loop {
+        let mut stmt = conn
+            .prepare("SELECT thread_id, model_selection_json FROM projection_threads WHERE (?1 IS NULL OR thread_id > ?1) ORDER BY thread_id ASC LIMIT ?2")
+            .map_err(|e| err(format!("sql failed: {e}")))?;
+        let rows: Vec<(String, String)> = stmt
+            .query_map(rusqlite::params![thread_cursor, PAGE], |r| Ok((r.get(0)?, r.get(1)?)))
+            .map_err(|e| err(format!("sql failed: {e}")))?
+            .filter_map(|r| r.ok())
+            .collect();
+        drop(stmt);
+        if rows.is_empty() {
+            break;
+        }
+        for (thread_id, json) in &rows {
+            if let Some(normalized) = normalize_model_selection_json(json) {
+                conn.execute(
+                    "UPDATE projection_threads SET model_selection_json = ?1 WHERE thread_id = ?2",
+                    rusqlite::params![normalized, thread_id],
+                ).map_err(|e| err(format!("sql failed: {e}")))?;
+            }
+        }
+        thread_cursor = rows.last().map(|(id, _)| id.clone());
+    }
+
+    let mut event_cursor: i64 = 0;
+    loop {
+        let mut stmt = conn
+            .prepare("SELECT sequence, payload_json FROM orchestration_events WHERE sequence > ?1 ORDER BY sequence ASC LIMIT ?2")
+            .map_err(|e| err(format!("sql failed: {e}")))?;
+        let rows: Vec<(i64, String)> = stmt
+            .query_map(rusqlite::params![event_cursor, PAGE], |r| Ok((r.get(0)?, r.get(1)?)))
+            .map_err(|e| err(format!("sql failed: {e}")))?
+            .filter_map(|r| r.ok())
+            .collect();
+        drop(stmt);
+        if rows.is_empty() {
+            break;
+        }
+        for (sequence, json) in &rows {
+            let parsed: serde_json::Value = match serde_json::from_str(json) {
+                Ok(v) => v,
+                Err(_) => continue,
+            };
+            let obj = match parsed.as_object() {
+                Some(o) => o,
+                None => continue,
+            };
+            let mut next: Option<serde_json::Map<String, serde_json::Value>> = None;
+            for key in ["defaultModelSelection", "modelSelection"] {
+                if let Some(value) = obj.get(key) {
+                    let normalized = normalize_persisted_model_selection(value);
+                    if serde_json::to_string(&normalized).ok() != serde_json::to_string(value).ok() {
+                        let payload = next.get_or_insert_with(|| obj.clone());
+                        payload.insert(key.to_string(), normalized);
+                    }
+                }
+            }
+            if let Some(payload) = next {
+                if let Ok(serialized) = serde_json::to_string(&payload) {
+                    conn.execute(
+                        "UPDATE orchestration_events SET payload_json = ?1 WHERE sequence = ?2",
+                        rusqlite::params![serialized, sequence],
+                    ).map_err(|e| err(format!("sql failed: {e}")))?;
+                }
+            }
+        }
+        event_cursor = rows.last().map(|(seq, _)| *seq).unwrap_or(event_cursor);
+    }
     Ok(())
 }
 

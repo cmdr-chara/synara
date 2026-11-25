@@ -203,6 +203,17 @@ fn discover_opencode_models() -> Result<Vec<Value>, WsErr> {
     }
 }
 
+
+fn codex_discovery_result(payload: &Value) -> Result<Value, WsErr> {
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    let models = crate::codex_runner::discover_models(cwd)?;
+    Ok(json!({
+        "models": models,
+        "source": "app-server",
+        "cached": false,
+    }))
+}
+
 fn pi_discovery_result(payload: &Value) -> Result<Value, WsErr> {
     let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
     let models = crate::pi_runner::discover_models(cwd)?;
@@ -248,6 +259,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         if provider == "pi" {
             return pi_discovery_result(payload);
         }
+        if provider == "codex" {
+            return codex_discovery_result(payload);
+        }
         return Err(err("no provider model catalog cache"));
     };
     let doc: Value = serde_json::from_str(&text).map_err(|e| err(e.to_string()))?;
@@ -281,6 +295,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     }
     if provider == "pi" {
         return pi_discovery_result(payload);
+    }
+    if provider == "codex" {
+        return codex_discovery_result(payload);
     }
     Err(err(format!(
         "no cached model catalog for {provider}/{instance}"

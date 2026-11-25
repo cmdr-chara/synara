@@ -12,7 +12,7 @@
 
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
-use std::process::{Child, Command, Stdio};
+use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
@@ -480,6 +480,196 @@ impl Rpc {
             cancel_turn(&ctx.thread_id);
         }
     }
+}
+
+
+fn write_json_line(stdin: &mut ChildStdin, value: &Value) -> Result<(), WsErr> {
+    stdin
+        .write_all(value.to_string().as_bytes())
+        .and_then(|_| stdin.write_all(b"\n"))
+        .and_then(|_| stdin.flush())
+        .map_err(|e| err(format!("codex discovery write: {e}")))
+}
+
+fn reasoning_efforts(value: Option<&Value>) -> Vec<Value> {
+    value
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|entry| {
+            if let Some(value) = entry.as_str() {
+                let value = value.trim();
+                return (!value.is_empty()).then(|| json!({"value": value}));
+            }
+            let effort = entry
+                .get("reasoningEffort")
+                .or_else(|| entry.get("reasoning_effort"))
+                .or_else(|| entry.get("value"))
+                .and_then(Value::as_str)?
+                .trim()
+                .to_string();
+            if effort.is_empty() {
+                return None;
+            }
+            let mut object = json!({"value": effort});
+            if let Some(description) = entry
+                .get("description")
+                .or_else(|| entry.get("label"))
+                .and_then(Value::as_str)
+                .map(str::trim)
+                .filter(|v| !v.is_empty())
+            {
+                object["description"] = json!(description);
+            }
+            Some(object)
+        })
+        .collect()
+}
+
+pub fn parse_codex_models_response(response: &Value) -> Vec<Value> {
+    let raw_models = response
+        .get("items")
+        .or_else(|| response.get("data"))
+        .or_else(|| response.get("models"))
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let mut seen = std::collections::HashSet::new();
+    let mut models = Vec::new();
+    for model in raw_models {
+        let slug = model
+            .get("id")
+            .or_else(|| model.get("slug"))
+            .or_else(|| model.get("model"))
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|v| !v.is_empty())
+            .unwrap_or("")
+            .to_string();
+        if slug.is_empty() || !seen.insert(slug.clone()) {
+            continue;
+        }
+        let name = model
+            .get("name")
+            .or_else(|| model.get("displayName"))
+            .or_else(|| model.get("display_name"))
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|v| !v.is_empty())
+            .unwrap_or(&slug)
+            .to_string();
+        let efforts = reasoning_efforts(
+            model
+                .get("supportedReasoningEfforts")
+                .or_else(|| model.get("supported_reasoning_efforts")),
+        );
+        let mut out = json!({
+            "slug": slug,
+            "name": name,
+            "supportedReasoningEfforts": efforts,
+        });
+        if let Some(default_effort) = model
+            .get("defaultReasoningEffort")
+            .or_else(|| model.get("default_reasoning_effort"))
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|v| !v.is_empty())
+        {
+            out["defaultReasoningEffort"] = json!(default_effort);
+        }
+        if let Some(description) = model
+            .get("description")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|v| !v.is_empty())
+        {
+            out["description"] = json!(description);
+        }
+        models.push(out);
+    }
+    models
+}
+
+/// Discover the account-aware Codex catalog through the official app-server.
+/// The process is temporary and is killed after `model/list`; no credential
+/// file is opened or copied by Synara.
+pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
+    let mut child = Command::new(codex_binary())
+        .arg("app-server")
+        .current_dir(if cwd.is_empty() { "/" } else { cwd })
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .map_err(|e| err(format!("could not launch `codex app-server`: {e}")))?;
+    let mut stdin = child.stdin.take().ok_or_else(|| err("codex stdin"))?;
+    let stdout = child.stdout.take().ok_or_else(|| err("codex stdout"))?;
+    write_json_line(
+        &mut stdin,
+        &json!({
+            "jsonrpc":"2.0",
+            "id":1,
+            "method":"initialize",
+            "params":{
+                "clientInfo":{"name":"synara_desktop","title":"Synara Desktop","version":"0.1.0"},
+                "capabilities":{"experimentalApi":true},
+            },
+        }),
+    )?;
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let mut reader = BufReader::new(stdout);
+        loop {
+            let mut line = String::new();
+            let Ok(n) = reader.read_line(&mut line) else { break };
+            if n == 0 { break }
+            if let Ok(value) = serde_json::from_str::<Value>(line.trim_end_matches(['\n','\r'])) {
+                let _ = tx.send(value);
+            }
+        }
+    });
+    let deadline = std::time::Duration::from_secs(20);
+    let started = std::time::Instant::now();
+    let mut initialized = false;
+    let mut models_response = None;
+    let mut sent_model_list = false;
+    while started.elapsed() < deadline && models_response.is_none() {
+        match rx.recv_timeout(std::time::Duration::from_millis(200)) {
+            Ok(value) => {
+                if value.get("id").and_then(Value::as_i64) == Some(1) {
+                    if value.get("error").is_some() {
+                        let _ = child.kill();
+                        let _ = child.wait();
+                        return Err(err(format!("codex initialize failed: {value}")));
+                    }
+                    initialized = true;
+                    write_json_line(&mut stdin, &json!({"jsonrpc":"2.0","method":"initialized"}))?;
+                    write_json_line(
+                        &mut stdin,
+                        &json!({"jsonrpc":"2.0","id":2,"method":"model/list","params":{}}),
+                    )?;
+                    sent_model_list = true;
+                } else if initialized
+                    && sent_model_list
+                    && value.get("id").and_then(Value::as_i64) == Some(2)
+                {
+                    models_response = Some(value);
+                }
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break,
+        }
+    }
+    let _ = child.kill();
+    let _ = child.wait();
+    let response = models_response.ok_or_else(|| err("codex model/list timed out"))?;
+    if let Some(error) = response.get("error") {
+        return Err(err(format!("codex model/list failed: {error}")));
+    }
+    Ok(parse_codex_models_response(
+        response.get("result").unwrap_or(&Value::Null),
+    ))
 }
 
 pub fn supports_provider(provider: &str) -> bool {

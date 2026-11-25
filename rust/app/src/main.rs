@@ -25,6 +25,7 @@ mod skills_catalog;
 mod computer_audit;
 mod computer_native;
 mod opencode_runner;
+mod pi_runner;
 mod orchestration_engine;
 mod project_agent;
 mod project_imports;

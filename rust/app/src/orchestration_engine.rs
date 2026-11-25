@@ -477,6 +477,7 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     crate::codex_runner::drop_thread_resources(&thread_id);
     crate::claude_runner::drop_thread_resources(&thread_id);
     crate::opencode_runner::drop_thread_resources(&thread_id);
+    crate::pi_runner::drop_thread_resources(&thread_id);
     let seq = commit_events(&conn, &events, &command_id)?;
     let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
     if row.claude_cache_review.is_some() {
@@ -1051,13 +1052,14 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
         || crate::codex_runner::has_running_turn(&thread_id)
         || crate::claude_runner::has_running_turn(&thread_id)
-        || crate::opencode_runner::has_running_turn(&thread_id);
+        || crate::opencode_runner::has_running_turn(&thread_id)
+        || crate::pi_runner::has_running_turn(&thread_id);
     // Codex app-server and Claude streaming-input both accept native mid-turn
     // input. Unsupported steers queue and interrupt the active turn instead
     // of spawning a parallel provider turn.
     let native_steer = dispatch_mode == "steer"
         && provider_turn_live
-        && matches!(active_provider.as_deref(), Some("codex" | "claudeAgent"));
+        && matches!(active_provider.as_deref(), Some("codex" | "claudeAgent" | "pi"));
     let should_queue = row.parent_thread_id.is_none()
         && (row.claude_cache_review.is_some()
             || (provider_turn_live && !native_steer));
@@ -1327,10 +1329,10 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         cancel_any_provider_turn(&thread_id);
     }
     if native_steer {
-        let delivered = if active_provider.as_deref() == Some("codex") {
-            crate::codex_runner::steer_turn(&thread_id, &text)
-        } else {
-            crate::claude_runner::steer_turn(&thread_id, &text)
+        let delivered = match active_provider.as_deref() {
+            Some("codex") => crate::codex_runner::steer_turn(&thread_id, &text),
+            Some("pi") => crate::pi_runner::steer_turn(&thread_id, &text),
+            _ => crate::claude_runner::steer_turn(&thread_id, &text),
         };
         if !delivered {
             return Err(err("failed to deliver steering message to the active provider turn"));
@@ -1356,6 +1358,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
             || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
             || provider.as_deref().is_some_and(crate::opencode_runner::supports_provider)
+            || provider.as_deref().is_some_and(crate::pi_runner::supports_provider)
             || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
         {
             let cwd: Option<String> = conn
@@ -1375,6 +1378,8 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
                     crate::claude_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
                 } else if crate::opencode_runner::supports_provider(&pname) {
                     crate::opencode_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                } else if crate::pi_runner::supports_provider(&pname) {
+                    crate::pi_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
                 } else {
                     crate::acp_runner::start_turn(
                         pname,
@@ -1396,6 +1401,7 @@ fn cancel_any_provider_turn(thread_id: &str) {
     crate::codex_runner::cancel_turn(thread_id);
     crate::claude_runner::cancel_turn(thread_id);
     crate::opencode_runner::cancel_turn(thread_id);
+    crate::pi_runner::cancel_turn(thread_id);
 }
 
 /// After a provider turn completes, start the oldest queued user message
@@ -1450,6 +1456,8 @@ pub(crate) fn continue_queued_turn(thread_id: &str) {
         crate::claude_runner::start_turn(tid, message_id, text, cwd);
     } else if crate::opencode_runner::supports_provider(&provider) {
         crate::opencode_runner::start_turn(tid, message_id, text, cwd);
+    } else if crate::pi_runner::supports_provider(&provider) {
+        crate::pi_runner::start_turn(tid, message_id, text, cwd);
     } else if crate::acp_runner::supports_provider(&provider) {
         crate::acp_runner::start_turn(provider, tid, message_id, text, cwd);
     }
@@ -4430,6 +4438,7 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
         || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
         || provider.as_deref().is_some_and(crate::opencode_runner::supports_provider)
+        || provider.as_deref().is_some_and(crate::pi_runner::supports_provider)
         || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
     {
         let message = conn
@@ -4458,6 +4467,8 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 crate::claude_runner::start_turn(thread_id.clone(), message_id, text, cwd);
             } else if crate::opencode_runner::supports_provider(&pname) {
                 crate::opencode_runner::start_turn(thread_id.clone(), message_id, text, cwd);
+            } else if crate::pi_runner::supports_provider(&pname) {
+                crate::pi_runner::start_turn(thread_id.clone(), message_id, text, cwd);
             } else {
                 crate::acp_runner::start_turn(pname, thread_id.clone(), message_id, text, cwd);
             }

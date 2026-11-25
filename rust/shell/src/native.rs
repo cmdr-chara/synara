@@ -19893,22 +19893,38 @@ impl Render for Native {
         };
         // Color swatch pill: bordered pill with color box + hex label.
         // Color-filled pill with the hex label inside, like upstream's theme swatch.
+        // Upstream ThemePackEditor swatch: 176x32 pill filled with the colour,
+        // radius 10, 8/12 padding, 8px gap; a 20px ring and the hex (13px) in
+        // the contrasting ink, border and ring at ink 32%.
         let swatch_pill = |hex_label: SharedString, color: u32| {
             let r = ((color >> 16) & 0xff) as f32;
             let g = ((color >> 8) & 0xff) as f32;
             let b = (color & 0xff) as f32;
             let lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-            let ink = if lum > 140. { rgba(0x000000aa) } else { rgba(0xffffffcc) };
-            div()
-                .w(px(160.))
-                .h(px(26.))
-                .px_3()
-                .flex()
+            let (ink, ring) = if lum > 140. {
+                (rgb(0x1a1c1f), rgba(0x1a1c1f52))
+            } else {
+                (rgb(0xffffff), rgba(0xffffff52))
+            };
+            h_flex()
+                .w(px(176.))
+                .h(px(32.))
+                .pl(px(8.))
+                .pr(px(12.))
+                .gap(px(8.))
                 .items_center()
-                .rounded(px(8.))
+                .rounded(px(10.))
                 .border_1()
-                .border_color(theme.border)
+                .border_color(ring)
                 .bg(rgb(color))
+                .child(
+                    div()
+                        .size(px(20.))
+                        .flex_shrink_0()
+                        .rounded_full()
+                        .border_1()
+                        .border_color(ring),
+                )
                 .child(div().text_size(px(13.)).text_color(ink).child(hex_label.to_string()))
                 .into_any_element()
         };
@@ -22094,19 +22110,20 @@ impl Render for Native {
                 ];
                 // Upstream shows the resolved variant's card first
                 // (AppearanceSettingsView: resolved theme first).
-                let resolved_dark = {
-                    let m = if self.appearance_mode == 0 {
-                        2
-                    } else {
-                        self.appearance_mode
-                    };
-                    m == 2
-                };
+                let resolved_dark = dark_ui;
                 for dark in [resolved_dark, !resolved_dark] {
-                    let (name, desc, mut acc, mut bgc, mut fgc, mut al, mut bl, mut fl) = if dark {
+                    let (name, _slot_hint, mut acc, mut bgc, mut fgc, mut al, mut bl, mut fl) = if dark {
                         ("Dark theme", "Used when your system switches to dark.", 0xf2612d, 0x111111, 0xfcfcfc, "#F2612D".to_string(), "#111111".to_string(), "#FCFCFC".to_string())
                     } else {
                         ("Light theme", "System is currently using this light slot.", 0xc74614, 0xffffff, 0x0d0d0d, "#C74614".to_string(), "#FFFFFF".to_string(), "#0D0D0D".to_string())
+                    };
+                    let mode = ["system", "light", "dark"][self.appearance_mode.min(2) as usize];
+                    let variant = if dark { "dark" } else { "light" };
+                    let desc: String = match (dark == resolved_dark, mode == "system") {
+                        (true, true) => format!("System is currently using this {variant} slot."),
+                        (true, false) => "This is the active theme right now.".to_string(),
+                        (false, true) => format!("Used when your system switches to {variant}."),
+                        (false, false) => format!("Inactive while the app is locked to {mode}."),
                     };
                     // Stored pack overrides win over the built-in swatches.
                     let pk = self
@@ -22480,7 +22497,7 @@ impl Render for Native {
                                     .justify_between()
                                     .px_3()
                                     .pb_2()
-                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(desc))
+                                    .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(desc.clone()))
                                     // Outline "Use {light|dark} theme" button on the inactive slot card.
                                     // Active slot = resolved theme (system resolves dark in this shell).
                                     .when((if self.appearance_mode == 0 { 2 } else { self.appearance_mode }) != (if dark { 2 } else { 1 }), |d| {

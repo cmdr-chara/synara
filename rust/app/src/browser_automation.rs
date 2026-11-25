@@ -54,6 +54,22 @@ fn state() -> &'static Mutex<BrowserState> {
     STATE.get_or_init(|| Mutex::new(BrowserState::default()))
 }
 
+/// Stop the owned headless Obscura process when the host exits. Ego lite is a
+/// user-visible browser rather than a Synara-owned child process, so shutdown
+/// intentionally leaves it alone.
+pub async fn shutdown_browser_automation() {
+    let child = state().lock().ok().and_then(|mut state| {
+        state.active_backend = None;
+        state.obscura.take().map(|mut process| {
+            let _ = process.child.start_kill();
+            process.child
+        })
+    });
+    if let Some(mut child) = child {
+        let _ = child.wait().await;
+    }
+}
+
 fn tool(name: &str, description: &str, schema: Value) -> Value {
     json!({"name": name, "description": description, "inputSchema": schema})
 }

@@ -89,4 +89,5 @@ async fn main() {
     crate::claude_runner::drop_all_resources();
     crate::opencode_runner::drop_all_resources();
     crate::pi_runner::drop_all_resources();
+    crate::browser_automation::shutdown_browser_automation().await;
 }

@@ -102,6 +102,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         }
         "thread.meta.update" => thread_meta_update(command),
         "thread.turn.start" => thread_turn_start(command),
+        "thread.turn.resume" => thread_turn_resume(command),
         "thread.turn.interrupt" => {
             if let Some(t) = s(command, "threadId") {
                 cancel_any_provider_turn(&t);
@@ -1396,6 +1397,217 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
 
     Ok(json!({ "sequence": seq }))
+}
+
+/// `thread.turn.resume`: hidden continuation after a restart, ported from
+/// upstream quitResume planQuitResumeTurns. No chat message is written; the
+/// provider receives only the continuation prompt. The optional
+/// resumePrecondition (`recordedTurnId`) is enforced atomically here: the
+/// resume is refused when the thread moved on since the record was written.
+fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
+    let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
+    let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
+    let continuation = s(command, "continuationPrompt")
+        .filter(|t| !t.trim().is_empty())
+        .unwrap_or_else(|| "Synara was closed while this chat was still running. Continue where you left off.".into());
+    let created_at = s(command, "createdAt").unwrap_or_else(iso_now_ms);
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let row = require_thread(&conn, &thread_id)?;
+    if row.archived_at.is_some() {
+        return Err(err(format!("Thread '{thread_id}' is archived.")));
+    }
+    if thread_has_in_flight(&conn, &thread_id)? {
+        return Err(err(format!("Thread '{thread_id}' already has a turn in flight.")));
+    }
+    let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
+        || crate::codex_runner::has_running_turn(&thread_id)
+        || crate::claude_runner::has_running_turn(&thread_id)
+        || crate::opencode_runner::has_running_turn(&thread_id)
+        || crate::pi_runner::has_running_turn(&thread_id);
+    if provider_turn_live {
+        return Err(err(format!("Thread '{thread_id}' already has a turn in flight.")));
+    }
+    // Precondition: the thread must not have moved on since the record.
+    if let Some(precondition) = command.get("resumePrecondition").and_then(Value::as_object) {
+        let recorded_turn = precondition.get("recordedTurnId").and_then(Value::as_str);
+        let latest: Option<String> = conn
+            .query_row(
+                "SELECT turn_id FROM projection_turns WHERE thread_id = ?1                  ORDER BY requested_at DESC, rowid DESC LIMIT 1",
+                params![thread_id],
+                |r| r.get(0),
+            )
+            .ok();
+        match (recorded_turn, latest.as_deref()) {
+            (Some(recorded), Some(latest)) if recorded == latest => {}
+            (None, None) | (None, Some(_)) => {}
+            (Some(_), None) => {
+                return Err(err("resume precondition violated: recorded turn is missing"))
+            }
+            (Some(_), Some(_)) => {
+                return Err(err("resume precondition violated: the thread moved on since the record"))
+            }
+        }
+    }
+    let runtime_mode = s(command, "runtimeMode")
+        .or_else(|| {
+            conn.query_row(
+                "SELECT runtime_mode FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .ok()
+            .flatten()
+        })
+        .unwrap_or_else(|| "full-access".into());
+    let provider: Option<String> = conn
+        .query_row(
+            "SELECT provider_name FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .or_else(|| {
+            conn.query_row(
+                "SELECT json_extract(model_selection_json, '$.provider') FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .ok()
+            .flatten()
+        });
+    let Some(provider) = provider else {
+        return Err(err(format!("Thread '{thread_id}' has no provider to resume with.")));
+    };
+    let supported = crate::codex_runner::supports_provider(&provider)
+        || crate::claude_runner::supports_provider(&provider)
+        || crate::opencode_runner::supports_provider(&provider)
+        || crate::pi_runner::supports_provider(&provider)
+        || crate::acp_runner::supports_provider(&provider);
+    if !supported {
+        return Err(err(format!("Provider '{provider}' cannot resume turns.")));
+    }
+    let cwd: Option<String> = conn
+        .query_row(
+            "SELECT p.workspace_root FROM projection_projects p              JOIN projection_threads t ON t.project_id = p.project_id              WHERE t.thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok();
+    let Some(cwd) = cwd else {
+        return Err(err(format!("Thread '{thread_id}' has no workspace to resume in.")));
+    };
+    let message_id = format!("resume-{command_id}");
+    let starting_ev = out_event(
+        "thread.session-set",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "session": {
+                "threadId": thread_id,
+                "status": "starting",
+                "providerName": provider,
+                "runtimeMode": runtime_mode,
+                "activeTurnId": null,
+                "lastError": null,
+                "updatedAt": created_at,
+            }
+        }),
+    );
+    let mut turn_ev = out_event(
+        "thread.turn-start-requested",
+        &thread_id,
+        &created_at,
+        json!({
+            "threadId": thread_id,
+            "messageId": message_id,
+            "dispatchMode": "queue",
+            "dispatchOrigin": "quit-resume",
+            "runtimeMode": runtime_mode,
+            "resumePrecondition": command.get("resumePrecondition").cloned().unwrap_or(Value::Null),
+            "hiddenContinuation": true,
+            "createdAt": created_at,
+        }),
+    );
+    turn_ev.causation_event_id = Some(starting_ev.event_id.clone());
+    let events = vec![starting_ev, turn_ev];
+    let seq = commit_events(&conn, &events, &command_id)?;
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_sessions          (thread_id, status, provider_name, provider_session_id, provider_thread_id,           active_turn_id, last_error, updated_at, runtime_mode)          VALUES (?1, 'starting', ?2, NULL, NULL, NULL, NULL, ?3, ?4)",
+        params![thread_id, provider, created_at, runtime_mode],
+    )
+    .map_err(|e| err(e.to_string()))?;
+    if crate::codex_runner::supports_provider(&provider) {
+        crate::codex_runner::start_turn(thread_id.clone(), message_id, continuation, cwd);
+    } else if crate::claude_runner::supports_provider(&provider) {
+        crate::claude_runner::start_turn(thread_id.clone(), message_id, continuation, cwd);
+    } else if crate::opencode_runner::supports_provider(&provider) {
+        crate::opencode_runner::start_turn(thread_id.clone(), message_id, continuation, cwd);
+    } else if crate::pi_runner::supports_provider(&provider) {
+        crate::pi_runner::start_turn(thread_id.clone(), message_id, continuation, cwd);
+    } else {
+        crate::acp_runner::start_turn(provider, thread_id.clone(), message_id, continuation, cwd);
+    }
+    let _ = row;
+    Ok(json!({ "sequence": seq }))
+}
+
+/// Boot-time consumption of the quit-resume record written by
+/// `orchestration.prepareQuitResume`: every recorded thread that still
+/// satisfies the resume preconditions gets a hidden continuation turn, then
+/// the record is deleted so it can never resume twice. Upstream performs the
+/// same claim-once dance through claimQuitResumeRecord.
+pub fn consume_quit_resume_record() -> usize {
+    let path = PathBuf::from(state_dir()).join("quit-resume.json");
+    let Ok(raw) = std::fs::read_to_string(&path) else { return 0 };
+    let Ok(record) = serde_json::from_str::<Value>(raw.trim()) else {
+        let _ = std::fs::remove_file(&path);
+        return 0;
+    };
+    let Some(record_id) = record.get("recordId").and_then(Value::as_str) else {
+        let _ = std::fs::remove_file(&path);
+        return 0;
+    };
+    let continuation = record
+        .get("continuationPrompt")
+        .and_then(Value::as_str)
+        .unwrap_or("Synara was closed while this chat was still running. Continue where you left off.")
+        .to_string();
+    let threads = record
+        .get("threads")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let now = iso_now_ms();
+    let mut resumed = 0usize;
+    for entry in threads {
+        let Some(thread_id) = entry.get("threadId").and_then(Value::as_str) else { continue };
+        let turn_id = entry.get("turnId").and_then(Value::as_str);
+        let mut cmd = Map::new();
+        cmd.insert("type".into(), json!("thread.turn.resume"));
+        cmd.insert(
+            "commandId".into(),
+            json!(format!("quit-resume:{record_id}:{thread_id}")),
+        );
+        cmd.insert("threadId".into(), json!(thread_id));
+        cmd.insert("continuationPrompt".into(), json!(continuation));
+        cmd.insert("createdAt".into(), json!(now));
+        cmd.insert(
+            "resumePrecondition".into(),
+            json!({
+                "recordedTurnId": turn_id,
+                "recordedAt": record.get("recordedAt").cloned().unwrap_or(Value::Null),
+            }),
+        );
+        if thread_turn_resume(&cmd).is_ok() {
+            resumed += 1;
+        }
+    }
+    let _ = std::fs::remove_file(&path);
+    resumed
 }
 
 fn cancel_any_provider_turn(thread_id: &str) {

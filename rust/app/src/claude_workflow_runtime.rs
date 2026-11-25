@@ -326,6 +326,66 @@ pub fn collect_runtime(transcript_dir: &str, state: &mut WorkflowRuntimeState) -
     changed
 }
 
+/// Detached workflow runtime poller, mirroring upstream
+/// startWorkflowRuntimePoller: ticks every 2s, emits `task.progress`
+/// activities with the deduped snapshot array. Upstream ties poller lifetime
+/// to workflow task_updated events from the deeper subagent layer, which the
+/// Rust slice does not have yet; the approximation here stops when every
+/// started agent has completed, or after 150 consecutive changeless ticks
+/// (~5 minutes) as a safety cap.
+pub fn spawn_workflow_poller(
+    thread_id: String,
+    turn_id: String,
+    task_id: String,
+    transcript_dir: String,
+    labels: Vec<String>,
+) {
+    std::thread::spawn(move || {
+        let mut state = WorkflowRuntimeState::default();
+        let mut last_emitted = String::new();
+        let mut idle_ticks = 0u32;
+        loop {
+            std::thread::sleep(std::time::Duration::from_secs(2));
+            let changed = collect_runtime(&transcript_dir, &mut state);
+            if changed {
+                idle_ticks = 0;
+                let snapshots = runtime_snapshots(&state, &labels);
+                if !snapshots.is_empty() {
+                    let fingerprint = serde_json::to_string(&snapshots).unwrap_or_default();
+                    if fingerprint != last_emitted {
+                        last_emitted = fingerprint;
+                        if let Ok(c) = crate::orchestration_engine::open_state_rw() {
+                            let _ = crate::acp_runner::append_activity(
+                                &c,
+                                &thread_id,
+                                &turn_id,
+                                "info",
+                                "task.progress",
+                                "Workflow agents",
+                                &serde_json::json!({
+                                    "taskId": task_id,
+                                    "description": "Workflow agents",
+                                    "workflowAgents": snapshots,
+                                }),
+                            );
+                        }
+                    }
+                }
+            } else {
+                idle_ticks += 1;
+            }
+            let all_completed = !state.insertion_order.is_empty()
+                && state
+                    .insertion_order
+                    .iter()
+                    .all(|id| state.agents.get(id).map(|a| a.state.as_str()) == Some("completed"));
+            if all_completed || idle_ticks >= 150 {
+                break;
+            }
+        }
+    });
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

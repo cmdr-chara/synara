@@ -161,6 +161,75 @@ fn permission_kind(tool_name: &str) -> &'static str {
     }
 }
 
+
+fn normalize_ask_questions(input: &Value) -> Vec<Value> {
+    input
+        .get("questions")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .enumerate()
+        .map(|(index, question)| {
+            let header = question
+                .get("header")
+                .and_then(Value::as_str)
+                .filter(|value| !value.is_empty())
+                .map(str::to_string)
+                .unwrap_or_else(|| format!("Question {}", index + 1));
+            let id = question
+                .get("header")
+                .and_then(Value::as_str)
+                .filter(|value| !value.is_empty())
+                .map(str::to_string)
+                .unwrap_or_else(|| format!("q-{index}"));
+            json!({
+                "id": id,
+                "header": header,
+                "question": question.get("question").and_then(Value::as_str).unwrap_or(""),
+                "options": question.get("options").cloned().unwrap_or(json!([])),
+                "multiSelect": question.get("multiSelect").and_then(Value::as_bool).unwrap_or(false),
+            })
+        })
+        .collect()
+}
+
+fn claude_answer_string(value: &Value) -> String {
+    if let Some(text) = value.as_str() {
+        return text.to_string();
+    }
+    value
+        .as_array()
+        .map(|items| items.iter().filter_map(Value::as_str).collect::<Vec<_>>().join(", "))
+        .unwrap_or_default()
+}
+
+fn remap_claude_answers(questions: &[Value], answers: &Value) -> Value {
+    let mut remapped = serde_json::Map::new();
+    if let Some(object) = answers.as_object() {
+        for (key, value) in object {
+            remapped.insert(key.clone(), json!(claude_answer_string(value)));
+        }
+    }
+    for question in questions {
+        let question_text = question.get("question").and_then(Value::as_str).unwrap_or("");
+        if question_text.is_empty() || remapped.contains_key(question_text) {
+            continue;
+        }
+        for key in [
+            question.get("id").and_then(Value::as_str).unwrap_or(""),
+            question.get("header").and_then(Value::as_str).unwrap_or(""),
+        ] {
+            if !key.is_empty() && remapped.contains_key(key) {
+                let value = remapped.remove(key).unwrap_or(json!(""));
+                remapped.insert(question_text.to_string(), value);
+                break;
+            }
+        }
+    }
+    Value::Object(remapped)
+}
+
 fn handle_can_use_tool(
     stdin: &Arc<Mutex<ChildStdin>>,
     request: &Value,
@@ -189,6 +258,91 @@ fn handle_can_use_tool(
             }),
         )
     };
+    if tool_name == "AskUserQuestion" {
+        let questions = normalize_ask_questions(&input);
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+            let now = iso_now_ms();
+            let _ = c.execute(
+                "INSERT OR REPLACE INTO projection_pending_interactions \
+                 (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision, response_command_id, response_requested_at, created_at, resolved_at) \
+                 VALUES ('userInput', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+                params![request_id, thread_id, turn_id, now],
+            );
+            let _ = append_activity(
+                &c,
+                thread_id,
+                turn_id,
+                "info",
+                "user-input.requested",
+                "User input requested",
+                &json!({
+                    "requestId": request_id,
+                    "questions": questions,
+                    "providerMethod": "can_use_tool/AskUserQuestion",
+                    "providerPayload": request,
+                }),
+            );
+        }
+
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+        let mut answers_json: Option<String> = None;
+        while answers_json.is_none() {
+            if cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+                answers_json = Some("{}".to_string());
+                break;
+            }
+            if let Ok(c) = open_state_rw() {
+                match c.query_row(
+                    "SELECT decision FROM projection_pending_interactions \
+                     WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                    params![thread_id, request_id],
+                    |r| r.get::<_, Option<String>>(0),
+                ) {
+                    Ok(Some(value)) => answers_json = Some(value),
+                    Ok(None) => {}
+                    Err(_) => answers_json = Some("{}".to_string()),
+                }
+            }
+            if answers_json.is_none() {
+                std::thread::sleep(std::time::Duration::from_millis(250));
+            }
+        }
+        let answers = answers_json
+            .as_deref()
+            .and_then(|raw| serde_json::from_str::<Value>(raw).ok())
+            .unwrap_or(json!({}));
+        let empty = answers.as_object().map(|object| object.is_empty()).unwrap_or(true);
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute(
+                "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                params![thread_id, request_id],
+            );
+            let _ = append_activity(
+                &c,
+                thread_id,
+                turn_id,
+                "info",
+                "user-input.resolved",
+                "User input resolved",
+                &json!({"requestId": request_id, "answers": answers, "cancelled": empty}),
+            );
+        }
+        if empty {
+            return respond(json!({
+                "behavior": "deny",
+                "message": "User cancelled tool execution.",
+            }));
+        }
+        return respond(json!({
+            "behavior": "allow",
+            "updatedInput": {
+                "questions": input.get("questions").cloned().unwrap_or(json!([])),
+                "answers": remap_claude_answers(&questions, &answers),
+            },
+        }));
+    }
+
     if runtime_mode == "full-access" {
         return respond(json!({"behavior": "allow", "updatedInput": input}));
     }

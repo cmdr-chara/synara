@@ -657,6 +657,12 @@ fn m056(conn: &Connection) -> Result<(), WsErr> {
 
 // 057 ThreadScopedProjectionMessageIdentity
 fn m057(conn: &Connection) -> Result<(), WsErr> {
+    // Replaying the rebuild over an already-rebuilt table would drop every
+    // column later migrations added, so the thread-scoped key is the durable
+    // post-state marker and the rebuild is skipped.
+    if primary_key_columns(conn, "projection_thread_messages").iter().any(|c| c == "thread_id") {
+        return Ok(());
+    }
     execute(conn, "DROP TABLE IF EXISTS projection_thread_messages_v57")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_messages_v57 (\n      message_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      role TEXT NOT NULL,\n      text TEXT NOT NULL,\n      is_streaming INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      attachments_json TEXT,\n      source TEXT NOT NULL DEFAULT 'native',\n      skills_json TEXT,\n      mentions_json TEXT,\n      dispatch_mode TEXT,\n      dispatch_origin TEXT,\n      PRIMARY KEY (thread_id, message_id)\n    )")?;
     execute(conn, "INSERT INTO projection_thread_messages_v57 (\n      message_id,\n      thread_id,\n      turn_id,\n      role,\n      text,\n      is_streaming,\n      created_at,\n      updated_at,\n      attachments_json,\n      source,\n      skills_json,\n      mentions_json,\n      dispatch_mode,\n      dispatch_origin\n    )\n    SELECT\n      message_id,\n      thread_id,\n      turn_id,\n      role,\n      text,\n      is_streaming,\n      created_at,\n      updated_at,\n      attachments_json,\n      source,\n      skills_json,\n      mentions_json,\n      dispatch_mode,\n      dispatch_origin\n    FROM projection_thread_messages")?;
@@ -672,6 +678,12 @@ fn m057(conn: &Connection) -> Result<(), WsErr> {
 
 // 058 ThreadScopedPendingApprovalIdentity
 fn m058(conn: &Connection) -> Result<(), WsErr> {
+    if !table_exists(conn, "projection_pending_approvals") {
+        return Ok(());
+    }
+    if primary_key_columns(conn, "projection_pending_approvals").iter().any(|c| c == "thread_id") {
+        return Ok(());
+    }
     execute(conn, "DROP TABLE IF EXISTS projection_pending_approvals_v58")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS projection_pending_approvals_v58 (\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT,\n      PRIMARY KEY (thread_id, request_id)\n    )")?;
     execute(conn, "INSERT INTO projection_pending_approvals_v58 (\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    FROM projection_pending_approvals")?;
@@ -690,12 +702,18 @@ fn m059(conn: &Connection) -> Result<(), WsErr> {
 
 // 060 PendingApprovalLifecycleGeneration
 fn m060(conn: &Connection) -> Result<(), WsErr> {
+    if !table_exists(conn, "projection_pending_approvals") {
+        return Ok(());
+    }
     execute_lenient(conn, "ALTER TABLE projection_pending_approvals\n      ADD COLUMN lifecycle_generation TEXT")?;
     Ok(())
 }
 
 // 061 PendingApprovalSettlementState
 fn m061(conn: &Connection) -> Result<(), WsErr> {
+    if !table_exists(conn, "projection_pending_approvals") {
+        return Ok(());
+    }
     execute_lenient(conn, "ALTER TABLE projection_pending_approvals\n      ADD COLUMN response_command_id TEXT")?;
     execute_lenient(conn, "ALTER TABLE projection_pending_approvals\n      ADD COLUMN response_requested_at TEXT")?;
     execute(conn, "UPDATE projection_pending_approvals\n    SET status = 'confirmed'\n    WHERE status = 'resolved'")?;
@@ -704,6 +722,9 @@ fn m061(conn: &Connection) -> Result<(), WsErr> {
 
 // 062 PendingInteractionSettlementParity
 fn m062(conn: &Connection) -> Result<(), WsErr> {
+    if !table_exists(conn, "projection_pending_approvals") {
+        return Ok(());
+    }
     execute(conn, "DROP TABLE IF EXISTS projection_pending_interactions_v62")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS projection_pending_interactions_v62 (\n      interaction_kind TEXT NOT NULL,\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      lifecycle_generation TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      response_command_id TEXT,\n      response_requested_at TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT,\n      PRIMARY KEY (thread_id, interaction_kind, request_id)\n    )")?;
     execute(conn, "INSERT INTO projection_pending_interactions_v62 (\n      interaction_kind,\n      request_id,\n      thread_id,\n      turn_id,\n      lifecycle_generation,\n      status,\n      decision,\n      response_command_id,\n      response_requested_at,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      'approval',\n      request_id,\n      thread_id,\n      turn_id,\n      lifecycle_generation,\n      status,\n      decision,\n      response_command_id,\n      response_requested_at,\n      created_at,\n      resolved_at\n    FROM projection_pending_approvals")?;
@@ -1540,6 +1561,11 @@ fn m145(conn: &Connection) -> Result<(), WsErr> {
 
 // 146 AgentGatewayOperationWaves
 fn m146(conn: &Connection) -> Result<(), WsErr> {
+    // Post-state marker: a replay over the rebuilt table would copy the
+    // pre-column list and drop resume_context_json (and everything later).
+    if column_exists(conn, "agent_gateway_operations", "resume_context_json") {
+        return Ok(());
+    }
     execute(conn, "CREATE TABLE agent_gateway_operations_v146 (\n      operation_id TEXT PRIMARY KEY,\n      caller_thread_id TEXT NOT NULL,\n      caller_turn_id TEXT NOT NULL,\n      operation_kind TEXT NOT NULL CHECK (operation_kind IN ('create_threads')),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count BETWEEN 1 AND 20),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      caller_purged_at TEXT,\n      resume_context_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (caller_thread_id, caller_turn_id, operation_kind, request_id)\n    )")?;
     execute(conn, "INSERT INTO agent_gateway_operations_v146 (\n      operation_id, caller_thread_id, caller_turn_id, operation_kind, request_id,\n      fingerprint, requested_count, plan_json, status, result_json, error_json,\n      caller_purged_at, created_at, updated_at\n    )\n    SELECT\n      operation_id, caller_thread_id, caller_turn_id, operation_kind, request_id,\n      fingerprint, requested_count, plan_json, status, result_json, error_json,\n      caller_purged_at, created_at, updated_at\n    FROM agent_gateway_operations")?;
     execute(conn, "DROP TABLE agent_gateway_operations")?;

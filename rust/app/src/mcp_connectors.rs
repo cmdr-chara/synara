@@ -21,7 +21,7 @@ pub fn handles(tag: &str) -> bool {
     ) || (std::env::var("SYNARA_NO_UPSTREAM").is_ok()
         && matches!(
             tag,
-            "server.disconnectMcpConnector" | "server.resolveMcpConnectorProposal"
+            "server.disconnectMcpConnector" | "server.resolveMcpConnectorProposal" | "server.connectMcpConnector"
         ))
 }
 
@@ -32,6 +32,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "server.getMcpConnectorSetup" => Ok(json!({
             "redirectUrl": format!("http://127.0.0.1:{}/oauth/mcp/callback", server_port()),
         })),
+        "server.connectMcpConnector" => connect(payload),
         "server.disconnectMcpConnector" => disconnect(payload),
         "server.resolveMcpConnectorProposal" => resolve_proposal(payload),
         _ => Err(err("unhandled mcp connector tag")),
@@ -118,7 +119,11 @@ fn doc_path() -> std::path::PathBuf {
 
 fn write_document(doc: &Value) -> Result<(), WsErr> {
     let text = serde_json::to_string(doc).map_err(|e| err(e.to_string()))?;
-    std::fs::write(doc_path(), text).map_err(|e| err(e.to_string()))
+    let path = doc_path();
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| err(e.to_string()))?;
+    }
+    std::fs::write(&path, text).map_err(|e| err(e.to_string()))
 }
 
 /// `server.disconnectMcpConnector` — runtime.ts `disconnect`: a stdio entry
@@ -379,4 +384,174 @@ fn civil(z: i64) -> (i64, u32, u32) {
     let d = (doy - (153 * mp + 2) / 5 + 1) as u32;
     let m = if mp < 10 { mp + 3 } else { mp - 9 } as u32;
     (if m <= 2 { y + 1 } else { y }, m, d)
+}
+
+
+/// Probe a stdio MCP server like upstream's StdioConnectorSessions probe:
+/// spawn it, send the MCP initialize handshake, connected when any response
+/// line comes back before the deadline.
+fn probe_stdio(command: &str, args: &[Value], cwd: Option<&str>) -> bool {
+    use std::io::{BufRead, Write};
+    use std::process::{Command, Stdio};
+    let mut cmd = Command::new(command);
+    for arg in args {
+        if let Some(a) = arg.as_str() {
+            cmd.arg(a);
+        }
+    }
+    cmd.stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    if let Some(cwd) = cwd {
+        cmd.current_dir(cwd);
+    }
+    let Ok(mut child) = cmd.spawn() else {
+        return false;
+    };
+    let answered = (|| -> bool {
+        let (Some(mut stdin), Some(stdout)) = (child.stdin.take(), child.stdout.take()) else {
+            return false;
+        };
+        let init = json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {
+                "protocolVersion": "2024-11-05",
+                "capabilities": {},
+                "clientInfo": {"name": "synara-probe", "version": "0.1.0"},
+            }
+        });
+        if stdin
+            .write_all(init.to_string().as_bytes())
+            .and_then(|_| stdin.write_all(b"\n"))
+            .and_then(|_| stdin.flush())
+            .is_err()
+        {
+            return false;
+        }
+        let (tx, rx) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let mut reader = std::io::BufReader::new(stdout);
+            let mut line = String::new();
+            let got = reader.read_line(&mut line).map(|n| n > 0).unwrap_or(false);
+            let _ = tx.send(got);
+        });
+        rx.recv_timeout(std::time::Duration::from_secs(8))
+            .unwrap_or(false)
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    answered
+}
+
+/// `server.connectMcpConnector` — upstream runtime.connect. Stdio inputs are
+/// fully supported: probe, dedupe on (command, cwd, args), unique server name,
+/// 30-connector cap. HTTP inputs need the OAuth discovery dance, which is not
+/// ported; they get an explicit error instead of a half-connect.
+fn connect(payload: &Value) -> Result<Value, WsErr> {
+    let Some(command_v) = payload.get("command").cloned() else {
+        return Err(err(
+            "HTTP MCP connector connect (OAuth discovery) is not implemented yet; stdio connectors are supported",
+        ));
+    };
+    let command = command_v.clone();
+    let cwd = payload.get("cwd").cloned().unwrap_or(Value::Null);
+    let args = payload.get("args").cloned().unwrap_or(json!([]));
+    let name = payload
+        .get("name")
+        .and_then(|v| v.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Connector");
+    let env = payload.get("env").cloned().unwrap_or(json!({}));
+    let mut env_keys: Vec<String> = env
+        .as_object()
+        .map(|o| o.keys().cloned().collect())
+        .unwrap_or_default();
+    env_keys.sort();
+
+    let args_vec: Vec<Value> = args.as_array().cloned().unwrap_or_default();
+    let status = if probe_stdio(
+        command.as_str().unwrap_or_default(),
+        &args_vec,
+        cwd.as_str(),
+    ) {
+        "connected"
+    } else {
+        "unreachable"
+    };
+
+    let mut doc = document().unwrap_or_else(|| {
+        json!({"version": 1, "connectors": [], "stdio": [], "proposals": [], "unreadable": false})
+    });
+    if doc.get("stdio").is_none() {
+        doc["stdio"] = json!([]);
+    }
+    if doc.get("connectors").is_none() {
+        doc["connectors"] = json!([]);
+    }
+
+    let list_len = doc
+        .get("stdio")
+        .and_then(|v| v.as_array())
+        .map(|a| a.len())
+        .unwrap_or(0)
+        + doc
+            .get("connectors")
+            .and_then(|v| v.as_array())
+            .map(|a| a.len())
+            .unwrap_or(0);
+    let existing_idx = doc
+        .get("stdio")
+        .and_then(|v| v.as_array())
+        .and_then(|a| {
+            a.iter().position(|e| {
+                e.get("command") == Some(&command)
+                    && e.get("cwd").cloned().unwrap_or(Value::Null) == cwd
+                    && e.get("args").cloned().unwrap_or(json!([])) == args
+            })
+        });
+    if existing_idx.is_none() && list_len >= 30 {
+        return Err(err("Too many connectors."));
+    }
+    let (existing_id, existing_name, existing_created) = existing_idx
+        .and_then(|ix| doc.pointer(&format!("/stdio/{ix}")).cloned())
+        .map(|e| {
+            (
+                e.get("connectorId").and_then(|v| v.as_str()).map(String::from),
+                e.get("serverName").and_then(|v| v.as_str()).map(String::from),
+                e.get("createdAt").and_then(|v| v.as_str()).map(String::from),
+            )
+        })
+        .unwrap_or((None, None, None));
+    let server_name = existing_name.unwrap_or_else(|| unique_server_name(&doc, &mcp_connector_slug(name)));
+    let now = chrono_iso_now();
+    let saved = json!({
+        "name": name,
+        "command": command,
+        "args": args,
+        "cwd": cwd,
+        "env": env,
+        "transport": "stdio",
+        "connectorId": existing_id
+            .unwrap_or_else(|| format!("mcp_conn_{}", crate::orchestration_engine::uuid_v4())),
+        "presetId": Value::Null,
+        "serverName": server_name,
+        "authKind": "none",
+        "status": status,
+        "envKeys": env_keys,
+        "createdAt": existing_created.unwrap_or_else(|| now.clone()),
+        "updatedAt": now,
+    });
+    let list = doc
+        .get_mut("stdio")
+        .and_then(|v| v.as_array_mut())
+        .ok_or_else(|| err("malformed connectors document"))?;
+    match existing_idx {
+        Some(ix) => list[ix] = saved.clone(),
+        None => list.push(saved.clone()),
+    }
+    write_document(&doc)?;
+
+    let mut public = saved;
+    public.as_object_mut().map(|o| o.remove("env"));
+    Ok(json!({"authorizationUrl": Value::Null, "connector": public}))
 }

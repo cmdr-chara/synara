@@ -1332,7 +1332,8 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         let delivered = match active_provider.as_deref() {
             Some("codex") => crate::codex_runner::steer_turn(&thread_id, &text),
             Some("pi") => crate::pi_runner::steer_turn(&thread_id, &text),
-            _ => crate::claude_runner::steer_turn(&thread_id, &text),
+            Some("claudeAgent") => crate::claude_runner::steer_turn(&thread_id, &text),
+            _ => false,
         };
         if !delivered {
             return Err(err("failed to deliver steering message to the active provider turn"));

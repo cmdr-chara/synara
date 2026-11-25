@@ -532,6 +532,49 @@ fn handle_can_use_tool(
     }
 }
 
+fn claude_window_tokens(value: &str) -> Option<i64> {
+    let normalized = value.trim().to_ascii_lowercase();
+    if normalized == "1m" {
+        return Some(1_000_000);
+    }
+    if normalized == "200k" {
+        return Some(200_000);
+    }
+    if let Some(number) = normalized.strip_suffix('k').and_then(|v| v.parse::<i64>().ok()) {
+        return Some(number * 1_000);
+    }
+    if let Some(number) = normalized.strip_suffix('m').and_then(|v| v.parse::<i64>().ok()) {
+        return Some(number * 1_000_000);
+    }
+    normalized.parse::<i64>().ok().filter(|value| *value > 0)
+}
+
+fn selected_claude_settings(model_selection: &Value) -> Value {
+    let mut settings = serde_json::Map::new();
+    if let Some(thinking) = model_selection.pointer("/options/thinking").and_then(Value::as_bool) {
+        settings.insert("alwaysThinkingEnabled".to_string(), json!(thinking));
+    }
+    if model_selection.pointer("/options/fastMode").and_then(Value::as_bool) == Some(true) {
+        settings.insert("fastMode".to_string(), json!(true));
+    }
+    let effort = model_selection
+        .pointer("/options/effort")
+        .and_then(Value::as_str)
+        .or_else(|| model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str))
+        .unwrap_or("");
+    if effort == "ultracode" {
+        settings.insert("ultracode".to_string(), json!(true));
+    }
+    let window = model_selection
+        .pointer("/options/autoCompactWindow")
+        .and_then(Value::as_str)
+        .or_else(|| model_selection.pointer("/options/contextWindow").and_then(Value::as_str));
+    if let Some(tokens) = window.and_then(claude_window_tokens) {
+        settings.insert("autoCompactWindow".to_string(), json!(tokens));
+    }
+    Value::Object(settings)
+}
+
 fn selected_claude_model(model_selection: &Value) -> Option<String> {
     let model = model_selection
         .get("model")
@@ -572,6 +615,7 @@ fn spawn_claude(
     runtime_mode: &str,
     model: Option<&str>,
     effort: Option<&str>,
+    settings: Option<&Value>,
     resume: Option<&str>,
 ) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
     let mut args = vec![
@@ -594,6 +638,10 @@ fn spawn_claude(
     if let Some(effort) = effort {
         args.push("--effort".to_string());
         args.push(effort.to_string());
+    }
+    if let Some(settings) = settings.filter(|value| !value.as_object().is_none_or(|object| object.is_empty())) {
+        args.push("--settings".to_string());
+        args.push(settings.to_string());
     }
     if let Some(sid) = resume {
         args.push("--resume".to_string());
@@ -783,7 +831,7 @@ pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None)?;
+    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None, None)?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
     let result = initialize_cli_response(&stdin, &mut reader).map(|init| claude_catalog_from_initialize(&init));
@@ -881,19 +929,22 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         .unwrap_or(Value::Null);
     let selected_model = selected_claude_model(&model_selection);
     let selected_effort = selected_claude_effort(&model_selection);
+    let selected_settings = selected_claude_settings(&model_selection);
     let launch_key = format!(
-        "{}|{}|{}|{}|{}",
+        "{}|{}|{}|{}|{}|{}",
         claude_binary(),
         cwd,
         runtime_mode,
         selected_model.as_deref().unwrap_or(""),
-        selected_effort.as_deref().unwrap_or("")
+        selected_effort.as_deref().unwrap_or(""),
+        selected_settings
     );
     let (mut child, stdin_raw, stdout) = spawn_claude(
         &cwd,
         &runtime_mode,
         selected_model.as_deref(),
         selected_effort.as_deref(),
+        Some(&selected_settings),
         stored_session.as_deref(),
     )?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
@@ -953,18 +1004,20 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .unwrap_or(Value::Null);
     let selected_model = selected_claude_model(&model_selection);
     let selected_effort = selected_claude_effort(&model_selection);
+    let selected_settings = selected_claude_settings(&model_selection);
     let cwd = if !cwd.is_empty() && std::path::Path::new(cwd).is_dir() {
         cwd.to_string()
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
     let launch_key = format!(
-        "{}|{}|{}|{}|{}",
+        "{}|{}|{}|{}|{}|{}",
         claude_binary(),
         cwd,
         turn_runtime_mode,
         selected_model.as_deref().unwrap_or(""),
-        selected_effort.as_deref().unwrap_or("")
+        selected_effort.as_deref().unwrap_or(""),
+        selected_settings
     );
 
     let turn_id = uuid_v4();
@@ -1001,6 +1054,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             &turn_runtime_mode,
             selected_model.as_deref(),
             selected_effort.as_deref(),
+            Some(&selected_settings),
             stored_session.as_deref(),
         )?;
         let stdin = Arc::new(Mutex::new(stdin_raw));

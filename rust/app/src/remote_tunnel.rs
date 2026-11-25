@@ -227,7 +227,7 @@ fn ws_accept_key(key: &str) -> String {
 /// same surface node http exposes upstream before handleUpgrade.
 async fn read_upgrade_request<S: tokio::io::AsyncRead + Unpin>(
     stream: &mut S,
-) -> Option<(String, String)> {
+) -> Option<(String, String, String, String)> {
     let mut buf = Vec::with_capacity(4096);
     let mut chunk = [0u8; 1024];
     loop {
@@ -240,17 +240,23 @@ async fn read_upgrade_request<S: tokio::io::AsyncRead + Unpin>(
             let request_line = lines.next()?;
             let path = request_line.split_whitespace().nth(1)?.to_string();
             let mut key = String::new();
+            let mut authorization = String::new();
+            let mut dpop = String::new();
             for line in lines {
                 if let Some((name, value)) = line.split_once(':') {
                     if name.trim().eq_ignore_ascii_case("sec-websocket-key") {
                         key = value.trim().to_string();
+                    } else if name.trim().eq_ignore_ascii_case("authorization") {
+                        authorization = value.trim().to_string();
+                    } else if name.trim().eq_ignore_ascii_case("dpop") {
+                        dpop = value.trim().to_string();
                     }
                 }
             }
             if key.is_empty() {
                 return None;
             }
-            return Some((path, key));
+            return Some((path, key, authorization, dpop));
         }
         use tokio::io::AsyncReadExt;
         match stream.read(&mut chunk).await {
@@ -267,11 +273,48 @@ pub async fn serve_inner(
     todos: std::sync::Arc<crate::todo::TodoStore>,
 ) {
     use futures_util::{SinkExt, StreamExt};
-    let Some((path, key)) = read_upgrade_request(&mut tls).await else {
+    let Some((path, key, authorization, dpop)) = read_upgrade_request(&mut tls).await else {
         return;
     };
     if path != REMOTE_INNER_RPC_PATH && path != REMOTE_INNER_PAIRING_PATH {
         return;
+    }
+    // The rpc path is admission-gated exactly like upstream's admit(): a
+    // device session credential plus its DPoP proof bound to this upgrade.
+    // The pairing path stays open — pairing is how devices earn trust.
+    if path == REMOTE_INNER_RPC_PATH {
+        let state_dir = crate::todo::state_dir();
+        let secrets_dir = format!("{state_dir}/secrets");
+        let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
+        let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
+        let admitted = (|| -> Result<(), String> {
+            let identity = crate::host_identity::read_host_identity(&identity_path)?
+                .ok_or_else(|| "host identity missing".to_string())?;
+            let credential = authorization
+                .strip_prefix("DPoP ")
+                .ok_or_else(|| "missing credential".to_string())?;
+            let verified = crate::host_auth_verify::verify_session_credential(
+                credential,
+                &dpop,
+                &identity,
+                &environment_id,
+                1,
+                REMOTE_INNER_RPC_PATH,
+                "GET",
+                None,
+            )?;
+            let conn = crate::remote_pairing::open()?;
+            let secrets_dir2 = format!("{state_dir}/secrets");
+            let scope = crate::remote_pairing::local_scope(&secrets_dir2, &environment_id)
+                .ok_or_else(|| "scope unavailable".to_string())?;
+            if !crate::remote_pairing::authorize_device(&conn, &scope, &verified.device_jkt)? {
+                return Err("device trust is not current".to_string());
+            }
+            Ok(())
+        })();
+        if admitted.is_err() {
+            return;
+        }
     }
     use tokio::io::AsyncWriteExt;
     let response = format!(

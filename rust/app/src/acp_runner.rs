@@ -717,6 +717,185 @@ pub fn resolve_provider_cli(provider: &str) -> Option<String> {
     acp_launch_profile_ex(provider, "full-access", None, None, &[]).map(|profile| profile.binary)
 }
 
+fn flatten_acp_config_options(options: &Value) -> Vec<Value> {
+    let mut flattened = Vec::new();
+    let Some(entries) = options.as_array() else {
+        return flattened;
+    };
+    for entry in entries {
+        if entry.get("value").and_then(Value::as_str).is_some() {
+            flattened.push(entry.clone());
+        } else if let Some(nested) = entry.get("options").and_then(Value::as_array) {
+            for option in nested {
+                if option.get("value").and_then(Value::as_str).is_some() {
+                    flattened.push(option.clone());
+                }
+            }
+        }
+    }
+    flattened
+}
+
+fn find_acp_select_config<'a>(options: &'a [Value], id: &str, category: &str) -> Option<&'a Value> {
+    options.iter().find(|option| {
+        option.get("type").and_then(Value::as_str).unwrap_or("select") == "select"
+            && (option.get("id").and_then(Value::as_str) == Some(id)
+                || option.get("category").and_then(Value::as_str) == Some(category))
+    })
+}
+
+fn acp_config_options(response: &Value) -> Vec<Value> {
+    response
+        .get("configOptions")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+}
+
+fn build_acp_model_descriptor(model: &Value, level_option: Option<&Value>) -> Value {
+    let value = model.get("value").and_then(Value::as_str).unwrap_or("");
+    let mut descriptor = json!({
+        "slug": value,
+        "name": model.get("name").and_then(Value::as_str).unwrap_or(value),
+        "supportsFastMode": false,
+        "supportsThinkingToggle": false,
+    });
+    if let Some(description) = model.get("description").cloned() {
+        descriptor["description"] = description;
+    }
+    if let Some(level_option) = level_option {
+        let efforts = flatten_acp_config_options(level_option.get("options").unwrap_or(&Value::Null));
+        if !efforts.is_empty() {
+            descriptor["supportedReasoningEfforts"] = json!(efforts
+                .iter()
+                .map(|effort| {
+                    let value = effort.get("value").and_then(Value::as_str).unwrap_or("");
+                    let mut item = json!({
+                        "value": value,
+                        "label": effort.get("name").and_then(Value::as_str).unwrap_or(value),
+                    });
+                    if let Some(description) = effort.get("description").cloned() {
+                        item["description"] = description;
+                    }
+                    item
+                })
+                .collect::<Vec<_>>());
+            if let Some(current) = level_option.get("currentValue").and_then(Value::as_str) {
+                descriptor["defaultReasoningEffort"] = json!(current);
+            }
+        }
+    }
+    descriptor
+}
+
+/// Discover Droid's runtime model matrix through its ACP session config
+/// options. This mirrors upstream: probe each model sequentially because the
+/// reasoning ladder can change with the selected model, then restore the
+/// original config before discarding the temporary process.
+pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
+    let launch = acp_launch_profile_ex("droid", "full-access", None, None, &[])
+        .ok_or_else(|| err("Droid does not support ACP discovery"))?;
+    let mut command = Command::new(&launch.binary);
+    command
+        .args(&launch.args)
+        .current_dir(if cwd.is_empty() { "." } else { cwd })
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    for (key, value) in &launch.env {
+        command.env(key, value);
+    }
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `{}` for Droid ACP discovery: {e}", launch.binary)))?;
+    let result = (|| -> Result<Value, WsErr> {
+        let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
+        let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
+        let mut rpc = Rpc {
+            stdin: Arc::new(Mutex::new(stdin)),
+            reader: BufReader::new(stdout),
+            next_id: 1,
+            pending: Vec::new(),
+            approval_ctx: None,
+        };
+        let initialize_result = rpc.call(
+            "initialize",
+            json!({
+                "protocolVersion": 1,
+                "clientCapabilities": {"fs":{"readTextFile":false,"writeTextFile":false},"terminal":false},
+                "clientInfo": {"name":"synara","version":"1.0.0"},
+            }),
+        )?;
+        let auth_methods = initialize_result
+            .get("authMethods")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        let setup = |rpc: &mut Rpc| rpc.call(
+            "session/new",
+            json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
+        );
+        let setup_result = match setup(&mut rpc) {
+            Ok(result) => result,
+            Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
+                let Some(method) = select_auth_method("droid", &auth_methods) else { return Err(e) };
+                rpc.call("authenticate", json!({"methodId": method}))?;
+                setup(&mut rpc)?
+            }
+            Err(e) => return Err(e),
+        };
+        let session_id = setup_result
+            .get("sessionId")
+            .and_then(Value::as_str)
+            .ok_or_else(|| err("Droid ACP discovery session returned no sessionId"))?
+            .to_string();
+        let initial_options = acp_config_options(&setup_result);
+        let model_config = find_acp_select_config(&initial_options, "model", "model")
+            .cloned()
+            .ok_or_else(|| err("Droid ACP did not advertise a model configuration option"))?;
+        let original_model = model_config.get("currentValue").and_then(Value::as_str).map(str::to_string);
+        let original_reasoning = find_acp_select_config(&initial_options, "reasoning_effort", "thought_level")
+            .and_then(|option| option.get("currentValue").and_then(Value::as_str))
+            .map(str::to_string);
+        let model_options = flatten_acp_config_options(model_config.get("options").unwrap_or(&Value::Null));
+        if model_options.is_empty() {
+            return Err(err("Droid ACP model discovery returned no models"));
+        }
+        let mut models = Vec::new();
+        for model in &model_options {
+            let model_value = model.get("value").and_then(Value::as_str).unwrap_or("");
+            let updated_options = match rpc.call(
+                "session/set_config_option",
+                json!({"sessionId": session_id, "configId": "model", "value": model_value}),
+            ) {
+                Ok(response) => {
+                    let options = acp_config_options(&response);
+                    if options.is_empty() { initial_options.clone() } else { options }
+                }
+                Err(_) => initial_options.clone(),
+            };
+            let reasoning = find_acp_select_config(&updated_options, "reasoning_effort", "thought_level");
+            models.push(build_acp_model_descriptor(model, reasoning));
+        }
+        if let Some(original_model) = original_model {
+            let _ = rpc.call(
+                "session/set_config_option",
+                json!({"sessionId": session_id, "configId": "model", "value": original_model}),
+            );
+            if let Some(original_reasoning) = original_reasoning {
+                let _ = rpc.call(
+                    "session/set_config_option",
+                    json!({"sessionId": session_id, "configId": "reasoning_effort", "value": original_reasoning}),
+                );
+            }
+        }
+        Ok(json!({"models": models, "source": "droid-acp", "cached": false}))
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    result
+}
+
 /// Providers currently routed through the shared ACP stdio runtime. OpenCode is
 /// deliberately absent: upstream drives it through its own HTTP/SSE server and
 /// SDK rather than ACP stdio.
@@ -899,6 +1078,15 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
             )?;
             apply_omp_interaction_mode(&mut rpc, &session_id, &interaction_mode);
         }
+        if provider == "droid" {
+            apply_droid_session_configuration(
+                &mut rpc,
+                &session_id,
+                selected_model.as_deref(),
+                reasoning_effort.as_deref(),
+            )?;
+            apply_droid_interaction_mode(&mut rpc, &session_id, &interaction_mode, &turn_runtime_mode);
+        }
         Ok(session_id)
     })();
     match prepared {
@@ -935,6 +1123,54 @@ fn apply_omp_session_configuration(
         )?;
     }
     Ok(())
+}
+
+fn apply_droid_session_configuration(
+    rpc: &mut Rpc,
+    session_id: &str,
+    model: Option<&str>,
+    reasoning_effort: Option<&str>,
+) -> Result<(), WsErr> {
+    if let Some(model) = model.map(str::trim).filter(|value| !value.is_empty()) {
+        rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "model", "value": model}),
+        )?;
+    }
+    if let Some(effort) = reasoning_effort.map(str::trim).filter(|value| !value.is_empty()) {
+        rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "reasoning_effort", "value": effort}),
+        )?;
+    }
+    Ok(())
+}
+
+fn apply_droid_interaction_mode(
+    rpc: &mut Rpc,
+    session_id: &str,
+    interaction_mode: &str,
+    runtime_mode: &str,
+) {
+    let mode = if interaction_mode == "plan" {
+        "spec"
+    } else if runtime_mode == "full-access" {
+        "auto-high"
+    } else {
+        "normal"
+    };
+    if rpc
+        .call(
+            "session/set_mode",
+            json!({"sessionId": session_id, "modeId": mode}),
+        )
+        .is_err()
+    {
+        let _ = rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "autonomy_level", "value": mode}),
+        );
+    }
 }
 
 fn apply_omp_interaction_mode(rpc: &mut Rpc, session_id: &str, interaction_mode: &str) {
@@ -1886,6 +2122,15 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     omp_thinking_level.as_deref(),
                 )?;
                 apply_omp_interaction_mode(&mut rpc, &session_id, &ctx_mode.1);
+            }
+            if provider == "droid" {
+                apply_droid_session_configuration(
+                    &mut rpc,
+                    &session_id,
+                    selected_model.as_deref(),
+                    reasoning_effort.as_deref(),
+                )?;
+                apply_droid_interaction_mode(&mut rpc, &session_id, &ctx_mode.1, &ctx_mode.0);
             }
             session_id
         };

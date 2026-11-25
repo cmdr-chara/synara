@@ -1156,6 +1156,32 @@ fn claude_discovery_result(payload: &Value, key: &str) -> Result<Value, WsErr> {
     }))
 }
 
+fn dynamic_discovery_result(provider: &str, payload: &Value) -> Option<Result<Value, WsErr>> {
+    match provider {
+        "opencode" => Some(opencode_discovery_result(payload)),
+        "pi" => Some(pi_discovery_result(payload)),
+        "codex" => Some(codex_discovery_result(payload)),
+        "devin" => Some(Ok(devin_discovery_result())),
+        "omp" => Some(omp_discovery_result()),
+        "grok" => Some(grok_discovery_result()),
+        "antigravity" => Some(antigravity_discovery_result()),
+        "cursor" => Some(cursor_discovery_result()),
+        "droid" => {
+            let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+            Some(crate::acp_runner::discover_droid_models(cwd))
+        }
+        "claudeAgent" => {
+            let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+            Some(crate::claude_runner::discover_catalog(cwd).map(|catalog| json!({
+                "models": catalog.get("models").cloned().unwrap_or(json!([])),
+                "source": "sdk",
+                "cached": false,
+            })))
+        }
+        _ => None,
+    }
+}
+
 fn list_models(payload: &Value) -> Result<Value, WsErr> {
     let provider = payload
         .get("provider")
@@ -1174,53 +1200,8 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         .join("provider-models")
         .join("catalogs.json");
     let Ok(text) = std::fs::read_to_string(&path) else {
-        if provider == "opencode" {
-            return opencode_discovery_result(payload);
-        }
-        if provider == "pi" {
-            return pi_discovery_result(payload);
-        }
-        if provider == "codex" {
-            return codex_discovery_result(payload);
-        }
-        if provider == "devin" {
-            return Ok(devin_discovery_result());
-        }
-        if provider == "omp" {
-            return omp_discovery_result();
-        }
-        if provider == "grok" {
-            return grok_discovery_result();
-        }
-        if provider == "antigravity" {
-            return antigravity_discovery_result();
-        }
-        if provider == "cursor" {
-            return cursor_discovery_result();
-        }
-        if provider == "devin" {
-            return Ok(devin_discovery_result());
-        }
-        if provider == "omp" {
-            return omp_discovery_result();
-        }
-        if provider == "grok" {
-            return grok_discovery_result();
-        }
-        if provider == "antigravity" {
-            return antigravity_discovery_result();
-        }
-        if provider == "cursor" {
-            return cursor_discovery_result();
-        }
-        if provider == "claudeAgent" {
-            let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
-            let catalog = crate::claude_runner::discover_catalog(cwd)?;
-            return Ok(json!({
-                "models": catalog.get("models").cloned().unwrap_or(json!([])),
-                "source": "sdk",
-                "cached": false,
-            }));
+        if let Some(result) = dynamic_discovery_result(&provider, payload) {
+            return result;
         }
         return Err(err("no provider model catalog cache"));
     };
@@ -1250,23 +1231,8 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
             "cached": true,
         }));
     }
-    if provider == "opencode" {
-        return opencode_discovery_result(payload);
-    }
-    if provider == "pi" {
-        return pi_discovery_result(payload);
-    }
-    if provider == "codex" {
-        return codex_discovery_result(payload);
-    }
-    if provider == "claudeAgent" {
-        let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
-        let catalog = crate::claude_runner::discover_catalog(cwd)?;
-        return Ok(json!({
-            "models": catalog.get("models").cloned().unwrap_or(json!([])),
-            "source": "sdk",
-            "cached": false,
-        }));
+    if let Some(result) = dynamic_discovery_result(&provider, payload) {
+        return result;
     }
     Err(err(format!(
         "no cached model catalog for {provider}/{instance}"

@@ -44,6 +44,7 @@ pub fn handles(tag: &str) -> bool {
             | "orchestration.reconcileProviderDelivery"
             | "orchestration.repairState"
             | "orchestration.regenerateThreadTitle"
+            | "orchestration.importThread"
     ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
 }
 
@@ -167,12 +168,237 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
     Ok(json!({ "status": "renamed", "title": title }))
 }
 
+
+/// Lean port of upstream importThreadRoute for claude+codex: validates the
+/// thread, reads the provider-native transcript straight from disk (the same
+/// files the discovery catalog scans), projects messages with
+/// `import:{thread}:{provider}:{sourceId}` ids, and binds the external resume
+/// cursor so the next turn continues that session. OMP/OpenCode/Droid imports
+/// remain documented gaps — their transcripts need the live adapter protocol.
+fn import_thread(payload: &Value) -> Result<Value, WsErr> {
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("threadId is required"))?;
+    let external_id = payload
+        .get("externalId")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .ok_or_else(|| err("externalId is required"))?;
+    let conn = open_state_rw()?;
+    let thread: Option<(String, String)> = conn
+        .query_row(
+            "SELECT model_selection_json, project_id FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .ok();
+    let Some((model_selection, _project_id)) = thread else {
+        return Err(err(format!("Thread '{thread_id}' was not found.")));
+    };
+    // Upstream refuses to import into a thread with a live provider session.
+    let active: bool = conn
+        .query_row(
+            "SELECT COUNT(1) FROM projection_thread_sessions WHERE thread_id = ?1 AND status != 'stopped'",
+            params![thread_id],
+            |r| r.get::<_, i64>(0),
+        )
+        .map(|n| n > 0)
+        .unwrap_or(false);
+    if active {
+        return Err(err(format!(
+            "Thread '{thread_id}' already has an active provider session."
+        )));
+    }
+    let provider = serde_json::from_str::<Value>(&model_selection)
+        .ok()
+        .and_then(|v| v.get("provider").and_then(Value::as_str).map(str::to_string))
+        .unwrap_or_else(|| "claudeAgent".to_string());
+
+    // Locate the provider-native transcript by external id.
+    let home = std::env::var("HOME").unwrap_or_default();
+    let transcript_path: Option<std::path::PathBuf> = match provider.as_str() {
+        "claudeAgent" | "claude" => {
+            let projects = std::path::PathBuf::from(&home).join(".claude/projects");
+            let target = format!("{external_id}.jsonl");
+            let mut found = None;
+            if let Ok(dirs) = std::fs::read_dir(&projects) {
+                for dir in dirs.flatten() {
+                    let candidate = dir.path().join(&target);
+                    if candidate.is_file() {
+                        found = Some(candidate);
+                        break;
+                    }
+                }
+            }
+            found
+        }
+        "codex" => {
+            // Codex rollout files embed the session id in the file name.
+            let sessions = std::path::PathBuf::from(&home).join(".codex/sessions");
+            let mut found = None;
+            fn scan(dir: &std::path::Path, needle: &str, depth: u32) -> Option<std::path::PathBuf> {
+                if depth == 0 {
+                    return None;
+                }
+                for entry in std::fs::read_dir(dir).ok()?.flatten() {
+                    let path = entry.path();
+                    if path.is_dir() {
+                        if let Some(hit) = scan(&path, needle, depth - 1) {
+                            return Some(hit);
+                        }
+                    } else if entry.file_name().to_string_lossy().contains(needle) {
+                        return Some(path);
+                    }
+                }
+                None
+            }
+            if sessions.is_dir() {
+                found = scan(&sessions, external_id, 4);
+            }
+            found
+        }
+        other => {
+            return Err(err(format!(
+                "Session import is not available for provider '{other}' in the native server."
+            )))
+        }
+    };
+    let Some(path) = transcript_path else {
+        return Err(err(format!(
+            "Session '{external_id}' was not found on this machine."
+        )));
+    };
+    let content = std::fs::read(&path).map_err(|e| err(format!("Failed to read session history: {e}")))?;
+
+    // Map transcript lines to (role, text, timestamp, source id) tuples.
+    let mut imported: Vec<(String, String, Option<String>, String)> = Vec::new();
+    for (index, line) in content.split(|b| *b == b'\n').enumerate() {
+        if line.len() < 4 || line.len() > 8 * 1024 * 1024 {
+            continue;
+        }
+        let Ok(entry) = serde_json::from_slice::<Value>(line) else { continue };
+        let timestamp = entry
+            .get("timestamp")
+            .and_then(Value::as_str)
+            .map(str::to_string);
+        if provider == "codex" {
+            // Rollout lines wrap payload items; user/assistant messages carry
+            // content parts with text.
+            let item = entry.get("payload").cloned().unwrap_or(entry.clone());
+            let item_type = item.get("type").and_then(Value::as_str).unwrap_or("");
+            if item_type != "user_message" && item_type != "assistant_message" && item_type != "message" {
+                continue;
+            }
+            let role = item
+                .get("role")
+                .and_then(Value::as_str)
+                .unwrap_or(if item_type == "user_message" { "user" } else { "assistant" })
+                .to_string();
+            if role != "user" && role != "assistant" {
+                continue;
+            }
+            let text_out = item
+                .get("content")
+                .and_then(Value::as_array)
+                .map(|parts| {
+                    parts
+                        .iter()
+                        .filter_map(|p| p.get("text").and_then(Value::as_str))
+                        .collect::<Vec<_>>()
+                        .join("")
+                })
+                .or_else(|| item.get("text").and_then(Value::as_str).map(str::to_string))
+                .unwrap_or_default();
+            if text_out.trim().is_empty() {
+                continue;
+            }
+            let source_id = item
+                .get("id")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+                .unwrap_or_else(|| index.to_string());
+            imported.push((role, text_out, timestamp, source_id));
+        } else {
+            let entry_type = entry.get("type").and_then(Value::as_str).unwrap_or("");
+            if entry_type != "user" && entry_type != "assistant" {
+                continue;
+            }
+            if entry.get("isSidechain").and_then(Value::as_bool) == Some(true) {
+                continue;
+            }
+            let message = entry.get("message").cloned().unwrap_or(json!({}));
+            let text_out = message
+                .get("content")
+                .and_then(Value::as_array)
+                .map(|parts| {
+                    parts
+                        .iter()
+                        .filter(|p| p.get("type").and_then(Value::as_str) == Some("text"))
+                        .filter_map(|p| p.get("text").and_then(Value::as_str))
+                        .collect::<Vec<_>>()
+                        .join("\n")
+                })
+                .or_else(|| message.get("content").and_then(Value::as_str).map(str::to_string))
+                .unwrap_or_default();
+            if text_out.trim().is_empty() {
+                continue;
+            }
+            let source_id = entry
+                .get("uuid")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+                .unwrap_or_else(|| index.to_string());
+            imported.push((entry_type.to_string(), text_out, timestamp, source_id));
+        }
+    }
+    if imported.is_empty() {
+        return Err(err("The session transcript has no importable messages."));
+    }
+
+    // Project messages with upstream-exact id derivation, then bind the
+    // resume cursor so the next turn continues the external session.
+    let now = crate::projects_fileops::iso8601(
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs())
+            .unwrap_or(0),
+    );
+    let provider_key = if provider == "codex" { "codex" } else { "claude" };
+    for (seq, (role, text_out, timestamp, source_id)) in imported.iter().enumerate() {
+        let message_id = format!("import:{thread_id}:{provider_key}:{source_id}");
+        let created = timestamp.clone().unwrap_or_else(|| now.clone());
+        let _ = conn.execute(
+            "INSERT OR IGNORE INTO projection_thread_messages (message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at, source) VALUES (?1, ?2, NULL, ?3, ?4, 0, ?5, ?5, 'imported')",
+            params![message_id, thread_id, role, text_out, created],
+        );
+        // Distinct ordering guard: imported rows share timestamps; rowid order
+        // already preserves transcript order through insertion sequence.
+        let _ = seq;
+    }
+    let cursor = match provider_key {
+        "codex" => json!({ "resume": external_id }),
+        _ => json!({ "resume": external_id }),
+    };
+    let now2 = now.clone();
+    conn.execute(
+        "INSERT INTO provider_session_runtime (thread_id, provider_name, adapter_key, status, last_seen_at, resume_cursor_json) VALUES (?1, ?2, ?2, 'stopped', ?3, ?4) ON CONFLICT(thread_id) DO UPDATE SET resume_cursor_json = excluded.resume_cursor_json, last_seen_at = excluded.last_seen_at",
+        params![thread_id, provider_key, now2, cursor.to_string()],
+    )
+    .map_err(|e| err(format!("resume cursor binding: {e}")))?;
+    Ok(json!({ "threadId": thread_id }))
+}
+
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     if tag == "orchestration.prepareQuitResume" {
         return prepare_quit_resume(payload);
     }
     if tag == "orchestration.regenerateThreadTitle" {
         return regenerate_thread_title(payload);
+    }
+    if tag == "orchestration.importThread" {
+        return import_thread(payload);
     }
     if tag == "orchestration.repairState" {
         return repair_state();

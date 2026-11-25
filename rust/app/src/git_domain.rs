@@ -42,6 +42,7 @@ const HANDLED: &[&str] = &[
     "git.stashDrop",
     "git.removeIndexLock",
     "git.createWorktree",
+    "git.createDetachedWorktree",
     "git.removeWorktree",
 ];
 
@@ -924,6 +925,158 @@ fn create_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     }))
 }
 
+/// Detached (or branch-pinned) worktree creation, ported from upstream
+/// `GitCore.createDetachedWorktree`: resolve the ref to a commit, optionally
+/// verify the copy source is at the same HEAD, create the branch before the
+/// checkout so failures roll back cleanly, materialize the worktree, then
+/// copy local changes as a binary patch plus untracked files. Progress
+/// streaming (`onPhase`) and `.worktreeinclude` are documented gaps: the
+/// Rust WS surface answers with the final result.
+fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
+    require_repo(cwd)?;
+    let refspec = str_arg(payload, "ref")?;
+    if refspec.starts_with('-') {
+        return Err(err("invalid `ref`"));
+    }
+    let new_branch = payload
+        .get("newBranch")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from);
+    let copy_from = payload
+        .get("copyChangesFrom")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from);
+
+    let resolved_ref = stdout(cwd, &["rev-parse", "--verify", "--end-of-options", &format!("{refspec}^{{commit}}")], "git rev-parse")?
+        .trim()
+        .to_string();
+
+    if let Some(source) = &copy_from {
+        let source_head = stdout(source, &["rev-parse", "--verify", "HEAD^{commit}"], "git rev-parse")?
+            .trim()
+            .to_string();
+        if source_head != resolved_ref {
+            return Err(err(
+                "Cannot copy checkout changes because the selected ref is not that checkout's HEAD.",
+            ));
+        }
+    }
+
+    let path = payload
+        .get("path")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from)
+        .unwrap_or_else(|| {
+            // Short opaque generated path, upstream buildGeneratedDetachedWorktreePath.
+            let short: String = crate::orchestration_engine::uuid_v4().chars().filter(|c| *c != '-').take(4).collect();
+            format!("{}/{short}/detached", worktrees_dir())
+        });
+    if let Some(parent) = std::path::Path::new(&path).parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+
+    // Parallel checkout when the user has not configured checkout.workers.
+    let parallel = run(cwd, &["config", "--get", "checkout.workers"]).map(|o| !o.status.success()).unwrap_or(false);
+
+    if let Some(nb) = &new_branch {
+        let out = run(cwd, &["branch", nb, &resolved_ref])?;
+        if !out.status.success() {
+            let stderr = String::from_utf8_lossy(&out.stderr);
+            return Err(err(format!("git branch failed: {}", stderr.trim().lines().next().unwrap_or("git failed"))));
+        }
+    }
+
+    let mut args: Vec<String> = Vec::new();
+    if parallel {
+        args.push("-c".to_string());
+        args.push("checkout.workers=0".to_string());
+    }
+    args.push("worktree".to_string());
+    args.push("add".to_string());
+    if new_branch.is_none() {
+        args.push("--detach".to_string());
+    }
+    args.push(path.clone());
+    args.push(new_branch.clone().unwrap_or_else(|| resolved_ref.clone()));
+    let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
+    let out = run(cwd, &arg_refs)?;
+    if !out.status.success() {
+        if let Some(nb) = &new_branch {
+            let _ = run(cwd, &["branch", "-D", nb]);
+        }
+        let stderr = String::from_utf8_lossy(&out.stderr);
+        return Err(err(format!("git worktree add failed: {}", stderr.trim().lines().next().unwrap_or("git failed"))));
+    }
+
+    if let Some(source) = &copy_from {
+        if let Err(e) = copy_checkout_changes(source, &path) {
+            let _ = run(cwd, &["worktree", "remove", "--force", &path]);
+            if let Some(nb) = &new_branch {
+                let _ = run(cwd, &["branch", "-D", nb]);
+            }
+            return Err(e);
+        }
+    }
+
+    Ok(json!({
+        "worktree": {
+            "path": path,
+            "ref": resolved_ref,
+            "branch": new_branch,
+        }
+    }))
+}
+
+/// Copy uncommitted changes between checkouts, upstream `copyCheckoutChanges`:
+/// a binary full-index patch of tracked modifications applied in the target,
+/// plus untracked files copied verbatim. Nested repositories and linked
+/// worktrees (trailing-slash entries) are skipped.
+fn copy_checkout_changes(source: &str, target: &str) -> Result<(), WsErr> {
+    let patch = stdout(
+        source,
+        &["diff", "--binary", "--full-index", "--no-color", "--no-ext-diff", "--no-textconv", "--src-prefix=a/", "--dst-prefix=b/", "HEAD", "--"],
+        "git diff",
+    )?;
+    if !patch.trim().is_empty() {
+        let mut child = std::process::Command::new("git")
+            .args(["apply", "--whitespace=nowarn", "-"])
+            .current_dir(target)
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::piped())
+            .spawn()
+            .map_err(|e| err(format!("git apply: {e}")))?;
+        if let Some(mut stdin) = child.stdin.take() {
+            use std::io::Write;
+            let _ = stdin.write_all(patch.as_bytes());
+        }
+        let out = child.wait_with_output().map_err(|e| err(format!("git apply: {e}")))?;
+        if !out.status.success() {
+            let stderr = String::from_utf8_lossy(&out.stderr);
+            return Err(err(format!("git apply failed: {}", stderr.trim().lines().next().unwrap_or("apply failed"))));
+        }
+    }
+    let untracked = stdout(source, &["ls-files", "--others", "--exclude-standard", "-z"], "git ls-files")?;
+    for rel in untracked.split('\0').filter(|p| !p.is_empty()) {
+        if rel.ends_with('/') {
+            continue;
+        }
+        let src = std::path::Path::new(source).join(rel);
+        let dst = std::path::Path::new(target).join(rel);
+        if let Some(parent) = dst.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        std::fs::copy(&src, &dst).map_err(|e| err(format!("copy {rel}: {e}")))?;
+    }
+    Ok(())
+}
+
 fn remove_worktree(cwd: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
     require_repo(cwd)?;
     let path = str_arg(payload, "path")?;
@@ -1031,6 +1184,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
         "git.stashDrop" => stash_drop(&cwd_of(payload)?, payload),
         "git.removeIndexLock" => remove_index_lock(&cwd_of(payload)?),
         "git.createWorktree" => create_worktree(&cwd_of(payload)?, payload).map(Some),
+        "git.createDetachedWorktree" => create_detached_worktree(&cwd_of(payload)?, payload).map(Some),
         "git.removeWorktree" => remove_worktree(&cwd_of(payload)?, payload),
         _ => Err(err(format!("unhandled git tag {tag}"))),
     }

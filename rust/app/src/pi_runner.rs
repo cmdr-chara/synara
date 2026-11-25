@@ -183,6 +183,7 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
     }
     let mut __cmd = Command::new(pi_binary());
     crate::provider_env::sanitize_provider_child(&mut __cmd);
+    crate::provider_instances::apply_instance_environment(&mut __cmd, "pi");
     let mut child = __cmd
         .args(&args)
         .current_dir(cwd)
@@ -203,6 +204,7 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
 fn rpc_query(cwd: &str, command: &str) -> Result<Value, WsErr> {
     let mut cmd = Command::new(pi_binary());
     crate::provider_env::sanitize_provider_child(&mut cmd);
+    crate::provider_instances::apply_instance_environment(&mut cmd, "pi");
     cmd.arg("--mode")
         .arg("rpc")
         .arg("--no-session")

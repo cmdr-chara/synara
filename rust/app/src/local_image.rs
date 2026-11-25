@@ -36,6 +36,10 @@ fn is_supported_preview(path: &str) -> bool {
         || PDF_EXTENSIONS.contains(&ext.as_str())
 }
 
+pub(crate) fn local_image_mime_for(path: &str) -> &'static str {
+    mime_for(path)
+}
+
 fn mime_for(path: &str) -> &'static str {
     match lower_extension(path).as_deref().unwrap_or("") {
         ".png" => "image/png",

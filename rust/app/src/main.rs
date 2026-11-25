@@ -26,6 +26,7 @@ mod git_handoff;
 mod git_action_registry;
 mod git_pr;
 mod github_inbox;
+mod attachments_http;
 mod local_image;
 mod list_worktrees;
 mod native_ws;
@@ -107,6 +108,8 @@ async fn main() {
         .merge(agent_gateway_mcp::router())
         .route("/__tap_client", axum::routing::post(original::tap_client))
         .route("/api/local-image", axum::routing::get(local_image::local_image))
+        .route("/api/attachments/upload", axum::routing::post(attachments_http::upload))
+        .route("/attachments/{id}", axum::routing::get(attachments_http::serve))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

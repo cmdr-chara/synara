@@ -287,13 +287,78 @@ fn m031(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 032 ReconcileImportedSchemaLineage
+// 032 ReconcileImportedSchemaLineage — hand-ported: re-ensures every column
+// migrations 17-31 add, so imported databases whose foreign tracker skipped
+// those ids still converge. Idempotent; a no-op for fresh installs.
 fn m032(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE projection_threads\n      SET env_mode = CASE\n        WHEN worktree_path IS NOT NULL THEN 'worktree'\n        ELSE 'local'\n      END")?;
-    execute(conn, "UPDATE projection_threads\n      SET associated_worktree_path = worktree_path\n      WHERE associated_worktree_path IS NULL")?;
-    execute(conn, "UPDATE projection_threads\n      SET associated_worktree_branch = branch\n      WHERE associated_worktree_branch IS NULL")?;
-    execute(conn, "UPDATE projection_threads\n      SET associated_worktree_ref = COALESCE(associated_worktree_branch, branch)\n      WHERE associated_worktree_ref IS NULL\n        AND COALESCE(associated_worktree_branch, branch) IS NOT NULL")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_threads_parent_thread_id\n    ON projection_threads(parent_thread_id)")?;
+    let ensure_pt = |conn: &Connection, col: &str, def: &str| -> Result<bool, WsErr> {
+        if column_exists(conn, "projection_threads", col) {
+            return Ok(false);
+        }
+        execute(conn, &format!("ALTER TABLE projection_threads ADD COLUMN {def}"))?;
+        Ok(true)
+    };
+    let ensure_ptm = |conn: &Connection, col: &str, def: &str| -> Result<bool, WsErr> {
+        if column_exists(conn, "projection_thread_messages", col) {
+            return Ok(false);
+        }
+        execute(conn, &format!("ALTER TABLE projection_thread_messages ADD COLUMN {def}"))?;
+        Ok(true)
+    };
+    let ensure_pp = |conn: &Connection, col: &str, def: &str| -> Result<bool, WsErr> {
+        if column_exists(conn, "projection_projects", col) {
+            return Ok(false);
+        }
+        execute(conn, &format!("ALTER TABLE projection_projects ADD COLUMN {def}"))?;
+        Ok(true)
+    };
+
+    ensure_pt(conn, "handoff_json", "handoff_json TEXT")?;
+    ensure_ptm(conn, "source", "source TEXT NOT NULL DEFAULT 'native'")?;
+    ensure_ptm(conn, "skills_json", "skills_json TEXT")?;
+    ensure_ptm(conn, "mentions_json", "mentions_json TEXT")?;
+
+    if ensure_pt(conn, "env_mode", "env_mode TEXT NOT NULL DEFAULT 'local'")? {
+        execute(conn, "UPDATE projection_threads SET env_mode = CASE WHEN worktree_path IS NOT NULL THEN 'worktree' ELSE 'local' END")?;
+    }
+
+    ensure_pt(conn, "fork_source_thread_id", "fork_source_thread_id TEXT")?;
+
+    if ensure_pt(conn, "associated_worktree_path", "associated_worktree_path TEXT")? {
+        execute(conn, "UPDATE projection_threads SET associated_worktree_path = worktree_path WHERE associated_worktree_path IS NULL")?;
+    }
+
+    if ensure_pt(conn, "associated_worktree_branch", "associated_worktree_branch TEXT")? {
+        execute(conn, "UPDATE projection_threads SET associated_worktree_branch = branch WHERE associated_worktree_branch IS NULL")?;
+    }
+
+    if ensure_pt(conn, "associated_worktree_ref", "associated_worktree_ref TEXT")? {
+        execute(conn, "UPDATE projection_threads SET associated_worktree_ref = COALESCE(associated_worktree_branch, branch) WHERE associated_worktree_ref IS NULL AND COALESCE(associated_worktree_branch, branch) IS NOT NULL")?;
+    }
+
+    ensure_pt(conn, "archived_at", "archived_at TEXT")?;
+    ensure_pt(conn, "parent_thread_id", "parent_thread_id TEXT")?;
+    ensure_pt(conn, "subagent_agent_id", "subagent_agent_id TEXT")?;
+    ensure_pt(conn, "subagent_nickname", "subagent_nickname TEXT")?;
+    ensure_pt(conn, "subagent_role", "subagent_role TEXT")?;
+    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_threads_parent_thread_id ON projection_threads(parent_thread_id)")?;
+
+    let added_latest_user_message_at = ensure_pt(conn, "latest_user_message_at", "latest_user_message_at TEXT")?;
+    let added_pending_approval_count = ensure_pt(conn, "pending_approval_count", "pending_approval_count INTEGER NOT NULL DEFAULT 0")?;
+    let added_pending_user_input_count = ensure_pt(conn, "pending_user_input_count", "pending_user_input_count INTEGER NOT NULL DEFAULT 0")?;
+    let added_has_actionable_proposed_plan = ensure_pt(conn, "has_actionable_proposed_plan", "has_actionable_proposed_plan INTEGER NOT NULL DEFAULT 0")?;
+    if added_latest_user_message_at
+        || added_pending_approval_count
+        || added_pending_user_input_count
+        || added_has_actionable_proposed_plan
+    {
+        m027(conn)?;
+    }
+
+    ensure_pp(conn, "kind", "kind TEXT NOT NULL DEFAULT 'project'")?;
+    ensure_pt(conn, "last_known_pr_json", "last_known_pr_json TEXT")?;
+    ensure_ptm(conn, "dispatch_mode", "dispatch_mode TEXT")?;
+    ensure_pt(conn, "create_branch_flow_completed", "create_branch_flow_completed INTEGER NOT NULL DEFAULT 0")?;
     Ok(())
 }
 
@@ -433,7 +498,11 @@ fn m037(conn: &Connection) -> Result<(), WsErr> {
 
 // 038 ReconcileLegacySidechatSource
 fn m038(conn: &Connection) -> Result<(), WsErr> {
-    Ok(())
+    // Upstream re-runs the 033 sidechat-source migration here: imported legacy
+    // databases whose tracker used id 33 for a pre-Synara migration skipped the
+    // column even though read-model queries require it. The 033 body is
+    // idempotent, so this converges both fresh and repaired databases.
+    m033(conn)
 }
 
 // 039 ReconcileLegacyPinnedThreads
@@ -769,6 +838,9 @@ fn m075(conn: &Connection) -> Result<(), WsErr> {
 
 // 076 ExternalMcpHardening
 fn m076(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "external_mcp_integrations", "client_kind") {
+        execute(conn, "ALTER TABLE external_mcp_integrations ADD COLUMN client_kind TEXT NOT NULL DEFAULT 'other' CHECK (client_kind IN ('codex', 'claudeCode', 'claudeDesktop', 'other'))")?;
+    }
     execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_rate_windows (\n      integration_id TEXT PRIMARY KEY REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      window_id INTEGER NOT NULL,\n      admitted_count INTEGER NOT NULL DEFAULT 0,\n      rejected_count INTEGER NOT NULL DEFAULT 0,\n      rejection_audit_id TEXT,\n      updated_at TEXT NOT NULL\n    )")?;
     execute(conn, "DROP VIEW IF EXISTS external_mcp_active_capacity_claims")?;
     execute(conn, "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')")?;
@@ -800,6 +872,9 @@ fn m079(conn: &Connection) -> Result<(), WsErr> {
 
 // 080 ExternalMcpProjectScope
 fn m080(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "external_mcp_integrations", "project_scope") {
+        execute(conn, "ALTER TABLE external_mcp_integrations ADD COLUMN project_scope TEXT NOT NULL DEFAULT 'selected' CHECK (project_scope IN ('all', 'selected'))")?;
+    }
     Ok(())
 }
 
@@ -1028,6 +1103,9 @@ fn m108(conn: &Connection) -> Result<(), WsErr> {
 
 // 109 ProjectAgent
 fn m109(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "automation_definitions", "managed_by_project") {
+        execute(conn, "ALTER TABLE automation_definitions ADD COLUMN managed_by_project INTEGER NOT NULL DEFAULT 0")?;
+    }
     execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_configs (\n      project_id TEXT PRIMARY KEY,\n      coordinator_thread_id TEXT NOT NULL,\n      coordinator_name TEXT NOT NULL,\n      coordinator_model_selection_json TEXT NOT NULL,\n      coordinator_provider_options_json TEXT,\n      worker_routing_json TEXT,\n      limits_json TEXT NOT NULL,\n      capture_enabled INTEGER NOT NULL,\n      enabled INTEGER NOT NULL,\n      automation_id TEXT,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      disabled_at TEXT\n    )")?;
     execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_configs_coordinator\n    ON project_agent_configs (coordinator_thread_id)")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_goals (\n      goal_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      objective TEXT NOT NULL,\n      authorization_source TEXT NOT NULL,\n      scope_version INTEGER NOT NULL,\n      acceptance_criteria TEXT,\n      limits_json TEXT NOT NULL,\n      status TEXT NOT NULL,\n      continuation_count INTEGER NOT NULL,\n      worker_creation_count INTEGER NOT NULL,\n      authorized_at TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (project_id) REFERENCES project_agent_configs(project_id)\n    )")?;
@@ -1061,6 +1139,15 @@ fn m109(conn: &Connection) -> Result<(), WsErr> {
 
 // 110 Groups
 fn m110(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "project_agent_configs", "goal") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN goal TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "icon") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN icon TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "auto_memory_enabled") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN auto_memory_enabled INTEGER NOT NULL DEFAULT 0")?;
+    }
     execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_linked_projects (\n      project_id TEXT NOT NULL,\n      linked_project_id TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      PRIMARY KEY (project_id, linked_project_id)\n    )")?;
     execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_linked_projects_linked\n    ON project_agent_linked_projects (linked_project_id)")?;
     Ok(())
@@ -1068,26 +1155,60 @@ fn m110(conn: &Connection) -> Result<(), WsErr> {
 
 // 111 GroupLibraryHosting
 fn m111(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "project_agent_configs", "library_path") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN library_path TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "library_remote_url") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN library_remote_url TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "library_push_on_change") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN library_push_on_change INTEGER NOT NULL DEFAULT 0")?;
+    }
     Ok(())
 }
 
 // 112 CoordinatorAppearance
 fn m112(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "project_agent_configs", "coordinator_icon") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN coordinator_icon TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "coordinator_color") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN coordinator_color TEXT")?;
+    }
     Ok(())
 }
 
 // 113 ProjectAgentWakeCursor
 fn m113(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "project_agent_cursors", "processed_through_created_at") {
+        execute(conn, "ALTER TABLE project_agent_cursors ADD COLUMN processed_through_created_at TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_cursors", "coordinator_busy_since") {
+        execute(conn, "ALTER TABLE project_agent_cursors ADD COLUMN coordinator_busy_since TEXT")?;
+    }
     Ok(())
 }
 
 // 114 ProjectAgentLifecycle
 fn m114(conn: &Connection) -> Result<(), WsErr> {
+    if !column_exists(conn, "project_agent_configs", "paused_at") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN paused_at TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "archived_at") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN archived_at TEXT")?;
+    }
+    if !column_exists(conn, "project_agent_configs", "paused_automation_ids") {
+        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN paused_automation_ids TEXT")?;
+    }
     Ok(())
 }
 
-// 115 ProjectAgentManagedWorkers
+// 115 — project_agent_managed_workers table (upstream used sql.unsafe for
+// plain DDL; content identical to the sql` form).
 fn m115(conn: &Connection) -> Result<(), WsErr> {
+    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_managed_workers (project_id TEXT NOT NULL, thread_id TEXT NOT NULL, batch_id TEXT NOT NULL, request_id TEXT NOT NULL, title TEXT NOT NULL, task_id TEXT, settled_at TEXT, settle_outcome TEXT, waiting_since TEXT, stuck_kind TEXT, stuck_since TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (project_id, thread_id))")?;
+    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_workers_thread ON project_agent_managed_workers (thread_id)")?;
+    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_workers_batch ON project_agent_managed_workers (project_id, batch_id)")?;
     Ok(())
 }
 

@@ -31,6 +31,48 @@ struct RunningTurn {
 static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
 
+/// Warm OpenCode server parked after a clean turn. The server is expensive
+/// to boot and owns the provider session/MCP registry for the thread; it is
+/// reused only for the same workspace launch identity.
+struct ParkedOpenCode {
+    child: Arc<Mutex<Child>>,
+    port: u16,
+    password: String,
+    session_id: String,
+    launch_key: String,
+}
+
+static PARKED: LazyLock<Mutex<HashMap<String, ParkedOpenCode>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+fn drop_parked(parked: ParkedOpenCode) {
+    if let Ok(mut child) = parked.child.lock() {
+        let _ = child.kill();
+        let _ = child.wait();
+    }
+}
+
+fn take_parked(thread_id: &str, launch_key: &str) -> Option<ParkedOpenCode> {
+    let parked = PARKED.lock().ok()?.remove(thread_id)?;
+    if parked.launch_key != launch_key {
+        drop_parked(parked);
+        return None;
+    }
+    let alive = parked
+        .child
+        .lock()
+        .ok()
+        .and_then(|mut child| child.try_wait().ok())
+        .map(|status| status.is_none())
+        .unwrap_or(false);
+    if alive {
+        Some(parked)
+    } else {
+        drop_parked(parked);
+        None
+    }
+}
+
 pub fn has_running_turn(thread_id: &str) -> bool {
     RUNNING
         .lock()
@@ -295,34 +337,46 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
 
-    // Reserve a free loopback port, then spawn the server onto it.
-    let port = std::net::TcpListener::bind("127.0.0.1:0")
-        .and_then(|l| l.local_addr())
-        .map(|a| a.port())
-        .unwrap_or(4096);
-    let password = random_token();
-    let auth = basic_auth_header(&password);
-    let mut command = Command::new(opencode_binary());
-    command
-        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
-        .current_dir(&cwd)
-        .env("OPENCODE_SERVER_USERNAME", "opencode")
-        .env("OPENCODE_SERVER_PASSWORD", &password)
-        .env("OPENCODE_PASSWORD", &password)
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null());
-    let mut child: Child = match command.spawn() {
-        Ok(c) => c,
-        Err(e) => {
-            let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-            let msg = format!("could not launch `opencode serve`: {e}");
-            let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
-            return Err(err(msg));
-        }
-    };
+    let launch_key = cwd.clone();
     let cancelled = Arc::new(AtomicBool::new(false));
-    let child_shared = Arc::new(Mutex::new(child));
+    let (child_shared, port, password, reused_session_id) = if let Some(parked) =
+        take_parked(thread_id, &launch_key)
+    {
+        (
+            parked.child,
+            parked.port,
+            parked.password,
+            Some(parked.session_id),
+        )
+    } else {
+        // Reserve a free loopback port, then spawn the server onto it.
+        let port = std::net::TcpListener::bind("127.0.0.1:0")
+            .and_then(|l| l.local_addr())
+            .map(|a| a.port())
+            .unwrap_or(4096);
+        let password = random_token();
+        let mut command = Command::new(opencode_binary());
+        command
+            .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+            .current_dir(&cwd)
+            .env("OPENCODE_SERVER_USERNAME", "opencode")
+            .env("OPENCODE_SERVER_PASSWORD", &password)
+            .env("OPENCODE_PASSWORD", &password)
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
+        let child: Child = match command.spawn() {
+            Ok(c) => c,
+            Err(e) => {
+                let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                let msg = format!("could not launch `opencode serve`: {e}");
+                let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
+                return Err(err(msg));
+            }
+        };
+        (Arc::new(Mutex::new(child)), port, password, None)
+    };
+    let auth = basic_auth_header(&password);
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
         map.insert(
@@ -334,28 +388,32 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         );
     }
 
+    let mut active_session_id: Option<String> = None;
     let result = (|| -> Result<String, WsErr> {
-        // Wait for the server to accept connections.
-        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
-        loop {
-            if cancelled.load(Ordering::SeqCst) {
-                return Ok("cancelled".to_string());
-            }
-            if let Ok((status, _)) = http_request(port, "GET", "/provider", &auth, None) {
-                if status > 0 {
-                    break;
+        if reused_session_id.is_none() {
+            // Wait for a newly spawned server to accept connections.
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+            loop {
+                if cancelled.load(Ordering::SeqCst) {
+                    return Ok("cancelled".to_string());
                 }
+                if let Ok((status, _)) = http_request(port, "GET", "/provider", &auth, None) {
+                    if status > 0 {
+                        break;
+                    }
+                }
+                if std::time::Instant::now() >= deadline {
+                    return Err(err("opencode server did not become ready in 20s"));
+                }
+                std::thread::sleep(std::time::Duration::from_millis(200));
             }
-            if std::time::Instant::now() >= deadline {
-                return Err(err("opencode server did not become ready in 20s"));
-            }
-            std::thread::sleep(std::time::Duration::from_millis(200));
         }
 
         install_gateway_mcp(port, &auth, &cwd);
 
-        // Reuse the stored session when present; otherwise create one.
-        let session_id = if let Some(sid) = stored_session.clone() {
+        // Reuse the warm server's live session first; a respawned server can
+        // still resume OpenCode's stored session id when one exists.
+        let session_id = if let Some(sid) = reused_session_id.clone().or(stored_session.clone()) {
             sid
         } else {
             let (status, body) = http_request(
@@ -376,6 +434,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 .ok_or_else(|| err("opencode session create returned no id"))?
                 .to_string()
         };
+        active_session_id = Some(session_id.clone());
         set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(&session_id))?;
 
         // Subscribe to events before prompting so no delta is missed.
@@ -492,12 +551,36 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     if let Ok(mut map) = RUNNING.lock() {
         map.remove(thread_id);
     }
-    if let Ok(mut c) = child_shared.lock() {
+    let cancelled_flag = cancelled.load(Ordering::SeqCst);
+    let server_alive = child_shared
+        .lock()
+        .ok()
+        .and_then(|mut child| child.try_wait().ok())
+        .map(|status| status.is_none())
+        .unwrap_or(false);
+    let parkable = matches!(result, Ok(ref reason) if reason == "completed")
+        && !cancelled_flag
+        && server_alive;
+    if parkable {
+        if let (Some(session_id), Ok(mut parked_map)) =
+            (active_session_id.clone(), PARKED.lock())
+        {
+            parked_map.insert(
+                thread_id.to_string(),
+                ParkedOpenCode {
+                    child: child_shared.clone(),
+                    port,
+                    password,
+                    session_id,
+                    launch_key,
+                },
+            );
+        }
+    } else if let Ok(mut c) = child_shared.lock() {
         let _ = c.kill();
         let _ = c.wait();
     }
 
-    let cancelled_flag = cancelled.load(Ordering::SeqCst);
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;

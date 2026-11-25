@@ -181,7 +181,9 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
         args.push("--model".to_string());
         args.push(model.to_string());
     }
-    let mut child = Command::new(pi_binary())
+    let mut __cmd = Command::new(pi_binary());
+    crate::provider_env::sanitize_provider_child(&mut __cmd);
+    let mut child = __cmd
         .args(&args)
         .current_dir(cwd)
         .stdin(Stdio::piped())
@@ -200,6 +202,7 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
 /// uses `--no-session`, so discovery cannot mutate the user's session store.
 fn rpc_query(cwd: &str, command: &str) -> Result<Value, WsErr> {
     let mut cmd = Command::new(pi_binary());
+    crate::provider_env::sanitize_provider_child(&mut cmd);
     cmd.arg("--mode")
         .arg("rpc")
         .arg("--no-session")

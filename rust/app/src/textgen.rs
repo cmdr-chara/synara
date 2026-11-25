@@ -53,7 +53,9 @@ pub(crate) fn claude_json_generate(prompt: &str, schema: &Value, model: Option<&
         .or_else(|| std::env::var("CLAUDE_BINARY_PATH").ok().filter(|v| !v.trim().is_empty()))
         .unwrap_or_else(|| "claude".to_string());
 
-    let mut child = Command::new(&binary)
+    let mut __cmd = Command::new(&binary);
+    crate::provider_env::sanitize_claude_child(&mut __cmd);
+    let mut child = __cmd
         .args(&args)
         .current_dir(&isolated)
         .stdin(Stdio::piped())

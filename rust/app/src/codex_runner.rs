@@ -774,7 +774,9 @@ pub fn parse_codex_models_response(response: &Value) -> Vec<Value> {
 /// The process is temporary and is killed after `model/list`; no credential
 /// file is opened or copied by Synara.
 pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
-    let mut child = Command::new(codex_binary())
+    let mut __cmd = Command::new(codex_binary());
+    crate::provider_env::sanitize_provider_child(&mut __cmd);
+    let mut child = __cmd
         .arg("app-server")
         .current_dir(if cwd.is_empty() { "/" } else { cwd })
         .stdin(Stdio::piped())
@@ -899,6 +901,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     );
 
     let mut command = Command::new(codex_binary());
+    crate::provider_env::sanitize_provider_child(&mut command);
     command
         .arg("app-server")
         .current_dir(&cwd)
@@ -1167,6 +1170,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         (parked.child, parked.rpc, Some(provider_thread_id))
     } else {
         let mut command = Command::new(codex_binary());
+        crate::provider_env::sanitize_provider_child(&mut command);
+    crate::provider_env::sanitize_provider_child(&mut command);
         command
             .arg("app-server")
             .current_dir(&cwd)

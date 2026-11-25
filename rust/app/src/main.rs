@@ -3,6 +3,7 @@ mod agent_gateway_mcp;
 mod acp_runner;
 mod claude_runner;
 mod claude_tasks;
+mod provider_env;
 mod codex_runner;
 mod device;
 mod editor;

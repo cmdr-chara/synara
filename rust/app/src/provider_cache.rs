@@ -235,6 +235,17 @@ fn opencode_discovery_result() -> Result<Value, WsErr> {
 
 /// `provider.listModels`: the upstream-normalized catalog cache keyed by a
 /// JSON array whose first two elements are provider and instanceId.
+fn claude_discovery_result(payload: &Value, key: &str) -> Result<Value, WsErr> {
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    let catalog = crate::claude_runner::discover_catalog(cwd)?;
+    let values = catalog.get(key).cloned().unwrap_or(json!([]));
+    Ok(json!({
+        key: values,
+        "source": "sdk",
+        "cached": false,
+    }))
+}
+
 fn list_models(payload: &Value) -> Result<Value, WsErr> {
     let provider = payload
         .get("provider")
@@ -261,6 +272,15 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         }
         if provider == "codex" {
             return codex_discovery_result(payload);
+        }
+        if provider == "claudeAgent" {
+            let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+            let catalog = crate::claude_runner::discover_catalog(cwd)?;
+            return Ok(json!({
+                "models": catalog.get("models").cloned().unwrap_or(json!([])),
+                "source": "sdk",
+                "cached": false,
+            }));
         }
         return Err(err("no provider model catalog cache"));
     };
@@ -298,6 +318,15 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     }
     if provider == "codex" {
         return codex_discovery_result(payload);
+    }
+    if provider == "claudeAgent" {
+        let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+        let catalog = crate::claude_runner::discover_catalog(cwd)?;
+        return Ok(json!({
+            "models": catalog.get("models").cloned().unwrap_or(json!([])),
+            "source": "sdk",
+            "cached": false,
+        }));
     }
     Err(err(format!(
         "no cached model catalog for {provider}/{instance}"
@@ -350,6 +379,15 @@ fn list_agents(payload: &Value) -> Result<Value, WsErr> {
         }
         return Ok(json!({"agents": [], "source": "cold-or-unsupported", "cached": false}));
     }
+    if provider == "claudeAgent" {
+        let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+        let catalog = crate::claude_runner::discover_catalog(cwd)?;
+        return Ok(json!({
+            "agents": catalog.get("agents").cloned().unwrap_or(json!([])),
+            "source": "sdk",
+            "cached": false,
+        }));
+    }
     Ok(json!({"agents": [], "source": "unsupported", "cached": false}))
 }
 
@@ -377,6 +415,16 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
             }
         }
         return Ok(json!({"commands": [], "source": "cold-or-unsupported", "cached": false}));
+    }
+    if provider == "claudeAgent" {
+        let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+        let catalog = crate::claude_runner::discover_catalog(cwd)?;
+        return Ok(json!({
+            "commands": catalog.get("commands").cloned().unwrap_or(json!([])),
+            "artifacts": "unavailable",
+            "source": "sdk",
+            "cached": false,
+        }));
     }
     Ok(json!({"commands": [], "source": "unsupported", "cached": false}))
 }

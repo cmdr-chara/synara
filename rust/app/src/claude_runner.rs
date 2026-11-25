@@ -587,10 +587,10 @@ fn read_json_line(reader: &mut BufReader<ChildStdout>) -> Result<Option<Value>, 
     }
 }
 
-fn initialize_cli(
+fn initialize_cli_response(
     stdin: &Arc<Mutex<ChildStdin>>,
     reader: &mut BufReader<ChildStdout>,
-) -> Result<(), WsErr> {
+) -> Result<Value, WsErr> {
     write_line(
         stdin,
         &json!({
@@ -607,7 +607,7 @@ fn initialize_cli(
             && v.pointer("/response/request_id").and_then(Value::as_str) == Some("synara-initialize")
         {
             if v.pointer("/response/subtype").and_then(Value::as_str) == Some("success") {
-                return Ok(());
+                return Ok(v.pointer("/response/response").cloned().unwrap_or(json!({})));
             }
             let msg = v
                 .pointer("/response/error")
@@ -618,6 +618,125 @@ fn initialize_cli(
     }
 }
 
+fn initialize_cli(
+    stdin: &Arc<Mutex<ChildStdin>>,
+    reader: &mut BufReader<ChildStdout>,
+) -> Result<(), WsErr> {
+    initialize_cli_response(stdin, reader).map(|_| ())
+}
+
+
+
+fn claude_reasoning_efforts(model: &Value) -> Vec<Value> {
+    model
+        .get("supportedEffortLevels")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(Value::as_str)
+        .map(|value| json!({"value": value, "label": value}))
+        .collect()
+}
+
+fn claude_catalog_from_initialize(init: &Value) -> Value {
+    let commands = init
+        .get("commands")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|command| {
+            let name = command.get("name").and_then(Value::as_str)?.trim().to_string();
+            if name.is_empty() {
+                return None;
+            }
+            let mut object = json!({"name": name});
+            if let Some(description) = command.get("description").and_then(Value::as_str) {
+                if !description.trim().is_empty() {
+                    object["description"] = json!(description);
+                }
+            }
+            Some(object)
+        })
+        .collect::<Vec<_>>();
+    let models = init
+        .get("models")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|model| {
+            let value = model.get("value").and_then(Value::as_str)?.trim().to_string();
+            if value.is_empty() {
+                return None;
+            }
+            let efforts = claude_reasoning_efforts(model);
+            let mut object = json!({
+                "slug": value,
+                "name": model.get("displayName").and_then(Value::as_str).unwrap_or(""),
+            });
+            if let Some(resolved) = model.get("resolvedModel").and_then(Value::as_str) {
+                object["resolvedModel"] = json!(resolved);
+            }
+            if !efforts.is_empty() || model.get("supportsEffort").and_then(Value::as_bool) == Some(false) {
+                object["supportedReasoningEfforts"] = json!(efforts);
+            }
+            if let Some(fast) = model.get("supportsFastMode").and_then(Value::as_bool) {
+                object["supportsFastMode"] = json!(fast);
+            }
+            if model.get("supportsAdaptiveThinking").and_then(Value::as_bool) == Some(true) {
+                object["supportsThinkingToggle"] = json!(false);
+            }
+            if let Some(auto) = model.get("supportsAutoMode").and_then(Value::as_bool) {
+                object["supportsAutoMode"] = json!(auto);
+            }
+            Some(object)
+        })
+        .collect::<Vec<_>>();
+    let agents = init
+        .get("agents")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|agent| {
+            let name = agent.get("name").and_then(Value::as_str)?.trim().to_string();
+            if name.is_empty() {
+                return None;
+            }
+            let mut object = json!({"name": name, "displayName": name});
+            if let Some(description) = agent.get("description").and_then(Value::as_str) {
+                if !description.trim().is_empty() {
+                    object["description"] = json!(description);
+                }
+            }
+            if let Some(model) = agent.get("model").and_then(Value::as_str) {
+                object["model"] = json!(model);
+            }
+            Some(object)
+        })
+        .collect::<Vec<_>>();
+    json!({"commands": commands, "models": models, "agents": agents})
+}
+
+/// Discover the official CLI's session catalog by initializing a temporary
+/// stream-json process. The process exits before any user prompt and only the
+/// official binary reads its configured credentials.
+pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
+    let cwd = if !cwd.trim().is_empty() && std::path::Path::new(cwd).is_dir() {
+        cwd.to_string()
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None)?;
+    let stdin = Arc::new(Mutex::new(stdin_raw));
+    let mut reader = BufReader::new(stdout);
+    let result = initialize_cli_response(&stdin, &mut reader).map(|init| claude_catalog_from_initialize(&init));
+    let _ = child.kill();
+    let _ = child.wait();
+    result
+}
 
 /// Start Claude's streaming-input CLI before the first prompt and park it
 /// after the control initialize handshake. No user/model traffic is sent.

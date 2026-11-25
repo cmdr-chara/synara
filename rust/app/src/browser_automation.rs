@@ -23,6 +23,7 @@ const RESULT_MARKER: &str = "__SYNARA_BROWSER_RESULT__";
 enum BrowserBackend {
     Obscura,
     EgoLite,
+    Cdp,
 }
 
 impl BrowserBackend {
@@ -30,6 +31,7 @@ impl BrowserBackend {
         match self {
             Self::Obscura => "obscura",
             Self::EgoLite => "ego-lite",
+            Self::Cdp => "chrome-cdp",
         }
     }
 }
@@ -67,6 +69,7 @@ fn state() -> &'static Mutex<BrowserState> {
 /// user-visible browser rather than a Synara-owned child process, so shutdown
 /// intentionally leaves it alone.
 pub async fn shutdown_browser_automation() {
+    crate::browser_cdp::shutdown_cdp().await;
     let child = state().lock().ok().and_then(|mut state| {
         state.scopes.clear();
         state.obscura.take().map(|mut process| {
@@ -356,6 +359,7 @@ fn current_backend_for(args: &Value, visible_default: bool, thread: Option<&str>
     {
         "obscura" => return Ok(BrowserBackend::Obscura),
         "ego-lite" | "ego" | "ego_lite" => return Ok(BrowserBackend::EgoLite),
+        "cdp" | "chrome" | "chrome-cdp" => return Ok(BrowserBackend::Cdp),
         "auto" => {}
         other => return Err(format!("unknown browser backend '{other}'")),
     }
@@ -367,7 +371,18 @@ fn current_backend_for(args: &Value, visible_default: bool, thread: Option<&str>
     {
         return Ok(BrowserBackend::EgoLite);
     }
-    Ok(scope_backend(thread).unwrap_or(BrowserBackend::Obscura))
+    let preferred = scope_backend(thread).unwrap_or(BrowserBackend::Obscura);
+    Ok(match preferred {
+        BrowserBackend::Obscura if obscura_path().is_none() => {
+            if ego_path().is_some() {
+                BrowserBackend::EgoLite
+            } else {
+                BrowserBackend::Cdp
+            }
+        }
+        BrowserBackend::EgoLite if ego_path().is_none() => BrowserBackend::Cdp,
+        other => other,
+    })
 }
 
 fn set_active_backend_for(backend: BrowserBackend, thread: Option<&str>) {
@@ -432,6 +447,9 @@ fn backend_install_error(backend: BrowserBackend) -> String {
         }
         BrowserBackend::EgoLite => {
             "ego lite is not installed or onboarding has not registered `ego-browser`. Install ego lite and finish onboarding, or set SYNARA_EGO_BROWSER_BIN.".to_string()
+        }
+        BrowserBackend::Cdp => {
+            "no Chromium browser found for the CDP fallback. Install Chrome, Edge, Brave or Chromium, or set SYNARA_CDP_BROWSER.".to_string()
         }
     }
 }
@@ -624,6 +642,10 @@ fn unwrap_mcp_tool(result: Value) -> Result<Value, String> {
         return Ok(value);
     }
     Ok(result)
+}
+
+pub(crate) fn browser_run_expression_pub(code: &str) -> String {
+    browser_run_expression(code)
 }
 
 fn browser_run_expression(code: &str) -> String {
@@ -1009,7 +1031,7 @@ pub(crate) async fn call_browser_tool(
             let active = scope_backend(thread).map(|b| b.name());
             let ego_space_id = scope_ego_space(thread);
             return Ok(json!({
-                "available": obscura.is_some() || ego.is_some(),
+                "available": obscura.is_some() || ego.is_some() || crate::browser_cdp::cdp_available(),
                 "activeBackend": active,
                 "backends": {
                     "obscura": {"available": obscura.is_some(), "path": obscura, "running": obscura_running.is_some(), "process": obscura_running.map(|(port,pid)| json!({"port":port,"pid":pid}))},
@@ -1032,6 +1054,7 @@ pub(crate) async fn call_browser_tool(
                     v
                 }),
                 BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
+                BrowserBackend::Cdp => crate::browser_cdp::call_cdp_tool(name, args, thread).await,
             };
         }
         "browser_tabs" => {
@@ -1053,6 +1076,7 @@ pub(crate) async fn call_browser_tool(
                         })
                 }
                 BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
+                BrowserBackend::Cdp => crate::browser_cdp::call_cdp_tool(name, args, thread).await,
             };
         }
         _ => {}
@@ -1067,5 +1091,6 @@ pub(crate) async fn call_browser_tool(
             v
         }),
         BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
+        BrowserBackend::Cdp => crate::browser_cdp::call_cdp_tool(name, args, thread).await,
     }
 }

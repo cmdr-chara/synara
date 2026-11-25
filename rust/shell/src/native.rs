@@ -1680,6 +1680,11 @@ struct AutomForm {
 const AUTOM_KINDS: &[&str] = &["Once", "Interval", "Daily", "Weekdays", "Weekly", "Cron"];
 const AUTOM_DAYS: &[&str] = &["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+// Upstream DEFAULT_PROVIDER_ORDER (PROVIDER_DESCRIPTORS order).
+const PROVIDER_ORDER: [&str; 10] = [
+    "codex", "claudeAgent", "cursor", "antigravity", "grok", "droid", "opencode", "pi", "devin", "omp",
+];
+
 const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
     ("profile", "Profile"),
     ("accounts", "Accounts"),
@@ -19887,18 +19892,78 @@ impl Render for Native {
                         rows.push((pid.to_string(), name.to_string(), status.to_string(), upd));
                     }
                 } else {
-                    for p in &cfg_providers {
+                    // Upstream providerSetupStatusLabel + providerUpdateStatusLabel
+                    // (" · "-joined), rows in DEFAULT_PROVIDER_ORDER.
+                    let update_checks = get(get(sdata, "settings"), "enableProviderUpdateChecks")
+                        .as_bool()
+                        .unwrap_or(true);
+                    let fmt_ver = |v: &str| -> Option<String> {
+                        let v = v.trim();
+                        if v.is_empty() {
+                            None
+                        } else if v.starts_with('v') {
+                            Some(v.to_string())
+                        } else {
+                            Some(format!("v{v}"))
+                        }
+                    };
+                    let mut ordered: Vec<&Value> = cfg_providers.iter().collect();
+                    let rank = |p: &Value| {
+                        let pid = str_at(p, "provider");
+                        let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
+                        PROVIDER_ORDER.iter().position(|k| *k == pid).unwrap_or(usize::MAX)
+                    };
+                    ordered.sort_by_key(|p| rank(p));
+                    for p in ordered {
                         let pid = str_at(p, "provider");
                         let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
                         if pid.is_empty() { continue; }
                         let avail = get(p, "available").as_bool().unwrap_or(false);
-                        let ver = str_at(p, "version");
-                        let status = if avail {
-                            if ver.is_empty() { "Installed".to_string() } else { format!("Installed \u{b7} {ver}") }
-                        } else {
+                        let auth = str_at(p, "authStatus");
+                        let setup = if !avail {
                             "Unavailable".to_string()
+                        } else if auth == "unauthenticated" {
+                            "Needs sign-in".to_string()
+                        } else if str_at(p, "status") != "ready" {
+                            "Needs attention".to_string()
+                        } else if auth == "unknown" {
+                            if str_at(p, "driver") == "opencode" || pid == "opencode" {
+                                "Installed \u{b7} authentication managed by OpenCode".to_string()
+                            } else {
+                                "Installed \u{b7} sign-in not verified".to_string()
+                            }
+                        } else {
+                            "Connected".to_string()
                         };
-                        let upd = get(p, "updateAvailable").as_bool().unwrap_or(false);
+                        let current = fmt_ver(str_at(p, "version"));
+                        let advisory = get(p, "versionAdvisory");
+                        let update_label = if !update_checks {
+                            current.map(|v| format!("Current {v}"))
+                        } else {
+                            match str_at(get(p, "updateState"), "status") {
+                                "queued" => Some("Update queued".to_string()),
+                                "running" => Some("Updating".to_string()),
+                                "succeeded" => Some("Updated".to_string()),
+                                "failed" => Some("Update failed".to_string()),
+                                "unchanged" => Some("Still outdated".to_string()),
+                                _ => {
+                                    let latest = fmt_ver(str_at(advisory, "latestVersion"));
+                                    if str_at(advisory, "status") == "behind_latest" && latest.is_some() {
+                                        match fmt_ver(str_at(advisory, "currentVersion")) {
+                                            Some(cv) => Some(format!("{cv} -> {}", latest.unwrap_or_default())),
+                                            None => Some(format!("Latest {}", latest.unwrap_or_default())),
+                                        }
+                                    } else {
+                                        current.map(|v| format!("Current {v}"))
+                                    }
+                                }
+                            }
+                        };
+                        let status = match update_label {
+                            Some(u) => format!("{setup} \u{b7} {u}"),
+                            None => setup,
+                        };
+                        let upd = str_at(advisory, "status") == "behind_latest";
                         rows.push((pid.to_string(), provider_display(pid).to_string(), status, upd));
                     }
                 }
@@ -19909,7 +19974,21 @@ impl Render for Native {
                             .items_center()
                             .justify_between()
                             .child(section_label("Agents"))
-                            .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("Refresh status")),
+                            .child(
+                                // Upstream outline button: 28px, radius 10, 9px padding,
+                                // 13px medium, border foreground at 7%.
+                                div()
+                                    .h(px(28.))
+                                    .px(px(9.))
+                                    .flex()
+                                    .items_center()
+                                    .rounded(px(10.))
+                                    .border_1()
+                                    .border_color(theme.foreground.opacity(0.07))
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child("Refresh status"),
+                            ),
                     )
                     .child(card(
                         v_flex()
@@ -19921,13 +20000,35 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(10.))
                                     .child(div().w(px(16.)).text_size(px(13.)).text_color(theme.muted_foreground).child("\u{283f}"))
-                                    .child(svg_icon(p_icon(pid)).size(px(16.)).text_color(theme.foreground))
+                                    .child(
+                                        // Upstream ProviderIcon: Claude, Antigravity and Oh My
+                                        // Pi are full-colour marks; the rest are foreground.
+                                        match pid.as_str() {
+                                            "claudeAgent" | "claude" | "antigravity" | "omp" => {
+                                                let file = match pid.as_str() {
+                                                    "antigravity" => "antigravity-color",
+                                                    "omp" => "omp",
+                                                    _ => "claude",
+                                                };
+                                                gpui::img(std::path::PathBuf::from(format!(
+                                                    "{}/assets/icons/{file}.svg",
+                                                    env!("CARGO_MANIFEST_DIR")
+                                                )))
+                                                .size(px(16.))
+                                                .into_any_element()
+                                            }
+                                            _ => svg_icon(p_icon(pid))
+                                                .size(px(16.))
+                                                .text_color(theme.foreground)
+                                                .into_any_element(),
+                                        },
+                                    )
                                     .child(
                                         v_flex()
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(1.))
-                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name.clone()))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(theme.foreground).child(name.clone()))
                                             .child(div().text_xs().text_color(theme.muted_foreground).child(status.clone())),
                                     )
                                     .children(if *upd {

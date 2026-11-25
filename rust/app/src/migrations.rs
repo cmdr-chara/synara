@@ -17,6 +17,8 @@ use rusqlite::{params, Connection};
 use crate::acp_runner::err;
 use crate::todo::WsErr;
 
+mod automation_identity;
+mod model_selection_compat;
 mod batch1;
 mod helpers;
 

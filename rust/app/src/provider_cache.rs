@@ -279,6 +279,154 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
     models
 }
 
+fn cursor_reasoning_label(value: &str) -> String {
+    match value {
+        "xhigh" => "Extra High".to_string(),
+        "max" => "Max".to_string(),
+        other => {
+            let mut chars = other.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
+                .unwrap_or_default()
+        }
+    }
+}
+
+fn parse_cursor_reasoning_effort(model: &str) -> Option<String> {
+    let lower_model = model.trim().to_ascii_lowercase();
+    let tokens = lower_model.split('-').collect::<Vec<_>>();
+    for index in (0..tokens.len()).rev() {
+        let token = tokens[index];
+        if token.is_empty() {
+            continue;
+        }
+        if token == "xhigh" || (token == "high" && index > 0 && tokens[index - 1] == "extra") {
+            return Some("xhigh".to_string());
+        }
+        if matches!(token, "max" | "none" | "low" | "medium" | "high") {
+            return Some(token.to_string());
+        }
+    }
+    None
+}
+
+fn cursor_cli_one_million_context(model: &str) -> bool {
+    let normalized = model.trim().to_ascii_lowercase();
+    if normalized.starts_with("gpt-5.5-") || normalized.starts_with("claude-4.6-opus") || normalized.starts_with("claude-4.6-sonnet") {
+        return true;
+    }
+    if normalized.starts_with("claude-fable-5-") || normalized.starts_with("claude-opus-4-7-") || normalized.starts_with("claude-opus-4-8-") {
+        return true;
+    }
+    normalized.starts_with("gpt-5.4-low")
+        || normalized.starts_with("gpt-5.4-medium")
+        || normalized.starts_with("gpt-5.4-high")
+        || normalized.starts_with("gpt-5.4-xhigh")
+        || normalized.starts_with("gpt-5.4-extra-high")
+}
+
+fn infer_cursor_upstream(slug: &str, name: &str) -> (&'static str, &'static str) {
+    let token = format!("{slug} {name}").to_ascii_lowercase();
+    if token.contains("claude") {
+        ("anthropic", "Anthropic")
+    } else if token.contains("gemini") {
+        ("google", "Google")
+    } else if token.contains("grok") {
+        ("xai", "xAI")
+    } else if token.contains("kimi") {
+        ("moonshot", "Moonshot AI")
+    } else if token.contains("deepseek") {
+        ("deepseek", "DeepSeek")
+    } else if token.contains("qwen") {
+        ("alibaba", "Alibaba")
+    } else if token.contains("llama") {
+        ("meta", "Meta")
+    } else if token.contains("mistral") {
+        ("mistral", "Mistral")
+    } else if token.contains("nemotron") {
+        ("nvidia", "NVIDIA")
+    } else if token.contains("gpt") || token.contains("codex") || token.contains("o1") || token.contains("o3") || token.contains("o4") {
+        ("openai", "OpenAI")
+    } else {
+        ("cursor", "Cursor")
+    }
+}
+
+fn parse_cursor_models_output(output: &str) -> Vec<Value> {
+    let mut seen = std::collections::HashSet::new();
+    let mut models = Vec::new();
+    for line in output.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed == "Available models" || trimmed.starts_with("Tip:") {
+            continue;
+        }
+        let Some((slug, raw_name)) = trimmed.split_once(" - ") else {
+            continue;
+        };
+        let slug = slug.trim();
+        let raw_name = raw_name.trim();
+        if slug.is_empty() || raw_name.is_empty() || !seen.insert(slug.to_string()) {
+            continue;
+        }
+        let lower_name = raw_name.to_ascii_lowercase();
+        let name = if lower_name.ends_with(" (default)") || lower_name.ends_with(" (current)") {
+            raw_name[..raw_name.len() - 10].trim().to_string()
+        } else {
+            raw_name.to_string()
+        };
+        let (provider_id, provider_name) = infer_cursor_upstream(slug, &name);
+        let lower = slug.to_ascii_lowercase();
+        let effort = parse_cursor_reasoning_effort(&lower);
+        let mut model = json!({
+            "slug": slug,
+            "name": if name.is_empty() { raw_name.to_string() } else { name },
+            "upstreamProviderId": provider_id,
+            "upstreamProviderName": provider_name,
+        });
+        if lower.ends_with("-fast") {
+            model["supportsFastMode"] = json!(true);
+        }
+        if lower.contains("-thinking") {
+            model["supportsThinkingToggle"] = json!(true);
+        }
+        if let Some(effort) = effort {
+            model["supportedReasoningEfforts"] = json!([{"value": effort, "label": cursor_reasoning_label(&effort)}]);
+            model["defaultReasoningEffort"] = json!(effort);
+        }
+        if cursor_cli_one_million_context(&lower) {
+            model["contextWindowOptions"] = json!([{"value":"1m","label":"1M","isDefault":true}]);
+            model["defaultContextWindow"] = json!("1m");
+        }
+        models.push(model);
+    }
+    models
+}
+
+fn cursor_discovery_result() -> Result<Value, WsErr> {
+    let binary = crate::acp_runner::resolve_provider_cli("cursor")
+        .ok_or_else(|| err("Cursor does not support CLI discovery"))?;
+    let output = std::process::Command::new(&binary)
+        .arg("models")
+        .env("NO_BROWSER", "true")
+        .env("BROWSER", "www-browser")
+        .output()
+        .map_err(|e| err(format!("failed to execute cursor-agent models: {e}")))?;
+    if !output.status.success() {
+        return Err(err(format!(
+            "cursor-agent models exited with {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let models = parse_cursor_models_output(&stdout);
+    if models.is_empty() {
+        return Err(err("Cursor model discovery returned no models"));
+    }
+    Ok(json!({"models": models, "source": "cursor-cli", "cached": false, "degraded": true}))
+}
+
 fn antigravity_effort_label(value: &str) -> String {
     value
         .split(|ch| ch == '-' || ch == '_' || ch == ' ')
@@ -731,6 +879,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         if provider == "antigravity" {
             return antigravity_discovery_result();
         }
+        if provider == "cursor" {
+            return cursor_discovery_result();
+        }
         if provider == "omp" {
             return omp_discovery_result();
         }
@@ -739,6 +890,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         }
         if provider == "antigravity" {
             return antigravity_discovery_result();
+        }
+        if provider == "cursor" {
+            return cursor_discovery_result();
         }
         if provider == "claudeAgent" {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");

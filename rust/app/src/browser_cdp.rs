@@ -130,6 +130,24 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                             }
                         }
                     } else if v.get("method").and_then(Value::as_str)
+                        == Some("Browser.downloadProgress")
+                    {
+                        let state = v
+                            .pointer("/params/state")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let guid = v
+                            .pointer("/params/guid")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        if state == "completed" {
+                            if let Ok(mut dl) = downloads().lock() {
+                                dl.insert(guid.clone(), json!({"guid": guid, "state": state}));
+                            }
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
                         == Some("Runtime.consoleAPICalled")
                     {
                         let session = v
@@ -313,6 +331,11 @@ pub(crate) async fn shutdown_cdp() {
 
 /// Per-thread tab: each calling thread gets its own target in the shared CDP
 /// browser, mirroring upstream's per-thread browser target registry.
+fn downloads() -> &'static Mutex<HashMap<String, Value>> {
+    static DL: OnceLock<Mutex<HashMap<String, Value>>> = OnceLock::new();
+    DL.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
 fn console_logs() -> &'static Mutex<HashMap<String, Vec<Value>>> {
     static LOGS: OnceLock<Mutex<HashMap<String, Vec<Value>>>> = OnceLock::new();
     LOGS.get_or_init(|| Mutex::new(HashMap::new()))
@@ -728,6 +751,57 @@ return true}})()"#,
             );
             cdp_eval(&conn, &session, &expr).await?;
             Ok(json!({"backend": "chrome-cdp", "dragged": true}))
+        }
+        "browser_download" => {
+            // Arms the download behavior for the browser and waits for the
+            // next completed download. The caller is expected to trigger the
+            // download (click) first or pass a selector to click here.
+            let dir = cdp_profile_dir().join("downloads");
+            let _ = std::fs::create_dir_all(&dir);
+            conn.call(
+                "Browser.setDownloadBehavior",
+                json!({
+                    "behavior": "allow",
+                    "downloadPath": dir.display().to_string(),
+                    "eventsEnabled": true,
+                }),
+                None,
+            )
+            .await?;
+            if let Ok(sel) = selector_js(args) {
+                let expr = format!(
+                    "(()=>{{const el=document.querySelector({});if(!el)throw new Error('download target not found');el.click();return true}})()",
+                    js_string(&sel)
+                );
+                cdp_eval(&conn, &session, &expr).await?;
+            }
+            let timeout_ms = args
+                .get("timeout")
+                .and_then(Value::as_u64)
+                .unwrap_or(15_000);
+            let start = std::time::Instant::now();
+            let baseline: Vec<String> = downloads()
+                .lock()
+                .map(|dl| dl.keys().cloned().collect())
+                .unwrap_or_default();
+            loop {
+                let done = downloads().lock().ok().and_then(|dl| {
+                    dl.iter()
+                        .find(|(guid, _)| !baseline.contains(guid))
+                        .map(|(_, v)| v.clone())
+                });
+                if let Some(entry) = done {
+                    return Ok(json!({
+                        "backend": "chrome-cdp",
+                        "download": entry,
+                        "directory": dir.display().to_string(),
+                    }));
+                }
+                if start.elapsed().as_millis() as u64 > timeout_ms {
+                    return Err("browser_download timed out waiting for a completed download".to_string());
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+            }
         }
         "browser_close" => {
             let key = thread.unwrap_or("").to_string();

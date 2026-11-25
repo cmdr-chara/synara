@@ -337,12 +337,10 @@ fn prewarm_thread(payload: &Value) -> Result<Value, WsErr> {
     let provider = {
         let conn = crate::orchestration_engine::open_state_rw()?;
         conn.query_row(
-            "SELECT provider_name FROM projection_thread_sessions WHERE thread_id=?1",
+            "SELECT COALESCE(                (SELECT provider_name FROM projection_thread_sessions WHERE thread_id=?1),                json_extract((SELECT model_selection_json FROM projection_threads WHERE thread_id=?1), '$.provider'),                ''             )",
             params![thread_id],
-            |r| r.get::<_, Option<String>>(0),
+            |r| r.get::<_, String>(0),
         )
-        .ok()
-        .flatten()
         .unwrap_or_default()
     };
     let started = match provider.as_str() {

@@ -1197,6 +1197,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let stdin = rpc.stdin.clone();
 
     let mut active_provider_thread_id: Option<String> = None;
+    let mut usage_windows = json!({});
+    let mut usage_limit_error = false;
     let result = (|| -> Result<String, WsErr> {
         let provider_thread_id = if let Some(reused) = reused_thread.clone() {
             reused
@@ -1355,6 +1357,19 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         let terminal = loop {
             let v = rpc.read_msg()?;
             let method = v.get("method").and_then(Value::as_str).unwrap_or("");
+            if method == "account/rateLimits/updated" {
+                let now_ms = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_millis() as i64)
+                    .unwrap_or(0);
+                if let Some(next) = crate::usage_limit::codex_usage_limit_windows(
+                    &usage_windows,
+                    v.get("params").unwrap_or(&Value::Null),
+                    now_ms,
+                ) {
+                    usage_windows = next;
+                }
+            }
             match method {
                 "item/agentMessage/delta" => {
                     if let Some(d) = v.pointer("/params/delta").and_then(Value::as_str) {
@@ -1369,8 +1384,24 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         .and_then(Value::as_bool)
                         .unwrap_or(false);
                     if !will_retry {
-                        let msg = v
-                            .pointer("/params/error/message")
+                        let error_obj = v.pointer("/params/error").cloned().unwrap_or(Value::Null);
+                        let code = error_obj
+                            .get("codexErrorInfo")
+                            .or_else(|| error_obj.get("codex_error_info"))
+                            .and_then(|info| {
+                                if let Some(s) = info.as_str() {
+                                    Some(s.to_string())
+                                } else {
+                                    info.as_object().and_then(|o| {
+                                        if o.len() == 1 { o.keys().next().cloned() } else { None }
+                                    })
+                                }
+                            });
+                        if crate::usage_limit::is_codex_usage_limit_error(code.as_deref(), &error_obj) {
+                            usage_limit_error = true;
+                        }
+                        let msg = error_obj
+                            .get("message")
                             .and_then(Value::as_str)
                             .unwrap_or("codex turn error")
                             .to_string();
@@ -1477,6 +1508,53 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 ("error", "error")
             };
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
+            if !cancelled_flag && usage_limit_error {
+                let now_ms = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_millis() as i64)
+                    .unwrap_or(0);
+                if let Some(reset_at) = crate::usage_limit::usage_limit_reset_at(&usage_windows, now_ms) {
+                    let epoch = format!("codex-{turn_id}");
+                    let model_sel: Value = conn
+                        .query_row(
+                            "SELECT model_selection_json FROM projection_threads WHERE thread_id=?1",
+                            rusqlite::params![thread_id],
+                            |r| r.get::<_, Option<String>>(0),
+                        )
+                        .ok()
+                        .flatten()
+                        .and_then(|j| serde_json::from_str(&j).ok())
+                        .unwrap_or(Value::Null);
+                    let now = iso_now_ms();
+                    let mut src = serde_json::Map::new();
+                    src.insert("type".into(), json!("thread.usage-limit.source"));
+                    src.insert("commandId".into(), json!(format!("ul-source:{turn_id}")));
+                    src.insert("threadId".into(), json!(thread_id));
+                    src.insert("createdAt".into(), json!(now));
+                    src.insert("source".into(), json!({
+                        "turnId": turn_id,
+                        "bindingKey": "detection",
+                        "policyEpoch": epoch,
+                    }));
+                    let mut sched = serde_json::Map::new();
+                    sched.insert("type".into(), json!("thread.usage-limit.schedule"));
+                    sched.insert("commandId".into(), json!(format!("ul-schedule:{turn_id}")));
+                    sched.insert("threadId".into(), json!(thread_id));
+                    sched.insert("createdAt".into(), json!(now));
+                    sched.insert("recovery".into(), json!({
+                        "id": format!("ul-{turn_id}"),
+                        "turnId": turn_id,
+                        "bindingKey": "detection",
+                        "policyEpoch": epoch,
+                        "resetAt": reset_at,
+                        "provider": model_sel.get("provider").cloned().unwrap_or(json!("codex")),
+                        "providerInstanceId": model_sel.get("instanceId").or_else(|| model_sel.get("provider")).cloned().unwrap_or(json!("codex")),
+                        "model": model_sel.get("model").cloned().unwrap_or(Value::Null),
+                    }));
+                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(src));
+                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(sched));
+                }
+            }
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;
             session_set_event(
                 &conn,

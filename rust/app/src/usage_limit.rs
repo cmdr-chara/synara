@@ -18,9 +18,7 @@ fn parse_reset_at(value: &Value, now_ms: i64) -> Option<String> {
         return None;
     };
     if ms > now_ms && ms <= 8_640_000_000_000_000 {
-        // Numeric epochs are seconds since the Unix epoch upstream; render an
-        // ISO-ish marker so downstream comparison stays homogeneous.
-        Some(format!("epoch:{ms}"))
+        Some(crate::todo::iso_from_ms(ms))
     } else {
         None
     }
@@ -117,6 +115,92 @@ pub fn claude_usage_limit_windows(previous: &Value, value: &Value, now_ms: i64) 
         }
     }
     Some(json!({"windows": windows}))
+}
+
+/// Merge one Codex `account/rateLimits/updated` snapshot into the
+/// accumulated windows, mirroring upstream codexUsageLimitWindows: only
+/// windows at 100% with a valid future reset keep a timestamp; everything
+/// else clears or stays manual.
+pub fn codex_usage_limit_windows(previous: &Value, value: &Value, now_ms: i64) -> Option<Value> {
+    let root = value.as_object()?;
+    let by_id = root.get("rateLimitsByLimitId").and_then(Value::as_object);
+    let snapshot = if let Some(by_id) = by_id {
+        if !by_id.contains_key("codex") {
+            return Some(previous.clone());
+        }
+        by_id.get("codex").and_then(Value::as_object).cloned()
+    } else if root.contains_key("rateLimits") {
+        root.get("rateLimits").and_then(Value::as_object).cloned()
+    } else {
+        Some(root.clone())
+    };
+    let snapshot = snapshot?;
+    if snapshot.get("limitId").is_some_and(|l| l.as_str() != Some("codex")) {
+        return Some(previous.clone());
+    }
+    let mut windows = previous
+        .get("windows")
+        .and_then(Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    let mut observed = previous.get("windows").is_some();
+    let mut out = json!({"windows": Value::Null});
+    for name in ["primary", "secondary"] {
+        if !snapshot.contains_key(name) {
+            continue;
+        }
+        observed = true;
+        if snapshot.get(name).is_some_and(Value::is_null) {
+            windows.remove(name);
+            continue;
+        }
+        let Some(window) = snapshot.get(name).and_then(Value::as_object) else {
+            if windows.contains_key(name) {
+                windows.insert(name.to_string(), Value::Null);
+            }
+            continue;
+        };
+        if let Some(percent) = window.get("usedPercent").and_then(Value::as_f64) {
+            if percent < 100.0 {
+                windows.remove(name);
+            } else {
+                let reset = window
+                    .get("resetsAt")
+                    .and_then(|v| parse_reset_at(v, now_ms))
+                    .or_else(|| windows.get(name).and_then(Value::as_str).map(str::to_string));
+                match reset {
+                    Some(r) => windows.insert(name.to_string(), json!(r)),
+                    None => windows.insert(name.to_string(), Value::Null),
+                };
+            }
+        } else if window.contains_key("resetsAt") && windows.contains_key(name) {
+            if let Some(r) = window.get("resetsAt").and_then(|v| parse_reset_at(v, now_ms)) {
+                windows.insert(name.to_string(), json!(r));
+            }
+        }
+    }
+    if let Some(credits) = snapshot.get("credits").and_then(Value::as_object) {
+        observed = true;
+        let mut c = serde_json::Map::new();
+        if let Some(h) = credits.get("hasCredits").and_then(Value::as_bool) {
+            c.insert("hasCredits".into(), json!(h));
+        }
+        if let Some(u) = credits.get("unlimited").and_then(Value::as_bool) {
+            c.insert("unlimited".into(), json!(u));
+        }
+        if !c.is_empty() {
+            out["codexCredits"] = Value::Object(c);
+        }
+    }
+    if let Some(allowed) = snapshot.get("allowed").and_then(Value::as_bool) {
+        observed = true;
+        out["codexAllowed"] = json!(allowed);
+    }
+    if !observed {
+        return None;
+    }
+    out["windows"] = Value::Object(windows);
+    Some(out)
 }
 
 /// Codex error classification, mirroring upstream isCodexUsageLimitError.

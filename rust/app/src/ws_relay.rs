@@ -213,6 +213,7 @@ async fn intercept_todo(
         && !crate::device::handles(tag)
         && !crate::editor::handles(tag)
         && !crate::editor_intelligence::handles(tag)
+        && !crate::editor_debug::handles(tag)
         && !tag.starts_with("githubInbox.")
         && !crate::pull_requests::handles(tag)
         && !crate::automation::handles(tag)
@@ -1191,6 +1192,10 @@ async fn intercept_todo(
             .map_err(error_json)
     } else if crate::mcp_connectors::handles(tag) {
         crate::mcp_connectors::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::editor_debug::handles(tag) {
+        crate::editor_debug::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::editor_intelligence::handles(tag) {

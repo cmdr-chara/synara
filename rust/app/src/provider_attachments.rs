@@ -195,7 +195,7 @@ pub fn opencode_image_file_parts(attachments: &[Value]) -> Vec<Value> {
         .collect()
 }
 
-fn base64_encode(data: &[u8]) -> String {
+pub fn base64_encode(data: &[u8]) -> String {
     const ALPHABET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::new();
     for chunk in data.chunks(3) {

@@ -86,13 +86,59 @@ fn write_line(stdin: &Arc<Mutex<ChildStdin>>, value: &Value) -> Result<(), WsErr
         .map_err(|e| err(format!("claude write: {e}")))
 }
 
-fn user_message(text: &str) -> Value {
+fn user_message(content: Vec<Value>) -> Value {
     json!({
         "type": "user",
         "session_id": "",
-        "message": {"role": "user", "content": [{"type": "text", "text": text}]},
+        "message": {"role": "user", "content": content},
         "parent_tool_use_id": Value::Null,
     })
+}
+
+fn claude_content_blocks(text: &str, attachments: &[Value]) -> Result<Vec<Value>, WsErr> {
+    let mut content = Vec::new();
+    if !text.is_empty() {
+        content.push(json!({"type": "text", "text": text}));
+    }
+    let supported = ["image/gif", "image/jpeg", "image/png", "image/webp"];
+    let mut projected = Vec::new();
+    for attachment in attachments {
+        if attachment.get("type").and_then(Value::as_str) != Some("image") {
+            projected.push(attachment.clone());
+            continue;
+        }
+        let mime = attachment
+            .get("mimeType")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_ascii_lowercase();
+        if !supported.contains(&mime.as_str()) {
+            projected.push(attachment.clone());
+            continue;
+        }
+        let Some(path) = crate::provider_attachments::resolve_attachment_path(attachment) else {
+            return Err(err("invalid attachment id"));
+        };
+        let bytes = std::fs::read(&path)
+            .map_err(|e| err(format!("failed to read attachment file: {e}")))?;
+        content.push(json!({
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": mime,
+                "data": crate::provider_attachments::base64_encode(&bytes),
+            }
+        }));
+    }
+    let file_block = crate::provider_attachments::append_file_attachments_prompt_block(
+        "",
+        &projected,
+        true,
+    );
+    if !file_block.is_empty() {
+        content.push(json!({"type": "text", "text": file_block}));
+    }
+    Ok(content)
 }
 
 /// Native steering: push the user message into the live streaming-input
@@ -106,7 +152,7 @@ pub fn steer_turn(thread_id: &str, text: &str) -> bool {
         },
         Err(_) => return false,
     };
-    write_line(&stdin, &user_message(text)).is_ok()
+    write_line(&stdin, &user_message(vec![json!({"type":"text","text":text})])).is_ok()
 }
 
 /// Interrupt through the CLI control protocol. The response is consumed by
@@ -660,7 +706,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         text.to_string()
     };
-    write_line(&stdin, &user_message(&prompt_text))?;
+    let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
+    let content = claude_content_blocks(&prompt_text, &attachments)?;
+    write_line(&stdin, &user_message(content))?;
     let cancelled = Arc::new(AtomicBool::new(false));
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;

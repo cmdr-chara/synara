@@ -105,11 +105,7 @@ fn format_bytes(bytes: i64) -> String {
 }
 
 fn quote_prompt_value(value: &str) -> String {
-    if value.chars().any(|ch| ch.is_whitespace() || ch == '"' || ch == '\'') {
-        format!("\"{}\"", value.replace('\\', "\\\\").replace('"', "\\\""))
-    } else {
-        value.to_string()
-    }
+    serde_json::to_string(value).unwrap_or_else(|_| "\"\"".to_string())
 }
 
 /// Mirror upstream's `<attached_files>` block. Image attachments are included

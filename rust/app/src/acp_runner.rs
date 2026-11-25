@@ -1,8 +1,10 @@
 //! Provider runtime: drives a real agent session over ACP (Agent Client
-//! Protocol, JSON-RPC on stdio). Currently implements the Devin provider via
-//! `devin acp`; the credentials stored by `devin auth login` are reused as-is.
+//! Protocol, JSON-RPC on stdio). The transport and turn machinery are shared
+//! across ACP-capable providers; provider-specific support supplies the binary,
+//! arguments and environment needed to launch its agent process.
 //!
-//! A turn lives on a dedicated std::thread: spawn `devin acp`, initialize,
+//! A turn lives on a dedicated std::thread: spawn the provider ACP command,
+//! initialize,
 //! session/new (or session/load when the thread already has a provider
 //! session), session/prompt, then translate `session/update` notifications
 //! into orchestration events and projection writes until the prompt resolves.
@@ -301,52 +303,167 @@ pub fn cancel_turn(thread_id: &str) {
     }
 }
 
-/// Resolve the `devin` CLI: explicit override, PATH, then the usual install
-/// locations (the backend may run under a minimal service PATH).
-fn devin_binary() -> String {
-    if let Ok(p) = std::env::var("SYNARA_DEVIN_CLI") {
-        if !p.is_empty() {
-            return p;
-        }
+#[derive(Clone, Debug)]
+struct AcpLaunchProfile {
+    display_name: &'static str,
+    binary: String,
+    args: Vec<String>,
+    env: Vec<(&'static str, &'static str)>,
+}
+
+fn executable_override(keys: &[&str]) -> Option<String> {
+    keys.iter().find_map(|key| {
+        std::env::var(key)
+            .ok()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty())
+    })
+}
+
+fn executable_on_path(binary: &str) -> bool {
+    if binary.contains('/') {
+        return std::path::Path::new(binary).is_file();
     }
-    if let Ok(p) = std::env::var("DEVIN_BINARY_PATH") {
-        if !p.is_empty() {
-            return p;
-        }
-    }
-    if Command::new("devin")
-        .arg("--version")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .map(|s| s.success())
+    std::env::var_os("PATH")
+        .map(|paths| {
+            std::env::split_paths(&paths).any(|dir| {
+                let candidate = dir.join(binary);
+                candidate.is_file()
+            })
+        })
         .unwrap_or(false)
-    {
-        return "devin".to_string();
+}
+
+fn resolve_provider_binary(
+    default_binary: &str,
+    override_keys: &[&str],
+    home_relative_candidates: &[&str],
+) -> String {
+    if let Some(path) = executable_override(override_keys) {
+        return path;
+    }
+    if executable_on_path(default_binary) {
+        return default_binary.to_string();
     }
     if let Some(home) = std::env::var_os("HOME") {
-        for cand in [
-            PathBuf::from(&home).join(".local/bin/devin"),
-            PathBuf::from(&home).join(".devin/bin/devin"),
-        ] {
-            if cand.exists() {
-                return cand.to_string_lossy().into_owned();
+        for relative in home_relative_candidates {
+            let candidate = PathBuf::from(&home).join(relative);
+            if candidate.exists() {
+                return candidate.to_string_lossy().into_owned();
             }
         }
     }
-    for cand in ["/opt/homebrew/bin/devin", "/usr/local/bin/devin"] {
-        if std::path::Path::new(cand).exists() {
-            return cand.to_string();
+    for prefix in ["/opt/homebrew/bin", "/usr/local/bin"] {
+        let candidate = format!("{prefix}/{default_binary}");
+        if std::path::Path::new(&candidate).exists() {
+            return candidate;
         }
     }
-    "devin".to_string()
+    default_binary.to_string()
 }
 
-/// Called after a `thread.turn-start-requested` event is committed for a
-/// Devin thread. Spawns the runner thread that drives the ACP session.
-pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
+fn model_args(provider: &str, model: Option<&str>) -> Vec<String> {
+    let Some(model) = model.map(str::trim).filter(|value| !value.is_empty()) else {
+        return Vec::new();
+    };
+    match provider {
+        "devin" => vec!["--model".into(), model.into()],
+        "grok" | "droid" => vec!["-m".into(), model.into()],
+        _ => Vec::new(),
+    }
+}
+
+fn acp_launch_profile(
+    provider: &str,
+    runtime_mode: &str,
+    model: Option<&str>,
+) -> Option<AcpLaunchProfile> {
+    let (display_name, default_binary, override_keys, home_candidates, mut args, env) = match provider {
+        "devin" => (
+            "Devin",
+            "devin",
+            &["SYNARA_DEVIN_CLI", "DEVIN_BINARY_PATH"][..],
+            &[".local/bin/devin", ".devin/bin/devin"][..],
+            vec!["acp".to_string()],
+            Vec::new(),
+        ),
+        "omp" => (
+            "Oh My Pi",
+            "omp",
+            &["SYNARA_OMP_CLI", "OMP_BINARY_PATH"][..],
+            &[".local/bin/omp"][..],
+            vec!["acp".to_string()],
+            Vec::new(),
+        ),
+        "cursor" => (
+            "Cursor",
+            "cursor-agent",
+            &["SYNARA_CURSOR_CLI", "CURSOR_AGENT_BINARY_PATH", "CURSOR_BINARY_PATH"][..],
+            &[".local/bin/cursor-agent"][..],
+            vec!["acp".to_string()],
+            vec![("NO_BROWSER", "true"), ("BROWSER", "www-browser")],
+        ),
+        "grok" => (
+            "Grok",
+            "grok",
+            &["SYNARA_GROK_CLI", "GROK_BINARY_PATH"][..],
+            &[".local/bin/grok"][..],
+            vec![
+                "--permission-mode".into(),
+                "default".into(),
+                "agent".into(),
+                "--no-leader".into(),
+            ],
+            Vec::new(),
+        ),
+        "droid" => (
+            "Factory Droid",
+            "droid",
+            &["SYNARA_DROID_CLI", "DROID_BINARY_PATH"][..],
+            &[".local/bin/droid"][..],
+            vec!["exec".into(), "--output-format".into(), "acp".into()],
+            Vec::new(),
+        ),
+        "antigravity" => (
+            "Antigravity",
+            "agy",
+            &["SYNARA_ANTIGRAVITY_CLI", "ANTIGRAVITY_BINARY_PATH", "AGY_BINARY_PATH"][..],
+            &[".local/bin/agy"][..],
+            vec!["acp".to_string()],
+            Vec::new(),
+        ),
+        _ => return None,
+    };
+    if provider == "grok" && runtime_mode == "full-access" {
+        args.push("--always-approve".into());
+    }
+    args.extend(model_args(provider, model));
+    if provider == "grok" {
+        args.push("stdio".into());
+    }
+    Some(AcpLaunchProfile {
+        display_name,
+        binary: resolve_provider_binary(default_binary, override_keys, home_candidates),
+        args,
+        env,
+    })
+}
+
+/// Providers currently routed through the shared ACP stdio runtime. OpenCode is
+/// deliberately absent: upstream drives it through its own HTTP/SSE server and
+/// SDK rather than ACP stdio.
+pub fn supports_provider(provider: &str) -> bool {
+    matches!(
+        provider,
+        "devin" | "omp" | "cursor" | "grok" | "droid" | "antigravity"
+    )
+}
+
+/// Called after a `thread.turn-start-requested` event is committed for an
+/// ACP-capable provider thread. Spawns the runner thread that drives the session.
+pub fn start_turn(provider: String, thread_id: String, message_id: String, text: String, cwd: String) {
     std::thread::spawn(move || {
-        if let Err(e) = run_turn(&thread_id, &message_id, &text, &cwd) {
+        if let Err(e) = run_turn(&provider, &thread_id, &message_id, &text, &cwd) {
             tracing_error(&thread_id, &e);
         }
     });
@@ -446,7 +563,7 @@ impl Rpc {
                 .read_line(&mut line)
                 .map_err(|e| err(format!("acp read: {e}")))?;
             if n == 0 {
-                return Err(err("devin acp closed stdout"));
+                return Err(err("acp provider closed stdout"));
             }
             let trimmed = line.trim();
             if trimmed.is_empty() {
@@ -827,14 +944,16 @@ fn acp_mode_matches<'a>(modes: &'a [Value], aliases: &[&str], whole_token: bool)
 }
 
 fn resolve_acp_mode(
+    provider: &str,
     mode_state: &Value,
     runtime_mode: &str,
     interaction_mode: &str,
 ) -> Result<Option<String>, String> {
     if runtime_mode == "auto" {
         return Err(
-            "Provider \"devin\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
-                .to_string(),
+            format!(
+                "Provider \"{provider}\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
+            ),
         );
     }
     let modes = mode_state
@@ -898,7 +1017,7 @@ fn resolve_acp_mode(
     }
 }
 
-fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
+fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
@@ -938,9 +1057,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         "INSERT OR REPLACE INTO projection_thread_sessions \
          (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
           active_turn_id, last_error, updated_at, runtime_mode) \
-         VALUES (?1, 'running', 'devin', NULL, ?2, ?3, NULL, ?4, \
+         VALUES (?1, 'running', ?5, NULL, ?2, ?3, NULL, ?4, \
           COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'))",
-        params![thread_id, stored_session, turn_id, now],
+        params![thread_id, stored_session, turn_id, now, provider],
     )
     .map_err(|e| err(format!("session start: {e}")))?;
     session_set_event(
@@ -949,7 +1068,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         &json!({
             "threadId": thread_id,
             "status": "running",
-            "providerName": "devin",
+            "providerName": provider,
             "activeTurnId": turn_id,
             "runtimeMode": turn_runtime_mode,
             "lastError": null,
@@ -968,18 +1087,42 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         cwd
     };
-    let spawn_result = Command::new(devin_binary())
-        .arg("acp")
+    let selected_model: Option<String> = conn
+        .query_row(
+            "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|value| {
+            value
+                .get("model")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        });
+    let launch = acp_launch_profile(provider, &turn_runtime_mode, selected_model.as_deref())
+        .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
+    let mut command = Command::new(&launch.binary);
+    command
+        .args(&launch.args)
         .current_dir(&cwd)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn();
+        .stderr(Stdio::null());
+    for (key, value) in &launch.env {
+        command.env(key, value);
+    }
+    let spawn_result = command.spawn();
     let mut child: Child = match spawn_result {
         Ok(c) => c,
         Err(e) => {
             let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-            let msg = format!("could not launch `devin acp`: {e}");
+            let msg = format!(
+                "could not launch `{}` for {} ACP: {e}",
+                launch.binary, launch.display_name
+            );
             let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
             return Err(err(msg));
         }
@@ -1080,7 +1223,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             .as_ref()
             .map(|c| (c.runtime_mode.clone(), c.interaction_mode.clone()))
             .unwrap_or_default();
-        match resolve_acp_mode(&mode_state, &ctx_mode.0, &ctx_mode.1) {
+        match resolve_acp_mode(provider, &mode_state, &ctx_mode.0, &ctx_mode.1) {
             Ok(Some(mode_id)) => {
                 if let Err(e) = rpc.call(
                     "session/set_mode",
@@ -1274,7 +1417,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 &json!({
                     "threadId": thread_id,
                     "status": status,
-                    "providerName": "devin",
+                    "providerName": provider,
                     "activeTurnId": null,
                     "runtimeMode": turn_runtime_mode,
                     "lastError": null,
@@ -1297,7 +1440,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 &json!({
                     "threadId": thread_id,
                     "status": status,
-                    "providerName": "devin",
+                    "providerName": provider,
                     "activeTurnId": null,
                     "runtimeMode": turn_runtime_mode,
                     "lastError": e.0,
@@ -1322,7 +1465,7 @@ mod tests {
             ],
             "currentModeId": "bypass",
         });
-        let err = resolve_acp_mode(&modes, "auto", "").unwrap_err();
+        let err = resolve_acp_mode("devin", &modes, "auto", "").unwrap_err();
         assert_eq!(
             err,
             "Provider \"devin\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
@@ -1361,6 +1504,55 @@ mod tests {
         );
     }
 
+
+    #[test]
+    fn acp_provider_profiles_cover_shared_stdio_providers() {
+        for provider in ["devin", "omp", "cursor", "grok", "droid", "antigravity"] {
+            assert!(supports_provider(provider));
+            assert!(acp_launch_profile(provider, "full-access", None).is_some());
+        }
+        assert!(!supports_provider("opencode"));
+        assert!(!supports_provider("codex"));
+        assert!(acp_launch_profile("opencode", "full-access", None).is_none());
+    }
+
+    #[test]
+    fn acp_provider_profiles_use_provider_native_commands() {
+        let devin = acp_launch_profile("devin", "full-access", Some("devin-1")).unwrap();
+        assert_eq!(devin.args, vec!["acp", "--model", "devin-1"]);
+
+        let omp = acp_launch_profile("omp", "full-access", Some("gpt-5")).unwrap();
+        assert_eq!(omp.args, vec!["acp"]);
+
+        let cursor = acp_launch_profile("cursor", "full-access", None).unwrap();
+        assert_eq!(cursor.args, vec!["acp"]);
+        assert!(cursor.env.contains(&("NO_BROWSER", "true")));
+
+        let grok = acp_launch_profile("grok", "full-access", Some("grok-code-fast-1")).unwrap();
+        assert_eq!(
+            grok.args,
+            vec![
+                "--permission-mode",
+                "default",
+                "agent",
+                "--no-leader",
+                "--always-approve",
+                "-m",
+                "grok-code-fast-1",
+                "stdio"
+            ]
+        );
+
+        let droid = acp_launch_profile("droid", "full-access", Some("droid-core")).unwrap();
+        assert_eq!(
+            droid.args,
+            vec!["exec", "--output-format", "acp", "-m", "droid-core"]
+        );
+
+        let antigravity = acp_launch_profile("antigravity", "approval-required", None).unwrap();
+        assert_eq!(antigravity.args, vec!["acp"]);
+    }
+
     #[test]
     fn devin_full_access_still_maps_to_bypass() {
         let modes = json!({
@@ -1368,7 +1560,7 @@ mod tests {
             "currentModeId": "code",
         });
         assert_eq!(
-            resolve_acp_mode(&modes, "full-access", "").unwrap(),
+            resolve_acp_mode("devin", &modes, "full-access", "").unwrap(),
             Some("bypass".to_string())
         );
     }

@@ -21760,16 +21760,20 @@ impl Render for Native {
                 );
             }
         } else if gh_rows.is_empty() {
+            // Upstream <Empty>: p-12 block, centered 20px semibold title
+            // (leading 28px) and a 13px muted line 4px below.
             pr_rows = pr_rows.child(
                 v_flex()
                     .w_full()
                     .items_center()
-                    .gap(px(6.))
-                    .pt(px(50.))
+                    .p(px(48.))
                     .child(
                         div()
-                            .text_size(px(14.))
-                            .font_weight(FontWeight::MEDIUM)
+                            .w_full()
+                            .text_center()
+                            .text_size(px(20.))
+                            .line_height(px(28.))
+                            .font_weight(FontWeight::SEMIBOLD)
                             .child(if self.gh_items.is_empty() {
                                 "No pull requests and issues found"
                             } else {
@@ -21778,8 +21782,10 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .pt(px(4.))
-                            .text_size(px(12.))
+                            .w_full()
+                            .mt(px(4.))
+                            .text_center()
+                            .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child(if self.gh_items.is_empty() {
                                 "Nothing here in the repositories of your projects."

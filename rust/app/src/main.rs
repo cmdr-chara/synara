@@ -103,6 +103,7 @@ async fn main() {
                 eprintln!("usage-limit recovery: resumed {fired} thread(s) after reset");
             }
         });
+        claude_runner::spawn_credential_keepalive();
     }
     let listener = tokio::net::TcpListener::bind(SocketAddr::from(([0, 0, 0, 0], port)))
         .await

@@ -215,7 +215,63 @@ pub fn cancel_turn(thread_id: &str) {
     let _ = write_line(&stdin, &request);
 }
 
-fn claude_binary() -> String {
+/// Credential keepalive, ported from upstream `claudeCredentialKeepalive.ts`.
+/// Long-lived parked sessions ride the macOS Keychain OAuth token, which
+/// lapses after ~8h; the file-based auth check never observes it there. The
+/// refresh is delegated to the official CLI itself: `claude auth status`
+/// validates and rotates its own Keychain token through its own ACL, so
+/// Synara never reads, copies, or replays any credential. Opt-in via
+/// SYNARA_CLAUDE_KEEPALIVE=1; interval SYNARA_CLAUDE_KEEPALIVE_MINUTES
+/// (default 30). Simplification vs upstream: the Rust port does not yet
+/// derive multi-account provider instances, so the default config dir is
+/// kept fresh; per-account env arrives with multi-instance support.
+pub(crate) fn spawn_credential_keepalive() {
+    let enabled = std::env::var("SYNARA_CLAUDE_KEEPALIVE")
+        .map(|v| matches!(v.trim().to_lowercase().as_str(), "1" | "true" | "yes" | "on"))
+        .unwrap_or(false);
+    if !enabled {
+        return;
+    }
+    let minutes: u64 = std::env::var("SYNARA_CLAUDE_KEEPALIVE_MINUTES")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .filter(|m: &u64| *m > 0)
+        .unwrap_or(30);
+    std::thread::spawn(move || loop {
+        // Run first, then wait: a boot-time refresh costs nothing and covers
+        // sessions parked across the 8h boundary right after startup.
+        let binary = claude_binary();
+        let child = Command::new(&binary)
+            .args(["auth", "status"])
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn();
+        if let Ok(mut child) = child {
+            // Bound the wait at the upstream 20s command timeout; a hung CLI
+            // must never wedge the keepalive thread.
+            let (tx, rx) = std::sync::mpsc::channel();
+            let pid = child.id();
+            std::thread::spawn(move || {
+                let _ = child.wait();
+                let _ = tx.send(());
+            });
+            if rx.recv_timeout(std::time::Duration::from_secs(20)).is_err() {
+                unsafe extern "C" {
+                    fn kill(pid: i32, sig: i32) -> i32;
+                }
+                unsafe {
+                    kill(pid as i32, 9);
+                }
+                eprintln!("claude keepalive: auth status timed out, killed");
+            }
+        }
+        std::thread::sleep(std::time::Duration::from_secs(minutes * 60));
+    });
+    eprintln!("claude credential keepalive: enabled every {minutes} minute(s)");
+}
+
+pub(crate) fn claude_binary() -> String {
     for key in ["SYNARA_CLAUDE_CLI", "CLAUDE_BINARY_PATH"] {
         if let Ok(p) = std::env::var(key) {
             if !p.trim().is_empty() {

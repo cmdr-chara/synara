@@ -128,6 +128,10 @@ async fn main() {
         .route("/api/auth/logout", axum::routing::post(auth_http::logout))
         .route("/api/auth/clients", axum::routing::get(auth_http::clients))
         .route("/api/auth/clients/revoke", axum::routing::post(auth_http::clients_revoke))
+        .route("/api/auth/bootstrap/bearer", axum::routing::post(auth_http::bootstrap_bearer))
+        .route("/api/auth/pairing-links", axum::routing::get(auth_http::pairing_links))
+        .route("/api/auth/pairing-links/revoke", axum::routing::post(auth_http::pairing_links_revoke))
+        .route("/api/auth/clients/revoke-others", axum::routing::post(auth_http::clients_revoke_others))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

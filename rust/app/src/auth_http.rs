@@ -352,3 +352,113 @@ pub async fn clients_revoke(headers: HeaderMap, body: Bytes) -> Response {
     }
     json_response(StatusCode::OK, json!({ "revoked": true }))
 }
+
+/// Bearer bootstrap variant: same exchange, but the session token travels in
+/// the JSON body instead of a cookie — for non-browser clients.
+pub async fn bootstrap_bearer(headers: HeaderMap, body: Bytes) -> Response {
+    let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
+    let credential = payload.get("credential").and_then(Value::as_str).unwrap_or("").trim().to_uppercase();
+    if credential.is_empty() {
+        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "Invalid bootstrap credential."}));
+    }
+    let Ok(conn) = open_state_rw() else {
+        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+    };
+    let now = now_iso();
+    let link: Option<(String, String, String, String)> = conn
+        .query_row(
+            "SELECT id, role, subject, method FROM auth_pairing_links WHERE credential = ?1 AND revoked_at IS NULL AND consumed_at IS NULL AND expires_at > ?2",
+            params![credential, now],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+        )
+        .ok();
+    let Some((link_id, role, subject, _method)) = link else {
+        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "Invalid bootstrap credential."}));
+    };
+    let ua = headers.get(header::USER_AGENT).and_then(|v| v.to_str().ok()).map(str::to_string);
+    let Some((_session_id, token)) =
+        create_session_row(&subject, &role, "bearer-session-token", None, ua.as_deref())
+    else {
+        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "failed to create session"}));
+    };
+    let _ = conn.execute(
+        "UPDATE auth_pairing_links SET consumed_at = ?2 WHERE id = ?1",
+        params![link_id, now],
+    );
+    json_response(
+        StatusCode::OK,
+        json!({
+            "authenticated": true,
+            "role": role,
+            "sessionMethod": "bearer-session-token",
+            "expiresAt": iso_plus_ms(auth_sessions::SESSION_TTL_MS),
+            "sessionToken": token,
+        }),
+    )
+}
+
+pub async fn pairing_links(headers: HeaderMap) -> Response {
+    let Some(session) = authenticate(&headers) else {
+        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+    };
+    if session.role != "owner" {
+        return json_response(StatusCode::FORBIDDEN, json!({"error": "Only owner sessions can list pairing links."}));
+    }
+    let Ok(conn) = open_state_rw() else {
+        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+    };
+    let now = now_iso();
+    let mut stmt = match conn.prepare(
+        "SELECT id, label, created_at, expires_at, consumed_at FROM auth_pairing_links WHERE revoked_at IS NULL AND expires_at > ?1 ORDER BY created_at DESC",
+    ) {
+        Ok(s) => s,
+        Err(_) => return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "query failed"})),
+    };
+    let rows: Vec<Value> = stmt
+        .query_map(params![now], |r| {
+            Ok(json!({
+                "id": r.get::<_, String>(0)?,
+                "label": r.get::<_, Option<String>>(1)?,
+                "createdAt": r.get::<_, String>(2)?,
+                "expiresAt": r.get::<_, String>(3)?,
+                "consumed": r.get::<_, Option<String>>(4)?.is_some(),
+            }))
+        })
+        .map(|rows| rows.filter_map(|r| r.ok()).collect())
+        .unwrap_or_default();
+    json_response(StatusCode::OK, json!({ "links": rows }))
+}
+
+pub async fn pairing_links_revoke(headers: HeaderMap, body: Bytes) -> Response {
+    let Some(session) = authenticate(&headers) else {
+        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+    };
+    if session.role != "owner" {
+        return json_response(StatusCode::FORBIDDEN, json!({"error": "Only owner sessions can revoke pairing links."}));
+    }
+    let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
+    let target = payload.get("id").and_then(Value::as_str).unwrap_or("");
+    if target.is_empty() {
+        return json_response(StatusCode::BAD_REQUEST, json!({"error": "id is required"}));
+    }
+    if let Ok(conn) = open_state_rw() {
+        let _ = conn.execute(
+            "UPDATE auth_pairing_links SET revoked_at = ?2 WHERE id = ?1",
+            params![target, now_iso()],
+        );
+    }
+    json_response(StatusCode::OK, json!({ "revoked": true }))
+}
+
+pub async fn clients_revoke_others(headers: HeaderMap) -> Response {
+    let Some(session) = authenticate(&headers) else {
+        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+    };
+    if let Ok(conn) = open_state_rw() {
+        let _ = conn.execute(
+            "UPDATE auth_sessions SET revoked_at = ?2 WHERE session_id != ?1 AND revoked_at IS NULL",
+            params![session.session_id, now_iso()],
+        );
+    }
+    json_response(StatusCode::OK, json!({ "revoked": true }))
+}

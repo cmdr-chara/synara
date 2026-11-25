@@ -683,9 +683,38 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         } else {
             text.to_string()
         };
+        let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
+        let prompt_text = crate::provider_attachments::append_file_attachments_prompt_block(
+            &prompt_text,
+            &attachments,
+            false,
+        );
+        let mut input_items = Vec::new();
+        if !prompt_text.is_empty() {
+            input_items.push(json!({
+                "type": "text",
+                "text": prompt_text,
+                "text_elements": [],
+            }));
+        }
+        for attachment in &attachments {
+            if attachment.get("type").and_then(Value::as_str) != Some("image") {
+                continue;
+            }
+            let Some(path) = crate::provider_attachments::resolve_attachment_path(attachment) else {
+                return Err(err("invalid attachment id"));
+            };
+            input_items.push(json!({
+                "type": "localImage",
+                "path": path.to_string_lossy(),
+            }));
+        }
+        if input_items.is_empty() {
+            return Err(err("turn input must include text or attachments"));
+        }
         let mut turn_params = json!({
             "threadId": provider_thread_id,
-            "input": [{"type": "text", "text": prompt_text}],
+            "input": input_items,
             "summary": "auto",
         });
         if let Some(model) = selected_model.as_deref() {

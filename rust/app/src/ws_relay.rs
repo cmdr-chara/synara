@@ -65,7 +65,7 @@ async fn upgrade(
 /// `todo.*` requests served by the native store; the string check is a fast
 /// prefilter so ordinary traffic still takes the relay path unparsed.
 /// `Some(None)` marks a handled stream request (the reply is the chunk flow).
-fn intercept_todo(
+async fn intercept_todo(
     text: &str,
     todos: &std::sync::Arc<crate::todo::TodoStore>,
     native_tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
@@ -77,6 +77,7 @@ fn intercept_todo(
         && !text.contains("\"server.get")
         && !text.contains("\"shell.openInEditor\"")
         && !text.contains("\"git.")
+        && !text.contains("\"agentGateway.call")
         && !text.contains("\"filesystem.browse")
         && !text.contains("server.listWorktrees")
         && !text.contains("projects.listDirectories")
@@ -176,6 +177,7 @@ fn intercept_todo(
         && !crate::projects_provision::handles(tag)
         && !crate::mcp_connectors::handles(tag)
         && !crate::provider_usage::handles(tag)
+        && tag != "agentGateway.call"
         && !crate::textgen::handles(tag)
         && tag != "server.upsertKeybinding"
         && tag != "server.editKeybindings"
@@ -991,6 +993,11 @@ fn intercept_todo(
         crate::mcp_connectors::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
+    } else if tag == "agentGateway.call" {
+        crate::agent_gateway_mcp::handle_ws_call(&payload)
+            .await
+            .map(Some)
+            .map_err(error_json)
     } else if crate::provider_usage::handles(tag) {
         crate::provider_usage::handle(tag, &payload)
             .map(Some)
@@ -1185,7 +1192,7 @@ async fn relay(
         while let Some(msg) = client_rx.next().await {
             match msg {
                 Ok(ClientMessage::Text(t)) => {
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in) {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in).await {
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
                         }
@@ -1301,7 +1308,7 @@ async fn relay(
                             continue;
                         }
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in) {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in).await {
                         eprintln!("ws_relay: native todo reply");
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);

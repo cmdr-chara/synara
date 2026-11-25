@@ -419,6 +419,37 @@ fn semantic_target(args: &Value) -> Option<Value> {
     semantic.then(|| Value::Object(target))
 }
 
+/// WS surface for remote agent delegation, upstream `agentGateway.call`:
+/// a paired client invokes a gateway tool through the socket instead of
+/// standing up its own MCP connection. The caller context pins the thread so
+/// browser/computer tools act in that thread's scope.
+pub async fn handle_ws_call(payload: &Value) -> Result<Value, crate::todo::WsErr> {
+    let tool = payload
+        .get("tool")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .ok_or_else(|| crate::git_domain::err("invalid `tool`"))?;
+    let args = payload.get("arguments").cloned().unwrap_or_else(|| json!({}));
+    let thread = payload
+        .pointer("/caller/threadId")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    match call_tool(tool, &args, thread.as_deref()).await {
+        Ok(value) => Ok(json!({
+            "content": [{
+                "type": "text",
+                "text": serde_json::to_string_pretty(&value).unwrap_or_else(|_| value.to_string()),
+            }],
+            "structuredContent": value,
+        })),
+        Err(message) => Ok(json!({
+            "content": [{"type": "text", "text": message}],
+            "isError": true,
+        })),
+    }
+}
+
 async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     if name.starts_with("browser_") {
         return crate::browser_automation::call_browser_tool(name, args, thread).await;

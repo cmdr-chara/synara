@@ -455,6 +455,307 @@ fn handle_permission_request(
     Ok(())
 }
 
+
+fn question_id(index: usize, header: &str) -> String {
+    let mut slug = String::new();
+    let mut last_dash = false;
+    for ch in header.trim().to_lowercase().chars() {
+        if ch.is_ascii_alphanumeric() || ch == '_' || ch == '-' {
+            slug.push(ch);
+            last_dash = false;
+        } else if !last_dash {
+            slug.push('-');
+            last_dash = true;
+        }
+    }
+    let slug = slug.trim_matches('-');
+    if slug.is_empty() {
+        format!("question-{index}")
+    } else {
+        format!("question-{index}-{slug}")
+    }
+}
+
+fn form_unsupported(form: &Value) -> bool {
+    form.get("fields")
+        .and_then(Value::as_array)
+        .map(|fields| {
+            fields.iter().any(|field| {
+                field.get("type").and_then(Value::as_str) == Some("external")
+                    || field.get("hidden").and_then(Value::as_bool).unwrap_or(false)
+                    || field
+                        .get("when")
+                        .and_then(Value::as_array)
+                        .map(|w| !w.is_empty())
+                        .unwrap_or(false)
+            })
+        })
+        .unwrap_or(false)
+}
+
+fn normalized_questions(form: &Value) -> Vec<Value> {
+    let title = form.get("title").and_then(Value::as_str).unwrap_or("OpenCode form");
+    if form_unsupported(form) {
+        return vec![json!({
+            "id": question_id(0, title),
+            "header": title,
+            "question": "This form needs OpenCode's interface. Complete it there, or cancel it here.",
+            "options": [{"label": "Cancel", "description": "Cancel this OpenCode form"}],
+        })];
+    }
+    form.get("fields")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .enumerate()
+        .map(|(index, field)| {
+            let key = field.get("key").and_then(Value::as_str).unwrap_or("value");
+            let header = field.get("title").and_then(Value::as_str).unwrap_or(title);
+            let kind = field.get("type").and_then(Value::as_str).unwrap_or("string");
+            let mut options = Vec::new();
+            if kind == "boolean" {
+                options.push(json!({"label":"true","description":"Yes"}));
+                options.push(json!({"label":"false","description":"No"}));
+            } else if let Some(items) = field.get("options").and_then(Value::as_array) {
+                for option in items {
+                    let value = option.get("value").and_then(Value::as_str).unwrap_or("");
+                    let label = option.get("label").and_then(Value::as_str).unwrap_or(value);
+                    options.push(json!({
+                        "label": label,
+                        "description": option.get("description").and_then(Value::as_str).unwrap_or(value),
+                    }));
+                }
+            }
+            let mut q = json!({
+                "id": question_id(index, header),
+                "header": header,
+                "question": field.get("description").and_then(Value::as_str)
+                    .or(field.get("title").and_then(Value::as_str))
+                    .unwrap_or(key),
+                "options": options,
+            });
+            if kind == "multiselect" {
+                q["multiSelect"] = json!(true);
+            }
+            q
+        })
+        .collect()
+}
+
+fn scalar_answer_values(value: &Value) -> Vec<String> {
+    match value {
+        Value::Array(items) => items
+            .iter()
+            .filter_map(|item| match item {
+                Value::String(s) => Some(s.clone()),
+                Value::Number(n) => Some(n.to_string()),
+                Value::Bool(b) => Some(b.to_string()),
+                _ => None,
+            })
+            .collect(),
+        Value::String(s) => vec![s.clone()],
+        Value::Number(n) => vec![n.to_string()],
+        Value::Bool(b) => vec![b.to_string()],
+        _ => Vec::new(),
+    }
+}
+
+/// Convert Synara's object-shaped user-input answers into OpenCode V2's
+/// native form answer object, including option-label -> internal-value and
+/// boolean/number coercion from upstream's openCodeV2Answer boundary.
+fn opencode_form_answer(form: &Value, answers: &Value) -> Result<Value, WsErr> {
+    if form_unsupported(form) {
+        return Err(err("form must be completed in OpenCode or cancelled"));
+    }
+    let answers_obj = answers.as_object().cloned().unwrap_or_default();
+    let fields = form
+        .get("fields")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let title = form.get("title").and_then(Value::as_str).unwrap_or("OpenCode form");
+    let mut out = serde_json::Map::new();
+    for (index, field) in fields.iter().enumerate() {
+        let header = field.get("title").and_then(Value::as_str).unwrap_or(title);
+        let key = field.get("key").and_then(Value::as_str).unwrap_or("value");
+        let id = question_id(index, header);
+        let values = answers_obj
+            .get(&id)
+            .or_else(|| answers_obj.get(key))
+            .map(scalar_answer_values)
+            .unwrap_or_default();
+        if values.is_empty() {
+            if field.get("required").and_then(Value::as_bool).unwrap_or(false) {
+                return Err(err(format!("OpenCode requires an answer for {key}")));
+            }
+            continue;
+        }
+        let kind = field.get("type").and_then(Value::as_str).unwrap_or("string");
+        let mapped: Vec<String> = values
+            .iter()
+            .map(|value| {
+                field
+                    .get("options")
+                    .and_then(Value::as_array)
+                    .and_then(|options| {
+                        options.iter().find(|option| {
+                            let internal = option.get("value").and_then(Value::as_str).unwrap_or("");
+                            let label = option.get("label").and_then(Value::as_str).unwrap_or(internal);
+                            label == value
+                        })
+                    })
+                    .and_then(|option| option.get("value").and_then(Value::as_str).map(str::to_string))
+                    .unwrap_or_else(|| value.clone())
+            })
+            .collect();
+        match kind {
+            "multiselect" => {
+                out.insert(key.to_string(), json!(mapped));
+            }
+            "boolean" => {
+                match mapped.first().map(String::as_str) {
+                    Some("true") => out.insert(key.to_string(), json!(true)),
+                    Some("false") => out.insert(key.to_string(), json!(false)),
+                    _ => return Err(err(format!("invalid boolean answer for {key}"))),
+                };
+            }
+            "number" | "integer" => {
+                let value = mapped
+                    .first()
+                    .and_then(|v| v.parse::<f64>().ok())
+                    .ok_or_else(|| err(format!("invalid numeric answer for {key}")))?;
+                if kind == "integer" && value.fract() != 0.0 {
+                    return Err(err(format!("invalid integer answer for {key}")));
+                }
+                out.insert(key.to_string(), json!(value));
+            }
+            _ => {
+                out.insert(key.to_string(), json!(mapped.join(", ")));
+            }
+        }
+    }
+    Ok(Value::Object(out))
+}
+
+/// Bridge a native V2 form into Synara's structured user-input surface. Empty
+/// answers cancel the form, matching upstream's user-input cancellation
+/// contract; non-empty answers are converted positionally by question id.
+fn handle_form_request(
+    port: u16,
+    auth: &str,
+    event_session_id: &str,
+    data: &Value,
+    thread_id: &str,
+    turn_id: &str,
+    cancelled: &Arc<AtomicBool>,
+) -> Result<(), WsErr> {
+    let form = data.get("form").unwrap_or(data);
+    let request_id = form
+        .get("id")
+        .and_then(Value::as_str)
+        .filter(|id| !id.is_empty())
+        .ok_or_else(|| err("opencode form missing id"))?
+        .to_string();
+    let form_session_id = form
+        .get("sessionID")
+        .and_then(Value::as_str)
+        .filter(|id| !id.is_empty())
+        .unwrap_or(event_session_id)
+        .to_string();
+    let questions = normalized_questions(form);
+    if let Ok(c) = open_state_rw() {
+        let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+        let now = iso_now_ms();
+        let _ = c.execute(
+            "INSERT OR REPLACE INTO projection_pending_interactions \
+             (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision, response_command_id, response_requested_at, created_at, resolved_at) \
+             VALUES ('userInput', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+            params![request_id, thread_id, turn_id, now],
+        );
+        let _ = append_activity(
+            &c,
+            thread_id,
+            turn_id,
+            "info",
+            "user-input.requested",
+            "User input requested",
+            &json!({
+                "requestId": request_id,
+                "questions": questions,
+                "providerMethod": "form.created",
+                "providerPayload": form,
+            }),
+        );
+    }
+
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+    let mut encoded: Option<String> = None;
+    while encoded.is_none() {
+        if cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+            encoded = Some("{}".to_string());
+            break;
+        }
+        if let Ok(c) = open_state_rw() {
+            match c.query_row(
+                "SELECT decision FROM projection_pending_interactions \
+                 WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                params![thread_id, request_id],
+                |r| r.get::<_, Option<String>>(0),
+            ) {
+                Ok(Some(d)) => encoded = Some(d),
+                Ok(None) => {}
+                Err(_) => encoded = Some("{}".to_string()),
+            }
+        }
+        if encoded.is_none() {
+            std::thread::sleep(std::time::Duration::from_millis(250));
+        }
+    }
+    let encoded = encoded.unwrap_or_else(|| "{}".to_string());
+    let answers = serde_json::from_str::<Value>(&encoded).unwrap_or(json!({}));
+    let empty = answers.as_object().map(|o| {
+        o.values().all(|v| v.is_null())
+            || o.is_empty()
+            || (o.len() == 1 && o.values().any(|v| scalar_answer_values(v).iter().any(|x| x == "Cancel")))
+    }).unwrap_or(true);
+    if let Ok(c) = open_state_rw() {
+        let _ = c.execute(
+            "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+            params![thread_id, request_id],
+        );
+        let _ = append_activity(
+            &c,
+            thread_id,
+            turn_id,
+            "info",
+            "user-input.resolved",
+            "User input submitted",
+            &json!({"requestId": request_id, "answers": answers}),
+        );
+    }
+
+    let (method, path, body) = if empty {
+        (
+            "DELETE",
+            format!("/api/session/{form_session_id}/form/{request_id}"),
+            None,
+        )
+    } else {
+        let answer = opencode_form_answer(form, &answers)?;
+        (
+            "POST",
+            format!("/api/session/{form_session_id}/form/{request_id}/reply"),
+            Some(json!({"answer": answer})),
+        )
+    };
+    let (status, response_body) = http_request(port, method, &path, auth, body.as_ref())?;
+    if status >= 400 {
+        return Err(err(format!("opencode form reply HTTP {status}: {response_body}")));
+    }
+    Ok(())
+}
+
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&thread_id, &message_id, &text, &cwd) {
@@ -743,6 +1044,18 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         thread_id,
                         &turn_id,
                         &turn_runtime_mode,
+                        &cancelled,
+                    )?;
+                }
+                "form.created" if protocol == OpenCodeProtocol::V2 => {
+                    let data = v.get("data").cloned().unwrap_or(Value::Null);
+                    handle_form_request(
+                        port,
+                        &auth,
+                        &session_id,
+                        &data,
+                        thread_id,
+                        &turn_id,
                         &cancelled,
                     )?;
                 }

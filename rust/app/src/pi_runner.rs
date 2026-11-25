@@ -157,6 +157,9 @@ fn read_json_line(reader: &mut BufReader<ChildStdout>) -> Result<Option<Value>, 
 }
 
 fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str, instance_id: Option<&str>) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
+    // OpenCode-hosted models resolve through the SDK-native models.json
+    // composition point; refresh is cached, offline-aware, and silent on failure.
+    crate::pi_opencode_catalog::refresh_for_instance(instance_id);
     let session_id: String = thread_id
         .chars()
         .filter(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '-'))

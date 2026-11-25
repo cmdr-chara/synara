@@ -279,6 +279,135 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
     models
 }
 
+fn antigravity_effort_label(value: &str) -> String {
+    value
+        .split(|ch| ch == '-' || ch == '_' || ch == ' ')
+        .filter(|part| !part.is_empty())
+        .map(|part| {
+            let mut chars = part.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str().to_ascii_lowercase().as_str())
+                .unwrap_or_default()
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn parse_antigravity_model_label(line: &str) -> Option<(String, Option<String>)> {
+    let mut stripped = String::new();
+    let mut chars = line.chars().peekable();
+    while let Some(ch) = chars.next() {
+        if ch == '\u{1b}' && chars.peek() == Some(&'[') {
+            chars.next();
+            for inner in chars.by_ref() {
+                if inner.is_ascii_alphabetic() {
+                    break;
+                }
+            }
+        } else {
+            stripped.push(ch);
+        }
+    }
+    let stripped = stripped.trim();
+    if stripped.is_empty() {
+        return None;
+    }
+    let label_column = stripped
+        .split_once('\t')
+        .map(|(_, label)| label.trim())
+        .unwrap_or(stripped)
+        .trim_start_matches(['*', '•', '-', ' '])
+        .trim();
+    if label_column.is_empty() {
+        return None;
+    }
+    if label_column.ends_with(')') {
+        if let Some(open) = label_column.rfind('(') {
+            let model = label_column[..open].trim();
+            let effort = label_column[open + 1..label_column.len() - 1].trim();
+            if !model.is_empty() && !effort.is_empty() {
+                return Some((model.to_string(), Some(effort.to_ascii_lowercase())));
+            }
+        }
+    }
+    Some((label_column.to_string(), None))
+}
+
+fn parse_antigravity_models_output(output: &str) -> Vec<Value> {
+    let mut groups: Vec<(String, Vec<String>)> = Vec::new();
+    for line in output.lines() {
+        let Some((model, effort)) = parse_antigravity_model_label(line) else {
+            continue;
+        };
+        if let Some((_, efforts)) = groups.iter_mut().find(|(name, _)| *name == model) {
+            if let Some(effort) = effort {
+                if !efforts.contains(&effort) {
+                    efforts.push(effort);
+                }
+            }
+        } else {
+            groups.push((model, effort.into_iter().collect()));
+        }
+    }
+    let order = ["low", "medium", "high", "thinking"];
+    let defaults = [
+        ("Gemini 3.7 Flash", "high"),
+        ("Gemini 3.6 Flash", "medium"),
+        ("Gemini 3.5 Flash", "medium"),
+        ("Gemini 3.1 Pro", "low"),
+        ("Claude Sonnet 4.6", "thinking"),
+        ("Claude Opus 4.6", "thinking"),
+        ("Claude 3.7 Sonnet", "thinking"),
+        ("DeepSeek V4 Flash Max", "high"),
+        ("GPT-OSS 120B", "medium"),
+    ];
+    let mut models = Vec::new();
+    for (model, mut efforts) in groups {
+        efforts.sort_by_key(|effort| order.iter().position(|candidate| candidate == effort).unwrap_or(order.len()));
+        let preferred = defaults.iter().find(|(name, _)| *name == model).map(|(_, effort)| *effort);
+        let default = preferred
+            .filter(|preferred| efforts.iter().any(|effort| effort == preferred))
+            .or_else(|| efforts.first().map(String::as_str));
+        let mut object = json!({"slug": model, "name": model});
+        if !efforts.is_empty() {
+            object["supportedReasoningEfforts"] = json!(efforts
+                .iter()
+                .map(|effort| json!({"value": effort, "label": antigravity_effort_label(effort)}))
+                .collect::<Vec<_>>());
+            if let Some(default) = default {
+                object["defaultReasoningEffort"] = json!(default);
+            }
+        }
+        models.push(object);
+    }
+    models
+}
+
+fn antigravity_discovery_result() -> Result<Value, WsErr> {
+    let binary = crate::acp_runner::resolve_provider_cli("antigravity")
+        .ok_or_else(|| err("Antigravity does not support CLI discovery"))?;
+    let output = std::process::Command::new(&binary)
+        .arg("models")
+        .env("AGY_CLI_DISABLE_AUTO_UPDATE", "true")
+        .env("NO_BROWSER", "true")
+        .output()
+        .map_err(|e| err(format!("failed to execute agy models: {e}")))?;
+    if !output.status.success() {
+        return Err(err(format!(
+            "agy models exited with {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let models = parse_antigravity_models_output(&stdout);
+    if models.is_empty() {
+        return Err(err("Antigravity model discovery returned no models"));
+    }
+    Ok(json!({"models": models, "source": "antigravity-cli", "cached": false}))
+}
+
 fn grok_family(slug: &str) -> &'static str {
     let lower = slug.trim().to_ascii_lowercase();
     let mut major_minor = None;
@@ -599,11 +728,17 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         if provider == "grok" {
             return grok_discovery_result();
         }
+        if provider == "antigravity" {
+            return antigravity_discovery_result();
+        }
         if provider == "omp" {
             return omp_discovery_result();
         }
         if provider == "grok" {
             return grok_discovery_result();
+        }
+        if provider == "antigravity" {
+            return antigravity_discovery_result();
         }
         if provider == "claudeAgent" {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");

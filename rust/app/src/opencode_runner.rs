@@ -456,6 +456,31 @@ fn handle_permission_request(
 }
 
 
+
+fn opencode_permission_rules(runtime_mode: &str, interaction_mode: &str) -> Value {
+    if interaction_mode == "plan" {
+        let mut rules = vec![json!({"action":"*","resource":"*","effect":"deny"})];
+        for action in [
+            "read", "glob", "grep", "list", "lsp", "webfetch", "websearch", "codesearch",
+            "todoread", "todowrite", "question",
+        ] {
+            rules.push(json!({"action":action,"resource":"*","effect":"allow"}));
+        }
+        return json!(rules);
+    }
+    if runtime_mode == "full-access" {
+        return json!([{"action":"*","resource":"*","effect":"allow"}]);
+    }
+    let mut rules = vec![json!({"action":"*","resource":"*","effect":"ask"})];
+    for action in [
+        "shell", "edit", "webfetch", "websearch", "codesearch", "external_directory", "doom_loop",
+    ] {
+        rules.push(json!({"action":action,"resource":"*","effect":"ask"}));
+    }
+    rules.push(json!({"action":"question","resource":"*","effect":"allow"}));
+    json!(rules)
+}
+
 fn question_id(index: usize, header: &str) -> String {
     let mut slug = String::new();
     let mut last_dash = false;
@@ -796,6 +821,13 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             |r| r.get(0),
         )
         .unwrap_or_else(|_| "full-access".to_string());
+    let interaction_mode: String = conn
+        .query_row(
+            "SELECT interaction_mode FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "default".to_string());
     conn.execute(
         "INSERT OR REPLACE INTO projection_thread_sessions \
          (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
@@ -943,6 +975,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 Some(&json!({
                     "location": {"directory": cwd},
                     "title": format!("synara-{thread_id}"),
+                    "permissions": opencode_permission_rules(&turn_runtime_mode, &interaction_mode),
                 })),
             )?;
             if status >= 400 {
@@ -976,6 +1009,21 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 .to_string()
         };
         active_session_id = Some(session_id.clone());
+        if protocol == OpenCodeProtocol::V2 {
+            let path = format!("/api/session/{session_id}");
+            let (status, body) = http_request(
+                port,
+                "PATCH",
+                &path,
+                &auth,
+                Some(&json!({
+                    "permissions": opencode_permission_rules(&turn_runtime_mode, &interaction_mode),
+                })),
+            )?;
+            if status >= 400 && status != 404 && status != 405 {
+                return Err(err(format!("opencode permission rules HTTP {status}: {body}")));
+            }
+        }
         set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(&session_id))?;
 
         // Subscribe to events before prompting so no delta is missed.

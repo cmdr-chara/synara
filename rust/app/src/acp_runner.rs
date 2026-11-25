@@ -1215,6 +1215,258 @@ fn apply_omp_interaction_mode(rpc: &mut Rpc, session_id: &str, interaction_mode:
     );
 }
 
+fn normalize_cursor_reasoning(value: &str) -> Option<&'static str> {
+    match value.trim().to_ascii_lowercase().as_str() {
+        "low" => Some("low"),
+        "medium" => Some("medium"),
+        "high" => Some("high"),
+        "max" => Some("max"),
+        "xhigh" | "extra-high" | "extra high" => Some("xhigh"),
+        _ => None,
+    }
+}
+
+fn cursor_reasoning_label(value: &str) -> String {
+    match value {
+        "xhigh" => "Extra High".to_string(),
+        "max" => "Max".to_string(),
+        other => {
+            let mut chars = other.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
+                .unwrap_or_default()
+        }
+    }
+}
+
+fn humanize_cursor_model(value: &str) -> String {
+    value
+        .split(|ch| ch == '-' || ch == '_' || ch == '/')
+        .filter(|part| !part.is_empty())
+        .map(|part| match part.to_ascii_lowercase().as_str() {
+            "gpt" => "GPT".to_string(),
+            "ai" => "AI".to_string(),
+            "codex" => "Codex".to_string(),
+            "claude" => "Claude".to_string(),
+            "opus" => "Opus".to_string(),
+            "sonnet" => "Sonnet".to_string(),
+            "haiku" => "Haiku".to_string(),
+            "gemini" => "Gemini".to_string(),
+            "grok" => "Grok".to_string(),
+            other => {
+                let mut chars = other.chars();
+                chars
+                    .next()
+                    .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
+                    .unwrap_or_default()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn infer_cursor_upstream_provider(slug: &str, name: &str) -> (&'static str, &'static str) {
+    let token = format!("{slug} {name}").to_ascii_lowercase();
+    if token.contains("claude") {
+        ("anthropic", "Anthropic")
+    } else if token.contains("gemini") {
+        ("google", "Google")
+    } else if token.contains("grok") {
+        ("xai", "xAI")
+    } else if token.contains("kimi") {
+        ("moonshot", "Moonshot AI")
+    } else if token.contains("deepseek") {
+        ("deepseek", "DeepSeek")
+    } else if token.contains("qwen") {
+        ("alibaba", "Alibaba")
+    } else if token.contains("llama") {
+        ("meta", "Meta")
+    } else if token.contains("mistral") {
+        ("mistral", "Mistral")
+    } else if token.contains("nemotron") {
+        ("nvidia", "NVIDIA")
+    } else if token.contains("gpt") || token.contains("codex") || token.contains("o1") || token.contains("o3") || token.contains("o4") {
+        ("openai", "OpenAI")
+    } else {
+        ("cursor", "Cursor")
+    }
+}
+
+fn cursor_is_effort_config(option: &Value) -> bool {
+    let id = option.get("id").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+    let name = option.get("name").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+    id == "effort"
+        || id == "reasoning"
+        || name == "effort"
+        || name == "reasoning"
+        || name.contains("effort")
+        || name.contains("reasoning")
+        || option.get("category").and_then(Value::as_str) == Some("thought_level")
+}
+
+fn cursor_is_context_config(option: &Value) -> bool {
+    let id = option.get("id").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+    let name = option.get("name").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+    option.get("category").and_then(Value::as_str) == Some("model_config")
+        && (id == "context" || id == "context_size" || name.contains("context"))
+}
+
+fn build_cursor_acp_model_descriptor(model: &Value) -> Option<Value> {
+    let raw_slug = model.get("value").and_then(Value::as_str)?.trim();
+    if raw_slug.is_empty() {
+        return None;
+    }
+    let slug = if raw_slug == "default" { "auto" } else { raw_slug };
+    let config_options = model
+        .get("configOptions")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let name = model
+        .get("name")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string)
+        .unwrap_or_else(|| humanize_cursor_model(slug));
+    let (provider_id, provider_name) = infer_cursor_upstream_provider(slug, &name);
+    let mut descriptor = json!({
+        "slug": slug,
+        "name": name,
+        "upstreamProviderId": provider_id,
+        "upstreamProviderName": provider_name,
+    });
+    if let Some(effort_option) = config_options.iter().find(|option| cursor_is_effort_config(option)) {
+        let efforts = flatten_acp_config_options(effort_option.get("options").unwrap_or(&Value::Null))
+            .iter()
+            .filter_map(|entry| {
+                let raw = entry.get("value").and_then(Value::as_str)?;
+                let value = normalize_cursor_reasoning(raw)?;
+                Some(json!({"value": value, "label": cursor_reasoning_label(value)}))
+            })
+            .collect::<Vec<_>>();
+        if !efforts.is_empty() {
+            descriptor["supportedReasoningEfforts"] = json!(efforts);
+            if let Some(current) = effort_option
+                .get("currentValue")
+                .and_then(Value::as_str)
+                .and_then(normalize_cursor_reasoning)
+            {
+                descriptor["defaultReasoningEffort"] = json!(current);
+            }
+        }
+    }
+    if let Some(context_option) = config_options.iter().find(|option| cursor_is_context_config(option)) {
+        let current = context_option.get("currentValue").and_then(Value::as_str);
+        let contexts = flatten_acp_config_options(context_option.get("options").unwrap_or(&Value::Null))
+            .iter()
+            .filter_map(|entry| {
+                let value = entry.get("value").and_then(Value::as_str)?;
+                let label = if value.eq_ignore_ascii_case("1m") { "1M".to_string() } else { value.to_ascii_uppercase() };
+                Some(json!({"value": value, "label": label, "isDefault": Some(value) == current}))
+            })
+            .collect::<Vec<_>>();
+        if !contexts.is_empty() {
+            if let Some(current) = current {
+                descriptor["defaultContextWindow"] = json!(current);
+            }
+            descriptor["contextWindowOptions"] = json!(contexts);
+        }
+    }
+    if config_options.iter().any(|option| option.get("id").and_then(Value::as_str).is_some_and(|id| id.eq_ignore_ascii_case("thinking"))) {
+        descriptor["supportsThinkingToggle"] = json!(true);
+    }
+    if config_options.iter().any(|option| option.get("id").and_then(Value::as_str).is_some_and(|id| id.eq_ignore_ascii_case("fast"))) {
+        descriptor["supportsFastMode"] = json!(true);
+    }
+    Some(descriptor)
+}
+
+/// Discover Cursor's parameterized model matrix through its ACP extension.
+pub(crate) fn discover_cursor_models(cwd: &str) -> Result<Value, WsErr> {
+    let launch = acp_launch_profile_ex("cursor", "full-access", None, None, &[])
+        .ok_or_else(|| err("Cursor does not support ACP discovery"))?;
+    let mut command = Command::new(&launch.binary);
+    command
+        .args(&launch.args)
+        .current_dir(if cwd.is_empty() { "." } else { cwd })
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    for (key, value) in &launch.env {
+        command.env(key, value);
+    }
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `{}` for Cursor ACP discovery: {e}", launch.binary)))?;
+    let result = (|| -> Result<Value, WsErr> {
+        let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
+        let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
+        let mut rpc = Rpc {
+            stdin: Arc::new(Mutex::new(stdin)),
+            reader: BufReader::new(stdout),
+            next_id: 1,
+            pending: Vec::new(),
+            approval_ctx: None,
+        };
+        let initialize_result = rpc.call(
+            "initialize",
+            json!({
+                "protocolVersion": 1,
+                "clientCapabilities": {"_meta":{"parameterizedModelPicker":true}},
+                "clientInfo": {"name":"synara","version":"1.0.0"},
+            }),
+        )?;
+        let auth_methods = initialize_result
+            .get("authMethods")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        let setup = |rpc: &mut Rpc| rpc.call(
+            "session/new",
+            json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
+        );
+        let setup_result = match setup(&mut rpc) {
+            Ok(result) => result,
+            Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
+                let Some(method) = select_auth_method("cursor", &auth_methods) else { return Err(e) };
+                rpc.call("authenticate", json!({"methodId": method, "_meta": {"headless": true}}))?;
+                setup(&mut rpc)?
+            }
+            Err(e) => return Err(e),
+        };
+        let session_id = setup_result
+            .get("sessionId")
+            .and_then(Value::as_str)
+            .ok_or_else(|| err("Cursor ACP discovery session returned no sessionId"))?;
+        let response = rpc.call(
+            "cursor/list_available_models",
+            json!({"sessionId": session_id}),
+        )?;
+        let mut seen = std::collections::HashSet::new();
+        let models = response
+            .get("models")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .filter_map(build_cursor_acp_model_descriptor)
+            .filter(|model| {
+                let slug = model.get("slug").and_then(Value::as_str).unwrap_or("");
+                !slug.is_empty() && seen.insert(slug.to_string())
+            })
+            .collect::<Vec<_>>();
+        if models.is_empty() {
+            return Err(err("Cursor ACP model discovery returned no models"));
+        }
+        Ok(json!({"models": models, "source": "cursor.acp", "cached": false}))
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    result
+}
+
 pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
     discover_acp_config_models("droid", cwd, "reasoning_effort", "droid-acp")
 }

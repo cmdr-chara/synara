@@ -1171,7 +1171,13 @@ fn dynamic_discovery_result(provider: &str, payload: &Value) -> Option<Result<Va
                 Err(_) => antigravity_discovery_result(),
             })
         }
-        "cursor" => Some(cursor_discovery_result()),
+        "cursor" => {
+            let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+            Some(match crate::acp_runner::discover_cursor_models(cwd) {
+                Ok(result) => Ok(result),
+                Err(_) => cursor_discovery_result(),
+            })
+        }
         "droid" => {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
             Some(crate::acp_runner::discover_droid_models(cwd))

@@ -21,7 +21,7 @@ fn err(message: &str) -> WsErr {
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
-        "server.listProviderUsage" | "server.getProviderUsageSnapshot"
+        "server.listProviderUsage" | "server.getProviderUsageSnapshot" | "server.consumeCodexResetCredit"
     )
 }
 
@@ -222,6 +222,180 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             };
             Ok(snapshot_from(provider, &record))
         }
+        "server.consumeCodexResetCredit" => consume_codex_reset_credit(payload).map(|outcome| json!({"outcome": outcome})),
         _ => Err(err("unhandled provider usage tag")),
     }
+}
+
+// ---- Codex reset-credit consumption ----
+//
+// Mirrors upstream consumeCodexResetCredit: a short-lived `codex app-server`
+// process verifies the account still matches, checks whether any rate-limit
+// window is at >=90% used, then consumes the reset credit idempotently. The
+// official CLI owns all credential material; Synara never sees a token.
+
+fn can_use_reset_credit(usage: &Value) -> Option<bool> {
+    let core = usage
+        .pointer("/rateLimitsByLimitId/codex")
+        .cloned()
+        .or_else(|| usage.get("rateLimits").cloned())?;
+    let mut saw_window = false;
+    let mut exhausted = false;
+    for key in ["primary", "secondary"] {
+        if let Some(percent) = core
+            .get(key)
+            .and_then(|w| w.get("usedPercent"))
+            .and_then(Value::as_f64)
+        {
+            saw_window = true;
+            if percent >= 90.0 {
+                exhausted = true;
+            }
+        }
+    }
+    if saw_window { Some(exhausted) } else { None }
+}
+
+struct ShortLivedRpc {
+    stdin: std::process::ChildStdin,
+    lines: std::sync::mpsc::Receiver<String>,
+    next_id: i64,
+}
+
+impl ShortLivedRpc {
+    fn spawn() -> Result<(Self, std::process::Child), WsErr> {
+        use std::io::BufRead;
+        use std::process::{Command, Stdio};
+        let binary = crate::codex_runner::codex_binary();
+        let mut child = Command::new(&binary)
+            .args(["app-server"])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .map_err(|e| err(&format!("could not launch `codex app-server`: {e}")))?;
+        let stdin = child
+            .stdin
+            .take()
+            .ok_or_else(|| err("codex app-server stdin unavailable"))?;
+        let stdout = child
+            .stdout
+            .take()
+            .ok_or_else(|| err("codex app-server stdout unavailable"))?;
+        let (tx, rx) = std::sync::mpsc::channel::<String>();
+        std::thread::spawn(move || {
+            let mut reader = std::io::BufReader::new(stdout);
+            loop {
+                let mut line = String::new();
+                match reader.read_line(&mut line) {
+                    Ok(0) | Err(_) => break,
+                    Ok(_) => {
+                        if tx.send(line).is_err() {
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        Ok((Self { stdin, lines: rx, next_id: 1 }, child))
+    }
+
+    fn write(&mut self, msg: &Value) -> Result<(), WsErr> {
+        use std::io::Write;
+        self.stdin
+            .write_all(msg.to_string().as_bytes())
+            .and_then(|_| self.stdin.write_all(b"\n"))
+            .and_then(|_| self.stdin.flush())
+            .map_err(|e| err(&format!("codex write: {e}")))
+    }
+
+    fn call(&mut self, method: &str, params: Value) -> Result<Value, WsErr> {
+        let id = self.next_id;
+        self.next_id += 1;
+        self.write(&json!({"jsonrpc":"2.0","id":id,"method":method,"params":params}))?;
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+        loop {
+            let remaining = deadline.saturating_duration_since(std::time::Instant::now());
+            if remaining.is_zero() {
+                return Err(err(&format!("codex app-server timed out on {method}")));
+            }
+            let line = self
+                .lines
+                .recv_timeout(remaining)
+                .map_err(|_| err(&format!("codex app-server timed out on {method}")))?;
+            let trimmed = line.trim();
+            if trimmed.is_empty() {
+                continue;
+            }
+            let Ok(v) = serde_json::from_str::<Value>(trimmed) else {
+                continue;
+            };
+            if v.get("id").and_then(Value::as_i64) != Some(id) {
+                continue;
+            }
+            if let Some(error) = v.get("error") {
+                let message = error
+                    .get("message")
+                    .and_then(Value::as_str)
+                    .unwrap_or("codex app-server error");
+                return Err(err(&format!("{method} failed: {message}")));
+            }
+            return Ok(v.get("result").cloned().unwrap_or(Value::Null));
+        }
+    }
+}
+
+fn consume_codex_reset_credit(payload: &Value) -> Result<&'static str, WsErr> {
+    let account_id = payload
+        .get("accountId")
+        .and_then(Value::as_str)
+        .filter(|s| !s.is_empty())
+        .ok_or_else(|| err("server.consumeCodexResetCredit requires accountId"))?;
+    let idempotency_key = payload
+        .get("idempotencyKey")
+        .and_then(Value::as_str)
+        .filter(|s| !s.is_empty())
+        .ok_or_else(|| err("server.consumeCodexResetCredit requires idempotencyKey"))?;
+    let credit_id = payload.get("creditId").and_then(Value::as_str);
+
+    let (mut rpc, mut child) = ShortLivedRpc::spawn()?;
+    let result = (|| -> Result<&'static str, WsErr> {
+        rpc.call(
+            "initialize",
+            json!({
+                "clientInfo": {"name": "synara_desktop", "title": "Synara Desktop", "version": "0.1.0"},
+                "capabilities": {"experimentalApi": true},
+            }),
+        )?;
+        rpc.write(&json!({"jsonrpc":"2.0","method":"initialized"}))?;
+
+        let usage = rpc.call("account/rateLimits/read", json!({}))?;
+        let usage_account = usage.get("accountId").and_then(Value::as_str).unwrap_or("");
+        if usage_account != account_id {
+            return Err(err("The Codex account changed. Refresh usage before using a reset."));
+        }
+        let Some(can_use) = can_use_reset_credit(&usage) else {
+            return Err(err(
+                "Current Codex usage is unavailable. Retry the same attempt when it returns.",
+            ));
+        };
+        if !can_use {
+            return Ok("nothingToReset");
+        }
+        let mut params = json!({"idempotencyKey": idempotency_key});
+        if let Some(cid) = credit_id {
+            params["creditId"] = json!(cid);
+        }
+        let result = rpc.call("account/rateLimitResetCredit/consume", params)?;
+        match result.get("outcome").and_then(Value::as_str) {
+            Some("reset") => Ok("reset"),
+            Some("nothingToReset") => Ok("nothingToReset"),
+            Some("noCredit") => Ok("noCredit"),
+            Some("alreadyRedeemed") => Ok("alreadyRedeemed"),
+            _ => Err(err("Codex returned an unknown reset result. Retry the same attempt.")),
+        }
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    result
 }

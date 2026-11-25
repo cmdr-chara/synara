@@ -167,7 +167,7 @@ pub fn cancel_turn(thread_id: &str) {
     }
 }
 
-fn codex_binary() -> String {
+pub(crate) fn codex_binary() -> String {
     for key in ["SYNARA_CODEX_CLI", "CODEX_BINARY_PATH"] {
         if let Ok(p) = std::env::var(key) {
             if !p.trim().is_empty() {

@@ -128,6 +128,9 @@ mod icons {
     pub const SORT: &[u8] =
         include_bytes!("../assets/icons/sort-arrow-up-down.svg");
     pub const FILTER: &[u8] = include_bytes!("../assets/icons/filter-1.svg");
+    // Code review header (upstream central-icons arrow-top-bottom / filter-2).
+    pub const ARROW_TOP_BOTTOM: &[u8] = include_bytes!("../assets/icons/arrow-top-bottom.svg");
+    pub const FILTER_2: &[u8] = include_bytes!("../assets/icons/filter-2.svg");
     pub const PLUS_MED: &[u8] = include_bytes!("../assets/icons/plus-medium.svg");
     pub const PENCIL: &[u8] = include_bytes!("../assets/icons/pencil.svg");
     pub const TRASH: &[u8] = include_bytes!("../assets/icons/trash-can.svg");
@@ -22445,6 +22448,8 @@ impl Render for Native {
         let gh_filter_weak = gh_sort_weak.clone();
         let gh_actions_weak = gh_sort_weak.clone();
 
+        // Upstream Code review header buttons: 24px, 14px icons at muted 58%.
+        let gh_icon_ink = theme.foreground.opacity(0.58);
         let pullreq_panel = v_flex()
             .flex_1()
             .h_full()
@@ -22457,9 +22462,10 @@ impl Render for Native {
                     .pb_2()
                     .items_center()
                     .child(
+                        // Upstream panel title: font-display (Cal Sans) 17px.
                         div()
-                            .text_base()
-                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_size(px(17.))
+                            .font_family("Cal Sans")
                             .child("Code review"),
                     )
                     .child(div().flex_1())
@@ -22467,8 +22473,8 @@ impl Render for Native {
                         Button::new("gh-sort-menu")
                             .ghost()
                             .compact()
-                            .icon(svg_icon(icons::SORT).size(px(14.)))
-                            .dropdown_caret(true)
+                            .size(px(24.))
+                            .icon(svg_icon(icons::ARROW_TOP_BOTTOM).size(px(14.)).text_color(gh_icon_ink))
                             .dropdown_menu(move |menu, _, _| {
                                 let mut m = menu.min_w(px(170.));
                                 for (value, label) in [("created", "Newest"), ("updated", "Recently updated")] {
@@ -22487,13 +22493,13 @@ impl Render for Native {
                                 m
                             }),
                     )
-                    .child(div().w(px(4.)))
+                    .child(div().w(px(6.)))
                     .child(
                         Button::new("gh-filter-menu")
                             .ghost()
                             .compact()
-                            .icon(svg_icon(icons::FILTER).size(px(14.)))
-                            .dropdown_caret(true)
+                            .size(px(24.))
+                            .icon(svg_icon(icons::FILTER_2).size(px(14.)).text_color(gh_icon_ink))
                             .dropdown_menu(move |menu, _, _| {
                                 let mut m = menu.min_w(px(150.));
                                 for (value, label) in [("open", "Open"), ("closed", "Closed"), ("merged", "Merged")] {
@@ -22512,12 +22518,13 @@ impl Render for Native {
                                 m
                             }),
                     )
-                    .child(div().w(px(4.)))
+                    .child(div().w(px(6.)))
                     .child(
                         Button::new("gh-more-menu")
                             .ghost()
                             .compact()
-                            .icon(svg_icon(icons::MORE).size(px(14.)))
+                            .size(px(24.))
+                            .icon(svg_icon(icons::MORE).size(px(14.)).text_color(gh_icon_ink))
                             .dropdown_menu(move |menu, _, _| {
                                 let weak = gh_actions_weak.clone();
                                 menu.min_w(px(150.)).item(

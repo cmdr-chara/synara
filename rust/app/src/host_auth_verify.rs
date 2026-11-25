@@ -406,3 +406,95 @@ mod tests {
         assert_eq!(jwk_thumbprint(&jwk), expected);
     }
 }
+
+pub const MINT_REQUEST_JWT_TYP: &str = "synara-mint-request+jwt";
+pub const MINT_REQUEST_MAX_AGE_SECONDS: u64 = 2 * 60;
+pub const SYNARA_DEVICE_ISSUER: &str = "synara-device";
+
+pub struct MintedSessionCredential {
+    pub credential: String,
+    pub user_id: String,
+    pub device_jkt: String,
+    pub expires_at_seconds: u64,
+}
+
+/// Mints a session credential for a trusted device, port of upstream
+/// hostAuth/mintService.ts. The mint request is a proof-of-possession JWT
+/// signed by the device key. Upstream additionally requires an account grant
+/// inside it; the local build has no account authority, so the approval row
+/// in remote_device_trust — written only by an owner action — is the
+/// authorization, and `authorize` supplies both the check and the generation.
+pub fn mint_session_credential(
+    mint_request_jwt: &str,
+    identity: &HostIdentity,
+    environment_id: &str,
+    key_generation: u64,
+    authorize: impl FnOnce(&str) -> Result<u64, String>,
+) -> Result<MintedSessionCredential, String> {
+    let now = now_seconds();
+    let (header, claims, signature, signing_input) = split_jwt(mint_request_jwt)?;
+    let jwk = claims
+        .get("publicKeyJwk")
+        .cloned()
+        .ok_or_else(|| "mint request carries no device key".to_string())?;
+    let kty = jwk.get("kty").and_then(Value::as_str).unwrap_or("");
+    let crv = jwk.get("crv").and_then(Value::as_str).unwrap_or("");
+    let algorithm = match (kty, crv) {
+        ("OKP", "Ed25519") => "EdDSA",
+        ("EC", "P-256") => "ES256",
+        _ => return Err("mint request key type unsupported".to_string()),
+    };
+    if header.get("typ").and_then(Value::as_str) != Some(MINT_REQUEST_JWT_TYP)
+        || header.get("alg").and_then(Value::as_str) != Some(algorithm)
+    {
+        return Err("mint request protected header is invalid".to_string());
+    }
+    let x = jwk.get("x").and_then(Value::as_str).unwrap_or("");
+    if algorithm == "EdDSA" {
+        verify_ed25519(&signing_input, &signature, x)
+            .map_err(|_| "mint request signature invalid".to_string())?;
+    } else {
+        let y = jwk.get("y").and_then(Value::as_str).unwrap_or("");
+        verify_p256(&signing_input, &signature, x, y)
+            .map_err(|_| "mint request signature invalid".to_string())?;
+    }
+    let str_of = |key: &str| claims.get(key).and_then(Value::as_str).unwrap_or("");
+    let iat = claims.get("iat").and_then(Value::as_u64).unwrap_or(0);
+    let exp = claims.get("exp").and_then(Value::as_u64).unwrap_or(0);
+    if str_of("iss") != SYNARA_DEVICE_ISSUER
+        || str_of("aud") != format!("synara-host:{environment_id}")
+        || exp <= iat
+        || exp - iat > MINT_REQUEST_MAX_AGE_SECONDS
+        || now + JWT_CLOCK_TOLERANCE_SECONDS < iat
+        || now > exp + JWT_CLOCK_TOLERANCE_SECONDS
+    {
+        return Err("mint request claims are invalid".to_string());
+    }
+    let device_jkt = jwk_thumbprint(&jwk);
+    let trust_generation = authorize(&device_jkt)?;
+    if trust_generation < 1 {
+        return Err("Device has no current local approval".to_string());
+    }
+    let subject = str_of("sub");
+    let expires_at = now + SESSION_CREDENTIAL_MAX_AGE_SECONDS;
+    let header_out = json!({"alg": "EdDSA", "typ": SESSION_CREDENTIAL_JWT_TYP});
+    let payload = json!({
+        "trustGeneration": trust_generation,
+        "cnf": {"jkt": device_jkt},
+        "keyGeneration": key_generation,
+        "scope": [HOST_CONNECT_SCOPE],
+        "iss": format!("synara-host:{environment_id}"),
+        "sub": subject,
+        "aud": SYNARA_SESSION_AUDIENCE,
+        "iat": now,
+        "exp": expires_at,
+        "jti": crate::orchestration_engine::uuid_v4(),
+    });
+    let credential = identity.sign_jwt(header_out, payload)?;
+    Ok(MintedSessionCredential {
+        credential,
+        user_id: subject.to_string(),
+        device_jkt,
+        expires_at_seconds: expires_at,
+    })
+}

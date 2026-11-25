@@ -145,7 +145,7 @@ impl HostIdentity {
 
     /// Hand-rolled EdDSA JWT: upstream uses jose SignJWT, the wire format is
     /// identical — base64url(header).base64url(payload).base64url(signature).
-    fn sign_jwt(&self, header: Value, payload: Value) -> Result<String, String> {
+    pub(crate) fn sign_jwt(&self, header: Value, payload: Value) -> Result<String, String> {
         let header_b64 = b64url(
             serde_json::to_string(&header)
                 .map_err(|e| e.to_string())?

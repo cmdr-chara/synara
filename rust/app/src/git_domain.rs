@@ -24,6 +24,7 @@ const EMPTY_TREE: &str = "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
 const HANDLED: &[&str] = &[
     "git.status",
     "git.githubRepository",
+    "git.summarizeDiff",
     "git.readWorkingTreeDiff",
     "git.blameLine",
     "git.readFileAtRev",
@@ -957,6 +958,62 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
     match tag {
         "git.status" => git_status(&cwd_of(payload)?).map(Some),
         "git.githubRepository" => github_repository(&cwd_of(payload)?).map(Some),
+                "git.summarizeDiff" => {
+            let cwd = payload
+                .get("cwd")
+                .and_then(Value::as_str)
+                .ok_or_else(|| err("git.summarizeDiff requires cwd"))?;
+            let scope = payload
+                .get("scope")
+                .and_then(Value::as_str)
+                .unwrap_or("workingTree");
+            let mut args = diff_args(scope, None, cwd);
+            args.insert(1, "-U3".to_string());
+            let patch_full = stdout(cwd, &args.iter().map(String::as_str).collect::<Vec<_>>(), "git")
+                .unwrap_or_default();
+            let patch: String = patch_full.chars().take(50_000).collect();
+            if patch.trim().is_empty() {
+                return Ok(Some(json!({"summary": "## Summary\n- No changes in scope.\n\n## Files Changed\n- Not available."})));
+            }
+            let prompt = [
+                "You write GitHub-style engineering summaries for git diffs.",
+                "Return a JSON object with key: summary.",
+                "Respond with only the JSON object, no prose and no code fences.",
+                "Rules:",
+                "- summary must be markdown",
+                "- include headings '## Summary' and '## Files Changed'",
+                "- under each heading, use concise bullet points",
+                "- describe only changes directly supported by the diff",
+                "- mention risks or follow-ups only when clearly implied by the patch",
+                "- do not invent tests, tickets, or product context",
+                "",
+                "Diff patch:",
+                &patch,
+            ]
+            .join("\n");
+            let schema = json!({
+                "type": "object",
+                "properties": {"summary": {"type": "string"}},
+                "required": ["summary"],
+                "additionalProperties": false,
+            });
+            let model = payload
+                .get("textGenerationModel")
+                .and_then(Value::as_str)
+                .or_else(|| payload.pointer("/textGenerationModelSelection/model").and_then(Value::as_str));
+            let structured = crate::textgen::claude_json_generate(&prompt, &schema, model)?;
+            let raw = structured
+                .get("summary")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .trim();
+            let summary = if raw.is_empty() {
+                "## Summary\n- Update the current diff.\n\n## Files Changed\n- Not available.".to_string()
+            } else {
+                raw.to_string()
+            };
+            Ok(Some(json!({"summary": summary})))
+        }
         "git.readWorkingTreeDiff" => read_working_tree_diff(&cwd_of(payload)?, payload).map(Some),
         "git.blameLine" => blame_line(&cwd_of(payload)?, payload).map(Some),
         "git.readFileAtRev" => read_file_at_rev(&cwd_of(payload)?, payload).map(Some),

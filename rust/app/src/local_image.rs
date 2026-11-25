@@ -3,8 +3,8 @@
 //! an allowlisted root are served, the decision uses the realpath of both file
 //! and root (symlink escapes fail closed), the extension allowlist matches
 //! upstream shared/localPreviewFiles.ts, and bytes never come from inline
-//! payloads. Grant tokens, Range streaming for video, and the multi-home
-//! overlay enumeration are documented gaps — the default CODEX_HOME plus the
+//! payloads. Grant tokens and the multi-home overlay enumeration
+//! are documented gaps — the default CODEX_HOME plus the
 //! SYNARA_HOME overlay cover the configurations this server actually launches.
 
 use axum::{
@@ -59,6 +59,87 @@ fn mime_for(path: &str) -> &'static str {
         ".pdf" => "application/pdf",
         _ => "application/octet-stream",
     }
+}
+
+
+/// Range-aware file response shared by `/api/local-image` and `/attachments`.
+/// Semantics match upstream streamedFileResponse exactly: `bytes=a-b`,
+/// `bytes=a-`, `bytes=-suffix`, 416 with `Content-Range: bytes */size` on
+/// unsatisfiable ranges, and `Accept-Ranges: bytes` on every response.
+pub(crate) fn file_response_with_range(
+    path: &Path,
+    range_header: Option<&str>,
+    content_type: &str,
+    cache_control: &str,
+) -> Response {
+    let size = match std::fs::metadata(path) {
+        Ok(m) => m.len(),
+        Err(_) => return StatusCode::NOT_FOUND.into_response(),
+    };
+    if size > MAX_PREVIEW_BYTES {
+        return StatusCode::PAYLOAD_TOO_LARGE.into_response();
+    }
+    let mut start: u64 = 0;
+    let mut end: u64 = size.saturating_sub(1);
+    let mut partial = false;
+    if let Some(range) = range_header {
+        partial = true;
+        if let Some(spec) = range.strip_prefix("bytes=") {
+            let mut parts = spec.splitn(2, '-');
+            let first = parts.next().unwrap_or("");
+            let second = parts.next().unwrap_or("");
+            if !first.is_empty() || !second.is_empty() {
+                if first.is_empty() {
+                    let suffix: u64 = second.parse().unwrap_or(u64::MAX);
+                    start = size.saturating_sub(suffix);
+                } else {
+                    start = first.parse().unwrap_or(u64::MAX);
+                    if !second.is_empty() {
+                        end = second.parse::<u64>().unwrap_or(u64::MAX).min(end);
+                    }
+                }
+            } else {
+                start = u64::MAX;
+            }
+        } else {
+            start = u64::MAX;
+        }
+        if start == u64::MAX || start > end || start >= size {
+            return (
+                StatusCode::RANGE_NOT_SATISFIABLE,
+                [
+                    (header::CONTENT_RANGE, format!("bytes */{size}")),
+                    (header::ACCEPT_RANGES, "bytes".to_string()),
+                ],
+            )
+                .into_response();
+        }
+    }
+    let length = end.saturating_sub(start) + 1;
+    let data = match std::fs::read(path) {
+        Ok(bytes) => {
+            let s = (start as usize).min(bytes.len());
+            let e = ((end as usize) + 1).min(bytes.len());
+            bytes[s..e].to_vec()
+        }
+        Err(_) => return StatusCode::NOT_FOUND.into_response(),
+    };
+    let status = if partial && length < size {
+        StatusCode::PARTIAL_CONTENT
+    } else {
+        StatusCode::OK
+    };
+    let mut response = axum::response::Response::builder()
+        .status(status)
+        .header(header::CONTENT_TYPE, content_type)
+        .header(header::CACHE_CONTROL, cache_control)
+        .header(header::ACCEPT_RANGES, "bytes");
+    if status == StatusCode::PARTIAL_CONTENT {
+        response = response.header(header::CONTENT_RANGE, format!("bytes {start}-{end}/{size}"));
+    }
+    response
+        .body(axum::body::Body::from(data))
+        .unwrap_or_else(|_| StatusCode::INTERNAL_SERVER_ERROR.into_response())
 }
 
 fn is_inside(path: &Path, root: &Path) -> bool {
@@ -156,7 +237,7 @@ fn query_param<'a>(query: &'a str, key: &str) -> Option<String> {
     None
 }
 
-pub async fn local_image(RawQuery(query): RawQuery) -> Response {
+pub async fn local_image(RawQuery(query): RawQuery, headers: axum::http::HeaderMap) -> Response {
     let query = query.unwrap_or_default();
     let path_param = query_param(&query, "path");
     let cwd_param = query_param(&query, "cwd");
@@ -166,17 +247,18 @@ pub async fn local_image(RawQuery(query): RawQuery) -> Response {
     let Some((real, _len)) = resolve_allowed(requested, cwd_param.as_deref()) else {
         return StatusCode::NOT_FOUND.into_response();
     };
-    let Ok(bytes) = std::fs::read(&real) else {
+    if !real.is_file() {
         return StatusCode::NOT_FOUND.into_response();
-    };
-    (
-        [
-            (header::CONTENT_TYPE, mime_for(real.to_str().unwrap_or(""))),
-            (header::CACHE_CONTROL, "private, no-store"),
-        ],
-        bytes,
+    }
+    let range = headers
+        .get(header::RANGE)
+        .and_then(|v| v.to_str().ok());
+    file_response_with_range(
+        &real,
+        range,
+        mime_for(real.to_str().unwrap_or("")),
+        "private, no-store",
     )
-        .into_response()
 }
 
 #[cfg(test)]

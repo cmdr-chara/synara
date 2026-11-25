@@ -9560,8 +9560,20 @@ impl Native {
             } else {
                 "#FFFFFF"
             };
-            colors.insert("accent".to_string(), json!(acc));
-            colors.insert("primary".to_string(), json!(acc));
+            // Upstream dark themes draw accent text, switches and focus in
+            // --color-text-accent = mix(accent, white, 0.3 + contrast * 0.15),
+            // with contrast on the Codex curve (baseline 60); light themes use
+            // the accent itself (theme.logic.ts buildDarkDerivedTokens).
+            let shown = if dark {
+                let v = contrast * 100.;
+                let curved = v / 100. + ((v - 60.) / 60.) * 0.7;
+                let strength = if v <= 60. { curved } else { 0.6 + (curved - 0.6) * 2. };
+                mix_hex(&acc, 0xffffff, (0.3 + strength * 0.15).clamp(0., 1.))
+            } else {
+                acc.clone()
+            };
+            colors.insert("accent".to_string(), json!(shown));
+            colors.insert("primary".to_string(), json!(shown));
             colors.insert("primary_foreground".to_string(), json!(fg));
             colors.insert("accent_foreground".to_string(), json!(fg));
         }

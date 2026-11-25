@@ -17,7 +17,7 @@ pub fn handles(tag: &str) -> bool {
 }
 
 /// Run one JSON-mode generation and return the structured output object.
-fn claude_json_generate(prompt: &str, schema: &Value, model: Option<&str>) -> Result<Value, WsErr> {
+pub(crate) fn claude_json_generate(prompt: &str, schema: &Value, model: Option<&str>) -> Result<Value, WsErr> {
     use std::io::Write;
     use std::process::{Command, Stdio};
 

@@ -518,10 +518,24 @@ fn handle_can_use_tool(
     }
 }
 
+fn selected_claude_effort(model_selection: &Value) -> Option<String> {
+    let effort = model_selection
+        .pointer("/options/effort")
+        .and_then(Value::as_str)
+        .or_else(|| model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str))?
+        .trim();
+    match effort {
+        "low" | "medium" | "high" | "xhigh" | "max" => Some(effort.to_string()),
+        "ultracode" => Some("xhigh".to_string()),
+        _ => None,
+    }
+}
+
 fn spawn_claude(
     cwd: &str,
     runtime_mode: &str,
     model: Option<&str>,
+    effort: Option<&str>,
     resume: Option<&str>,
 ) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
     let mut args = vec![
@@ -540,6 +554,10 @@ fn spawn_claude(
     if let Some(model) = model {
         args.push("--model".to_string());
         args.push(model.to_string());
+    }
+    if let Some(effort) = effort {
+        args.push("--effort".to_string());
+        args.push(effort.to_string());
     }
     if let Some(sid) = resume {
         args.push("--resume".to_string());
@@ -729,7 +747,7 @@ pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None)?;
+    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None)?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
     let result = initialize_cli_response(&stdin, &mut reader).map(|init| claude_catalog_from_initialize(&init));
@@ -822,20 +840,27 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let selected_model = model_selection_json
+    let model_selection = model_selection_json
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
+        .unwrap_or(Value::Null);
+    let selected_model = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_effort = selected_claude_effort(&model_selection);
     let launch_key = format!(
-        "{}|{}|{}|{}",
+        "{}|{}|{}|{}|{}",
         claude_binary(),
         cwd,
         runtime_mode,
-        selected_model.as_deref().unwrap_or("")
+        selected_model.as_deref().unwrap_or(""),
+        selected_effort.as_deref().unwrap_or("")
     );
     let (mut child, stdin_raw, stdout) = spawn_claude(
         &cwd,
         &runtime_mode,
         selected_model.as_deref(),
+        selected_effort.as_deref(),
         stored_session.as_deref(),
     )?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
@@ -883,7 +908,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             |r| r.get(0),
         )
         .unwrap_or_else(|_| "full-access".to_string());
-    let selected_model: Option<String> = conn
+    let model_selection: Value = conn
         .query_row(
             "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
             params![thread_id],
@@ -892,18 +917,24 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .ok()
         .flatten()
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|v| v.get("model").and_then(Value::as_str).map(str::to_string));
+        .unwrap_or(Value::Null);
+    let selected_model: Option<String> = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_effort = selected_claude_effort(&model_selection);
     let cwd = if !cwd.is_empty() && std::path::Path::new(cwd).is_dir() {
         cwd.to_string()
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
     let launch_key = format!(
-        "{}|{}|{}|{}",
+        "{}|{}|{}|{}|{}",
         claude_binary(),
         cwd,
         turn_runtime_mode,
-        selected_model.as_deref().unwrap_or("")
+        selected_model.as_deref().unwrap_or(""),
+        selected_effort.as_deref().unwrap_or("")
     );
 
     let turn_id = uuid_v4();
@@ -939,6 +970,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             &cwd,
             &turn_runtime_mode,
             selected_model.as_deref(),
+            selected_effort.as_deref(),
             stored_session.as_deref(),
         )?;
         let stdin = Arc::new(Mutex::new(stdin_raw));

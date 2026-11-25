@@ -1561,11 +1561,25 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
             .approval_ctx
             .as_ref()
             .map(|ctx| ctx.tool_calls.clone());
+        let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
+        let prompt_text = crate::provider_attachments::append_file_attachments_prompt_block(
+            text,
+            &attachments,
+            false,
+        );
+        let mut prompt_parts = Vec::new();
+        if !prompt_text.trim().is_empty() {
+            prompt_parts.push(json!({"type": "text", "text": prompt_text}));
+        }
+        prompt_parts.extend(crate::provider_attachments::image_blocks(&attachments)?);
+        if prompt_parts.is_empty() {
+            return Err(err("turn requires non-empty text or attachments"));
+        }
         let result = rpc.call_streaming(
             "session/prompt",
             json!({
                 "sessionId": session_id,
-                "prompt": [{"type": "text", "text": text}],
+                "prompt": prompt_parts,
             }),
             &cancelled,
             |v| {

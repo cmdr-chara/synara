@@ -702,6 +702,7 @@ fn spawn_claude(
     settings: Option<&Value>,
     resume: Option<&str>,
     thread_id: Option<&str>,
+    instance_id: Option<&str>,
 ) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
     let mut args = vec![
         "--output-format".to_string(),
@@ -758,7 +759,7 @@ fn spawn_claude(
     // non-default instance without an explicit home is forced into its
     // isolated provider home, upstream `buildClaudeInstanceProcessEnv`.
     let settings = crate::server_settings::current();
-    if let Some(instance) = crate::provider_instances::resolve_instance(&settings, None, Some("claudeAgent")) {
+    if let Some(instance) = crate::provider_instances::resolve_instance(&settings, instance_id, Some("claudeAgent")) {
         for (key, value) in crate::provider_instances::instance_start_environment(&instance) {
             command.env(key, value);
         }
@@ -940,7 +941,7 @@ pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None, None, None)?;
+    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None, None, None, None)?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
     let result = initialize_cli_response(&stdin, &mut reader).map(|init| claude_catalog_from_initialize(&init));
@@ -1040,13 +1041,14 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     let selected_effort = selected_claude_effort(&model_selection);
     let selected_settings = selected_claude_settings(&model_selection);
     let launch_key = format!(
-        "{}|{}|{}|{}|{}|{}",
+        "{}|{}|{}|{}|{}|{}|{}",
         claude_binary(),
         cwd,
         runtime_mode,
         selected_model.as_deref().unwrap_or(""),
         selected_effort.as_deref().unwrap_or(""),
-        selected_settings
+        selected_settings,
+        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
     );
     let (mut child, stdin_raw, stdout) = spawn_claude(
         &cwd,
@@ -1056,6 +1058,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         Some(&selected_settings),
         stored_session.as_deref(),
         Some(thread_id),
+        model_selection.get("instanceId").and_then(Value::as_str),
     )?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
@@ -1167,6 +1170,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             Some(&selected_settings),
             stored_session.as_deref(),
             Some(thread_id),
+            model_selection.get("instanceId").and_then(Value::as_str),
         )?;
         let stdin = Arc::new(Mutex::new(stdin_raw));
         let mut reader = BufReader::new(stdout);

@@ -15555,16 +15555,21 @@ impl Render for Native {
                 let n = needs_count;
                 format!("{n} thing{} need{} you.", if n == 1 { "" } else { "s" }, if n == 1 { "s" } else { "" })
             };
+            // Upstream inbox sections: rounded-2xl (18px), bg-muted, which is
+            // foreground at ~0.8% in dark mode (nearly flush with the page).
             let tile = |children: gpui::AnyElement| {
-                div().rounded(px(16.)).bg(soft_bg).child(children)
+                let fill = if dark_ui { theme.foreground.opacity(0.008) } else { soft_bg };
+                div().rounded(px(18.)).bg(fill).child(children)
             };
 
             let header = h_flex()
                 .items_baseline()
                 .gap_2()
                 .child(
+                    // Upstream h1: text-3xl (30px/36px) medium, tracking-tight.
                     div()
-                        .text_size(px(24.))
+                        .text_size(px(30.))
+                        .line_height(px(36.))
                         .font_weight(FontWeight::MEDIUM)
                         .child("Inbox"),
                 )
@@ -16384,12 +16389,14 @@ impl Render for Native {
                 )
                 .child(right_col);
 
+            // Upstream page: p-10 under the top bar, gap-7 between sections
+            // (title lands 40px below the 44px bar, like the web Inbox).
             let mut page = v_flex()
                 .flex_1()
-                .px(px(32.))
-                .pt(px(74.))
+                .px(px(24.))
+                .pt(px(20.))
                 .pb(px(32.))
-                .gap_4()
+                .gap(px(28.))
                 .child(header)
                 .child(grid);
 
@@ -21326,15 +21333,19 @@ impl Render for Native {
         };
 
         // /tasks — rail only: List|Kanban toggle top-right, centered column.
+        // Upstream puts List|Kanban in the top bar, so it doesn't push the
+        // column down: overlay it at the top-right instead of a row.
         let tasks_pane = v_flex()
             .flex_1()
             .h_full()
+            .relative()
             .child(
                 h_flex()
-                    .w_full()
+                    .absolute()
+                    .top_0()
+                    .right_0()
                     .pt(px(9.))
                     .pr(px(19.))
-                    .child(div().flex_1())
                     .child(
                         h_flex()
                             .gap(px(2.))
@@ -21356,9 +21367,11 @@ impl Render for Native {
                     .flex_1()
                     .items_center()
                     .child(
+                        // Upstream: max-w-[36rem] column with px-6 + header px-3
+                        // = 504px of text, title 40px below the top bar.
                         v_flex()
-                            .w(px(560.))
-                            .pt(px(36.))
+                            .w(px(504.))
+                            .pt(px(32.))
                             .child(
                                 div()
                                     .text_size(px(24.))

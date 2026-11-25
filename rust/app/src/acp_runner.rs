@@ -1860,6 +1860,108 @@ impl Rpc {
                     self.reply_auto(v);
                 }
             }
+            "cursor/ask_question" => {
+                if let Some(ctx) = self.approval_ctx.clone() {
+                    self.handle_cursor_ask_question(v, &ctx);
+                } else if let Some(rid) = v.get("id").cloned() {
+                    let _ = self.write_raw(&json!({
+                        "jsonrpc": "2.0",
+                        "id": rid,
+                        "result": {"answers": {}},
+                    }));
+                }
+            }
+            "cursor/create_plan" => {
+                let params = v.get("params").cloned().unwrap_or(Value::Null);
+                if let Some(ctx) = self.approval_ctx.clone() {
+                    let plan_markdown = params
+                        .get("plan")
+                        .and_then(Value::as_str)
+                        .filter(|t| !t.is_empty())
+                        .unwrap_or("# Plan\n\n(Cursor did not supply plan text.)");
+                    if let Ok(c) = open_state_rw() {
+                        let _ = append_activity(
+                            &c,
+                            &ctx.thread_id,
+                            &ctx.turn_id,
+                            "info",
+                            "turn.proposed.completed",
+                            "Plan proposed",
+                            &json!({
+                                "planMarkdown": plan_markdown,
+                                "providerPayload": params,
+                                "source": "acp.cursor.extension",
+                                "method": "cursor/create_plan",
+                            }),
+                        );
+                    }
+                }
+                if let Some(rid) = v.get("id").cloned() {
+                    let _ = self.write_raw(&json!({
+                        "jsonrpc": "2.0",
+                        "id": rid,
+                        "result": {"accepted": true},
+                    }));
+                }
+            }
+            "cursor/update_todos" => {
+                let params = v.get("params").cloned().unwrap_or(Value::Null);
+                if let Some(ctx) = self.approval_ctx.clone() {
+                    let steps: Vec<Value> = params
+                        .get("todos")
+                        .and_then(Value::as_array)
+                        .map(|todos| {
+                            todos
+                                .iter()
+                                .filter_map(|t| {
+                                    let step = t
+                                        .get("content")
+                                        .and_then(Value::as_str)
+                                        .map(str::trim)
+                                        .filter(|x| !x.is_empty())
+                                        .or_else(|| {
+                                            t.get("title")
+                                                .and_then(Value::as_str)
+                                                .map(str::trim)
+                                                .filter(|x| !x.is_empty())
+                                        })?;
+                                    let status = match t.get("status").and_then(Value::as_str).unwrap_or("") {
+                                        s if s.contains("completed") || s.contains("done") => "completed",
+                                        s if s.contains("progress") || s.contains("doing") => "inProgress",
+                                        _ => "pending",
+                                    };
+                                    Some(json!({"step": step, "status": status}))
+                                })
+                                .collect()
+                        })
+                        .unwrap_or_default();
+                    if let Ok(c) = open_state_rw() {
+                        let _ = append_activity(
+                            &c,
+                            &ctx.thread_id,
+                            &ctx.turn_id,
+                            "info",
+                            "turn.plan.updated",
+                            "Plan updated",
+                            &json!({
+                                "plan": steps,
+                                "providerPayload": params,
+                                "source": "acp.cursor.extension",
+                                "method": "cursor/update_todos",
+                            }),
+                        );
+                    }
+                }
+                // Cursor CLI sends this as a request with an id; older clients
+                // send a bare notification. Reply only when a reply is expected.
+                if let Some(rid) = v.get("id").cloned() {
+                    let _ = self.write_raw(&json!({
+                        "jsonrpc": "2.0",
+                        "id": rid,
+                        "result": {"accepted": true},
+                    }));
+                }
+            }
             "fs/read_text_file" | "fs/write_text_file" | "terminal/create"
             | "terminal/output" | "terminal/wait_for_exit" | "terminal/kill"
             | "terminal/release" => {
@@ -1888,6 +1990,127 @@ impl Rpc {
                 "result": {"outcome": {"outcome": "selected", "optionId": option_id}},
             }));
         }
+    }
+
+    /// cursor/ask_question: the interactive extension upstream routes through
+    /// user-input.requested/resolved runtime events. Persist a userInput
+    /// pending interaction, block on the user's decision (or cancel/timeout),
+    /// then answer the agent with the collected answers keyed by question id.
+    fn handle_cursor_ask_question(&mut self, v: &Value, ctx: &ApprovalCtx) {
+        let params = v.get("params").cloned().unwrap_or(Value::Null);
+        let Some(rid) = v.get("id").cloned() else { return };
+        let questions: Vec<Value> = params
+            .get("questions")
+            .and_then(Value::as_array)
+            .map(|qs| {
+                qs.iter()
+                    .map(|q| {
+                        let options: Vec<Value> = q
+                            .get("options")
+                            .and_then(Value::as_array)
+                            .map(|os| {
+                                os.iter()
+                                    .filter_map(|o| {
+                                        o.get("label").and_then(Value::as_str).map(|l| {
+                                            json!({"label": l, "description": l})
+                                        })
+                                    })
+                                    .collect()
+                            })
+                            .unwrap_or_default();
+                        let options = if options.is_empty() {
+                            vec![json!({"label": "OK", "description": "Continue"})]
+                        } else {
+                            options
+                        };
+                        json!({
+                            "id": q.get("id").cloned().unwrap_or(Value::Null),
+                            "header": "Question",
+                            "question": q.get("prompt").cloned().unwrap_or(Value::Null),
+                            "multiSelect": q.get("allowMultiple").and_then(Value::as_bool).unwrap_or(false),
+                            "options": options,
+                        })
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+        if questions.is_empty() {
+            let _ = self.write_raw(&json!({
+                "jsonrpc": "2.0",
+                "id": rid,
+                "error": {"code": -32602, "message": "cursor/ask_question did not include a renderable question."},
+            }));
+            return;
+        }
+        let request_id = uuid_v4();
+        let now = iso_now_ms();
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+            let _ = c.execute(
+                "INSERT OR REPLACE INTO projection_pending_interactions                  (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision, response_command_id, response_requested_at, created_at, resolved_at)                  VALUES ('userInput', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+                rusqlite::params![request_id, ctx.thread_id, ctx.turn_id, now],
+            );
+            let _ = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "info",
+                "user-input.requested",
+                "User input requested",
+                &json!({
+                    "requestId": request_id,
+                    "questions": questions,
+                    "providerMethod": "cursor/ask_question",
+                    "providerPayload": params,
+                }),
+            );
+        }
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+        let mut answers_json: Option<String> = None;
+        while answers_json.is_none() {
+            if ctx.cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+                answers_json = Some("{}".to_string());
+                break;
+            }
+            if let Ok(c) = open_state_rw() {
+                match c.query_row(
+                    "SELECT decision FROM projection_pending_interactions                      WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                    rusqlite::params![ctx.thread_id, request_id],
+                    |r| r.get::<_, Option<String>>(0),
+                ) {
+                    Ok(Some(value)) => answers_json = Some(value),
+                    Ok(None) => {}
+                    Err(_) => answers_json = Some("{}".to_string()),
+                }
+            }
+            if answers_json.is_none() {
+                std::thread::sleep(std::time::Duration::from_millis(250));
+            }
+        }
+        let answers: Value = answers_json
+            .as_deref()
+            .and_then(|raw| serde_json::from_str(raw).ok())
+            .unwrap_or(json!({}));
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute(
+                "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                rusqlite::params![ctx.thread_id, request_id],
+            );
+            let _ = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "info",
+                "user-input.resolved",
+                "User input resolved",
+                &json!({"requestId": request_id, "answers": answers}),
+            );
+        }
+        let _ = self.write_raw(&json!({
+            "jsonrpc": "2.0",
+            "id": rid,
+            "result": {"answers": answers},
+        }));
     }
 
     /// Upstream approval gating (pendingInteractions + approval.requested/

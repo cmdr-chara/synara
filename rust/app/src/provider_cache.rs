@@ -279,6 +279,184 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
     models
 }
 
+fn grok_family(slug: &str) -> &'static str {
+    let lower = slug.trim().to_ascii_lowercase();
+    let mut major_minor = None;
+    if let Some(rest) = lower.strip_prefix("grok-") {
+        let mut parts = rest.split('.');
+        if let (Some(major), Some(minor)) = (parts.next(), parts.next()) {
+            let minor_digits: String = minor.chars().take_while(|ch| ch.is_ascii_digit()).collect();
+            if let (Ok(major), Ok(minor)) = (major.parse::<u32>(), minor_digits.parse::<u32>()) {
+                major_minor = Some((major, minor));
+            }
+        }
+    }
+    let versioned_new = major_minor.is_some_and(|(major, minor)| major > 4 || (major == 4 && minor >= 5));
+    if !versioned_new
+        && (lower.contains("build") || lower.contains("code-fast") || lower == "grok-4" || lower == "grok-4.3" || lower.starts_with("grok-4.3-"))
+    {
+        return "build";
+    }
+    match major_minor {
+        Some((major, minor)) if major == 4 && minor == 5 => "4.5",
+        Some((major, minor)) if major > 4 || (major == 4 && minor >= 6) => "4.6",
+        _ => "build",
+    }
+}
+
+fn grok_effort(value: &str, label: &str, description: Option<&str>, default: bool) -> Value {
+    let mut effort = json!({"value": value, "label": label});
+    if let Some(description) = description {
+        effort["description"] = json!(description);
+    }
+    if default {
+        effort["isDefault"] = json!(true);
+    }
+    effort
+}
+
+fn grok_reasoning_efforts(slug: &str) -> (Vec<Value>, Option<&'static str>) {
+    let cli = |value: &'static str, label: &'static str, default: bool| {
+        let description = match value {
+            "low" => Some("Quick, fast implementations"),
+            "medium" => Some("Balanced effort with standard implementation and testing"),
+            "high" => Some("Higher implementation quality with extensive reasoning"),
+            "xhigh" => Some("Highest effort and reasoning level"),
+            _ => None,
+        };
+        grok_effort(value, label, description, default)
+    };
+    match grok_family(slug) {
+        "build" => (
+            vec![
+                grok_effort("none", "None", None, false),
+                grok_effort("low", "Low", None, true),
+                grok_effort("medium", "Medium", None, false),
+                grok_effort("high", "High", None, false),
+            ],
+            Some("low"),
+        ),
+        "4.5" => (
+            vec![
+                cli("low", "Low", false),
+                cli("medium", "Medium", false),
+                cli("high", "High", true),
+            ],
+            Some("high"),
+        ),
+        _ => (
+            vec![
+                cli("low", "Low", false),
+                cli("medium", "Medium", false),
+                cli("high", "High", true),
+                cli("xhigh", "Extra High", false),
+            ],
+            Some("high"),
+        ),
+    }
+}
+
+fn humanize_grok_slug(slug: &str) -> String {
+    if slug == "grok-build-0.1" {
+        return "Grok Build 0.1".to_string();
+    }
+    if slug == "grok-build" {
+        return "Grok 4.3".to_string();
+    }
+    slug.split('-')
+        .map(|part| {
+            let mut chars = part.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
+                .unwrap_or_default()
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn parse_grok_models_output(output: &str) -> Vec<(String, bool)> {
+    let mut models = Vec::new();
+    let mut in_available = false;
+    let mut fallback_default = None;
+    for line in output.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            if in_available && !models.is_empty() {
+                break;
+            }
+            continue;
+        }
+        let lower = trimmed.to_ascii_lowercase();
+        if let Some(rest) = lower.strip_prefix("default model:") {
+            fallback_default = trimmed[trimmed.len() - rest.len()..].split_whitespace().next().map(str::to_string);
+            continue;
+        }
+        if lower.starts_with("available models:") {
+            in_available = true;
+            continue;
+        }
+        if !in_available {
+            continue;
+        }
+        let entry = trimmed.strip_prefix("* ").or_else(|| trimmed.strip_prefix("- ")).unwrap_or(trimmed);
+        let end = entry
+            .find(|ch: char| !(ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '/' | '-')))
+            .unwrap_or(entry.len());
+        let slug = entry[..end].trim();
+        if slug.is_empty() {
+            continue;
+        }
+        let is_default = entry[end..].to_ascii_lowercase().contains("default");
+        models.push((slug.to_string(), is_default));
+    }
+    if models.is_empty() {
+        if let Some(default) = fallback_default {
+            models.push((default, true));
+        }
+    }
+    models.sort_by_key(|(_, is_default)| !*is_default);
+    models
+}
+
+fn grok_discovery_result() -> Result<Value, WsErr> {
+    let binary = crate::acp_runner::resolve_provider_cli("grok")
+        .ok_or_else(|| err("Grok does not support CLI discovery"))?;
+    let output = std::process::Command::new(&binary)
+        .arg("models")
+        .output()
+        .map_err(|e| err(format!("failed to execute grok models: {e}")))?;
+    if !output.status.success() {
+        return Err(err(format!(
+            "grok models exited with {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut seen = std::collections::HashSet::new();
+    let mut models = Vec::new();
+    for (slug, _) in parse_grok_models_output(&stdout) {
+        if !seen.insert(slug.to_ascii_lowercase()) {
+            continue;
+        }
+        let (efforts, default_effort) = grok_reasoning_efforts(&slug);
+        let mut model = json!({
+            "slug": slug,
+            "name": humanize_grok_slug(&slug),
+            "supportedReasoningEfforts": efforts,
+        });
+        if let Some(default_effort) = default_effort {
+            model["defaultReasoningEffort"] = json!(default_effort);
+        }
+        models.push(model);
+    }
+    if models.is_empty() {
+        return Err(err("Grok model discovery returned no models"));
+    }
+    Ok(json!({"models": models, "source": "grok-cli", "cached": false, "degraded": false}))
+}
+
 fn omp_discovery_result() -> Result<Value, WsErr> {
     let binary = crate::acp_runner::resolve_provider_cli("omp")
         .ok_or_else(|| err("OMP does not support CLI discovery"))?;
@@ -418,8 +596,14 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         if provider == "omp" {
             return omp_discovery_result();
         }
+        if provider == "grok" {
+            return grok_discovery_result();
+        }
         if provider == "omp" {
             return omp_discovery_result();
+        }
+        if provider == "grok" {
+            return grok_discovery_result();
         }
         if provider == "claudeAgent" {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");

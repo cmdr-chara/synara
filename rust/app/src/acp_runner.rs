@@ -1092,6 +1092,9 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
             )?;
             apply_droid_interaction_mode(&mut rpc, &session_id, &interaction_mode, &turn_runtime_mode);
         }
+        if provider == "cursor" {
+            apply_cursor_session_configuration(&mut rpc, &session_id, &model_value);
+        }
         if provider == "antigravity" {
             apply_antigravity_session_configuration(
                 &mut rpc,
@@ -1182,6 +1185,50 @@ fn apply_droid_interaction_mode(
         let _ = rpc.call(
             "session/set_config_option",
             json!({"sessionId": session_id, "configId": "autonomy_level", "value": mode}),
+        );
+    }
+}
+
+fn apply_cursor_session_configuration(rpc: &mut Rpc, session_id: &str, model_selection: &Value) {
+    let Some(raw_model) = model_selection.get("model").and_then(Value::as_str).map(str::trim).filter(|value| !value.is_empty()) else {
+        return;
+    };
+    let base_model = raw_model.split('[').next().unwrap_or(raw_model).trim();
+    let acp_model = if base_model.is_empty() || base_model == "auto" { "default" } else { base_model };
+    let _ = rpc.call(
+        "session/set_config_option",
+        json!({"sessionId": session_id, "configId": "model", "value": acp_model}),
+    );
+    if let Some(effort) = model_selection
+        .pointer("/options/reasoningEffort")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        let key = if base_model.contains("claude") || base_model.contains("grok") { "effort" } else { "reasoning" };
+        let value = if effort == "xhigh" { "extra-high" } else { effort };
+        let _ = rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": key, "value": value}),
+        );
+    }
+    for (option_key, config_id) in [("thinking", "thinking"), ("fastMode", "fast")] {
+        if let Some(value) = model_selection.pointer(&format!("/options/{option_key}")).and_then(Value::as_bool) {
+            let _ = rpc.call(
+                "session/set_config_option",
+                json!({"sessionId": session_id, "configId": config_id, "type": "boolean", "value": value}),
+            );
+        }
+    }
+    if let Some(context) = model_selection
+        .pointer("/options/contextWindow")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
+        let _ = rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "context", "value": context}),
         );
     }
 }
@@ -2425,6 +2472,9 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     reasoning_effort.as_deref(),
                 )?;
                 apply_droid_interaction_mode(&mut rpc, &session_id, &ctx_mode.1, &ctx_mode.0);
+            }
+            if provider == "cursor" {
+                apply_cursor_session_configuration(&mut rpc, &session_id, &model_value);
             }
             if provider == "antigravity" {
                 apply_antigravity_session_configuration(

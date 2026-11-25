@@ -20,6 +20,7 @@ pub fn handles(tag: &str) -> bool {
         "provider.listModels"
             | "provider.compactThread"
             | "provider.getComposerCapabilities"
+            | "provider.listCommands"
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
             | "server.updateProvider"
@@ -37,6 +38,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "provider.listModels" => list_models(payload),
         "provider.compactThread" => compact_thread(payload),
         "provider.getComposerCapabilities" => composer_capabilities(payload),
+        "provider.listCommands" => list_commands(payload),
         "server.listExternalMcpIntegrations" => list_external_mcp_integrations(),
         "server.createExternalMcpIntegration" => create_external_mcp_integration(payload),
         "server.revokeExternalMcpIntegration" => revoke_external_mcp_integration(payload),
@@ -197,6 +199,16 @@ fn discover_opencode_models() -> Result<Vec<Value>, WsErr> {
     }
 }
 
+fn pi_discovery_result(payload: &Value) -> Result<Value, WsErr> {
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    let models = crate::pi_runner::discover_models(cwd)?;
+    Ok(json!({
+        "models": models,
+        "source": "cli-rpc",
+        "cached": false,
+    }))
+}
+
 fn opencode_discovery_result() -> Result<Value, WsErr> {
     let models = discover_opencode_models()?;
     Ok(json!({
@@ -229,6 +241,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         if provider == "opencode" {
             return opencode_discovery_result();
         }
+        if provider == "pi" {
+            return pi_discovery_result(payload);
+        }
         return Err(err("no provider model catalog cache"));
     };
     let doc: Value = serde_json::from_str(&text).map_err(|e| err(e.to_string()))?;
@@ -260,6 +275,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     if provider == "opencode" {
         return opencode_discovery_result();
     }
+    if provider == "pi" {
+        return pi_discovery_result(payload);
+    }
     Err(err(format!(
         "no cached model catalog for {provider}/{instance}"
     )))
@@ -289,6 +307,23 @@ fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
         _ => return Err(err(format!("unsupported provider '{provider}'"))),
     };
     Ok(caps)
+}
+
+
+fn list_commands(payload: &Value) -> Result<Value, WsErr> {
+    let provider = payload
+        .get("provider")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("provider is required"))?;
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    if provider == "pi" {
+        return Ok(json!({
+            "commands": crate::pi_runner::discover_commands(cwd)?,
+            "source": "cli-rpc",
+            "cached": false,
+        }));
+    }
+    Ok(json!({"commands": [], "source": "unsupported", "cached": false}))
 }
 
 fn compact_thread(payload: &Value) -> Result<Value, WsErr> {

@@ -181,6 +181,120 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str)
 }
 
 
+
+/// Run one discovery command against a temporary Pi RPC process. The process
+/// uses `--no-session`, so discovery cannot mutate the user's session store.
+fn rpc_query(cwd: &str, command: &str) -> Result<Value, WsErr> {
+    let mut cmd = Command::new(pi_binary());
+    cmd.arg("--mode")
+        .arg("rpc")
+        .arg("--no-session")
+        .arg("--no-context-files")
+        .current_dir(if cwd.is_empty() { "/" } else { cwd })
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    let mut child = cmd.spawn().map_err(|e| err(format!("pi spawn: {e}")))?;
+    let mut stdin = child.stdin.take().ok_or_else(|| err("pi stdin"))?;
+    let stdout = child.stdout.take().ok_or_else(|| err("pi stdout"))?;
+    let command_value = json!({"type":command});
+    stdin
+        .write_all(command_value.to_string().as_bytes())
+        .and_then(|_| stdin.write_all(b"\n"))
+        .and_then(|_| stdin.flush())
+        .map_err(|e| err(format!("pi write: {e}")))?;
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let mut reader = BufReader::new(stdout);
+        let mut line = String::new();
+        while reader.read_line(&mut line).map(|n| n > 0).unwrap_or(false) {
+            if let Ok(value) = serde_json::from_str::<Value>(line.trim_end_matches(['\n','\r'])) {
+                let _ = tx.send(value);
+            }
+            line.clear();
+        }
+    });
+    let deadline = std::time::Duration::from_secs(20);
+    let started = std::time::Instant::now();
+    let mut result = None;
+    while started.elapsed() < deadline {
+        match rx.recv_timeout(std::time::Duration::from_millis(200)) {
+            Ok(value)
+                if value.get("type").and_then(Value::as_str) == Some("response")
+                    && value.get("command").and_then(Value::as_str) == Some(command) =>
+            {
+                result = Some(value);
+                break;
+            }
+            Ok(_) => {}
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break,
+        }
+    }
+    let _ = child.kill();
+    let _ = child.wait();
+    let response = result.ok_or_else(|| err(format!("pi {command} timed out")))?;
+    if response.get("success").and_then(Value::as_bool) != Some(true) {
+        return Err(err(format!(
+            "pi {command} failed: {}",
+            response.get("error").and_then(Value::as_str).unwrap_or("unknown error")
+        )));
+    }
+    Ok(response.get("data").cloned().unwrap_or(json!({})))
+}
+
+pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
+    let data = rpc_query(cwd, "get_available_models")?;
+    let models = data
+        .get("models")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    Ok(models
+        .iter()
+        .filter_map(|model| {
+            let provider = model.get("provider").and_then(Value::as_str)?;
+            let id = model.get("id").and_then(Value::as_str)?;
+            let name = model.get("name").and_then(Value::as_str).unwrap_or(id);
+            let efforts = if model.get("reasoning").and_then(Value::as_bool) == Some(true) {
+                vec!["low", "medium", "high"]
+            } else {
+                Vec::new()
+            };
+            Some(json!({
+                "slug": format!("{provider}/{id}"),
+                "providerID": provider,
+                "modelID": id,
+                "name": name,
+                "variants": [],
+                "supportedReasoningEfforts": efforts,
+            }))
+        })
+        .collect())
+}
+
+pub fn discover_commands(cwd: &str) -> Result<Vec<Value>, WsErr> {
+    let data = rpc_query(cwd, "get_commands")?;
+    let commands = data
+        .get("commands")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    Ok(commands
+        .iter()
+        .filter_map(|command| {
+            let name = command.get("name").and_then(Value::as_str)?;
+            let mut out = json!({"name": name});
+            if let Some(description) = command.get("description").and_then(Value::as_str) {
+                if !description.is_empty() {
+                    out["description"] = json!(description);
+                }
+            }
+            Some(out)
+        })
+        .collect())
+}
+
 /// Compact a warm Pi session using the documented RPC command. Pi performs the
 /// summarization inside the official CLI and returns the compact response on
 /// stdout, so no transcript or credential material crosses Synara's process.

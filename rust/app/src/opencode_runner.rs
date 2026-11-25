@@ -5,8 +5,9 @@
 //!
 //! v1 vertical slice: per-turn server process, session create/resume, async
 //! prompt, SSE event stream translated into projection writes, terminal on
-//! session.idle/error. Later slices: pooled warm servers, permission/question
-//! reconciliation, model/agent/command discovery, MCP injection config.
+//! session.idle/error, and best-effort gateway MCP injection on V2 servers.
+//! Later slices: pooled warm servers, permission/question reconciliation,
+//! model/agent/command discovery, and native V2 session/prompt contracts.
 
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -134,6 +135,83 @@ fn http_request(
         .and_then(|s| s.parse::<u16>().ok())
         .unwrap_or(0);
     Ok((status, body_text))
+}
+
+
+fn urlencode_component(value: &str) -> String {
+    value
+        .bytes()
+        .map(|byte| match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                (byte as char).to_string()
+            }
+            _ => format!("%{byte:02X}"),
+        })
+        .collect()
+}
+
+/// Install the Synara gateway as a remote MCP server on OpenCode V2. The
+/// registry is server/directory scoped, so this runtime intentionally uses a
+/// thread-owned server process. Older V1 servers do not expose the endpoint;
+/// injection is optional there and the turn continues without it.
+fn install_gateway_mcp(port: u16, auth: &str, directory: &str) -> bool {
+    let location = format!(
+        "location%5Bdirectory%5D={}",
+        urlencode_component(directory)
+    );
+    let config = json!({
+        "config": {
+            "type": "remote",
+            "url": crate::agent_gateway_mcp::agent_gateway_url(),
+            "headers": {
+                "Authorization": format!(
+                    "Bearer {}",
+                    crate::agent_gateway_mcp::agent_gateway_token()
+                ),
+            },
+            "oauth": false,
+            "disabled": false,
+        }
+    });
+    let path = format!("/api/experimental/mcp/synara?{location}");
+    let Ok((status, _)) = http_request(port, "PUT", &path, auth, Some(&config)) else {
+        return false;
+    };
+    if status == 404 || status == 405 {
+        return false;
+    }
+    if status >= 400 {
+        eprintln!("opencode_runner: gateway MCP registration HTTP {status}");
+        return false;
+    }
+    for _ in 0..90 {
+        let list_path = format!("/api/mcp?{location}");
+        if let Ok((list_status, body)) = http_request(port, "GET", &list_path, auth, None) {
+            if list_status < 400 {
+                if let Ok(parsed) = serde_json::from_str::<Value>(&body) {
+                    let entries = parsed
+                        .get("data")
+                        .and_then(Value::as_array)
+                        .cloned()
+                        .unwrap_or_default();
+                    if let Some(entry) = entries.iter().find(|entry| {
+                        entry.get("name").and_then(Value::as_str) == Some("synara")
+                    }) {
+                        match entry.pointer("/status/status").and_then(Value::as_str) {
+                            Some("connected") => return true,
+                            Some("failed") => {
+                                eprintln!("opencode_runner: gateway MCP connection failed");
+                                return false;
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            }
+        }
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
+    false
 }
 
 fn open_sse_stream(port: u16, auth: &str) -> Result<TcpStream, WsErr> {
@@ -274,6 +352,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             std::thread::sleep(std::time::Duration::from_millis(200));
         }
 
+        install_gateway_mcp(port, &auth, &cwd);
+
         // Reuse the stored session when present; otherwise create one.
         let session_id = if let Some(sid) = stored_session.clone() {
             sid
@@ -300,13 +380,18 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
 
         // Subscribe to events before prompting so no delta is missed.
         let sse = open_sse_stream(port, &auth)?;
+        let prompt_text = if stored_session.is_none() {
+            format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
+        } else {
+            text.to_string()
+        };
         let (status, body) = http_request(
             port,
             "POST",
             &format!("/session/{session_id}/prompt_async"),
             &auth,
             Some(&json!({
-                "parts": [{"type": "text", "text": text}],
+                "parts": [{"type": "text", "text": prompt_text}],
             })),
         )?;
         if status >= 400 {

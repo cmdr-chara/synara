@@ -26,6 +26,7 @@ mod git_handoff;
 mod git_action_registry;
 mod git_pr;
 mod github_inbox;
+mod local_image;
 mod list_worktrees;
 mod native_ws;
 mod orchestration_reads;
@@ -105,6 +106,7 @@ async fn main() {
         .merge(ws_relay::router())
         .merge(agent_gateway_mcp::router())
         .route("/__tap_client", axum::routing::post(original::tap_client))
+        .route("/api/local-image", axum::routing::get(local_image::local_image))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

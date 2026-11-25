@@ -118,6 +118,25 @@ async fn main() {
                 std::process::exit(1);
             }
         }
+        // Host identity is established once at startup like upstream: the
+        // pairing scope, credential minting and tunnel admission all derive
+        // from it, so a fresh home must have it before any remote surface is
+        // touched. Existing identities load unchanged.
+        {
+            let state_dir = todo::state_dir();
+            let secrets_dir = format!("{state_dir}/secrets");
+            let _ = std::fs::create_dir_all(&secrets_dir);
+            let identity_path = host_identity::host_identity_path(&secrets_dir);
+            match host_identity::read_host_identity(&identity_path) {
+                Ok(Some(_)) => {}
+                Ok(None) => {
+                    if host_identity::generate_and_persist_host_identity(&identity_path).is_ok() {
+                        eprintln!("host identity: generated");
+                    }
+                }
+                Err(e) => eprintln!("host identity unreadable: {e}"),
+            }
+        }
         let orphans = orchestration_engine::recover_orphaned_turns();
         if !orphans.is_empty() {
             let crash_resumed = orchestration_engine::resume_orphaned_turns(&orphans);

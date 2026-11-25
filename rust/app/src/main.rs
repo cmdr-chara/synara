@@ -14,6 +14,8 @@ mod codex_runner;
 mod device;
 mod editor_intelligence;
 mod editor;
+mod host_identity;
+mod remote_pairing;
 mod hosts;
 mod automation_executor;
 mod automation_schedule;

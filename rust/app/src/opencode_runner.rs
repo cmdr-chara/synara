@@ -825,6 +825,29 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
 
+    let model_selection = conn
+        .query_row(
+            "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .unwrap_or(Value::Null);
+    let selected_model = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_agent = model_selection
+        .pointer("/options/agent")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_variant = model_selection
+        .pointer("/options/variant")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+
     let launch_key = cwd.clone();
     let cancelled = Arc::new(AtomicBool::new(false));
     let (child_shared, port, password, reused_session_id) = if let Some(parked) =
@@ -958,7 +981,65 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         // Subscribe to events before prompting so no delta is missed.
         let event_path = if protocol == OpenCodeProtocol::V2 { "/api/event" } else { "/event" };
         let sse = open_sse_stream(port, &auth, event_path)?;
-        let prompt_text = if stored_session.is_none() {
+
+        // V2 keeps durable system instructions out of the user message and
+        // switches agent/model through native session endpoints, mirroring the
+        // upstream client boundary. Older fakes/servers without the experimental
+        // instruction endpoint fall back to first-prompt prefix injection.
+        let mut use_instruction_fallback = false;
+        if protocol == OpenCodeProtocol::V2 {
+            if stored_session.is_none() {
+                let path = format!(
+                    "/api/experimental/session/{session_id}/instructions/entries/synara"
+                );
+                let (status, _) = http_request(
+                    port,
+                    "PUT",
+                    &path,
+                    &auth,
+                    Some(&json!({"value": crate::harness_policy::first_prompt_prefix()})),
+                )?;
+                use_instruction_fallback = status == 404 || status == 405;
+                if status >= 400 && !use_instruction_fallback {
+                    eprintln!("opencode_runner: instruction install HTTP {status}");
+                }
+            }
+            if let Some(agent) = selected_agent.as_deref() {
+                let path = format!("/api/session/{session_id}/agent");
+                let (status, body) = http_request(
+                    port,
+                    "POST",
+                    &path,
+                    &auth,
+                    Some(&json!({"agent": agent})),
+                )?;
+                if status >= 400 && status != 404 && status != 405 {
+                    return Err(err(format!("opencode agent switch HTTP {status}: {body}")));
+                }
+            }
+            if let Some(model) = selected_model.as_deref() {
+                if let Some((provider_id, model_id)) = model.split_once('/') {
+                    let mut native_model = json!({"providerID": provider_id, "id": model_id});
+                    if let Some(variant) = selected_variant.as_deref() {
+                        native_model["variant"] = json!(variant);
+                    }
+                    let path = format!("/api/session/{session_id}/model");
+                    let (status, body) = http_request(
+                        port,
+                        "POST",
+                        &path,
+                        &auth,
+                        Some(&json!({"model": native_model})),
+                    )?;
+                    if status >= 400 && status != 404 && status != 405 {
+                        return Err(err(format!("opencode model switch HTTP {status}: {body}")));
+                    }
+                }
+            }
+        }
+        let prompt_text = if stored_session.is_none()
+            && (protocol != OpenCodeProtocol::V2 || use_instruction_fallback)
+        {
             format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
         } else {
             text.to_string()

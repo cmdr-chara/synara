@@ -899,6 +899,26 @@ fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: 
     icon_btn_pad(id, data, size, 16., hover, ink)
 }
 
+/// Upstream ProviderIcon at 16px: Claude, Antigravity and Oh My Pi are
+/// full-colour marks; the rest render the mono glyph in `ink`.
+fn provider_icon_16(pid: &str, mono: &'static [u8], ink: Hsla) -> gpui::AnyElement {
+    let file = match pid {
+        "claudeAgent" | "claude" => Some("claude"),
+        "antigravity" => Some("antigravity-color"),
+        "omp" => Some("omp"),
+        _ => None,
+    };
+    match file {
+        Some(file) => gpui::img(std::path::PathBuf::from(format!(
+            "{}/assets/icons/{file}.svg",
+            env!("CARGO_MANIFEST_DIR")
+        )))
+        .size(px(16.))
+        .into_any_element(),
+        None => svg_icon(mono).size(px(16.)).text_color(ink).into_any_element(),
+    }
+}
+
 fn icon_btn_pad(
     id: &'static str,
     data: &'static [u8],
@@ -20748,29 +20768,7 @@ impl Render for Native {
                                     .px_3()
                                     .py(px(10.))
                                     .child(div().w(px(16.)).text_size(px(13.)).text_color(theme.muted_foreground).child("\u{283f}"))
-                                    .child(
-                                        // Upstream ProviderIcon: Claude, Antigravity and Oh My
-                                        // Pi are full-colour marks; the rest are foreground.
-                                        match pid.as_str() {
-                                            "claudeAgent" | "claude" | "antigravity" | "omp" => {
-                                                let file = match pid.as_str() {
-                                                    "antigravity" => "antigravity-color",
-                                                    "omp" => "omp",
-                                                    _ => "claude",
-                                                };
-                                                gpui::img(std::path::PathBuf::from(format!(
-                                                    "{}/assets/icons/{file}.svg",
-                                                    env!("CARGO_MANIFEST_DIR")
-                                                )))
-                                                .size(px(16.))
-                                                .into_any_element()
-                                            }
-                                            _ => svg_icon(p_icon(pid))
-                                                .size(px(16.))
-                                                .text_color(theme.foreground)
-                                                .into_any_element(),
-                                        },
-                                    )
+                                    .child(provider_icon_16(pid, p_icon(pid), theme.foreground))
                                     .child(
                                         v_flex()
                                             .flex_1()
@@ -20994,33 +20992,21 @@ impl Render for Native {
                                     .items_center()
                                     .gap_2p5()
                                     .px_3()
-                                    .py(px(9.))
-                                    .child(svg_icon(p_icon2(pid)).size(px(16.)).text_color(theme.foreground))
+                                    // Upstream rows land 45px apart (44px + 1px divider).
+                                    .h(px(44.))
+                                    .child(provider_icon_16(pid, p_icon2(pid), theme.foreground))
                                     .child(div().flex_1().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name.to_string()))
                                     .child(toggle(*on))
                                     .into_any_element();
                                 if i > 0 { vec![divider().into_any_element(), row] } else { vec![row] }
                             }))
-                            .into_any_element(),
-                    ))
-                    .child(section_label("Ring"))
-                    .child(card(
-                        h_flex()
-                            .w_full()
-                            .items_center()
-                            .justify_between()
-                            .gap_3()
-                            .px_3()
-                            .py(px(10.))
-                            .child(div().flex_1().min_w_0().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
-                                "Show both limits as two rings, or a single ring for one of them."))
-                            .child(
-                                h_flex()
-                                    .gap_3()
-                                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Both"))
-                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("5h"))
-                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Weekly")),
-                            )
+                            // Upstream: Ring is the last row of the Sidebar card.
+                            .child(divider())
+                            .child(srow(
+                                "Ring",
+                                "Show both limits as two rings, or a single ring for one of them.",
+                                seg(&["Both", "5h", "Weekly"], 0),
+                            ))
                             .into_any_element(),
                     ))
                     .child(section_label("Usage popovers"))
@@ -21032,6 +21018,10 @@ impl Render for Native {
                             .child(divider())
                             .child(srow("Banked resets",
                                 "Include Codex banked resets in the details.",
+                                toggle(true)))
+                            .child(divider())
+                            .child(srow("Credits and token totals",
+                                "Include credit balances and recent token totals (24h, 7d, 30d) in the details.",
                                 toggle(true)))
                             .into_any_element(),
                     ));

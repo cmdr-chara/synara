@@ -13699,10 +13699,12 @@ impl Render for Native {
                 .gap_1()
                 .mb_1()
                 .child(
+                    // Upstream wordmark: font-display (Cal Sans) 17px, normal
+                    // weight (the face is already semibold-looking).
                     div()
                         .px_1()
-                        .text_size(px(15.))
-                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_size(px(17.))
+                        .font_family("Cal Sans")
                         .child("Synara"),
                 )
                 .child(
@@ -13712,7 +13714,13 @@ impl Render for Native {
                     Button::new("app-menu")
                         .ghost()
                         .compact()
-                        .icon(AssetIcon::ChevronDown)
+                        // Upstream keeps the chevron 6px from the wordmark.
+                        .ml(px(-12.))
+                        .icon(
+                            Icon::new(AssetIcon::ChevronDown)
+                                .size(px(14.))
+                                .text_color(theme.foreground.opacity(0.41)),
+                        )
                         .dropdown_menu({
                             let weak = cx.weak_entity();
                             move |menu, _, _cx| {
@@ -13758,14 +13766,14 @@ impl Render for Native {
                 )
                 .child(div().flex_1())
                 .child(
-                    icon_btn_pad("sidebar-search", icons::SEARCH, 18., 8., theme.secondary, theme.muted_foreground)
+                    icon_btn_pad("sidebar-search", icons::SEARCH, 15., 9., theme.secondary, theme.foreground.opacity(0.35))
                         .on_click(cx.listener(|this, _ev, _w, cx| {
                             this.search_open = !this.search_open;
                             cx.notify();
                         })),
                 )
                 .child(
-                    icon_btn_pad("sidebar-new", icons::NEW_THREAD, 18., 8., theme.secondary, theme.muted_foreground)
+                    icon_btn_pad("sidebar-new", icons::NEW_THREAD, 15., 9., theme.secondary, theme.foreground.opacity(0.44))
                         .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
                 ),
         );

@@ -474,13 +474,16 @@ fn reconcile_pass() -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     // Adopt turns that have appeared since dispatch: the turn's
     // pending_message_id is the run's derived message id.
+    // Message ids are derived as {run_id}-message at dispatch time; manual
+    // runs inserted before this executor existed may lack the column, so the
+    // linkage falls back to the same derivation instead of requiring the row.
     let _ = conn.execute(
         "UPDATE automation_runs SET turn_id = (
             SELECT turn_id FROM projection_turns
-            WHERE pending_message_id = automation_runs.message_id
+            WHERE pending_message_id = COALESCE(automation_runs.message_id, automation_runs.run_id || '-message')
             ORDER BY row_id DESC LIMIT 1
          ) WHERE status IN ('pending', 'running') AND turn_id IS NULL
-           AND EXISTS (SELECT 1 FROM projection_turns WHERE pending_message_id = automation_runs.message_id)",
+           AND EXISTS (SELECT 1 FROM projection_turns WHERE pending_message_id = COALESCE(automation_runs.message_id, automation_runs.run_id || '-message'))",
         [],
     );
     let active: Vec<(String, Option<String>)> = {

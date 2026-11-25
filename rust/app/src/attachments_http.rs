@@ -44,6 +44,10 @@ fn percent_decode(input: &str) -> String {
     String::from_utf8_lossy(&out).into_owned()
 }
 
+pub(crate) fn attachments_http_query(query: &str, key: &str) -> Option<String> {
+    query_param(query, key)
+}
+
 fn query_param(query: &str, key: &str) -> Option<String> {
     for pair in query.split('&') {
         let (k, v) = pair.split_once('=').unwrap_or((pair, ""));

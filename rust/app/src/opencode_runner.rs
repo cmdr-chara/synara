@@ -256,11 +256,36 @@ fn install_gateway_mcp(port: u16, auth: &str, directory: &str) -> bool {
     false
 }
 
-fn open_sse_stream(port: u16, auth: &str) -> Result<TcpStream, WsErr> {
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum OpenCodeProtocol {
+    V1,
+    V2,
+}
+
+/// Detect the server contract before sending mutating provider requests,
+/// mirroring upstream: `/api/info` is the V2-only server-info endpoint.
+fn detect_protocol(port: u16, auth: &str) -> OpenCodeProtocol {
+    if let Ok((status, body)) = http_request(port, "GET", "/api/info", auth, None) {
+        if status >= 200 && status < 300 {
+            if let Ok(info) = serde_json::from_str::<Value>(&body) {
+                if info.get("version").and_then(Value::as_str).is_some()
+                    && info.get("pid").and_then(Value::as_i64).is_some()
+                    && info.get("urls").and_then(Value::as_array).is_some()
+                {
+                    return OpenCodeProtocol::V2;
+                }
+            }
+        }
+    }
+    OpenCodeProtocol::V1
+}
+
+fn open_sse_stream(port: u16, auth: &str, path: &str) -> Result<TcpStream, WsErr> {
     let mut stream = TcpStream::connect(("127.0.0.1", port))
         .map_err(|e| err(format!("opencode sse connect: {e}")))?;
     let request = format!(
-        "GET /event HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Basic {auth}\r\nAccept: text/event-stream\r\n\r\n"
+        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Basic {auth}\r\nAccept: text/event-stream\r\n\r\n"
     );
     stream
         .write_all(request.as_bytes())
@@ -390,6 +415,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
 
     let mut active_session_id: Option<String> = None;
     let result = (|| -> Result<String, WsErr> {
+        let mut protocol = detect_protocol(port, &auth);
         if reused_session_id.is_none() {
             // Wait for a newly spawned server to accept connections.
             let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
@@ -397,10 +423,16 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 if cancelled.load(Ordering::SeqCst) {
                     return Ok("cancelled".to_string());
                 }
-                if let Ok((status, _)) = http_request(port, "GET", "/provider", &auth, None) {
-                    if status > 0 {
-                        break;
-                    }
+                protocol = detect_protocol(port, &auth);
+                let ready = if protocol == OpenCodeProtocol::V2 {
+                    true
+                } else {
+                    http_request(port, "GET", "/provider", &auth, None)
+                        .map(|(status, _)| status > 0)
+                        .unwrap_or(false)
+                };
+                if ready {
+                    break;
                 }
                 if std::time::Instant::now() >= deadline {
                     return Err(err("opencode server did not become ready in 20s"));
@@ -408,6 +440,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 std::thread::sleep(std::time::Duration::from_millis(200));
             }
         }
+        protocol = detect_protocol(port, &auth);
 
         install_gateway_mcp(port, &auth, &cwd);
 
@@ -415,6 +448,28 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         // still resume OpenCode's stored session id when one exists.
         let session_id = if let Some(sid) = reused_session_id.clone().or(stored_session.clone()) {
             sid
+        } else if protocol == OpenCodeProtocol::V2 {
+            let (status, body) = http_request(
+                port,
+                "POST",
+                "/api/session",
+                &auth,
+                Some(&json!({
+                    "location": {"directory": cwd},
+                    "title": format!("synara-{thread_id}"),
+                })),
+            )?;
+            if status >= 400 {
+                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+            }
+            let parsed: Value = serde_json::from_str(&body)
+                .map_err(|e| err(format!("opencode session parse: {e}")))?;
+            parsed
+                .pointer("/data/id")
+                .and_then(Value::as_str)
+                .or_else(|| parsed.get("id").and_then(Value::as_str))
+                .ok_or_else(|| err("opencode session create returned no id"))?
+                .to_string()
         } else {
             let (status, body) = http_request(
                 port,
@@ -438,21 +493,30 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(&session_id))?;
 
         // Subscribe to events before prompting so no delta is missed.
-        let sse = open_sse_stream(port, &auth)?;
+        let event_path = if protocol == OpenCodeProtocol::V2 { "/api/event" } else { "/event" };
+        let sse = open_sse_stream(port, &auth, event_path)?;
         let prompt_text = if stored_session.is_none() {
             format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
         } else {
             text.to_string()
         };
-        let (status, body) = http_request(
-            port,
-            "POST",
-            &format!("/session/{session_id}/prompt_async"),
-            &auth,
-            Some(&json!({
-                "parts": [{"type": "text", "text": prompt_text}],
-            })),
-        )?;
+        let (prompt_path, prompt_body) = if protocol == OpenCodeProtocol::V2 {
+            (
+                format!("/api/session/{session_id}/prompt"),
+                json!({
+                    "text": prompt_text,
+                    "delivery": "steer",
+                }),
+            )
+        } else {
+            (
+                format!("/session/{session_id}/prompt_async"),
+                json!({
+                    "parts": [{"type": "text", "text": prompt_text}],
+                }),
+            )
+        };
+        let (status, body) = http_request(port, "POST", &prompt_path, &auth, Some(&prompt_body))?;
         if status >= 400 {
             return Err(err(format!("opencode prompt HTTP {status}: {body}")));
         }
@@ -497,20 +561,23 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 .or_else(|| v.pointer("/properties/type").and_then(Value::as_str))
                 .unwrap_or("");
             match event_type {
-                "message.part.delta" => {
+                "message.part.delta" | "session.text.delta" => {
                     if let Some(d) = v
                         .pointer("/properties/delta")
                         .and_then(Value::as_str)
                         .or_else(|| v.pointer("/properties/part/text").and_then(Value::as_str))
+                        .or_else(|| v.pointer("/data/delta").and_then(Value::as_str))
                     {
                         text_buf.push_str(d);
                     }
                 }
-                "session.idle" => break "completed",
-                "session.error" => {
+                "session.idle" | "session.execution.succeeded" => break "completed",
+                "session.execution.interrupted" => break "cancelled",
+                "session.error" | "session.execution.failed" => {
                     let msg = v
                         .pointer("/properties/error/message")
                         .and_then(Value::as_str)
+                        .or_else(|| v.pointer("/data/error/message").and_then(Value::as_str))
                         .unwrap_or("opencode session error")
                         .to_string();
                     return Err(err(msg));

@@ -776,6 +776,7 @@ pub fn parse_codex_models_response(response: &Value) -> Vec<Value> {
 pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
     let mut __cmd = Command::new(codex_binary());
     crate::provider_env::sanitize_provider_child(&mut __cmd);
+    crate::provider_instances::apply_instance_environment(&mut __cmd, "codex");
     let mut child = __cmd
         .arg("app-server")
         .current_dir(if cwd.is_empty() { "/" } else { cwd })
@@ -902,6 +903,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
 
     let mut command = Command::new(codex_binary());
     crate::provider_env::sanitize_provider_child(&mut command);
+    crate::provider_instances::apply_instance_environment(&mut command, "codex");
     command
         .arg("app-server")
         .current_dir(&cwd)
@@ -1171,7 +1173,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         let mut command = Command::new(codex_binary());
         crate::provider_env::sanitize_provider_child(&mut command);
+        crate::provider_instances::apply_instance_environment(&mut command, "codex");
     crate::provider_env::sanitize_provider_child(&mut command);
+    crate::provider_instances::apply_instance_environment(&mut command, "codex");
         command
             .arg("app-server")
             .current_dir(&cwd)

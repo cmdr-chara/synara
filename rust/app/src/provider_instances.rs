@@ -172,6 +172,20 @@ pub(crate) fn instance_home_path(instance: &ResolvedInstance) -> Option<String> 
     }
 }
 
+/// Resolve the default instance for a driver and apply its start
+/// environment to a child command, after spawn sanitization. Shared by all
+/// runtime spawners; driver-specific home isolation beyond environment
+/// configuration (Codex overlays, Claude instance homes) stays in the
+/// owning runner.
+pub(crate) fn apply_instance_environment(command: &mut std::process::Command, driver: &str) {
+    let settings = crate::server_settings::current();
+    if let Some(instance) = resolve_instance(&settings, None, Some(driver)) {
+        for (key, value) in instance_start_environment(&instance) {
+            command.env(key, value);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

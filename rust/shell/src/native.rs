@@ -21596,14 +21596,16 @@ impl Render for Native {
 
         // ==================== rail route views ====================
         // Segmented pill chip — upstream: muted rounded track, white active.
+        // Upstream view switch buttons: 28px, radius 8, padding 4/10; active
+        // gets foreground at 2.7%, inactive text is muted (58%).
         let seg_chip = |id: &'static str, label: &'static str, active: bool| {
             let d = div()
                 .id(ElementId::Name(id.into()))
-                .h(px(24.))
+                .h(px(28.))
                 .px(px(10.))
                 .flex()
                 .items_center()
-                .rounded(px(6.))
+                .rounded(px(8.))
                 .cursor_pointer()
                 .child(
                     div()
@@ -21615,8 +21617,11 @@ impl Render for Native {
                         })
                         .child(label),
                 );
-            if active { d.bg(theme.background) } else { d }
+            if active { d.bg(theme.foreground.opacity(0.027)) } else { d }
         };
+        // Upstream top-bar controls sit 8px from the window top; the native
+        // 47px strip is above the pane, so pin them at 8 - 47 = -39px.
+        let topbar_y = px(8. - 47.);
 
         // /tasks — rail only: List|Kanban toggle top-right, centered column.
         // Upstream puts List|Kanban in the top bar, so it doesn't push the
@@ -21628,16 +21633,11 @@ impl Render for Native {
             .child(
                 h_flex()
                     .absolute()
-                    .top_0()
-                    .right_0()
-                    .pt(px(9.))
-                    .pr(px(19.))
+                    .top(topbar_y)
+                    .right(px(19.))
                     .child(
                         h_flex()
-                            .gap(px(2.))
-                            .p(px(2.))
-                            .rounded(px(8.))
-                            .bg(soft_bg)
+                            .gap(px(4.))
                             .child(seg_chip("seg-tasks-list", "List", true).on_click(cx.listener(
                                 |this, _e, _w, cx| this.open_route(1, cx),
                             )))
@@ -22682,27 +22682,32 @@ impl Render for Native {
                     .find(|d| str_at(d, "id") == sel.as_str())
                     .cloned()
             });
+        // Upstream Refresh: 28px top-bar icon button (radius 10, 16px icon at
+        // 58%), overlaid so it doesn't push the pane down.
         let mut autom_pane = v_flex()
             .flex_1()
             .h_full()
+            .relative()
             .child(
-                h_flex()
-                    .w_full()
-                    .pt(px(9.))
-                    .pr(px(19.))
-                    .child(div().flex_1())
+                div()
+                    .id("autom-refresh")
+                    .absolute()
+                    .top(topbar_y)
+                    .right(px(24.))
+                    .size(px(28.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(10.))
+                    .cursor_pointer()
+                    .hover(|d| d.bg(theme.secondary))
+                    .on_click(cx.listener(|this, _e, _w, cx| {
+                        this.fetch_automations(cx);
+                    }))
                     .child(
-                        div()
-                            .id("autom-refresh")
-                            .cursor_pointer()
-                            .on_click(cx.listener(|this, _e, _w, cx| {
-                                this.fetch_automations(cx);
-                            }))
-                            .child(
-                                svg_icon(icons::REFRESH)
-                                    .size(px(18.))
-                                    .text_color(theme.muted_foreground),
-                            ),
+                        svg_icon(icons::REFRESH)
+                            .size(px(16.))
+                            .text_color(theme.foreground.opacity(0.58)),
                     ),
             );
         if let Some(def) = autom_sel_def.clone() {
@@ -24892,6 +24897,12 @@ impl Render for Native {
             });
 
         // ---- top strip (AppShellTopStrip) ----
+        let route_view = self.view_inbox
+            || self.view_tasks
+            || self.view_kanban
+            || self.view_autom
+            || self.view_pullreq
+            || self.view_studio;
         // 47px #f7f7f7 band, borderless, over rail+panel+content: sidebar
         // toggle centered over the rail at left, Environment + dock toggles
         // at right (Hugeicons panel-top-open / layout-right).
@@ -25123,6 +25134,10 @@ impl Render for Native {
                 tabs
             })
             .child(div().flex_1())
+            // Upstream rail routes (inbox, tasks, kanban, code review, automations,
+            // hubs) show no thread controls at the top right.
+            .when(!route_view, |d| {
+                d
             .child(
                 rail_btn("nav-handoff", icons::HANDOFF, false, cx),
             )
@@ -25214,7 +25229,8 @@ impl Render for Native {
                         this.toggle_changes(cx);
                     }),
                 ),
-            );
+            )
+            });
 
         // ---- left column: #f7f7f7 well holding the rail and the floating
         // white sidebar card (bordered right+bottom, rounded corners, ~4px

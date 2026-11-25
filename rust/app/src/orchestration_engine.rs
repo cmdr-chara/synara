@@ -1017,14 +1017,53 @@ fn resume_precondition_violation(
 fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
-    if command.contains_key("sourceProposedPlan") {
-        // Upstream resolves the source plan text from the source thread's
-        // proposed-plan store; that store is not yet part of the native
-        // projection, so plan-conversion turns stay rejected rather than
-        // silently dropping the plan content.
-        return Err(err(
-            "thread.turn.start with sourceProposedPlan is not ported yet (native engine slice)",
-        ));
+    // sourceProposedPlan: validate exactly like upstream — the plan must
+    // exist on the source thread, and the source thread must share the
+    // target project. Proposed plans persist as turn.proposed.completed
+    // activities keyed by payload planId (upstream keeps them in the
+    // in-memory projection; activities are the native durable analog).
+    let source_proposed_plan = command.get("sourceProposedPlan").cloned();
+    if let Some(spp) = source_proposed_plan.as_ref().and_then(Value::as_object) {
+        let src_thread = spp.get("threadId").and_then(Value::as_str).unwrap_or("");
+        let plan_id = spp.get("planId").and_then(Value::as_str).unwrap_or("");
+        let conn_v = open_state_rw()?;
+        let src_project: Option<String> = conn_v
+            .query_row(
+                "SELECT project_id FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
+                params![src_thread],
+                |r| r.get(0),
+            )
+            .ok();
+        if src_project.is_none() {
+            return Err(err(format!(
+                "Proposed plan '{plan_id}' does not exist on thread '{src_thread}'."
+            )));
+        }
+        let plan_exists: bool = conn_v
+            .query_row(
+                "SELECT COUNT(*) FROM projection_thread_activities                  WHERE thread_id = ?1 AND kind = 'turn.proposed.completed'                  AND json_extract(payload_json, '$.planId') = ?2",
+                params![src_thread, plan_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .map(|n| n > 0)
+            .unwrap_or(false);
+        if !plan_exists {
+            return Err(err(format!(
+                "Proposed plan '{plan_id}' does not exist on thread '{src_thread}'."
+            )));
+        }
+        let target_project: Option<String> = conn_v
+            .query_row(
+                "SELECT project_id FROM projection_threads WHERE thread_id = ?1",
+                params![s(command, "threadId").unwrap_or_default()],
+                |r| r.get(0),
+            )
+            .ok();
+        if src_project != target_project {
+            return Err(err(format!(
+                "Proposed plan '{plan_id}' belongs to thread '{src_thread}' in a different project."
+            )));
+        }
     }
     // Native reviews never carry prompt attachments (upstream rejects before
     // message acceptance so the caller can preserve the draft).
@@ -1253,6 +1292,12 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     tp.insert("dispatchOrigin".into(), json!(dispatch_origin));
     tp.insert("runtimeMode".into(), runtime_mode.clone());
     tp.insert("interactionMode".into(), interaction_mode.clone());
+    if let Some(v) = command.get("sourceProposedPlan") {
+        tp.insert("sourceProposedPlan".into(), v.clone());
+    }
+    if let Some(v) = command.get("reviewTarget") {
+        tp.insert("reviewTarget".into(), v.clone());
+    }
     tp.insert("createdAt".into(), json!(created_at));
     let mut turn_event = out_event(
         if should_queue {

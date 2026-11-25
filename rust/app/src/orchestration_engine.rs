@@ -6652,6 +6652,9 @@ fn replay_projection_event(
                 append_activity_projection(conn, stream_id, &activity, sequence)?;
             }
         }
+        "thread.proposed-plan-upserted" => {
+            upsert_proposed_plan_projection(stream_id, &pg("proposedPlan"))?;
+        }
         // Request/record events and lifecycle markers with no projection writes.
         _ => {}
     }

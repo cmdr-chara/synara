@@ -14,6 +14,48 @@ fn err(msg: impl Into<String>) -> WsErr {
     WsErr(msg.into(), Some("PROVIDER"))
 }
 
+/// 5-minute in-memory discovery cache, matching upstream
+/// OMP_MODEL_DISCOVERY_CACHE_MS. CLI/ACP discovery spawns a provider process;
+/// without caching, every composer open pays that cost. Transient failures
+/// (results carrying an `error` key) are never cached so a retry can recover.
+const DISCOVERY_CACHE_TTL_MS: i64 = 5 * 60_000;
+
+fn discovery_cache() -> &'static std::sync::Mutex<std::collections::HashMap<String, (i64, Value)>> {
+    static CACHE: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<String, (i64, Value)>>> =
+        std::sync::OnceLock::new();
+    CACHE.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+fn now_ms_i64() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0)
+}
+
+fn cached_discovery(key: &str, force_reload: bool) -> Option<Value> {
+    if force_reload {
+        return None;
+    }
+    let cache = discovery_cache().lock().ok()?;
+    let (expires_at, value) = cache.get(key)?;
+    if *expires_at <= now_ms_i64() {
+        return None;
+    }
+    let mut cached = value.clone();
+    cached["cached"] = json!(true);
+    Some(cached)
+}
+
+fn store_discovery(key: &str, value: &Value) {
+    if value.get("error").is_some() {
+        return;
+    }
+    if let Ok(mut cache) = discovery_cache().lock() {
+        cache.insert(key.to_string(), (now_ms_i64() + DISCOVERY_CACHE_TTL_MS, value.clone()));
+    }
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -1157,6 +1199,20 @@ fn claude_discovery_result(payload: &Value, key: &str) -> Result<Value, WsErr> {
 }
 
 fn dynamic_discovery_result(provider: &str, payload: &Value) -> Option<Result<Value, WsErr>> {
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    let force_reload = payload.get("forceReload").and_then(Value::as_bool).unwrap_or(false);
+    let cache_key = format!("models:{provider}:{cwd}");
+    if let Some(cached) = cached_discovery(&cache_key, force_reload) {
+        return Some(Ok(cached));
+    }
+    let result = dynamic_discovery_result_uncached(provider, payload)?;
+    if let Ok(value) = &result {
+        store_discovery(&cache_key, value);
+    }
+    Some(result)
+}
+
+fn dynamic_discovery_result_uncached(provider: &str, payload: &Value) -> Option<Result<Value, WsErr>> {
     match provider {
         "opencode" => Some(opencode_discovery_result(payload)),
         "pi" => Some(pi_discovery_result(payload)),
@@ -1345,12 +1401,23 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
         }));
     }
     if matches!(provider, "devin" | "omp" | "droid") {
+        let force_reload = payload.get("forceReload").and_then(Value::as_bool).unwrap_or(false);
+        let cache_key = format!("commands:{provider}:{cwd}");
+        if let Some(cached) = cached_discovery(&cache_key, force_reload) {
+            return Ok(cached);
+        }
         let source = format!("{provider}-acp");
-        return Ok(json!({
+        let result = json!({
             "commands": crate::acp_runner::discover_acp_commands(provider, cwd)?,
             "source": source,
             "cached": false,
-        }));
+        });
+        // Upstream never caches an empty command list: a slow first advertise
+        // would otherwise pin "no slash commands" for the whole TTL.
+        if result.get("commands").and_then(Value::as_array).is_some_and(|c| !c.is_empty()) {
+            store_discovery(&cache_key, &result);
+        }
+        return Ok(result);
     }
     Ok(json!({"commands": [], "source": "unsupported", "cached": false}))
 }

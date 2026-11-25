@@ -672,6 +672,42 @@ pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
     ))
 }
 
+
+/// Compact a warm Codex thread through the app-server's native control
+/// request. Unlike Pi/OpenCode there is no process-local transcript copy here:
+/// the official binary summarizes its own thread state and Synara only awaits
+/// the acknowledgement.
+pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Err(err("cannot compact while a turn is running"));
+    }
+    let mut parked = {
+        let mut parked_map = PARKED.lock().map_err(|_| err("parked map"))?;
+        match parked_map.remove(thread_id) {
+            Some(parked) => parked,
+            None => return Ok(false),
+        }
+    };
+    let provider_thread_id = parked.provider_thread_id.clone();
+    let result = parked
+        .rpc
+        .call(
+            "thread/compact/start",
+            json!({"threadId": provider_thread_id}),
+        )
+        .map(|_| true);
+    let alive = matches!(parked.child.try_wait(), Ok(None));
+    if alive {
+        if let Ok(mut parked_map) = PARKED.lock() {
+            parked.rpc.approval_ctx = None;
+            parked_map.insert(thread_id.to_string(), parked);
+        }
+    } else {
+        drop_parked(parked);
+    }
+    result
+}
+
 pub fn supports_provider(provider: &str) -> bool {
     provider == "codex"
 }

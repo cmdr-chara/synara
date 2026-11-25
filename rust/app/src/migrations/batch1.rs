@@ -63,10 +63,11 @@ fn m005(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 006 ProjectionThreadSessionRuntimeModeColumns — PARTIAL
+// 006 ProjectionThreadSessionRuntimeModeColumns — hand-ported: the only
+// interpolation was the DEFAULT_RUNTIME_MODE constant inlined as its literal.
 fn m006(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_sessions\n      ADD COLUMN runtime_mode TEXT NOT NULL DEFAULT 'full-access'")?;
-    // MANUAL: dynamic sql with interpolation was here
+    execute_lenient(conn, "ALTER TABLE projection_thread_sessions ADD COLUMN runtime_mode TEXT NOT NULL DEFAULT 'full-access'")?;
+    execute(conn, "UPDATE projection_thread_sessions SET runtime_mode = 'full-access' WHERE runtime_mode IS NULL")?;
     Ok(())
 }
 
@@ -555,13 +556,17 @@ fn m063(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 064 DurableProviderCommandDelivery — PARTIAL
+// 064 DurableProviderCommandDelivery — hand-ported: consumer cursor insert with run timestamp
 fn m064(conn: &Connection) -> Result<(), WsErr> {
     execute(conn, "CREATE TABLE IF NOT EXISTS orchestration_consumer_state (\n      consumer_name TEXT PRIMARY KEY,\n      last_acked_sequence INTEGER NOT NULL CHECK (last_acked_sequence >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS orchestration_event_deliveries (\n      consumer_name TEXT NOT NULL,\n      event_sequence INTEGER NOT NULL,\n      thread_id TEXT NOT NULL,\n      state TEXT NOT NULL CHECK (\n        state IN ('inflight', 'retry', 'succeeded', 'dead', 'uncertain')\n      ),\n      claim_owner TEXT,\n      claimed_at TEXT,\n      claim_expires_at TEXT,\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      last_error TEXT,\n      completed_at TEXT,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (consumer_name, event_sequence),\n      FOREIGN KEY (consumer_name)\n        REFERENCES orchestration_consumer_state(consumer_name)\n        ON DELETE CASCADE\n    )")?;
     execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orchestration_event_deliveries_state_sequence\n    ON orchestration_event_deliveries(consumer_name, state, event_sequence)")?;
     execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orchestration_event_deliveries_thread_state\n    ON orchestration_event_deliveries(consumer_name, thread_id, state, event_sequence)")?;
-    // MANUAL: dynamic sql with interpolation was here
+    let migrated_at = chrono::Utc::now().to_rfc3339();
+    conn.execute(
+        "INSERT INTO orchestration_consumer_state (consumer_name, last_acked_sequence, created_at, updated_at) SELECT 'provider-command-reactor.v1', COALESCE(MAX(sequence), 0), ?1, ?1 FROM orchestration_events WHERE 1 = 1 ON CONFLICT (consumer_name) DO NOTHING",
+        rusqlite::params![migrated_at],
+    ).map_err(|e| err(format!("sql failed: {e}")))?;
     Ok(())
 }
 
@@ -574,14 +579,18 @@ fn m065(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 066 DurableProviderRuntimeEvents — PARTIAL
+// 066 DurableProviderRuntimeEvents — hand-ported: consumer cursor insert with run timestamp
 fn m066(conn: &Connection) -> Result<(), WsErr> {
     execute(conn, "CREATE TABLE IF NOT EXISTS provider_runtime_events (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      event_id TEXT NOT NULL UNIQUE,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      lifecycle_generation TEXT,\n      event_type TEXT NOT NULL,\n      event_json TEXT NOT NULL\n        CHECK (length(CAST(event_json AS BLOB)) <= 2097152),\n      persisted_at TEXT NOT NULL\n    )")?;
     execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_runtime_events_thread_sequence\n    ON provider_runtime_events(thread_id, sequence)")?;
     execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_runtime_events_turn_sequence\n    ON provider_runtime_events(thread_id, turn_id, sequence)")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS provider_runtime_open_turns (\n      thread_id TEXT NOT NULL,\n      turn_id TEXT NOT NULL,\n      first_sequence INTEGER NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (thread_id, turn_id)\n    )")?;
     execute(conn, "CREATE TABLE IF NOT EXISTS provider_runtime_event_consumers (\n      consumer_name TEXT PRIMARY KEY,\n      last_acked_sequence INTEGER NOT NULL DEFAULT 0\n        CHECK (last_acked_sequence >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    // MANUAL: dynamic sql with interpolation was here
+    let migrated_at = chrono::Utc::now().to_rfc3339();
+    conn.execute(
+        "INSERT INTO provider_runtime_event_consumers (consumer_name, last_acked_sequence, created_at, updated_at) VALUES ('provider-runtime-ingestion.v1', 0, ?1, ?1) ON CONFLICT (consumer_name) DO NOTHING",
+        rusqlite::params![migrated_at],
+    ).map_err(|e| err(format!("sql failed: {e}")))?;
     Ok(())
 }
 
@@ -747,10 +756,12 @@ fn m088(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 089 RecoverRetentionHiddenThreads — PARTIAL
+// 089 RecoverRetentionHiddenThreads — hand-ported: retention-deleted threads
+// become reversibly archived; the event conversion keeps replay consistent.
+// The only interpolation was the constant 'thread-retention:%' LIKE pattern.
 fn m089(conn: &Connection) -> Result<(), WsErr> {
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
+    execute(conn, "UPDATE orchestration_events SET event_type = 'thread.archived', payload_json = json_set(json_remove(payload_json, '$.deletedAt'), '$.archivedAt', json_extract(payload_json, '$.deletedAt'), '$.updatedAt', json_extract(payload_json, '$.deletedAt')) WHERE event_type = 'thread.deleted' AND command_id LIKE 'thread-retention:%'")?;
+    execute(conn, "UPDATE projection_threads SET archived_at = COALESCE(archived_at, deleted_at), deleted_at = NULL WHERE deleted_at IS NOT NULL AND thread_id IN (SELECT stream_id FROM orchestration_events WHERE aggregate_kind = 'thread' AND event_type = 'thread.archived' AND command_id LIKE 'thread-retention:%')")?;
     Ok(())
 }
 
@@ -770,10 +781,12 @@ fn m091(conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
-// 092 BackfillAutomationRunThreadSource — PARTIAL
+// 092 BackfillAutomationRunThreadSource — hand-ported: marks legacy per-run
+// automation threads in both the authoritative event and the projection row.
+// The only interpolation was the constant 'automation:automation-run:%:thread'.
 fn m092(conn: &Connection) -> Result<(), WsErr> {
-    // MANUAL: dynamic sql with interpolation was here
-    // MANUAL: dynamic sql with interpolation was here
+    execute(conn, "UPDATE orchestration_events SET payload_json = json_set(payload_json, '$.creationSource', 'automation_run') WHERE aggregate_kind = 'thread' AND event_type = 'thread.created' AND stream_id LIKE 'automation:automation-run:%:thread' AND json_extract(payload_json, '$.creationSource') IS NULL AND stream_id NOT IN (SELECT target_thread_id FROM automation_definitions WHERE target_thread_id IS NOT NULL)")?;
+    execute(conn, "UPDATE projection_threads SET creation_source = 'automation_run' WHERE creation_source IS NULL AND thread_id LIKE 'automation:automation-run:%:thread' AND thread_id NOT IN (SELECT target_thread_id FROM automation_definitions WHERE target_thread_id IS NOT NULL)")?;
     Ok(())
 }
 

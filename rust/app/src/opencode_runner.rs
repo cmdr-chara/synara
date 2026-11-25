@@ -1123,14 +1123,58 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         } else {
             text.to_string()
         };
+        let mut v2_command: Option<(String, String)> = None;
+        if protocol == OpenCodeProtocol::V2 {
+            let trimmed = prompt_text.trim();
+            if let Some(rest) = trimmed.strip_prefix('/') {
+                let mut parts = rest.splitn(2, char::is_whitespace);
+                let name = parts.next().unwrap_or("").to_string();
+                let argument = parts.next().unwrap_or("").trim().to_string();
+                if !name.is_empty() {
+                    let list_path = format!(
+                        "/api/command?location={}",
+                        urlencode_component(&cwd)
+                    );
+                    if let Ok((status, body)) = http_request(port, "GET", &list_path, &auth, None) {
+                        if status < 400 {
+                            let commands = serde_json::from_str::<Value>(&body)
+                                .ok()
+                                .and_then(|v| {
+                                    v.get("data")
+                                        .cloned()
+                                        .or(Some(v))
+                                        .and_then(|v| v.as_array().cloned())
+                                })
+                                .unwrap_or_default();
+                            if commands.iter().any(|entry| {
+                                entry.get("name").and_then(Value::as_str) == Some(name.as_str())
+                            }) {
+                                v2_command = Some((name, argument));
+                            }
+                        }
+                    }
+                }
+            }
+        }
         let (prompt_path, prompt_body) = if protocol == OpenCodeProtocol::V2 {
-            (
-                format!("/api/session/{session_id}/prompt"),
-                json!({
-                    "text": prompt_text,
-                    "delivery": "steer",
-                }),
-            )
+            if let Some((name, argument)) = v2_command {
+                (
+                    format!("/api/session/{session_id}/command"),
+                    json!({
+                        "name": name,
+                        "text": argument,
+                        "delivery": "steer",
+                    }),
+                )
+            } else {
+                (
+                    format!("/api/session/{session_id}/prompt"),
+                    json!({
+                        "text": prompt_text,
+                        "delivery": "steer",
+                    }),
+                )
+            }
         } else {
             (
                 format!("/session/{session_id}/prompt_async"),

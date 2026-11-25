@@ -1122,6 +1122,15 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .and_then(Value::as_str)
         .or_else(|| model_selection.pointer("/options/effort").and_then(Value::as_str))
         .map(str::to_string);
+    let selected_service_tier: Option<String> = if model_selection.pointer("/options/serviceTier").and_then(Value::as_str) == Some("ultrafast") {
+        Some("ultrafast".to_string())
+    } else {
+        match model_selection.pointer("/options/fastMode").and_then(Value::as_bool) {
+            Some(true) => Some("fast".to_string()),
+            Some(false) => Some("default".to_string()),
+            None => None,
+        }
+    };
 
     let launch_key = format!(
         "{}|{}|{}",
@@ -1283,6 +1292,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         }
         if let Some(effort) = selected_effort.as_deref() {
             turn_params["effort"] = json!(effort);
+        }
+        if let Some(service_tier) = selected_service_tier.as_deref() {
+            turn_params["serviceTier"] = json!(service_tier);
         }
         let plan_mode = interaction_mode == "plan";
         let collaboration_model = selected_model

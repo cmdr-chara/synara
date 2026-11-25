@@ -28,6 +28,8 @@ mod git_pr;
 mod github_inbox;
 mod attachments_http;
 mod favicons;
+mod auth_http;
+mod auth_sessions;
 mod server_secrets;
 mod thread_export;
 mod local_image;
@@ -99,7 +101,8 @@ async fn main() {
         if fenced + recovered > 0 {
             eprintln!("startup recovery: fenced {fenced} interrupted git handoff(s), replayed {recovered}");
         }
-        attachments_http::start_cleanup_worker();
+        auth_http::seed_bootstrap_credential();
+    attachments_http::start_cleanup_worker();
     automation_executor::start();
         let resumed = orchestration_engine::consume_quit_resume_record();
         if resumed > 0 {
@@ -118,6 +121,13 @@ async fn main() {
         .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
         .route("/health", axum::routing::get(|| async { "ok" }))
+        .route("/api/auth/bootstrap", axum::routing::post(auth_http::bootstrap))
+        .route("/api/auth/session", axum::routing::get(auth_http::session_state))
+        .route("/api/auth/ws-token", axum::routing::post(auth_http::ws_token))
+        .route("/api/auth/pairing-token", axum::routing::post(auth_http::pairing_token))
+        .route("/api/auth/logout", axum::routing::post(auth_http::logout))
+        .route("/api/auth/clients", axum::routing::get(auth_http::clients))
+        .route("/api/auth/clients/revoke", axum::routing::post(auth_http::clients_revoke))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

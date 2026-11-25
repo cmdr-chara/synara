@@ -1560,6 +1560,20 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
     result
 }
 
+fn acp_usage_snapshot(update: &Value) -> Option<Value> {
+    let used = update.get("used").and_then(Value::as_i64).filter(|value| *value >= 0)?;
+    let max = update.get("size").and_then(Value::as_i64).filter(|value| *value > 0);
+    let percent = max.map(|max| ((used as f64 / max as f64) * 100.0).clamp(0.0, 100.0));
+    let mut usage = json!({"usedTokens": used, "compactsAutomatically": true});
+    if let Some(percent) = percent {
+        usage["usedPercent"] = json!(percent);
+    }
+    if let Some(max) = max {
+        usage["maxTokens"] = json!(max);
+    }
+    Some(usage)
+}
+
 /// Called after a `thread.turn-start-requested` event is committed for an
 /// ACP-capable provider thread. Spawns the runner thread that drives the session.
 pub fn start_turn(provider: String, thread_id: String, message_id: String, text: String, cwd: String) {
@@ -2614,6 +2628,25 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                             let payload = json!({ "tasks": tasks });
                             if let Ok(c) = open_state_rw() {
                                 if let Err(e) = append_activity(&c, &tid, &t_id, "info", "turn.tasks.updated", "Task list updated", &payload) { eprintln!("acp_runner: plan activity failed: {}", e.0); }
+                            }
+                        }
+                    }
+                    "usage_update" => {
+                        if let Some(usage) = acp_usage_snapshot(&update) {
+                            if let Ok(c) = open_state_rw() {
+                                let payload = json!({
+                                    "threadId": tid,
+                                    "turnId": t_id,
+                                    "usage": usage,
+                                    "raw": {
+                                        "source": "acp.jsonrpc",
+                                        "method": "session/update",
+                                        "payload": v.get("params").cloned().unwrap_or(Value::Null),
+                                    },
+                                });
+                                if let Err(e) = append_event(&c, &tid, "thread.token-usage.updated", &iso_now_ms(), payload) {
+                                    eprintln!("acp_runner: usage event failed: {}", e.0);
+                                }
                             }
                         }
                     }

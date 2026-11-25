@@ -22321,6 +22321,39 @@ impl Render for Native {
             // ---------- Profile ----------
             if self.settings_section == "profile" {
                 let prof = get(sdata, "profile");
+                // Upstream toDisplayName / deriveInitials over stats.identity.
+                let ident = get(prof, "identity");
+                let base = str_at(ident, "homeDirBasename");
+                let profile_name: String = {
+                    let cleaned = base
+                        .split(|c: char| c == '.' || c == '_' || c == '-' || c.is_whitespace())
+                        .filter(|p| !p.is_empty())
+                        .map(|p| {
+                            let mut ch = p.chars();
+                            match ch.next() {
+                                Some(f) => f.to_uppercase().collect::<String>() + ch.as_str(),
+                                None => String::new(),
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                        .join(" ");
+                    if cleaned.is_empty() { "Synara".to_string() } else { cleaned }
+                };
+                let profile_initials: String = match str_at(ident, "initials") {
+                    "" => {
+                        let parts: Vec<&str> = profile_name.split_whitespace().collect();
+                        if parts.len() >= 2 {
+                            parts.iter().take(2).filter_map(|p| p.chars().next()).collect::<String>().to_uppercase()
+                        } else {
+                            profile_name.chars().take(2).collect::<String>().to_uppercase()
+                        }
+                    }
+                    i => i.to_string(),
+                };
+                let profile_handle: String = match str_at(ident, "defaultHandle") {
+                    "" => format!("@{}", if base.is_empty() { "synara" } else { base }),
+                    h => h.to_string(),
+                };
                 let num = |k: &str| get(prof, k).as_i64().map(|n| n.to_string());
                 let threads_total = arr(get(sdata, "snapshot"), "threads").len()
                     .max(arr(get(sdata, "snapshot"), "items").len());
@@ -22359,19 +22392,55 @@ impl Render for Native {
                             .items_center()
                             .gap(px(6.))
                             .py_4()
+                            // Upstream ProfileSettingsPanel hero: 64px avatar (default
+                            // emerald) with 20px initials, 24px/32 semibold name from
+                            // toDisplayName(identity.homeDirBasename), 13px handle line.
                             .child(
                                 div()
-                                    .w(px(44.))
-                                    .h(px(44.))
+                                    .size(px(64.))
                                     .rounded_full()
-                                    .bg(rgb(0x34a853))
+                                    .bg(rgb(0x22c55e))
                                     .flex()
                                     .items_center()
                                     .justify_center()
-                                    .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).text_color(gpui::white()).child("DE")),
+                                    .child(
+                                        div()
+                                            .text_size(px(20.))
+                                            .line_height(px(28.))
+                                            .font_weight(FontWeight::SEMIBOLD)
+                                            .text_color(gpui::white())
+                                            .child(profile_initials.clone()),
+                                    ),
                             )
-                            .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).child("Devin"))
-                            .child(div().text_xs().text_color(theme.muted_foreground).child("@devin \u{b7} Synara")),
+                            .child(
+                                div()
+                                    .mt(px(6.))
+                                    .text_size(px(24.))
+                                    .line_height(px(32.))
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .child(profile_name.clone()),
+                            )
+                            .child(
+                                h_flex()
+                                    .gap(px(6.))
+                                    .text_size(px(13.))
+                                    .line_height(px(17.875))
+                                    .text_color(theme.muted_foreground)
+                                    .child(profile_handle.clone())
+                                    .child("\u{b7}")
+                                    // Upstream: the app name sits in a small
+                                    // rounded-full chip (border foreground 7%,
+                                    // px-1.5 py-px).
+                                    .child(
+                                        div()
+                                            .px(px(6.))
+                                            .py(px(1.))
+                                            .rounded_full()
+                                            .border_1()
+                                            .border_color(theme.foreground.opacity(0.07))
+                                            .child("Synara"),
+                                    ),
+                            ),
                     )
                     .child(
                         h_flex()

@@ -8,6 +8,7 @@ mod provider_instances;
 mod claude_environment;
 mod codex_runner;
 mod device;
+mod editor_intelligence;
 mod editor;
 mod hosts;
 mod automation;

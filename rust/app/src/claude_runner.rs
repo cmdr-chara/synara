@@ -1083,11 +1083,21 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         );
     }
 
+    let mut usage_windows = json!({"windows": {}});
     let result = (|| -> Result<String, WsErr> {
         loop {
             let Some(v) = read_json_line(&mut reader)? else {
                 return Err(err("claude exited before turn result"));
             };
+            if v.get("rate_limit_info").is_some() || v.get("type").and_then(Value::as_str) == Some("rate_limit_info") {
+                let now_ms = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_millis() as i64)
+                    .unwrap_or(0);
+                if let Some(next) = crate::usage_limit::claude_usage_limit_windows(&usage_windows, &v, now_ms) {
+                    usage_windows = next;
+                }
+            }
             match v.get("type").and_then(Value::as_str).unwrap_or("") {
                 "system" => {
                     if v.get("subtype").and_then(Value::as_str) == Some("init") {
@@ -1181,6 +1191,56 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         Err(e) => {
             let (state, status) = if cancelled_flag { ("interrupted", "interrupted") } else { ("error", "error") };
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
+            // Usage-limit evidence: schedule automatic recovery while the
+            // session still carries the active turn (`source` requires it).
+            if !cancelled_flag {
+                let now_ms = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_millis() as i64)
+                    .unwrap_or(0);
+                if let Some(reset_at) = crate::usage_limit::usage_limit_reset_at(&usage_windows, now_ms) {
+                    let epoch = format!("claude-{turn_id}");
+                    let binding = json!({
+                        "turnId": turn_id,
+                        "bindingKey": "detection",
+                        "policyEpoch": epoch,
+                    });
+                    let model_sel: Value = conn
+                        .query_row(
+                            "SELECT model_selection_json FROM projection_threads WHERE thread_id=?1",
+                            rusqlite::params![thread_id],
+                            |r| r.get::<_, Option<String>>(0),
+                        )
+                        .ok()
+                        .flatten()
+                        .and_then(|j| serde_json::from_str(&j).ok())
+                        .unwrap_or(Value::Null);
+                    let now = iso_now_ms();
+                    let mut src = serde_json::Map::new();
+                    src.insert("type".into(), json!("thread.usage-limit.source"));
+                    src.insert("commandId".into(), json!(format!("ul-source:{turn_id}")));
+                    src.insert("threadId".into(), json!(thread_id));
+                    src.insert("createdAt".into(), json!(now));
+                    src.insert("source".into(), binding.clone());
+                    let mut sched = serde_json::Map::new();
+                    sched.insert("type".into(), json!("thread.usage-limit.schedule"));
+                    sched.insert("commandId".into(), json!(format!("ul-schedule:{turn_id}")));
+                    sched.insert("threadId".into(), json!(thread_id));
+                    sched.insert("createdAt".into(), json!(now));
+                    sched.insert("recovery".into(), json!({
+                        "id": format!("ul-{turn_id}"),
+                        "turnId": turn_id,
+                        "bindingKey": "detection",
+                        "policyEpoch": epoch,
+                        "resetAt": reset_at,
+                        "provider": model_sel.get("provider").cloned().unwrap_or(json!("claudeAgent")),
+                        "providerInstanceId": model_sel.get("instanceId").or_else(|| model_sel.get("provider")).cloned().unwrap_or(json!("claudeAgent")),
+                        "model": model_sel.get("model").cloned().unwrap_or(Value::Null),
+                    }));
+                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(src));
+                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(sched));
+                }
+            }
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), session_id.as_deref())?;
             session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}))?;
             if cancelled_flag {

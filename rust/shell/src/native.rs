@@ -21415,6 +21415,30 @@ impl Render for Native {
                 .child(div().text_size(px(13.)).text_color(ink).child(hex_label.to_string()))
                 .into_any_element()
         };
+        // Upstream ThemePackEditor FontInput: 224x32 field, radius 10, faint
+        // border and fill, 13px text; the placeholder (default family) is
+        // foreground at ~42%.
+        let font_field = |value: String, placeholder: &'static str| {
+            let empty = value.trim().is_empty();
+            div()
+                .w(px(224.))
+                .h(px(32.))
+                .px(px(12.))
+                .flex()
+                .items_center()
+                .rounded(px(10.))
+                .border_1()
+                .border_color(theme.foreground.opacity(0.07))
+                .bg(rgba(0x34343452))
+                .text_size(px(13.))
+                .text_color(if empty {
+                    theme.foreground.opacity(0.42)
+                } else {
+                    theme.foreground
+                })
+                .child(if empty { placeholder.to_string() } else { value })
+                .into_any_element()
+        };
         // Bordered number field + "px" suffix.
         let num_field = |v: &'static str| {
             h_flex()
@@ -24112,7 +24136,14 @@ impl Render for Native {
                         .justify_between()
                         .px_3()
                         .py(px(10. * dscale))
-                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(label))
+                        // Upstream theme-pack row labels: 13px regular at
+                        // foreground 90%.
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.foreground.opacity(0.9))
+                                .child(label),
+                        )
                         .child(ctrl)
                         .into_any_element()
                 };
@@ -24614,34 +24645,26 @@ impl Render for Native {
                             .child(divider())
                             .child(prow(
                                 "UI font",
-                                swatch_click(
-                                    dark,
-                                    "fontUi",
-                                    select_pill(
-                                        if font_ui.is_empty() {
-                                            "System default".to_string()
-                                        } else {
-                                            font_ui.clone()
-                                        },
-                                        None,
-                                    ),
-                                ),
+                                // Upstream shows this note under the field while "Use
+                                // system UI font" is on (the shell's switch is fixed on).
+                                v_flex()
+                                    .items_end()
+                                    .gap(px(4.))
+                                    .child(swatch_click(dark, "fontUi", font_field(font_ui.clone(), "System default")))
+                                    .child(
+                                        div()
+                                            .text_size(px(12.))
+                                            .line_height(px(18.))
+                                            .whitespace_nowrap()
+                                            .text_color(theme.foreground.opacity(0.58))
+                                            .child("Use system UI font is on; theme fonts are not applied."),
+                                    )
+                                    .into_any_element(),
                             ))
                             .child(divider())
                             .child(prow(
                                 "Code font",
-                                swatch_click(
-                                    dark,
-                                    "fontCode",
-                                    select_pill(
-                                        if font_code.is_empty() {
-                                            "JetBrains Mono".to_string()
-                                        } else {
-                                            font_code.clone()
-                                        },
-                                        None,
-                                    ),
-                                ),
+                                swatch_click(dark, "fontCode", font_field(font_code.clone(), "\"JetBrains Mono\"")),
                             ))
                             .child(divider())
                             .child(prow("Window", window_seg.into_any_element()))

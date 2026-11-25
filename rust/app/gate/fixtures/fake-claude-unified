@@ -27,6 +27,8 @@ if "-p" in sys.argv or "--print" in sys.argv:
         out = {"suggestion": "commit it and open a PR"}
     elif "engineering summaries for git diffs" in prompt:
         out = {"summary": "## Summary\n- Appends a line to a.txt and adds b.txt.\n\n## Files Changed\n- a.txt: appended content\n- b.txt: new file"}
+    elif "generate concise chat thread titles" in prompt:
+        out = {"title": "Fix login redirect loop"}
     else:
         out = {"recap": "Ported browser download capture to the CDP backend; next up is usage snapshots verification."}
     send = {"type": "result", "result": json.dumps(out), "structured_output": out}

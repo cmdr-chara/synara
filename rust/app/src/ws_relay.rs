@@ -96,6 +96,7 @@ fn intercept_todo(
         && !text.contains("projects.subscribeDevServerEvents")
         && !text.contains("projects.subscribeFileChange")
         && !text.contains("projects.provisionFromGitHub")
+        && !text.contains("server.consumeCodexResetCredit")
         && !text.contains("server.listProviderUsage")
         && !text.contains("server.getProviderUsageSnapshot")
         && !text.contains("server.upsertKeybinding")

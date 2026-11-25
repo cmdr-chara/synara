@@ -497,6 +497,34 @@ fn resolve_provider_binary(
     default_binary.to_string()
 }
 
+fn resolve_devin_selected_model(model_selection: &Value) -> Option<String> {
+    let model = model_selection.get("model").and_then(Value::as_str)?.trim();
+    if model.is_empty() {
+        return None;
+    }
+    let fast_mode = model_selection.pointer("/options/fastMode").and_then(Value::as_bool);
+    let resolved = match (model, fast_mode) {
+        ("swe-1-6", Some(true)) => "swe-1-6-fast",
+        ("swe-1-7", Some(true)) => "swe-1-7-lightning",
+        ("swe-1-6-fast", Some(false)) => "swe-1-6",
+        ("swe-1-7-lightning", Some(false)) => "swe-1-7",
+        _ => model,
+    };
+    Some(resolved.to_string())
+}
+
+fn selected_acp_model(provider: &str, model_selection: &Value) -> Option<String> {
+    if provider == "devin" {
+        return resolve_devin_selected_model(model_selection);
+    }
+    model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string)
+}
+
 fn model_args(provider: &str, model: Option<&str>) -> Vec<String> {
     let Some(model) = model.map(str::trim).filter(|value| !value.is_empty()) else {
         return Vec::new();
@@ -671,10 +699,7 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
     let model_value = model_json
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
         .unwrap_or(Value::Null);
-    let selected_model = model_value
-        .get("model")
-        .and_then(Value::as_str)
-        .map(str::to_string);
+    let selected_model = selected_acp_model(provider, &model_value);
     let reasoning_effort = model_value
         .pointer("/options/reasoningEffort")
         .and_then(Value::as_str)
@@ -1466,7 +1491,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
     } else {
         cwd
     };
-    let selected_model: Option<String> = conn
+    let model_value: Value = conn
         .query_row(
             "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
             params![thread_id],
@@ -1475,28 +1500,13 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
         .ok()
         .flatten()
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|value| {
-            value
-                .get("model")
-                .and_then(Value::as_str)
-                .map(str::to_string)
-        });
-    let reasoning_effort: Option<String> = conn
-        .query_row(
-            "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
-            params![thread_id],
-            |r| r.get::<_, Option<String>>(0),
-        )
-        .ok()
-        .flatten()
-        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|value| {
-            value
-                .pointer("/options/reasoningEffort")
-                .and_then(Value::as_str)
-                .or_else(|| value.get("reasoningEffort").and_then(Value::as_str))
-                .map(str::to_string)
-        });
+        .unwrap_or(Value::Null);
+    let selected_model = selected_acp_model(provider, &model_value);
+    let reasoning_effort: Option<String> = model_value
+        .pointer("/options/reasoningEffort")
+        .and_then(Value::as_str)
+        .or_else(|| model_value.get("reasoningEffort").and_then(Value::as_str))
+        .map(str::to_string);
     let additional_dirs: Vec<String> = conn
         .query_row(
             "SELECT p.additional_folders_json FROM projection_projects p              JOIN projection_threads t ON t.project_id = p.project_id              WHERE t.thread_id = ?1",

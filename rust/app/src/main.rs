@@ -20,6 +20,7 @@ mod orchestration_reads;
 mod orchestration_snapshot;
 mod original;
 mod mcp_connectors;
+mod provider_attachments;
 mod provider_cache;
 mod skills_catalog;
 mod computer_audit;

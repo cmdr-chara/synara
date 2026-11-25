@@ -524,8 +524,19 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
     };
+    let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
+    let prompt_text = crate::provider_attachments::append_file_attachments_prompt_block(
+        &prompt_text,
+        &attachments,
+        false,
+    );
+    let prompt_images = crate::provider_attachments::image_blocks(&attachments)?;
     let result = (|| -> Result<String, WsErr> {
-        write_line(&stdin, &json!({"id": format!("prompt-{turn_id}"), "type":"prompt", "message": prompt_text}))?;
+        let mut prompt_command = json!({"id": format!("prompt-{turn_id}"), "type":"prompt", "message": prompt_text});
+        if !prompt_images.is_empty() {
+            prompt_command["images"] = json!(prompt_images);
+        }
+        write_line(&stdin, &prompt_command)?;
         let mut saw_delta = false;
         loop {
             let Some(value) = read_json_line(&mut reader)? else {

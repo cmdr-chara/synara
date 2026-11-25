@@ -53,7 +53,6 @@ pub fn handles(tag: &str) -> bool {
             | "git.createDetachedWorktree"
             | "git.preparePullRequestThread"
             | "git.runStackedAction"
-            | "git.handoffThread"
     )
 }
 
@@ -69,7 +68,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
             prepare_pull_request_thread(&cwd_of(payload)?, payload).map(Some)
         }
         "git.runStackedAction" => run_stacked_action(&cwd_of(payload)?, payload).map(Some),
-        "git.handoffThread" => handoff_thread(&cwd_of(payload)?, payload).map(Some),
+
         _ => Err(err(format!("unhandled git tag {tag}"))),
     }
 }
@@ -1791,7 +1790,7 @@ fn recreate_worktree(
     (true, changes)
 }
 
-fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
+pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     require_repo(cwd)?;
     let target_mode = str_arg(payload, "targetMode")?;
     let current_branch = handoff_opt_str(payload, "currentBranch");

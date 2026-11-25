@@ -88,6 +88,10 @@ async fn main() {
                 orphans.len()
             );
         }
+        let (fenced, recovered) = git_handoff::recover();
+        if fenced + recovered > 0 {
+            eprintln!("startup recovery: fenced {fenced} interrupted git handoff(s), replayed {recovered}");
+        }
         let resumed = orchestration_engine::consume_quit_resume_record();
         if resumed > 0 {
             eprintln!("startup recovery: resumed {resumed} thread(s) from the quit-resume record");

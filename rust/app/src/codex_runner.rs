@@ -7,9 +7,8 @@
 //! v1 vertical slice: initialize handshake, thread start/resume, turn start,
 //! streaming agentMessage deltas into the projection, terminal
 //! turn/completed|aborted|error handling. Server->client approval requests
-//! are auto-accepted for now; the upstream approval-card integration is a
-//! later slice, as are long-lived process parking, MCP injection and
-//! collaboration modes.
+//! are routed through pending approval interactions outside full-access,
+//! while long-lived process parking and collaboration modes remain later slices.
 
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
@@ -21,7 +20,7 @@ use rusqlite::params;
 use serde_json::{json, Value};
 
 use crate::acp_runner::{
-    append_assistant_text, err, session_set_event, set_session, set_turn_state,
+    append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state,
 };
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
 use crate::todo::{iso_now_ms, WsErr};
@@ -144,6 +143,46 @@ struct Rpc {
     stdin: Arc<Mutex<std::process::ChildStdin>>,
     reader: BufReader<std::process::ChildStdout>,
     next_id: i64,
+    approval_ctx: Option<CodexApprovalCtx>,
+}
+
+#[derive(Clone)]
+struct CodexApprovalCtx {
+    thread_id: String,
+    turn_id: String,
+    runtime_mode: String,
+    cancelled: Arc<AtomicBool>,
+}
+
+fn codex_request_kind(method: &str) -> Option<&'static str> {
+    match method {
+        "item/commandExecution/requestApproval" => Some("command"),
+        "item/fileRead/requestApproval" => Some("file-read"),
+        "item/fileChange/requestApproval" => Some("file-change"),
+        "item/permissions/requestApproval" => Some("permissions"),
+        _ => None,
+    }
+}
+
+fn is_mcp_tool_approval(method: &str, params: &Value) -> bool {
+    method == "mcpServer/elicitation/request"
+        && params
+            .pointer("/_meta/codex_approval_kind")
+            .and_then(Value::as_str)
+            == Some("mcp_tool_call")
+}
+
+fn without_null_values(value: &Value) -> Value {
+    match value {
+        Value::Object(map) => Value::Object(
+            map.iter()
+                .filter(|(_, v)| !v.is_null())
+                .map(|(k, v)| (k.clone(), without_null_values(v)))
+                .collect(),
+        ),
+        Value::Array(items) => Value::Array(items.iter().map(without_null_values).collect()),
+        _ => value.clone(),
+    }
 }
 
 impl Rpc {
@@ -197,21 +236,206 @@ impl Rpc {
         }
     }
 
-    /// Server->client requests (approvals, user input) are auto-accepted in
-    /// this slice; approval cards are a later integration.
+    /// Server→client requests. Native approval methods become pending
+    /// interactions and block until `thread.approval.respond` writes the
+    /// user's decision, matching the upstream approval-card contract. In
+    /// full-access mode they are auto-accepted because the runtime override
+    /// already expresses the user's blanket grant. Unknown requests receive
+    /// a protocol error instead of a silent approval.
     fn answer_server_request(&mut self, v: &Value) {
-        if v.get("method").is_none() || v.get("id").is_none() {
+        let Some(method) = v.get("method").and_then(Value::as_str) else {
+            return;
+        };
+        if v.get("id").is_none() || v.get("id").and_then(Value::as_i64) == Some(-1) {
             return;
         }
-        if v.get("id").and_then(Value::as_i64) == Some(-1) {
+        let params = v.get("params").cloned().unwrap_or(Value::Null);
+        let mcp_approval = is_mcp_tool_approval(method, &params);
+        let request_kind = if mcp_approval {
+            Some("tool")
+        } else {
+            codex_request_kind(method)
+        };
+        let Some(request_kind) = request_kind else {
+            if let Some(rid) = v.get("id").cloned() {
+                let (result, error) = if method == "mcpServer/elicitation/request" {
+                    (Some(json!({"action":"cancel","content":null,"_meta":null})), None)
+                } else {
+                    (None, Some(json!({"code":-32601,"message":format!("unsupported server request: {method}")})))
+                };
+                let mut response = json!({"jsonrpc":"2.0","id":rid});
+                if let Some(result) = result { response["result"] = result; }
+                if let Some(error) = error { response["error"] = error; }
+                let _ = self.write_raw(&response);
+            }
             return;
+        };
+        let Some(ctx) = self.approval_ctx.clone() else {
+            self.auto_accept(v, method, request_kind);
+            return;
+        };
+        if ctx.runtime_mode == "full-access" {
+            self.auto_accept(v, method, request_kind);
+        } else {
+            self.handle_interactive_approval(v, method, request_kind, &ctx);
         }
+    }
+
+    fn auto_accept(&mut self, v: &Value, method: &str, _request_kind: &str) {
         if let Some(rid) = v.get("id").cloned() {
-            let _ = self.write_raw(&json!({
-                "jsonrpc": "2.0",
-                "id": rid,
-                "result": {"decision": "accept"},
-            }));
+            let params = v.get("params").cloned().unwrap_or(Value::Null);
+            let result = if is_mcp_tool_approval(method, &params) {
+                json!({"action":"accept","content":null,"_meta":null})
+            } else if method == "item/permissions/requestApproval" {
+                json!({"permissions": without_null_values(params.get("permissions").unwrap_or(&Value::Null)), "scope":"turn"})
+            } else {
+                json!({"decision":"accept"})
+            };
+            let _ = self.write_raw(&json!({"jsonrpc":"2.0","id":rid,"result":result}));
+        }
+    }
+
+    fn handle_interactive_approval(
+        &mut self,
+        v: &Value,
+        method: &str,
+        request_kind: &str,
+        ctx: &CodexApprovalCtx,
+    ) {
+        let params = v.get("params").cloned().unwrap_or(Value::Null);
+        let request_id = uuid_v4();
+        let title = if is_mcp_tool_approval(method, &params) {
+            params
+                .pointer("/_meta/tool_name")
+                .and_then(Value::as_str)
+                .or_else(|| {
+                    params
+                        .get("message")
+                        .and_then(Value::as_str)
+                        .and_then(|message| {
+                            message
+                                .strip_prefix("Allow the synara MCP server to run tool \"")?
+                                .strip_suffix("\"?")
+                        })
+                })
+                .map(|name| format!("mcp__synara__{name}"))
+                .unwrap_or_else(|| "MCP tool call".to_string())
+        } else {
+            params
+                .get("command")
+                .or_else(|| params.get("path"))
+                .or_else(|| params.get("reason"))
+                .and_then(Value::as_str)
+                .unwrap_or("Codex approval")
+                .to_string()
+        };
+        let now = iso_now_ms();
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+            if let Err(e) = c.execute(
+                "INSERT OR REPLACE INTO projection_pending_interactions                  (interaction_kind, request_id, thread_id, turn_id,                   lifecycle_generation, status, decision,                   response_command_id, response_requested_at,                   created_at, resolved_at)                  VALUES ('approval', ?1, ?2, ?3, NULL, 'pending', NULL,                   NULL, NULL, ?4, NULL)",
+                params![request_id, ctx.thread_id, ctx.turn_id, now],
+            ) {
+                eprintln!("codex_runner: pending approval insert: {e}");
+            }
+            let payload = json!({
+                "requestId": request_id,
+                "requestKind": request_kind,
+                "toolName": title,
+                "detail": title,
+                "providerMethod": method,
+                "providerPayload": params,
+                "sessionApprovalAvailable": true,
+            });
+            let _ = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "warn",
+                "approval.requested",
+                "Approval requested",
+                &payload,
+            );
+        }
+
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+        let mut decision: Option<String> = None;
+        while decision.is_none() {
+            if ctx.cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+                decision = Some("cancel".to_string());
+                break;
+            }
+            if let Ok(c) = open_state_rw() {
+                match c.query_row(
+                    "SELECT decision FROM projection_pending_interactions                      WHERE thread_id=?1 AND request_id=?2                      AND interaction_kind='approval'",
+                    params![ctx.thread_id, request_id],
+                    |r| r.get::<_, Option<String>>(0),
+                ) {
+                    Ok(d) => {
+                        if let Some(d) = d {
+                            decision = Some(d);
+                        }
+                    }
+                    Err(_) => decision = Some("cancel".to_string()),
+                }
+            }
+            if decision.is_none() {
+                std::thread::sleep(std::time::Duration::from_millis(250));
+            }
+        }
+        let decision = decision.unwrap_or_else(|| "cancel".to_string());
+
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute(
+                "DELETE FROM projection_pending_interactions                  WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='approval'",
+                params![ctx.thread_id, request_id],
+            );
+            let _ = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "info",
+                "approval.resolved",
+                "Approval resolved",
+                &json!({"requestId": request_id, "decision": decision}),
+            );
+        }
+
+        if let Some(rid) = v.get("id").cloned() {
+            let result = if is_mcp_tool_approval(method, &params) {
+                let action = match decision.as_str() {
+                    "accept" | "acceptForSession" => "accept",
+                    "decline" => "decline",
+                    _ => "cancel",
+                };
+                let persist_session = decision == "acceptForSession"
+                    && match params.pointer("/_meta/persist") {
+                        Some(Value::Array(items)) => items.iter().any(|x| x.as_str() == Some("session")),
+                        Some(Value::String(s)) => s == "session",
+                        _ => false,
+                    };
+                json!({
+                    "action": action,
+                    "content": null,
+                    "_meta": if persist_session { json!({"persist":"session"}) } else { Value::Null },
+                })
+            } else if method == "item/permissions/requestApproval" {
+                let granted = if matches!(decision.as_str(), "accept" | "acceptForSession") {
+                    without_null_values(params.get("permissions").unwrap_or(&Value::Null))
+                } else {
+                    json!({})
+                };
+                json!({
+                    "permissions": granted,
+                    "scope": if decision == "acceptForSession" { "session" } else { "turn" },
+                })
+            } else {
+                json!({"decision": decision})
+            };
+            let _ = self.write_raw(&json!({"jsonrpc":"2.0","id":rid,"result":result}));
+        }
+        if decision == "cancel" && matches!(request_kind, "permissions" | "tool") {
+            cancel_turn(&ctx.thread_id);
         }
     }
 }
@@ -323,6 +547,12 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         stdin: stdin.clone(),
         reader: BufReader::new(stdout),
         next_id: 1,
+        approval_ctx: Some(CodexApprovalCtx {
+            thread_id: thread_id.to_string(),
+            turn_id: turn_id.clone(),
+            runtime_mode: turn_runtime_mode.clone(),
+            cancelled: cancelled.clone(),
+        }),
     };
 
     let result = (|| -> Result<String, WsErr> {

@@ -28,6 +28,7 @@ mod computer_native;
 mod opencode_runner;
 mod pi_runner;
 mod orchestration_engine;
+mod usage_limit;
 mod project_agent;
 mod project_imports;
 mod projects_provision;

@@ -169,7 +169,8 @@ fn tool(name: &str, description: &str, schema: Value) -> Value {
 }
 
 fn tool_definitions() -> Vec<Value> {
-    vec![
+    let mut definitions = crate::browser_automation::browser_tool_definitions();
+    definitions.extend(vec![
         tool(
             "computer_list_windows",
             "List visible desktop windows with their exact window ids.",
@@ -341,7 +342,8 @@ fn tool_definitions() -> Vec<Value> {
                 &[],
             ),
         ),
-    ]
+    ]);
+    definitions
 }
 
 fn semantic_target(args: &Value) -> Option<Value> {
@@ -373,6 +375,9 @@ fn semantic_target(args: &Value) -> Option<Value> {
 }
 
 async fn call_tool(name: &str, args: &Value) -> Result<Value, String> {
+    if name.starts_with("browser_") {
+        return crate::browser_automation::call_browser_tool(name, args).await;
+    }
     if name == "computer_batch" {
         return computer_batch(args).await;
     }

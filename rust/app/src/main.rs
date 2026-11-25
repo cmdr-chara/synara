@@ -5,6 +5,7 @@ mod device;
 mod editor;
 mod hosts;
 mod automation;
+mod browser_automation;
 mod fs_browse;
 mod git_domain;
 mod git_handoff;

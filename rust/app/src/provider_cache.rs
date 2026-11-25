@@ -67,6 +67,141 @@ pub(crate) fn provider_statuses() -> Vec<Value> {
     out
 }
 
+
+fn opencode_binary() -> String {
+    for key in ["SYNARA_OPENCODE_CLI", "OPENCODE_BINARY_PATH"] {
+        if let Ok(path) = std::env::var(key) {
+            if !path.trim().is_empty() {
+                return path;
+            }
+        }
+    }
+    "opencode".to_string()
+}
+
+fn fallback_model_name(slug: &str) -> String {
+    slug.rsplit('/').next().unwrap_or(slug).to_string()
+}
+
+fn parse_opencode_models_output(output: &str) -> Vec<Value> {
+    let lines: Vec<&str> = output.lines().collect();
+    let mut models = Vec::new();
+    let mut index = 0;
+    while index < lines.len() {
+        let candidate = lines[index].trim();
+        index += 1;
+        let Some((provider_id, model_id)) = candidate.split_once('/') else {
+            continue;
+        };
+        if provider_id.is_empty() || model_id.is_empty() || candidate.contains(char::is_whitespace) {
+            continue;
+        }
+        let mut object = Value::Null;
+        if index < lines.len() && lines[index].trim_start().starts_with('{') {
+            let mut json_text = String::new();
+            let mut depth = 0i32;
+            let mut started = false;
+            while index < lines.len() {
+                let line = lines[index];
+                index += 1;
+                json_text.push_str(line);
+                json_text.push('\n');
+                for ch in line.chars() {
+                    match ch {
+                        '{' => { depth += 1; started = true; }
+                        '}' => depth -= 1,
+                        _ => {}
+                    }
+                }
+                if started && depth <= 0 {
+                    break;
+                }
+            }
+            object = serde_json::from_str(&json_text).unwrap_or(Value::Null);
+        }
+        let variants = object
+            .get("variants")
+            .and_then(Value::as_object)
+            .map(|variants| variants.keys().cloned().collect::<Vec<_>>())
+            .unwrap_or_default();
+        let efforts = object
+            .get("reasoning_options")
+            .or_else(|| object.get("reasoningOptions"))
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        let mut model = json!({
+            "slug": candidate,
+            "providerID": object.get("providerID").and_then(Value::as_str).unwrap_or(provider_id),
+            "modelID": object.get("id").and_then(Value::as_str).unwrap_or(model_id),
+            "name": object.get("name").and_then(Value::as_str).unwrap_or_else(|| fallback_model_name(candidate).leak()),
+            "variants": variants,
+            "supportedReasoningEfforts": efforts,
+        });
+        if let Some(default_effort) = object
+            .get("defaultReasoningEffort")
+            .or_else(|| object.get("default_reasoning_effort"))
+            .cloned()
+        {
+            model["defaultReasoningEffort"] = default_effort;
+        }
+        models.push(model);
+    }
+    models.sort_by(|a, b| {
+        a.get("name").and_then(Value::as_str).unwrap_or("")
+            .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
+            .then(a.get("slug").and_then(Value::as_str).unwrap_or("")
+                .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")))
+    });
+    models.dedup_by(|a, b| a.get("slug") == b.get("slug"));
+    models
+}
+
+fn discover_opencode_models() -> Result<Vec<Value>, WsErr> {
+    let binary = opencode_binary();
+    let mut output = std::process::Command::new(&binary)
+        .args(["models", "--verbose"])
+        .output()
+        .map_err(|e| err(format!("failed to execute opencode models: {e}")))?;
+    if !output.status.success() {
+        let combined = format!(
+            "{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        )
+        .to_lowercase();
+        if combined.contains("unknown") && combined.contains("verbose") {
+            output = std::process::Command::new(&binary)
+                .args(["models"])
+                .output()
+                .map_err(|e| err(format!("failed to execute opencode models: {e}")))?;
+        }
+    }
+    if !output.status.success() {
+        return Err(err(format!(
+            "opencode models exited with {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let models = parse_opencode_models_output(&stdout);
+    if models.is_empty() {
+        Err(err("opencode models returned no models"))
+    } else {
+        Ok(models)
+    }
+}
+
+fn opencode_discovery_result() -> Result<Value, WsErr> {
+    let models = discover_opencode_models()?;
+    Ok(json!({
+        "models": models,
+        "source": "cli",
+        "cached": false,
+    }))
+}
+
 /// `provider.listModels`: the upstream-normalized catalog cache keyed by a
 /// JSON array whose first two elements are provider and instanceId.
 fn list_models(payload: &Value) -> Result<Value, WsErr> {
@@ -87,6 +222,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         .join("provider-models")
         .join("catalogs.json");
     let Ok(text) = std::fs::read_to_string(&path) else {
+        if provider == "opencode" {
+            return opencode_discovery_result();
+        }
         return Err(err("no provider model catalog cache"));
     };
     let doc: Value = serde_json::from_str(&text).map_err(|e| err(e.to_string()))?;
@@ -114,6 +252,9 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
             "source": "cache",
             "cached": true,
         }));
+    }
+    if provider == "opencode" {
+        return opencode_discovery_result();
     }
     Err(err(format!(
         "no cached model catalog for {provider}/{instance}"

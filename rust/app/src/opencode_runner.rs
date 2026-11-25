@@ -19,7 +19,7 @@ use std::sync::{Arc, LazyLock, Mutex};
 use rusqlite::params;
 use serde_json::{json, Value};
 
-use crate::acp_runner::{append_assistant_text, err, session_set_event, set_session, set_turn_state};
+use crate::acp_runner::{append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state};
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
 use crate::todo::{iso_now_ms, WsErr};
 
@@ -291,6 +291,160 @@ fn open_sse_stream(port: u16, auth: &str, path: &str) -> Result<TcpStream, WsErr
         .write_all(request.as_bytes())
         .map_err(|e| err(format!("opencode sse write: {e}")))?;
     Ok(stream)
+}
+
+
+fn permission_request_kind(action: &str) -> &'static str {
+    match action {
+        "shell" | "bash" => "command",
+        "read" => "file-read",
+        "edit" | "write" | "patch" => "file-change",
+        _ => "tool",
+    }
+}
+
+/// Bridge one native V2 permission request into Synara's pending-interaction
+/// approval surface, wait for `thread.approval.respond`, then answer the
+/// server. Full Access auto-accepts because that mode is itself the user's
+/// blanket grant; other modes require the explicit card decision.
+fn handle_permission_request(
+    port: u16,
+    auth: &str,
+    session_id: &str,
+    data: &Value,
+    thread_id: &str,
+    turn_id: &str,
+    runtime_mode: &str,
+    cancelled: &Arc<AtomicBool>,
+) -> Result<(), WsErr> {
+    let request_id = data
+        .get("id")
+        .and_then(Value::as_str)
+        .filter(|id| !id.is_empty())
+        .ok_or_else(|| err("opencode permission request missing id"))?
+        .to_string();
+    let action = data
+        .get("action")
+        .and_then(Value::as_str)
+        .unwrap_or("tool");
+    let resources = data
+        .get("resources")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let detail = resources
+        .iter()
+        .filter_map(Value::as_str)
+        .collect::<Vec<_>>()
+        .join(", ");
+    let title = if detail.is_empty() {
+        format!("OpenCode {action}")
+    } else {
+        detail.clone()
+    };
+    let reply_for = |decision: &str| match decision {
+        "accept" | "acceptForSession" => {
+            if decision == "acceptForSession" { "always" } else { "once" }
+        }
+        _ => "reject",
+    };
+
+    if runtime_mode == "full-access" {
+        let path = format!("/api/session/{session_id}/permission/{request_id}/reply");
+        let (status, body) = http_request(
+            port,
+            "POST",
+            &path,
+            auth,
+            Some(&json!({"decision": "once"})),
+        )?;
+        if status >= 400 {
+            return Err(err(format!("opencode permission reply HTTP {status}: {body}")));
+        }
+        return Ok(());
+    }
+
+    if let Ok(c) = open_state_rw() {
+        let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+        let now = iso_now_ms();
+        if let Err(e) = c.execute(
+            "INSERT OR REPLACE INTO projection_pending_interactions              (interaction_kind, request_id, thread_id, turn_id,               lifecycle_generation, status, decision,               response_command_id, response_requested_at,               created_at, resolved_at)              VALUES ('approval', ?1, ?2, ?3, NULL, 'pending', NULL,               NULL, NULL, ?4, NULL)",
+            params![request_id, thread_id, turn_id, now],
+        ) {
+            eprintln!("opencode_runner: pending permission insert: {e}");
+        }
+        let _ = append_activity(
+            &c,
+            thread_id,
+            turn_id,
+            "warn",
+            "approval.requested",
+            "Approval requested",
+            &json!({
+                "requestId": request_id,
+                "requestKind": permission_request_kind(action),
+                "toolName": title,
+                "detail": title,
+                "providerMethod": "permission.asked",
+                "providerPayload": data,
+                "sessionApprovalAvailable": true,
+            }),
+        );
+    }
+
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+    let mut decision: Option<String> = None;
+    while decision.is_none() {
+        if cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+            decision = Some("cancel".to_string());
+            break;
+        }
+        if let Ok(c) = open_state_rw() {
+            match c.query_row(
+                "SELECT decision FROM projection_pending_interactions                  WHERE thread_id=?1 AND request_id=?2                  AND interaction_kind='approval'",
+                params![thread_id, request_id],
+                |r| r.get::<_, Option<String>>(0),
+            ) {
+                Ok(d) => {
+                    if let Some(d) = d {
+                        decision = Some(d);
+                    }
+                }
+                Err(_) => decision = Some("cancel".to_string()),
+            }
+        }
+        if decision.is_none() {
+            std::thread::sleep(std::time::Duration::from_millis(250));
+        }
+    }
+    let decision = decision.unwrap_or_else(|| "cancel".to_string());
+    if let Ok(c) = open_state_rw() {
+        let _ = c.execute(
+            "DELETE FROM projection_pending_interactions              WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='approval'",
+            params![thread_id, request_id],
+        );
+        let _ = append_activity(
+            &c,
+            thread_id,
+            turn_id,
+            "info",
+            "approval.resolved",
+            "Approval resolved",
+            &json!({"requestId": request_id, "decision": decision}),
+        );
+    }
+    let path = format!("/api/session/{session_id}/permission/{request_id}/reply");
+    let (status, body) = http_request(
+        port,
+        "POST",
+        &path,
+        auth,
+        Some(&json!({"decision": reply_for(&decision)})),
+    )?;
+    if status >= 400 {
+        return Err(err(format!("opencode permission reply HTTP {status}: {body}")));
+    }
+    Ok(())
 }
 
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
@@ -570,6 +724,19 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     {
                         text_buf.push_str(d);
                     }
+                }
+                "permission.asked" if protocol == OpenCodeProtocol::V2 => {
+                    let data = v.get("data").cloned().unwrap_or(Value::Null);
+                    handle_permission_request(
+                        port,
+                        &auth,
+                        &session_id,
+                        &data,
+                        thread_id,
+                        &turn_id,
+                        &turn_runtime_mode,
+                        &cancelled,
+                    )?;
                 }
                 "session.idle" | "session.execution.succeeded" => break "completed",
                 "session.execution.interrupted" => break "cancelled",

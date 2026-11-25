@@ -9990,6 +9990,17 @@ impl Native {
         s.into_any_element()
     }
 
+    /// Width of the left panel card next to the rail. Upstream's Code review
+    /// list is its own section, 416px by default (min 16rem); every other
+    /// surface uses the 257px sidebar card.
+    fn side_panel_w(&self) -> f32 {
+        if self.view_pullreq && !self.view_settings {
+            416.
+        } else {
+            257.
+        }
+    }
+
     /// Upstream keep-awake segmented control: writes settings.keepAwakeMode
     /// ("on" | "agent" | "off"); the server turns that into caffeinate state.
     fn set_keep_awake(&mut self, i: usize, cx: &mut Context<Self>) {
@@ -22068,7 +22079,7 @@ impl Render for Native {
                     .p(px(48.))
                     .child(
                         div()
-                            .w_full()
+                            .w(px(272.))
                             .text_center()
                             .text_size(px(20.))
                             .line_height(px(28.))
@@ -22081,7 +22092,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .w_full()
+                            .w(px(272.))
                             .mt(px(4.))
                             .text_center()
                             .text_size(px(13.))
@@ -24920,7 +24931,7 @@ impl Render for Native {
             // open-thread tabs start where the content pane starts.
             .child(
                 div()
-                    .w(if self.sidebar_collapsed { px(0.) } else { px(257.) })
+                    .w(if self.sidebar_collapsed { px(0.) } else { px(self.side_panel_w()) })
                     .flex_none(),
             )
             .child({
@@ -25241,7 +25252,7 @@ impl Render for Native {
             };
             left_well = left_well.child(
                 v_flex()
-                    .w(px(257.))
+                    .w(px(self.side_panel_w()))
                     .h_full()
                     .mb(px(4.))
                     .bg(sidebar_bg)
@@ -30281,7 +30292,7 @@ impl Render for Native {
                         && !this.view_tasks
                         && !this.view_kanban
                     {
-                        x0 += 257.0;
+                        x0 += this.side_panel_w();
                     }
                     let right = if this.view_changes { 300.0_f32 } else { 0.0 };
                     let vw = f32::from(_w.viewport_size().width);

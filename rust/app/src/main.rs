@@ -14,6 +14,7 @@ mod device;
 mod editor_intelligence;
 mod editor;
 mod hosts;
+mod automation_executor;
 mod automation_schedule;
 mod automation;
 mod browser_automation;
@@ -93,6 +94,7 @@ async fn main() {
         if fenced + recovered > 0 {
             eprintln!("startup recovery: fenced {fenced} interrupted git handoff(s), replayed {recovered}");
         }
+        automation_executor::start();
         let resumed = orchestration_engine::consume_quit_resume_record();
         if resumed > 0 {
             eprintln!("startup recovery: resumed {resumed} thread(s) from the quit-resume record");

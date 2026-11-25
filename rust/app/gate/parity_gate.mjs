@@ -408,6 +408,33 @@ await scenario("claude subagent task progress attributed, unknown dropped", asyn
   assert(terminal.includes("completed"), "no terminal task.updated with status");
 });
 
+// 19. automation execution: a due occurrence fires end-to-end
+await scenario("due automation fires a turn and reconciles", async () => {
+  const aid = "gate-auto-" + Date.now();
+  sql(
+    `insert into automation_definitions (automation_id, project_id, source_thread_id, name, prompt, schedule_json, enabled, next_run_at, model_selection_json, provider_options_json, runtime_mode, interaction_mode, worktree_mode, mode, target_thread_id, max_iterations, stop_on_error, minimum_interval_seconds, retry_policy_json, misfire_policy, acknowledged_risks_json, iteration_count, created_at, updated_at) values ('${aid}', '${projectId}', NULL, 'Gate Automation', 'hello', '{\"type\":\"interval\",\"everySeconds\":3600}', 1, '2020-01-01T00:00:00.000Z', '{\"provider\":\"omp\",\"model\":\"openai/gpt-5\"}', '{}', 'worktree', 'autonomous', 'reuse', 'standalone', NULL, NULL, 0, 60, '{}', 'fire-if-due', '{}', 0, '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z')`,
+  );
+  // The scheduler ticks every 60s; the first pass runs ~5s after boot, but
+  // this automation is inserted after boot, so wait for the next pass.
+  await sleep(16000);
+  const run = sql(
+    `select status, thread_id, turn_id from automation_runs where automation_id='${aid}' limit 1`,
+  );
+  assert(run.length > 0, "no automation run created");
+  assert(run.includes("completed"), `run not completed: ${run}`);
+  const threadId = sql(`select thread_id from automation_runs where automation_id='${aid}' limit 1`)
+    .trim()
+    .split("\n")[0];
+  const messages = sql(
+    `select count(*) from projection_thread_messages where thread_id='${threadId}' and role='assistant'`,
+  );
+  assert(Number(messages) >= 1, "automation turn produced no assistant message");
+  const advanced = sql(
+    `select next_run_at from automation_definitions where automation_id='${aid}'`,
+  );
+  assert(!advanced.includes("2020-01-01"), "schedule was not advanced past the fired occurrence");
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

@@ -618,6 +618,84 @@ fn initialize_cli(
     }
 }
 
+
+/// Start Claude's streaming-input CLI before the first prompt and park it
+/// after the control initialize handshake. No user/model traffic is sent.
+pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Ok(false);
+    }
+    if let Ok(parked_map) = PARKED.lock() {
+        if parked_map.contains_key(thread_id) {
+            return Ok(false);
+        }
+    }
+    let conn = open_state_rw()?;
+    let (raw_cwd, runtime_mode, model_selection_json): (String, String, Option<String>) = conn
+        .query_row(
+            "SELECT COALESCE(NULLIF(working_directory, ''), NULLIF(worktree_path, ''), NULLIF(associated_worktree_path, ''), (SELECT workspace_root FROM projection_projects WHERE project_id=projection_threads.project_id), ''), \
+                    COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id=?1), 'full-access'), \
+                    model_selection_json \
+             FROM projection_threads WHERE thread_id=?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|e| err(format!("claude prewarm thread lookup: {e}")))?;
+    let stored_session: Option<String> = conn
+        .query_row(
+            "SELECT provider_thread_id FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let cwd = if !raw_cwd.is_empty() && std::path::Path::new(&raw_cwd).is_dir() {
+        raw_cwd
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let selected_model = model_selection_json
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
+    let launch_key = format!(
+        "{}|{}|{}|{}",
+        claude_binary(),
+        cwd,
+        runtime_mode,
+        selected_model.as_deref().unwrap_or("")
+    );
+    let (mut child, stdin_raw, stdout) = spawn_claude(
+        &cwd,
+        &runtime_mode,
+        selected_model.as_deref(),
+        stored_session.as_deref(),
+    )?;
+    let stdin = Arc::new(Mutex::new(stdin_raw));
+    let mut reader = BufReader::new(stdout);
+    match initialize_cli(&stdin, &mut reader) {
+        Ok(()) => {
+            if let Ok(mut parked_map) = PARKED.lock() {
+                parked_map.insert(
+                    thread_id.to_string(),
+                    ParkedClaude {
+                        child,
+                        stdin,
+                        reader,
+                        session_id: stored_session,
+                        launch_key,
+                    },
+                );
+            }
+            Ok(true)
+        }
+        Err(e) => {
+            let _ = child.kill();
+            let _ = child.wait();
+            Err(e)
+        }
+    }
+}
+
 fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")

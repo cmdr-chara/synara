@@ -1560,6 +1560,71 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
 /// satisfies the resume preconditions gets a hidden continuation turn, then
 /// the record is deleted so it can never resume twice. Upstream performs the
 /// same claim-once dance through claimQuitResumeRecord.
+/// Scheduler half of the usage-limit recovery flow: upstream's reactor
+/// watches recovery rows and fires `thread.usage-limit.resume` once the
+/// reset timestamp passes; here a background loop does the same scan every
+/// minute. After the recovery transitions to `resuming`, the hidden
+/// continuation restart goes through `thread.turn.resume` so the provider
+/// turn actually starts again.
+pub fn fire_due_usage_limit_recoveries() -> usize {
+    let Ok(conn) = open_state_rw() else { return 0 };
+    let rows: Vec<(String, String)> = conn
+        .prepare("SELECT thread_id, usage_limit_recovery_json FROM projection_threads                   WHERE usage_limit_recovery_json IS NOT NULL AND usage_limit_recovery_json != 'null'")
+        .and_then(|mut st| {
+            Ok(st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
+                .filter_map(|row| row.ok())
+                .collect::<Vec<_>>())
+        })
+        .unwrap_or_default();
+    drop(conn);
+    let now_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0);
+    let mut fired = 0usize;
+    for (thread_id, raw) in rows {
+        let Ok(recovery) = serde_json::from_str::<Value>(&raw) else { continue };
+        if recovery.get("state").and_then(Value::as_str) != Some("waiting") {
+            continue;
+        }
+        let Some(reset_at) = recovery.get("resetAt").and_then(Value::as_str) else { continue };
+        let Some(reset_ms) = iso_ms(reset_at) else { continue };
+        if reset_ms > now_ms {
+            continue;
+        }
+        let Some(recovery_id) = recovery.get("id").and_then(Value::as_str) else { continue };
+        let epoch = recovery
+            .get("policyEpoch")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_string();
+        let now = iso_now_ms();
+        let mut resume_cmd = Map::new();
+        resume_cmd.insert("type".into(), json!("thread.usage-limit.resume"));
+        resume_cmd.insert("commandId".into(), json!(format!("ul-resume:{recovery_id}")));
+        resume_cmd.insert("threadId".into(), json!(thread_id));
+        resume_cmd.insert("recoveryId".into(), json!(recovery_id));
+        resume_cmd.insert("policyEpoch".into(), json!(epoch));
+        resume_cmd.insert("createdAt".into(), json!(now));
+        if usage_limit_dispatch(&resume_cmd).is_err() {
+            continue;
+        }
+        let mut turn_cmd = Map::new();
+        turn_cmd.insert("type".into(), json!("thread.turn.resume"));
+        turn_cmd.insert("commandId".into(), json!(format!("ul-turn:{recovery_id}")));
+        turn_cmd.insert("threadId".into(), json!(thread_id));
+        turn_cmd.insert(
+            "continuationPrompt".into(),
+            json!("The usage limit reset. Continue where you left off."),
+        );
+        turn_cmd.insert("createdAt".into(), json!(now));
+        if thread_turn_resume(&turn_cmd).is_ok() {
+            fired += 1;
+        }
+    }
+    fired
+}
+
 /// Crash counterpart of the quit-resume flow: turns orphaned by a hard kill
 /// are first settled as interrupted (so the precondition "nothing in flight"
 /// holds) and then continued exactly like a clean quit would. Threads whose

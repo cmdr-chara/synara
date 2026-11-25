@@ -22,6 +22,7 @@ mod orchestration_snapshot;
 mod original;
 mod mcp_connectors;
 mod provider_usage;
+mod textgen;
 mod provider_attachments;
 mod provider_cache;
 mod skills_catalog;

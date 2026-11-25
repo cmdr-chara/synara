@@ -232,6 +232,129 @@ async fn intercept_todo(
         .get("payload")
         .cloned()
         .unwrap_or(serde_json::Value::Null);
+    if tag == "git.createDetachedWorktree" {
+        // Same streaming shape as runStackedAction: phase progress chunks, the
+        // terminal `completed` event carries the worktree result.
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let task = tokio::spawn(async move {
+            let (ptx, mut prx) = tokio::sync::mpsc::unbounded_channel::<serde_json::Value>();
+            let payload3 = payload.clone();
+            let join = tokio::task::spawn_blocking(move || {
+                let mut forward = move |event: serde_json::Value| {
+                    let _ = ptx.send(event);
+                };
+                let cwd = payload3
+                    .get("cwd")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("")
+                    .to_string();
+                crate::git_pr::create_detached_worktree_streaming(&cwd, &payload3, &mut forward)
+            });
+            let tx2 = tx.clone();
+            let rid2 = rid.clone();
+            let forwarder = tokio::spawn(async move {
+                while let Some(event) = prx.recv().await {
+                    let chunk = serde_json::json!({
+                        "_tag": "Chunk", "requestId": rid2, "values": [event],
+                    });
+                    if tx2.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                        break;
+                    }
+                }
+            });
+            let result = join.await;
+            let _ = forwarder.await;
+            let reply = match result {
+                Ok(Ok(_value)) => serde_json::json!({
+                    "_tag": "Exit", "requestId": rid,
+                    "exit": {"_tag": "Success", "value": null},
+                }),
+                Ok(Err(e)) => serde_json::json!({
+                    "_tag": "Exit", "requestId": rid,
+                    "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": error_json(e)}]},
+                }),
+                Err(_) => serde_json::json!({
+                    "_tag": "Exit", "requestId": rid,
+                    "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": error_json(crate::todo::WsErr("worktree setup task panicked".to_string(), None))}]},
+                }),
+            };
+            let _ = tx.send(ClientMessage::Text(reply.to_string().into()));
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+
+    if tag == "git.runStackedAction" {
+        // Upstream serves this RPC as a stream of GitActionProgressEvent chunks;
+        // the terminal action_finished event carries the result. The pipeline
+        // itself is blocking git plumbing, so it runs in spawn_blocking while
+        // progress events flow back as Chunk frames on this socket.
+        let tx = native_tx.clone();
+        let rid = request_id.clone();
+        let payload2 = payload.clone();
+        let task = tokio::spawn(async move {
+            let (ptx, mut prx) = tokio::sync::mpsc::unbounded_channel::<serde_json::Value>();
+            let payload3 = payload2.clone();
+            let join = tokio::task::spawn_blocking(move || {
+                let mut forward = move |event: serde_json::Value| {
+                    let _ = ptx.send(event);
+                };
+                let cwd = payload3
+                    .get("cwd")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("")
+                    .to_string();
+                crate::git_pr::run_stacked_action_streaming(&cwd, &payload3, &mut forward)
+            });
+            let tx2 = tx.clone();
+            let rid2 = rid.clone();
+            let forwarder = tokio::spawn(async move {
+                while let Some(event) = prx.recv().await {
+                    let chunk = serde_json::json!({
+                        "_tag": "Chunk", "requestId": rid2, "values": [event],
+                    });
+                    if tx2.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                        break;
+                    }
+                }
+            });
+            let result = join.await;
+            drop(payload2);
+            let _ = forwarder.await;
+            let reply = match result {
+                Ok(Ok(_value)) => serde_json::json!({
+                    "_tag": "Exit", "requestId": rid,
+                    "exit": {"_tag": "Success", "value": null},
+                }),
+                Ok(Err(e)) => {
+                    // The failure also surfaces as a terminal action_failed chunk
+                    // so stream consumers see the same shape as upstream.
+                    let fail_chunk = serde_json::json!({
+                        "_tag": "Chunk", "requestId": rid,
+                        "values": [{"kind": "action_failed", "phase": null, "message": e.0}],
+                    });
+                    let _ = tx.send(ClientMessage::Text(fail_chunk.to_string().into()));
+                    serde_json::json!({
+                        "_tag": "Exit", "requestId": rid,
+                        "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": error_json(e)}]},
+                    })
+                }
+                Err(_) => serde_json::json!({
+                    "_tag": "Exit", "requestId": rid,
+                    "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": error_json(crate::todo::WsErr("git action task panicked".to_string(), None))}]},
+                }),
+            };
+            let _ = tx.send(ClientMessage::Text(reply.to_string().into()));
+        });
+        if let Ok(mut map) = streams.lock() {
+            map.insert(request_id, task);
+        }
+        return Some(None);
+    }
+
     if tag == "device.subscribeEvents" {
         // Upstream answers `Stream.never` when no device engine can run: the
         // subscription stays open and silent, since an instantly-completing

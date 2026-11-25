@@ -1041,6 +1041,33 @@ fn copy_preserve(src: &Path, dst: &Path) -> Result<(), std::io::Error> {
 }
 
 fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
+    create_detached_worktree_streaming(cwd, payload, &mut |_| {})
+}
+
+/// Detached worktree creation with upstream `GitWorktreeSetupProgressEvent`
+/// emission: `phase_started` for branch/worktree/copy-changes in execution
+/// order, then the terminal `completed` carrying the result.
+pub(crate) fn create_detached_worktree_streaming(
+    cwd: &str,
+    payload: &Value,
+    progress: &mut dyn FnMut(Value),
+) -> Result<Value, WsErr> {
+    let progress_id = payload
+        .get("progressId")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let mut emit = |kind: &str, phase: Option<&str>, result: Option<Value>| {
+        let mut m = serde_json::Map::new();
+        m.insert("progressId".into(), match progress_id.clone() { Some(v) => json!(v), None => Value::Null });
+        m.insert("kind".into(), json!(kind));
+        if let Some(p) = phase {
+            m.insert("phase".into(), json!(p));
+        }
+        if let Some(r) = result {
+            m.insert("result".into(), r);
+        }
+        progress(Value::Object(m));
+    };
     require_repo(cwd)?;
     let reference = str_arg(payload, "ref")?;
     let new_branch = payload
@@ -1092,6 +1119,7 @@ fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> 
     };
 
     if let Some(nb) = &new_branch {
+        emit("phase_started", Some("branch"), None);
         let out = run(cwd, &["branch", nb, &resolved_ref])?;
         if !out.status.success() {
             return Err(err(format!(
@@ -1101,6 +1129,7 @@ fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> 
         }
     }
 
+    emit("phase_started", Some("worktree"), None);
     let use_parallel = config_value(cwd, "checkout.workers").is_none();
     let mut args: Vec<String> = Vec::new();
     if use_parallel {
@@ -1133,6 +1162,7 @@ fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> 
     }
 
     if let Some(src) = &copy_from {
+        emit("phase_started", Some("copy-changes"), None);
         if let Err(e) = copy_checkout_changes(src, &worktree_path) {
             let _ = run(cwd, &["worktree", "remove", "--force", &worktree_path]);
             if let Some(nb) = &new_branch {
@@ -1142,13 +1172,15 @@ fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> 
         }
     }
 
-    Ok(json!({
+    let result = json!({
         "worktree": {
             "path": worktree_path,
             "ref": resolved_ref,
             "branch": new_branch,
         }
-    }))
+    });
+    emit("completed", None, Some(result.clone()));
+    Ok(result)
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -1158,6 +1190,58 @@ fn create_detached_worktree(cwd: &str, payload: &Value) -> Result<Value, WsErr> 
 // ---------------------------------------------------------------------------------------------
 
 fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
+    run_stacked_action_streaming(cwd, payload, &mut |_| {})
+}
+
+/// The stacked-action pipeline with upstream `GitActionProgressEvent` emission:
+/// `action_started` with the phase list, `phase_started` at each step boundary,
+/// and the terminal `action_finished`/`action_failed` emitted by the caller so
+/// the error path carries the failing phase.
+pub(crate) fn run_stacked_action_streaming(
+    cwd: &str,
+    payload: &Value,
+    progress: &mut dyn FnMut(Value),
+) -> Result<Value, WsErr> {
+    let action_id = payload.get("actionId").and_then(Value::as_str).unwrap_or("").to_string();
+    let action_kind = payload.get("action").and_then(Value::as_str).unwrap_or("").to_string();
+    let base = |extra: serde_json::Map<String, Value>| {
+        let mut m = serde_json::Map::new();
+        m.insert("actionId".into(), json!(action_id));
+        m.insert("cwd".into(), json!(cwd));
+        m.insert("action".into(), json!(action_kind));
+        m.extend(extra);
+        Value::Object(m)
+    };
+    let mut emit = |kind: &str, mut extra: serde_json::Map<String, Value>| {
+        extra.insert("kind".into(), json!(kind));
+        progress(base(extra));
+    };
+    {
+        let mut phases: Vec<&str> = Vec::new();
+        if payload.get("featureBranch").and_then(Value::as_bool).unwrap_or(false) {
+            phases.push("branch");
+        }
+        let a = payload.get("action").and_then(Value::as_str).unwrap_or("");
+        if matches!(a, "commit" | "commit_push" | "commit_push_pr") {
+            phases.push("commit");
+        }
+        if matches!(a, "push" | "commit_push" | "commit_push_pr") {
+            phases.push("push");
+        }
+        if matches!(a, "create_pr" | "commit_push_pr") {
+            phases.push("pr");
+        }
+        let mut m = serde_json::Map::new();
+        m.insert("phases".into(), json!(phases));
+        emit("action_started", m);
+    }
+    #[allow(dead_code)]
+    let phase_started = |emit: &mut dyn FnMut(&str, serde_json::Map<String, Value>), phase: &str, label: &str| {
+        let mut m = serde_json::Map::new();
+        m.insert("phase".into(), json!(phase));
+        m.insert("label".into(), json!(label));
+        emit("phase_started", m);
+    };
     let action = str_arg(payload, "action")?.to_string();
     let wants_commit = matches!(action.as_str(), "commit" | "commit_push" | "commit_push_pr");
     let wants_push = matches!(action.as_str(), "push" | "commit_push" | "commit_push_pr");
@@ -1182,6 +1266,12 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     }
 
     // -- branch step -------------------------------------------------------------
+    if payload.get("featureBranch").and_then(|v| v.as_bool()).unwrap_or(false) {
+        let mut m = serde_json::Map::new();
+        m.insert("phase".into(), json!("branch"));
+        m.insert("label".into(), json!("Creating feature branch"));
+        emit("phase_started", m);
+    }
     let mut branch_status = "skipped_not_requested";
     let mut branch_name = Value::Null;
     if payload
@@ -1217,6 +1307,12 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     }
 
     // -- commit step -------------------------------------------------------------
+    if wants_commit {
+        let mut m = serde_json::Map::new();
+        m.insert("phase".into(), json!("commit"));
+        m.insert("label".into(), json!("Committing changes"));
+        emit("phase_started", m);
+    }
     let mut commit_status = if wants_commit {
         "skipped_no_changes"
     } else {
@@ -1269,6 +1365,12 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     }
 
     // -- push step ---------------------------------------------------------------
+    if wants_push {
+        let mut m = serde_json::Map::new();
+        m.insert("phase".into(), json!("push"));
+        m.insert("label".into(), json!("Pushing to origin"));
+        emit("phase_started", m);
+    }
     let mut push_status = if wants_push {
         "pushed"
     } else {
@@ -1315,6 +1417,12 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
     }
 
     // -- pr step -----------------------------------------------------------------
+    if wants_pr {
+        let mut m = serde_json::Map::new();
+        m.insert("phase".into(), json!("pr"));
+        m.insert("label".into(), json!("Opening pull request"));
+        emit("phase_started", m);
+    }
     let mut pr_status = "skipped_not_requested";
     let mut pr_url = Value::Null;
     let mut pr_number = Value::Null;
@@ -1413,7 +1521,7 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
         }
     }
 
-    Ok(json!({
+    let result = json!({
         "action": action,
         "branch": {"status": branch_status, "name": branch_name},
         "commit": {"status": commit_status, "commitSha": commit_sha, "subject": commit_subject},
@@ -1431,7 +1539,11 @@ fn run_stacked_action(cwd: &str, payload: &Value) -> Result<Value, WsErr> {
             "headBranch": pr_head,
             "title": pr_title,
         },
-    }))
+    });
+    let mut m = serde_json::Map::new();
+    m.insert("result".into(), result.clone());
+    emit("action_finished", m);
+    Ok(result)
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -457,6 +457,10 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
         events.push(out_event("thread.claude-cache-set", &thread_id, &occurred_at, json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at})));
     }
     events.push(out_event("thread.deleted", &thread_id, &occurred_at, json!({"threadId": thread_id, "deletedAt": occurred_at})));
+    cancel_any_provider_turn(&thread_id);
+    crate::acp_runner::drop_thread_resources(&thread_id);
+    crate::codex_runner::drop_thread_resources(&thread_id);
+    crate::opencode_runner::drop_thread_resources(&thread_id);
     let seq = commit_events(&conn, &events, &command_id)?;
     let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
     if row.claude_cache_review.is_some() {

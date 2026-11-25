@@ -81,6 +81,14 @@ pub fn has_running_turn(thread_id: &str) -> bool {
 /// input at the model's next turn boundary; its response frame is read and
 /// ignored by the runner's notification loop, so this is intentionally a
 /// fire-and-forget write like upstream's steer delivery surface.
+pub fn drop_thread_resources(thread_id: &str) {
+    if let Ok(mut parked_map) = PARKED.lock() {
+        if let Some(parked) = parked_map.remove(thread_id) {
+            drop_parked(parked);
+        }
+    }
+}
+
 pub fn steer_turn(thread_id: &str, text: &str) -> bool {
     let (stdin, thread_ref, turn_ref) = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {

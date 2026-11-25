@@ -36,6 +36,14 @@ static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
 
 /// Whether a Devin turn is currently live for the thread.
+pub fn drop_thread_resources(thread_id: &str) {
+    if let Ok(mut parked_map) = PARKED.lock() {
+        if let Some(parked) = parked_map.remove(thread_id) {
+            drop_parked(parked);
+        }
+    }
+}
+
 pub fn has_running_turn(thread_id: &str) -> bool {
     RUNNING
         .lock()

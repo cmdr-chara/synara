@@ -27,6 +27,7 @@ mod git_action_registry;
 mod git_pr;
 mod github_inbox;
 mod attachments_http;
+mod favicons;
 mod thread_export;
 mod local_image;
 mod list_worktrees;
@@ -112,6 +113,8 @@ async fn main() {
         .route("/api/attachments/upload", axum::routing::post(attachments_http::upload))
         .route("/attachments/{id}", axum::routing::get(attachments_http::serve))
         .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
+        .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
+        .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

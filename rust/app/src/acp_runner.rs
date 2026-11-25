@@ -655,6 +655,13 @@ fn acp_launch_profile_ex(
     })
 }
 
+/// Resolve the executable path Synara would use for an ACP provider without
+/// spawning it. Discovery endpoints share the same override and package-manager
+/// fallback logic as turn launch.
+pub fn resolve_provider_cli(provider: &str) -> Option<String> {
+    acp_launch_profile_ex(provider, "full-access", None, None, &[]).map(|profile| profile.binary)
+}
+
 /// Providers currently routed through the shared ACP stdio runtime. OpenCode is
 /// deliberately absent: upstream drives it through its own HTTP/SSE server and
 /// SDK rather than ACP stdio.

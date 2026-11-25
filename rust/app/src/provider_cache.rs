@@ -204,6 +204,105 @@ fn discover_opencode_models() -> Result<Vec<Value>, WsErr> {
 }
 
 
+fn omp_thinking_label(value: &str) -> String {
+    match value {
+        "off" => "Off".to_string(),
+        "auto" => "Auto".to_string(),
+        "minimal" => "Minimal".to_string(),
+        "low" => "Low".to_string(),
+        "medium" => "Medium".to_string(),
+        "high" => "High".to_string(),
+        "max" => "Max".to_string(),
+        "xhigh" => "XHigh".to_string(),
+        other => {
+            let mut chars = other.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
+                .unwrap_or_default()
+        }
+    }
+}
+
+fn parse_omp_models_output(output: &str) -> Vec<Value> {
+    let parsed: Value = serde_json::from_str(output).unwrap_or(Value::Null);
+    let raw_models = if parsed.is_array() {
+        parsed.as_array().cloned().unwrap_or_default()
+    } else {
+        parsed
+            .get("models")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+    };
+    let valid_efforts = ["off", "auto", "minimal", "low", "medium", "high", "max", "xhigh"];
+    let mut seen = std::collections::HashSet::new();
+    let mut models = Vec::new();
+    for entry in raw_models {
+        let slug = entry
+            .get("selector")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim();
+        let name = entry.get("name").and_then(Value::as_str).unwrap_or("").trim();
+        if slug.is_empty() || name.is_empty() || !seen.insert(slug.to_string()) {
+            continue;
+        }
+        let mut seen_efforts = std::collections::HashSet::new();
+        let efforts = entry
+            .get("thinking")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .filter_map(Value::as_str)
+            .map(|value| value.trim().to_ascii_lowercase())
+            .filter(|value| {
+                valid_efforts.contains(&value.as_str()) && seen_efforts.insert(value.clone())
+            })
+            .map(|value| json!({"value": value, "label": omp_thinking_label(&value)}))
+            .collect::<Vec<_>>();
+        let mut model = json!({"slug": slug, "name": name});
+        let provider_id = entry
+            .get("provider")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim();
+        if !provider_id.is_empty() {
+            model["upstreamProviderId"] = json!(provider_id);
+        }
+        if !efforts.is_empty() {
+            model["supportedReasoningEfforts"] = json!(efforts);
+        }
+        models.push(model);
+    }
+    models
+}
+
+fn omp_discovery_result() -> Result<Value, WsErr> {
+    let binary = crate::acp_runner::resolve_provider_cli("omp")
+        .ok_or_else(|| err("OMP does not support CLI discovery"))?;
+    let output = std::process::Command::new(&binary)
+        .args(["models", "--json"])
+        .output()
+        .map_err(|e| err(format!("failed to execute omp models --json: {e}")))?;
+    if !output.status.success() {
+        return Err(err(format!(
+            "omp models --json exited with {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let models = parse_omp_models_output(&stdout);
+    if models.is_empty() {
+        return Err(err(
+            "OMP model discovery returned no models. Run `omp` to authenticate so ~/.omp credentials exist.",
+        ));
+    }
+    Ok(json!({"models": models, "source": "omp-cli", "cached": false}))
+}
+
 fn codex_discovery_result(payload: &Value) -> Result<Value, WsErr> {
     let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
     let models = crate::codex_runner::discover_models(cwd)?;
@@ -315,6 +414,12 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         }
         if provider == "codex" {
             return codex_discovery_result(payload);
+        }
+        if provider == "omp" {
+            return omp_discovery_result();
+        }
+        if provider == "omp" {
+            return omp_discovery_result();
         }
         if provider == "claudeAgent" {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");

@@ -807,6 +807,7 @@ fn discover_acp_config_models(
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
+    crate::provider_env::sanitize_provider_child(&mut command);
     for (key, value) in &launch.env {
         command.env(key, value);
     }
@@ -1010,6 +1011,7 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
+    crate::provider_env::sanitize_provider_child(&mut command);
     for (key, value) in &launch.env {
         command.env(key, value);
     }
@@ -1441,6 +1443,7 @@ pub(crate) fn discover_cursor_models(cwd: &str) -> Result<Value, WsErr> {
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
+    crate::provider_env::sanitize_provider_child(&mut command);
     for (key, value) in &launch.env {
         command.env(key, value);
     }
@@ -1525,6 +1528,7 @@ pub(crate) fn discover_acp_commands(provider: &str, cwd: &str) -> Result<Vec<Val
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
+    crate::provider_env::sanitize_provider_child(&mut command);
     for (key, value) in &launch.env {
         command.env(key, value);
     }
@@ -2613,7 +2617,8 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                 .stdin(Stdio::piped())
                 .stdout(Stdio::piped())
                 .stderr(Stdio::null());
-            for (key, value) in &launch.env {
+            crate::provider_env::sanitize_provider_child(&mut command);
+    for (key, value) in &launch.env {
                 command.env(key, value);
             }
             let spawn_result = command.spawn();

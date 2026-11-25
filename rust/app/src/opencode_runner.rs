@@ -1295,6 +1295,7 @@ pub fn discover_server_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
         .unwrap_or(4096);
     let password = random_token();
     let mut command = Command::new(opencode_binary());
+    crate::provider_env::sanitize_provider_child(&mut command);
     command
         .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
         .current_dir(&cwd)
@@ -1400,6 +1401,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         .unwrap_or(4096);
     let password = random_token();
     let mut command = Command::new(opencode_binary());
+    crate::provider_env::sanitize_provider_child(&mut command);
     command
         .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
         .current_dir(&cwd)
@@ -1689,6 +1691,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             .unwrap_or(4096);
         let password = random_token();
         let mut command = Command::new(opencode_binary());
+        crate::provider_env::sanitize_provider_child(&mut command);
         command
             .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
             .current_dir(&cwd)

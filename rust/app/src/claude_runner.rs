@@ -241,12 +241,14 @@ pub(crate) fn spawn_credential_keepalive() {
         // Run first, then wait: a boot-time refresh costs nothing and covers
         // sessions parked across the 8h boundary right after startup.
         let binary = claude_binary();
-        let child = Command::new(&binary)
+        let mut command = Command::new(&binary);
+        command
             .args(["auth", "status"])
             .stdin(Stdio::null())
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .spawn();
+            .stderr(Stdio::null());
+        crate::provider_env::sanitize_claude_child(&mut command);
+        let child = command.spawn();
         if let Ok(mut child) = child {
             // Bound the wait at the upstream 20s command timeout; a hung CLI
             // must never wedge the keepalive thread.
@@ -743,12 +745,15 @@ fn spawn_claude(
     args.push("--mcp-config".to_string());
     args.push(mcp_config.to_string());
 
-    let mut child = Command::new(claude_binary())
+    let mut command = Command::new(claude_binary());
+    command
         .args(&args)
         .current_dir(cwd)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
+        .stderr(Stdio::null());
+    crate::provider_env::sanitize_claude_child(&mut command);
+    let mut child = command
         .spawn()
         .map_err(|e| err(format!("could not launch `claude` CLI: {e}")))?;
     let stdin = child.stdin.take().ok_or_else(|| err("claude stdin"))?;

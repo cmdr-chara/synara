@@ -1127,6 +1127,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     .duration_since(std::time::UNIX_EPOCH)
                     .map(|d| d.as_millis() as i64)
                     .unwrap_or(0);
+                crate::provider_usage::persist("claudeAgent", &v);
                 if let Some(next) = crate::usage_limit::claude_usage_limit_windows(&usage_windows, &v, now_ms) {
                     usage_windows = next;
                 }

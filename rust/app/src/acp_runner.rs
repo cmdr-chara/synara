@@ -672,7 +672,7 @@ fn acp_launch_profile_ex(
             &["SYNARA_ANTIGRAVITY_CLI", "ANTIGRAVITY_BINARY_PATH", "AGY_BINARY_PATH"][..],
             &[".local/bin/agy"][..],
             vec!["acp".to_string()],
-            Vec::new(),
+            vec![("AGY_CLI_DISABLE_AUTO_UPDATE", "true"), ("NO_BROWSER", "true")],
         ),
         _ => return None,
     };
@@ -792,9 +792,14 @@ fn build_acp_model_descriptor(model: &Value, level_option: Option<&Value>) -> Va
 /// options. This mirrors upstream: probe each model sequentially because the
 /// reasoning ladder can change with the selected model, then restore the
 /// original config before discarding the temporary process.
-pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
-    let launch = acp_launch_profile_ex("droid", "full-access", None, None, &[])
-        .ok_or_else(|| err("Droid does not support ACP discovery"))?;
+fn discover_acp_config_models(
+    provider: &str,
+    cwd: &str,
+    reasoning_config_id: &str,
+    source: &str,
+) -> Result<Value, WsErr> {
+    let launch = acp_launch_profile_ex(provider, "full-access", None, None, &[])
+        .ok_or_else(|| err(format!("{provider} does not support ACP discovery")))?;
     let mut command = Command::new(&launch.binary);
     command
         .args(&launch.args)
@@ -807,7 +812,7 @@ pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
     }
     let mut child = command
         .spawn()
-        .map_err(|e| err(format!("could not launch `{}` for Droid ACP discovery: {e}", launch.binary)))?;
+        .map_err(|e| err(format!("could not launch `{}` for {provider} ACP discovery: {e}", launch.binary)))?;
     let result = (|| -> Result<Value, WsErr> {
         let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
         let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
@@ -838,7 +843,7 @@ pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
         let setup_result = match setup(&mut rpc) {
             Ok(result) => result,
             Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
-                let Some(method) = select_auth_method("droid", &auth_methods) else { return Err(e) };
+                let Some(method) = select_auth_method(provider, &auth_methods) else { return Err(e) };
                 rpc.call("authenticate", json!({"methodId": method}))?;
                 setup(&mut rpc)?
             }
@@ -847,14 +852,14 @@ pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
         let session_id = setup_result
             .get("sessionId")
             .and_then(Value::as_str)
-            .ok_or_else(|| err("Droid ACP discovery session returned no sessionId"))?
+            .ok_or_else(|| err(format!("{provider} ACP discovery session returned no sessionId")))?
             .to_string();
         let initial_options = acp_config_options(&setup_result);
         let model_config = find_acp_select_config(&initial_options, "model", "model")
             .cloned()
-            .ok_or_else(|| err("Droid ACP did not advertise a model configuration option"))?;
+            .ok_or_else(|| err(format!("{provider} ACP did not advertise a model configuration option")))?;
         let original_model = model_config.get("currentValue").and_then(Value::as_str).map(str::to_string);
-        let original_reasoning = find_acp_select_config(&initial_options, "reasoning_effort", "thought_level")
+        let original_reasoning = find_acp_select_config(&initial_options, reasoning_config_id, "thought_level")
             .and_then(|option| option.get("currentValue").and_then(Value::as_str))
             .map(str::to_string);
         let model_options = flatten_acp_config_options(model_config.get("options").unwrap_or(&Value::Null));
@@ -874,7 +879,7 @@ pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
                 }
                 Err(_) => initial_options.clone(),
             };
-            let reasoning = find_acp_select_config(&updated_options, "reasoning_effort", "thought_level");
+            let reasoning = find_acp_select_config(&updated_options, reasoning_config_id, "thought_level");
             models.push(build_acp_model_descriptor(model, reasoning));
         }
         if let Some(original_model) = original_model {
@@ -885,11 +890,11 @@ pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
             if let Some(original_reasoning) = original_reasoning {
                 let _ = rpc.call(
                     "session/set_config_option",
-                    json!({"sessionId": session_id, "configId": "reasoning_effort", "value": original_reasoning}),
+                    json!({"sessionId": session_id, "configId": reasoning_config_id, "value": original_reasoning}),
                 );
             }
         }
-        Ok(json!({"models": models, "source": "droid-acp", "cached": false}))
+        Ok(json!({"models": models, "source": source, "cached": false}))
     })();
     let _ = child.kill();
     let _ = child.wait();
@@ -1179,6 +1184,14 @@ fn apply_omp_interaction_mode(rpc: &mut Rpc, session_id: &str, interaction_mode:
         "session/set_config_option",
         json!({"sessionId": session_id, "configId": "mode", "value": mode}),
     );
+}
+
+pub(crate) fn discover_droid_models(cwd: &str) -> Result<Value, WsErr> {
+    discover_acp_config_models("droid", cwd, "reasoning_effort", "droid-acp")
+}
+
+pub(crate) fn discover_antigravity_models(cwd: &str) -> Result<Value, WsErr> {
+    discover_acp_config_models("antigravity", cwd, "thought_level", "antigravity.acp")
 }
 
 /// Compact a warm ACP session by sending the provider-native `/compact`

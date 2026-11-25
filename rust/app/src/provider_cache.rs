@@ -1164,7 +1164,13 @@ fn dynamic_discovery_result(provider: &str, payload: &Value) -> Option<Result<Va
         "devin" => Some(Ok(devin_discovery_result())),
         "omp" => Some(omp_discovery_result()),
         "grok" => Some(grok_discovery_result()),
-        "antigravity" => Some(antigravity_discovery_result()),
+        "antigravity" => {
+            let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+            Some(match crate::acp_runner::discover_antigravity_models(cwd) {
+                Ok(result) => Ok(result),
+                Err(_) => antigravity_discovery_result(),
+            })
+        }
         "cursor" => Some(cursor_discovery_result()),
         "droid" => {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");

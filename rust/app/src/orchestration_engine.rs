@@ -138,12 +138,27 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             thread_simple(command, "thread.approval-response-requested")
         }
         "thread.user-input.respond" => {
+            // Like approvals, leave a confirmed row for the live provider
+            // runtime to consume. Structured answers are stored as JSON in the
+            // legacy decision column; rows are deleted only after forwarding.
             if let (Some(tid), Some(rid)) = (s(command, "threadId"), s(command, "requestId")) {
                 let conn = open_state_rw()?;
+                let answers = command
+                    .get("answers")
+                    .cloned()
+                    .unwrap_or(json!({}))
+                    .to_string();
                 conn.execute(
-                    "DELETE FROM projection_pending_interactions \
-                     WHERE thread_id=?1 AND request_id=?2",
-                    params![tid, rid],
+                    "UPDATE projection_pending_interactions \
+                     SET status='confirmed', decision=?3, response_command_id=?4, resolved_at=?5 \
+                     WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                    params![
+                        tid,
+                        rid,
+                        answers,
+                        s(command, "commandId").unwrap_or_default(),
+                        s(command, "createdAt").unwrap_or_default()
+                    ],
                 )
                 .map_err(|e| err(format!("resolve user-input: {e}")))?;
             }

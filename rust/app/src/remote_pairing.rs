@@ -341,6 +341,72 @@ pub fn revoke(conn: &Connection, scope: &TrustScope, id: &str) -> Result<(), Str
     Ok(())
 }
 
+
+/// Trusted devices for the management list, mirroring RemoteTrustedDevice.
+pub fn list_devices(conn: &Connection, scope: &TrustScope) -> Result<Vec<Value>, String> {
+    let mut stmt = conn.prepare(
+        "SELECT device_jkt, device_public_key, label, generation, approved_at, revoked_at, enrolled_via FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2",
+    ).map_err(|e| e.to_string())?;
+    let rows = stmt.query_map(params![scope.environment_id, scope.root_fingerprint], |row| {
+        let key_raw: String = row.get(1)?;
+        Ok(json!({
+            "deviceJkt": row.get::<_, String>(0)?,
+            "publicKey": serde_json::from_str::<Value>(&key_raw).unwrap_or(Value::Null),
+            "label": row.get::<_, String>(2)?,
+            "generation": row.get::<_, i64>(3)?,
+            "approvedAt": row.get::<_, String>(4)?,
+            "revokedAt": row.get::<_, Option<String>>(5)?,
+            "enrolledVia": row.get::<_, Option<String>>(6)?,
+        }))
+    }).map_err(|e| e.to_string())?;
+    rows.collect::<Result<Vec<_>, _>>().map_err(|e| e.to_string())
+}
+
+pub fn revoke_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<(), String> {
+    conn.execute(
+        "UPDATE remote_device_trust SET revoked_at = ?1 WHERE environment_id = ?2 AND root_fingerprint = ?3 AND device_jkt = ?4 AND revoked_at IS NULL",
+        params![now_iso(), scope.environment_id, scope.root_fingerprint, device_jkt],
+    ).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+/// The owner's allow_connections switch lives alongside the enabled marker.
+pub fn allows_connections(conn: &Connection, scope: &TrustScope) -> Result<bool, String> {
+    let value: Option<i64> = conn.query_row(
+        "SELECT allow_connections FROM remote_access_state WHERE environment_id = ?1 AND root_fingerprint = ?2",
+        params![scope.environment_id, scope.root_fingerprint],
+        |r| r.get(0),
+    ).ok();
+    Ok(value.unwrap_or(1) != 0)
+}
+
+pub fn set_allow_connections(conn: &Connection, scope: &TrustScope, enabled: bool) -> Result<(), String> {
+    // `enabled` is the live-identity marker and is left untouched here; the
+    // owner switch alone flips (upstream migration 140, default on).
+    conn.execute(
+        "INSERT INTO remote_access_state (environment_id, root_fingerprint, enabled, allow_connections) VALUES (?1, ?2, 0, ?3)
+         ON CONFLICT(environment_id, root_fingerprint) DO UPDATE SET allow_connections = ?3",
+        params![scope.environment_id, scope.root_fingerprint, enabled as i64],
+    ).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+/// Local trust scope: root fingerprint is the sha256 of the host identity
+/// public key — stable per environment, needs no account connectivity.
+pub fn local_scope(secrets_dir: &str, environment_id: &str) -> Option<TrustScope> {
+    let path = crate::host_identity::host_identity_path(secrets_dir);
+    let identity = crate::host_identity::read_host_identity(&path).ok()??;
+    let x = identity.public_key_jwk.get("x").and_then(Value::as_str)?;
+    let fingerprint = sha256_hex(x);
+    Some(TrustScope {
+        environment_id: environment_id.to_string(),
+        root_fingerprint: fingerprint,
+        account_authority: String::new(),
+        user_id: String::new(),
+        organization_id: String::new(),
+    })
+}
+
 /// Opens state.sqlite rw for the pairing surface, mirroring the rest of the app.
 pub fn open() -> Result<Connection, String> {
     open_state_rw().map_err(|e| e.0)

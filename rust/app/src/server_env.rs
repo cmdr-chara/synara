@@ -94,7 +94,7 @@ fn server_version() -> String {
 
 /// Environment id persisted by whoever owns `<stateDir>` — the file format is
 /// a bare UUID per line, created on first boot (`accountAuth.ts`).
-fn environment_id(state_dir: &str) -> Option<String> {
+pub(crate) fn environment_id(state_dir: &str) -> Option<String> {
     let path = std::path::Path::new(state_dir).join("environment-id");
     let raw = std::fs::read_to_string(path).ok()?.trim().to_string();
     if raw.is_empty() { None } else { Some(raw) }

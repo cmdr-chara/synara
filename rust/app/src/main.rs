@@ -3,6 +3,7 @@ mod agent_gateway_mcp;
 mod acp_runner;
 mod claude_runner;
 mod claude_monitor;
+mod claude_workflow_script;
 mod claude_workflow_runtime;
 mod claude_tasks;
 mod provider_env;

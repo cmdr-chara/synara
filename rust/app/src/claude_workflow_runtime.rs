@@ -10,7 +10,7 @@ use serde_json::Value;
 pub const MAX_CLAUDE_WORKFLOW_FILE_BYTES: u64 = 5 * 1024 * 1024;
 const MAX_CHUNK_BYTES: u64 = 512 * 1024;
 const RECENT_TOOL_NAMES: usize = 3;
-pub const WORKFLOW_PROMPT_PREVIEW_CHARS: usize = 160;
+pub const WORKFLOW_PROMPT_PREVIEW_CHARS: usize = 400;
 
 pub struct AgentAccum {
     pub agent_id: String,

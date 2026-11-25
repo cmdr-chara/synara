@@ -14,6 +14,7 @@ mod device;
 mod editor_intelligence;
 mod editor;
 mod hosts;
+mod automation_schedule;
 mod automation;
 mod browser_automation;
 mod browser_cdp;

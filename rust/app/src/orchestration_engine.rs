@@ -1560,6 +1560,34 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
 /// satisfies the resume preconditions gets a hidden continuation turn, then
 /// the record is deleted so it can never resume twice. Upstream performs the
 /// same claim-once dance through claimQuitResumeRecord.
+/// Crash counterpart of the quit-resume flow: turns orphaned by a hard kill
+/// are first settled as interrupted (so the precondition "nothing in flight"
+/// holds) and then continued exactly like a clean quit would. Threads whose
+/// resume is refused (archived, deleted, no provider, missing workspace) keep
+/// the interrupted state, matching upstream's skip reasons.
+pub fn resume_orphaned_turns(thread_ids: &[String]) -> usize {
+    let now = iso_now_ms();
+    let mut resumed = 0usize;
+    for thread_id in thread_ids {
+        let mut cmd = Map::new();
+        cmd.insert("type".into(), json!("thread.turn.resume"));
+        cmd.insert(
+            "commandId".into(),
+            json!(format!("crash-resume:{thread_id}")),
+        );
+        cmd.insert("threadId".into(), json!(thread_id));
+        cmd.insert(
+            "continuationPrompt".into(),
+            json!("Synara restarted while this chat was still running. Continue where you left off."),
+        );
+        cmd.insert("createdAt".into(), json!(now));
+        if thread_turn_resume(&cmd).is_ok() {
+            resumed += 1;
+        }
+    }
+    resumed
+}
+
 pub fn consume_quit_resume_record() -> usize {
     let path = PathBuf::from(state_dir()).join("quit-resume.json");
     let Ok(raw) = std::fs::read_to_string(&path) else { return 0 };
@@ -6562,10 +6590,10 @@ fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
 // stuck in a running state forever. Auto-resume of the interrupted work is
 // the upstream `thread.turn.resume` continuation flow and is intentionally
 // not part of this sweep.
-pub fn recover_orphaned_turns() -> usize {
-    let Ok(conn) = open_state_rw() else { return 0 };
+pub fn recover_orphaned_turns() -> Vec<String> {
+    let Ok(conn) = open_state_rw() else { return Vec::new() };
     if conn.execute_batch("PRAGMA busy_timeout = 5000;").is_err() {
-        return 0;
+        return Vec::new();
     }
     let now = iso_now_ms();
     let orphans: Vec<(String, String)> = conn
@@ -6644,7 +6672,7 @@ pub fn recover_orphaned_turns() -> usize {
             }),
         );
     }
-    affected_threads.len()
+    affected_threads.into_iter().collect()
 }
 
 // ---- orchestration.repairState ----

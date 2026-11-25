@@ -47,7 +47,7 @@ rand_core = { version = "0.6", features = ["getrandom"] }
 rcgen = { version = "0.13", features = ["pem", "x509-parser"] }
 x509-parser = "0.16"
 time = "0.3"
-p256 = { version = "0.13", features = ["pkcs8", "pem"] }
+p256 = { version = "0.13", features = ["pkcs8", "pem", "ecdsa"] }
 tokio-rustls = { version = "0.26", features = ["ring"] }
 rustls-pemfile = "2"
 

@@ -14,6 +14,7 @@ mod codex_runner;
 mod device;
 mod editor_intelligence;
 mod editor;
+mod host_auth_verify;
 mod host_identity;
 mod remote_pairing;
 mod remote_tls;

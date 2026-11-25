@@ -3,6 +3,7 @@
 // that was ported from upstream; a failure means a parity regression.
 // Usage: node parity_gate.mjs <ws-url> <project-id> <state.sqlite-path>
 import { execSync } from 'node:child_process';
+import fs from 'node:fs';
 
 const [wsUrl, projectId, dbPath] = process.argv.slice(2);
 const ws = new WebSocket(wsUrl);
@@ -153,6 +154,23 @@ await scenario('turn.start reviewTarget rejects attachments', async () => {
 await scenario('server.consumeCodexResetCredit returns an outcome', async () => {
   const r = await call('server.consumeCodexResetCredit', { accountId: 'acct-test-1', idempotencyKey: 'gate-key' });
   assert(['reset', 'nothingToReset', 'noCredit', 'alreadyRedeemed'].includes(r.outcome), 'bad outcome ' + r.outcome);
+});
+
+// 12. claude edge-block retry re-prompts on the same session and completes
+await scenario('claude edge-block 403 retried and turn completes', async () => {
+  const before = fs.existsSync('/tmp/fake-claude-user-log') ? fs.readFileSync('/tmp/fake-claude-user-log', 'utf8').trim().split('\n').length : 0;
+  const tid = await runTurn('claudeAgent', 'claude-sonnet-4-5', 'edgeblock please retry', 4000);
+  const rows = sql(`select count(*) from projection_thread_messages where thread_id='${tid}' and role='assistant' and length(text) > 0`);
+  assert(Number(rows) >= 1, 'no assistant message after edge retry');
+  const after = fs.readFileSync('/tmp/fake-claude-user-log', 'utf8').trim().split('\n').length;
+  assert(after - before >= 2, 'expected at least 2 prompts (initial + retry), got ' + (after - before));
+});
+
+// 13. claude rate_limit_info evidence persisted as passive usage snapshot
+await scenario('claude rate-limit evidence persisted for usage snapshot', async () => {
+  await runTurn('claudeAgent', 'claude-sonnet-4-5', 'rlimit hit now', 3000);
+  const snap = await call('server.getProviderUsageSnapshot', { provider: 'claudeAgent' });
+  assert(snap.provider === 'claudeAgent', 'wrong provider');
 });
 
 let pass = 0, fail = 0;

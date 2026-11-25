@@ -53,8 +53,97 @@ pub fn start() {
 
 fn tick() -> Result<(), WsErr> {
     due_pass()?;
+    deferred_pass()?;
     reconcile_pass()?;
     Ok(())
+}
+
+/// Retry deferred continuation runs whose cooldown elapsed. The dispatch path
+/// re-defers them when the target thread is still busy, so a permanently busy
+/// heartbeat neither fires nor dies — same destination upstream reaches.
+fn deferred_pass() -> Result<(), WsErr> {
+    let now = iso_now();
+    let due: Vec<(String, String)> = {
+        let conn = open_state_rw()?;
+        let mut stmt = conn
+            .prepare(
+                "SELECT run_id, automation_id FROM automation_runs
+                 WHERE status = 'deferred' AND deferred_until IS NOT NULL AND deferred_until <= ?1 LIMIT 50",
+            )
+            .map_err(|e| err(format!("automation deferred scan: {e}")))?;
+        stmt.query_map(params![now], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+            .map_err(|e| err(format!("automation deferred scan: {e}")))?
+            .filter_map(|r| r.ok())
+            .collect()
+    };
+    for (run_id, automation_id) in due {
+        let conn = open_state_rw()?;
+        let automation = load_automation(&conn, &automation_id);
+        let scheduled_for: String = conn
+            .query_row(
+                "SELECT scheduled_for FROM automation_runs WHERE run_id = ?1",
+                params![run_id],
+                |r| r.get(0),
+            )
+            .unwrap_or_default();
+        drop(conn);
+        if let Some(automation) = automation {
+            // Mark running before dispatch so a crash in between does not
+            // re-enter through the deferred scan with a duplicate turn.
+            if let Ok(conn) = open_state_rw() {
+                let _ = conn.execute(
+                    "UPDATE automation_runs SET status = 'running', deferred_until = NULL, updated_at = ?2 WHERE run_id = ?1",
+                    params![run_id, now],
+                );
+            }
+            if let Err(e) = dispatch_run(&run_id, &automation, &scheduled_for, &now) {
+                eprintln!("automation deferred dispatch failed for {}: {}", run_id, e.0);
+            }
+        }
+    }
+    Ok(())
+}
+
+fn load_automation(conn: &rusqlite::Connection, automation_id: &str) -> Option<DueAutomation> {
+    conn.query_row(
+        "SELECT automation_id, project_id, name, prompt, schedule_json, COALESCE(next_run_at,''),
+                model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id
+         FROM automation_definitions WHERE automation_id = ?1 AND enabled = 1 AND archived_at IS NULL",
+        params![automation_id],
+        |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, String>(1)?,
+                r.get::<_, String>(2)?,
+                r.get::<_, String>(3)?,
+                r.get::<_, String>(4)?,
+                r.get::<_, String>(5)?,
+                r.get::<_, Option<String>>(6)?,
+                r.get::<_, String>(7)?,
+                r.get::<_, String>(8)?,
+                r.get::<_, String>(9)?,
+                r.get::<_, Option<String>>(10)?,
+            ))
+        },
+    )
+    .ok()
+    .map(|(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt)| {
+        DueAutomation {
+            id,
+            project_id,
+            name,
+            prompt,
+            schedule: serde_json::from_str(&schedule_json).unwrap_or(json!({})),
+            next_run_at,
+            model_selection: ms
+                .and_then(|s| serde_json::from_str(&s).ok())
+                .unwrap_or(Value::Null),
+            runtime_mode: rm,
+            interaction_mode: im,
+            mode,
+            target_thread_id: tt,
+        }
+    })
 }
 
 struct DueAutomation {
@@ -204,6 +293,33 @@ fn dispatch_run(
     let thread_id = continuation
         .clone()
         .unwrap_or_else(|| format!("{run_id}-thread"));
+
+    // Heartbeat coalescing, lean slice of the upstream deferral machinery: a
+    // continuation run whose target thread is busy must not queue a competing
+    // turn — defer it for the automation's cooldown and retry on a later pass.
+    if let Some(target) = &continuation {
+        let busy: bool = open_state_rw()
+            .ok()
+            .and_then(|c| {
+                c.query_row(
+                    "SELECT active_turn_id IS NOT NULL AND active_turn_id != '' FROM projection_thread_sessions WHERE thread_id = ?1",
+                    params![target],
+                    |r| r.get::<_, bool>(0),
+                )
+                .ok()
+            })
+            .unwrap_or(false);
+        if busy {
+            if let Ok(conn) = open_state_rw() {
+                let _ = conn.execute(
+                    "UPDATE automation_runs SET status = 'deferred', thread_id = ?2,
+                     deferred_until = datetime('now', '+' || 60 || ' seconds'), updated_at = ?3 WHERE run_id = ?1",
+                    params![run_id, target, now],
+                );
+            }
+            return Ok(());
+        }
+    }
 
     if continuation.is_none() {
         let create = json!({

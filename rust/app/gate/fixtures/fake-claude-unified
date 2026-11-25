@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""Unified fake claude CLI for the parity gate: `-p` invocations answer
+text-generation prompts; anything else emulates the interactive stream-json
+control plane used by thread turns."""
+import sys, json, os
+
+if "-p" in sys.argv or "--print" in sys.argv:
+    prompt = sys.stdin.read()
+    if "automation creation intents" in prompt:
+        out = {
+            "isAutomation": True,
+            "confidence": 0.9,
+            "language": "en",
+            "name": "Daily follower count",
+            "taskPrompt": "Update the follower count from the static file.",
+            "schedule": {"type": "interval", "everySeconds": 86400},
+            "mode": "heartbeat",
+            "maxIterations": None,
+            "completionPolicy": {"type": "none"},
+            "missingFields": [],
+            "needsConfirmation": False,
+            "reason": None,
+        }
+    elif "predict the next message" in prompt:
+        out = {"suggestion": "commit it and open a PR"}
+    elif "engineering summaries for git diffs" in prompt:
+        out = {"summary": "## Summary\n- Appends a line to a.txt and adds b.txt.\n\n## Files Changed\n- a.txt: appended content\n- b.txt: new file"}
+    else:
+        out = {"recap": "Ported browser download capture to the CDP backend; next up is usage snapshots verification."}
+    send = {"type": "result", "result": json.dumps(out), "structured_output": out}
+    sys.stdout.write(json.dumps(send) + "\n")
+
+    sys.exit(0)
+
+import sys,json,os
+with open('/tmp/fake-claude-start-log','a') as f:f.write(str(os.getpid())+'\n')
+with open('/tmp/fake-claude-args-log','a') as f:f.write(json.dumps(sys.argv[1:])+'\n')
+out=sys.stdout
+def send(v):
+ out.write(json.dumps(v)+'\n');out.flush()
+for line in sys.stdin:
+ try:v=json.loads(line)
+ except Exception:continue
+ if v.get('type')=='control_request':
+  sub=v.get('request',{}).get('subtype')
+  rid=v.get('request_id','')
+  if sub in ('initialize','interrupt'):
+   send({'type':'control_response','response':{'subtype':'success','request_id':rid,'response':{'commands':[{'name':'review','description':'Review code','argumentHint':'<path>'},{'name':'compact','description':'Compact context'}],'models':[{'value':'sonnet','resolvedModel':'claude-sonnet-5','displayName':'Sonnet','description':'Fast model','supportsEffort':True,'supportedEffortLevels':['low','high'],'supportsFastMode':True,'supportsAdaptiveThinking':True,'supportsAutoMode':False}],'agents':[{'name':'Explore','description':'Explore code','model':'inherit'}]}}})
+   if sub=='initialize':send({'type':'system','subtype':'init','session_id':'fake-claude-session'})
+ elif v.get('type')=='user':
+  with open('/tmp/fake-claude-user-log','a') as f:f.write(json.dumps(v)+'\n')
+  send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
+  send({'type':'result','subtype':'success','result':'done'})

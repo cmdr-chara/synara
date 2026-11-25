@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+import sys,json
+out=sys.stdout
+current='claude-opus-4-8'
+def send(v): out.write(json.dumps(v)+'\n');out.flush()
+def cfg():
+ efforts=['low','medium','high'] if current.startswith('claude') else ['medium','high','xhigh']
+ return [
+  {'id':'model','name':'Model','category':'model','type':'select','currentValue':current,'options':[
+   {'value':'claude-opus-4-8','name':'Claude Opus 4.8'},
+   {'value':'gpt-5.6-sol','name':'GPT-5.6 Sol'}
+  ]},
+  {'id':'reasoning_effort','name':'Reasoning','category':'thought_level','type':'select','currentValue':efforts[1],'options':[{'value':x,'name':x.title()} for x in efforts]}
+ ]
+for line in sys.stdin:
+ try:v=json.loads(line)
+ except Exception:continue
+ method=v.get('method'); rid=v.get('id')
+ with open('/tmp/fake-droid-rpc-log','a') as f:f.write(json.dumps({'method':method,'params':v.get('params')})+'\n')
+ if method=='initialize': send({'jsonrpc':'2.0','id':rid,'result':{'authMethods':[]}})
+ elif method=='session/new': send({'jsonrpc':'2.0','id':rid,'result':{'sessionId':'fake-droid-session','configOptions':cfg()}})
+ elif method=='session/set_config_option':
+  p=v.get('params',{})
+  if p.get('configId')=='model': current=p.get('value',current)
+  send({'jsonrpc':'2.0','id':rid,'result':{'configOptions':cfg()}})
+ elif rid is not None: send({'jsonrpc':'2.0','id':rid,'result':{}})

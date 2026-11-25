@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+import sys,json,time,os
+out=sys.stdout
+def send(v):
+ out.write(json.dumps(v)+'\n');out.flush()
+for line in sys.stdin:
+ try:v=json.loads(line)
+ except Exception:continue
+ method=v.get('method')
+ if method is None and v.get('id')==99:
+  with open('/tmp/fake-codex-input-log','a') as f:f.write(json.dumps(v)+'\n')
+  send({'jsonrpc':'2.0','method':'item/agentMessage/delta','params':{'delta':'codex input answered'}})
+  send({'jsonrpc':'2.0','method':'turn/completed','params':{}})
+  continue
+ if not method: continue
+ if method=='initialize':
+  send({'jsonrpc':'2.0','id':v.get('id'),'result':{}})
+ elif method=='initialized':
+  continue
+ elif method=='model/list':
+  send({'jsonrpc':'2.0','id':v.get('id'),'result':{'items':[{'id':'gpt-5.5','name':'GPT-5.5','supportedReasoningEfforts':[{'value':'low','description':'Low'},{'value':'high'}],'defaultReasoningEffort':'low'},{'id':'gpt-5.4-mini','displayName':'GPT-5.4 Mini'}]}})
+ elif method=='thread/start':
+  with open('/tmp/fake-codex-thread-log','a') as f:f.write(json.dumps({'method':method,'params':v.get('params',{})})+'\n')
+  send({'jsonrpc':'2.0','id':v.get('id'),'result':{'thread':{'id':'fake-codex-thread'}}})
+ elif method=='thread/resume':
+  with open('/tmp/fake-codex-thread-log','a') as f:f.write(json.dumps({'method':method,'params':v.get('params',{})})+'\n')
+  send({'jsonrpc':'2.0','id':v.get('id'),'result':{'thread':{'id':v.get('params',{}).get('threadId','fake-codex-thread')}}})
+ elif method=='turn/start':
+  with open('/tmp/fake-codex-turn-log','a') as f:f.write(json.dumps(v.get('params',{}))+'\n')
+  send({'jsonrpc':'2.0','id':v.get('id'),'result':{'turn':{'id':'fake-codex-turn'}}})
+  if os.environ.get('FAKE_CODEX_USER_INPUT')=='1':
+   send({'jsonrpc':'2.0','id':99,'method':'item/tool/requestUserInput','params':{'questions':[{'id':'q1','header':'Pick','question':'Which option?','options':[{'label':'Visible'}],'multiSelect':False}]}})
+  else:
+   send({'jsonrpc':'2.0','method':'item/agentMessage/delta','params':{'delta':'codex done'}})
+   send({'jsonrpc':'2.0','method':'turn/completed','params':{}})
+ elif method=='thread/compact/start':
+  with open('/tmp/fake-codex-compact-log','a') as f:f.write(json.dumps(v.get('params',{}))+'\n')
+  send({'jsonrpc':'2.0','id':v.get('id'),'result':{}})
+ elif method in ('turn/interrupt','turn/steer'):
+  if v.get('id') is not None: send({'jsonrpc':'2.0','id':v.get('id'),'result':{}})

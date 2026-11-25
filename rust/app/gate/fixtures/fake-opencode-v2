@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+import json,threading,time,os,sys
+from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
+sse_clients=[]
+class H(BaseHTTPRequestHandler):
+ def log_message(self,*args):pass
+ def _auth(self):return True
+ def do_GET(self):
+  if self.path.startswith('/api/info'):
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'version':'2.0.25','pid':os.getpid(),'urls':[]}).encode());return
+  if self.path.startswith('/api/provider'):
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'location':{'directory':'/tmp'},'data':{'all':[{'id':'openai','name':'OpenAI','models':{'gpt-5':{'id':'gpt-5','name':'GPT-5','limit':{'context':400000},'enabled':True}}},{'id':'anthropic','name':'Anthropic','models':{'claude-sonnet-4.5':{'id':'claude-sonnet-4.5','name':'Claude Sonnet','limit':{'context':200000},'enabled':True}}},{'id':'vertex','name':'Vertex','source':'config','models':{'gemini-3':{'id':'gemini-3','name':'Gemini 3','enabled':True}}}],'connected':['openai','anthropic'],'default':{}}}).encode());return
+  if self.path.startswith('/api/mcp'):
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'data':[{'name':'synara','status':{'status':'connected'}}]}).encode());return
+  if self.path.startswith('/api/agent'):
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'data':[{'name':'build','displayName':'Build','mode':'primary','description':'Build changes','model':{'providerID':'test','modelID':'model'}},{'name':'hidden','hidden':True,'mode':'primary'}]}).encode());return
+  if self.path.startswith('/api/command'):
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'data':[{'name':'review','description':'Review code'},{'name':'build'}]}).encode());return
+  if self.path.startswith('/api/event'):
+   self.send_response(200);self.send_header('Content-Type','text/event-stream');self.send_header('Cache-Control','no-cache');self.end_headers()
+   sse_clients.append(self.wfile)
+   try:
+    self.wfile.write(b'data: {"type":"server.connected","data":{}}\n\n');self.wfile.flush()
+    while True:time.sleep(30)
+   except Exception:pass
+   return
+  self.send_response(404);self.end_headers()
+ def do_POST(self):
+  n=int(self.headers.get('Content-Length','0') or 0);body=self.rfile.read(n).decode() if n else ''
+  if '/form/' in self.path:
+   with open('/tmp/fake-opencode-form-log','a') as f:f.write(self.command+' '+self.path+' '+body+'\n')
+   self.send_response(204);self.end_headers();return
+  if '/permission/' in self.path and self.path.endswith('/reply'):
+   with open('/tmp/fake-opencode-permission-log','a') as f:f.write(self.path+' '+body+'\n')
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(b'{}');return
+  if self.path.endswith('/compact'):
+   with open('/tmp/fake-opencode-compact-log','a') as f:f.write(self.path+' '+body+'\n')
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(b'{}');return
+  if self.path.endswith('/interrupt'):
+   with open('/tmp/fake-opencode-interrupt-log','a') as f:f.write(self.path+'\n')
+   def emit_interrupt():
+    time.sleep(.1)
+    event={'type':'session.execution.interrupted','data':{'sessionID':'fake-oc-session'}}
+    for w in list(sse_clients):
+     try:w.write(('data: '+json.dumps(event)+'\n\n').encode());w.flush()
+     except Exception:pass
+   threading.Thread(target=emit_interrupt,daemon=True).start()
+   self.send_response(204);self.end_headers();return
+  if self.path.endswith('/prompt') or self.path.endswith('/prompt_async'):
+   with open('/tmp/fake-opencode-prompt-log','a') as f:f.write(body+'\n')
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'data':{'id':'msg-user','time':{'created':1}}}).encode())
+   v2='/api/' in self.path
+   def emit():
+    time.sleep(.2)
+    events=[]
+    if os.environ.get('FAKE_OPENCODE_HANG')=='1':
+     return
+    if v2 and os.environ.get('FAKE_OPENCODE_PERMISSION')=='1':events.append({'type':'permission.asked','data':{'id':'perm-1','sessionID':'fake-oc-session','action':'shell','resources':['git status'],'metadata':{}}})
+    if v2 and os.environ.get('FAKE_OPENCODE_FORM')=='1':events.append({'type':'form.created','data':{'form':{'id':'form-1','sessionID':'fake-oc-session','title':'Choose','fields':[{'type':'string','key':'choice','title':'Choice','required':True,'options':[{'value':'internal','label':'Visible'}]},{'type':'boolean','key':'confirm','title':'Confirm'}]}}})
+    events += [
+     {'type':'session.text.delta','data':{'delta':'fake opencode v2 answer'}} if v2 else {'type':'message.part.delta','properties':{'delta':'fake opencode answer'}},
+     {'type':'session.execution.succeeded','data':{'sessionID':'fake-oc-session'}} if v2 else {'type':'session.idle','properties':{'sessionID':'fake-oc-session'}},
+    ]
+    for event in events:
+     with open('/tmp/fake-opencode-events-log','a') as f:f.write(json.dumps(event)+'\n')
+     for w in list(sse_clients):
+      try:w.write(('data: '+json.dumps(event)+'\n\n').encode());w.flush()
+      except Exception:pass
+     time.sleep(.1)
+   threading.Thread(target=emit,daemon=True).start();return
+  if self.path=='/api/session':
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'data':{'id':'fake-oc-session','location':{'directory':'/tmp'},'title':'fake'}}).encode());return
+  self.send_response(404);self.end_headers()
+ def do_PUT(self):
+  n=int(self.headers.get('Content-Length','0') or 0);body=self.rfile.read(n).decode() if n else ''
+  if self.path.startswith('/api/experimental/mcp/'):
+   with open('/tmp/fake-opencode-mcp-log','a') as f:f.write(self.path+' '+body+'\n')
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(b'{"data":{}}');return
+  self.send_response(404);self.end_headers()
+ def do_PATCH(self):
+  n=int(self.headers.get('Content-Length','0') or 0);body=self.rfile.read(n).decode() if n else ''
+  if self.path.startswith('/api/session/'):
+   self.send_response(204);self.end_headers();return
+  self.send_response(404);self.end_headers()
+ def do_DELETE(self):
+  if '/form/' in self.path:
+   with open('/tmp/fake-opencode-form-log','a') as f:f.write(self.command+' '+self.path+' \n')
+   self.send_response(204);self.end_headers();return
+  self.send_response(404);self.end_headers()
+with open('/tmp/fake-opencode-pids','a') as f:f.write(str(os.getpid())+'\n')
+with open('/tmp/fake-opencode-env','w') as f:f.write('FORM='+os.environ.get('FAKE_OPENCODE_FORM','')+' PERM='+os.environ.get('FAKE_OPENCODE_PERMISSION',''))
+port=50169
+if '--port' in sys.argv:
+ port=int(sys.argv[sys.argv.index('--port')+1])
+ThreadingHTTPServer(('127.0.0.1',port),H).serve_forever()

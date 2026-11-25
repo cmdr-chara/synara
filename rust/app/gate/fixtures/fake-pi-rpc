@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+import sys,json,time,os,threading
+
+def send(v):
+ sys.stdout.write(json.dumps(v)+'\n');sys.stdout.flush()
+for line in sys.stdin:
+ try:v=json.loads(line)
+ except Exception:continue
+ t=v.get('type')
+ if t=='prompt':
+  open('/tmp/fake-pi-prompt-log','a').write(json.dumps(v)+'\n')
+  send({'id':v.get('id'),'type':'response','command':'prompt','success':True,'data':{'disposition':'started'}})
+  def emit():
+   time.sleep(.1)
+   send({'type':'agent_start'})
+   send({'type':'message_update','assistantMessageEvent':{'type':'text_delta','contentIndex':0,'delta':'fake pi answer'}})
+   send({'type':'message_end','message':{'role':'assistant','content':[{'type':'text','text':'fake pi answer'}]}})
+   send({'type':'agent_end','messages':[],'willRetry':False})
+   send({'type':'agent_settled','aborted':False})
+  threading.Thread(target=emit,daemon=True).start()
+ elif t=='get_available_models':
+  send({'type':'response','command':'get_available_models','success':True,'data':{'models':[{'id':'fake-sonnet','name':'Fake Sonnet','provider':'anthropic','reasoning':True}]}})
+ elif t=='get_commands':
+  send({'type':'response','command':'get_commands','success':True,'data':{'commands':[{'name':'review','description':'Review code','source':'prompt'}]}})
+ elif t=='compact':
+  send({'type':'response','command':'compact','success':True,'data':{'summary':'fake compact','tokensBefore':10,'estimatedTokensAfter':3}})
+ elif t=='steer':
+  send({'type':'response','command':'steer','success':True,'data':{'disposition':'queued'}})
+ elif t=='abort':
+  send({'type':'response','command':'abort','success':True})
+  send({'type':'agent_settled','aborted':True})

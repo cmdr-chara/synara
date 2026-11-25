@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$1" = models ]; then
+ printf '%s\n' 'openai/gpt-5'
+ exit 0
+fi
+exec python3 /Users/devin/synara-test-fixtures/fake-opencode-v2 "$@"

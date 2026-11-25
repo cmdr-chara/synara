@@ -181,6 +181,76 @@ fn runtime_overrides(runtime_mode: &str) -> Value {
     }
 }
 
+
+fn parse_codex_user_input_questions(params: &Value) -> Vec<Value> {
+    params
+        .get("questions")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|question| {
+            let id = question.get("id").and_then(Value::as_str)?.trim().to_string();
+            let header = question.get("header").and_then(Value::as_str)?.trim().to_string();
+            let prompt = question.get("question").and_then(Value::as_str)?.trim().to_string();
+            if id.is_empty() || header.is_empty() || prompt.is_empty() {
+                return None;
+            }
+            let options = question
+                .get("options")
+                .and_then(Value::as_array)
+                .cloned()
+                .unwrap_or_default()
+                .iter()
+                .filter_map(|option| {
+                    let label = option.get("label").and_then(Value::as_str)?.trim().to_string();
+                    if label.is_empty() {
+                        return None;
+                    }
+                    let description = option
+                        .get("description")
+                        .and_then(Value::as_str)
+                        .map(str::trim)
+                        .filter(|value| !value.is_empty())
+                        .unwrap_or(&label)
+                        .to_string();
+                    Some(json!({"label": label, "description": description}))
+                })
+                .collect::<Vec<_>>();
+            Some(json!({
+                "id": id,
+                "header": header,
+                "question": prompt,
+                "options": options,
+                "multiSelect": question.get("multiSelect").and_then(Value::as_bool).unwrap_or(false),
+            }))
+        })
+        .collect()
+}
+
+fn codex_user_input_answer(value: &Value) -> Value {
+    if let Some(text) = value.as_str() {
+        return json!({"answers": [text]});
+    }
+    if let Some(items) = value.as_array() {
+        return json!({"answers": items.iter().filter_map(Value::as_str).collect::<Vec<_>>()});
+    }
+    if let Some(items) = value.get("answers").and_then(Value::as_array) {
+        return json!({"answers": items.iter().filter_map(Value::as_str).collect::<Vec<_>>()});
+    }
+    json!({"answers": []})
+}
+
+fn codex_user_input_answers(answers: &Value) -> Value {
+    let mut out = serde_json::Map::new();
+    if let Some(object) = answers.as_object() {
+        for (question_id, value) in object {
+            out.insert(question_id.clone(), codex_user_input_answer(value));
+        }
+    }
+    Value::Object(out)
+}
+
 struct Rpc {
     stdin: Arc<Mutex<std::process::ChildStdin>>,
     reader: BufReader<std::process::ChildStdout>,
@@ -292,6 +362,14 @@ impl Rpc {
             return;
         }
         let params = v.get("params").cloned().unwrap_or(Value::Null);
+        if method == "item/tool/requestUserInput" {
+            if let Some(ctx) = self.approval_ctx.clone() {
+                self.handle_user_input_request(v, &params, &ctx);
+            } else if let Some(rid) = v.get("id").cloned() {
+                let _ = self.write_raw(&json!({"jsonrpc":"2.0","id":rid,"error":{"code":-32603,"message":"user input is unavailable before turn start"}}));
+            }
+            return;
+        }
         let mcp_approval = is_mcp_tool_approval(method, &params);
         let request_kind = if mcp_approval {
             Some("tool")
@@ -335,6 +413,93 @@ impl Rpc {
             };
             let _ = self.write_raw(&json!({"jsonrpc":"2.0","id":rid,"result":result}));
         }
+    }
+
+    fn handle_user_input_request(&mut self, v: &Value, params: &Value, ctx: &CodexApprovalCtx) {
+        let questions = parse_codex_user_input_questions(params);
+        let Some(rid) = v.get("id").cloned() else { return };
+        if questions.is_empty() {
+            let _ = self.write_raw(&json!({
+                "jsonrpc":"2.0",
+                "id":rid,
+                "error":{"code":-32602,"message":"item/tool/requestUserInput did not include a renderable question."},
+            }));
+            return;
+        }
+        let request_id = uuid_v4();
+        let now = iso_now_ms();
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute_batch("PRAGMA busy_timeout = 5000;");
+            let _ = c.execute(
+                "INSERT OR REPLACE INTO projection_pending_interactions \
+                 (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision, response_command_id, response_requested_at, created_at, resolved_at) \
+                 VALUES ('userInput', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+                params![request_id, ctx.thread_id, ctx.turn_id, now],
+            );
+            let _ = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "info",
+                "user-input.requested",
+                "User input requested",
+                &json!({
+                    "requestId": request_id,
+                    "questions": questions,
+                    "providerMethod": "item/tool/requestUserInput",
+                    "providerPayload": params,
+                }),
+            );
+        }
+
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
+        let mut answers_json: Option<String> = None;
+        while answers_json.is_none() {
+            if ctx.cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
+                answers_json = Some("{}".to_string());
+                break;
+            }
+            if let Ok(c) = open_state_rw() {
+                match c.query_row(
+                    "SELECT decision FROM projection_pending_interactions \
+                     WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                    params![ctx.thread_id, request_id],
+                    |r| r.get::<_, Option<String>>(0),
+                ) {
+                    Ok(Some(value)) => answers_json = Some(value),
+                    Ok(None) => {}
+                    Err(_) => answers_json = Some("{}".to_string()),
+                }
+            }
+            if answers_json.is_none() {
+                std::thread::sleep(std::time::Duration::from_millis(250));
+            }
+        }
+        let answers = answers_json
+            .as_deref()
+            .and_then(|raw| serde_json::from_str::<Value>(raw).ok())
+            .unwrap_or(json!({}));
+        let codex_answers = codex_user_input_answers(&answers);
+        if let Ok(c) = open_state_rw() {
+            let _ = c.execute(
+                "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
+                params![ctx.thread_id, request_id],
+            );
+            let _ = append_activity(
+                &c,
+                &ctx.thread_id,
+                &ctx.turn_id,
+                "info",
+                "user-input.resolved",
+                "User input resolved",
+                &json!({"requestId": request_id, "answers": codex_answers}),
+            );
+        }
+        let _ = self.write_raw(&json!({
+            "jsonrpc":"2.0",
+            "id":rid,
+            "result":{"answers": codex_answers},
+        }));
     }
 
     fn handle_interactive_approval(

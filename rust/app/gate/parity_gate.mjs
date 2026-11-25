@@ -22,13 +22,36 @@ function call(tag, payload, timeoutMs = 15000) {
     }, timeoutMs);
   });
 }
+
+// Streaming variant of call(): resolves {chunks, value} collecting Chunk frames.
+function callStreaming(tag, payload, timeoutMs = 20000) {
+  return new Promise((resolve, reject) => {
+    const id = String(next++);
+    const chunks = [];
+    pending.set(id, { resolve, reject, tag, chunks });
+    ws.send(JSON.stringify({ _tag: "Request", id, tag, payload, headers: [] }));
+    setTimeout(() => {
+      if (pending.has(id)) {
+        pending.delete(id);
+        reject(new Error("timeout " + tag));
+      }
+    }, timeoutMs);
+  });
+}
+
 ws.onmessage = (ev) => {
   const m = JSON.parse(ev.data);
+  if (m._tag === "Chunk") {
+    const p = pending.get(String(m.requestId));
+    if (p?.chunks) for (const v of m.values ?? []) p.chunks.push(v);
+    return;
+  }
   if (m._tag === "Exit") {
     const p = pending.get(String(m.requestId));
     if (!p) return;
     pending.delete(String(m.requestId));
-    if (m.exit?._tag === "Success") p.resolve(m.exit.value);
+    if (m.exit?._tag === "Success")
+      p.resolve(p.chunks ? { chunks: p.chunks, value: m.exit.value } : m.exit.value);
     else p.reject(new Error(p.tag + ": " + JSON.stringify(m.exit).slice(0, 300)));
   }
 };
@@ -271,6 +294,74 @@ await scenario("editor.intelligence diagnostics and hover via ts worker", async 
     30000,
   );
   assert(hover && typeof hover === "object", "no hover result");
+});
+
+// 16. git.runStackedAction streaming + resume dedup registry
+await scenario("git stacked action streams chunks and resume dedups", async () => {
+  const repo = "/tmp/gate-git-repo";
+  fs.rmSync(repo, { recursive: true, force: true });
+  fs.mkdirSync(repo, { recursive: true });
+  const gitEnv = {
+    env: {
+      ...process.env,
+      GIT_AUTHOR_NAME: "Gate",
+      GIT_AUTHOR_EMAIL: "gate@test",
+      GIT_COMMITTER_NAME: "Gate",
+      GIT_COMMITTER_EMAIL: "gate@test",
+    },
+  };
+  execSync("git init -q", { cwd: repo, ...gitEnv });
+  fs.writeFileSync(repo + "/a.txt", "one\n");
+  execSync("git add a.txt && git commit -qm init", { cwd: repo, ...gitEnv });
+  fs.writeFileSync(repo + "/b.txt", "two\n");
+  const countCommits = () =>
+    Number(execSync("git rev-list --count HEAD", { cwd: repo }).toString().trim());
+  const before = countCommits();
+
+  const actionId = "gate-action-" + Date.now();
+  const payload = {
+    cwd: repo,
+    actionId,
+    action: "commit",
+    commitMessage: "gate commit",
+    featureBranch: false,
+  };
+  const first = await callStreaming("git.runStackedAction", payload);
+  const kinds = first.chunks.map((c) => c.kind);
+  assert(kinds.includes("action_started"), "no action_started chunk: " + kinds.join(","));
+  assert(kinds.includes("action_finished"), "no action_finished chunk: " + kinds.join(","));
+  assert(countCommits() === before + 1, "commit not created");
+
+  // Resume with the same payload attaches to the completed action and must
+  // NOT create a second commit.
+  const resumed = await callStreaming("git.runStackedAction", { ...payload, resume: true });
+  assert(
+    resumed.chunks.some((c) => c.kind === "action_finished"),
+    "resume did not replay terminal event",
+  );
+  assert(countCommits() === before + 1, "resume duplicated the mutation");
+
+  // Same actionId with different inputs is rejected.
+  let mismatch = false;
+  try {
+    await callStreaming("git.runStackedAction", { ...payload, commitMessage: "different" });
+  } catch (e) {
+    mismatch = e.message.includes("reused with different inputs");
+  }
+  assert(mismatch, "fingerprint mismatch not rejected");
+
+  // Resume of an unknown action is rejected with the upstream message.
+  let missing = false;
+  try {
+    await callStreaming("git.runStackedAction", {
+      ...payload,
+      actionId: "never-existed",
+      resume: true,
+    });
+  } catch (e) {
+    missing = e.message.includes("result is unavailable");
+  }
+  assert(missing, "resume-missing not rejected");
 });
 
 let pass = 0,

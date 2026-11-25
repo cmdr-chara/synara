@@ -1087,7 +1087,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let selected_model: Option<String> = conn
+    let model_selection: Value = conn
         .query_row(
             "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
             params![thread_id],
@@ -1096,7 +1096,16 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .ok()
         .flatten()
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
-        .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
+        .unwrap_or(Value::Null);
+    let selected_model: Option<String> = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_effort: Option<String> = model_selection
+        .pointer("/options/reasoningEffort")
+        .and_then(Value::as_str)
+        .or_else(|| model_selection.pointer("/options/effort").and_then(Value::as_str))
+        .map(str::to_string);
 
     let launch_key = format!(
         "{}|{}|{}",
@@ -1252,6 +1261,12 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         });
         if let Some(model) = selected_model.as_deref() {
             turn_params["model"] = json!(model);
+            if model == "gpt-5.3-codex-spark" {
+                turn_params["summary"] = json!("none");
+            }
+        }
+        if let Some(effort) = selected_effort.as_deref() {
+            turn_params["effort"] = json!(effort);
         }
         let turn_res = rpc.call("turn/start", turn_params)?;
         let provider_turn_id = turn_res

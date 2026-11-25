@@ -1015,6 +1015,22 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
     result
 }
 
+fn codex_collaboration_instructions(plan: bool) -> String {
+    if plan {
+        format!(
+            "<collaboration_mode># Plan Mode (Conversational)\n\nYou are in **Plan Mode** until developer instructions explicitly end it. Plan execution; do not perform it. You may inspect, search, test and otherwise gather facts only when those actions do not mutate repo-tracked state. Do not edit files, apply patches, run rewriting formatters/codegen, or execute plan-implementing side effects. Explore discoverable facts before asking. Use the request_user_input tool for decisions that materially change the plan, meaningful tradeoffs, or information that cannot be discovered. Ask only questions that cannot be answered locally. Continue until the specification is decision-complete. When final, emit exactly one Markdown plan wrapped in <proposed_plan> on its own line and </proposed_plan> on its own line. The plan must include title, summary, API/interface changes, tests, assumptions, and defaults. Do not ask whether to proceed.\n</collaboration_mode>{}\n\n{}",
+            crate::harness_policy::browser_routing_instructions(),
+            crate::harness_policy::harness_policy(),
+        )
+    } else {
+        format!(
+            "<collaboration_mode># Collaboration Mode: Default\n\nYou are now in Default mode. Previous collaboration-mode instructions are inactive. The request_user_input tool is unavailable in Default mode. Prefer reasonable assumptions and execution over stopping to ask questions; ask directly in plain text only when local context cannot answer a high-risk question.\n</collaboration_mode>{}\n\n{}",
+            crate::harness_policy::browser_routing_instructions(),
+            crate::harness_policy::harness_policy(),
+        )
+    }
+}
+
 pub fn supports_provider(provider: &str) -> bool {
     provider == "codex"
 }
@@ -1087,14 +1103,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let model_selection: Value = conn
+    let (model_selection_raw, interaction_mode): (Option<String>, String) = conn
         .query_row(
-            "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+            "SELECT model_selection_json, interaction_mode FROM projection_threads WHERE thread_id = ?1",
             params![thread_id],
-            |r| r.get::<_, Option<String>>(0),
+            |r| Ok((r.get(0)?, r.get::<_, Option<String>>(1)?.unwrap_or_default())),
         )
-        .ok()
-        .flatten()
+        .unwrap_or((None, "default".to_string()));
+    let model_selection: Value = model_selection_raw
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
         .unwrap_or(Value::Null);
     let selected_model: Option<String> = model_selection
@@ -1268,6 +1284,18 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         if let Some(effort) = selected_effort.as_deref() {
             turn_params["effort"] = json!(effort);
         }
+        let plan_mode = interaction_mode == "plan";
+        let collaboration_model = selected_model
+            .clone()
+            .unwrap_or_else(|| "gpt-5.3-codex".to_string());
+        turn_params["collaborationMode"] = json!({
+            "mode": if plan_mode { "plan" } else { "default" },
+            "settings": {
+                "model": collaboration_model,
+                "reasoning_effort": selected_effort.clone().unwrap_or_else(|| "medium".to_string()),
+                "developer_instructions": codex_collaboration_instructions(plan_mode),
+            },
+        });
         let turn_res = rpc.call("turn/start", turn_params)?;
         let provider_turn_id = turn_res
             .pointer("/turn/id")

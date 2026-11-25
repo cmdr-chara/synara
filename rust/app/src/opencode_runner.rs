@@ -839,6 +839,241 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
     Ok(true)
 }
 
+
+/// Start and configure an idle OpenCode server/session before the first user
+/// prompt. Unlike a turn, prewarm performs no model traffic: it only pays the
+/// process startup, MCP registration, permission and model/agent switching
+/// costs once, then parks the server for `start_turn` to reuse.
+pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Ok(false);
+    }
+    if let Ok(parked_map) = PARKED.lock() {
+        if parked_map.contains_key(thread_id) {
+            return Ok(false);
+        }
+    }
+
+    let conn = open_state_rw()?;
+    let stored_session: Option<String> = conn
+        .query_row(
+            "SELECT provider_thread_id FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let turn_runtime_mode: String = conn
+        .query_row(
+            "SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "full-access".to_string());
+    let (interaction_mode, model_selection_json, working_directory): (String, Option<String>, Option<String>) = conn
+        .query_row(
+            "SELECT interaction_mode, model_selection_json, COALESCE(working_directory, worktree_path, associated_worktree_path) \
+             FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|e| err(format!("opencode prewarm thread lookup: {e}")))?;
+    let cwd = working_directory
+        .filter(|path| !path.is_empty() && std::path::Path::new(path).is_dir())
+        .unwrap_or_else(|| std::env::var("HOME").unwrap_or_else(|_| "/".to_string()));
+    let model_selection = model_selection_json
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .unwrap_or(Value::Null);
+    let selected_model = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_agent = model_selection
+        .pointer("/options/agent")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let selected_variant = model_selection
+        .pointer("/options/variant")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+
+    let port = std::net::TcpListener::bind("127.0.0.1:0")
+        .and_then(|l| l.local_addr())
+        .map(|a| a.port())
+        .unwrap_or(4096);
+    let password = random_token();
+    let mut command = Command::new(opencode_binary());
+    command
+        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+        .current_dir(&cwd)
+        .env("OPENCODE_SERVER_USERNAME", "opencode")
+        .env("OPENCODE_SERVER_PASSWORD", &password)
+        .env("OPENCODE_PASSWORD", &password)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `opencode serve`: {e}")))?;
+
+    let auth = basic_auth_header(&password);
+    let prepared = (|| -> Result<String, WsErr> {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+        let mut protocol = detect_protocol(port, &auth);
+        loop {
+            protocol = detect_protocol(port, &auth);
+            let ready = if protocol == OpenCodeProtocol::V2 {
+                true
+            } else {
+                http_request(port, "GET", "/provider", &auth, None)
+                    .map(|(status, _)| status > 0)
+                    .unwrap_or(false)
+            };
+            if ready {
+                break;
+            }
+            if std::time::Instant::now() >= deadline {
+                return Err(err("opencode server did not become ready in 20s"));
+            }
+            std::thread::sleep(std::time::Duration::from_millis(200));
+        }
+        protocol = detect_protocol(port, &auth);
+        install_gateway_mcp(port, &auth, &cwd);
+
+        let session_id = if let Some(session_id) = stored_session.clone() {
+            session_id
+        } else if protocol == OpenCodeProtocol::V2 {
+            let (status, body) = http_request(
+                port,
+                "POST",
+                "/api/session",
+                &auth,
+                Some(&json!({
+                    "location": {"directory": cwd},
+                    "title": format!("synara-{thread_id}"),
+                    "permissions": opencode_permission_rules(&turn_runtime_mode, &interaction_mode),
+                })),
+            )?;
+            if status >= 400 {
+                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+            }
+            let parsed: Value = serde_json::from_str(&body)
+                .map_err(|e| err(format!("opencode session parse: {e}")))?;
+            parsed
+                .pointer("/data/id")
+                .and_then(Value::as_str)
+                .or_else(|| parsed.get("id").and_then(Value::as_str))
+                .ok_or_else(|| err("opencode session create returned no id"))?
+                .to_string()
+        } else {
+            let (status, body) = http_request(
+                port,
+                "POST",
+                "/session",
+                &auth,
+                Some(&json!({"title": format!("synara-{thread_id}")})),
+            )?;
+            if status >= 400 {
+                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+            }
+            let parsed: Value = serde_json::from_str(&body)
+                .map_err(|e| err(format!("opencode session parse: {e}")))?;
+            parsed
+                .get("id")
+                .and_then(Value::as_str)
+                .ok_or_else(|| err("opencode session create returned no id"))?
+                .to_string()
+        };
+
+        if protocol == OpenCodeProtocol::V2 {
+            let path = format!("/api/session/{session_id}");
+            let (status, body) = http_request(
+                port,
+                "PATCH",
+                &path,
+                &auth,
+                Some(&json!({
+                    "permissions": opencode_permission_rules(&turn_runtime_mode, &interaction_mode),
+                })),
+            )?;
+            if status >= 400 && status != 404 && status != 405 {
+                return Err(err(format!("opencode permission rules HTTP {status}: {body}")));
+            }
+            if stored_session.is_none() {
+                let path = format!(
+                    "/api/experimental/session/{session_id}/instructions/entries/synara"
+                );
+                let (status, _) = http_request(
+                    port,
+                    "PUT",
+                    &path,
+                    &auth,
+                    Some(&json!({"value": crate::harness_policy::first_prompt_prefix()})),
+                )?;
+                if status >= 400 && status != 404 && status != 405 {
+                    eprintln!("opencode_runner: prewarm instruction install HTTP {status}");
+                }
+            }
+            if let Some(agent) = selected_agent.as_deref() {
+                let path = format!("/api/session/{session_id}/agent");
+                let (status, body) = http_request(
+                    port,
+                    "POST",
+                    &path,
+                    &auth,
+                    Some(&json!({"agent": agent})),
+                )?;
+                if status >= 400 && status != 404 && status != 405 {
+                    return Err(err(format!("opencode agent switch HTTP {status}: {body}")));
+                }
+            }
+            if let Some(model) = selected_model.as_deref() {
+                if let Some((provider_id, model_id)) = model.split_once('/') {
+                    let mut native_model = json!({"providerID": provider_id, "id": model_id});
+                    if let Some(variant) = selected_variant.as_deref() {
+                        native_model["variant"] = json!(variant);
+                    }
+                    let path = format!("/api/session/{session_id}/model");
+                    let (status, body) = http_request(
+                        port,
+                        "POST",
+                        &path,
+                        &auth,
+                        Some(&json!({"model": native_model})),
+                    )?;
+                    if status >= 400 && status != 404 && status != 405 {
+                        return Err(err(format!("opencode model switch HTTP {status}: {body}")));
+                    }
+                }
+            }
+        }
+        Ok(session_id)
+    })();
+
+    match prepared {
+        Ok(session_id) => {
+            if let Ok(mut parked_map) = PARKED.lock() {
+                parked_map.insert(
+                    thread_id.to_string(),
+                    ParkedOpenCode {
+                        child: Arc::new(Mutex::new(child)),
+                        port,
+                        password,
+                        session_id,
+                        launch_key: cwd,
+                    },
+                );
+            }
+            Ok(true)
+        }
+        Err(e) => {
+            let _ = child.kill();
+            let _ = child.wait();
+            Err(e)
+        }
+    }
+}
+
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&thread_id, &message_id, &text, &cwd) {

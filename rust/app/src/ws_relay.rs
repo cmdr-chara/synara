@@ -96,6 +96,7 @@ fn intercept_todo(
         && !text.contains("projects.subscribeDevServerEvents")
         && !text.contains("projects.subscribeFileChange")
         && !text.contains("projects.provisionFromGitHub")
+        && !text.contains("server.generateThreadRecap")
         && !text.contains("server.consumeCodexResetCredit")
         && !text.contains("server.listProviderUsage")
         && !text.contains("server.getProviderUsageSnapshot")
@@ -172,6 +173,7 @@ fn intercept_todo(
         && !crate::projects_provision::handles(tag)
         && !crate::mcp_connectors::handles(tag)
         && !crate::provider_usage::handles(tag)
+        && !crate::textgen::handles(tag)
         && tag != "server.upsertKeybinding"
         && tag != "server.editKeybindings"
         && tag != "server.listLocalServers"
@@ -988,6 +990,10 @@ fn intercept_todo(
             .map_err(error_json)
     } else if crate::provider_usage::handles(tag) {
         crate::provider_usage::handle(tag, &payload)
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::textgen::handles(tag) {
+        crate::textgen::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::account::handles(tag) {

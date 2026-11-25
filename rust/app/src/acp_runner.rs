@@ -303,6 +303,62 @@ pub fn cancel_turn(thread_id: &str) {
     }
 }
 
+/// A live ACP process parked between turns of the same thread. Upstream's
+/// shared runtime keeps one authenticated agent process per session alive;
+/// parking the child, its RPC transport and the session id lets the next
+/// turn prompt the same session directly instead of respawning the CLI and
+/// replaying the transcript through `session/load` every time.
+struct ParkedSession {
+    child: Child,
+    rpc: Rpc,
+    session_id: String,
+    /// provider|model|runtimeMode|cwd — any change invalidates the parked
+    /// process because those are spawn-fixed in the CLI invocation.
+    launch_key: String,
+}
+
+static PARKED: LazyLock<Mutex<HashMap<String, ParkedSession>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+fn drop_parked(mut parked: ParkedSession) {
+    let _ = parked.child.kill();
+    let _ = parked.child.wait();
+}
+
+/// True when an ACP error means the agent requires authentication before
+/// the session can be created.
+fn is_auth_required_error(e: &WsErr) -> bool {
+    let msg = e.0.to_lowercase();
+    msg.contains("auth") || msg.contains("login") || msg.contains("unauthorized")
+}
+
+/// Pick an authentication method the agent advertised in `authMethods`.
+/// Provider preferences mirror the upstream support modules (non-interactive
+/// cached/token methods first); otherwise fall back to the first advertised
+/// method, which is what a fresh CLI login would use.
+fn select_auth_method(provider: &str, methods: &[Value]) -> Option<String> {
+    let preferred: &[&str] = match provider {
+        "devin" => &["cached_token", "windsurf-api-key"],
+        "cursor" => &["cursor_login"],
+        "antigravity" => &["gemini-api-key", "oauth-personal"],
+        _ => &[],
+    };
+    let id_of = |m: &Value| {
+        m.get("id")
+            .and_then(Value::as_str)
+            .map(str::to_string)
+    };
+    for want in preferred {
+        if let Some(found) = methods.iter().find_map(|m| {
+            let id = id_of(m)?;
+            if id == *want { Some(id) } else { None }
+        }) {
+            return Some(found);
+        }
+    }
+    methods.iter().find_map(id_of)
+}
+
 #[derive(Clone, Debug)]
 struct AcpLaunchProfile {
     display_name: &'static str,
@@ -1104,141 +1160,227 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
         });
     let launch = acp_launch_profile(provider, &turn_runtime_mode, selected_model.as_deref())
         .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
-    let mut command = Command::new(&launch.binary);
-    command
-        .args(&launch.args)
-        .current_dir(&cwd)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null());
-    for (key, value) in &launch.env {
-        command.env(key, value);
-    }
-    let spawn_result = command.spawn();
-    let mut child: Child = match spawn_result {
-        Ok(c) => c,
-        Err(e) => {
-            let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-            let msg = format!(
-                "could not launch `{}` for {} ACP: {e}",
-                launch.binary, launch.display_name
-            );
-            let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
-            return Err(err(msg));
-        }
-    };
-    let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
-    let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
-    let stdin = Arc::new(Mutex::new(stdin));
+    let launch_key = format!(
+        "{provider}|{}|{turn_runtime_mode}|{cwd}",
+        selected_model.as_deref().unwrap_or("")
+    );
+
+    // Reuse the live process parked by the previous turn of this thread
+    // when it is still alive and the spawn-fixed inputs are unchanged.
+    let parked = PARKED
+        .lock()
+        .ok()
+        .and_then(|mut map| map.remove(thread_id))
+        .and_then(|mut p| {
+            let alive = matches!(p.child.try_wait(), Ok(None));
+            if alive && p.launch_key == launch_key {
+                Some(p)
+            } else {
+                if alive {
+                    eprintln!(
+                        "acp_runner: discarding parked {provider} session \
+                         (launch inputs changed)"
+                    );
+                }
+                drop_parked(p);
+                None
+            }
+        });
+
     let cancelled = Arc::new(AtomicBool::new(false));
-    let mut rpc = Rpc {
-        stdin: stdin.clone(),
-        reader: BufReader::new(stdout),
-        next_id: 1,
-        pending: Vec::new(),
-        approval_ctx: Some(ApprovalCtx {
-            thread_id: thread_id.to_string(),
-            turn_id: turn_id.clone(),
-            cancelled: cancelled.clone(),
-            runtime_mode: turn_runtime_mode.clone(),
-            interaction_mode: conn
-                .query_row(
-                    "SELECT interaction_mode FROM projection_threads WHERE thread_id = ?1",
-                    params![thread_id],
-                    |r| r.get::<_, String>(0),
-                )
-                .unwrap_or_else(|_| "default".to_string()),
-            tool_calls: Arc::new(Mutex::new(HashMap::new())),
-        }),
+    let interaction_mode = conn
+        .query_row(
+            "SELECT interaction_mode FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, String>(0),
+        )
+        .unwrap_or_else(|_| "default".to_string());
+
+    let (mut child, mut rpc, stdin, reused_session_id) = match parked {
+        Some(mut p) => {
+            let stdin = p.rpc.stdin.clone();
+            p.rpc.approval_ctx = Some(ApprovalCtx {
+                thread_id: thread_id.to_string(),
+                turn_id: turn_id.clone(),
+                cancelled: cancelled.clone(),
+                runtime_mode: turn_runtime_mode.clone(),
+                interaction_mode: interaction_mode.clone(),
+                tool_calls: Arc::new(Mutex::new(HashMap::new())),
+            });
+            let session_id = p.session_id.clone();
+            (p.child, p.rpc, stdin, Some(session_id))
+        }
+        None => {
+            let mut command = Command::new(&launch.binary);
+            command
+                .args(&launch.args)
+                .current_dir(&cwd)
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped())
+                .stderr(Stdio::null());
+            for (key, value) in &launch.env {
+                command.env(key, value);
+            }
+            let spawn_result = command.spawn();
+            let mut child: Child = match spawn_result {
+                Ok(c) => c,
+                Err(e) => {
+                    let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                    let msg = format!(
+                        "could not launch `{}` for {} ACP: {e}",
+                        launch.binary, launch.display_name
+                    );
+                    let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
+                    return Err(err(msg));
+                }
+            };
+            let child_stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
+            let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
+            let stdin = Arc::new(Mutex::new(child_stdin));
+            let rpc = Rpc {
+                stdin: stdin.clone(),
+                reader: BufReader::new(stdout),
+                next_id: 1,
+                pending: Vec::new(),
+                approval_ctx: Some(ApprovalCtx {
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.clone(),
+                    cancelled: cancelled.clone(),
+                    runtime_mode: turn_runtime_mode.clone(),
+                    interaction_mode: interaction_mode.clone(),
+                    tool_calls: Arc::new(Mutex::new(HashMap::new())),
+                }),
+            };
+            (child, rpc, stdin, None)
+        }
     };
 
+    let mut session_id_out = String::new();
     let result = (|| -> Result<String, WsErr> {
-        let initialize_result = rpc.call(
-            "initialize",
-            json!({
-                "protocolVersion": 1,
-                "clientCapabilities": {
-                    "fs": {"readTextFile": false, "writeTextFile": false},
-                    "terminal": false,
-                },
-                "clientInfo": {"name": "synara", "version": "1.0.0"},
-            }),
-        )?;
-        let mcp_servers = if initialize_result
-            .pointer("/agentCapabilities/mcpCapabilities/http")
-            .and_then(Value::as_bool)
-            == Some(true)
-        {
-            json!([{
-                "type": "http",
-                "name": "synara",
-                "url": crate::agent_gateway_mcp::agent_gateway_url(),
-                "headers": [{
-                    "name": "Authorization",
-                    "value": format!(
-                        "Bearer {}",
-                        crate::agent_gateway_mcp::agent_gateway_token()
-                    ),
-                }],
-            }])
+        let session_id = if let Some(sid) = reused_session_id.clone() {
+            // The parked process already completed initialize/authenticate
+            // and session setup; prompt the live session directly.
+            sid
         } else {
-            json!([])
-        };
+            let initialize_result = rpc.call(
+                "initialize",
+                json!({
+                    "protocolVersion": 1,
+                    "clientCapabilities": {
+                        "fs": {"readTextFile": false, "writeTextFile": false},
+                        "terminal": false,
+                    },
+                    "clientInfo": {"name": "synara", "version": "1.0.0"},
+                }),
+            )?;
+            let auth_methods = initialize_result
+                .get("authMethods")
+                .and_then(Value::as_array)
+                .cloned()
+                .unwrap_or_default();
+            let mcp_servers = if initialize_result
+                .pointer("/agentCapabilities/mcpCapabilities/http")
+                .and_then(Value::as_bool)
+                == Some(true)
+            {
+                json!([{
+                    "type": "http",
+                    "name": "synara",
+                    "url": crate::agent_gateway_mcp::agent_gateway_url(),
+                    "headers": [{
+                        "name": "Authorization",
+                        "value": format!(
+                            "Bearer {}",
+                            crate::agent_gateway_mcp::agent_gateway_token()
+                        ),
+                    }],
+                }])
+            } else {
+                json!([])
+            };
 
-        let mut mode_state = Value::Null;
-        let session_id = if let Some(sid) = stored_session.as_deref() {
-            match rpc.call(
-                "session/load",
-                json!({"sessionId": sid, "cwd": cwd, "mcpServers": mcp_servers}),
-            ) {
-                Ok(res) => {
-                    mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
-                    sid.to_string()
+            // Session setup: load the stored provider session when one
+            // exists, otherwise create a fresh one. An auth-required failure
+            // triggers one ACP `authenticate` round with the provider's
+            // preferred method and a single retry, mirroring the upstream
+            // runtime's authentication phase.
+            let try_setup = |rpc: &mut Rpc| -> Result<(String, Value), WsErr> {
+                if let Some(sid) = stored_session.as_deref() {
+                    match rpc.call(
+                        "session/load",
+                        json!({"sessionId": sid, "cwd": cwd, "mcpServers": mcp_servers}),
+                    ) {
+                        Ok(res) => {
+                            let mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
+                            return Ok((sid.to_string(), mode_state));
+                        }
+                        Err(e) => {
+                            if is_auth_required_error(&e) {
+                                return Err(e);
+                            }
+                            let res = rpc.call(
+                                "session/new",
+                                json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                            )?;
+                            let mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
+                            let id = res
+                                .get("sessionId")
+                                .and_then(Value::as_str)
+                                .ok_or_else(|| err("session/new returned no sessionId"))?
+                                .to_string();
+                            return Ok((id, mode_state));
+                        }
+                    }
                 }
-                Err(_) => {
-                    let res =
-                        rpc.call("session/new", json!({"cwd": cwd, "mcpServers": mcp_servers}))?;
-                    mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
-                    res.get("sessionId")
-                        .and_then(Value::as_str)
-                        .ok_or_else(|| err("session/new returned no sessionId"))?
-                        .to_string()
+                let res = rpc.call("session/new", json!({"cwd": cwd, "mcpServers": mcp_servers}))?;
+                let mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
+                let id = res
+                    .get("sessionId")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| err("session/new returned no sessionId"))?
+                    .to_string();
+                Ok((id, mode_state))
+            };
+            let (session_id, mode_state) = match try_setup(&mut rpc) {
+                Ok(ok) => ok,
+                Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
+                    let Some(method) = select_auth_method(provider, &auth_methods) else {
+                        return Err(e);
+                    };
+                    rpc.call("authenticate", json!({"methodId": method}))?;
+                    try_setup(&mut rpc)?
                 }
-            }
-        } else {
-            let res = rpc.call("session/new", json!({"cwd": cwd, "mcpServers": mcp_servers}))?;
-            mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
-            res.get("sessionId")
-                .and_then(Value::as_str)
-                .ok_or_else(|| err("session/new returned no sessionId"))?
-                .to_string()
-        };
+                Err(e) => return Err(e),
+            };
 
-        // Upstream applyDevinSessionConfiguration: translate the thread's
-        // runtime/interaction mode into an ACP session mode before the
-        // first prompt (plan -> plan/architect, approval-required ->
-        // accept-edits/code/"ask everytime", otherwise bypass/full access).
-        let ctx_mode = rpc
-            .approval_ctx
-            .as_ref()
-            .map(|c| (c.runtime_mode.clone(), c.interaction_mode.clone()))
-            .unwrap_or_default();
-        match resolve_acp_mode(provider, &mode_state, &ctx_mode.0, &ctx_mode.1) {
-            Ok(Some(mode_id)) => {
-                if let Err(e) = rpc.call(
-                    "session/set_mode",
-                    json!({"sessionId": session_id, "modeId": mode_id}),
-                ) {
-                    eprintln!("acp_runner: session/set_mode failed: {}", e.0);
+            // Upstream applyDevinSessionConfiguration: translate the thread's
+            // runtime/interaction mode into an ACP session mode before the
+            // first prompt (plan -> plan/architect, approval-required ->
+            // accept-edits/code/"ask everytime", otherwise bypass/full access).
+            let ctx_mode = rpc
+                .approval_ctx
+                .as_ref()
+                .map(|c| (c.runtime_mode.clone(), c.interaction_mode.clone()))
+                .unwrap_or_default();
+            match resolve_acp_mode(provider, &mode_state, &ctx_mode.0, &ctx_mode.1) {
+                Ok(Some(mode_id)) => {
+                    if let Err(e) = rpc.call(
+                        "session/set_mode",
+                        json!({"sessionId": session_id, "modeId": mode_id}),
+                    ) {
+                        eprintln!("acp_runner: session/set_mode failed: {}", e.0);
+                    }
+                }
+                Ok(None) => {}
+                Err(issue) => {
+                    let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                    let _ = set_session(&conn, thread_id, "error", Some(""), Some(&issue), None);
+                    return Err(err(issue));
                 }
             }
-            Ok(None) => {}
-            Err(issue) => {
-                let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-                let _ = set_session(&conn, thread_id, "error", Some(""), Some(&issue), None);
-                return Err(err(issue));
-            }
-        }
+            session_id
+        };
+        session_id_out = session_id.clone();
 
         {
             let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
@@ -1397,10 +1539,38 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
     if let Ok(mut map) = RUNNING.lock() {
         map.remove(thread_id);
     }
-    let _ = child.kill();
-    let _ = child.wait();
-
     let cancelled_flag = cancelled.load(Ordering::SeqCst);
+
+    // Park the live process for the next turn when the prompt completed
+    // normally: upstream keeps one authenticated agent process per session
+    // alive, so the next turn prompts the same session instead of paying
+    // spawn + initialize + authenticate + transcript replay again. On
+    // errors or interruptions the session state is uncertain, so the
+    // process is torn down and the next turn falls back to session/load.
+    let parkable = matches!(&result, Ok(reason) if reason != "cancelled")
+        && !cancelled_flag
+        && !session_id_out.is_empty()
+        && matches!(child.try_wait(), Ok(None));
+    if parkable {
+        if let Ok(mut map) = PARKED.lock() {
+            map.insert(
+                thread_id.to_string(),
+                ParkedSession {
+                    child,
+                    rpc,
+                    session_id: session_id_out.clone(),
+                    launch_key,
+                },
+            );
+        } else {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    } else {
+        let _ = child.kill();
+        let _ = child.wait();
+    }
+
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
@@ -1551,6 +1721,33 @@ mod tests {
 
         let antigravity = acp_launch_profile("antigravity", "approval-required", None).unwrap();
         assert_eq!(antigravity.args, vec!["acp"]);
+    }
+
+    #[test]
+    fn auth_method_selection_prefers_provider_cached_methods() {
+        let methods = vec![
+            json!({"id": "browser-oauth"}),
+            json!({"id": "cached_token"}),
+        ];
+        assert_eq!(
+            select_auth_method("devin", &methods),
+            Some("cached_token".to_string())
+        );
+        // Unknown providers fall back to the first advertised method.
+        assert_eq!(
+            select_auth_method("omp", &methods),
+            Some("browser-oauth".to_string())
+        );
+        assert_eq!(select_auth_method("omp", &[]), None);
+    }
+
+    #[test]
+    fn auth_required_errors_are_detected() {
+        assert!(is_auth_required_error(&err(
+            "acp session/new error: authentication required"
+        )));
+        assert!(is_auth_required_error(&err("unauthorized")));
+        assert!(!is_auth_required_error(&err("timeout waiting for response")));
     }
 
     #[test]

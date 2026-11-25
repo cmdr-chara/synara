@@ -21,6 +21,8 @@ if "-p" in sys.argv or "--print" in sys.argv:
             "needsConfirmation": False,
             "reason": None,
         }
+    elif "evaluate whether a completed Synara heartbeat automation should stop" in prompt:
+        out = {"stopMatched": True, "confidence": 0.95, "reason": "The run output shows the goal is met."}
     elif "predict the next message" in prompt:
         out = {"suggestion": "commit it and open a PR"}
     elif "engineering summaries for git diffs" in prompt:

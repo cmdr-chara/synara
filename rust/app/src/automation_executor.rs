@@ -334,9 +334,218 @@ fn reconcile_pass() -> Result<(), WsErr> {
                 "UPDATE automation_runs SET status = ?2, finished_at = ?3, updated_at = ?3 WHERE run_id = ?1",
                 params![run_id, status, now],
             );
+            settle_run(&conn, &run_id, status, &now);
         }
     }
     Ok(())
+}
+
+/// Layer 4/5 settlement after a run reaches a terminal state: iteration and
+/// consecutive-failure accounting, deterministic stop policies (upstream
+/// stopPolicy.ts semantics: failures disable at the configured streak,
+/// max-iterations disables at the configured count), and the ai-evaluated
+/// completion check via the official Claude CLI. Runs exactly once per run
+/// because the row leaves the active set on transition.
+fn settle_run(conn: &rusqlite::Connection, run_id: &str, status: &str, now: &str) {
+    let def: Option<(String, i64, Option<i64>, Option<i64>, i64, String, String, String, String)> = conn
+        .query_row(
+            "SELECT a.automation_id, COALESCE(a.consecutive_failure_count,0),
+                    a.stop_after_consecutive_failures, a.max_iterations,
+                    COALESCE(a.iteration_count,0), a.completion_policy_json,
+                    a.name, a.prompt, r.thread_id
+             FROM automation_runs r
+             JOIN automation_definitions a ON a.automation_id = r.automation_id
+             WHERE r.run_id = ?1",
+            params![run_id],
+            |r| {
+                Ok((
+                    r.get(0)?,
+                    r.get(1)?,
+                    r.get(2)?,
+                    r.get(3)?,
+                    r.get(4)?,
+                    r.get(5)?,
+                    r.get(6)?,
+                    r.get(7)?,
+                    r.get(8)?,
+                ))
+            },
+        )
+        .ok();
+    let Some((automation_id, failures, stop_after, max_iterations, iterations, policy_json, name, prompt, thread_id)) = def else {
+        return;
+    };
+
+    let new_iterations = iterations + 1;
+    let new_failures = if status == "completed" { 0 } else { failures + 1 };
+    let mut disable_reason: Option<&str> = None;
+    if let Some(stop) = stop_after {
+        if stop > 0 && new_failures >= stop {
+            disable_reason = Some("failures");
+        }
+    }
+    if let Some(max) = max_iterations {
+        if max > 0 && new_iterations >= max {
+            disable_reason = Some("max-iterations");
+        }
+    }
+    let _ = conn.execute(
+        "UPDATE automation_definitions SET iteration_count = ?2, consecutive_failure_count = ?3, updated_at = ?4 WHERE automation_id = ?1",
+        params![automation_id, new_iterations, new_failures, now],
+    );
+    if let Some(reason) = disable_reason {
+        let _ = conn.execute(
+            "UPDATE automation_definitions SET enabled = 0, disabled_reason = ?2, disabled_at = ?3, updated_at = ?3 WHERE automation_id = ?1",
+            params![automation_id, reason, now],
+        );
+        eprintln!("automation {} disabled: {}", automation_id, reason);
+        return;
+    }
+
+    // Layer 5: ai-evaluated completion policy, only meaningful for completed runs.
+    if status != "completed" {
+        return;
+    }
+    let policy: Value = serde_json::from_str(&policy_json).unwrap_or(json!({"type":"none"}));
+    if policy.get("type").and_then(Value::as_str) != Some("ai-evaluated") {
+        return;
+    }
+    let Some(stop_when) = policy.get("stopWhen").and_then(Value::as_str) else {
+        return;
+    };
+    let threshold = policy
+        .get("confidenceThreshold")
+        .and_then(Value::as_f64)
+        .unwrap_or(1.0);
+    evaluate_completion(conn, run_id, &automation_id, &name, &prompt, stop_when, threshold, &thread_id, now);
+}
+
+fn limit_section(text: &str, max: usize) -> String {
+    let trimmed = text.trim();
+    if trimmed.len() <= max {
+        trimmed.to_string()
+    } else {
+        trimmed[..max].to_string()
+    }
+}
+
+fn evaluate_completion(
+    conn: &rusqlite::Connection,
+    run_id: &str,
+    automation_id: &str,
+    name: &str,
+    prompt: &str,
+    stop_when: &str,
+    threshold: f64,
+    thread_id: &str,
+    now: &str,
+) {
+    // Gather the run's user message and assistant output plus recent thread
+    // context, mirroring upstream findRunCompletionMessages in spirit: the
+    // evidence must come from the completed run output, not the saved prompt.
+    let user_msg: String = conn
+        .query_row(
+            "SELECT text FROM projection_thread_messages WHERE thread_id = ?1 AND role = 'user' ORDER BY rowid DESC LIMIT 1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| prompt.to_string());
+    let assistant_text: String = conn
+        .query_row(
+            "SELECT text FROM projection_thread_messages WHERE thread_id = ?1 AND role = 'assistant' ORDER BY rowid DESC LIMIT 1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "(no assistant output)".to_string());
+    let context: String = conn
+        .query_row(
+            "SELECT group_concat(substr(text, 1, 500), char(10)) FROM (
+                SELECT text FROM projection_thread_messages WHERE thread_id = ?1 ORDER BY rowid DESC LIMIT 6
+             )",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "(none)".to_string());
+
+    let eval_prompt = [
+        "You evaluate whether a completed Synara heartbeat automation should stop.",
+        "Return a JSON object with keys: stopMatched, confidence, reason.",
+        "Respond with only the JSON object, no prose and no code fences.",
+        "",
+        "Decision rules:",
+        "- stopMatched=true only if the completed run clearly satisfies the stop condition.",
+        "- If the evidence is missing, indirect, ambiguous, or only says work continues, set stopMatched=false.",
+        "- confidence must be a number from 0 to 1.",
+        "- reason must be one concise sentence grounded in the run output.",
+        "- Do not infer from the automation prompt alone; use the completed run output as evidence.",
+        "",
+        &format!("Automation: {name}"),
+        "",
+        "Saved automation prompt:",
+        &limit_section(prompt, 4_000),
+        "",
+        "Stop condition:",
+        &limit_section(stop_when, 2_000),
+        "",
+        "Run user message:",
+        &limit_section(&user_msg, 4_000),
+        "",
+        "Run assistant output:",
+        &limit_section(&assistant_text, 12_000),
+        "",
+        "Recent thread context:",
+        &limit_section(&context, 6_000),
+    ]
+    .join("
+");
+
+    let schema = json!({
+        "type": "object",
+        "properties": {
+            "stopMatched": {"type": "boolean"},
+            "confidence": {"type": "number"},
+            "reason": {"type": "string"},
+        },
+        "required": ["stopMatched", "confidence", "reason"],
+    });
+
+    let evaluation = crate::textgen::claude_json_generate(&eval_prompt, &schema, None);
+    let (stop_matched, confidence, reason) = match evaluation {
+        Ok(v) => (
+            v.get("stopMatched").and_then(Value::as_bool).unwrap_or(false),
+            v.get("confidence").and_then(Value::as_f64).unwrap_or(0.0),
+            v.get("reason").and_then(Value::as_str).unwrap_or("No reason given.").chars().take(1_000).collect::<String>(),
+        ),
+        Err(e) => {
+            let _ = conn.execute(
+                "UPDATE automation_runs SET result_json = json_object('completionEvaluation', json_object('stopMatched', 0, 'confidence', 0.0, 'reason', ?2)), updated_at = ?3 WHERE run_id = ?1",
+                params![run_id, format!("Stop check failed: {}", e.0), now],
+            );
+            return;
+        }
+    };
+
+    let matched = stop_matched && confidence >= threshold;
+    let summary = if matched {
+        format!("Stopped: {reason}")
+    } else {
+        reason.clone()
+    };
+    let _ = conn.execute(
+        "UPDATE automation_runs SET result_json = json_object(
+            'outcome', CASE WHEN ?4 THEN 'no-findings' ELSE 'unknown' END,
+            'summary', ?5,
+            'completionEvaluation', json_object('stopMatched', ?4, 'confidence', ?6, 'reason', ?2)
+         ), updated_at = ?3 WHERE run_id = ?1",
+        params![run_id, reason, now, matched, summary, confidence],
+    );
+    if matched {
+        let _ = conn.execute(
+            "UPDATE automation_definitions SET enabled = 0, disabled_reason = 'completion', disabled_at = ?2, updated_at = ?2 WHERE automation_id = ?1",
+            params![automation_id, now],
+        );
+        eprintln!("automation {} completed its stop condition: {}", automation_id, reason);
+    }
 }
 
 #[cfg(test)]

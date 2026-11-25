@@ -435,6 +435,41 @@ await scenario("due automation fires a turn and reconciles", async () => {
   assert(!advanced.includes("2020-01-01"), "schedule was not advanced past the fired occurrence");
 });
 
+// 20. automation stop policies: completion evaluation + max iterations
+await scenario("automation stop policies settle after terminal runs", async () => {
+  const suffix = Date.now();
+  const aidCompletion = "gate-auto-comp-" + suffix;
+  const aidMaxIter = "gate-auto-maxiter-" + suffix;
+  const insertDef = (aid, extra) =>
+    sql(
+      `insert into automation_definitions (automation_id, project_id, source_thread_id, name, prompt, schedule_json, enabled, next_run_at, model_selection_json, provider_options_json, runtime_mode, interaction_mode, worktree_mode, mode, target_thread_id, max_iterations, stop_on_error, minimum_interval_seconds, retry_policy_json, misfire_policy, acknowledged_risks_json, iteration_count, created_at, updated_at, completion_policy_json) values ('${aid}', '${projectId}', NULL, 'Stop Policy Test', 'hello', '{\"type\":\"interval\",\"everySeconds\":3600}', 1, '2020-01-01T00:00:00.000Z', '{\"provider\":\"omp\",\"model\":\"openai/gpt-5\"}', '{}', 'worktree', 'autonomous', 'reuse', 'standalone', NULL, ${extra.maxIter}, 0, 60, '{}', 'fire-if-due', '{}', 0, '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', '${extra.policy}')`,
+    );
+  insertDef(aidCompletion, {
+    maxIter: "NULL",
+    policy:
+      '{\"type\":\"ai-evaluated\",\"stopWhen\":\"the goal is met\",\"confidenceThreshold\":0.8}',
+  });
+  insertDef(aidMaxIter, { maxIter: "1", policy: '{\"type\":\"none\"}' });
+  // tick at 3s: fire+dispatch; turn ~2s; next tick: reconcile+settle; AI eval
+  // adds a few seconds for the completion path — allow four ticks.
+  await sleep(20000);
+  const comp = sql(
+    `select enabled, disabled_reason from automation_definitions where automation_id='${aidCompletion}'`,
+  );
+  assert(
+    comp.includes("completion"),
+    `completion automation not disabled by stop condition: ${comp}`,
+  );
+  const compRun = sql(
+    `select result_json from automation_runs where automation_id='${aidCompletion}' limit 1`,
+  );
+  assert(compRun.includes("stopMatched"), `no completionEvaluation recorded: ${compRun}`);
+  const maxiter = sql(
+    `select enabled, disabled_reason, iteration_count from automation_definitions where automation_id='${aidMaxIter}'`,
+  );
+  assert(maxiter.includes("max-iterations"), `max-iterations automation not disabled: ${maxiter}`);
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

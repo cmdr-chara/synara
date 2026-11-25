@@ -92,6 +92,20 @@ pub fn drop_thread_resources(thread_id: &str) {
     }
 }
 
+/// Stop every parked provider process when the host shuts down. Parked
+/// processes are in-memory only; leaving them behind would keep provider
+/// sessions and local servers alive after Synara can no longer control them.
+pub fn drop_all_resources() {
+    let parked = if let Ok(mut parked_map) = PARKED.lock() {
+        parked_map.drain().map(|(_, parked)| parked).collect::<Vec<_>>()
+    } else {
+        Vec::new()
+    };
+    for parked in parked {
+        drop_parked(parked);
+    }
+}
+
 
 pub fn steer_turn(thread_id: &str, text: &str) -> bool {
     let (port, password, session_id) = match RUNNING.lock() {

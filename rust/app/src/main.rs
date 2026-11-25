@@ -84,4 +84,9 @@ async fn main() {
         .await
         .expect("serving");
     original.stop();
+    crate::acp_runner::drop_all_resources();
+    crate::codex_runner::drop_all_resources();
+    crate::claude_runner::drop_all_resources();
+    crate::opencode_runner::drop_all_resources();
+    crate::pi_runner::drop_all_resources();
 }

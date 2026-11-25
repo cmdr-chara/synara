@@ -56,6 +56,12 @@ for line in sys.stdin:
   elif 'rlimit' in body and n==1:
    send({'type':'rate_limit_info','rate_limit_info':{'status':'rejected','rateLimitType':'five_hour','resetsAt':4102444800}})
    send({'type':'result','subtype':'error','result':'Claude usage limit reached','isApiErrorMessage':True})
+  elif 'tasklist' in body:
+   send({'type':'assistant','message':{'content':[{'type':'tool_use','id':'tu-1','name':'TodoWrite','input':{'todos':[{'content':'write the port','status':'in_progress','activeForm':'writing the port'},{'content':'verify it','status':'pending'}]}}]}})
+   send({'type':'assistant','message':{'content':[{'type':'tool_use','id':'tu-2','name':'TaskCreate','input':{'subject':'implement parser','description':'recursive descent'}}]}})
+   send({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':'tu-2','content':json.dumps({'task':{'taskId':'1','subject':'implement parser'}})}]}})
+   send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
+   send({'type':'result','subtype':'success','result':'done'})
   else:
    send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
    send({'type':'result','subtype':'success','result':'done'})

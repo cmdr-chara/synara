@@ -234,6 +234,19 @@ await scenario("claude rate-limit evidence persisted for usage snapshot", async 
   assert(snap.provider === "claudeAgent", "wrong provider");
 });
 
+// 14. claude task tracking: TodoWrite + TaskCreate surface as turn.tasks.updated activities
+await scenario("claude task tools emit turn.tasks.updated activities", async () => {
+  const tid = await runTurn("claudeAgent", "claude-sonnet-4-5", "tasklist demo", 3000);
+  const rows = sql(
+    `select count(*) from projection_thread_activities where thread_id='${tid}' and kind='turn.tasks.updated'`,
+  );
+  assert(Number(rows) >= 2, "expected >=2 task-list activities, got " + rows);
+  const payload = sql(
+    `select payload_json from projection_thread_activities where thread_id='${tid}' and kind='turn.tasks.updated' order by sequence desc limit 1`,
+  );
+  assert(payload.includes("implement parser"), "tracked TaskCreate task missing from payload");
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

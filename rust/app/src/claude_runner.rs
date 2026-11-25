@@ -1117,6 +1117,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
 
     let mut usage_windows = json!({"windows": {}});
     let mut edge_attempt = 0usize;
+    let mut tracked_tasks: HashMap<String, crate::claude_tasks::TrackedTask> = HashMap::new();
+    let mut pending_tools: HashMap<String, (String, Value)> = HashMap::new();
     let result = (|| -> Result<String, WsErr> {
         loop {
             let Some(v) = read_json_line(&mut reader)? else {
@@ -1142,14 +1144,54 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     }
                 }
                 "assistant" => {
-                    let text_out: String = v
-                        .pointer("/message/content")
-                        .and_then(Value::as_array)
+                    let parts = v.pointer("/message/content").and_then(Value::as_array);
+                    let text_out: String = parts
                         .map(|parts| parts.iter().filter(|p| p.get("type").and_then(Value::as_str) == Some("text")).filter_map(|p| p.get("text").and_then(Value::as_str)).collect::<Vec<_>>().join(""))
                         .unwrap_or_default();
                     if !text_out.is_empty() {
                         if let Ok(c) = open_state_rw() {
                             let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, &text_out, true);
+                        }
+                    }
+                    if let Some(parts) = parts {
+                        for block in parts {
+                            if block.get("type").and_then(Value::as_str) != Some("tool_use") {
+                                continue;
+                            }
+                            let name = block.get("name").and_then(Value::as_str).unwrap_or("").to_string();
+                            let input = block.get("input").cloned().unwrap_or(json!({}));
+                            if let Some(id) = block.get("id").and_then(Value::as_str) {
+                                pending_tools.insert(id.to_string(), (name.clone(), input.clone()));
+                            }
+                            if name == "TodoWrite" {
+                                if let Some(payload) = crate::claude_tasks::todo_payload(&input) {
+                                    if let Ok(c) = open_state_rw() {
+                                        let _ = append_activity(&c, thread_id, &turn_id, "info", "turn.tasks.updated", "Task list updated", &payload);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                "user" => {
+                    // Tool results arrive as user-type frames; the task tools
+                    // (TaskCreate/Update/Get/List) update the tracked map and
+                    // re-emit the whole list, mirroring upstream.
+                    if let Some(parts) = v.pointer("/message/content").and_then(Value::as_array) {
+                        for block in parts {
+                            if block.get("type").and_then(Value::as_str) != Some("tool_result") {
+                                continue;
+                            }
+                            let Some(use_id) = block.get("tool_use_id").and_then(Value::as_str) else { continue };
+                            let Some((name, input)) = pending_tools.get(use_id).cloned() else { continue };
+                            let is_error = block.get("is_error").and_then(Value::as_bool) == Some(true);
+                            let content = block.get("content").cloned().unwrap_or(Value::Null);
+                            if crate::claude_tasks::apply_tool_result(&mut tracked_tasks, &name, &input, &content, is_error) {
+                                let payload = crate::claude_tasks::tracked_payload(&tracked_tasks);
+                                if let Ok(c) = open_state_rw() {
+                                    let _ = append_activity(&c, thread_id, &turn_id, "info", "turn.tasks.updated", "Task list updated", &payload);
+                                }
+                            }
                         }
                     }
                 }

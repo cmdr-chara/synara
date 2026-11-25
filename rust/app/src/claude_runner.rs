@@ -1154,6 +1154,13 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
 
     let parked = take_parked(thread_id, &launch_key);
     let fresh = parked.is_none();
+    let mut monitor_cursor = crate::claude_monitor::MonitorCursor::default();
+    let turn_started_at = {
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default();
+        crate::claude_monitor::iso_from_ms(now.as_millis() as i64)
+    };
     let (mut child, stdin, mut reader, mut session_id) = if let Some(parked) = parked {
         (
             parked.child,
@@ -1287,6 +1294,50 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     }
                 }
                 "result" => {
+                    // Monitor notifications never reach the SDK stream; read
+                    // them back from the session transcript when this turn was
+                    // woken by one, upstream emitMonitorEvents.
+                    if v.pointer("/origin/kind").and_then(Value::as_str) == Some("task-notification") {
+                        if let Some(sid) = session_id.clone().or_else(|| stored_session.clone()) {
+                            let config_dir = std::env::var("CLAUDE_CONFIG_DIR")
+                                .ok()
+                                .filter(|v| !v.is_empty())
+                                .unwrap_or_else(|| {
+                                    let home = std::env::var("HOME").unwrap_or_default();
+                                    format!("{home}/.claude")
+                                });
+                            let events = crate::claude_monitor::read_monitor_events(
+                                &mut monitor_cursor,
+                                &sid,
+                                &config_dir,
+                                &turn_started_at,
+                            );
+                            if !events.is_empty() {
+                                if let Ok(c) = open_state_rw() {
+                                    for event in events {
+                                        let _ = append_activity(
+                                            &c,
+                                            thread_id,
+                                            &turn_id,
+                                            "warning",
+                                            "monitor.event",
+                                            &event.message,
+                                            &json!({
+                                                "type": "system",
+                                                "subtype": "monitor_event",
+                                                "task_id": event.task_id,
+                                                "notificationId": event.id,
+                                                "name": event.name,
+                                                "output": event.output,
+                                                "outcome": event.outcome,
+                                                "createdAt": event.created_at,
+                                            }),
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
                     let subtype = v.get("subtype").and_then(Value::as_str).unwrap_or("");
                     if subtype == "success" {
                         break Ok("completed".to_string());

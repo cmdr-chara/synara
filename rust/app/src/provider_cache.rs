@@ -21,6 +21,7 @@ pub fn handles(tag: &str) -> bool {
             | "provider.compactThread"
             | "provider.getComposerCapabilities"
             | "provider.listCommands"
+            | "provider.listAgents"
             | "provider.prewarmThread"
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
@@ -40,6 +41,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "provider.compactThread" => compact_thread(payload),
         "provider.getComposerCapabilities" => composer_capabilities(payload),
         "provider.listCommands" => list_commands(payload),
+        "provider.listAgents" => list_agents(payload),
         "provider.prewarmThread" => prewarm_thread(payload),
         "server.listExternalMcpIntegrations" => list_external_mcp_integrations(),
         "server.createExternalMcpIntegration" => create_external_mcp_integration(payload),
@@ -311,6 +313,28 @@ fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
     Ok(caps)
 }
 
+
+
+fn list_agents(payload: &Value) -> Result<Value, WsErr> {
+    let provider = payload
+        .get("provider")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("provider is required"))?;
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    if provider == "opencode" {
+        if let Some(thread_id) = payload.get("threadId").and_then(Value::as_str) {
+            if let Some(agents) = crate::opencode_runner::discover_agents(thread_id, cwd)? {
+                return Ok(json!({
+                    "agents": agents,
+                    "source": "server",
+                    "cached": false,
+                }));
+            }
+        }
+        return Ok(json!({"agents": [], "source": "cold-or-unsupported", "cached": false}));
+    }
+    Ok(json!({"agents": [], "source": "unsupported", "cached": false}))
+}
 
 fn list_commands(payload: &Value) -> Result<Value, WsErr> {
     let provider = payload

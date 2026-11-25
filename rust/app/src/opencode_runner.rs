@@ -841,6 +841,101 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
 
 
 
+
+fn opencode_display_name(name: &str) -> String {
+    name.split(['-', '_', ' '])
+        .filter(|part| !part.is_empty())
+        .map(|part| {
+            let mut chars = part.chars();
+            match chars.next() {
+                Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+                None => String::new(),
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// List user-selectable primary agents from a warm OpenCode server.
+pub fn discover_agents(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>>, WsErr> {
+    let (port, password) = {
+        let parked_map = PARKED.lock().map_err(|_| err("parked map"))?;
+        let Some(parked) = parked_map.get(thread_id) else {
+            return Ok(None);
+        };
+        (parked.port, parked.password.clone())
+    };
+    let auth = basic_auth_header(&password);
+    let location = if cwd.is_empty() {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    } else {
+        cwd.to_string()
+    };
+    let path = format!("/api/agent?location={}", urlencode_component(&location));
+    let (status, body) = http_request(port, "GET", &path, &auth, None)?;
+    if status == 404 || status == 405 {
+        return Ok(None);
+    }
+    if status >= 400 {
+        return Err(err(format!("opencode agent list HTTP {status}: {body}")));
+    }
+    let parsed: Value = serde_json::from_str(&body)
+        .map_err(|e| err(format!("opencode agent parse: {e}")))?;
+    let entries = parsed
+        .get("data")
+        .cloned()
+        .or(Some(parsed))
+        .and_then(|v| v.as_array().cloned())
+        .unwrap_or_default();
+    let mut agents: Vec<Value> = entries
+        .iter()
+        .filter(|agent| {
+            agent.get("hidden").and_then(Value::as_bool) != Some(true)
+                && matches!(
+                    agent.get("mode").and_then(Value::as_str),
+                    Some("primary") | Some("all") | None
+                )
+        })
+        .filter_map(|agent| {
+            let name = agent.get("name").and_then(Value::as_str)?.trim().to_string();
+            if name.is_empty() {
+                return None;
+            }
+            let display_name = agent
+                .get("displayName")
+                .and_then(Value::as_str)
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .map(str::to_string)
+                .unwrap_or_else(|| opencode_display_name(&name));
+            let mut out = json!({"name": name, "displayName": display_name});
+            if let Some(description) = agent.get("description").and_then(Value::as_str) {
+                if !description.trim().is_empty() {
+                    out["description"] = json!(description.trim());
+                }
+            }
+            if let Some(model) = agent.get("model") {
+                let provider = model.get("providerID").and_then(Value::as_str);
+                let model_id = model
+                    .get("modelID")
+                    .and_then(Value::as_str)
+                    .or_else(|| model.get("id").and_then(Value::as_str));
+                if let (Some(provider), Some(model_id)) = (provider, model_id) {
+                    out["model"] = json!(format!("{provider}/{model_id}"));
+                }
+            }
+            Some(out)
+        })
+        .collect();
+    agents.sort_by(|a, b| {
+        a.get("displayName")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .cmp(b.get("displayName").and_then(Value::as_str).unwrap_or(""))
+    });
+    Ok(Some(agents))
+}
+
 /// List native OpenCode slash commands from a warm thread-owned server. Cold
 /// discovery is intentionally not hidden behind a model/session mutation: the
 /// caller can prewarm explicitly when it wants a live server.

@@ -63,7 +63,14 @@ impl Client {
         let base = std::env::var("SYNARA_HTTP").unwrap_or_else(|_| "http://127.0.0.1:8080".into());
         let (cookie, token) = Self::mint_session(&base);
         let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| {
-            format!("ws://127.0.0.1:8080/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision=3&x-synara-server-instance=inst-1&token={token}")
+            // Derive the socket authority from SYNARA_HTTP so isolated
+            // instances on non-default ports connect to their own backend;
+            // the hardcoded default only ever matched the production port.
+            let authority = base
+                .trim_start_matches("http://")
+                .trim_start_matches("https://")
+                .trim_end_matches('/');
+            format!("ws://{authority}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision=3&x-synara-server-instance=inst-1&token={token}")
         });
         let host = http::Uri::try_from(&url)
             .ok()

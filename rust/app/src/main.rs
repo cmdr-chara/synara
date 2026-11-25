@@ -67,9 +67,13 @@ async fn main() {
     // orchestration. With the upstream TS server active, its turns may be
     // legitimately in flight in the shared state and must not be touched.
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
-        let recovered = orchestration_engine::recover_orphaned_turns();
-        if recovered > 0 {
-            eprintln!("startup recovery: settled {recovered} orphaned thread(s) as interrupted");
+        let orphans = orchestration_engine::recover_orphaned_turns();
+        if !orphans.is_empty() {
+            let crash_resumed = orchestration_engine::resume_orphaned_turns(&orphans);
+            eprintln!(
+                "startup recovery: settled {} orphaned thread(s), resumed {crash_resumed}",
+                orphans.len()
+            );
         }
         let resumed = orchestration_engine::consume_quit_resume_record();
         if resumed > 0 {

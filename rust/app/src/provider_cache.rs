@@ -325,6 +325,18 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
             "cached": false,
         }));
     }
+    if provider == "opencode" {
+        if let Some(thread_id) = payload.get("threadId").and_then(Value::as_str) {
+            if let Some(commands) = crate::opencode_runner::discover_commands(thread_id, cwd)? {
+                return Ok(json!({
+                    "commands": commands,
+                    "source": "server",
+                    "cached": false,
+                }));
+            }
+        }
+        return Ok(json!({"commands": [], "source": "cold-or-unsupported", "cached": false}));
+    }
     Ok(json!({"commands": [], "source": "unsupported", "cached": false}))
 }
 

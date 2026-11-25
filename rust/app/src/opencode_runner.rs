@@ -840,6 +840,69 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
 }
 
 
+
+/// List native OpenCode slash commands from a warm thread-owned server. Cold
+/// discovery is intentionally not hidden behind a model/session mutation: the
+/// caller can prewarm explicitly when it wants a live server.
+pub fn discover_commands(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>>, WsErr> {
+    let (port, password) = {
+        let parked_map = PARKED.lock().map_err(|_| err("parked map"))?;
+        let Some(parked) = parked_map.get(thread_id) else {
+            return Ok(None);
+        };
+        (parked.port, parked.password.clone())
+    };
+    let auth = basic_auth_header(&password);
+    let location = if cwd.is_empty() {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    } else {
+        cwd.to_string()
+    };
+    let path = format!("/api/command?location={}", urlencode_component(&location));
+    let (status, body) = http_request(port, "GET", &path, &auth, None)?;
+    if status == 404 || status == 405 {
+        return Ok(None);
+    }
+    if status >= 400 {
+        return Err(err(format!("opencode command list HTTP {status}: {body}")));
+    }
+    let parsed: Value = serde_json::from_str(&body)
+        .map_err(|e| err(format!("opencode command parse: {e}")))?;
+    let entries = parsed
+        .get("data")
+        .cloned()
+        .or(Some(parsed))
+        .and_then(|v| v.as_array().cloned())
+        .unwrap_or_default();
+    let mut commands: Vec<Value> = entries
+        .iter()
+        .filter_map(|entry| {
+            let name = entry.get("name").and_then(Value::as_str)?.trim().to_string();
+            if name.is_empty() {
+                return None;
+            }
+            let mut out = json!({"name": name});
+            if let Some(description) = entry.get("description").and_then(Value::as_str) {
+                let description = description.trim();
+                if !description.is_empty() {
+                    out["description"] = json!(description);
+                }
+            }
+            Some(out)
+        })
+        .collect();
+    commands.sort_by(|a, b| {
+        a.get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
+    });
+    commands.dedup_by(|a, b| {
+        a.get("name").and_then(Value::as_str) == b.get("name").and_then(Value::as_str)
+    });
+    Ok(Some(commands))
+}
+
 /// Start and configure an idle OpenCode server/session before the first user
 /// prompt. Unlike a turn, prewarm performs no model traffic: it only pays the
 /// process startup, MCP registration, permission and model/agent switching

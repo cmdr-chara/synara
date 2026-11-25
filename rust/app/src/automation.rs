@@ -333,6 +333,11 @@ fn create(payload: &Value) -> Result<Value, WsErr> {
     let now = crate::todo::iso_now_ms();
     let id = crate::orchestration_engine::uuid_v4();
     let stop_after = payload["stopAfterConsecutiveFailures"].as_i64().unwrap_or(3);
+    // A created automation must become fireable: compute the first occurrence
+    // from its schedule. Manual/project-event schedules yield no next run.
+    let initial_next_run: Option<String> =
+        crate::automation_schedule::compute_next_run_at(&payload["schedule"], &now, None)
+            .unwrap_or(None);
     conn.execute(
         "INSERT INTO automation_definitions \
          (automation_id, project_id, source_thread_id, name, prompt, schedule_json, \
@@ -343,7 +348,7 @@ fn create(payload: &Value) -> Result<Value, WsErr> {
           retry_policy_json, misfire_policy, acknowledged_risks_json, \
           completion_policy_json, iteration_count, managed_by_project, \
           created_at, updated_at) \
-         VALUES (?1,?2,?3,?4,?5,?6,?7,NULL,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,'{\"type\":\"none\"}',0,0,?24,?24)",
+         VALUES (?1,?2,?3,?4,?5,?6,?7,?25,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,'{\"type\":\"none\"}',0,0,?24,?24)",
         rusqlite::params![
             id,
             project_id,
@@ -369,6 +374,7 @@ fn create(payload: &Value) -> Result<Value, WsErr> {
             payload["misfirePolicy"].as_str().unwrap_or("coalesce"),
             payload["acknowledgedRisks"].to_string(),
             now,
+            initial_next_run,
         ],
     )
     .map_err(|e| err(e.to_string()))?;

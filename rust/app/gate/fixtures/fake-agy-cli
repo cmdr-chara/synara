@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+import sys
+if sys.argv[1:]==['models']:
+ print('gemini-flash\tGemini 3.7 Flash (low)')
+ print('gemini-flash\tGemini 3.7 Flash (medium)')
+ print('gemini-flash\tGemini 3.7 Flash (high)')
+ print('claude\tClaude Sonnet 4.6 (thinking)')
+ sys.exit(0)
+sys.exit(1)

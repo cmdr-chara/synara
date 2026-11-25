@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+"""Minimal MCP stdio server: answers initialize, ignores the rest."""
+import sys, json
+for line in sys.stdin:
+    line = line.strip()
+    if not line:
+        continue
+    try:
+        msg = json.loads(line)
+    except json.JSONDecodeError:
+        continue
+    if msg.get("method") == "initialize" and msg.get("id") is not None:
+        sys.stdout.write(json.dumps({
+            "jsonrpc": "2.0", "id": msg["id"],
+            "result": {"protocolVersion": "2024-11-05", "capabilities": {}, "serverInfo": {"name": "fake", "version": "1.0"}},
+        }) + "\n")
+        sys.stdout.flush()

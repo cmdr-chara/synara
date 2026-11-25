@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+import sys,json
+if sys.argv[1:]==['models']:
+ print('gpt-5.4-high - GPT-5.4 High')
+ sys.exit(0)
+out=sys.stdout
+state={}
+def send(v): out.write(json.dumps(v)+'\n');out.flush()
+for line in sys.stdin:
+ try:v=json.loads(line)
+ except Exception:continue
+ method=v.get('method'); rid=v.get('id')
+ with open('/tmp/fake-cursor-rpc-log','a') as f:f.write(json.dumps({'method':method,'params':v.get('params')})+'\n')
+ if method=='initialize': send({'jsonrpc':'2.0','id':rid,'result':{'authMethods':[]}})
+ elif method=='session/new': send({'jsonrpc':'2.0','id':rid,'result':{'sessionId':'fake-cursor-session'}})
+ elif method=='cursor/list_available_models':
+  send({'jsonrpc':'2.0','id':rid,'result':{'models':[
+   {'value':'default','name':'Auto','configOptions':[]},
+   {'value':'gpt-5.4','name':'GPT-5.4','configOptions':[
+    {'id':'reasoning','name':'Reasoning','category':'thought_level','type':'select','currentValue':'medium','options':[{'value':'low','name':'Low'},{'value':'medium','name':'Medium'},{'value':'high','name':'High'}]},
+    {'id':'context','name':'Context','category':'model_config','type':'select','currentValue':'1m','options':[{'value':'300k','name':'300k'},{'value':'1m','name':'1m'}]},
+    {'id':'fast','name':'Fast','type':'boolean','currentValue':False}
+   ]},
+   {'value':'claude-sonnet-4-6','name':'Claude Sonnet 4.6','configOptions':[
+    {'id':'thinking','name':'Thinking','type':'boolean','currentValue':False}
+   ]}
+  ]}})
+ elif method=='session/prompt':
+  if 'askq' in json.dumps(v.get('params',{})):
+   state['prompt_rid']=rid
+   send({'jsonrpc':'2.0','id':500,'method':'cursor/ask_question','params':{'toolCallId':'tc1','questions':[{'id':'q1','prompt':'Which color?','allowMultiple':False,'options':[{'label':'Red'},{'label':'Blue'}]}]}})
+  else:
+   send({'jsonrpc':'2.0','id':rid,'result':{'stopReason':'end_turn'}})
+ elif method is None and rid==500:
+  with open('/tmp/fake-cursor-answers-log','a') as f:f.write(json.dumps(v.get('result'))+'\n')
+  send({'jsonrpc':'2.0','id':501,'method':'cursor/update_todos','params':{'toolCallId':'tc2','merge':False,'todos':[{'content':'Write code','status':'in_progress'},{'title':'Test it','status':'pending'}]}})
+ elif method is None and rid==501:
+  send({'jsonrpc':'2.0','id':502,'method':'cursor/create_plan','params':{'toolCallId':'tc3','plan':'# Plan\n\n1. step one','todos':[]}})
+ elif method is None and rid==502:
+  send({'jsonrpc':'2.0','id':state.get('prompt_rid'),'result':{'stopReason':'end_turn'}})
+ elif rid is not None: send({'jsonrpc':'2.0','id':rid,'result':{}})

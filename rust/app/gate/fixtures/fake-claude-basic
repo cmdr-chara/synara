@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+import sys,json,os
+with open('/tmp/fake-claude-start-log','a') as f:f.write(str(os.getpid())+'\n')
+with open('/tmp/fake-claude-args-log','a') as f:f.write(json.dumps(sys.argv[1:])+'\n')
+out=sys.stdout
+def send(v):
+ out.write(json.dumps(v)+'\n');out.flush()
+for line in sys.stdin:
+ try:v=json.loads(line)
+ except Exception:continue
+ if v.get('type')=='control_request':
+  sub=v.get('request',{}).get('subtype')
+  rid=v.get('request_id','')
+  if sub in ('initialize','interrupt'):
+   send({'type':'control_response','response':{'subtype':'success','request_id':rid,'response':{'commands':[{'name':'review','description':'Review code','argumentHint':'<path>'},{'name':'compact','description':'Compact context'}],'models':[{'value':'sonnet','resolvedModel':'claude-sonnet-5','displayName':'Sonnet','description':'Fast model','supportsEffort':True,'supportedEffortLevels':['low','high'],'supportsFastMode':True,'supportsAdaptiveThinking':True,'supportsAutoMode':False}],'agents':[{'name':'Explore','description':'Explore code','model':'inherit'}]}}})
+   if sub=='initialize':send({'type':'system','subtype':'init','session_id':'fake-claude-session'})
+ elif v.get('type')=='user':
+  with open('/tmp/fake-claude-user-log','a') as f:f.write(json.dumps(v)+'\n')
+  send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
+  send({'type':'result','subtype':'success','result':'done'})

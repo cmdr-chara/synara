@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+import sys
+if sys.argv[1:]==['models']:
+ print('Default model: grok-4.6\n\nAvailable models:\n* grok-4.6 (default)\n- grok-4.5\n- grok-build\n')
+ sys.exit(0)
+sys.exit(1)

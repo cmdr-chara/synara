@@ -1836,6 +1836,62 @@ fn ascii_hash3(x: i64, y: i64, z: i64) -> f32 {
     ((h as u32) ^ ((h as u32) >> 16)) as f32 / 4294967296.0
 }
 
+/// Upstream `ui/switch.tsx` (sm): 32x20 track with a 1px border and 1px
+/// padding, a 16px white thumb (shadow-sm + ring-black/5) travelling 12px.
+/// Off = color-mix(foreground 20%, control-opaque) under a foreground/14%
+/// border; control-opaque is the surface in light and rgb(23,23,23) on the
+/// default dark #111111 surface (6/235 toward the ink).
+fn switch_track(on: bool, accent: gpui::Hsla, theme: &gpui_kit::component::Theme) -> gpui::Div {
+    let mix = |a: gpui::Hsla, b: gpui::Hsla, t: f32| -> gpui::Hsla {
+        let (a, b) = (gpui::Rgba::from(a), gpui::Rgba::from(b));
+        gpui::Rgba {
+            r: a.r + (b.r - a.r) * t,
+            g: a.g + (b.g - a.g) * t,
+            b: a.b + (b.b - a.b) * t,
+            a: 1.,
+        }
+        .into()
+    };
+    let dark = matches!(theme.mode, gpui_kit::component::ThemeMode::Dark);
+    let control = if dark {
+        mix(theme.background, theme.foreground, 6. / 235.)
+    } else {
+        theme.background
+    };
+    let (fill, border) = if on {
+        (accent, accent)
+    } else {
+        (mix(control, theme.foreground, 0.2), theme.foreground.opacity(0.14))
+    };
+    let t = div()
+        .w(px(32.))
+        .h(px(20.))
+        .flex_shrink_0()
+        .rounded_full()
+        .border_1()
+        .border_color(border)
+        .bg(fill)
+        .p(px(1.))
+        .flex()
+        .items_center();
+    let t = if on { t.justify_end() } else { t.justify_start() };
+    t.child(
+        div()
+            .size(px(16.))
+            .rounded_full()
+            .bg(gpui::white())
+            .shadow(vec![
+                gpui::BoxShadow::new(px(0.), px(0.), gpui::hsla(0., 0., 0., 0.05))
+                    .spread_radius(px(1.)),
+                gpui::BoxShadow::new(px(0.), px(1.), gpui::hsla(0., 0., 0., 0.1))
+                    .blur_radius(px(3.)),
+                gpui::BoxShadow::new(px(0.), px(1.), gpui::hsla(0., 0., 0., 0.1))
+                    .blur_radius(px(2.))
+                    .spread_radius(px(-1.)),
+            ]),
+    )
+}
+
 fn smoothstep(edge0: f32, edge1: f32, v: f32) -> f32 {
     let t = ((v - edge0) / (edge1 - edge0)).clamp(0., 1.);
     t * t * (3. - 2. * t)
@@ -9938,28 +9994,10 @@ impl Native {
         on: bool,
         accent: gpui::Hsla,
     ) -> gpui::AnyElement {
-        let mut t = div()
+        switch_track(on, accent, gpui_kit::component::Theme::global(cx))
             .id(ElementId::Name(format!("setting-switch-{key}").into()))
-            .w(px(28.))
-            .h(px(16.))
-            .rounded_full()
-            .flex()
-            .items_center()
-            .cursor_pointer();
-        t = if on {
-            t.bg(accent).justify_end()
-        } else {
-            t.bg(rgb(0xd9d9d9)).justify_start()
-        };
-        t.child(
-            div()
-                .w(px(12.))
-                .h(px(12.))
-                .rounded_full()
-                .bg(gpui::white())
-                .mx(px(2.)),
-        )
-        .on_click(cx.listener(move |this, _ev, _w, cx| {
+            .cursor_pointer()
+            .on_click(cx.listener(move |this, _ev, _w, cx| {
             this.set_setting_key(key, json!(!on), cx);
         }))
         .into_any_element()
@@ -14682,17 +14720,7 @@ impl Render for Native {
                 );
                 for (i, (label, desc)) in FLAG_ROWS.iter().enumerate() {
                     let on = self.feature_flags[i];
-                    let mut track = div()
-                        .w(px(28.))
-                        .h(px(16.))
-                        .rounded_full()
-                        .flex()
-                        .items_center();
-                    track = if on {
-                        track.bg(theme.primary).justify_end()
-                    } else {
-                        track.bg(rgb(0xd9d9d9)).justify_start()
-                    };
+                    let track = switch_track(on, theme.primary, &theme);
                     menu = menu.child(
                         div()
                             .id(ElementId::Name(format!("ff-row-{i}").into()))
@@ -14724,14 +14752,7 @@ impl Render for Native {
                                                     .child(*desc),
                                             ),
                                     )
-                                    .child(track.child(
-                                        div()
-                                            .w(px(12.))
-                                            .h(px(12.))
-                                            .rounded_full()
-                                            .bg(gpui::white())
-                                            .mx(px(2.)),
-                                    )),
+                                    .child(track),
                             )
                             .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 this.toggle_feature_flag(i, cx);
@@ -18753,28 +18774,8 @@ impl Render for Native {
 
         // ---- shared controls for ported settings sections ----
         let accent_c = theme.primary;
-        let toggle = move |on: bool| {
-            let mut t = div()
-                .w(px(28.))
-                .h(px(16.))
-                .rounded_full()
-                .flex()
-                .items_center();
-            if on {
-                t = t.bg(accent_c).justify_end();
-            } else {
-                t = t.bg(rgb(0xd9d9d9)).justify_start();
-            }
-            t.child(
-                div()
-                    .w(px(12.))
-                    .h(px(12.))
-                    .rounded_full()
-                    .bg(gpui::white())
-                    .mx(px(2.)),
-            )
-            .into_any_element()
-        };
+        let switch_theme = theme.clone();
+        let toggle = move |on: bool| switch_track(on, accent_c, &switch_theme).into_any_element();
         // Upstream segmented = ghost buttons gap-1; active gets a gray "secondary" fill.
         let seg = |opts: &[&'static str], active: usize| {
             let mut s = h_flex().items_center().gap(px(4.));

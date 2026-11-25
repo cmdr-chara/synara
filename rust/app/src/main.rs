@@ -41,6 +41,7 @@ mod orchestration_snapshot;
 mod original;
 mod mcp_connectors;
 mod mcp_oauth;
+mod editor_debug;
 mod provider_usage;
 mod textgen;
 mod provider_attachments;

@@ -16,6 +16,7 @@ mod editor_intelligence;
 mod editor;
 mod host_auth_verify;
 mod host_identity;
+mod pairing_gateway;
 mod remote_pairing;
 mod remote_tls;
 mod remote_tunnel;

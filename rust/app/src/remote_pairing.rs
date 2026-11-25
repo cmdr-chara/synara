@@ -370,6 +370,16 @@ pub fn revoke_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) ->
     Ok(())
 }
 
+/// Whether the device is trusted and unrevoked, upstream's trust.authorize.
+pub fn authorize_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<bool, String> {
+    let found = conn.query_row(
+        "SELECT 1 FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2 AND device_jkt = ?3 AND revoked_at IS NULL",
+        params![scope.environment_id, scope.root_fingerprint, device_jkt],
+        |_| Ok(()),
+    );
+    Ok(found.is_ok())
+}
+
 /// The owner's allow_connections switch lives alongside the enabled marker.
 pub fn allows_connections(conn: &Connection, scope: &TrustScope) -> Result<bool, String> {
     let value: Option<i64> = conn.query_row(

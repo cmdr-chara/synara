@@ -287,6 +287,15 @@ pub async fn serve_inner(
         None,
     )
     .await;
+    if path == REMOTE_INNER_PAIRING_PATH {
+        let state_dir = crate::todo::state_dir();
+        let secrets_dir = format!("{state_dir}/secrets");
+        let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
+        if let Some(scope) = crate::remote_pairing::local_scope(&secrets_dir, &environment_id) {
+            crate::pairing_gateway::run_pairing(ws, scope).await;
+        }
+        return;
+    }
     let (mut client_tx, mut client_rx) = ws.split();
     let (native_tx, mut native_rx) = tokio::sync::mpsc::unbounded_channel::<axum::extract::ws::Message>();
     let streams: std::sync::Arc<

@@ -140,6 +140,8 @@ async fn intercept_todo(
         && !text.contains("server.connectMcp")
         && !text.contains("server.disconnectMcp")
         && !text.contains("server.resolveMcp")
+        && !text.contains("server.transcribeVoice")
+        && !text.contains("server.prewarmVoice")
         && !text.contains("server.refreshProviders")
         && !text.contains("server.updateProvider")
     {
@@ -178,6 +180,7 @@ async fn intercept_todo(
         && !crate::projects_provision::handles(tag)
         && !crate::mcp_connectors::handles(tag)
         && !crate::provider_usage::handles(tag)
+        && !crate::voice_transcription::handles(tag)
         && tag != "agentGateway.call"
         && !crate::textgen::handles(tag)
         && tag != "server.upsertKeybinding"
@@ -1204,6 +1207,10 @@ async fn intercept_todo(
     } else if tag == "agentGateway.call" {
         crate::agent_gateway_mcp::handle_ws_call(&payload)
             .await
+            .map(Some)
+            .map_err(error_json)
+    } else if crate::voice_transcription::handles(tag) {
+        crate::voice_transcription::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
     } else if crate::provider_usage::handles(tag) {

@@ -170,7 +170,7 @@ pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
 
 /// Ids never carry an extension or path segments; the extension is resolved
 /// by scanning the known set exactly like upstream resolveAttachmentPathById.
-pub async fn serve(Path(id): Path<String>) -> Response {
+pub async fn serve(Path(id): Path<String>, headers: axum::http::HeaderMap) -> Response {
     if id.is_empty()
         || id.contains('/')
         || id.contains('\\')
@@ -186,17 +186,14 @@ pub async fn serve(Path(id): Path<String>) -> Response {
         if let Ok(real) = candidate.canonicalize() {
             let real_root = root.canonicalize().unwrap_or_else(|_| root.clone());
             if real.starts_with(&real_root) && real.is_file() {
-                if let Ok(bytes) = std::fs::read(&real) {
-                    let mime = crate::local_image::local_image_mime_for(&real.to_string_lossy());
-                    return (
-                        [
-                            (header::CONTENT_TYPE, mime),
-                            (header::CACHE_CONTROL, "private, no-store"),
-                        ],
-                        bytes,
-                    )
-                        .into_response();
-                }
+                let range = headers.get(header::RANGE).and_then(|v| v.to_str().ok());
+                let mime = crate::local_image::local_image_mime_for(&real.to_string_lossy());
+                return crate::local_image::file_response_with_range(
+                    &real,
+                    range,
+                    mime,
+                    "private, no-store",
+                );
             }
         }
     }

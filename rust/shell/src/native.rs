@@ -1327,6 +1327,9 @@ pub struct Native {
     voice_capture: Option<crate::voice::VoiceCapture>,
     /// True while a finished clip is with the transcription backend.
     voice_transcribing: bool,
+    /// voiceEnterBehavior "send": send the message once the transcription
+    /// lands in the composer.
+    voice_send_after: bool,
     ctx_menu: Option<(String, f32, f32)>,
     // True when ctx_menu was opened from an open-thread tab: upstream appends
     // "close tabs" scope rows on top of the usual thread menu.
@@ -2712,7 +2715,18 @@ impl Native {
                     match event {
                         InputEvent::PressEnter { shift, .. } => {
                             if !shift {
-                                this.send(window, cx);
+                                // voiceEnterBehavior: while a voice note is
+                                // recording Enter stops it — "stop" transcribes
+                                // into the composer, "send" sends the message
+                                // once the transcription lands.
+                                if this.voice_capture.is_some() {
+                                    let behavior =
+                                        this.setting_str("voiceEnterBehavior", "stop");
+                                    this.voice_send_after = behavior == "send";
+                                    this.stop_voice(window, cx);
+                                } else {
+                                    this.send(window, cx);
+                                }
                             }
                         }
                         InputEvent::Change => this.on_composer_change(cx),
@@ -3050,6 +3064,7 @@ impl Native {
             user_input_open: Vec::new(),
             voice_capture: None,
             voice_transcribing: false,
+            voice_send_after: false,
             ctx_menu: None,
             ctx_menu_tab: false,
             ctx_sub: None,
@@ -8508,6 +8523,17 @@ impl Native {
                 }
                 cx.notify();
             });
+            // voiceEnterBehavior "send": the transcription just landed in the
+            // draft; fire the normal send path with the composer's window.
+            if !empty {
+                let _ = cx.update_window(window_handle, move |_, window, app| {
+                    let _ = this.update(app, |this: &mut Self, cx| {
+                        if std::mem::take(&mut this.voice_send_after) {
+                            this.send(window, cx);
+                        }
+                    });
+                });
+            }
         })
         .detach();
     }

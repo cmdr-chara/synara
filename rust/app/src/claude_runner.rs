@@ -753,6 +753,24 @@ fn spawn_claude(
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
     crate::provider_env::sanitize_claude_child(&mut command);
+    // Provider instance environment, applied after sanitization so deliberate
+    // per-account configuration always wins over ambient filtering. A
+    // non-default instance without an explicit home is forced into its
+    // isolated provider home, upstream `buildClaudeInstanceProcessEnv`.
+    let settings = crate::server_settings::current();
+    if let Some(instance) = crate::provider_instances::resolve_instance(&settings, None, Some("claudeAgent")) {
+        for (key, value) in crate::provider_instances::instance_start_environment(&instance) {
+            command.env(key, value);
+        }
+        if !instance.is_default && crate::provider_instances::instance_home_path(&instance).is_none() {
+            let userdata = crate::todo::state_dir();
+            let home = crate::claude_environment::isolated_home_path(&userdata, Some(&instance.instance_id));
+            let _ = std::fs::create_dir_all(&home);
+            for (key, value) in crate::claude_environment::home_environment(&home) {
+                command.env(key, value);
+            }
+        }
+    }
     let mut child = command
         .spawn()
         .map_err(|e| err(format!("could not launch `claude` CLI: {e}")))?;

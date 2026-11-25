@@ -518,6 +518,28 @@ fn handle_can_use_tool(
     }
 }
 
+fn selected_claude_model(model_selection: &Value) -> Option<String> {
+    let model = model_selection
+        .get("model")
+        .and_then(Value::as_str)?
+        .trim()
+        .to_string();
+    if model.is_empty() {
+        return None;
+    }
+    let context_window = model_selection
+        .pointer("/options/autoCompactWindow")
+        .and_then(Value::as_str)
+        .or_else(|| model_selection.pointer("/options/contextWindow").and_then(Value::as_str))
+        .map(str::trim)
+        .unwrap_or("");
+    let has_suffix = model.ends_with(']') && model.rfind('[').is_some_and(|pos| pos < model.len() - 1);
+    if context_window == "1m" && !has_suffix {
+        return Some(format!("{model}[1m]"));
+    }
+    Some(model)
+}
+
 fn selected_claude_effort(model_selection: &Value) -> Option<String> {
     let effort = model_selection
         .pointer("/options/effort")
@@ -843,10 +865,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     let model_selection = model_selection_json
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
         .unwrap_or(Value::Null);
-    let selected_model = model_selection
-        .get("model")
-        .and_then(Value::as_str)
-        .map(str::to_string);
+    let selected_model = selected_claude_model(&model_selection);
     let selected_effort = selected_claude_effort(&model_selection);
     let launch_key = format!(
         "{}|{}|{}|{}|{}",
@@ -918,10 +937,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         .flatten()
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
         .unwrap_or(Value::Null);
-    let selected_model: Option<String> = model_selection
-        .get("model")
-        .and_then(Value::as_str)
-        .map(str::to_string);
+    let selected_model = selected_claude_model(&model_selection);
     let selected_effort = selected_claude_effort(&model_selection);
     let cwd = if !cwd.is_empty() && std::path::Path::new(cwd).is_dir() {
         cwd.to_string()

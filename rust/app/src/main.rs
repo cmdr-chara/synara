@@ -116,6 +116,7 @@ async fn main() {
         .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
         .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
+        .route("/health", axum::routing::get(|| async { "ok" }))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

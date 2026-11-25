@@ -434,6 +434,16 @@ fn acp_launch_profile(
     runtime_mode: &str,
     model: Option<&str>,
 ) -> Option<AcpLaunchProfile> {
+    acp_launch_profile_ex(provider, runtime_mode, model, None, &[])
+}
+
+fn acp_launch_profile_ex(
+    provider: &str,
+    runtime_mode: &str,
+    model: Option<&str>,
+    reasoning_effort: Option<&str>,
+    additional_dirs: &[String],
+) -> Option<AcpLaunchProfile> {
     let (display_name, default_binary, override_keys, home_candidates, mut args, env) = match provider {
         "devin" => (
             "Devin",
@@ -494,6 +504,25 @@ fn acp_launch_profile(
         args.push("--always-approve".into());
     }
     args.extend(model_args(provider, model));
+    if let Some(effort) = reasoning_effort.map(str::trim).filter(|v| !v.is_empty()) {
+        match provider {
+            "grok" => {
+                args.push("--reasoning-effort".into());
+                args.push(effort.to_string());
+            }
+            "droid" => {
+                args.push("-r".into());
+                args.push(effort.to_string());
+            }
+            _ => {}
+        }
+    }
+    if provider == "antigravity" {
+        for dir in additional_dirs {
+            args.push("--add-dir".into());
+            args.push(dir.clone());
+        }
+    }
     if provider == "grok" {
         args.push("stdio".into());
     }
@@ -1158,8 +1187,49 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                 .and_then(Value::as_str)
                 .map(str::to_string)
         });
-    let launch = acp_launch_profile(provider, &turn_runtime_mode, selected_model.as_deref())
-        .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
+    let reasoning_effort: Option<String> = conn
+        .query_row(
+            "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|value| {
+            value
+                .pointer("/options/reasoningEffort")
+                .and_then(Value::as_str)
+                .or_else(|| value.get("reasoningEffort").and_then(Value::as_str))
+                .map(str::to_string)
+        });
+    let additional_dirs: Vec<String> = conn
+        .query_row(
+            "SELECT p.additional_folders_json FROM projection_projects p              JOIN projection_threads t ON t.project_id = p.project_id              WHERE t.thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|v| v.as_array().cloned())
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|entry| {
+            entry
+                .as_str()
+                .map(str::to_string)
+                .or_else(|| entry.get("path").and_then(Value::as_str).map(str::to_string))
+        })
+        .collect();
+    let launch = acp_launch_profile_ex(
+        provider,
+        &turn_runtime_mode,
+        selected_model.as_deref(),
+        reasoning_effort.as_deref(),
+        &additional_dirs,
+    )
+    .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
     let launch_key = format!(
         "{provider}|{}|{turn_runtime_mode}|{cwd}",
         selected_model.as_deref().unwrap_or("")
@@ -1748,6 +1818,25 @@ mod tests {
         )));
         assert!(is_auth_required_error(&err("unauthorized")));
         assert!(!is_auth_required_error(&err("timeout waiting for response")));
+    }
+
+    #[test]
+    fn provider_specializations_add_reasoning_and_dirs() {
+        let grok = acp_launch_profile_ex("grok", "full-access", None, Some("high"), &[]).unwrap();
+        assert!(grok.args.windows(2).any(|w| w == ["--reasoning-effort", "high"]));
+
+        let droid = acp_launch_profile_ex("droid", "full-access", None, Some("medium"), &[]).unwrap();
+        assert!(droid.args.windows(2).any(|w| w == ["-r", "medium"]));
+
+        let agy = acp_launch_profile_ex(
+            "antigravity",
+            "full-access",
+            None,
+            None,
+            &["/extra/dir".to_string()],
+        )
+        .unwrap();
+        assert!(agy.args.windows(2).any(|w| w == ["--add-dir", "/extra/dir"]));
     }
 
     #[test]

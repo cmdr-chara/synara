@@ -100,6 +100,32 @@ fn write_line(stdin: &Arc<Mutex<ChildStdin>>, value: &Value) -> Result<(), WsErr
         .map_err(|e| err(format!("claude write: {e}")))
 }
 
+/// Port of upstream isProviderEdgeBlockedText: Cloudflare can refuse a
+/// healthy request with an HTML 403 page; the CLI surfaces only its text.
+/// The login itself is fine, so the turn retries instead of failing.
+fn is_edge_blocked_text(text: &str) -> bool {
+    let lower = text.to_lowercase();
+    text.contains("403")
+        && (lower.contains("cloudflare")
+            || lower.contains("attention required")
+            || lower.contains("just a moment"))
+}
+
+/// Upstream CLAUDE_EDGE_BLOCK_RETRY_DELAYS_MS = [5s, 15s, 45s]; env override
+/// keeps integration tests fast.
+fn edge_block_retry_delays_ms() -> Vec<u64> {
+    if let Ok(raw) = std::env::var("SYNARA_CLAUDE_EDGE_RETRY_DELAYS_MS") {
+        let parsed: Vec<u64> = raw
+            .split(',')
+            .filter_map(|part| part.trim().parse().ok())
+            .collect();
+        if !parsed.is_empty() {
+            return parsed;
+        }
+    }
+    vec![5_000, 15_000, 45_000]
+}
+
 fn user_message(content: Vec<Value>) -> Value {
     json!({
         "type": "user",
@@ -1076,7 +1102,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     };
     let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
     let content = claude_content_blocks(&prompt_text, &attachments)?;
-    write_line(&stdin, &user_message(content))?;
+    write_line(&stdin, &user_message(content.clone()))?;
     let cancelled = Arc::new(AtomicBool::new(false));
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
@@ -1090,6 +1116,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     }
 
     let mut usage_windows = json!({"windows": {}});
+    let mut edge_attempt = 0usize;
     let result = (|| -> Result<String, WsErr> {
         loop {
             let Some(v) = read_json_line(&mut reader)? else {
@@ -1140,7 +1167,33 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     }
                     let msg = v.get("result").and_then(Value::as_str)
                         .or_else(|| v.pointer("/error/message").and_then(Value::as_str))
-                        .unwrap_or("claude turn error");
+                        .unwrap_or("claude turn error")
+                        .to_string();
+                    // Edge block: keep the turn open and re-prompt the same
+                    // live CLI after a backoff, mirroring upstream
+                    // retryEdgeBlockedTurn. Interrupts and cancel stop it.
+                    if is_edge_blocked_text(&msg) && !cancelled.load(Ordering::SeqCst) {
+                        let delays = edge_block_retry_delays_ms();
+                        if edge_attempt < delays.len() {
+                            let delay = delays[edge_attempt];
+                            edge_attempt += 1;
+                            let mut waited = 0u64;
+                            while waited < delay && !cancelled.load(Ordering::SeqCst) {
+                                let step = (delay - waited).min(100);
+                                std::thread::sleep(std::time::Duration::from_millis(step));
+                                waited += step;
+                            }
+                            if cancelled.load(Ordering::SeqCst) {
+                                break Err(err(msg));
+                            }
+                            if write_line(&stdin, &user_message(content.clone())).is_ok() {
+                                continue;
+                            }
+                        }
+                        break Err(err(format!(
+                            "Anthropic's Cloudflare edge temporarily blocked the request (HTTP 403). Your Claude login is fine; send a message to continue."
+                        )));
+                    }
                     break Err(err(msg));
                 }
                 _ => {}

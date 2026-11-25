@@ -247,6 +247,32 @@ await scenario("claude task tools emit turn.tasks.updated activities", async () 
   assert(payload.includes("implement parser"), "tracked TaskCreate task missing from payload");
 });
 
+// 15. editor.intelligence: TypeScript worker diagnostics + hover
+await scenario("editor.intelligence diagnostics and hover via ts worker", async () => {
+  const contents = "const n: number = 'oops';\nconsole.log(n);\n";
+  const base = {
+    cwd: process.env.GATE_REPO_ROOT,
+    relativePath: "scratch-gate.ts",
+    documents: [{ relativePath: "scratch-gate.ts", contents, version: 1 }],
+    length: contents.length,
+  };
+  const diag = await call(
+    "editor.intelligence",
+    { ...base, operation: "diagnostics", offset: 0 },
+    30000,
+  );
+  assert(
+    Array.isArray(diag.diagnostics) && diag.diagnostics.length >= 1,
+    "no diagnostics for type error",
+  );
+  const hover = await call(
+    "editor.intelligence",
+    { ...base, operation: "hover", offset: contents.indexOf("console") + 2, length: 0 },
+    30000,
+  );
+  assert(hover && typeof hover === "object", "no hover result");
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

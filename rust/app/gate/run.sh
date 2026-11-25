@@ -44,4 +44,4 @@ SERVER_PID=$!
 sleep 2
 
 echo "== running scenarios =="
-GATE_FIXTURES="$FIX" node "$GATE_DIR/parity_gate.mjs" "ws://127.0.0.1:$PORT/ws" "$PROJECT_ID" "$DB"
+GATE_FIXTURES="$FIX" GATE_REPO_ROOT="$(cd "$GATE_DIR/../../.." && pwd)" node "$GATE_DIR/parity_gate.mjs" "ws://127.0.0.1:$PORT/ws" "$PROJECT_ID" "$DB"

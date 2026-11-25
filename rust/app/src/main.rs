@@ -20,6 +20,7 @@ mod fs_browse;
 mod git_domain;
 mod harness_policy;
 mod git_handoff;
+mod git_action_registry;
 mod git_pr;
 mod github_inbox;
 mod list_worktrees;

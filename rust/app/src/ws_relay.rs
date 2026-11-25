@@ -290,66 +290,141 @@ async fn intercept_todo(
     }
 
     if tag == "git.runStackedAction" {
-        // Upstream serves this RPC as a stream of GitActionProgressEvent chunks;
-        // the terminal action_finished event carries the result. The pipeline
-        // itself is blocking git plumbing, so it runs in spawn_blocking while
-        // progress events flow back as Chunk frames on this socket.
+        // Upstream serves this RPC as a stream of GitActionProgressEvent chunks
+        // through a keyed action registry: a client that reconnects and resumes
+        // attaches to the in-flight or completed action instead of duplicating
+        // the mutation. The pipeline runs detached in spawn_blocking; progress
+        // events flow through the registry into Chunk frames on this socket.
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let payload2 = payload.clone();
         let task = tokio::spawn(async move {
-            let (ptx, mut prx) = tokio::sync::mpsc::unbounded_channel::<serde_json::Value>();
-            let payload3 = payload2.clone();
-            let join = tokio::task::spawn_blocking(move || {
-                let mut forward = move |event: serde_json::Value| {
-                    let _ = ptx.send(event);
-                };
-                let cwd = payload3
-                    .get("cwd")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("")
-                    .to_string();
-                crate::git_pr::run_stacked_action_streaming(&cwd, &payload3, &mut forward)
+            let action_id = payload2
+                .get("actionId")
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string();
+            let fp = crate::git_action_registry::fingerprint(&payload2);
+            let resume = payload2.get("resume").and_then(|v| v.as_bool()).unwrap_or(false);
+            use crate::git_action_registry::Attach;
+            let fail_exit = |message: &str| serde_json::json!({
+                "_tag": "Exit", "requestId": rid,
+                "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
+                    "_tag": "WsRpcError", "message": message, "code": null, "retryable": false,
+                }}]},
             });
-            let tx2 = tx.clone();
-            let rid2 = rid.clone();
-            let forwarder = tokio::spawn(async move {
-                while let Some(event) = prx.recv().await {
-                    let chunk = serde_json::json!({
-                        "_tag": "Chunk", "requestId": rid2, "values": [event],
+            let (history, mut rx) = match crate::git_action_registry::attach(&action_id, &fp, resume) {
+                Attach::New { rx } => {
+                    // Spawn the mutation itself; it publishes every progress
+                    // event into the registry, which fans out to subscribers.
+                    let payload3 = payload2.clone();
+                    let aid = action_id.clone();
+                    tokio::task::spawn_blocking(move || {
+                        let aid2 = aid.clone();
+                        let mut forward = move |event: serde_json::Value| {
+                            crate::git_action_registry::publish(&aid2, &event);
+                        };
+                        let cwd = payload3
+                            .get("cwd")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("")
+                            .to_string();
+                        let result =
+                            crate::git_pr::run_stacked_action_streaming(&cwd, &payload3, &mut forward);
+                        if let Err(e) = &result {
+                            crate::git_action_registry::publish(
+                                &aid,
+                                &serde_json::json!({
+                                    "kind": "action_failed", "phase": null, "message": e.0,
+                                }),
+                            );
+                            crate::git_action_registry::finish(&aid, Err(e.0.clone()));
+                        } else {
+                            crate::git_action_registry::finish(&aid, Ok(()));
+                        }
                     });
-                    if tx2.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
-                        break;
-                    }
+                    (Vec::new(), rx)
                 }
-            });
-            let result = join.await;
-            drop(payload2);
-            let _ = forwarder.await;
-            let reply = match result {
-                Ok(Ok(_value)) => serde_json::json!({
-                    "_tag": "Exit", "requestId": rid,
-                    "exit": {"_tag": "Success", "value": null},
-                }),
-                Ok(Err(e)) => {
-                    // The failure also surfaces as a terminal action_failed chunk
-                    // so stream consumers see the same shape as upstream.
-                    let fail_chunk = serde_json::json!({
-                        "_tag": "Chunk", "requestId": rid,
-                        "values": [{"kind": "action_failed", "phase": null, "message": e.0}],
-                    });
-                    let _ = tx.send(ClientMessage::Text(fail_chunk.to_string().into()));
-                    serde_json::json!({
-                        "_tag": "Exit", "requestId": rid,
-                        "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": error_json(e)}]},
-                    })
+                Attach::Existing {
+                    events,
+                    outcome: _,
+                    subscriber,
+                } => match subscriber {
+                    Some(rx) => (events, rx),
+                    None => (events, {
+                        // Completed action: an empty closed receiver — the
+                        // terminal event is already inside the replayed history.
+                        let (_tx, rx) = tokio::sync::mpsc::unbounded_channel();
+                        rx
+                    }),
+                },
+                Attach::Mismatch => {
+                    let _ = tx.send(ClientMessage::Text(
+                        fail_exit("Git action ID was reused with different inputs.")
+                            .to_string()
+                            .into(),
+                    ));
+                    return;
                 }
-                Err(_) => serde_json::json!({
-                    "_tag": "Exit", "requestId": rid,
-                    "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": error_json(crate::todo::WsErr("git action task panicked".to_string(), None))}]},
-                }),
+                Attach::ResumeMissing => {
+                    let _ = tx.send(ClientMessage::Text(
+                        fail_exit(
+                            "The Git action result is unavailable. The server may have restarted or the request may not have arrived. Check the repository status before trying again.",
+                        )
+                        .to_string()
+                        .into(),
+                    ));
+                    return;
+                }
             };
-            let _ = tx.send(ClientMessage::Text(reply.to_string().into()));
+            // Replay the recorded history, then forward live events. The
+            // terminal action_finished/action_failed event produces the Exit.
+            let mut replay = history.into_iter();
+            let mut pending: Vec<serde_json::Value> = replay.by_ref().collect();
+            loop {
+                let event = if !pending.is_empty() {
+                    pending.remove(0)
+                } else {
+                    match rx.recv().await {
+                        Some(event) => event,
+                        None => break,
+                    }
+                };
+                let kind = event.get("kind").and_then(|v| v.as_str()).unwrap_or("");
+                let terminal = kind == "action_finished" || kind == "action_failed";
+                let fail_message = if kind == "action_failed" {
+                    event
+                        .get("message")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("Git action failed.")
+                        .to_string()
+                } else {
+                    String::new()
+                };
+                let chunk = serde_json::json!({
+                    "_tag": "Chunk", "requestId": rid, "values": [event],
+                });
+                if tx.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                    break;
+                }
+                if terminal {
+                    let reply = if kind == "action_finished" {
+                        serde_json::json!({
+                            "_tag": "Exit", "requestId": rid,
+                            "exit": {"_tag": "Success", "value": null},
+                        })
+                    } else {
+                        serde_json::json!({
+                            "_tag": "Exit", "requestId": rid,
+                            "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
+                                "_tag": "WsRpcError", "message": fail_message, "code": null, "retryable": false,
+                            }}]},
+                        })
+                    };
+                    let _ = tx.send(ClientMessage::Text(reply.to_string().into()));
+                    break;
+                }
+            }
         });
         if let Ok(mut map) = streams.lock() {
             map.insert(request_id, task);

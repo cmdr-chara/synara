@@ -805,6 +805,40 @@ fn handle_form_request(
     Ok(())
 }
 
+
+/// Compact the warm OpenCode session through the native V2 endpoint. The
+/// request is intentionally limited to idle warm sessions: compacting a busy
+/// provider would race the active turn, while a cold parked process is cheaper
+/// to resume on the next prompt than to boot only for maintenance.
+pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Err(err("cannot compact while a turn is running"));
+    }
+    let (port, password, session_id) = {
+        let parked_map = PARKED.lock().map_err(|_| err("parked map"))?;
+        let Some(parked) = parked_map.get(thread_id) else {
+            return Ok(false);
+        };
+        (parked.port, parked.password.clone(), parked.session_id.clone())
+    };
+    let auth = basic_auth_header(&password);
+    let path = format!("/api/session/{session_id}/compact");
+    let (status, body) = http_request(
+        port,
+        "POST",
+        &path,
+        &auth,
+        Some(&json!({"delivery":"steer"})),
+    )?;
+    if status == 404 || status == 405 {
+        return Ok(false);
+    }
+    if status >= 400 {
+        return Err(err(format!("opencode compact HTTP {status}: {body}")));
+    }
+    Ok(true)
+}
+
 pub fn start_turn(thread_id: String, message_id: String, text: String, cwd: String) {
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&thread_id, &message_id, &text, &cwd) {

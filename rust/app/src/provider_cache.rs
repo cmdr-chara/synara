@@ -18,6 +18,7 @@ pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
         "provider.listModels"
+            | "provider.compactThread"
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
             | "server.updateProvider"
@@ -33,6 +34,7 @@ pub fn handles(tag: &str) -> bool {
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "provider.listModels" => list_models(payload),
+        "provider.compactThread" => compact_thread(payload),
         "server.listExternalMcpIntegrations" => list_external_mcp_integrations(),
         "server.createExternalMcpIntegration" => create_external_mcp_integration(payload),
         "server.revokeExternalMcpIntegration" => revoke_external_mcp_integration(payload),
@@ -259,6 +261,16 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     Err(err(format!(
         "no cached model catalog for {provider}/{instance}"
     )))
+}
+
+
+fn compact_thread(payload: &Value) -> Result<Value, WsErr> {
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("threadId is required"))?;
+    let compacted = crate::opencode_runner::compact_thread(thread_id)?;
+    Ok(json!({"compacted": compacted}))
 }
 
 /// External MCP helpers mirroring `externalMcp/Layers/ExternalMcpService.ts`

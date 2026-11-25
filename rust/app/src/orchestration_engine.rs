@@ -1007,7 +1007,14 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let interaction_mode = opt(command, "interactionMode");
     // With no native provider sessions yet no turn can be running, so messages
     // queue only for a claude-cache review gate, exactly like upstream.
-    let should_queue = row.parent_thread_id.is_none() && row.claude_cache_review.is_some();
+    let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
+        || crate::codex_runner::has_running_turn(&thread_id)
+        || crate::claude_runner::has_running_turn(&thread_id)
+        || crate::opencode_runner::has_running_turn(&thread_id);
+    // Upstream: a message arriving while the provider is mid-turn queues
+    // instead of starting a parallel turn on the same session.
+    let should_queue = (row.parent_thread_id.is_none() && row.claude_cache_review.is_some())
+        || (provider_turn_live && dispatch_mode != "steer");
 
     let mut events: Vec<OutEvent> = Vec::new();
     if dispatch_origin == "user"
@@ -1335,6 +1342,63 @@ fn cancel_any_provider_turn(thread_id: &str) {
     crate::codex_runner::cancel_turn(thread_id);
     crate::claude_runner::cancel_turn(thread_id);
     crate::opencode_runner::cancel_turn(thread_id);
+}
+
+/// After a provider turn completes, start the oldest queued user message
+/// that no turn has consumed yet. Queued messages are recorded with
+/// dispatch_mode 'queue'; consumption is proven by a projection_turns row
+/// whose pending_message_id is the message. Recursive safety: the next
+/// runner repeats the check when it completes, draining the queue one
+/// turn at a time.
+pub(crate) fn continue_queued_turn(thread_id: &str) {
+    let Ok(conn) = open_state_rw() else {
+        return;
+    };
+    let _ = conn.execute_batch("PRAGMA busy_timeout = 5000;");
+    let next: Option<(String, String)> = conn
+        .query_row(
+            "SELECT message_id, text FROM projection_thread_messages              WHERE thread_id = ?1 AND role = 'user' AND dispatch_mode = 'queue'              AND message_id NOT IN (                SELECT COALESCE(pending_message_id, '') FROM projection_turns WHERE thread_id = ?1              )              ORDER BY created_at ASC LIMIT 1",
+            params![thread_id],
+            |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)),
+        )
+        .ok();
+    let Some((message_id, text)) = next else {
+        return;
+    };
+    let provider: Option<String> = conn
+        .query_row(
+            "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .and_then(|raw| serde_json::from_str::<serde_json::Value>(&raw).ok())
+        .and_then(|v| {
+            v.get("provider")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        });
+    let cwd: Option<String> = conn
+        .query_row(
+            "SELECT p.workspace_root FROM projection_projects p              JOIN projection_threads t ON t.project_id = p.project_id              WHERE t.thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok();
+    let (Some(provider), Some(cwd)) = (provider, cwd) else {
+        return;
+    };
+    let tid = thread_id.to_string();
+    if crate::codex_runner::supports_provider(&provider) {
+        crate::codex_runner::start_turn(tid, message_id, text, cwd);
+    } else if crate::claude_runner::supports_provider(&provider) {
+        crate::claude_runner::start_turn(tid, message_id, text, cwd);
+    } else if crate::opencode_runner::supports_provider(&provider) {
+        crate::opencode_runner::start_turn(tid, message_id, text, cwd);
+    } else if crate::acp_runner::supports_provider(&provider) {
+        crate::acp_runner::start_turn(provider, tid, message_id, text, cwd);
+    }
 }
 
 /// Event-only commands: validate the thread exists, append one event whose

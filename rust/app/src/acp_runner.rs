@@ -1664,6 +1664,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     "updatedAt": iso_now_ms(),
                 }),
             )?;
+            crate::orchestration_engine::continue_queued_turn(thread_id);
             Ok(())
         }
         Err(e) => {

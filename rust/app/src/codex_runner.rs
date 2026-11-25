@@ -895,10 +895,11 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
         .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
     let launch_key = format!(
-        "{}|{}|{}",
+        "{}|{}|{}|{}",
         turn_runtime_mode,
         selected_model.as_deref().unwrap_or(""),
-        cwd
+        cwd,
+        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
     );
 
     let mut command = Command::new(codex_binary());
@@ -1173,9 +1174,11 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     } else {
         let mut command = Command::new(codex_binary());
         crate::provider_env::sanitize_provider_child(&mut command);
-        crate::provider_instances::apply_instance_environment(&mut command, "codex");
-    crate::provider_env::sanitize_provider_child(&mut command);
-    crate::provider_instances::apply_instance_environment(&mut command, "codex");
+        crate::provider_instances::apply_instance_environment_for(
+            &mut command,
+            "codex",
+            model_selection.get("instanceId").and_then(Value::as_str),
+        );
         command
             .arg("app-server")
             .current_dir(&cwd)

@@ -520,6 +520,115 @@ await scenario("heartbeat automation defers while target thread is busy", async 
   assert(after.includes("completed"), `deferred run did not dispatch after target freed: ${after}`);
 });
 
+// --- HTTP surface scenarios (23-26): attachment v2, export, favicons, auth ---
+const httpBase = wsUrl.replace("ws://", "http://").replace(/\/ws$/, "");
+
+await scenario("attachment v2 upload/serve/lifecycle roundtrip", async () => {
+  const up = await fetch(
+    `${httpBase}/api/attachments/upload?threadId=gate-att&type=image&name=g.png&mimeType=${encodeURIComponent("image/png")}`,
+    { method: "POST", body: "gatepngbytes" },
+  );
+  assert(up.status === 201, `upload status ${up.status}`);
+  const meta = await up.json();
+  assert(meta.id.startsWith("att_v2_"), `id format wrong: ${meta.id}`);
+  assert(meta.sizeBytes === 12, `sizeBytes ${meta.sizeBytes}`);
+  assert((meta.relativePath || "").startsWith("objects/"), `layout wrong: ${meta.relativePath}`);
+  const served = await fetch(`${httpBase}/attachments/${meta.id}`);
+  assert(served.status === 200, `serve status ${served.status}`);
+  assert((served.headers.get("content-type") || "").includes("image/png"), "mime wrong");
+  const row = sql(
+    `select state, sha256 IS NOT NULL, staging_expires_at IS NOT NULL from managed_attachment_blobs where attachment_id='${meta.id}'`,
+  );
+  assert(row.startsWith("staged|1|1"), `lifecycle row wrong: ${row}`);
+  const partial = await fetch(`${httpBase}/attachments/${meta.id}`, {
+    headers: { Range: "bytes=0-3" },
+  });
+  assert(partial.status === 206, `range status ${partial.status}`);
+});
+
+await scenario("thread export zip with in-flight guard", async () => {
+  const tid = "gate-export-" + Date.now();
+  sql(
+    `insert into projection_threads (thread_id, project_id, title, created_at, updated_at, runtime_mode, interaction_mode) values ('${tid}', '${projectId}', 'Export Me', '2026-01-01T00:00:00.000Z', '2026-01-02T00:00:00.000Z', 'worktree', 'autonomous')`,
+  );
+  sql(
+    `insert into projection_thread_messages (thread_id, message_id, role, text, is_streaming, created_at, updated_at) values ('${tid}','xm1','user','hello export',0,'2026-01-01T00:00:00.000Z','2026-01-01T00:00:00.000Z')`,
+  );
+  const res = await fetch(`${httpBase}/api/thread-export?threadId=${tid}`);
+  assert(res.status === 200, `export status ${res.status}`);
+  assert((res.headers.get("content-type") || "").includes("application/zip"), "not a zip");
+  const buf = Buffer.from(await res.arrayBuffer());
+  assert(buf.length > 200 && buf.readUInt32LE(0) === 0x04034b50, "zip magic missing");
+  assert(
+    (res.headers.get("content-disposition") || "").includes("synara-thread-export-me-"),
+    "filename wrong",
+  );
+  const missing = await fetch(`${httpBase}/api/thread-export?threadId=nope`);
+  assert(missing.status === 404, `missing status ${missing.status}`);
+  sql(
+    `insert into projection_thread_messages (thread_id, message_id, role, text, is_streaming, created_at, updated_at) values ('${tid}','xm2','assistant','partial',1,'2026-01-01T00:01:00.000Z','2026-01-01T00:01:00.000Z')`,
+  );
+  const blocked = await fetch(`${httpBase}/api/thread-export?threadId=${tid}`);
+  assert(blocked.status === 409, `streaming guard status ${blocked.status}`);
+});
+
+await scenario("project and site favicon routes", async () => {
+  const projDir = execSync("mktemp -d").toString().trim();
+  fs.mkdirSync(`${projDir}/public`, { recursive: true });
+  fs.writeFileSync(`${projDir}/public/favicon.png`, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+  const found = await fetch(`${httpBase}/api/project-favicon?cwd=${encodeURIComponent(projDir)}`);
+  assert(found.status === 200, `found status ${found.status}`);
+  assert((found.headers.get("content-type") || "").includes("image/png"), "png mime wrong");
+  const fallback = await fetch(`${httpBase}/api/project-favicon?cwd=/nonexistent-gate-dir`);
+  assert(fallback.status === 200, `fallback status ${fallback.status}`);
+  assert((fallback.headers.get("content-type") || "").includes("image/svg+xml"), "svg mime wrong");
+  const none = await fetch(
+    `${httpBase}/api/project-favicon?cwd=/nonexistent-gate-dir&fallback=none`,
+  );
+  assert(none.status === 204, `fallback=none status ${none.status}`);
+  const ssrf = await fetch(`${httpBase}/api/site-favicon?domain=localhost`);
+  assert((ssrf.headers.get("content-type") || "").includes("image/svg+xml"), "ssrf guard failed");
+  const bad = await fetch(`${httpBase}/api/site-favicon?domain=`);
+  assert(bad.status === 400, `empty domain status ${bad.status}`);
+});
+
+await scenario("auth bootstrap/session/ws-token/revoke loop", async () => {
+  const cred = fs.readFileSync(
+    `${dbPath.replace(/\/state\.sqlite$/, "")}/secrets/bootstrap-credential.bin`,
+    "utf8",
+  );
+  const boot = await fetch(`${httpBase}/api/auth/bootstrap`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ credential: cred }),
+  });
+  assert(boot.status === 200, `bootstrap status ${boot.status}`);
+  const bootBody = await boot.json();
+  assert(bootBody.authenticated === true && bootBody.role === "owner", "bootstrap body wrong");
+  const cookie = (boot.headers.get("set-cookie") || "").split(";")[0];
+  assert(cookie.includes("synara_session"), "cookie missing");
+  const reuse = await fetch(`${httpBase}/api/auth/bootstrap`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ credential: cred }),
+  });
+  assert(reuse.status === 401, `consumed credential reuse status ${reuse.status}`);
+  const session = await fetch(`${httpBase}/api/auth/session`, { headers: { Cookie: cookie } });
+  const sessionBody = await session.json();
+  assert(sessionBody.authenticated === true, "session state not authenticated");
+  const wst = await fetch(`${httpBase}/api/auth/ws-token`, {
+    method: "POST",
+    headers: { Cookie: cookie },
+  });
+  const wstBody = await wst.json();
+  assert((wstBody.token || "").split(".").length === 2, "ws ticket shape wrong");
+  const unauth = await fetch(`${httpBase}/api/auth/ws-token`, { method: "POST" });
+  assert(unauth.status === 401, `unauth ws-token status ${unauth.status}`);
+  await fetch(`${httpBase}/api/auth/logout`, { method: "POST", headers: { Cookie: cookie } });
+  const after = await fetch(`${httpBase}/api/auth/session`, { headers: { Cookie: cookie } });
+  assert((await after.json()).authenticated === false, "logout did not revoke");
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

@@ -26,6 +26,9 @@ use crate::todo::{iso_now_ms, WsErr};
 struct RunningTurn {
     child: Arc<Mutex<Child>>,
     cancelled: Arc<AtomicBool>,
+    port: u16,
+    password: String,
+    provider_session_id: Arc<Mutex<Option<String>>>,
 }
 
 static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
@@ -90,16 +93,37 @@ pub fn drop_thread_resources(thread_id: &str) {
 }
 
 pub fn cancel_turn(thread_id: &str) {
-    let (child, flag) = match RUNNING.lock() {
+    let (child, flag, port, password, provider_session_id) = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {
-            Some(rt) => (rt.child.clone(), rt.cancelled.clone()),
+            Some(rt) => (
+                rt.child.clone(),
+                rt.cancelled.clone(),
+                rt.port,
+                rt.password.clone(),
+                rt.provider_session_id.clone(),
+            ),
             None => return,
         },
         Err(_) => return,
     };
     flag.store(true, Ordering::SeqCst);
-    if let Ok(mut c) = child.lock() {
-        let _ = c.kill();
+    let session_id = provider_session_id
+        .lock()
+        .ok()
+        .and_then(|id| id.clone());
+    let interrupted = session_id
+        .map(|session_id| {
+            let auth = basic_auth_header(&password);
+            let path = format!("/api/session/{session_id}/interrupt");
+            http_request(port, "POST", &path, &auth, None)
+                .map(|(status, _)| (200..300).contains(&status) || status == 204)
+                .unwrap_or(false)
+        })
+        .unwrap_or(false);
+    if !interrupted {
+        if let Ok(mut c) = child.lock() {
+            let _ = c.kill();
+        }
     }
 }
 
@@ -920,6 +944,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         (Arc::new(Mutex::new(child)), port, password, None)
     };
     let auth = basic_auth_header(&password);
+    let running_provider_session_id = Arc::new(Mutex::new(reused_session_id.clone()));
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
         map.insert(
@@ -927,6 +952,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             RunningTurn {
                 child: child_shared.clone(),
                 cancelled: cancelled.clone(),
+                port,
+                password: password.clone(),
+                provider_session_id: running_provider_session_id.clone(),
             },
         );
     }
@@ -1009,6 +1037,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 .to_string()
         };
         active_session_id = Some(session_id.clone());
+        if let Ok(mut running_session) = running_provider_session_id.lock() {
+            *running_session = Some(session_id.clone());
+        }
         if protocol == OpenCodeProtocol::V2 {
             let path = format!("/api/session/{session_id}");
             let (status, body) = http_request(

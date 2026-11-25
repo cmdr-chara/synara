@@ -300,11 +300,25 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         rpc.write_raw(&json!({"jsonrpc": "2.0", "method": "initialized"}))?;
 
         let overrides = runtime_overrides(&turn_runtime_mode);
+        let mcp_config = json!({
+            "mcpServers": {
+                "synara": {
+                    "url": crate::agent_gateway_mcp::agent_gateway_url(),
+                    "httpHeaders": {
+                        "Authorization": format!(
+                            "Bearer {}",
+                            crate::agent_gateway_mcp::agent_gateway_token()
+                        ),
+                    },
+                },
+            },
+        });
         let mut open_params = json!({
             "cwd": cwd,
             "approvalPolicy": overrides["approvalPolicy"],
             "approvalsReviewer": overrides["approvalsReviewer"],
             "sandbox": overrides["sandbox"],
+            "config": mcp_config,
         });
         if let Some(model) = selected_model.as_deref() {
             open_params["model"] = json!(model);
@@ -330,9 +344,16 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             })
             .ok_or_else(|| err(format!("{open_method} returned no thread id")))?;
 
+        // Fresh sessions get the host policy + browser routing rules
+        // prepended to the first prompt; resumed threads already carry it.
+        let prompt_text = if stored_thread.is_none() {
+            format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
+        } else {
+            text.to_string()
+        };
         let mut turn_params = json!({
             "threadId": provider_thread_id,
-            "input": [{"type": "text", "text": text}],
+            "input": [{"type": "text", "text": prompt_text}],
             "summary": "auto",
         });
         if let Some(model) = selected_model.as_deref() {

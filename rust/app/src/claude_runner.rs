@@ -166,6 +166,24 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         args.push("--resume".into());
         args.push(sid.to_string());
     }
+    // Expose the synara agent gateway (browser_*, computer_*, synara_*) to
+    // the CLI over HTTP MCP; auth rides in the bearer header, never in files.
+    let mcp_config = json!({
+        "mcpServers": {
+            "synara": {
+                "type": "http",
+                "url": crate::agent_gateway_mcp::agent_gateway_url(),
+                "headers": {
+                    "Authorization": format!(
+                        "Bearer {}",
+                        crate::agent_gateway_mcp::agent_gateway_token()
+                    ),
+                },
+            },
+        },
+    });
+    args.push("--mcp-config".into());
+    args.push(mcp_config.to_string());
 
     let mut command = Command::new(claude_binary());
     command
@@ -183,8 +201,13 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             return Err(err(msg));
         }
     };
+    let prompt_text = if stored_session.is_none() {
+        format!("{}{}", crate::harness_policy::first_prompt_prefix(), text)
+    } else {
+        text.to_string()
+    };
     if let Some(mut stdin) = child.stdin.take() {
-        let _ = stdin.write_all(text.as_bytes());
+        let _ = stdin.write_all(prompt_text.as_bytes());
         // Closing stdin starts the headless run.
         drop(stdin);
     }

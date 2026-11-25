@@ -1059,7 +1059,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     // of spawning a parallel provider turn.
     let native_steer = dispatch_mode == "steer"
         && provider_turn_live
-        && matches!(active_provider.as_deref(), Some("codex" | "claudeAgent" | "pi"));
+        && matches!(active_provider.as_deref(), Some("codex" | "claudeAgent" | "pi" | "opencode"));
     let should_queue = row.parent_thread_id.is_none()
         && (row.claude_cache_review.is_some()
             || (provider_turn_live && !native_steer));
@@ -1333,6 +1333,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
             Some("codex") => crate::codex_runner::steer_turn(&thread_id, &text),
             Some("pi") => crate::pi_runner::steer_turn(&thread_id, &text),
             Some("claudeAgent") => crate::claude_runner::steer_turn(&thread_id, &text),
+            Some("opencode") => crate::opencode_runner::steer_turn(&thread_id, &text),
             _ => false,
         };
         if !delivered {

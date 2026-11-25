@@ -92,6 +92,35 @@ pub fn drop_thread_resources(thread_id: &str) {
     }
 }
 
+
+pub fn steer_turn(thread_id: &str, text: &str) -> bool {
+    let (port, password, session_id) = match RUNNING.lock() {
+        Ok(map) => match map.get(thread_id) {
+            Some(rt) => {
+                let session_id = rt.provider_session_id.lock().ok().and_then(|id| id.clone());
+                match session_id {
+                    Some(session_id) => (rt.port, rt.password.clone(), session_id),
+                    None => return false,
+                }
+            }
+            None => return false,
+        },
+        Err(_) => return false,
+    };
+    let auth = basic_auth_header(&password);
+    let path = format!("/api/session/{session_id}/prompt");
+    if let Ok((status, _)) = http_request(
+        port,
+        "POST",
+        &path,
+        &auth,
+        Some(&json!({"text": text, "delivery": "steer"})),
+    ) {
+        return status < 400;
+    }
+    false
+}
+
 pub fn cancel_turn(thread_id: &str) {
     let (child, flag, port, password, provider_session_id) = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {

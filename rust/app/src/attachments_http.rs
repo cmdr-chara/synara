@@ -234,10 +234,15 @@ pub fn run_cleanup_sweep() {
         if target.starts_with(&root) {
             let _ = std::fs::remove_file(&target);
         }
-        // The upstream CHECK chain requires delete_reason and
-        // delete_requested_at on both deleting and deleted rows.
+        // The upstream trigger graph only allows deleting -> deleted, so the
+        // sweep walks victims through deleting first; the CHECK chain requires
+        // delete_reason and delete_requested_at on both states.
         let _ = conn.execute(
-            "UPDATE managed_attachment_blobs SET state='deleted', delete_reason=COALESCE(delete_reason,'staging-expired'), delete_requested_at=COALESCE(delete_requested_at,?2), deleted_at=?2, updated_at=?2 WHERE attachment_id=?1",
+            "UPDATE managed_attachment_blobs SET state='deleting', delete_reason=COALESCE(delete_reason,'staging-expired'), delete_requested_at=COALESCE(delete_requested_at,?2), updated_at=?2 WHERE attachment_id=?1 AND state IN ('staged','claimed','uploading')",
+            params![id, now],
+        );
+        let _ = conn.execute(
+            "UPDATE managed_attachment_blobs SET state='deleted', deleted_at=?2, updated_at=?2 WHERE attachment_id=?1 AND state='deleting'",
             params![id, now],
         );
     }

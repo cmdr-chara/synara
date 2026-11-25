@@ -4467,6 +4467,47 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
     Ok(json!({ "sequence": seq }))
 }
 
+
+pub fn upsert_proposed_plan_projection(thread_id: &str, plan: &Value) -> Result<(), WsErr> {
+    let conn = open_state_rw()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| err(e.to_string()))?;
+    let plan_id = plan.get("id").and_then(Value::as_str).unwrap_or("");
+    let markdown = plan.get("planMarkdown").and_then(Value::as_str).unwrap_or("");
+    if plan_id.is_empty() || markdown.is_empty() {
+        return Ok(());
+    }
+    let now = iso_now_ms();
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_proposed_plans \
+         (plan_id, thread_id, turn_id, plan_markdown, implemented_at, implementation_thread_id, created_at, updated_at) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, COALESCE((SELECT created_at FROM projection_thread_proposed_plans WHERE plan_id=?1), ?7), ?7)",
+        params![
+            plan_id,
+            thread_id,
+            plan.get("turnId").and_then(Value::as_str),
+            markdown,
+            plan.get("implementedAt").and_then(Value::as_str),
+            plan.get("implementationThreadId").and_then(Value::as_str),
+            now,
+        ],
+    )
+    .map_err(|e| err(format!("upsert proposed plan: {e}")))?;
+    let actionable: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_thread_proposed_plans WHERE thread_id=?1 AND implemented_at IS NULL",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    conn.execute(
+        "UPDATE projection_threads SET has_actionable_proposed_plan=?2, updated_at=?3 WHERE thread_id=?1",
+        params![thread_id, if actionable > 0 { 1 } else { 0 }, now],
+    )
+    .map_err(|e| err(format!("update proposed plan summary: {e}")))?;
+    Ok(())
+}
+
 fn proposed_plan_upsert(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
@@ -4475,16 +4516,18 @@ fn proposed_plan_upsert(command: &Map<String, Value>) -> Result<Value, WsErr> {
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
     require_thread(&conn, &thread_id)?;
+    let proposed_plan = command.get("proposedPlan").cloned().unwrap_or(Value::Null);
     let events = vec![out_event(
         "thread.proposed-plan-upserted",
         &thread_id,
         &created_at,
         json!({
             "threadId": thread_id,
-            "proposedPlan": command.get("proposedPlan").cloned().unwrap_or(Value::Null),
+            "proposedPlan": proposed_plan,
         }),
     )];
     let seq = commit_events(&conn, &events, &command_id)?;
+    upsert_proposed_plan_projection(&thread_id, &proposed_plan)?;
     Ok(json!({ "sequence": seq }))
 }
 

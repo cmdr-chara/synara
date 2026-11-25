@@ -258,6 +258,48 @@ fn handle_can_use_tool(
             }),
         )
     };
+    if tool_name == "ExitPlanMode" {
+        let plan_markdown = input
+            .get("plan")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|plan| !plan.is_empty())
+            .map(str::to_string);
+        if let Some(plan_markdown) = plan_markdown {
+            let now = iso_now_ms();
+            let plan = json!({
+                "id": format!("claude-plan-{request_id}"),
+                "turnId": turn_id,
+                "planMarkdown": plan_markdown,
+                "implementedAt": Value::Null,
+                "implementationThreadId": Value::Null,
+                "createdAt": now,
+                "updatedAt": now,
+            });
+            let _ = crate::orchestration_engine::upsert_proposed_plan_projection(thread_id, &plan);
+            if let Ok(c) = open_state_rw() {
+                let _ = append_activity(
+                    &c,
+                    thread_id,
+                    turn_id,
+                    "info",
+                    "proposed-plan.completed",
+                    "Proposed plan completed",
+                    &json!({
+                        "requestId": request_id,
+                        "plan": plan,
+                        "providerMethod": "can_use_tool/ExitPlanMode",
+                        "providerPayload": request,
+                    }),
+                );
+            }
+        }
+        return respond(json!({
+            "behavior": "deny",
+            "message": "The client captured your proposed plan. Stop here and wait for the user's feedback or implementation request in a later turn.",
+        }));
+    }
+
     if tool_name == "AskUserQuestion" {
         let questions = normalize_ask_questions(&input);
         if let Ok(c) = open_state_rw() {

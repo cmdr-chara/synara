@@ -316,6 +316,43 @@ pub(crate) fn browser_tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "browser_console",
+            "Return console messages captured from the scoped browser tab.",
+            object_schema(merge_properties(json!({})), &[]),
+        ),
+        tool(
+            "browser_select",
+            "Select an option in a <select> element by value.",
+            object_schema(
+                merge_properties(json!({
+                    "value": {"type":"string", "description":"Option value to select."},
+                })),
+                &["value"],
+            ),
+        ),
+        tool(
+            "browser_upload",
+            "Set files on a file input element. Paths are local to the machine running the browser.",
+            object_schema(
+                merge_properties(json!({
+                    "files": {"type":"array", "items":{"type":"string"}, "description":"Absolute file paths to upload."},
+                    "path": {"type":"string", "description":"Single file path shorthand."},
+                })),
+                &[],
+            ),
+        ),
+        tool(
+            "browser_drag",
+            "Drag one element onto another using synthesized drag events.",
+            object_schema(
+                merge_properties(json!({
+                    "from": {"type":"string", "description":"Selector of the drag source element."},
+                    "to": {"type":"string", "description":"Selector of the drop target element."},
+                })),
+                &["from","to"],
+            ),
+        ),
+        tool(
             "browser_close",
             "Close the active scoped browser page/session. This is irreversible for the current tab.",
             object_schema(merge_properties(json!({})), &[]),

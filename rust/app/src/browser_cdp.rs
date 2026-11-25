@@ -129,6 +129,46 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                                 let _ = sender.send(v);
                             }
                         }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Runtime.consoleAPICalled")
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let level = v
+                            .pointer("/params/type")
+                            .and_then(Value::as_str)
+                            .unwrap_or("log")
+                            .to_string();
+                        let text_out: String = v
+                            .pointer("/params/args")
+                            .and_then(Value::as_array)
+                            .map(|args| {
+                                args.iter()
+                                    .map(|a| {
+                                        a.get("value")
+                                            .and_then(Value::as_str)
+                                            .map(str::to_string)
+                                            .unwrap_or_else(|| {
+                                                a.get("description")
+                                                    .and_then(Value::as_str)
+                                                    .unwrap_or("")
+                                                    .to_string()
+                                            })
+                                    })
+                                    .collect::<Vec<_>>()
+                                    .join(" ")
+                            })
+                            .unwrap_or_default();
+                        if let Ok(mut logs) = console_logs().lock() {
+                            let entries = logs.entry(session).or_default();
+                            entries.push(json!({"level": level, "text": text_out}));
+                            if entries.len() > 500 {
+                                entries.remove(0);
+                            }
+                        }
                     }
                 }
             }
@@ -273,6 +313,11 @@ pub(crate) async fn shutdown_cdp() {
 
 /// Per-thread tab: each calling thread gets its own target in the shared CDP
 /// browser, mirroring upstream's per-thread browser target registry.
+fn console_logs() -> &'static Mutex<HashMap<String, Vec<Value>>> {
+    static LOGS: OnceLock<Mutex<HashMap<String, Vec<Value>>>> = OnceLock::new();
+    LOGS.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
 fn cdp_tabs() -> &'static Mutex<HashMap<String, (String, String)>> {
     static TABS: OnceLock<Mutex<HashMap<String, (String, String)>>> = OnceLock::new();
     TABS.get_or_init(|| Mutex::new(HashMap::new()))
@@ -590,6 +635,99 @@ pub(crate) async fn call_cdp_tool(
                 }
                 tokio::time::sleep(std::time::Duration::from_millis(150)).await;
             }
+        }
+        "browser_console" => {
+            let entries = console_logs()
+                .lock()
+                .ok()
+                .and_then(|logs| logs.get(&session).cloned())
+                .unwrap_or_default();
+            Ok(json!({"backend": "chrome-cdp", "entries": entries}))
+        }
+        "browser_select" => {
+            let sel = selector_js(args)?;
+            let value = args
+                .get("value")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "browser_select requires value".to_string())?;
+            let expr = format!(
+                "(()=>{{const el=document.querySelector({});if(!el)throw new Error('select target not found');el.value={};el.dispatchEvent(new Event('change',{{bubbles:true}}));return el.value}})()",
+                js_string(&sel),
+                js_string(value)
+            );
+            cdp_eval(&conn, &session, &expr).await?;
+            Ok(json!({"backend": "chrome-cdp", "selected": value}))
+        }
+        "browser_upload" => {
+            let sel = selector_js(args)?;
+            let files: Vec<String> = args
+                .get("files")
+                .and_then(Value::as_array)
+                .map(|f| {
+                    f.iter()
+                        .filter_map(Value::as_str)
+                        .map(str::to_string)
+                        .collect()
+                })
+                .or_else(|| {
+                    args.get("path")
+                        .and_then(Value::as_str)
+                        .map(|p| vec![p.to_string()])
+                })
+                .ok_or_else(|| "browser_upload requires files or path".to_string())?;
+            // DOM.setFileInputFiles needs the node id of the input element.
+            let doc = conn
+                .call("DOM.getDocument", json!({}), Some(&session))
+                .await?;
+            let root_id = doc
+                .pointer("/root/nodeId")
+                .and_then(Value::as_i64)
+                .ok_or_else(|| "DOM.getDocument missing root".to_string())?;
+            let node = conn
+                .call(
+                    "DOM.querySelector",
+                    json!({"nodeId": root_id, "selector": sel}),
+                    Some(&session),
+                )
+                .await?;
+            let node_id = node.get("nodeId").and_then(Value::as_i64).unwrap_or(0);
+            if node_id == 0 {
+                return Err(format!("upload target '{sel}' not found"));
+            }
+            conn.call(
+                "DOM.setFileInputFiles",
+                json!({"files": files, "nodeId": node_id}),
+                Some(&session),
+            )
+            .await?;
+            Ok(json!({"backend": "chrome-cdp", "uploaded": files}))
+        }
+        "browser_drag" => {
+            // HTML5 drag events are synthesized in-page; CDP mouse events only
+            // cover simple pointer drags, which is what most pages implement.
+            let from = args
+                .get("from")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "browser_drag requires from".to_string())?;
+            let to = args
+                .get("to")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "browser_drag requires to".to_string())?;
+            let expr = format!(
+                r#"(()=>{{
+const src=document.querySelector({});const dst=document.querySelector({});
+if(!src)throw new Error('drag source not found');if(!dst)throw new Error('drag target not found');
+const dataTransfer=new DataTransfer();
+for(const type of ['dragstart']){{src.dispatchEvent(new DragEvent(type,{{bubbles:true,dataTransfer}}));}}
+dst.dispatchEvent(new DragEvent('dragover',{{bubbles:true,dataTransfer}}));
+dst.dispatchEvent(new DragEvent('drop',{{bubbles:true,dataTransfer}}));
+src.dispatchEvent(new DragEvent('dragend',{{bubbles:true,dataTransfer}}));
+return true}})()"#,
+                js_string(from),
+                js_string(to)
+            );
+            cdp_eval(&conn, &session, &expr).await?;
+            Ok(json!({"backend": "chrome-cdp", "dragged": true}))
         }
         "browser_close" => {
             let key = thread.unwrap_or("").to_string();

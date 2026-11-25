@@ -624,6 +624,182 @@ pub fn supports_provider(provider: &str) -> bool {
 }
 
 
+
+/// Start an ACP provider before the first user prompt, authenticate/session-
+/// configure it, and park the live process. This is the generic prewarm path
+/// for Devin, OMP, Cursor, Grok, Droid and Antigravity.
+pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
+    if has_running_turn(thread_id) {
+        return Ok(false);
+    }
+    if let Ok(parked_map) = PARKED.lock() {
+        if parked_map.contains_key(thread_id) {
+            return Ok(false);
+        }
+    }
+    let conn = open_state_rw()?;
+    let (raw_cwd, interaction_mode, model_json): (String, String, Option<String>) = conn
+        .query_row(
+            "SELECT COALESCE(NULLIF(t.working_directory, ''), NULLIF(t.worktree_path, ''), NULLIF(t.associated_worktree_path, ''), p.workspace_root, ''), \
+                    t.interaction_mode, t.model_selection_json \
+             FROM projection_threads t JOIN projection_projects p ON p.project_id=t.project_id \
+             WHERE t.thread_id=?1",
+            params![thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|e| err(format!("acp prewarm thread lookup: {e}")))?;
+    let stored_session: Option<String> = conn
+        .query_row(
+            "SELECT provider_thread_id FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
+    let turn_runtime_mode: String = conn
+        .query_row(
+            "SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or_else(|_| "full-access".to_string());
+    let cwd = if !raw_cwd.is_empty() && std::path::Path::new(&raw_cwd).is_dir() {
+        raw_cwd
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let model_value = model_json
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .unwrap_or(Value::Null);
+    let selected_model = model_value
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let reasoning_effort = model_value
+        .pointer("/options/reasoningEffort")
+        .and_then(Value::as_str)
+        .or_else(|| model_value.get("reasoningEffort").and_then(Value::as_str))
+        .map(str::to_string);
+    let additional_dirs: Vec<String> = conn
+        .query_row(
+            "SELECT p.additional_folders_json FROM projection_projects p \
+             JOIN projection_threads t ON t.project_id = p.project_id WHERE t.thread_id = ?1",
+            params![thread_id],
+            |r| r.get::<_, Option<String>>(0),
+        )
+        .ok()
+        .flatten()
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|v| v.as_array().cloned())
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|entry| {
+            entry
+                .as_str()
+                .map(str::to_string)
+                .or_else(|| entry.get("path").and_then(Value::as_str).map(str::to_string))
+        })
+        .collect();
+    let launch = acp_launch_profile_ex(
+        provider,
+        &turn_runtime_mode,
+        selected_model.as_deref(),
+        reasoning_effort.as_deref(),
+        &additional_dirs,
+    )
+    .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
+    let launch_key = format!(
+        "{provider}|{}|{turn_runtime_mode}|{cwd}",
+        selected_model.as_deref().unwrap_or("")
+    );
+    let mut command = Command::new(&launch.binary);
+    command
+        .args(&launch.args)
+        .current_dir(&cwd)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    for (key, value) in &launch.env {
+        command.env(key, value);
+    }
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `{}` for {} ACP: {e}", launch.binary, launch.display_name)))?;
+    let child_stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
+    let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
+    let stdin = Arc::new(Mutex::new(child_stdin));
+    let mut rpc = Rpc {
+        stdin,
+        reader: BufReader::new(stdout),
+        next_id: 1,
+        pending: Vec::new(),
+        approval_ctx: None,
+    };
+    let prepared = (|| -> Result<String, WsErr> {
+        let initialize_result = rpc.call(
+            "initialize",
+            json!({
+                "protocolVersion": 1,
+                "clientCapabilities": {"fs":{"readTextFile":false,"writeTextFile":false},"terminal":false},
+                "clientInfo": {"name":"synara","version":"1.0.0"},
+            }),
+        )?;
+        let auth_methods = initialize_result
+            .get("authMethods")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        let mcp_servers = if initialize_result
+            .pointer("/agentCapabilities/mcpCapabilities/http")
+            .and_then(Value::as_bool)
+            == Some(true)
+        {
+            json!([{"type":"http","name":"synara","url":crate::agent_gateway_mcp::agent_gateway_url(),"headers":[{"name":"Authorization","value":format!("Bearer {}",crate::agent_gateway_mcp::agent_gateway_token())}]}])
+        } else {
+            json!([])
+        };
+        let try_setup = |rpc: &mut Rpc| -> Result<(String, Value), WsErr> {
+            if let Some(sid) = stored_session.as_deref() {
+                match rpc.call("session/load", json!({"sessionId":sid,"cwd":cwd,"mcpServers":mcp_servers})) {
+                    Ok(res) => return Ok((sid.to_string(), res.get("modes").cloned().unwrap_or(Value::Null))),
+                    Err(e) if is_auth_required_error(&e) => return Err(e),
+                    Err(_) => {}
+                }
+            }
+            let res = rpc.call("session/new", json!({"cwd":cwd,"mcpServers":mcp_servers}))?;
+            let id = res.get("sessionId").and_then(Value::as_str)
+                .ok_or_else(|| err("session/new returned no sessionId"))?.to_string();
+            Ok((id, res.get("modes").cloned().unwrap_or(Value::Null)))
+        };
+        let (session_id, mode_state) = match try_setup(&mut rpc) {
+            Ok(ok) => ok,
+            Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
+                let Some(method) = select_auth_method(provider, &auth_methods) else { return Err(e) };
+                rpc.call("authenticate", json!({"methodId":method}))?;
+                try_setup(&mut rpc)?
+            }
+            Err(e) => return Err(e),
+        };
+        if let Ok(Some(mode_id)) = resolve_acp_mode(provider, &mode_state, &turn_runtime_mode, &interaction_mode) {
+            let _ = rpc.call("session/set_mode", json!({"sessionId":session_id,"modeId":mode_id}));
+        }
+        Ok(session_id)
+    })();
+    match prepared {
+        Ok(session_id) => {
+            if let Ok(mut parked_map) = PARKED.lock() {
+                parked_map.insert(thread_id.to_string(), ParkedSession { child, rpc, session_id, launch_key });
+            }
+            Ok(true)
+        }
+        Err(e) => {
+            let _ = child.kill();
+            let _ = child.wait();
+            Err(e)
+        }
+    }
+}
+
 /// Compact a warm ACP session by sending the provider-native `/compact`
 /// prompt. Devin and Grok expose compaction as a normal agent prompt rather
 /// than a dedicated RPC method; compaction output is intentionally left in the

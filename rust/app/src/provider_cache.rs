@@ -401,6 +401,7 @@ fn prewarm_thread(payload: &Value) -> Result<Value, WsErr> {
         "pi" => crate::pi_runner::prewarm_thread(thread_id)?,
         "codex" => crate::codex_runner::prewarm_thread(thread_id)?,
         "claudeAgent" => crate::claude_runner::prewarm_thread(thread_id)?,
+        "devin" | "omp" | "cursor" | "grok" | "droid" | "antigravity" => crate::acp_runner::prewarm_thread(&provider, thread_id)?,
         _ => false,
     };
     Ok(json!({"started": started}))

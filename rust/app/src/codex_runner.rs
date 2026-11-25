@@ -934,7 +934,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
                     "httpHeaders": {
                         "Authorization": format!(
                             "Bearer {}",
-                            crate::agent_gateway_mcp::agent_gateway_token()
+                            crate::agent_gateway_mcp::issue_thread_token(&thread_id)
                         ),
                     },
                 },
@@ -1220,7 +1220,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         "httpHeaders": {
                             "Authorization": format!(
                                 "Bearer {}",
-                                crate::agent_gateway_mcp::agent_gateway_token()
+                                crate::agent_gateway_mcp::issue_thread_token(&thread_id)
                             ),
                         },
                     },

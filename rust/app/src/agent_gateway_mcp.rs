@@ -67,12 +67,52 @@ pub fn agent_gateway_token() -> &'static str {
     })
 }
 
-fn bearer_valid(headers: &HeaderMap) -> bool {
-    headers
+/// Upstream injects a thread-bound bearer token at session start so the
+/// gateway knows which thread is calling (AgentGateway.ts). Tokens are random
+/// per thread; the legacy master token stays valid as an unscoped caller.
+fn thread_tokens() -> &'static std::sync::Mutex<std::collections::HashMap<String, String>> {
+    static TOKENS: OnceLock<std::sync::Mutex<std::collections::HashMap<String, String>>> =
+        OnceLock::new();
+    TOKENS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+pub fn issue_thread_token(thread_id: &str) -> String {
+    use std::io::Read;
+    let mut bytes = [0u8; 16];
+    if let Ok(mut f) = std::fs::File::open("/dev/urandom") {
+        let _ = f.read_exact(&mut bytes);
+    } else {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or_default();
+        for (i, b) in bytes.iter_mut().enumerate() {
+            *b = (nanos.wrapping_add(i as u128) & 0xff) as u8;
+        }
+    }
+    let token: String = bytes.iter().map(|b| format!("{b:02x}")).collect();
+    if let Ok(mut map) = thread_tokens().lock() {
+        map.insert(token.clone(), thread_id.to_string());
+    }
+    token
+}
+
+/// None = invalid token; Some(None) = master token (unscoped caller);
+/// Some(Some(thread)) = thread-scoped caller.
+fn bearer_caller(headers: &HeaderMap) -> Option<Option<String>> {
+    let value = headers
         .get(axum::http::header::AUTHORIZATION)
-        .and_then(|v| v.to_str().ok())
-        .map(|v| v == format!("Bearer {}", agent_gateway_token()))
-        .unwrap_or(false)
+        .and_then(|v| v.to_str().ok())?;
+    let token = value.strip_prefix("Bearer ")?;
+    if token == agent_gateway_token() {
+        return Some(None);
+    }
+    if let Ok(map) = thread_tokens().lock() {
+        if let Some(thread) = map.get(token) {
+            return Some(Some(thread.clone()));
+        }
+    }
+    None
 }
 
 async fn handle_mcp(
@@ -80,13 +120,16 @@ async fn handle_mcp(
     headers: HeaderMap,
     body: String,
 ) -> Response {
-    if !bearer_valid(&headers) {
-        return (
-            StatusCode::UNAUTHORIZED,
-            Json(json!({"error": "unauthorized"})),
-        )
-            .into_response();
-    }
+    let caller_thread = match bearer_caller(&headers) {
+        Some(thread) => thread,
+        None => {
+            return (
+                StatusCode::UNAUTHORIZED,
+                Json(json!({"error": "unauthorized"})),
+            )
+                .into_response();
+        }
+    };
     let msg: Value = match serde_json::from_str(&body) {
         Ok(v) => v,
         Err(_) => {
@@ -131,7 +174,7 @@ async fn handle_mcp(
                 .pointer("/params/arguments")
                 .cloned()
                 .unwrap_or_else(|| json!({}));
-            match call_tool(name, &args).await {
+            match call_tool(name, &args, caller_thread.as_deref()).await {
                 Ok(value) => Ok(tool_json(value)),
                 Err(message) => Ok(json!({
                     "content": [{"type": "text", "text": message}],
@@ -376,9 +419,9 @@ fn semantic_target(args: &Value) -> Option<Value> {
     semantic.then(|| Value::Object(target))
 }
 
-async fn call_tool(name: &str, args: &Value) -> Result<Value, String> {
+async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     if name.starts_with("browser_") {
-        return crate::browser_automation::call_browser_tool(name, args).await;
+        return crate::browser_automation::call_browser_tool(name, args, thread).await;
     }
     if name == "computer_batch" {
         return computer_batch(args).await;

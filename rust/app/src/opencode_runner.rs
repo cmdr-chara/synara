@@ -1027,6 +1027,197 @@ pub fn discover_commands(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>
     Ok(Some(commands))
 }
 
+
+fn opencode_variant_descriptors(model: &Value) -> Vec<Value> {
+    if let Some(variants) = model.get("variants").and_then(Value::as_object) {
+        return variants
+            .iter()
+            .filter_map(|(key, variant)| {
+                let value = variant
+                    .get("value")
+                    .and_then(Value::as_str)
+                    .or_else(|| variant.get("id").and_then(Value::as_str))
+                    .unwrap_or(key)
+                    .trim()
+                    .to_string();
+                if value.is_empty() {
+                    return None;
+                }
+                let mut out = json!({"value": value});
+                if let Some(label) = variant.get("label").and_then(Value::as_str) {
+                    out["label"] = json!(label);
+                }
+                if let Some(description) = variant.get("description").and_then(Value::as_str) {
+                    out["description"] = json!(description);
+                }
+                Some(out)
+            })
+            .collect();
+    }
+    if let Some(variants) = model.get("variants").and_then(Value::as_array) {
+        return variants
+            .iter()
+            .filter_map(|variant| {
+                let value = variant
+                    .get("id")
+                    .and_then(Value::as_str)
+                    .or_else(|| variant.get("value").and_then(Value::as_str))?
+                    .trim()
+                    .to_string();
+                if value.is_empty() { return None; }
+                let mut out = json!({"value": value});
+                if let Some(label) = variant.get("label").and_then(Value::as_str) {
+                    out["label"] = json!(label);
+                }
+                Some(out)
+            })
+            .collect();
+    }
+    model
+        .get("reasoning_options")
+        .or_else(|| model.get("reasoningOptions"))
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+}
+
+fn flatten_opencode_inventory_models(provider_list: &Value) -> Vec<Value> {
+    let mut models = Vec::new();
+    for provider in provider_list
+        .get("data")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+    {
+        let provider_id = provider.get("id").and_then(Value::as_str).unwrap_or("");
+        if provider_id.is_empty() {
+            continue;
+        }
+        let provider_name = provider.get("name").and_then(Value::as_str).unwrap_or(provider_id);
+        let mut entries = Vec::new();
+        if let Some(object) = provider.get("models").and_then(Value::as_object) {
+            for (model_id, model) in object {
+                entries.push((model_id.clone(), model.clone()));
+            }
+        } else if let Some(array) = provider.get("models").and_then(Value::as_array) {
+            for model in array {
+                if let Some(model_id) = model.get("id").and_then(Value::as_str) {
+                    entries.push((model_id.to_string(), model.clone()));
+                }
+            }
+        }
+        for (model_id, model) in entries {
+            let name = model
+                .get("name")
+                .and_then(Value::as_str)
+                .unwrap_or(model_id.as_str())
+                .trim()
+                .to_string();
+            if name.is_empty() {
+                continue;
+            }
+            let efforts = opencode_variant_descriptors(&model);
+            let mut out = json!({
+                "slug": format!("{provider_id}/{model_id}"),
+                "name": name,
+                "providerID": provider_id,
+                "modelID": model_id,
+                "upstreamProviderId": provider_id,
+                "upstreamProviderName": provider_name,
+            });
+            if !efforts.is_empty() {
+                out["supportedReasoningEfforts"] = json!(efforts);
+            }
+            if let Some(default_effort) = model
+                .pointer("/options/reasoningEffort")
+                .or_else(|| model.pointer("/options/reasoning_effort"))
+                .or_else(|| model.pointer("/options/effort"))
+                .and_then(Value::as_str)
+            {
+                out["defaultReasoningEffort"] = json!(default_effort);
+            }
+            if let Some(context) = model.pointer("/limit/context").and_then(Value::as_i64) {
+                if context > 0 {
+                    let value = if context >= 1_000_000 && context % 1_000_000 == 0 {
+                        format!("{}m", context / 1_000_000)
+                    } else if context >= 1_000 && context % 1_000 == 0 {
+                        format!("{}k", context / 1_000)
+                    } else {
+                        context.to_string()
+                    };
+                    out["contextWindowOptions"] = json!([{"value": value, "label": value.to_uppercase(), "isDefault": true}]);
+                    out["defaultContextWindow"] = json!(value);
+                }
+            }
+            models.push(out);
+        }
+    }
+    models.sort_by(|a,b| {
+        a.get("name").and_then(Value::as_str).unwrap_or("")
+            .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
+            .then(a.get("slug").and_then(Value::as_str).unwrap_or("")
+                .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")))
+    });
+    models
+}
+
+/// Discover the server-side model inventory through a temporary official
+/// OpenCode server. The server owns provider credentials and availability;
+/// Synara only reads its public model metadata.
+pub fn discover_server_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
+    let cwd = if !cwd.trim().is_empty() && std::path::Path::new(cwd).is_dir() {
+        cwd.to_string()
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let port = std::net::TcpListener::bind("127.0.0.1:0")
+        .and_then(|l| l.local_addr())
+        .map(|a| a.port())
+        .unwrap_or(4096);
+    let password = random_token();
+    let mut command = Command::new(opencode_binary());
+    command
+        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+        .current_dir(&cwd)
+        .env("OPENCODE_SERVER_USERNAME", "opencode")
+        .env("OPENCODE_SERVER_PASSWORD", &password)
+        .env("OPENCODE_PASSWORD", &password)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `opencode serve`: {e}")))?;
+    let auth = basic_auth_header(&password);
+    let result = (|| -> Result<Vec<Value>, WsErr> {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+        loop {
+            if detect_protocol(port, &auth) == OpenCodeProtocol::V2 {
+                break;
+            }
+            if std::time::Instant::now() >= deadline {
+                return Err(err("opencode discovery server did not become ready in 20s"));
+            }
+            std::thread::sleep(std::time::Duration::from_millis(150));
+        }
+        let location = format!("location%5Bdirectory%5D={}", urlencode_component(&cwd));
+        let (status, body) = http_request(port, "GET", &format!("/api/provider?{location}"), &auth, None)?;
+        if status >= 400 {
+            return Err(err(format!("opencode provider inventory HTTP {status}: {body}")));
+        }
+        let parsed: Value = serde_json::from_str(&body)
+            .map_err(|e| err(format!("opencode provider inventory parse: {e}")))?;
+        let models = flatten_opencode_inventory_models(&parsed);
+        if models.is_empty() {
+            return Err(err("opencode provider inventory returned no models"));
+        }
+        Ok(models)
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    result
+}
+
 /// Start and configure an idle OpenCode server/session before the first user
 /// prompt. Unlike a turn, prewarm performs no model traffic: it only pays the
 /// process startup, MCP registration, permission and model/agent switching

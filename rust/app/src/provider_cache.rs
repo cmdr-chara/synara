@@ -224,13 +224,56 @@ fn pi_discovery_result(payload: &Value) -> Result<Value, WsErr> {
     }))
 }
 
-fn opencode_discovery_result() -> Result<Value, WsErr> {
-    let models = discover_opencode_models()?;
-    Ok(json!({
-        "models": models,
-        "source": "cli",
-        "cached": false,
-    }))
+fn merge_opencode_models(server_models: Vec<Value>, cli_models: Vec<Value>) -> Vec<Value> {
+    let mut models = server_models;
+    for cli_model in cli_models {
+        let slug = cli_model.get("slug").and_then(Value::as_str).unwrap_or("");
+        if !slug.is_empty()
+            && !models.iter().any(|model| {
+                model.get("slug").and_then(Value::as_str) == Some(slug)
+            })
+        {
+            models.push(cli_model);
+        }
+    }
+    models.sort_by(|a, b| {
+        a.get("name").and_then(Value::as_str).unwrap_or("")
+            .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
+            .then(a.get("slug").and_then(Value::as_str).unwrap_or("")
+                .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")))
+    });
+    models
+}
+
+fn opencode_discovery_result(payload: &Value) -> Result<Value, WsErr> {
+    let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
+    let cli_result = discover_opencode_models();
+    let server_result = crate::opencode_runner::discover_server_models(cwd);
+    match (server_result, cli_result) {
+        (Ok(server_models), Ok(cli_models)) => Ok(json!({
+            "models": merge_opencode_models(server_models, cli_models),
+            "source": "opencode-cli",
+            "cached": false,
+            "degraded": false,
+        })),
+        (Ok(server_models), Err(_)) => Ok(json!({
+            "models": server_models,
+            "source": "opencode",
+            "cached": false,
+            "degraded": true,
+        })),
+        (Err(server_error), Ok(cli_models)) => Ok(json!({
+            "models": cli_models,
+            "source": "opencode-cli",
+            "cached": false,
+            "degraded": true,
+            "serverError": server_error.0,
+        })),
+        (Err(server_error), Err(cli_error)) => Err(err(format!(
+            "opencode model discovery failed: {}; {}",
+            cli_error.0, server_error.0
+        ))),
+    }
 }
 
 /// `provider.listModels`: the upstream-normalized catalog cache keyed by a
@@ -265,7 +308,7 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         .join("catalogs.json");
     let Ok(text) = std::fs::read_to_string(&path) else {
         if provider == "opencode" {
-            return opencode_discovery_result();
+            return opencode_discovery_result(payload);
         }
         if provider == "pi" {
             return pi_discovery_result(payload);
@@ -311,7 +354,7 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
         }));
     }
     if provider == "opencode" {
-        return opencode_discovery_result();
+        return opencode_discovery_result(payload);
     }
     if provider == "pi" {
         return pi_discovery_result(payload);

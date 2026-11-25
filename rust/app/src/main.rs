@@ -29,6 +29,7 @@ mod github_inbox;
 mod attachments_http;
 mod favicons;
 mod auth_http;
+mod editor_icon;
 mod auth_sessions;
 mod server_secrets;
 mod thread_export;
@@ -120,6 +121,7 @@ async fn main() {
         .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
         .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
+        .route("/api/editor-icon", axum::routing::get(editor_icon::editor_icon))
         .route("/health", axum::routing::get(|| async { "ok" }))
         .route("/api/auth/bootstrap", axum::routing::post(auth_http::bootstrap))
         .route("/api/auth/session", axum::routing::get(auth_http::session_state))

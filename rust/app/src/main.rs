@@ -91,6 +91,15 @@ async fn main() {
         .ok()
         .and_then(|p| p.parse().ok())
         .unwrap_or(8080);
+    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+        std::thread::spawn(|| loop {
+            std::thread::sleep(std::time::Duration::from_secs(60));
+            let fired = orchestration_engine::fire_due_usage_limit_recoveries();
+            if fired > 0 {
+                eprintln!("usage-limit recovery: resumed {fired} thread(s) after reset");
+            }
+        });
+    }
     let listener = tokio::net::TcpListener::bind(SocketAddr::from(([0, 0, 0, 0], port)))
         .await
         .expect("binding the port");

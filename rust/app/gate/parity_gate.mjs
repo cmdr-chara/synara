@@ -73,7 +73,7 @@ function assert(cond, msg) {
   if (!cond) throw new Error(msg);
 }
 function sql(query) {
-  return execSync(`sqlite3 ${JSON.stringify(dbPath)} ${JSON.stringify(query)}`)
+  return execSync(`sqlite3 -cmd ".timeout 8000" ${JSON.stringify(dbPath)} ${JSON.stringify(query)}`)
     .toString()
     .trim();
 }
@@ -468,6 +468,56 @@ await scenario("automation stop policies settle after terminal runs", async () =
     `select enabled, disabled_reason, iteration_count from automation_definitions where automation_id='${aidMaxIter}'`,
   );
   assert(maxiter.includes("max-iterations"), `max-iterations automation not disabled: ${maxiter}`);
+});
+
+// 21. manual automation run dispatches through the scheduler
+await scenario("manual automation.runNow dispatches and completes", async () => {
+  const aid = "gate-auto-manual-" + Date.now();
+  sql(
+    `insert into automation_definitions (automation_id, project_id, source_thread_id, name, prompt, schedule_json, enabled, next_run_at, model_selection_json, provider_options_json, runtime_mode, interaction_mode, worktree_mode, mode, target_thread_id, max_iterations, stop_on_error, minimum_interval_seconds, retry_policy_json, misfire_policy, acknowledged_risks_json, iteration_count, created_at, updated_at) values ('${aid}', '${projectId}', NULL, 'Manual Test', 'hello', '{\"type\":\"manual\"}', 1, NULL, '{\"provider\":\"omp\",\"model\":\"openai/gpt-5\"}', '{}', 'worktree', 'autonomous', 'reuse', 'standalone', NULL, NULL, 0, 60, '{}', 'fire-if-due', '{}', 0, '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z')`,
+  );
+  const r = await call("automation.runNow", { automationId: aid });
+  assert(r && typeof r === "object", "runNow returned nothing");
+  // tick at 3s picks up the queued run, turn ~2s, next tick reconciles.
+  await sleep(12000);
+  const run = sql(
+    `select status from automation_runs where automation_id='${aid}' and trigger_type='manual' limit 1`,
+  );
+  assert(run.includes("completed"), `manual run did not complete: ${run}`);
+});
+
+// 22. heartbeat deferral: busy target thread defers instead of competing
+await scenario("heartbeat automation defers while target thread is busy", async () => {
+  const suffix = Date.now();
+  const targetThread = "gate-hb-target-" + suffix;
+  const aid = "gate-auto-hb-" + suffix;
+  // Seed a target thread with a fake active session so the deferral check
+  // sees it busy without needing a real slow turn.
+  sql(
+    `insert into projection_threads (thread_id, project_id, title, created_at, updated_at, runtime_mode, interaction_mode) values ('${targetThread}', '${projectId}', 'HB Target', '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z', 'worktree', 'autonomous')`,
+  );
+  sql(
+    `insert into projection_thread_sessions (thread_id, status, provider_name, active_turn_id, updated_at) values ('${targetThread}', 'running', 'omp', 'fake-busy-turn', '2026-01-01T00:00:00.000Z')`,
+  );
+  sql(
+    `insert into automation_definitions (automation_id, project_id, source_thread_id, name, prompt, schedule_json, enabled, next_run_at, model_selection_json, provider_options_json, runtime_mode, interaction_mode, worktree_mode, mode, target_thread_id, max_iterations, stop_on_error, minimum_interval_seconds, retry_policy_json, misfire_policy, acknowledged_risks_json, iteration_count, created_at, updated_at) values ('${aid}', '${projectId}', NULL, 'HB Test', 'hello', '{\"type\":\"interval\",\"everySeconds\":3600}', 1, '2020-01-01T00:00:00.000Z', '{\"provider\":\"omp\",\"model\":\"openai/gpt-5\"}', '{}', 'worktree', 'autonomous', 'reuse', 'heartbeat', '${targetThread}', NULL, 0, 60, '{}', 'fire-if-due', '{}', 0, '2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z')`,
+  );
+  // First tick fires the occurrence; the busy target must defer it.
+  await sleep(7000);
+  const deferred = sql(
+    `select status, deferred_until IS NOT NULL from automation_runs where automation_id='${aid}' limit 1`,
+  );
+  assert(deferred.includes("deferred"), `run was not deferred while target busy: ${deferred}`);
+  // Free the target: the next deferred pass must dispatch and complete it.
+  sql(
+    `update projection_thread_sessions set active_turn_id = NULL, status = 'idle' where thread_id = '${targetThread}'`,
+  );
+  sql(
+    `update automation_runs set deferred_until = '2020-01-01T00:00:00.000Z' where automation_id = '${aid}'`,
+  );
+  await sleep(12000);
+  const after = sql(`select status from automation_runs where automation_id='${aid}' limit 1`);
+  assert(after.includes("completed"), `deferred run did not dispatch after target freed: ${after}`);
 });
 
 let pass = 0,

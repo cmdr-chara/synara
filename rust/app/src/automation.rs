@@ -508,13 +508,17 @@ fn run_now(payload: &Value) -> Result<Value, WsErr> {
     conn.execute(
         "INSERT INTO automation_runs \
          (run_id, automation_id, project_id, trigger_type, status, scheduled_for, \
+          thread_create_command_id, turn_start_command_id, message_id, \
           permission_snapshot_json, created_at, updated_at) \
-         VALUES (?1,?2,?3,'manual','queued',?4,'{}',?4,?4)",
+         VALUES (?1,?2,?3,'manual','queued',?4,?5,?6,?7,'{}',?4,?4)",
         rusqlite::params![
             run_id,
             id,
             def["projectId"].as_str().unwrap_or_default(),
             now,
+            format!("{run_id}-thread-create"),
+            format!("{run_id}-turn-start"),
+            format!("{run_id}-message"),
         ],
     )
     .map_err(|e| err(e.to_string()))?;

@@ -1282,6 +1282,70 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                                     let _ = append_activity(&c, thread_id, &turn_id, "info", "turn.tasks.updated", "Task list updated", &payload);
                                 }
                             }
+                            if name == "Workflow" && !is_error {
+                                // Workflow launch detection, upstream ClaudeAdapter:
+                                // structured result first, then text fallback.
+                                let text = match &content {
+                                    Value::String(t) => t.clone(),
+                                    Value::Array(blocks) => blocks
+                                        .iter()
+                                        .filter(|b| b.get("type").and_then(Value::as_str) == Some("text"))
+                                        .filter_map(|b| b.get("text").and_then(Value::as_str))
+                                        .collect::<Vec<_>>()
+                                        .join("\n"),
+                                    other => serde_json::to_string(other).unwrap_or_default(),
+                                };
+                                let launch = crate::claude_workflow_script::parse_workflow_launch(&content)
+                                    .or_else(|| {
+                                        if text.is_empty() {
+                                            None
+                                        } else {
+                                            crate::claude_workflow_script::parse_workflow_launch_from_text(&text)
+                                        }
+                                    });
+                                if let Some(launch) = launch {
+                                    let task_id = launch
+                                        .get("taskId")
+                                        .and_then(Value::as_str)
+                                        .or_else(|| launch.get("runId").and_then(Value::as_str))
+                                        .unwrap_or("")
+                                        .to_string();
+                                    if !task_id.is_empty() {
+                                        if let Ok(c) = open_state_rw() {
+                                            let _ = append_activity(
+                                                &c,
+                                                thread_id,
+                                                &turn_id,
+                                                "info",
+                                                "task.updated",
+                                                "Workflow launched",
+                                                &json!({
+                                                    "taskId": task_id,
+                                                    "workflowRunId": launch.get("runId"),
+                                                    "workflowScriptPath": launch.get("scriptPath"),
+                                                }),
+                                            );
+                                        }
+                                        if let Some(dir) = launch.get("transcriptDir").and_then(Value::as_str) {
+                                            // Labels zip against journal start order; read
+                                            // them from the persisted script when present.
+                                            let labels = launch
+                                                .get("scriptPath")
+                                                .and_then(Value::as_str)
+                                                .and_then(|p| std::fs::read_to_string(p).ok())
+                                                .map(|s| crate::claude_workflow_script::ordered_agent_labels(&s))
+                                                .unwrap_or_default();
+                                            crate::claude_workflow_runtime::spawn_workflow_poller(
+                                                thread_id.to_string(),
+                                                turn_id.clone(),
+                                                task_id,
+                                                dir.to_string(),
+                                                labels,
+                                            );
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -667,6 +667,39 @@ pub fn parse_workflow_progress_agents(content: &str) -> Option<Value> {
     }
 }
 
+/// Labels of agent(...) calls in script order, deduplicated — the zip key for
+/// runtime snapshots, matching how upstream accumulates them.
+pub fn ordered_agent_labels(script: &str) -> Vec<String> {
+    let scan = Scanner::new(script);
+    let mut labels: Vec<String> = Vec::new();
+    let mut i = 0;
+    while i + 5 < scan.len() {
+        if scan.slice(i, i + 5) == "agent" {
+            let boundary = i == 0 || {
+                let prev = scan.at(i - 1).unwrap();
+                !(prev.is_ascii_alphanumeric() || prev == '_' || prev == '$')
+            };
+            if boundary {
+                let mut j = i + 5;
+                while j < scan.len() && scan.at(j).is_some_and(|c| c.is_whitespace()) {
+                    j += 1;
+                }
+                if scan.at(j) == Some('(') {
+                    if let Some(call_text) = read_balanced_call(&scan, j) {
+                        if let Some(label) = read_option_string_literal(&call_text, "label") {
+                            if !labels.contains(&label) {
+                                labels.push(label);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        i += 1;
+    }
+    labels
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

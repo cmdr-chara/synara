@@ -364,6 +364,32 @@ await scenario("git stacked action streams chunks and resume dedups", async () =
   assert(missing, "resume-missing not rejected");
 });
 
+// 17. claude workflow observability: launch detection + transcript poller
+await scenario("claude workflow launch emits task.updated and task.progress", async () => {
+  const dir = "/tmp/gate-wf-transcripts";
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync("/tmp/gate-wf.js", 'agent("scan", { label: "scanner", phase: "One" });\n');
+  fs.writeFileSync(dir + "/journal.jsonl", '{"type":"started","agentId":"agent-1"}\n');
+  fs.writeFileSync(
+    dir + "/agent-agent-1.jsonl",
+    '{"type":"user","timestamp":"2025-06-01T10:00:00Z","message":{"content":"scan the repo"}}\n',
+  );
+  const tid = await runTurn("claudeAgent", "claude-sonnet-4-5", "workflowdemo run", 3000);
+  const updated = sql(
+    `select count(*) from projection_thread_activities where thread_id='${tid}' and kind='task.updated'`,
+  );
+  assert(Number(updated) >= 1, "no task.updated activity for workflow launch");
+  // The poller ticks every 2s; give it time to read the seeded transcripts.
+  await sleep(5000);
+  const progress = sql(
+    `select payload_json from projection_thread_activities where thread_id='${tid}' and kind='task.progress' order by sequence desc limit 1`,
+  );
+  assert(progress.includes("workflowAgents"), "no workflowAgents progress payload");
+  assert(progress.includes("agent-1"), "agent snapshot missing from progress");
+  assert(progress.includes("scanner"), "zipped label missing from progress");
+});
+
 let pass = 0,
   fail = 0;
 for (const [status, name] of results) {

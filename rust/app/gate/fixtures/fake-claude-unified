@@ -62,6 +62,12 @@ for line in sys.stdin:
    send({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':'tu-2','content':json.dumps({'task':{'taskId':'1','subject':'implement parser'}})}]}})
    send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
    send({'type':'result','subtype':'success','result':'done'})
+  elif 'workflowdemo' in body:
+   send({'type':'assistant','message':{'content':[{'type':'tool_use','id':'tu-wf','name':'Workflow','input':{'script':'export const meta={name:"demo"}'}}]}})
+   launch={'taskType':'local_workflow','taskId':'wf-task-1','runId':'wf_gate123','scriptPath':'/tmp/gate-wf.js','transcriptDir':'/tmp/gate-wf-transcripts'}
+   send({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':'tu-wf','content':json.dumps(launch)}]}})
+   send({'type':'assistant','message':{'content':[{'type':'text','text':'workflow launched'}]}})
+   send({'type':'result','subtype':'success','result':'done'})
   else:
    send({'type':'assistant','message':{'content':[{'type':'text','text':'claude done'}]}})
    send({'type':'result','subtype':'success','result':'done'})

@@ -28,6 +28,7 @@ mod git_pr;
 mod github_inbox;
 mod attachments_http;
 mod favicons;
+mod server_secrets;
 mod thread_export;
 mod local_image;
 mod list_worktrees;

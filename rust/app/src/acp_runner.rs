@@ -1092,6 +1092,14 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
             )?;
             apply_droid_interaction_mode(&mut rpc, &session_id, &interaction_mode, &turn_runtime_mode);
         }
+        if provider == "antigravity" {
+            apply_antigravity_session_configuration(
+                &mut rpc,
+                &session_id,
+                selected_model.as_deref(),
+                reasoning_effort.as_deref(),
+            )?;
+        }
         Ok(session_id)
     })();
     match prepared {
@@ -1176,6 +1184,27 @@ fn apply_droid_interaction_mode(
             json!({"sessionId": session_id, "configId": "autonomy_level", "value": mode}),
         );
     }
+}
+
+fn apply_antigravity_session_configuration(
+    rpc: &mut Rpc,
+    session_id: &str,
+    model: Option<&str>,
+    reasoning_effort: Option<&str>,
+) -> Result<(), WsErr> {
+    if let Some(model) = model.map(str::trim).filter(|value| !value.is_empty()) {
+        rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "model", "value": model}),
+        )?;
+    }
+    if let Some(effort) = reasoning_effort.map(str::trim).filter(|value| !value.is_empty()) {
+        rpc.call(
+            "session/set_config_option",
+            json!({"sessionId": session_id, "configId": "thought_level", "value": effort}),
+        )?;
+    }
+    Ok(())
 }
 
 fn apply_omp_interaction_mode(rpc: &mut Rpc, session_id: &str, interaction_mode: &str) {
@@ -2144,6 +2173,14 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     reasoning_effort.as_deref(),
                 )?;
                 apply_droid_interaction_mode(&mut rpc, &session_id, &ctx_mode.1, &ctx_mode.0);
+            }
+            if provider == "antigravity" {
+                apply_antigravity_session_configuration(
+                    &mut rpc,
+                    &session_id,
+                    selected_model.as_deref(),
+                    reasoning_effort.as_deref(),
+                )?;
             }
             session_id
         };

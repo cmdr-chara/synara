@@ -53,9 +53,93 @@ pub fn start() {
 
 fn tick() -> Result<(), WsErr> {
     due_pass()?;
+    manual_pass()?;
     deferred_pass()?;
     reconcile_pass()?;
     Ok(())
+}
+
+/// automation.runNow inserts runs in `queued` state without dispatching;
+/// the scheduler owns execution for every trigger type, so pick them up here.
+/// Manual runs are allowed on user-disabled automations (the runNow command
+/// only refuses failure-disabled ones), so the definition lookup must not
+/// require enabled = 1.
+fn manual_pass() -> Result<(), WsErr> {
+    let now = iso_now();
+    let queued: Vec<(String, String, String)> = {
+        let conn = open_state_rw()?;
+        let mut stmt = conn
+            .prepare(
+                "SELECT run_id, automation_id, scheduled_for FROM automation_runs
+                 WHERE status = 'queued' LIMIT 50",
+            )
+            .map_err(|e| err(format!("automation manual scan: {e}")))?;
+        stmt.query_map(params![], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+        })
+        .map_err(|e| err(format!("automation manual scan: {e}")))?
+        .filter_map(|r| r.ok())
+        .collect()
+    };
+    for (run_id, automation_id, scheduled_for) in queued {
+        let conn = open_state_rw()?;
+        let automation = load_automation_any(&conn, &automation_id);
+        drop(conn);
+        if let Some(automation) = automation {
+            if automation.target_thread_id.is_none() && automation.mode != "standalone" {
+                // Continuation modes without a thread can never dispatch; the
+                // runNow command already refuses these, so this is only the
+                // crash/race backstop.
+                continue;
+            }
+            if let Err(e) = dispatch_run(&run_id, &automation, &scheduled_for, &now) {
+                eprintln!("automation manual dispatch failed for {}: {}", run_id, e.0);
+            }
+        }
+    }
+    Ok(())
+}
+
+fn load_automation_any(conn: &rusqlite::Connection, automation_id: &str) -> Option<DueAutomation> {
+    conn.query_row(
+        "SELECT automation_id, project_id, name, prompt, schedule_json, COALESCE(next_run_at,''),
+                model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id
+         FROM automation_definitions WHERE automation_id = ?1 AND archived_at IS NULL",
+        params![automation_id],
+        |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, String>(1)?,
+                r.get::<_, String>(2)?,
+                r.get::<_, String>(3)?,
+                r.get::<_, String>(4)?,
+                r.get::<_, String>(5)?,
+                r.get::<_, Option<String>>(6)?,
+                r.get::<_, String>(7)?,
+                r.get::<_, String>(8)?,
+                r.get::<_, String>(9)?,
+                r.get::<_, Option<String>>(10)?,
+            ))
+        },
+    )
+    .ok()
+    .map(|(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt)| {
+        DueAutomation {
+            id,
+            project_id,
+            name,
+            prompt,
+            schedule: serde_json::from_str(&schedule_json).unwrap_or(json!({})),
+            next_run_at,
+            model_selection: ms
+                .and_then(|s| serde_json::from_str(&s).ok())
+                .unwrap_or(Value::Null),
+            runtime_mode: rm,
+            interaction_mode: im,
+            mode,
+            target_thread_id: tt,
+        }
+    })
 }
 
 /// Retry deferred continuation runs whose cooldown elapsed. The dispatch path

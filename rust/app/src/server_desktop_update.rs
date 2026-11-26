@@ -82,7 +82,16 @@ fn busy_from_connection(conn: &Connection) -> Result<bool, rusqlite::Error> {
         [],
         |r| r.get(0),
     )?;
-    Ok(automation_work > 0)
+    if automation_work > 0 { return Ok(true); }
+
+    // Durable queued-turn promotions are accepted user work waiting for the
+    // active turn boundary; restarting before dispatch loses their in-flight ordering.
+    let queued_work: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM queued_turn_promotions WHERE state IN ('queued', 'promoting')",
+        [],
+        |r| r.get(0),
+    )?;
+    Ok(queued_work > 0)
 }
 
 fn busy() -> bool {
@@ -263,7 +272,7 @@ mod tests {
     fn busy_fixture() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute_batch(
-            "CREATE TABLE projection_threads (               thread_id TEXT PRIMARY KEY, latest_turn_id TEXT, deleted_at TEXT,                pending_approval_count INTEGER DEFAULT 0, pending_user_input_count INTEGER DEFAULT 0,                claude_cache_review_json TEXT             );             CREATE TABLE projection_thread_sessions (thread_id TEXT PRIMARY KEY, status TEXT, active_turn_id TEXT);             CREATE TABLE projection_turns (thread_id TEXT, turn_id TEXT, state TEXT);             CREATE TABLE projection_pending_interactions (thread_id TEXT, status TEXT);             CREATE TABLE provider_session_runtime (thread_id TEXT PRIMARY KEY, status TEXT);             CREATE TABLE automation_runs (run_id TEXT PRIMARY KEY, status TEXT, deferred_until TEXT);",
+            "CREATE TABLE projection_threads (               thread_id TEXT PRIMARY KEY, latest_turn_id TEXT, deleted_at TEXT,                pending_approval_count INTEGER DEFAULT 0, pending_user_input_count INTEGER DEFAULT 0,                claude_cache_review_json TEXT             );             CREATE TABLE projection_thread_sessions (thread_id TEXT PRIMARY KEY, status TEXT, active_turn_id TEXT);             CREATE TABLE projection_turns (thread_id TEXT, turn_id TEXT, state TEXT);             CREATE TABLE projection_pending_interactions (thread_id TEXT, status TEXT);             CREATE TABLE provider_session_runtime (thread_id TEXT PRIMARY KEY, status TEXT);             CREATE TABLE automation_runs (run_id TEXT PRIMARY KEY, status TEXT, deferred_until TEXT);             CREATE TABLE queued_turn_promotions (queued_event_sequence INTEGER PRIMARY KEY, state TEXT);",
         ).unwrap();
         conn.execute(
             "INSERT INTO projection_threads (thread_id, latest_turn_id) VALUES ('thread-a', 'turn-a')",
@@ -310,6 +319,11 @@ mod tests {
         conn.execute("UPDATE automation_runs SET deferred_until = NULL", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
         conn.execute("UPDATE automation_runs SET status = 'succeeded'", []).unwrap();
+
+        conn.execute("INSERT INTO queued_turn_promotions (queued_event_sequence, state) VALUES (1, 'queued')", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE queued_turn_promotions SET state = 'promoted'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
 
         conn.execute("UPDATE projection_threads SET deleted_at = 'now'", []).unwrap();
         conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", []).unwrap();

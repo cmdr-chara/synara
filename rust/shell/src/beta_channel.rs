@@ -227,6 +227,42 @@ pub fn launch_beta_install(
     Ok(())
 }
 
+/// Finds the stable executable beta should reopen when the user leaves beta.
+/// The exact handed-over executable wins; standard macOS install locations are
+/// the fallback, matching upstream's stable handoff semantics.
+pub fn detect_stable_executable(home_dir: &Path, env: &HashMap<String, String>) -> Option<PathBuf> {
+    if let Some(handed_over) = env.get("SYNARA_STABLE_EXECUTABLE").filter(|value| !value.trim().is_empty()) {
+        let path = PathBuf::from(handed_over.trim());
+        if path.is_absolute() && path.is_file() {
+            return Some(path);
+        }
+    }
+    if cfg!(target_os = "macos") {
+        for app_path in [PathBuf::from("/Applications/Synara.app"), home_dir.join("Applications/Synara.app")] {
+            let executable = app_path.join("Contents/MacOS/synara-shell");
+            if executable.is_file() {
+                return Some(executable);
+            }
+        }
+    }
+    None
+}
+
+/// Opens stable from beta without copying beta data back. Launcher-only and
+/// beta-specific overrides are stripped; the stable data home is restored only
+/// when stable handed one over at beta launch.
+pub fn launch_stable(executable: &Path, stable_home: Option<&Path>) -> Result<(), String> {
+    let mut command = Command::new(executable);
+    scrub_launcher_overrides(&mut command);
+    command.env_remove("SYNARA_BETA_HOME");
+    if let Some(stable_home) = stable_home {
+        command.env("SYNARA_HOME", stable_home);
+    }
+    command.stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null());
+    command.spawn().map_err(|error| format!("Could not launch Synara: {error}"))?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -260,6 +296,17 @@ mod tests {
         assert!(read_beta_import_result(&root).is_some());
         std::fs::write(root.join(RESULT_FILE), "{\"version\":2,\"ok\":true}").unwrap();
         assert!(read_beta_import_result(&root).is_none());
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+
+    #[test]
+    fn handed_over_stable_executable_wins_when_absolute_and_present() {
+        let root = temp_root();
+        let executable = root.join("synara-shell");
+        std::fs::write(&executable, "x").unwrap();
+        let env = HashMap::from([("SYNARA_STABLE_EXECUTABLE".into(), executable.to_string_lossy().into_owned())]);
+        assert_eq!(detect_stable_executable(&root, &env), Some(executable));
         let _ = std::fs::remove_dir_all(root);
     }
 

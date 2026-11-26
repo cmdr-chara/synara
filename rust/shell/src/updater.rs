@@ -474,6 +474,158 @@ impl InstallPreparationCoordinator {
     }
 }
 
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ResumableDownloadConfig {
+    pub idle_timeout_ms: u64,
+    pub retry_base_delay_ms: u64,
+    pub retry_max_delay_ms: u64,
+    pub max_consecutive_stall_retries: u32,
+    pub max_total_attempts: u32,
+    pub overall_timeout_ms: u64,
+    pub progress_throttle_ms: u64,
+    pub max_redirects: u32,
+}
+
+impl Default for ResumableDownloadConfig {
+    fn default() -> Self {
+        Self {
+            idle_timeout_ms: 15_000,
+            retry_base_delay_ms: 500,
+            retry_max_delay_ms: 5_000,
+            max_consecutive_stall_retries: 6,
+            max_total_attempts: 100,
+            overall_timeout_ms: 600_000,
+            progress_throttle_ms: 500,
+            max_redirects: 10,
+        }
+    }
+}
+
+pub fn parse_content_range_total(value: Option<&str>) -> Option<u64> {
+    value?.rsplit('/').next()?.trim().parse().ok().filter(|total| *total > 0)
+}
+
+pub fn select_sha512_encoding(value: &str) -> &'static str {
+    if value.len() == 128 && !value.contains('+') && !value.contains('Z') && !value.contains('=') { "hex" } else { "base64" }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DownloadResponseAction {
+    Append { total: Option<u64> },
+    FromStart { total: Option<u64> },
+    Complete,
+    Retryable { status: u16 },
+    Fatal { status: u16 },
+}
+
+pub fn classify_download_response(status: u16, content_range: Option<&str>, content_length: Option<u64>, already: u64) -> DownloadResponseAction {
+    match status {
+        206 => DownloadResponseAction::Append { total: parse_content_range_total(content_range).or(content_length.map(|length| already + length)) },
+        200 => DownloadResponseAction::FromStart { total: content_length },
+        416 => DownloadResponseAction::Complete,
+        429 | 500..=599 => DownloadResponseAction::Retryable { status },
+        _ => DownloadResponseAction::Fatal { status },
+    }
+}
+
+pub fn retry_delay_ms(consecutive_stalls: u32, config: &ResumableDownloadConfig) -> u64 {
+    if consecutive_stalls <= 1 { return 0; }
+    let shift = consecutive_stalls.saturating_sub(2).min(20);
+    (config.retry_base_delay_ms.saturating_mul(1u64 << shift)).min(config.retry_max_delay_ms)
+}
+
+pub fn download_should_give_up(consecutive_stalls: u32, attempts: u32, elapsed_ms: u64, config: &ResumableDownloadConfig) -> bool {
+    consecutive_stalls > config.max_consecutive_stall_retries || attempts > config.max_total_attempts || elapsed_ms > config.overall_timeout_ms
+}
+
+pub fn download_headers(start_offset: u64, attach_auth: bool, headers: &[(String, String)]) -> Vec<(String, String)> {
+    let mut out: Vec<(String, String)> = headers.iter().filter(|(key, _)| {
+        let key = key.to_ascii_lowercase();
+        attach_auth || (key != "authorization" && key != "proxy-authorization")
+    }).cloned().collect();
+    if !out.iter().any(|(key, _)| key.eq_ignore_ascii_case("user-agent")) {
+        out.push(("User-Agent".into(), "synara-updater".into()));
+    }
+    out.push(("Cache-Control".into(), "no-cache".into()));
+    if start_offset > 0 { out.push(("Range".into(), format!("bytes={start_offset}-"))); }
+    out
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct UpdateFeedFile {
+    pub url: String,
+    pub sha512: String,
+    pub size: Option<u64>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct UpdateManifest {
+    pub version: String,
+    pub files: Vec<UpdateFeedFile>,
+}
+
+fn yaml_scalar(value: &str) -> String {
+    let trimmed = value.trim();
+    if trimmed.len() >= 2 && trimmed.starts_with('\'') && trimmed.ends_with('\'') {
+        trimmed[1..trimmed.len()-1].replace("''", "'")
+    } else if trimmed.len() >= 2 && trimmed.starts_with('"') && trimmed.ends_with('"') {
+        trimmed[1..trimmed.len()-1].into()
+    } else { trimmed.into() }
+}
+
+pub fn parse_update_manifest(text: &str) -> Result<UpdateManifest, String> {
+    let mut version = None;
+    let mut files = Vec::new();
+    let mut current: Option<usize> = None;
+    let mut in_files = false;
+    for raw in text.lines() {
+        let trimmed = raw.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') { continue; }
+        if !raw.starts_with(' ') && !raw.starts_with('\t') && !raw.starts_with('-') {
+            in_files = false;
+            current = None;
+            if let Some((key, value)) = trimmed.split_once(':') {
+                if key.trim() == "files" { in_files = true; }
+                if key.trim() == "version" { version = Some(yaml_scalar(value)); }
+            }
+            continue;
+        }
+        if !in_files { continue; }
+        if let Some(rest) = trimmed.strip_prefix("- ") {
+            files.push(UpdateFeedFile { url: String::new(), sha512: String::new(), size: None });
+            current = Some(files.len() - 1);
+            if let Some((key, value)) = rest.split_once(':') {
+                assign_manifest_field(&mut files[current.unwrap()], key.trim(), value);
+            }
+        } else if let (Some(index), Some((key, value))) = (current, trimmed.split_once(':')) {
+            assign_manifest_field(&mut files[index], key.trim(), value);
+        }
+    }
+    files.retain(|file| !file.url.is_empty() && !file.sha512.is_empty());
+    match (version.filter(|value: &String| !value.is_empty()), files.is_empty()) {
+        (Some(version), false) => Ok(UpdateManifest { version, files }),
+        _ => Err("could not parse update manifest: missing version or files".into()),
+    }
+}
+
+fn assign_manifest_field(file: &mut UpdateFeedFile, key: &str, value: &str) {
+    let value = yaml_scalar(value);
+    match key {
+        "url" => file.url = value,
+        "sha512" => file.sha512 = value,
+        "size" => file.size = value.parse().ok(),
+        _ => {}
+    }
+}
+
+pub fn select_update_download_file<'a>(files: &'a [UpdateFeedFile], arch: &str, extension: &str) -> Result<&'a UpdateFeedFile, String> {
+    let matches: Vec<&UpdateFeedFile> = files.iter().filter(|file| file.url.ends_with(extension)).collect();
+    let unmarked = (matches.len() == 1).then_some(matches[0]).filter(|file| !file.url.contains("-arm64-") && !file.url.contains("-x64-") && !file.url.ends_with("-arm64.zip") && !file.url.ends_with("-x64.zip"));
+    matches.iter().copied().find(|file| file.url.contains(&format!("-{arch}-")) || file.url.ends_with(&format!("-{arch}{extension}"))).or(unmarked)
+        .ok_or_else(|| format!("no update download for {arch} in manifest"))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -550,6 +702,24 @@ mod tests {
         coordinator.require_active(first).unwrap();
         coordinator.release(first).unwrap();
         assert!(coordinator.begin().is_some());
+    }
+
+    #[test]
+    fn resumable_policy_classifies_ranges_and_retries() {
+        let config = ResumableDownloadConfig::default();
+        assert_eq!(parse_content_range_total(Some("bytes 200-1000/1001")), Some(1001));
+        assert_eq!(classify_download_response(206, Some("bytes 1-2/3"), None, 1), DownloadResponseAction::Append { total: Some(3) });
+        assert_eq!(classify_download_response(429, None, None, 0), DownloadResponseAction::Retryable { status: 429 });
+        assert_eq!(retry_delay_ms(1, &config), 0);
+        assert_eq!(retry_delay_ms(3, &config), 1000);
+    }
+
+    #[test]
+    fn update_manifest_selects_matching_arch_and_rejects_foreign_arch() {
+        let manifest = parse_update_manifest("version: 0.9.1-beta.1\nfiles:\n  - url: Synara-0.9.1-beta.1-arm64.zip\n    sha512: abc\n    size: 10\n  - url: Synara-0.9.1-beta.1-x64.zip\n    sha512: def\n").unwrap();
+        assert_eq!(manifest.version, "0.9.1-beta.1");
+        assert_eq!(select_update_download_file(&manifest.files, "arm64", ".zip").unwrap().sha512, "abc");
+        assert!(select_update_download_file(&manifest.files, "x86_64", ".zip").is_err());
     }
 
 }

@@ -861,6 +861,19 @@ fn assign_manifest_field(file: &mut UpdateFeedFile, key: &str, value: &str) {
 
 pub fn select_update_download_file<'a>(files: &'a [UpdateFeedFile], arch: &str, extension: &str) -> Result<&'a UpdateFeedFile, String> {
     let matches: Vec<&UpdateFeedFile> = files.iter().filter(|file| file.url.ends_with(extension)).collect();
+    if extension == ".AppImage" {
+        // Linux publishes architecture-specific feeds, but upstream still
+        // refuses a foreign AppImage if both names are present: arm64 is the
+        // only explicitly suffixed architecture; Intel uses x86_64 or no marker.
+        return matches.iter().copied().find(|file| {
+            let name = file.url.rsplit('/').next().unwrap_or(&file.url);
+            if arch == "arm64" {
+                name.to_ascii_lowercase().ends_with("arm64.appimage")
+            } else {
+                !name.to_ascii_lowercase().contains("arm64")
+            }
+        }).ok_or_else(|| format!("no update download for {arch} in manifest"));
+    }
     let unmarked = (matches.len() == 1).then_some(matches[0]).filter(|file| !file.url.contains("-arm64-") && !file.url.contains("-x64-") && !file.url.ends_with("-arm64.zip") && !file.url.ends_with("-x64.zip"));
     matches.iter().copied().find(|file| file.url.contains(&format!("-{arch}-")) || file.url.ends_with(&format!("-{arch}{extension}"))).or(unmarked)
         .ok_or_else(|| format!("no update download for {arch} in manifest"))
@@ -2288,6 +2301,25 @@ mod tests {
             atom_tag_manifest_url("https://github.com/o/r/releases.atom", "0.9.3-beta.2", UpdateFlavor::Beta).as_deref(),
             Some("https://github.com/o/r/releases/download/v0.9.3-beta.2/beta-mac.yml")
         );
+    }
+
+    #[test]
+    fn linux_manifest_selection_rejects_foreign_appimage_architecture() {
+        let manifest = parse_update_manifest("version: 1.5.2
+files:
+  - url: Synara-1.5.2-arm64.AppImage
+    sha512: arm
+  - url: Synara-1.5.2-x86_64.AppImage
+    sha512: intel
+").unwrap();
+        assert_eq!(select_update_download_file(&manifest.files, "arm64", ".AppImage").unwrap().sha512, "arm");
+        assert_eq!(select_update_download_file(&manifest.files, "x64", ".AppImage").unwrap().sha512, "intel");
+        let wrong = parse_update_manifest("version: 1.5.2
+files:
+  - url: Synara-1.5.2-arm64.AppImage
+    sha512: arm
+").unwrap();
+        assert!(select_update_download_file(&wrong.files, "x64", ".AppImage").is_err());
     }
 
     #[test]

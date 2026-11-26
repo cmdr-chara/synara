@@ -71,12 +71,38 @@ fn plist_value(path: &Path, key: &str) -> Option<String> {
     plist_string_value(&std::fs::read_to_string(path).ok()?, key)
 }
 
-fn packaged_flavor() -> Option<&'static str> {
-    let plist = current_app_info_plist()?;
-    if let Some(value) = plist_value(&plist, "SynaraDesktopFlavor") {
-        if let Some(flavor) = valid_flavor(&value) { return Some(flavor); }
+fn flavor_for_executable_name(name: &str) -> Option<&'static str> {
+    let normalized = name
+        .trim_end_matches(".exe")
+        .trim_end_matches(".EXE")
+        .replace(' ', "-")
+        .to_ascii_lowercase();
+    match normalized.as_str() {
+        "synara-beta" => Some("beta"),
+        "synara-remote" => Some("remote"),
+        "synara-canary" => Some("canary"),
+        "synara-cua" => Some("cua"),
+        "synara" => Some("production"),
+        _ => None,
     }
-    plist_value(&plist, "CFBundleIdentifier").and_then(|id| flavor_for_bundle_id(&id))
+}
+
+fn packaged_flavor() -> Option<&'static str> {
+    if let Some(plist) = current_app_info_plist() {
+        if let Some(value) = plist_value(&plist, "SynaraDesktopFlavor") {
+            if let Some(flavor) = valid_flavor(&value) { return Some(flavor); }
+        }
+        if let Some(flavor) = plist_value(&plist, "CFBundleIdentifier").and_then(|id| flavor_for_bundle_id(&id)) {
+            return Some(flavor);
+        }
+    }
+    // Linux and Windows do not carry the macOS bundle plist. Their packaged
+    // flavors use dedicated executable names, which are fixed inside the
+    // AppImage/installer even when the outer downloaded file is renamed.
+    let exe = std::env::current_exe().ok()?;
+    exe.file_name()
+        .and_then(|name| name.to_str())
+        .and_then(flavor_for_executable_name)
 }
 
 /// The runtime flavor. Packaged bundle metadata is authoritative; the
@@ -131,6 +157,15 @@ mod tests {
         assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara.canary"), Some("canary"));
         assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara.cua"), Some("cua"));
         assert_eq!(flavor_for_bundle_id("com.example.other"), None);
+    }
+
+    #[test]
+    fn executable_names_resolve_non_macos_flavors() {
+        assert_eq!(flavor_for_executable_name("synara"), Some("production"));
+        assert_eq!(flavor_for_executable_name("synara-beta"), Some("beta"));
+        assert_eq!(flavor_for_executable_name("Synara Beta.exe"), Some("beta"));
+        assert_eq!(flavor_for_executable_name("synara-remote"), Some("remote"));
+        assert_eq!(flavor_for_executable_name("custom-renamed"), None);
     }
 
     #[test]

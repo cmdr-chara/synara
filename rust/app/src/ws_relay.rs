@@ -663,7 +663,7 @@ async fn intercept_todo(
             loop {
                 if let Ok(snapshot) = crate::orchestration_snapshot::get_shell_snapshot() {
                     let text = snapshot.to_string();
-                    if text != last {
+                    if !snapshot.is_null() && text != last {
                         last = text;
                         let chunk = serde_json::json!({
                             "_tag": "Chunk", "requestId": rid,
@@ -717,7 +717,7 @@ async fn intercept_todo(
             fn send(tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>, chunk: serde_json::Value) -> bool {
                 tx.send(ClientMessage::Text(chunk.to_string().into())).is_ok()
             }
-            let mut last_seen: i64;
+            let mut last_seen: i64 = 0;
             if let Some(after) = after_seq {
                 // Cursor resume: replay the gap instead of a full snapshot.
                 match crate::orchestration_reads::thread_events_after(&thread_id, after) {
@@ -751,20 +751,25 @@ async fn intercept_todo(
                 }
             } else {
                 // Snapshot first, then live events past its sequence.
-                let snapshot = crate::orchestration_snapshot::get_thread_detail_snapshot(
+                // A missing thread yields no snapshot at all: emitting
+                // `snapshot: null` violates the stream schema and the client
+                // drops the whole socket as a protocol defect.
+                if let Ok(snapshot) = crate::orchestration_snapshot::get_thread_detail_snapshot(
                     &serde_json::json!({"threadId": thread_id}),
-                )
-                .unwrap_or(serde_json::Value::Null);
-                last_seen = snapshot
-                    .get("snapshotSequence")
-                    .and_then(|v| v.as_i64())
-                    .unwrap_or(0);
-                let chunk = serde_json::json!({
-                    "_tag": "Chunk", "requestId": rid,
-                    "values": [{"kind": "snapshot", "snapshot": snapshot}],
-                });
-                if !send(&tx, chunk) {
-                    return;
+                ) {
+                    if !snapshot.is_null() {
+                        last_seen = snapshot
+                            .get("snapshotSequence")
+                            .and_then(|v| v.as_i64())
+                            .unwrap_or(0);
+                        let chunk = serde_json::json!({
+                            "_tag": "Chunk", "requestId": rid,
+                            "values": [{"kind": "snapshot", "snapshot": snapshot}],
+                        });
+                        if !send(&tx, chunk) {
+                            return;
+                        }
+                    }
                 }
             }
             loop {
@@ -1499,6 +1504,19 @@ async fn relay(
         while let Some(msg) = client_rx.next().await {
             match msg {
                 Ok(ClientMessage::Text(t)) => {
+                    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+                        let snippet: String = t.chars().take(220).collect();
+                        eprintln!("ws_native_in: {snippet}");
+                    }
+                    // Effect-rpc application-level liveness: the client's pinger
+                    // replaces the connection after one missed pong, so these
+                    // must be answered before anything else.
+                    if t.contains("\"_tag\":\"Ping\"") || t.contains("\"_tag\": \"Ping\"") {
+                        let _ = native_tx.send(ClientMessage::Text(
+                            "{\"_tag\":\"Pong\"}".to_string().into(),
+                        ));
+                        continue;
+                    }
                     if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in).await {
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);

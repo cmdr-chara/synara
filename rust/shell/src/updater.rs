@@ -1144,11 +1144,19 @@ fn configured_release_url() -> Option<String> {
 }
 
 fn current_desktop_version() -> String {
-    std::env::var("SYNARA_DESKTOP_VERSION")
+    if let Some(value) = std::env::var("SYNARA_DESKTOP_VERSION")
         .ok()
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())
-        .unwrap_or_else(|| env!("CARGO_PKG_VERSION").to_string())
+    {
+        return value;
+    }
+    if let Ok(app) = current_app_bundle_path() {
+        if let Some(version) = plist_value(&app.join("Contents").join("Info.plist"), "CFBundleShortVersionString") {
+            if !version.trim().is_empty() { return version; }
+        }
+    }
+    env!("CARGO_PKG_VERSION").to_string()
 }
 
 fn configured_flavor() -> UpdateFlavor {

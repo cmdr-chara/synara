@@ -13931,8 +13931,8 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
             let label = if summary.is_empty() { kind } else { summary };
             (!label.is_empty()).then_some(label.to_string())
         });
-        // Stopped-on-human state: an amber dot plus an explicit instruction/
-        // approval prompt, matching the working indicator's restrained row.
+        // Stopped-on-human state: a plain quiet transcript row, matching the
+        // web client instead of borrowing another product's status treatment.
         let waiting_approval = arr(thread_v, "pendingInteractions").iter().any(|p| {
             str_at(p, "status") == "pending" && str_at(p, "interactionKind") != "userInput"
         }) || get(thread_v, "hasPendingApprovals").as_bool() == Some(true);
@@ -13940,29 +13940,18 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
             || get(thread_v, "hasPendingUserInput").as_bool() == Some(true);
         if waiting_approval || waiting_input {
             let label = if waiting_approval {
-                "Synara is waiting for approval"
+                "Waiting for approval"
             } else {
-                "Synara is awaiting instructions"
+                "Waiting for your answer"
             };
             col = col.child(
                 h_flex().w_full().justify_center().child(
                     div().w_full().max_w(chat_mw).child(
-                        h_flex()
-                            .gap_1p5()
-                            .items_center()
+                        div()
                             .py(px(2.))
-                            .child(
-                                div()
-                                    .size(px(7.))
-                                    .rounded_full()
-                                    .bg(theme.warning),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .text_color(theme.muted_foreground)
-                                    .child(label),
-                            ),
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(label),
                     ),
                 ),
             );

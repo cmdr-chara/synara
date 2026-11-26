@@ -113,6 +113,9 @@ mod icons {
     pub const P_OMP: &[u8] = include_bytes!("../assets/icons/omp.svg");
     pub const P_ANTIGRAVITY: &[u8] = include_bytes!("../assets/icons/antigravity.svg");
     pub const LOGO: &[u8] = include_bytes!("../assets/icons/synara-logo.svg");
+    pub const LOGO_LEFT: &[u8] = include_bytes!("../assets/icons/synara-logo-left.svg");
+    pub const LOGO_RIGHT: &[u8] = include_bytes!("../assets/icons/synara-logo-right.svg");
+    pub const LOGO_STEM: &[u8] = include_bytes!("../assets/icons/synara-logo-stem.svg");
     pub const SHIELD_ACCESS: &[u8] =
         include_bytes!("../assets/icons/shield-access.svg");
     pub const SHIELD_CODE: &[u8] = include_bytes!("../assets/icons/shield-code.svg");
@@ -229,32 +232,87 @@ fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
 
-/// Live-work brand mark: the winged Synara logo flutters in place while the
-/// agent is acting, rather than spinning like a generic loader.
-fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
+/// One piece of the live-work brand mark. Pieces converge from the middle,
+/// assemble the Synara logo, hold briefly, then dissolve so the next loop can
+/// rebuild it while the agent is working.
+fn animated_logo_piece(
+    data: &'static [u8],
+    id: &'static str,
+    icon_size: Pixels,
+    color: gpui::Hsla,
+    start_x: f32,
+    start_y: f32,
+    start_rotation: f32,
+) -> impl gpui::Element {
     gpui::svg()
-        .data(icons::LOGO)
+        .data(data)
         .size(icon_size)
         .text_color(color)
         .with_animation(
-            "synara-working-logo-flutter",
-            gpui::Animation::new(std::time::Duration::from_millis(1500)).repeat_synced(),
-            |this, delta| {
-                let flutter = (delta * std::f32::consts::TAU).sin();
+            id,
+            gpui::Animation::new(std::time::Duration::from_millis(1800)).repeat_synced(),
+            move |this, delta| {
+                let smooth = |t: f32| t * t * (3.0 - 2.0 * t);
+                let (tx, ty, rotation, scale, alpha) = if delta < 0.45 {
+                    let eased = smooth(delta / 0.45);
+                    let remaining = 1.0 - eased;
+                    (
+                        start_x * remaining,
+                        start_y * remaining,
+                        start_rotation * remaining,
+                        0.68 + 0.32 * eased,
+                        eased,
+                    )
+                } else if delta < 0.78 {
+                    (0.0, 0.0, 0.0, 1.0, 1.0)
+                } else {
+                    let eased = smooth((delta - 0.78) / 0.22);
+                    (0.0, 0.0, 0.0, 1.0 - 0.18 * eased, 1.0 - eased)
+                };
                 this.with_transformation(
                     gpui::Transformation::default()
-                        .with_scaling(gpui::size(
-                            0.95 + 0.08 * flutter,
-                            0.985 - 0.03 * flutter,
-                        ))
-                        .with_translation(gpui::point(
-                            gpui::px(0.),
-                            gpui::px(-1.0 * flutter),
-                        ))
-                        .with_rotation(gpui::radians(0.10 * flutter)),
+                        .with_scaling(gpui::size(scale, scale))
+                        .with_translation(gpui::point(gpui::px(tx), gpui::px(ty)))
+                        .with_rotation(gpui::radians(rotation))
+                        .with_alpha(alpha),
                 )
             },
         )
+}
+
+/// Live-work brand mark: the three pieces of the Synara logo repeatedly
+/// reconstruct it while the agent searches and acts.
+fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
+    div()
+        .relative()
+        .size(icon_size)
+        .child(div().absolute().inset_0().child(animated_logo_piece(
+            icons::LOGO_LEFT,
+            "synara-working-logo-left",
+            icon_size,
+            color,
+            2.8,
+            2.0,
+            0.25,
+        )))
+        .child(div().absolute().inset_0().child(animated_logo_piece(
+            icons::LOGO_RIGHT,
+            "synara-working-logo-right",
+            icon_size,
+            color,
+            -2.8,
+            2.0,
+            -0.25,
+        )))
+        .child(div().absolute().inset_0().child(animated_logo_piece(
+            icons::LOGO_STEM,
+            "synara-working-logo-stem",
+            icon_size,
+            color,
+            0.0,
+            -2.4,
+            0.0,
+        )))
 }
 
 // ---- keyboard-shortcut helpers (Settings > Keyboard shortcuts) ---------

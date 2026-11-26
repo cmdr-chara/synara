@@ -3719,7 +3719,13 @@ impl Native {
                 self.notification_keys.insert(completion_key.clone());
                 let title = str_at(thread, "title");
                 let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
-                events.push((id.clone(), title, "Finished working.".to_string(), false, completion_key));
+                let preview = str_at(thread, "latestReplyPreview");
+                let body = if preview.trim().is_empty() {
+                    "Finished working.".to_string()
+                } else {
+                    preview.to_string()
+                };
+                events.push((id.clone(), title, body, false, completion_key));
             }
             if !previous_attention && attention && get(thread, "snoozedUntil").is_null() {
                 let title = str_at(thread, "title");

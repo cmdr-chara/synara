@@ -1381,6 +1381,17 @@ pub struct Native {
     dock_tabs_scroll: ScrollHandle,
     settings_data: Value,
     settings_loading: bool,
+    /// Owner-side browser credential vault surface (Saved logins). Snapshots
+    /// carry metadata only; revealed secrets stay in `vault_revealed` briefly
+    /// and never enter `settings_data` or diagnostics.
+    vault_snapshot: Option<Value>,
+    vault_error: Option<String>,
+    vault_master_input: Entity<InputState>,
+    vault_confirm_input: Entity<InputState>,
+    vault_reveal_input: Entity<InputState>,
+    vault_reveal_id: Option<String>,
+    vault_revealed: Option<(String, String)>,
+    vault_delete_id: Option<String>,
     /// Upstream dismissedThreadStatusKeyByThreadId (thread_id -> dismissalKey).
     dismissed_status: std::collections::HashMap<String, String>,
     /// Upstream lastVisitedAtByThreadId (thread_id -> ISO timestamp).
@@ -1843,6 +1854,7 @@ const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
     ("appsnap", "AppSnap"),
     ("worktrees", "Worktrees"),
     ("archive", "Archive"),
+    ("saved-logins", "Saved logins"),
     ("privacy", "Privacy"),
     ("advanced", "Advanced"),
     ("about", "About"),
@@ -3017,6 +3029,9 @@ impl Native {
                             if this.settings_data.is_null() {
                                 this.fetch_settings(cx);
                             }
+                            if sid == "saved-logins" {
+                                this.refresh_vault(cx);
+                            }
                             this.settings_search.update(cx, |s, cx| s.set_value("", window, cx));
                         }
                         cx.notify();
@@ -3103,6 +3118,44 @@ impl Native {
                 .detach();
                 tp_sliders.insert(id, st);
             }
+            let vault_master_input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Master password")
+            });
+            vault_master_input.update(cx, |state, cx| state.set_masked(true, window, cx));
+            let vault_confirm_input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Confirm master password")
+            });
+            vault_confirm_input.update(cx, |state, cx| state.set_masked(true, window, cx));
+            let vault_reveal_input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("Master password")
+            });
+            vault_reveal_input.update(cx, |state, cx| state.set_masked(true, window, cx));
+            cx.subscribe_in(
+                &vault_master_input,
+                window,
+                |this: &mut Self, _state, event, window, cx| {
+                    if let InputEvent::PressEnter { .. } = event {
+                        let configured = this
+                            .vault_snapshot
+                            .as_ref()
+                            .and_then(|snapshot| snapshot.pointer("/protection/configured"))
+                            .and_then(Value::as_bool)
+                            .unwrap_or(false);
+                        this.submit_vault_master(!configured, window, cx);
+                    }
+                },
+            )
+            .detach();
+            cx.subscribe_in(
+                &vault_reveal_input,
+                window,
+                |this: &mut Self, _state, event, window, cx| {
+                    if let InputEvent::PressEnter { .. } = event {
+                        this.submit_vault_reveal(window, cx);
+                    }
+                },
+            )
+            .detach();
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -3278,6 +3331,14 @@ impl Native {
                 dock_tabs_scroll: ScrollHandle::new(),
                 settings_data: Value::Null,
                 settings_loading: false,
+                vault_snapshot: None,
+                vault_error: None,
+                vault_master_input,
+                vault_confirm_input,
+                vault_reveal_input,
+                vault_reveal_id: None,
+                vault_revealed: None,
+                vault_delete_id: None,
                 dismissed_status: std::collections::HashMap::new(),
                 visited_threads: std::collections::HashMap::new(),
                 keep_awake_mode: 2,
@@ -10602,6 +10663,158 @@ impl Native {
             .as_str()
             .unwrap_or(default)
             .to_string()
+    }
+
+    fn refresh_vault(&mut self, cx: &mut Context<Self>) {
+        match browserhost_rs::cdp::shared_browser_vault().and_then(|vault| vault.snapshot()) {
+            Ok(snapshot) => {
+                self.vault_snapshot = Some(snapshot);
+                self.vault_error = None;
+            }
+            Err(error) => {
+                self.vault_error = Some(error);
+            }
+        }
+        cx.notify();
+    }
+
+    fn configure_vault(&mut self, key: &'static str, enabled: bool, cx: &mut Context<Self>) {
+        let Some(snapshot) = self.vault_snapshot.clone() else { return };
+        let current = snapshot.get("settings").cloned().unwrap_or(Value::Null);
+        let mut settings = browserhost_rs::vault::VaultSettings {
+            agent_use: current.get("agentUse").and_then(Value::as_bool).unwrap_or(true),
+            offer_save: current.get("offerSave").and_then(Value::as_bool).unwrap_or(false),
+            autosave: current.get("autosave").and_then(Value::as_bool).unwrap_or(false),
+        };
+        match key {
+            "agentUse" => settings.agent_use = enabled,
+            "offerSave" => settings.offer_save = enabled,
+            "autosave" => settings.autosave = enabled,
+            _ => return,
+        }
+        if !settings.offer_save {
+            settings.autosave = false;
+        }
+        match browserhost_rs::cdp::shared_browser_vault()
+            .and_then(|vault| vault.configure(settings))
+        {
+            Ok(snapshot) => {
+                self.vault_snapshot = Some(snapshot);
+                self.vault_error = None;
+            }
+            Err(error) => self.vault_error = Some(error),
+        }
+        cx.notify();
+    }
+
+    fn vault_switch(
+        cx: &mut Context<Self>,
+        key: &'static str,
+        on: bool,
+        accent: gpui::Hsla,
+    ) -> gpui::AnyElement {
+        switch_track(on, accent, gpui_kit::component::Theme::global(cx))
+            .id(ElementId::Name(format!("vault-switch-{key}").into()))
+            .cursor_pointer()
+            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                this.configure_vault(key, !on, cx);
+            }))
+            .into_any_element()
+    }
+
+    fn submit_vault_master(&mut self, setup: bool, window: &mut Window, cx: &mut Context<Self>) {
+        let password = self.vault_master_input.read(cx).value().to_string();
+        let confirmation = self.vault_confirm_input.read(cx).value().to_string();
+        if password.is_empty() {
+            return;
+        }
+        if setup && password != confirmation {
+            self.vault_error = Some("Use at least 12 characters and enter the same master password twice.".into());
+            cx.notify();
+            return;
+        }
+        let result = browserhost_rs::cdp::shared_browser_vault().and_then(|vault| {
+            if setup {
+                vault.setup_master(&password)
+            } else {
+                vault.unlock(&password)
+            }
+        });
+        self.vault_master_input.update(cx, |state, cx| state.set_value("", window, cx));
+        self.vault_confirm_input.update(cx, |state, cx| state.set_value("", window, cx));
+        match result {
+            Ok(()) => {
+                self.vault_error = None;
+                self.refresh_vault(cx);
+            }
+            Err(error) => {
+                self.vault_error = Some(error);
+                cx.notify();
+            }
+        }
+    }
+
+    fn lock_vault(&mut self, cx: &mut Context<Self>) {
+        match browserhost_rs::cdp::shared_browser_vault().and_then(|vault| vault.lock()) {
+            Ok(()) => {
+                self.vault_revealed = None;
+                self.vault_reveal_id = None;
+                self.refresh_vault(cx);
+            }
+            Err(error) => {
+                self.vault_error = Some(error);
+                cx.notify();
+            }
+        }
+    }
+
+    fn submit_vault_reveal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(id) = self.vault_reveal_id.clone() else { return };
+        let password = self.vault_reveal_input.read(cx).value().to_string();
+        if password.is_empty() {
+            return;
+        }
+        let result = browserhost_rs::cdp::shared_browser_vault()
+            .and_then(|vault| vault.reveal(&id, &password));
+        self.vault_reveal_input.update(cx, |state, cx| state.set_value("", window, cx));
+        match result {
+            Ok(revealed) => {
+                let password = revealed
+                    .get("password")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .to_string();
+                self.vault_revealed = Some((id.clone(), password));
+                self.vault_error = None;
+                cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_secs(20))
+                        .await;
+                    let _ = this.update(cx, |this: &mut Self, cx| {
+                        if this.vault_revealed.as_ref().is_some_and(|(open, _)| open == &id) {
+                            this.vault_revealed = None;
+                            this.vault_reveal_id = None;
+                            cx.notify();
+                        }
+                    });
+                })
+                .detach();
+            }
+            Err(error) => self.vault_error = Some(error),
+        }
+        cx.notify();
+    }
+
+    fn remove_vault_login(&mut self, id: &str, cx: &mut Context<Self>) {
+        match browserhost_rs::cdp::shared_browser_vault().and_then(|vault| vault.remove(id)) {
+            Ok(snapshot) => {
+                self.vault_snapshot = Some(snapshot);
+                self.vault_delete_id = None;
+                self.vault_error = None;
+            }
+            Err(error) => self.vault_error = Some(error),
+        }
+        cx.notify();
     }
 
     /// One-key appSettings write-through (same path as set_keep_awake):
@@ -19792,6 +20005,7 @@ impl Render for Native {
                 ("archive", "Archive", icons::S_ARCHIVE, None),
             ]),
             ("System", &[
+                ("saved-logins", "Saved logins", icons::SHIELD_ACCESS, None),
                 ("privacy", "Privacy", icons::S_SHIELD, None),
                 ("advanced", "Advanced", icons::S_TOOLBOX, None),
                 ("about", "About", icons::S_CIRCLE_INFO, None),
@@ -20092,6 +20306,7 @@ impl Render for Native {
                                 "appsnap" => "Capture another app's frontmost window directly into a task.".to_string(),
                                 "worktrees" => "Review and clean up isolated workspaces created by Synara.".to_string(),
                                 "archive" => "Find and restore threads you previously archived.".to_string(),
+                                "saved-logins" => "Manage passwords saved by the browser, master-password protection, and agent metadata access.".to_string(),
                                 "privacy" => "What Synara shares, and what it can read on this computer.".to_string(),
                                 "advanced" => "Recovery tools and this browser's session.".to_string(),
                                 "about" => "Version, release channel, and what changed.".to_string(),
@@ -21967,6 +22182,334 @@ impl Render for Native {
                 );
             }
 
+            // ---------- Saved logins ----------
+            if self.settings_section == "saved-logins" {
+                if self.vault_snapshot.is_none() && self.vault_error.is_none() {
+                    self.refresh_vault(cx);
+                }
+                if let Some(error) = self.vault_error.clone() {
+                    settings_pane = settings_pane.child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .gap_3()
+                            .rounded(px(12.))
+                            .border_1()
+                            .border_color(theme.danger)
+                            .px_3()
+                            .py(px(10.))
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .text_size(px(13.))
+                                    .text_color(theme.danger)
+                                    .child(error),
+                            )
+                            .child(
+                                div()
+                                    .id("vault-retry")
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                                        this.vault_error = None;
+                                        this.refresh_vault(cx);
+                                    }))
+                                    .child(outline_btn("Retry")),
+                            ),
+                    );
+                }
+                let snapshot = self.vault_snapshot.clone().unwrap_or(Value::Null);
+                if !snapshot.is_null() {
+                    let locked = snapshot
+                        .pointer("/protection/locked")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(true);
+                    let configured = snapshot
+                        .pointer("/protection/configured")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
+                    let settings = snapshot.get("settings").cloned().unwrap_or(Value::Null);
+                    let agent_use = settings.get("agentUse").and_then(Value::as_bool).unwrap_or(true);
+                    let offer_save = settings.get("offerSave").and_then(Value::as_bool).unwrap_or(false);
+                    let autosave = settings.get("autosave").and_then(Value::as_bool).unwrap_or(false);
+
+                    settings_pane = settings_pane
+                        .child(section_label("Protection"))
+                        .child(card(
+                            v_flex()
+                                .child(
+                                    h_flex()
+                                        .w_full()
+                                        .items_center()
+                                        .justify_between()
+                                        .gap_3()
+                                        .px_3()
+                                        .py(px(10.))
+                                        .child(
+                                            v_flex()
+                                                .flex_1()
+                                                .min_w_0()
+                                                .gap(px(2.))
+                                                .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Master password"))
+                                                .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(
+                                                    if configured {
+                                                        "Unlocks saved logins and protects password reveal on this device."
+                                                    } else {
+                                                        "Optional protection for saved logins. Use at least 12 characters."
+                                                    })),
+                                        )
+                                        .child(
+                                            div()
+                                                .id("vault-lock-toggle")
+                                                .cursor_pointer()
+                                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                    if configured && !locked {
+                                                        this.lock_vault(cx);
+                                                    }
+                                                }))
+                                                .child(outline_btn(if configured {
+                                                    if locked { "Locked" } else { "Lock" }
+                                                } else {
+                                                    "Not set"
+                                                })),
+                                        )
+                                        .into_any_element(),
+                                )
+                                .when(locked || !configured, |rows| {
+                                    rows.child(divider()).child(
+                                        h_flex()
+                                            .w_full()
+                                            .items_center()
+                                            .gap_2()
+                                            .px_3()
+                                            .py(px(10.))
+                                            .child(
+                                                div()
+                                                    .flex_1()
+                                                    .min_w_0()
+                                                    .child(Input::new(&self.vault_master_input).appearance(false).mask_toggle()),
+                                            )
+                                            .when(!configured, |row| {
+                                                row.child(
+                                                    div()
+                                                        .flex_1()
+                                                        .min_w_0()
+                                                        .child(Input::new(&self.vault_confirm_input).appearance(false).mask_toggle()),
+                                                )
+                                            })
+                                            .child(
+                                                div()
+                                                    .id("vault-master-submit")
+                                                    .cursor_pointer()
+                                                    .on_click(cx.listener(move |this, _ev, w, cx| {
+                                                        this.submit_vault_master(!configured, w, cx);
+                                                    }))
+                                                    .child(outline_btn(if configured { "Unlock" } else { "Set password" })),
+                                            )
+                                            .into_any_element(),
+                                    )
+                                })
+                                .into_any_element(),
+                        ))
+                        .child(section_label("Saving and access"))
+                        .child(card(
+                            v_flex()
+                                .child(srow(
+                                    "Offer to save passwords",
+                                    "After a successful sign-in, Synara can save or update the login for that exact site.",
+                                    Self::vault_switch(cx, "offerSave", offer_save, theme.primary),
+                                ))
+                                .child(divider())
+                                .child(srow(
+                                    "Autosave agent sign-ins",
+                                    "Save agent-completed sign-ins without asking. Password saving must stay enabled.",
+                                    Self::vault_switch(cx, "autosave", autosave, theme.primary),
+                                ))
+                                .child(divider())
+                                .child(srow(
+                                    "Let agents find saved accounts",
+                                    "Agents can see account metadata for the exact site only. Password filling and generation stay unavailable.",
+                                    Self::vault_switch(cx, "agentUse", agent_use, theme.primary),
+                                ))
+                                .into_any_element(),
+                        ));
+
+                    let logins = arr(&snapshot, "logins").to_vec();
+                    settings_pane = settings_pane.child(section_label("Logins"));
+                    if locked {
+                        settings_pane = settings_pane.child(card(
+                            div()
+                                .px_3()
+                                .py(px(18.))
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Unlock saved logins to view accounts.")
+                                .into_any_element(),
+                        ));
+                    } else if logins.is_empty() {
+                        settings_pane = settings_pane.child(card(
+                            v_flex()
+                                .items_center()
+                                .px_3()
+                                .py(px(24.))
+                                .gap_2()
+                                .child(svg_icon(icons::SHIELD_ACCESS).size(px(22.)).text_color(theme.muted_foreground))
+                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("No saved logins yet."))
+                                .into_any_element(),
+                        ));
+                    } else {
+                        let mut list = v_flex();
+                        for (index, login) in logins.iter().enumerate() {
+                            let id = str_at(login, "id").to_string();
+                            let origin = str_at(login, "origin").to_string();
+                            let username = str_at(login, "username").to_string();
+                            let source = str_at(login, "source").to_string();
+                            let status = str_at(login, "status").to_string();
+                            let reveal_open = self.vault_reveal_id.as_deref() == Some(id.as_str());
+                            let revealed = self
+                                .vault_revealed
+                                .as_ref()
+                                .filter(|(revealed_id, _)| revealed_id == &id)
+                                .map(|(_, password)| password.clone());
+                            let deleting = self.vault_delete_id.as_deref() == Some(id.as_str());
+                            let reveal_id = id.clone();
+                            let delete_id = id.clone();
+                            let cancel_delete_id = id.clone();
+                            let confirm_delete_id = id.clone();
+                            let mut row = v_flex()
+                                .px_3()
+                                .py(px(10.))
+                                .gap_2()
+                                .child(
+                                    h_flex()
+                                        .w_full()
+                                        .items_start()
+                                        .gap_3()
+                                        .child(
+                                            v_flex()
+                                                .flex_1()
+                                                .min_w_0()
+                                                .gap(px(2.))
+                                                .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(origin))
+                                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(if username.is_empty() { "No username".to_string() } else { username }))
+                                                .child(div().text_xs().text_color(theme.muted_foreground).child(format!(
+                                                    "{}{}{}",
+                                                    match source.as_str() {
+                                                        "agent" => "Saved by an agent",
+                                                        "user" => "Saved by you",
+                                                        _ => "Saved login",
+                                                    },
+                                                    if status == "saved" { "" } else { " · unfinished signup" },
+                                                    if status == "expired" { " · expired" } else { "" },
+                                                ))),
+                                        )
+                                        .child(
+                                            div()
+                                                .id(ElementId::Name(format!("vault-reveal-{index}").into()))
+                                                .cursor_pointer()
+                                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                    if this.vault_reveal_id.as_deref() == Some(reveal_id.as_str()) {
+                                                        this.vault_reveal_id = None;
+                                                        this.vault_revealed = None;
+                                                    } else {
+                                                        this.vault_reveal_id = Some(reveal_id.clone());
+                                                        this.vault_revealed = None;
+                                                    }
+                                                    cx.notify();
+                                                }))
+                                                .child(outline_btn("Reveal")),
+                                        )
+                                        .child(
+                                            div()
+                                                .id(ElementId::Name(format!("vault-delete-{index}").into()))
+                                                .cursor_pointer()
+                                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                    this.vault_delete_id = Some(delete_id.clone());
+                                                    cx.notify();
+                                                }))
+                                                .child(outline_btn("Delete")),
+                                        ),
+                                );
+                            if reveal_open {
+                                row = row.child(
+                                    h_flex()
+                                        .w_full()
+                                        .items_center()
+                                        .gap_2()
+                                        .child(
+                                            div()
+                                                .w(px(210.))
+                                                .child(Input::new(&self.vault_reveal_input).appearance(false).mask_toggle()),
+                                        )
+                                        .child(
+                                            div()
+                                                .id(ElementId::Name(format!("vault-reveal-submit-{index}").into()))
+                                                .cursor_pointer()
+                                                .on_click(cx.listener(|this, _ev, w, cx| {
+                                                    this.submit_vault_reveal(w, cx);
+                                                }))
+                                                .child(outline_btn("Reveal password")),
+                                        )
+                                        .when(revealed.is_some(), |row| {
+                                            row.child(
+                                                div()
+                                                    .flex_1()
+                                                    .rounded(px(8.))
+                                                    .border_1()
+                                                    .border_color(theme.border)
+                                                    .px_2()
+                                                    .py_1()
+                                                    .text_size(px(13.))
+                                                    .child(revealed.unwrap_or_default()),
+                                            )
+                                        }),
+                                );
+                            }
+                            if deleting {
+                                row = row.child(
+                                    h_flex()
+                                        .w_full()
+                                        .items_center()
+                                        .justify_between()
+                                        .gap_3()
+                                        .child(div().text_size(px(13.)).child("Delete this saved login?"))
+                                        .child(
+                                            h_flex()
+                                                .gap_2()
+                                                .child(
+                                                    div()
+                                                        .id(ElementId::Name(format!("vault-cancel-delete-{index}").into()))
+                                                        .cursor_pointer()
+                                                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                            if this.vault_delete_id.as_deref() == Some(cancel_delete_id.as_str()) {
+                                                                this.vault_delete_id = None;
+                                                            }
+                                                            cx.notify();
+                                                        }))
+                                                        .child(outline_btn("Cancel")),
+                                                )
+                                                .child(
+                                                    div()
+                                                        .id(ElementId::Name(format!("vault-confirm-delete-{index}").into()))
+                                                        .cursor_pointer()
+                                                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                            this.remove_vault_login(&confirm_delete_id, cx);
+                                                        }))
+                                                        .child(outline_btn("Delete")),
+                                                ),
+                                        ),
+                                );
+                            }
+                            list = list.child(row.into_any_element());
+                            if index + 1 != logins.len() {
+                                list = list.child(divider().into_any_element());
+                            }
+                        }
+                        settings_pane = settings_pane.child(card(list.into_any_element()));
+                    }
+                }
+            }
+
             // ---------- Privacy ----------
             if self.settings_section == "privacy" {
                 // Upstream renders nothing extra in this build (Safari onboarding and
@@ -22750,6 +23293,9 @@ impl Render for Native {
                 this.settings_search.update(cx, |s, cx| s.set_value("", w, cx));
                 if this.settings_data.is_null() {
                     this.fetch_settings(cx);
+                }
+                if id == "saved-logins" {
+                    this.refresh_vault(cx);
                 }
                 cx.notify();
             }))

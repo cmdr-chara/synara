@@ -170,6 +170,12 @@ fn vault_capture_configured() -> bool {
         .unwrap_or(false)
 }
 
+/// Shared owner-side vault instance for the desktop shell. This is not part
+/// of the agent-facing browser tool surface.
+pub fn shared_browser_vault() -> Result<&'static BrowserVault, String> {
+    browser_vault()
+}
+
 fn browser_vault() -> Result<&'static BrowserVault, String> {
     static VAULT: OnceLock<Result<BrowserVault, String>> = OnceLock::new();
     VAULT

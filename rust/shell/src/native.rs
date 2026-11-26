@@ -3463,6 +3463,7 @@ impl Native {
                 find_query: String::new(),
             };
             this.refresh(cx);
+            this.fetch_settings(cx);
             // Keep the component theme in step with the system appearance, not
             // only when settings load: the chrome follows it (`dark_ui`), so a
             // late or changed appearance left theme text dark-on-dark.
@@ -10076,12 +10077,17 @@ impl Native {
     /// profile stats, computer backend status, archived thread count.
     fn fetch_settings(&self, cx: &mut Context<Self>) {
         let cell = self.client.clone();
+        let cell_tail = self.client.clone();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.settings_loading = true;
                 cx.notify();
             });
-            let bundle = cx
+            // Stage 1: the critical server-owned settings hydrate first. The
+            // heavy tail below is a chain of blocking serial RPCs (up to 60s
+            // each) and any slow or hung call down there must not starve
+            // appearance/sidebar hydration — it used to never land at all.
+            let critical = cx
                 .background_executor()
                 .spawn(async move {
                     let Some(c) = ensure_client(&cell) else {
@@ -10090,6 +10096,31 @@ impl Native {
                     let cfg = c.call("server.getConfig", json!({})).unwrap_or(Value::Null);
                     let app = c.call("server.getSettings", json!({})).unwrap_or(Value::Null);
                     let usage = c.call("server.listProviderUsage", json!({})).unwrap_or(Value::Null);
+                    json!({"config":cfg,"settings":app,"usage":usage})
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(rules) = critical
+                    .get("config")
+                    .and_then(|c| c.get("keybindings"))
+                    .and_then(|k| k.as_array())
+                    .cloned()
+                {
+                    this.kb_rules = rules;
+                }
+                this.settings_loading = false;
+                this.settings_data = critical;
+                native_hydrate_settings(this, cx);
+                cx.notify();
+            });
+            // Stage 2: the heavy tail merges into settings_data whenever it
+            // finishes; nothing user-visible in the chrome depends on it.
+            let tail = cx
+                .background_executor()
+                .spawn(async move {
+                    let Some(c) = ensure_client(&cell_tail) else {
+                        return Value::Null;
+                    };
                     let skills = c.call("provider.listSkills", json!({})).unwrap_or(Value::Null);
                     let conns = c.call("server.listMcpConnectors", json!({})).unwrap_or(Value::Null);
                     let props = c.call("server.listMcpConnectorProposals", json!({})).unwrap_or(Value::Null);
@@ -10135,102 +10166,27 @@ impl Native {
                     let comp = c.call("computer.getStatus", json!({})).unwrap_or(Value::Null);
                     let snap = c.call("orchestration.getShellSnapshot", json!({})).unwrap_or(Value::Null);
                     let acct = c.call("account.status", json!({})).unwrap_or(Value::Null);
-                    json!({"config":cfg,"settings":app,"usage":usage,"skills":skills,
+                    json!({"skills":skills,
                            "connectors":conns,"proposals":props,"external":exts,
                            "worktrees":wts,"profile":prof,"tokens":toks,"analytics":ana,
                            "computer":comp,"snapshot":snap,"account":acct})
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
-                if let Some(rules) = bundle
-                    .get("config")
-                    .and_then(|c| c.get("keybindings"))
-                    .and_then(|k| k.as_array())
-                    .cloned()
-                {
-                    this.kb_rules = rules;
-                }
-                this.settings_loading = false;
-                this.settings_data = bundle;
-                // Appearance (upstream appSettings, server-side mirror):
-                // mode / uiDensity / chatWidth / showAsciiBackground.
-                let app = get(&this.settings_data, "settings");
-                let ap = get(app, "appearance");
-                if ap.is_object() {
-                    this.appearance_mode = match str_at(ap, "mode") {
-                        "light" => 1,
-                        "dark" => 2,
-                        _ => 0,
-                    };
-                    this.ui_density = match str_at(ap, "uiDensity") {
-                        "compact" => 0,
-                        "spacious" => 2,
-                        _ => 1,
-                    };
-                    this.chat_width_mode = match str_at(ap, "chatWidth") {
-                        "wide" => 1,
-                        "full" => 2,
-                        _ => 0,
-                    };
-                    this.show_ascii_bg = ap
-                        .get("showAsciiBackground")
-                        .and_then(Value::as_bool)
-                        .unwrap_or(true);
-                    this.backdrop_full = ap
-                        .get("atmosphereFullWindow")
-                        .and_then(Value::as_bool)
-                        .unwrap_or(false);
-                    this.theme_packs = get(ap, "themePacks").clone();
-                }
-                this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
-                    "on" => 0,
-                    "agent" => 1,
-                    _ => 2,
-                };
-                // Sidebar UI state (upstream localStorage mirrors): dismissed
-                // status keys + last-visited stamps drive pill suppression.
-                let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
-                this.apply_appearance_mode(None, cx);
-                this.apply_theme_pack(cx);
-                if let Some(m) = get(&su, "dismissedStatusKeyByThreadId").as_object() {
-                    this.dismissed_status = m
-                        .iter()
-                        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
-                        .collect();
-                }
-                if let Some(m) = get(&su, "lastVisitedAtByThreadId").as_object() {
-                    this.visited_threads = m
-                        .iter()
-                        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
-                        .collect();
-                }
-                if let Some(m) = get(&su, "coachmarks").as_object() {
-                    this.coachmarks_seen = m.keys().cloned().collect();
-                }
-                if let Some(m) = get(&su, "featureFlags").as_object() {
-                    const FF_KEYS: [&str; 3] = [
-                        "persist-action-failed-debug-toasts",
-                        "pin-git-progress-toast-preview",
-                        "show-debug-task-banner",
-                    ];
-                    for (i, k) in FF_KEYS.iter().enumerate() {
-                        this.feature_flags[i] =
-                            m.get(*k).and_then(|v| v.as_bool()).unwrap_or(false);
+                if let (Some(dst), Some(src)) = (
+                    this.settings_data.as_object_mut(),
+                    tail.as_object(),
+                ) {
+                    for (k, v) in src {
+                        dst.insert(k.clone(), v.clone());
                     }
                 }
-                this.wn_seen = get(&su, "whatsNewLastSeenVersion")
-                    .as_str()
-                    .map(|s| s.to_string());
-                this.eval_whats_new(cx);
-                this.show_next_coachmark(cx);
                 cx.notify();
             });
         })
         .detach();
     }
 
-    /// Upstream resolveWhatsNewState: silent-bootstrap on first launch or a
-    /// build without curated notes, popout only on a covered upgrade.
     fn eval_whats_new(&mut self, cx: &mut Context<Self>) {
         match self.wn_seen.clone() {
             None => self.mark_whats_new_seen(cx),
@@ -25567,7 +25523,7 @@ impl Render for Native {
         let mut main = v_flex().flex_1().min_w_0().h_full().relative();
                 // The wm block in the pane builder only runs on the landing;
                 // with full-window mode the image must exist for every view.
-                if (show_landing || self.backdrop_full) && self.show_ascii_bg {
+                if show_landing && self.show_ascii_bg {
                     let vpw = window.viewport_size().width.as_f32();
                     let vph = window.viewport_size().height.as_f32();
                     let dark = theme.is_dark();
@@ -25591,7 +25547,7 @@ impl Render for Native {
                         self.backdrop_key = key;
                     }
                 }
-                let landing_bd_main = if (show_landing || self.backdrop_full) && self.show_ascii_bg {
+                let mut landing_bd_main = if show_landing && self.show_ascii_bg {
                     self.backdrop_img.clone().map(|img| {
                         let vpw = window.viewport_size().width.as_f32();
                         let vph = window.viewport_size().height.as_f32();
@@ -25630,8 +25586,10 @@ impl Render for Native {
                 } else {
                     None
                 };
-        if let Some(bd) = landing_bd_main {
-            main = main.child(bd);
+        if !self.backdrop_full {
+            if let Some(bd) = landing_bd_main.take() {
+                main = main.child(bd);
+            }
         }
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
@@ -27727,6 +27685,11 @@ impl Render for Native {
         // ---- left column: #f7f7f7 well holding the rail and the floating
         // white sidebar card (bordered right+bottom, rounded corners, ~4px
         // bottom inset) exactly like upstream's app-rail-panel.
+        let well_bg = if self.backdrop_full && show_landing && self.show_ascii_bg {
+            rgba(0x00000000)
+        } else {
+            well_bg
+        };
         let mut left_well = h_flex()
             .h_full()
             .bg(well_bg)
@@ -27752,7 +27715,14 @@ impl Render for Native {
                     .w(px(self.side_panel_w()))
                     .h_full()
                     .mb(px(4.))
-                    .bg(sidebar_bg)
+                    .bg(if self.backdrop_full && show_landing && self.show_ascii_bg {
+                        // Full-window atmosphere: the floating sidebar card
+                        // goes clear so the texture runs behind it (upstream
+                        // [data-atmosphere-full] sidebar-inner surfaces).
+                        gpui::transparent_black()
+                    } else {
+                        sidebar_bg
+                    })
                     .border_r_1()
                     .border_b_1()
                     .border_color(hairline)
@@ -27805,11 +27775,16 @@ impl Render for Native {
             );
         }
 
-        let mut body = h_flex()
-            .flex_1()
-            .min_h_0()
-            .child(left_well)
-            .child(main);
+        let mut body = h_flex().flex_1().min_h_0().relative();
+        if self.backdrop_full {
+            // Full-window mode: the empty-chat texture spans the whole window,
+            // painted behind the sidebar and the chat column (upstream
+            // data-atmosphere-full opening the clip).
+            if let Some(bd) = landing_bd_main {
+                body = body.child(bd);
+            }
+        }
+        body = body.child(left_well).child(main);
         if self.view_changes {
             body = body.child(changes_pane.border_l_1().border_color(theme.border));
         }
@@ -32846,4 +32821,83 @@ impl Render for Native {
             })
             .when(self.wn_view != 0, |d| d.child(wn_dialog_overlay))
     }
+}
+
+
+/// Settings hydration applied to the shell state once the server-owned
+/// settings document lands: appearance, power, sidebar UI mirrors, coachmarks,
+/// feature flags, what's-new. Extracted from fetch_settings so the critical
+/// stage can apply it without waiting for the heavy RPC tail.
+pub fn native_hydrate_settings(this: &mut Native, cx: &mut Context<Native>) {
+// Appearance (upstream appSettings, server-side mirror):
+// mode / uiDensity / chatWidth / showAsciiBackground.
+let app = get(&this.settings_data, "settings");
+let ap = get(app, "appearance");
+if ap.is_object() {
+    this.appearance_mode = match str_at(ap, "mode") {
+        "light" => 1,
+        "dark" => 2,
+        _ => 0,
+    };
+    this.ui_density = match str_at(ap, "uiDensity") {
+        "compact" => 0,
+        "spacious" => 2,
+        _ => 1,
+    };
+    this.chat_width_mode = match str_at(ap, "chatWidth") {
+        "wide" => 1,
+        "full" => 2,
+        _ => 0,
+    };
+    this.show_ascii_bg = ap
+        .get("showAsciiBackground")
+        .and_then(Value::as_bool)
+        .unwrap_or(true);
+    this.backdrop_full = ap
+        .get("atmosphereFullWindow")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    this.theme_packs = get(ap, "themePacks").clone();
+}
+this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
+    "on" => 0,
+    "agent" => 1,
+    _ => 2,
+};
+// Sidebar UI state (upstream localStorage mirrors): dismissed
+// status keys + last-visited stamps drive pill suppression.
+let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
+this.apply_appearance_mode(None, cx);
+this.apply_theme_pack(cx);
+if let Some(m) = get(&su, "dismissedStatusKeyByThreadId").as_object() {
+    this.dismissed_status = m
+        .iter()
+        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
+        .collect();
+}
+if let Some(m) = get(&su, "lastVisitedAtByThreadId").as_object() {
+    this.visited_threads = m
+        .iter()
+        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
+        .collect();
+}
+if let Some(m) = get(&su, "coachmarks").as_object() {
+    this.coachmarks_seen = m.keys().cloned().collect();
+}
+if let Some(m) = get(&su, "featureFlags").as_object() {
+    const FF_KEYS: [&str; 3] = [
+        "persist-action-failed-debug-toasts",
+        "pin-git-progress-toast-preview",
+        "show-debug-task-banner",
+    ];
+    for (i, k) in FF_KEYS.iter().enumerate() {
+        this.feature_flags[i] =
+            m.get(*k).and_then(|v| v.as_bool()).unwrap_or(false);
+    }
+}
+this.wn_seen = get(&su, "whatsNewLastSeenVersion")
+    .as_str()
+    .map(|s| s.to_string());
+this.eval_whats_new(cx);
+this.show_next_coachmark(cx);
 }

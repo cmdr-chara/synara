@@ -150,6 +150,8 @@ export type TimestampFormat = typeof TimestampFormat.Type;
 export const DEFAULT_TIMESTAMP_FORMAT: TimestampFormat = "locale";
 export const SidebarProjectSortOrder = Schema.Literals(["updated_at", "created_at", "manual"]);
 export type SidebarProjectSortOrder = typeof SidebarProjectSortOrder.Type;
+export const EmptyChatBackdropStyle = Schema.Literals(["temple", "gradient"]);
+export type EmptyChatBackdropStyle = typeof EmptyChatBackdropStyle.Type;
 export const DEFAULT_SIDEBAR_PROJECT_SORT_ORDER: SidebarProjectSortOrder = "manual";
 export const SidebarThreadSortOrder = Schema.Literals(["updated_at", "created_at"]);
 export const ComputerPreviewSize = Schema.Literals(["compact", "large"]);
@@ -417,6 +419,11 @@ export const AppSettingsSchema = Schema.Struct({
   // open-thread tab strip.
   showOpenThreadTabs: Schema.Boolean.pipe(withDefaults(() => true)),
   showAsciiBackground: Schema.Boolean.pipe(withDefaults(() => true)),
+  // Which empty-chat backdrop shows while `showAsciiBackground` is on.
+  emptyChatBackdropStyle: EmptyChatBackdropStyle.pipe(
+    withDefaults(() => "temple" as const satisfies EmptyChatBackdropStyle),
+  ),
+  // Extends the empty-chat backdrop texture behind the whole app window, capy-style.
   confirmThreadDelete: Schema.Boolean.pipe(withDefaults(() => true)),
   // Opt-in: archiving a task also releases its worktree when nothing else uses it.
   archiveDeletesOrphanedWorktree: Schema.Boolean.pipe(withDefaults(() => false)),

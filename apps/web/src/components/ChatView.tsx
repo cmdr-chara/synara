@@ -317,7 +317,7 @@ import { RenameThreadDialog } from "./RenameThreadDialog";
 import { hasUnseenSnoozeReturn, resolveThreadProjectLabel } from "./Sidebar.logic";
 import { SidebarHeaderNavigationControls } from "./SidebarHeaderNavigationControls";
 import { SynaraLogo } from "@synara/profile-ui/logo";
-import { AsciiWaveBackground } from "./chat/AsciiWaveBackground";
+import { EmptyChatBackdrop } from "./chat/EmptyChatBackdrop";
 import { SponsorLandingBanner } from "./SponsorLandingBanner";
 import TerminalWorkspaceTabs from "./TerminalWorkspaceTabs";
 import { ThreadWorktreeHandoffDialog } from "./ThreadWorktreeHandoffDialog";
@@ -7142,7 +7142,7 @@ export default function ChatView({
                 )}
               >
                 {settings.showAsciiBackground && !terminalWorkspaceTerminalTabActive ? (
-                  <AsciiWaveBackground />
+                  <EmptyChatBackdrop style={settings.emptyChatBackdropStyle} />
                 ) : null}
                 {/* The heading floats centered in the space above the composer, which is
                     anchored to the bottom of the pane (with its workspace-tools rail
@@ -7151,10 +7151,14 @@ export default function ChatView({
                 <div className="relative flex min-h-0 flex-1 items-center justify-center">
                   {/* Pinned to the top so the heading stays optically centered; hidden on
                       short panes where it would crowd the heading. */}
-                  <div className="absolute inset-x-0 top-4 flex justify-center px-6 [@media(max-height:620px)]:hidden">
+                  <div
+                    data-empty-chat-backdrop-quiet=""
+                    className="absolute inset-x-0 top-4 flex justify-center px-6 [@media(max-height:620px)]:hidden"
+                  >
                     <SponsorLandingBanner className="w-full max-w-[520px]" />
                   </div>
                   <div
+                    data-empty-chat-backdrop-quiet=""
                     className={cn(
                       "flex flex-col items-center gap-4 px-6 text-center select-none",
                       CHAT_COLUMN_FRAME_CLASS_NAME,

@@ -100,7 +100,8 @@ export function useSettingsRestoreDefaults({
       ? ["settings:childThreads"]
       : []),
     ...(settings.showAsciiBackground !== defaults.showAsciiBackground ||
-    settings.emptyChatBackdropStyle !== defaults.emptyChatBackdropStyle
+    settings.emptyChatBackdropStyle !== defaults.emptyChatBackdropStyle ||
+    settings.shellAtmosphereFullWindow !== defaults.shellAtmosphereFullWindow
       ? ["Empty chat background"]
       : []),
     ...(settings.uiDensity !== defaults.uiDensity ? ["settings:changed_uiDensity"] : []),

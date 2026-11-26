@@ -423,7 +423,9 @@ export const AppSettingsSchema = Schema.Struct({
   emptyChatBackdropStyle: EmptyChatBackdropStyle.pipe(
     withDefaults(() => "temple" as const satisfies EmptyChatBackdropStyle),
   ),
-  // Extends the empty-chat backdrop texture behind the whole app window, capy-style.
+  // Extends the shell atmosphere texture behind the whole window instead of only the
+  // window chrome (top band, rail, outer gaps).
+  shellAtmosphereFullWindow: Schema.Boolean.pipe(withDefaults(() => false)),
   confirmThreadDelete: Schema.Boolean.pipe(withDefaults(() => true)),
   // Opt-in: archiving a task also releases its worktree when nothing else uses it.
   archiveDeletesOrphanedWorktree: Schema.Boolean.pipe(withDefaults(() => false)),

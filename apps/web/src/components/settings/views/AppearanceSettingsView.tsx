@@ -381,6 +381,18 @@ export function AppearanceSettingsView(binding: AppSettingsBinding) {
           }
         />
 
+        {settings.showAsciiBackground ? (
+          <BooleanSettingRow
+            {...binding}
+            id="setting-shell-atmosphere-full-window"
+            settingKey="shellAtmosphereFullWindow"
+            title="settings:shellAtmosphereFullWindow"
+            description="settings:shellAtmosphereFullWindowDescription"
+            resetLabel="settings:shellAtmosphereFullWindow"
+            ariaLabel="settings:shellAtmosphereFullWindow"
+          />
+        ) : null}
+
 
         {isAudioLevelAvailable() ? (
           <SettingsRow

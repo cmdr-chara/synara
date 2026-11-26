@@ -4232,3 +4232,24 @@ diffs-container {
 .dark .app-shell-atmosphere {
   opacity: 0.8;
 }
+
+/* Full-window atmosphere (opt-in): the clip opens to the whole window and the surfaces that
+   would paint over the texture go clear, so the dots run behind the thread panel and the
+   content surface as well as the chrome. The composer keeps its opaque tray, and raised
+   surfaces (menus, cards) keep their own fills. */
+[data-atmosphere-full] .app-shell-atmosphere {
+  clip-path: none;
+}
+
+[data-atmosphere-full] .app-rail-panel,
+[data-atmosphere-full] [data-sidebar-layout="rail"] .sidebar-icon-chip {
+  background: transparent;
+}
+
+[data-atmosphere-full]
+  [data-sidebar-layout="rail"]
+  .chat-content-card
+  :is(.app-content-surface, .app-settings-surface),
+[data-atmosphere-full] [data-slot="sidebar-inner"].app-content-surface {
+  background: transparent;
+}

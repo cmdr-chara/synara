@@ -19,6 +19,9 @@ export function ChatShell({
       data-sidebar-side="left"
       data-sidebar-layout="rail"
       data-shell-sidebar-state={open ? "expanded" : "collapsed"}
+      {...(showAtmosphere && settings.showAsciiBackground && settings.shellAtmosphereFullWindow
+        ? { "data-atmosphere-full": "" }
+        : {})}
     >
       {showAtmosphere && settings.showAsciiBackground ? (
         <div aria-hidden="true" className="app-shell-atmosphere" data-shell-atmosphere="">

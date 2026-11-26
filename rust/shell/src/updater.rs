@@ -690,11 +690,82 @@ fn desktop_update_supported() -> bool {
         || (cfg!(target_os = "macos") && packaged_mac_app())
 }
 
+fn parse_app_update_yml(text: &str) -> Option<std::collections::HashMap<String, String>> {
+    let mut entries = std::collections::HashMap::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') { continue; }
+        let Some((key, value)) = trimmed.split_once(':') else { continue };
+        if key.chars().all(|ch| ch.is_ascii_alphanumeric() || ch == '-') {
+            entries.insert(key.trim().to_string(), yaml_scalar(value));
+        }
+    }
+    entries.contains_key("provider").then_some(entries)
+}
+
+fn packaged_app_update_yml() -> Option<std::collections::HashMap<String, String>> {
+    let exe = std::env::current_exe().ok()?;
+    let macos_dir = exe.parent()?;
+    if !macos_dir.ends_with("MacOS") { return None; }
+    let contents = macos_dir.parent()?;
+    let path = contents.join("Resources").join("app-update.yml");
+    parse_app_update_yml(&std::fs::read_to_string(path).ok()?)
+}
+
+fn update_channel_for_flavor(flavor: UpdateFlavor) -> &'static str {
+    match flavor {
+        UpdateFlavor::Beta => "beta",
+        UpdateFlavor::Remote => "remote",
+        _ => "synara",
+    }
+}
+
+fn update_manifest_name(flavor: UpdateFlavor) -> String {
+    let channel = update_channel_for_flavor(flavor);
+    if cfg!(target_os = "macos") {
+        format!("{channel}-mac.yml")
+    } else if cfg!(target_os = "windows") {
+        format!("{channel}.yml")
+    } else if runtime_arch() == "arm64" {
+        format!("{channel}-linux-arm64.yml")
+    } else {
+        format!("{channel}-linux.yml")
+    }
+}
+
+fn github_update_feed_url(entries: &std::collections::HashMap<String, String>, flavor: UpdateFlavor) -> Option<String> {
+    if entries.get("provider").map(String::as_str) != Some("github") { return None; }
+    let owner = entries.get("owner")?.trim();
+    let repo = entries.get("repo")?.trim();
+    if owner.is_empty() || repo.is_empty() { return None; }
+    let host = entries.get("host").map(String::as_str).filter(|host| !host.trim().is_empty()).unwrap_or("github.com");
+    let protocol = if entries.get("protocol").map(String::as_str) == Some("http") { "http" } else { "https" };
+    Some(format!(
+        "{protocol}://{host}/{owner}/{repo}/releases/latest/download/{}",
+        update_manifest_name(flavor)
+    ))
+}
+
 fn configured_feed_url() -> Option<String> {
-    std::env::var("SYNARA_UPDATE_FEED_URL")
+    if let Some(value) = std::env::var("SYNARA_UPDATE_FEED_URL")
         .ok()
         .map(|value| value.trim().to_string())
         .filter(|value| value.starts_with("https://") || value.starts_with("http://"))
+    {
+        return Some(value);
+    }
+    packaged_app_update_yml().as_ref().and_then(|entries| github_update_feed_url(entries, configured_flavor()))
+}
+
+fn configured_release_url() -> Option<String> {
+    if let Some(value) = std::env::var("SYNARA_UPDATE_RELEASE_URL").ok().filter(|v| !v.trim().is_empty()) {
+        return Some(value);
+    }
+    let entries = packaged_app_update_yml()?;
+    let owner = entries.get("owner")?;
+    let repo = entries.get("repo")?;
+    let host = entries.get("host").map(String::as_str).filter(|host| !host.trim().is_empty());
+    Some(github_releases_page(owner, repo, host, None))
 }
 
 fn current_desktop_version() -> String {
@@ -736,7 +807,7 @@ impl DesktopUpdateService {
         );
         state.enabled = configured_feed_url().is_some() && desktop_update_supported();
         state.status = if state.enabled { UpdateStatus::Idle } else { UpdateStatus::Disabled };
-        state.release_url = std::env::var("SYNARA_UPDATE_RELEASE_URL").ok().filter(|v| !v.trim().is_empty());
+        state.release_url = configured_release_url();
         if !state.enabled {
             state.message = Some("Automatic updates are not available because no update feed is configured.".into());
         }
@@ -1122,6 +1193,17 @@ mod tests {
         assert_eq!(classify_download_response(429, None, None, 0), DownloadResponseAction::Retryable { status: 429 });
         assert_eq!(retry_delay_ms(1, &config), 0);
         assert_eq!(retry_delay_ms(3, &config), 1000);
+    }
+
+    #[test]
+    fn packaged_feed_config_derives_channel_manifest_url() {
+        let entries = parse_app_update_yml("provider: github\nowner: cmdr-chara\nrepo: synara\n").unwrap();
+        let url = github_update_feed_url(&entries, UpdateFlavor::Production).unwrap();
+        if cfg!(target_os = "macos") {
+            assert_eq!(url, "https://github.com/cmdr-chara/synara/releases/latest/download/synara-mac.yml");
+        }
+        let beta = github_update_feed_url(&entries, UpdateFlavor::Beta).unwrap();
+        assert!(beta.contains("/beta-"), "{beta}");
     }
 
     #[test]

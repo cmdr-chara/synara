@@ -17,7 +17,6 @@ mod appsnap;
 mod browser_host;
 mod cua;
 mod desktop_identity;
-mod escape_monitor;
 mod native;
 mod reliability;
 mod updater;

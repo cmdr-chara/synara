@@ -609,10 +609,8 @@ mod tests {
     #[test]
     fn armed_helper_escape_reaches_callback() {
         use std::os::unix::fs::PermissionsExt;
-        let root = std::env::temp_dir().join(format!(
-            "synara-escape-monitor-test-{}",
-            uuid::Uuid::new_v4()
-        ));
+        let root =
+            std::env::temp_dir().join(format!("synara-escape-monitor-test-{}", std::process::id()));
         std::fs::create_dir_all(&root).unwrap();
         let helper = root.join("helper.sh");
         std::fs::write(
@@ -632,5 +630,133 @@ mod tests {
         );
         monitor.dispose();
         let _ = std::fs::remove_dir_all(root);
+    }
+}
+
+fn resolve_helper() -> Option<PathBuf> {
+    if let Some(path) = std::env::var_os("SYNARA_APPSNAP_HELPER") {
+        let path = PathBuf::from(path);
+        if path.is_file() {
+            return Some(path);
+        }
+    }
+    let exe = std::env::current_exe().ok()?;
+    if let Some(mac_os) = exe.parent() {
+        let bundled = mac_os.join("../Helpers/synara-appsnap-helper");
+        if bundled.is_file() {
+            return Some(bundled);
+        }
+    }
+    for ancestor in exe.ancestors() {
+        for candidate in [
+            ancestor.join("apps/desktop/native/appsnap/build/synara-appsnap-helper"),
+            ancestor.join("apps/desktop/.electron-runtime/appsnap/synara-appsnap-helper"),
+        ] {
+            if candidate.is_file() {
+                return Some(candidate);
+            }
+        }
+    }
+    None
+}
+
+static ACTIVE_THREAD: Mutex<Option<String>> = Mutex::new(None);
+
+fn global_monitor() -> Option<&'static Arc<EscapeKillSwitchMonitor>> {
+    static MONITOR: std::sync::OnceLock<Option<Arc<EscapeKillSwitchMonitor>>> =
+        std::sync::OnceLock::new();
+    MONITOR.get_or_init(|| {
+        resolve_helper().map(|helper| Arc::new(EscapeKillSwitchMonitor::with_physical_input(
+            helper,
+            || {
+                let thread = ACTIVE_THREAD.lock().ok().and_then(|value| value.clone());
+                let _ = thread;
+                crate::computer_manager::emergency_stop_input_sync();
+            },
+            |input| {
+                let thread = ACTIVE_THREAD.lock().ok().and_then(|value| value.clone());
+                crate::computer_manager::note_user_desktop_input();
+                if crate::computer_manager::any_input_in_flight()
+                    || crate::computer_manager::input_pause_active(thread.as_deref())
+                {
+                    crate::computer_manager::record_global_input_pause(serde_json::json!({
+                        "kind": "human-takeover",
+                        "physicalKind": input.kind,
+                        "message": "You used the keyboard or mouse while the agent was controlling the computer. Read fresh computer state before continuing; no further input was dispatched."
+                    }));
+                }
+            },
+            |message| eprintln!("input monitor: {message}"),
+        )))
+    }).as_ref()
+}
+
+pub fn state_json() -> serde_json::Value {
+    match global_monitor() {
+        Some(monitor) => {
+            let state = monitor.state();
+            serde_json::json!({
+                "ready": state.ready,
+                "error": state.error,
+            })
+        }
+        None => serde_json::json!({
+            "ready": false,
+            "error": "input_monitor_unavailable",
+        }),
+    }
+}
+
+/// Synchronously activate the listener for a mutating computer action and
+/// enforce the same admission gate as upstream: no healthy listen-only Escape
+/// monitor means no OS input dispatch.
+pub fn ensure_input_ready(thread_id: &str) -> Result<(), String> {
+    if !thread_id.is_empty() {
+        if let Ok(mut active) = ACTIVE_THREAD.lock() {
+            *active = Some(thread_id.to_string());
+        }
+    }
+    let Some(monitor) = global_monitor() else {
+        return Err("The computer input listener is unavailable. Input remains paused until the listener reconnects.".into());
+    };
+    monitor.activate();
+    let state = monitor.state();
+    if state.ready {
+        return Ok(());
+    }
+    Err(match state.error.as_deref() {
+        Some("input-monitoring-required") => "Allow Input Monitoring in System Settings, then wait for the computer input listener to reconnect before continuing.".into(),
+        Some(error) => format!("The computer input listener is unavailable ({error}). Input remains paused until the listener reconnects."),
+        None => "The computer input listener is unavailable. Input remains paused until the listener reconnects.".into(),
+    })
+}
+
+/// Arm the process-local listener when backend admission gives a conversation
+/// computer authority. This covers agent-initiated control, not only shell clicks.
+pub fn control_armed(thread_id: &str) {
+    if thread_id.is_empty() {
+        return;
+    }
+    if let Ok(mut active) = ACTIVE_THREAD.lock() {
+        *active = Some(thread_id.to_string());
+    }
+    if let Some(monitor) = global_monitor() {
+        let monitor = Arc::clone(monitor);
+        std::thread::spawn(move || monitor.activate());
+    }
+}
+
+pub fn control_disarmed(thread_id: &str) {
+    let matches = ACTIVE_THREAD
+        .lock()
+        .map(|active| active.as_deref() == Some(thread_id))
+        .unwrap_or(false);
+    if matches {
+        if let Ok(mut active) = ACTIVE_THREAD.lock() {
+            *active = None;
+        }
+        if let Some(monitor) = global_monitor() {
+            monitor.set_armed(false);
+        }
     }
 }

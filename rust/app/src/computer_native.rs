@@ -284,7 +284,8 @@ fn status_json() -> Value {
         "computerId": COMPUTER_ID,
         "availability": availability(),
         "health": health(),
-        "capabilities": capabilities()
+        "capabilities": capabilities(),
+        "inputMonitor": crate::input_monitor::state_json()
     })
 }
 
@@ -299,6 +300,11 @@ fn set_control_enabled(payload: &Value) -> Result<Value, String> {
         return Err("threadId is required".into());
     }
     let generation = crate::computer_control::set(tid, !enabled)?;
+    if enabled {
+        crate::input_monitor::control_armed(tid);
+    } else {
+        crate::input_monitor::control_disarmed(tid);
+    }
     Ok(json!({"enabled": enabled, "generation": generation}))
 }
 
@@ -362,7 +368,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
         tag,
         "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click"
             | "computer.moveCursor" | "computer.drag" | "computer.scroll" | "computer.input.scroll"
-            | "computer.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
+            | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
             | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp"
     );
     if mutating && !owner.is_empty() {
@@ -379,6 +385,20 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             return Some(Err(e));
         }
     }
+    let user_input = matches!(
+        tag,
+        "computer.input.click" | "computer.input.scroll" | "computer.input.key" | "computer.input.typeText"
+    );
+    let agent_mutating = mutating && !user_input;
+    if agent_mutating {
+        if owner.is_empty() {
+            return Some(Err("Computer input requires an owning conversation; no input was dispatched.".into()));
+        }
+        if let Err(e) = crate::input_monitor::ensure_input_ready(owner) {
+            return Some(Err(e));
+        }
+        crate::computer_manager::input_started(owner);
+    }
     let r = (|| -> Result<Value, String> {
         match tag {
             "computer.getStatus" => Ok(status_json()),
@@ -387,17 +407,11 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 "screenSize": screen_size()?,
                 "availability": availability()
             })),
-            "computer.listWindows" => {
-                let windows = list_windows()?;
-                if let Some(thread_id) = payload["threadId"].as_str().filter(|value| !value.is_empty()) {
-                    crate::computer_manager::clear_input_pause(thread_id);
-                }
-                Ok(json!({
-                    "computerId": COMPUTER_ID,
-                    "windows": windows,
-                    "availability": availability()
-                }))
-            }
+            "computer.listWindows" => Ok(json!({
+                "computerId": COMPUTER_ID,
+                "windows": list_windows()?,
+                "availability": availability()
+            })),
             "computer.getThreadState" => {
                 let mut v = json!({
                     "computerId": COMPUTER_ID,
@@ -453,6 +467,13 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                             "status": "unavailable",
                             "unavailableWindowIds": []
                         });
+                    }
+                }
+                if payload["modelObservation"].as_bool() == Some(true)
+                    && (v.get("screenshot").is_some() || v.get("root").is_some())
+                {
+                    if let Some(thread_id) = payload["threadId"].as_str().filter(|value| !value.is_empty()) {
+                        crate::computer_manager::clear_input_pause(thread_id);
                     }
                 }
                 Ok(v)
@@ -562,7 +583,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 });
                 Ok(v)
             }
-            "computer.typeText" => {
+            "computer.typeText" | "computer.input.typeText" => {
                 require_ax()?;
                 let text = payload["text"].as_str().unwrap_or("");
                 helper("type", &json!({"text": text}))?;
@@ -609,6 +630,9 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             _ => return Err(MISS.into()),
         }
     })();
+    if agent_mutating {
+        crate::computer_manager::input_finished(owner);
+    }
     let outcome = match r {
         Err(m) if m == MISS => None,
         Ok(v) => {

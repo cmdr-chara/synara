@@ -455,23 +455,24 @@ async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Val
         return crate::browser_automation::call_browser_tool(name, args, thread).await;
     }
     if name == "computer_batch" {
-        return computer_batch(args).await;
+        return computer_batch(args, thread).await;
     }
-    call_simple_tool(name, args).await
+    call_simple_tool(name, args, thread).await
 }
 
-async fn call_simple_tool(name: &str, args: &Value) -> Result<Value, String> {
+async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     match name {
         "computer_help" => computer_help(args),
-        "computer_list_windows" => native_call("computer.listWindows", &json!({})),
+        "computer_list_windows" => native_call_scoped("computer.listWindows", &json!({}), thread),
         "computer_get_state" => {
             let payload = json!({
                 "windowId": args.get("window_id").cloned().unwrap_or(Value::Null),
                 "includeText": args.get("include_text").and_then(Value::as_bool).unwrap_or(false),
                 "includeScreenshot": args.get("include_screenshot").and_then(Value::as_bool).unwrap_or(false),
                 "labelContains": args.get("label_contains").cloned().unwrap_or(Value::Null),
+                "modelObservation": true,
             });
-            let mut out = native_call("computer.getState", &payload)?;
+            let mut out = native_call_scoped("computer.getState", &payload, thread)?;
             scrub_nulls(&mut out);
             Ok(out)
         }
@@ -483,7 +484,7 @@ async fn call_simple_tool(name: &str, args: &Value) -> Result<Value, String> {
                     return Err("Semantic computer_click currently supports one left press; use coordinates for other clicks.".into());
                 }
                 target["action"] = json!("press");
-                return native_call("computer.performAction", &target);
+                return native_call_scoped("computer.performAction", &target, thread);
             }
             let x = number(args, "x")?;
             let y = number(args, "y")?;
@@ -493,25 +494,27 @@ async fn call_simple_tool(name: &str, args: &Value) -> Result<Value, String> {
                 ("left", _) => "computer.click",
                 _ => return Err("button must be left or right".into()),
             };
-            native_call(
+            native_call_scoped(
                 tag,
                 &json!({"x":x,"y":y,"windowId":string_arg(args,"window_id")}),
+                thread,
             )
         }
         "computer_type_text" => {
             let mode = string_arg(args, "typing_mode").unwrap_or("keyboard");
             let text = string_arg(args, "text").ok_or("text is required")?;
             match mode {
-                "keyboard" => native_call(
+                "keyboard" => native_call_scoped(
                     "computer.typeText",
                     &json!({"text":text,"windowId":string_arg(args,"window_id")}),
+                    thread,
                 ),
                 "semantic" => {
                     let Some(mut target) = semantic_target(args) else {
                         return Err("typing_mode semantic requires an exact ref, node_path, role or label target.".into());
                     };
                     target["value"] = json!(text);
-                    native_call("computer.setValue", &target)
+                    native_call_scoped("computer.setValue", &target, thread)
                 }
                 _ => Err(
                     "typing_mode must be keyboard or semantic; no automatic fallback is used."
@@ -519,26 +522,28 @@ async fn call_simple_tool(name: &str, args: &Value) -> Result<Value, String> {
                 ),
             }
         }
-        "computer_press_key" => native_call(
+        "computer_press_key" => native_call_scoped(
             "computer.pressKey",
             &json!({
                 "key": string_arg(args,"key").ok_or("key is required")?,
                 "modifiers": args.get("modifiers").cloned().unwrap_or(json!([])),
                 "windowId": string_arg(args,"window_id"),
             }),
+            thread,
         ),
         "computer_scroll" => {
             let mut dx = number_opt(args, "delta_x").unwrap_or(0.0);
             let mut dy = number_opt(args, "delta_y").unwrap_or(0.0);
             dx = dx.signum() * dx.abs().min(6_000.0);
             dy = dy.signum() * dy.abs().min(6_000.0);
-            native_call(
+            native_call_scoped(
                 "computer.scroll",
                 &json!({
                     "x":number(args,"x")?,"y":number(args,"y")?,
                     "deltaX":dx,"deltaY":dy,
                     "windowId":string_arg(args,"window_id"),
                 }),
+                thread,
             )
         }
         "computer_perform_action" => {
@@ -546,7 +551,7 @@ async fn call_simple_tool(name: &str, args: &Value) -> Result<Value, String> {
                 return Err("computer_perform_action requires an exact ref, node_path, role or label target.".into());
             };
             target["action"] = json!(string_arg(args, "action").ok_or("action is required")?);
-            native_call("computer.performAction", &target)
+            native_call_scoped("computer.performAction", &target, thread)
         }
         "computer_select_text" => {
             let Some(mut target) = semantic_target(args) else {
@@ -565,16 +570,17 @@ async fn call_simple_tool(name: &str, args: &Value) -> Result<Value, String> {
                     .and_then(Value::as_u64)
                     .ok_or("length is required")?
             );
-            native_call("computer.selectText", &target)
+            native_call_scoped("computer.selectText", &target, thread)
         }
-        "computer_launch_app" => native_call(
+        "computer_launch_app" => native_call_scoped(
             "computer.launchApp",
             &json!({
                 "app": string_arg(args,"app").ok_or("app is required")?,
                 "arguments": args.get("arguments").cloned().unwrap_or(json!([])),
             }),
+            thread,
         ),
-        "computer_wait" => computer_wait(args).await,
+        "computer_wait" => computer_wait(args, thread).await,
         _ => Err(format!("Unknown tool: {name}")),
     }
 }
@@ -589,7 +595,7 @@ fn readiness_failure(value: &Value) -> Option<&'static str> {
     }
 }
 
-async fn computer_batch(args: &Value) -> Result<Value, String> {
+async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, String> {
     let steps = args
         .get("steps")
         .and_then(Value::as_array)
@@ -630,7 +636,7 @@ async fn computer_batch(args: &Value) -> Result<Value, String> {
         if let Some(object) = arguments.as_object_mut() {
             object.remove("type");
         }
-        match call_simple_tool(tool_name, &arguments).await {
+        match call_simple_tool(tool_name, &arguments, thread).await {
             Ok(value) => {
                 let barrier = (step_type == "wait")
                     .then(|| readiness_failure(&value))
@@ -679,6 +685,19 @@ fn native_call(tag: &str, payload: &Value) -> Result<Value, String> {
         Some(result) => result,
         None => Err("No computer backend is available on this server.".into()),
     }
+}
+
+/// Agent tools carry the caller conversation into the native control plane.
+/// Without this the authority, lease, pause and input-monitor gates cannot
+/// distinguish the owning thread from shell manual input.
+fn native_call_scoped(tag: &str, payload: &Value, thread: Option<&str>) -> Result<Value, String> {
+    let mut scoped = payload.clone();
+    if let (Some(thread), Some(object)) = (thread, scoped.as_object_mut()) {
+        object
+            .entry("threadId".to_string())
+            .or_insert_with(|| json!(thread));
+    }
+    native_call(tag, &scoped)
 }
 
 fn number(args: &Value, key: &str) -> Result<f64, String> {
@@ -809,10 +828,11 @@ fn computer_help(args: &Value) -> Result<Value, String> {
     Ok(playbook_chapter(&topic, playbook))
 }
 
-async fn read_state(window_id: Option<&str>) -> Result<Value, String> {
-    native_call(
+async fn read_state(window_id: Option<&str>, thread: Option<&str>) -> Result<Value, String> {
+    native_call_scoped(
         "computer.getState",
         &json!({"windowId": window_id, "includeText": false, "includeScreenshot": false}),
+        thread,
     )
 }
 
@@ -889,7 +909,11 @@ fn tree_hash(root: &Value) -> u64 {
     hasher.finish()
 }
 
-async fn wait_control(args: &Value, timeout_ms: u64) -> Result<Value, String> {
+async fn wait_control(
+    args: &Value,
+    timeout_ms: u64,
+    thread: Option<&str>,
+) -> Result<Value, String> {
     let window_id = string_arg(args, "window_id");
     let label = string_arg(args, "label");
     let role = string_arg(args, "role");
@@ -909,7 +933,7 @@ async fn wait_control(args: &Value, timeout_ms: u64) -> Result<Value, String> {
     let mut checks = 0_u64;
     let mut satisfied_since: Option<Instant> = None;
     loop {
-        let state = read_state(window_id).await?;
+        let state = read_state(window_id, thread).await?;
         checks += 1;
         let window_closed = window_id.is_some_and(|id| {
             !state
@@ -984,7 +1008,7 @@ async fn wait_control(args: &Value, timeout_ms: u64) -> Result<Value, String> {
     }
 }
 
-async fn wait_settle(args: &Value, timeout_ms: u64) -> Result<Value, String> {
+async fn wait_settle(args: &Value, timeout_ms: u64, thread: Option<&str>) -> Result<Value, String> {
     let window_id = string_arg(args, "window_id").ok_or("settle requires window_id")?;
     let stable_ms = args.get("stable_ms").and_then(Value::as_u64).unwrap_or(250);
     if stable_ms > timeout_ms {
@@ -995,7 +1019,7 @@ async fn wait_settle(args: &Value, timeout_ms: u64) -> Result<Value, String> {
     let mut last_hash = 0_u64;
     let mut stable_since: Option<Instant> = None;
     loop {
-        let state = read_state(Some(window_id)).await?;
+        let state = read_state(Some(window_id), thread).await?;
         checks += 1;
         let hash = state.get("root").map(tree_hash).unwrap_or_default();
         if hash == last_hash {
@@ -1026,7 +1050,7 @@ async fn wait_settle(args: &Value, timeout_ms: u64) -> Result<Value, String> {
     }
 }
 
-async fn computer_wait(args: &Value) -> Result<Value, String> {
+async fn computer_wait(args: &Value, thread: Option<&str>) -> Result<Value, String> {
     let timeout_ms = args
         .get("duration_ms")
         .and_then(Value::as_u64)
@@ -1036,10 +1060,10 @@ async fn computer_wait(args: &Value) -> Result<Value, String> {
         if string_arg(args, "label").is_some() || string_arg(args, "role").is_some() {
             return Err("A settle wait cannot combine with a control condition.".into());
         }
-        return wait_settle(args, timeout_ms).await;
+        return wait_settle(args, timeout_ms, thread).await;
     }
     if string_arg(args, "label").is_some() || string_arg(args, "role").is_some() {
-        return wait_control(args, timeout_ms).await;
+        return wait_control(args, timeout_ms, thread).await;
     }
     tokio::time::sleep(std::time::Duration::from_millis(timeout_ms)).await;
     Ok(json!({

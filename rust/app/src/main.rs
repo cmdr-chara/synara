@@ -1,4 +1,5 @@
 mod account;
+mod input_monitor;
 mod migrations;
 mod agent_gateway_mcp;
 mod acp_runner;

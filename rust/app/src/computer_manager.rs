@@ -64,6 +64,11 @@ pub struct ManagerState {
     /// Most recent user desktop input; foreground delivery must wait for
     /// quiet — taking focus while the user types steals their screen.
     last_user_desktop_input_at: Option<u64>,
+    /// Host-wide observation gate after Escape, human takeover or listener
+    /// failure. The desktop is shared, so this is intentionally not per-thread.
+    global_input_pause: Option<Value>,
+    /// Native foreground input currently dispatching per thread.
+    input_in_flight: HashMap<String, u64>,
     known_app_names: HashSet<String>,
 }
 
@@ -80,6 +85,8 @@ fn manager() -> &'static Mutex<ManagerState> {
             authority_turns: HashMap::new(),
             control_requests: HashMap::new(),
             last_user_desktop_input_at: None,
+            global_input_pause: None,
+            input_in_flight: HashMap::new(),
             known_app_names: HashSet::new(),
         })
     })
@@ -141,7 +148,11 @@ pub async fn admit_control(
         manager().lock().unwrap().disabled_threads.insert(thread_id.to_string());
         e
     })?;
-    Ok(enabled && can_activate_control(thread_id, generation))
+    let admitted = enabled && can_activate_control(thread_id, generation);
+    if admitted {
+        crate::input_monitor::control_armed(thread_id);
+    }
+    Ok(admitted)
 }
 
 /// Upstream's canContinueChatControl: the recorded chat intent generation is
@@ -167,12 +178,14 @@ pub async fn set_control_enabled(
     };
     if enabled {
         crate::computer_control::set(thread_id, false)?;
+        crate::input_monitor::control_armed(thread_id);
         let mut guard = manager().lock().unwrap();
         if guard.control_requests.get(thread_id).copied() == Some(request) {
             guard.disabled_threads.remove(thread_id);
         }
     } else {
         crate::computer_control::set(thread_id, true)?;
+        crate::input_monitor::control_disarmed(thread_id);
         {
             let mut guard = manager().lock().unwrap();
             guard.disabled_threads.insert(thread_id.to_string());
@@ -219,6 +232,13 @@ pub fn assert_control_authority(owner: Option<&str>) -> Result<(), String> {
 pub fn assert_input_not_paused(owner: Option<&str>) -> Result<(), String> {
     let Some(owner) = owner else { return Ok(()) };
     let guard = manager().lock().unwrap();
+    if let Some(pause) = &guard.global_input_pause {
+        let message = pause
+            .get("message")
+            .and_then(Value::as_str)
+            .unwrap_or("Computer input is paused until the desktop is observed again.");
+        return Err(message.to_string());
+    }
     if let Some(runtime) = guard.threads.get(owner) {
         if let Some(pause) = &runtime.input_pause {
             let message = pause
@@ -239,10 +259,57 @@ pub fn record_input_pause(owner: &str, pause: Value) {
     guard.threads.entry(owner.to_string()).or_default().input_pause = Some(pause);
 }
 
+pub fn record_global_input_pause(pause: Value) {
+    manager().lock().unwrap().global_input_pause = Some(pause);
+}
+
+pub fn input_pause_active(owner: Option<&str>) -> bool {
+    let guard = manager().lock().unwrap();
+    if guard.global_input_pause.is_some() {
+        return true;
+    }
+    owner.is_some_and(|owner| {
+        guard
+            .threads
+            .get(owner)
+            .is_some_and(|runtime| runtime.input_pause.is_some())
+    })
+}
+
+pub fn input_started(thread_id: &str) {
+    if thread_id.is_empty() {
+        return;
+    }
+    let mut guard = manager().lock().unwrap();
+    *guard.input_in_flight.entry(thread_id.to_string()).or_insert(0) += 1;
+}
+
+pub fn input_finished(thread_id: &str) {
+    let mut guard = manager().lock().unwrap();
+    if let Some(count) = guard.input_in_flight.get_mut(thread_id) {
+        *count = count.saturating_sub(1);
+        if *count == 0 {
+            guard.input_in_flight.remove(thread_id);
+        }
+    }
+}
+
+pub fn any_input_in_flight() -> bool {
+    manager()
+        .lock()
+        .unwrap()
+        .input_in_flight
+        .values()
+        .any(|count| *count > 0)
+}
+
 /// A fresh desktop observation clears the human-takeover pause. Only direct
 /// observations call this: status/control reads must not silently re-arm input.
 pub fn clear_input_pause(owner: &str) {
     let mut guard = manager().lock().unwrap();
+    // A successful fresh model observation proves the shared desktop state
+    // again, so it clears both the host-wide gate and this thread's pause.
+    guard.global_input_pause = None;
     if let Some(runtime) = guard.threads.get_mut(owner) {
         runtime.input_pause = None;
     }
@@ -374,14 +441,27 @@ pub async fn agent_call_finished(thread_id: &str) {
     }
 }
 
-/// Upstream's emergencyStopInput: Escape semantics — every live authority
-/// aborts and the backend stops input, reported via the stopped event edge.
-pub async fn emergency_stop_input() {
+fn emergency_stop_input_now() {
     crate::computer_approval::gate().revoke_task_grants();
     let mut guard = manager().lock().unwrap();
     guard.lease = None;
     guard.background_leases.clear();
     guard.authority_turns.clear();
+    guard.global_input_pause = Some(serde_json::json!({
+        "kind": "escape-interrupt",
+        "message": "Computer input was interrupted by the physical Escape key. Read fresh computer state before continuing; do not replay an uncertain action."
+    }));
+}
+
+/// Upstream's emergencyStopInput: Escape semantics — every live authority
+/// aborts and fresh observation is required before input resumes.
+pub fn emergency_stop_input_sync() {
+    emergency_stop_input_now();
+}
+
+/// Async form retained for lifecycle callers that already live in Tokio.
+pub async fn emergency_stop_input() {
+    emergency_stop_input_now();
 }
 
 /// Denylist fencing for driven targets — checked before any dispatch so a

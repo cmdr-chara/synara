@@ -360,6 +360,8 @@ struct Preferences {
     settings: VaultSettings,
     #[serde(default)]
     sources: HashMap<String, CredentialSource>,
+    #[serde(default, rename = "neverOrigins")]
+    never_origins: HashSet<String>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -640,6 +642,116 @@ impl BrowserVault {
         state.redaction_secrets.insert(password.to_string());
         self.persist_all_locked(&state)?;
         Ok(id)
+    }
+
+    pub fn track_secret(&self, secret: &str) {
+        if secret.is_empty() {
+            return;
+        }
+        if let Ok(mut state) = self.state.lock() {
+            state.redaction_secrets.insert(secret.to_string());
+        }
+    }
+
+    pub fn capture_enabled(&self) -> bool {
+        self.state
+            .lock()
+            .map(|state| state.preferences.settings.offer_save && state.key.is_some())
+            .unwrap_or(false)
+    }
+
+    pub fn capture_policy(&self) -> (bool, bool) {
+        self.state
+            .lock()
+            .map(|state| {
+                (
+                    state.preferences.settings.offer_save && state.key.is_some(),
+                    state.preferences.settings.autosave,
+                )
+            })
+            .unwrap_or((false, false))
+    }
+
+    pub fn is_never_origin(&self, origin: &str) -> bool {
+        let Ok(origin) = canonical_origin(origin) else {
+            return false;
+        };
+        self.state
+            .lock()
+            .map(|state| state.preferences.never_origins.contains(&origin))
+            .unwrap_or(false)
+    }
+
+    pub fn never_origin(&self, origin: &str) -> Result<(), String> {
+        let origin = canonical_origin(origin)?;
+        let mut state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+        state.preferences.never_origins.insert(origin);
+        while state.preferences.never_origins.len() > 500 {
+            if let Some(first) = state.preferences.never_origins.iter().next().cloned() {
+                state.preferences.never_origins.remove(&first);
+            }
+        }
+        self.persist_preferences_locked(&state)
+    }
+
+    pub fn has_login(&self, origin: &str, username: &str) -> Result<bool, String> {
+        let origin = canonical_origin(origin)?;
+        let state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+        self.require_unlocked(&state)?;
+        Ok(state.payload.records.iter().any(|record| {
+            record.origin == origin && record.username.eq_ignore_ascii_case(username)
+        }))
+    }
+
+    pub fn should_offer_save(
+        &self,
+        origin: &str,
+        username: &str,
+        password: &str,
+    ) -> Result<bool, String> {
+        let origin = canonical_origin(origin)?;
+        let state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+        if !state.preferences.settings.offer_save || state.key.is_none() {
+            return Ok(false);
+        }
+        if state.preferences.never_origins.contains(&origin) {
+            return Ok(false);
+        }
+        Ok(!state.payload.records.iter().any(|record| {
+            record.origin == origin
+                && record.username.eq_ignore_ascii_case(username)
+                && record.password == password
+        }))
+    }
+
+    /// Save an accepted browser submission. `defer_to_pending` suppresses the
+    /// duplicate produced when a generated password was typed into the page by
+    /// the agent; only the vault may compare that secret.
+    pub fn save_captured(
+        &self,
+        origin: &str,
+        username: &str,
+        password: &str,
+        label: Option<&str>,
+        source: CredentialSource,
+        defer_to_pending: bool,
+    ) -> Result<bool, String> {
+        let origin = canonical_origin(origin)?;
+        if defer_to_pending {
+            let state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+            self.require_unlocked(&state)?;
+            let now = now_ms();
+            let deferred = state.payload.pending.iter().any(|pending| {
+                pending.origin == origin
+                    && iso_to_ms(&pending.expires_at) >= now
+                    && pending.password == password
+            });
+            if deferred {
+                return Ok(false);
+            }
+        }
+        self.save_login(&origin, username, password, label, source)?;
+        Ok(true)
     }
 
     pub fn remove(&self, id: &str) -> Result<Value, String> {
@@ -1149,6 +1261,85 @@ mod tests {
             vault.list_metadata("https://example.com/").unwrap().len(),
             1
         );
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
+    #[test]
+    fn capture_policy_detects_updates_duplicates_and_never_origins() {
+        let dir = home("capture-policy");
+        let vault = BrowserVault::open_with_keyring(&dir, false).unwrap();
+        let mut settings = VaultSettings::default();
+        settings.offer_save = true;
+        vault.configure(settings).unwrap();
+        vault
+            .save_login(
+                "https://example.com/",
+                "ada",
+                "same-secret",
+                None,
+                CredentialSource::User,
+            )
+            .unwrap();
+        assert!(!vault
+            .should_offer_save("https://example.com/login", "ada", "same-secret")
+            .unwrap());
+        assert!(vault
+            .should_offer_save("https://example.com/login", "ada", "changed-secret")
+            .unwrap());
+        vault.never_origin("https://example.com/login").unwrap();
+        assert!(!vault
+            .should_offer_save("https://example.com/login", "ada", "changed-secret")
+            .unwrap());
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
+    #[test]
+    fn pending_generated_secret_defers_duplicate_capture() {
+        let dir = home("capture-defer");
+        let vault = BrowserVault::open_with_keyring(&dir, false).unwrap();
+        let mut settings = VaultSettings::default();
+        settings.offer_save = true;
+        vault.configure(settings).unwrap();
+        let pending = vault
+            .generate_password(
+                "https://example.com/",
+                "ada",
+                None,
+                None,
+                CredentialSource::Agent,
+            )
+            .unwrap();
+        let pending_id = pending
+            .get("pendingId")
+            .and_then(Value::as_str)
+            .unwrap()
+            .to_string();
+        let password = vault
+            .state
+            .lock()
+            .unwrap()
+            .payload
+            .pending[0]
+            .password
+            .clone();
+        assert!(!vault
+            .save_captured(
+                "https://example.com/",
+                "ada",
+                &password,
+                None,
+                CredentialSource::Agent,
+                true,
+            )
+            .unwrap());
+        assert!(vault
+            .list_metadata("https://example.com/")
+            .unwrap()
+            .is_empty());
+        vault
+            .commit_generated("https://example.com/", &pending_id)
+            .unwrap();
+        assert_eq!(vault.list_metadata("https://example.com/").unwrap().len(), 1);
         let _ = std::fs::remove_dir_all(dir);
     }
 

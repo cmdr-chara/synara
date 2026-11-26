@@ -206,6 +206,122 @@ fn credential_list_result(action: &str, origin: &str) -> Result<Value, String> {
     }
 }
 
+
+const VAULT_SENSOR_JS: &str = include_str!("../assets/vault-sensor.js");
+const VAULT_WORLD: &str = "betterwright-vault";
+const VAULT_BINDING: &str = "__bwVaultEvent";
+
+fn agent_activity() -> &'static Mutex<HashMap<String, i64>> {
+    static ACTIVITY: OnceLock<Mutex<HashMap<String, i64>>> = OnceLock::new();
+    ACTIVITY.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn now_ms() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_millis() as i64)
+        .unwrap_or_default()
+}
+
+fn note_agent_activity(session: &str) {
+    if let Ok(mut activity) = agent_activity().lock() {
+        activity.insert(session.to_string(), now_ms());
+    }
+}
+
+fn recent_agent_activity(session: &str) -> bool {
+    agent_activity()
+        .lock()
+        .ok()
+        .and_then(|activity| activity.get(session).copied())
+        .is_some_and(|at| now_ms() - at <= 5_000)
+}
+
+fn strip_hash(url: &str) -> &str {
+    url.split('#').next().unwrap_or(url)
+}
+
+fn host_label(origin: &str) -> Option<String> {
+    url::Url::parse(origin)
+        .ok()
+        .and_then(|url| url.host_str().map(str::to_string))
+}
+
+#[derive(Clone)]
+struct PendingCapture {
+    origin: String,
+    href: String,
+    username: String,
+    password: String,
+    context_id: u64,
+    confirming: bool,
+}
+
+fn resolve_capture(
+    capture: PendingCapture,
+    session: &str,
+    prompts: &mut HashMap<String, (String, PendingCapture)>,
+    tx: &mpsc::UnboundedSender<String>,
+    next_id: &AtomicU64,
+) {
+    let Ok(vault) = browser_vault() else { return };
+    let (enabled, autosave) = vault.capture_policy();
+    if !enabled
+        || vault.is_never_origin(&capture.origin)
+        || !vault
+            .should_offer_save(&capture.origin, &capture.username, &capture.password)
+            .unwrap_or(false)
+    {
+        return;
+    }
+    let agent_driven = recent_agent_activity(session);
+    let source = if agent_driven {
+        crate::vault::CredentialSource::Agent
+    } else {
+        crate::vault::CredentialSource::User
+    };
+    if autosave || agent_driven {
+        let _ = vault.save_captured(
+            &capture.origin,
+            &capture.username,
+            &capture.password,
+            host_label(&capture.origin).as_deref(),
+            source,
+            true,
+        );
+        return;
+    }
+    let prompt_id = uuid::Uuid::new_v4().to_string();
+    let mode = if vault
+        .has_login(&capture.origin, &capture.username)
+        .unwrap_or(false)
+    {
+        "update"
+    } else {
+        "save"
+    };
+    prompts.insert(prompt_id.clone(), (session.to_string(), capture.clone()));
+    let expression = format!(
+        "globalThis.__bwVaultShowPrompt && globalThis.__bwVaultShowPrompt({})",
+        json!({
+            "promptId": prompt_id,
+            "origin": capture.origin,
+            "username": capture.username,
+            "mode": mode,
+        })
+    );
+    fire_and_forget_command(
+        tx,
+        next_id,
+        "Runtime.evaluate",
+        json!({
+            "expression": expression,
+            "contextId": capture.context_id,
+        }),
+        Some(session),
+    );
+}
+
 fn fire_and_forget_command(
     tx: &mpsc::UnboundedSender<String>,
     next_id: &AtomicU64,
@@ -249,7 +365,13 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
     let event_tx = tx.clone();
     let event_next_id = next_id.clone();
     tokio::spawn(async move {
-        let mut execution_contexts: HashMap<(String, u64), String> = HashMap::new();
+        // context key -> (origin, world name, frame id)
+        let mut execution_contexts: HashMap<(String, u64), (String, String, String)> =
+            HashMap::new();
+        // (session, frame) -> (isolated-world context id, last committed URL)
+        let mut vault_frames: HashMap<(String, String), (u64, String)> = HashMap::new();
+        let mut pending_captures: HashMap<(String, String), PendingCapture> = HashMap::new();
+        let mut vault_prompts: HashMap<String, (String, PendingCapture)> = HashMap::new();
         while let Some(msg) = stream.next().await {
             let Ok(msg) = msg else { break };
             if let tokio_tungstenite::tungstenite::Message::Text(text) = msg {
@@ -277,8 +399,30 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                             .and_then(Value::as_str)
                             .unwrap_or("")
                             .to_string();
+                        let name = v
+                            .pointer("/params/context/name")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let frame_id = v
+                            .pointer("/params/context/auxData/frameId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
                         if id != 0 && !origin.is_empty() {
-                            execution_contexts.insert((session, id), origin);
+                            if name == VAULT_WORLD {
+                                fire_and_forget_command(
+                                    &event_tx,
+                                    &event_next_id,
+                                    "Runtime.addBinding",
+                                    json!({"name": VAULT_BINDING, "executionContextName": VAULT_WORLD}),
+                                    Some(&session),
+                                );
+                                vault_frames
+                                    .entry((session.clone(), frame_id.clone()))
+                                    .or_insert((id, String::new()));
+                            }
+                            execution_contexts.insert((session, id), (origin, name, frame_id));
                         }
                     } else if v.get("method").and_then(Value::as_str)
                         == Some("Runtime.executionContextDestroyed")
@@ -293,6 +437,130 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                             .and_then(Value::as_u64)
                             .unwrap_or(0);
                         execution_contexts.remove(&(session, id));
+                        vault_frames.retain(|_, (context_id, _)| *context_id != id);
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Runtime.bindingCalled")
+                        && v.pointer("/params/name").and_then(Value::as_str) == Some(VAULT_BINDING)
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let context_id = v
+                            .pointer("/params/executionContextId")
+                            .and_then(Value::as_u64)
+                            .unwrap_or(0);
+                        let payload_text = v
+                            .pointer("/params/payload")
+                            .and_then(Value::as_str)
+                            .unwrap_or("{}");
+                        let Ok(message) = serde_json::from_str::<Value>(payload_text) else {
+                            continue;
+                        };
+                        let message_type = message.get("type").and_then(Value::as_str).unwrap_or("");
+                        if message_type == "promptResponse" {
+                            let prompt_id = message
+                                .get("promptId")
+                                .and_then(Value::as_str)
+                                .unwrap_or("");
+                            let choice = message.get("choice").and_then(Value::as_str).unwrap_or("");
+                            if let Some((prompt_session, capture)) = vault_prompts.remove(prompt_id) {
+                                if let Ok(vault) = browser_vault() {
+                                    if choice == "save" {
+                                        let _ = vault.save_captured(
+                                            &capture.origin,
+                                            &capture.username,
+                                            &capture.password,
+                                            host_label(&capture.origin).as_deref(),
+                                            crate::vault::CredentialSource::User,
+                                            true,
+                                        );
+                                    } else if choice == "never" {
+                                        let _ = vault.never_origin(&capture.origin);
+                                    }
+                                }
+                                let _ = prompt_session;
+                            }
+                            continue;
+                        }
+                        let frame_id = execution_contexts
+                            .get(&(session.clone(), context_id))
+                            .map(|(_, _, frame)| frame.clone())
+                            .unwrap_or_default();
+                        if session.is_empty() || frame_id.is_empty() {
+                            continue;
+                        }
+                        let key = (session.clone(), frame_id.clone());
+                        if message_type == "submitCapture" {
+                            let origin = message
+                                .get("origin")
+                                .and_then(Value::as_str)
+                                .unwrap_or("")
+                                .to_string();
+                            let password = message
+                                .get("password")
+                                .and_then(Value::as_str)
+                                .unwrap_or("")
+                                .to_string();
+                            if !origin.is_empty() && !password.is_empty() {
+                                if let Ok(vault) = browser_vault() {
+                                    if vault.capture_enabled() {
+                                        vault.track_secret(&password);
+                                        pending_captures.insert(
+                                            key,
+                                            PendingCapture {
+                                                origin,
+                                                href: message
+                                                    .get("href")
+                                                    .and_then(Value::as_str)
+                                                    .unwrap_or("")
+                                                    .to_string(),
+                                                username: message
+                                                    .get("username")
+                                                    .and_then(Value::as_str)
+                                                    .unwrap_or("")
+                                                    .to_string(),
+                                                password,
+                                                context_id,
+                                                confirming: false,
+                                            },
+                                        );
+                                    }
+                                }
+                            }
+                        } else if message_type == "fieldsCleared" {
+                            if let Some(capture) = pending_captures.remove(&key) {
+                                resolve_capture(
+                                    capture,
+                                    &session,
+                                    &mut vault_prompts,
+                                    &event_tx,
+                                    &event_next_id,
+                                );
+                            }
+                        } else if message_type == "passwordFormScan" {
+                            let present = message
+                                .get("present")
+                                .and_then(Value::as_bool)
+                                .unwrap_or(false);
+                            let resolving = pending_captures
+                                .get(&key)
+                                .is_some_and(|capture| capture.confirming);
+                            if resolving {
+                                if present {
+                                    pending_captures.remove(&key);
+                                } else if let Some(capture) = pending_captures.remove(&key) {
+                                    resolve_capture(
+                                        capture,
+                                        &session,
+                                        &mut vault_prompts,
+                                        &event_tx,
+                                        &event_next_id,
+                                    );
+                                }
+                            }
+                        }
                     } else if v.get("method").and_then(Value::as_str)
                         == Some("Runtime.bindingCalled")
                         && v.pointer("/params/name").and_then(Value::as_str)
@@ -305,7 +573,9 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                             .unwrap_or(0);
                         let context_origin = session
                             .and_then(|session| {
-                                execution_contexts.get(&(session.to_string(), context_id)).cloned()
+                                execution_contexts
+                                    .get(&(session.to_string(), context_id))
+                                    .map(|(origin, _, _)| origin.clone())
                             })
                             .unwrap_or_default();
                         let payload_text = v
@@ -364,6 +634,85 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                                     "contextId": context_id,
                                 }),
                                 session,
+                            );
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Page.frameNavigated")
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let frame_id = v
+                            .pointer("/params/frame/id")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let url = v
+                            .pointer("/params/frame/url")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        if !session.is_empty() && !frame_id.is_empty() {
+                            let key = (session.clone(), frame_id.clone());
+                            vault_frames
+                                .entry(key.clone())
+                                .and_modify(|(_, old_url)| *old_url = url.clone())
+                                .or_insert((0, url.clone()));
+                            if let Some(capture) = pending_captures.get_mut(&key) {
+                                if !url.is_empty() && strip_hash(&url) != strip_hash(&capture.href) {
+                                    capture.confirming = true;
+                                } else {
+                                    pending_captures.remove(&key);
+                                }
+                            }
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Page.navigatedWithinDocument")
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let frame_id = v
+                            .pointer("/params/frameId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let url = v
+                            .pointer("/params/url")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let key = (session.clone(), frame_id.clone());
+                        if let Some(capture) = pending_captures.get_mut(&key) {
+                            if !url.is_empty() && strip_hash(&url) != strip_hash(&capture.href) {
+                                capture.confirming = true;
+                            }
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Page.frameDetached")
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let frame_id = v
+                            .pointer("/params/frameId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let key = (session.clone(), frame_id);
+                        if let Some(capture) = pending_captures.remove(&key) {
+                            resolve_capture(
+                                capture,
+                                &session,
+                                &mut vault_prompts,
+                                &event_tx,
+                                &event_next_id,
                             );
                         }
                     } else if v.get("method").and_then(Value::as_str)
@@ -712,6 +1061,22 @@ async fn thread_session(
             Some(&session_id),
         )
         .await;
+    if browser_vault()
+        .map(|vault| vault.capture_enabled())
+        .unwrap_or(false)
+    {
+        let _ = conn
+            .call(
+                "Page.addScriptToEvaluateOnNewDocument",
+                json!({
+                    "source": VAULT_SENSOR_JS,
+                    "worldName": VAULT_WORLD,
+                    "runImmediately": true,
+                }),
+                Some(&session_id),
+            )
+            .await;
+    }
     if let Ok(mut tabs) = cdp_tabs().lock() {
         tabs.insert(key, (target_id.clone(), session_id.clone()));
     }
@@ -770,6 +1135,69 @@ async fn cdp_eval(
     expression: &str,
 ) -> Result<Value, String> {
     cdp_eval_in_context(conn, session, expression, None).await
+}
+
+async fn trusted_click(
+    conn: &CdpConnection,
+    session: &str,
+    selector: &str,
+) -> Result<(), String> {
+    let document = conn
+        .call("DOM.getDocument", json!({"depth": 1}), Some(session))
+        .await?;
+    let root = document
+        .pointer("/root/nodeId")
+        .and_then(Value::as_u64)
+        .ok_or("DOM root unavailable")?;
+    let node = conn
+        .call(
+            "DOM.querySelector",
+            json!({"nodeId": root, "selector": selector}),
+            Some(session),
+        )
+        .await?;
+    let node_id = node
+        .get("nodeId")
+        .and_then(Value::as_u64)
+        .filter(|id| *id != 0)
+        .ok_or("click target not found")?;
+    let quads = conn
+        .call("DOM.getContentQuads", json!({"nodeId": node_id}), Some(session))
+        .await?;
+    let quad = quads
+        .get("quads")
+        .and_then(Value::as_array)
+        .and_then(|items| items.first())
+        .and_then(Value::as_array)
+        .ok_or("click target is not visible")?;
+    let xs: Vec<f64> = [0, 2, 4, 6]
+        .iter()
+        .filter_map(|index| quad.get(*index).and_then(Value::as_f64))
+        .collect();
+    let ys: Vec<f64> = [1, 3, 5, 7]
+        .iter()
+        .filter_map(|index| quad.get(*index).and_then(Value::as_f64))
+        .collect();
+    if xs.len() != 4 || ys.len() != 4 {
+        return Err("click target geometry is unavailable".into());
+    }
+    let x = xs.iter().sum::<f64>() / 4.0;
+    let y = ys.iter().sum::<f64>() / 4.0;
+    for event_type in ["mouseMoved", "mousePressed", "mouseReleased"] {
+        let mut event = json!({
+            "type": event_type,
+            "x": x,
+            "y": y,
+            "button": "left",
+            "clickCount": 1,
+        });
+        if event_type == "mouseMoved" {
+            event.as_object_mut().unwrap().remove("clickCount");
+        }
+        conn.call("Input.dispatchMouseEvent", event, Some(session))
+            .await?;
+    }
+    Ok(())
 }
 
 async fn create_agent_context(conn: &CdpConnection, session: &str) -> Result<u64, String> {
@@ -855,6 +1283,18 @@ pub async fn call_cdp_tool(
         return Ok(json!({"tabs": list, "backend": backend}));
     }
     let (_target_id, session) = thread_session(&conn, thread, mode).await?;
+    if matches!(
+        name,
+        "browser_open"
+            | "browser_navigate"
+            | "browser_run"
+            | "browser_click"
+            | "browser_fill"
+            | "browser_type"
+            | "browser_press_key"
+    ) {
+        note_agent_activity(&session);
+    }
     match name {
         "browser_open" | "browser_navigate" => {
             let url = args
@@ -922,11 +1362,13 @@ pub async fn call_cdp_tool(
         }
         "browser_click" => {
             let sel = selector_js(args)?;
-            let expr = format!(
-                "(()=>{{const el=document.querySelector({});if(!el)throw new Error('click target not found');el.click();return true}})()",
-                js_string(&sel)
-            );
-            cdp_eval(&conn, &session, &expr).await?;
+            if trusted_click(&conn, &session, &sel).await.is_err() {
+                let expr = format!(
+                    "(()=>{{const el=document.querySelector({});if(!el)throw new Error('click target not found');el.click();return true}})()",
+                    js_string(&sel)
+                );
+                cdp_eval(&conn, &session, &expr).await?;
+            }
             Ok(json!({"backend": backend, "clicked": sel}))
         }
         "browser_fill" | "browser_type" => {

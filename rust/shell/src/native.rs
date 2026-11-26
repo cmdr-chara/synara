@@ -1276,6 +1276,7 @@ pub struct Native {
     ui_density: u8,
     chat_width_mode: u8,
     show_ascii_bg: bool,
+    backdrop_full: bool,
     /// AsciiWaveBackground (upstream): ambient field clock. `ascii_cells`
     /// holds the per-cell glyph indices so scrambling is incremental, and
     /// `ascii_ripples` the live click ripples (x, y, phaseA, phaseB, start).
@@ -3190,6 +3191,7 @@ impl Native {
     ui_density: 1,
     chat_width_mode: 0,
     show_ascii_bg: true,
+    backdrop_full: false,
             ascii_t0: std::time::Instant::now(),
             ascii_seed: 0.0,
             ascii_cells: Vec::new(),
@@ -10050,6 +10052,10 @@ impl Native {
                         .get("showAsciiBackground")
                         .and_then(Value::as_bool)
                         .unwrap_or(true);
+                    this.backdrop_full = ap
+                        .get("atmosphereFullWindow")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
                     this.theme_packs = get(ap, "themePacks").clone();
                 }
                 this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
@@ -10562,6 +10568,7 @@ impl Native {
             "uiDensity": dens,
             "chatWidth": width,
             "showAsciiBackground": self.show_ascii_bg,
+            "atmosphereFullWindow": self.backdrop_full,
             "themePacks": self.theme_packs.clone(),
         });
         if let Some(obj) = get_mut(&mut self.settings_data, "settings")
@@ -11059,6 +11066,11 @@ impl Native {
 
     fn toggle_ascii_bg(&mut self, cx: &mut Context<Self>) {
         self.show_ascii_bg = !self.show_ascii_bg;
+        self.persist_appearance(cx);
+    }
+
+    fn toggle_backdrop_full(&mut self, cx: &mut Context<Self>) {
+        self.backdrop_full = !self.backdrop_full;
         self.persist_appearance(cx);
     }
 
@@ -22593,6 +22605,14 @@ impl Render for Native {
                                             .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_ascii_bg(cx)))
                                             .into_any_element(),
                                     ))
+                                    .child(srow(
+                                        "Full-window backdrop",
+                                        "Keep the temple backdrop behind the whole chat column, not just the empty landing.",
+                                        div().id("backdrop-full-toggle").cursor_pointer()
+                                            .child(toggle(self.backdrop_full))
+                                            .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_backdrop_full(cx)))
+                                            .into_any_element(),
+                                    ))
                                     .into_any_element(),
                             )),
                     )
@@ -24644,7 +24664,33 @@ impl Render for Native {
             self.browser_input = None;
         }
         let mut main = v_flex().flex_1().min_w_0().h_full().relative();
-                let landing_bd_main = if show_landing && self.show_ascii_bg {
+                // The wm block in the pane builder only runs on the landing;
+                // with full-window mode the image must exist for every view.
+                if (show_landing || self.backdrop_full) && self.show_ascii_bg {
+                    let vpw = window.viewport_size().width.as_f32();
+                    let vph = window.viewport_size().height.as_f32();
+                    let dark = theme.is_dark();
+                    let key = (vpw as u32, vph as u32, dark);
+                    if self.backdrop_key != key || self.backdrop_img.is_none() {
+                        let col_w = 736.0f32.min(vpw * 0.9);
+                        let cx0 = (vpw - col_w) / 2.0;
+                        let quiet = vec![
+                            (cx0, vph * 0.30, col_w, vph * 0.22),
+                            (cx0, vph - 210.0, col_w, 180.0),
+                        ];
+                        self.backdrop_img = crate::backdrop::build_backdrop_image(
+                            &crate::backdrop::BackdropSpec {
+                                width: vpw,
+                                height: vph,
+                                dark,
+                                accent_rgb: [0x01, 0x69, 0xcc],
+                                quiet,
+                            },
+                        );
+                        self.backdrop_key = key;
+                    }
+                }
+                let landing_bd_main = if (show_landing || self.backdrop_full) && self.show_ascii_bg {
                     self.backdrop_img.clone().map(|img| {
                         let vpw = window.viewport_size().width.as_f32();
                         let vph = window.viewport_size().height.as_f32();

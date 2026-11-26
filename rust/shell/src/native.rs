@@ -228,6 +228,60 @@ fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
     s
 }
 
+// Latest context-window usage emitted by the runtime, scanning activities
+// backwards (upstream deriveLatestContextWindowState): a fresh configuration
+// or a completed compaction invalidates older usage. Returns
+// (used_percentage 0..100 clamped, used_tokens, max_tokens).
+fn context_window_usage(thread_v: &Value) -> Option<(f64, f64, Option<f64>)> {
+    for a in arr(thread_v, "activities").iter().rev() {
+        let kind = str_at(a, "kind");
+        if kind == "context-window.configured" {
+            return None;
+        }
+        if kind == "context-compaction" {
+            let st = str_at(a, "payload.state");
+            if st == "compacted" || str_at(a, "payload.status") == "completed" {
+                return None;
+            }
+        }
+        if kind != "context-window.updated" {
+            continue;
+        }
+        let used = a.pointer("/payload/usedTokens").and_then(Value::as_f64).unwrap_or(0.0);
+        let pct = a.pointer("/payload/usedPercent").and_then(Value::as_f64).map(|p| p.clamp(0.0, 100.0));
+        let max_t = a.pointer("/payload/maxTokens").and_then(Value::as_f64).filter(|m| *m > 0.0);
+        if used <= 0.0 && pct.is_none() && max_t.is_none() {
+            continue;
+        }
+        let used_pct = pct.or_else(|| max_t.map(|m| (used / m * 100.0).min(100.0)))?;
+        return Some((used_pct, used, max_t));
+    }
+    None
+}
+
+// Ring svg for the compact context meter (upstream ContextWindowMeter:
+// 16px, r=6, 2px stroke, dash-offset arc). Cached per integer percent —
+// svg data needs a static lifetime, so strings leak once per value.
+fn meter_ring_data(pct: f64) -> &'static str {
+    use std::collections::HashMap;
+    use std::sync::{Mutex, OnceLock};
+    static CACHE: OnceLock<Mutex<HashMap<u32, &'static str>>> = OnceLock::new();
+    let key = pct.round().clamp(0.0, 100.0) as u32;
+    let cache = CACHE.get_or_init(|| Mutex::new(HashMap::new()));
+    let mut guard = cache.lock().unwrap();
+    guard.entry(key).or_insert_with(|| {
+        let r = 6.0f64;
+        let circ = 2.0 * std::f64::consts::PI * r;
+        let offset = circ - (key as f64 / 100.0) * circ;
+        Box::leak(format!(
+            "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'>\
+<circle cx='8' cy='8' r='6' fill='none' stroke='currentColor' stroke-opacity='0.25' stroke-width='2'/>\
+<circle cx='8' cy='8' r='6' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' \
+stroke-dasharray='{circ:.3}' stroke-dashoffset='{offset:.3}' transform='rotate(-90 8 8)'/></svg>"
+        ).into_boxed_str())
+    })
+}
+
 fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
@@ -18864,6 +18918,33 @@ impl Render for Native {
                         .child(plus_btn)
                         .child(build_mode_chip(cx))
                         .child(div().flex_1())
+                        .children(
+                            if in_thread {
+                                context_window_usage(thread_v).map(|(pct, used, max_t)| {
+                                    let label = if let Some(m) = max_t {
+                                        format!("{:.0}% — {} of {} tokens used", pct, used as u64, m as u64)
+                                    } else {
+                                        format!("{:.0}% of context used", pct)
+                                    };
+                                    div()
+                                        .flex_none()
+                                        .size(px(16.))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .text_color(theme.muted_foreground)
+                                        .child(
+                                            gpui::svg()
+                                                .data(meter_ring_data(pct).as_bytes())
+                                                .size(px(16.))
+                                                .text_color(theme.muted_foreground),
+                                        )
+                                        .into_any_element()
+                                }).into_iter()
+                            } else {
+                                None.into_iter()
+                            },
+                        )
                         .child(build_model_chip())
                         .child(make_mic_btn(cx))
                         .child(send_btn),

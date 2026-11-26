@@ -1259,6 +1259,9 @@ pub struct Native {
     view_cua: bool,
     cua: Option<crate::cua::CuaHandle>,
     cua_seen_seq: u64,
+    /// Logical screen points from computer.getScreenSize — the click
+    /// mapping divides the PNG pixels by this, never assuming retina.
+    cua_screen_points: Option<(f64, f64)>,
     term_active: bool,
     // TerminalWorkspaceTabs: one PTY session per tab; events route by id.
     term_tabs: Vec<TermTab>,
@@ -3034,6 +3037,7 @@ impl Native {
                 view_cua: false,
                 cua: None,
                 cua_seen_seq: 0,
+                cua_screen_points: None,
                 term_active: false,
                 term_tabs: Vec::new(),
                 term_sel: 0,
@@ -8072,6 +8076,35 @@ impl Native {
                 handle.start();
             }
             self.ensure_cua_refresh(cx);
+            if self.cua_screen_points.is_none() {
+                let client_cell = self.client.clone();
+                cx.spawn(async move |this, cx: &mut AsyncApp| {
+                    let cell = client_cell.clone();
+                    if let Some(client) = cx
+                        .background_executor()
+                        .spawn(async move { ensure_client(&cell) })
+                        .await
+                    {
+                        let result = cx
+                            .background_executor()
+                            .spawn(async move {
+                                client.call("computer.getScreenSize", json!({}))
+                            })
+                            .await;
+                        if let Some(v) = result {
+                            let w = v["screenSize"]["width"].as_f64().or_else(|| v["screenSize"]["width"].as_u64().map(|u| u as f64));
+                            let h = v["screenSize"]["height"].as_f64().or_else(|| v["screenSize"]["height"].as_u64().map(|u| u as f64));
+                            if let (Some(w), Some(h)) = (w, h) {
+                                let _ = this.update(cx, |view, cx| {
+                                    view.cua_screen_points = Some((w, h));
+                                    cx.notify();
+                                });
+                            }
+                        }
+                    }
+                })
+                .detach();
+            }
         } else if let Some(handle) = &self.cua {
             handle.stop();
         }
@@ -24237,19 +24270,49 @@ impl Render for Native {
                 // a click position in the element IS the screen point.
                 if let Some(path) = self.cua_frame_path() {
                     let (pw, ph) = self.cua_png_size().unwrap_or((1440., 900.));
-                    let logical_w = pw / 2.0;
-                    let logical_h = ph / 2.0;
+                    // Logical size comes from the live screen size when known;
+                    // the retina 2x fallback only covers the first frames.
+                    let (logical_w, logical_h) = self
+                        .cua_screen_points
+                        .map(|(w, h)| (w as f32, h as f32))
+                        .unwrap_or((pw / 2.0, ph / 2.0));
                     let click_thread = thread_for_control.clone();
+                    // Mouse positions arrive in window coordinates; a
+                    // transparent canvas over the image records its painted
+                    // origin every frame, so the click handler subtracts the
+                    // true element origin — scroll offsets included.
+                    let origin_slot = std::sync::Arc::new(std::sync::Mutex::new((0f32, 0f32)));
+                    let origin_paint = origin_slot.clone();
+                    let origin_click = origin_slot.clone();
+                    let recorder = gpui::canvas(
+                        move |_bounds, _window, _cx| (),
+                        move |bounds, _unit, _window, _cx| {
+                            if let Ok(mut slot) = origin_paint.lock() {
+                                let x: f32 = bounds.origin.x.into();
+                                let y: f32 = bounds.origin.y.into();
+                                *slot = (x, y);
+                            }
+                        },
+                    )
+                    .absolute()
+                    .top_0()
+                    .left_0()
+                    .size_full();
                     let frame_el = div()
                         .id("cua-frame")
+                        .relative()
                         .w(px(logical_w))
                         .h(px(logical_h))
                         .child(gpui::img(path).w(px(logical_w)).h(px(logical_h)))
+                        .child(recorder)
                         .on_mouse_down(
                             gpui::MouseButton::Left,
                             cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
-                                let x: f32 = ev.position.x.into();
-                                let y: f32 = ev.position.y.into();
+                                let wx: f32 = ev.position.x.into();
+                                let wy: f32 = ev.position.y.into();
+                                let (ox, oy) = origin_click.lock().map(|s| *s).unwrap_or((0., 0.));
+                                let x = (wx - ox).max(0.) as f64;
+                                let y = (wy - oy).max(0.) as f64;
                                 let client_cell = this.client.clone();
                                 let thread = click_thread.clone();
                                 cx.spawn(async move |_this, cx: &mut AsyncApp| {
@@ -24263,9 +24326,7 @@ impl Render for Native {
                                         let _ = cx
                                             .background_executor()
                                             .spawn(async move {
-                                                crate::cua::click(
-                                                    &client, &thread2, x as f64, y as f64, "left",
-                                                )
+                                                crate::cua::click(&client, &thread2, x, y, "left")
                                             })
                                             .await;
                                     }

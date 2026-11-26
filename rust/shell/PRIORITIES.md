@@ -80,3 +80,7 @@ SETTINGS EXACT SPEC (measured in live web via CDP, 1600x1088):
   32px bottom margin before first section.
 - First card top edge web y=197 vs shell y=188 — shell is 9px high.
 - Scroll container is the full pane (x 308, w 889).
+
+NOTE on diff metric: 8.65% at thresh 18 with aligned geometry — cross-rasterizer
+text AA inflates it. Next refinement: measure diff EXCLUDING text pixels, or
+diff on blurred images (geometry-only). reddiff/anaglyph on downsampled pairs.

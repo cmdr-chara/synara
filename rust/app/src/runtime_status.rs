@@ -24,7 +24,7 @@ const KEEP_SAMPLES: usize = 4096;
 
 struct Stats {
     started: Instant,
-    samples: VecDeque<u64>,
+    samples: VecDeque<(Instant, u64)>,
     sample_count: u64,
     stall_window_count: u64,
     max_stall_ms: u64,
@@ -72,7 +72,7 @@ pub fn start_sampler() {
                 continue;
             }
             let drift = drift as u64;
-            s.samples.push_back(drift);
+            s.samples.push_back((now, drift));
             if s.samples.len() > KEEP_SAMPLES {
                 s.samples.pop_front();
             }
@@ -101,7 +101,14 @@ pub fn get_runtime_status() -> Value {
         Ok(s) => s,
         Err(e) => e.into_inner(),
     };
-    let mut sorted: Vec<u64> = s.samples.iter().copied().collect();
+    let window_started = s.started.elapsed().min(std::time::Duration::from_secs(30));
+    let cutoff = Instant::now().checked_sub(std::time::Duration::from_secs(30));
+    let mut sorted: Vec<u64> = s
+        .samples
+        .iter()
+        .filter(|(at, _)| cutoff.is_none_or(|cutoff| *at >= cutoff))
+        .map(|(_, drift)| *drift)
+        .collect();
     sorted.sort_unstable();
     let last_stall = s.last_stall_at.map(|t| {
         json!({
@@ -116,7 +123,7 @@ pub fn get_runtime_status() -> Value {
     };
     json!({
         "available": true,
-        "sampleWindowMs": s.started.elapsed().as_millis() as u64,
+        "sampleWindowMs": window_started.as_millis() as u64,
         "sampleCount": s.sample_count,
         "delayP50Ms": percentile(&sorted, 50),
         "delayP99Ms": percentile(&sorted, 99),

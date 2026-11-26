@@ -1343,6 +1343,11 @@ pub struct Native {
     /// dot field plus the (w,h,dark) key it was built at.
     backdrop_img: Option<Arc<gpui::RenderImage>>,
     backdrop_key: (u32, u32, bool),
+    /// Full-window atmosphere layer (upstream .app-shell-atmosphere):
+    /// window-coordinated texture composited at 35%/80% opacity under the
+    /// landing texture, exactly like the fork's two-canvas structure.
+    atmosphere_img: Option<Arc<gpui::RenderImage>>,
+    atmosphere_key: (u32, u32, bool),
     ascii_ripples: Vec<(f32, f32, f32, f32, std::time::Instant)>,
     /// Cell pitch measured like upstream (`measureText("M").width + 1` in the
     /// UI font); 0 until first measured.
@@ -3338,6 +3343,8 @@ impl Native {
             ascii_cells: Vec::new(),
             backdrop_img: None,
             backdrop_key: (0, 0, false),
+            atmosphere_img: None,
+            atmosphere_key: (0, 0, false),
             ascii_ripples: Vec::new(),
             ascii_cell_w: 0.0,
             ascii_fresh: true,
@@ -26066,38 +26073,77 @@ impl Render for Native {
             // (default) or the shell-wide one (full-window) shows through.
             main = main.bg(content_bg);
         }
-                // The wm block in the pane builder only runs on the landing;
-                // with full-window mode the image must exist for every view.
+                // Full-window atmosphere (upstream .app-shell-atmosphere):
+                // window-coordinated texture, composited at 35% (light) / 80%
+                // (dark) under the landing texture — the fork's two-canvas
+                // structure. Never overwrites backdrop_img: the landing canvas
+                // keeps its own pane-sized geometry.
                 if (show_landing || self.backdrop_full) && self.show_ascii_bg {
                     let vpw = window.viewport_size().width.as_f32();
                     let vph = window.viewport_size().height.as_f32();
                     let dark = theme.is_dark();
                     let key = (vpw as u32, vph as u32, dark);
-                    if self.backdrop_key != key || self.backdrop_img.is_none() {
-                        let col_w = 736.0f32.min(vpw * 0.9);
-                        let cx0 = (vpw - col_w) / 2.0;
-                        let quiet = vec![
-                            (cx0, vph * 0.30, col_w, vph * 0.22),
-                            (cx0, vph - 210.0, col_w, 180.0),
-                        ];
-                        self.backdrop_img = crate::backdrop::build_backdrop_image(
+                    if self.atmosphere_key != key || self.atmosphere_img.is_none() {
+                        self.atmosphere_img = crate::backdrop::build_backdrop_image(
                             &crate::backdrop::BackdropSpec {
                                 width: vpw,
                                 height: vph,
                                 dark,
                                 accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
-                                quiet,
+                                quiet: Vec::new(),
                                 scale: window.scale_factor(),
                             },
                         );
-                        self.backdrop_key = key;
+                        self.atmosphere_key = key;
                     }
                 }
-                let mut landing_bd_main = if (show_landing || self.backdrop_full) && self.show_ascii_bg {
-                    self.backdrop_img.clone().map(|img| {
+                let atmosphere_img_c = if (show_landing || self.backdrop_full) && self.show_ascii_bg {
+                    self.atmosphere_img.clone()
+                } else {
+                    None
+                };
+                let mut atmosphere_layer = if self.backdrop_full && self.show_ascii_bg {
+                    self.atmosphere_img.clone().map(|img| {
                         let vpw = window.viewport_size().width.as_f32();
                         let vph = window.viewport_size().height.as_f32();
+                        gpui::img(ImageSource::Render(img))
+                            .absolute()
+                            .top_0()
+                            .left_0()
+                            .w(px(vpw))
+                            .h(px(vph))
+                    })
+                } else {
+                    None
+                };
+                let mut landing_bd_main = if show_landing && self.show_ascii_bg {
+                    self.backdrop_img.clone().map(|img| {
+                        let vpw = (window.viewport_size().width.as_f32() - 308.0).max(200.0);
+                        let vph = (window.viewport_size().height.as_f32() - 44.0).max(200.0);
                         let mut field = div().size_full().overflow_hidden().relative();
+                        // Window-coordinated atmosphere under the landing
+                        // texture (upstream .app-shell-atmosphere at 35%/80%).
+                        // In full-window mode the body-level layer already
+                        // paints it at full strength — skip the dim copy.
+                        if !self.backdrop_full {
+                            if let Some(atmo) = atmosphere_img_c.clone() {
+                                let win_w = window.viewport_size().width.as_f32();
+                                let win_h = window.viewport_size().height.as_f32();
+                                let atmo_op = if theme.is_dark() { 0.8 } else { 0.35 };
+                                field = field.child(
+                                    div()
+                                        .absolute()
+                                        .top(px(-44.))
+                                        .left(px(-308.))
+                                        .opacity(atmo_op)
+                                        .child(
+                                            gpui::img(ImageSource::Render(atmo))
+                                                .w(px(win_w))
+                                                .h(px(win_h)),
+                                        ),
+                                );
+                            }
+                        }
                         if !theme.is_dark() {
                             field = field.child(
                                 div()
@@ -26132,10 +26178,8 @@ impl Render for Native {
                 } else {
                     None
                 };
-        if !self.backdrop_full {
-            if let Some(bd) = landing_bd_main.take() {
-                main = main.child(bd);
-            }
+        if let Some(bd) = landing_bd_main.take() {
+            main = main.child(bd);
         }
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
@@ -28373,11 +28417,17 @@ impl Render for Native {
 
         let mut body = h_flex().flex_1().min_h_0().relative();
         if self.backdrop_full {
-            // Full-window mode: the empty-chat texture spans the whole window,
-            // painted behind the sidebar and the chat column (upstream
-            // data-atmosphere-full opening the clip).
-            if let Some(bd) = landing_bd_main {
-                body = body.child(bd);
+            // Full-window mode: the atmosphere texture spans the whole window
+            // at full strength, painted behind the sidebar and the chat column
+            // (upstream data-atmosphere-full opening the clip).
+            if let Some(atmo) = atmosphere_layer.take() {
+                body = body.child(
+                    div()
+                        .absolute()
+                        .inset_0()
+                        .overflow_hidden()
+                        .child(atmo),
+                );
             }
         }
         body = body.child(left_well).child(main);

@@ -3638,6 +3638,32 @@ impl Native {
     /// pending input produce toast/OS notifications according to settings.
     fn observe_snapshot_notifications(&mut self, incoming: &Value, cx: &mut Context<Self>) {
         let threads = arr(incoming, "threads");
+        // The server materializes snoozeReminderAt only when a snooze expires,
+        // so its presence is itself the due-reminder event. Dedupe by the exact
+        // reminder timestamp across reconnects and snapshot refetches.
+        for thread in threads {
+            let reminder_at = str_at(thread, "snoozeReminderAt");
+            if reminder_at.is_empty()
+                || !get(thread, "archivedAt").is_null()
+                || !get(thread, "snoozedUntil").is_null()
+            {
+                continue;
+            }
+            let id = str_at(thread, "id");
+            let key = format!("snooze:{id}:{reminder_at}");
+            if !self.notification_keys.insert(key) {
+                continue;
+            }
+            let title = str_at(thread, "title");
+            let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
+            self.deliver_activity_notification(
+                id,
+                title,
+                "Ready to pick this thread back up?".to_string(),
+                false,
+                cx,
+            );
+        }
         if !self.notification_primed {
             self.notification_states = threads
                 .iter()

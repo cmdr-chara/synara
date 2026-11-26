@@ -1451,6 +1451,7 @@ pub struct Native {
         std::sync::Mutex<std::collections::HashMap<String, std::sync::Arc<RenderImage>>>,
     >,
     md_images_pending: std::sync::Arc<std::sync::Mutex<std::collections::HashSet<String>>>,
+    activity_open: Vec<String>,
     /// Live voice-note capture while the composer mic is recording.
     voice_capture: Option<crate::voice::VoiceCapture>,
     /// True while a finished clip is with the transcription backend.
@@ -3310,6 +3311,7 @@ impl Native {
             user_input_open: Vec::new(),
             md_images: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new())),
             md_images_pending: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashSet::new())),
+            activity_open: Vec::new(),
             voice_capture: None,
             voice_transcribing: false,
             voice_send_after: false,
@@ -13123,6 +13125,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     )
                 })
         };
+        let open_acts = self.activity_open.clone();
         let activity_row = |a: &Value| {
             let kind = str_at(a, "kind");
             let summary = str_at(a, "summary");
@@ -13159,7 +13162,58 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                         .child(detail),
                 );
             }
-            row
+            // Click-to-expand detail: payload locations, content text, and
+            // status — the native counterpart of upstream's per-entry detail
+            // surface, rendered inline.
+            let aid = str_at(a, "id").to_string();
+            if !open_acts.iter().any(|x| x == &aid) {
+                return v_flex().w_full().child(row).into_any_element();
+            }
+            let payload = get(a, "payload");
+            let mut det = v_flex()
+                .w_full()
+                .gap(px(2.))
+                .pl(px(16.))
+                .py(px(2.));
+            let status = str_at(payload, "status");
+            let stext = str_at(a, "status");
+            let status_line = if !status.is_empty() { status } else { stext };
+            if !status_line.is_empty() {
+                det = det.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child(format!("status: {}", status_line)),
+                );
+            }
+            for loc in arr(payload, "locations").iter() {
+                let p = str_at(loc, "path");
+                if !p.is_empty() {
+                    det = det.child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(p.to_string()),
+                    );
+                }
+            }
+            for c in arr(payload, "content").iter() {
+                let inner = get(c, "content");
+                let mut ct = str_at(inner, "text");
+                // resource-type content carries the text one level deeper.
+                if ct.is_empty() {
+                    ct = str_at(get(inner, "resource"), "text");
+                }
+                if !ct.is_empty() {
+                    det = det.child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(ct.to_string()),
+                    );
+                }
+            }
+            v_flex().w_full().child(row).child(det).into_any_element()
         };
         // Upstream withUserInputExchanges: resolved userInput pairs render as
         // Q→A bubble exchanges and consume their requested row.
@@ -13264,7 +13318,22 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                         div()
                             .w_full()
                             .max_w(chat_mw)
-                            .child(activity_row(&seg[0])),
+                            .child({
+                                let aid = str_at(&seg[0], "id").to_string();
+                                let aidc = aid.clone();
+                                div()
+                                    .id(SharedString::from(format!("actrow-{}", aid)))
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        if let Some(pos) = this.activity_open.iter().position(|x| x == &aidc) {
+                                            this.activity_open.remove(pos);
+                                        } else {
+                                            this.activity_open.push(aidc.clone());
+                                        }
+                                        cx.notify();
+                                    }))
+                                    .child(activity_row(&seg[0]))
+                            }),
                     ),
                 );
             } else {
@@ -13326,7 +13395,23 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                         // Staggered entrance: the easing holds at zero for a
                         // slice of the duration that grows with the row index,
                         // so rows cascade instead of popping in together.
-                        let base_row = activity_row(a);
+                        let base_row = {
+                            let aid = str_at(a, "id").to_string();
+                            let aidc = aid.clone();
+                            div()
+                                .w_full()
+                                .id(SharedString::from(format!("actrow-{}", aid)))
+                                .cursor_pointer()
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    if let Some(pos) = this.activity_open.iter().position(|x| x == &aidc) {
+                                        this.activity_open.remove(pos);
+                                    } else {
+                                        this.activity_open.push(aidc.clone());
+                                    }
+                                    cx.notify();
+                                }))
+                                .child(activity_row(a))
+                        };
                         let row_with_live = h_flex().gap_1().child(base_row);
                         let stagger = (row_idx as f32 * 0.09).min(0.6);
                         let animated = row_with_live.with_animation(

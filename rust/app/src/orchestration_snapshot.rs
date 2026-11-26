@@ -376,7 +376,7 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
                 ),
                 &[("is_streaming", "streaming"), ("text_json", "textSegments")],
                 &[],
-                &["is_streaming"],
+                &["is_streaming", "starts_new_turn"],
             )),
         );
         tobj.insert(
@@ -573,17 +573,26 @@ fn to_thread_shell(thread: &Value) -> Value {
 /// required keys). Every other null-valued key is dropped: the client schema
 /// treats optional fields as absent-or-value and rejects present-but-null.
 const CONTRACT_KEEP_NULL_KEYS: &[&str] = &[
-    "defaultModelSelection",
-    "deletedAt",
-    "branch",
-    "worktreePath",
-    "session",
-    "latestTurn",
-    "handoff",
-    "activeTurnId",
-    "providerThreadId",
-    "providerSessionId",
-    "lastError",
+    // Keys typed NullOr in the contract schemas accept (and when required,
+    // demand) a present null; every other null is stripped because optional
+    // non-nullable fields must be absent, never null.
+    "activeTurnId", "assistantMessageId", "branch", "causationEventId", "commandId",
+    "completedAt", "correlationId", "defaultModelSelection", "deletedAt", "elapsedMs",
+    "goalStartedAt", "handoff", "implementationThreadId", "implementedAt", "label",
+    "lastError", "lastReconciledAt", "lastReconciledBy", "lastReconciliationNote",
+    "lastReconciliationOutcome", "latestTurn", "latestUserMessageAt", "lifecycleGeneration",
+    "providerName", "recordedTurnId", "resolvedAt", "responseCommandId",
+    "responseRequestedAt", "review", "session", "startedAt", "turnId", "worktreePath",
+    "additions", "archivedAt", "associatedWorktreeBranch", "associatedWorktreePath",
+    "associatedWorktreeRef", "changedFiles", "claudeCacheReview", "creationSource",
+    "deletions", "discovered", "dismissedAt", "expectedReviewId", "expectedSnoozedUntil",
+    "forkSourceMessageId", "forkSourceThreadId", "gatewayOperationId",
+    "gatewayOperationIndex", "goalPausedAt", "lastActivityAt", "lastKnownPr",
+    "lastProgressAt", "latestHumanMessageAt", "parentThreadId", "settledAt",
+    "snoozeReminderAt", "snoozedUntil", "sourceThreadId", "sourceTurnId", "spaceId",
+    "subagentAgentId", "subagentNickname", "subagentRole",
+    "usageLimitRecoveryCancelledAt", "usageLimitRecoveryCancelledTurnId",
+    "workingDirectory",
 ];
 
 fn normalize_contract_shape(value: &mut Value) {

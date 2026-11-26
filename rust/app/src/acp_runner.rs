@@ -218,7 +218,7 @@ pub(crate) fn append_assistant_text(
         "INSERT INTO projection_thread_messages \
          (message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at, \
           attachments_json, source, starts_new_turn) \
-         VALUES (?1, ?2, ?3, 'assistant', ?4, ?5, ?6, ?6, '[]', 'provider', 0) \
+         VALUES (?1, ?2, ?3, 'assistant', ?4, ?5, ?6, ?6, '[]', 'native', 0) \
          ON CONFLICT(thread_id, message_id) DO UPDATE SET \
           text=excluded.text, is_streaming=excluded.is_streaming, updated_at=excluded.updated_at",
         params![message_id, thread_id, turn_id, text, streaming as i64, now],
@@ -236,7 +236,7 @@ pub(crate) fn append_assistant_text(
             "text": delta,
             "turnId": turn_id,
             "streaming": streaming,
-            "source": "provider",
+            "source": "native",
             "createdAt": now,
             "updatedAt": now,
         }),

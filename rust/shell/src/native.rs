@@ -26116,7 +26116,7 @@ impl Render for Native {
                 } else {
                     None
                 };
-                let mut landing_bd_main = if show_landing && self.show_ascii_bg {
+                let mut landing_bd_main = if show_landing && !other_surface_active && self.show_ascii_bg {
                     self.backdrop_img.clone().map(|img| {
                         let vpw = (window.viewport_size().width.as_f32() - 308.0).max(200.0);
                         let vph = (window.viewport_size().height.as_f32() - 44.0).max(200.0);

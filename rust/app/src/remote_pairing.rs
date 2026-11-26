@@ -367,6 +367,9 @@ pub fn revoke_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) ->
         "UPDATE remote_device_trust SET revoked_at = ?1 WHERE environment_id = ?2 AND root_fingerprint = ?3 AND device_jkt = ?4 AND revoked_at IS NULL",
         params![now_iso(), scope.environment_id, scope.root_fingerprint, device_jkt],
     ).map_err(|e| e.to_string())?;
+    // A revoke reaches live sessions immediately rather than at credential
+    // expiry — the registry signals every socket this device holds.
+    crate::remote_sessions::close_for_device(device_jkt);
     Ok(())
 }
 

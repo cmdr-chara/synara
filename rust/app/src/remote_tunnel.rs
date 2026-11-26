@@ -315,6 +315,7 @@ pub async fn serve_inner(
         }
         return;
     }
+    let mut session_registration: Option<(String, tokio::sync::mpsc::UnboundedReceiver<u16>)> = None;
     // In-band session handshake, port of upstream remoteSessions/gateway.ts:
     // the upgrade stays open and the first frames authenticate — a mint
     // request (proof of possession of a trusted device key) earns a fresh
@@ -417,6 +418,8 @@ pub async fn serve_inner(
             if trusted != Ok(true) {
                 return;
             }
+            let (session_id, close_rx) = crate::remote_sessions::add(&verified.device_jkt, &verified.user_id, "direct");
+            session_registration = Some((session_id, close_rx));
             let ready = serde_json::json!({
                 "v": 2,
                 "type": "session_ready",
@@ -452,7 +455,24 @@ pub async fn serve_inner(
             }
         }
     });
-    while let Some(msg) = client_rx.next().await {
+    let mut close_rx = session_registration.as_mut().map(|(_, rx)| rx);
+    loop {
+        let msg = if let Some(rx) = close_rx.as_mut() {
+            tokio::select! {
+                signal = rx.recv() => {
+                    break;
+                }
+                frame = client_rx.next() => match frame {
+                    Some(frame) => frame,
+                    None => break,
+                },
+            }
+        } else {
+            match client_rx.next().await {
+                Some(frame) => frame,
+                None => break,
+            }
+        };
         match msg {
             Ok(tokio_tungstenite::tungstenite::Message::Text(t)) => {
                 if let Some(reply) =
@@ -489,4 +509,7 @@ pub async fn serve_inner(
         }
     }
     writer.abort();
+    if let Some((session_id, _)) = session_registration {
+        crate::remote_sessions::remove(&session_id);
+    }
 }

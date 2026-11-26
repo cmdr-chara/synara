@@ -51,6 +51,7 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
         "list" => Ok(json!({
             "kind": "host-state",
             "invitations": rp::list_invites(&conn, &scope)?,
+            "activeSessions": crate::remote_sessions::list(),
             "devices": rp::list_devices(&conn, &scope)?,
             "rootFingerprint": scope.root_fingerprint,
             "allowConnections": rp::allows_connections(&conn, &scope)?,

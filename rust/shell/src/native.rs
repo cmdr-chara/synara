@@ -6630,11 +6630,12 @@ impl Native {
                         ));
                     }
                 }
-                let navs: [(&str, &str, &str); 4] = [
+                let navs: [(&str, &str, &str); 5] = [
                     ("go-inbox", "Go to Inbox", ""),
                     ("go-kanban", "Go to Kanban", ""),
                     ("go-studio", "Go to Studio", ""),
                     ("go-automations", "Go to Automations", ""),
+                    ("toggle-computer", "Toggle computer", ""),
                 ];
                 for (id, label, kbd) in navs {
                     if q.is_empty() || label.to_lowercase().contains(&q) {
@@ -6788,6 +6789,7 @@ impl Native {
                     self.view_inbox = true;
                     self.fetch_inbox(cx);
                 }
+                "toggle-computer" => self.toggle_cua(window, cx),
                 "go-kanban" => self.open_route(2, cx),
                 "go-studio" => self.open_route(5, cx),
                 "go-automations" => self.open_route(4, cx),

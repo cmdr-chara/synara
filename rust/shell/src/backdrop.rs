@@ -155,8 +155,8 @@ fn blur_lum(src: &[f32], cols: usize, rows: usize, radius: f32) -> Vec<f32> {
     if radius <= 0.01 {
         return src.to_vec();
     }
-    // canvas blur(N) approximates a Gaussian with sigma ~ N/2; use sigma = N/2
-    let sigma = (radius / 2.0).max(0.2);
+    // canvas blur(N) is a Gaussian with sigma = N (measured against Chrome)
+    let sigma = radius.max(0.2);
     let spread = (sigma * 3.0).ceil() as i32;
     let kernel: Vec<f32> = (-spread..=spread)
         .map(|i| (-0.5 * (i as f32 / sigma).powi(2)).exp())

@@ -130,3 +130,14 @@ INBOX EXACT SPEC (live CDP, 1600x1088):
 - h1 'Inbox': text-2xl->3xl = 30px medium-500, first baseline content y=84
   (44 pane top + 40 padding)
 - Header: flex flex-wrap items-end justify-between gap-3 (12px)
+
+INBOX LAYOUT — structural divergence (bigger than rhythm):
+Upstream InboxView.tsx is a container-query adaptive layout:
+- LEFT column: Ready-for-review card THEN Today's-tasks card stacked
+- RIGHT column: recap/digest cards ('The recap didn't load' + Try again)
+- Shell currently: top row [tasks | nothing-ran] + full-width review list — WRONG
+- Tiles: rounded-2xl bg-muted sections; grid gaps gap-4/@lg:gap-7 (16/28px)
+- Also missing in shell: 'Mark all read' top-right action
+- Component spec: apps/web/src/components/inbox/InboxView.tsx — port the grid
+  structure faithfully (task column + recap column), not just spacing.
+Shell padding fix (p-10/gap-7) already in, uncommitted at time of writing.

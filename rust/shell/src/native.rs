@@ -17446,7 +17446,8 @@ impl Render for Native {
         }
 
         // ---- inbox pane (upstream /inbox recap layout) ----
-        let mut inbox_pane = v_flex().flex_1().h_full().p_4().gap_2();
+        // Upstream inbox column: p-10 (40px) and gap-7 (28px) at desktop width.
+        let mut inbox_pane = v_flex().flex_1().h_full().p(px(40.)).gap(px(28.));
         if self.view_inbox {
             use chrono::Timelike as _;
             let now = chrono::Local::now();

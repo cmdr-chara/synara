@@ -65,6 +65,13 @@ pub fn current_snapshot() -> Value {
     snapshot_event()
 }
 
+/// Desktop updater safety: any manager entry represents a child process whose
+/// lifetime is owned by this backend. The watcher reaps exited entries, so a
+/// nonempty map is active work even before the startup probe flips to running.
+pub fn has_active_dev_servers() -> bool {
+    SERVERS.lock().map(|servers| !servers.is_empty()).unwrap_or(true)
+}
+
 fn refresh_status(s: &DevServer) {
     let mut status = s.status.lock().unwrap();
     if *status == "starting" && s.started_instant.elapsed() >= Duration::from_secs(2) {

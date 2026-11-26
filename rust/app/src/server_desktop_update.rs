@@ -73,10 +73,22 @@ fn busy_from_connection(conn: &Connection) -> Result<bool, rusqlite::Error> {
         [],
         |r| r.get(0),
     )?;
-    Ok(provider_work > 0)
+    if provider_work > 0 { return Ok(true); }
+
+    // Upstream also blocks while recoverable automation work exists. Deferred
+    // pending rows are future schedules, not work the restart would interrupt.
+    let automation_work: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM automation_runs          WHERE status IN ('pending', 'claimed', 'running', 'waiting-for-approval')            AND NOT (status = 'pending' AND deferred_until IS NOT NULL)",
+        [],
+        |r| r.get(0),
+    )?;
+    Ok(automation_work > 0)
 }
 
 fn busy() -> bool {
+    if crate::projects_devserver::has_active_dev_servers() {
+        return true;
+    }
     let db = std::path::PathBuf::from(crate::todo::state_dir()).join("state.sqlite");
     let tmp = std::env::temp_dir().join(format!(
         "synara-desktop-update-{}.sqlite",
@@ -251,7 +263,7 @@ mod tests {
     fn busy_fixture() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute_batch(
-            "CREATE TABLE projection_threads (               thread_id TEXT PRIMARY KEY, latest_turn_id TEXT, deleted_at TEXT,                pending_approval_count INTEGER DEFAULT 0, pending_user_input_count INTEGER DEFAULT 0,                claude_cache_review_json TEXT             );             CREATE TABLE projection_thread_sessions (thread_id TEXT PRIMARY KEY, status TEXT, active_turn_id TEXT);             CREATE TABLE projection_turns (thread_id TEXT, turn_id TEXT, state TEXT);             CREATE TABLE projection_pending_interactions (thread_id TEXT, status TEXT);             CREATE TABLE provider_session_runtime (thread_id TEXT PRIMARY KEY, status TEXT);",
+            "CREATE TABLE projection_threads (               thread_id TEXT PRIMARY KEY, latest_turn_id TEXT, deleted_at TEXT,                pending_approval_count INTEGER DEFAULT 0, pending_user_input_count INTEGER DEFAULT 0,                claude_cache_review_json TEXT             );             CREATE TABLE projection_thread_sessions (thread_id TEXT PRIMARY KEY, status TEXT, active_turn_id TEXT);             CREATE TABLE projection_turns (thread_id TEXT, turn_id TEXT, state TEXT);             CREATE TABLE projection_pending_interactions (thread_id TEXT, status TEXT);             CREATE TABLE provider_session_runtime (thread_id TEXT PRIMARY KEY, status TEXT);             CREATE TABLE automation_runs (run_id TEXT PRIMARY KEY, status TEXT, deferred_until TEXT);",
         ).unwrap();
         conn.execute(
             "INSERT INTO projection_threads (thread_id, latest_turn_id) VALUES ('thread-a', 'turn-a')",
@@ -289,6 +301,15 @@ mod tests {
 
         conn.execute("INSERT INTO provider_session_runtime (thread_id, status) VALUES ('thread-a', 'running')", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
+
+        conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", []).unwrap();
+        conn.execute("INSERT INTO automation_runs (run_id, status) VALUES ('run-a', 'running')", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE automation_runs SET status = 'pending', deferred_until = 'later'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE automation_runs SET deferred_until = NULL", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE automation_runs SET status = 'succeeded'", []).unwrap();
 
         conn.execute("UPDATE projection_threads SET deleted_at = 'now'", []).unwrap();
         conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", []).unwrap();

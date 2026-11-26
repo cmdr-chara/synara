@@ -92,6 +92,17 @@ fn server_version() -> String {
         .unwrap_or_else(|| "0.0.0".to_string())
 }
 
+fn desktop_update_bridge_available(state_dir: &str) -> bool {
+    let path = std::path::Path::new(state_dir).join("desktop-update-bridge.json");
+    let Ok(descriptor) = serde_json::from_str::<Value>(&std::fs::read_to_string(path).unwrap_or_default()) else {
+        return false;
+    };
+    let Some(port) = descriptor.get("port").and_then(Value::as_u64) else { return false };
+    if port == 0 || port > u16::MAX as u64 { return false; }
+    let Ok(addr) = format!("127.0.0.1:{port}").parse::<std::net::SocketAddr>() else { return false };
+    std::net::TcpStream::connect_timeout(&addr, std::time::Duration::from_millis(80)).is_ok()
+}
+
 /// Environment id persisted by whoever owns `<stateDir>` — the file format is
 /// a bare UUID per line, created on first boot (`accountAuth.ts`).
 pub(crate) fn environment_id(state_dir: &str) -> Option<String> {
@@ -118,7 +129,7 @@ pub fn get_environment(state_dir: &str) -> Result<Value, String> {
         "platform": { "os": platform_os(), "arch": platform_arch() },
         "serverVersion": server_version(),
         "capabilities": {
-            "desktopUpdates": false,
+            "desktopUpdates": desktop_update_bridge_available(state_dir),
             "repositoryIdentity": true,
             "accountProfileSync": false,
             "remoteConnections": false,

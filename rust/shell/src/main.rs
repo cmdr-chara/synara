@@ -12,6 +12,7 @@ mod backdrop;
 mod backend;
 mod browser_host;
 mod cua;
+mod desktop_identity;
 mod native;
 mod updater;
 mod voice;

@@ -363,13 +363,7 @@ fn port_from_http_url(value: &str) -> Option<u16> {
 }
 
 pub(crate) fn configured_home_dir() -> PathBuf {
-    if let Some(path) = std::env::var_os("SYNARA_HOME") {
-        return PathBuf::from(path);
-    }
-    if let Some(home) = std::env::var_os("HOME") {
-        return Path::new(&home).join(".synara");
-    }
-    PathBuf::from(".synara")
+    crate::desktop_identity::configured_home_dir()
 }
 
 fn resolve_backend_binary() -> Option<PathBuf> {

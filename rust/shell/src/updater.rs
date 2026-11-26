@@ -1336,12 +1336,33 @@ fn current_desktop_version() -> String {
 }
 
 fn configured_flavor() -> UpdateFlavor {
-    match std::env::var("SYNARA_UPDATE_FLAVOR").ok().as_deref() {
-        Some("beta") => UpdateFlavor::Beta,
-        Some("canary") => UpdateFlavor::Canary,
-        Some("cua") => UpdateFlavor::Cua,
-        Some("remote") => UpdateFlavor::Remote,
+    // Packaged bundle identity wins over process environment. The update
+    // override remains useful in unpackaged smoke fixtures, where the shell is
+    // not running from a flavor-stamped .app bundle.
+    let flavor_override = std::env::var("SYNARA_UPDATE_FLAVOR").ok();
+    let unpackaged = !std::env::current_exe()
+        .is_ok_and(|exe| exe.to_string_lossy().contains(".app/Contents/MacOS/"));
+    let flavor = if unpackaged {
+        flavor_override.unwrap_or_else(|| crate::desktop_identity::runtime_flavor().to_string())
+    } else {
+        crate::desktop_identity::runtime_flavor().to_string()
+    };
+    match flavor.as_str() {
+        "beta" => UpdateFlavor::Beta,
+        "canary" => UpdateFlavor::Canary,
+        "cua" => UpdateFlavor::Cua,
+        "remote" => UpdateFlavor::Remote,
         _ => UpdateFlavor::Production,
+    }
+}
+
+fn updater_cache_name(flavor: UpdateFlavor) -> &'static str {
+    match flavor {
+        UpdateFlavor::Beta => "synara-desktop-beta-updater",
+        UpdateFlavor::Remote => "synara-desktop-remote-updater",
+        UpdateFlavor::Canary => "synara-desktop-canary-updater",
+        UpdateFlavor::Cua => "synara-desktop-cua-updater",
+        UpdateFlavor::Production => "synara-updater",
     }
 }
 
@@ -1349,10 +1370,16 @@ impl DesktopUpdateService {
     fn new() -> Self {
         let arch = runtime_arch();
         let home = crate::backend::configured_home_dir();
+        // electron-updater caches are OS-user caches, not Synara data: a custom
+        // SYNARA_HOME must not relocate downloads into the migrated database home.
+        let os_home = std::env::var_os("HOME")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| home.clone());
+        let flavor = configured_flavor();
         let cache = updater_cache_dir(
-            "synara-updater",
+            updater_cache_name(flavor),
             std::env::consts::OS,
-            &home,
+            &os_home,
             std::env::var_os("LOCALAPPDATA").as_deref().map(Path::new),
             std::env::var_os("XDG_CACHE_HOME").as_deref().map(Path::new),
         )
@@ -1362,7 +1389,7 @@ impl DesktopUpdateService {
             arch,
             arch,
             false,
-            configured_flavor(),
+            flavor,
         );
         state.enabled = configured_feed_url().is_some() && desktop_update_supported();
         state.status = if state.enabled { UpdateStatus::Idle } else { UpdateStatus::Disabled };

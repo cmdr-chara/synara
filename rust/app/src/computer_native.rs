@@ -10,7 +10,7 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
 
-const COMPUTER_ID: &str = "desktop";
+pub const COMPUTER_ID: &str = "desktop";
 
 fn jxa(script: &str) -> Result<String, String> {
     let out = Command::new("osascript")

@@ -46,10 +46,7 @@ pub fn router() -> Router<Original> {
             "/ws/device-frames",
             get(|s, w, u, h| upgrade(s, w, u, h, false)),
         )
-        .route(
-            "/ws/computer-frames",
-            get(|s, w, u, h| upgrade(s, w, u, h, false)),
-        )
+        .route("/ws/computer-frames", get(computer_frames_upgrade))
         .route("/ws/host/v2", get(remote_tunnel_upgrade))
 }
 
@@ -76,6 +73,31 @@ async fn remote_tunnel_upgrade(
         })
         .await;
     })
+}
+
+/// Computer frame streaming serves natively when the backend owns the
+/// computer; upstream mode relays exactly like every other socket.
+async fn computer_frames_upgrade(
+    State(original): State<Original>,
+    ws: WebSocketUpgrade,
+    uri: Uri,
+    headers: HeaderMap,
+) -> Response {
+    if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
+        return upgrade(State(original), ws, uri, headers, false).await;
+    }
+    let params: std::collections::HashMap<String, String> = uri
+        .query()
+        .map(|q| {
+            q.split('&')
+                .filter_map(|pair| {
+                    let mut parts = pair.splitn(2, '=');
+                    Some((parts.next()?.to_string(), parts.next().unwrap_or("").to_string()))
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    crate::computer_frames::upgrade(ws, axum::extract::Query(params)).await
 }
 
 async fn upgrade(

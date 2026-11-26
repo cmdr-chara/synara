@@ -58,6 +58,8 @@ mod provider_attachments;
 mod provider_cache;
 mod skills_catalog;
 mod computer_audit;
+mod computer_frames;
+mod frame_transport;
 mod computer_approval;
 mod computer_control;
 mod computer_denylist;

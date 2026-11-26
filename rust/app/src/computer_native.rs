@@ -356,7 +356,8 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     // manager semantics upstream asserts at the same boundary: the owning
     // conversation must still hold control, input must not be paused, and
     // denylisted targets never execute. Reading the desktop stays open.
-    let owner = payload["threadId"].as_str().unwrap_or("");
+    let owner_opt = payload["threadId"].as_str().map(str::to_string);
+    let owner = owner_opt.as_deref().unwrap_or("");
     let mutating = matches!(
         tag,
         "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click"
@@ -588,7 +589,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             _ => return Err(MISS.into()),
         }
     })();
-    match r {
+    let outcome = match r {
         Err(m) if m == MISS => None,
         Ok(v) => {
             if let Some(name) = tag
@@ -600,7 +601,41 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             Some(Ok(v))
         }
         _ => Some(r),
+    };
+    // Every handled action leaves an audit record with its effect — the
+    // sensitive payload never crosses into it, the log summarizes.
+    if outcome.is_some() {
+        let effect = match &outcome {
+            Some(Ok(_)) => "performed",
+            Some(Err(e)) if e.contains("denylist") || e.contains("security") => "refused",
+            Some(Err(_)) => "error",
+            None => "performed",
+        };
+        let mut entry = json!({
+            "tool": tag.strip_prefix("computer.").map(|n| format!("computer_{}", n.replace('.', "_"))).unwrap_or_else(|| tag.to_string()),
+            "effect": effect,
+            "layer": "server-manager",
+        });
+        if let Some(t) = owner_opt {
+            entry["threadId"] = json!(t);
+        }
+        if let Some(args) = payload.get("args").cloned().or_else(|| {
+            let mut shallow = serde_json::Map::new();
+            for key in ["x", "y", "text", "value", "key", "keys", "button", "app", "direction", "amount"] {
+                if let Some(v) = payload.get(key) {
+                    shallow.insert(key.to_string(), v.clone());
+                }
+            }
+            if shallow.is_empty() { None } else { Some(Value::Object(shallow)) }
+        }) {
+            entry["args"] = args;
+        }
+        if let Some(Err(e)) = &outcome {
+            entry["code"] = json!(e);
+        }
+        crate::computer_audit::record(entry);
     }
+    outcome
 }
 
 const ACTION_TAGS: &[&str] = &[

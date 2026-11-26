@@ -13,6 +13,7 @@ actions!(shell, [QuitApp, HideApp, HideOthers]);
 mod backdrop;
 mod backend;
 mod beta_channel;
+mod appsnap;
 mod browser_host;
 mod cua;
 mod desktop_identity;

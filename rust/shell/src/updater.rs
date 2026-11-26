@@ -555,7 +555,7 @@ pub fn download_headers(start_offset: u64, attach_auth: bool, headers: &[(String
     out
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UpdateFeedFile {
     pub url: String,
     pub sha512: String,
@@ -641,6 +641,12 @@ fn decode_hex(value: &str) -> Option<Vec<u8>> {
     Some(out)
 }
 
+fn artifact_matches_feed_file(identity: &ArtifactIdentity, expected: &UpdateFeedFile) -> bool {
+    let Some(digest) = decode_hex(&identity.sha512) else { return false };
+    identity.sha512.eq_ignore_ascii_case(&expected.sha512)
+        || base64::Engine::encode(&base64::engine::general_purpose::STANDARD, digest) == expected.sha512
+}
+
 // ---------------------------------------------------------------------------
 // Runtime service and private desktop bridge
 // ---------------------------------------------------------------------------
@@ -661,6 +667,68 @@ pub struct DesktopUpdateService {
     committed: std::sync::atomic::AtomicBool,
     feed_url: Option<String>,
     cache_dir: PathBuf,
+}
+
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct PendingDownloadedUpdate {
+    version: String,
+    file: UpdateFeedFile,
+    artifact_path: PathBuf,
+    artifact_size: u64,
+    artifact_sha512: String,
+}
+
+fn pending_update_path(cache_dir: &Path, version: &str) -> PathBuf {
+    cache_dir.join(version).join("pending-update.json")
+}
+
+fn write_json_atomic(path: &Path, value: &impl Serialize) -> Result<(), String> {
+    let tmp = path.with_extension(format!("tmp-{}", uuid::Uuid::new_v4()));
+    std::fs::write(&tmp, serde_json::to_vec_pretty(value).map_err(|error| error.to_string())?).map_err(|error| error.to_string())?;
+    std::fs::rename(&tmp, path).map_err(|error| error.to_string())
+}
+
+fn persist_pending_update(cache_dir: &Path, version: &str, file: &UpdateFeedFile, artifact: &ArtifactIdentity) -> Result<(), String> {
+    write_json_atomic(&pending_update_path(cache_dir, version), &PendingDownloadedUpdate {
+        version: version.to_string(),
+        file: file.clone(),
+        artifact_path: artifact.path.clone(),
+        artifact_size: artifact.size,
+        artifact_sha512: artifact.sha512.clone(),
+    })
+}
+
+fn validate_pending_update(cache_dir: &Path, version: &str, flavor: UpdateFlavor) -> Option<(String, UpdateFeedFile, ArtifactIdentity)> {
+    let path = pending_update_path(cache_dir, version);
+    let pending: PendingDownloadedUpdate = serde_json::from_slice(&std::fs::read(path).ok()?).ok()?;
+    if pending.version != version || !version_allowed_for_flavor(&pending.version, flavor) {
+        return None;
+    }
+    let artifact = fingerprint_artifact(&pending.artifact_path).ok()?;
+    if artifact.size != pending.artifact_size || artifact.sha512 != pending.artifact_sha512 {
+        return None;
+    }
+    if !artifact_matches_feed_file(&artifact, &pending.file) { return None; }
+    Some((pending.version, pending.file, artifact))
+}
+
+fn restore_pending_update(cache_dir: &Path, current_version: &str, flavor: UpdateFlavor) -> Option<(String, UpdateFeedFile, ArtifactIdentity)> {
+    let mut candidates = Vec::new();
+    for entry in std::fs::read_dir(cache_dir).ok()? {
+        let Ok(entry) = entry else { continue };
+        let Some(version) = entry.file_name().to_str().map(str::to_string) else { continue };
+        if version_newer(current_version, &version) {
+            if let Some(candidate) = validate_pending_update(cache_dir, &version, flavor) {
+                candidates.push(candidate);
+            }
+        }
+    }
+    candidates.sort_by(|left, right| {
+        if version_newer(&right.0, &left.0) { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater }
+    });
+    candidates.into_iter().next()
 }
 
 fn now_iso() -> String {
@@ -993,13 +1061,27 @@ impl DesktopUpdateService {
         state.enabled = configured_feed_url().is_some() && desktop_update_supported();
         state.status = if state.enabled { UpdateStatus::Idle } else { UpdateStatus::Disabled };
         state.release_url = configured_release_url();
+        let restored = restore_pending_update(&cache, &state.current_version, state.flavor);
+        let mut restored_artifact = None;
+        let mut restored_file = None;
+        if state.enabled {
+            if let Some((version, file, artifact)) = restored {
+                state.status = UpdateStatus::Downloaded;
+                state.available_version = Some(version.clone());
+                state.downloaded_version = Some(version);
+                state.download_percent = Some(100.0);
+                state.can_retry = true;
+                restored_file = Some(file);
+                restored_artifact = Some(artifact);
+            }
+        }
         if !state.enabled {
             state.message = Some("Automatic updates are not available because no update feed is configured.".into());
         }
         Self {
             state: std::sync::Mutex::new(state),
-            artifact: std::sync::Mutex::new(None),
-            selected_file: std::sync::Mutex::new(None),
+            artifact: std::sync::Mutex::new(restored_artifact),
+            selected_file: std::sync::Mutex::new(restored_file),
             ticket: std::sync::Mutex::new(None),
             committed: std::sync::atomic::AtomicBool::new(false),
             feed_url: configured_feed_url(),
@@ -1096,12 +1178,7 @@ impl DesktopUpdateService {
     }
 
     fn artifact_matches(&self, expected: &UpdateFeedFile, identity: &ArtifactIdentity) -> bool {
-        let digest = match decode_hex(&identity.sha512) {
-            Some(digest) => digest,
-            None => return false,
-        };
-        identity.sha512.eq_ignore_ascii_case(&expected.sha512)
-            || base64::Engine::encode(&base64::engine::general_purpose::STANDARD, digest) == expected.sha512
+        artifact_matches_feed_file(identity, expected)
     }
 
     fn perform_download(self: &Arc<Self>) {
@@ -1156,6 +1233,7 @@ impl DesktopUpdateService {
                 let _ = std::fs::remove_file(&target);
                 return Err("The downloaded update did not match its signed checksum.".into());
             }
+            persist_pending_update(&self.cache_dir, &version, &selected, &identity)?;
             if let Ok(mut artifact) = self.artifact.lock() { *artifact = Some(identity.clone()); }
             Ok((version, identity))
         })();
@@ -1350,6 +1428,26 @@ mod tests {
         assert!(!verify_artifact_identity(&identity));
         std::fs::remove_dir_all(root).unwrap();
     }
+    #[test]
+    fn pending_download_restores_newest_verified_payload() {
+        let root = std::env::temp_dir().join(format!("synara-pending-update-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let mut file = UpdateFeedFile { url: "Synara-0.9.2-arm64.zip".into(), sha512: String::new(), size: Some(7) };
+        for version in ["0.9.1", "0.9.2"] {
+            let dir = root.join(version);
+            std::fs::create_dir_all(&dir).unwrap();
+            let payload = dir.join(&file.url);
+            File::create(&payload).unwrap().write_all(b"payload").unwrap();
+            let artifact = fingerprint_artifact(&payload).unwrap();
+            file.sha512 = artifact.sha512.clone();
+            persist_pending_update(&root, version, &file, &artifact).unwrap();
+        }
+        let restored = restore_pending_update(&root, "0.9.0", UpdateFlavor::Production).unwrap();
+        assert_eq!(restored.0, "0.9.2");
+        assert_eq!(restored.2.size, 7);
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
     #[test]
     fn install_marker_is_atomic_and_reports_outcomes() {
         let root = std::env::temp_dir().join(format!("synara-marker-test-{}", uuid::Uuid::new_v4()));

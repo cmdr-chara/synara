@@ -278,6 +278,15 @@ fn action_result(action: &str, point: Option<(f64, f64)>) -> Value {
     v
 }
 
+fn desktop_state_json() -> Value {
+    let (epoch, interruptions, pauses) = crate::computer_manager::desktop_interruption_state();
+    json!({
+        "epoch": epoch,
+        "interruptions": interruptions,
+        "pauses": pauses,
+    })
+}
+
 fn status_json() -> Value {
     json!({
         "provisionable": true,
@@ -285,7 +294,8 @@ fn status_json() -> Value {
         "availability": availability(),
         "health": health(),
         "capabilities": capabilities(),
-        "inputMonitor": crate::input_monitor::state_json()
+        "inputMonitor": crate::input_monitor::state_json(),
+        "desktop": desktop_state_json()
     })
 }
 
@@ -399,6 +409,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
         }
         crate::computer_manager::input_started(owner);
     }
+    let desktop_baseline = agent_mutating.then(crate::computer_manager::desktop_epoch);
     let r = (|| -> Result<Value, String> {
         match tag {
             "computer.getStatus" => Ok(status_json()),
@@ -424,7 +435,8 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                     "availability": availability(),
                     "health": health(),
                     "capabilities": capabilities(),
-                    "lastError": null
+                    "lastError": null,
+                    "desktop": desktop_state_json()
                 });
                 if let Ok(c) = helper("cursor", &json!({})) {
                     v["cursor"] = json!({"x": c["x"], "y": c["y"]});
@@ -633,6 +645,13 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     if agent_mutating {
         crate::computer_manager::input_finished(owner);
     }
+    let r = match (r, desktop_baseline) {
+        (Ok(value), Some(baseline)) if crate::computer_manager::desktop_epoch() != baseline => {
+            let _ = value;
+            Err("The desktop changed while this operation was in flight. Observe again before continuing; do not replay an uncertain action.".into())
+        }
+        (result, _) => result,
+    };
     let outcome = match r {
         Err(m) if m == MISS => None,
         Ok(v) => {

@@ -69,6 +69,12 @@ pub struct ManagerState {
     global_input_pause: Option<Value>,
     /// Native foreground input currently dispatching per thread.
     input_in_flight: HashMap<String, u64>,
+    /// Monotonic desktop generation. Physical input advances it even when no
+    /// agent action is active; in-flight dispatch compares before/after.
+    desktop_epoch: u64,
+    /// Interruption boundaries crossed while computer authority was live.
+    desktop_interruptions: u64,
+    desktop_pause_reasons: Vec<String>,
     known_app_names: HashSet<String>,
 }
 
@@ -87,6 +93,9 @@ fn manager() -> &'static Mutex<ManagerState> {
             last_user_desktop_input_at: None,
             global_input_pause: None,
             input_in_flight: HashMap::new(),
+            desktop_epoch: 0,
+            desktop_interruptions: 0,
+            desktop_pause_reasons: Vec::new(),
             known_app_names: HashSet::new(),
         })
     })
@@ -303,6 +312,30 @@ pub fn any_input_in_flight() -> bool {
         .any(|count| *count > 0)
 }
 
+pub fn desktop_epoch() -> u64 {
+    manager().lock().unwrap().desktop_epoch
+}
+
+pub fn desktop_interruption_state() -> (u64, u64, Vec<String>) {
+    let guard = manager().lock().unwrap();
+    (
+        guard.desktop_epoch,
+        guard.desktop_interruptions,
+        guard.desktop_pause_reasons.clone(),
+    )
+}
+
+pub fn note_desktop_interruption(reason: &str) {
+    let mut guard = manager().lock().unwrap();
+    guard.desktop_interruptions = guard.desktop_interruptions.saturating_add(1);
+    if !reason.is_empty()
+        && guard.desktop_pause_reasons.len() < 16
+        && !guard.desktop_pause_reasons.iter().any(|existing| existing == reason)
+    {
+        guard.desktop_pause_reasons.push(reason.to_string());
+    }
+}
+
 /// A fresh desktop observation clears the human-takeover pause. Only direct
 /// observations call this: status/control reads must not silently re-arm input.
 pub fn clear_input_pause(owner: &str) {
@@ -310,6 +343,7 @@ pub fn clear_input_pause(owner: &str) {
     // A successful fresh model observation proves the shared desktop state
     // again, so it clears both the host-wide gate and this thread's pause.
     guard.global_input_pause = None;
+    guard.desktop_pause_reasons.clear();
     if let Some(runtime) = guard.threads.get_mut(owner) {
         runtime.input_pause = None;
     }
@@ -340,7 +374,9 @@ pub fn assert_foreground_allowed(
 }
 
 pub fn note_user_desktop_input() {
-    manager().lock().unwrap().last_user_desktop_input_at = Some(now_ms());
+    let mut guard = manager().lock().unwrap();
+    guard.last_user_desktop_input_at = Some(now_ms());
+    guard.desktop_epoch = guard.desktop_epoch.saturating_add(1);
 }
 
 /// Acquires the shared desktop lease for a thread's turn. Only one
@@ -447,6 +483,11 @@ fn emergency_stop_input_now() {
     guard.lease = None;
     guard.background_leases.clear();
     guard.authority_turns.clear();
+    guard.desktop_epoch = guard.desktop_epoch.saturating_add(1);
+    guard.desktop_interruptions = guard.desktop_interruptions.saturating_add(1);
+    if !guard.desktop_pause_reasons.iter().any(|reason| reason == "escape") {
+        guard.desktop_pause_reasons.push("escape".into());
+    }
     guard.global_input_pause = Some(serde_json::json!({
         "kind": "escape-interrupt",
         "message": "Computer input was interrupted by the physical Escape key. Read fresh computer state before continuing; do not replay an uncertain action."
@@ -578,6 +619,13 @@ mod tests {
         assert!(assert_foreground_allowed(Some(&thread), true).is_ok());
         note_user_desktop_input();
         assert!(assert_foreground_allowed(Some(&thread), true).is_err());
+    }
+
+    #[test]
+    fn physical_input_advances_the_desktop_epoch() {
+        let before = desktop_epoch();
+        note_user_desktop_input();
+        assert!(desktop_epoch() > before);
     }
 
     #[test]

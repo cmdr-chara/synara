@@ -679,6 +679,7 @@ fn global_monitor() -> Option<&'static Arc<EscapeKillSwitchMonitor>> {
                 if crate::computer_manager::any_input_in_flight()
                     || crate::computer_manager::input_pause_active(thread.as_deref())
                 {
+                    crate::computer_manager::note_desktop_interruption("human-input");
                     crate::computer_manager::record_global_input_pause(serde_json::json!({
                         "kind": "human-takeover",
                         "physicalKind": input.kind,

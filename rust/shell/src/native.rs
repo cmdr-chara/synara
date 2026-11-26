@@ -229,6 +229,25 @@ fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
 
+/// Live-work brand mark: the Synara logo spins while the agent is acting.
+/// `with_animation` keeps repainting the tiny mark and honors reduced motion.
+fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
+    gpui::svg()
+        .data(icons::LOGO)
+        .size(icon_size)
+        .text_color(color)
+        .with_animation(
+            "synara-working-logo",
+            gpui::Animation::new(std::time::Duration::from_millis(1600)).repeat_synced(),
+            |this, delta| {
+                this.with_transformation(
+                    gpui::Transformation::default()
+                        .with_rotation(gpui::radians(delta * std::f32::consts::TAU)),
+                )
+            },
+        )
+}
+
 // ---- keyboard-shortcut helpers (Settings > Keyboard shortcuts) ---------
 
 fn sc_flag(sc: &Value, f: &str) -> bool {
@@ -12970,42 +12989,12 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 let mut card = v_flex().gap(px(1.)).child(header);
                 seen_cards += 1;
                 if expanded {
-                    let last_idx = seg.len().saturating_sub(1);
                     for (row_idx, a) in seg.iter().enumerate() {
                         // Staggered entrance: the easing holds at zero for a
                         // slice of the duration that grows with the row index,
                         // so rows cascade instead of popping in together.
                         let base_row = activity_row(a);
-                        let row_with_live = if working && row_idx == last_idx {
-                            // Live row: a pulsing dot ahead of the activity,
-                            // phase-locked to the shared clock so all spinners
-                            // in the transcript breathe together.
-                            let pulse = div()
-                                .w(px(10.))
-                                .flex()
-                                .justify_center()
-                                .child(
-                                    div()
-                                        .text_xs()
-                                        .text_color(theme.muted_foreground)
-                                        .child("\u{25cf}")
-                                        .with_animation(
-                                            SharedString::from(format!(
-                                                "toollive-{}",
-                                                str_at(a, "id")
-                                            )),
-                                            Animation::new(std::time::Duration::from_millis(1200))
-                                                .repeat_synced(),
-                                            |this, delta| {
-                                                let tri = 1.0 - (delta * 2.0 - 1.0).abs();
-                                                this.opacity(0.25 + 0.75 * tri)
-                                            },
-                                        ),
-                                );
-                            h_flex().gap_1().child(pulse).child(base_row)
-                        } else {
-                            h_flex().gap_1().child(base_row)
-                        };
+                        let row_with_live = h_flex().gap_1().child(base_row);
                         let stagger = (row_idx as f32 * 0.09).min(0.6);
                         let animated = row_with_live.with_animation(
                             SharedString::from(format!(
@@ -13859,6 +13848,71 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
             col = col.child(
                 h_flex().w_full().justify_center().child(
                     div().w_full().max_w(chat_mw).child(card),
+                ),
+            );
+        }
+
+        let working = thread_actively_working(thread_v);
+        let live_label = arr(thread_v, "activities").iter().rev().find_map(|a| {
+            let kind = str_at(a, "kind");
+            if !matches!(kind, "tool.started" | "tool.updated") {
+                return None;
+            }
+            let summary = str_at(a, "summary");
+            let label = if summary.is_empty() { kind } else { summary };
+            (!label.is_empty()).then_some(label.to_string())
+        });
+        // Stopped-on-human state: an amber dot plus an explicit instruction/
+        // approval prompt, matching the working indicator's restrained row.
+        let waiting_approval = arr(thread_v, "pendingInteractions").iter().any(|p| {
+            str_at(p, "status") == "pending" && str_at(p, "interactionKind") != "userInput"
+        }) || get(thread_v, "hasPendingApprovals").as_bool() == Some(true);
+        let waiting_input = active_pending_input(thread_v).is_some()
+            || get(thread_v, "hasPendingUserInput").as_bool() == Some(true);
+        if waiting_approval || waiting_input {
+            let label = if waiting_approval {
+                "Synara is waiting for approval"
+            } else {
+                "Synara is awaiting instructions"
+            };
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(chat_mw).child(
+                        h_flex()
+                            .gap_1p5()
+                            .items_center()
+                            .py(px(2.))
+                            .child(
+                                div()
+                                    .size(px(7.))
+                                    .rounded_full()
+                                    .bg(theme.warning),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(label),
+                            ),
+                    ),
+                ),
+            );
+        } else if working {
+            col = col.child(
+                h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(chat_mw).child(
+                        h_flex()
+                            .gap_1p5()
+                            .items_center()
+                            .py(px(2.))
+                            .child(animated_logo(px(14.), theme.primary))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(live_label.unwrap_or_else(|| "Thinking".to_string())),
+                            ),
+                    ),
                 ),
             );
         }

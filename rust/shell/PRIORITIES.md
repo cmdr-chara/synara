@@ -124,3 +124,9 @@ SYSTEMATIC PATTERN for remaining surfaces (kanban/tasks/codereview/automations/
 hubs/transcript/composer): measure upstream metrics via CDP getBoundingClientRect
 + computed style on the live web app (cheap, exact), then apply to the shell
 port — do NOT eyeball screenshots except to verify.
+
+INBOX EXACT SPEC (live CDP, 1600x1088):
+- Column: mx-auto max-w-[1760px], padding 40px (p-10 @2xl), gap 28px (gap-7)
+- h1 'Inbox': text-2xl->3xl = 30px medium-500, first baseline content y=84
+  (44 pane top + 40 padding)
+- Header: flex flex-wrap items-end justify-between gap-3 (12px)

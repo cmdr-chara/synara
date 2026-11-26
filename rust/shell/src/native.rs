@@ -205,6 +205,17 @@ mod icons {
 fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
     let mut s = gpui_kit::component::text::TextViewStyle::default();
     s.code_block.padding.top = Some(px(28.).into());
+    // Upstream: code surface follows the user-message token (3% ink in light),
+    // radius 0.65rem = 10.4px.
+    s.code_block.background = Some(if dark {
+        gpui::hsla(0.0, 0.0, 1.0, 0.06).into()
+    } else {
+        gpui::hsla(0.0, 0.0, 0.0, 0.03).into()
+    });
+    s.code_block.corner_radii.top_left = Some(px(10.4).into());
+    s.code_block.corner_radii.top_right = Some(px(10.4).into());
+    s.code_block.corner_radii.bottom_left = Some(px(10.4).into());
+    s.code_block.corner_radii.bottom_right = Some(px(10.4).into());
     s.highlight_theme = if dark {
         gpui_kit::component::highlighter::HighlightTheme::default_dark()
     } else {

@@ -957,6 +957,15 @@ fn plist_string_value(text: &str, key: &str) -> Option<String> {
 }
 
 fn plist_value(path: &Path, key: &str) -> Option<String> {
+    #[cfg(target_os = "macos")]
+    {
+        if let Ok(output) = Command::new("/usr/libexec/PlistBuddy").arg("-c").arg(format!("Print:{key}")).arg(path).output() {
+            if output.status.success() {
+                let value = String::from_utf8_lossy(&output.stdout).trim().to_string();
+                if !value.is_empty() { return Some(value); }
+            }
+        }
+    }
     plist_string_value(&std::fs::read_to_string(path).ok()?, key)
 }
 

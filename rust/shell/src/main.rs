@@ -8,6 +8,8 @@ use gpui_kit::component::{
 use gpui_kit::*;
 use gpui_webview::WebView;
 
+actions!(shell, [QuitApp, HideApp, HideOthers]);
+
 mod backdrop;
 mod backend;
 mod beta_channel;
@@ -224,6 +226,32 @@ fn main() {
 
     app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);
+        cx.on_action(|_: &QuitApp, cx| cx.quit());
+        cx.on_action(|_: &HideApp, cx| cx.hide());
+        cx.on_action(|_: &HideOthers, cx| cx.hide_other_apps());
+        cx.set_menus([
+            Menu::new("Synara").items([
+                MenuItem::os_submenu("Services", SystemMenuType::Services),
+                MenuItem::separator(),
+                MenuItem::action("Hide Synara", HideApp),
+                MenuItem::action("Hide Others", HideOthers),
+                MenuItem::separator(),
+                MenuItem::action("Quit Synara", QuitApp),
+            ]),
+            Menu::new("Edit").items([
+                MenuItem::os_action("Undo", NoAction, OsAction::Undo),
+                MenuItem::os_action("Redo", NoAction, OsAction::Redo),
+                MenuItem::separator(),
+                MenuItem::os_action("Cut", NoAction, OsAction::Cut),
+                MenuItem::os_action("Copy", NoAction, OsAction::Copy),
+                MenuItem::os_action("Paste", NoAction, OsAction::Paste),
+                MenuItem::os_action("Select All", NoAction, OsAction::SelectAll),
+            ]),
+            Menu::new("View").items([
+                MenuItem::action("Find", native::ToggleFind),
+                MenuItem::action("Toggle Terminal", native::ToggleTerminal),
+            ]),
+        ]);
         // Upstream display face for the wordmark (--font-display-family:
         // "Cal Sans"; SIL OFL 1.1, see assets/fonts/CalSans-OFL.txt).
         let _ = cx.text_system().add_fonts(vec![std::borrow::Cow::Borrowed(

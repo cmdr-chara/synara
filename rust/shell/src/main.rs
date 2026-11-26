@@ -31,7 +31,9 @@ pub struct Shell {
 
 impl Shell {
     pub fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
-        let native_ui = std::env::var("SYNARA_NATIVE").is_ok();
+        // Native GPUI UI is the default; SYNARA_WEBVIEW=1 re-enables the
+        // legacy webview shell during the transition away from it.
+        let native_ui = std::env::var("SYNARA_WEBVIEW").is_err();
         let webview = if native_ui {
             // In native mode the WKWebView subview is never rendered; creating
             // it anyway leaves an invisible native view over the window that

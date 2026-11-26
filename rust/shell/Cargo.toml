@@ -22,7 +22,7 @@ urlencoding = "2"
 cpal = "0.15"
 base64 = "0.22"
 smallvec = "1"
-image = { version = "0.25", default-features = false, features = ["jpeg"] }
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "webp"] }
 browserhost-rs = { path = "../browserhost-rs" }
 tokio = { version = "1", features = ["rt-multi-thread"] }
 libc = "0.2"

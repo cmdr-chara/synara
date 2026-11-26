@@ -20841,11 +20841,13 @@ impl Render for Native {
             .overflow_y_scroll()
             .vertical_scrollbar(&self.settings_scroll)
             .px_6()
-            .pt(px(27.))
+            .pt(px(32.))
             .pb_8()
             .gap_5();
         {
-            let mut head = h_flex().w_full().items_start().justify_between().gap_4();
+            // Upstream header row carries mb-8 (32px); the pane's uniform gap_5
+            // covers 20 of it, so the head itself contributes the remaining 12.
+            let mut head = h_flex().w_full().items_start().justify_between().gap_4().pb(px(3.));
             if self.settings_section == "profile" {
                 head = h_flex().items_start().w_full().justify_end().gap_4();
             } else {

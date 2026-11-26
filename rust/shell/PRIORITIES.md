@@ -52,6 +52,17 @@ OPEN, in priority order:
    session URLs are like /4dbd7265-....; drive shell via computer tool clicks,
    capture, anaglyph, fix worst fringes. Areas: message bubbles, markdown,
    code blocks, activities rows, composer-in-thread (permission/branch/model row).
+
+PROGRESS LOG (overnight):
+- Settings/General: 65% -> 8.8% pixel diff after opaque-surface fix
+  (5510376856). REMAINING: section vertical rhythm — web section content sits
+  ~15px lower than shell; header top padding + section gap need exact matching.
+  Sidebar nav aligns well. Next: measure exact y positions of General title /
+  first card in both captures and adjust settings pane padding.
+- Web settings IS a route after all: /settings works (earlier redirect was a
+  fluke). Navigate web by URL where possible — much cheaper than JS clicks.
+- USER CLARIFICATION 00:41: GPUI must be IDENTICAL to Electron — not
+  'close enough'. Micro-offsets count. Every surface iterates to convergence.
 3. Sidebar/inbox/kanban/tasks/codereview/automations/hubs/settings — same method,
    one surface at a time. Settings is static content: cheapest high-value target.
 4. Composer fine metrics: input zone padding/height, chip row spacing vs upstream.

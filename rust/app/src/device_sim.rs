@@ -352,6 +352,80 @@ fn device_thread_state(payload: &Value) -> Result<Value, String> {
     }
 }
 
+
+// ---- unified log capture + focused-value editing -------------------------------
+
+fn escape_predicate(value: &str) -> String {
+    value.replace('\\', "\\\\").replace('\"', "\\\"")
+}
+
+fn device_logs(udid: &str, payload: &Value) -> Result<Value, String> {
+    let executable = payload
+        .get("executable")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
+    if executable.is_empty() {
+        return Err("executable required".into());
+    }
+    let since = payload
+        .get("sinceSeconds")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(60)
+        .max(1);
+    let level = payload
+        .get("level")
+        .and_then(|v| v.as_str())
+        .unwrap_or("default");
+    let level_flags: Vec<&str> = match level {
+        "debug" => vec!["--info", "--debug"],
+        "info" => vec!["--info"],
+        _ => vec![],
+    };
+    let scope = if level == "error" {
+        "(messageType == error OR messageType == fault)"
+    } else {
+        "(NOT subsystem BEGINSWITH \"com.apple.\" OR messageType == error OR messageType == fault)"
+    };
+    let predicate = format!(
+        "process == \"{}\" AND eventType == logEvent AND {scope}",
+        escape_predicate(executable)
+    );
+    let mut args: Vec<String> = vec![
+        "spawn".into(),
+        udid.to_string(),
+        "log".into(),
+        "show".into(),
+        "--last".into(),
+        format!("{since}s"),
+        "--style".into(),
+        "compact".into(),
+    ];
+    for f in level_flags {
+        args.push(f.into());
+    }
+    args.push("--predicate".into());
+    args.push(predicate);
+    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+    // log show exits non-zero when nothing matched; empty output is a valid answer.
+    let out = std::process::Command::new("xcrun")
+        .arg("simctl")
+        .args(&refs)
+        .output()
+        .map_err(|e| format!("log show spawn: {e}"))?;
+    let text = String::from_utf8_lossy(&out.stdout).to_string();
+    let lines: Vec<&str> = text.lines().collect();
+    let limit = payload.get("limit").and_then(|v| v.as_u64()).unwrap_or(200) as usize;
+    let tail: Vec<&str> = lines.iter().rev().take(limit).rev().copied().collect();
+    Ok(json!({ "udid": udid, "lines": tail }))
+}
+
+fn device_set_focused_value(udid: &str, payload: &Value) -> Result<Value, String> {
+    let value = payload.get("value").and_then(|v| v.as_str()).unwrap_or("");
+    crate::device_helper::attach(udid)?;
+    crate::device_helper::request("set-focused-value", json!({ "value": value }))?;
+    Ok(json!({ "udid": udid, "performed": true }))
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -373,6 +447,8 @@ pub fn handles(tag: &str) -> bool {
             | "device.attach"
             | "device.detach"
             | "device.getThreadState"
+            | "device.logs"
+            | "device.setFocusedValue"
     )
 }
 
@@ -445,6 +521,8 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
         "device.attach" => device_attach(payload),
         "device.detach" => device_detach(payload),
         "device.getThreadState" => device_thread_state(payload),
+        "device.logs" => device_logs(udid, payload),
+        "device.setFocusedValue" => device_set_focused_value(udid, payload),
         "device.startRecording" => {
             if udid.is_empty() { Err("udid required".into()) } else { start_recording(udid) }
         }

@@ -19003,6 +19003,7 @@ impl Render for Native {
                 )
         };
         let chat_mw = self.chat_max_w();
+        let mut landing_controls: Option<Div> = None;
         let mut composer_col = v_flex()
             .w_full().max_w(chat_mw)
             .gap_0()
@@ -19675,7 +19676,7 @@ impl Render for Native {
                             ),
                     );
             }
-            composer_col = composer_col.child(controls);
+            landing_controls = Some(controls);
         }
         // Upstream status banners sit at the top of the chat column: the
         // provider-health alert above everything and the thread error first
@@ -20319,25 +20320,58 @@ impl Render for Native {
                 ),
             );
         }
-        // Upstream .chat-composer-shell: an opaque near-white squircle behind
-        // the translucent (white/0.55) surface — the composite reads as the
-        // crisp opaque tray; without it the texture washes the composer out.
+        // Upstream .chat-composer-shell: ONE opaque tray surface holding the
+        // project/branch chips strip, a hairline, the input zone and the
+        // controls row — not a floating chip above a separate card. The
+        // surface keeps upstream's translucent white/0.55 over an opaque
+        // near-white shell so the texture does not wash it out.
         let composer_shell_bg: gpui::Hsla = if theme.is_dark() {
             sidebar_bg
         } else {
             gpui::hsla(0.0, 0.0, 0.983, 1.0)
         };
-        let composer_shelled = div()
-            .flex()
-            .justify_center()
-            .w_full()
-            .child(
-                div()
-                    .rounded(px(24.2))
-                    .bg(composer_shell_bg)
-                    .p(px(4.))
-                    .child(composer_card),
-            );
+        let composer_shelled = if let Some(controls) = landing_controls {
+            div()
+                .flex()
+                .justify_center()
+                .w_full()
+                .child(
+                    v_flex()
+                        .w_full()
+                        .max_w(px(755.))
+                        .rounded(px(19.2))
+                        .border_1()
+                        .border_color(composer_border)
+                        .bg(if theme.is_dark() {
+                            sidebar_bg
+                        } else {
+                            gpui::hsla(0.0, 0.0, 0.99, 1.0)
+                        })
+                        .shadow_md()
+                        .child(
+                            div().pt(px(6.)).px(px(10.)).child(controls),
+                        )
+                        .child(
+                            div()
+                                .mx(px(10.))
+                                .h(px(1.))
+                                .bg(theme.border.opacity(0.6)),
+                        )
+                        .child(composer_card.border_0().shadow_none().rounded(px(0.))),
+                )
+        } else {
+            div()
+                .flex()
+                .justify_center()
+                .w_full()
+                .child(
+                    div()
+                        .rounded(px(24.2))
+                        .bg(composer_shell_bg)
+                        .p(px(4.))
+                        .child(composer_card),
+                )
+        };
         composer_col = composer_col.child(composer_shelled);
         if row_composer {
             // Pickers row under the composer card (upstream "row" layout):

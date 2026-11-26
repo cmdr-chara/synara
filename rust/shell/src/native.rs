@@ -16172,12 +16172,10 @@ impl Render for Native {
                     }
                     cx.notify();
                 }));
-            // Upstream mounts the field over the whole chat column (composer
-            // included); mounting it inside `home` stopped it above the
-            // composer tray. Attach it to the pane so it spans top to bottom.
-            pane = pane
-                .relative()
-                .child(div().absolute().inset_0().overflow_hidden().child(wm));
+            // The wm build above populates self.backdrop_img; the field itself
+            // is mounted at the chat-column level (over the composer too),
+            // because the scrollable pane cannot span the composer tray.
+            let _ = wm;
             if !self.sponsor_dismissed {
                 // Upstream SponsorLandingBanner: centered, max-w-520, borderless
                 // row — star + title + subtitle; dismiss X appears only on hover.
@@ -24646,6 +24644,48 @@ impl Render for Native {
             self.browser_input = None;
         }
         let mut main = v_flex().flex_1().min_w_0().h_full().relative();
+                let landing_bd_main = if show_landing && self.show_ascii_bg {
+                    self.backdrop_img.clone().map(|img| {
+                        let vpw = window.viewport_size().width.as_f32();
+                        let vph = window.viewport_size().height.as_f32();
+                        let mut field = div().size_full().overflow_hidden().relative();
+                        if !theme.is_dark() {
+                            field = field.child(
+                                div()
+                                    .absolute()
+                                    .inset_0()
+                                    .bg(gpui::linear_gradient(
+                                        180.,
+                                        gpui::linear_color_stop(
+                                            rgb(0x0169cc).opacity(0.03),
+                                            0.,
+                                        ),
+                                        gpui::linear_color_stop(
+                                            rgb(0x0169cc).opacity(0.09),
+                                            0.55,
+                                        ),
+                                    )),
+                            );
+                        }
+                        div()
+                            .absolute()
+                            .inset_0()
+                            .overflow_hidden()
+                            .child(field.child(
+                                gpui::img(ImageSource::Render(img))
+                                    .absolute()
+                                    .top_0()
+                                    .left_0()
+                                    .w(px(vpw))
+                                    .h(px(vph)),
+                            ))
+                    })
+                } else {
+                    None
+                };
+        if let Some(bd) = landing_bd_main {
+            main = main.child(bd);
+        }
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
         } else if self.view_dev {
@@ -24933,6 +24973,7 @@ impl Render for Native {
                 // Zed-style split: two ratio-sized panes + draggable divider.
                 let ratio = self.split_ratio.clamp(0.25, 0.75);
                 let left = v_flex()
+                    .relative()
                     .id("split-left")
                     .w(gpui::relative(ratio))
                     .min_w_0()

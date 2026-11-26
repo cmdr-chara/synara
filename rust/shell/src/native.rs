@@ -9933,11 +9933,39 @@ impl Native {
             } else {
                 "#FFFFFF"
             };
-            colors.insert("accent".to_string(), json!(acc));
-            colors.insert("primary".to_string(), json!(acc));
-            colors.insert("primary_foreground".to_string(), json!(fg));
-            colors.insert("accent_foreground".to_string(), json!(fg));
+            let _ = fg;
+            // Upstream at zero contrast: primary surfaces are the ink color
+            // (measured light #0D0D0D / dark #FCFCFC — buttons render black,
+            // not brand-orange), while `accent` is the soft tint wash.
+            let ink_primary = if dark { "#FCFCFC" } else { "#0D0D0D" };
+            let ink_primary_fg = if dark { "#0D0D0D" } else { "#FFFFFF" };
+            let soft_accent = if dark { "#230E06" } else { "#FAEFEA" };
+            colors.insert("accent".to_string(), json!(soft_accent));
+            colors.insert("primary".to_string(), json!(ink_primary));
+            colors.insert("primary_foreground".to_string(), json!(ink_primary_fg));
+            colors.insert("accent_foreground".to_string(), json!(acc));
         }
+        // Upstream's zero-contrast ink-derived tokens, measured on the live
+        // web app: the alpha channels sit on the variant's ink color. Without
+        // these the gpui defaults leak visibly different grays into hover
+        // states, borders and secondary text.
+        let ink_tokens: [(&str, &str, &str); 5] = [
+            // token, light value, dark value
+            ("muted_foreground", "rgba(13, 13, 13, 0.598)", "rgba(252, 252, 252, 0.58)"),
+            ("muted", "rgba(13, 13, 13, 0.04)", "rgba(252, 252, 252, 0.006)"),
+            ("secondary", "rgba(13, 13, 13, 0.03)", "rgba(252, 252, 252, 0.026)"),
+            ("border", "rgba(13, 13, 13, 0.069)", "rgba(252, 252, 252, 0.072)"),
+            ("input", "rgba(13, 13, 13, 0.069)", "rgba(252, 252, 252, 0.072)"),
+        ];
+        for (k, light_v, dark_v) in ink_tokens {
+            colors.insert(k.to_string(), json!(if dark { dark_v } else { light_v }));
+        }
+        // The ring is the text-accent in both variants (measured), and the
+        // dark accent/primary differ from the shell's earlier guesses.
+        colors.insert(
+            "ring".to_string(),
+            json!(if dark { "#F58056" } else { "#C74614" }),
+        );
         // Upstream theme fonts: pack.fonts.ui drives the UI family,
         // pack.fonts.code the monospace family (empty = default).
         let font_of = |sub: &str| -> Option<String> {
@@ -14428,7 +14456,7 @@ impl Render for Native {
             h_flex()
                 .id("new-thread")
                 .w_full()
-                .h(px(32.))
+                .h(px(28.))
                 .px_2()
                 .gap_2()
                 .items_center()
@@ -14484,10 +14512,10 @@ impl Render for Native {
                 .h(px(28. * self.density_scale()))
                 .pl(px(indent))
                 .pr_2()
-                .gap(px(6.))
+                .gap(px(8.))
                 .items_center()
                 .cursor_pointer()
-                .rounded_md()
+                .rounded(px(8.))
                 .child(
                     svg_icon(provider_icon)
                         .size(px(12.))
@@ -17284,16 +17312,16 @@ impl Render for Native {
         let fast_on = self.fast_mode;
         let plus_btn = Button::new("composer-attach")
             .compact()
-            .icon(svg_icon(icons::PLUS).size(px(14.)))
-            .rounded(ButtonRounded::Size(px(14.)))
+            .icon(svg_icon(icons::PLUS).size(px(20.)))
+            .rounded(ButtonRounded::Size(px(10.)))
             .with_variant(ButtonVariant::Custom(
                 ButtonCustomVariant::new(cx)
                     .color(chip_bg.into())
                     .foreground(theme.foreground)
                     .hover(subtle.into()),
             ))
-            .w(px(28.))
-            .h(px(28.))
+            .w(px(36.))
+            .h(px(36.))
             .dropdown_menu(move |menu, window, cx| {
                 let wins: Vec<(String, String, String)> = ensure_client(&extras_cell)
                     .and_then(|c| c.call("computer.listWindows", json!({})))
@@ -17652,7 +17680,7 @@ impl Render for Native {
                 .max_w(px(755.))
                 .border_1()
                 .border_color(composer_border)
-                .rounded(px(19.))
+                .rounded(px(19.2))
                 .bg(sidebar_bg)
                 .shadow_md()
                 .px_2()
@@ -17672,7 +17700,7 @@ impl Render for Native {
                 .max_w(px(755.))
                 .border_1()
                 .border_color(composer_border)
-                .rounded(px(19.))
+                .rounded(px(19.2))
                 .bg(sidebar_bg)
                 .shadow_md()
                 .px_2()
@@ -25535,7 +25563,7 @@ impl Render for Native {
                 .w(px(20.))
                 .h(px(1.))
                 .bg(theme.border)
-                .my(px(3.))
+                .my(px(2.))
         };
         let home_active = !self.view_files
             && !self.view_dev
@@ -25550,8 +25578,8 @@ impl Render for Native {
         let rail = v_flex()
             .w(px(51.))
             .h_full()
-            .pt(px(7.))
-            .pb(px(4.))
+            .pt(px(10.))
+            .pb(px(10.))
             .items_center()
             .gap(px(6.))
             .child(

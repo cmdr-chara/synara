@@ -1420,6 +1420,10 @@ pub struct Native {
     // Async user-input (pending question) cards: expanded ids and the
     // (message_id, question_index) -> chosen option label draft.
     user_input_open: Vec<String>,
+    md_images: std::sync::Arc<
+        std::sync::Mutex<std::collections::HashMap<String, std::sync::Arc<RenderImage>>>,
+    >,
+    md_images_pending: std::sync::Arc<std::sync::Mutex<std::collections::HashSet<String>>>,
     /// Live voice-note capture while the composer mic is recording.
     voice_capture: Option<crate::voice::VoiceCapture>,
     /// True while a finished clip is with the transcription backend.
@@ -1901,6 +1905,49 @@ fn session_phase(detail: Option<&Value>) -> &'static str {
         "closed" => "disconnected",
         _ => "ready",
     }
+}
+
+/// Collect remote image URLs from markdown `![alt](url)` references. The
+/// transcript markdown renderer (gpui TextView) resolves document images
+/// through the shell cache below instead of gpui's own resource loader,
+/// which does not follow the redirects image hosts commonly answer with.
+fn extract_md_image_urls(text: &str, out: &mut Vec<String>) {
+    let bytes = text.as_bytes();
+    let mut i = 0;
+    while i + 3 < bytes.len() {
+        if bytes[i] == b'!' && bytes[i + 1] == b'[' {
+            if let Some(close) = text[i + 2..].find("](") {
+                let url_start = i + 2 + close + 2;
+                if let Some(end) = text[url_start..].find(')') {
+                    let url = text[url_start..url_start + end].trim();
+                    if url.starts_with("http://") || url.starts_with("https://") {
+                        let url = url.split_whitespace().next().unwrap_or(url);
+                        out.push(url.to_string());
+                    }
+                    i = url_start + end;
+                    continue;
+                }
+            }
+        }
+        i += 1;
+    }
+}
+
+/// Fetch and decode a remote image for the transcript cache. Runs on the
+/// background executor; ureq follows redirects by default.
+fn fetch_decode_image(url: &str) -> Option<std::sync::Arc<RenderImage>> {
+    use std::io::Read as _;
+    let resp = ureq::get(url).call().ok()?;
+    let mut bytes = Vec::new();
+    resp.into_reader()
+        .take(20 * 1024 * 1024)
+        .read_to_end(&mut bytes)
+        .ok()?;
+    let decoded = image::load_from_memory(&bytes).ok()?;
+    let rgba = decoded.to_rgba8();
+    Some(std::sync::Arc::new(RenderImage::new(smallvec::smallvec![
+        image::Frame::new(rgba)
+    ])))
 }
 
 fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
@@ -3225,6 +3272,8 @@ impl Native {
             search_open: false,
             sidebar_collapsed: false,
             user_input_open: Vec::new(),
+            md_images: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new())),
+            md_images_pending: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashSet::new())),
             voice_capture: None,
             voice_transcribing: false,
             voice_send_after: false,
@@ -3501,6 +3550,7 @@ impl Native {
                 if this.selected_thread.as_deref() == Some(tid.as_str()) {
                     this.detail = detail;
                     this.transcript_scroll.scroll_to_bottom();
+                    this.prefetch_md_images(cx);
                 }
                 cx.notify();
             });
@@ -3550,6 +3600,7 @@ impl Native {
                         if at_bottom {
                             this.transcript_scroll.scroll_to_bottom();
                         }
+                        this.prefetch_md_images(cx);
                     }
                     cx.notify();
                 });
@@ -3628,6 +3679,56 @@ impl Native {
     }
 
     /// Deselect the current thread so the composer starts a new one.
+    /// Prefetch markdown images referenced by the loaded thread detail into
+    /// the shell cache the TextView image resolver reads. Idempotent: URLs
+    /// already cached or in flight are skipped. Failed fetches stay pending,
+    /// so a later detail refresh retries them.
+    fn prefetch_md_images(&mut self, cx: &mut Context<Self>) {
+        let Some(detail) = self.detail.clone() else {
+            return;
+        };
+        let thread_v = get(&detail, "thread");
+        let mut urls = Vec::new();
+        for m in arr(thread_v, "messages") {
+            let mut text = str_at(m, "text").to_string();
+            if text.trim().is_empty() {
+                text = get(m, "textSegments")
+                    .as_array()
+                    .map(|segs| {
+                        segs.iter()
+                            .filter_map(|s| s.get("text").and_then(Value::as_str))
+                            .collect::<Vec<_>>()
+                            .join("")
+                    })
+                    .unwrap_or_default();
+            }
+            extract_md_image_urls(&text, &mut urls);
+        }
+        for url in urls {
+            if self.md_images.lock().unwrap().contains_key(&url)
+                || self.md_images_pending.lock().unwrap().contains(&url)
+            {
+                continue;
+            }
+            self.md_images_pending.lock().unwrap().insert(url.clone());
+            let cache = self.md_images.clone();
+            let pending = self.md_images_pending.clone();
+            cx.spawn(async move |this, cx| {
+                let fetch_url = url.clone();
+                let img = cx
+                    .background_executor()
+                    .spawn(async move { fetch_decode_image(&fetch_url) })
+                    .await;
+                if let Some(img) = img {
+                    cache.lock().unwrap().insert(url.clone(), img);
+                    pending.lock().unwrap().remove(&url);
+                    let _ = this.update(cx, |_this, cx| cx.notify());
+                }
+            })
+            .detach();
+        }
+    }
+
     fn new_thread(&mut self, cx: &mut Context<Self>) {
         if let Some(old) = self.thread_stream_id.take() {
             if let Ok(guard) = self.client.lock() {
@@ -11747,6 +11848,7 @@ impl Native {
                 }
                 if let Some(d) = d {
                     this.detail = Some(d);
+                    this.prefetch_md_images(cx);
                 }
                 cx.notify();
             });
@@ -12656,6 +12758,21 @@ impl Native {
                                         ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
                                         text,
                                     )
+                                    .image_source({
+                                        let cache = self.md_images.clone();
+                                        move |uri: &SharedUri| -> ImageSource {
+                                            let key = uri.as_str();
+                                            if let Some(img) = cache.lock().unwrap().get(key).cloned() {
+                                                ImageSource::Render(img)
+                                            } else if key.starts_with("http://") || key.starts_with("https://") {
+                                                // Remote image still in flight: perpetual-loading
+                                                // custom source; the cache fill re-renders.
+                                                ImageSource::Custom(std::sync::Arc::new(|_w, _cx| None))
+                                            } else {
+                                                uri.clone().into()
+                                            }
+                                        }
+                                    })
                                     .style(markdown_style(theme.is_dark()))
                                     .code_block_actions({
                                         let muted_fg = theme.muted_foreground;

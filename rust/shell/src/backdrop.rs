@@ -204,6 +204,9 @@ pub struct BackdropSpec {
     pub accent_rgb: [u8; 3],
     /// (x, y, w, h) quiet zones in logical px, container coords.
     pub quiet: Vec<(f32, f32, f32, f32)>,
+    /// Device scale factor: the bitmap is rasterized at logical*scale so dots
+    /// stay crisp instead of being bilinear-smoothed by the renderer.
+    pub scale: f32,
 }
 
 const QUIET_PADDING_PX: f32 = 12.0;
@@ -366,13 +369,20 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
         spec.accent_rgb
     };
 
-    // render one bitmap pixel per cell, binary — upstream's canvas is cols x
-    // rows and the browser scales it up with smoothing; gpui does the same
-    // when this image is drawn at pane size, which is what softens the dots
-    // into the pale print instead of hard full-ink circles.
-    let w_px = cols;
-    let h_px = rows;
+    // Upstream renders one bitmap pixel per cell and the browser upscales it
+    // with `image-rendering: pixelated` (nearest, crisp), then intersects a
+    // per-cell radial mask: a circle of `dot` px radius solid, fading to
+    // transparent over the next 0.4 px, tiled every CELL_PX. Drawing the
+    // cells bitmap stretched in gpui instead bilinear-smears every dot into
+    // pale mush, so we rasterize the final composite at device resolution:
+    // each active cell paints its circle directly, no scaling involved.
+    let scale = spec.scale.max(1.0);
+    let w_px = (width * scale).ceil() as usize;
+    let h_px = (height * scale).ceil() as usize;
     let mut buf = vec![0u8; w_px * h_px * 4];
+    let dot_r = levels.dot * scale;
+    let aa = 0.4 * scale;
+    let reach = (dot_r + aa).ceil() as i32;
     // light sky mask: dot opacity fades in over the top 42% of the pane
     // (upstream LIGHT_SKY_MASK intersecting the dot mask).
     for row in 0..rows {
@@ -389,16 +399,43 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
             if sky_alpha <= 0.0 {
                 continue;
             }
-            let idx = (row * w_px + col) * 4;
-            let a = (255.0 * sky_alpha).round() as u8;
-            // BGRA, premultiplied: gpui composites src.rgb + dst*(1-a),
-            // so unpremultiplied ink would print full-strength even
-            // where the sky mask keeps alpha low.
-            let scale = a as f32 / 255.0;
-            buf[idx] = (ink[2] as f32 * scale).round() as u8;
-            buf[idx + 1] = (ink[1] as f32 * scale).round() as u8;
-            buf[idx + 2] = (ink[0] as f32 * scale).round() as u8;
-            buf[idx + 3] = a;
+            // cell center in device px
+            let ccx = (col as f32 * CELL_PX + CELL_PX / 2.0) * scale;
+            let ccy = cy * scale;
+            let cx0 = (ccx.round() as i32 - reach).max(0);
+            let cx1 = (ccx.round() as i32 + reach).min(w_px as i32 - 1);
+            let cy0 = (ccy.round() as i32 - reach).max(0);
+            let cy1 = (ccy.round() as i32 + reach).min(h_px as i32 - 1);
+            for py in cy0..=cy1 {
+                for px_ in cx0..=cx1 {
+                    let dx = px_ as f32 + 0.5 - ccx;
+                    let dy = py as f32 + 0.5 - ccy;
+                    let dist = (dx * dx + dy * dy).sqrt();
+                    let cover = if dist <= dot_r {
+                        1.0
+                    } else {
+                        ((dot_r + aa - dist) / aa).clamp(0.0, 1.0)
+                    };
+                    if cover <= 0.0 {
+                        continue;
+                    }
+                    let a = 255.0 * sky_alpha * cover;
+                    let idx = (py as usize * w_px + px_ as usize) * 4;
+                    // BGRA premultiplied; max-merge so overlapping cell
+                    // circles never exceed full ink.
+                    let s = a / 255.0;
+                    let ib = (ink[2] as f32 * s).round() as u8;
+                    let ig = (ink[1] as f32 * s).round() as u8;
+                    let ir = (ink[0] as f32 * s).round() as u8;
+                    let ia = a.round() as u8;
+                    if ia > buf[idx + 3] {
+                        buf[idx] = ib;
+                        buf[idx + 1] = ig;
+                        buf[idx + 2] = ir;
+                        buf[idx + 3] = ia;
+                    }
+                }
+            }
         }
     }
 

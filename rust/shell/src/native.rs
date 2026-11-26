@@ -16758,8 +16758,13 @@ impl Render for Native {
             // scene replaced the ascii wave — same toggle, same click-ripple
             // surface below. Static port: no ripples/gradient style yet.
             let wm = if self.show_ascii_bg {
-                let vpw = window.viewport_size().width.as_f32();
-                let vph = window.viewport_size().height.as_f32();
+                // The texture lives inside the content pane (right of the
+                // rail+sidebar, below the top strip): upstream's landing
+                // canvas spans exactly that rect, so the scene geometry and
+                // quiet zones are computed in pane coordinates, not full
+                // window ones.
+                let vpw = (window.viewport_size().width.as_f32() - 308.0).max(200.0);
+                let vph = (window.viewport_size().height.as_f32() - 44.0).max(200.0);
                 let dark = theme.is_dark();
                 let key = (vpw as u32, vph as u32, dark);
                 if self.backdrop_key != key || self.backdrop_img.is_none() {
@@ -16779,6 +16784,7 @@ impl Render for Native {
                             dark,
                             accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
                             quiet,
+                            scale: window.scale_factor(),
                         },
                     );
                     self.backdrop_key = key;
@@ -25932,6 +25938,7 @@ impl Render for Native {
                                 dark,
                                 accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
                                 quiet,
+                                scale: window.scale_factor(),
                             },
                         );
                         self.backdrop_key = key;

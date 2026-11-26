@@ -234,8 +234,12 @@ impl BackendLaunch {
 impl BackendSupervisor {
     fn start(config: BackendConfig) -> Result<Self, String> {
         let (mut child, output_tail) = spawn_backend(&config)
-            .map_err(|e| format!("avvio backend {} fallito: {e}", config.binary.display()))?;
+            .map_err(|e| {
+                crate::reliability::track("backend.spawn_failed");
+                format!("avvio backend {} fallito: {e}", config.binary.display())
+            })?;
         wait_until_ready(&mut child, config.port).map_err(|e| {
+            crate::reliability::track("backend.exit_before_ready");
             let _ = terminate_child(&mut child);
             let detail = output_tail.read();
             if detail.is_empty() {
@@ -330,6 +334,7 @@ fn watchdog_loop(inner: Arc<SupervisorInner>) {
             return;
         }
 
+        crate::reliability::track("backend.exit_after_ready");
         let (restart_index, config) = {
             let mut state = inner.state.lock().expect("supervisor state");
             if state.start_failures >= MAX_RESTARTS - 1 {
@@ -353,11 +358,15 @@ fn watchdog_loop(inner: Arc<SupervisorInner>) {
         }
 
         let restart = spawn_backend(&config)
-            .map_err(|e| e.to_string())
+            .map_err(|e| {
+                crate::reliability::track("backend.spawn_failed");
+                e.to_string()
+            })
             .and_then(
                 |(mut child, output_tail)| match wait_until_ready(&mut child, config.port) {
                     Ok(()) => Ok((child, output_tail)),
                     Err(error) => {
+                        crate::reliability::track("backend.exit_before_ready");
                         let _ = terminate_child(&mut child);
                         Err(error)
                     }

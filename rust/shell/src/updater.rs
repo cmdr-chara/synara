@@ -1056,8 +1056,19 @@ fn packaged_mac_app() -> bool {
 }
 
 fn desktop_update_supported() -> bool {
-    std::env::var("SYNARA_UPDATE_ENABLE").ok().as_deref() == Some("1")
-        || (cfg!(target_os = "macos") && packaged_mac_app())
+    if std::env::var("SYNARA_UPDATE_ENABLE").ok().as_deref() == Some("1") {
+        return true;
+    }
+    if cfg!(target_os = "macos") {
+        return packaged_mac_app();
+    }
+    if cfg!(target_os = "linux") {
+        return std::env::var_os("APPIMAGE").is_some() && std::env::var_os("SNAP").is_none();
+    }
+    if cfg!(target_os = "windows") {
+        return packaged_app_update_yml().is_some();
+    }
+    false
 }
 
 fn parse_app_update_yml(text: &str) -> Option<std::collections::HashMap<String, String>> {
@@ -1075,11 +1086,19 @@ fn parse_app_update_yml(text: &str) -> Option<std::collections::HashMap<String, 
 
 fn packaged_app_update_yml() -> Option<std::collections::HashMap<String, String>> {
     let exe = std::env::current_exe().ok()?;
-    let macos_dir = exe.parent()?;
-    if !macos_dir.ends_with("MacOS") { return None; }
-    let contents = macos_dir.parent()?;
-    let path = contents.join("Resources").join("app-update.yml");
-    parse_app_update_yml(&std::fs::read_to_string(path).ok()?)
+    let exe_dir = exe.parent()?;
+    let mut candidates = vec![exe_dir.join("app-update.yml")];
+    if exe_dir.ends_with("MacOS") {
+        if let Some(contents) = exe_dir.parent() {
+            candidates.push(contents.join("Resources").join("app-update.yml"));
+        }
+    }
+    if let Some(prefix) = exe_dir.parent() {
+        candidates.push(prefix.join("share").join("synara").join("app-update.yml"));
+    }
+    candidates.into_iter().find_map(|path| {
+        parse_app_update_yml(&std::fs::read_to_string(path).ok()?)
+    })
 }
 
 fn update_channel_for_flavor(flavor: UpdateFlavor) -> &'static str {
@@ -1272,6 +1291,121 @@ fn extract_update_payload(payload: &Path, cache_dir: &Path, version: &str) -> Re
 
 fn shell_single_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+fn filename_contains_semver(name: &str) -> bool {
+    let bytes = name.as_bytes();
+    for start in 0..bytes.len() {
+        if !bytes[start].is_ascii_digit() { continue; }
+        let mut dots = 0;
+        let mut pos = start;
+        let mut digits = 0;
+        while pos < bytes.len() {
+            if bytes[pos].is_ascii_digit() {
+                digits += 1;
+                pos += 1;
+            } else if bytes[pos] == b'.' && digits > 0 && dots < 2 {
+                dots += 1;
+                digits = 0;
+                pos += 1;
+            } else { break; }
+        }
+        if dots == 2 && digits > 0 { return true; }
+    }
+    false
+}
+
+pub fn linux_appimage_destination(current: &Path, staged: &Path) -> PathBuf {
+    let current_name = current.file_name().and_then(|name| name.to_str()).unwrap_or_default();
+    let staged_name = staged.file_name().and_then(|name| name.to_str()).unwrap_or_default();
+    if staged_name == current_name || !filename_contains_semver(current_name) {
+        current.to_path_buf()
+    } else {
+        current.parent().unwrap_or_else(|| Path::new(".")).join(staged_name)
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn prepare_linux_install(artifact: &ArtifactIdentity, cache_dir: &Path, _version: &str) -> Result<(), String> {
+    use std::os::unix::fs::PermissionsExt as _;
+    let current = std::env::var_os("APPIMAGE")
+        .map(PathBuf::from)
+        .ok_or("APPIMAGE is not defined; this Synara build is not running from an AppImage.")?;
+    if std::env::var_os("SNAP").is_some() {
+        return Err("Automatic updates are disabled inside Snap confinement.".into());
+    }
+    if !current.is_file() {
+        return Err("The running AppImage payload is no longer available.".into());
+    }
+    std::fs::set_permissions(&artifact.path, std::fs::Permissions::from_mode(0o755))
+        .map_err(|error| format!("Could not mark the downloaded AppImage executable: {error}"))?;
+    let destination = linux_appimage_destination(&current, &artifact.path);
+    let script_path = cache_dir.join("install-update-linux.sh");
+    let log_path = cache_dir.join("install.log");
+    let shell_pid = std::process::id();
+    let mut script = String::from("#!/bin/sh\nset -u\nwhile kill -0 ");
+    script.push_str(&shell_pid.to_string());
+    script.push_str(" 2>/dev/null; do sleep 0.1; done\ncurrent=");
+    script.push_str(&shell_single_quote(&current.to_string_lossy()));
+    script.push_str("\nstaged=");
+    script.push_str(&shell_single_quote(&artifact.path.to_string_lossy()));
+    script.push_str("\ndestination=");
+    script.push_str(&shell_single_quote(&destination.to_string_lossy()));
+    script.push_str("\nlog=");
+    script.push_str(&shell_single_quote(&log_path.to_string_lossy()));
+    script.push_str("\nrm -f \"$current\"\nif ! mv -f \"$staged\" \"$destination\" 2>>\"$log\"; then echo 'could not move AppImage update into place' >>\"$log\"; exit 1; fi\nchmod 755 \"$destination\" 2>>\"$log\" || true\nAPPIMAGE_SILENT_INSTALL=true nohup \"$destination\" >>\"$log\" 2>&1 &\n");
+    std::fs::write(&script_path, script).map_err(|error| format!("Could not write the update installer: {error}"))?;
+    std::fs::set_permissions(&script_path, std::fs::Permissions::from_mode(0o700)).map_err(|error| error.to_string())?;
+    Command::new("/bin/sh")
+        .arg(&script_path)
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|error| format!("Could not start the update installer: {error}"))?;
+    Ok(())
+}
+
+#[cfg(target_os = "windows")]
+fn verify_windows_installer_signature(installer: &Path) -> Result<(), String> {
+    let Some(entries) = packaged_app_update_yml() else { return Ok(()) };
+    let Some(publisher) = entries.get("publisherName").filter(|value| !value.trim().is_empty()) else { return Ok(()) };
+    let installer_text = installer.to_string_lossy().replace('\'', "''");
+    let publisher_text = publisher.replace('\'', "''");
+    let command = format!(
+        "$s=Get-AuthenticodeSignature '{}'; if ($s.Status -eq 'Valid' -and $s.SignerCertificate.Subject -like '*CN={}*') {{ exit 0 }}; exit 1",
+        installer_text,
+        publisher_text
+    );
+    let output = Command::new("powershell")
+        .args(["-NoProfile", "-NonInteractive", "-Command", command.as_str()])
+        .output()
+        .map_err(|error| format!("Could not verify the Windows update signature: {error}"))?;
+    if output.status.success() { Ok(()) } else { Err("The Windows update is not signed by the application publisher.".into()) }
+}
+
+#[cfg(target_os = "windows")]
+fn prepare_windows_install(artifact: &ArtifactIdentity, _cache_dir: &Path, _version: &str) -> Result<(), String> {
+    verify_windows_installer_signature(&artifact.path)?;
+    Command::new(&artifact.path)
+        .args(["--updated", "--force-run"])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|error| format!("Could not start the Windows update installer: {error}"))?;
+    Ok(())
+}
+
+fn prepare_platform_install(artifact: &ArtifactIdentity, cache_dir: &Path, version: &str) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    { return prepare_macos_install(artifact, cache_dir, version); }
+    #[cfg(target_os = "linux")]
+    { return prepare_linux_install(artifact, cache_dir, version); }
+    #[cfg(target_os = "windows")]
+    { return prepare_windows_install(artifact, cache_dir, version); }
+    #[allow(unreachable_code)]
+    Err("Packaged install handoff is not implemented on this platform.".into())
 }
 
 fn spawn_macos_install_helper(current: &Path, staged: &Path, cache_dir: &Path) -> Result<(), String> {
@@ -1664,6 +1798,12 @@ impl DesktopUpdateService {
                     self.set_state(|state| state.download_progress(percent));
                 }
             })?;
+            #[cfg(target_os = "linux")]
+            {
+                use std::os::unix::fs::PermissionsExt as _;
+                std::fs::set_permissions(&target, std::fs::Permissions::from_mode(0o755))
+                    .map_err(|error| format!("Could not mark the downloaded AppImage executable: {error}"))?;
+            }
             let identity = fingerprint_artifact(&target)?;
             if !self.artifact_matches(&selected, &identity) {
                 let _ = std::fs::remove_file(&target);
@@ -1732,7 +1872,7 @@ impl DesktopUpdateService {
         if let Err(message) = write_install_marker(&marker_path, &marker) {
             return (false, None, Some(format!("Could not prepare a durable update install handoff: {message}")));
         }
-        let install_result = prepare_macos_install(&artifact, &self.cache_dir, expected)
+        let install_result = prepare_platform_install(&artifact, &self.cache_dir, expected)
             .and_then(|_| {
                 mark_install_handoff(&marker_path, &marker.attempt_id, &artifact, &now_iso())
                     .and_then(|marked| marked.ok_or_else(|| "Durable update install handoff no longer matches the active attempt.".to_string()))
@@ -2148,6 +2288,20 @@ mod tests {
             atom_tag_manifest_url("https://github.com/o/r/releases.atom", "0.9.3-beta.2", UpdateFlavor::Beta).as_deref(),
             Some("https://github.com/o/r/releases/download/v0.9.3-beta.2/beta-mac.yml")
         );
+    }
+
+    #[test]
+    fn linux_appimage_destination_preserves_custom_names_and_versions_new_files() {
+        assert_eq!(
+            linux_appimage_destination(Path::new("/opt/Synara"), Path::new("/cache/Synara-0.9.1.AppImage")),
+            PathBuf::from("/opt/Synara")
+        );
+        assert_eq!(
+            linux_appimage_destination(Path::new("/opt/Synara-0.9.0.AppImage"), Path::new("/cache/Synara-0.9.1.AppImage")),
+            PathBuf::from("/opt/Synara-0.9.1.AppImage")
+        );
+        assert!(filename_contains_semver("Synara-0.9.1-beta.2.AppImage"));
+        assert!(!filename_contains_semver("Synara.AppImage"));
     }
 
     #[test]

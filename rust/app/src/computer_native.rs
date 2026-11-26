@@ -387,11 +387,17 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 "screenSize": screen_size()?,
                 "availability": availability()
             })),
-            "computer.listWindows" => Ok(json!({
-                "computerId": COMPUTER_ID,
-                "windows": list_windows()?,
-                "availability": availability()
-            })),
+            "computer.listWindows" => {
+                let windows = list_windows()?;
+                if let Some(thread_id) = payload["threadId"].as_str().filter(|value| !value.is_empty()) {
+                    crate::computer_manager::clear_input_pause(thread_id);
+                }
+                Ok(json!({
+                    "computerId": COMPUTER_ID,
+                    "windows": windows,
+                    "availability": availability()
+                }))
+            }
             "computer.getThreadState" => {
                 let mut v = json!({
                     "computerId": COMPUTER_ID,
@@ -473,6 +479,16 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             }
             "computer.noteUserInput" => {
                 crate::computer_manager::note_user_desktop_input();
+                let thread_id = payload["threadId"].as_str().unwrap_or("");
+                if !thread_id.is_empty() {
+                    crate::computer_manager::record_input_pause(
+                        thread_id,
+                        json!({
+                            "kind": "human-takeover",
+                            "message": "You used the keyboard or mouse while the agent was controlling the computer. Observe the desktop again before continuing; no further input was dispatched."
+                        }),
+                    );
+                }
                 Ok(json!({"accepted": true, "computerId": COMPUTER_ID}))
             }
             "computer.setControlEnabled" => set_control_enabled(payload),

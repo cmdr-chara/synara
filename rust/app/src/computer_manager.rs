@@ -239,6 +239,15 @@ pub fn record_input_pause(owner: &str, pause: Value) {
     guard.threads.entry(owner.to_string()).or_default().input_pause = Some(pause);
 }
 
+/// A fresh desktop observation clears the human-takeover pause. Only direct
+/// observations call this: status/control reads must not silently re-arm input.
+pub fn clear_input_pause(owner: &str) {
+    let mut guard = manager().lock().unwrap();
+    if let Some(runtime) = guard.threads.get_mut(owner) {
+        runtime.input_pause = None;
+    }
+}
+
 /// Foreground delivery rules: the user must have asked for visible use this
 /// turn, and the desktop must be quiet — grabbing focus while the user is
 /// actively typing takes their screen mid-keystroke.
@@ -474,6 +483,15 @@ mod tests {
     }
 
     #[test]
+    #[test]
+    fn physical_input_pause_blocks_until_desktop_observation() {
+        let thread = format!("pause-{}", now_ms());
+        record_input_pause(&thread, serde_json::json!({"kind":"human-takeover"}));
+        assert!(assert_input_not_paused(Some(&thread)).is_err());
+        clear_input_pause(&thread);
+        assert!(assert_input_not_paused(Some(&thread)).is_ok());
+    }
+
     fn foreground_requires_request_and_quiet() {
         let thread = unique_thread();
         assert!(assert_foreground_allowed(Some(&thread), false).is_err());

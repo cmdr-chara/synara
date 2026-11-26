@@ -1197,6 +1197,10 @@ pub struct Native {
     ascii_t0: std::time::Instant,
     ascii_seed: f32,
     ascii_cells: Vec<u8>,
+    /// Dithered temple backdrop (upstream EmptyChatBackdrop): cached rendered
+    /// dot field plus the (w,h,dark) key it was built at.
+    backdrop_img: Option<Arc<gpui::RenderImage>>,
+    backdrop_key: (u32, u32, bool),
     ascii_ripples: Vec<(f32, f32, f32, f32, std::time::Instant)>,
     /// Cell pitch measured like upstream (`measureText("M").width + 1` in the
     /// UI font); 0 until first measured.
@@ -2991,6 +2995,8 @@ impl Native {
             ascii_t0: std::time::Instant::now(),
             ascii_seed: 0.0,
             ascii_cells: Vec::new(),
+            backdrop_img: None,
+            backdrop_key: (0, 0, false),
             ascii_ripples: Vec::new(),
             ascii_cell_w: 0.0,
             ascii_fresh: true,
@@ -15587,81 +15593,65 @@ impl Render for Native {
                     }
                 }
             }
+            // EmptyChatBackdrop (upstream bfb3bd3551): the dithered temple
+            // scene replaced the ascii wave — same toggle, same click-ripple
+            // surface below. Static port: no ripples/gradient style yet.
             let wm = if self.show_ascii_bg {
-                let field = div()
-                    .size_full()
-                    .overflow_hidden()
-                    .relative();
-                // Per-cell glyph painting like the upstream canvas atlas:
-                // one shaped line per (glyph, alpha) pair, each drawn
-                // centered in its cell so the grid pitch stays exact.
-                let fg = theme.foreground;
-                let ac = theme.primary;
-                let fam = theme.font_family.clone();
-                let draws = std::rc::Rc::new(draws);
-                let draws_paint = draws.clone();
-                field.child(
-                    gpui::canvas(
-                        move |_bounds, window, _cx| {
-                            let font = gpui::font(fam.clone());
-                            let mut lines: std::collections::HashMap<
-                                (u8, u8),
-                                gpui::ShapedLine,
-                            > = std::collections::HashMap::with_capacity(
-                                draws.len().min(2048),
-                            );
-                            for &(_, _, g, a) in draws.iter() {
-                                lines.entry((g, a)).or_insert_with(|| {
-                                    let color = if a == 255 {
-                                        ac.opacity(0.75)
-                                    } else {
-                                        fg.opacity(a as f32 * 2. / 255.)
-                                    };
-                                    window.text_system().shape_line(
-                                        SharedString::from(
-                                            (ASCII_GLYPHS[g as usize] as char)
-                                                .to_string(),
-                                        ),
-                                        px(10.),
-                                        &[TextRun {
-                                            len: 1,
-                                            font: font.clone(),
-                                            color,
-                                            background_color: None,
-                                            underline: None,
-                                            strikethrough: None,
-                                        }],
-                                        None,
-                                    )
-                                });
-                            }
-                            lines
+                let vpw = window.viewport_size().width.as_f32();
+                let vph = window.viewport_size().height.as_f32();
+                let dark = theme.is_dark();
+                let key = (vpw as u32, vph as u32, dark);
+                if self.backdrop_key != key || self.backdrop_img.is_none() {
+                    // Quiet zones approximated from the landing layout: the
+                    // centered heading band and the composer card (upstream
+                    // measures the DOM rects).
+                    let col_w = 736.0f32.min(vpw * 0.9);
+                    let cx0 = (vpw - col_w) / 2.0;
+                    let quiet = vec![
+                        (cx0, vph * 0.30, col_w, vph * 0.22),
+                        (cx0, vph - 210.0, col_w, 180.0),
+                    ];
+                    self.backdrop_img = crate::backdrop::build_backdrop_image(
+                        &crate::backdrop::BackdropSpec {
+                            width: vpw,
+                            height: vph,
+                            dark,
+                            accent_rgb: [0x01, 0x69, 0xcc],
+                            quiet,
                         },
-                        move |bounds, lines, window, cx| {
-                            let cw_px = px(cw);
-                            let lh = px(ASCII_CELL_H);
-                            for &(c, r, g, a) in draws_paint.iter() {
-                                if let Some(line) = lines.get(&(g, a)) {
-                                    let x = bounds.origin.x
-                                        + px(c as f32 * cw)
-                                        + (cw_px - line.width()) / 2.;
-                                    let y = bounds.origin.y
-                                        + px(r as f32 * ASCII_CELL_H);
-                                    let _ = line.paint(
-                                        gpui::point(x, y),
-                                        lh,
-                                        gpui::TextAlign::Left,
-                                        None,
-                                        window,
-                                        cx,
-                                    );
-                                }
-                            }
-                        },
-                    )
-                    .absolute()
-                    .inset_0(),
-                )
+                    );
+                    self.backdrop_key = key;
+                }
+                let mut field = div().size_full().overflow_hidden().relative();
+                if !dark {
+                    // Light temple prints on tinted paper: accent wash
+                    // 3% -> 9% toward the bottom (upstream skyMask paper div).
+                    field = field.child(
+                        div()
+                            .absolute()
+                            .inset_0()
+                            .bg(gpui::linear_gradient(
+                                180.,
+                                gpui::linear_color_stop(
+                                    rgb(0x0169cc).opacity(0.03),
+                                    0.,
+                                ),
+                                gpui::linear_color_stop(
+                                    rgb(0x0169cc).opacity(0.09),
+                                    0.55,
+                                ),
+                            )),
+                    );
+                }
+                if let Some(img) = self.backdrop_img.clone() {
+                    field = field.child(
+                        gpui::img(ImageSource::Render(img))
+                            .absolute()
+                            .top_0()
+                            .left_0(),
+                    );
+                }
+                field
             } else {
                 div().size_full()
             };

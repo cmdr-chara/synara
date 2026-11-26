@@ -21,5 +21,7 @@ async-channel = "2"
 urlencoding = "2"
 cpal = "0.15"
 base64 = "0.22"
+smallvec = "1"
+image = { version = "0.25", default-features = false, features = ["jpeg"] }
 
 [workspace]

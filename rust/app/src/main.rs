@@ -109,6 +109,7 @@ use original::shutdown_signal;
 async fn main() {
     original::report_fallbacks();
     runtime_status::start_sampler();
+    server_lifecycle::start_keep_awake();
     let original = original::Original::start().await;
     // The sweep owns running turns only when the native engine serves
     // orchestration. With the upstream TS server active, its turns may be

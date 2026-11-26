@@ -95,6 +95,151 @@ pub fn get_config() -> Value {
     })
 }
 
+
+struct KeepAwakeProcess {
+    child: Option<std::process::Child>,
+    restarts: u32,
+    active: bool,
+    error: Option<String>,
+    last_desired: bool,
+}
+
+impl Default for KeepAwakeProcess {
+    fn default() -> Self {
+        Self { child: None, restarts: 0, active: false, error: None, last_desired: false }
+    }
+}
+
+fn keep_awake_process() -> &'static std::sync::Mutex<KeepAwakeProcess> {
+    static PROCESS: std::sync::OnceLock<std::sync::Mutex<KeepAwakeProcess>> = std::sync::OnceLock::new();
+    PROCESS.get_or_init(|| std::sync::Mutex::new(KeepAwakeProcess::default()))
+}
+
+fn caffeinate_available() -> bool {
+    std::env::consts::OS == "macos"
+        && (Path::new("/usr/bin/caffeinate").exists()
+            || std::env::var_os("PATH").is_some_and(|paths| {
+                std::env::split_paths(&paths).any(|dir| dir.join("caffeinate").exists())
+            }))
+}
+
+fn active_turn_count() -> usize {
+    let db = std::path::PathBuf::from(crate::todo::state_dir()).join("state.sqlite");
+    let Ok(conn) = rusqlite::Connection::open_with_flags(
+        db,
+        rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
+    ) else { return 0 };
+    conn.query_row(
+        "SELECT COUNT(*) FROM projection_thread_sessions WHERE status = 'running' AND active_turn_id IS NOT NULL",
+        [],
+        |row| row.get::<_, i64>(0),
+    ).ok().filter(|count| *count > 0).unwrap_or(0) as usize
+}
+
+fn desired_keep_awake(mode: &str) -> bool {
+    mode == "always" || (mode == "agent" && active_turn_count() > 0)
+}
+
+fn stop_caffeinate(child: &mut std::process::Child) {
+    #[cfg(unix)]
+    unsafe {
+        libc::kill(child.id() as i32, libc::SIGTERM);
+    }
+    let deadline = std::time::Instant::now() + std::time::Duration::from_millis(800);
+    loop {
+        match child.try_wait() {
+            Ok(Some(_)) => return,
+            Ok(None) if std::time::Instant::now() < deadline => std::thread::sleep(std::time::Duration::from_millis(20)),
+            Ok(None) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                return;
+            }
+            Err(_) => return,
+        }
+    }
+}
+
+fn reconcile_keep_awake() {
+    let mode = crate::server_settings::current()
+        .get("keepAwakeMode")
+        .and_then(Value::as_str)
+        .unwrap_or("off")
+        .to_string();
+    let desired = caffeinate_available() && desired_keep_awake(&mode);
+    let mut process = match keep_awake_process().lock() {
+        Ok(process) => process,
+        Err(_) => return,
+    };
+
+    if desired && !process.last_desired {
+        process.restarts = 0;
+        process.error = None;
+    }
+    process.last_desired = desired;
+
+    let mut exited_unexpectedly = false;
+    if let Some(child) = process.child.as_mut() {
+        match child.try_wait() {
+            Ok(Some(_)) => exited_unexpectedly = true,
+            Ok(None) => {}
+            Err(error) => process.error = Some(format!("caffeinate wait failed: {error}")),
+        }
+    }
+    if exited_unexpectedly {
+        process.child = None;
+        process.active = false;
+        if desired {
+            process.restarts += 1;
+            if process.restarts > 5 {
+                process.error = Some("caffeinate exited unexpectedly 6 times; giving up until the mode changes".into());
+            }
+        }
+    }
+
+    if !desired {
+        if let Some(mut child) = process.child.take() {
+            stop_caffeinate(&mut child);
+        }
+        process.active = false;
+        if mode == "off" { process.error = None; }
+        return;
+    }
+
+    if process.error.is_some() || process.child.is_some() {
+        return;
+    }
+    match std::process::Command::new("caffeinate")
+        .args(["-dims", "-w", &std::process::id().to_string()])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+    {
+        Ok(child) => {
+            process.child = Some(child);
+            process.active = true;
+        }
+        Err(error) => {
+            process.active = false;
+            process.error = Some(format!("caffeinate spawn failed: {error}"));
+        }
+    }
+}
+
+/// Start the small power-assertion supervisor. `caffeinate -w <server pid>`
+/// is deliberately tied to this process so a crashed backend cannot leave the
+/// computer awake forever.
+pub fn start_keep_awake() {
+    tokio::spawn(async move {
+        reconcile_keep_awake();
+        loop {
+            tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+            reconcile_keep_awake();
+        }
+    });
+}
+
 /// `ServerKeepAwakeState`: the native server can keep the OS awake via the
 /// platform power assertion (available on every desktop OS we ship on), is
 /// driven by `keepAwakeMode`, and starts inactive because no agent turn is
@@ -105,10 +250,11 @@ pub fn keep_awake_state() -> Value {
         .get("keepAwakeMode")
         .and_then(Value::as_str)
         .unwrap_or("off");
+    let process = keep_awake_process().lock().ok();
     json!({
-        "available": true,
+        "available": caffeinate_available(),
         "mode": mode,
-        "active": mode == "always",
-        "error": Value::Null,
+        "active": process.as_ref().is_some_and(|process| process.active),
+        "error": process.as_ref().and_then(|process| process.error.clone()).map(Value::String).unwrap_or(Value::Null),
     })
 }

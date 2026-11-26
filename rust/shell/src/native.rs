@@ -11032,7 +11032,7 @@ impl Native {
     /// ("on" | "agent" | "off"); the server turns that into caffeinate state.
     fn set_keep_awake(&mut self, i: usize, cx: &mut Context<Self>) {
         self.keep_awake_mode = i;
-        let mode = ["on", "agent", "off"][i.min(2)];
+        let mode = ["always", "agent", "off"][i.min(2)];
         if let Some(obj) = get_mut(&mut self.settings_data, "settings")
             .and_then(|s| s.as_object_mut())
         {
@@ -32860,7 +32860,7 @@ if ap.is_object() {
     this.theme_packs = get(ap, "themePacks").clone();
 }
 this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
-    "on" => 0,
+    "always" | "on" => 0,
     "agent" => 1,
     _ => 2,
 };

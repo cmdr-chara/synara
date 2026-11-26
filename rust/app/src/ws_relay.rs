@@ -1052,27 +1052,24 @@ async fn intercept_todo(
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
-            let mut last_mode: Option<String> = None;
-            let mut rx = crate::server_settings::changes();
-            let send_state = |mode_hint: &mut Option<String>| -> Option<String> {
+            let mut last_state: Option<String> = None;
+            let send_state = |state_hint: &mut Option<String>| -> Option<String> {
                 let state = crate::server_lifecycle::keep_awake_state();
-                let mode = state
-                    .get("mode")
-                    .and_then(serde_json::Value::as_str)
-                    .map(str::to_owned);
-                if mode == *mode_hint {
+                let comparable = state.to_string();
+                if comparable == *state_hint.as_ref().unwrap_or(&String::new()) {
                     return None;
                 }
-                *mode_hint = mode;
+                *state_hint = Some(comparable);
                 Some(serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"keepAwake": state}]}).to_string())
             };
-            if let Some(chunk) = send_state(&mut last_mode) {
+            if let Some(chunk) = send_state(&mut last_state) {
                 if tx.send(ClientMessage::Text(chunk.into())).is_err() {
                     return;
                 }
             }
-            while let Ok(_settings) = rx.recv().await {
-                if let Some(chunk) = send_state(&mut last_mode) {
+            loop {
+                tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+                if let Some(chunk) = send_state(&mut last_state) {
                     if tx.send(ClientMessage::Text(chunk.into())).is_err() {
                         return;
                     }

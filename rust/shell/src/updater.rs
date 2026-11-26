@@ -996,6 +996,18 @@ fn install_restart_failure_state(state: &mut UpdateState, version: &str, failure
     state.install_failure_count = failures;
 }
 
+fn cleanup_successful_install_cache(cache_dir: &Path, marker: &InstallMarker) {
+    let version = Path::new(&marker.to_version);
+    let mut components = version.components();
+    let Some(std::path::Component::Normal(_)) = components.next() else { return };
+    if components.next().is_some() { return; }
+    let canonical_cache = cache_dir.canonicalize().unwrap_or_else(|_| cache_dir.to_path_buf());
+    let version_dir = canonical_cache.join(&marker.to_version);
+    if marker.artifact.path.starts_with(&version_dir) {
+        let _ = std::fs::remove_dir_all(version_dir);
+    }
+}
+
 fn apply_install_marker_startup(state: &mut UpdateState, path: &Path) -> bool {
     let marker = match read_install_marker(path) {
         Ok(Some(marker)) => marker,
@@ -1394,10 +1406,21 @@ impl DesktopUpdateService {
         state.enabled = configured_feed_url().is_some() && desktop_update_supported();
         state.status = if state.enabled { UpdateStatus::Idle } else { UpdateStatus::Disabled };
         state.release_url = configured_release_url();
+        let install_marker_path = update_install_marker_path();
+        let completed_marker = read_install_marker(&install_marker_path)
+            .ok()
+            .flatten()
+            .filter(|marker| {
+                install_marker_outcome(marker, &state.current_version, &now_iso())
+                    == InstallOutcome::Success
+            });
         let automatic_checks_suppressed = apply_install_marker_startup(
             &mut state,
-            &update_install_marker_path(),
+            &install_marker_path,
         );
+        if let Some(marker) = completed_marker {
+            cleanup_successful_install_cache(&cache, &marker);
+        }
         let restored = (!automatic_checks_suppressed)
             .then(|| restore_pending_update(&cache, &state.current_version, state.flavor))
             .flatten();
@@ -1984,6 +2007,27 @@ mod tests {
         assert!(!apply_install_marker_startup(&mut update, &path));
         assert!(!path.exists());
         assert_eq!(update.status, UpdateStatus::Disabled);
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn successful_install_cleans_only_its_version_cache() {
+        let root = std::env::temp_dir().join(format!("synara-update-cache-clean-test-{}", uuid::Uuid::new_v4()));
+        let cache = root.join("cache");
+        let version_dir = cache.join("0.9.1");
+        let other_dir = cache.join("0.9.2");
+        std::fs::create_dir_all(&version_dir).unwrap();
+        std::fs::create_dir_all(&other_dir).unwrap();
+        let payload = version_dir.join("update.zip");
+        std::fs::write(&payload, b"payload").unwrap();
+        std::fs::write(other_dir.join("update.zip"), b"other").unwrap();
+        let artifact = fingerprint_artifact(&payload).unwrap();
+        let marker = InstallMarker::create("0.9.0", "0.9.1", now_iso(), artifact);
+
+        cleanup_successful_install_cache(&cache, &marker);
+
+        assert!(!version_dir.exists());
+        assert!(other_dir.exists());
         std::fs::remove_dir_all(root).unwrap();
     }
 

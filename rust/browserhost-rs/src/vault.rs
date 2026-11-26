@@ -383,6 +383,7 @@ struct VaultState {
     payload: VaultPayload,
     preferences: Preferences,
     redaction_secrets: HashSet<String>,
+    capture_error: Option<String>,
 }
 
 impl BrowserVault {
@@ -402,6 +403,7 @@ impl BrowserVault {
             payload: VaultPayload::default(),
             preferences: Preferences::default(),
             redaction_secrets: HashSet::new(),
+            capture_error: None,
         };
         if let Ok(text) = std::fs::read_to_string(directory.join("preferences.json")) {
             state.preferences = serde_json::from_str(&text).unwrap_or_default();
@@ -595,7 +597,7 @@ impl BrowserVault {
             "settings": state.preferences.settings,
             "logins": logins,
             "pending": [],
-            "error": null,
+            "error": state.capture_error.clone().map(Value::String).unwrap_or(Value::Null),
         }))
     }
 
@@ -642,6 +644,21 @@ impl BrowserVault {
         state.redaction_secrets.insert(password.to_string());
         self.persist_all_locked(&state)?;
         Ok(id)
+    }
+
+    pub fn report_capture_failure(&self) {
+        if let Ok(mut state) = self.state.lock() {
+            if state.capture_error.is_none() {
+                state.capture_error =
+                    Some("Password saving is unavailable. Reopen the browser and try again.".into());
+            }
+        }
+    }
+
+    pub fn report_capture_ready(&self) {
+        if let Ok(mut state) = self.state.lock() {
+            state.capture_error = None;
+        }
     }
 
     pub fn track_secret(&self, secret: &str) {

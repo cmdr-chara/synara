@@ -152,6 +152,24 @@ fn cdp_profile_dir(mode: CdpMode) -> std::path::PathBuf {
     }
 }
 
+fn vault_capture_configured() -> bool {
+    let Some(home) = std::env::var_os("SYNARA_HOME") else { return false };
+    let text = std::fs::read_to_string(
+        std::path::Path::new(&home)
+            .join("browser-vault")
+            .join("preferences.json"),
+    );
+    let Ok(text) = text else { return false };
+    serde_json::from_str::<Value>(&text)
+        .ok()
+        .and_then(|preferences| {
+            preferences
+                .pointer("/settings/offerSave")
+                .and_then(Value::as_bool)
+        })
+        .unwrap_or(false)
+}
+
 fn browser_vault() -> Result<&'static BrowserVault, String> {
     static VAULT: OnceLock<Result<BrowserVault, String>> = OnceLock::new();
     VAULT
@@ -1061,21 +1079,26 @@ async fn thread_session(
             Some(&session_id),
         )
         .await;
-    if browser_vault()
-        .map(|vault| vault.capture_enabled())
-        .unwrap_or(false)
-    {
-        let _ = conn
-            .call(
-                "Page.addScriptToEvaluateOnNewDocument",
-                json!({
-                    "source": VAULT_SENSOR_JS,
-                    "worldName": VAULT_WORLD,
-                    "runImmediately": true,
-                }),
-                Some(&session_id),
-            )
-            .await;
+    if vault_capture_configured() {
+        if let Ok(vault) = browser_vault() {
+            if vault.capture_enabled() {
+                match conn
+                    .call(
+                        "Page.addScriptToEvaluateOnNewDocument",
+                        json!({
+                            "source": VAULT_SENSOR_JS,
+                            "worldName": VAULT_WORLD,
+                            "runImmediately": true,
+                        }),
+                        Some(&session_id),
+                    )
+                    .await
+                {
+                    Ok(_) => vault.report_capture_ready(),
+                    Err(_) => vault.report_capture_failure(),
+                }
+            }
+        }
     }
     if let Ok(mut tabs) = cdp_tabs().lock() {
         tabs.insert(key, (target_id.clone(), session_id.clone()));

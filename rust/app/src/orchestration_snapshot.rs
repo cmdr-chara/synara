@@ -569,6 +569,66 @@ fn to_thread_shell(thread: &Value) -> Value {
     Value::Object(shell)
 }
 
+/// Keys whose null value is meaningful to the contract schema (`Schema.NullOr`
+/// required keys). Every other null-valued key is dropped: the client schema
+/// treats optional fields as absent-or-value and rejects present-but-null.
+const CONTRACT_KEEP_NULL_KEYS: &[&str] = &[
+    "defaultModelSelection",
+    "deletedAt",
+    "branch",
+    "worktreePath",
+    "session",
+    "latestTurn",
+    "handoff",
+    "activeTurnId",
+    "providerThreadId",
+    "providerSessionId",
+    "lastError",
+];
+
+fn normalize_contract_shape(value: &mut Value) {
+    match value {
+        Value::Object(map) => {
+            let null_keys: Vec<String> = map
+                .iter()
+                .filter(|(k, v)| v.is_null() && !CONTRACT_KEEP_NULL_KEYS.contains(&k.as_str()))
+                .map(|(k, _)| k.clone())
+                .collect();
+            for k in null_keys {
+                map.remove(&k);
+            }
+            for v in map.values_mut() {
+                normalize_contract_shape(v);
+            }
+        }
+        Value::Array(items) => {
+            for v in items.iter_mut() {
+                normalize_contract_shape(v);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn conform_thread_contract(thread: &mut Value) {
+    let Some(obj) = thread.as_object_mut() else { return };
+    if obj.get("updatedAt").is_none_or(Value::is_null) {
+        let created = obj.get("createdAt").cloned().unwrap_or(Value::Null);
+        obj.insert("updatedAt".into(), created);
+    }
+    for key in ["latestTurn", "session"] {
+        if !obj.contains_key(key) {
+            obj.insert(key.into(), Value::Null);
+        }
+    }
+    for key in ["messages", "activities", "checkpoints", "proposedPlans", "pullRequests"] {
+        if !obj.contains_key(key) {
+            obj.insert(key.into(), json!([]));
+        }
+    }
+    normalize_contract_shape(thread);
+}
+
 pub fn get_shell_snapshot() -> Result<Value, WsErr> {
     let snap = get_snapshot()?;
     let threads = snap
@@ -578,6 +638,10 @@ pub fn get_shell_snapshot() -> Result<Value, WsErr> {
         .unwrap_or_default()
         .iter()
         .map(to_thread_shell)
+        .map(|mut t| {
+            conform_thread_contract(&mut t);
+            t
+        })
         .collect::<Vec<_>>();
     Ok(json!({
         "snapshotSequence": snap.get("snapshotSequence"),
@@ -604,6 +668,8 @@ pub fn get_thread_detail_snapshot(payload: &Value) -> Result<Value, WsErr> {
     let sequence = snapshot_sequence(conn);
     for thread in load_threads(conn) {
         if get(&thread, "id").as_str() == Some(thread_id.as_str()) {
+            let mut thread = thread;
+            conform_thread_contract(&mut thread);
             return Ok(json!({
                 "snapshotSequence": sequence,
                 "thread": thread,

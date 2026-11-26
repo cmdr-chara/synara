@@ -412,6 +412,15 @@ pub struct VaultProtection {
     pub os_protected: bool,
 }
 
+struct SavePrompt {
+    id: String,
+    origin: String,
+    username: String,
+    password: Zeroizing<String>,
+    mode: &'static str,
+    expires_at_ms: i64,
+}
+
 pub struct BrowserVault {
     directory: PathBuf,
     state: Mutex<VaultState>,
@@ -425,6 +434,7 @@ struct VaultState {
     preferences: Preferences,
     redaction_secrets: HashSet<String>,
     capture_error: Option<String>,
+    save_prompts: Vec<SavePrompt>,
 }
 
 impl BrowserVault {
@@ -445,6 +455,7 @@ impl BrowserVault {
             preferences: Preferences::default(),
             redaction_secrets: HashSet::new(),
             capture_error: None,
+            save_prompts: Vec::new(),
         };
         if let Ok(text) = std::fs::read_to_string(directory.join("preferences.json")) {
             state.preferences = serde_json::from_str(&text).unwrap_or_default();
@@ -637,9 +648,93 @@ impl BrowserVault {
             },
             "settings": state.preferences.settings,
             "logins": logins,
-            "pending": [],
+            "pending": state.save_prompts.iter().filter(|prompt| prompt.expires_at_ms > now).map(|prompt| json!({
+                "id": prompt.id,
+                "origin": prompt.origin,
+                "username": prompt.username,
+                "mode": prompt.mode,
+                "expiresAt": prompt.expires_at_ms,
+            })).collect::<Vec<_>>(),
             "error": state.capture_error.clone().map(Value::String).unwrap_or(Value::Null),
         }))
+    }
+
+    /// Queue a metadata-visible save/update decision for the owner. The
+    /// password remains only in process memory until the prompt is answered
+    /// or expires; snapshots never include it.
+    pub fn offer_save(
+        &self,
+        origin: &str,
+        username: &str,
+        password: &str,
+    ) -> Result<Value, String> {
+        let origin = canonical_origin(origin)?;
+        if username.trim().is_empty() || password.is_empty() {
+            return Err("username and password are required".into());
+        }
+        let mut state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+        self.require_unlocked(&state)?;
+        if !state.preferences.settings.offer_save || state.preferences.never_origins.contains(&origin) {
+            return Err("password saving is unavailable for this site".into());
+        }
+        let now = now_ms();
+        state.save_prompts.retain(|prompt| prompt.expires_at_ms > now);
+        state.save_prompts.retain(|prompt| {
+            !(prompt.origin == origin && prompt.username.eq_ignore_ascii_case(username))
+        });
+        if state.save_prompts.len() >= 8 {
+            state.save_prompts.remove(0);
+        }
+        let mode = if state.payload.records.iter().any(|record| {
+            record.origin == origin && record.username.eq_ignore_ascii_case(username)
+        }) {
+            "update"
+        } else {
+            "save"
+        };
+        let prompt = SavePrompt {
+            id: uuid::Uuid::new_v4().to_string(),
+            origin,
+            username: username.to_string(),
+            password: Zeroizing::new(password.to_string()),
+            mode,
+            expires_at_ms: now + 120_000,
+        };
+        let metadata = json!({
+            "id": prompt.id,
+            "origin": prompt.origin,
+            "username": prompt.username,
+            "mode": prompt.mode,
+            "expiresAt": prompt.expires_at_ms,
+        });
+        state.save_prompts.push(prompt);
+        Ok(metadata)
+    }
+
+    pub fn respond(&self, id: &str, save: bool) -> Result<Value, String> {
+        let prompt = {
+            let mut state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+            self.require_unlocked(&state)?;
+            let now = now_ms();
+            state.save_prompts.retain(|prompt| prompt.expires_at_ms > now);
+            let position = state
+                .save_prompts
+                .iter()
+                .position(|prompt| prompt.id == id)
+                .ok_or("save prompt is no longer available")?;
+            state.save_prompts.remove(position)
+        };
+        if save {
+            self.save_captured(
+                &prompt.origin,
+                &prompt.username,
+                prompt.password.as_str(),
+                None,
+                CredentialSource::User,
+                false,
+            )?;
+        }
+        self.snapshot()
     }
 
     pub fn save_login(
@@ -1140,6 +1235,10 @@ fn redact_value(value: &Value, secrets: &HashSet<String>) -> Value {
 mod tests {
     use super::*;
 
+    fn arr_len(value: Option<&Value>) -> usize {
+        value.and_then(Value::as_array).map(Vec::len).unwrap_or(0)
+    }
+
     fn home(name: &str) -> PathBuf {
         let path =
             std::env::temp_dir().join(format!("synara-vault-test-{name}-{}", uuid::Uuid::new_v4()));
@@ -1421,6 +1520,48 @@ mod tests {
             .commit_generated("https://example.com/", &pending_id)
             .unwrap();
         assert_eq!(vault.list_metadata("https://example.com/").unwrap().len(), 1);
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
+    #[test]
+    fn save_prompt_response_updates_records_without_exposing_secret() {
+        let dir = home("save-prompt");
+        let vault = BrowserVault::open_with_keyring(&dir, false).unwrap();
+        let mut settings = VaultSettings::default();
+        settings.offer_save = true;
+        vault.configure(settings).unwrap();
+        let prompt = vault
+            .offer_save("https://example.com/login", "ada", "new-secret")
+            .unwrap();
+        assert!(prompt.get("password").is_none());
+        let id = prompt.get("id").and_then(Value::as_str).unwrap().to_string();
+        let snapshot = vault.snapshot().unwrap();
+        assert_eq!(arr_len(snapshot.get("pending")), 1);
+        let after = vault.respond(&id, true).unwrap();
+        assert_eq!(arr_len(after.get("pending")), 0);
+        assert_eq!(arr_len(after.get("logins")), 1);
+        assert!(vault.respond(&id, false).is_err());
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
+    #[test]
+    fn dismissing_save_prompt_does_not_save_login() {
+        let dir = home("save-prompt-dismiss");
+        let vault = BrowserVault::open_with_keyring(&dir, false).unwrap();
+        let mut settings = VaultSettings::default();
+        settings.offer_save = true;
+        vault.configure(settings).unwrap();
+        let prompt = vault
+            .offer_save("https://example.com/login", "ada", "new-secret")
+            .unwrap();
+        let after = vault
+            .respond(prompt.get("id").and_then(Value::as_str).unwrap(), false)
+            .unwrap();
+        assert!(after
+            .get("logins")
+            .and_then(Value::as_array)
+            .unwrap()
+            .is_empty());
         let _ = std::fs::remove_dir_all(dir);
     }
 

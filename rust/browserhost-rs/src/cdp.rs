@@ -338,15 +338,17 @@ fn resolve_capture(
         );
         return;
     }
-    let prompt_id = uuid::Uuid::new_v4().to_string();
-    let mode = if vault
-        .has_login(&capture.origin, &capture.username)
-        .unwrap_or(false)
-    {
-        "update"
-    } else {
-        "save"
+    let Ok(prompt) = vault.offer_save(&capture.origin, &capture.username, &capture.password) else {
+        return;
     };
+    let prompt_id = prompt
+        .get("id")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    if prompt_id.is_empty() {
+        return;
+    }
     prompts.insert(prompt_id.clone(), (session.to_string(), capture.clone()));
     let expression = format!(
         "globalThis.__bwVaultShowPrompt && globalThis.__bwVaultShowPrompt({})",
@@ -354,7 +356,7 @@ fn resolve_capture(
             "promptId": prompt_id,
             "origin": capture.origin,
             "username": capture.username,
-            "mode": mode,
+            "mode": prompt.get("mode").and_then(Value::as_str).unwrap_or("save"),
         })
     );
     fire_and_forget_command(
@@ -514,18 +516,10 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                             let choice = message.get("choice").and_then(Value::as_str).unwrap_or("");
                             if let Some((prompt_session, capture)) = vault_prompts.remove(prompt_id) {
                                 if let Ok(vault) = browser_vault() {
-                                    if choice == "save" {
-                                        let _ = vault.save_captured(
-                                            &capture.origin,
-                                            &capture.username,
-                                            &capture.password,
-                                            host_label(&capture.origin).as_deref(),
-                                            crate::vault::CredentialSource::User,
-                                            true,
-                                        );
-                                    } else if choice == "never" {
+                                    if choice == "never" {
                                         let _ = vault.never_origin(&capture.origin);
                                     }
+                                    let _ = vault.respond(prompt_id, choice == "save");
                                 }
                                 let _ = prompt_session;
                             }

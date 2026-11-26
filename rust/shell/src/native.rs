@@ -10825,6 +10825,19 @@ impl Native {
         cx.notify();
     }
 
+    fn respond_vault_prompt(&mut self, id: &str, save: bool, cx: &mut Context<Self>) {
+        match browserhost_rs::cdp::shared_browser_vault()
+            .and_then(|vault| vault.respond(id, save))
+        {
+            Ok(snapshot) => {
+                self.vault_snapshot = Some(snapshot);
+                self.vault_error = None;
+            }
+            Err(error) => self.vault_error = Some(error),
+        }
+        cx.notify();
+    }
+
     fn remove_vault_login(&mut self, id: &str, cx: &mut Context<Self>) {
         match browserhost_rs::cdp::shared_browser_vault().and_then(|vault| vault.remove(id)) {
             Ok(snapshot) => {
@@ -22438,6 +22451,64 @@ impl Render for Native {
                                 ))
                                 .into_any_element(),
                         ));
+
+                    let pending_prompts = arr(&snapshot, "pending").to_vec();
+                    if !pending_prompts.is_empty() {
+                        let mut prompts = v_flex();
+                        for (index, prompt) in pending_prompts.iter().enumerate() {
+                            let id = str_at(prompt, "id").to_string();
+                            let save_id = id.clone();
+                            let skip_id = id.clone();
+                            let title = if str_at(prompt, "mode") == "update" { "Update password" } else { "Save password" };
+                            prompts = prompts.child(
+                                h_flex()
+                                    .w_full()
+                                    .items_center()
+                                    .justify_between()
+                                    .gap_3()
+                                    .px_3()
+                                    .py(px(10.))
+                                    .child(
+                                        v_flex()
+                                            .flex_1()
+                                            .min_w_0()
+                                            .gap(px(2.))
+                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(title))
+                                            .child(div().text_size(px(13.)).child(str_at(prompt, "origin").to_string()))
+                                            .child(div().text_xs().text_color(theme.muted_foreground).child(str_at(prompt, "username").to_string())),
+                                    )
+                                    .child(
+                                        h_flex()
+                                            .gap_2()
+                                            .child(
+                                                div()
+                                                    .id(ElementId::Name(format!("vault-prompt-skip-{index}").into()))
+                                                    .cursor_pointer()
+                                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                        this.respond_vault_prompt(&skip_id, false, cx);
+                                                    }))
+                                                    .child(outline_btn("Not now")),
+                                            )
+                                            .child(
+                                                div()
+                                                    .id(ElementId::Name(format!("vault-prompt-save-{index}").into()))
+                                                    .cursor_pointer()
+                                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                        this.respond_vault_prompt(&save_id, true, cx);
+                                                    }))
+                                                    .child(outline_btn("Save")),
+                                            ),
+                                    )
+                                    .into_any_element(),
+                            );
+                            if index + 1 != pending_prompts.len() {
+                                prompts = prompts.child(divider().into_any_element());
+                            }
+                        }
+                        settings_pane = settings_pane
+                            .child(section_label("Password prompts"))
+                            .child(card(prompts.into_any_element()));
+                    }
 
                     let logins = arr(&snapshot, "logins").to_vec();
                     settings_pane = settings_pane.child(section_label("Logins"));

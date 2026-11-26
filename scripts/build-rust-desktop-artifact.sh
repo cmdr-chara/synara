@@ -49,6 +49,13 @@ case "$(uname -m)" in
   *) ARCH="$(uname -m)" ;;
 esac
 
+APPSNAP_HELPER_SRC="$ROOT/apps/desktop/native/appsnap/build/synara-appsnap-helper"
+if [[ "${SYNARA_SKIP_APPSNAP_HELPER:-0}" != 1 ]]; then
+  node "$ROOT/apps/desktop/scripts/build-appsnap-helper.mjs" \
+    --arch "$ARCH" --release --output "$APPSNAP_HELPER_SRC"
+fi
+[[ -x "$APPSNAP_HELPER_SRC" ]] || { echo "missing AppSnap helper: $APPSNAP_HELPER_SRC" >&2; exit 1; }
+
 if [[ "$SKIP_BUILD" != 1 ]]; then
   cargo build --release --manifest-path "$ROOT/rust/shell/Cargo.toml"
   cargo build --release --manifest-path "$ROOT/rust/app/Cargo.toml"
@@ -61,10 +68,14 @@ BACKEND_BIN="$ROOT/rust/app/target/release/index"
 
 APP_DIR="$OUT_DIR/$APP_NAME.app"
 rm -rf "$APP_DIR"
-mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources"
+mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources" "$APP_DIR/Contents/Helpers"
 cp "$SHELL_BIN" "$APP_DIR/Contents/MacOS/synara-shell"
 cp "$BACKEND_BIN" "$APP_DIR/Contents/MacOS/synara-backend"
-chmod 755 "$APP_DIR/Contents/MacOS/synara-shell" "$APP_DIR/Contents/MacOS/synara-backend"
+cp "$APPSNAP_HELPER_SRC" "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
+chmod 755 \
+  "$APP_DIR/Contents/MacOS/synara-shell" \
+  "$APP_DIR/Contents/MacOS/synara-backend" \
+  "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
 cp "$ROOT/apps/desktop/resources/icon.icns" "$APP_DIR/Contents/Resources/icon.icns"
 
 cat > "$APP_DIR/Contents/Info.plist" <<PLIST
@@ -83,7 +94,11 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
   <key>SynaraDesktopFlavor</key><string>$FLAVOR</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>NSHighResolutionCapable</key><true/>
-  <key>NSMicrophoneUsageDescription</key><string>Synara uses the microphone for voice input when you start dictation.</string>
+  <key>NSMicrophoneUsageDescription</key><string>Synara needs microphone access so you can record voice notes and transcribe them into the chat composer, and, if you turn it on, to move the chat message trail with your voice.</string>
+  <key>NSAudioCaptureUsageDescription</key><string>Synara reads how loud your Mac's audio is to animate the chat message trail. The audio itself is never recorded.</string>
+  <key>NSScreenCaptureUsageDescription</key><string>Synara captures the windows you authorize for Computer use.</string>
+  <key>NSAccessibilityUsageDescription</key><string>Synara controls the windows you authorize for Computer use.</string>
+  <key>NSLocalNetworkUsageDescription</key><string>Synara connects to the browsers it drives on this Mac so agents can browse in the background.</string>
   <key>NSCameraUsageDescription</key><string>Synara uses the camera only when you enable video input.</string>
 </dict>
 </plist>
@@ -102,6 +117,8 @@ YML
 # SYNARA_MACOS_NOTARY_PROFILE or Apple ID credentials.
 SIGN_IDENTITY="${SYNARA_MACOS_SIGN_IDENTITY:-}"
 if [[ -n "$SIGN_IDENTITY" ]]; then
+  codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
+    "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
   codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
     "$APP_DIR/Contents/MacOS/synara-backend"
   codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \

@@ -126,7 +126,13 @@ fn uuid_v4_short() -> String {
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
-        "device.list" | "device.boot" | "device.shutdown" | "device.screenshot"
+        "device.list"
+            | "device.boot"
+            | "device.shutdown"
+            | "device.screenshot"
+            | "device.installApp"
+            | "device.launchApp"
+            | "device.openUrl"
     )
 }
 
@@ -158,6 +164,45 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
                 Err("udid required".into())
             } else {
                 screenshot(udid)
+            }
+        }
+        "device.installApp" => {
+            let app_path = payload.get("appPath").and_then(|v| v.as_str()).unwrap_or("");
+            if udid.is_empty() || app_path.is_empty() {
+                Err("udid and appPath required".into())
+            } else {
+                simctl(&["install", udid, app_path])?;
+                Ok(json!({ "udid": udid, "installed": true }))
+            }
+        }
+        "device.launchApp" => {
+            let bundle = payload
+                .get("bundleId")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
+            if udid.is_empty() || bundle.is_empty() {
+                Err("udid and bundleId required".into())
+            } else {
+                if payload.get("terminateExisting").and_then(|v| v.as_bool()) == Some(true) {
+                    let _ = simctl(&["terminate", udid, bundle]);
+                }
+                // `simctl launch` prints `<bundleId>: <pid>`.
+                let out = simctl(&["launch", udid, bundle])?;
+                let pid = out
+                    .trim()
+                    .rsplit(':')
+                    .next()
+                    .and_then(|p| p.trim().parse::<u64>().ok());
+                Ok(json!({ "udid": udid, "bundleId": bundle, "pid": pid }))
+            }
+        }
+        "device.openUrl" => {
+            let url = payload.get("url").and_then(|v| v.as_str()).unwrap_or("");
+            if udid.is_empty() || url.is_empty() {
+                Err("udid and url required".into())
+            } else {
+                simctl(&["openurl", udid, url])?;
+                Ok(json!({ "udid": udid, "opened": true }))
             }
         }
         _ => Err(format!("unknown device tag {tag}")),

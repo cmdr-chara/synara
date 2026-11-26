@@ -8,6 +8,7 @@ use gpui_kit::component::{
 use gpui_kit::*;
 use gpui_webview::WebView;
 
+mod cua;
 mod native;
 mod voice;
 mod ws_client;

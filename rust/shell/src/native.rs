@@ -988,7 +988,7 @@ impl Render for DragGhost {
 
 /// Settings > Keyboard shortcuts rows: (title, description, default kbd
 /// label, space-separated command ids) in upstream order.
-static SHORTCUT_ROWS: [(&str, &str, &str, &str); 69] = [
+static SHORTCUT_ROWS: [(&str, &str, &str, &str); 70] = [
     ("Toggle sidebar", "Collapse or reveal the sidebar shell.", "\u{2318}B", "sidebar.toggle"),
     ("Add project", "Open the Create project dialog to import a local folder.", "\u{21e7}\u{2318}O", "sidebar.addProject"),
     ("Search projects and threads", "Open the sidebar search palette from anywhere in the app.", "\u{2318}K", "sidebar.search"),
@@ -1024,6 +1024,7 @@ static SHORTCUT_ROWS: [(&str, &str, &str, &str); 69] = [
     ("Previous change", "Jump the diff viewport to the previous changed file.", "\u{2325}Up", "diff.change.previous"),
     ("Toggle side chat", "Open or hide a side chat beside the main conversation.", "\u{2325}\u{2318}S", "sidechat.toggle"),
     ("Toggle browser", "Reveal the built-in browser panel for the active thread.", "\u{21e7}\u{2318}B", "browser.toggle"),
+    ("Toggle computer", "Reveal the computer-use panel: live desktop stream and control.", "", "computer.toggle"),
     ("Toggle iOS Simulator", "Reveal the iOS Simulator panel for the active thread. macOS servers only.", "", "device.toggle"),
     ("Copy thread ID", "Copy the active thread's ID to the clipboard.", "\u{21e7}\u{2318}C", "thread.copyId"),
     ("Archive thread", "Archive the active chat, with the same confirmation and undo as the thread menu.", "\u{2325}\u{21e7}\u{2318}A", "thread.archive"),
@@ -1250,6 +1251,10 @@ pub struct Native {
     // 0 = Git, 1 = Subagents, 2 = Background tasks, 3 = Side chats.
     dock_tab: usize,
     view_terminal: bool,
+    /// Computer-use panel: live desktop stream + control affordances.
+    view_cua: bool,
+    cua: Option<crate::cua::CuaHandle>,
+    cua_seen_seq: u64,
     term_active: bool,
     // TerminalWorkspaceTabs: one PTY session per tab; events route by id.
     term_tabs: Vec<TermTab>,
@@ -3019,6 +3024,9 @@ impl Native {
                 changes_unavailable: false,
                 dock_tab: 0,
                 view_terminal: false,
+                view_cua: false,
+                cua: None,
+                cua_seen_seq: 0,
                 term_active: false,
                 term_tabs: Vec::new(),
                 term_sel: 0,
@@ -7593,6 +7601,7 @@ impl Native {
             "chat.visible.next" | "view.recent.next" | "threadTab.next"
             | "chat.attention.next" | "space.next" => self.cycle_tab(1, cx),
             "diff.toggle" | "git.commitAndPush" => self.toggle_changes(cx),
+            "computer.toggle" => self.toggle_cua(window, cx),
             c if c.starts_with("thread.jump.") => {
                 if let Ok(i) = c["thread.jump.".len()..].parse::<usize>() {
                     if let Some(t) = self.open_threads.get(i.saturating_sub(1)).cloned() {
@@ -7983,6 +7992,87 @@ impl Native {
         })
         .detach();
         self.close_tab(tid, cx);
+    }
+
+    /// Toggle the computer-use panel: opening connects the frame stream
+    /// and starts the refresh timer; closing retires the receiver thread.
+    fn toggle_cua(&mut self, _window: &mut Window, cx: &mut Context<Self>) {
+        self.view_cua = !self.view_cua;
+        if self.view_cua {
+            if self.cua.is_none() {
+                self.cua = Some(crate::cua::CuaHandle::new());
+            }
+            if let Some(handle) = &self.cua {
+                handle.start();
+            }
+            self.ensure_cua_refresh(cx);
+        } else if let Some(handle) = &self.cua {
+            handle.stop();
+        }
+        cx.notify();
+    }
+
+    /// Sample the shared frame slot on a fixed cadence: the receiver thread
+    /// never touches gpui state, the UI thread copies the newest PNG into
+    /// the panel cache and redraws only when the sequence advanced.
+    fn ensure_cua_refresh(&mut self, cx: &mut Context<Self>) {
+        cx.spawn(async move |this, cx: &mut AsyncApp| {
+            loop {
+                cx.background_executor()
+                    .timer(std::time::Duration::from_millis(350))
+                    .await;
+                let alive = this.update(cx, |view, cx| {
+                    if !view.view_cua {
+                        return false;
+                    }
+                    let new_frame = view
+                        .cua
+                        .as_ref()
+                        .and_then(|h| h.shared.lock().ok().map(|s| (s.sequence, s.frame_png.clone(), s.connected, s.error.clone())));
+                    if let Some((seq, png, _conn, _err)) = new_frame {
+                        if seq != view.cua_seen_seq && png.is_some() {
+                            view.cua_seen_seq = seq;
+                            cx.notify();
+                        }
+                    }
+                    true
+                });
+                if alive.is_err() || !alive.unwrap_or(false) {
+                    break;
+                }
+            }
+        })
+        .detach();
+    }
+
+    /// Frame cache path for the newest still: gpui images load from disk,
+    /// so the receiver's PNG lands in a rotating pair of files (gpui caches
+    /// by path — alternating names defeats the cache exactly on change).
+    fn cua_frame_path(&self) -> Option<std::path::PathBuf> {
+        let handle = self.cua.as_ref()?;
+        let s = handle.shared.lock().ok()?;
+        let png = s.frame_png.as_ref()?;
+        let dir = std::env::temp_dir().join("synara-cua");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join(format!("frame-{}.png", s.sequence % 2));
+        if std::fs::write(&path, png).is_ok() {
+            Some(path)
+        } else {
+            None
+        }
+    }
+
+    /// PNG pixel dimensions from the IHDR header (big-endian u32s at 16/20).
+    fn cua_png_size(&self) -> Option<(f32, f32)> {
+        let handle = self.cua.as_ref()?;
+        let s = handle.shared.lock().ok()?;
+        let png = s.frame_png.as_ref()?;
+        if png.len() < 24 {
+            return None;
+        }
+        let w = u32::from_be_bytes([png[16], png[17], png[18], png[19]]) as f32;
+        let h = u32::from_be_bytes([png[20], png[21], png[22], png[23]]) as f32;
+        Some((w, h))
     }
 
     /// Rail button: toggle the bottom terminal drawer. Opening spawns a PTY
@@ -23913,7 +24003,172 @@ impl Render for Native {
         } else if self.view_studio {
             main = main.child(div().flex_1().child(studio_pane));
         } else {
-            if self.view_terminal && self.term_active {
+            if self.view_cua {
+                let (connected, error, seq) = self
+                    .cua
+                    .as_ref()
+                    .and_then(|h| {
+                        h.shared.lock().ok().map(|s| {
+                            (s.connected, s.error.clone(), s.sequence)
+                        })
+                    })
+                    .unwrap_or((false, None, 0));
+                let thread_for_control = self
+                    .selected_thread
+                    .clone()
+                    .unwrap_or_else(|| "shell".to_string());
+                let mut cua_surface = v_flex().flex_1().min_h_0().w_full().bg(content_bg);
+                // Control strip: enable / emergency stop, status text.
+                let enable_thread = thread_for_control.clone();
+                let stop_thread = thread_for_control.clone();
+                let strip = h_flex()
+                    .w_full()
+                    .h(px(36.))
+                    .px_3()
+                    .items_center()
+                    .gap_2()
+                    .border_b_1()
+                    .border_color(theme.border)
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("Computer"),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        Button::new("cua-enable")
+                            .compact()
+                            .label("Enable control")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                let client_cell = this.client.clone();
+                                let thread = enable_thread.clone();
+                                cx.spawn(async move |_this, cx: &mut AsyncApp| {
+                                    let cell = client_cell.clone();
+                                    if let Some(client) = cx
+                                        .background_executor()
+                                        .spawn(async move { ensure_client(&cell) })
+                                        .await
+                                    {
+                                        let thread2 = thread.clone();
+                                        let _ = cx
+                                            .background_executor()
+                                            .spawn(async move {
+                                                crate::cua::enable_control(&client, &thread2)
+                                            })
+                                            .await;
+                                    }
+                                })
+                                .detach();
+                            })),
+                    )
+                    .child(
+                        Button::new("cua-stop")
+                            .compact()
+                            .label("Stop")
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                let client_cell = this.client.clone();
+                                let thread = stop_thread.clone();
+                                cx.spawn(async move |_this, cx: &mut AsyncApp| {
+                                    let cell = client_cell.clone();
+                                    if let Some(client) = cx
+                                        .background_executor()
+                                        .spawn(async move { ensure_client(&cell) })
+                                        .await
+                                    {
+                                        let thread2 = thread.clone();
+                                        let _ = cx
+                                            .background_executor()
+                                            .spawn(async move {
+                                                crate::cua::disable_control(&client, &thread2)
+                                            })
+                                            .await;
+                                    }
+                                })
+                                .detach();
+                            })),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.muted_foreground)
+                            .child(if connected {
+                                format!("live · frame {seq}")
+                            } else if let Some(e) = &error {
+                                format!("offline · {e}")
+                            } else {
+                                "connecting…".to_string()
+                            }),
+                    );
+                cua_surface = cua_surface.child(strip);
+                // The desktop still renders at logical screen size — retina
+                // captures are 2× the point space — inside a scroll area, so
+                // a click position in the element IS the screen point.
+                if let Some(path) = self.cua_frame_path() {
+                    let (pw, ph) = self.cua_png_size().unwrap_or((1440., 900.));
+                    let logical_w = pw / 2.0;
+                    let logical_h = ph / 2.0;
+                    let click_thread = thread_for_control.clone();
+                    let frame_el = div()
+                        .id("cua-frame")
+                        .w(px(logical_w))
+                        .h(px(logical_h))
+                        .child(gpui::img(path).w(px(logical_w)).h(px(logical_h)))
+                        .on_mouse_down(
+                            gpui::MouseButton::Left,
+                            cx.listener(move |this, ev: &gpui::MouseDownEvent, _w, cx| {
+                                let x: f32 = ev.position.x.into();
+                                let y: f32 = ev.position.y.into();
+                                let client_cell = this.client.clone();
+                                let thread = click_thread.clone();
+                                cx.spawn(async move |_this, cx: &mut AsyncApp| {
+                                    let cell = client_cell.clone();
+                                    if let Some(client) = cx
+                                        .background_executor()
+                                        .spawn(async move { ensure_client(&cell) })
+                                        .await
+                                    {
+                                        let thread2 = thread.clone();
+                                        let _ = cx
+                                            .background_executor()
+                                            .spawn(async move {
+                                                crate::cua::click(
+                                                    &client, &thread2, x as f64, y as f64, "left",
+                                                )
+                                            })
+                                            .await;
+                                    }
+                                })
+                                .detach();
+                            }),
+                        );
+                    cua_surface = cua_surface.child(
+                        div()
+                            .id("cua-scroll")
+                            .flex_1()
+                            .min_h_0()
+                            .overflow_y_scroll()
+                            .p_2()
+                            .child(frame_el),
+                    );
+                } else {
+                    cua_surface = cua_surface.child(
+                        div()
+                            .flex_1()
+                            .items_center()
+                            .justify_center()
+                            .flex()
+                            .text_color(theme.muted_foreground)
+                            .text_size(px(13.))
+                            .child(if connected {
+                                "waiting for the first frame…"
+                            } else {
+                                "the desktop stream is not connected"
+                            }),
+                    );
+                }
+                main = main.child(cua_surface);
+            } else if self.view_terminal && self.term_active {
                 main = main.child(term_surface);
             } else if self.split_open {
                 // Zed-style split: two ratio-sized panes + draggable divider.

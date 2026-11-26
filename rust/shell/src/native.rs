@@ -8050,10 +8050,12 @@ impl Native {
                 .detach();
                 self.browser_input = Some(input);
             }
-        } else if let Some(webview) = &self.browser_webview {
-            webview.update(cx, |view, _| {
-                view.hide();
-            });
+        } else {
+            // Dropping the entity hides the native subview (wry teardown is
+            // lazy but invisible at once); recreating on reopen reloads the
+            // document, acceptable against a stale overlay trapping input.
+            self.browser_webview = None;
+            self.browser_input = None;
         }
         cx.notify();
     }
@@ -24037,6 +24039,24 @@ impl Render for Native {
 
         // ---- main column under the strip: panes + composer ----
         // .relative() hosts the provider-update toast overlay.
+        // The browser panel only lives in the thread workspace; when any
+        // other surface owns the main column the native overlay must close
+        // or it floats over content it does not belong to.
+        let other_surface_active = self.view_files
+            || self.view_dev
+            || self.view_inbox
+            || self.view_settings
+            || self.view_tasks
+            || self.view_kanban
+            || self.view_pullreq
+            || self.view_autom
+            || self.view_studio
+            || self.view_spaces;
+        if self.view_browser && other_surface_active {
+            self.view_browser = false;
+            self.browser_webview = None;
+            self.browser_input = None;
+        }
         let mut main = v_flex().flex_1().min_w_0().h_full().relative();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));

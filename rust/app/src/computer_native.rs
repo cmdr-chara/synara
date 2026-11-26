@@ -352,6 +352,32 @@ fn ax_result(action: &str, resolved: &Value) -> Value {
 #[cfg(target_os = "macos")]
 pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     const MISS: &str = "\u{1}native-miss";
+    // Control-plane guards gate every mutating action before dispatch, the
+    // manager semantics upstream asserts at the same boundary: the owning
+    // conversation must still hold control, input must not be paused, and
+    // denylisted targets never execute. Reading the desktop stays open.
+    let owner = payload["threadId"].as_str().unwrap_or("");
+    let mutating = matches!(
+        tag,
+        "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click"
+            | "computer.moveCursor" | "computer.drag" | "computer.scroll" | "computer.input.scroll"
+            | "computer.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
+            | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp"
+    );
+    if mutating && !owner.is_empty() {
+        if let Err(e) = crate::computer_manager::assert_control_authority(Some(owner)) {
+            return Some(Err(e));
+        }
+        if let Err(e) = crate::computer_manager::assert_input_not_paused(Some(owner)) {
+            return Some(Err(e));
+        }
+    }
+    if tag == "computer.launchApp" {
+        let app = payload["app"].as_str().unwrap_or("");
+        if let Err(e) = crate::computer_manager::assert_not_denied(Some(app), None) {
+            return Some(Err(e));
+        }
+    }
     let r = (|| -> Result<Value, String> {
         match tag {
             "computer.getStatus" => Ok(status_json()),

@@ -17695,6 +17695,17 @@ impl Render for Native {
         } else {
             theme.border
         };
+        // Upstream light composer card is color(srgb 1 1 1 / 0.55); dark keeps the
+        // surface tint at the same alpha so the backdrop reads through.
+        let composer_card_bg = {
+            let mut c = if theme.is_dark() {
+                sidebar_bg
+            } else {
+                gpui::hsla(0.0, 0.0, 1.0, 1.0)
+            };
+            c.a = 0.55;
+            c
+        };
         let composer_card: Div = if row_composer {
             div()
                 .w_full()
@@ -17702,7 +17713,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(composer_border)
                 .rounded(px(19.2))
-                .bg(sidebar_bg)
+                .bg(composer_card_bg)
                 .shadow_md()
                 .px_2()
                 .py(px(4.))
@@ -17722,7 +17733,7 @@ impl Render for Native {
                 .border_1()
                 .border_color(composer_border)
                 .rounded(px(19.2))
-                .bg(sidebar_bg)
+                .bg(composer_card_bg)
                 .shadow_md()
                 .px_2()
                 .pt(px(4.))

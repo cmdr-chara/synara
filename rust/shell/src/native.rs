@@ -14792,7 +14792,8 @@ impl Render for Native {
             sidebar = sidebar.child(
                 div()
                     .w_full()
-                    .py_2()
+                    .pt(px(16.))
+                    .px(px(8.))
                     .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child(div().text_center().child("No projects yet")),

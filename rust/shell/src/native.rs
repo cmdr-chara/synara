@@ -15644,11 +15644,16 @@ impl Render for Native {
                     );
                 }
                 if let Some(img) = self.backdrop_img.clone() {
+                    // The bitmap is logical-resolution; without an explicit
+                    // size the retina scale factor would display it at half
+                    // the pane. Stretching 1:1 logical is exact.
                     field = field.child(
                         gpui::img(ImageSource::Render(img))
                             .absolute()
                             .top_0()
-                            .left_0(),
+                            .left_0()
+                            .w(px(vpw))
+                            .h(px(vph)),
                     );
                 }
                 field

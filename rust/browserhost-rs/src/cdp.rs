@@ -208,11 +208,43 @@ async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
     let binary = chrome_path().ok_or_else(|| {
         "no Chromium browser found for the CDP fallback (install Chrome, Edge, Brave or Chromium)".to_string()
     })?;
+    let profile = cdp_profile_dir();
+    // Chrome refuses a second instance on the same user-data-dir. When a
+    // browser is already running on this profile (whichever process launched
+    // it), reuse it. Chrome only writes DevToolsActivePort for auto-assigned
+    // ports, so our own launcher records the port in a sidecar file.
+    for candidate in [
+        profile.join("synara-cdp-port"),
+        profile.join("DevToolsActivePort"),
+    ] {
+        if let Ok(contents) = std::fs::read_to_string(&candidate) {
+            if let Some(port_str) = contents.lines().next() {
+                if let Ok(existing_port) = port_str.trim().parse::<u16>() {
+                let endpoint = format!("http://127.0.0.1:{existing_port}/json/version");
+                if let Ok(resp) = reqwest_get(&endpoint).await {
+                    if let Ok(version) = serde_json::from_str::<Value>(&resp) {
+                        if let Some(ws_url) = version
+                            .get("webSocketDebuggerUrl")
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                        {
+                            if let Ok(conn) = connect_ws(&ws_url).await {
+                                if let Ok(mut state) = cdp_state().lock() {
+                                    state.1 = Some(conn.clone());
+                                }
+                                return Ok(conn);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    }
     let port = std::net::TcpListener::bind("127.0.0.1:0")
         .and_then(|l| l.local_addr())
         .map(|a| a.port())
         .map_err(|e| format!("no free port for cdp: {e}"))?;
-    let profile = cdp_profile_dir();
     let _ = std::fs::create_dir_all(&profile);
     let child = Command::new(&binary)
         .args([
@@ -243,6 +275,7 @@ async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
         tokio::time::sleep(std::time::Duration::from_millis(150)).await;
     }
     let version = version.ok_or_else(|| "chromium devtools endpoint did not come up".to_string())?;
+    let _ = std::fs::write(profile.join("synara-cdp-port"), format!("{port}\n"));
     let ws_url = version
         .get("webSocketDebuggerUrl")
         .and_then(Value::as_str)

@@ -9,6 +9,7 @@ use gpui_kit::*;
 use gpui_webview::WebView;
 
 mod backdrop;
+mod browser_host;
 mod cua;
 mod native;
 mod voice;
@@ -164,6 +165,9 @@ fn main() {
     let app = gpui_kit::platform::linux(WindowingModes::X11);
     #[cfg(not(target_os = "linux"))]
     let app = gpui_kit::application();
+
+    // Upstream desktop role: host visible browser automation for the server.
+    browser_host::start_browser_host();
 
     app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);

@@ -1586,6 +1586,7 @@ dependencies = [
  "sha1",
  "sha2",
  "staticassets-rs",
+ "synara-shellenv",
  "time",
  "tokio",
  "tokio-rustls",
@@ -3124,6 +3125,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "synara-shellenv"
+version = "0.1.0"
+dependencies = [
+ "libc",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

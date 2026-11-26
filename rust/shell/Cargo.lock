@@ -8120,11 +8120,21 @@ dependencies = [
  "sha2 0.10.9",
  "signal-hook",
  "smallvec",
+ "synara-shellenv",
  "tokio",
  "tungstenite",
  "ureq",
  "urlencoding",
  "uuid",
+]
+
+[[package]]
+name = "synara-shellenv"
+version = "0.1.0"
+dependencies = [
+ "libc",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

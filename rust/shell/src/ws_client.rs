@@ -41,6 +41,11 @@ fn default_ws_url(base: &str, token: &str) -> String {
     )
 }
 
+/// Session cookie + backend base captured at connect time so auxiliary
+/// fetches (attachment images in the transcript) carry the same auth.
+pub static SESSION_COOKIE: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+pub static BACKEND_BASE: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+
 impl Client {
     /// Mint a real session cookie + ws token through the front door so relayed
     /// (non-native) RPCs authenticate like the browser does.
@@ -77,6 +82,10 @@ impl Client {
     pub fn connect() -> Option<Arc<Self>> {
         let base = std::env::var("SYNARA_HTTP").unwrap_or_else(|_| "http://127.0.0.1:8080".into());
         let (cookie, token) = Self::mint_session(&base);
+        if let Some(c) = &cookie {
+            let _ = SESSION_COOKIE.set(c.clone());
+        }
+        let _ = BACKEND_BASE.set(base.clone());
         let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| default_ws_url(&base, &token));
         let host = http::Uri::try_from(&url)
             .ok()

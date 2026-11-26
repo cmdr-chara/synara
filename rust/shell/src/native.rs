@@ -1964,7 +1964,16 @@ fn extract_md_image_urls(text: &str, out: &mut Vec<String>) {
 /// background executor; ureq follows redirects by default.
 fn fetch_decode_image(url: &str) -> Option<std::sync::Arc<RenderImage>> {
     use std::io::Read as _;
-    let resp = ureq::get(url).call().ok()?;
+    let mut req = ureq::get(url);
+    if let (Some(base), Some(cookie)) = (
+        crate::ws_client::BACKEND_BASE.get(),
+        crate::ws_client::SESSION_COOKIE.get(),
+    ) {
+        if url.starts_with(base.as_str()) {
+            req = req.set("Cookie", cookie);
+        }
+    }
+    let resp = req.call().ok()?;
     let mut bytes = Vec::new();
     resp.into_reader()
         .take(20 * 1024 * 1024)
@@ -3730,6 +3739,16 @@ impl Native {
                     .unwrap_or_default();
             }
             extract_md_image_urls(&text, &mut urls);
+            if let Some(base) = crate::ws_client::BACKEND_BASE.get() {
+                for a in arr(m, "attachments") {
+                    if str_at(a, "type") == "image" {
+                        let id = str_at(a, "id");
+                        if !id.is_empty() {
+                            urls.push(format!("{base}/attachments/{id}"));
+                        }
+                    }
+                }
+            }
         }
         for url in urls {
             if self.md_images.lock().unwrap().contains_key(&url)
@@ -12662,9 +12681,110 @@ impl Native {
                     h_flex().w_full().justify_center().child(
                         h_flex().w_full().max_w(chat_mw).justify_end().child(
                             stack
-                                .child(pill.child(
-                                    div().text_size(px(13.)).child(text),
-                                ))
+                                .child(pill.child({
+                                    // User attachments (upstream UserMessageImageAttachments
+                                    // + file cards): image thumbnails row, then file and
+                                    // assistant-selection chips, then the text.
+                                    let mut content = v_flex().gap(px(8.));
+                                    let msg_atts = arr(m, "attachments");
+                                    let img_atts: Vec<&Value> = msg_atts
+                                        .iter()
+                                        .filter(|a| str_at(a, "type") == "image")
+                                        .collect();
+                                    if !img_atts.is_empty() {
+                                        let mut row = h_flex().gap(px(8.)).flex_wrap();
+                                        for a in &img_atts {
+                                            let aid = str_at(a, "id").to_string();
+                                            let cached = crate::ws_client::BACKEND_BASE
+                                                .get()
+                                                .and_then(|base| {
+                                                    self.md_images
+                                                        .lock()
+                                                        .unwrap()
+                                                        .get(&format!("{base}/attachments/{aid}"))
+                                                        .cloned()
+                                                });
+                                            row = row.child(match cached {
+                                                Some(render) => div()
+                                                    .rounded(px(8.))
+                                                    .overflow_hidden()
+                                                    .child(
+                                                        img(ImageSource::Render(render))
+                                                            .h(px(96.))
+                                                            .rounded(px(8.)),
+                                                    )
+                                                    .into_any_element(),
+                                                None => div()
+                                                    .size(px(96.))
+                                                    .rounded(px(8.))
+                                                    .bg(subtle)
+                                                    .into_any_element(),
+                                            });
+                                        }
+                                        content = content.child(row);
+                                    }
+                                    for a in msg_atts.iter().filter(|a| str_at(a, "type") == "file") {
+                                        let name = str_at(a, "name").to_string();
+                                        let kb = a.get("sizeBytes").and_then(Value::as_u64).unwrap_or(0) / 1024;
+                                        content = content.child(
+                                            h_flex()
+                                                .max_w(px(256.))
+                                                .gap(px(8.))
+                                                .rounded(px(8.))
+                                                .py(px(4.))
+                                                .pl(px(4.))
+                                                .pr(px(8.))
+                                                .border_1()
+                                                .border_color(theme.border)
+                                                .items_center()
+                                                .child(
+                                                    div()
+                                                        .size(px(24.))
+                                                        .rounded(px(6.))
+                                                        .bg(subtle)
+                                                        .flex()
+                                                        .items_center()
+                                                        .justify_center()
+                                                        .child(
+                                                            svg_icon(icons::COPY)
+                                                                .size(px(12.))
+                                                                .text_color(theme.muted_foreground),
+                                                        ),
+                                                )
+                                                .child(
+                                                    v_flex()
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(13.))
+                                                                .whitespace_nowrap()
+                                                                .overflow_hidden()
+                                                                .child(name),
+                                                        )
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(11.))
+                                                                .text_color(theme.muted_foreground)
+                                                                .child(format!("{kb} KB")),
+                                                        ),
+                                                ),
+                                        );
+                                    }
+                                    for a in msg_atts
+                                        .iter()
+                                        .filter(|a| str_at(a, "type") == "assistant-selection")
+                                    {
+                                        content = content.child(
+                                            div()
+                                                .border_l_2()
+                                                .border_color(theme.border)
+                                                .pl(px(8.))
+                                                .text_size(px(12.))
+                                                .text_color(theme.muted_foreground)
+                                                .child(str_at(a, "text").to_string()),
+                                        );
+                                    }
+                                    content.child(div().text_size(px(13.)).child(text))
+                                }))
                                 .child(ufooter),
                         ),
                     ),

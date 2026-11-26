@@ -298,25 +298,7 @@ fn set_control_enabled(payload: &Value) -> Result<Value, String> {
     if tid.is_empty() {
         return Err("threadId is required".into());
     }
-    let path = control_path();
-    let mut state: Value = std::fs::read_to_string(&path)
-        .ok()
-        .and_then(|t| serde_json::from_str(&t).ok())
-        .unwrap_or_else(|| json!({}));
-    let prev = state[tid]["generation"].as_i64().unwrap_or(-1);
-    let generation = if enabled { prev.max(0) } else { prev.max(0) + 1 };
-    state[tid] = json!({"disabled": !enabled, "generation": generation});
-    let tmp = path.with_extension("json.tmp");
-    let mut f = std::fs::File::create(&tmp).map_err(|e| e.to_string())?;
-    f.write_all(serde_json::to_string(&state).unwrap().as_bytes())
-        .map_err(|e| e.to_string())?;
-    drop(f);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        let _ = std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o600));
-    }
-    std::fs::rename(&tmp, &path).map_err(|e| e.to_string())?;
+    let generation = crate::computer_control::set(tid, !enabled)?;
     Ok(json!({"enabled": enabled, "generation": generation}))
 }
 

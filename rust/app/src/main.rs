@@ -58,6 +58,8 @@ mod provider_attachments;
 mod provider_cache;
 mod skills_catalog;
 mod computer_audit;
+mod computer_approval;
+mod computer_control;
 mod computer_native;
 mod opencode_runner;
 mod pi_runner;

@@ -107,3 +107,20 @@ overshoots y400+. Hypothesis to test next cycle: shell vertical scene mapping
 or the unsharp-mask vertical ramp (sharpenFrom/To 0.24/0.36 of scene height)
 differs — verify the sharpen smoothstep math uses scene-height fractions
 correctly in device vs logical units.
+
+INBOX pass (web_inbox/shell_inbox/anaglyph_inbox in /tmp/pxcmp):
+- Structural: shell content sits ~15-20px too HIGH vs web (same rhythm class
+  as settings had). Extract exact paddings from upstream inbox component and
+  match: top padding of the pane, section gaps, row heights.
+- Web rows in Ready-for-review are TALLER (title + description lines?) — check
+  upstream InboxView row structure vs shell's single-line rows.
+- Shell shows "Mark all read"/"Try again" actions web doesn't show in the same
+  spots — verify against upstream conditions.
+- Data note: web showed a task entry (5h) the shell didn't — sync/timing,
+  not layout.
+- geodiff r3: mean 2.73, >10: 3.7% — geometry close; rhythm is the gap.
+
+SYSTEMATIC PATTERN for remaining surfaces (kanban/tasks/codereview/automations/
+hubs/transcript/composer): measure upstream metrics via CDP getBoundingClientRect
++ computed style on the live web app (cheap, exact), then apply to the shell
+port — do NOT eyeball screenshots except to verify.

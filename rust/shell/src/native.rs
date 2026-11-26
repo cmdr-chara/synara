@@ -267,13 +267,11 @@ fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
                 let fill_alpha = smooth((delta - 0.18) / 0.25)
                     * (1.0 - smooth((delta - 0.82) / 0.18));
                 let wing_transform = |left: bool| {
-                    let direction = if left { -1.0 } else { 1.0 };
+                    let direction = if left { 1.0 } else { -1.0 };
                     let pivot_x = if left { 177.0 } else { 292.0 };
-                    let inward_x = if left { 55.0 } else { -55.0 } * close;
                     format!(
-                        "translate({:.2} 0) rotate({:.2} {:.1} 274)",
-                        inward_x,
-                        direction * 145.0 * close,
+                        "rotate({:.2} {:.1} 274)",
+                        direction * 32.0 * close,
                         pivot_x,
                     )
                 };

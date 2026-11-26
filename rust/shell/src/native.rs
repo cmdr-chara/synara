@@ -229,20 +229,29 @@ fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
 
-/// Live-work brand mark: the Synara logo spins while the agent is acting.
-/// `with_animation` keeps repainting the tiny mark and honors reduced motion.
+/// Live-work brand mark: the winged Synara logo flutters in place while the
+/// agent is acting, rather than spinning like a generic loader.
 fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
     gpui::svg()
         .data(icons::LOGO)
         .size(icon_size)
         .text_color(color)
         .with_animation(
-            "synara-working-logo",
-            gpui::Animation::new(std::time::Duration::from_millis(1600)).repeat_synced(),
+            "synara-working-logo-flutter",
+            gpui::Animation::new(std::time::Duration::from_millis(1500)).repeat_synced(),
             |this, delta| {
+                let flutter = (delta * std::f32::consts::TAU).sin();
                 this.with_transformation(
                     gpui::Transformation::default()
-                        .with_rotation(gpui::radians(delta * std::f32::consts::TAU)),
+                        .with_scaling(gpui::size(
+                            0.95 + 0.08 * flutter,
+                            0.985 - 0.03 * flutter,
+                        ))
+                        .with_translation(gpui::point(
+                            gpui::px(0.),
+                            gpui::px(-1.0 * flutter),
+                        ))
+                        .with_rotation(gpui::radians(0.10 * flutter)),
                 )
             },
         )

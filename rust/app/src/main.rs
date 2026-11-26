@@ -284,23 +284,9 @@ async fn oauth_mcp_callback(axum::extract::RawQuery(query): axum::extract::RawQu
 async fn health() -> axum::Json<serde_json::Value> {
     axum::Json(serde_json::json!({
         "status": "ok",
-        // The Rust backend runs on Tokio rather than Node's event-loop monitor.
-        // Shape-compatible unavailable counters keep /health unauthenticated and
-        // free of runtime detail while preserving the upstream contract.
-        "eventLoop": {
-            "available": false,
-            "sampleWindowMs": 0,
-            "sampleCount": 0,
-            "delayP50Ms": 0,
-            "delayP99Ms": 0,
-            "delayMaxMs": 0,
-            "utilization": 0,
-            "stallWindowCount": 0,
-            "maxStallMs": 0,
-            "discardedIdleGapCount": 0,
-            "discardedIdleGapMs": 0,
-            "lastStall": null,
-        },
+        // Tokio has no direct equivalent of Node's monitorEventLoopDelay, so
+        // this surface reports the sampler's measured scheduler-lag analog.
+        "eventLoop": runtime_status::get_runtime_status(),
         // Axum only routes this after migrations/recovery and router construction
         // have completed, so the lifecycle gates upstream separates are already
         // satisfied by the time a client can observe this response.

@@ -25,5 +25,7 @@ smallvec = "1"
 image = { version = "0.25", default-features = false, features = ["jpeg"] }
 browserhost-rs = { path = "../browserhost-rs" }
 tokio = { version = "1", features = ["rt-multi-thread"] }
+libc = "0.2"
+signal-hook = "0.3"
 
 [workspace]

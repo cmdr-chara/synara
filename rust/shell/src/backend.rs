@@ -1,0 +1,502 @@
+//! Backend process supervision for the desktop shell.
+//!
+//! The shell owns the native backend lifecycle in desktop mode: reuse an
+//! already healthy server, otherwise spawn the sidecar/backend, wait for
+//! readiness, restart it after unexpected exits, and stop it when the shell
+//! shuts down.
+
+use serde_json::json;
+use std::fs::{self, OpenOptions};
+use std::io;
+use std::path::{Path, PathBuf};
+use std::process::{Child, Command, Stdio};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread::{self, JoinHandle};
+use std::time::{Duration, Instant};
+
+const READY_TIMEOUT: Duration = Duration::from_secs(20);
+const READY_POLL: Duration = Duration::from_millis(100);
+const STOP_GRACE: Duration = Duration::from_secs(4);
+const MAX_RESTARTS: u32 = 5;
+const STABLE_AFTER: Duration = Duration::from_secs(60);
+
+#[derive(Clone, Debug)]
+struct BackendConfig {
+    binary: PathBuf,
+    port: u16,
+    home_dir: PathBuf,
+    log_path: PathBuf,
+}
+
+struct SharedState {
+    child: Option<Child>,
+    config: BackendConfig,
+    restarts: u32,
+    started_at: Instant,
+    restart_pending: bool,
+}
+
+struct SupervisorInner {
+    state: Mutex<SharedState>,
+    running: AtomicBool,
+    watchdog: Mutex<Option<JoinHandle<()>>>,
+}
+
+#[derive(Clone)]
+pub struct BackendSupervisor {
+    inner: Arc<SupervisorInner>,
+}
+
+pub enum BackendLaunch {
+    External,
+    Managed(BackendSupervisor),
+    Unavailable(String),
+}
+
+impl BackendLaunch {
+    pub fn supervisor(&self) -> Option<BackendSupervisor> {
+        match self {
+            Self::Managed(supervisor) => Some(supervisor.clone()),
+            _ => None,
+        }
+    }
+}
+
+impl BackendSupervisor {
+    fn start(config: BackendConfig) -> Result<Self, String> {
+        let mut child = spawn_backend(&config)
+            .map_err(|e| format!("avvio backend {} fallito: {e}", config.binary.display()))?;
+        wait_until_ready(&mut child, config.port).map_err(|e| {
+            let _ = terminate_child(&mut child);
+            format!("backend non pronto sulla porta {}: {e}", config.port)
+        })?;
+
+        let state = Arc::new(SupervisorInner {
+            state: Mutex::new(SharedState {
+                child: Some(child),
+                config,
+                restarts: 0,
+                started_at: Instant::now(),
+                restart_pending: false,
+            }),
+            running: AtomicBool::new(true),
+            watchdog: Mutex::new(None),
+        });
+
+        let thread_state = state.clone();
+        let watchdog = thread::spawn(move || watchdog_loop(thread_state));
+        *state.watchdog.lock().expect("supervisor watchdog slot") = Some(watchdog);
+        Ok(Self { inner: state })
+    }
+
+    pub fn shutdown(&self) {
+        self.inner.running.store(false, Ordering::SeqCst);
+        let child = {
+            let mut state = self.inner.state.lock().expect("supervisor state");
+            state.child.take()
+        };
+        if let Some(mut child) = child {
+            let _ = terminate_child(&mut child);
+        }
+        if let Some(watchdog) = self
+            .inner
+            .watchdog
+            .lock()
+            .expect("supervisor watchdog slot")
+            .take()
+        {
+            let _ = watchdog.join();
+        }
+    }
+}
+
+impl Drop for BackendSupervisor {
+    fn drop(&mut self) {
+        // `shutdown` is idempotent. The signal thread intentionally retains a
+        // clone for the whole process lifetime, so strong-count ownership is
+        // not a usable shutdown signal here.
+        self.shutdown();
+    }
+}
+
+fn watchdog_loop(inner: Arc<SupervisorInner>) {
+    while inner.running.load(Ordering::SeqCst) {
+        let exit_reason = {
+            let mut state = inner.state.lock().expect("supervisor state");
+            if let Some(child) = state.child.as_mut() {
+                match child.try_wait() {
+                    Ok(Some(status)) => {
+                        state.child = None;
+                        state.restart_pending = true;
+                        Some(status.to_string())
+                    }
+                    Ok(None) => None,
+                    Err(e) => {
+                        state.child = None;
+                        state.restart_pending = true;
+                        Some(format!("stato processo non leggibile: {e}"))
+                    }
+                }
+            } else if state.restart_pending {
+                Some("backend assente dopo un restart fallito".to_string())
+            } else {
+                return;
+            }
+        };
+
+        let Some(reason) = exit_reason else {
+            thread::sleep(Duration::from_millis(250));
+            continue;
+        };
+        if !inner.running.load(Ordering::SeqCst) {
+            return;
+        }
+
+        let (restart_index, config) = {
+            let mut state = inner.state.lock().expect("supervisor state");
+            if state.started_at.elapsed() >= STABLE_AFTER {
+                state.restarts = 0;
+            }
+            if state.restarts >= MAX_RESTARTS {
+                eprintln!(
+                    "backend supervision: processo uscito ({reason}); limite di {MAX_RESTARTS} restart raggiunto"
+                );
+                return;
+            }
+            state.restarts += 1;
+            (state.restarts, state.config.clone())
+        };
+        eprintln!(
+            "backend supervision: processo uscito ({reason}), restart {restart_index}/{MAX_RESTARTS}"
+        );
+
+        interruptible_sleep(&inner, Duration::from_millis(400 * restart_index as u64));
+        if !inner.running.load(Ordering::SeqCst) {
+            return;
+        }
+
+        let restart = spawn_backend(&config)
+            .map_err(|e| e.to_string())
+            .and_then(
+                |mut child| match wait_until_ready(&mut child, config.port) {
+                    Ok(()) => Ok(child),
+                    Err(error) => {
+                        let _ = terminate_child(&mut child);
+                        Err(error)
+                    }
+                },
+            );
+        match restart {
+            Ok(child) => {
+                let mut state = inner.state.lock().expect("supervisor state");
+                state.child = Some(child);
+                state.started_at = Instant::now();
+                state.restart_pending = false;
+                eprintln!(
+                    "backend supervision: backend riavviato sulla porta {}",
+                    config.port
+                );
+            }
+            Err(e) => {
+                eprintln!("backend supervision: restart fallito: {e}");
+                interruptible_sleep(&inner, Duration::from_secs(1));
+            }
+        }
+    }
+}
+
+fn interruptible_sleep(inner: &SupervisorInner, duration: Duration) {
+    let deadline = Instant::now() + duration;
+    while inner.running.load(Ordering::SeqCst) && Instant::now() < deadline {
+        thread::sleep(Duration::from_millis(100));
+    }
+}
+
+fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
+    if let Some(parent) = config.log_path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    fs::create_dir_all(&config.home_dir)?;
+    let stdout = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&config.log_path)?;
+    let stderr = stdout.try_clone()?;
+
+    let mut command = Command::new(&config.binary);
+    command
+        .arg("--home-dir")
+        .arg(&config.home_dir)
+        .env("PORT", config.port.to_string())
+        .env("SYNARA_NO_UPSTREAM", "1")
+        .env("SYNARA_MODE", "desktop")
+        .stdin(Stdio::null())
+        .stdout(Stdio::from(stdout))
+        .stderr(Stdio::from(stderr));
+
+    let child = command.spawn()?;
+    eprintln!(
+        "backend supervision: avviato pid {} sulla porta {} (log {})",
+        child.id(),
+        config.port,
+        config.log_path.display()
+    );
+    Ok(child)
+}
+
+fn wait_until_ready(child: &mut Child, port: u16) -> Result<(), String> {
+    let deadline = Instant::now() + READY_TIMEOUT;
+    loop {
+        if backend_ready(port) {
+            return Ok(());
+        }
+        if let Some(status) = child
+            .try_wait()
+            .map_err(|e| format!("stato processo non leggibile: {e}"))?
+        {
+            return Err(format!("processo uscito prima della readiness ({status})"));
+        }
+        if Instant::now() >= deadline {
+            return Err("timeout readiness /health".to_string());
+        }
+        thread::sleep(READY_POLL);
+    }
+}
+
+fn backend_ready(port: u16) -> bool {
+    let url = format!("http://127.0.0.1:{port}/health");
+    ureq::AgentBuilder::new()
+        .timeout_connect(Duration::from_millis(250))
+        .timeout_read(Duration::from_millis(250))
+        .build()
+        .get(&url)
+        .call()
+        .map(|response| response.status() == 200)
+        .unwrap_or(false)
+}
+
+fn terminate_child(child: &mut Child) -> io::Result<()> {
+    if child.try_wait()?.is_some() {
+        return Ok(());
+    }
+
+    #[cfg(unix)]
+    {
+        // SAFETY: `kill` is called with a live child process id and a standard
+        // signal number; it does not mutate memory or transfer ownership.
+        unsafe {
+            libc::kill(child.id() as libc::pid_t, libc::SIGTERM);
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        child.kill()?;
+    }
+
+    let deadline = Instant::now() + STOP_GRACE;
+    loop {
+        if child.try_wait()?.is_some() {
+            return Ok(());
+        }
+        if Instant::now() >= deadline {
+            child.kill()?;
+            let _ = child.wait();
+            return Ok(());
+        }
+        thread::sleep(Duration::from_millis(80));
+    }
+}
+
+pub fn ensure_backend() -> BackendLaunch {
+    if std::env::var("SYNARA_BACKEND_AUTOSTART").ok().as_deref() == Some("0") {
+        return BackendLaunch::External;
+    }
+    let port = configured_port();
+    if backend_ready(port) {
+        eprintln!("backend supervision: backend esistente riutilizzato sulla porta {port}");
+        return BackendLaunch::External;
+    }
+
+    let Some(binary) = resolve_backend_binary() else {
+        return BackendLaunch::Unavailable(
+            "backend non trovato: imposta SYNARA_BACKEND_BIN o avvia rust/app manualmente".into(),
+        );
+    };
+    let home_dir = configured_home_dir();
+    let log_path = home_dir.join("userdata").join("logs").join("backend.log");
+    let config = BackendConfig {
+        binary,
+        port,
+        home_dir,
+        log_path,
+    };
+
+    match BackendSupervisor::start(config) {
+        Ok(supervisor) => BackendLaunch::Managed(supervisor),
+        Err(error) => BackendLaunch::Unavailable(error),
+    }
+}
+
+fn configured_port() -> u16 {
+    if let Ok(url) = std::env::var("SYNARA_HTTP") {
+        if let Some(port) = port_from_http_url(&url) {
+            return port;
+        }
+    }
+    std::env::var("PORT")
+        .ok()
+        .and_then(|value| value.parse().ok())
+        .unwrap_or(8080)
+}
+
+fn port_from_http_url(value: &str) -> Option<u16> {
+    let uri = http::Uri::try_from(value).ok()?;
+    if let Some(port) = uri.authority().and_then(|authority| authority.port_u16()) {
+        return Some(port);
+    }
+    match uri.scheme_str() {
+        Some("https") => Some(443),
+        Some("http") => Some(80),
+        _ => None,
+    }
+}
+
+pub(crate) fn configured_home_dir() -> PathBuf {
+    if let Some(path) = std::env::var_os("SYNARA_HOME") {
+        return PathBuf::from(path);
+    }
+    if let Some(home) = std::env::var_os("HOME") {
+        return Path::new(&home).join(".synara");
+    }
+    PathBuf::from(".synara")
+}
+
+fn resolve_backend_binary() -> Option<PathBuf> {
+    if let Some(path) = std::env::var_os("SYNARA_BACKEND_BIN") {
+        let path = PathBuf::from(path);
+        return path.is_file().then_some(path);
+    }
+
+    if let Ok(exe) = std::env::current_exe() {
+        if let Some(dir) = exe.parent() {
+            for name in packaged_backend_names() {
+                let candidate = dir.join(name);
+                if candidate.is_file() {
+                    return Some(candidate);
+                }
+            }
+        }
+        if let Some(candidate) = dev_backend_binary_from_exe(&exe) {
+            return Some(candidate);
+        }
+    }
+    None
+}
+
+fn packaged_backend_names() -> &'static [&'static str] {
+    #[cfg(target_os = "windows")]
+    {
+        &["synara-backend.exe", "index.exe"]
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        &["synara-backend", "index"]
+    }
+}
+
+fn dev_backend_binary_from_exe(exe: &Path) -> Option<PathBuf> {
+    let binary_name = if cfg!(target_os = "windows") {
+        "index.exe"
+    } else {
+        "index"
+    };
+    for ancestor in exe.ancestors() {
+        let candidate = ancestor
+            .join("rust")
+            .join("app")
+            .join("target")
+            .join("debug")
+            .join(binary_name);
+        if candidate.is_file() {
+            return Some(candidate);
+        }
+    }
+    None
+}
+
+pub fn install_signal_shutdown(supervisor: BackendSupervisor) {
+    thread::spawn(move || {
+        #[cfg(unix)]
+        let signal_list = [signal_hook::consts::SIGINT, signal_hook::consts::SIGTERM];
+        #[cfg(not(unix))]
+        let signal_list = [signal_hook::consts::SIGINT];
+        let mut signals = match signal_hook::iterator::Signals::new(signal_list) {
+            Ok(signals) => signals,
+            Err(e) => {
+                eprintln!("backend supervision: signal handler non installato: {e}");
+                return;
+            }
+        };
+        if signals.forever().next().is_some() {
+            supervisor.shutdown();
+            std::process::exit(130);
+        }
+    });
+}
+
+pub fn launch_summary(launch: &BackendLaunch) -> serde_json::Value {
+    match launch {
+        BackendLaunch::External => json!({"mode": "external"}),
+        BackendLaunch::Managed(_) => json!({"mode": "managed"}),
+        BackendLaunch::Unavailable(error) => json!({"mode": "unavailable", "error": error}),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_explicit_http_ports() {
+        assert_eq!(port_from_http_url("http://127.0.0.1:8081"), Some(8081));
+        assert_eq!(
+            port_from_http_url("https://example.test:4443/x"),
+            Some(4443)
+        );
+    }
+
+    #[test]
+    fn parses_scheme_default_ports() {
+        assert_eq!(port_from_http_url("http://example.test"), Some(80));
+        assert_eq!(port_from_http_url("https://example.test"), Some(443));
+    }
+
+    #[test]
+    fn rejects_non_urls() {
+        assert_eq!(port_from_http_url("not a url"), None);
+        assert_eq!(port_from_http_url("ws://example.test"), None);
+    }
+
+    #[test]
+    fn resolves_dev_backend_from_shell_target_path() {
+        let root = std::env::temp_dir().join(format!("synara-backend-test-{}", std::process::id()));
+        let exe = root
+            .join("rust")
+            .join("shell")
+            .join("target")
+            .join("debug")
+            .join("synara-shell");
+        let backend = root
+            .join("rust")
+            .join("app")
+            .join("target")
+            .join("debug")
+            .join(if cfg!(windows) { "index.exe" } else { "index" });
+        fs::create_dir_all(backend.parent().unwrap()).unwrap();
+        fs::create_dir_all(exe.parent().unwrap()).unwrap();
+        fs::write(&backend, b"").unwrap();
+        assert_eq!(dev_backend_binary_from_exe(&exe), Some(backend));
+        let _ = fs::remove_dir_all(root);
+    }
+}

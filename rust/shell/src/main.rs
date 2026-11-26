@@ -9,10 +9,12 @@ use gpui_kit::*;
 use gpui_webview::WebView;
 
 mod backdrop;
+mod backend;
 mod browser_host;
 mod cua;
 mod native;
 mod voice;
+mod window_state;
 mod ws_client;
 
 const DEFAULT_URL: &str = "http://127.0.0.1:4577";
@@ -22,6 +24,8 @@ pub struct Shell {
     webview: Option<Entity<WebView>>,
     native: Entity<native::Native>,
     address_input: Entity<InputState>,
+    last_window_state_write: std::time::Instant,
+    window_state_subscription: Option<Subscription>,
 }
 
 impl Shell {
@@ -53,12 +57,26 @@ impl Shell {
         }
 
         cx.new(|cx| {
-            let this = Self {
+            let mut this = Self {
                 focus_handle: cx.focus_handle(),
                 webview,
                 native: native::Native::new(window, cx),
                 address_input: address_input.clone(),
+                last_window_state_write: std::time::Instant::now()
+                    - std::time::Duration::from_secs(1),
+                window_state_subscription: None,
             };
+            this.window_state_subscription = Some(cx.observe_window_bounds(
+                window,
+                |this: &mut Self, window: &mut Window, _cx: &mut Context<Self>| {
+                    if this.last_window_state_write.elapsed()
+                        >= std::time::Duration::from_millis(300)
+                    {
+                        window_state::save_from_window(window);
+                        this.last_window_state_write = std::time::Instant::now();
+                    }
+                },
+            ));
 
             cx.subscribe(
                 &address_input,
@@ -154,6 +172,15 @@ impl Render for Shell {
 }
 
 fn main() {
+    let backend_launch = backend::ensure_backend();
+    eprintln!(
+        "backend supervision: {}",
+        backend::launch_summary(&backend_launch)
+    );
+    if let Some(supervisor) = backend_launch.supervisor() {
+        backend::install_signal_shutdown(supervisor);
+    }
+
     // Required for Windows to render the WebView.
     #[cfg(target_os = "windows")]
     unsafe {
@@ -177,7 +204,8 @@ fn main() {
             include_bytes!("../assets/fonts/CalSans-Regular.ttf").as_slice(),
         )]);
 
-        let options = WindowOptions {
+        let persisted_window = window_state::load();
+        let mut options = WindowOptions {
             window_bounds: Some(WindowBounds::Maximized(Bounds::centered(
                 None,
                 size(px(1440.), px(900.)),
@@ -185,7 +213,16 @@ fn main() {
             ))),
             ..Default::default()
         };
+        if let Some(bounds) = persisted_window.window_bounds {
+            options.window_bounds = Some(bounds);
+        }
 
-        gpui_kit::open_window(options, cx, Shell::new).expect("Failed to open window");
+        let (window_handle, _) =
+            gpui_kit::open_window(options, cx, Shell::new).expect("Failed to open window");
+        if let Some(native_state) = persisted_window.native_state {
+            let _ = window_handle.update(cx, |_, window, _| {
+                window.restore_native_window_state(&native_state);
+            });
+        }
     });
 }

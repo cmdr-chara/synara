@@ -27037,11 +27037,8 @@ impl Render for Native {
                                 },
                             )))
                             .child(frow("fctx-reveal", "Reveal in Finder", Box::new(
-                                move |_this, _w, _cx| {
-                                    let _ = std::process::Command::new("open")
-                                        .arg("-R")
-                                        .arg(&p_reveal)
-                                        .spawn();
+                                move |_this, _w, cx| {
+                                    cx.reveal_path(std::path::Path::new(&p_reveal));
                                 },
                             )))
                             .child(frow("fctx-copy", "Copy path", Box::new(
@@ -27195,12 +27192,9 @@ impl Render for Native {
                 let root_reloc = proj_root.clone();
                 menu = menu
                     .child(mrow("pctx-finder", "Open in Finder".into(), Box::new(
-                        move |_this, _w, _cx| {
+                        move |_this, _w, cx| {
                             if !p_reveal.is_empty() {
-                                let _ = std::process::Command::new("open")
-                                    .arg("-R")
-                                    .arg(&p_reveal)
-                                    .spawn();
+                                cx.reveal_path(std::path::Path::new(&p_reveal));
                             }
                         },
                     )))

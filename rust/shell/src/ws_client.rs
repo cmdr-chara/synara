@@ -26,6 +26,21 @@ pub struct Client {
     cookie: Option<String>,
 }
 
+fn default_ws_url(base: &str, token: &str) -> String {
+    let base = base.trim_end_matches('/');
+    let ws_base = if let Some(rest) = base.strip_prefix("http://") {
+        format!("ws://{rest}")
+    } else if let Some(rest) = base.strip_prefix("https://") {
+        format!("wss://{rest}")
+    } else {
+        "ws://127.0.0.1:8080".to_string()
+    };
+    format!(
+        "{ws_base}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision=3&x-synara-server-instance=inst-1&token={}",
+        urlencoding::encode(token)
+    )
+}
+
 impl Client {
     /// Mint a real session cookie + ws token through the front door so relayed
     /// (non-native) RPCs authenticate like the browser does.
@@ -62,16 +77,7 @@ impl Client {
     pub fn connect() -> Option<Arc<Self>> {
         let base = std::env::var("SYNARA_HTTP").unwrap_or_else(|_| "http://127.0.0.1:8080".into());
         let (cookie, token) = Self::mint_session(&base);
-        let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| {
-            // Derive the socket authority from SYNARA_HTTP so isolated
-            // instances on non-default ports connect to their own backend;
-            // the hardcoded default only ever matched the production port.
-            let authority = base
-                .trim_start_matches("http://")
-                .trim_start_matches("https://")
-                .trim_end_matches('/');
-            format!("ws://{authority}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision=3&x-synara-server-instance=inst-1&token={token}")
-        });
+        let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| default_ws_url(&base, &token));
         let host = http::Uri::try_from(&url)
             .ok()
             .and_then(|u| u.authority().map(|a| a.as_str().to_string()))
@@ -132,36 +138,40 @@ impl Client {
         let reader_alive = alive.clone();
         thread::spawn(move || {
             loop {
-            match sock.read() {
-                Ok(Message::Text(text)) => {
-                    let Ok(msg) = serde_json::from_str::<Value>(&text) else {
-                        continue;
-                    };
-                    let rid = msg
-                        .get("requestId")
-                        .and_then(Value::as_str)
-                        .map(str::to_owned);
-                    if let Some(rid) = rid {
-                        if let Some(tx) = pending_reader.lock().ok().and_then(|m| m.get(&rid).cloned()) {
-                            let _ = tx.send(msg);
+                match sock.read() {
+                    Ok(Message::Text(text)) => {
+                        let Ok(msg) = serde_json::from_str::<Value>(&text) else {
+                            continue;
+                        };
+                        let rid = msg
+                            .get("requestId")
+                            .and_then(Value::as_str)
+                            .map(str::to_owned);
+                        if let Some(rid) = rid {
+                            if let Some(tx) = pending_reader
+                                .lock()
+                                .ok()
+                                .and_then(|m| m.get(&rid).cloned())
+                            {
+                                let _ = tx.send(msg);
+                            }
                         }
                     }
-                }
-                Ok(Message::Ping(p)) => {
-                    if let Ok(mut w) = pong_writer.lock() {
-                        let _ = w.send(Message::Pong(p));
+                    Ok(Message::Ping(p)) => {
+                        if let Ok(mut w) = pong_writer.lock() {
+                            let _ = w.send(Message::Pong(p));
+                        }
                     }
+                    Ok(Message::Close(c)) => {
+                        eprintln!("ws_client: close frame: {c:?}");
+                        break;
+                    }
+                    Err(e) => {
+                        eprintln!("ws_client: read error: {e}");
+                        break;
+                    }
+                    Ok(_) => {}
                 }
-                Ok(Message::Close(c)) => {
-                    eprintln!("ws_client: close frame: {c:?}");
-                    break;
-                }
-                Err(e) => {
-                    eprintln!("ws_client: read error: {e}");
-                    break;
-                }
-                Ok(_) => {}
-            }
             }
             reader_alive.store(false, Ordering::Relaxed);
             // Drop every outstanding sender so blocked `call`/`call_stream`
@@ -226,7 +236,10 @@ impl Client {
             req = req.set("Cookie", cookie);
         }
         match req.send_bytes(bytes) {
-            Ok(r) => r.into_json::<Value>().ok().filter(|v| v.get("id").is_some()),
+            Ok(r) => r
+                .into_json::<Value>()
+                .ok()
+                .filter(|v| v.get("id").is_some()),
             Err(e) => {
                 eprintln!("ws_client: attachment upload failed: {e}");
                 None
@@ -249,7 +262,8 @@ impl Client {
         );
         let (tx, rx) = channel();
         self.pending.lock().ok()?.insert(id.clone(), tx);
-        let req = json!({"_tag": "Request", "id": id, "tag": tag, "payload": payload, "headers": []});
+        let req =
+            json!({"_tag": "Request", "id": id, "tag": tag, "payload": payload, "headers": []});
         let sent = self
             .writer
             .lock()
@@ -378,5 +392,24 @@ impl Client {
         }
         let _ = self.pending.lock().map(|mut m| m.remove(&id));
         (Some(id), out)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn derives_ws_url_from_http_base() {
+        let url = default_ws_url("http://127.0.0.1:8091", "token.with+chars");
+        assert!(url.starts_with("ws://127.0.0.1:8091/ws?"));
+        assert!(url.ends_with("token=token.with%2Bchars"));
+    }
+
+    #[test]
+    fn derives_wss_url_from_https_base() {
+        assert!(
+            default_ws_url("https://synara.example/", "t").starts_with("wss://synara.example/ws?")
+        );
     }
 }

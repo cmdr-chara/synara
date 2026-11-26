@@ -22617,6 +22617,11 @@ impl Render for Native {
                                                 .id(ElementId::Name(format!("vault-reveal-{index}").into()))
                                                 .cursor_pointer()
                                                 .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                    if !configured {
+                                                        this.vault_error = Some("Set a master password before revealing saved passwords.".into());
+                                                        cx.notify();
+                                                        return;
+                                                    }
                                                     if this.vault_reveal_id.as_deref() == Some(reveal_id.as_str()) {
                                                         this.vault_reveal_id = None;
                                                         this.vault_revealed = None;

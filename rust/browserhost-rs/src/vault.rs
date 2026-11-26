@@ -435,6 +435,7 @@ struct VaultState {
     redaction_secrets: HashSet<String>,
     capture_error: Option<String>,
     save_prompts: Vec<SavePrompt>,
+    master_retry_at: i64,
 }
 
 impl BrowserVault {
@@ -456,6 +457,7 @@ impl BrowserVault {
             redaction_secrets: HashSet::new(),
             capture_error: None,
             save_prompts: Vec::new(),
+            master_retry_at: 0,
         };
         if let Ok(text) = std::fs::read_to_string(directory.join("preferences.json")) {
             state.preferences = serde_json::from_str(&text).unwrap_or_default();
@@ -571,15 +573,29 @@ impl BrowserVault {
         let master = envelope
             .get("master")
             .ok_or("master password is not configured")?;
+        {
+            let state = self.state.lock().map_err(|_| "vault lock".to_string())?;
+            if now_ms() < state.master_retry_at {
+                return Err("master password verification failed. Try again shortly.".into());
+            }
+        }
         let salt = unb64(master.get("salt").and_then(Value::as_str).unwrap_or(""), 16)?;
         let derived = derive_password_key(password, &salt)?;
-        let plaintext = decrypt(
+        let plaintext = match decrypt(
             &derived,
             master.get("iv").and_then(Value::as_str).unwrap_or(""),
             master.get("tag").and_then(Value::as_str).unwrap_or(""),
             master.get("data").and_then(Value::as_str).unwrap_or(""),
             KEY_AAD,
-        )?;
+        ) {
+            Ok(plaintext) => plaintext,
+            Err(error) => {
+                if let Ok(mut state) = self.state.lock() {
+                    state.master_retry_at = now_ms() + 1000;
+                }
+                return Err(error);
+            }
+        };
         if plaintext.len() != KEY_BYTES {
             return Err("vault key verification failed".into());
         }
@@ -597,6 +613,7 @@ impl BrowserVault {
         }
         state.key = None;
         state.payload = VaultPayload::default();
+        state.save_prompts.clear();
         Ok(())
     }
 
@@ -606,6 +623,9 @@ impl BrowserVault {
         }
         let mut state = self.state.lock().map_err(|_| "vault lock".to_string())?;
         state.preferences.settings = settings;
+        if !settings.offer_save {
+            state.save_prompts.clear();
+        }
         self.persist_preferences_locked(&state)?;
         drop(state);
         self.snapshot()
@@ -683,7 +703,7 @@ impl BrowserVault {
             !(prompt.origin == origin && prompt.username.eq_ignore_ascii_case(username))
         });
         if state.save_prompts.len() >= 8 {
-            state.save_prompts.remove(0);
+            return Err("too many password save prompts are waiting".into());
         }
         let mode = if state.payload.records.iter().any(|record| {
             record.origin == origin && record.username.eq_ignore_ascii_case(username)
@@ -930,7 +950,10 @@ impl BrowserVault {
             .iter()
             .find(|record| record.id == id)
             .ok_or("no saved password exists for this login")?;
-        Ok(json!({"password": record.password, "expiresAt": now_ms() + 20_000}))
+        let password = record.password.clone();
+        drop(state);
+        self.track_secret(&password);
+        Ok(json!({"password": password, "expiresAt": now_ms() + 20_000}))
     }
 
     pub fn list_metadata(&self, origin: &str) -> Result<Vec<Value>, String> {
@@ -1316,6 +1339,7 @@ mod tests {
             .and_then(Value::as_bool)
             .unwrap());
         assert!(locked.unlock("the wrong password").is_err());
+        locked.state.lock().unwrap().master_retry_at = 0;
         locked.unlock("another long password").unwrap();
         let revealed = locked.reveal(&id, "another long password").unwrap();
         assert_eq!(

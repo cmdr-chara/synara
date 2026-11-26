@@ -1262,6 +1262,9 @@ pub struct Native {
     /// Logical screen points from computer.getScreenSize — the click
     /// mapping divides the PNG pixels by this, never assuming retina.
     cua_screen_points: Option<(f64, f64)>,
+    /// Keyboard forwarding input inside the computer panel: typed text goes
+    /// to the desktop as computer.typeText on Enter, then a Return key.
+    cua_input: Option<Entity<InputState>>,
     term_active: bool,
     // TerminalWorkspaceTabs: one PTY session per tab; events route by id.
     term_tabs: Vec<TermTab>,
@@ -3038,6 +3041,7 @@ impl Native {
                 cua: None,
                 cua_seen_seq: 0,
                 cua_screen_points: None,
+                cua_input: None,
                 term_active: false,
                 term_tabs: Vec::new(),
                 term_sel: 0,
@@ -8066,7 +8070,7 @@ impl Native {
 
     /// Toggle the computer-use panel: opening connects the frame stream
     /// and starts the refresh timer; closing retires the receiver thread.
-    fn toggle_cua(&mut self, _window: &mut Window, cx: &mut Context<Self>) {
+    fn toggle_cua(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         self.view_cua = !self.view_cua;
         if self.view_cua {
             if self.cua.is_none() {
@@ -8076,6 +8080,54 @@ impl Native {
                 handle.start();
             }
             self.ensure_cua_refresh(cx);
+            if self.cua_input.is_none() {
+                let input = cx.new(|cx| {
+                    InputState::new(window, cx).placeholder("type into the desktop, Enter sends")
+                });
+                cx.subscribe_in(&input, window, |this: &mut Self, state, ev, w, cx| {
+                    if let InputEvent::PressEnter { .. } = ev {
+                        let text = state.read(cx).value().to_string();
+                        if text.is_empty() {
+                            return;
+                        }
+                        state.update(cx, |s, cx| {
+                            s.set_value("", w, cx);
+                        });
+                        let thread = this
+                            .selected_thread
+                            .clone()
+                            .unwrap_or_else(|| "shell".to_string());
+                        let client_cell = this.client.clone();
+                        cx.spawn(async move |_this, cx: &mut AsyncApp| {
+                            let cell = client_cell.clone();
+                            if let Some(client) = cx
+                                .background_executor()
+                                .spawn(async move { ensure_client(&cell) })
+                                .await
+                            {
+                                let thread2 = thread.clone();
+                                let text2 = text.clone();
+                                let client2 = client.clone();
+                                let _ = cx
+                                    .background_executor()
+                                    .spawn(async move {
+                                        crate::cua::type_text(&client2, &thread2, &text2)
+                                    })
+                                    .await;
+                                let _ = cx
+                                    .background_executor()
+                                    .spawn(async move {
+                                        crate::cua::key(&client, &thread, "return")
+                                    })
+                                    .await;
+                            }
+                        })
+                        .detach();
+                    }
+                })
+                .detach();
+                self.cua_input = Some(input);
+            }
             if self.cua_screen_points.is_none() {
                 let client_cell = self.client.clone();
                 cx.spawn(async move |this, cx: &mut AsyncApp| {
@@ -24265,6 +24317,18 @@ impl Render for Native {
                             }),
                     );
                 cua_surface = cua_surface.child(strip);
+                if let Some(input) = &self.cua_input {
+                    cua_surface = cua_surface.child(
+                        h_flex()
+                            .w_full()
+                            .h(px(34.))
+                            .px_2()
+                            .items_center()
+                            .border_b_1()
+                            .border_color(theme.border)
+                            .child(div().flex_1().child(Input::new(input))),
+                    );
+                }
                 // The desktop still renders at logical screen size — retina
                 // captures are 2× the point space — inside a scroll area, so
                 // a click position in the element IS the screen point.

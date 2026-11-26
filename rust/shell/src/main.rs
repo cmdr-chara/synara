@@ -13,6 +13,7 @@ mod backend;
 mod browser_host;
 mod cua;
 mod native;
+mod updater;
 mod voice;
 mod window_material;
 mod window_state;

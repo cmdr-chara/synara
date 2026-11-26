@@ -84,3 +84,15 @@ SETTINGS EXACT SPEC (measured in live web via CDP, 1600x1088):
 NOTE on diff metric: 8.65% at thresh 18 with aligned geometry — cross-rasterizer
 text AA inflates it. Next refinement: measure diff EXCLUDING text pixels, or
 diff on blurred images (geometry-only). reddiff/anaglyph on downsampled pairs.
+
+NEXT ACTION (post-compaction pickup): transcript surface pass. Blocker hit:
+test threads vanished from shell sidebar (project shows 0 chats) though web
+tabs still show sessions /4dbd7265 /4c8deb08 /57a0ee49 /a903e821. State db
+location uncertain (state.sqlite unreadable/empty via sqlite3 cli — likely
+locked or wrong path; backend pid running as ./target/debug/index). FASTEST
+unblock: create a fresh test thread in the web app UI (composer input burns
+no quota if echo provider configured — verify first), or send a message via
+the backend RPC directly. Alternative: point both clients at the same session
+by navigating web tab to a thread then finding it in shell sidebar under its
+project. ALSO: /settings IS a valid web route — use URL navigation for all
+web surfaces where routes exist (cheap).

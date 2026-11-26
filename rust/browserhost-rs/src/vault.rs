@@ -354,11 +354,52 @@ impl Default for VaultPayload {
     }
 }
 
+mod source_entries {
+    use super::CredentialSource;
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use std::collections::HashMap;
+
+    #[derive(Serialize, Deserialize)]
+    struct SourceEntry {
+        id: String,
+        source: CredentialSource,
+    }
+
+    pub fn serialize<S>(
+        sources: &HashMap<String, CredentialSource>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut entries: Vec<_> = sources
+            .iter()
+            .map(|(id, source)| SourceEntry {
+                id: id.clone(),
+                source: *source,
+            })
+            .collect();
+        entries.sort_by(|left, right| left.id.cmp(&right.id));
+        entries.serialize(serializer)
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<HashMap<String, CredentialSource>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let entries = Vec::<SourceEntry>::deserialize(deserializer)?;
+        Ok(entries
+            .into_iter()
+            .map(|entry| (entry.id, entry.source))
+            .collect())
+    }
+}
+
 #[derive(Default, Serialize, Deserialize)]
 struct Preferences {
     #[serde(default)]
     settings: VaultSettings,
-    #[serde(default)]
+    #[serde(default, with = "source_entries")]
     sources: HashMap<String, CredentialSource>,
     #[serde(default, rename = "neverOrigins")]
     never_origins: HashSet<String>,
@@ -1181,6 +1222,29 @@ mod tests {
         assert_eq!(
             revealed.get("password").and_then(Value::as_str),
             Some("persisted-secret")
+        );
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
+    #[test]
+    fn preferences_sources_use_upstream_entry_array() {
+        let dir = home("preferences-format");
+        let vault = BrowserVault::open_with_keyring(&dir, false).unwrap();
+        vault
+            .save_login(
+                "https://example.com/",
+                "ada",
+                "secret",
+                None,
+                CredentialSource::User,
+            )
+            .unwrap();
+        let text = std::fs::read_to_string(dir.join("preferences.json")).unwrap();
+        let preferences: Value = serde_json::from_str(&text).unwrap();
+        assert!(preferences.get("sources").and_then(Value::as_array).is_some());
+        assert_eq!(
+            preferences.pointer("/sources/0/source").and_then(Value::as_str),
+            Some("user")
         );
         let _ = std::fs::remove_dir_all(dir);
     }

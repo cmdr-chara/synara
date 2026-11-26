@@ -133,6 +133,16 @@ async fn main() {
             let state_dir = todo::state_dir();
             let secrets_dir = format!("{state_dir}/secrets");
             let _ = std::fs::create_dir_all(&secrets_dir);
+            // The environment id is created once on first boot exactly like
+            // upstream's accountAuth — a bare UUID in a file every remote
+            // surface and server.getEnvironment reads back.
+            let env_id_path = std::path::Path::new(&state_dir).join("environment-id");
+            if server_env::environment_id(&state_dir).is_none() {
+                let id = orchestration_engine::uuid_v4();
+                if std::fs::write(&env_id_path, format!("{id}\n")).is_ok() {
+                    eprintln!("environment id: generated");
+                }
+            }
             let identity_path = host_identity::host_identity_path(&secrets_dir);
             match host_identity::read_host_identity(&identity_path) {
                 Ok(Some(_)) => {}

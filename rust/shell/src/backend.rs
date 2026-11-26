@@ -302,7 +302,38 @@ impl Drop for BackendSupervisor {
 }
 
 fn watchdog_loop(inner: Arc<SupervisorInner>) {
+    let mut last_stall_count: Option<u64> = None;
+    let mut last_health_poll = Instant::now() - Duration::from_secs(1);
     while inner.running.load(Ordering::SeqCst) {
+        let health_port = {
+            let state = inner.state.lock().expect("supervisor state");
+            state.child.as_ref().map(|_| state.config.port)
+        };
+        if let Some(port) = health_port {
+            if last_health_poll.elapsed() >= Duration::from_secs(1) {
+                last_health_poll = Instant::now();
+                if let Some(payload) = backend_health_payload(port) {
+                    let count = payload
+                        .get("eventLoop")
+                        .and_then(|event_loop| event_loop.get("stallWindowCount"))
+                        .and_then(serde_json::Value::as_u64)
+                        .unwrap_or(0);
+                    match last_stall_count {
+                        None => last_stall_count = Some(count),
+                        Some(previous) if count > previous => {
+                            for _ in previous..count {
+                                crate::reliability::track("backend.event_loop_stall");
+                            }
+                            last_stall_count = Some(count);
+                        }
+                        Some(previous) if count < previous => last_stall_count = Some(count),
+                        _ => {}
+                    }
+                }
+            }
+        } else {
+            last_stall_count = None;
+        }
         let exit_reason = {
             let mut state = inner.state.lock().expect("supervisor state");
             if let Some(child) = state.child.as_mut() {
@@ -482,7 +513,7 @@ fn wait_until_ready(child: &mut Child, port: u16) -> Result<(), String> {
     }
 }
 
-fn backend_ready(port: u16) -> bool {
+fn backend_health_payload(port: u16) -> Option<serde_json::Value> {
     let url = format!("http://127.0.0.1:{port}/health");
     ureq::AgentBuilder::new()
         .timeout_connect(Duration::from_millis(250))
@@ -493,6 +524,10 @@ fn backend_ready(port: u16) -> bool {
         .ok()
         .filter(|response| response.status() == 200)
         .and_then(|response| response.into_json::<serde_json::Value>().ok())
+}
+
+fn backend_ready(port: u16) -> bool {
+    backend_health_payload(port)
         .is_some_and(|payload| payload.get("startupReady").and_then(serde_json::Value::as_bool) == Some(true))
 }
 
@@ -737,6 +772,29 @@ mod tests {
         let read = tail.read();
         assert_eq!(read.len(), BACKEND_FAILURE_OUTPUT_TAIL_BYTES);
         assert!(read.ends_with("bcdef"));
+    }
+
+    #[test]
+    fn health_payload_requires_successful_json_response() {
+        use std::io::{Read as _, Write as _};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0_u8; 1024];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"startupReady":true,"eventLoop":{"stallWindowCount":2}}"#;
+            write!(
+                stream,
+                "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{}",
+                body.len(),
+                body
+            )
+            .unwrap();
+        });
+        let payload = backend_health_payload(port).unwrap();
+        assert_eq!(payload["startupReady"], serde_json::json!(true));
+        server.join().unwrap();
     }
 
     #[test]

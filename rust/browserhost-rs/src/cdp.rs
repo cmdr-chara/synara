@@ -4,6 +4,7 @@
 //! profile; Synara never touches the user's real browser profile or cookies.
 
 use crate::network::NetworkPolicy;
+use crate::vault::BrowserVault;
 use serde_json::{json, Map, Value};
 use std::collections::HashMap;
 use std::process::Stdio;
@@ -151,6 +152,60 @@ fn cdp_profile_dir(mode: CdpMode) -> std::path::PathBuf {
     }
 }
 
+fn browser_vault() -> Result<&'static BrowserVault, String> {
+    static VAULT: OnceLock<Result<BrowserVault, String>> = OnceLock::new();
+    VAULT
+        .get_or_init(|| {
+            let base = std::env::var("SYNARA_HOME")
+                .map(std::path::PathBuf::from)
+                .unwrap_or_else(|_| {
+                    std::path::PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| "/tmp".into()))
+                        .join(".synara")
+                });
+            BrowserVault::open(base.join("browser-vault"))
+        })
+        .as_ref()
+        .map_err(Clone::clone)
+}
+
+const CREDENTIALS_BRIDGE_JS: &str = r#"(() => {
+  if (window.__synaraCredentialBridgeInstalled) return true;
+  window.__synaraCredentialBridgeInstalled = true;
+  window.__synaraCredentialPending = {};
+  window.__synaraCredentialResolve = (id, result, error) => {
+    const pending = window.__synaraCredentialPending[id];
+    if (!pending) return false;
+    delete window.__synaraCredentialPending[id];
+    if (error) pending.reject(new Error(error));
+    else pending.resolve(result);
+    return true;
+  };
+  const invoke = (action, payload) => new Promise((resolve, reject) => {
+    const id = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
+    window.__synaraCredentialPending[id] = { resolve, reject };
+    window.__synaraCredentialBinding(JSON.stringify({
+      id,
+      action,
+      payload: payload || {},
+      origin: location.origin,
+    }));
+  });
+  window.credentials = {
+    list: (payload) => invoke('list', payload),
+    listPending: (payload) => invoke('list-pending', payload),
+  };
+  return true;
+})()"#;
+
+fn credential_list_result(action: &str, origin: &str) -> Result<Value, String> {
+    let vault = browser_vault()?;
+    match action {
+        "list" => vault.agent_list_metadata(origin).map(Value::Array),
+        "list-pending" => vault.agent_list_pending_metadata(origin).map(Value::Array),
+        _ => Err("credential action unavailable to browser scripts".into()),
+    }
+}
+
 fn fire_and_forget_command(
     tx: &mpsc::UnboundedSender<String>,
     next_id: &AtomicU64,
@@ -194,6 +249,7 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
     let event_tx = tx.clone();
     let event_next_id = next_id.clone();
     tokio::spawn(async move {
+        let mut execution_contexts: HashMap<(String, u64), String> = HashMap::new();
         while let Some(msg) = stream.next().await {
             let Ok(msg) = msg else { break };
             if let tokio_tungstenite::tungstenite::Message::Text(text) = msg {
@@ -203,6 +259,112 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                             if let Some(sender) = map.remove(&id) {
                                 let _ = sender.send(v);
                             }
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Runtime.executionContextCreated")
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let id = v
+                            .pointer("/params/context/id")
+                            .and_then(Value::as_u64)
+                            .unwrap_or(0);
+                        let origin = v
+                            .pointer("/params/context/origin")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        if id != 0 && !origin.is_empty() {
+                            execution_contexts.insert((session, id), origin);
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Runtime.executionContextDestroyed")
+                    {
+                        let session = v
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .unwrap_or("")
+                            .to_string();
+                        let id = v
+                            .pointer("/params/executionContextId")
+                            .and_then(Value::as_u64)
+                            .unwrap_or(0);
+                        execution_contexts.remove(&(session, id));
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Runtime.bindingCalled")
+                        && v.pointer("/params/name").and_then(Value::as_str)
+                            == Some("__synaraCredentialBinding")
+                    {
+                        let session = v.get("sessionId").and_then(Value::as_str);
+                        let context_id = v
+                            .pointer("/params/executionContextId")
+                            .and_then(Value::as_u64)
+                            .unwrap_or(0);
+                        let context_origin = session
+                            .and_then(|session| {
+                                execution_contexts.get(&(session.to_string(), context_id)).cloned()
+                            })
+                            .unwrap_or_default();
+                        let payload_text = v
+                            .pointer("/params/payload")
+                            .and_then(Value::as_str)
+                            .unwrap_or("");
+                        let mut request_id = String::new();
+                        let mut result = Value::Null;
+                        let mut error: Option<String> = None;
+                        if context_origin.is_empty() {
+                            error = Some("credential origin is unavailable".into());
+                        } else if let Ok(request) = serde_json::from_str::<Value>(payload_text) {
+                            request_id = request
+                                .get("id")
+                                .and_then(Value::as_str)
+                                .unwrap_or("")
+                                .to_string();
+                            let action = request
+                                .get("action")
+                                .and_then(Value::as_str)
+                                .unwrap_or("");
+                            let payload_origin = request
+                                .get("origin")
+                                .and_then(Value::as_str)
+                                .unwrap_or(&context_origin);
+                            if payload_origin != context_origin {
+                                error = Some("credential request does not match this page origin".into());
+                            } else {
+                                match credential_list_result(action, &context_origin) {
+                                    Ok(value) => result = value,
+                                    Err(message) => error = Some(message),
+                                }
+                            }
+                        } else {
+                            error = Some("invalid credential request".into());
+                        }
+                        if !request_id.is_empty() {
+                            let error_json = error
+                                .as_deref()
+                                .map(js_string)
+                                .unwrap_or_else(|| "null".into());
+                            let expression = format!(
+                                "window.__synaraCredentialResolve && window.__synaraCredentialResolve({}, {}, {})",
+                                js_string(&request_id),
+                                if error.is_some() { "null".into() } else { result.to_string() },
+                                error_json,
+                            );
+                            fire_and_forget_command(
+                                &event_tx,
+                                &event_next_id,
+                                "Runtime.evaluate",
+                                json!({
+                                    "expression": expression,
+                                    "awaitPromise": true,
+                                    "returnByValue": true,
+                                    "contextId": context_id,
+                                }),
+                                session,
+                            );
                         }
                     } else if v.get("method").and_then(Value::as_str)
                         == Some("Fetch.requestPaused")
@@ -538,6 +700,13 @@ async fn thread_session(
         .await;
     let _ = conn
         .call(
+            "Runtime.addBinding",
+            json!({"name": "__synaraCredentialBinding", "executionContextName": "synara-agent"}),
+            Some(&session_id),
+        )
+        .await;
+    let _ = conn
+        .call(
             "Fetch.enable",
             json!({"patterns": [{"urlPattern": "*", "requestStage": "Request"}]}),
             Some(&session_id),
@@ -564,21 +733,22 @@ async fn wait_for_load(conn: &CdpConnection, session: &str) {
     }
 }
 
-async fn cdp_eval(
+async fn cdp_eval_in_context(
     conn: &CdpConnection,
     session: &str,
     expression: &str,
+    context_id: Option<u64>,
 ) -> Result<Value, String> {
+    let mut params = json!({
+        "expression": expression,
+        "awaitPromise": true,
+        "returnByValue": true,
+    });
+    if let Some(context_id) = context_id {
+        params["contextId"] = json!(context_id);
+    }
     let result = conn
-        .call(
-            "Runtime.evaluate",
-            json!({
-                "expression": expression,
-                "awaitPromise": true,
-                "returnByValue": true,
-            }),
-            Some(session),
-        )
+        .call("Runtime.evaluate", params, Some(session))
         .await?;
     if let Some(exception) = result.pointer("/exceptionDetails/exception/description").and_then(Value::as_str) {
         return Err(exception.to_string());
@@ -592,6 +762,33 @@ async fn cdp_eval(
         .pointer("/result/value")
         .cloned()
         .unwrap_or(Value::Null))
+}
+
+async fn cdp_eval(
+    conn: &CdpConnection,
+    session: &str,
+    expression: &str,
+) -> Result<Value, String> {
+    cdp_eval_in_context(conn, session, expression, None).await
+}
+
+async fn create_agent_context(conn: &CdpConnection, session: &str) -> Result<u64, String> {
+    let tree = conn.call("Page.getFrameTree", json!({}), Some(session)).await?;
+    let frame_id = tree
+        .pointer("/frameTree/frame/id")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "Page.getFrameTree missing main frame".to_string())?;
+    let created = conn
+        .call(
+            "Page.createIsolatedWorld",
+            json!({"frameId": frame_id, "worldName": "synara-agent"}),
+            Some(session),
+        )
+        .await?;
+    created
+        .get("executionContextId")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| "Page.createIsolatedWorld missing executionContextId".to_string())
 }
 
 fn js_string(value: &str) -> String {
@@ -717,8 +914,10 @@ pub async fn call_cdp_tool(
                 .get("code")
                 .and_then(Value::as_str)
                 .ok_or_else(|| "browser_run requires code".to_string())?;
+            let context_id = create_agent_context(&conn, &session).await?;
+            cdp_eval_in_context(&conn, &session, CREDENTIALS_BRIDGE_JS, Some(context_id)).await?;
             let expression = crate::runexpr::browser_run_expression(code);
-            let value = cdp_eval(&conn, &session, &expression).await?;
+            let value = cdp_eval_in_context(&conn, &session, &expression, Some(context_id)).await?;
             Ok(json!({"backend": backend, "value": value}))
         }
         "browser_click" => {

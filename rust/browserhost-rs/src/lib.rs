@@ -5,3 +5,4 @@ pub mod network;
 pub mod protocol;
 pub mod runexpr;
 pub mod server;
+pub mod vault;

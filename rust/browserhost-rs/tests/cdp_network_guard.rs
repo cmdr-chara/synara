@@ -31,6 +31,22 @@ async fn allowed_loopback_page_loads_through_fetch_guard() {
         }
     });
 
+    let vault = browserhost_rs::vault::BrowserVault::open_with_keyring(
+        home.join("browser-vault"),
+        false,
+    )
+    .expect("seed browser vault");
+    vault
+        .save_login(
+            &format!("http://127.0.0.1:{port}/"),
+            "ada",
+            "live-vault-secret",
+            None,
+            browserhost_rs::vault::CredentialSource::User,
+        )
+        .expect("seed login");
+    drop(vault);
+
     let thread = "network-guard-smoke";
     let opened = browserhost_rs::cdp::call_cdp_tool(
         "browser_open",
@@ -54,6 +70,36 @@ async fn allowed_loopback_page_loads_through_fetch_guard() {
     assert_eq!(
         evaluated.get("value").and_then(serde_json::Value::as_str),
         Some("guard-smoke-ok")
+    );
+
+    let credentials = browserhost_rs::cdp::call_cdp_tool(
+        "browser_run",
+        &json!({"code": "return await credentials.list()"}),
+        Some(thread),
+    )
+    .await
+    .expect("credentials bridge should answer");
+    let accounts = credentials
+        .get("value")
+        .and_then(serde_json::Value::as_array)
+        .expect("credentials.list returns an array");
+    assert_eq!(accounts.len(), 1);
+    assert_eq!(
+        accounts[0].get("username").and_then(serde_json::Value::as_str),
+        Some("ada")
+    );
+    assert!(!accounts[0].to_string().contains("live-vault-secret"));
+
+    let page_exposure = browserhost_rs::cdp::call_cdp_tool(
+        "browser_evaluate",
+        &json!({"expression": "typeof window.credentials + '|' + typeof window.__synaraCredentialBinding"}),
+        Some(thread),
+    )
+    .await
+    .expect("main-world exposure check");
+    assert_eq!(
+        page_exposure.get("value").and_then(serde_json::Value::as_str),
+        Some("undefined|undefined")
     );
 
     let blocked = browserhost_rs::cdp::call_cdp_tool(

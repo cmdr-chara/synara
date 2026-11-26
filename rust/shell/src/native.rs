@@ -14769,7 +14769,12 @@ impl Render for Native {
                     "Projects".to_string()
                 }),
         );
-        if arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects").is_empty() {
+        if arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+            .iter()
+            .filter(|p| str_at(p, "kind") != "chat")
+            .count()
+            == 0
+        {
             sidebar = sidebar.child(
                 div()
                     .w_full()
@@ -15085,6 +15090,16 @@ impl Render for Native {
                     cx,
                 ));
             }
+            if chat_threads.is_empty() && !self.chats_collapsed {
+                sidebar = sidebar.child(
+                    div()
+                        .pl(px(6.))
+                        .py(px(6.))
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground.opacity(0.48))
+                        .child("No chats yet"),
+                );
+            }
             if chat_threads.len() > 5 {
                 let mut page_row = h_flex()
                     .id("pg-chats")
@@ -15297,6 +15312,7 @@ impl Render for Native {
                 );
                 footer = footer.child(menu);
             }
+            if std::env::var("SYNARA_DEV_FLAGS").is_ok() {
             footer = footer.child(
                 h_flex()
                     .id("ff-footer")
@@ -15324,6 +15340,7 @@ impl Render for Native {
                         cx.notify();
                     })),
             );
+            }
             sidebar = sidebar.child(footer);
         }
         // ---- transcript ----

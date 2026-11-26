@@ -1110,10 +1110,17 @@ fn github_update_feed_url(entries: &std::collections::HashMap<String, String>, f
     if owner.is_empty() || repo.is_empty() { return None; }
     let host = entries.get("host").map(String::as_str).filter(|host| !host.trim().is_empty()).unwrap_or("github.com");
     let protocol = if entries.get("protocol").map(String::as_str) == Some("http") { "http" } else { "https" };
-    Some(format!(
-        "{protocol}://{host}/{owner}/{repo}/releases/latest/download/{}",
-        update_manifest_name(flavor)
-    ))
+    let base = format!("{protocol}://{host}/{owner}/{repo}");
+    if matches!(flavor, UpdateFlavor::Beta | UpdateFlavor::Remote) {
+        // Prerelease lanes are never GitHub Latest. Like electron-updater,
+        // discover their newest matching tag through the releases atom feed.
+        Some(format!("{base}/releases.atom"))
+    } else {
+        Some(format!(
+            "{base}/releases/latest/download/{}",
+            update_manifest_name(flavor)
+        ))
+    }
 }
 
 
@@ -1307,6 +1314,61 @@ fn prepare_macos_install(artifact: &ArtifactIdentity, cache_dir: &Path, version:
     let staged = extract_update_payload(&artifact.path, cache_dir, version)?;
     let current = current_app_bundle_path()?;
     spawn_macos_install_helper(&current, &staged, cache_dir)
+}
+
+pub fn github_release_tags_from_atom(text: &str) -> Vec<String> {
+    let mut tags = Vec::new();
+    for entry in text.split("<entry>").skip(1) {
+        let mut rest = entry;
+        while let Some(position) = rest.find("/releases/tag/") {
+            let after = &rest[position + "/releases/tag/".len()..];
+            let end = after.find(|ch| matches!(ch, '"' | '\'' | '<' | '?' | '#')).unwrap_or(after.len());
+            let tag = after[..end].trim();
+            if !tag.is_empty() && tag.bytes().all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'-' | b'_' | b'+')) {
+                let tag = tag.strip_prefix('v').unwrap_or(tag).to_string();
+                if !tags.contains(&tag) { tags.push(tag); }
+                break;
+            }
+            rest = &after[end.min(after.len())..];
+        }
+    }
+    tags
+}
+
+fn atom_tag_manifest_url(atom_feed: &str, tag: &str, flavor: UpdateFlavor) -> Option<String> {
+    let base = atom_feed.strip_suffix("/releases.atom")?;
+    Some(format!("{base}/releases/download/v{tag}/{}", update_manifest_name(flavor)))
+}
+
+fn fetch_update_text(url: &str) -> Result<String, String> {
+    let response = ureq::get(url)
+        .set("User-Agent", "synara-updater")
+        .set("Cache-Control", "no-cache")
+        .call()
+        .map_err(|error| format!("Could not check for updates: {error}"))?;
+    if response.status() != 200 {
+        return Err(format!("Could not check for updates: update feed returned HTTP {}", response.status()));
+    }
+    response.into_string().map_err(|error| format!("Could not read update feed: {error}"))
+}
+
+enum ResolvedUpdateFeed {
+    Manifest { url: String, text: String },
+    NoUpdate,
+}
+
+fn resolve_update_feed(feed: &str, current_version: &str, flavor: UpdateFlavor) -> Result<ResolvedUpdateFeed, String> {
+    if !feed.ends_with("/releases.atom") {
+        return fetch_update_text(feed).map(|text| ResolvedUpdateFeed::Manifest { url: feed.to_string(), text });
+    }
+    let atom = fetch_update_text(feed)?;
+    for tag in github_release_tags_from_atom(&atom) {
+        if version_newer(current_version, &tag) && version_allowed_for_flavor(&tag, flavor) {
+            let url = atom_tag_manifest_url(feed, &tag, flavor).ok_or("update atom feed is invalid")?;
+            return fetch_update_text(&url).map(|text| ResolvedUpdateFeed::Manifest { url, text });
+        }
+    }
+    Ok(ResolvedUpdateFeed::NoUpdate)
 }
 
 fn configured_feed_url() -> Option<String> {
@@ -1523,18 +1585,18 @@ impl DesktopUpdateService {
     fn perform_check(self: &Arc<Self>) {
         let result = (|| -> Result<(UpdateManifest, UpdateFeedFile), String> {
             let feed = self.feed_url.clone().ok_or("update feed is not configured")?;
-            let response = ureq::get(&feed)
-                .set("User-Agent", "synara-updater")
-                .set("Cache-Control", "no-cache")
-                .call()
-                .map_err(|error| format!("Could not check for updates: {error}"))?;
-            if response.status() != 200 {
-                return Err(format!("Could not check for updates: update feed returned HTTP {}", response.status()));
-            }
-            let text = response.into_string().map_err(|error| format!("Could not read update feed: {error}"))?;
+            let current = self.current_state().map(|state| (state.current_version, state.flavor)).ok_or("update state unavailable")?;
+            let (manifest_url, text) = match resolve_update_feed(&feed, &current.0, current.1)? {
+                ResolvedUpdateFeed::Manifest { url, text } => (url, text),
+                ResolvedUpdateFeed::NoUpdate => return Err("__synara_no_lane_update__".into()),
+            };
             let manifest = parse_update_manifest(&text)?;
             let extension = if cfg!(target_os = "macos") { ".zip" } else if cfg!(target_os = "windows") { ".exe" } else { ".AppImage" };
-            let file = select_update_download_file(&manifest.files, runtime_arch(), extension)?.clone();
+            let mut file = select_update_download_file(&manifest.files, runtime_arch(), extension)?.clone();
+            if !file.url.starts_with("https://") && !file.url.starts_with("http://") {
+                let base = manifest_url.rsplit_once('/').map(|(base, _)| base).unwrap_or(&manifest_url);
+                file.url = format!("{base}/{}", file.url.trim_start_matches('/'));
+            }
             Ok((manifest, file))
         })();
         match result {
@@ -1556,6 +1618,10 @@ impl DesktopUpdateService {
                         let _ = service.request_download();
                     });
                 }
+            }
+            Err(message) if message == "__synara_no_lane_update__" => {
+                if let Ok(mut selected) = self.selected_file.lock() { *selected = None; }
+                self.set_state(|state| state.no_update(now_iso()));
             }
             Err(message) => self.set_state(|state| state.check_failure(message, now_iso())),
         }
@@ -2071,7 +2137,17 @@ mod tests {
             assert_eq!(url, "https://github.com/cmdr-chara/synara/releases/latest/download/synara-mac.yml");
         }
         let beta = github_update_feed_url(&entries, UpdateFlavor::Beta).unwrap();
-        assert!(beta.contains("/beta-"), "{beta}");
+        assert!(beta.ends_with("/releases.atom"), "{beta}");
+    }
+
+    #[test]
+    fn github_atom_discovers_newest_lane_tags_in_feed_order() {
+        let atom = r#"<feed><entry><link href="https://github.com/o/r/releases/tag/v0.9.3-beta.2" /></entry><entry><link href="https://github.com/o/r/releases/tag/v0.9.2" /></entry><entry><link href="https://github.com/o/r/releases/tag/v0.9.3-beta.1" /></entry></feed>"#;
+        assert_eq!(github_release_tags_from_atom(atom), vec!["0.9.3-beta.2", "0.9.2", "0.9.3-beta.1"]);
+        assert_eq!(
+            atom_tag_manifest_url("https://github.com/o/r/releases.atom", "0.9.3-beta.2", UpdateFlavor::Beta).as_deref(),
+            Some("https://github.com/o/r/releases/download/v0.9.3-beta.2/beta-mac.yml")
+        );
     }
 
     #[test]

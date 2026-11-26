@@ -12235,9 +12235,11 @@ impl Native {
                 let mut pill = div()
                     .bg(user_bubble)
                     .rounded(px(16.))
-                    .px_4()
+                    .px(px(14.))
                     .py(px(10.))
-                    .max_w(px(560.));
+                    // Upstream caps the bubble at 80% of the transcript
+                    // column, not a fixed width.
+                    .max_w(chat_mw * 0.8);
                 if is_match {
                     pill = pill.border_1().border_color(theme.warning);
                 }

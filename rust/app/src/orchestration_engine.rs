@@ -2760,6 +2760,19 @@ pub(crate) fn project_create(command: &Map<String, Value>) -> Result<Value, WsEr
             ));
         }
     }
+    if next_kind == "chat" {
+        // Chat containers own the home root exclusively too — without this
+        // guard every bootstrap or racing client inserts another "Home" row
+        // (observed: 5 duplicate rows after a handful of restarts). Upstream
+        // the same duplicate error drives the client's recovery path, which
+        // extracts the existing project id and adopts it.
+        for existing in active_projects_by_root(&conn, &workspace_root, &["chat"])? {
+            return Err(err(format!(
+                "Project '{}' already uses workspace root '{}'.",
+                existing.id, existing.workspace_root
+            )));
+        }
+    }
     if next_kind == "group" || next_kind == "studio" {
         // Cross-kind: a regular project already owning this root would break
         // workspace-root-to-project uniqueness.

@@ -17308,15 +17308,28 @@ impl Render for Native {
         // Upstream ComposerPromptEditor: font-system-ui text-chat (13px)
         // leading-relaxed (1.625 -> ~21.1px/line), min-height 2lh (~42px),
         // padding x12/top12/bottom8; placeholder sits at the text origin.
-        let mut input_zone = div().relative().child(
-            div()
-                .min_h(px(if self.selected_thread.is_some() {
-                    24.
-                } else {
-                    42.25
-                }))
-                .child(Input::new(&self.composer).appearance(false)),
-        );
+        let mut input_zone = div()
+            .relative()
+            .w_full()
+            .on_mouse_down(
+                gpui::MouseButton::Left,
+                cx.listener(|this, _e, window, cx| {
+                    // Guarantee click-to-focus regardless of how the inner
+                    // editor hitbox resolves in the flex chain.
+                    let input = this.composer.clone();
+                    input.update(cx, |s, cx| s.focus_handle(cx).focus(window, cx));
+                }),
+            )
+            .child(
+                div()
+                    .w_full()
+                    .min_h(px(if self.selected_thread.is_some() {
+                        24.
+                    } else {
+                        42.25
+                    }))
+                    .child(Input::new(&self.composer).appearance(false).w_full()),
+            );
         if draft_empty {
             // Placeholder rendered on top: the web uses muted-foreground/40,
             // much lighter than the editor's own muted foreground tone.

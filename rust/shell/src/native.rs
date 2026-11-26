@@ -3786,6 +3786,12 @@ impl Native {
                 this.beta_action_message = message;
                 cx.notify();
             });
+            // Upstream hands the user back to Stable and then exits the Beta
+            // app. Stable is already launched by the background action; quitting
+            // here is part of the successful leave flow rather than UI cleanup.
+            if action == "leave" && ok {
+                cx.update(|app| app.quit());
+            }
         }).detach();
     }
 

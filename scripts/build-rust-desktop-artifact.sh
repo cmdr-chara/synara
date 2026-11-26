@@ -96,11 +96,51 @@ repo: $REPO
 host: $HOST
 YML
 
-# Ad-hoc signing keeps the bundle launchable locally; release signing/notarization
-# remains a separate release-pipeline concern.
-if command -v codesign >/dev/null 2>&1; then
+# Unsigned local artifacts are ad-hoc signed so macOS will launch them. Release
+# artifacts opt into real signing with SYNARA_MACOS_SIGN_IDENTITY and into
+# notarization with SYNARA_MACOS_NOTARIZE=1 plus either
+# SYNARA_MACOS_NOTARY_PROFILE or Apple ID credentials.
+SIGN_IDENTITY="${SYNARA_MACOS_SIGN_IDENTITY:-}"
+if [[ -n "$SIGN_IDENTITY" ]]; then
+  codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
+    "$APP_DIR/Contents/MacOS/synara-backend"
+  codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
+    "$APP_DIR/Contents/MacOS/synara-shell"
+  codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$APP_DIR"
+  codesign --verify --deep --strict "$APP_DIR"
+elif command -v codesign >/dev/null 2>&1; then
   codesign --force --deep --sign - "$APP_DIR" >/dev/null 2>&1 || true
 fi
+
+case "${SYNARA_MACOS_NOTARIZE:-0}" in
+  1|true|TRUE|yes|YES|on|ON)
+    if [[ -z "$SIGN_IDENTITY" ]]; then
+      echo "SYNARA_MACOS_NOTARIZE requires SYNARA_MACOS_SIGN_IDENTITY" >&2
+      exit 2
+    fi
+    NOTARY_ZIP="$OUT_DIR/.notary-submit-$VERSION-$ARCH.zip"
+    rm -f "$NOTARY_ZIP"
+    ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "$NOTARY_ZIP"
+    NOTARY_ARGS=(submit "$NOTARY_ZIP" --wait)
+    if [[ -n "${SYNARA_MACOS_NOTARY_PROFILE:-}" ]]; then
+      NOTARY_ARGS+=(--keychain-profile "$SYNARA_MACOS_NOTARY_PROFILE")
+    else
+      : "${SYNARA_MACOS_NOTARY_APPLE_ID:?set SYNARA_MACOS_NOTARY_APPLE_ID or SYNARA_MACOS_NOTARY_PROFILE}"
+      : "${SYNARA_MACOS_NOTARY_PASSWORD:?set SYNARA_MACOS_NOTARY_PASSWORD or SYNARA_MACOS_NOTARY_PROFILE}"
+      : "${SYNARA_MACOS_NOTARY_TEAM_ID:?set SYNARA_MACOS_NOTARY_TEAM_ID or SYNARA_MACOS_NOTARY_PROFILE}"
+      NOTARY_ARGS+=(--apple-id "$SYNARA_MACOS_NOTARY_APPLE_ID" --password "$SYNARA_MACOS_NOTARY_PASSWORD" --team-id "$SYNARA_MACOS_NOTARY_TEAM_ID")
+    fi
+    xcrun notarytool "${NOTARY_ARGS[@]}"
+    rm -f "$NOTARY_ZIP"
+    xcrun stapler staple "$APP_DIR"
+    xcrun stapler validate "$APP_DIR"
+    ;;
+  0|false|FALSE|no|NO|off|OFF|'') ;;
+  *)
+    echo "unsupported SYNARA_MACOS_NOTARIZE value: ${SYNARA_MACOS_NOTARIZE}" >&2
+    exit 2
+    ;;
+esac
 
 ZIP_NAME="${APP_NAME// /-}-$VERSION-$ARCH.zip"
 ZIP_PATH="$OUT_DIR/$ZIP_NAME"

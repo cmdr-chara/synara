@@ -66,6 +66,7 @@ mod computer_denylist;
 mod computer_manager;
 mod device_helper;
 mod device_sim;
+mod device_stream;
 mod computer_native;
 mod opencode_runner;
 mod pi_runner;

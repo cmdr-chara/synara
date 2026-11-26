@@ -108,6 +108,11 @@ use original::shutdown_signal;
 
 #[tokio::main]
 async fn main() {
+    {
+        let state_dir = std::path::PathBuf::from(todo::state_dir());
+        let home_dir = state_dir.parent().map(std::path::Path::to_path_buf).unwrap_or(state_dir);
+        synara_shellenv::fix_path(&home_dir);
+    }
     original::report_fallbacks();
     runtime_status::start_sampler();
     server_lifecycle::start_keep_awake();

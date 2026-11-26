@@ -197,6 +197,8 @@ impl Render for Shell {
 }
 
 fn main() {
+    let shell_environment = synara_shellenv::sync_shell_environment(&backend::configured_home_dir());
+    synara_shellenv::apply_hydration_marker(shell_environment.path_hydrated);
     if let Err(error) = updater::start_desktop_update_bridge() {
         eprintln!("desktop updater bridge unavailable: {error}");
     }

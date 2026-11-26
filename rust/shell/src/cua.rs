@@ -6,7 +6,7 @@
 
 use serde_json::{json, Value};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 use tungstenite::{connect, Message};
 
 pub struct CuaShared {
@@ -111,15 +111,81 @@ impl CuaHandle {
     }
 }
 
-/// Control-plane actions forwarded as ordinary RPCs on the shell client.
-pub fn enable_control(client: &crate::ws_client::Client, thread_id: &str) -> Option<Value> {
-    client.call(
-        "computer.setControlEnabled",
-        json!({"threadId": thread_id, "enabled": true}),
-    )
+static ESCAPE_TARGET: Mutex<Option<(Arc<crate::ws_client::Client>, String)>> = Mutex::new(None);
+
+fn escape_monitor() -> Option<&'static Arc<crate::escape_monitor::EscapeKillSwitchMonitor>> {
+    static MONITOR: OnceLock<Option<Arc<crate::escape_monitor::EscapeKillSwitchMonitor>>> =
+        OnceLock::new();
+    MONITOR
+        .get_or_init(|| {
+            crate::appsnap::resolve_appsnap_helper().map(|helper| {
+                Arc::new(crate::escape_monitor::EscapeKillSwitchMonitor::new(
+                    helper,
+                    || {
+                        let target = ESCAPE_TARGET.lock().ok().and_then(|target| target.clone());
+                        if let Some((client, thread_id)) = target {
+                            std::thread::spawn(move || {
+                                let result = client.call(
+                                    "computer.setControlEnabled",
+                                    json!({"threadId": thread_id, "enabled": false}),
+                                );
+                                if result.is_some() {
+                                    if let Ok(mut target) = ESCAPE_TARGET.lock() {
+                                        *target = None;
+                                    }
+                                    if let Some(monitor) = escape_monitor() {
+                                        monitor.set_armed(false);
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    |message| eprintln!("escape monitor: {message}"),
+                ))
+            })
+        })
+        .as_ref()
 }
 
-pub fn disable_control(client: &crate::ws_client::Client, thread_id: &str) -> Option<Value> {
+fn clear_escape_target(thread_id: &str) {
+    let clear = ESCAPE_TARGET
+        .lock()
+        .map(|target| {
+            target
+                .as_ref()
+                .is_some_and(|(_, current)| current == thread_id)
+        })
+        .unwrap_or(false);
+    if clear {
+        if let Ok(mut target) = ESCAPE_TARGET.lock() {
+            *target = None;
+        }
+        if let Some(monitor) = escape_monitor() {
+            monitor.set_armed(false);
+        }
+    }
+}
+
+/// Control-plane actions forwarded as ordinary RPCs on the shell client.
+pub fn enable_control(client: &Arc<crate::ws_client::Client>, thread_id: &str) -> Option<Value> {
+    if let Some(monitor) = escape_monitor() {
+        if let Ok(mut target) = ESCAPE_TARGET.lock() {
+            *target = Some((Arc::clone(client), thread_id.to_string()));
+        }
+        monitor.activate();
+    }
+    let result = client.call(
+        "computer.setControlEnabled",
+        json!({"threadId": thread_id, "enabled": true}),
+    );
+    if result.is_none() {
+        clear_escape_target(thread_id);
+    }
+    result
+}
+
+pub fn disable_control(client: &Arc<crate::ws_client::Client>, thread_id: &str) -> Option<Value> {
+    clear_escape_target(thread_id);
     client.call(
         "computer.setControlEnabled",
         json!({"threadId": thread_id, "enabled": false}),

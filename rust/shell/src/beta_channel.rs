@@ -263,6 +263,239 @@ pub fn launch_stable(executable: &Path, stable_home: Option<&Path>) -> Result<()
     Ok(())
 }
 
+// ---------------------------------------------------------------------------
+// macOS beta installer: download the newest beta zip from the update feed,
+// verify checksum and bundle identity, then commit it into /Applications with
+// same-volume staging and recovery of an interrupted swap.
+// ---------------------------------------------------------------------------
+
+#[cfg(target_os = "macos")]
+const BETA_BUNDLE_ID: &str = "com.emanueledipietro.synara.beta";
+#[cfg(target_os = "macos")]
+const BETA_FEED_ATOM: &str = "https://github.com/Emanuele-web04/synara/releases.atom";
+
+#[cfg(target_os = "macos")]
+fn validate_feed_url(url: &str) -> Result<(), String> {
+    if url.starts_with("https://") { return Ok(()); }
+    if let Some(rest) = url.strip_prefix("http://") {
+        let authority = rest.split('/').next().unwrap_or_default();
+        let host_port = authority.rsplit('@').next().unwrap_or(authority);
+        let host = host_port.trim_start_matches('[').split([':', ']']).next().unwrap_or_default();
+        if matches!(host, "127.0.0.1" | "localhost" | "::1") { return Ok(()); }
+        return Err(format!("Refusing plain-HTTP beta feed for non-loopback host {host}."));
+    }
+    Err("Unsupported beta feed protocol.".into())
+}
+
+#[cfg(target_os = "macos")]
+fn resolve_redirect(current: &str, location: &str) -> String {
+    if location.starts_with("http://") || location.starts_with("https://") {
+        return location.to_string();
+    }
+    let base = current.rsplit_once('/').map(|(base, _)| base).unwrap_or(current);
+    if location.starts_with('/') {
+        let scheme_host = current.split('/').take(3).collect::<Vec<_>>().join("/");
+        format!("{scheme_host}{location}")
+    } else {
+        format!("{base}/{location}")
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn feed_response(url: &str) -> Result<ureq::Response, String> {
+    let agent = ureq::AgentBuilder::new().redirects(0).build();
+    let mut current = url.to_string();
+    for _ in 0..=5 {
+        validate_feed_url(&current)?;
+        let response = agent.get(&current)
+            .set("user-agent", "synara-desktop")
+            .timeout(std::time::Duration::from_secs(45))
+            .call()
+            .map_err(|error| format!("Could not download beta feed: {error}"))?;
+        let status = response.status();
+        if (300..400).contains(&status) {
+            let location = response.header("location").ok_or("Beta feed redirect missing its location.")?;
+            current = resolve_redirect(&current, location);
+            continue;
+        }
+        return Ok(response);
+    }
+    Err("Beta feed redirected too many times.".into())
+}
+
+#[cfg(target_os = "macos")]
+fn fetch_text(url: &str) -> Result<String, String> {
+    feed_response(url)?
+        .into_string()
+        .map_err(|error| format!("Could not read beta feed: {error}"))
+}
+
+#[cfg(target_os = "macos")]
+fn download_file(url: &str, target: &Path) -> Result<(), String> {
+    let response = feed_response(url)?;
+    let mut reader = response.into_reader();
+    let mut output = std::fs::File::create(target).map_err(|error| error.to_string())?;
+    std::io::copy(&mut reader, &mut output).map_err(|error| format!("Could not save Synara Beta: {error}"))?;
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+fn verify_beta_app_bundle(app_path: &Path) -> Result<(), String> {
+    let metadata = std::fs::symlink_metadata(app_path)
+        .map_err(|_| format!("The download did not contain {}.", BETA_APP_NAME))?;
+    if !metadata.is_dir() || metadata.file_type().is_symlink() {
+        return Err("The beta download isn't signed by Synara. It wasn't installed.".into());
+    }
+    let plist = std::fs::read_to_string(app_path.join("Contents/Info.plist"))
+        .map_err(|_| format!("The download did not contain {}.", BETA_APP_NAME))?;
+    let bundle_id = plist
+        .split("<key>CFBundleIdentifier</key>")
+        .nth(1)
+        .and_then(|rest| rest.split("<string>").nth(1))
+        .and_then(|rest| rest.split("</string>").next())
+        .map(str::trim);
+    if bundle_id != Some(BETA_BUNDLE_ID) {
+        return Err(format!("Downloaded app is not Synara Beta (bundle id {}).", bundle_id.unwrap_or("missing")));
+    }
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+fn verify_beta_signature(app_path: &Path, expected_team_id: Option<&str>) -> Result<(), String> {
+    let Some(expected_team_id) = expected_team_id else { return Ok(()) };
+    let unsigned = "The beta download isn't signed by Synara. It wasn't installed.";
+    let verify = Command::new("codesign")
+        .args(["--verify", "--deep", "--strict"])
+        .arg(app_path)
+        .output()
+        .map_err(|error| format!("Couldn't check the beta download's signature: {error}"))?;
+    if !verify.status.success() { return Err(unsigned.into()); }
+    let info = Command::new("codesign")
+        .args(["-dv", "--verbose=4"])
+        .arg(app_path)
+        .output()
+        .map_err(|error| format!("Couldn't check the beta download's signature: {error}"))?;
+    let stderr = String::from_utf8_lossy(&info.stderr);
+    let team = stderr.lines().find_map(|line| line.strip_prefix("TeamIdentifier="));
+    if team != Some(expected_team_id) { return Err(unsigned.into()); }
+    Ok(())
+}
+
+#[cfg(target_os = "macos")]
+fn verify_beta_install_bundle(app_path: &Path, expected_team_id: Option<&str>) -> Result<(), String> {
+    verify_beta_app_bundle(app_path)?;
+    verify_beta_signature(app_path, expected_team_id)
+}
+
+#[cfg(target_os = "macos")]
+fn beta_feed_manifest_url(feed_override: Option<&str>) -> Result<String, String> {
+    if let Some(base) = feed_override.filter(|value| !value.trim().is_empty()) {
+        return Ok(format!("{}/beta-mac.yml", base.trim_end_matches('/')));
+    }
+    let atom = fetch_text(BETA_FEED_ATOM)?;
+    let tag = crate::updater::github_release_tags_from_atom(&atom)
+        .into_iter()
+        .find(|tag| crate::updater::version_allowed_for_flavor(tag.trim_start_matches('v'), crate::updater::UpdateFlavor::Beta))
+        .ok_or("No Synara Beta release was found.")?;
+    Ok(format!("https://github.com/Emanuele-web04/synara/releases/download/{tag}/beta-mac.yml"))
+}
+
+/// Download and install the newest beta build. This is macOS-only like the
+/// upstream installer; Windows/Linux beta handoff uses already installed apps.
+#[cfg(target_os = "macos")]
+pub fn install_beta_from_feed(
+    install_dir: &Path,
+    feed_override: Option<&str>,
+    expected_team_id: Option<&str>,
+) -> Result<PathBuf, String> {
+    let target = install_dir.join(BETA_APP_NAME);
+    let previous = install_dir.join(format!("{BETA_APP_NAME}.previous"));
+    if std::fs::symlink_metadata(&previous).is_ok() {
+        if verify_beta_install_bundle(&target, expected_team_id).is_err() {
+            verify_beta_install_bundle(&previous, expected_team_id)?;
+            let _ = std::fs::remove_dir_all(&target);
+            std::fs::rename(&previous, &target).map_err(|error| format!("recover previous beta: {error}"))?;
+        } else {
+            let _ = std::fs::remove_dir_all(&previous);
+        }
+    }
+
+    let work = std::env::temp_dir().join(format!("synara-beta-install-{}", uuid::Uuid::new_v4()));
+    std::fs::create_dir_all(&work).map_err(|error| error.to_string())?;
+    let result = (|| {
+        let manifest_url = beta_feed_manifest_url(feed_override)?;
+        let manifest_text = fetch_text(&manifest_url)?;
+        let manifest = crate::updater::parse_update_manifest(&manifest_text)?;
+        let arch = if std::env::consts::ARCH == "aarch64" { "arm64" } else { "x64" };
+        let file = crate::updater::select_update_download_file(&manifest.files, arch, ".zip")?;
+        let base = manifest_url.rsplit_once('/').map(|(base, _)| base).unwrap_or("");
+        let zip_url = if file.url.starts_with("http://") || file.url.starts_with("https://") {
+            file.url.clone()
+        } else {
+            format!("{base}/{}", file.url.trim_start_matches('/'))
+        };
+        let zip_path = work.join(file.url.rsplit('/').next().unwrap_or("synara-beta.zip"));
+        download_file(&zip_url, &zip_path)?;
+        let artifact = crate::updater::fingerprint_artifact(&zip_path)?;
+        let digest = artifact.sha512.clone();
+        if !digest.eq_ignore_ascii_case(&file.sha512) {
+            let raw = decode_hex_sha512(&digest).unwrap_or_default();
+            if base64::Engine::encode(&base64::engine::general_purpose::STANDARD, raw) != file.sha512 {
+                return Err("The beta download failed its checksum. Try again.".into());
+            }
+        }
+        let extracted = work.join("extracted");
+        std::fs::create_dir_all(&extracted).map_err(|error| error.to_string())?;
+        let ditto = Command::new("ditto").args(["-x", "-k"]).arg(&zip_path).arg(&extracted).output()
+            .map_err(|error| format!("Could not extract Synara Beta: {error}"))?;
+        if !ditto.status.success() {
+            return Err(format!("Could not extract Synara Beta: {}", String::from_utf8_lossy(&ditto.stderr).trim()));
+        }
+        let app = extracted.join(BETA_APP_NAME);
+        verify_beta_install_bundle(&app, expected_team_id)?;
+        std::fs::create_dir_all(install_dir).map_err(|error| error.to_string())?;
+        let staging = install_dir.join(format!(".synara-beta-install-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&staging).map_err(|error| error.to_string())?;
+        let staged_app = staging.join(BETA_APP_NAME);
+        let install_result = (|| {
+            // `mv` handles a cross-volume install destination; a direct rename
+            // only works when /tmp and /Applications share one filesystem.
+            let moved = Command::new("mv").arg(&app).arg(&staged_app).output()
+                .map_err(|error| format!("stage beta app: {error}"))?;
+            if !moved.status.success() {
+                return Err(format!("stage beta app: {}", String::from_utf8_lossy(&moved.stderr).trim()));
+            }
+            let had_previous = std::fs::symlink_metadata(&target).is_ok();
+            if had_previous {
+                std::fs::rename(&target, &previous).map_err(|error| format!("move previous beta aside: {error}"))?;
+            }
+            if let Err(error) = std::fs::rename(&staged_app, &target) {
+                if had_previous { let _ = std::fs::rename(&previous, &target); }
+                return Err(format!("install beta app: {error}"));
+            }
+            let _ = std::fs::remove_dir_all(&previous);
+            Ok(())
+        })();
+        let _ = std::fs::remove_dir_all(&staging);
+        install_result?;
+        Ok(target.clone())
+    })();
+    let _ = std::fs::remove_dir_all(&work);
+    result
+}
+
+#[cfg(target_os = "macos")]
+fn decode_hex_sha512(value: &str) -> Option<Vec<u8>> {
+    if value.len() % 2 != 0 { return None; }
+    let mut out = Vec::new();
+    for pair in value.as_bytes().chunks_exact(2) {
+        let hi = (pair[0] as char).to_digit(16)?;
+        let lo = (pair[1] as char).to_digit(16)?;
+        out.push(((hi << 4) | lo) as u8);
+    }
+    Some(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -308,6 +541,17 @@ mod tests {
         let env = HashMap::from([("SYNARA_STABLE_EXECUTABLE".into(), executable.to_string_lossy().into_owned())]);
         assert_eq!(detect_stable_executable(&root, &env), Some(executable));
         let _ = std::fs::remove_dir_all(root);
+    }
+
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn beta_feed_urls_require_https_except_loopback_http() {
+        assert!(validate_feed_url("https://github.com/example").is_ok());
+        assert!(validate_feed_url("http://127.0.0.1:9999/feed").is_ok());
+        assert!(validate_feed_url("http://localhost/feed").is_ok());
+        assert!(validate_feed_url("http://example.com/feed").is_err());
+        assert!(validate_feed_url("ftp://example.com/feed").is_err());
     }
 
     #[test]

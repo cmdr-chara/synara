@@ -21,7 +21,7 @@ const KEY_BYTES: usize = 32;
 const IV_BYTES: usize = 12;
 const TAG_BYTES: usize = 16;
 const KEY_AAD: &[u8] = b"synara-browser-vault-key-v1";
-const VAULT_AAD: &[u8] = b"synara-browser-login-vault-v1";
+const VAULT_AAD: &[u8] = b"betterwright-local-credential-vault:v1";
 const KEYRING_SERVICE: &str = "synara-browser-vault";
 const KEYRING_USER: &str = "data-key";
 const GENERATED_PASSWORD_LEN: usize = 24;
@@ -52,6 +52,16 @@ fn random_bytes<const N: usize>() -> [u8; N] {
 
 fn b64(bytes: &[u8]) -> String {
     base64::engine::general_purpose::STANDARD.encode(bytes)
+}
+
+fn b64url(bytes: &[u8]) -> String {
+    base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(bytes)
+}
+
+fn unb64url(text: &str) -> Result<Vec<u8>, String> {
+    base64::engine::general_purpose::URL_SAFE_NO_PAD
+        .decode(text)
+        .map_err(|_| "invalid vault encoding".to_string())
 }
 
 fn unb64(text: &str, len: usize) -> Result<Vec<u8>, String> {
@@ -90,7 +100,16 @@ fn encrypt(
 fn unb64_any(text: &str) -> Result<Vec<u8>, String> {
     base64::engine::general_purpose::STANDARD
         .decode(text)
+        .or_else(|_| base64::engine::general_purpose::URL_SAFE_NO_PAD.decode(text))
         .map_err(|_| "invalid vault encoding".to_string())
+}
+
+fn unb64_len_any(text: &str, len: usize) -> Result<Vec<u8>, String> {
+    let bytes = unb64_any(text)?;
+    if bytes.len() != len {
+        return Err("invalid vault encoding".into());
+    }
+    Ok(bytes)
 }
 
 fn decrypt(
@@ -100,9 +119,9 @@ fn decrypt(
     data_text: &str,
     aad: &[u8],
 ) -> Result<Zeroizing<Vec<u8>>, String> {
-    let iv = unb64(iv_text, IV_BYTES)?;
+    let iv = unb64_len_any(iv_text, IV_BYTES)?;
     let mut encrypted = unb64_any(data_text)?;
-    let tag = unb64(tag_text, TAG_BYTES)?;
+    let tag = unb64_len_any(tag_text, TAG_BYTES)?;
     encrypted.extend_from_slice(&tag);
     let cipher = Aes256Gcm::new(AesKey::<Aes256Gcm>::from_slice(key));
     cipher
@@ -205,6 +224,30 @@ fn derive_password_key(password: &str, salt: &[u8]) -> Result<Zeroizing<[u8; KEY
     Ok(key)
 }
 
+fn login_category() -> String {
+    "login".into()
+}
+
+fn exact_origin_match() -> String {
+    "exact-origin".into()
+}
+
+fn random_base64url_32() -> String {
+    b64url(&random_bytes::<32>())
+}
+
+fn iso_after_ms(ms: i64) -> String {
+    (time::OffsetDateTime::now_utc() + time::Duration::milliseconds(ms))
+        .format(&time::format_description::well_known::Rfc3339)
+        .unwrap_or_else(|_| "1970-01-01T00:00:00Z".into())
+}
+
+fn iso_to_ms(text: &str) -> i64 {
+    time::OffsetDateTime::parse(text, &time::format_description::well_known::Rfc3339)
+        .map(|time| time.unix_timestamp() * 1000)
+        .unwrap_or_default()
+}
+
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum CredentialSource {
@@ -241,9 +284,17 @@ impl Default for VaultSettings {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 struct LoginRecord {
     id: String,
+    #[serde(default = "login_category")]
+    category: String,
+    #[serde(default = "exact_origin_match", rename = "matchMode")]
+    match_mode: String,
     origin: String,
     username: String,
     password: String,
+    #[serde(default)]
+    fields: Value,
+    #[serde(default)]
+    notes: Option<String>,
     label: Option<String>,
     #[serde(rename = "createdAt")]
     created_at: String,
@@ -255,24 +306,52 @@ struct LoginRecord {
 struct PendingLogin {
     #[serde(rename = "pendingId")]
     pending_id: String,
-    origin: String,
-    username: String,
-    password: String,
-    label: Option<String>,
-    #[serde(rename = "createdAt")]
-    created_at: String,
-    #[serde(rename = "expiresAtMs")]
-    expires_at_ms: i64,
     #[serde(rename = "recordId")]
     record_id: Option<String>,
+    #[serde(rename = "recordVersion")]
+    record_version: Option<String>,
+    #[serde(rename = "requestFingerprint", skip_serializing_if = "Option::is_none")]
+    request_fingerprint: Option<String>,
+    origin: String,
+    #[serde(rename = "creationOrigin")]
+    creation_origin: String,
+    #[serde(default = "exact_origin_match", rename = "matchMode")]
+    match_mode: String,
+    #[serde(rename = "usernameOverride")]
+    username_override: bool,
+    username: String,
+    #[serde(rename = "labelOverride")]
+    label_override: bool,
+    label: Option<String>,
+    #[serde(rename = "secret")]
+    password: String,
+    #[serde(rename = "createdAt")]
+    created_at: String,
+    #[serde(rename = "updatedAt")]
+    updated_at: String,
+    #[serde(rename = "expiresAt")]
+    expires_at: String,
 }
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 struct VaultPayload {
+    version: u32,
+    revision: u64,
     #[serde(default)]
     records: Vec<LoginRecord>,
     #[serde(default)]
     pending: Vec<PendingLogin>,
+}
+
+impl Default for VaultPayload {
+    fn default() -> Self {
+        Self {
+            version: 1,
+            revision: 0,
+            records: Vec::new(),
+            pending: Vec::new(),
+        }
+    }
 }
 
 #[derive(Default, Serialize, Deserialize)]
@@ -500,7 +579,7 @@ impl BrowserVault {
                     "username": pending.username,
                     "label": pending.label,
                     "updatedAt": pending.created_at,
-                    "status": if pending.expires_at_ms < now { "expired" } else { "pending" },
+                    "status": if iso_to_ms(&pending.expires_at) < now { "expired" } else { "pending" },
                     "source": state.preferences.sources.get(&pending.pending_id).copied().unwrap_or_default(),
                 }));
             }
@@ -541,12 +620,16 @@ impl BrowserVault {
             record.updated_at = now;
             record.id.clone()
         } else {
-            let id = uuid::Uuid::new_v4().to_string();
+            let id = format!("cred_{}", uuid::Uuid::new_v4());
             state.payload.records.push(LoginRecord {
                 id: id.clone(),
+                category: login_category(),
+                match_mode: exact_origin_match(),
                 origin,
                 username: username.to_string(),
                 password: password.to_string(),
+                fields: Value::Null,
+                notes: None,
                 label: label.map(str::to_string),
                 created_at: now.clone(),
                 updated_at: now,
@@ -623,7 +706,7 @@ impl BrowserVault {
                     "username": pending.username,
                     "label": pending.label,
                     "createdAt": pending.created_at,
-                    "expired": pending.expires_at_ms < now,
+                    "expired": iso_to_ms(&pending.expires_at) < now,
                 })
             })
             .collect())
@@ -673,20 +756,28 @@ impl BrowserVault {
         state
             .payload
             .pending
-            .retain(|pending| pending.expires_at_ms >= now_ms());
+            .retain(|pending| iso_to_ms(&pending.expires_at) >= now_ms());
         if state.payload.pending.len() >= 64 {
             return Err("too many pending generated credentials".into());
         }
         let pending_id = uuid::Uuid::new_v4().to_string();
+        let created_at = now_iso();
         state.payload.pending.push(PendingLogin {
             pending_id: pending_id.clone(),
-            origin: origin.clone(),
-            username: username.to_string(),
-            password: password.clone(),
-            label: label.map(str::to_string),
-            created_at: now_iso(),
-            expires_at_ms: now_ms() + PENDING_TTL_MS,
             record_id: record_id.map(str::to_string),
+            record_version: record_id.map(|_| random_base64url_32()),
+            request_fingerprint: Some(random_base64url_32()),
+            origin: origin.clone(),
+            creation_origin: origin.clone(),
+            match_mode: exact_origin_match(),
+            username_override: true,
+            username: username.to_string(),
+            label_override: label.is_some(),
+            label: label.map(str::to_string),
+            password: password.clone(),
+            created_at: created_at.clone(),
+            updated_at: created_at,
+            expires_at: iso_after_ms(PENDING_TTL_MS),
         });
         state.preferences.sources.insert(pending_id.clone(), source);
         state.redaction_secrets.insert(password);
@@ -727,12 +818,16 @@ impl BrowserVault {
             record.updated_at = now;
             record.id.clone()
         } else {
-            let id = uuid::Uuid::new_v4().to_string();
+            let id = format!("cred_{}", uuid::Uuid::new_v4());
             state.payload.records.push(LoginRecord {
                 id: id.clone(),
+                category: login_category(),
+                match_mode: exact_origin_match(),
                 origin: pending.origin,
                 username: pending.username,
                 password: pending.password,
+                fields: Value::Null,
+                notes: None,
                 label: pending.label,
                 created_at: pending.created_at,
                 updated_at: now,

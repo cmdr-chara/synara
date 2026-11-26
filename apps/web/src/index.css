@@ -4242,9 +4242,11 @@ diffs-container {
 }
 
 /* The chrome strips need the fuller weight to read at all; spread behind the whole window
-   the same weight would drown the text, so the full-window atmosphere settles lower. */
+   the same weight would drown the text, so the full-window atmosphere settles lower — and
+   the dark mode dots dim and desaturate, or the raw accent reads electric over large areas. */
 .dark [data-atmosphere-full] .app-shell-atmosphere {
-  opacity: 0.45;
+  opacity: 0.6;
+  filter: brightness(0.75) saturate(0.6);
 }
 
 [data-atmosphere-full] .app-rail-panel,

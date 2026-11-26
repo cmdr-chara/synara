@@ -11968,10 +11968,12 @@ impl Native {
         } else {
             theme.list_active
         };
+        // Upstream light bubble: rgba(13,13,13,0.03) — neutral ink, not the
+        // list-selection tint.
         let user_bubble: gpui::Hsla = if dark_ui {
             rgb(0x181818).into()
         } else {
-            theme.list_active
+            gpui::hsla(0.0, 0.0, 0.05, 0.03)
         };
         let mut col = v_flex().gap_2();
         let thread_v = get(detail, "thread");

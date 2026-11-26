@@ -266,6 +266,92 @@ fn stop_recording(udid: &str) -> Result<Value, String> {
     Ok(json!({ "udid": udid, "recording": false }))
 }
 
+
+// ---- thread-scoped attachment (pragmatic manager slice) ----------------------
+//
+// Upstream's DeviceManager versions one ThreadDeviceState per thread with
+// boot ownership, stream lifecycle and idle teardown. This slice implements
+// the observable contract — attach boots the device when needed, attaches the
+// input helper and records the attachment per thread; detach releases it —
+// while the stream-lifecycle machinery stays upstream-shaped future work.
+
+static ATTACHMENTS: std::sync::OnceLock<
+    std::sync::Mutex<std::collections::HashMap<String, Value>>,
+> = std::sync::OnceLock::new();
+
+fn attachments() -> &'static std::sync::Mutex<std::collections::HashMap<String, Value>> {
+    ATTACHMENTS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+fn thread_key(payload: &Value) -> String {
+    payload
+        .get("threadId")
+        .and_then(|v| v.as_str())
+        .unwrap_or("shell")
+        .to_string()
+}
+
+fn device_attach(payload: &Value) -> Result<Value, String> {
+    let udid = payload.get("udid").and_then(|v| v.as_str()).unwrap_or("");
+    if udid.is_empty() {
+        return Err("udid required".into());
+    }
+    let key = thread_key(payload);
+    // Boot when shutdown — attach on a shutdown simulator never works.
+    let devices = list_devices(true)?;
+    let state = devices
+        .get("devices")
+        .and_then(|d| d.as_array())
+        .and_then(|arr| {
+            arr.iter()
+                .find(|d| d.get("udid").and_then(|v| v.as_str()) == Some(udid))
+                .and_then(|d| d.get("state").and_then(|v| v.as_str()))
+                .map(str::to_string)
+        })
+        .ok_or_else(|| format!("no such device {udid}"))?;
+    if state == "shutdown" {
+        boot_device(udid)?;
+    }
+    let geometry = crate::device_helper::attach(udid)?;
+    let now = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+    let value = json!({
+        "threadId": key,
+        "attachedDeviceUdid": udid,
+        "attachmentSource": payload.get("source").and_then(|v| v.as_str()).unwrap_or("user"),
+        "attachedAt": now,
+        "geometry": geometry,
+        "version": 1,
+    });
+    attachments()
+        .lock()
+        .map_err(|_| "attachments lock")?
+        .insert(key, value.clone());
+    Ok(value)
+}
+
+fn device_detach(payload: &Value) -> Result<Value, String> {
+    let key = thread_key(payload);
+    let existed = attachments()
+        .lock()
+        .map_err(|_| "attachments lock")?
+        .remove(&key)
+        .is_some();
+    Ok(json!({ "threadId": key, "detached": existed }))
+}
+
+fn device_thread_state(payload: &Value) -> Result<Value, String> {
+    let key = thread_key(payload);
+    let map = attachments().lock().map_err(|_| "attachments lock")?;
+    match map.get(&key) {
+        Some(state) => Ok(state.clone()),
+        None => Ok(json!({
+            "threadId": key,
+            "attachedDeviceUdid": Value::Null,
+            "version": 0,
+        })),
+    }
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -284,6 +370,9 @@ pub fn handles(tag: &str) -> bool {
             | "device.describeUi"
             | "device.startRecording"
             | "device.stopRecording"
+            | "device.attach"
+            | "device.detach"
+            | "device.getThreadState"
     )
 }
 
@@ -353,6 +442,9 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
         "device.keyEvent" => device_key(udid, payload),
         "device.pressButton" => device_button(udid, payload),
         "device.describeUi" => device_describe_ui(udid),
+        "device.attach" => device_attach(payload),
+        "device.detach" => device_detach(payload),
+        "device.getThreadState" => device_thread_state(payload),
         "device.startRecording" => {
             if udid.is_empty() { Err("udid required".into()) } else { start_recording(udid) }
         }

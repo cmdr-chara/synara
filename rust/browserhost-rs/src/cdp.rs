@@ -1730,7 +1730,7 @@ return true}})()"#,
             }
         }
         "browser_close" => {
-            let key = thread.unwrap_or("").to_string();
+            let key = format!("{}:{}", mode.backend_name(), thread.unwrap_or(""));
             let target = cdp_tabs()
                 .lock()
                 .ok()

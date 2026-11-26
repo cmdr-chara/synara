@@ -70,6 +70,7 @@ fn capture_still() -> Option<Vec<u8>> {
     #[cfg(target_os = "macos")]
     {
         let dir = crate::todo::state_dir();
+        let _ = std::fs::create_dir_all(&dir);
         let path = std::path::Path::new(&dir).join("computer-frame-capture.png");
         let out = std::process::Command::new("screencapture")
             .args(["-x", "-C"])
@@ -77,11 +78,19 @@ fn capture_still() -> Option<Vec<u8>> {
             .output()
             .ok()?;
         if !out.status.success() {
+            eprintln!("computer_frames: screencapture failed: {}", String::from_utf8_lossy(&out.stderr).trim());
             return None;
         }
-        let bytes = std::fs::read(&path).ok()?;
+        let bytes = match std::fs::read(&path) {
+            Ok(b) => b,
+            Err(e) => {
+                eprintln!("computer_frames: read failed: {e}");
+                return None;
+            }
+        };
         let _ = std::fs::remove_file(&path);
         if bytes.is_empty() {
+            eprintln!("computer_frames: empty capture");
             return None;
         }
         Some(bytes)
@@ -152,7 +161,9 @@ async fn drive(socket: WebSocket, computer_id: String) {
             }
             let forced = force.swap(false, std::sync::atomic::Ordering::SeqCst);
             let captured = tokio::task::spawn_blocking(capture_still).await.ok().flatten();
-            let Some(bytes) = captured else { continue };
+            let Some(bytes) = captured else {
+                continue;
+            };
             let digest = format!("{}:{}", bytes.len(), sha1_hex(&bytes));
             if !forced && digest == last_digest {
                 continue;

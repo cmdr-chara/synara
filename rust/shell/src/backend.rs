@@ -256,6 +256,7 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
         .env("PORT", config.port.to_string())
         .env("SYNARA_NO_UPSTREAM", "1")
         .env("SYNARA_MODE", "desktop")
+        .env("SYNARA_DESKTOP_FLAVOR", crate::desktop_identity::runtime_flavor())
         .stdin(Stdio::null())
         .stdout(Stdio::from(stdout))
         .stderr(Stdio::from(stderr));

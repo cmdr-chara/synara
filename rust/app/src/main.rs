@@ -26,6 +26,7 @@ mod hosts;
 mod automation_executor;
 mod automation_schedule;
 mod automation;
+mod beta_import;
 mod browser_automation;
 mod browser_frame;
 mod fs_browse;
@@ -115,6 +116,16 @@ async fn main() {
     // orchestration. With the upstream TS server active, its turns may be
     // legitimately in flight in the shared state and must not be touched.
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+        // Stable→Beta handoff consumption must happen before migrations open
+        // state.sqlite: the imported snapshot can carry a different schema.
+        let beta_import = beta_import::run_beta_import_if_requested();
+        if beta_import.consumed {
+            if beta_import.ok {
+                eprintln!("beta import: stable data copied");
+            } else {
+                eprintln!("beta import failed: {}", beta_import.error.as_deref().unwrap_or("unknown error"));
+            }
+        }
         // Schema ownership: the native backend runs the full migration ledger
         // once at startup so fresh homes get the complete schema and existing
         // databases validate against the canonical lineage before any reader

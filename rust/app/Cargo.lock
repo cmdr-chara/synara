@@ -1581,6 +1581,7 @@ dependencies = [
  "reqwest",
  "rusqlite",
  "rustls-pemfile",
+ "serde",
  "serde_json",
  "sha1",
  "sha2",

@@ -32,6 +32,7 @@ profilestats-rs = { path = "../profilestats-rs" }
 profilestatsarchive-rs = { path = "../profilestatsarchive-rs" }
 recapstats-rs = { path = "../recapstats-rs" }
 usageanalyticsstats-rs = { path = "../usageanalyticsstats-rs" }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 futures-util = "0.3"
 tokio-tungstenite = "0.26"

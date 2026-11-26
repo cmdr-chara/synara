@@ -481,6 +481,21 @@ async fn thread_session(
     Ok((target_id, session_id))
 }
 
+/// Wait for the document to reach a usable ready state after navigation.
+/// `Page.navigate` returns as soon as the navigation commits; interacting
+/// with the page before the DOM exists races every follow-up tool.
+async fn wait_for_load(conn: &CdpConnection, session: &str) {
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(15);
+    while std::time::Instant::now() < deadline {
+        if let Ok(Value::String(state)) = cdp_eval(conn, session, "document.readyState").await {
+            if state == "interactive" || state == "complete" {
+                return;
+            }
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(120)).await;
+    }
+}
+
 async fn cdp_eval(
     conn: &CdpConnection,
     session: &str,
@@ -583,6 +598,7 @@ pub async fn call_cdp_tool(
                 .ok_or_else(|| format!("{name} requires url"))?;
             conn.call("Page.navigate", json!({"url": url}), Some(&session))
                 .await?;
+            wait_for_load(&conn, &session).await;
             let info = cdp_eval(
                 &conn,
                 &session,
@@ -699,10 +715,26 @@ pub async fn call_cdp_tool(
                 )
                 .await?;
             let data = result.get("data").cloned().unwrap_or(Value::Null);
-            Ok(json!({
+            let mut out = json!({
                 "backend": backend,
                 "image": {"data": data, "mimeType": "image/png"},
-            }))
+            });
+            if let Some(path) = args.get("path").and_then(Value::as_str) {
+                use base64::Engine as _;
+                let bytes = data
+                    .as_str()
+                    .and_then(|b64| base64::engine::general_purpose::STANDARD.decode(b64).ok())
+                    .ok_or_else(|| "screenshot data missing for file output".to_string())?;
+                if let Some(parent) = std::path::Path::new(path).parent() {
+                    let _ = std::fs::create_dir_all(parent);
+                }
+                std::fs::write(path, &bytes)
+                    .map_err(|e| format!("could not write screenshot to {path}: {e}"))?;
+                if let Value::Object(ref mut obj) = out {
+                    obj.insert("artifactPath".into(), json!(path));
+                }
+            }
+            Ok(out)
         }
         "browser_wait_for" => {
             let sel = args
@@ -712,7 +744,8 @@ pub async fn call_cdp_tool(
             let timeout_ms = args
                 .get("timeout")
                 .and_then(Value::as_u64)
-                .unwrap_or(5000);
+                .unwrap_or(30)
+                * 1000;
             let start = std::time::Instant::now();
             loop {
                 let found = cdp_eval(
@@ -739,7 +772,8 @@ pub async fn call_cdp_tool(
             let timeout_ms = args
                 .get("timeout")
                 .and_then(Value::as_u64)
-                .unwrap_or(5000);
+                .unwrap_or(30)
+                * 1000;
             let start = std::time::Instant::now();
             loop {
                 let found = cdp_eval(

@@ -321,7 +321,10 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
     for row in 0..rows {
         for col in 0..cols {
             let index = row * cols + col;
-            if density[index] > BAYER_8[(row & 7) * 8 + (col & 7)] {
+            // upstream normalizes the matrix to 0..255 thresholds:
+            // Math.round(((v + 0.5) / 64) * 255)
+            let bayer = ((BAYER_8[(row & 7) * 8 + (col & 7)] as u32 * 2 + 1) * 255 / 128) as u8;
+            if density[index] > bayer {
                 dots[index] = 1;
             }
         }

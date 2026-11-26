@@ -321,10 +321,10 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
     for row in 0..rows {
         for col in 0..cols {
             let index = row * cols + col;
-            // upstream normalizes the matrix to 0..255 thresholds:
-            // Math.round(((v + 0.5) / 64) * 255)
-            let bayer = ((BAYER_8[(row & 7) * 8 + (col & 7)] as u32 * 2 + 1) * 255 / 128) as u8;
-            if density[index] > bayer {
+            // BAYER_8 is already normalized to 0..255 thresholds the way
+            // upstream does (Math.round(((v + 0.5) / 64) * 255)); the compare
+            // is density > threshold, one binary cell pixel, no radius.
+            if density[index] > BAYER_8[(row & 7) * 8 + (col & 7)] {
                 dots[index] = 1;
             }
         }
@@ -366,11 +366,12 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
         spec.accent_rgb
     };
 
-    // render bitmap at logical resolution: CELL_PX x CELL_PX per cell, dot is a
-    // circle of `levels.dot` radius with 0.4px of anti-aliased edge, matching
-    // the upstream radial mask (solid to dot, transparent by dot+0.4).
-    let w_px = cols * CELL_PX as usize;
-    let h_px = rows * CELL_PX as usize;
+    // render one bitmap pixel per cell, binary — upstream's canvas is cols x
+    // rows and the browser scales it up with smoothing; gpui does the same
+    // when this image is drawn at pane size, which is what softens the dots
+    // into the pale print instead of hard full-ink circles.
+    let w_px = cols;
+    let h_px = rows;
     let mut buf = vec![0u8; w_px * h_px * 4];
     // light sky mask: dot opacity fades in over the top 42% of the pane
     // (upstream LIGHT_SKY_MASK intersecting the dot mask).
@@ -379,7 +380,6 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
             if clean[row * cols + col] == 0 {
                 continue;
             }
-            let cx = col as f32 * CELL_PX + CELL_PX / 2.0;
             let cy = row as f32 * CELL_PX + CELL_PX / 2.0;
             let sky_alpha = if !spec.dark {
                 (cy / (height * 0.42)).clamp(0.0, 1.0)
@@ -389,36 +389,16 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
             if sky_alpha <= 0.0 {
                 continue;
             }
-            // stamp the cell's pixels
-            let x0 = (col as f32 * CELL_PX) as usize;
-            let y0 = (row as f32 * CELL_PX) as usize;
-            for py in 0..CELL_PX as usize {
-                for px in 0..CELL_PX as usize {
-                    let x = x0 + px;
-                    let y = y0 + py;
-                    if x >= w_px || y >= h_px {
-                        continue;
-                    }
-                    // pixel center distance from cell center
-                    let pcx = x as f32 + 0.5;
-                    let pcy = y as f32 + 0.5;
-                    let dist = ((pcx - cx).powi(2) + (pcy - cy).powi(2)).sqrt();
-                    let cover = (levels.dot + 0.4 - dist).clamp(0.0, 1.0).min(1.0);
-                    if cover <= 0.0 {
-                        continue;
-                    }
-                    let idx = (y * w_px + x) * 4;
-                    let a = (255.0 * cover * sky_alpha).round() as u8;
-                    // BGRA, premultiplied: gpui composites src.rgb + dst*(1-a),
-                    // so unpremultiplied ink would print full-strength even
-                    // where the sky mask or the dot edge keeps alpha low.
-                    let scale = a as f32 / 255.0;
-                    buf[idx] = (ink[2] as f32 * scale).round() as u8;
-                    buf[idx + 1] = (ink[1] as f32 * scale).round() as u8;
-                    buf[idx + 2] = (ink[0] as f32 * scale).round() as u8;
-                    buf[idx + 3] = a;
-                }
-            }
+            let idx = (row * w_px + col) * 4;
+            let a = (255.0 * sky_alpha).round() as u8;
+            // BGRA, premultiplied: gpui composites src.rgb + dst*(1-a),
+            // so unpremultiplied ink would print full-strength even
+            // where the sky mask keeps alpha low.
+            let scale = a as f32 / 255.0;
+            buf[idx] = (ink[2] as f32 * scale).round() as u8;
+            buf[idx + 1] = (ink[1] as f32 * scale).round() as u8;
+            buf[idx + 2] = (ink[0] as f32 * scale).round() as u8;
+            buf[idx + 3] = a;
         }
     }
 

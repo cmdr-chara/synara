@@ -28,7 +28,6 @@ mod automation_schedule;
 mod automation;
 mod browser_automation;
 mod browser_frame;
-mod browser_cdp;
 mod fs_browse;
 mod git_domain;
 mod harness_policy;

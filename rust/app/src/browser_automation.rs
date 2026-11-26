@@ -69,7 +69,7 @@ fn state() -> &'static Mutex<BrowserState> {
 /// user-visible browser rather than a Synara-owned child process, so shutdown
 /// intentionally leaves it alone.
 pub async fn shutdown_browser_automation() {
-    crate::browser_cdp::shutdown_cdp().await;
+    browserhost_rs::cdp::shutdown_cdp().await;
     let child = state().lock().ok().and_then(|mut state| {
         state.scopes.clear();
         state.obscura.take().map(|mut process| {
@@ -1049,6 +1049,33 @@ pub(crate) async fn call_browser_tool(
     args: &Value,
     thread: Option<&str>,
 ) -> Result<Value, String> {
+    // Upstream architecture: when the desktop shell publishes a browser host,
+    // it owns visible browser automation and the server delegates
+    // (browserHostRpcClient.ts). The local backend chain below stays as the
+    // fallback for a host-less server-only deployment.
+    if let Some(discovery) = browserhost_rs::discovery::resolve() {
+        let client = browserhost_rs::client::HostClient::from_discovery(&discovery);
+        let session_id = thread.unwrap_or("default");
+        match client
+            .execute_tool(session_id, thread, name, args.clone())
+            .await
+        {
+            Ok(mut value) => {
+                if let Value::Object(ref mut obj) = value {
+                    obj.insert("backend".into(), json!("shell-host"));
+                }
+                return Ok(value);
+            }
+            Err(message) => {
+                // A stale or crashed host must not wedge browser automation:
+                // fall through to the local chain when the host cannot be
+                // reached, but surface real tool errors as-is.
+                if !message.starts_with("browser host connect") {
+                    return Err(message);
+                }
+            }
+        }
+    }
     let required = match name {
         "browser_navigate" => Some("url"),
         "browser_evaluate" => Some("expression"),
@@ -1082,7 +1109,7 @@ pub(crate) async fn call_browser_tool(
             let active = scope_backend(thread).map(|b| b.name());
             let ego_space_id = scope_ego_space(thread);
             return Ok(json!({
-                "available": obscura.is_some() || ego.is_some() || crate::browser_cdp::cdp_available(),
+                "available": obscura.is_some() || ego.is_some() || browserhost_rs::cdp::cdp_available(),
                 "activeBackend": active,
                 "backends": {
                     "obscura": {"available": obscura.is_some(), "path": obscura, "running": obscura_running.is_some(), "process": obscura_running.map(|(port,pid)| json!({"port":port,"pid":pid}))},
@@ -1105,7 +1132,7 @@ pub(crate) async fn call_browser_tool(
                     v
                 }),
                 BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
-                BrowserBackend::Cdp => crate::browser_cdp::call_cdp_tool(name, args, thread).await,
+                BrowserBackend::Cdp => browserhost_rs::cdp::call_cdp_tool(name, args, thread).await,
             };
         }
         "browser_tabs" => {
@@ -1127,7 +1154,7 @@ pub(crate) async fn call_browser_tool(
                         })
                 }
                 BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
-                BrowserBackend::Cdp => crate::browser_cdp::call_cdp_tool(name, args, thread).await,
+                BrowserBackend::Cdp => browserhost_rs::cdp::call_cdp_tool(name, args, thread).await,
             };
         }
         _ => {}
@@ -1142,6 +1169,6 @@ pub(crate) async fn call_browser_tool(
             v
         }),
         BrowserBackend::EgoLite => call_ego_tool(name, args, thread).await,
-        BrowserBackend::Cdp => crate::browser_cdp::call_cdp_tool(name, args, thread).await,
+        BrowserBackend::Cdp => browserhost_rs::cdp::call_cdp_tool(name, args, thread).await,
     }
 }

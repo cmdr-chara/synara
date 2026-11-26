@@ -12,7 +12,6 @@ use std::sync::{Arc, Mutex, OnceLock};
 use tokio::process::{Child, Command};
 use tokio::sync::{mpsc, oneshot};
 
-use crate::todo::WsErr;
 
 
 
@@ -313,7 +312,7 @@ async fn reqwest_get(url: &str) -> Result<String, String> {
     Ok(String::from_utf8_lossy(&buf[start..(start + content_length).min(buf.len())]).to_string())
 }
 
-pub(crate) async fn shutdown_cdp() {
+pub async fn shutdown_cdp() {
     let child = cdp_state()
         .lock()
         .ok()
@@ -436,11 +435,11 @@ fn selector_js(args: &Value) -> Result<String, String> {
     Err("browser target requires ref, selector or locator".to_string())
 }
 
-pub(crate) fn cdp_available() -> bool {
+pub fn cdp_available() -> bool {
     chrome_path().is_some()
 }
 
-pub(crate) async fn call_cdp_tool(
+pub async fn call_cdp_tool(
     name: &str,
     args: &Value,
     thread: Option<&str>,
@@ -528,7 +527,7 @@ pub(crate) async fn call_cdp_tool(
                 .get("code")
                 .and_then(Value::as_str)
                 .ok_or_else(|| "browser_run requires code".to_string())?;
-            let expression = crate::browser_automation::browser_run_expression_pub(code);
+            let expression = crate::runexpr::browser_run_expression(code);
             let value = cdp_eval(&conn, &session, &expression).await?;
             Ok(json!({"backend": "chrome-cdp", "value": value}))
         }

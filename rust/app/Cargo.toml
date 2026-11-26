@@ -26,6 +26,7 @@ tokio = { version = "1", features = [
   "time",
 ] }
 staticassets-rs = { path = "../staticassets-rs" }
+browserhost-rs = { path = "../browserhost-rs" }
 keybindingrules-rs = { path = "../keybindingrules-rs" }
 profilestats-rs = { path = "../profilestats-rs" }
 profilestatsarchive-rs = { path = "../profilestatsarchive-rs" }

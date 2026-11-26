@@ -25,10 +25,10 @@ pub async fn browser_frame(RawQuery(query): RawQuery) -> Response {
         })
         .unwrap_or_default()
         .to_string();
-    if !crate::browser_cdp::cdp_available() {
+    if !browserhost_rs::cdp::cdp_available() {
         return StatusCode::NO_CONTENT.into_response();
     }
-    let result = crate::browser_cdp::call_cdp_tool(
+    let result = browserhost_rs::cdp::call_cdp_tool(
         "browser_screenshot",
         &Value::Object(serde_json::Map::new()),
         if thread.is_empty() { None } else { Some(thread.as_str()) },

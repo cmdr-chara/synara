@@ -18,6 +18,50 @@ use std::time::{Duration, Instant};
 
 const LOG_FILE_MAX_BYTES: u64 = 10 * 1024 * 1024;
 const LOG_FILE_MAX_FILES: usize = 10;
+const BACKEND_FAILURE_OUTPUT_TAIL_BYTES: usize = 8 * 1024;
+const BACKEND_RESTART_MAX_DELAY: Duration = Duration::from_secs(10);
+
+
+/// Rolling byte tail of one backend session's output. Chunks are appended as
+/// they are forwarded to the durable log; only the bounded tail is kept in memory.
+#[derive(Clone)]
+struct OutputTail {
+    bytes: Arc<Mutex<std::collections::VecDeque<u8>>>,
+}
+
+impl OutputTail {
+    fn new() -> Self {
+        Self { bytes: Arc::new(Mutex::new(std::collections::VecDeque::new())) }
+    }
+
+    fn push(&self, chunk: &[u8]) {
+        if chunk.is_empty() { return; }
+        let Ok(mut bytes) = self.bytes.lock() else { return; };
+        if chunk.len() >= BACKEND_FAILURE_OUTPUT_TAIL_BYTES {
+            bytes.clear();
+            bytes.extend(chunk[chunk.len() - BACKEND_FAILURE_OUTPUT_TAIL_BYTES..].iter().copied());
+            return;
+        }
+        while bytes.len() + chunk.len() > BACKEND_FAILURE_OUTPUT_TAIL_BYTES {
+            bytes.pop_front();
+        }
+        bytes.extend(chunk.iter().copied());
+    }
+
+    fn read(&self) -> String {
+        let Ok(bytes) = self.bytes.lock() else { return String::new() };
+        String::from_utf8_lossy(&bytes.iter().copied().collect::<Vec<_>>())
+            .replace('\r', "")
+            .trim()
+            .to_string()
+    }
+}
+
+fn backend_restart_delay(attempt: u32) -> Duration {
+    let shift = attempt.saturating_sub(1).min(5);
+    let millis = 500u64.saturating_mul(1u64 << shift);
+    Duration::from_millis(millis).min(BACKEND_RESTART_MAX_DELAY)
+}
 
 /// Shared rotating backend log sink. The child owns neither the rotation nor
 /// the file descriptor, so output remains bounded across crashes/restarts.
@@ -97,13 +141,14 @@ fn prune_overflow_backups(path: &Path, max_files: usize) {
     }
 }
 
-fn forward_backend_output(mut reader: impl Read + Send + 'static, sink: Arc<Mutex<RotatingFile>>) {
+fn forward_backend_output(mut reader: impl Read + Send + 'static, sink: Arc<Mutex<RotatingFile>>, tail: OutputTail) {
     thread::spawn(move || {
         let mut buffer = [0u8; 8192];
         loop {
             match reader.read(&mut buffer) {
                 Ok(0) => return,
                 Ok(count) => {
+                    tail.push(&buffer[..count]);
                     if let Ok(mut sink) = sink.lock() {
                         let _ = sink.write_chunk(&buffer[..count]);
                     }
@@ -118,7 +163,6 @@ const READY_TIMEOUT: Duration = Duration::from_secs(20);
 const READY_POLL: Duration = Duration::from_millis(100);
 const STOP_GRACE: Duration = Duration::from_secs(4);
 const MAX_RESTARTS: u32 = 5;
-const STABLE_AFTER: Duration = Duration::from_secs(60);
 
 #[derive(Clone, Debug)]
 struct BackendConfig {
@@ -131,8 +175,8 @@ struct BackendConfig {
 struct SharedState {
     child: Option<Child>,
     config: BackendConfig,
-    restarts: u32,
-    started_at: Instant,
+    start_failures: u32,
+    output_tail: OutputTail,
     restart_pending: bool,
 }
 
@@ -189,19 +233,28 @@ impl BackendLaunch {
 
 impl BackendSupervisor {
     fn start(config: BackendConfig) -> Result<Self, String> {
-        let mut child = spawn_backend(&config)
+        let (mut child, output_tail) = spawn_backend(&config)
             .map_err(|e| format!("avvio backend {} fallito: {e}", config.binary.display()))?;
         wait_until_ready(&mut child, config.port).map_err(|e| {
             let _ = terminate_child(&mut child);
-            format!("backend non pronto sulla porta {}: {e}", config.port)
+            let detail = output_tail.read();
+            if detail.is_empty() {
+                format!("backend non pronto sulla porta {}: {e}", config.port)
+            } else {
+                format!(
+                    "backend non pronto sulla porta {}: {e}\n{}",
+                    config.port,
+                    summarize_backend_failure_output(&detail)
+                )
+            }
         })?;
 
         let state = Arc::new(SupervisorInner {
             state: Mutex::new(SharedState {
                 child: Some(child),
                 config,
-                restarts: 0,
-                started_at: Instant::now(),
+                start_failures: 0,
+                output_tail,
                 restart_pending: false,
             }),
             running: AtomicBool::new(true),
@@ -279,23 +332,22 @@ fn watchdog_loop(inner: Arc<SupervisorInner>) {
 
         let (restart_index, config) = {
             let mut state = inner.state.lock().expect("supervisor state");
-            if state.started_at.elapsed() >= STABLE_AFTER {
-                state.restarts = 0;
-            }
-            if state.restarts >= MAX_RESTARTS {
+            if state.start_failures >= MAX_RESTARTS - 1 {
                 eprintln!(
-                    "backend supervision: processo uscito ({reason}); limite di {MAX_RESTARTS} restart raggiunto"
+                    "backend supervision: processo uscito ({reason}); limite di {MAX_RESTARTS} restart raggiunto
+{}",
+                    summarize_backend_failure_output(&state.output_tail.read())
                 );
                 return;
             }
-            state.restarts += 1;
-            (state.restarts, state.config.clone())
+            state.start_failures += 1;
+            (state.start_failures, state.config.clone())
         };
         eprintln!(
             "backend supervision: processo uscito ({reason}), restart {restart_index}/{MAX_RESTARTS}"
         );
 
-        interruptible_sleep(&inner, Duration::from_millis(400 * restart_index as u64));
+        interruptible_sleep(&inner, backend_restart_delay(restart_index));
         if !inner.running.load(Ordering::SeqCst) {
             return;
         }
@@ -303,8 +355,8 @@ fn watchdog_loop(inner: Arc<SupervisorInner>) {
         let restart = spawn_backend(&config)
             .map_err(|e| e.to_string())
             .and_then(
-                |mut child| match wait_until_ready(&mut child, config.port) {
-                    Ok(()) => Ok(child),
+                |(mut child, output_tail)| match wait_until_ready(&mut child, config.port) {
+                    Ok(()) => Ok((child, output_tail)),
                     Err(error) => {
                         let _ = terminate_child(&mut child);
                         Err(error)
@@ -312,10 +364,11 @@ fn watchdog_loop(inner: Arc<SupervisorInner>) {
                 },
             );
         match restart {
-            Ok(child) => {
+            Ok((child, output_tail)) => {
                 let mut state = inner.state.lock().expect("supervisor state");
                 state.child = Some(child);
-                state.started_at = Instant::now();
+                state.output_tail = output_tail;
+                state.start_failures = 0;
                 state.restart_pending = false;
                 eprintln!(
                     "backend supervision: backend riavviato sulla porta {}",
@@ -337,7 +390,7 @@ fn interruptible_sleep(inner: &SupervisorInner, duration: Duration) {
     }
 }
 
-fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
+fn spawn_backend(config: &BackendConfig) -> io::Result<(Child, OutputTail)> {
     if let Some(parent) = config.log_path.parent() {
         fs::create_dir_all(parent)?;
     }
@@ -361,12 +414,13 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
         Ok(sink) => {
             command.stdout(Stdio::piped()).stderr(Stdio::piped());
             let sink = Arc::new(Mutex::new(sink));
+            let output_tail = OutputTail::new();
             let mut child = command.spawn()?;
             if let Some(stdout) = child.stdout.take() {
-                forward_backend_output(stdout, sink.clone());
+                forward_backend_output(stdout, sink.clone(), output_tail.clone());
             }
             if let Some(stderr) = child.stderr.take() {
-                forward_backend_output(stderr, sink);
+                forward_backend_output(stderr, sink, output_tail.clone());
             }
             eprintln!(
                 "backend supervision: avviato pid {} sulla porta {} (log {})",
@@ -374,7 +428,7 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
                 config.port,
                 config.log_path.display()
             );
-            return Ok(child);
+            return Ok((child, output_tail));
         }
         Err(error) => {
             eprintln!(
@@ -397,7 +451,7 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
         config.port,
         config.log_path.display()
     );
-    Ok(child)
+    Ok((child, OutputTail::new()))
 }
 
 fn wait_until_ready(child: &mut Child, port: u16) -> Result<(), String> {
@@ -605,6 +659,16 @@ pub fn launch_summary(launch: &BackendLaunch) -> serde_json::Value {
     }
 }
 
+
+fn summarize_backend_failure_output(output: &str) -> String {
+    let lines: Vec<&str> = output
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .collect();
+    if lines.is_empty() { return String::new(); }
+    lines.iter().rev().take(8).rev().copied().collect::<Vec<_>>().join("\n")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -642,6 +706,26 @@ mod tests {
         assert!(root.join("server-child.log.2").is_file());
         assert!(!root.join("server-child.log.3").exists());
         let _ = fs::remove_dir_all(root);
+    }
+
+
+    #[test]
+    fn restart_delay_doubles_and_caps() {
+        assert_eq!(backend_restart_delay(1), Duration::from_millis(500));
+        assert_eq!(backend_restart_delay(2), Duration::from_secs(1));
+        assert_eq!(backend_restart_delay(5), Duration::from_secs(8));
+        assert_eq!(backend_restart_delay(6), Duration::from_secs(10));
+        assert_eq!(backend_restart_delay(99), Duration::from_secs(10));
+    }
+
+    #[test]
+    fn output_tail_keeps_bounded_newest_bytes() {
+        let tail = OutputTail::new();
+        tail.push(&vec![b'a'; BACKEND_FAILURE_OUTPUT_TAIL_BYTES - 2]);
+        tail.push(b"bcdef");
+        let read = tail.read();
+        assert_eq!(read.len(), BACKEND_FAILURE_OUTPUT_TAIL_BYTES);
+        assert!(read.ends_with("bcdef"));
     }
 
     #[test]

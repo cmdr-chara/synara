@@ -25710,10 +25710,23 @@ impl Render for Native {
             self.browser_webview = None;
             self.browser_input = None;
         }
+        // The content surface is always opaque (Kartik's shell-atmosphere
+        // model): in full-window mode it is what hides the persistent texture
+        // behind an active thread — the atmosphere reads only through the
+        // transparent chrome. The landing paints its own texture instance on
+        // top of this surface, so empty chats are unaffected.
         let mut main = v_flex().flex_1().min_w_0().h_full().relative();
+        if !show_landing {
+            // The content surface is opaque over active threads: in
+            // full-window mode it is what covers the persistent shell
+            // atmosphere, so the texture reads only through the chrome.
+            // The empty landing stays clear — its own texture instance
+            // (default) or the shell-wide one (full-window) shows through.
+            main = main.bg(content_bg);
+        }
                 // The wm block in the pane builder only runs on the landing;
                 // with full-window mode the image must exist for every view.
-                if show_landing && self.show_ascii_bg {
+                if (show_landing || self.backdrop_full) && self.show_ascii_bg {
                     let vpw = window.viewport_size().width.as_f32();
                     let vph = window.viewport_size().height.as_f32();
                     let dark = theme.is_dark();
@@ -25737,7 +25750,7 @@ impl Render for Native {
                         self.backdrop_key = key;
                     }
                 }
-                let mut landing_bd_main = if show_landing && self.show_ascii_bg {
+                let mut landing_bd_main = if (show_landing || self.backdrop_full) && self.show_ascii_bg {
                     self.backdrop_img.clone().map(|img| {
                         let vpw = window.viewport_size().width.as_f32();
                         let vph = window.viewport_size().height.as_f32();
@@ -27875,7 +27888,7 @@ impl Render for Native {
         // ---- left column: #f7f7f7 well holding the rail and the floating
         // white sidebar card (bordered right+bottom, rounded corners, ~4px
         // bottom inset) exactly like upstream's app-rail-panel.
-        let well_bg = if self.backdrop_full && show_landing && self.show_ascii_bg {
+        let well_bg = if self.backdrop_full && self.show_ascii_bg {
             rgba(0x00000000)
         } else {
             well_bg
@@ -27905,7 +27918,7 @@ impl Render for Native {
                     .w(px(self.side_panel_w()))
                     .h_full()
                     .mb(px(4.))
-                    .bg(if self.backdrop_full && show_landing && self.show_ascii_bg {
+                    .bg(if self.backdrop_full && self.show_ascii_bg {
                         // Full-window atmosphere: the floating sidebar card
                         // goes clear so the texture runs behind it (upstream
                         // [data-atmosphere-full] sidebar-inner surfaces).

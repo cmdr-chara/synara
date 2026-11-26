@@ -101,6 +101,75 @@ fn scene() -> &'static image::RgbaImage {
     })
 }
 
+
+/// Summed-area table of scene luminance (rec709), size (sw+1)*(sh+1), for
+/// exact area-averaged downscaling. Built once per process.
+fn scene_sat() -> &'static Vec<f64> {
+    static SAT: std::sync::OnceLock<Vec<f64>> = std::sync::OnceLock::new();
+    SAT.get_or_init(|| {
+        let scene = scene();
+        let (sw, sh) = (scene.width() as usize, scene.height() as usize);
+        let mut sat = vec![0.0f64; (sw + 1) * (sh + 1)];
+        for y in 0..sh {
+            let mut rowsum = 0.0f64;
+            for x in 0..sw {
+                let p = scene.get_pixel(x as u32, y as u32).0;
+                rowsum += (0.2126 * p[0] as f64 + 0.7152 * p[1] as f64 + 0.0722 * p[2] as f64) / 255.0;
+                sat[(y + 1) * (sw + 1) + (x + 1)] = sat[y * (sw + 1) + (x + 1)] + rowsum;
+            }
+        }
+        sat
+    })
+}
+
+/// Exact integral of scene luminance over the fractional rect [x0,x1]x[y0,y1]
+/// divided by its area — edge pixels weighted by coverage, matching the
+/// browser's area-averaging downscale.
+fn scene_area_average(sat: &[f64], sw: usize, sh: usize, x0: f32, y0: f32, x1: f32, y1: f32) -> f32 {
+    let x0 = x0.max(0.0);
+    let y0 = y0.max(0.0);
+    let x1 = x1.min(sw as f32);
+    let y1 = y1.min(sh as f32);
+    if x1 <= x0 || y1 <= y0 {
+        return 0.0;
+    }
+    // integral over fractional rect via clamped integer decomposition:
+    // sample SAT at fractional coverage by splitting into per-pixel spans
+    let mut acc = 0.0f64;
+    let mut area = 0.0f64;
+    let xi0 = x0.floor() as usize;
+    let xi1 = x1.ceil() as usize;
+    let yi0 = y0.floor() as usize;
+    let yi1 = y1.ceil() as usize;
+    // iterate pixel rows/cols covered; each contributes luminance*coverage
+    // using SAT column/row differences per whole pixel (exact, cheap: cells
+    // are ~2-3 scene px wide)
+    for py in yi0..yi1.min(sh) {
+        let cov_y = (y1.min((py + 1) as f32) - y0.max(py as f32)).max(0.0) as f64;
+        if cov_y <= 0.0 {
+            continue;
+        }
+        for px_ in xi0..xi1.min(sw) {
+            let cov_x = (x1.min((px_ + 1) as f32) - x0.max(px_ as f32)).max(0.0) as f64;
+            if cov_x <= 0.0 {
+                continue;
+            }
+            // exact luminance of pixel (px_, py) from the SAT
+            let stride = sw + 1;
+            let l = sat[(py + 1) * stride + px_ + 1] - sat[py * stride + px_ + 1]
+                - sat[(py + 1) * stride + px_]
+                + sat[py * stride + px_];
+            acc += l * cov_x * cov_y;
+            area += cov_x * cov_y;
+        }
+    }
+    if area > 0.0 {
+        (acc / area) as f32
+    } else {
+        0.0
+    }
+}
+
 /// Bilinear resize of the scene into the cell-resolution grid area, matching
 /// the canvas drawImage(dst) upstream: the scene covers [scene_w x scene_h]
 /// cells placed at (left, top) in cell units; out-of-scene cells stay empty
@@ -115,6 +184,7 @@ fn draw_scene_cells(
 ) -> Vec<f32> {
     // returns luminance-per-cell with alpha folded in: -1 marks empty cells
     let scene = scene();
+    let sat = scene_sat();
     let (sw, sh) = (scene.width() as f32, scene.height() as f32);
     let mut lum = vec![-1.0f32; cols * rows];
     // cell (col,row) samples the scene at its center in scene-cell space
@@ -125,24 +195,19 @@ fn draw_scene_cells(
             // position within the drawn scene rect (cell units)
             let sx = (cx - left) / scene_w * sw;
             let sy = (cy - top) / scene_h * sh;
-            if sx < 0.0 || sy < 0.0 || sx >= sw - 1.0 || sy >= sh - 1.0 {
+            if sx < 0.0 || sy < 0.0 || sx >= sw || sy >= sh {
                 continue;
             }
-            let x0 = sx.floor() as u32;
-            let y0 = sy.floor() as u32;
-            let fx = sx - x0 as f32;
-            let fy = sy - y0 as f32;
-            let sample = |x: u32, y: u32| -> f32 {
-                let p = scene.get_pixel(x, y).0;
-                (0.2126 * p[0] as f32 + 0.7152 * p[1] as f32 + 0.0722 * p[2] as f32) / 255.0
-            };
-            let a = sample(x0, y0);
-            let b = sample(x0 + 1, y0);
-            let c = sample(x0, y0 + 1);
-            let d = sample(x0 + 1, y0 + 1);
-            let topmix = a + (b - a) * fx;
-            let botmix = c + (d - c) * fx;
-            lum[row * cols + col] = topmix + (botmix - topmix) * fy;
+            // Upstream draws the scene into the cell-resolution canvas with
+            // the browser's high-quality downscale: each cell is the AREA
+            // AVERAGE of the scene pixels it covers, not a point sample.
+            // Point sampling aliases the sky grain into noisy clusters, so
+            // integrate over the cell footprint with a summed-area table.
+            let cell_sx0 = (cx - left - 0.5) / scene_w * sw;
+            let cell_sy0 = (cy - top - 0.5) / scene_h * sh;
+            let cell_sx1 = (cx - left + 0.5) / scene_w * sw;
+            let cell_sy1 = (cy - top + 0.5) / scene_h * sh;
+            lum[row * cols + col] = scene_area_average(&sat, sw as usize, sh as usize, cell_sx0, cell_sy0, cell_sx1, cell_sy1);
         }
     }
     lum

@@ -152,8 +152,9 @@ pub(crate) async fn intercept_todo_pub(
     streams: &std::sync::Arc<
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
+    desktop_update_authority: Option<&str>,
 ) -> Option<Option<ClientMessage>> {
-    intercept_todo(text, todos, native_tx, streams).await
+    intercept_todo(text, todos, native_tx, streams, desktop_update_authority).await
 }
 
 async fn intercept_todo(
@@ -163,6 +164,7 @@ async fn intercept_todo(
     streams: &std::sync::Arc<
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
+    desktop_update_authority: Option<&str>,
 ) -> Option<Option<ClientMessage>> {
     if !text.contains("\"todo.")
         && !text.contains("\"server.get")
@@ -1149,11 +1151,11 @@ async fn intercept_todo(
             .map(Some)
             .map_err(error_json)
     } else if tag == "server.desktopUpdateStatus" {
-        crate::server_desktop_update::desktop_update_status()
+        crate::server_desktop_update::desktop_update_status(desktop_update_authority)
             .map(Some)
             .map_err(error_json)
     } else if tag == "server.desktopUpdate" {
-        crate::server_desktop_update::desktop_update(&payload)
+        crate::server_desktop_update::desktop_update(&payload, desktop_update_authority)
             .map(Some)
             .map_err(error_json)
     } else if tag == "server.getConfig" {
@@ -1488,6 +1490,9 @@ async fn relay(
     intercept: bool,
 ) {
     let todos = original.todos.clone();
+    let desktop_update_authority = crate::auth_http::authenticate(&headers).and_then(|session| {
+        (session.role == "owner").then(|| format!("owner:{}", session.session_id))
+    });
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
         // No original is running: serve every frame natively. Handled tags get
         // their normal reply; anything else answers an Exit failure so callers
@@ -1522,7 +1527,7 @@ async fn relay(
                         ));
                         continue;
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in).await {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref()).await {
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
                         }
@@ -1637,7 +1642,7 @@ async fn relay(
                             continue;
                         }
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in).await {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref()).await {
                         eprintln!("ws_relay: native todo reply");
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);

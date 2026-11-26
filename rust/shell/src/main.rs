@@ -82,6 +82,11 @@ impl Shell {
                 },
             ));
 
+            // Native owns most workspace state and changes it from background
+            // websocket/updater tasks. GPUI does not automatically invalidate
+            // the parent merely because a child entity was passed through, so
+            // forward Native notifications into the root view's render pass.
+            cx.observe(&this.native, |_, _, cx| cx.notify()).detach();
             cx.subscribe(
                 &address_input,
                 |this: &mut Self, input, event: &InputEvent, cx| {

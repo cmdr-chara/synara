@@ -21,6 +21,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::*;
 use gpui_kit::component::WindowExt as _;
+use gpui_kit::base::Disableable as _;
 use gpui_kit::assets::IconName as AssetIcon;
 use gpui::prelude::FluentBuilder as _;
 
@@ -1415,6 +1416,8 @@ pub struct Native {
     notification_keys: std::collections::HashSet<String>,
     notification_window: Option<gpui::AnyWindowHandle>,
     notification_window_active: bool,
+    desktop_update_state: Option<crate::updater::UpdateState>,
+    desktop_update_installing: bool,
     /// Upstream OneTimeCoachmark: seen keys persisted under
     /// settings.sidebarUi.coachmarks; `coachmark` is the one showing.
     coachmarks_seen: std::collections::HashSet<String>,
@@ -2966,6 +2969,14 @@ fn ensure_client(cell: &SharedClient) -> Option<Arc<Client>> {
     guard.clone()
 }
 
+fn desktop_update_state_from_status(status: &Value) -> Option<crate::updater::UpdateState> {
+    serde_json::from_value(status.get("state").cloned()?).ok()
+}
+
+fn desktop_update_state_from_result(result: &Value) -> Option<crate::updater::UpdateState> {
+    result.get("status").and_then(desktop_update_state_from_status)
+}
+
 impl Native {
     pub fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
         cx.new(|cx| {
@@ -3377,6 +3388,8 @@ impl Native {
                 notification_keys: std::collections::HashSet::new(),
                 notification_window: None,
                 notification_window_active: true,
+                desktop_update_state: None,
+                desktop_update_installing: false,
                 coachmarks_seen: std::collections::HashSet::new(),
                 feature_flags: [false; 3],
                 flags_menu_open: false,
@@ -3525,6 +3538,20 @@ impl Native {
                 }
             })
             .detach();
+            // Desktop updater state is owned by the shell service and changes
+            // outside websocket events (background checks, transfers, restore).
+            cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                loop {
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_millis(1000))
+                        .await;
+                    let keep = this
+                        .update(cx, |this: &mut Self, cx| this.refresh_desktop_update_state(cx))
+                        .is_ok();
+                    if !keep { break; }
+                }
+            })
+            .detach();
             // AsciiWaveBackground ambient clock: ~15fps repaints while the
             // landing field is on screen (upstream AMBIENT_FRAME_INTERVAL_MS).
             cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
@@ -3587,6 +3614,85 @@ impl Native {
             "messages",
         )
         .is_empty()
+    }
+
+    fn refresh_desktop_update_state(&mut self, cx: &mut Context<Self>) {
+        let next = crate::updater::desktop_update_service().snapshot_state();
+        if next != self.desktop_update_state {
+            self.desktop_update_state = next;
+            cx.notify();
+            cx.refresh_windows();
+        }
+    }
+
+    /// Sidebar updater action, backed by `server.desktopUpdate` rather than by
+    /// poking the shell-local service directly: the backend remains the owner
+    /// of busy-chat restart admission, while the shell bridge executes the update.
+    fn perform_desktop_update_action(&mut self, cx: &mut Context<Self>) {
+        let Some(state) = self
+            .desktop_update_state
+            .clone()
+            .or_else(|| crate::updater::desktop_update_service().snapshot_state()) else { return };
+        if crate::updater::desktop_update_button_disabled(Some(&state)) || self.desktop_update_installing {
+            return;
+        }
+        let action = match crate::updater::resolve_desktop_update_button_action(&state) {
+            crate::updater::DesktopUpdateButtonAction::Check => "check",
+            crate::updater::DesktopUpdateButtonAction::Download => "download",
+            crate::updater::DesktopUpdateButtonAction::Install => "install",
+            crate::updater::DesktopUpdateButtonAction::None => return,
+        };
+        let expected_version = state.downloaded_version.clone().or_else(|| state.available_version.clone());
+        if action == "install" {
+            self.desktop_update_installing = true;
+            cx.notify();
+        }
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx.background_executor().spawn(async move { ensure_client(&cell) }).await;
+            let Some(client) = client else {
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    this.desktop_update_installing = false;
+                    cx.notify();
+                });
+                return;
+            };
+            let expected = expected_version.clone();
+            let result = cx.background_executor().spawn(async move {
+                if action == "install" {
+                    let Some(version) = expected else { return Value::Null };
+                    let payload = json!({
+                        "action": "install",
+                        "confirmRestart": true,
+                        "expectedVersion": version,
+                    });
+                    let first = client.call("server.desktopUpdate", payload).unwrap_or(Value::Null);
+                    let Some(token) = first.get("restartToken").and_then(Value::as_str).map(str::to_string) else {
+                        return first;
+                    };
+                    if !first.get("accepted").and_then(Value::as_bool).unwrap_or(false) {
+                        return first;
+                    }
+                    client.call("server.desktopUpdate", json!({
+                        "action": "install",
+                        "confirmRestart": true,
+                        "expectedVersion": version,
+                        "restartToken": token,
+                    })).unwrap_or(Value::Null)
+                } else {
+                    client.call("server.desktopUpdate", json!({"action": action})).unwrap_or(Value::Null)
+                }
+            }).await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(next) = desktop_update_state_from_result(&result) {
+                    this.desktop_update_state = Some(next);
+                }
+                this.desktop_update_installing = false;
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     fn deliver_activity_notification(
@@ -27199,6 +27305,11 @@ impl Render for Native {
             && !self.view_autom
             && !self.view_studio
             && !self.view_spaces;
+        let desktop_update = self
+            .desktop_update_state
+            .clone()
+            .or_else(|| crate::updater::desktop_update_service().snapshot_state())
+            .filter(|state| crate::updater::should_show_desktop_update_button(Some(state)));
         let rail = v_flex()
             .w(px(51.))
             .h_full()
@@ -27449,6 +27560,51 @@ impl Render for Native {
                                 }),
                         )
                     })
+            })
+            .when_some(desktop_update, |rail, update_state| {
+                let percent = crate::updater::desktop_update_download_percent(&update_state);
+                let disabled = crate::updater::desktop_update_button_disabled(Some(&update_state))
+                    || self.desktop_update_installing;
+                let label = crate::updater::desktop_update_button_label(&update_state, self.desktop_update_installing);
+                rail.child(
+                    Button::new("nav-update")
+                        .ghost()
+                        .compact()
+                        .w(px(36.))
+                        .h(px(36.))
+                        .p_0()
+                        .rounded(px(8.))
+                        .disabled(disabled)
+                        .accessibility_label(label.clone())
+                        .tooltip(label)
+                        .child(
+                            div()
+                                .size(px(28.))
+                                .rounded_full()
+                                .bg(theme.primary)
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .child(
+                                    if let Some(percent) = percent {
+                                        div()
+                                            .text_size(px(9.))
+                                            .font_weight(FontWeight::SEMIBOLD)
+                                            .text_color(theme.primary_foreground)
+                                            .child(format!("{percent}%"))
+                                            .into_any_element()
+                                    } else {
+                                        svg_icon(icons::DOWNLOAD)
+                                            .size(px(16.))
+                                            .text_color(theme.primary_foreground)
+                                            .into_any_element()
+                                    },
+                                ),
+                        )
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.perform_desktop_update_action(cx);
+                        })),
+                )
             })
             .child({
                 // Upstream signed-out account menu (AccountFooterControl):

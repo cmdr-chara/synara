@@ -435,6 +435,9 @@ pub async fn serve_inner(
             authed = true;
         }
     }
+    let desktop_update_authority = session_registration
+        .as_ref()
+        .map(|(session_id, _)| crate::server_desktop_update::authorize_remote_session(session_id));
     let (native_tx, mut native_rx) = tokio::sync::mpsc::unbounded_channel::<axum::extract::ws::Message>();
     let streams: std::sync::Arc<
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
@@ -476,7 +479,7 @@ pub async fn serve_inner(
         match msg {
             Ok(tokio_tungstenite::tungstenite::Message::Text(t)) => {
                 if let Some(reply) =
-                    crate::ws_relay::intercept_todo_pub(&t, &todos, &native_tx, &streams_in).await
+                    crate::ws_relay::intercept_todo_pub(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref()).await
                 {
                     if let Some(reply) = reply {
                         let _ = native_tx.send(reply);
@@ -510,6 +513,7 @@ pub async fn serve_inner(
     }
     writer.abort();
     if let Some((session_id, _)) = session_registration {
+        crate::server_desktop_update::revoke_remote_session(&session_id);
         crate::remote_sessions::remove(&session_id);
     }
 }

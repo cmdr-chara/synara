@@ -13,6 +13,48 @@ use serde_json::{Value, json};
 
 use crate::todo::WsErr;
 
+fn approved_remote_sessions() -> &'static std::sync::Mutex<std::collections::HashMap<String, String>> {
+    static SESSIONS: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<String, String>>> = std::sync::OnceLock::new();
+    SESSIONS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+/// Mirrors upstream `authorizeRemoteDesktopUpdateSession`: only the verified
+/// remote gateway receives updater authority; ordinary client sessions do not.
+pub(crate) fn authorize_remote_session(session_id: &str) -> String {
+    let authority = format!("remote:{}", crate::orchestration_engine::uuid_v4());
+    if let Ok(mut sessions) = approved_remote_sessions().lock() {
+        sessions.insert(session_id.to_string(), authority.clone());
+    }
+    authority
+}
+
+pub(crate) fn revoke_remote_session(session_id: &str) {
+    if let Ok(mut sessions) = approved_remote_sessions().lock() {
+        sessions.remove(session_id);
+    }
+}
+
+fn valid_authority(authority: Option<&str>) -> Result<String, WsErr> {
+    let Some(authority) = authority.filter(|value| !value.trim().is_empty()) else {
+        return Err(WsErr(
+            "Desktop updates require an authenticated owner or approved remote device.".to_string(),
+            None,
+        ));
+    };
+    let approved_remote = approved_remote_sessions()
+        .lock()
+        .ok()
+        .is_some_and(|sessions| sessions.values().any(|value| value == authority));
+    if authority.starts_with("owner:") || approved_remote {
+        Ok(authority.to_string())
+    } else {
+        Err(WsErr(
+            "Desktop updates require an authenticated owner or approved remote device.".to_string(),
+            None,
+        ))
+    }
+}
+
 fn busy() -> bool {
     let db = std::path::PathBuf::from(crate::todo::state_dir()).join("state.sqlite");
     let tmp = std::env::temp_dir().join(format!(
@@ -68,7 +110,7 @@ fn bridge_file() -> std::path::PathBuf {
     std::path::PathBuf::from(crate::todo::state_dir()).join("desktop-update-bridge.json")
 }
 
-fn bridge_request(action: &str, payload: &Value) -> Option<Value> {
+fn bridge_request(action: &str, payload: &Value, authority: &str) -> Option<Value> {
     use std::io::{BufRead as _, BufReader, Write as _};
     let descriptor: Value = serde_json::from_str(&std::fs::read_to_string(bridge_file()).ok()?).ok()?;
     let port = descriptor.get("port").and_then(Value::as_u64)?;
@@ -85,7 +127,7 @@ fn bridge_request(action: &str, payload: &Value) -> Option<Value> {
         .ok()?;
     let mut request = json!({
         "token": token,
-        "authority": format!("owner:{}", std::process::id()),
+        "authority": authority,
         "action": action,
     });
     if let Some(expected) = payload.get("expectedVersion").and_then(Value::as_str) {
@@ -117,8 +159,8 @@ fn merged_status(status: Value) -> Value {
     out
 }
 
-fn status() -> Value {
-    match bridge_request("status", &json!({}))
+fn status(authority: &str) -> Value {
+    match bridge_request("status", &json!({}), authority)
         .and_then(|response| response.get("status").cloned())
     {
         Some(status) => merged_status(status),
@@ -126,11 +168,13 @@ fn status() -> Value {
     }
 }
 
-pub fn desktop_update_status() -> Result<Value, WsErr> {
-    Ok(status())
+pub fn desktop_update_status(authority: Option<&str>) -> Result<Value, WsErr> {
+    let authority = valid_authority(authority)?;
+    Ok(status(&authority))
 }
 
-pub fn desktop_update(payload: &Value) -> Result<Value, WsErr> {
+pub fn desktop_update(payload: &Value, authority: Option<&str>) -> Result<Value, WsErr> {
+    let authority = valid_authority(authority)?;
     let action = payload
         .get("action")
         .and_then(Value::as_str)
@@ -148,13 +192,26 @@ pub fn desktop_update(payload: &Value) -> Result<Value, WsErr> {
             Some("VALIDATION"),
         ));
     }
-    let current = status();
+    let current = status(&authority);
     if !current.get("supported").and_then(Value::as_bool).unwrap_or(false)
         || (action == "install" && current.get("busy").and_then(Value::as_bool).unwrap_or(false))
     {
         return Ok(json!({ "accepted": false, "status": current }));
     }
-    if let Some(result) = bridge_request(action, payload) {
+    // The status round trip can overlap a turn start; upstream re-reads busy
+    // immediately before forwarding an install commit.
+    if action == "install" && busy() {
+        return Ok(json!({
+            "accepted": false,
+            "status": json!({
+                "supported": current.get("supported").cloned().unwrap_or(Value::Bool(false)),
+                "state": current.get("state").cloned().unwrap_or(Value::Null),
+                "busy": true,
+                "message": "Finish running chats and tasks before restarting Synara."
+            })
+        }));
+    }
+    if let Some(result) = bridge_request(action, payload, &authority) {
         if let Some(bridge_status) = result.get("status").cloned() {
             let mut out = result.clone();
             out["status"] = merged_status(bridge_status);
@@ -170,4 +227,22 @@ pub fn desktop_update(payload: &Value) -> Result<Value, WsErr> {
             "message": "Desktop updater is unavailable. Reconnect and refresh its status."
         })
     }))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn updater_authority_admits_only_owner_or_active_remote() {
+        assert!(valid_authority(None).is_err());
+        assert!(valid_authority(Some("client:session")).is_err());
+        assert!(valid_authority(Some("owner:session-a")).is_ok());
+
+        let session_id = format!("remote-test-{}", crate::orchestration_engine::uuid_v4());
+        let authority = authorize_remote_session(&session_id);
+        assert_eq!(valid_authority(Some(&authority)).ok(), Some(authority.clone()));
+        revoke_remote_session(&session_id);
+        assert!(valid_authority(Some(&authority)).is_err());
+    }
 }

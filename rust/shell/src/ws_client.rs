@@ -51,11 +51,26 @@ impl Client {
     /// (non-native) RPCs authenticate like the browser does.
     fn mint_session(base: &str) -> (Option<String>, String) {
         let agent = ureq::AgentBuilder::new().build();
+        // The backend seeds the owner bootstrap credential into its private
+        // secret store; the desktop shell is the trusted local peer and reads
+        // it from the same SYNARA_HOME rather than using a hard-coded token.
+        let credential = std::env::var("SYNARA_BOOTSTRAP_CREDENTIAL")
+            .ok()
+            .filter(|value| !value.trim().is_empty())
+            .or_else(|| {
+                let path = crate::backend::configured_home_dir()
+                    .join("userdata")
+                    .join("secrets")
+                    .join("bootstrap-credential.bin");
+                std::fs::read_to_string(path).ok().map(|value| value.trim().to_string()).filter(|value| !value.is_empty())
+            })
+            .unwrap_or_else(|| "rectoken".to_string());
+        let bootstrap_body = json!({"credential": credential}).to_string();
         let cookie = agent
             .post(&format!("{base}/api/auth/bootstrap"))
             .set("Origin", base)
             .set("Content-Type", "application/json")
-            .send_string("{\"credential\":\"rectoken\"}")
+            .send_string(&bootstrap_body)
             .ok()
             .and_then(|r| {
                 r.all("set-cookie")

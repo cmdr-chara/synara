@@ -270,6 +270,101 @@ pub fn can_check(state: &UpdateState) -> bool {
     !matches!(state.status, UpdateStatus::Checking | UpdateStatus::Downloading)
 }
 
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DesktopUpdateButtonAction {
+    Check,
+    Download,
+    Install,
+    None,
+}
+
+pub fn resolve_desktop_update_button_action(state: &UpdateState) -> DesktopUpdateButtonAction {
+    if state.status == UpdateStatus::Error && state.error_context.as_deref() == Some("install") && !state.can_retry {
+        return DesktopUpdateButtonAction::None;
+    }
+    if matches!(state.status, UpdateStatus::Idle | UpdateStatus::Checking | UpdateStatus::UpToDate)
+        || (state.status == UpdateStatus::Error && state.error_context.as_deref() == Some("check"))
+    {
+        return DesktopUpdateButtonAction::Check;
+    }
+    if state.status == UpdateStatus::Available { return DesktopUpdateButtonAction::Download; }
+    if state.status == UpdateStatus::Downloaded { return DesktopUpdateButtonAction::Install; }
+    if state.status == UpdateStatus::Error {
+        if state.error_context.as_deref() == Some("install") && state.downloaded_version.is_none() && state.available_version.is_some() {
+            return DesktopUpdateButtonAction::Download;
+        }
+        if state.downloaded_version.is_some() && matches!(state.error_context.as_deref(), Some("install") | None) {
+            return DesktopUpdateButtonAction::Install;
+        }
+        if state.available_version.is_some() && matches!(state.error_context.as_deref(), Some("download") | None) {
+            return DesktopUpdateButtonAction::Download;
+        }
+    }
+    DesktopUpdateButtonAction::None
+}
+
+pub fn should_show_desktop_update_button(state: Option<&UpdateState>) -> bool {
+    let Some(state) = state.filter(|state| state.enabled) else { return false };
+    let action = resolve_desktop_update_button_action(state);
+    matches!(state.status, UpdateStatus::Available | UpdateStatus::Downloading | UpdateStatus::Downloaded)
+        || (state.status == UpdateStatus::Error
+            && state.error_context.as_deref() != Some("check")
+            && (action != DesktopUpdateButtonAction::None
+                || (state.error_context.as_deref() == Some("install") && state.downloaded_version.is_some())))
+}
+
+pub fn desktop_update_button_disabled(state: Option<&UpdateState>) -> bool {
+    let Some(state) = state else { return true };
+    (state.status == UpdateStatus::Error && state.error_context.as_deref() == Some("install") && !state.can_retry)
+        || matches!(state.status, UpdateStatus::Downloading | UpdateStatus::Checking)
+        || (state.status == UpdateStatus::Available && state.error_context.as_deref() != Some("download"))
+}
+
+pub fn desktop_update_download_percent(state: &UpdateState) -> Option<u32> {
+    if state.status != UpdateStatus::Downloading { return None; }
+    state.download_percent.filter(|percent| percent.is_finite()).map(|percent| percent.clamp(0.0, 100.0).floor() as u32)
+}
+
+pub fn desktop_update_button_label(state: &UpdateState, installing: bool) -> String {
+    if installing { return "Applying update...".into(); }
+    if state.status == UpdateStatus::Error && state.error_context.as_deref() == Some("install") && !state.can_retry {
+        return state.message.clone().unwrap_or_else(|| "Fully quit and reopen Synara before retrying the update.".into());
+    }
+    match state.status {
+        UpdateStatus::Idle => "Check for updates".into(),
+        UpdateStatus::Checking => "Checking for updates...".into(),
+        UpdateStatus::UpToDate => format!("You're up to date on {}. Click to check again.", state.current_version),
+        UpdateStatus::Available => format!("Preparing update {}", state.available_version.clone().unwrap_or_default()).trim().to_string(),
+        UpdateStatus::Downloading => {
+            let progress = state.download_percent.map(|percent| format!(" ({}%)", percent.floor() as u32)).unwrap_or_default();
+            format!("Preparing update{progress}")
+        }
+        UpdateStatus::Downloaded => format!(
+            "Update {} is ready. Click to restart and install.",
+            state.downloaded_version.clone().or_else(|| state.available_version.clone()).unwrap_or_else(|| "ready".into())
+        ),
+        UpdateStatus::Error => {
+            if state.error_context.as_deref() == Some("install") && state.downloaded_version.is_none() && state.available_version.is_some() {
+                return format!("Synara restarted, but update {} was not installed. Click to try again.", state.available_version.clone().unwrap_or_default());
+            }
+            if state.error_context.as_deref() == Some("download") && state.available_version.is_some() {
+                return format!("Could not prepare update {}. Click to retry.", state.available_version.clone().unwrap_or_default());
+            }
+            if state.error_context.as_deref() == Some("install") {
+                if let Some(version) = state.downloaded_version.clone().or_else(|| state.available_version.clone()) {
+                    return format!("Could not install update {version}. Click to retry.");
+                }
+            }
+            if state.error_context.as_deref() == Some("check") {
+                return state.message.clone().map(|message| format!("{message}. Click to check again.")).unwrap_or_else(|| "Update check failed. Click to try again.".into());
+            }
+            state.message.clone().unwrap_or_else(|| "Update failed".into())
+        }
+        UpdateStatus::Disabled => "Updates are unavailable".into(),
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ArtifactIdentity {
     pub path: PathBuf,
@@ -1260,11 +1355,16 @@ impl DesktopUpdateService {
         self.state.lock().ok().map(|state| state.clone())
     }
 
+    pub fn snapshot_state(&self) -> Option<UpdateState> {
+        self.current_state()
+    }
+
     fn request_check(self: &Arc<Self>) -> bool {
         let Some(state) = self.current_state() else { return false };
         if !self.supported() || !can_check(&state) {
             return false;
         }
+        if let Ok(mut ticket) = self.ticket.lock() { *ticket = None; }
         self.set_state(|state| state.check_start(now_iso()));
         let service = Arc::clone(self);
         std::thread::spawn(move || service.perform_check());
@@ -1299,6 +1399,13 @@ impl DesktopUpdateService {
                 } else {
                     if let Ok(mut selected) = self.selected_file.lock() { *selected = Some(file); }
                     self.set_state(|state| state.update_available(manifest.version, now_iso()));
+                    // electron-updater starts preparing an available payload in
+                    // the background; the rail's disabled "Preparing" state is
+                    // parity with that flow, not a dead manual step.
+                    let service = Arc::clone(self);
+                    std::thread::spawn(move || {
+                        let _ = service.request_download();
+                    });
                 }
             }
             Err(message) => self.set_state(|state| state.check_failure(message, now_iso())),
@@ -1310,6 +1417,7 @@ impl DesktopUpdateService {
         if !self.supported() || state.status != UpdateStatus::Available || state.available_version.is_none() {
             return false;
         }
+        if let Ok(mut ticket) = self.ticket.lock() { *ticket = None; }
         self.set_state(|state| state.download_start());
         let service = Arc::clone(self);
         std::thread::spawn(move || service.perform_download());
@@ -1410,6 +1518,9 @@ impl DesktopUpdateService {
         if !self.supported() {
             return json!({"accepted": false, "status": self.status_json(Some("Updates require a packaged Synara Desktop app with an update feed configured.".into()))});
         }
+        if self.committed.load(std::sync::atomic::Ordering::SeqCst) {
+            return json!({"accepted": false, "status": self.status_json(Some("Synara is already preparing to restart.".into()))});
+        }
         match action {
             "check" => {
                 let accepted = self.request_check();
@@ -1470,8 +1581,8 @@ pub fn start_desktop_update_bridge() -> Result<(), String> {
     let automatic = Arc::clone(&service);
     std::thread::spawn(move || {
         // Upstream desktop behavior: a startup check after 15s, then a quiet
-        // poll every four hours. Explicit renderer/menu checks still go through
-        // the bridge; this loop never downloads or installs by itself.
+        // poll every four hours. A newer payload downloads in the background;
+        // installation still requires an explicit owner/approved-remote action.
         std::thread::sleep(std::time::Duration::from_secs(15));
         loop {
             let _ = automatic.request_check();
@@ -1508,6 +1619,22 @@ mod tests {
 
     fn state() -> UpdateState {
         UpdateState::initial("0.9.0", "arm64", "arm64", false, UpdateFlavor::Production)
+    }
+
+    #[test]
+    fn rail_button_action_and_visibility_match_upstream_policy() {
+        let mut update = state();
+        assert!(!should_show_desktop_update_button(Some(&update)));
+        update.enabled = true;
+        update = update.check_start("now").update_available("0.9.1", "now");
+        assert!(should_show_desktop_update_button(Some(&update)));
+        assert_eq!(resolve_desktop_update_button_action(&update), DesktopUpdateButtonAction::Download);
+        assert!(desktop_update_button_disabled(Some(&update)));
+        update.error_context = Some("download".into());
+        assert!(!desktop_update_button_disabled(Some(&update)));
+        update = update.download_start().download_progress(42.8).download_complete("0.9.1");
+        assert_eq!(resolve_desktop_update_button_action(&update), DesktopUpdateButtonAction::Install);
+        assert!(desktop_update_button_label(&update, false).contains("0.9.1"));
     }
 
     #[test]

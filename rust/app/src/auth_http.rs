@@ -73,17 +73,17 @@ fn extract_session_token(headers: &HeaderMap) -> Option<String> {
     None
 }
 
-struct AuthenticatedSession {
-    session_id: String,
-    role: String,
-    method: String,
-    subject: String,
+pub(crate) struct AuthenticatedSession {
+    pub(crate) session_id: String,
+    pub(crate) role: String,
+    pub(crate) method: String,
+    pub(crate) subject: String,
 }
 
 /// Validates the request session: token cryptographic validity plus the
 /// session row still active (not revoked, not expired) — mirroring upstream
 /// authenticateRequest.
-fn authenticate(headers: &HeaderMap) -> Option<AuthenticatedSession> {
+pub(crate) fn authenticate(headers: &HeaderMap) -> Option<AuthenticatedSession> {
     let token = extract_session_token(headers)?;
     let claims = auth_sessions::verify_token(&token)?;
     if claims.kind != "session" {

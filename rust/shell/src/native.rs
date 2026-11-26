@@ -23650,7 +23650,7 @@ impl Render for Native {
                                     ))
                                     .child(srow(
                                         "Full-window backdrop",
-                                        "Keep the temple backdrop behind the whole chat column, not just the empty landing.",
+                                        "Keep the temple backdrop behind the whole window chrome, not just the empty landing.",
                                         div().id("backdrop-full-toggle").cursor_pointer()
                                             .child(toggle(self.backdrop_full))
                                             .on_click(cx.listener(|this, _ev, _w, cx| this.toggle_backdrop_full(cx)))

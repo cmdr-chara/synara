@@ -1392,6 +1392,7 @@ pub struct Native {
     vault_reveal_id: Option<String>,
     vault_revealed: Option<(String, String)>,
     vault_delete_id: Option<String>,
+    vault_prompts_seen: std::collections::HashSet<String>,
     /// Owner cookie-import draft/result. Browser/profile choices are explicit;
     /// cookie values never pass through this UI state.
     cookie_sources: Vec<Value>,
@@ -3353,6 +3354,7 @@ impl Native {
                 vault_reveal_id: None,
                 vault_revealed: None,
                 vault_delete_id: None,
+                vault_prompts_seen: std::collections::HashSet::new(),
                 cookie_sources: Vec::new(),
                 cookie_browser: None,
                 cookie_profile: None,
@@ -3477,10 +3479,29 @@ impl Native {
             cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
                 loop {
                     cx.background_executor()
-                        .timer(std::time::Duration::from_secs(2))
+                        .timer(std::time::Duration::from_millis(500))
                         .await;
                     let keep = this
                         .update(cx, |this: &mut Self, cx| {
+                            if let Some(Ok(vault)) = browserhost_rs::cdp::initialized_browser_vault() {
+                                if let Ok(snapshot) = vault.snapshot() {
+                                    let pending: Vec<String> = arr(&snapshot, "pending")
+                                        .iter()
+                                        .map(|prompt| str_at(prompt, "id").to_string())
+                                        .filter(|id| !id.is_empty() && !this.vault_prompts_seen.contains(id))
+                                        .collect();
+                                    if !pending.is_empty() {
+                                        for id in pending {
+                                            this.vault_prompts_seen.insert(id);
+                                        }
+                                        if !(this.view_settings && this.settings_section == "saved-logins") {
+                                            this.clear_views();
+                                            this.view_settings = true;
+                                            this.settings_section = "saved-logins";
+                                        }
+                                    }
+                                }
+                            }
                             if this.view_settings && this.settings_section == "saved-logins" {
                                 this.refresh_vault(cx);
                             }

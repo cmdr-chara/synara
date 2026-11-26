@@ -199,9 +199,10 @@ pub fn cookie_import_destinations(thread: &str) -> Vec<&'static str> {
     backends
 }
 
+static BROWSER_VAULT: OnceLock<Result<BrowserVault, String>> = OnceLock::new();
+
 fn browser_vault() -> Result<&'static BrowserVault, String> {
-    static VAULT: OnceLock<Result<BrowserVault, String>> = OnceLock::new();
-    VAULT
+    BROWSER_VAULT
         .get_or_init(|| {
             let base = std::env::var("SYNARA_HOME")
                 .map(std::path::PathBuf::from)
@@ -213,6 +214,12 @@ fn browser_vault() -> Result<&'static BrowserVault, String> {
         })
         .as_ref()
         .map_err(Clone::clone)
+}
+
+/// Existing vault instance without materializing one. Used by passive owner UI
+/// polling so merely opening Synara never triggers keychain access.
+pub fn initialized_browser_vault() -> Option<Result<&'static BrowserVault, String>> {
+    BROWSER_VAULT.get().map(|result| result.as_ref().map_err(Clone::clone))
 }
 
 const CREDENTIALS_BRIDGE_JS: &str = r#"(() => {
@@ -308,8 +315,6 @@ fn resolve_capture(
     capture: PendingCapture,
     session: &str,
     prompts: &mut HashMap<String, (String, PendingCapture)>,
-    tx: &mpsc::UnboundedSender<String>,
-    next_id: &AtomicU64,
 ) {
     let Ok(vault) = browser_vault() else { return };
     let (enabled, autosave) = vault.capture_policy();
@@ -349,26 +354,11 @@ fn resolve_capture(
     if prompt_id.is_empty() {
         return;
     }
+    // Like upstream's requestSave integration, owner decisions live in the
+    // desktop vault surface rather than a second in-page prompt. Keep the
+    // capture in the session map so a legacy in-page response can still be
+    // consumed harmlessly if a stale sensor was already injected.
     prompts.insert(prompt_id.clone(), (session.to_string(), capture.clone()));
-    let expression = format!(
-        "globalThis.__bwVaultShowPrompt && globalThis.__bwVaultShowPrompt({})",
-        json!({
-            "promptId": prompt_id,
-            "origin": capture.origin,
-            "username": capture.username,
-            "mode": prompt.get("mode").and_then(Value::as_str).unwrap_or("save"),
-        })
-    );
-    fire_and_forget_command(
-        tx,
-        next_id,
-        "Runtime.evaluate",
-        json!({
-            "expression": expression,
-            "contextId": capture.context_id,
-        }),
-        Some(session),
-    );
 }
 
 fn fire_and_forget_command(
@@ -576,8 +566,6 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                                     capture,
                                     &session,
                                     &mut vault_prompts,
-                                    &event_tx,
-                                    &event_next_id,
                                 );
                             }
                         } else if message_type == "passwordFormScan" {
@@ -596,8 +584,6 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                                         capture,
                                         &session,
                                         &mut vault_prompts,
-                                        &event_tx,
-                                        &event_next_id,
                                     );
                                 }
                             }
@@ -752,8 +738,6 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                                 capture,
                                 &session,
                                 &mut vault_prompts,
-                                &event_tx,
-                                &event_next_id,
                             );
                         }
                     } else if v.get("method").and_then(Value::as_str)

@@ -1251,6 +1251,10 @@ pub struct Native {
     // 0 = Git, 1 = Subagents, 2 = Background tasks, 3 = Side chats.
     dock_tab: usize,
     view_terminal: bool,
+    /// Browser panel: embedded webview for dev-server preview.
+    view_browser: bool,
+    browser_webview: Option<Entity<gpui_webview::WebView>>,
+    browser_input: Option<Entity<InputState>>,
     /// Computer-use panel: live desktop stream + control affordances.
     view_cua: bool,
     cua: Option<crate::cua::CuaHandle>,
@@ -3024,6 +3028,9 @@ impl Native {
                 changes_unavailable: false,
                 dock_tab: 0,
                 view_terminal: false,
+                view_browser: false,
+                browser_webview: None,
+                browser_input: None,
                 view_cua: false,
                 cua: None,
                 cua_seen_seq: 0,
@@ -6630,12 +6637,13 @@ impl Native {
                         ));
                     }
                 }
-                let navs: [(&str, &str, &str); 5] = [
+                let navs: [(&str, &str, &str); 6] = [
                     ("go-inbox", "Go to Inbox", ""),
                     ("go-kanban", "Go to Kanban", ""),
                     ("go-studio", "Go to Studio", ""),
                     ("go-automations", "Go to Automations", ""),
                     ("toggle-computer", "Toggle computer", ""),
+                    ("toggle-browser", "Toggle browser", "\u{21e7}\u{2318}B"),
                 ];
                 for (id, label, kbd) in navs {
                     if q.is_empty() || label.to_lowercase().contains(&q) {
@@ -6790,6 +6798,7 @@ impl Native {
                     self.fetch_inbox(cx);
                 }
                 "toggle-computer" => self.toggle_cua(window, cx),
+                "toggle-browser" => self.toggle_browser(window, cx),
                 "go-kanban" => self.open_route(2, cx),
                 "go-studio" => self.open_route(5, cx),
                 "go-automations" => self.open_route(4, cx),
@@ -7604,6 +7613,7 @@ impl Native {
             | "chat.attention.next" | "space.next" => self.cycle_tab(1, cx),
             "diff.toggle" | "git.commitAndPush" => self.toggle_changes(cx),
             "computer.toggle" => self.toggle_cua(window, cx),
+            "browser.toggle" => self.toggle_browser(window, cx),
             c if c.starts_with("thread.jump.") => {
                 if let Ok(i) = c["thread.jump.".len()..].parse::<usize>() {
                     if let Some(t) = self.open_threads.get(i.saturating_sub(1)).cloned() {
@@ -7994,6 +8004,58 @@ impl Native {
         })
         .detach();
         self.close_tab(tid, cx);
+    }
+
+    /// Toggle the embedded browser panel. The webview entity is created
+    /// lazily because it needs the window handle; closing hides the native
+    /// subview rather than dropping it, since wry teardown is heavyweight
+    /// and reopening should be instant.
+    fn toggle_browser(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.view_browser = !self.view_browser;
+        if self.view_browser {
+            if self.browser_webview.is_none() {
+                let webview = cx.new(|cx| {
+                    let builder = wry::WebViewBuilder::new();
+                    #[cfg(debug_assertions)]
+                    let builder = builder.with_devtools(true);
+                    gpui_webview::WebView::build(builder, window, cx)
+                        .expect("Failed to create browser panel webview")
+                });
+                webview.update(cx, |view, _| {
+                    view.load_url("http://127.0.0.1:3000");
+                });
+                self.browser_webview = Some(webview);
+            } else if let Some(webview) = &self.browser_webview {
+                webview.update(cx, |view, _| {
+                    view.show();
+                });
+            }
+            if self.browser_input.is_none() {
+                let input = cx.new(|cx| {
+                    InputState::new(window, cx).placeholder("http://127.0.0.1:3000")
+                });
+                cx.subscribe_in(&input, window, |this: &mut Self, state, ev, _w, cx| {
+                    if let InputEvent::PressEnter { .. } = ev {
+                        let mut url = state.read(cx).value().to_string();
+                        if !url.is_empty() && !url.contains("://") {
+                            url = format!("http://{url}");
+                        }
+                        if let Some(webview) = &this.browser_webview {
+                            webview.update(cx, |view, _| {
+                                view.load_url(&url);
+                            });
+                        }
+                    }
+                })
+                .detach();
+                self.browser_input = Some(input);
+            }
+        } else if let Some(webview) = &self.browser_webview {
+            webview.update(cx, |view, _| {
+                view.hide();
+            });
+        }
+        cx.notify();
     }
 
     /// Toggle the computer-use panel: opening connects the frame stream
@@ -24005,7 +24067,54 @@ impl Render for Native {
         } else if self.view_studio {
             main = main.child(div().flex_1().child(studio_pane));
         } else {
-            if self.view_cua {
+            if self.view_browser {
+                let mut browser_surface = v_flex().flex_1().min_h_0().w_full().bg(content_bg);
+                let mut strip = h_flex()
+                    .w_full()
+                    .h(px(36.))
+                    .px_2()
+                    .items_center()
+                    .gap_1()
+                    .border_b_1()
+                    .border_color(theme.border);
+                if let Some(webview) = &self.browser_webview {
+                    let back_wv = webview.clone();
+                    let fwd_wv = webview.clone();
+                    strip = strip
+                        .child(
+                            Button::new("browser-back")
+                                .ghost()
+                                .compact()
+                                .icon(IconName::ChevronLeft)
+                                .on_click(cx.listener(move |_this, _ev, _w, cx| {
+                                    back_wv.update(cx, |view, _| {
+                                        let _ = view.back();
+                                    });
+                                })),
+                        )
+                        .child(
+                            Button::new("browser-forward")
+                                .ghost()
+                                .compact()
+                                .icon(IconName::ChevronRight)
+                                .on_click(cx.listener(move |_this, _ev, _w, cx| {
+                                    fwd_wv.update(cx, |view, _| {
+                                        let _ = view.forward();
+                                    });
+                                })),
+                        );
+                }
+                if let Some(input) = &self.browser_input {
+                    strip = strip.child(div().flex_1().child(Input::new(input)));
+                }
+                browser_surface = browser_surface.child(strip);
+                if let Some(webview) = &self.browser_webview {
+                    browser_surface = browser_surface.child(
+                        div().flex_1().min_h_0().child(webview.clone()),
+                    );
+                }
+                main = main.child(browser_surface);
+            } else if self.view_cua {
                 let (connected, error, seq) = self
                     .cua
                     .as_ref()

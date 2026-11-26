@@ -134,17 +134,28 @@ const ACCOUNT_LINEAGES: &[(u32, &[&str])] = &[
 /// Run every pending migration inside one transaction, mirroring the effect
 /// Migrator run: insert tracker rows for all pending migrations first (the
 /// lock), then execute in id order. Any failure rolls everything back.
-pub fn run_pending(conn: &Connection) -> Result<Vec<u32>, WsErr> {
+/// Read-only lookahead: which migration ids would run against this database.
+/// Backs the backup decision so fully migrated databases skip the copy.
+pub fn pending_migrations(conn: &Connection) -> Result<Vec<u32>, WsErr> {
     ensure_tracker(conn)?;
     let rows = tracker_rows(conn)?;
     let validated = validate_lineage(conn, rows.as_slice())?;
     let latest = validated.iter().map(|(id, _)| *id).max().unwrap_or(0);
-    let all = canonical_migrations();
-    let pending: Vec<&(u32, &'static str, MigrationFn)> =
-        all.iter().filter(|(id, _, _)| *id > latest).collect();
-    if pending.is_empty() {
+    Ok(canonical_migrations()
+        .iter()
+        .filter(|(id, _, _)| *id > latest)
+        .map(|(id, _, _)| *id)
+        .collect())
+}
+
+pub fn run_pending(conn: &Connection) -> Result<Vec<u32>, WsErr> {
+    let pending_ids = pending_migrations(conn)?;
+    if pending_ids.is_empty() {
         return Ok(Vec::new());
     }
+    let all = canonical_migrations();
+    let pending: Vec<&(u32, &'static str, MigrationFn)> =
+        all.iter().filter(|(id, _, _)| pending_ids.contains(id)).collect();
     let tx = conn
         .unchecked_transaction()
         .map_err(|e| err(format!("migration transaction: {e}")))?;
@@ -168,6 +179,58 @@ pub fn run_pending(conn: &Connection) -> Result<Vec<u32>, WsErr> {
 /// Returns the ids applied in this run; an empty vector means the database was
 /// already current. Exclusivity comes from the single-transaction runner plus
 /// the tracker-first lock, matching the upstream effect Migrator semantics.
+pub const MIGRATION_BACKUP_RETENTION: usize = 5;
+
+/// Copies the database aside before any migration mutates it, the safety
+/// core of upstream persistence/MigrationBackup.ts: without this a failed or
+/// divergent migration leaves the user with no way back. The copy goes
+/// through sqlite's own backup API so it is consistent even with the WAL
+/// live, backups rotate at the upstream retention of five, and a migration
+/// run that would apply nothing makes no backup at all. Upstream's
+/// provenance documents, free-space preflighting and failure bundles are
+/// operator-experience layers not yet ported — the restore path here is a
+/// plain file copy while every Synara process is stopped.
+pub fn create_migration_backup(db: &std::path::Path) -> Result<Option<std::path::PathBuf>, String> {
+    use rusqlite::Connection;
+    if !db.exists() {
+        return Ok(None);
+    }
+    let backup_dir = db.parent().unwrap_or(std::path::Path::new(".")).join("migration-backups");
+    std::fs::create_dir_all(&backup_dir).map_err(|e| format!("backup directory: {e}"))?;
+    let stamp = chrono::DateTime::from_timestamp_millis(
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_millis() as i64)
+            .unwrap_or(0),
+    )
+    .map(|d| d.format("%Y%m%d-%H%M%S").to_string())
+    .unwrap_or_else(|| "unknown".to_string());
+    let target = backup_dir.join(format!("state-{stamp}.sqlite"));
+    {
+        let source = Connection::open(db).map_err(|e| format!("backup source open: {e}"))?;
+        let mut dest = Connection::open(&target).map_err(|e| format!("backup target open: {e}"))?;
+        let backup = rusqlite::backup::Backup::new(&source, &mut dest)
+            .map_err(|e| format!("backup init: {e}"))?;
+        backup
+            .run_to_completion(64, std::time::Duration::from_millis(10), None)
+            .map_err(|e| format!("backup copy: {e}"))?;
+    }
+    // Rotate: drop everything beyond the retention window, oldest first.
+    let mut entries: Vec<_> = std::fs::read_dir(&backup_dir)
+        .map_err(|e| format!("backup rotation: {e}"))?
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.file_name().to_string_lossy().starts_with("state-"))
+        .collect();
+    entries.sort_by_key(|entry| entry.file_name());
+    while entries.len() > MIGRATION_BACKUP_RETENTION {
+        if let Some(oldest) = entries.first() {
+            let _ = std::fs::remove_file(oldest.path());
+        }
+        entries.remove(0);
+    }
+    Ok(Some(target))
+}
+
 pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
     use rusqlite::Connection;
     use std::path::PathBuf;
@@ -176,6 +239,15 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
     let db = PathBuf::from(dir).join("state.sqlite");
     let conn = Connection::open(&db)
         .map_err(|e| crate::acp_runner::err(format!("could not open state.sqlite: {e}")))?;
+    // Backup precedes mutation only when mutation is actually pending: a
+    // fully migrated database needs no fresh copy every boot.
+    if db.exists() && !pending_migrations(&conn).map_err(|e| crate::acp_runner::err(e.0.clone()))?.is_empty() {
+        match create_migration_backup(&db) {
+            Ok(Some(path)) => eprintln!("migrations: backup at {}", path.display()),
+            Ok(None) => {}
+            Err(e) => eprintln!("migrations: backup failed ({e}) — continuing with in-transaction safety only"),
+        }
+    }
     run_pending(&conn)
 }
 

@@ -747,6 +747,71 @@ mod tests {
         assert!(validate_feed_url("ftp://example.com/feed").is_err());
     }
 
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn macos_feed_installer_downloads_verifies_and_commits_beta_app() {
+        use base64::Engine as _;
+        use sha2::Digest as _;
+        use std::io::{Read as _, Write as _};
+
+        let root = temp_root();
+        let zip_input = root.join("zip-input");
+        let app = zip_input.join(BETA_APP_NAME).join("Contents");
+        std::fs::create_dir_all(&app).unwrap();
+        std::fs::write(
+            app.join("Info.plist"),
+            r#"<?xml version="1.0"?><plist version="1.0"><dict><key>CFBundleIdentifier</key><string>com.emanueledipietro.synara.beta</string><key>CFBundleExecutable</key><string>synara-shell</string></dict></plist>"#,
+        ).unwrap();
+        let zip_path = root.join("beta.zip");
+        let zipped = Command::new("ditto")
+            .current_dir(&zip_input)
+            .args(["-c", "-k", "--sequesterRsrc", "--keepParent", BETA_APP_NAME])
+            .arg(&zip_path)
+            .output()
+            .unwrap();
+        assert!(zipped.status.success(), "{}", String::from_utf8_lossy(&zipped.stderr));
+        let zip_bytes = std::fs::read(&zip_path).unwrap();
+        let sha512 = base64::engine::general_purpose::STANDARD.encode(sha2::Sha512::digest(&zip_bytes));
+        let manifest = format!(
+            "version: 1.6.7-beta.1\nfiles:\n  - url: beta.zip\n    sha512: {sha512}\n    size: {}\n",
+            zip_bytes.len()
+        );
+
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let manifest_bytes = manifest.into_bytes();
+        let zip_response = zip_bytes.clone();
+        std::thread::spawn(move || {
+            for _ in 0..2 {
+                let Ok((mut stream, _)) = listener.accept() else { break };
+                let mut buffer = [0u8; 4096];
+                let Ok(count) = stream.read(&mut buffer) else { continue };
+                let request = String::from_utf8_lossy(&buffer[..count]);
+                let path = request.split_whitespace().nth(1).unwrap_or("/");
+                let (body, content_type) = if path == "/beta-mac.yml" {
+                    (manifest_bytes.clone(), "text/yaml")
+                } else if path == "/beta.zip" {
+                    (zip_response.clone(), "application/zip")
+                } else {
+                    (Vec::new(), "text/plain")
+                };
+                let status = if body.is_empty() && path != "/beta.zip" && path != "/beta-mac.yml" { "404 Not Found" } else { "200 OK" };
+                let head = format!("HTTP/1.1 {status}\r\ncontent-length: {}\r\ncontent-type: {content_type}\r\nconnection: close\r\n\r\n", body.len());
+                let _ = stream.write_all(head.as_bytes());
+                let _ = stream.write_all(&body);
+            }
+        });
+
+        let install_dir = root.join("install");
+        let feed = format!("http://127.0.0.1:{port}");
+        let installed = install_beta_from_feed(&install_dir, Some(&feed), None).unwrap();
+        assert_eq!(installed, install_dir.join(BETA_APP_NAME));
+        assert!(installed.join("Contents/Info.plist").is_file());
+        assert!(!install_dir.join(format!("{BETA_APP_NAME}.previous")).exists());
+        let _ = std::fs::remove_dir_all(root);
+    }
+
     #[test]
     fn mac_probe_honors_install_dir_override_first() {
         let root = temp_root();

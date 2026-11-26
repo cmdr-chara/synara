@@ -1472,6 +1472,8 @@ pub struct Native {
     notification_window_active: bool,
     desktop_update_state: Option<crate::updater::UpdateState>,
     desktop_update_installing: bool,
+    beta_action_running: Option<&'static str>,
+    beta_action_message: Option<String>,
     /// Upstream OneTimeCoachmark: seen keys persisted under
     /// settings.sidebarUi.coachmarks; `coachmark` is the one showing.
     coachmarks_seen: std::collections::HashSet<String>,
@@ -3444,6 +3446,8 @@ impl Native {
                 notification_window_active: true,
                 desktop_update_state: None,
                 desktop_update_installing: false,
+                beta_action_running: None,
+                beta_action_message: None,
                 coachmarks_seen: std::collections::HashSet::new(),
                 feature_flags: [false; 3],
                 flags_menu_open: false,
@@ -3747,6 +3751,42 @@ impl Native {
             });
         })
         .detach();
+    }
+
+    /// Run one Stable↔Beta verb off the UI thread. Install can download a
+    /// large payload, while import/launch are local process handoffs.
+    fn perform_beta_action(&mut self, action: &'static str, cx: &mut Context<Self>) {
+        if self.beta_action_running.is_some() { return; }
+        self.beta_action_running = Some(action);
+        self.beta_action_message = None;
+        cx.notify();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let result = cx.background_executor().spawn(async move {
+                let channel = crate::beta_channel::DesktopBetaChannel::current();
+                match action {
+                    "install" => channel.install(),
+                    "launch" => channel.launch(),
+                    "import" => channel.import_and_launch(),
+                    "leave" => channel.leave(),
+                    _ => crate::beta_channel::BetaActionResult { ok: false, error: Some("internal"), message: Some("Unknown beta action.".into()) },
+                }
+            }).await;
+            let ok = result.ok;
+            let message = result.message.or(if ok {
+                Some(match action {
+                    "install" => "Synara Beta is installed and opening.".into(),
+                    "launch" => "Synara Beta is opening.".into(),
+                    "import" => "Your data will be copied when Synara Beta starts.".into(),
+                    "leave" => "Synara is opening.".into(),
+                    _ => "Done.".into(),
+                })
+            } else { None });
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.beta_action_running = None;
+                this.beta_action_message = message;
+                cx.notify();
+            });
+        }).detach();
     }
 
     fn deliver_activity_notification(
@@ -20502,6 +20542,7 @@ impl Render for Native {
             ]),
             ("System", &[
                 ("saved-logins", "Saved logins", icons::SHIELD_ACCESS, None),
+                ("beta", "Beta channel", icons::S_GAUGE, Some("Beta")),
                 ("privacy", "Privacy", icons::S_SHIELD, None),
                 ("advanced", "Advanced", icons::S_TOOLBOX, None),
                 ("about", "About", icons::S_CIRCLE_INFO, None),
@@ -20803,6 +20844,7 @@ impl Render for Native {
                                 "worktrees" => "Review and clean up isolated workspaces created by Synara.".to_string(),
                                 "archive" => "Find and restore threads you previously archived.".to_string(),
                                 "saved-logins" => "Manage passwords saved by the browser, master-password protection, and agent metadata access.".to_string(),
+                                "beta" => "Install Synara Beta, copy stable data into it, or switch back.".to_string(),
                                 "privacy" => "What Synara shares, and what it can read on this computer.".to_string(),
                                 "advanced" => "Recovery tools and this browser's session.".to_string(),
                                 "about" => "Version, release channel, and what changed.".to_string(),
@@ -23251,6 +23293,56 @@ impl Render for Native {
                             )
                             .into_any_element(),
                     ));
+            }
+
+            // ---------- Beta channel ----------
+            if self.settings_section == "beta" {
+                let state = crate::beta_channel::DesktopBetaChannel::current().state();
+                let busy = self.beta_action_running;
+                let beta_button = |id: &'static str, action: &'static str, label: &'static str, cx: &mut Context<Self>| {
+                    div()
+                        .id(ElementId::Name(format!("beta-{id}").into()))
+                        .cursor_pointer()
+                        .on_click(cx.listener(move |this, _ev, _w, cx| this.perform_beta_action(action, cx)))
+                        .child(outline_btn(if busy == Some(action) { "Working" } else { label }))
+                        .into_any_element()
+                };
+                let mut rows = v_flex();
+                if crate::desktop_identity::runtime_flavor() == "beta" {
+                    rows = rows.child(srow(
+                        "Switch back to Synara",
+                        "Open stable Synara with its own data. Beta data is never copied back.",
+                        beta_button("leave", "leave", "Open Synara", cx),
+                    ));
+                } else {
+                    rows = rows
+                        .child(srow(
+                            "Synara Beta",
+                            if state.installed { "Beta is installed on this computer." } else { "Install the beta app beside stable Synara." },
+                            beta_button("install", "install", if state.installed { "Open" } else { "Install" }, cx),
+                        ))
+                        .child(divider())
+                        .child(srow(
+                            "Copy my data to Beta",
+                            "Beta snapshots stable data once at startup. Quit Beta before starting the copy.",
+                            beta_button("import", "import", "Copy and open", cx),
+                        ));
+                }
+                if let Some(error) = state.last_import_error {
+                    rows = rows.child(divider()).child(
+                        div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.danger).child(error)
+                    );
+                } else if let Some(done) = state.last_import_at {
+                    rows = rows.child(divider()).child(
+                        div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Last import completed at {done}"))
+                    );
+                }
+                if let Some(message) = self.beta_action_message.clone() {
+                    rows = rows.child(divider()).child(
+                        div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.muted_foreground).child(message)
+                    );
+                }
+                settings_pane = settings_pane.child(section_label("Beta channel")).child(card(rows.into_any_element()));
             }
 
             // ---------- About ----------

@@ -115,8 +115,14 @@ pub fn detect_beta_install(home_dir: &Path, env: &HashMap<String, String>) -> Be
                     let stdout = String::from_utf8_lossy(&output.stdout);
                     let location = stdout.lines().find_map(|line| {
                         let line = line.trim();
-                        line.strip_prefix("InstallLocation")
-                            .and_then(|rest| rest.split_whitespace().nth(1).map(str::to_string))
+                        line.strip_prefix("InstallLocation").and_then(|rest| {
+                            let rest = rest.trim();
+                            rest.strip_prefix("REG_EXPAND_SZ")
+                                .or_else(|| rest.strip_prefix("REG_SZ"))
+                                .map(str::trim)
+                                .filter(|value| !value.is_empty())
+                                .map(str::to_string)
+                        })
                     });
                     if let Some(location) = location {
                         let install = PathBuf::from(location);
@@ -143,7 +149,23 @@ pub fn is_beta_server_running(beta_home: &Path) -> bool {
     let Some(pid) = serde_json::from_str::<serde_json::Value>(&text).ok()
         .and_then(|value| value.get("pid").and_then(|pid| pid.as_i64()))
         .filter(|pid| *pid > 0) else { return false };
-    unsafe { libc::kill(pid as i32, 0) == 0 || std::io::Error::last_os_error().raw_os_error() == Some(libc::EPERM) }
+    #[cfg(unix)]
+    {
+        unsafe { libc::kill(pid as i32, 0) == 0 || std::io::Error::last_os_error().raw_os_error() == Some(libc::EPERM) }
+    }
+    #[cfg(windows)]
+    {
+        Command::new("tasklist.exe")
+            .args(["/FO", "CSV", "/NH", "/FI", &format!("PID eq {pid}")])
+            .output()
+            .map(|output| String::from_utf8_lossy(&output.stdout).contains(&pid.to_string()))
+            .unwrap_or(false)
+    }
+    #[cfg(not(any(unix, windows)))]
+    {
+        let _ = pid;
+        false
+    }
 }
 
 #[derive(Serialize)]

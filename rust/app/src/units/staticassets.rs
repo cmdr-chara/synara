@@ -17,7 +17,7 @@ pub async fn handle(route: &str, params: HashMap<String, String>, req: Request) 
     // SPA fallback uses. When nothing is configured the original 503 stays
     // verbatim (app-cases `index-html`, `example-001-get-root`).
     if crate::web_static::configured() {
-        return crate::web_static::serve(req.uri().clone()).await;
+        return crate::web_static::serve(req.uri().clone(), req.headers().clone()).await;
     }
     Response::builder()
         .status(StatusCode::SERVICE_UNAVAILABLE)

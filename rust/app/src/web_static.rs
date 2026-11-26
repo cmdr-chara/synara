@@ -56,7 +56,7 @@ pub fn configured() -> bool {
     dist_dir().is_some()
 }
 
-pub async fn serve(uri: axum::http::Uri) -> Response {
+pub async fn serve(uri: axum::http::Uri, headers: axum::http::HeaderMap) -> Response {
     let Some(dir) = dist_dir() else {
         return (
             StatusCode::NOT_FOUND,
@@ -73,11 +73,38 @@ pub async fn serve(uri: axum::http::Uri) -> Response {
         }
     }
     let mut file = dir.join(&rel);
+    let mut is_shell_fallback = false;
     if rel.as_os_str().is_empty() || !file.exists() || file.is_dir() {
         // SPA fallback: client-side routes get the shell page.
         file = dir.join("index.html");
+        is_shell_fallback = true;
     }
-    match std::fs::read(&file) {
+    // Pre-compressed sidecars emitted by the vite build: prefer brotli over
+    // gzip when the client accepts both, mirroring the upstream server. The
+    // content type still describes the uncompressed asset.
+    let accept_encoding = headers
+        .get(header::ACCEPT_ENCODING)
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    let mut content_encoding: Option<&'static str> = None;
+    let mut bytes_file = file.clone();
+    if !is_shell_fallback {
+        for (encoding, ext) in [("br", "br"), ("gzip", "gz")] {
+            if accepts_encoding(&accept_encoding, encoding) {
+                let sidecar = file.with_extension(format!(
+                    "{}.{ext}",
+                    file.extension().and_then(|e| e.to_str()).unwrap_or("")
+                ));
+                if sidecar.exists() {
+                    content_encoding = Some(encoding);
+                    bytes_file = sidecar;
+                    break;
+                }
+            }
+        }
+    }
+    match std::fs::read(&bytes_file) {
         Ok(bytes) => {
             let mut response = Body::from(bytes).into_response();
             response.headers_mut().insert(
@@ -87,15 +114,44 @@ pub async fn serve(uri: axum::http::Uri) -> Response {
                     None => "",
                 })),
             );
-            // Hashed assets cache forever; the html shell never does.
-            if file.file_name().and_then(|n| n.to_str()) == Some("index.html") {
+            if let Some(encoding) = content_encoding {
                 response.headers_mut().insert(
-                    header::CACHE_CONTROL,
-                    header::HeaderValue::from_static("no-cache"),
+                    header::CONTENT_ENCODING,
+                    header::HeaderValue::from_static(encoding),
+                );
+                response.headers_mut().insert(
+                    header::VARY,
+                    header::HeaderValue::from_static("Accept-Encoding"),
                 );
             }
+            response.headers_mut().insert(
+                header::CACHE_CONTROL,
+                header::HeaderValue::from_static(cache_control_for(&rel, is_shell_fallback)),
+            );
             response
         }
         Err(_) => (StatusCode::NOT_FOUND, "not found").into_response(),
     }
+}
+
+fn accepts_encoding(accept_encoding: &str, encoding: &str) -> bool {
+    accept_encoding
+        .split(',')
+        .map(str::trim)
+        .any(|entry| entry == encoding || entry.starts_with(&format!("{encoding};")))
+}
+
+fn cache_control_for(rel: &std::path::Path, is_shell_fallback: bool) -> &'static str {
+    if is_shell_fallback {
+        return "no-cache";
+    }
+    let normalized = rel.to_string_lossy().replace('\\', "/");
+    // Vite writes content-hashed filenames under assets/; they never change.
+    if normalized.starts_with("assets/") {
+        return "public, max-age=31536000, immutable";
+    }
+    if normalized.starts_with("central-icons-reversed/") || normalized.starts_with("central-icons-fill/") {
+        return "public, max-age=86400";
+    }
+    "no-cache"
 }

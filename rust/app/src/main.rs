@@ -65,6 +65,7 @@ mod computer_control;
 mod computer_denylist;
 mod computer_manager;
 mod device_helper;
+mod web_static;
 mod device_sim;
 mod device_stream;
 mod computer_native;
@@ -203,6 +204,7 @@ async fn main() {
         .route("/api/auth/pairing-links", axum::routing::get(auth_http::pairing_links))
         .route("/api/auth/pairing-links/revoke", axum::routing::post(auth_http::pairing_links_revoke))
         .route("/api/auth/clients/revoke-others", axum::routing::post(auth_http::clients_revoke_others))
+        .fallback(axum::routing::get(web_static::serve))
         .with_state(original.clone());
     let port = std::env::var("PORT")
         .ok()

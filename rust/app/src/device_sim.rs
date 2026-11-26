@@ -123,6 +123,97 @@ fn uuid_v4_short() -> String {
     crate::orchestration_engine::uuid_v4().replace('-', "")[..12].to_string()
 }
 
+
+// ---- input injection through the native helper -----------------------------
+
+/// Attach + normalize + forward one input method. Geometry comes back from
+/// the helper's `attach`; coordinates arrive in device points and the helper
+/// protocol wants 0..1 normalized, matching upstream's `helper.normalize`.
+fn with_attachment<F>(udid: &str, f: F) -> Result<Value, String>
+where
+    F: FnOnce(f64, f64) -> Result<Value, String>,
+{
+    let geometry = crate::device_helper::attach(udid)?;
+    let w = geometry
+        .get("pointWidth")
+        .and_then(|v| v.as_f64())
+        .ok_or("attach returned no pointWidth")?;
+    let h = geometry
+        .get("pointHeight")
+        .and_then(|v| v.as_f64())
+        .ok_or("attach returned no pointHeight")?;
+    f(w, h)
+}
+
+fn norm(x: f64, extent: f64) -> f64 {
+    if extent <= 0.0 {
+        0.0
+    } else {
+        (x / extent).clamp(0.0, 1.0)
+    }
+}
+
+fn device_tap(udid: &str, payload: &Value) -> Result<Value, String> {
+    let x = payload.get("x").and_then(|v| v.as_f64()).unwrap_or(0.0);
+    let y = payload.get("y").and_then(|v| v.as_f64()).unwrap_or(0.0);
+    with_attachment(udid, |w, h| {
+        let mut params = json!({ "x": norm(x, w), "y": norm(y, h) });
+        if let Some(hold) = payload.get("holdMs").and_then(|v| v.as_u64()) {
+            params["holdMs"] = json!(hold);
+        }
+        crate::device_helper::request("tap", params)?;
+        Ok(json!({ "udid": udid, "performed": true }))
+    })
+}
+
+fn device_swipe(udid: &str, payload: &Value) -> Result<Value, String> {
+    with_attachment(udid, |w, h| {
+        let fx = payload.get("fromX").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        let fy = payload.get("fromY").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        let tx = payload.get("toX").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        let ty = payload.get("toY").and_then(|v| v.as_f64()).unwrap_or(0.0);
+        let mut params = json!({
+            "fromX": norm(fx, w), "fromY": norm(fy, h),
+            "toX": norm(tx, w), "toY": norm(ty, h),
+        });
+        if let Some(d) = payload.get("durationMs").and_then(|v| v.as_u64()) {
+            params["durationMs"] = json!(d);
+        }
+        if let Some(edge) = payload.get("edge").and_then(|v| v.as_str()) {
+            params["edge"] = json!(edge);
+        }
+        crate::device_helper::request("swipe", params)?;
+        Ok(json!({ "udid": udid, "performed": true }))
+    })
+}
+
+fn device_type_text(udid: &str, payload: &Value) -> Result<Value, String> {
+    let text = payload.get("text").and_then(|v| v.as_str()).unwrap_or("");
+    crate::device_helper::attach(udid)?;
+    crate::device_helper::request("text", json!({ "text": text }))?;
+    Ok(json!({ "udid": udid, "performed": true }))
+}
+
+fn device_key(udid: &str, payload: &Value) -> Result<Value, String> {
+    let key = payload.get("key").and_then(|v| v.as_str()).unwrap_or("");
+    crate::device_helper::attach(udid)?;
+    crate::device_helper::request("key", json!({ "key": key }))?;
+    Ok(json!({ "udid": udid, "performed": true }))
+}
+
+fn device_button(udid: &str, payload: &Value) -> Result<Value, String> {
+    let button = payload.get("button").and_then(|v| v.as_str()).unwrap_or("");
+    crate::device_helper::attach(udid)?;
+    crate::device_helper::request("button", json!({ "button": button }))?;
+    Ok(json!({ "udid": udid, "performed": true }))
+}
+
+fn device_describe_ui(udid: &str) -> Result<Value, String> {
+    crate::device_helper::attach(udid)?;
+    let tree = crate::device_helper::request("describe-ui", json!({}))?;
+    Ok(json!({ "udid": udid, "tree": tree }))
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -133,6 +224,12 @@ pub fn handles(tag: &str) -> bool {
             | "device.installApp"
             | "device.launchApp"
             | "device.openUrl"
+            | "device.tap"
+            | "device.swipe"
+            | "device.typeText"
+            | "device.keyEvent"
+            | "device.pressButton"
+            | "device.describeUi"
     )
 }
 
@@ -196,6 +293,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
                 Ok(json!({ "udid": udid, "bundleId": bundle, "pid": pid }))
             }
         }
+        "device.tap" => device_tap(udid, payload),
+        "device.swipe" => device_swipe(udid, payload),
+        "device.typeText" => device_type_text(udid, payload),
+        "device.keyEvent" => device_key(udid, payload),
+        "device.pressButton" => device_button(udid, payload),
+        "device.describeUi" => device_describe_ui(udid),
         "device.openUrl" => {
             let url = payload.get("url").and_then(|v| v.as_str()).unwrap_or("");
             if udid.is_empty() || url.is_empty() {

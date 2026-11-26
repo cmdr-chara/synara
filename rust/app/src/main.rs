@@ -64,6 +64,7 @@ mod computer_approval;
 mod computer_control;
 mod computer_denylist;
 mod computer_manager;
+mod device_helper;
 mod device_sim;
 mod computer_native;
 mod opencode_runner;

@@ -1,5 +1,4 @@
-//! Chrome DevTools Protocol fallback backend. When neither Obscura nor Ego
-//! lite is installed, Synara launches the user's own Chromium browser
+//! Chrome DevTools Protocol backend. Synara launches the user's own Chromium browser
 //! (Chrome/Edge/Brave/Chromium) with a dedicated profile and drives it over
 //! CDP — nothing extra ships in the bundle, and the browser reads its own
 //! profile; Synara never touches the user's real browser profile or cookies.

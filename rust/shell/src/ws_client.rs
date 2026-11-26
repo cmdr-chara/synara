@@ -164,6 +164,13 @@ impl Client {
             }
             }
             reader_alive.store(false, Ordering::Relaxed);
+            // Drop every outstanding sender so blocked `call`/`call_stream`
+            // receivers observe the channel closing instead of hanging
+            // forever — without this the shell never learns the socket died
+            // and never reconnects.
+            if let Ok(mut m) = pending_reader.lock() {
+                m.clear();
+            }
         });
         // The upstream closes relayed sockets after ~40s of silence; the
         // browser keeps them alive with an application-level Ping frame.

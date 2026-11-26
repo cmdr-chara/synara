@@ -31,3 +31,33 @@ Method that works: side-by-side screenshots of web app and native shell at
 the same window size, then pixel-sample ink/paper/density in matched
 regions. For the web reference use CDP Emulation.setDeviceMetricsOverride
 — the browser window size is NOT the viewport. Do not eyeball.
+
+## Overnight pixel-perfect program (deadline 13:00, user asleep)
+
+User mandate 2026-11-27 00:34: "fai pixel perfect TUTTE le sezioni frontend" —
+systematic anaglyph pass on every shell surface vs the web reference.
+Child session 4d0502480de04b9d99c9568a648d279d owns ALL backend completion in parallel.
+
+DONE tonight:
+- Two-canvas backdrop structure (commit 5f24209efc): atmosphere full-window at
+  35%/80% under pane-sized landing texture. Temple mass now aligns in overlay;
+  mid-hills within 1.2%, bottom-right exact.
+
+OPEN, in priority order:
+1. Sky density: web upper sky reads denser than shell in anaglyph. Suspects:
+   (a) sky_alpha ramp coordinate units (logical vs device px in raster loop),
+   (b) atmosphere/landing cell-grid phase interplay, (c) dot alpha blending.
+   Measure with alpha-aware detection (pale dots fail naive ink thresholds).
+2. Transcript surface pass — needs same thread in both clients. Web test
+   session URLs are like /4dbd7265-....; drive shell via computer tool clicks,
+   capture, anaglyph, fix worst fringes. Areas: message bubbles, markdown,
+   code blocks, activities rows, composer-in-thread (permission/branch/model row).
+3. Sidebar/inbox/kanban/tasks/codereview/automations/hubs/settings — same method,
+   one surface at a time. Settings is static content: cheapest high-value target.
+4. Composer fine metrics: input zone padding/height, chip row spacing vs upstream.
+5. Dark mode backdrop — never verified end to end.
+
+Method (tools/pixel-perfect/): capture.sh + anaglyph.py — red=web reference,
+cyan=shell; grey means matched. Both at 1600x1088. NEVER eyeball — measure.
+Web capture requires CDP 57012 tab on the target surface; viewport override
+must be re-applied after any navigation; wait ~7s for backdrop rebuild.

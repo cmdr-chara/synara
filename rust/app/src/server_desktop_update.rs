@@ -5,8 +5,8 @@
 //! `busy` still reflects real work so callers see why a restart would be unsafe.
 //!
 //! Busy is read from a byte copy of `state.sqlite` (upstream holds an
-//! exclusive lock): running turns or unsettled pending interactions count.
-//! A failed read fails closed — busy=true.
+//! exclusive lock): active sessions/turns, unanswered interactions, cache
+//! review, and durable provider runtime work count. A failed read fails closed.
 
 use rusqlite::Connection;
 use serde_json::{Value, json};
@@ -55,6 +55,27 @@ fn valid_authority(authority: Option<&str>) -> Result<String, WsErr> {
     }
 }
 
+fn busy_from_connection(conn: &Connection) -> Result<bool, rusqlite::Error> {
+    // Mirrors upstream hasDesktopUpdateThreadWork: active provider/session
+    // intent, running latest turns, unanswered human interactions, and open
+    // Claude cache review all make a restart unsafe. Deleted threads do not.
+    let thread_work: i64 = conn.query_row(
+        "SELECT COUNT(*)          FROM projection_threads t          LEFT JOIN projection_thread_sessions s ON s.thread_id = t.thread_id          WHERE t.deleted_at IS NULL AND (            s.status = 'starting'            OR s.active_turn_id IS NOT NULL            OR COALESCE(t.pending_approval_count, 0) > 0            OR COALESCE(t.pending_user_input_count, 0) > 0            OR EXISTS (              SELECT 1 FROM projection_turns lt              WHERE lt.thread_id = t.thread_id                AND lt.turn_id = t.latest_turn_id                AND lt.state = 'running'            )            OR EXISTS (              SELECT 1 FROM projection_pending_interactions pi              WHERE pi.thread_id = t.thread_id AND pi.status <> 'confirmed'            )            OR (              t.claude_cache_review_json IS NOT NULL              AND json_extract(t.claude_cache_review_json, '$.status') <> 'failed'            )          )",
+        [],
+        |r| r.get(0),
+    )?;
+    if thread_work > 0 { return Ok(true); }
+
+    // Provider background work can outlive a foreground turn. The durable
+    // runtime projection is the Rust backend's available evidence for it.
+    let provider_work: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM provider_session_runtime          WHERE status IN ('running', 'connecting')",
+        [],
+        |r| r.get(0),
+    )?;
+    Ok(provider_work > 0)
+}
+
 fn busy() -> bool {
     let db = std::path::PathBuf::from(crate::todo::state_dir()).join("state.sqlite");
     let tmp = std::env::temp_dir().join(format!(
@@ -71,25 +92,7 @@ fn busy() -> bool {
             let _ = std::fs::copy(&wal, &tmp_wal);
         }
         let conn = Connection::open(&tmp).ok()?;
-        let running_turns: i64 = conn
-            .query_row(
-                "SELECT COUNT(*) FROM projection_turns WHERE state = 'running'",
-                [],
-                |r| r.get(0),
-            )
-            .ok()?;
-        if running_turns > 0 {
-            return Some(true);
-        }
-        let pending: i64 = conn
-            .query_row(
-                "SELECT COUNT(*) FROM projection_pending_interactions \
-                 WHERE status NOT IN ('resolved', 'failed', 'cancelled', 'dismissed', 'completed')",
-                [],
-                |r| r.get(0),
-            )
-            .ok()?;
-        Some(pending > 0)
+        busy_from_connection(&conn).ok()
     })();
     let _ = std::fs::remove_file(&tmp);
     let _ = std::fs::remove_file(&tmp_wal);
@@ -245,4 +248,51 @@ mod tests {
         revoke_remote_session(&session_id);
         assert!(valid_authority(Some(&authority)).is_err());
     }
+    fn busy_fixture() -> Connection {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE projection_threads (               thread_id TEXT PRIMARY KEY, latest_turn_id TEXT, deleted_at TEXT,                pending_approval_count INTEGER DEFAULT 0, pending_user_input_count INTEGER DEFAULT 0,                claude_cache_review_json TEXT             );             CREATE TABLE projection_thread_sessions (thread_id TEXT PRIMARY KEY, status TEXT, active_turn_id TEXT);             CREATE TABLE projection_turns (thread_id TEXT, turn_id TEXT, state TEXT);             CREATE TABLE projection_pending_interactions (thread_id TEXT, status TEXT);             CREATE TABLE provider_session_runtime (thread_id TEXT PRIMARY KEY, status TEXT);",
+        ).unwrap();
+        conn.execute(
+            "INSERT INTO projection_threads (thread_id, latest_turn_id) VALUES ('thread-a', 'turn-a')",
+            [],
+        ).unwrap();
+        conn
+    }
+
+    #[test]
+    fn updater_busy_projection_matches_active_work_shapes() {
+        let conn = busy_fixture();
+        assert!(!busy_from_connection(&conn).unwrap());
+
+        conn.execute("INSERT INTO projection_thread_sessions (thread_id, status) VALUES ('thread-a', 'starting')", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE projection_thread_sessions SET status = 'stopped'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
+
+        conn.execute("INSERT INTO projection_turns (thread_id, turn_id, state) VALUES ('thread-a', 'turn-a', 'running')", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE projection_turns SET state = 'completed'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
+
+        conn.execute("INSERT INTO projection_pending_interactions (thread_id, status) VALUES ('thread-a', 'pending')", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE projection_pending_interactions SET status = 'confirmed'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
+
+        conn.execute("UPDATE projection_threads SET pending_user_input_count = 1", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE projection_threads SET pending_user_input_count = 0, claude_cache_review_json = '{\"status\":\"pending\"}'", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+        conn.execute("UPDATE projection_threads SET claude_cache_review_json = '{\"status\":\"failed\"}'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
+
+        conn.execute("INSERT INTO provider_session_runtime (thread_id, status) VALUES ('thread-a', 'running')", []).unwrap();
+        assert!(busy_from_connection(&conn).unwrap());
+
+        conn.execute("UPDATE projection_threads SET deleted_at = 'now'", []).unwrap();
+        conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", []).unwrap();
+        assert!(!busy_from_connection(&conn).unwrap());
+    }
+
 }

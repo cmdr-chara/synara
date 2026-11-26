@@ -272,6 +272,7 @@ async fn intercept_todo(
         && !crate::skills_catalog::handles(tag)
         && !crate::project_imports::handles(tag)
         && !crate::computer_audit::handles(tag)
+        && !tag.starts_with("computer.")
         && !crate::account::handles(tag)
         && !crate::hosts::handles(tag)
         && !crate::device::handles(tag)
@@ -1246,6 +1247,12 @@ async fn intercept_todo(
         crate::computer_audit::handle(tag, &payload)
             .map(Some)
             .map_err(error_json)
+    } else if tag.starts_with("computer.") {
+        match crate::computer_native::handle(tag, &payload) {
+            Some(Ok(v)) => Ok(Some(v)),
+            Some(Err(message)) => Err(error_json(crate::todo::WsErr(message, None))),
+            None => Ok(None),
+        }
     } else if crate::provider_cache::handles(tag) {
         crate::provider_cache::handle(tag, &payload)
             .map(Some)

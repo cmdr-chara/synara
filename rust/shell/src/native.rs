@@ -10267,7 +10267,7 @@ impl Native {
     /// Upstream CHAT_MAX_WIDTH_BY_MODE: standard 46rem, wide 72rem, full 100%.
     fn chat_max_w(&self) -> Pixels {
         match self.chat_width_mode {
-            0 => px(726.),
+            0 => px(736.),
             1 => px(1152.),
             _ => px(100_000.),
         }

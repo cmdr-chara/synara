@@ -113,7 +113,7 @@ mod icons {
     pub const P_OMP: &[u8] = include_bytes!("../assets/icons/omp.svg");
     pub const P_ANTIGRAVITY: &[u8] = include_bytes!("../assets/icons/antigravity.svg");
     pub const LOGO: &[u8] = include_bytes!("../assets/icons/synara-logo.svg");
-    pub const LOGO_DRAW: &[u8] = include_bytes!("../assets/icons/synara-logo-draw.svg");
+    pub const LOGO_MOTION: &[u8] = include_bytes!("../assets/icons/synara-logo-motion.svg");
     pub const SHIELD_ACCESS: &[u8] =
         include_bytes!("../assets/icons/shield-access.svg");
     pub const SHIELD_CODE: &[u8] = include_bytes!("../assets/icons/shield-code.svg");
@@ -230,30 +230,59 @@ fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
 
-/// Live-work brand mark: the Synara outline draws itself in, fills, holds,
-/// then draws back out. The loop reads as reconstruction rather than a spinner.
+/// Live-work brand mark: the Synara outline draws itself in while the wings
+/// open, holds as the assembled mark, then closes completely before repeating.
 fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
     gpui::svg()
-        .data(icons::LOGO_DRAW)
+        .data(icons::LOGO_MOTION)
         .size(icon_size)
         .text_color(color)
         .with_animation(
-            "synara-working-logo-draw",
-            gpui::Animation::new(std::time::Duration::from_millis(2200)).repeat_synced(),
+            "synara-working-logo-open-close",
+            gpui::Animation::new(std::time::Duration::from_millis(2400)).repeat_synced(),
             |this, delta| {
-                let offset = if delta < 0.42 {
-                    100.0 * (1.0 - delta / 0.42)
-                } else if delta < 0.75 {
+                let smooth = |t: f32| {
+                    let t = t.clamp(0.0, 1.0);
+                    t * t * (3.0 - 2.0 * t)
+                };
+                let close = if delta < 0.28 {
+                    1.0 - smooth(delta / 0.28)
+                } else if delta < 0.70 {
                     0.0
                 } else {
-                    -100.0 * (delta - 0.75) / 0.25
+                    smooth((delta - 0.70) / 0.30)
                 };
-                let fill_in = ((delta - 0.30) / 0.25).clamp(0.0, 1.0);
-                let fill_out = 1.0 - ((delta - 0.78) / 0.17).clamp(0.0, 1.0);
-                let fill = fill_in.min(fill_out);
-                let frame = String::from_utf8_lossy(icons::LOGO_DRAW)
+                let offset = if delta < 0.34 {
+                    100.0 * (1.0 - delta / 0.34)
+                } else {
+                    0.0
+                };
+                let stroke_alpha = if delta < 0.42 {
+                    1.0
+                } else if delta < 0.58 {
+                    1.0 - (delta - 0.42) / 0.16
+                } else {
+                    0.0
+                };
+                let fill_alpha = smooth((delta - 0.18) / 0.25)
+                    * (1.0 - smooth((delta - 0.82) / 0.18));
+                let wing_transform = |left: bool| {
+                    let direction = if left { -1.0 } else { 1.0 };
+                    let pivot_x = if left { 177.0 } else { 292.0 };
+                    let inward_x = if left { 55.0 } else { -55.0 } * close;
+                    format!(
+                        "translate({:.2} 0) rotate({:.2} {:.1} 274)",
+                        inward_x,
+                        direction * 145.0 * close,
+                        pivot_x,
+                    )
+                };
+                let frame = String::from_utf8_lossy(icons::LOGO_MOTION)
                     .replace("__OFFSET__", &format!("{offset:.2}"))
-                    .replace("__FILL__", &format!("{fill:.3}"));
+                    .replace("__STROKE_ALPHA__", &format!("{stroke_alpha:.3}"))
+                    .replace("__FILL_ALPHA__", &format!("{fill_alpha:.3}"))
+                    .replace("__LEFT_TRANSFORM__", &wing_transform(true))
+                    .replace("__RIGHT_TRANSFORM__", &wing_transform(false));
                 this.data(frame.as_bytes())
             },
         )

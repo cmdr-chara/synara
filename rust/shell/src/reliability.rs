@@ -518,9 +518,32 @@ mod tests {
         let port = listener.local_addr().unwrap().port();
         let server = std::thread::spawn(move || {
             let (mut stream, _) = listener.accept().unwrap();
-            let mut buffer = vec![0; 64 * 1024];
-            let size = stream.read(&mut buffer).unwrap();
-            let request = String::from_utf8_lossy(&buffer[..size]);
+            let mut request_bytes = Vec::new();
+            let mut buffer = [0_u8; 4096];
+            loop {
+                let size = stream.read(&mut buffer).unwrap();
+                assert!(size > 0, "connection closed before the request completed");
+                request_bytes.extend_from_slice(&buffer[..size]);
+                if let Some(header_end) = request_bytes
+                    .windows(4)
+                    .position(|window| window == b"\r\n\r\n")
+                {
+                    let headers = String::from_utf8_lossy(&request_bytes[..header_end]);
+                    let content_length = headers
+                        .split("\r\n")
+                        .find_map(|line| {
+                            let (name, value) = line.split_once(':')?;
+                            (name.trim().eq_ignore_ascii_case("content-length"))
+                                .then(|| value.trim().parse::<usize>().ok())
+                                .flatten()
+                        })
+                        .unwrap_or(0);
+                    if request_bytes.len() >= header_end + 4 + content_length {
+                        break;
+                    }
+                }
+            }
+            let request = String::from_utf8_lossy(&request_bytes);
             let body = request.split("\r\n\r\n").nth(1).unwrap_or("{}");
             let parsed: Value = serde_json::from_str(body).unwrap();
             let id = parsed["events"][0]["id"].as_str().unwrap().to_string();

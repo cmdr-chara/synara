@@ -1,4 +1,5 @@
 pub mod cdp;
+pub mod cookies;
 pub mod client;
 pub mod discovery;
 pub mod network;

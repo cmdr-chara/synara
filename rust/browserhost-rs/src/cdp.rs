@@ -1083,6 +1083,84 @@ async fn thread_session(
     Ok((target_id, session_id))
 }
 
+/// Read cookies from a local browser profile with rookie-cookies and install
+/// them into an existing browser tab's cookie jar. This owner-only operation is
+/// deliberately not exposed as an agent browser tool: importing cookies grants
+/// session access and must be initiated by the human-facing vault UI.
+pub async fn sync_cookie_import(
+    thread: &str,
+    browser: &str,
+    profile: Option<&str>,
+    domains: &[String],
+    mode: CdpMode,
+) -> Result<Value, String> {
+    static IMPORT_BUSY: AtomicU64 = AtomicU64::new(0);
+    if IMPORT_BUSY
+        .compare_exchange(0, 1, AtomicOrdering::SeqCst, AtomicOrdering::SeqCst)
+        .is_err()
+    {
+        return Err("another cookie import is running".into());
+    }
+    struct ImportGuard;
+    impl Drop for ImportGuard {
+        fn drop(&mut self) {
+            IMPORT_BUSY.store(0, AtomicOrdering::SeqCst);
+        }
+    }
+    let _import_guard = ImportGuard;
+    let key = format!("{}:{}", mode.backend_name(), thread);
+    let Some((_, session)) = cdp_tabs().lock().ok().and_then(|tabs| tabs.get(&key).cloned()) else {
+        return Err("cookie import requires an existing destination tab".into());
+    };
+    let conn = ensure_cdp(mode).await?;
+    let browser = browser.to_string();
+    let profile = profile.map(str::to_string);
+    let domains = domains.to_vec();
+    let import = tokio::task::spawn_blocking(move || {
+        crate::cookies::read_import(&browser, profile.as_deref(), &domains)
+    })
+    .await
+    .map_err(|_| "cookie import worker failed".to_string())??;
+    let mut imported = 0usize;
+    let mut skipped = import.skipped;
+    let _ = conn.call("Network.enable", json!({}), Some(&session)).await;
+    for chunk in import.cookies.chunks(500) {
+        let batch = conn
+            .call(
+                "Network.setCookies",
+                json!({"cookies": chunk}),
+                Some(&session),
+            )
+            .await;
+        if batch.is_ok() {
+            imported += chunk.len();
+            continue;
+        }
+        // Older CDP implementations reject a batch when a row uses a newer
+        // optional field (notably CHIPS partition keys). Retry row-by-row and
+        // count only cookies the browser accepted. Values never enter errors,
+        // logs, or returned metadata.
+        for cookie in chunk {
+            match conn
+                .call("Network.setCookie", cookie.clone(), Some(&session))
+                .await
+            {
+                Ok(result) if result.get("success").and_then(Value::as_bool) != Some(false) => {
+                    imported += 1;
+                }
+                _ => skipped += 1,
+            }
+        }
+    }
+    Ok(json!({
+        "ok": true,
+        "imported": imported,
+        "skipped": skipped,
+        "domains": import.domains,
+        "warnings": import.warnings,
+    }))
+}
+
 /// Wait for the document to reach a usable ready state after navigation.
 /// `Page.navigate` returns as soon as the navigation commits; interacting
 /// with the page before the DOM exists races every follow-up tool.

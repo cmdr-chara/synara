@@ -20331,6 +20331,15 @@ impl Render for Native {
             gpui::hsla(0.0, 0.0, 0.983, 1.0)
         };
         let composer_shelled = if let Some(controls) = landing_controls {
+            // Canonical upstream tray (#2306): a soft opaque GREY squircle —
+            // foreground 2% over background in light — with 4px padding; the
+            // project strip sits on the grey, and the composer inside keeps
+            // its own white surface, border, shadow and radius.
+            let tray_bg: gpui::Hsla = if theme.is_dark() {
+                gpui::hsla(0.0, 0.0, 0.14, 1.0)
+            } else {
+                gpui::hsla(0.0, 0.0, 0.975, 1.0)
+            };
             div()
                 .flex()
                 .justify_center()
@@ -20339,25 +20348,14 @@ impl Render for Native {
                     v_flex()
                         .w_full()
                         .max_w(px(755.))
-                        .rounded(px(19.2))
+                        .rounded(px(24.2))
                         .border_1()
-                        .border_color(composer_border)
-                        .bg(if theme.is_dark() {
-                            sidebar_bg
-                        } else {
-                            gpui::hsla(0.0, 0.0, 0.99, 1.0)
-                        })
-                        .shadow_md()
-                        .child(
-                            div().pt(px(6.)).px(px(10.)).child(controls),
-                        )
-                        .child(
-                            div()
-                                .mx(px(10.))
-                                .h(px(1.))
-                                .bg(theme.border.opacity(0.6)),
-                        )
-                        .child(composer_card.border_0().shadow_none().rounded(px(0.))),
+                        .border_color(theme.border.opacity(0.5))
+                        .bg(tray_bg)
+                        .p(px(4.))
+                        .gap(px(4.))
+                        .child(div().px(px(6.)).child(controls))
+                        .child(composer_card),
                 )
         } else {
             div()

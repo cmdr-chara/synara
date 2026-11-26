@@ -27,6 +27,7 @@ pub struct Shell {
     native: Entity<native::Native>,
     address_input: Entity<InputState>,
     last_window_state_write: std::time::Instant,
+    desktop_backgrounded_at: Option<std::time::Instant>,
     window_state_subscription: Option<Subscription>,
 }
 
@@ -68,6 +69,7 @@ impl Shell {
                 address_input: address_input.clone(),
                 last_window_state_write: std::time::Instant::now()
                     - std::time::Duration::from_secs(1),
+                desktop_backgrounded_at: None,
                 window_state_subscription: None,
             };
             this.window_state_subscription = Some(cx.observe_window_bounds(
@@ -87,6 +89,16 @@ impl Shell {
             // the parent merely because a child entity was passed through, so
             // forward Native notifications into the root view's render pass.
             cx.observe(&this.native, |_, _, cx| cx.notify()).detach();
+            cx.observe_window_activation(window, |this, window, _| {
+                if window.is_window_active() {
+                    if let Some(backgrounded_at) = this.desktop_backgrounded_at.take() {
+                        updater::note_desktop_foregrounded(backgrounded_at.elapsed());
+                    }
+                } else if this.desktop_backgrounded_at.is_none() {
+                    this.desktop_backgrounded_at = Some(std::time::Instant::now());
+                }
+            })
+            .detach();
             cx.subscribe(
                 &address_input,
                 |this: &mut Self, input, event: &InputEvent, cx| {

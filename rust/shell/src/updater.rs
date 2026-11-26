@@ -270,6 +270,26 @@ pub fn can_check(state: &UpdateState) -> bool {
     !matches!(state.status, UpdateStatus::Checking | UpdateStatus::Downloading)
 }
 
+pub const FOREGROUND_RECHECK_MIN_BACKGROUND_MS: u64 = 30_000;
+pub const FOREGROUND_RECHECK_MIN_INTERVAL_MS: i64 = 5 * 60 * 1000;
+
+pub fn foreground_recheck_needed(
+    checked_at: Option<&str>,
+    backgrounded_for_ms: u64,
+    now: i64,
+) -> bool {
+    if backgrounded_for_ms < FOREGROUND_RECHECK_MIN_BACKGROUND_MS {
+        return false;
+    }
+    match checked_at {
+        None => true,
+        Some(value) => match iso_ms(value) {
+            None => true,
+            Some(checked) => now - checked >= FOREGROUND_RECHECK_MIN_INTERVAL_MS,
+        },
+    }
+}
+
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DesktopUpdateButtonAction {
@@ -882,6 +902,7 @@ pub struct DesktopUpdateService {
     selected_file: std::sync::Mutex<Option<UpdateFeedFile>>,
     ticket: std::sync::Mutex<Option<RestartTicket>>,
     committed: std::sync::atomic::AtomicBool,
+    automatic_checks_suppressed: std::sync::atomic::AtomicBool,
     feed_url: Option<String>,
     cache_dir: PathBuf,
 }
@@ -954,6 +975,57 @@ fn now_iso() -> String {
 
 fn now_ms() -> i64 {
     chrono::Utc::now().timestamp_millis()
+}
+
+fn update_install_marker_path() -> PathBuf {
+    crate::backend::configured_home_dir()
+        .join("userdata")
+        .join("pending-update-install.json")
+}
+
+fn install_restart_failure_state(state: &mut UpdateState, version: &str, failures: u32) {
+    state.status = UpdateStatus::Error;
+    state.available_version = Some(version.to_string());
+    state.downloaded_version = None;
+    state.download_percent = None;
+    state.message = Some(format!(
+        "Synara restarted, but update {version} was not installed. Click to try again."
+    ));
+    state.error_context = Some("install".into());
+    state.can_retry = true;
+    state.install_failure_count = failures;
+}
+
+fn apply_install_marker_startup(state: &mut UpdateState, path: &Path) -> bool {
+    let marker = match read_install_marker(path) {
+        Ok(Some(marker)) => marker,
+        Ok(None) => return false,
+        Err(_) => {
+            let _ = std::fs::remove_file(path);
+            return false;
+        }
+    };
+    match install_marker_outcome(&marker, &state.current_version, &now_iso()) {
+        InstallOutcome::Success | InstallOutcome::Stale | InstallOutcome::Invalid => {
+            let _ = std::fs::remove_file(path);
+            false
+        }
+        InstallOutcome::Failure | InstallOutcome::AlreadyFailed => {
+            let mut marker = marker;
+            if marker.phase != "failed" {
+                marker.phase = "failed".into();
+                marker.consecutive_failures += 1;
+                marker.last_failure_at = Some(now_iso());
+                let _ = write_install_marker(path, &marker);
+            }
+            install_restart_failure_state(
+                state,
+                &marker.to_version,
+                marker.consecutive_failures.max(1),
+            );
+            true
+        }
+    }
 }
 
 fn runtime_arch() -> &'static str {
@@ -1295,7 +1367,13 @@ impl DesktopUpdateService {
         state.enabled = configured_feed_url().is_some() && desktop_update_supported();
         state.status = if state.enabled { UpdateStatus::Idle } else { UpdateStatus::Disabled };
         state.release_url = configured_release_url();
-        let restored = restore_pending_update(&cache, &state.current_version, state.flavor);
+        let automatic_checks_suppressed = apply_install_marker_startup(
+            &mut state,
+            &update_install_marker_path(),
+        );
+        let restored = (!automatic_checks_suppressed)
+            .then(|| restore_pending_update(&cache, &state.current_version, state.flavor))
+            .flatten();
         let mut restored_artifact = None;
         let mut restored_file = None;
         if state.enabled {
@@ -1318,6 +1396,7 @@ impl DesktopUpdateService {
             selected_file: std::sync::Mutex::new(restored_file),
             ticket: std::sync::Mutex::new(None),
             committed: std::sync::atomic::AtomicBool::new(false),
+            automatic_checks_suppressed: std::sync::atomic::AtomicBool::new(automatic_checks_suppressed),
             feed_url: configured_feed_url(),
             cache_dir: cache,
         }
@@ -1359,7 +1438,27 @@ impl DesktopUpdateService {
         self.current_state()
     }
 
+    fn request_foreground_check(self: &Arc<Self>, backgrounded_for: std::time::Duration) -> bool {
+        let Some(state) = self.current_state() else { return false };
+        if !foreground_recheck_needed(
+            state.checked_at.as_deref(),
+            backgrounded_for.as_millis() as u64,
+            now_ms(),
+        ) {
+            return false;
+        }
+        self.request_automatic_check()
+    }
+
+    fn request_automatic_check(self: &Arc<Self>) -> bool {
+        if self.automatic_checks_suppressed.load(std::sync::atomic::Ordering::SeqCst) {
+            return false;
+        }
+        self.request_check()
+    }
+
     fn request_check(self: &Arc<Self>) -> bool {
+        self.automatic_checks_suppressed.store(false, std::sync::atomic::Ordering::SeqCst);
         let Some(state) = self.current_state() else { return false };
         if !self.supported() || !can_check(&state) {
             return false;
@@ -1496,7 +1595,35 @@ impl DesktopUpdateService {
         let Some(artifact) = artifact else {
             return (false, None, Some("The verified update payload is no longer staged. Download it again.".into()));
         };
-        if let Err(message) = prepare_macos_install(&artifact, &self.cache_dir, expected) {
+        if !verify_artifact_identity(&artifact) {
+            return (false, None, Some("The downloaded update could not be reverified. Download it again.".into()));
+        }
+        let marker_path = update_install_marker_path();
+        let existing = read_install_marker(&marker_path)
+            .ok()
+            .flatten()
+            .filter(|marker| marker.to_version == expected);
+        let mut marker = InstallMarker::create(
+            state.current_version.clone(),
+            expected,
+            now_iso(),
+            artifact.clone(),
+        );
+        if let Some(existing) = existing {
+            marker.consecutive_failures = existing.consecutive_failures;
+            marker.last_failure_at = existing.last_failure_at;
+        }
+        if let Err(message) = write_install_marker(&marker_path, &marker) {
+            return (false, None, Some(format!("Could not prepare a durable update install handoff: {message}")));
+        }
+        let install_result = prepare_macos_install(&artifact, &self.cache_dir, expected)
+            .and_then(|_| {
+                mark_install_handoff(&marker_path, &marker.attempt_id, &artifact, &now_iso())
+                    .and_then(|marked| marked.ok_or_else(|| "Durable update install handoff no longer matches the active attempt.".to_string()))
+                    .map(|_| ())
+            });
+        if let Err(message) = install_result {
+            let _ = record_install_marker_failure(&marker_path, &marker.attempt_id, &artifact, &now_iso());
             self.set_state(|state| state.install_failure(&message));
             return (false, None, Some(message));
         }
@@ -1545,6 +1672,10 @@ impl DesktopUpdateService {
     }
 }
 
+pub fn note_desktop_foregrounded(backgrounded_for: std::time::Duration) {
+    let _ = desktop_update_service().request_foreground_check(backgrounded_for);
+}
+
 static UPDATE_SERVICE: std::sync::OnceLock<Arc<DesktopUpdateService>> = std::sync::OnceLock::new();
 
 pub fn desktop_update_service() -> Arc<DesktopUpdateService> {
@@ -1585,7 +1716,7 @@ pub fn start_desktop_update_bridge() -> Result<(), String> {
         // installation still requires an explicit owner/approved-remote action.
         std::thread::sleep(std::time::Duration::from_secs(15));
         loop {
-            let _ = automatic.request_check();
+            let _ = automatic.request_automatic_check();
             std::thread::sleep(std::time::Duration::from_secs(4 * 60 * 60));
         }
     });
@@ -1635,6 +1766,22 @@ mod tests {
         update = update.download_start().download_progress(42.8).download_complete("0.9.1");
         assert_eq!(resolve_desktop_update_button_action(&update), DesktopUpdateButtonAction::Install);
         assert!(desktop_update_button_label(&update, false).contains("0.9.1"));
+    }
+
+    #[test]
+    fn foreground_recheck_matches_upstream_cooldowns() {
+        let now = 1_000_000;
+        assert!(!foreground_recheck_needed(None, 29_999, now));
+        assert!(foreground_recheck_needed(None, 30_000, now));
+        assert!(foreground_recheck_needed(Some("not-a-date"), 30_000, now));
+        let recent = chrono::DateTime::from_timestamp_millis(now - FOREGROUND_RECHECK_MIN_INTERVAL_MS + 1)
+            .unwrap()
+            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+        assert!(!foreground_recheck_needed(Some(&recent), 30_000, now));
+        let stale = chrono::DateTime::from_timestamp_millis(now - FOREGROUND_RECHECK_MIN_INTERVAL_MS)
+            .unwrap()
+            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+        assert!(foreground_recheck_needed(Some(&stale), 30_000, now));
     }
 
     #[test]
@@ -1755,6 +1902,55 @@ mod tests {
         assert_eq!(handed.phase, "handoff");
         assert_eq!(install_marker_outcome(&handed, "0.9.0", "2026-01-01T00:02:00.000Z"), InstallOutcome::Failure);
         assert_eq!(install_marker_outcome(&handed, "0.9.1", "2026-01-01T00:02:00.000Z"), InstallOutcome::Success);
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn startup_marker_failure_suppresses_automatic_checks_until_retry() {
+        let root = std::env::temp_dir().join(format!("synara-startup-marker-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let payload = root.join("payload.bin");
+        std::fs::write(&payload, b"payload").unwrap();
+        let artifact = fingerprint_artifact(&payload).unwrap();
+        let path = root.join("install.json");
+        let mut marker = InstallMarker::create("0.9.0", "0.9.1", now_iso(), artifact);
+        marker.phase = "handoff".into();
+        write_install_marker(&path, &marker).unwrap();
+
+        let mut update = state();
+        assert!(apply_install_marker_startup(&mut update, &path));
+        assert_eq!(update.status, UpdateStatus::Error);
+        assert_eq!(update.available_version.as_deref(), Some("0.9.1"));
+        assert_eq!(update.downloaded_version, None);
+        assert_eq!(update.error_context.as_deref(), Some("install"));
+        assert_eq!(update.install_failure_count, 1);
+
+        let persisted = read_install_marker(&path).unwrap().unwrap();
+        assert_eq!(persisted.phase, "failed");
+        assert_eq!(persisted.consecutive_failures, 1);
+
+        let mut repeated = state();
+        assert!(apply_install_marker_startup(&mut repeated, &path));
+        assert_eq!(repeated.install_failure_count, 1);
+        let persisted = read_install_marker(&path).unwrap().unwrap();
+        assert_eq!(persisted.consecutive_failures, 1);
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn startup_success_marker_is_cleared() {
+        let root = std::env::temp_dir().join(format!("synara-startup-success-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let payload = root.join("payload.bin");
+        std::fs::write(&payload, b"payload").unwrap();
+        let artifact = fingerprint_artifact(&payload).unwrap();
+        let path = root.join("install.json");
+        let marker = InstallMarker::create("0.9.0", "0.9.0", now_iso(), artifact);
+        write_install_marker(&path, &marker).unwrap();
+        let mut update = state();
+        assert!(!apply_install_marker_startup(&mut update, &path));
+        assert!(!path.exists());
+        assert_eq!(update.status, UpdateStatus::Disabled);
         std::fs::remove_dir_all(root).unwrap();
     }
 

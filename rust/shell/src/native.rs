@@ -16617,7 +16617,7 @@ impl Render for Native {
                             width: vpw,
                             height: vph,
                             dark,
-                            accent_rgb: [0x01, 0x69, 0xcc],
+                            accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
                             quiet,
                         },
                     );
@@ -16634,11 +16634,11 @@ impl Render for Native {
                             .bg(gpui::linear_gradient(
                                 180.,
                                 gpui::linear_color_stop(
-                                    rgb(0x0169cc).opacity(0.03),
+                                    rgb(0xc74614).opacity(0.03),
                                     0.,
                                 ),
                                 gpui::linear_color_stop(
-                                    rgb(0x0169cc).opacity(0.09),
+                                    rgb(0xc74614).opacity(0.09),
                                     0.55,
                                 ),
                             )),
@@ -25743,7 +25743,7 @@ impl Render for Native {
                                 width: vpw,
                                 height: vph,
                                 dark,
-                                accent_rgb: [0x01, 0x69, 0xcc],
+                                accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
                                 quiet,
                             },
                         );
@@ -25763,11 +25763,11 @@ impl Render for Native {
                                     .bg(gpui::linear_gradient(
                                         180.,
                                         gpui::linear_color_stop(
-                                            rgb(0x0169cc).opacity(0.03),
+                                            rgb(0xc74614).opacity(0.03),
                                             0.,
                                         ),
                                         gpui::linear_color_stop(
-                                            rgb(0x0169cc).opacity(0.09),
+                                            rgb(0xc74614).opacity(0.09),
                                             0.55,
                                         ),
                                     )),

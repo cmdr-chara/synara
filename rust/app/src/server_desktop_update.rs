@@ -1,8 +1,8 @@
 //! `server.desktopUpdateStatus` / `server.desktopUpdate` — the desktop updater
-//! lives in the packaged Electron app upstream and is reached through an IPC
-//! bridge. The Rust app has no updater bridge, so updates are reported
-//! unsupported; `busy` still reflects real work so callers see why a restart
-//! would be unsafe once an updater exists.
+//! lives in the desktop shell upstream. The Rust shell owns the updater and
+//! exposes a loopback, token-authenticated private bridge; this module forwards
+//! status/actions there. Without a live shell bridge, updates are unsupported;
+//! `busy` still reflects real work so callers see why a restart would be unsafe.
 //!
 //! Busy is read from a byte copy of `state.sqlite` (upstream holds an
 //! exclusive lock): running turns or unsettled pending interactions count.
@@ -55,13 +55,75 @@ fn busy() -> bool {
     result.unwrap_or(true)
 }
 
-fn status() -> Value {
+fn unsupported_status() -> Value {
     json!({
         "supported": false,
         "state": Value::Null,
         "busy": busy(),
         "message": "Desktop updates require the packaged Synara Desktop app with its updater enabled."
     })
+}
+
+fn bridge_file() -> std::path::PathBuf {
+    std::path::PathBuf::from(crate::todo::state_dir()).join("desktop-update-bridge.json")
+}
+
+fn bridge_request(action: &str, payload: &Value) -> Option<Value> {
+    use std::io::{BufRead as _, BufReader, Write as _};
+    let descriptor: Value = serde_json::from_str(&std::fs::read_to_string(bridge_file()).ok()?).ok()?;
+    let port = descriptor.get("port").and_then(Value::as_u64)?;
+    let token = descriptor.get("token").and_then(Value::as_str)?.to_string();
+    if descriptor.get("version").and_then(Value::as_u64) != Some(1) || port == 0 || port > u16::MAX as u64 {
+        return None;
+    }
+    let mut stream = std::net::TcpStream::connect(("127.0.0.1", port as u16)).ok()?;
+    stream
+        .set_read_timeout(Some(std::time::Duration::from_secs(12)))
+        .ok()?;
+    stream
+        .set_write_timeout(Some(std::time::Duration::from_secs(12)))
+        .ok()?;
+    let mut request = json!({
+        "token": token,
+        "authority": format!("owner:{}", std::process::id()),
+        "action": action,
+    });
+    if let Some(expected) = payload.get("expectedVersion").and_then(Value::as_str) {
+        request["expectedVersion"] = json!(expected);
+    }
+    if let Some(restart_token) = payload.get("restartToken").and_then(Value::as_str) {
+        request["restartToken"] = json!(restart_token);
+    }
+    stream
+        .write_all(format!("{}\n", serde_json::to_string(&request).ok()?).as_bytes())
+        .ok()?;
+    let mut reader = BufReader::new(stream);
+    let mut line = String::new();
+    reader.read_line(&mut line).ok()?;
+    if line.is_empty() || line.len() > 64 * 1024 {
+        return None;
+    }
+    serde_json::from_str(&line).ok()
+}
+
+fn merged_status(status: Value) -> Value {
+    let mut out = status;
+    let local_busy = busy();
+    let bridge_busy = out.get("busy").and_then(Value::as_bool).unwrap_or(false);
+    out["busy"] = json!(local_busy || bridge_busy);
+    if local_busy && out.get("message").is_none_or(Value::is_null) {
+        out["message"] = json!("Finish running chats and tasks before restarting Synara.");
+    }
+    out
+}
+
+fn status() -> Value {
+    match bridge_request("status", &json!({}))
+        .and_then(|response| response.get("status").cloned())
+    {
+        Some(status) => merged_status(status),
+        None => unsupported_status(),
+    }
 }
 
 pub fn desktop_update_status() -> Result<Value, WsErr> {
@@ -87,6 +149,25 @@ pub fn desktop_update(payload: &Value) -> Result<Value, WsErr> {
         ));
     }
     let current = status();
-    // No updater bridge in this app — nothing is ever accepted.
-    Ok(json!({ "accepted": false, "status": current }))
+    if !current.get("supported").and_then(Value::as_bool).unwrap_or(false)
+        || (action == "install" && current.get("busy").and_then(Value::as_bool).unwrap_or(false))
+    {
+        return Ok(json!({ "accepted": false, "status": current }));
+    }
+    if let Some(result) = bridge_request(action, payload) {
+        if let Some(bridge_status) = result.get("status").cloned() {
+            let mut out = result.clone();
+            out["status"] = merged_status(bridge_status);
+            return Ok(out);
+        }
+    }
+    Ok(json!({
+        "accepted": false,
+        "status": json!({
+            "supported": false,
+            "state": Value::Null,
+            "busy": busy(),
+            "message": "Desktop updater is unavailable. Reconnect and refresh its status."
+        })
+    }))
 }

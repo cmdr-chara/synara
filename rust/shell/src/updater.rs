@@ -3,6 +3,8 @@
 //! orchestration plug into these pure transitions rather than owning policy.
 
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use std::sync::Arc;
 use sha2::{Digest, Sha512};
 use std::fs::File;
 use std::io::Read;
@@ -624,6 +626,414 @@ pub fn select_update_download_file<'a>(files: &'a [UpdateFeedFile], arch: &str, 
     let unmarked = (matches.len() == 1).then_some(matches[0]).filter(|file| !file.url.contains("-arm64-") && !file.url.contains("-x64-") && !file.url.ends_with("-arm64.zip") && !file.url.ends_with("-x64.zip"));
     matches.iter().copied().find(|file| file.url.contains(&format!("-{arch}-")) || file.url.ends_with(&format!("-{arch}{extension}"))).or(unmarked)
         .ok_or_else(|| format!("no update download for {arch} in manifest"))
+}
+
+fn decode_hex(value: &str) -> Option<Vec<u8>> {
+    if value.len() % 2 != 0 { return None; }
+    let mut out = Vec::with_capacity(value.len() / 2);
+    let bytes = value.as_bytes();
+    for pair in bytes.chunks_exact(2) {
+        let hi = (pair[0] as char).to_digit(16)?;
+        let lo = (pair[1] as char).to_digit(16)?;
+        out.push(((hi << 4) | lo) as u8);
+    }
+    Some(out)
+}
+
+// ---------------------------------------------------------------------------
+// Runtime service and private desktop bridge
+// ---------------------------------------------------------------------------
+
+#[derive(Clone, Debug)]
+struct RestartTicket {
+    token: String,
+    authority: String,
+    version: String,
+    expires_at_ms: i64,
+}
+
+pub struct DesktopUpdateService {
+    state: std::sync::Mutex<UpdateState>,
+    artifact: std::sync::Mutex<Option<ArtifactIdentity>>,
+    selected_file: std::sync::Mutex<Option<UpdateFeedFile>>,
+    ticket: std::sync::Mutex<Option<RestartTicket>>,
+    committed: std::sync::atomic::AtomicBool,
+    feed_url: Option<String>,
+    cache_dir: PathBuf,
+}
+
+fn now_iso() -> String {
+    chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+}
+
+fn now_ms() -> i64 {
+    chrono::Utc::now().timestamp_millis()
+}
+
+fn runtime_arch() -> &'static str {
+    match std::env::consts::ARCH {
+        "aarch64" => "arm64",
+        "x86_64" => "x64",
+        _ => "other",
+    }
+}
+
+fn packaged_mac_app() -> bool {
+    std::env::current_exe().is_ok_and(|exe| {
+        let text = exe.to_string_lossy();
+        text.contains(".app/Contents/MacOS/")
+    })
+}
+
+fn desktop_update_supported() -> bool {
+    std::env::var("SYNARA_UPDATE_ENABLE").ok().as_deref() == Some("1")
+        || (cfg!(target_os = "macos") && packaged_mac_app())
+}
+
+fn configured_feed_url() -> Option<String> {
+    std::env::var("SYNARA_UPDATE_FEED_URL")
+        .ok()
+        .map(|value| value.trim().to_string())
+        .filter(|value| value.starts_with("https://") || value.starts_with("http://"))
+}
+
+fn current_desktop_version() -> String {
+    std::env::var("SYNARA_DESKTOP_VERSION")
+        .ok()
+        .map(|value| value.trim().to_string())
+        .filter(|value| !value.is_empty())
+        .unwrap_or_else(|| env!("CARGO_PKG_VERSION").to_string())
+}
+
+fn configured_flavor() -> UpdateFlavor {
+    match std::env::var("SYNARA_UPDATE_FLAVOR").ok().as_deref() {
+        Some("beta") => UpdateFlavor::Beta,
+        Some("canary") => UpdateFlavor::Canary,
+        Some("cua") => UpdateFlavor::Cua,
+        Some("remote") => UpdateFlavor::Remote,
+        _ => UpdateFlavor::Production,
+    }
+}
+
+impl DesktopUpdateService {
+    fn new() -> Self {
+        let arch = runtime_arch();
+        let home = crate::backend::configured_home_dir();
+        let cache = updater_cache_dir(
+            "synara-updater",
+            std::env::consts::OS,
+            &home,
+            std::env::var_os("LOCALAPPDATA").as_deref().map(Path::new),
+            std::env::var_os("XDG_CACHE_HOME").as_deref().map(Path::new),
+        )
+        .unwrap_or_else(|| home.join("updater"));
+        let mut state = UpdateState::initial(
+            current_desktop_version(),
+            arch,
+            arch,
+            false,
+            configured_flavor(),
+        );
+        state.enabled = configured_feed_url().is_some() && desktop_update_supported();
+        state.status = if state.enabled { UpdateStatus::Idle } else { UpdateStatus::Disabled };
+        state.release_url = std::env::var("SYNARA_UPDATE_RELEASE_URL").ok().filter(|v| !v.trim().is_empty());
+        if !state.enabled {
+            state.message = Some("Automatic updates are not available because no update feed is configured.".into());
+        }
+        Self {
+            state: std::sync::Mutex::new(state),
+            artifact: std::sync::Mutex::new(None),
+            selected_file: std::sync::Mutex::new(None),
+            ticket: std::sync::Mutex::new(None),
+            committed: std::sync::atomic::AtomicBool::new(false),
+            feed_url: configured_feed_url(),
+            cache_dir: cache,
+        }
+    }
+
+    fn supported(&self) -> bool {
+        self.feed_url.is_some() && desktop_update_supported()
+    }
+
+    fn state_json(&self) -> Value {
+        let state = self.state.lock().map(|state| state.clone()).unwrap_or_else(|_| {
+            UpdateState::initial(current_desktop_version(), runtime_arch(), runtime_arch(), false, configured_flavor())
+        });
+        serde_json::to_value(state).unwrap_or(Value::Null)
+    }
+
+    fn status_json(&self, message: Option<String>) -> Value {
+        let supported = self.supported();
+        json!({
+            "supported": supported,
+            "state": if supported { self.state_json() } else { Value::Null },
+            "busy": self.committed.load(std::sync::atomic::Ordering::SeqCst),
+            "message": message.or_else(|| (!supported).then(|| "Updates require a packaged Synara Desktop app with an update feed configured.".to_string())),
+        })
+    }
+
+    fn set_state(&self, update: impl FnOnce(UpdateState) -> UpdateState) {
+        if let Ok(mut state) = self.state.lock() {
+            let next = update(state.clone());
+            *state = next;
+        }
+    }
+
+    fn current_state(&self) -> Option<UpdateState> {
+        self.state.lock().ok().map(|state| state.clone())
+    }
+
+    fn request_check(self: &Arc<Self>) -> bool {
+        let Some(state) = self.current_state() else { return false };
+        if !self.supported() || !can_check(&state) {
+            return false;
+        }
+        self.set_state(|state| state.check_start(now_iso()));
+        let service = Arc::clone(self);
+        std::thread::spawn(move || service.perform_check());
+        true
+    }
+
+    fn perform_check(self: &Arc<Self>) {
+        let result = (|| -> Result<(UpdateManifest, UpdateFeedFile), String> {
+            let feed = self.feed_url.clone().ok_or("update feed is not configured")?;
+            let response = ureq::get(&feed)
+                .set("User-Agent", "synara-updater")
+                .set("Cache-Control", "no-cache")
+                .call()
+                .map_err(|error| format!("Could not check for updates: {error}"))?;
+            if response.status() != 200 {
+                return Err(format!("Could not check for updates: update feed returned HTTP {}", response.status()));
+            }
+            let text = response.into_string().map_err(|error| format!("Could not read update feed: {error}"))?;
+            let manifest = parse_update_manifest(&text)?;
+            let extension = if cfg!(target_os = "macos") { ".zip" } else if cfg!(target_os = "windows") { ".exe" } else { ".AppImage" };
+            let file = select_update_download_file(&manifest.files, runtime_arch(), extension)?.clone();
+            Ok((manifest, file))
+        })();
+        match result {
+            Ok((manifest, file)) => {
+                let state = self.current_state().unwrap_or_else(|| UpdateState::initial(current_desktop_version(), runtime_arch(), runtime_arch(), false, configured_flavor()));
+                if !version_newer(&state.current_version, &manifest.version)
+                    || !version_allowed_for_flavor(&manifest.version, state.flavor)
+                {
+                    if let Ok(mut selected) = self.selected_file.lock() { *selected = None; }
+                    self.set_state(|state| state.no_update(now_iso()));
+                } else {
+                    if let Ok(mut selected) = self.selected_file.lock() { *selected = Some(file); }
+                    self.set_state(|state| state.update_available(manifest.version, now_iso()));
+                }
+            }
+            Err(message) => self.set_state(|state| state.check_failure(message, now_iso())),
+        }
+    }
+
+    fn request_download(self: &Arc<Self>) -> bool {
+        let Some(state) = self.current_state() else { return false };
+        if !self.supported() || state.status != UpdateStatus::Available || state.available_version.is_none() {
+            return false;
+        }
+        self.set_state(|state| state.download_start());
+        let service = Arc::clone(self);
+        std::thread::spawn(move || service.perform_download());
+        true
+    }
+
+    fn artifact_matches(&self, expected: &UpdateFeedFile, identity: &ArtifactIdentity) -> bool {
+        let digest = match decode_hex(&identity.sha512) {
+            Some(digest) => digest,
+            None => return false,
+        };
+        identity.sha512.eq_ignore_ascii_case(&expected.sha512)
+            || base64::Engine::encode(&base64::engine::general_purpose::STANDARD, digest) == expected.sha512
+    }
+
+    fn perform_download(self: &Arc<Self>) {
+        let outcome = (|| -> Result<(String, ArtifactIdentity), String> {
+            let state = self.current_state().ok_or("update state unavailable")?;
+            let version = state.available_version.clone().ok_or("no update is available")?;
+            let selected = self.selected_file.lock().ok().and_then(|file| file.clone()).ok_or("update payload is no longer selected")?;
+            let feed = self.feed_url.clone().ok_or("update feed is not configured")?;
+            let url = if selected.url.starts_with("https://") || selected.url.starts_with("http://") {
+                selected.url.clone()
+            } else {
+                let base = feed.rsplit_once('/').map(|(base, _)| base).unwrap_or(&feed);
+                format!("{base}/{}", selected.url.trim_start_matches('/'))
+            };
+            std::fs::create_dir_all(self.cache_dir.join(&version)).map_err(|error| error.to_string())?;
+            let file_name = selected.url.rsplit('/').next().filter(|name| !name.is_empty()).unwrap_or("update.payload");
+            let target = self.cache_dir.join(&version).join(file_name);
+            let temporary = target.with_extension(format!("download-{}", uuid::Uuid::new_v4()));
+            let response = ureq::get(&url)
+                .set("User-Agent", "synara-updater")
+                .set("Cache-Control", "no-cache")
+                .call()
+                .map_err(|error| format!("Could not download update: {error}"))?;
+            if response.status() != 200 {
+                return Err(format!("Could not download update: server returned HTTP {}", response.status()));
+            }
+            let total = response.header("Content-Length").and_then(|value| value.parse::<u64>().ok()).or(selected.size);
+            let mut reader = response.into_reader();
+            let mut output = File::create(&temporary).map_err(|error| format!("Could not create update download: {error}"))?;
+            let mut received = 0u64;
+            let mut buffer = [0u8; 128 * 1024];
+            loop {
+                let count = reader.read(&mut buffer).map_err(|error| format!("Could not read update download: {error}"))?;
+                if count == 0 { break; }
+                std::io::Write::write_all(&mut output, &buffer[..count]).map_err(|error| format!("Could not write update download: {error}"))?;
+                received += count as u64;
+                if let Some(total) = total.filter(|total| *total > 0) {
+                    let percent = (received as f64 / total as f64) * 100.0;
+                    self.set_state(|state| state.download_progress(percent));
+                }
+            }
+            drop(output);
+            if let Some(expected_size) = selected.size {
+                if expected_size != received {
+                    let _ = std::fs::remove_file(&temporary);
+                    return Err("The update download ended before the expected payload size.".into());
+                }
+            }
+            std::fs::rename(&temporary, &target).map_err(|error| format!("Could not stage update download: {error}"))?;
+            let identity = fingerprint_artifact(&target)?;
+            if !self.artifact_matches(&selected, &identity) {
+                let _ = std::fs::remove_file(&target);
+                return Err("The downloaded update did not match its signed checksum.".into());
+            }
+            if let Ok(mut artifact) = self.artifact.lock() { *artifact = Some(identity.clone()); }
+            Ok((version, identity))
+        })();
+        match outcome {
+            Ok((version, _identity)) => self.set_state(|state| state.download_complete(&version)),
+            Err(message) => self.set_state(|state| state.download_failure(message)),
+        }
+    }
+
+    fn request_install(self: &Arc<Self>, authority: &str, expected: Option<&str>, restart_token: Option<&str>) -> (bool, Option<String>, Option<String>) {
+        let Some(state) = self.current_state() else {
+            return (false, None, Some("Update state unavailable.".into()));
+        };
+        let expected = expected.unwrap_or_default();
+        if state.status != UpdateStatus::Downloaded || state.downloaded_version.as_deref() != Some(expected) {
+            return (false, None, Some("The downloaded update changed. Refresh its status and confirm again.".into()));
+        }
+        if restart_token.is_none() {
+            let ticket = RestartTicket {
+                token: uuid::Uuid::new_v4().to_string(),
+                authority: authority.to_string(),
+                version: expected.to_string(),
+                expires_at_ms: now_ms() + 60_000,
+            };
+            let token = ticket.token.clone();
+            if let Ok(mut active) = self.ticket.lock() { *active = Some(ticket); }
+            return (true, Some(token), Some("Synara will restart to install the update. This connection will disconnect.".into()));
+        }
+        let valid = self.ticket.lock().ok().and_then(|ticket| ticket.clone()).is_some_and(|ticket| {
+            Some(ticket.token.as_str()) == restart_token
+                && ticket.authority == authority
+                && ticket.version == expected
+                && ticket.expires_at_ms >= now_ms()
+        });
+        if !valid {
+            return (false, None, Some("The restart confirmation expired. Refresh its status and confirm again.".into()));
+        }
+        if let Ok(mut ticket) = self.ticket.lock() { *ticket = None; }
+        self.committed.store(true, std::sync::atomic::Ordering::SeqCst);
+        // The verified payload is staged, but package replacement/relaunch is still
+        // owned by the packaging layer. Surface a durable install failure rather
+        // than pretending Electron's quitAndInstall equivalent exists here.
+        self.set_state(|state| state.install_failure("The downloaded update is verified, but this build has no packaged installer handoff."));
+        self.committed.store(false, std::sync::atomic::Ordering::SeqCst);
+        (false, None, Some("The downloaded update is verified, but this build has no packaged installer handoff.".into()))
+    }
+
+    fn handle(self: &Arc<Self>, request: &Value) -> Value {
+        let action = request.get("action").and_then(Value::as_str).unwrap_or("status");
+        let authority = request.get("authority").and_then(Value::as_str).unwrap_or("owner:unknown");
+        if action == "status" {
+            return json!({"accepted": true, "status": self.status_json(None)});
+        }
+        if !self.supported() {
+            return json!({"accepted": false, "status": self.status_json(Some("Updates require a packaged Synara Desktop app with an update feed configured.".into()))});
+        }
+        match action {
+            "check" => {
+                let accepted = self.request_check();
+                json!({"accepted": accepted, "status": self.status_json((!accepted).then(|| "An update operation is already in progress.".to_string()))})
+            }
+            "download" => {
+                let accepted = self.request_download();
+                json!({"accepted": accepted, "status": self.status_json((!accepted).then(|| "No available update can be downloaded right now.".to_string()))})
+            }
+            "install" => {
+                let (accepted, restart_token, message) = self.request_install(
+                    authority,
+                    request.get("expectedVersion").and_then(Value::as_str),
+                    request.get("restartToken").and_then(Value::as_str),
+                );
+                let mut out = json!({"accepted": accepted, "status": self.status_json(message)});
+                if let Some(token) = restart_token { out["restartToken"] = json!(token); }
+                out
+            }
+            _ => json!({"accepted": false, "status": self.status_json(Some("Unknown desktop update action.".into()))}),
+        }
+    }
+}
+
+static UPDATE_SERVICE: std::sync::OnceLock<Arc<DesktopUpdateService>> = std::sync::OnceLock::new();
+
+pub fn desktop_update_service() -> Arc<DesktopUpdateService> {
+    UPDATE_SERVICE.get_or_init(|| Arc::new(DesktopUpdateService::new())).clone()
+}
+
+fn bridge_directory() -> PathBuf {
+    crate::backend::configured_home_dir().join("userdata")
+}
+
+fn write_bridge_file(port: u16, token: &str) -> Result<PathBuf, String> {
+    let dir = bridge_directory();
+    std::fs::create_dir_all(&dir).map_err(|error| error.to_string())?;
+    let path = dir.join("desktop-update-bridge.json");
+    let tmp = dir.join(format!(".desktop-update-bridge.{}.tmp", uuid::Uuid::new_v4()));
+    let body = json!({"version": 1, "port": port, "token": token, "pid": std::process::id()});
+    std::fs::write(&tmp, serde_json::to_string(&body).map_err(|error| error.to_string())?).map_err(|error| error.to_string())?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        let _ = std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o600));
+    }
+    std::fs::rename(&tmp, &path).map_err(|error| error.to_string())?;
+    Ok(path)
+}
+
+pub fn start_desktop_update_bridge() -> Result<(), String> {
+    let listener = std::net::TcpListener::bind("127.0.0.1:0").map_err(|error| error.to_string())?;
+    listener.set_nonblocking(false).map_err(|error| error.to_string())?;
+    let port = listener.local_addr().map_err(|error| error.to_string())?.port();
+    let token = uuid::Uuid::new_v4().to_string();
+    let path = write_bridge_file(port, &token)?;
+    let service = desktop_update_service();
+    std::thread::spawn(move || {
+        for stream in listener.incoming() {
+            let Ok(mut stream) = stream else { continue };
+            let service = Arc::clone(&service);
+            let token = token.clone();
+            std::thread::spawn(move || {
+                use std::io::{BufRead as _, BufReader, Write as _};
+                let _ = stream.set_read_timeout(Some(std::time::Duration::from_secs(12)));
+                let _ = stream.set_write_timeout(Some(std::time::Duration::from_secs(12)));
+                let mut reader = BufReader::new(match stream.try_clone() { Ok(s) => s, Err(_) => return });
+                let mut line = String::new();
+                if reader.read_line(&mut line).is_err() || line.len() > 32 * 1024 { return; }
+                let Ok(request) = serde_json::from_str::<Value>(&line) else { return };
+                if request.get("token").and_then(Value::as_str) != Some(token.as_str()) { return; }
+                let response = service.handle(&request);
+                let _ = stream.write_all(format!("{}\n", serde_json::to_string(&response).unwrap_or_else(|_| "{}".into())).as_bytes());
+            });
+        }
+    });
+    eprintln!("desktop updater bridge: listening on 127.0.0.1:{port} ({})", path.display());
+    Ok(())
 }
 
 #[cfg(test)]

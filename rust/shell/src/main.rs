@@ -176,6 +176,9 @@ impl Render for Shell {
 }
 
 fn main() {
+    if let Err(error) = updater::start_desktop_update_bridge() {
+        eprintln!("desktop updater bridge unavailable: {error}");
+    }
     let backend_launch = backend::ensure_backend();
     eprintln!(
         "backend supervision: {}",

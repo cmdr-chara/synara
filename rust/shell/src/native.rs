@@ -20313,7 +20313,26 @@ impl Render for Native {
                 ),
             );
         }
-        composer_col = composer_col.child(composer_card);
+        // Upstream .chat-composer-shell: an opaque near-white squircle behind
+        // the translucent (white/0.55) surface — the composite reads as the
+        // crisp opaque tray; without it the texture washes the composer out.
+        let composer_shell_bg: gpui::Hsla = if theme.is_dark() {
+            sidebar_bg
+        } else {
+            gpui::hsla(0.0, 0.0, 0.983, 1.0)
+        };
+        let composer_shelled = div()
+            .flex()
+            .justify_center()
+            .w_full()
+            .child(
+                div()
+                    .rounded(px(24.2))
+                    .bg(composer_shell_bg)
+                    .p(px(4.))
+                    .child(composer_card),
+            );
+        composer_col = composer_col.child(composer_shelled);
         if row_composer {
             // Pickers row under the composer card (upstream "row" layout):
             // interaction mode on the left, model picker on the right.

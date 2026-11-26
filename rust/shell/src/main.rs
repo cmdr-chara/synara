@@ -232,6 +232,13 @@ fn main() {
 
         let persisted_window = window_state::load();
         let mut options = WindowOptions {
+            // Electron parity: frameless transparent titlebar — the app's own
+            // top strip is the drag region and the traffic lights overlay it
+            // instead of a native 28px title band pushing the content down.
+            titlebar: Some(gpui::TitlebarOptions {
+                appears_transparent: true,
+                ..Default::default()
+            }),
             window_background: window_material::background_for_pack(
                 window_material::current_translucency(),
                 &serde_json::json!({}),

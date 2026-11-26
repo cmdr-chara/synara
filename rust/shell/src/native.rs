@@ -230,28 +230,23 @@ fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
 
-/// Live-work brand mark: the Synara outline draws itself in while the wings
-/// open, holds as the assembled mark, then closes completely before repeating.
+/// Live-work brand mark: the Synara outline draws itself in, then the wings
+/// lengthen inward until the negative space at the center is filled.
 fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
     gpui::svg()
         .data(icons::LOGO_MOTION)
         .size(icon_size)
         .text_color(color)
         .with_animation(
-            "synara-working-logo-open-close",
+            "synara-working-logo-extend",
             gpui::Animation::new(std::time::Duration::from_millis(2400)).repeat_synced(),
             |this, delta| {
                 let smooth = |t: f32| {
                     let t = t.clamp(0.0, 1.0);
                     t * t * (3.0 - 2.0 * t)
                 };
-                let close = if delta < 0.28 {
-                    1.0 - smooth(delta / 0.28)
-                } else if delta < 0.70 {
-                    0.0
-                } else {
-                    smooth((delta - 0.70) / 0.30)
-                };
+                let extend = smooth((delta - 0.34) / 0.34);
+                let scale = 1.0 + 0.22 * extend;
                 let offset = if delta < 0.34 {
                     100.0 * (1.0 - delta / 0.34)
                 } else {
@@ -265,14 +260,16 @@ fn animated_logo(icon_size: Pixels, color: gpui::Hsla) -> impl gpui::Element {
                     0.0
                 };
                 let fill_alpha = smooth((delta - 0.18) / 0.25)
-                    * (1.0 - smooth((delta - 0.82) / 0.18));
+                    * (1.0 - smooth((delta - 0.86) / 0.14));
                 let wing_transform = |left: bool| {
-                    let direction = if left { 1.0 } else { -1.0 };
-                    let pivot_x = if left { 177.0 } else { 292.0 };
+                    let (pivot_x, angle) = if left { (0.0, 57.0) } else { (470.0, 123.0) };
                     format!(
-                        "rotate({:.2} {:.1} 274)",
-                        direction * 32.0 * close,
+                        "translate({:.1} 0) rotate({:.1}) scale({:.3} 1) rotate({:.1}) translate({:.1} 0)",
                         pivot_x,
+                        angle,
+                        scale,
+                        -angle,
+                        -pivot_x,
                     )
                 };
                 let frame = String::from_utf8_lossy(icons::LOGO_MOTION)

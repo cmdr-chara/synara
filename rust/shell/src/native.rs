@@ -13939,19 +13939,28 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
         let waiting_input = active_pending_input(thread_v).is_some()
             || get(thread_v, "hasPendingUserInput").as_bool() == Some(true);
         if waiting_approval || waiting_input {
-            let label = if waiting_approval {
-                "Waiting for approval"
+            let (label, icon) = if waiting_approval {
+                ("Waiting for approval", svg_icon(icons::SHIELD_ACCESS))
             } else {
-                "Waiting for your answer"
+                ("Waiting for your answer", svg_icon(icons::BUBBLE_TEXT))
             };
             col = col.child(
                 h_flex().w_full().justify_center().child(
                     div().w_full().max_w(chat_mw).child(
-                        div()
+                        h_flex()
+                            .gap_1p5()
+                            .items_center()
                             .py(px(2.))
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child(label),
+                            .child(
+                                icon.size(px(12.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(label),
+                            ),
                     ),
                 ),
             );

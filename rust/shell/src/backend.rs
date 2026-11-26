@@ -43,6 +43,31 @@ struct SupervisorInner {
     watchdog: Mutex<Option<JoinHandle<()>>>,
 }
 
+static MANAGED_SUPERVISOR: std::sync::OnceLock<Mutex<Option<BackendSupervisor>>> = std::sync::OnceLock::new();
+
+fn managed_supervisor_slot() -> &'static Mutex<Option<BackendSupervisor>> {
+    MANAGED_SUPERVISOR.get_or_init(|| Mutex::new(None))
+}
+
+fn register_managed_supervisor(supervisor: &BackendSupervisor) {
+    if let Ok(mut slot) = managed_supervisor_slot().lock() {
+        *slot = Some(supervisor.clone());
+    }
+}
+
+/// Stop the backend owned by this shell. Update installation exits with
+/// `process::exit`, whose destructors do not run, so the updater explicitly
+/// uses this hook instead of leaking the sidecar across the bundle swap.
+pub fn shutdown_managed_backend() {
+    let supervisor = managed_supervisor_slot()
+        .lock()
+        .ok()
+        .and_then(|mut slot| slot.take());
+    if let Some(supervisor) = supervisor {
+        supervisor.shutdown();
+    }
+}
+
 #[derive(Clone)]
 pub struct BackendSupervisor {
     inner: Arc<SupervisorInner>,
@@ -333,7 +358,10 @@ pub fn ensure_backend() -> BackendLaunch {
     };
 
     match BackendSupervisor::start(config) {
-        Ok(supervisor) => BackendLaunch::Managed(supervisor),
+        Ok(supervisor) => {
+            register_managed_supervisor(&supervisor);
+            BackendLaunch::Managed(supervisor)
+        }
         Err(error) => BackendLaunch::Unavailable(error),
     }
 }

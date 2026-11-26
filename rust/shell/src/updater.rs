@@ -1657,7 +1657,13 @@ impl DesktopUpdateService {
         if let Ok(mut ticket) = self.ticket.lock() { *ticket = None; }
         self.committed.store(true, std::sync::atomic::Ordering::SeqCst);
         std::thread::spawn(|| {
-            std::thread::sleep(std::time::Duration::from_millis(700));
+            // Let the loopback bridge flush its accepted response first, then
+            // terminate the owned backend before the bundle is swapped. Normal
+            // process exit skips Rust destructors, so this explicit signal is
+            // what prevents the sidecar from surviving the install.
+            std::thread::sleep(std::time::Duration::from_millis(100));
+            crate::backend::shutdown_managed_backend();
+            std::thread::sleep(std::time::Duration::from_millis(600));
             std::process::exit(0);
         });
         (true, None, Some("Synara is restarting to install the update.".into()))

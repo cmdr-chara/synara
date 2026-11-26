@@ -38,6 +38,16 @@ const FORWARDED: &[&str] = &[
 
 const BOOTSTRAP_NEGOTIATE: &str = "bootstrap.negotiate";
 
+fn rpc_id_key(v: &serde_json::Value) -> String {
+    // Effect RPC clients use numeric request ids while the native shell uses
+    // string ids; responses must echo the original JSON type verbatim. Internally
+    // streams are keyed by this normalized string form either way.
+    match v {
+        serde_json::Value::String(s) => s.clone(),
+        other => other.to_string(),
+    }
+}
+
 pub fn router() -> Router<Original> {
     Router::new()
         .route("/ws", get(|s, w, u, h| upgrade(s, w, u, h, false)))
@@ -313,9 +323,8 @@ async fn intercept_todo(
     }
     let request_id = msg
         .get("id")
-        .and_then(|v| v.as_str())
-        .unwrap_or("")
-        .to_string();
+        .cloned()
+        .unwrap_or(serde_json::Value::String(String::new()));
     let payload = msg
         .get("payload")
         .cloned()
@@ -370,7 +379,7 @@ async fn intercept_todo(
             let _ = tx.send(ClientMessage::Text(reply.to_string().into()));
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -513,7 +522,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -526,7 +535,7 @@ async fn intercept_todo(
             std::future::pending::<()>().await;
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -557,7 +566,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -601,7 +610,7 @@ async fn intercept_todo(
             .await;
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -611,7 +620,7 @@ async fn intercept_todo(
         let task = tokio::spawn(async move {
             let mut rx = crate::computer_native::action_events();
             let send = |tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
-                        rid: &str,
+                        rid: &serde_json::Value,
                         ev: serde_json::Value|
              -> bool {
                 let chunk =
@@ -651,7 +660,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -681,7 +690,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -792,7 +801,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -827,7 +836,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -868,7 +877,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -906,7 +915,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -927,7 +936,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -958,7 +967,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -971,7 +980,7 @@ async fn intercept_todo(
             let _ = tx.send(ClientMessage::Text(chunk.to_string().into()));
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -1004,7 +1013,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -1035,7 +1044,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -1071,7 +1080,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -1108,7 +1117,7 @@ async fn intercept_todo(
             }
         });
         if let Ok(mut map) = streams.lock() {
-            map.insert(request_id, task);
+            map.insert(rpc_id_key(&request_id), task);
         }
         return Some(None);
     }
@@ -1405,9 +1414,8 @@ fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
     }
     let request_id = msg
         .get("id")
-        .and_then(|v| v.as_str())
-        .unwrap_or("")
-        .to_string();
+        .cloned()
+        .unwrap_or(serde_json::Value::String(String::new()));
     let payload = msg
         .get("payload")
         .cloned()
@@ -1435,7 +1443,7 @@ fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
         }),
     };
     let reply = json!({"_tag": "Exit", "requestId": request_id, "exit": exit});
-    Some((request_id, ClientMessage::Text(reply.to_string().into())))
+    Some((rpc_id_key(&request_id), ClientMessage::Text(reply.to_string().into())))
 }
 
 /// Replaces the `x-synara-server-instance` query value in a socket target.
@@ -1528,9 +1536,8 @@ async fn relay(
                     {
                         let rid = m2
                             .get("id")
-                            .and_then(|v| v.as_str())
-                            .unwrap_or("")
-                            .to_string();
+                            .cloned()
+                            .unwrap_or(serde_json::Value::String(String::new()));
                         let tag_s = m2.get("tag").and_then(|v| v.as_str()).unwrap_or("");
                         let reply = serde_json::json!({
                             "_tag": "Exit", "requestId": rid,
@@ -1649,12 +1656,12 @@ async fn relay(
                     {
                         let tag = msg.get("_tag").and_then(|v| v.as_str()).unwrap_or("");
                         if tag == "Interrupt" || tag == "Eof" || tag == "Ack" {
-                            let rid = msg.get("requestId").and_then(|v| v.as_str()).unwrap_or("");
+                            let rid = msg.get("requestId").map(rpc_id_key).unwrap_or_default();
                             let owned = if let Ok(mut map) = streams_in.lock() {
                                 if tag == "Eof" {
                                     map.drain().map(|(_, h)| h).collect::<Vec<_>>()
                                 } else if tag == "Interrupt" {
-                                    map.remove(rid).into_iter().collect::<Vec<_>>()
+                                    map.remove(&rid).into_iter().collect::<Vec<_>>()
                                 } else {
                                     Vec::new()
                                 }
@@ -1662,7 +1669,7 @@ async fn relay(
                                 Vec::new()
                             };
                             let known_native = if let Ok(map) = streams_in.lock() {
-                                map.contains_key(rid)
+                                map.contains_key(rid.as_str())
                             } else {
                                 false
                             };

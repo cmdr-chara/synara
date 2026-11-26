@@ -14,6 +14,7 @@ mod browser_host;
 mod cua;
 mod native;
 mod voice;
+mod window_material;
 mod window_state;
 mod ws_client;
 
@@ -206,6 +207,10 @@ fn main() {
 
         let persisted_window = window_state::load();
         let mut options = WindowOptions {
+            window_background: window_material::background_for_pack(
+                window_material::current_translucency(),
+                &serde_json::json!({}),
+            ),
             window_bounds: Some(WindowBounds::Maximized(Bounds::centered(
                 None,
                 size(px(1440.), px(900.)),

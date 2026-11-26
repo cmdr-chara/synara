@@ -9894,6 +9894,15 @@ impl Native {
             .get(if dark { "dark" } else { "light" })
             .cloned()
             .unwrap_or_else(|| json!({}));
+        let window_background = crate::window_material::background_for_pack(
+            crate::window_material::current_translucency(),
+            &pack,
+        );
+        for handle in cx.windows() {
+            let _ = handle.update(cx, |_, window, _| {
+                window.set_background_appearance(window_background);
+            });
+        }
         // Contrast (upstream theme.contrast 0-100): pushes the resolved
         // surface toward the variant's extreme and the ink the opposite
         // way. The effective swatches are always emitted at contrast > 0 so

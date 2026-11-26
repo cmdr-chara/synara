@@ -3,6 +3,7 @@
 //! CDP — nothing extra ships in the bundle, and the browser reads its own
 //! profile; Synara never touches the user's real browser profile or cookies.
 
+use crate::network::NetworkPolicy;
 use serde_json::{json, Map, Value};
 use std::collections::HashMap;
 use std::process::Stdio;
@@ -40,7 +41,7 @@ struct CdpProcess {
 struct CdpConnection {
     tx: mpsc::UnboundedSender<String>,
     pending: Arc<Mutex<HashMap<u64, oneshot::Sender<Value>>>>,
-    next_id: AtomicU64,
+    next_id: Arc<AtomicU64>,
 }
 
 impl CdpConnection {
@@ -150,6 +151,24 @@ fn cdp_profile_dir(mode: CdpMode) -> std::path::PathBuf {
     }
 }
 
+fn fire_and_forget_command(
+    tx: &mpsc::UnboundedSender<String>,
+    next_id: &AtomicU64,
+    method: &str,
+    params: Value,
+    session: Option<&str>,
+) {
+    let id = next_id.fetch_add(1, AtomicOrdering::SeqCst);
+    let mut msg = Map::new();
+    msg.insert("id".into(), json!(id));
+    msg.insert("method".into(), json!(method));
+    msg.insert("params".into(), params);
+    if let Some(session) = session {
+        msg.insert("sessionId".into(), json!(session));
+    }
+    let _ = tx.send(Value::Object(msg).to_string());
+}
+
 async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
     use futures_util::{SinkExt, StreamExt};
     let (ws, _) = tokio_tungstenite::connect_async(url)
@@ -170,7 +189,10 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
     });
     let pending: Arc<Mutex<HashMap<u64, oneshot::Sender<Value>>>> =
         Arc::new(Mutex::new(HashMap::new()));
+    let next_id = Arc::new(AtomicU64::new(1));
     let pending_reader = pending.clone();
+    let event_tx = tx.clone();
+    let event_next_id = next_id.clone();
     tokio::spawn(async move {
         while let Some(msg) = stream.next().await {
             let Ok(msg) = msg else { break };
@@ -180,6 +202,45 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
                         if let Ok(mut map) = pending_reader.lock() {
                             if let Some(sender) = map.remove(&id) {
                                 let _ = sender.send(v);
+                            }
+                        }
+                    } else if v.get("method").and_then(Value::as_str)
+                        == Some("Fetch.requestPaused")
+                    {
+                        let interception_id = v
+                            .pointer("/params/requestId")
+                            .or(v.pointer("/params/interceptionId"))
+                            .and_then(Value::as_str)
+                            .unwrap_or("");
+                        let request_url = v
+                            .pointer("/params/request/url")
+                            .and_then(Value::as_str)
+                            .unwrap_or("");
+                        if !interception_id.is_empty() {
+                            let session = v.get("sessionId").and_then(Value::as_str);
+                            match NetworkPolicy::default().check(request_url) {
+                                Ok(()) => fire_and_forget_command(
+                                    &event_tx,
+                                    &event_next_id,
+                                    "Fetch.continueRequest",
+                                    json!({"requestId": interception_id}),
+                                    session,
+                                ),
+                                Err(reason) => {
+                                    eprintln!(
+                                        "browser network guard: blocked {request_url}: {reason}"
+                                    );
+                                    fire_and_forget_command(
+                                        &event_tx,
+                                        &event_next_id,
+                                        "Fetch.failRequest",
+                                        json!({
+                                            "requestId": interception_id,
+                                            "errorReason": "AccessDenied",
+                                        }),
+                                        session,
+                                    );
+                                }
                             }
                         }
                     } else if v.get("method").and_then(Value::as_str)
@@ -248,7 +309,7 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
     Ok(Arc::new(CdpConnection {
         tx,
         pending,
-        next_id: AtomicU64::new(1),
+        next_id,
     }))
 }
 
@@ -475,6 +536,13 @@ async fn thread_session(
     let _ = conn
         .call("Runtime.enable", json!({}), Some(&session_id))
         .await;
+    let _ = conn
+        .call(
+            "Fetch.enable",
+            json!({"patterns": [{"urlPattern": "*", "requestStage": "Request"}]}),
+            Some(&session_id),
+        )
+        .await;
     if let Ok(mut tabs) = cdp_tabs().lock() {
         tabs.insert(key, (target_id.clone(), session_id.clone()));
     }
@@ -596,6 +664,9 @@ pub async fn call_cdp_tool(
                 .get("url")
                 .and_then(Value::as_str)
                 .ok_or_else(|| format!("{name} requires url"))?;
+            NetworkPolicy::default()
+                .check_navigation(url)
+                .map_err(|reason| format!("BrowserNavigationBlocked: {reason}"))?;
             conn.call("Page.navigate", json!({"url": url}), Some(&session))
                 .await?;
             wait_for_load(&conn, &session).await;

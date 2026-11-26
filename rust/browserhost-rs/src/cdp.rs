@@ -1048,8 +1048,8 @@ fn console_logs() -> &'static Mutex<HashMap<String, Vec<Value>>> {
     LOGS.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
-fn cdp_tabs() -> &'static Mutex<HashMap<String, (String, String)>> {
-    static TABS: OnceLock<Mutex<HashMap<String, (String, String)>>> = OnceLock::new();
+fn cdp_tabs() -> &'static Mutex<HashMap<String, (String, String, String)>> {
+    static TABS: OnceLock<Mutex<HashMap<String, (String, String, String)>>> = OnceLock::new();
     TABS.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
@@ -1060,23 +1060,67 @@ async fn thread_session(
 ) -> Result<(String, String), String> {
     let key = format!("{}:{}", mode.backend_name(), thread.unwrap_or(""));
     if let Some(pair) = cdp_tabs().lock().ok().and_then(|t| t.get(&key).cloned()) {
-        return Ok(pair);
+        return Ok((pair.0, pair.1));
     }
-    let target = conn
-        .call("Target.createTarget", json!({"url": "about:blank"}), None)
+    // One incognito browser context per automation thread: cookies, storage,
+    // cache and imported sessions must not leak between concurrent chats that
+    // share the visible/headless browser process.
+    let context = conn
+        .call("Target.createBrowserContext", json!({"disposeOnDetach": true}), None)
         .await?;
+    let browser_context_id = context
+        .get("browserContextId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "Target.createBrowserContext missing browserContextId".to_string())?
+        .to_string();
+    let target = match conn
+        .call(
+            "Target.createTarget",
+            json!({"url": "about:blank", "browserContextId": browser_context_id}),
+            None,
+        )
+        .await
+    {
+        Ok(target) => target,
+        Err(error) => {
+            let _ = conn
+                .call(
+                    "Target.disposeBrowserContext",
+                    json!({"browserContextId": browser_context_id}),
+                    None,
+                )
+                .await;
+            return Err(error);
+        }
+    };
     let target_id = target
         .get("targetId")
         .and_then(Value::as_str)
         .ok_or_else(|| "Target.createTarget missing targetId".to_string())?
         .to_string();
-    let attached = conn
+    let attached = match conn
         .call(
             "Target.attachToTarget",
             json!({"targetId": target_id, "flatten": true}),
             None,
         )
-        .await?;
+        .await
+    {
+        Ok(attached) => attached,
+        Err(error) => {
+            let _ = conn
+                .call("Target.closeTarget", json!({"targetId": target_id}), None)
+                .await;
+            let _ = conn
+                .call(
+                    "Target.disposeBrowserContext",
+                    json!({"browserContextId": browser_context_id}),
+                    None,
+                )
+                .await;
+            return Err(error);
+        }
+    };
     let session_id = attached
         .get("sessionId")
         .and_then(Value::as_str)
@@ -1124,7 +1168,7 @@ async fn thread_session(
         }
     }
     if let Ok(mut tabs) = cdp_tabs().lock() {
-        tabs.insert(key, (target_id.clone(), session_id.clone()));
+        tabs.insert(key, (target_id.clone(), session_id.clone(), browser_context_id.clone()));
     }
     Ok((target_id, session_id))
 }
@@ -1155,7 +1199,7 @@ pub async fn sync_cookie_import(
     }
     let _import_guard = ImportGuard;
     let key = format!("{}:{}", mode.backend_name(), thread);
-    let Some((_, session)) = cdp_tabs().lock().ok().and_then(|tabs| tabs.get(&key).cloned()) else {
+    let Some((_, session, _)) = cdp_tabs().lock().ok().and_then(|tabs| tabs.get(&key).cloned()) else {
         return Err("cookie import requires an existing destination tab".into());
     };
     let conn = ensure_cdp(mode).await?;
@@ -1424,12 +1468,22 @@ pub async fn call_cdp_tool(
     }
     if name == "browser_tabs" {
         let targets = conn.call("Target.getTargets", json!({}), None).await?;
+        let key = format!("{}:{}", mode.backend_name(), thread.unwrap_or(""));
+        let thread_target = cdp_tabs()
+            .lock()
+            .ok()
+            .and_then(|tabs| tabs.get(&key).map(|tab| tab.0.clone()));
         let list: Vec<Value> = targets
             .get("targetInfos")
             .and_then(Value::as_array)
             .map(|arr| {
                 arr.iter()
                     .filter(|t| t.get("type").and_then(Value::as_str) == Some("page"))
+                    .filter(|t| {
+                        thread_target.as_ref().is_some_and(|target| {
+                            t.get("targetId").and_then(Value::as_str) == Some(target.as_str())
+                        })
+                    })
                     .map(|t| {
                         json!({
                             "tabId": t.get("targetId").cloned().unwrap_or(Value::Null),
@@ -1816,10 +1870,17 @@ return true}})()"#,
             let target = cdp_tabs()
                 .lock()
                 .ok()
-                .and_then(|mut t| t.remove(&key).map(|pair| pair.0));
-            if let Some(target_id) = target {
+                .and_then(|mut t| t.remove(&key).map(|pair| (pair.0, pair.2)));
+            if let Some((target_id, browser_context_id)) = target {
                 let _ = conn
                     .call("Target.closeTarget", json!({"targetId": target_id}), None)
+                    .await;
+                let _ = conn
+                    .call(
+                        "Target.disposeBrowserContext",
+                        json!({"browserContextId": browser_context_id}),
+                        None,
+                    )
                     .await;
             }
             Ok(json!({"backend": backend, "closed": true}))

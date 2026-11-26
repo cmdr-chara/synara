@@ -29,3 +29,7 @@ libc = "0.2"
 signal-hook = "0.3"
 
 [workspace]
+
+[profile.dev]
+debug = 1
+incremental = false

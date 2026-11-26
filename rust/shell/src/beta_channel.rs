@@ -496,6 +496,177 @@ fn decode_hex_sha512(value: &str) -> Option<Vec<u8>> {
     Some(out)
 }
 
+// ---------------------------------------------------------------------------
+// Stable-side channel orchestration, mirroring upstream DesktopBetaChannel.
+// The native UI/RPC layer can call these verbs without owning any policy.
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BetaActionResult {
+    pub ok: bool,
+    pub error: Option<&'static str>,
+    pub message: Option<String>,
+}
+
+fn beta_action(ok: bool, error: Option<&'static str>, message: Option<String>) -> BetaActionResult {
+    BetaActionResult { ok, error, message }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BetaChannelState {
+    pub supported: bool,
+    pub flavor: &'static str,
+    pub stable_installed: bool,
+    pub installed: bool,
+    pub version: Option<String>,
+    pub can_install: bool,
+    pub running: bool,
+    pub last_import_at: Option<String>,
+    pub last_import_error: Option<String>,
+}
+
+pub struct DesktopBetaChannel {
+    beta_home: PathBuf,
+    stable_home: PathBuf,
+    user_home: PathBuf,
+    env: HashMap<String, String>,
+}
+
+impl DesktopBetaChannel {
+    pub fn current() -> Self {
+        Self {
+            beta_home: beta_home_dir(),
+            stable_home: crate::backend::configured_home_dir(),
+            user_home: std::env::var_os("HOME").map(PathBuf::from).unwrap_or_else(|| PathBuf::from(".")),
+            env: std::env::vars().collect(),
+        }
+    }
+
+    fn detect(&self) -> BetaInstallDetection {
+        detect_beta_install(&self.user_home, &self.env)
+    }
+
+    fn can_install(&self) -> bool {
+        cfg!(target_os = "macos")
+    }
+
+    fn production_only(&self) -> Option<BetaActionResult> {
+        (crate::desktop_identity::runtime_flavor() != "production").then(|| {
+            beta_action(false, Some("not-supported"), Some("Beta handoff is only available from stable Synara.".into()))
+        })
+    }
+
+    pub fn state(&self) -> BetaChannelState {
+        let flavor = crate::desktop_identity::runtime_flavor();
+        let supported = flavor != "remote";
+        let detection = supported.then(|| self.detect());
+        let result = supported.then(|| read_beta_import_result(&self.beta_home)).flatten();
+        let stable = flavor == "beta" && detect_stable_executable(&self.user_home, &self.env).is_some();
+        BetaChannelState {
+            supported,
+            flavor,
+            stable_installed: stable,
+            installed: detection.as_ref().is_some_and(|detection| detection.installed),
+            version: detection.and_then(|detection| detection.version),
+            can_install: supported && self.can_install(),
+            running: supported && is_beta_server_running(&self.beta_home),
+            last_import_at: result.as_ref().filter(|value| value.get("ok").and_then(|ok| ok.as_bool()) == Some(true))
+                .and_then(|value| value.get("completedAt").and_then(|completed| completed.as_str()).map(str::to_string)),
+            last_import_error: result.as_ref().filter(|value| value.get("ok").and_then(|ok| ok.as_bool()) == Some(false))
+                .map(|value| value.get("error").and_then(|error| error.as_str()).unwrap_or("import failed").to_string()),
+        }
+    }
+
+    #[cfg(target_os = "macos")]
+    fn current_team_id() -> Option<String> {
+        let executable = std::env::current_exe().ok()?;
+        let output = Command::new("codesign").args(["-dv", "--verbose=4"]).arg(executable).output().ok()?;
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        stderr.lines()
+            .find_map(|line| line.strip_prefix("TeamIdentifier="))
+            .filter(|team| *team != "not set")
+            .map(str::to_string)
+    }
+
+    fn ensure_installed(&self) -> Result<(), BetaActionResult> {
+        if self.detect().installed { return Ok(()); }
+        if !self.can_install() {
+            return Err(beta_action(false, Some("not-installed"), Some("Synara Beta is not installed yet.".into())));
+        }
+        #[cfg(target_os = "macos")]
+        {
+            let install_dir = self.env.get("SYNARA_BETA_INSTALL_DIR")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| PathBuf::from("/Applications"));
+            let feed = self.env.get("SYNARA_BETA_FEED_URL").map(String::as_str);
+            install_beta_from_feed(&install_dir, feed, Self::current_team_id().as_deref())
+                .map_err(|message| beta_action(false, Some("install-failed"), Some(message)))?;
+            if self.detect().installed { return Ok(()); }
+            return Err(beta_action(false, Some("install-failed"), Some("The beta install finished but the app was not found.".into())));
+        }
+        #[allow(unreachable_code)]
+        Err(beta_action(false, Some("not-installed"), Some("Synara Beta is not installed yet.".into())))
+    }
+
+    pub fn launch(&self) -> BetaActionResult {
+        if let Some(result) = self.production_only() { return result; }
+        let detection = self.detect();
+        if !detection.installed || detection.executable_path.is_none() {
+            return beta_action(false, Some("not-installed"), Some("Synara Beta is not installed yet.".into()));
+        }
+        let stable_executable = std::env::current_exe().ok();
+        match launch_beta_install(&detection, &self.beta_home, &self.stable_home, stable_executable.as_deref()) {
+            Ok(()) => beta_action(true, None, None),
+            Err(message) => beta_action(false, Some("launch-failed"), Some(message)),
+        }
+    }
+
+    pub fn install(&self) -> BetaActionResult {
+        if let Some(result) = self.production_only() { return result; }
+        match self.ensure_installed() {
+            Ok(()) => self.launch(),
+            Err(result) => result,
+        }
+    }
+
+    pub fn import_and_launch(&self) -> BetaActionResult {
+        if let Some(result) = self.production_only() { return result; }
+        if let Err(result) = self.ensure_installed() { return result; }
+        let detection = self.detect();
+        if !detection.installed || detection.executable_path.is_none() {
+            return beta_action(false, Some("not-installed"), Some("Synara Beta is not installed yet.".into()));
+        }
+        if is_beta_server_running(&self.beta_home) {
+            return beta_action(false, Some("beta-running"), Some("Quit Synara Beta first so it can pick up the import on its next launch.".into()));
+        }
+        if let Err(message) = write_beta_import_request(&self.beta_home, &self.stable_home) {
+            return beta_action(false, Some("internal"), Some(message));
+        }
+        let stable_executable = std::env::current_exe().ok();
+        match launch_beta_install(&detection, &self.beta_home, &self.stable_home, stable_executable.as_deref()) {
+            Ok(()) => beta_action(true, None, None),
+            Err(message) => {
+                let _ = std::fs::remove_file(self.beta_home.join(REQUEST_FILE));
+                beta_action(false, Some("internal"), Some(message))
+            }
+        }
+    }
+
+    pub fn leave(&self) -> BetaActionResult {
+        if crate::desktop_identity::runtime_flavor() != "beta" {
+            return beta_action(false, Some("not-supported"), Some("Switching back is only available from Synara Beta.".into()));
+        }
+        let Some(executable) = detect_stable_executable(&self.user_home, &self.env) else {
+            return beta_action(false, Some("not-installed"), Some("Synara isn't installed on this computer.".into()));
+        };
+        let stable_home = self.env.get("SYNARA_STABLE_HOME").map(PathBuf::from);
+        match launch_stable(&executable, stable_home.as_deref()) {
+            Ok(()) => beta_action(true, None, None),
+            Err(message) => beta_action(false, Some("launch-failed"), Some(message)),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -507,7 +678,7 @@ mod tests {
     }
 
     fn uuid_like() -> String {
-        format!("{}-{}", std::process::id(), chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0))
+        uuid::Uuid::new_v4().to_string()
     }
 
     #[test]

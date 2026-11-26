@@ -10,6 +10,7 @@ use gpui_webview::WebView;
 
 mod backdrop;
 mod backend;
+mod beta_channel;
 mod browser_host;
 mod cua;
 mod desktop_identity;

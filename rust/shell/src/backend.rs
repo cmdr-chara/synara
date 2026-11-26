@@ -7,13 +7,112 @@
 
 use serde_json::json;
 use std::fs::{self, OpenOptions};
-use std::io;
+use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
+
+
+const LOG_FILE_MAX_BYTES: u64 = 10 * 1024 * 1024;
+const LOG_FILE_MAX_FILES: usize = 10;
+
+/// Shared rotating backend log sink. The child owns neither the rotation nor
+/// the file descriptor, so output remains bounded across crashes/restarts.
+struct RotatingFile {
+    path: PathBuf,
+    max_bytes: u64,
+    max_files: usize,
+    current_size: u64,
+    file: Option<fs::File>,
+}
+
+impl RotatingFile {
+    fn open(path: PathBuf, max_bytes: u64, max_files: usize) -> io::Result<Self> {
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        prune_overflow_backups(&path, max_files);
+        let file = OpenOptions::new().create(true).append(true).open(&path)?;
+        let current_size = file.metadata().map(|metadata| metadata.len()).unwrap_or(0);
+        Ok(Self { path, max_bytes, max_files, current_size, file: Some(file) })
+    }
+
+    fn write_chunk(&mut self, chunk: &[u8]) -> io::Result<()> {
+        if chunk.is_empty() { return Ok(()); }
+        if self.current_size > 0 && self.current_size + chunk.len() as u64 > self.max_bytes {
+            self.rotate()?;
+        }
+        if self.file.is_none() {
+            self.file = Some(OpenOptions::new().create(true).append(true).open(&self.path)?);
+        }
+        let file = self.file.as_mut().expect("rotating log file");
+        file.write_all(chunk)?;
+        self.current_size += chunk.len() as u64;
+        if self.current_size > self.max_bytes {
+            self.rotate()?;
+        }
+        Ok(())
+    }
+
+    fn rotate(&mut self) -> io::Result<()> {
+        self.file = None;
+        let oldest = self.with_suffix(self.max_files);
+        if oldest.exists() {
+            fs::remove_file(&oldest)?;
+        }
+        for index in (1..self.max_files).rev() {
+            let source = self.with_suffix(index);
+            let target = self.with_suffix(index + 1);
+            if source.exists() {
+                fs::rename(source, target)?;
+            }
+        }
+        if self.path.exists() {
+            fs::rename(&self.path, self.with_suffix(1))?;
+        }
+        self.current_size = 0;
+        Ok(())
+    }
+
+    fn with_suffix(&self, index: usize) -> PathBuf {
+        PathBuf::from(format!("{}.{}", self.path.display(), index))
+    }
+}
+
+fn prune_overflow_backups(path: &Path, max_files: usize) {
+    let Some(parent) = path.parent() else { return };
+    let Some(base) = path.file_name().and_then(|name| name.to_str()) else { return };
+    let Ok(entries) = fs::read_dir(parent) else { return };
+    for entry in entries.flatten() {
+        let name = entry.file_name();
+        let Some(name) = name.to_str() else { continue };
+        let Some(suffix) = name.strip_prefix(&format!("{base}.")) else { continue };
+        let Ok(index) = suffix.parse::<usize>() else { continue };
+        if index > max_files {
+            let _ = fs::remove_file(entry.path());
+        }
+    }
+}
+
+fn forward_backend_output(mut reader: impl Read + Send + 'static, sink: Arc<Mutex<RotatingFile>>) {
+    thread::spawn(move || {
+        let mut buffer = [0u8; 8192];
+        loop {
+            match reader.read(&mut buffer) {
+                Ok(0) => return,
+                Ok(count) => {
+                    if let Ok(mut sink) = sink.lock() {
+                        let _ = sink.write_chunk(&buffer[..count]);
+                    }
+                }
+                Err(_) => return,
+            }
+        }
+    });
+}
 
 const READY_TIMEOUT: Duration = Duration::from_secs(20);
 const READY_POLL: Duration = Duration::from_millis(100);
@@ -243,11 +342,11 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
         fs::create_dir_all(parent)?;
     }
     fs::create_dir_all(&config.home_dir)?;
-    let stdout = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(&config.log_path)?;
-    let stderr = stdout.try_clone()?;
+    let rotating_log = RotatingFile::open(
+        config.log_path.clone(),
+        LOG_FILE_MAX_BYTES,
+        LOG_FILE_MAX_FILES,
+    );
 
     let mut command = Command::new(&config.binary);
     command
@@ -257,9 +356,39 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<Child> {
         .env("SYNARA_NO_UPSTREAM", "1")
         .env("SYNARA_MODE", "desktop")
         .env("SYNARA_DESKTOP_FLAVOR", crate::desktop_identity::runtime_flavor())
-        .stdin(Stdio::null())
-        .stdout(Stdio::from(stdout))
-        .stderr(Stdio::from(stderr));
+        .stdin(Stdio::null());
+    match rotating_log {
+        Ok(sink) => {
+            command.stdout(Stdio::piped()).stderr(Stdio::piped());
+            let sink = Arc::new(Mutex::new(sink));
+            let mut child = command.spawn()?;
+            if let Some(stdout) = child.stdout.take() {
+                forward_backend_output(stdout, sink.clone());
+            }
+            if let Some(stderr) = child.stderr.take() {
+                forward_backend_output(stderr, sink);
+            }
+            eprintln!(
+                "backend supervision: avviato pid {} sulla porta {} (log {})",
+                child.id(),
+                config.port,
+                config.log_path.display()
+            );
+            return Ok(child);
+        }
+        Err(error) => {
+            eprintln!(
+                "backend supervision: rotating log unavailable at {}: {error}; using direct append",
+                config.log_path.display()
+            );
+            let stdout = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(&config.log_path)?;
+            let stderr = stdout.try_clone()?;
+            command.stdout(Stdio::from(stdout)).stderr(Stdio::from(stderr));
+        }
+    }
 
     let child = command.spawn()?;
     eprintln!(
@@ -479,6 +608,41 @@ pub fn launch_summary(launch: &BackendLaunch) -> serde_json::Value {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+
+    #[test]
+    fn rotating_log_rotates_and_prunes_bounded_files() {
+        let root = std::env::temp_dir().join(format!("synara-log-test-{}", uuid::Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let path = root.join("server-child.log");
+        let mut sink = RotatingFile::open(path.clone(), 16, 2).unwrap();
+        sink.write_chunk(b"0123456789").unwrap();
+        sink.write_chunk(b"abcdefgh").unwrap();
+        sink.write_chunk(b"ij").unwrap();
+        assert!(root.join("server-child.log.1").is_file());
+        sink.write_chunk(b"klmnopqrstuv").unwrap();
+        sink.write_chunk(b"wx").unwrap();
+        sink.write_chunk(b"yz").unwrap();
+        assert!(root.join("server-child.log.2").is_file());
+        assert!(!root.join("server-child.log.3").exists());
+        assert!(fs::metadata(&path).unwrap().len() <= 16);
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn rotating_log_prunes_preexisting_overflow_backups() {
+        let root = std::env::temp_dir().join(format!("synara-log-prune-{}", uuid::Uuid::new_v4()));
+        fs::create_dir_all(&root).unwrap();
+        let path = root.join("server-child.log");
+        fs::write(root.join("server-child.log.1"), b"1").unwrap();
+        fs::write(root.join("server-child.log.2"), b"2").unwrap();
+        fs::write(root.join("server-child.log.3"), b"3").unwrap();
+        let _sink = RotatingFile::open(path, 16, 2).unwrap();
+        assert!(root.join("server-child.log.1").is_file());
+        assert!(root.join("server-child.log.2").is_file());
+        assert!(!root.join("server-child.log.3").exists());
+        let _ = fs::remove_dir_all(root);
+    }
 
     #[test]
     fn parses_explicit_http_ports() {

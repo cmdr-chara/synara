@@ -471,6 +471,10 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 let r = ax_action(payload, "selecttext")?;
                 Ok(ax_result("computer_select_text", &r))
             }
+            "computer.noteUserInput" => {
+                crate::computer_manager::note_user_desktop_input();
+                Ok(json!({"accepted": true, "computerId": COMPUTER_ID}))
+            }
             "computer.setControlEnabled" => set_control_enabled(payload),
             "computer.launchApp" => {
                 let app = payload["app"].as_str().unwrap_or("");

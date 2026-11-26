@@ -119,7 +119,7 @@ fn escape_monitor() -> Option<&'static Arc<crate::escape_monitor::EscapeKillSwit
     MONITOR
         .get_or_init(|| {
             crate::appsnap::resolve_appsnap_helper().map(|helper| {
-                Arc::new(crate::escape_monitor::EscapeKillSwitchMonitor::new(
+                Arc::new(crate::escape_monitor::EscapeKillSwitchMonitor::with_physical_input(
                     helper,
                     || {
                         let target = ESCAPE_TARGET.lock().ok().and_then(|target| target.clone());
@@ -137,6 +137,17 @@ fn escape_monitor() -> Option<&'static Arc<crate::escape_monitor::EscapeKillSwit
                                         monitor.set_armed(false);
                                     }
                                 }
+                            });
+                        }
+                    },
+                    |input| {
+                        let target = ESCAPE_TARGET.lock().ok().and_then(|target| target.clone());
+                        if let Some((client, thread_id)) = target {
+                            std::thread::spawn(move || {
+                                let _ = client.call(
+                                    "computer.noteUserInput",
+                                    json!({"threadId": thread_id, "kind": input.kind, "pid": input.pid, "windowId": input.window_id}),
+                                );
                             });
                         }
                     },

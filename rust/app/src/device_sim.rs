@@ -214,6 +214,58 @@ fn device_describe_ui(udid: &str) -> Result<Value, String> {
     Ok(json!({ "udid": udid, "tree": tree }))
 }
 
+
+// ---- video capture -----------------------------------------------------------
+
+static RECORDINGS: std::sync::OnceLock<
+    std::sync::Mutex<std::collections::HashMap<String, std::process::Child>>,
+> = std::sync::OnceLock::new();
+
+fn recordings() -> &'static std::sync::Mutex<
+    std::collections::HashMap<String, std::process::Child>,
+> {
+    RECORDINGS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+fn start_recording(udid: &str) -> Result<Value, String> {
+    {
+        let map = recordings().lock().map_err(|_| "recordings lock")?;
+        if map.contains_key(udid) {
+            return Err(format!("Device {udid} is already recording"));
+        }
+    }
+    let dir = std::path::Path::new(&crate::todo::state_dir()).join("device-recordings");
+    std::fs::create_dir_all(&dir).map_err(|e| format!("mkdir: {e}"))?;
+    let file = dir.join(format!("{udid}-{}.mp4", uuid_v4_short()));
+    let path = file.to_string_lossy().to_string();
+    let child = std::process::Command::new("xcrun")
+        .args(["simctl", "io", udid, "recordVideo", &path])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|e| format!("recordVideo spawn: {e}"))?;
+    recordings()
+        .lock()
+        .map_err(|_| "recordings lock")?
+        .insert(udid.to_string(), child);
+    Ok(json!({ "udid": udid, "recording": true, "path": path }))
+}
+
+fn stop_recording(udid: &str) -> Result<Value, String> {
+    let mut child = recordings()
+        .lock()
+        .map_err(|_| "recordings lock")?
+        .remove(udid)
+        .ok_or_else(|| format!("Device {udid} is not recording"))?;
+    // SIGINT so simctl finalizes the mp4 instead of truncating it.
+    unsafe {
+        libc::kill(child.id() as i32, libc::SIGINT);
+    }
+    let _ = child.wait();
+    Ok(json!({ "udid": udid, "recording": false }))
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -230,6 +282,8 @@ pub fn handles(tag: &str) -> bool {
             | "device.keyEvent"
             | "device.pressButton"
             | "device.describeUi"
+            | "device.startRecording"
+            | "device.stopRecording"
     )
 }
 
@@ -299,6 +353,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
         "device.keyEvent" => device_key(udid, payload),
         "device.pressButton" => device_button(udid, payload),
         "device.describeUi" => device_describe_ui(udid),
+        "device.startRecording" => {
+            if udid.is_empty() { Err("udid required".into()) } else { start_recording(udid) }
+        }
+        "device.stopRecording" => {
+            if udid.is_empty() { Err("udid required".into()) } else { stop_recording(udid) }
+        }
         "device.openUrl" => {
             let url = payload.get("url").and_then(|v| v.as_str()).unwrap_or("");
             if udid.is_empty() || url.is_empty() {

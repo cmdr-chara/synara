@@ -1059,6 +1059,7 @@ dependencies = [
  "futures-util",
  "http",
  "keybindingrules-rs",
+ "libc",
  "p256",
  "portable-pty",
  "profilestats-rs",

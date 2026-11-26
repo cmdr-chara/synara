@@ -55,12 +55,13 @@ fn stats() -> &'static Mutex<Stats> {
 /// Spawned once from main. Wakes every SAMPLE_MS and records the drift.
 pub fn start_sampler() {
     tokio::spawn(async move {
-        let mut expected = Instant::now();
+        let mut last_sample = Instant::now();
         loop {
-            expected += std::time::Duration::from_millis(SAMPLE_MS);
-            tokio::time::sleep_until(tokio::time::Instant::from_std(expected)).await;
+            tokio::time::sleep(std::time::Duration::from_millis(SAMPLE_MS)).await;
             let now = Instant::now();
-            let drift = now.saturating_duration_since(expected).as_millis();
+            let elapsed = now.saturating_duration_since(last_sample).as_millis();
+            last_sample = now;
+            let drift = elapsed.saturating_sub(SAMPLE_MS as u128);
             let mut s = match stats().lock() {
                 Ok(s) => s,
                 Err(e) => e.into_inner(),

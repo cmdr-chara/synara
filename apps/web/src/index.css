@@ -4241,6 +4241,12 @@ diffs-container {
   clip-path: none;
 }
 
+/* The chrome strips need the fuller weight to read at all; spread behind the whole window
+   the same weight would drown the text, so the full-window atmosphere settles lower. */
+.dark [data-atmosphere-full] .app-shell-atmosphere {
+  opacity: 0.45;
+}
+
 [data-atmosphere-full] .app-rail-panel,
 [data-atmosphere-full] [data-sidebar-layout="rail"] .sidebar-icon-chip {
   background: transparent;

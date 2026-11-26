@@ -1392,6 +1392,15 @@ pub struct Native {
     vault_reveal_id: Option<String>,
     vault_revealed: Option<(String, String)>,
     vault_delete_id: Option<String>,
+    /// Owner cookie-import draft/result. Browser/profile choices are explicit;
+    /// cookie values never pass through this UI state.
+    cookie_sources: Vec<Value>,
+    cookie_browser: Option<String>,
+    cookie_profile: Option<String>,
+    cookie_domain_input: Entity<InputState>,
+    cookie_importing: bool,
+    cookie_result: Option<String>,
+    cookie_error: Option<String>,
     /// Upstream dismissedThreadStatusKeyByThreadId (thread_id -> dismissalKey).
     dismissed_status: std::collections::HashMap<String, String>,
     /// Upstream lastVisitedAtByThreadId (thread_id -> ISO timestamp).
@@ -3031,6 +3040,7 @@ impl Native {
                             }
                             if sid == "saved-logins" {
                                 this.refresh_vault(cx);
+                                this.refresh_cookie_sources(cx);
                             }
                             this.settings_search.update(cx, |s, cx| s.set_value("", window, cx));
                         }
@@ -3156,6 +3166,9 @@ impl Native {
                 },
             )
             .detach();
+            let cookie_domain_input = cx.new(|cx| {
+                InputState::new(window, cx).placeholder("example.com (optional)")
+            });
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -3339,6 +3352,13 @@ impl Native {
                 vault_reveal_id: None,
                 vault_revealed: None,
                 vault_delete_id: None,
+                cookie_sources: Vec::new(),
+                cookie_browser: None,
+                cookie_profile: None,
+                cookie_domain_input,
+                cookie_importing: false,
+                cookie_result: None,
+                cookie_error: None,
                 dismissed_status: std::collections::HashMap::new(),
                 visited_threads: std::collections::HashMap::new(),
                 keep_awake_mode: 2,
@@ -10815,6 +10835,91 @@ impl Native {
             Err(error) => self.vault_error = Some(error),
         }
         cx.notify();
+    }
+
+    fn refresh_cookie_sources(&mut self, cx: &mut Context<Self>) {
+        let mut rows = Vec::new();
+        for source in browserhost_rs::cookies::sources() {
+            let mut source = source;
+            if let Some(id) = source.get("id").and_then(Value::as_str) {
+                if let Ok(profiles) = browserhost_rs::cookies::profiles(id) {
+                    if let Some(object) = source.as_object_mut() {
+                        object.insert("profiles".into(), Value::Array(profiles));
+                    }
+                }
+            }
+            rows.push(source);
+        }
+        self.cookie_sources = rows;
+        cx.notify();
+    }
+
+    fn import_cookies(&mut self, cx: &mut Context<Self>) {
+        let Some(browser) = self.cookie_browser.clone() else {
+            self.cookie_error = Some("Choose a browser profile before importing cookies.".into());
+            cx.notify();
+            return;
+        };
+        let profile = self.cookie_profile.clone();
+        if profile.is_none() {
+            self.cookie_error = Some("Choose the browser profile to import from.".into());
+            cx.notify();
+            return;
+        }
+        let thread = self.selected_thread.clone().unwrap_or_default();
+        let destination = browserhost_rs::cdp::cookie_import_destinations(&thread)
+            .first()
+            .copied();
+        let Some(destination) = destination else {
+            self.cookie_error = Some("Open a Synara browser tab in this chat before importing cookies.".into());
+            cx.notify();
+            return;
+        };
+        let mode = match destination {
+            "ego-lite" => browserhost_rs::cdp::CdpMode::Visible,
+            _ => browserhost_rs::cdp::CdpMode::Headless,
+        };
+        let domains: Vec<String> = self
+            .cookie_domain_input
+            .read(cx)
+            .value()
+            .split(|c: char| c == ',' || c.is_whitespace())
+            .filter(|part| !part.is_empty())
+            .map(str::to_string)
+            .collect();
+        self.cookie_importing = true;
+        self.cookie_error = None;
+        self.cookie_result = None;
+        cx.notify();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let result = cx
+                .background_executor()
+                .spawn(async move {
+                    browserhost_rs::cdp::sync_cookie_import(
+                        &thread,
+                        &browser,
+                        profile.as_deref(),
+                        &domains,
+                        mode,
+                    )
+                    .await
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.cookie_importing = false;
+                match result {
+                    Ok(result) => {
+                        let imported = result.get("imported").and_then(Value::as_u64).unwrap_or(0);
+                        let skipped = result.get("skipped").and_then(Value::as_u64).unwrap_or(0);
+                        this.cookie_result = Some(format!("Imported {imported} cookies; skipped {skipped}."));
+                        this.cookie_error = None;
+                    }
+                    Err(error) => this.cookie_error = Some(error),
+                }
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     /// One-key appSettings write-through (same path as set_keep_awake):
@@ -22508,6 +22613,99 @@ impl Render for Native {
                         settings_pane = settings_pane.child(card(list.into_any_element()));
                     }
                 }
+
+                settings_pane = settings_pane.child(section_label("Cookie import"));
+                let selected_browser = self.cookie_browser.clone();
+                let selected_profile = self.cookie_profile.clone();
+                let mut browser_rows = h_flex().flex_wrap().gap_2();
+                for source in &self.cookie_sources {
+                    let id = str_at(source, "id").to_string();
+                    let name = str_at(source, "name").to_string();
+                    let active = selected_browser.as_deref() == Some(id.as_str());
+                    browser_rows = browser_rows.child(
+                        div()
+                            .id(ElementId::Name(format!("cookie-browser-{id}").into()))
+                            .cursor_pointer()
+                            .rounded_full()
+                            .border_1()
+                            .border_color(if active { theme.primary } else { theme.border })
+                            .px(px(10.))
+                            .py(px(5.))
+                            .text_size(px(13.))
+                            .child(name)
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.cookie_browser = Some(id.clone());
+                                this.cookie_profile = None;
+                                cx.notify();
+                            })),
+                    );
+                }
+                let mut profile_rows = h_flex().flex_wrap().gap_2();
+                if let Some(browser_id) = selected_browser.clone() {
+                    if let Some(source) = self
+                        .cookie_sources
+                        .iter()
+                        .find(|source| str_at(source, "id") == browser_id)
+                    {
+                        for profile in arr(source, "profiles") {
+                            let id = str_at(profile, "id").to_string();
+                            let name = str_at(profile, "name").to_string();
+                            let active = selected_profile.as_deref() == Some(id.as_str());
+                            profile_rows = profile_rows.child(
+                                div()
+                                    .id(ElementId::Name(format!("cookie-profile-{id}").into()))
+                                    .cursor_pointer()
+                                    .rounded_full()
+                                    .border_1()
+                                    .border_color(if active { theme.primary } else { theme.border })
+                                    .px(px(10.))
+                                    .py(px(5.))
+                                    .text_size(px(13.))
+                                    .child(name)
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        this.cookie_profile = Some(id.clone());
+                                        cx.notify();
+                                    })),
+                            );
+                        }
+                    }
+                }
+                let mut import_card = v_flex()
+                    .px_3()
+                    .py(px(10.))
+                    .gap_2()
+                    .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Import browser cookies"))
+                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(
+                        "Copy cookies from a local browser profile into the Synara browser tab already open in the selected chat. Values are transferred directly and never shown here."))
+                    .child(browser_rows)
+                    .child(profile_rows)
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .gap_2()
+                            .child(div().flex_1().child(Input::new(&self.cookie_domain_input).appearance(false)))
+                            .child(
+                                div()
+                                    .id("cookie-import-submit")
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                                        if !this.cookie_importing {
+                                            this.import_cookies(cx);
+                                        }
+                                    }))
+                                    .child(outline_btn(if self.cookie_importing { "Importing" } else { "Import" })),
+                            ),
+                    );
+                if self.cookie_sources.is_empty() {
+                    import_card = import_card.child(div().text_xs().text_color(theme.muted_foreground).child("No supported Chrome, Safari, or Edge profiles were found."));
+                }
+                if let Some(result) = self.cookie_result.clone() {
+                    import_card = import_card.child(div().text_xs().text_color(theme.muted_foreground).child(result));
+                }
+                if let Some(error) = self.cookie_error.clone() {
+                    import_card = import_card.child(div().text_xs().text_color(theme.danger).child(error));
+                }
+                settings_pane = settings_pane.child(card(import_card.into_any_element()));
             }
 
             // ---------- Privacy ----------
@@ -23296,6 +23494,7 @@ impl Render for Native {
                 }
                 if id == "saved-logins" {
                     this.refresh_vault(cx);
+                    this.refresh_cookie_sources(cx);
                 }
                 cx.notify();
             }))

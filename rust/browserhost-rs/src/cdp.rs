@@ -176,6 +176,29 @@ pub fn shared_browser_vault() -> Result<&'static BrowserVault, String> {
     browser_vault()
 }
 
+/// Browser automation destinations already opened for a thread, exposed only
+/// for the owner-side cookie import surface. Values are CDP backend names.
+pub fn cookie_import_destinations(thread: &str) -> Vec<&'static str> {
+    let suffix = format!(":{thread}");
+    let mut backends: Vec<&'static str> = cdp_tabs()
+        .lock()
+        .map(|tabs| {
+            tabs.keys()
+                .filter_map(|key| {
+                    key.strip_suffix(&suffix).and_then(|backend| match backend {
+                        "ego-lite" => Some("ego-lite"),
+                        "obscura" => Some("obscura"),
+                        _ => None,
+                    })
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    backends.sort_unstable();
+    backends.dedup();
+    backends
+}
+
 fn browser_vault() -> Result<&'static BrowserVault, String> {
     static VAULT: OnceLock<Result<BrowserVault, String>> = OnceLock::new();
     VAULT

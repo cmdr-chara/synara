@@ -9,6 +9,7 @@ use sha2::{Digest, Sha512};
 use std::fs::File;
 use std::io::Read;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -746,6 +747,190 @@ fn github_update_feed_url(entries: &std::collections::HashMap<String, String>, f
     ))
 }
 
+
+fn plist_string_value(text: &str, key: &str) -> Option<String> {
+    let needle = format!("<key>{key}</key>");
+    let mut lines = text.lines();
+    while let Some(line) = lines.next() {
+        if line.trim() == needle {
+            for next in lines.by_ref() {
+                let trimmed = next.trim();
+                if trimmed.is_empty() { continue; }
+                return trimmed
+                    .strip_prefix("<string>")
+                    .and_then(|value| value.strip_suffix("</string>"))
+                    .map(str::to_string);
+            }
+        }
+    }
+    None
+}
+
+fn plist_value(path: &Path, key: &str) -> Option<String> {
+    plist_string_value(&std::fs::read_to_string(path).ok()?, key)
+}
+
+fn current_app_bundle_path() -> Result<PathBuf, String> {
+    if !cfg!(target_os = "macos") {
+        return Err("Packaged install handoff is currently implemented for macOS only.".into());
+    }
+    let exe = std::env::current_exe().map_err(|error| error.to_string())?;
+    for ancestor in exe.ancestors() {
+        if ancestor.extension().and_then(|value| value.to_str()) == Some("app") {
+            return Ok(ancestor.to_path_buf());
+        }
+    }
+    Err("This Synara build is not running from a packaged .app bundle.".into())
+}
+
+fn validate_bundle_architecture(app: &Path) -> Result<(), String> {
+    let plist = app.join("Contents").join("Info.plist");
+    let executable = plist_value(&plist, "CFBundleExecutable")
+        .ok_or("The update bundle does not declare an executable.")?;
+    if executable.contains('/') || executable.contains("..") {
+        return Err("The update bundle declares an invalid executable.".into());
+    }
+    let binary = app.join("Contents").join("MacOS").join(executable);
+    if !binary.is_file() {
+        return Err("The update bundle executable is missing.".into());
+    }
+    let output = Command::new("lipo").arg("-info").arg(&binary).output()
+        .map_err(|error| format!("Could not inspect update bundle architecture: {error}"))?;
+    let text = format!("{}{}", String::from_utf8_lossy(&output.stdout), String::from_utf8_lossy(&output.stderr));
+    let wanted = match runtime_arch() { "arm64" => "arm64", "x64" => "x86_64", other => other };
+    if !output.status.success() || !text.contains(wanted) {
+        return Err(format!("The update bundle does not contain a {wanted} executable."));
+    }
+    Ok(())
+}
+
+
+fn bundle_team_identifier(app: &Path) -> Result<Option<String>, String> {
+    let output = Command::new("codesign")
+        .arg("-dv")
+        .arg("--verbose=4")
+        .arg(app)
+        .output()
+        .map_err(|error| format!("Could not inspect the update bundle signer: {error}"))?;
+    if !output.status.success() {
+        return Err("Could not inspect the update bundle signer.".into());
+    }
+    let text = format!("{}{}", String::from_utf8_lossy(&output.stdout), String::from_utf8_lossy(&output.stderr));
+    for line in text.lines() {
+        if let Some(value) = line.trim().strip_prefix("TeamIdentifier=") {
+            let value = value.trim();
+            return Ok((value != "not set").then(|| value.to_string()));
+        }
+    }
+    Ok(None)
+}
+
+fn verify_bundle_signature(app: &Path) -> Result<(), String> {
+    let output = Command::new("codesign")
+        .args(["--verify", "--deep", "--strict"])
+        .arg(app)
+        .output()
+        .map_err(|error| format!("Could not verify the update bundle signature: {error}"))?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        Err(format!(
+            "The update bundle signature is invalid: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ))
+    }
+}
+
+fn validate_staged_bundle(staged: &Path, current: &Path) -> Result<PathBuf, String> {
+    let entries = std::fs::read_dir(staged).map_err(|error| format!("Could not read staged update: {error}"))?;
+    let mut apps = entries
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("app"));
+    let Some(app) = apps.next() else { return Err("The update payload does not contain a .app bundle.".into()) };
+    if apps.next().is_some() {
+        return Err("The update payload contains multiple .app bundles.".into());
+    }
+    if app.is_symlink() || !app.is_dir() {
+        return Err("The update bundle must be a real application directory.".into());
+    }
+    let current_plist = current.join("Contents").join("Info.plist");
+    let staged_plist = app.join("Contents").join("Info.plist");
+    let current_id = plist_value(&current_plist, "CFBundleIdentifier")
+        .ok_or("The running app does not declare a bundle identifier.")?;
+    let staged_id = plist_value(&staged_plist, "CFBundleIdentifier")
+        .ok_or("The update bundle does not declare a bundle identifier.")?;
+    if staged_id != current_id {
+        return Err("The update bundle identity does not match the running Synara app.".into());
+    }
+    validate_bundle_architecture(&app)?;
+    verify_bundle_signature(&app)?;
+    if bundle_team_identifier(&app)? != bundle_team_identifier(current)? {
+        return Err("The update bundle signer does not match the running Synara app.".into());
+    }
+    Ok(app)
+}
+
+fn extract_update_payload(payload: &Path, cache_dir: &Path, version: &str) -> Result<PathBuf, String> {
+    let staging = cache_dir.join(version).join("staged");
+    if staging.exists() {
+        std::fs::remove_dir_all(&staging).map_err(|error| format!("Could not clear the staged update: {error}"))?;
+    }
+    std::fs::create_dir_all(&staging).map_err(|error| format!("Could not create the staged update directory: {error}"))?;
+    let output = Command::new("ditto").arg("-x").arg("-k").arg(payload).arg(&staging).output()
+        .map_err(|error| format!("Could not extract the update payload: {error}"))?;
+    if !output.status.success() {
+        return Err(format!("Could not extract the update payload: {}", String::from_utf8_lossy(&output.stderr).trim()));
+    }
+    validate_staged_bundle(&staging, &current_app_bundle_path()?)
+}
+
+fn shell_single_quote(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+fn spawn_macos_install_helper(current: &Path, staged: &Path, cache_dir: &Path) -> Result<(), String> {
+    let parent = current.parent().ok_or("The running app bundle has no install directory.")?;
+    let probe = parent.join(format!(".synara-update-write-test-{}", std::process::id()));
+    std::fs::write(&probe, b"").map_err(|_| "Synara cannot write beside the installed app. Move it to a writable install location.".to_string())?;
+    let _ = std::fs::remove_file(&probe);
+    let backup = parent.join(format!(
+        ".{}-update-backup-{}",
+        current.file_name().and_then(|value| value.to_str()).unwrap_or("Synara.app"),
+        uuid::Uuid::new_v4()
+    ));
+    let log_path = cache_dir.join("install.log");
+    let script_path = cache_dir.join("install-update.sh");
+    let shell_pid = std::process::id();
+    let script = format!(
+        "#!/bin/sh\nset -u\nparent_pid={shell_pid}\nself_pid=$$\nchild_pids=$(pgrep -P \"$parent_pid\" 2>/dev/null || true)\nwhile kill -0 \"$parent_pid\" 2>/dev/null; do sleep 0.1; done\nfor child in $child_pids; do [ \"$child\" = \"$self_pid\" ] && continue; kill \"$child\" 2>/dev/null || true; done\nsleep 0.3\ncurrent={current}\nstaged={staged}\nbackup={backup}\nlog={log}\nrm -rf \"$backup\"\nif ! mv \"$current\" \"$backup\" 2>>\"$log\"; then echo 'could not move running app aside' >>\"$log\"; exit 1; fi\nif ! mv \"$staged\" \"$current\" 2>>\"$log\"; then echo 'could not move update into place' >>\"$log\"; mv \"$backup\" \"$current\" 2>/dev/null; exit 1; fi\nxattr -dr com.apple.quarantine \"$current\" >/dev/null 2>&1 || true\nopen -n \"$current\" >>\"$log\" 2>&1\nrm -rf \"$backup\"\n",
+        current = shell_single_quote(&current.to_string_lossy()),
+        staged = shell_single_quote(&staged.to_string_lossy()),
+        backup = shell_single_quote(&backup.to_string_lossy()),
+        log = shell_single_quote(&log_path.to_string_lossy()),
+    );
+    std::fs::write(&script_path, script).map_err(|error| format!("Could not write the update installer: {error}"))?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        std::fs::set_permissions(&script_path, std::fs::Permissions::from_mode(0o700)).map_err(|error| error.to_string())?;
+    }
+    Command::new("/bin/sh")
+        .arg(&script_path)
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .map_err(|error| format!("Could not start the update installer: {error}"))?;
+    Ok(())
+}
+
+fn prepare_macos_install(artifact: &ArtifactIdentity, cache_dir: &Path, version: &str) -> Result<(), String> {
+    let staged = extract_update_payload(&artifact.path, cache_dir, version)?;
+    let current = current_app_bundle_path()?;
+    spawn_macos_install_helper(&current, &staged, cache_dir)
+}
+
 fn configured_feed_url() -> Option<String> {
     if let Some(value) = std::env::var("SYNARA_UPDATE_FEED_URL")
         .ok()
@@ -1008,14 +1193,21 @@ impl DesktopUpdateService {
         if !valid {
             return (false, None, Some("The restart confirmation expired. Refresh its status and confirm again.".into()));
         }
+        let artifact = self.artifact.lock().ok().and_then(|artifact| artifact.clone());
+        let Some(artifact) = artifact else {
+            return (false, None, Some("The verified update payload is no longer staged. Download it again.".into()));
+        };
+        if let Err(message) = prepare_macos_install(&artifact, &self.cache_dir, expected) {
+            self.set_state(|state| state.install_failure(&message));
+            return (false, None, Some(message));
+        }
         if let Ok(mut ticket) = self.ticket.lock() { *ticket = None; }
         self.committed.store(true, std::sync::atomic::Ordering::SeqCst);
-        // The verified payload is staged, but package replacement/relaunch is still
-        // owned by the packaging layer. Surface a durable install failure rather
-        // than pretending Electron's quitAndInstall equivalent exists here.
-        self.set_state(|state| state.install_failure("The downloaded update is verified, but this build has no packaged installer handoff."));
-        self.committed.store(false, std::sync::atomic::Ordering::SeqCst);
-        (false, None, Some("The downloaded update is verified, but this build has no packaged installer handoff.".into()))
+        std::thread::spawn(|| {
+            std::thread::sleep(std::time::Duration::from_millis(700));
+            std::process::exit(0);
+        });
+        (true, None, Some("Synara is restarting to install the update.".into()))
     }
 
     fn handle(self: &Arc<Self>, request: &Value) -> Value {
@@ -1193,6 +1385,18 @@ mod tests {
         assert_eq!(classify_download_response(429, None, None, 0), DownloadResponseAction::Retryable { status: 429 });
         assert_eq!(retry_delay_ms(1, &config), 0);
         assert_eq!(retry_delay_ms(3, &config), 1000);
+    }
+
+    #[test]
+    fn plist_string_value_reads_bundle_identity() {
+        let plist = "<dict>\n<key>CFBundleIdentifier</key>\n<string>com.emanueledipietro.synara</string>\n<key>CFBundleExecutable</key>\n<string>synara-shell</string>\n</dict>";
+        assert_eq!(plist_string_value(plist, "CFBundleIdentifier").as_deref(), Some("com.emanueledipietro.synara"));
+        assert_eq!(plist_string_value(plist, "CFBundleExecutable").as_deref(), Some("synara-shell"));
+    }
+
+    #[test]
+    fn shell_single_quote_escapes_paths() {
+        assert_eq!(shell_single_quote("/tmp/Synara's app"), "'/tmp/Synara'\\''s app'");
     }
 
     #[test]

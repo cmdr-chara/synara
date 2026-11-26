@@ -321,7 +321,7 @@ pub(crate) async fn call_browser_tool(
         {
             Ok(mut value) => {
                 if let Value::Object(ref mut obj) = value {
-                    obj.insert("backend".into(), json!("shell-host"));
+                    obj.insert("via".into(), json!("shell-host"));
                 }
                 return Ok(value);
             }
@@ -362,9 +362,10 @@ pub(crate) async fn call_browser_tool(
             "available": browserhost_rs::cdp::cdp_available() || browserhost_rs::discovery::resolve().is_some(),
             "backends": {
                 "shell-host": {"available": browserhost_rs::discovery::resolve().is_some()},
-                "chrome-cdp": {"available": browserhost_rs::cdp::cdp_available()},
+                "obscura": {"available": browserhost_rs::cdp::cdp_available(), "kind": "headless Chrome CDP"},
+                "ego-lite": {"available": browserhost_rs::cdp::cdp_available(), "kind": "visible Chrome CDP"},
             },
-            "routing": "browser host (desktop shell) owns browser automation when published; Chrome CDP is the server-local fallback",
+            "routing": "browser host (desktop shell) owns browser automation when published; locally, background work uses headless obscura and explicitly visible work uses ego lite",
         }));
     }
     browserhost_rs::cdp::call_cdp_tool(name, args, thread).await

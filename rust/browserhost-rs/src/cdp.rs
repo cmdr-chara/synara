@@ -14,6 +14,24 @@ use tokio::sync::{mpsc, oneshot};
 
 
 
+/// Browser operating mode: obscura is the headless background browser,
+/// ego lite the visible one. Both are real Chrome/CDP instances with
+/// separate profiles so they never fight over one user-data-dir.
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum CdpMode {
+    Visible,
+    Headless,
+}
+
+impl CdpMode {
+    pub fn backend_name(self) -> &'static str {
+        match self {
+            Self::Visible => "ego-lite",
+            Self::Headless => "obscura",
+        }
+    }
+}
+
 struct CdpProcess {
     child: Child,
     port: u16,
@@ -59,9 +77,43 @@ impl CdpConnection {
     }
 }
 
-fn cdp_state() -> &'static Mutex<(Option<CdpProcess>, Option<Arc<CdpConnection>>)> {
-    static STATE: OnceLock<Mutex<(Option<CdpProcess>, Option<Arc<CdpConnection>>)>> = OnceLock::new();
-    STATE.get_or_init(|| Mutex::new((None, None)))
+fn cdp_state(mode: CdpMode) -> &'static Mutex<(Option<CdpProcess>, Option<Arc<CdpConnection>>)> {
+    static VISIBLE: OnceLock<Mutex<(Option<CdpProcess>, Option<Arc<CdpConnection>>)>> = OnceLock::new();
+    static HEADLESS: OnceLock<Mutex<(Option<CdpProcess>, Option<Arc<CdpConnection>>)>> = OnceLock::new();
+    let slot = match mode {
+        CdpMode::Visible => &VISIBLE,
+        CdpMode::Headless => &HEADLESS,
+    };
+    slot.get_or_init(|| Mutex::new((None, None)))
+}
+
+/// Remembered per-thread mode: browser_open pins the thread to the visible
+/// or headless browser so follow-up tools land in the same instance.
+fn thread_modes() -> &'static Mutex<HashMap<String, CdpMode>> {
+    static MODES: OnceLock<Mutex<HashMap<String, CdpMode>>> = OnceLock::new();
+    MODES.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn resolve_mode(args: &Value, thread: Option<&str>) -> CdpMode {
+    match args.get("backend").and_then(Value::as_str).unwrap_or("auto") {
+        "obscura" | "headless" => return CdpMode::Headless,
+        "ego-lite" | "ego" | "ego_lite" | "visible" => return CdpMode::Visible,
+        _ => {}
+    }
+    if let Some(visible) = args
+        .get("visible")
+        .and_then(Value::as_bool)
+        .or_else(|| args.get("show").and_then(Value::as_bool))
+    {
+        return if visible { CdpMode::Visible } else { CdpMode::Headless };
+    }
+    let key = thread.unwrap_or("").to_string();
+    if let Some(mode) = thread_modes().lock().ok().and_then(|m| m.get(&key).copied()) {
+        return mode;
+    }
+    // Background work defaults to the headless browser; only explicitly
+    // visible work opens a window.
+    CdpMode::Headless
 }
 
 fn chrome_path() -> Option<String> {
@@ -85,14 +137,17 @@ fn chrome_path() -> Option<String> {
         .map(|p| p.to_string())
 }
 
-fn cdp_profile_dir() -> std::path::PathBuf {
+fn cdp_profile_dir(mode: CdpMode) -> std::path::PathBuf {
     let base = std::env::var("SYNARA_HOME")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| {
             std::path::PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| "/tmp".into()))
                 .join(".synara")
         });
-    base.join("chrome-cdp-profile")
+    match mode {
+        CdpMode::Visible => base.join("chrome-cdp-profile"),
+        CdpMode::Headless => base.join("chrome-obscura-profile"),
+    }
 }
 
 async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
@@ -198,8 +253,8 @@ async fn connect_ws(url: &str) -> Result<Arc<CdpConnection>, String> {
 }
 
 /// Launch (or reuse) the CDP browser and return its connection.
-async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
-    if let Ok(state) = cdp_state().lock() {
+async fn ensure_cdp(mode: CdpMode) -> Result<Arc<CdpConnection>, String> {
+    if let Ok(state) = cdp_state(mode).lock() {
         if let Some(conn) = state.1.clone() {
             return Ok(conn);
         }
@@ -207,7 +262,7 @@ async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
     let binary = chrome_path().ok_or_else(|| {
         "no Chromium browser found for the CDP fallback (install Chrome, Edge, Brave or Chromium)".to_string()
     })?;
-    let profile = cdp_profile_dir();
+    let profile = cdp_profile_dir(mode);
     // Chrome refuses a second instance on the same user-data-dir. When a
     // browser is already running on this profile (whichever process launched
     // it), reuse it. Chrome only writes DevToolsActivePort for auto-assigned
@@ -228,7 +283,7 @@ async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
                             .map(str::to_string)
                         {
                             if let Ok(conn) = connect_ws(&ws_url).await {
-                                if let Ok(mut state) = cdp_state().lock() {
+                                if let Ok(mut state) = cdp_state(mode).lock() {
                                     state.1 = Some(conn.clone());
                                 }
                                 return Ok(conn);
@@ -245,20 +300,26 @@ async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
         .map(|a| a.port())
         .map_err(|e| format!("no free port for cdp: {e}"))?;
     let _ = std::fs::create_dir_all(&profile);
-    let child = Command::new(&binary)
-        .args([
+    let headless_args: Vec<&str> = match mode {
+        CdpMode::Headless => vec!["--headless=new", "--disable-gpu"],
+        CdpMode::Visible => vec![],
+    };
+    let mut child_command = Command::new(&binary);
+    child_command.args([
             &format!("--remote-debugging-port={port}"),
             &format!("--user-data-dir={}", profile.display()),
             "--no-first-run",
             "--no-default-browser-check",
             "--disable-session-crashed-bubble",
             "--hide-crash-restore-bubble",
-            "about:blank",
         ])
+        .args(&headless_args)
+        .arg("about:blank")
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
-        .kill_on_drop(true)
+        .kill_on_drop(true);
+    let child = child_command
         .spawn()
         .map_err(|e| format!("could not launch chromium for cdp: {e}"))?;
     // Wait for the devtools endpoint.
@@ -281,7 +342,7 @@ async fn ensure_cdp() -> Result<Arc<CdpConnection>, String> {
         .ok_or_else(|| "chromium devtools endpoint missing websocket url".to_string())?
         .to_string();
     let conn = connect_ws(&ws_url).await?;
-    if let Ok(mut state) = cdp_state().lock() {
+    if let Ok(mut state) = cdp_state(mode).lock() {
         state.0 = Some(CdpProcess { child, port });
         state.1 = Some(conn.clone());
     }
@@ -345,18 +406,20 @@ async fn reqwest_get(url: &str) -> Result<String, String> {
 }
 
 pub async fn shutdown_cdp() {
-    let child = cdp_state()
-        .lock()
-        .ok()
-        .and_then(|mut state| {
-            state.1 = None;
-            state.0.take().map(|mut p| {
-                let _ = p.child.start_kill();
-                p.child
-            })
-        });
-    if let Some(mut child) = child {
-        let _ = child.wait().await;
+    for mode in [CdpMode::Visible, CdpMode::Headless] {
+        let child = cdp_state(mode)
+            .lock()
+            .ok()
+            .and_then(|mut state| {
+                state.1 = None;
+                state.0.take().map(|mut p| {
+                    let _ = p.child.start_kill();
+                    p.child
+                })
+            });
+        if let Some(mut child) = child {
+            let _ = child.wait().await;
+        }
     }
 }
 
@@ -380,8 +443,9 @@ fn cdp_tabs() -> &'static Mutex<HashMap<String, (String, String)>> {
 async fn thread_session(
     conn: &CdpConnection,
     thread: Option<&str>,
+    mode: CdpMode,
 ) -> Result<(String, String), String> {
-    let key = thread.unwrap_or("").to_string();
+    let key = format!("{}:{}", mode.backend_name(), thread.unwrap_or(""));
     if let Some(pair) = cdp_tabs().lock().ok().and_then(|t| t.get(&key).cloned()) {
         return Ok(pair);
     }
@@ -476,11 +540,18 @@ pub async fn call_cdp_tool(
     args: &Value,
     thread: Option<&str>,
 ) -> Result<Value, String> {
-    let conn = ensure_cdp().await?;
+    let mode = resolve_mode(args, thread);
+    if name == "browser_open" {
+        if let Ok(mut modes) = thread_modes().lock() {
+            modes.insert(thread.unwrap_or("").to_string(), mode);
+        }
+    }
+    let conn = ensure_cdp(mode).await?;
+    let backend = mode.backend_name();
     if name == "browser_status" {
         return Ok(json!({
             "available": true,
-            "backend": "chrome-cdp",
+            "backend": backend,
         }));
     }
     if name == "browser_tabs" {
@@ -501,9 +572,9 @@ pub async fn call_cdp_tool(
                     .collect()
             })
             .unwrap_or_default();
-        return Ok(json!({"tabs": list, "backend": "chrome-cdp"}));
+        return Ok(json!({"tabs": list, "backend": backend}));
     }
-    let (_target_id, session) = thread_session(&conn, thread).await?;
+    let (_target_id, session) = thread_session(&conn, thread, mode).await?;
     match name {
         "browser_open" | "browser_navigate" => {
             let url = args
@@ -518,7 +589,7 @@ pub async fn call_cdp_tool(
                 "({url: location.href, title: document.title})",
             )
             .await?;
-            let mut out = json!({"backend": "chrome-cdp"});
+            let mut out = json!({"backend": backend});
             if let (Value::Object(o), Value::Object(info)) = (&mut out, info) {
                 for (k, v) in info {
                     o.insert(k, v);
@@ -540,7 +611,7 @@ pub async fn call_cdp_tool(
             )
             .await?;
             Ok(json!({
-                "backend": "chrome-cdp",
+                "backend": backend,
                 "url": meta.get("url").cloned().unwrap_or(Value::Null),
                 "title": meta.get("title").cloned().unwrap_or(Value::Null),
                 "snapshot": text,
@@ -552,7 +623,7 @@ pub async fn call_cdp_tool(
                 .and_then(Value::as_str)
                 .ok_or_else(|| "browser_evaluate requires expression".to_string())?;
             let value = cdp_eval(&conn, &session, expression).await?;
-            Ok(json!({"backend": "chrome-cdp", "value": value}))
+            Ok(json!({"backend": backend, "value": value}))
         }
         "browser_run" => {
             let code = args
@@ -561,7 +632,7 @@ pub async fn call_cdp_tool(
                 .ok_or_else(|| "browser_run requires code".to_string())?;
             let expression = crate::runexpr::browser_run_expression(code);
             let value = cdp_eval(&conn, &session, &expression).await?;
-            Ok(json!({"backend": "chrome-cdp", "value": value}))
+            Ok(json!({"backend": backend, "value": value}))
         }
         "browser_click" => {
             let sel = selector_js(args)?;
@@ -570,7 +641,7 @@ pub async fn call_cdp_tool(
                 js_string(&sel)
             );
             cdp_eval(&conn, &session, &expr).await?;
-            Ok(json!({"backend": "chrome-cdp", "clicked": sel}))
+            Ok(json!({"backend": backend, "clicked": sel}))
         }
         "browser_fill" | "browser_type" => {
             let sel = selector_js(args)?;
@@ -585,7 +656,7 @@ pub async fn call_cdp_tool(
                 js_string(text)
             );
             cdp_eval(&conn, &session, &expr).await?;
-            Ok(json!({"backend": "chrome-cdp", "filled": sel}))
+            Ok(json!({"backend": backend, "filled": sel}))
         }
         "browser_press_key" => {
             let key = args
@@ -598,26 +669,26 @@ pub async fn call_cdp_tool(
                 js_string(key)
             );
             cdp_eval(&conn, &session, &expr).await?;
-            Ok(json!({"backend": "chrome-cdp", "pressed": key}))
+            Ok(json!({"backend": backend, "pressed": key}))
         }
         "browser_scroll" => {
             let dx = args.get("dx").and_then(Value::as_i64).unwrap_or(0);
             let dy = args.get("dy").and_then(Value::as_i64).unwrap_or(400);
             cdp_eval(&conn, &session, &format!("window.scrollBy({dx},{dy}), true"))
                 .await?;
-            Ok(json!({"backend": "chrome-cdp", "scrolled": true}))
+            Ok(json!({"backend": backend, "scrolled": true}))
         }
         "browser_back" => {
             cdp_eval(&conn, &session, "history.back(), true").await?;
-            Ok(json!({"backend": "chrome-cdp"}))
+            Ok(json!({"backend": backend}))
         }
         "browser_forward" => {
             cdp_eval(&conn, &session, "history.forward(), true").await?;
-            Ok(json!({"backend": "chrome-cdp"}))
+            Ok(json!({"backend": backend}))
         }
         "browser_reload" => {
             conn.call("Page.reload", json!({}), Some(&session)).await?;
-            Ok(json!({"backend": "chrome-cdp"}))
+            Ok(json!({"backend": backend}))
         }
         "browser_screenshot" => {
             let result = conn
@@ -629,7 +700,7 @@ pub async fn call_cdp_tool(
                 .await?;
             let data = result.get("data").cloned().unwrap_or(Value::Null);
             Ok(json!({
-                "backend": "chrome-cdp",
+                "backend": backend,
                 "image": {"data": data, "mimeType": "image/png"},
             }))
         }
@@ -652,7 +723,7 @@ pub async fn call_cdp_tool(
                 .await
                 .unwrap_or(Value::Bool(false));
                 if found.as_bool() == Some(true) {
-                    return Ok(json!({"backend": "chrome-cdp", "found": sel}));
+                    return Ok(json!({"backend": backend, "found": sel}));
                 }
                 if start.elapsed().as_millis() as u64 > timeout_ms {
                     return Err(format!("browser_wait_for timed out waiting for {sel}"));
@@ -682,7 +753,7 @@ pub async fn call_cdp_tool(
                 .await
                 .unwrap_or(Value::Bool(false));
                 if found.as_bool() == Some(true) {
-                    return Ok(json!({"backend": "chrome-cdp", "found": text}));
+                    return Ok(json!({"backend": backend, "found": text}));
                 }
                 if start.elapsed().as_millis() as u64 > timeout_ms {
                     return Err(format!("browser_wait_for_text timed out waiting for {text}"));
@@ -696,7 +767,7 @@ pub async fn call_cdp_tool(
                 .ok()
                 .and_then(|logs| logs.get(&session).cloned())
                 .unwrap_or_default();
-            Ok(json!({"backend": "chrome-cdp", "entries": entries}))
+            Ok(json!({"backend": backend, "entries": entries}))
         }
         "browser_select" => {
             let sel = selector_js(args)?;
@@ -710,7 +781,7 @@ pub async fn call_cdp_tool(
                 js_string(value)
             );
             cdp_eval(&conn, &session, &expr).await?;
-            Ok(json!({"backend": "chrome-cdp", "selected": value}))
+            Ok(json!({"backend": backend, "selected": value}))
         }
         "browser_upload" => {
             let sel = selector_js(args)?;
@@ -754,7 +825,7 @@ pub async fn call_cdp_tool(
                 Some(&session),
             )
             .await?;
-            Ok(json!({"backend": "chrome-cdp", "uploaded": files}))
+            Ok(json!({"backend": backend, "uploaded": files}))
         }
         "browser_drag" => {
             // HTML5 drag events are synthesized in-page; CDP mouse events only
@@ -781,13 +852,13 @@ return true}})()"#,
                 js_string(to)
             );
             cdp_eval(&conn, &session, &expr).await?;
-            Ok(json!({"backend": "chrome-cdp", "dragged": true}))
+            Ok(json!({"backend": backend, "dragged": true}))
         }
         "browser_download" => {
             // Arms the download behavior for the browser and waits for the
             // next completed download. The caller is expected to trigger the
             // download (click) first or pass a selector to click here.
-            let dir = cdp_profile_dir().join("downloads");
+            let dir = cdp_profile_dir(mode).join("downloads");
             let _ = std::fs::create_dir_all(&dir);
             conn.call(
                 "Browser.setDownloadBehavior",
@@ -823,7 +894,7 @@ return true}})()"#,
                 });
                 if let Some(entry) = done {
                     return Ok(json!({
-                        "backend": "chrome-cdp",
+                        "backend": backend,
                         "download": entry,
                         "directory": dir.display().to_string(),
                     }));
@@ -845,7 +916,7 @@ return true}})()"#,
                     .call("Target.closeTarget", json!({"targetId": target_id}), None)
                     .await;
             }
-            Ok(json!({"backend": "chrome-cdp", "closed": true}))
+            Ok(json!({"backend": backend, "closed": true}))
         }
         other => Err(format!("browser tool {other} is not implemented for chrome-cdp")),
     }

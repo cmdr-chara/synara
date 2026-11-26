@@ -1159,8 +1159,38 @@ pub async fn sync_cookie_import(
         return Err("cookie import requires an existing destination tab".into());
     };
     let conn = ensure_cdp(mode).await?;
+    let before_url = cdp_eval(&conn, &session, "location.href")
+        .await
+        .and_then(|value| value.as_str().map(str::to_string).ok_or_else(|| "destination URL unavailable".to_string()))?;
+    let wait_deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+    while recent_agent_activity(&session) && std::time::Instant::now() < wait_deadline {
+        tokio::time::sleep(std::time::Duration::from_millis(150)).await;
+    }
+    if recent_agent_activity(&session) {
+        return Err("wait for the agent to finish using the browser before importing cookies".into());
+    }
+    let Some(profile) = profile else {
+        return Err("choose an available browser profile".into());
+    };
+    let profiles = crate::cookies::profiles(browser)?;
+    if !profiles.iter().any(|candidate| candidate.get("id").and_then(Value::as_str) == Some(profile)) {
+        return Err("choose an available browser profile".into());
+    }
     let browser = browser.to_string();
-    let profile = profile.map(str::to_string);
+    let profile = Some(profile.to_string());
+    if domains.len() > 1 {
+        return Err("cookie import supports one visible site at a time".into());
+    }
+    if let Some(domain) = domains.first() {
+        let visible_host = url::Url::parse(&before_url)
+            .ok()
+            .and_then(|url| url.host_str().map(str::to_string))
+            .unwrap_or_default();
+        let normalized = domain.trim_start_matches('.').to_ascii_lowercase();
+        if visible_host != normalized && !visible_host.ends_with(&format!(".{normalized}")) {
+            return Err("cookie import must match the visible site".into());
+        }
+    }
     let domains = domains.to_vec();
     let import = tokio::task::spawn_blocking(move || {
         crate::cookies::read_import(&browser, profile.as_deref(), &domains)
@@ -1197,6 +1227,12 @@ pub async fn sync_cookie_import(
                 _ => skipped += 1,
             }
         }
+    }
+    let after_url = cdp_eval(&conn, &session, "location.href")
+        .await
+        .and_then(|value| value.as_str().map(str::to_string).ok_or_else(|| "destination URL unavailable".to_string()))?;
+    if after_url != before_url {
+        return Err("the cookie import destination changed during import".into());
     }
     Ok(json!({
         "ok": true,

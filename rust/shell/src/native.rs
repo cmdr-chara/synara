@@ -1399,6 +1399,7 @@ pub struct Native {
     cookie_profile: Option<String>,
     cookie_domain_input: Entity<InputState>,
     cookie_importing: bool,
+    cookie_profile_confirmed: bool,
     cookie_result: Option<String>,
     cookie_error: Option<String>,
     /// Upstream dismissedThreadStatusKeyByThreadId (thread_id -> dismissalKey).
@@ -3357,6 +3358,7 @@ impl Native {
                 cookie_profile: None,
                 cookie_domain_input,
                 cookie_importing: false,
+                cookie_profile_confirmed: false,
                 cookie_result: None,
                 cookie_error: None,
                 dismissed_status: std::collections::HashMap::new(),
@@ -3470,6 +3472,26 @@ impl Native {
             // Give the root view initial focus so global chords dispatch even
             // before an input takes focus (chords bubble from inputs anyway).
             this.focus_handle.focus(window, cx);
+            // Owner vault prompts originate in the CDP browser host, outside the
+            // server websocket. Poll only while the owner surface is visible.
+            cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                loop {
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_secs(2))
+                        .await;
+                    let keep = this
+                        .update(cx, |this: &mut Self, cx| {
+                            if this.view_settings && this.settings_section == "saved-logins" {
+                                this.refresh_vault(cx);
+                            }
+                        })
+                        .is_ok();
+                    if !keep {
+                        break;
+                    }
+                }
+            })
+            .detach();
             // AsciiWaveBackground ambient clock: ~15fps repaints while the
             // landing field is on screen (upstream AMBIENT_FRAME_INTERVAL_MS).
             cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
@@ -10900,6 +10922,16 @@ impl Native {
             .filter(|part| !part.is_empty())
             .map(str::to_string)
             .collect();
+        if domains.len() > 1 {
+            self.cookie_error = Some("Enter one visible site, or leave the field empty for a whole-profile import.".into());
+            cx.notify();
+            return;
+        }
+        if domains.is_empty() && !self.cookie_profile_confirmed {
+            self.cookie_error = Some("Confirm whole-profile session access before importing all cookies.".into());
+            cx.notify();
+            return;
+        }
         self.cookie_importing = true;
         self.cookie_error = None;
         self.cookie_result = None;
@@ -10920,6 +10952,7 @@ impl Native {
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.cookie_importing = false;
+                this.cookie_profile_confirmed = false;
                 match result {
                     Ok(result) => {
                         let imported = result.get("imported").and_then(Value::as_u64).unwrap_or(0);
@@ -22767,6 +22800,32 @@ impl Render for Native {
                                     .child(outline_btn(if self.cookie_importing { "Importing" } else { "Import" })),
                             ),
                     );
+                if self.cookie_domain_input.read(cx).value().trim().is_empty() {
+                    let confirmed = self.cookie_profile_confirmed;
+                    import_card = import_card.child(
+                        h_flex()
+                            .w_full()
+                            .items_center()
+                            .justify_between()
+                            .gap_3()
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child("Whole-profile import copies session cookies for every site. Confirm that this browser tab may receive that access."),
+                            )
+                            .child(
+                                switch_track(confirmed, theme.primary, &theme)
+                                    .id("cookie-profile-confirmed")
+                                    .cursor_pointer()
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        this.cookie_profile_confirmed = !confirmed;
+                                        cx.notify();
+                                    })),
+                            ),
+                    );
+                }
                 if self.cookie_sources.is_empty() {
                     import_card = import_card.child(div().text_xs().text_color(theme.muted_foreground).child("No supported Chrome, Safari, or Edge profiles were found."));
                 }

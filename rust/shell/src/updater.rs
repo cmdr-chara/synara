@@ -555,6 +555,128 @@ pub fn download_headers(start_offset: u64, attach_auth: bool, headers: &[(String
     out
 }
 
+
+fn download_file_resumable(url: &str, target: &Path, expected_size: Option<u64>, mut progress: impl FnMut(u64, Option<u64>)) -> Result<u64, String> {
+    let config = ResumableDownloadConfig::default();
+    let temporary = target.with_extension("download");
+    let started = std::time::Instant::now();
+    let mut attempts = 0u32;
+    let mut stalls = 0u32;
+    let mut received = std::fs::metadata(&temporary).map(|metadata| metadata.len()).unwrap_or(0);
+    loop {
+        attempts += 1;
+        if download_should_give_up(stalls, attempts, started.elapsed().as_millis() as u64, &config) {
+            return Err("The update download stalled repeatedly. Check the connection and try again.".into());
+        }
+        let mut request = ureq::get(url)
+            .set("User-Agent", "synara-updater")
+            .set("Cache-Control", "no-cache")
+            .timeout(std::time::Duration::from_millis(config.idle_timeout_ms));
+        if received > 0 {
+            request = request.set("Range", &format!("bytes={received}-"));
+        }
+        let response = match request.call() {
+            Ok(response) => response,
+            Err(ureq::Error::Status(status, response)) => {
+                let action = classify_download_response(status, response.header("Content-Range"), response.header("Content-Length").and_then(|value| value.parse().ok()), received);
+                if matches!(action, DownloadResponseAction::Complete) && expected_size.is_some_and(|size| size == received) {
+                    break;
+                }
+                if matches!(action, DownloadResponseAction::Retryable { .. }) {
+                    stalls += 1;
+                    std::thread::sleep(std::time::Duration::from_millis(retry_delay_ms(stalls, &config)));
+                    continue;
+                }
+                return Err(format!("Could not download update: server returned HTTP {status}"));
+            }
+            Err(error) => {
+                stalls += 1;
+                if download_should_give_up(stalls, attempts, started.elapsed().as_millis() as u64, &config) {
+                    return Err(format!("Could not download update: {error}"));
+                }
+                std::thread::sleep(std::time::Duration::from_millis(retry_delay_ms(stalls, &config)));
+                continue;
+            }
+        };
+        let status = response.status();
+        let action = classify_download_response(status, response.header("Content-Range"), response.header("Content-Length").and_then(|value| value.parse().ok()), received);
+        let mut append = true;
+        let mut total = expected_size;
+        match action {
+            DownloadResponseAction::Append { total: response_total } => {
+                if received == 0 { append = false; }
+                total = response_total.or(total);
+            }
+            DownloadResponseAction::FromStart { total: response_total } => {
+                append = false;
+                total = response_total.or(total);
+            }
+            DownloadResponseAction::Complete => {
+                if expected_size.is_some_and(|size| size == received) { break; }
+                stalls += 1;
+                continue;
+            }
+            DownloadResponseAction::Retryable { .. } => {
+                stalls += 1;
+                std::thread::sleep(std::time::Duration::from_millis(retry_delay_ms(stalls, &config)));
+                continue;
+            }
+            DownloadResponseAction::Fatal { status } => {
+                return Err(format!("Could not download update: server returned HTTP {status}"));
+            }
+        }
+        if !append { received = 0; }
+        let mut output = std::fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .append(append)
+            .truncate(!append)
+            .open(&temporary)
+            .map_err(|error| format!("Could not create update download: {error}"))?;
+        let mut reader = response.into_reader();
+        let mut buffer = [0u8; 128 * 1024];
+        let mut interrupted = None;
+        loop {
+            match reader.read(&mut buffer) {
+                Ok(0) => {
+                    if total.is_some_and(|total| received < total) {
+                        interrupted = Some("connection ended before the update payload was complete".to_string());
+                    }
+                    break;
+                }
+                Ok(count) => {
+                    if let Err(error) = std::io::Write::write_all(&mut output, &buffer[..count]) {
+                        return Err(format!("Could not write update download: {error}"));
+                    }
+                    received += count as u64;
+                    progress(received, total);
+                }
+                Err(error) => {
+                    interrupted = Some(error.to_string());
+                    break;
+                }
+            }
+        }
+        drop(output);
+        if let Some(error) = interrupted {
+            stalls += 1;
+            if download_should_give_up(stalls, attempts, started.elapsed().as_millis() as u64, &config) {
+                return Err(format!("Could not download update: {error}"));
+            }
+            std::thread::sleep(std::time::Duration::from_millis(retry_delay_ms(stalls, &config)));
+            continue;
+        }
+        break;
+    }
+    if let Some(expected_size) = expected_size {
+        if expected_size != received {
+            return Err("The update download ended before the expected payload size.".into());
+        }
+    }
+    std::fs::rename(&temporary, target).map_err(|error| format!("Could not stage update download: {error}"))?;
+    Ok(received)
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UpdateFeedFile {
     pub url: String,
@@ -1196,38 +1318,12 @@ impl DesktopUpdateService {
             std::fs::create_dir_all(self.cache_dir.join(&version)).map_err(|error| error.to_string())?;
             let file_name = selected.url.rsplit('/').next().filter(|name| !name.is_empty()).unwrap_or("update.payload");
             let target = self.cache_dir.join(&version).join(file_name);
-            let temporary = target.with_extension(format!("download-{}", uuid::Uuid::new_v4()));
-            let response = ureq::get(&url)
-                .set("User-Agent", "synara-updater")
-                .set("Cache-Control", "no-cache")
-                .call()
-                .map_err(|error| format!("Could not download update: {error}"))?;
-            if response.status() != 200 {
-                return Err(format!("Could not download update: server returned HTTP {}", response.status()));
-            }
-            let total = response.header("Content-Length").and_then(|value| value.parse::<u64>().ok()).or(selected.size);
-            let mut reader = response.into_reader();
-            let mut output = File::create(&temporary).map_err(|error| format!("Could not create update download: {error}"))?;
-            let mut received = 0u64;
-            let mut buffer = [0u8; 128 * 1024];
-            loop {
-                let count = reader.read(&mut buffer).map_err(|error| format!("Could not read update download: {error}"))?;
-                if count == 0 { break; }
-                std::io::Write::write_all(&mut output, &buffer[..count]).map_err(|error| format!("Could not write update download: {error}"))?;
-                received += count as u64;
+            download_file_resumable(&url, &target, selected.size, |received, total| {
                 if let Some(total) = total.filter(|total| *total > 0) {
                     let percent = (received as f64 / total as f64) * 100.0;
                     self.set_state(|state| state.download_progress(percent));
                 }
-            }
-            drop(output);
-            if let Some(expected_size) = selected.size {
-                if expected_size != received {
-                    let _ = std::fs::remove_file(&temporary);
-                    return Err("The update download ended before the expected payload size.".into());
-                }
-            }
-            std::fs::rename(&temporary, &target).map_err(|error| format!("Could not stage update download: {error}"))?;
+            })?;
             let identity = fingerprint_artifact(&target)?;
             if !self.artifact_matches(&selected, &identity) {
                 let _ = std::fs::remove_file(&target);
@@ -1428,6 +1524,48 @@ mod tests {
         assert!(!verify_artifact_identity(&identity));
         std::fs::remove_dir_all(root).unwrap();
     }
+    #[test]
+    fn resumable_download_recovers_from_interrupted_body() {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let body = b"abcdefghijklmnopqrstuvwxyz0123456789".to_vec();
+        let server_body = body.clone();
+        let server = std::thread::spawn(move || {
+            for index in 0..2 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut request = Vec::new();
+                let mut byte = [0u8; 1];
+                while !request.windows(4).any(|tail| tail == b"\r\n\r\n") {
+                    if std::io::Read::read(&mut stream, &mut byte).unwrap() == 0 { break; }
+                    request.push(byte[0]);
+                }
+                let request = String::from_utf8_lossy(&request);
+                if index == 0 {
+                    let part = &server_body[..12];
+                    let response = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", server_body.len());
+                    std::io::Write::write_all(&mut stream, response.as_bytes()).unwrap();
+                    std::io::Write::write_all(&mut stream, part).unwrap();
+                } else {
+                    assert!(request.contains("Range: bytes=12-"), "{request}");
+                    let part = &server_body[12..];
+                    let response = format!("HTTP/1.1 206 Partial Content\r\nContent-Range: bytes 12-{}/{}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", server_body.len() - 1, server_body.len(), part.len());
+                    std::io::Write::write_all(&mut stream, response.as_bytes()).unwrap();
+                    std::io::Write::write_all(&mut stream, part).unwrap();
+                }
+            }
+        });
+        let root = std::env::temp_dir().join(format!("synara-resume-download-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let target = root.join("payload.bin");
+        let mut progresses = 0;
+        let received = download_file_resumable(&format!("http://127.0.0.1:{port}/payload"), &target, Some(body.len() as u64), |_, _| progresses += 1).unwrap();
+        server.join().unwrap();
+        assert_eq!(received as usize, body.len());
+        assert_eq!(std::fs::read(&target).unwrap(), body);
+        assert!(progresses > 0);
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
     #[test]
     fn pending_download_restores_newest_verified_payload() {
         let root = std::env::temp_dir().join(format!("synara-pending-update-test-{}", uuid::Uuid::new_v4()));

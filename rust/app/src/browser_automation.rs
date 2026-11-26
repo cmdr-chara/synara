@@ -413,7 +413,14 @@ fn current_backend_for(args: &Value, visible_default: bool, thread: Option<&str>
         .or_else(|| args.get("show").and_then(Value::as_bool))
         .unwrap_or(visible_default)
     {
-        return Ok(BrowserBackend::EgoLite);
+        // ego lite is the preferred visible host, but it is optional: fall
+        // back to the Chrome CDP backend (which drives a visible browser)
+        // when the ego binary is not installed.
+        return Ok(if ego_path().is_some() {
+            BrowserBackend::EgoLite
+        } else {
+            BrowserBackend::Cdp
+        });
     }
     let preferred = scope_backend(thread).unwrap_or(BrowserBackend::Obscura);
     Ok(match preferred {

@@ -1467,6 +1467,17 @@ pub fn start_desktop_update_bridge() -> Result<(), String> {
     let token = uuid::Uuid::new_v4().to_string();
     let path = write_bridge_file(port, &token)?;
     let service = desktop_update_service();
+    let automatic = Arc::clone(&service);
+    std::thread::spawn(move || {
+        // Upstream desktop behavior: a startup check after 15s, then a quiet
+        // poll every four hours. Explicit renderer/menu checks still go through
+        // the bridge; this loop never downloads or installs by itself.
+        std::thread::sleep(std::time::Duration::from_secs(15));
+        loop {
+            let _ = automatic.request_check();
+            std::thread::sleep(std::time::Duration::from_secs(4 * 60 * 60));
+        }
+    });
     std::thread::spawn(move || {
         for stream in listener.incoming() {
             let Ok(mut stream) = stream else { continue };

@@ -197,6 +197,23 @@ mod icons {
     pub const B_MCP: &[u8] = include_bytes!("../assets/icons/brands/mcp.svg");
 }
 
+/// Transcript/PR markdown style: follows the active light/dark theme instead
+/// of the hardcoded dark highlighter the first pass used. Upstream spec:
+/// code surface radius 16px, padding 8px 9.6px — the gpui-component theme
+/// already derives radius/padding/background; only the top inset for the
+/// actions row and the highlight theme need setting here.
+fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
+    let mut s = gpui_kit::component::text::TextViewStyle::default();
+    s.code_block.padding.top = Some(px(28.).into());
+    s.highlight_theme = if dark {
+        gpui_kit::component::highlighter::HighlightTheme::default_dark()
+    } else {
+        gpui_kit::component::highlighter::HighlightTheme::default_light()
+    };
+    s.is_dark = dark;
+    s
+}
+
 fn svg_icon(data: &'static [u8]) -> Icon {
     Icon::default().data(data)
 }
@@ -5776,14 +5793,7 @@ impl Native {
                     .into_any_element()
             } else {
                 TextView::markdown(ElementId::Name("pr-desc-md".into()), body_text)
-                    .style({
-                        let mut s = gpui_kit::component::text::TextViewStyle::default();
-                        s.code_block.padding.top = Some(px(28.).into());
-                        s.highlight_theme =
-                            gpui_kit::component::highlighter::HighlightTheme::default_dark(
-                            );
-                        s
-                    })
+                    .style(markdown_style(theme.is_dark()))
                     .into_any_element()
             })
             .into_any_element();
@@ -12530,24 +12540,18 @@ impl Native {
                                         ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
                                         text,
                                     )
-                                    .style({
-                                        let mut s =
-                                            gpui_kit::component::text::TextViewStyle::default();
-                                        s.code_block.padding.top = Some(px(28.).into());
-                                        s.highlight_theme =
-                                            gpui_kit::component::highlighter::HighlightTheme::default_dark();
-                                        s
-                                    })
-                                    .code_block_actions(|cb, _w, _cx| {
+                                    .style(markdown_style(theme.is_dark()))
+                                    .code_block_actions({
+                                        let muted_fg = theme.muted_foreground;
+                                        move |cb, _w, _cx| {
                                         let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
                                         h_flex()
-                                            .w(px(700.))
                                             .items_center()
                                             .justify_between()
                                             .child(
                                                 div()
                                                     .text_size(px(11.))
-                                                    .text_color(rgb(0x6e7781))
+                                                    .text_color(muted_fg)
                                                     .child(lang),
                                             )
                                             .child(
@@ -12556,14 +12560,15 @@ impl Native {
                                                     .child(
                                                         svg_icon(icons::COPY)
                                                             .size(px(14.))
-                                                            .text_color(rgb(0x6e7781)),
+                                                            .text_color(muted_fg),
                                                     )
                                                     .child(
                                                         svg_icon(icons::TEXT_WRAP)
                                                             .size(px(14.))
-                                                            .text_color(rgb(0x6e7781)),
+                                                            .text_color(muted_fg),
                                                     ),
                                             )
+                                        }
                                     })
                                     .selectable(true),
                                 ))
@@ -12573,6 +12578,7 @@ impl Native {
                 );
             }
         }
+
 
 
 /// Verb-summary aggregation for a run of tool activities, in the grammar the

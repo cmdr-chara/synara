@@ -96,3 +96,14 @@ the backend RPC directly. Alternative: point both clients at the same session
 by navigating web tab to a thread then finding it in shell sidebar under its
 project. ALSO: /settings IS a valid web route — use URL navigation for all
 web surfaces where routes exist (cheap).
+
+CONFIRMED LIVE: upstream .app-shell-atmosphere opacity 0.35 light, always
+rendered behind everything (even thread pages). Web / redirects to the last
+active thread — to capture the empty-chat landing, first close/archive test
+threads or use a fresh home; sky profile measurement needs the real landing.
+SKY PROFILE data point (earlier valid capture): web sky density peaks y150-200
+then dips — non-monotonic scene-driven; shell ramp monotonic too slow early,
+overshoots y400+. Hypothesis to test next cycle: shell vertical scene mapping
+or the unsharp-mask vertical ramp (sharpenFrom/To 0.24/0.36 of scene height)
+differs — verify the sharpen smoothstep math uses scene-height fractions
+correctly in device vs logical units.

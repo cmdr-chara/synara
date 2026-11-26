@@ -203,7 +203,7 @@ async fn main() {
         .route("/api/browser/frame", axum::routing::get(browser_frame::browser_frame))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
         .route("/api/editor-icon", axum::routing::get(editor_icon::editor_icon))
-        .route("/health", axum::routing::get(|| async { "ok" }))
+        .route("/health", axum::routing::get(health))
         .route("/api/auth/bootstrap", axum::routing::post(auth_http::bootstrap))
         .route("/api/auth/session", axum::routing::get(auth_http::session_state))
         .route("/api/auth/ws-token", axum::routing::post(auth_http::ws_token))
@@ -273,6 +273,47 @@ async fn oauth_mcp_callback(axum::extract::RawQuery(query): axum::extract::RawQu
         .header("content-type", "text/html; charset=utf-8")
         .body(axum::body::Body::from(html))
         .unwrap()
+}
+
+
+async fn health() -> axum::Json<serde_json::Value> {
+    axum::Json(serde_json::json!({
+        "status": "ok",
+        // The Rust backend runs on Tokio rather than Node's event-loop monitor.
+        // Shape-compatible unavailable counters keep /health unauthenticated and
+        // free of runtime detail while preserving the upstream contract.
+        "eventLoop": {
+            "available": false,
+            "sampleWindowMs": 0,
+            "sampleCount": 0,
+            "delayP50Ms": 0,
+            "delayP99Ms": 0,
+            "delayMaxMs": 0,
+            "utilization": 0,
+            "stallWindowCount": 0,
+            "maxStallMs": 0,
+            "discardedIdleGapCount": 0,
+            "discardedIdleGapMs": 0,
+            "lastStall": null,
+        },
+        // Axum only routes this after migrations/recovery and router construction
+        // have completed, so the lifecycle gates upstream separates are already
+        // satisfied by the time a client can observe this response.
+        "startupReady": true,
+        "pushBusReady": true,
+        "keybindingsReady": true,
+        "terminalSubscriptionsReady": true,
+        "orchestrationSubscriptionsReady": true,
+        "projection": {
+            "state": "healthy",
+            "inFlight": false,
+            "retryAttempts": 0,
+            "hasFailure": false,
+            "highWaterSequence": 0,
+            "lagByProjector": {},
+            "missingProjectors": [],
+        },
+    }))
 }
 
 fn html_escape(v: &str) -> String {

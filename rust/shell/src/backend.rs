@@ -481,8 +481,10 @@ fn backend_ready(port: u16) -> bool {
         .build()
         .get(&url)
         .call()
-        .map(|response| response.status() == 200)
-        .unwrap_or(false)
+        .ok()
+        .filter(|response| response.status() == 200)
+        .and_then(|response| response.into_json::<serde_json::Value>().ok())
+        .is_some_and(|payload| payload.get("startupReady").and_then(serde_json::Value::as_bool) == Some(true))
 }
 
 fn terminate_child(child: &mut Child) -> io::Result<()> {

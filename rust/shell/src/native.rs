@@ -20,6 +20,7 @@ use gpui_kit::component::{
     ActiveTheme as _, IconName, Sizable as _,
 };
 use gpui_kit::*;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::assets::IconName as AssetIcon;
 use gpui::prelude::FluentBuilder as _;
 
@@ -1409,6 +1410,11 @@ pub struct Native {
     visited_threads: std::collections::HashMap<String, String>,
     /// Upstream keepAwakeMode setting: 0 on, 1 agent, 2 off.
     keep_awake_mode: usize,
+    notification_primed: bool,
+    notification_states: std::collections::HashMap<String, (bool, bool)>,
+    notification_keys: std::collections::HashSet<String>,
+    notification_window: Option<gpui::AnyWindowHandle>,
+    notification_window_active: bool,
     /// Upstream OneTimeCoachmark: seen keys persisted under
     /// settings.sidebarUi.coachmarks; `coachmark` is the one showing.
     coachmarks_seen: std::collections::HashSet<String>,
@@ -3366,6 +3372,11 @@ impl Native {
                 dismissed_status: std::collections::HashMap::new(),
                 visited_threads: std::collections::HashMap::new(),
                 keep_awake_mode: 2,
+                notification_primed: false,
+                notification_states: std::collections::HashMap::new(),
+                notification_keys: std::collections::HashSet::new(),
+                notification_window: None,
+                notification_window_active: true,
                 coachmarks_seen: std::collections::HashSet::new(),
                 feature_flags: [false; 3],
                 flags_menu_open: false,
@@ -3578,6 +3589,136 @@ impl Native {
         .is_empty()
     }
 
+    fn deliver_activity_notification(
+        &mut self,
+        thread_id: &str,
+        title: String,
+        body: String,
+        warning: bool,
+        cx: &mut Context<Self>,
+    ) {
+        let toast = self.setting_bool("enableTaskCompletionToasts", true);
+        let system = self.setting_bool("enableSystemTaskCompletionNotifications", true)
+            && !self.notification_window_active;
+        if !toast && !system {
+            return;
+        }
+        let Some(handle) = self.notification_window else {
+            return;
+        };
+        let thread_id = thread_id.to_string();
+        let weak = cx.weak_entity();
+        let _ = cx.update_window(handle, move |_, window, cx| {
+            let click_thread = thread_id.clone();
+            let click_weak = weak.clone();
+            let mut notification = gpui_kit::component::notification::Notification::new()
+                .title(title)
+                .message(body)
+                .autohide(true)
+                .on_click(move |_, _window, app| {
+                    let thread = click_thread.clone();
+                    let _ = click_weak.update(app, |this, cx| this.open_thread(thread, cx));
+                });
+            notification = if warning {
+                notification.with_type(gpui_kit::component::notification::NotificationType::Warning)
+            } else {
+                notification.with_type(gpui_kit::component::notification::NotificationType::Success)
+            };
+            notification = match (toast, system) {
+                (true, true) => notification.in_app_and_system(),
+                (false, true) => notification.system(),
+                _ => notification,
+            };
+            window.push_notification(notification, cx);
+        });
+    }
+
+    /// Port of the web task-completion watcher for thread sessions: initial
+    /// hydration only primes state, then running→settled transitions and newly
+    /// pending input produce toast/OS notifications according to settings.
+    fn observe_snapshot_notifications(&mut self, incoming: &Value, cx: &mut Context<Self>) {
+        let threads = arr(incoming, "threads");
+        if !self.notification_primed {
+            self.notification_states = threads
+                .iter()
+                .map(|thread| {
+                    (
+                        str_at(thread, "id").to_string(),
+                        (
+                            thread_running_for_activity(thread),
+                            get(thread, "hasPendingApprovals").as_bool() == Some(true)
+                                || get(thread, "hasPendingUserInput").as_bool() == Some(true),
+                        ),
+                    )
+                })
+                .filter(|(id, _)| !id.is_empty())
+                .collect();
+            self.notification_primed = true;
+            return;
+        }
+
+        let wait_subagents = self.setting_bool("notifyAfterSubagentsFinish", true);
+        let mut next = std::collections::HashMap::new();
+        let mut events: Vec<(String, String, String, bool, String)> = Vec::new();
+        for thread in threads {
+            let id = str_at(thread, "id").to_string();
+            if id.is_empty() {
+                continue;
+            }
+            let running = thread_running_for_activity(thread);
+            let attention = get(thread, "hasPendingApprovals").as_bool() == Some(true)
+                || get(thread, "hasPendingUserInput").as_bool() == Some(true);
+            let Some((previous_running, previous_attention)) = self.notification_states.get(&id).copied() else {
+                next.insert(id, (running, attention));
+                continue;
+            };
+            let latest = get(thread, "latestTurn");
+            let completed_at = str_at(latest, "completedAt");
+            let completion_key = format!(
+                "{}:{}:{}",
+                id,
+                str_at(latest, "turnId"),
+                completed_at
+            );
+            let completion = previous_running
+                && !running
+                && str_at(latest, "state") == "completed"
+                && !completed_at.is_empty()
+                && get(thread, "snoozedUntil").is_null()
+                && get(thread, "archivedAt").is_null()
+                && (!wait_subagents || get(thread, "parentThreadId").is_null())
+                && get(thread, "pendingBackgroundTaskCount").as_u64().unwrap_or(0) == 0
+                && !self.notification_keys.contains(&completion_key);
+            if completion {
+                self.notification_keys.insert(completion_key.clone());
+                let title = str_at(thread, "title");
+                let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
+                events.push((id.clone(), title, "Finished working.".to_string(), false, completion_key));
+            }
+            if !previous_attention && attention && get(thread, "snoozedUntil").is_null() {
+                let title = str_at(thread, "title");
+                let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
+                let key = format!("attention:{}:{}", id, str_at(get(thread, "session"), "updatedAt"));
+                if self.notification_keys.insert(key.clone()) {
+                    events.push((id.clone(), "Input needed".to_string(), format!("{title}: input requested"), true, key));
+                }
+            }
+            next.insert(id, (running, attention));
+        }
+        self.notification_states = next;
+        if self.notification_keys.len() > 256 {
+            self.notification_keys = self.notification_keys.iter().skip(128).cloned().collect();
+        }
+        for (thread_id, title, body, warning, _) in events {
+            self.deliver_activity_notification(&thread_id, title, body, warning, cx);
+        }
+    }
+
+    fn adopt_snapshot(&mut self, snapshot: Value, cx: &mut Context<Self>) {
+        self.observe_snapshot_notifications(&snapshot, cx);
+        self.snapshot = Some(snapshot);
+    }
+
     /// (Re)fetch the shell snapshot, then keep it live via subscribeShell.
     fn refresh(&self, cx: &mut Context<Self>) {
         let client = self.client.clone();
@@ -3622,7 +3763,7 @@ impl Native {
                         this.kb_rules = rules;
                     }
                     if let Some(s) = snapshot {
-                        this.snapshot = Some(s);
+                        this.adopt_snapshot(s, cx);
                     }
                     this.fetch_git_status(cx);
                     if this.settings_data.is_null() {
@@ -3649,7 +3790,7 @@ impl Native {
                         .await;
                     let _ = this.update(cx, |this: &mut Self, cx| {
                         if let Some(s) = s {
-                            this.snapshot = Some(s);
+                            this.adopt_snapshot(s, cx);
                         }
                         cx.notify();
                     });
@@ -15161,6 +15302,8 @@ fn row(
 
 impl Render for Native {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        self.notification_window = Some(window.window_handle());
+        self.notification_window_active = window.is_window_active();
         let theme = cx.theme().clone();
         // Dark-aware chrome colors: upstream paints the top strip, rail well
         // and hairlines from the theme, not fixed light grays.
@@ -20564,6 +20707,21 @@ impl Render for Native {
             }
 
             if self.settings_section == "notifications" {
+                let accent = theme.primary;
+                let test_notification = Button::new("test-system-notification")
+                    .ghost()
+                    .compact()
+                    .h(px(28.))
+                    .label("Test")
+                    .on_click(cx.listener(|_this, _ev, window, cx| {
+                        window.push_notification(
+                            gpui_kit::component::notification::Notification::new()
+                                .title("Synara")
+                                .message("Test notification")
+                                .system(),
+                            cx,
+                        );
+                    }));
                 settings_pane = settings_pane.child(
                     v_flex()
                         .gap_1p5()
@@ -20573,24 +20731,24 @@ impl Render for Native {
                                 .child(srow(
                                     "Activity toasts",
                                     "Show an in-app toast when a chat or managed terminal agent finishes or needs input.",
-                                    toggle(true),
+                                    Self::setting_switch(cx, "enableTaskCompletionToasts", self.setting_bool("enableTaskCompletionToasts", true), accent),
                                 ))
                                 .child(divider())
                                 .child(srow(
                                     "Desktop notifications",
-                                    "Show an OS notification when a chat or managed terminal agent finishes or needs input while the app is in the background. Allow browser notifications to get alerts when chats or terminal agents finish or need input in the background.",
+                                    "Show an OS notification when a chat or managed terminal agent finishes or needs input while the app is in the background.",
                                     h_flex()
                                         .items_center()
                                         .gap_3()
-                                        .child(div().text_size(px(13.)).child("Test"))
-                                        .child(toggle(true))
+                                        .child(test_notification)
+                                        .child(Self::setting_switch(cx, "enableSystemTaskCompletionNotifications", self.setting_bool("enableSystemTaskCompletionNotifications", true), accent))
                                         .into_any_element(),
                                 ))
                                 .child(divider())
                                 .child(srow(
                                     "Wait for subagents",
                                     "Alert once the agent and all of its background subagents have finished. Turn this off to be alerted each time the agent or one of its subagents stops.",
-                                    toggle(true),
+                                    Self::setting_switch(cx, "notifyAfterSubagentsFinish", self.setting_bool("notifyAfterSubagentsFinish", true), accent),
                                 ))
                                 .into_any_element(),
                         )),

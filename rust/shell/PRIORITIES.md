@@ -72,3 +72,11 @@ Method (tools/pixel-perfect/): capture.sh + anaglyph.py — red=web reference,
 cyan=shell; grey means matched. Both at 1600x1088. NEVER eyeball — measure.
 Web capture requires CDP 57012 tab on the target surface; viewport override
 must be re-applied after any navigation; wait ~7s for backdrop rebuild.
+
+SETTINGS EXACT SPEC (measured in live web via CDP, 1600x1088):
+- Content column: `mx-auto w-full px-6 py-8 max-w-2xl` — centered in pane,
+  max width 672px, padding x 24 top 32. At 1600 window: x=417 y=44 w=672.
+- Header row: `mb-8 flex items-start justify-between` — title y=76,
+  32px bottom margin before first section.
+- First card top edge web y=197 vs shell y=188 — shell is 9px high.
+- Scroll container is the full pane (x 308, w 889).

@@ -311,6 +311,169 @@ pub fn github_releases_page(owner: &str, repo: &str, host: Option<&str>, tag: Op
     }
 }
 
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InstallMarker {
+    pub schema_version: u32,
+    pub attempt_id: String,
+    pub from_version: String,
+    pub to_version: String,
+    pub requested_at: String,
+    pub handoff_at: Option<String>,
+    pub phase: String,
+    pub consecutive_failures: u32,
+    pub last_failure_at: Option<String>,
+    pub artifact: ArtifactIdentity,
+}
+
+impl InstallMarker {
+    pub fn create(from_version: impl Into<String>, to_version: impl Into<String>, requested_at: impl Into<String>, artifact: ArtifactIdentity) -> Self {
+        Self {
+            schema_version: 2,
+            attempt_id: uuid::Uuid::new_v4().to_string(),
+            from_version: from_version.into(),
+            to_version: to_version.into(),
+            requested_at: requested_at.into(),
+            handoff_at: None,
+            phase: "requested".into(),
+            consecutive_failures: 0,
+            last_failure_at: None,
+            artifact,
+        }
+    }
+
+    pub fn valid(&self) -> bool {
+        self.schema_version == 2
+            && !self.attempt_id.trim().is_empty()
+            && !self.from_version.trim().is_empty()
+            && !self.to_version.trim().is_empty()
+            && iso_ms(&self.requested_at).is_some()
+            && self.handoff_at.as_deref().is_none_or(|value| iso_ms(value).is_some())
+            && matches!(self.phase.as_str(), "requested" | "handoff" | "failed")
+            && self.artifact.size > 0
+            && self.artifact.sha512.len() == 128
+            && self.artifact.sha512.bytes().all(|byte| byte.is_ascii_hexdigit())
+    }
+}
+
+fn iso_ms(value: &str) -> Option<i64> {
+    chrono::DateTime::parse_from_rfc3339(value).ok().map(|time| time.timestamp_millis())
+}
+
+pub fn read_install_marker(path: &Path) -> Result<Option<InstallMarker>, String> {
+    let raw = match std::fs::read_to_string(path) {
+        Ok(raw) => raw,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => return Err(error.to_string()),
+    };
+    let marker: InstallMarker = serde_json::from_str(&raw).map_err(|error| error.to_string())?;
+    if !marker.valid() {
+        return Err("marker does not match schema version 2".into());
+    }
+    Ok(Some(marker))
+}
+
+pub fn write_install_marker(path: &Path, marker: &InstallMarker) -> Result<(), String> {
+    if !marker.valid() {
+        return Err("cannot write an invalid update install marker".into());
+    }
+    let directory = path.parent().ok_or("install marker path has no parent")?;
+    std::fs::create_dir_all(directory).map_err(|error| error.to_string())?;
+    let temporary = directory.join(format!(".{}.{}.tmp", path.file_name().and_then(|name| name.to_str()).unwrap_or("install-marker"), uuid::Uuid::new_v4()));
+    std::fs::write(&temporary, format!("{}\n", serde_json::to_string_pretty(marker).map_err(|error| error.to_string())?)).map_err(|error| error.to_string())?;
+    std::fs::rename(&temporary, path).map_err(|error| error.to_string())
+}
+
+pub fn mark_install_handoff(path: &Path, attempt_id: &str, artifact: &ArtifactIdentity, now_iso: &str) -> Result<Option<InstallMarker>, String> {
+    let Some(mut marker) = read_install_marker(path)? else { return Ok(None) };
+    if marker.attempt_id != attempt_id || marker.artifact != *artifact || marker.phase == "failed" {
+        return Ok(None);
+    }
+    if marker.handoff_at.is_some() {
+        return Ok((marker.phase == "handoff").then_some(marker));
+    }
+    marker.phase = "handoff".into();
+    marker.handoff_at = Some(now_iso.into());
+    write_install_marker(path, &marker)?;
+    Ok(Some(marker))
+}
+
+pub fn record_install_marker_failure(path: &Path, attempt_id: &str, artifact: &ArtifactIdentity, now_iso: &str) -> Result<Option<InstallMarker>, String> {
+    let Some(mut marker) = read_install_marker(path)? else { return Ok(None) };
+    if marker.attempt_id != attempt_id || marker.artifact != *artifact {
+        return Ok(None);
+    }
+    if marker.phase != "failed" {
+        marker.phase = "failed".into();
+        marker.consecutive_failures += 1;
+        marker.last_failure_at = Some(now_iso.into());
+        write_install_marker(path, &marker)?;
+    }
+    Ok(Some(marker))
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum InstallOutcome {
+    Success,
+    Failure,
+    AlreadyFailed,
+    Stale,
+    Invalid,
+}
+
+pub fn install_marker_outcome(marker: &InstallMarker, current_version: &str, now_iso: &str) -> InstallOutcome {
+    let (Some(now), Some(requested)) = (iso_ms(now_iso), iso_ms(&marker.requested_at)) else { return InstallOutcome::Invalid };
+    if !marker.valid() { return InstallOutcome::Invalid; }
+    if !version_newer(current_version, &marker.to_version) { return InstallOutcome::Success; }
+    if now - requested > 7 * 24 * 60 * 60 * 1000 { return InstallOutcome::Stale; }
+    if marker.phase == "failed" { InstallOutcome::AlreadyFailed } else { InstallOutcome::Failure }
+}
+
+pub fn updater_cache_dir(cache_name: &str, platform: &str, home: &Path, local_app_data: Option<&Path>, xdg_cache_home: Option<&Path>) -> Option<PathBuf> {
+    if cache_name.trim().is_empty() { return None; }
+    let base = match platform {
+        "win32" => local_app_data.map(Path::to_path_buf).unwrap_or_else(|| home.join("AppData").join("Local")),
+        "macos" | "darwin" => home.join("Library").join("Caches"),
+        _ => xdg_cache_home.map(Path::to_path_buf).unwrap_or_else(|| home.join(".cache")),
+    };
+    Some(base.join(cache_name))
+}
+
+#[derive(Default)]
+pub struct InstallPreparationCoordinator {
+    active: std::sync::Mutex<Option<u64>>,
+    next: std::sync::atomic::AtomicU64,
+}
+
+impl InstallPreparationCoordinator {
+    pub fn begin(&self) -> Option<u64> {
+        let mut active = self.active.lock().ok()?;
+        if active.is_some() { return None; }
+        let token = self.next.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+        *active = Some(token);
+        Some(token)
+    }
+
+    pub fn cancel(&self) -> bool {
+        self.active.lock().map(|mut active| active.take().is_some()).unwrap_or(false)
+    }
+
+    pub fn require_active(&self, token: u64) -> Result<(), String> {
+        if self.active.lock().map_err(|_| "install preparation lock poisoned")?.is_some_and(|active| active == token) {
+            Ok(())
+        } else {
+            Err("Update install preparation was cancelled.".into())
+        }
+    }
+
+    pub fn release(&self, token: u64) -> Result<(), String> {
+        self.require_active(token)?;
+        if let Ok(mut active) = self.active.lock() { *active = None; }
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -362,4 +525,31 @@ mod tests {
         assert!(!verify_artifact_identity(&identity));
         std::fs::remove_dir_all(root).unwrap();
     }
+    #[test]
+    fn install_marker_is_atomic_and_reports_outcomes() {
+        let root = std::env::temp_dir().join(format!("synara-marker-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let payload = root.join("payload.bin");
+        std::fs::write(&payload, b"payload").unwrap();
+        let artifact = fingerprint_artifact(&payload).unwrap();
+        let path = root.join("install.json");
+        let marker = InstallMarker::create("0.9.0", "0.9.1", "2026-01-01T00:00:00.000Z", artifact.clone());
+        write_install_marker(&path, &marker).unwrap();
+        let handed = mark_install_handoff(&path, &marker.attempt_id, &artifact, "2026-01-01T00:01:00.000Z").unwrap().unwrap();
+        assert_eq!(handed.phase, "handoff");
+        assert_eq!(install_marker_outcome(&handed, "0.9.0", "2026-01-01T00:02:00.000Z"), InstallOutcome::Failure);
+        assert_eq!(install_marker_outcome(&handed, "0.9.1", "2026-01-01T00:02:00.000Z"), InstallOutcome::Success);
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn install_preparation_allows_one_active_attempt() {
+        let coordinator = InstallPreparationCoordinator::default();
+        let first = coordinator.begin().unwrap();
+        assert!(coordinator.begin().is_none());
+        coordinator.require_active(first).unwrap();
+        coordinator.release(first).unwrap();
+        assert!(coordinator.begin().is_some());
+    }
+
 }

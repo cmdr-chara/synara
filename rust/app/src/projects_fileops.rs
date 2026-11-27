@@ -627,15 +627,47 @@ pub fn write_file(payload: &Value) -> Result<Value, WsErr> {
         }
     }
 
+    let should_format = payload
+        .get("format")
+        .and_then(Value::as_bool)
+        .unwrap_or_else(crate::server_settings::format_agent_files_enabled);
+    let mut output_contents = contents.to_string();
+    let mut formatting = json!({"applied": false});
+    if should_format {
+        formatting = match language_from_input(
+            Some(&target.to_string_lossy()),
+            payload.get("formatLanguage").and_then(Value::as_str),
+        ) {
+            Ok(language) => {
+                let mut options = tidy_options(Some(&target), payload)?;
+                let effective_line_ending = line_ending.or_else(|| detect_line_ending(contents));
+                preserve_line_endings(&mut options, effective_line_ending);
+                match format_document(
+                    contents,
+                    language,
+                    &options,
+                    Some(&target.to_string_lossy()),
+                ) {
+                    Ok(formatted) => {
+                        output_contents = formatted;
+                        json!({"applied": true, "language": language_name(language)})
+                    }
+                    Err(error) => json!({"applied": false, "error": error.0, "code": error.1}),
+                }
+            }
+            Err(error) => json!({"applied": false, "error": error.0, "code": error.1}),
+        };
+    }
+
     let bytes = match (encoding, line_ending) {
-        (Some(enc), Some(le)) => encode_text(contents, enc, le),
-        _ => contents.as_bytes().to_vec(),
+        (Some(enc), Some(le)) => encode_text(&output_contents, enc, le),
+        _ => output_contents.as_bytes().to_vec(),
     };
 
     atomic_write(&target, &bytes)?;
 
     let version = format!("sha256:{}", hex_digest(&bytes));
-    Ok(json!({ "relativePath": rel, "version": version }))
+    Ok(json!({ "relativePath": rel, "version": version, "formatting": formatting }))
 }
 
 pub fn search_content(payload: &Value) -> Result<Value, WsErr> {
@@ -887,6 +919,36 @@ mod format_tests {
                 "expectedVersion": "sha256:bad"
             }))
             .is_err()
+        );
+        std::fs::remove_dir_all(&cwd).ok();
+    }
+
+    #[test]
+    fn write_file_can_format_supported_text_without_failing_unsupported_files() {
+        let cwd = temp_workspace("write-format");
+        let result = write_file(&json!({
+            "cwd": cwd,
+            "relativePath": "x.js",
+            "contents": "const x={a:1}\n",
+            "format": true
+        }))
+        .unwrap();
+        assert_eq!(result["formatting"]["applied"], true);
+        assert_eq!(
+            std::fs::read_to_string(cwd.join("x.js")).unwrap(),
+            "const x = { a: 1 };\n"
+        );
+        let result = write_file(&json!({
+            "cwd": cwd,
+            "relativePath": "x.rs",
+            "contents": "fn main(){}\n",
+            "format": true
+        }))
+        .unwrap();
+        assert_eq!(result["formatting"]["applied"], false);
+        assert_eq!(
+            std::fs::read_to_string(cwd.join("x.rs")).unwrap(),
+            "fn main(){}\n"
         );
         std::fs::remove_dir_all(&cwd).ok();
     }

@@ -39,6 +39,7 @@ fn default_settings() -> Value {
         "sourceControlWritingStyle": "repository",
         "sourceControlCustomInstructions": "",
         "gitAttributionEnabled": true,
+        "formatAgentFiles": false,
         "textGenerationModelSelection": {"provider": "codex", "model": "gpt-6-luna"},
         "providers": {
             "codex": {"enabled": true, "binaryPath": "codex", "customModels": [], "homePath": "", "accounts": [], "selectedAccountId": "default"},
@@ -129,6 +130,7 @@ const PATCH_KEYS: &[&str] = &[
     "sourceControlWritingStyle",
     "sourceControlCustomInstructions",
     "gitAttributionEnabled",
+    "formatAgentFiles",
     "textGenerationModelSelection",
     "providers",
     "providerInstances",
@@ -255,6 +257,13 @@ pub fn current() -> Value {
 
 pub fn changes() -> broadcast::Receiver<Value> {
     STORE.changes.subscribe()
+}
+
+pub(crate) fn format_agent_files_enabled() -> bool {
+    current()
+        .get("formatAgentFiles")
+        .and_then(Value::as_bool)
+        .unwrap_or(false)
 }
 
 pub fn update_settings(payload: &Value) -> Result<Value, WsErr> {

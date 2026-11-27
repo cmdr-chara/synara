@@ -9,7 +9,7 @@
 
 use axum::Router;
 use axum::extract::State;
-use axum::extract::ws::{Message as ClientMessage, WebSocket, WebSocketUpgrade};
+use axum::extract::ws::{CloseFrame, Message as ClientMessage, WebSocket, WebSocketUpgrade};
 use axum::response::IntoResponse;
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
@@ -670,21 +670,29 @@ async fn intercept_todo(
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
-            let mut last = String::new();
+            let mut last_sequence = -1i64;
             loop {
-                if let Ok(snapshot) = crate::orchestration_snapshot::get_shell_snapshot() {
-                    let text = snapshot.to_string();
-                    if !snapshot.is_null() && text != last {
-                        last = text;
-                        let chunk = serde_json::json!({
-                            "_tag": "Chunk", "requestId": rid,
-                            "values": [{"kind": "snapshot", "snapshot": snapshot}],
-                        });
-                        if tx
-                            .send(ClientMessage::Text(chunk.to_string().into()))
-                            .is_err()
-                        {
-                            return;
+                let sequence = crate::orchestration_snapshot::current_snapshot_sequence().unwrap_or(-1);
+                // The projection sequence is the dirty bit. Rebuilding and
+                // sending a full shell on a wall-clock-only `updatedAt` floods
+                // cold boot with multi-megabyte duplicates every 1.2 seconds.
+                if sequence != last_sequence {
+                    if let Ok(snapshot) = crate::orchestration_snapshot::get_shell_snapshot() {
+                        if !snapshot.is_null() {
+                            last_sequence = snapshot
+                                .get("snapshotSequence")
+                                .and_then(|value| value.as_i64())
+                                .unwrap_or(sequence);
+                            let chunk = serde_json::json!({
+                                "_tag": "Chunk", "requestId": rid,
+                                "values": [{"kind": "snapshot", "snapshot": snapshot}],
+                            });
+                            if tx
+                                .send(ClientMessage::Text(chunk.to_string().into()))
+                                .is_err()
+                            {
+                                return;
+                            }
                         }
                     }
                 }
@@ -1493,11 +1501,11 @@ async fn relay(
     let desktop_update_authority = crate::auth_http::authenticate(&headers).and_then(|session| {
         (session.role == "owner").then(|| format!("owner:{}", session.session_id))
     });
-    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
-        // No original is running: serve every frame natively. Handled tags get
+    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() || !original.upstream_running() {
+        // No usable original is running: serve every frame natively. Handled tags get
         // their normal reply; anything else answers an Exit failure so callers
         // never hang waiting for an upstream that does not exist.
-        eprintln!("ws_relay: SYNARA_NO_UPSTREAM set, serving socket natively");
+        eprintln!("ws_relay: serving socket natively (upstream unavailable or disabled)");
         let (mut client_tx, mut client_rx) = client.split();
         let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
         let streams: std::sync::Arc<
@@ -1545,7 +1553,7 @@ async fn relay(
                             "_tag": "Exit", "requestId": rid,
                             "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
                                 "_tag": "WsRpcError",
-                                "message": format!("{tag_s} requires the original server, which is not running (SYNARA_NO_UPSTREAM)"),
+                                "message": format!("{tag_s} requires the original server, which is unavailable"),
                                 "code": null, "retryable": false}}]}
                         });
                         let _ = native_tx.send(ClientMessage::Text(reply.to_string().into()));
@@ -1596,6 +1604,17 @@ async fn relay(
                     continue;
                 }
                 eprintln!("ws_relay: upstream connect to {target} failed: {e}");
+                // The upgrade was already accepted, so make the failure visible
+                // instead of dropping the socket into a silent black hole. The
+                // next attempt takes the native path once upstream_running()
+                // observes the dead child.
+                let mut client = client;
+                let _ = client
+                    .send(ClientMessage::Close(Some(CloseFrame {
+                        code: 1011,
+                        reason: "upstream server unavailable".into(),
+                    })))
+                    .await;
                 return;
             }
         }

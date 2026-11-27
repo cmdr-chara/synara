@@ -6,7 +6,7 @@
 
 use std::path::PathBuf;
 
-use rusqlite::Connection;
+use rusqlite::{Connection, OpenFlags};
 use serde_json::{Map, Value, json};
 
 use crate::todo::{WsErr, state_dir};
@@ -20,20 +20,39 @@ fn err(msg: impl Into<String>) -> WsErr {
 /// read that.
 pub(crate) struct StateCopy {
     pub(crate) conn: Connection,
-    db: PathBuf,
-    wal: PathBuf,
+    db: Option<PathBuf>,
+    wal: Option<PathBuf>,
 }
 
 impl Drop for StateCopy {
     fn drop(&mut self) {
-        let _ = std::fs::remove_file(&self.db);
-        let _ = std::fs::remove_file(&self.wal);
+        if let Some(path) = &self.db {
+            let _ = std::fs::remove_file(path);
+        }
+        if let Some(path) = &self.wal {
+            let _ = std::fs::remove_file(path);
+        }
     }
 }
 
 pub(crate) fn open_state_copy() -> Option<StateCopy> {
     let db = PathBuf::from(state_dir()).join("state.sqlite");
-    let tmp = std::env::temp_dir().join(format!("synara-orch-snap-{}.sqlite", std::process::id()));
+    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+        // Native mode owns state.sqlite and keeps it in WAL mode, so reads can
+        // share the live database. Copying the whole file for every RPC made
+        // cold boot quadratic and let concurrent snapshots overwrite the same
+        // process-wide temporary path.
+        let conn = Connection::open_with_flags(&db, OpenFlags::SQLITE_OPEN_READ_ONLY).ok()?;
+        return Some(StateCopy { conn, db: None, wal: None });
+    }
+    static TEMP_COUNTER: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+    let unique = format!(
+        "{}-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).ok()?.as_nanos(),
+        TEMP_COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+    );
+    let tmp = std::env::temp_dir().join(format!("synara-orch-snap-{unique}.sqlite"));
     let tmp_wal = PathBuf::from(format!("{}-wal", tmp.display()));
     let _ = std::fs::remove_file(&tmp);
     let _ = std::fs::remove_file(&tmp_wal);
@@ -45,8 +64,8 @@ pub(crate) fn open_state_copy() -> Option<StateCopy> {
     let conn = Connection::open(&tmp).ok()?;
     Some(StateCopy {
         conn,
-        db: tmp,
-        wal: tmp_wal,
+        db: Some(tmp),
+        wal: Some(tmp_wal),
     })
 }
 
@@ -467,6 +486,44 @@ pub(crate) fn now_iso() -> String {
     format!("{yy:04}-{mo:02}-{d:02}T{h:02}:{m:02}:{s:02}.{frac:03}Z")
 }
 
+fn collect_updated_at(value: &Value, best: &mut Option<String>) {
+    match value {
+        Value::Object(map) => {
+            if let Some(updated) = map.get("updatedAt").and_then(Value::as_str).filter(|v| !v.is_empty()) {
+                if best.as_deref().is_none_or(|current| updated > current) {
+                    *best = Some(updated.to_string());
+                }
+            }
+            for child in map.values() {
+                collect_updated_at(child, best);
+            }
+        }
+        Value::Array(items) => {
+            for child in items {
+                collect_updated_at(child, best);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Upstream derives the read model's `updatedAt` from persisted projection
+/// rows and falls back to the epoch. Using wall-clock time here makes every
+/// poll look dirty and retransmits the full shell forever.
+fn projection_updated_at(spaces: &[Value], projects: &[Value], threads: &[Value]) -> String {
+    let mut best = None;
+    for value in spaces.iter().chain(projects).chain(threads) {
+        collect_updated_at(value, &mut best);
+    }
+    best.unwrap_or_else(|| "1970-01-01T00:00:00.000Z".to_string())
+}
+
+/// Cheap sequence probe for subscription pumps; avoids rebuilding a full
+/// snapshot merely to learn that no projection event landed.
+pub fn current_snapshot_sequence() -> Option<i64> {
+    open_state_copy().map(|copy| snapshot_sequence(&copy.conn))
+}
+
 pub fn get_snapshot() -> Result<Value, WsErr> {
     let Some(copy) = open_state_copy() else {
         return Err(err("state.sqlite is unavailable"));
@@ -481,7 +538,7 @@ pub fn get_snapshot() -> Result<Value, WsErr> {
         "spaces": spaces,
         "projects": projects,
         "threads": threads,
-        "updatedAt": now_iso(),
+        "updatedAt": projection_updated_at(&spaces, &projects, &threads),
     }))
 }
 

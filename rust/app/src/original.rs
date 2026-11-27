@@ -156,6 +156,18 @@ impl Original {
         Some(id)
     }
 
+
+    /// Whether the managed upstream process is still alive. A crashed upstream
+    /// must degrade websocket upgrades to native serving instead of leaving
+    /// accepted sockets as black holes.
+    pub fn upstream_running(&self) -> bool {
+        let Ok(mut guard) = self.child.lock() else { return false };
+        match guard.as_mut() {
+            Some(child) => !matches!(child.try_wait(), Ok(Some(_))),
+            None => false,
+        }
+    }
+
     /// WebSocket URL of the original (the `base` with a `ws` scheme).
     pub fn ws_base(&self) -> String {
         self.base.replacen("http", "ws", 1)

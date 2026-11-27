@@ -315,3 +315,14 @@ in-thread geometria fine — misurare tray top edge/width entrambi; (3) kanban p
 (4) code review sidebar offset verticale; (5) regression sweep light finale. METODO invariato.
 Shell di test attiva: backend porta 8580 pid vario, SYNARA_HOME=/tmp/synara-bisect. Catture in
 /tmp/pxcmp: web_thread_now.png + shell_thread_now2.png sono la coppia thread dark piu' fresca.
+
+
+## Update 08:45 — committed 5c9d5f9ccf: mode_accent dark #fe8549/light #c74614 (misurato upstream
+menu Full access rgb(254,133,73); chip trigger in ask-mode e foreground-secondary statico) +
+pill attachments verticali (v_flex items_end, upstream le impila una per riga). MISURE thread
+dark fresche (web_settings_dark.png=full thread ref): sidebar edge web308/shell307, transcript
+left ink 584=584, composer shell top ~976 bottom ~1067 vs web 988/1078 (shell ~10px piu alto),
+right ink web1300 vs shell1294 (6px). bottom-edge: shell mostra texture strip al fondo finestra,
+web flush 17 — DA VERIFICARE se corretto upstream (card radius bottom) o bug shell. Selection:
+shell renderizza contenuto inline, web pill "1 selection" collassata — tipo attachment forse
+non "selection" o content nel testo; da investigare il payload. Build pulita, shell rilanciata.

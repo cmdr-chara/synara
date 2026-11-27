@@ -228,7 +228,9 @@ impl BetaDiagnosticsReporter {
     /// diagnostics-informed build consent.
     pub fn create(home_dir: &Path, flavor: &str, app_version: &str) -> Option<Arc<Self>> {
         if !matches!(flavor, "beta" | "remote") { return None; }
-        let enabled = flavor == "beta" || crate::reliability::ReliabilityReporter::consent_is_explicitly_enabled(home_dir);
+        // Remote follows the live product-sharing gate dynamically; a saved opt-out
+        // is already reflected there. Do not freeze the startup consent snapshot.
+        let enabled = true;
         Some(Arc::new(Self {
             home_dir: home_dir.to_path_buf(),
             queue_path: home_dir.join("diagnostics").join("events.jsonl"),
@@ -244,7 +246,12 @@ impl BetaDiagnosticsReporter {
     }
 
     fn is_enabled(&self) -> bool {
-        self.enabled.lock().map(|enabled| *enabled).unwrap_or(false)
+        let local = self.enabled.lock().map(|enabled| *enabled).unwrap_or(false);
+        if self.flavor == "remote" {
+            local && crate::product_analytics::enabled()
+        } else {
+            local
+        }
     }
 
     pub fn set_enabled(&self, enabled: bool) {
@@ -409,6 +416,29 @@ impl BetaDiagnosticsReporter {
         Some(id)
     }
 
+    fn resume_sharing(&self) {
+        let directory = self.home_dir.join("diagnostics");
+        if std::fs::create_dir_all(&directory).is_ok() {
+            let _ = write_private_atomic(
+                &directory.join("sharing-resumed-at"),
+                format!("{}
+", chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)).as_bytes(),
+            );
+        }
+    }
+
+    fn discard_queue(&self) {
+        for path in [
+            self.queue_path.clone(),
+            self.home_dir.join("diagnostics").join("usage-snapshot.json"),
+        ] {
+            let _ = std::fs::remove_file(path);
+        }
+        if let Ok(mut reports) = self.issue_reports.lock() { reports.clear(); }
+        if let Ok(mut timestamps) = self.error_sent_timestamps.lock() { timestamps.clear(); }
+        if let Ok(mut fingerprints) = self.error_fingerprint_sent_at.lock() { fingerprints.clear(); }
+    }
+
     fn track_daily_usage(&self) {
         let path = self.home_dir.join("diagnostics").join("usage-snapshot.json");
         let Ok(text) = std::fs::read_to_string(path) else { return };
@@ -417,6 +447,16 @@ impl BetaDiagnosticsReporter {
         let Ok(generated_at) = chrono::DateTime::parse_from_rfc3339(generated) else { return };
         let age = chrono::Utc::now().signed_duration_since(generated_at.with_timezone(&chrono::Utc));
         if age < chrono::Duration::zero() || age > chrono::Duration::hours(12) { return; }
+        let resumed_path = self.home_dir.join("diagnostics").join("sharing-resumed-at");
+        if let Ok(resumed_text) = std::fs::read_to_string(&resumed_path) {
+            if let Ok(resumed_at) = chrono::DateTime::parse_from_rfc3339(resumed_text.trim()) {
+                if generated_at.with_timezone(&chrono::Utc) - chrono::Duration::hours(24) < resumed_at.with_timezone(&chrono::Utc) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
         let day = generated_at.format("%Y-%m-%d").to_string();
         let marker = self.home_dir.join("diagnostics").join("usage-last-day");
         if std::fs::read_to_string(&marker).ok().is_some_and(|last| last.trim() == day) { return; }
@@ -508,6 +548,12 @@ pub fn initialize(home_dir: &Path, flavor: &str, app_version: &str) -> Option<Ar
     write_launch_version(home_dir, &reporter.app_version);
     reporter.start();
     Some(reporter)
+}
+
+pub fn sharing_changed(enabled: bool) {
+    if let Some(reporter) = REPORTER.get().and_then(Option::as_ref) {
+        if enabled { reporter.resume_sharing(); } else { reporter.discard_queue(); }
+    }
 }
 
 pub fn track(event: &str, payload: Value) -> Option<String> {

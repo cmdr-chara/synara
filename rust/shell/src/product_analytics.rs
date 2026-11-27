@@ -750,6 +750,7 @@ impl ProductAnalytics {
                 if self.persist_consent(true).is_ok() {
                     state.has_explicit_consent = true;
                     crate::reliability::set_enabled(true);
+                    crate::beta_diagnostics::sharing_changed(true);
                 }
                 return state.enabled;
             }
@@ -764,6 +765,7 @@ impl ProductAnalytics {
                 let _ = self.clear_persistent_data(&mut state);
                 let _ = self.persist_consent(false);
                 crate::reliability::set_enabled(false);
+                crate::beta_diagnostics::sharing_changed(false);
                 return false;
             }
             let _ = self.clear_persistent_data(&mut state);
@@ -790,6 +792,7 @@ impl ProductAnalytics {
         }
         let _ = self.persist_queue(&queue_snapshot);
         crate::reliability::set_enabled(self.enabled());
+        crate::beta_diagnostics::sharing_changed(self.enabled());
         self.enabled()
     }
 

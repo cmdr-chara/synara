@@ -169,6 +169,46 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
 }
 
 
+fn import_iso_to_ms(value: &str) -> Option<i64> {
+    chrono::DateTime::parse_from_rfc3339(value)
+        .ok()
+        .map(|date| date.timestamp_millis())
+}
+
+fn import_iso_from_ms(ms: i64) -> String {
+    chrono::DateTime::from_timestamp_millis(ms)
+        .map(|date| date.to_rfc3339_opts(chrono::SecondsFormat::Millis, true))
+        .unwrap_or_else(|| "1970-01-01T00:00:00.000Z".to_string())
+}
+
+/// Upstream finalizeImportedMessages: every projected imported row receives a
+/// distinct monotonically increasing timestamp. Missing, invalid, equal, or
+/// regressing provider timestamps are repaired one millisecond after the
+/// previous row; valid increasing timestamps keep their source time.
+fn finalize_imported_timestamps(
+    imported: Vec<(String, String, Option<String>, String)>,
+) -> Vec<(String, String, Option<String>, String)> {
+    let first_dated = imported
+        .iter()
+        .enumerate()
+        .find_map(|(index, row)| row.2.as_deref().and_then(import_iso_to_ms).map(|ms| (index, ms)));
+    let mut previous_ms = first_dated
+        .map(|(index, first_ms)| first_ms - index as i64 - 1)
+        .unwrap_or_else(|| chrono::Utc::now().timestamp_millis() - 1);
+    imported
+        .into_iter()
+        .map(|(role, text, timestamp, source_id)| {
+            let candidate = timestamp
+                .as_deref()
+                .and_then(import_iso_to_ms)
+                .unwrap_or(previous_ms + 1);
+            let created_ms = candidate.max(previous_ms + 1);
+            previous_ms = created_ms;
+            (role, text, Some(import_iso_from_ms(created_ms)), source_id)
+        })
+        .collect()
+}
+
 /// Lean port of upstream importThreadRoute for claude+codex: validates the
 /// thread, reads the provider-native transcript straight from disk (the same
 /// files the discovery catalog scans), projects messages with
@@ -223,6 +263,29 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         .get("instanceId")
         .and_then(Value::as_str)
         .map(str::to_string);
+    // Import uses the selected provider account boundary, not merely the
+    // transcript format. Match upstream resolveImportedThreadProviderOptions:
+    // unknown ids and disabled accounts fail before any provider state changes.
+    let settings = crate::server_settings::current();
+    let selected_instance = crate::provider_instances::resolve_instance(
+        &settings,
+        instance_id.as_deref(),
+        Some(provider.as_str()),
+    );
+    let Some(selected_instance) = selected_instance else {
+        let id = instance_id.as_deref().unwrap_or(provider.as_str());
+        return Err(err(format!("Unknown provider instance '{id}' for thread import.")));
+    };
+    if selected_instance.driver != provider {
+        let id = instance_id.as_deref().unwrap_or(provider.as_str());
+        return Err(err(format!("Unknown provider instance '{id}' for thread import.")));
+    }
+    if !selected_instance.enabled {
+        return Err(err(format!(
+            "Provider instance '{}' is disabled for thread import.",
+            selected_instance.instance_id
+        )));
+    }
 
     // Locate the provider-native transcript by external id. OpenCode sessions
     // are workspace-scoped, so resolve the same cwd the runners use before
@@ -267,16 +330,21 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     } else {
         match provider.as_str() {
             "claudeAgent" | "claude" => {
-                let projects = std::path::PathBuf::from(&home).join(".claude/projects");
                 let target = format!("{external_id}.jsonl");
                 let mut found = None;
-                if let Ok(dirs) = std::fs::read_dir(&projects) {
-                    for dir in dirs.flatten() {
-                        let candidate = dir.path().join(&target);
-                        if candidate.is_file() {
-                            found = Some(candidate);
-                            break;
+                for config_dir in crate::project_imports::claude_config_dirs_for_import(instance_id.as_deref()) {
+                    let projects = std::path::PathBuf::from(config_dir).join("projects");
+                    if let Ok(dirs) = std::fs::read_dir(&projects) {
+                        for dir in dirs.flatten() {
+                            let candidate = dir.path().join(&target);
+                            if candidate.is_file() {
+                                found = Some(candidate);
+                                break;
+                            }
                         }
+                    }
+                    if found.is_some() {
+                        break;
                     }
                 }
                 found
@@ -463,6 +531,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             }
         }
     }
+    imported = finalize_imported_timestamps(imported);
     if imported.is_empty() {
         return Err(err("The session transcript has no importable messages."));
     }
@@ -8147,4 +8216,42 @@ fn reconcile_provider_delivery(payload: &Value) -> Result<Value, WsErr> {
         "state": new_state,
         "reconciledAt": reconciled_at,
     }))
+}
+
+
+#[cfg(test)]
+mod import_finalization_tests {
+    use super::*;
+
+    fn ms(value: &str) -> i64 {
+        import_iso_to_ms(value).unwrap()
+    }
+
+    #[test]
+    fn imported_timestamps_are_distinct_and_ordered() {
+        let rows = finalize_imported_timestamps(vec![
+            ("user".into(), "a".into(), Some("2026-01-01T00:00:00Z".into()), "1".into()),
+            ("assistant".into(), "b".into(), Some("2026-01-01T00:00:00Z".into()), "2".into()),
+            ("user".into(), "c".into(), None, "3".into()),
+            ("assistant".into(), "d".into(), Some("not-a-date".into()), "4".into()),
+        ]);
+        let times: Vec<i64> = rows
+            .iter()
+            .filter_map(|row| row.2.as_deref())
+            .filter_map(import_iso_to_ms)
+            .collect();
+        assert_eq!(times.len(), 4);
+        assert!(times.windows(2).all(|pair| pair[0] < pair[1]));
+        assert_eq!(times[0], ms("2026-01-01T00:00:00Z"));
+    }
+
+    #[test]
+    fn increasing_source_times_are_kept() {
+        let rows = finalize_imported_timestamps(vec![
+            ("user".into(), "a".into(), Some("2026-01-01T00:00:00Z".into()), "1".into()),
+            ("assistant".into(), "b".into(), Some("2026-01-01T00:00:01Z".into()), "2".into()),
+        ]);
+        assert_eq!(rows[0].2.as_deref(), Some("2026-01-01T00:00:00.000Z"));
+        assert_eq!(rows[1].2.as_deref(), Some("2026-01-01T00:00:01.000Z"));
+    }
 }

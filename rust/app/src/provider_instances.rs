@@ -61,28 +61,95 @@ fn materialize_environment(raw: &Value) -> Vec<(String, String)> {
 /// drivers are skipped; `isDefault` holds when the instance id is the driver
 /// name itself.
 pub(crate) fn derive_instances(settings: &Value) -> Vec<ResolvedInstance> {
+    // Upstream deriveProviderInstanceConfigMap always seeds every built-in
+    // driver from the legacy `providers` section before overlaying explicit
+    // providerInstances. Without those implicit defaults, a thread selecting a
+    // provider with no explicit rows silently falls back to codex.
+    let mut merged: std::collections::BTreeMap<String, (String, bool, Value, Value)> =
+        std::collections::BTreeMap::new();
+    for provider in BUILT_IN_PROVIDER_KINDS {
+        let config = settings
+            .get("providers")
+            .and_then(|providers| providers.get(*provider))
+            .filter(|config| config.is_object())
+            .cloned()
+            .unwrap_or(json!({}));
+        let enabled = config.get("enabled").and_then(Value::as_bool) != Some(false);
+        merged.insert(
+            provider.to_string(),
+            (provider.to_string(), enabled, config.clone(), json!({
+                "driver": provider,
+                "enabled": enabled,
+                "config": config,
+            })),
+        );
+    }
+    if let Some(map) = settings.get("providerInstances").and_then(Value::as_object) {
+        for (instance_id, raw) in map {
+            if is_unresolved_automation_instance_id(instance_id) {
+                merged.remove(instance_id);
+                continue;
+            }
+            let driver = raw.get("driver").and_then(Value::as_str).unwrap_or("");
+            if !BUILT_IN_PROVIDER_KINDS.contains(&driver) {
+                merged.remove(instance_id);
+                continue;
+            }
+            if BUILT_IN_PROVIDER_KINDS.contains(&instance_id.as_str()) && instance_id != driver {
+                // Canonical built-in ids are routing authorities and cannot be
+                // retargeted to another provider's runtime.
+                continue;
+            }
+            let explicit_config = raw
+                .get("config")
+                .filter(|config| config.is_object())
+                .cloned()
+                .unwrap_or(json!({}));
+            let (config, _derived_enabled, merged_raw) = match merged.get(instance_id) {
+                Some((derived_driver, derived_enabled, derived_config, derived_raw))
+                    if derived_driver == driver =>
+                {
+                    // Explicit rows merge key-by-key over derived built-in config,
+                    // so sparse rows (for example customModels only) keep live
+                    // launch settings such as homes and binary paths.
+                    let mut config = derived_config.clone();
+                    if let (Some(target), Some(overlay)) =
+                        (config.as_object_mut(), explicit_config.as_object())
+                    {
+                        for (key, value) in overlay {
+                            target.insert(key.clone(), value.clone());
+                        }
+                    }
+                    let mut merged_raw = derived_raw.clone();
+                    if let (Some(target), Some(overlay)) =
+                        (merged_raw.as_object_mut(), raw.as_object())
+                    {
+                        for (key, value) in overlay {
+                            target.insert(key.clone(), value.clone());
+                        }
+                        target.insert("config".to_string(), config.clone());
+                    }
+                    (config, *derived_enabled, merged_raw)
+                }
+                _ => (explicit_config, true, raw.clone()),
+            };
+            let enabled = merged_raw.get("enabled").and_then(Value::as_bool) != Some(false)
+                && config.get("enabled").and_then(Value::as_bool) != Some(false);
+            merged.insert(
+                instance_id.clone(),
+                (driver.to_string(), enabled, config, merged_raw),
+            );
+        }
+    }
     let mut out = Vec::new();
-    let Some(map) = settings.get("providerInstances").and_then(Value::as_object) else {
-        return out;
-    };
-    for (instance_id, raw) in map {
-        if is_unresolved_automation_instance_id(instance_id) {
-            continue;
-        }
-        let driver = raw.get("driver").and_then(Value::as_str).unwrap_or("");
-        if !BUILT_IN_PROVIDER_KINDS.contains(&driver) {
-            continue;
-        }
-        let config = raw.get("config").filter(|c| c.is_object()).cloned().unwrap_or(json!({}));
-        let enabled = raw.get("enabled").and_then(Value::as_bool) != Some(false)
-            && config.get("enabled").and_then(Value::as_bool) != Some(false);
+    for (instance_id, (driver, enabled, config, raw)) in merged {
         out.push(ResolvedInstance {
-            instance_id: instance_id.clone(),
-            driver: driver.to_string(),
-            enabled,
             is_default: instance_id == driver,
+            environment: materialize_environment(&raw),
+            instance_id,
+            driver,
+            enabled,
             config,
-            environment: materialize_environment(raw),
         });
     }
     out
@@ -212,8 +279,13 @@ mod tests {
             "mystery": { "driver": "notAProvider" },
         }));
         let instances = derive_instances(&settings);
-        assert_eq!(instances.len(), 1);
-        assert!(instances[0].is_default);
+        assert_eq!(instances.len(), BUILT_IN_PROVIDER_KINDS.len());
+        let codex = instances.iter().find(|instance| instance.instance_id == "codex").unwrap();
+        assert!(codex.is_default);
+        assert!(!instances.iter().any(|instance| instance.instance_id == "mystery"));
+        assert!(!instances
+            .iter()
+            .any(|instance| instance.instance_id == "synara_unresolved_automation_codex"));
     }
 
     #[test]
@@ -226,7 +298,8 @@ mod tests {
             ]},
         }));
         let instances = derive_instances(&settings);
-        assert_eq!(instances[0].environment, vec![("VISIBLE".to_string(), "yes".to_string())]);
+        let codex = instances.iter().find(|instance| instance.instance_id == "codex").unwrap();
+        assert_eq!(codex.environment, vec![("VISIBLE".to_string(), "yes".to_string())]);
     }
 
     #[test]

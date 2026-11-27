@@ -496,6 +496,33 @@ fn sources(providers: &[&str]) -> Vec<Source> {
     out
 }
 
+/// Config-directory candidates for importing one Claude account boundary.
+/// Reuses the same source derivation as the import catalog so transcript
+/// import sees explicit config dirs, profile dirs, provider homes, explicit
+/// CLAUDE_CONFIG_DIR values, and isolated non-default account homes.
+pub(crate) fn claude_config_dirs_for_import(instance_id: Option<&str>) -> Vec<String> {
+    let mut dirs = Vec::new();
+    if let Ok(value) = std::env::var("CLAUDE_CONFIG_DIR") {
+        if !value.trim().is_empty() {
+            dirs.push(value);
+        }
+    }
+    if dirs.is_empty() {
+        dirs.push(format!("{}/.claude", home_dir().trim_end_matches('/')));
+    }
+    for source in sources(&["claudeAgent"]) {
+        if instance_id.is_some_and(|id| id != source.instance_id) {
+            continue;
+        }
+        if let Some(dir) = source.claude_config_dir {
+            dirs.push(dir);
+        }
+    }
+    dirs.sort();
+    dirs.dedup();
+    dirs
+}
+
 fn hex_encode(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()
 }

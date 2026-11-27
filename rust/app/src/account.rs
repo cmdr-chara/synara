@@ -921,6 +921,10 @@ fn sign_out() -> Result<Value, WsErr> {
         }
         write_account_file(&stored)?;
     }
+    // Outbound host sessions are bound to the exact account authority/user/
+    // organization triple. Signing out must retire them immediately; desired
+    // rows in durable trust remain inert until a matching account signs in.
+    crate::remote_connections::clear_all();
     Ok(json!({}))
 }
 

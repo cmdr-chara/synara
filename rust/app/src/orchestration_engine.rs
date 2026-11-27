@@ -1175,14 +1175,9 @@ fn thread_mode_set(
 pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
-    if command.contains_key("goal")
-        || command.contains_key("goalStartBehavior")
-        || command.contains_key("goalAchieved")
-        || command.contains_key("goalAchievements")
-        || command.contains_key("providerHandoff")
-    {
+    if command.contains_key("providerHandoff") {
         return Err(err(
-            "thread.meta.update with goal/providerHandoff fields is not ported yet",
+            "thread.meta.update with providerHandoff fields is not ported yet",
         ));
     }
     let conn = open_state_rw()?;
@@ -1202,6 +1197,123 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
     let mut ep = Map::new();
     ep.insert("threadId".into(), json!(thread_id));
     let mut sets: Vec<(&'static str, Value)> = Vec::new();
+    let mut starts_with_message = false;
+    let mut start_goal_text: Option<String> = None;
+    if command.contains_key("goal")
+        || command.contains_key("goalPaused")
+        || command.get("goalAchieved") == Some(&json!(true))
+    {
+        let current_goal: Option<(Option<String>, Option<String>, Option<String>, Option<String>)> = conn
+            .query_row(
+                "SELECT goal, goal_started_at, goal_paused_at, goal_achievements_json FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+            )
+            .ok();
+        let (goal, started, paused, achievements_raw) = current_goal.unwrap_or((None, None, None, None));
+        let active_goal = goal.unwrap_or_default().trim().to_string();
+        let mut patch: Vec<(&'static str, &'static str, Value)> = Vec::new();
+        if command.get("goalAchieved") == Some(&json!(true)) && !active_goal.is_empty() {
+            let started_ms = started.as_deref().and_then(iso_ms);
+            let paused_ms = paused.as_deref().and_then(iso_ms);
+            let occurred_ms = iso_ms(&occurred_at);
+            let end_ms = paused_ms.or(occurred_ms);
+            let elapsed_ms = match (started_ms, end_ms) {
+                (Some(start), Some(end)) => json!((end - start).max(0)),
+                _ => Value::Null,
+            };
+            let achievement = json!({
+                "goal": active_goal,
+                "achievedAt": occurred_at,
+                "elapsedMs": elapsed_ms,
+                "turnId": row.latest_turn_id,
+            });
+            let mut achievements: Vec<Value> = achievements_raw
+                .as_deref()
+                .and_then(|raw| serde_json::from_str(raw).ok())
+                .and_then(|value: Value| value.as_array().cloned())
+                .unwrap_or_default();
+            achievements.push(achievement);
+            if achievements.len() > 20 {
+                achievements = achievements.split_off(achievements.len() - 20);
+            }
+            patch.push(("goal", "goal", json!("")));
+            patch.push(("goalStartedAt", "goal_started_at", Value::Null));
+            patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
+            patch.push(("goalAchievements", "goal_achievements_json", json!(achievements)));
+        } else if let Some(next_goal) = command.get("goal").and_then(Value::as_str) {
+            if next_goal.trim().is_empty() {
+                patch.push(("goal", "goal", json!(next_goal)));
+                patch.push(("goalStartedAt", "goal_started_at", Value::Null));
+                patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
+            } else if active_goal.is_empty() {
+                patch.push(("goal", "goal", json!(next_goal)));
+                patch.push(("goalStartedAt", "goal_started_at", json!(occurred_at)));
+                patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
+                if command.get("goalStartBehavior").and_then(Value::as_str) == Some("start-with-message") {
+                    let session_inflight: bool = conn
+                        .query_row(
+                            "SELECT COUNT(1) FROM projection_thread_sessions WHERE thread_id = ?1 AND (active_turn_id IS NOT NULL OR status IN ('starting', 'running'))",
+                            params![thread_id],
+                            |r| r.get::<_, i64>(0),
+                        )
+                        .map(|count| count > 0)
+                        .unwrap_or(false);
+                    let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
+                        || crate::codex_runner::has_running_turn(&thread_id)
+                        || crate::claude_runner::has_running_turn(&thread_id)
+                        || crate::opencode_runner::has_running_turn(&thread_id)
+                        || crate::pi_runner::has_running_turn(&thread_id);
+                    let sidechat_expired: bool = conn
+                        .query_row(
+                            "SELECT sidechat_expired_at FROM projection_threads WHERE thread_id = ?1",
+                            params![thread_id],
+                            |r| r.get::<_, Option<String>>(0),
+                        )
+                        .ok()
+                        .flatten()
+                        .is_some();
+                    let escaped_len = next_goal.trim().len() + "/goal ".len() + 3;
+                    starts_with_message = row.archived_at.is_none()
+                        && row.parent_thread_id.is_none()
+                        && row.interaction_mode != "plan"
+                        && !session_inflight
+                        && !provider_turn_live
+                        && !sidechat_expired
+                        && escaped_len <= PROVIDER_SEND_TURN_MAX_INPUT_CHARS;
+                    if starts_with_message {
+                        start_goal_text = Some(next_goal.trim().to_string());
+                    }
+                }
+            } else {
+                patch.push(("goal", "goal", json!(next_goal)));
+            }
+        } else if command.contains_key("goalPaused") && !active_goal.is_empty() {
+            let pause_requested = command.get("goalPaused").and_then(Value::as_bool).unwrap_or(false);
+            if pause_requested && paused.is_none() {
+                patch.push(("goalPausedAt", "goal_paused_at", json!(occurred_at)));
+            } else if !pause_requested && let Some(paused_at) = paused.as_deref() {
+                let rebased = match (started.as_deref().and_then(iso_ms), iso_ms(paused_at), iso_ms(&occurred_at)) {
+                    (Some(started_ms), Some(paused_ms), Some(occurred_ms)) => {
+                        iso_from_ms(occurred_ms - (paused_ms - started_ms).max(0))
+                    }
+                    _ => occurred_at.clone(),
+                };
+                patch.push(("goalStartedAt", "goal_started_at", json!(rebased)));
+                patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
+            }
+        }
+        for (event_key, column, value) in patch {
+            ep.insert(event_key.to_string(), value.clone());
+            sets.push((column, value));
+        }
+    }
+    if let Some(v) = command.get("goalStartBehavior") {
+        ep.insert(
+            "goalStartBehavior".into(),
+            if starts_with_message { json!("defer") } else { v.clone() },
+        );
+    }
     let mut copy_field = |ep: &mut Map<String, Value>,
                           sets: &mut Vec<(&'static str, Value)>,
                           key: &'static str,
@@ -1309,6 +1421,30 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
     let events = vec![out_event("thread.meta-updated", &thread_id, &occurred_at, Value::Object(ep))];
     let seq = commit_events(&conn, &events, &command_id)?;
     update_projection(&conn, &thread_id, &sets)?;
+    if starts_with_message && let Some(goal) = start_goal_text {
+        let lower = goal.to_lowercase();
+        let needs_escape = goal.starts_with("--")
+            || matches!(lower.as_str(), "clear" | "pause" | "resume" | "edit");
+        let text = format!(
+            "/goal {}{}",
+            if needs_escape { "-- " } else { "" },
+            goal
+        );
+        let turn_command = json!({
+            "type": "thread.turn.start",
+            "commandId": uuid_v4(),
+            "threadId": thread_id,
+            "createdAt": iso_now_ms(),
+            "dispatchMode": "queue",
+            "dispatchOrigin": "user",
+            "message": {
+                "messageId": format!("goal:{command_id}"),
+                "text": text,
+                "source": "native",
+            },
+        });
+        thread_turn_start(turn_command.as_object().unwrap())?;
+    }
     Ok(json!({ "sequence": seq }))
 }
 

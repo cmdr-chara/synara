@@ -98,6 +98,13 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["threadId"]),
         ),
         def(
+            "synara_view_automation",
+            "Read one automation's full configuration. Get automationId from synara_list_automations.",
+            schema(json!({
+                "automationId": {"type": "string"},
+            }), &["automationId"]),
+        ),
+        def(
             "synara_read_kanban_board",
             "Read the kanban board of a project: every thread as a card in one of Draft / In Progress / Awaiting you / Done, with attention flags (failed, stuck, awaiting approval/input).",
             schema(json!({
@@ -609,6 +616,43 @@ fn read_kanban_board(args: &Value) -> Result<Value, String> {
     Ok(json!({"projectId": project_id, "columns": Value::Object(columns), "cardCount": rows.len()}))
 }
 
+fn view_automation(args: &Value) -> Result<Value, String> {
+    let automation_id = arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.query_row(
+        "SELECT automation_id, project_id, name, prompt, schedule_json, enabled, next_run_at, \
+         model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id, max_iterations, \
+         stop_on_error, minimum_interval_seconds, created_at, updated_at \
+         FROM automation_definitions WHERE automation_id = ?1",
+        [&automation_id],
+        |r| {
+            let parse = |raw: Option<String>| raw.and_then(|p| serde_json::from_str::<Value>(&p).ok()).unwrap_or(Value::Null);
+            Ok(json!({
+                "automationId": r.get::<_, String>(0)?,
+                "projectId": r.get::<_, String>(1)?,
+                "name": r.get::<_, Option<String>>(2)?,
+                "prompt": r.get::<_, Option<String>>(3)?,
+                "schedule": parse(r.get::<_, Option<String>>(4)?),
+                "enabled": r.get::<_, bool>(5)?,
+                "nextRunAt": r.get::<_, Option<String>>(6)?,
+                "modelSelection": parse(r.get::<_, Option<String>>(7)?),
+                "runtimeMode": r.get::<_, Option<String>>(8)?,
+                "interactionMode": r.get::<_, Option<String>>(9)?,
+                "mode": r.get::<_, Option<String>>(10)?,
+                "targetThreadId": r.get::<_, Option<String>>(11)?,
+                "maxIterations": r.get::<_, Option<i64>>(12)?,
+                "stopOnError": r.get::<_, bool>(13)?,
+                "minimumIntervalSeconds": r.get::<_, i64>(14)?,
+                "createdAt": r.get::<_, Option<String>>(15)?,
+                "updatedAt": r.get::<_, Option<String>>(16)?,
+            }))
+        },
+    )
+    .map(|v| json!({"automation": v}))
+    .map_err(|_| format!("Automation "{automation_id}" was not found."))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -619,6 +663,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String
         "synara_read_thread_activity" => read_thread_activity(args),
         "synara_read_thread_events" => read_thread_events(args),
         "synara_read_kanban_board" => read_kanban_board(args),
+        "synara_view_automation" => view_automation(args),
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),

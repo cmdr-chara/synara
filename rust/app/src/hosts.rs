@@ -74,6 +74,21 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
 /// Owner-side remote pairing management, mirroring upstream
 /// remotePairing/management.ts. Pairing previews are deliberately in-memory:
 /// a restart requires redeeming a fresh public code.
+fn controller_binding(account: &Value, environment_id: &str) -> Result<crate::remote_host_trust::Binding, String> {
+    let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+    let user_id = account.get("userId").and_then(Value::as_str).unwrap_or_default();
+    let organization_id = account.get("organizationId").and_then(Value::as_str).unwrap_or_default();
+    if account_url.is_empty() || user_id.is_empty() || organization_id.is_empty() {
+        return Err("Remote access operation failed".to_string());
+    }
+    Ok(crate::remote_host_trust::Binding {
+        controller_environment_id: environment_id.to_string(),
+        account_authority: crate::account::account_api_issuer(account_url),
+        user_id: user_id.to_string(),
+        organization_id: organization_id.to_string(),
+    })
+}
+
 fn pairing_previews() -> &'static Mutex<HashMap<String, Value>> {
     static PREVIEWS: OnceLock<Mutex<HashMap<String, Value>>> = OnceLock::new();
     PREVIEWS.get_or_init(|| Mutex::new(HashMap::new()))
@@ -173,6 +188,22 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
                 "rootNeedsRepair": tls_identity.as_ref().is_some_and(|identity| crate::remote_tls::root_needs_repair(identity, now_ms)),
                 "allowConnections": rp::allows_connections(&conn, &scope)?,
             }))
+        }
+        "forget-host" => {
+            let target_environment = request.get("environmentId").and_then(Value::as_str).unwrap_or_default();
+            if target_environment.is_empty() {
+                return Err("Remote access operation failed".to_string());
+            }
+            let account = crate::account::read_session_file().ok_or_else(|| "Remote access operation failed".to_string())?;
+            let binding = controller_binding(&account, &environment_id)?;
+            let trust_conn = crate::remote_host_trust::open()?;
+            crate::remote_host_trust::forget(&trust_conn, &binding, target_environment)?;
+            if let Ok(mut previews) = pairing_previews().lock() {
+                previews.retain(|_, preview| {
+                    preview.pointer("/bundle/environmentId").and_then(Value::as_str) != Some(target_environment)
+                });
+            }
+            Ok(json!({"kind":"done"}))
         }
         "redeem-code" => {
             prune_pairing_previews();

@@ -1593,8 +1593,8 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
             params![thread_id, target_provider, occurred_at, target_instance, runtime_payload.to_string()],
         );
         let _ = conn.execute(
-            "INSERT OR REPLACE INTO projection_thread_sessions (thread_id, status, provider_name, provider_session_id, provider_thread_id, active_turn_id, last_error, updated_at, runtime_mode) VALUES (?1, 'stopped', ?2, NULL, NULL, NULL, NULL, ?3, COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'))",
-            params![thread_id, target_provider, occurred_at],
+            "INSERT OR REPLACE INTO projection_thread_sessions (thread_id, status, provider_name, provider_session_id, provider_thread_id, active_turn_id, last_error, updated_at, runtime_mode, provider_instance_id) VALUES (?1, 'stopped', ?2, NULL, NULL, NULL, NULL, ?3, COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'), ?4)",
+            params![thread_id, target_provider, occurred_at, target_instance],
         );
     }
     if starts_with_message && let Some(goal) = start_goal_text {

@@ -222,3 +222,21 @@ Measurements needed from upstream: exact card inset margins, corner radius, chro
 5. dark mode pass — ALL surfaces
 6. transcript detail pass (scroll-sync, attachments layout)
 7. landing composer upstream controls (tmp/Select branch/Temporary/Worktree row) — shell has simplified "Work in a project" row; heading should be "What should we do in {project}?" when project selected
+
+## Dark mode backdrop delta (2026-11-27 ~02:10, verified vs upstream dark)
+- Shell dark texture visibly brighter/denser/more saturated than upstream dark landing.
+- Density constants (DARK_LEVELS) already match upstream exactly — gap is in ink rendering:
+  upstream blends per-dot `accentRgb + (highlight-accent)*lit` (luminance varies with local
+  density); shell paints uniform accent ink. Upstream dark also has no sky mask (correct in
+  shell) but the canvas composite differs.
+- Rail strip in dark shows bright white-ish noise in shell vs dim subdued texture upstream —
+  check atmosphere frame opacity path in dark (upstream `.dark .app-shell-atmosphere` = 0.8,
+  full = 0.6 + brightness(0.75) saturate(0.6) — the filter part is NOT ported).
+
+## CORRECTION 2026-11-27 ~02:30 — spaces/hubs NOT a divergence
+Upstream clicking Spaces rail icon navigates INTO the first space (URL /{spaceId}) and shows
+the LANDING composer in space context, sidebar label = space name ("Void"). Shell already does
+exactly this — the earlier "structural divergence" note was wrong. Hubs surface = STUDIO icon
+(upstream label key `common:hubs`), correctly wired to view_studio.
+Remaining real gap here: upstream landing heading is project-scoped "What should we do in
+{project}?" when a project is selected; shell always "What should we work on?".

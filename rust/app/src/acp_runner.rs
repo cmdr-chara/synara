@@ -253,7 +253,16 @@ pub(crate) fn set_turn_state(
     )
     .map_err(|e| err(format!("message settle: {e}")))?;
     if let Some((root, since)) = format_context {
-        crate::turn_format::spawn_after_turn(root, since);
+        crate::turn_format::spawn_after_turn(root.clone(), since);
+        // Capture the post-turn workspace checkpoint (upstream CheckpointStore
+        // capture trigger) so turn diffs and revert have a real anchor.
+        if state == "completed" {
+            crate::checkpointing::spawn_capture(
+                thread_id.to_string(),
+                turn_id.to_string(),
+                root,
+            );
+        }
     }
     Ok(())
 }

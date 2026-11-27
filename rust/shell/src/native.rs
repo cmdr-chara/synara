@@ -2115,6 +2115,16 @@ fn arr<'a>(v: &'a Value, k: &str) -> &'a [Value] {
     get(v, k).as_array().map(Vec::as_slice).unwrap_or(&[])
 }
 
+/// Automation target projects — upstream excludes chat-kind implicit
+/// containers; only real projects are selectable automation targets.
+fn autom_projects(v: &Value) -> Vec<Value> {
+    arr(v, "projects")
+        .iter()
+        .filter(|p| str_at(p, "kind") != "chat")
+        .cloned()
+        .collect()
+}
+
 // ── AsciiWaveBackground (upstream ambient field) ────────────────────────────
 // Port of apps/web/src/components/chat/AsciiWaveBackground.tsx: three cycling
 // noise patterns, per-cell glyph scramble, and accent click ripples.
@@ -10418,7 +10428,7 @@ impl Native {
                 _ => {}
             }
         }
-        let projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+        let projects = autom_projects(self.snapshot.as_ref().unwrap_or(&Value::Null));
         let mut proj = 0usize;
         if !proj_id.is_empty() {
             if let Some(i) = projects
@@ -10508,7 +10518,7 @@ impl Native {
         let prompt = form.prompt.read(cx).value().trim().to_string();
         let time = form.time.read(cx).value().trim().to_string();
         let extra = form.extra.read(cx).value().trim().to_string();
-        let projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+        let projects = autom_projects(self.snapshot.as_ref().unwrap_or(&Value::Null));
         let project_id = projects
             .get(form.proj)
             .map(|p| str_at(p, "id").to_string())
@@ -32870,7 +32880,7 @@ impl Render for Native {
                         .child(Input::new(&prompt_in).appearance(false)),
                 );
             // Project picker (radio list, upstream AutomationHeadingFields).
-            let projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects");
+            let projects = autom_projects(self.snapshot.as_ref().unwrap_or(&Value::Null));
             card = card.child(
                 div()
                     .text_size(px(11.))

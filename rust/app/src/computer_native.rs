@@ -527,6 +527,59 @@ fn kill_window_app(payload: &Value) -> Result<Value, String> {
     }))
 }
 
+fn read_clipboard() -> Result<Value, String> {
+    let result = helper("clipboard", &json!({"op":"read"}))?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "text": result.get("text").cloned().unwrap_or(Value::Null),
+    }))
+}
+
+fn write_clipboard(payload: &Value) -> Result<Value, String> {
+    let text = payload.get("text").and_then(Value::as_str).ok_or("text is required")?;
+    let result = helper("clipboard", &json!({"op":"write","text":text}))?;
+    if result.get("ok").and_then(Value::as_bool) != Some(true) {
+        return Err("The clipboard write was refused.".into());
+    }
+    Ok(json!({"computerId": COMPUTER_ID, "action": "computer_write_clipboard", "bytes": text.len()}))
+}
+
+fn paste_clipboard_text(payload: &Value) -> Result<Value, String> {
+    require_ax()?;
+    let text = payload.get("text").and_then(Value::as_str).ok_or("text is required")?;
+    let previous = helper("clipboard", &json!({"op":"read"}))
+        .ok()
+        .and_then(|value| value.get("text").and_then(Value::as_str).map(str::to_string));
+    let write = helper("clipboard", &json!({"op":"write","text":text}))?;
+    if write.get("ok").and_then(Value::as_bool) != Some(true) {
+        return Err("The clipboard write was refused.".into());
+    }
+    let paste_result = match key_code("v") {
+        Some(code) => helper("press", &json!({"code": code, "flags": flag_mask(&["cmd".to_string()])})).map(|_| ()),
+        None => Err("Paste key is unavailable".to_string()),
+    };
+    // Give the paste key event a short dispatch window before restoring the
+    // user's prior textual clipboard. Non-text pasteboard content is outside
+    // this compact native path and is documented in the result.
+    std::thread::sleep(std::time::Duration::from_millis(120));
+    let restored = if let Some(previous) = previous {
+        helper("clipboard", &json!({"op":"write","text":previous}))
+            .ok()
+            .and_then(|value| value.get("ok").and_then(Value::as_bool))
+            .unwrap_or(false)
+    } else {
+        false
+    };
+    paste_result?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_paste",
+        "bytes": text.len(),
+        "clipboardRestored": restored,
+        "clipboardRestoreScope": if restored { "text" } else { "unavailable" },
+    }))
+}
+
 fn desktop_state_json() -> Value {
     let (epoch, interruptions, pauses) = crate::computer_manager::desktop_interruption_state();
     json!({
@@ -663,6 +716,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
             | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp" | "computer.activateWindow"
             | "computer.setWindowMinimized" | "computer.setWindowFrame" | "computer.killApp"
+            | "computer.writeClipboard" | "computer.paste"
     );
     if mutating && !owner.is_empty() {
         if let Err(e) = crate::computer_manager::assert_control_authority(Some(owner)) {
@@ -793,6 +847,9 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 let r = ax_action(payload, "selecttext")?;
                 Ok(ax_result("computer_select_text", &r))
             }
+            "computer.readClipboard" => read_clipboard(),
+            "computer.writeClipboard" => write_clipboard(payload),
+            "computer.paste" => paste_clipboard_text(payload),
             "computer.noteUserInput" => {
                 crate::computer_manager::note_user_desktop_input();
                 let thread_id = payload["threadId"].as_str().unwrap_or("");

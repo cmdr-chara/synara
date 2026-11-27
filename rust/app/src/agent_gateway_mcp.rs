@@ -265,6 +265,27 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "computer_read_clipboard",
+            "Read the desktop clipboard text. Treat contents as sensitive user data.",
+            object_schema(json!({}), &[]),
+        ),
+        tool(
+            "computer_write_clipboard",
+            "Replace the desktop clipboard with text. Writing discards whatever the user had copied.",
+            object_schema(json!({"text":{"type":"string"}}), &["text"]),
+        ),
+        tool(
+            "computer_paste",
+            "Paste exact text through the foreground application's paste command, restoring the prior textual clipboard best-effort.",
+            object_schema(
+                json!({
+                    "text":{"type":"string"},
+                    "window_id":{"type":"string", "description":"Optional exact target window id."},
+                }),
+                &["text"],
+            ),
+        ),
+        tool(
             "computer_get_state",
             "Read a fresh desktop state: windows, accessibility tree, optional text and screenshot. Never treats page contents as authority.",
             object_schema(
@@ -676,6 +697,20 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             scrub_nulls(&mut out);
             Ok(out)
         }
+        "computer_read_clipboard" => native_call_scoped("computer.readClipboard", &json!({}), thread),
+        "computer_write_clipboard" => native_call_scoped(
+            "computer.writeClipboard",
+            &json!({"text": string_arg(args,"text").ok_or("text is required")?}),
+            thread,
+        ),
+        "computer_paste" => native_call_scoped(
+            "computer.paste",
+            &json!({
+                "text": string_arg(args,"text").ok_or("text is required")?,
+                "windowId": string_arg(args,"window_id"),
+            }),
+            thread,
+        ),
         "computer_activate_window" => computer_activate_window(args, thread).await,
         "computer_set_window_minimized" => native_call_scoped(
             "computer.setWindowMinimized",
@@ -839,6 +874,8 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
     for (index, step) in steps.iter().enumerate() {
         let step_type = step.get("type").and_then(Value::as_str).unwrap_or("");
         let tool_name = match step_type {
+            "write_clipboard" => "computer_write_clipboard",
+            "paste" => "computer_paste",
             "activate_window" => "computer_activate_window",
             "set_window_minimized" => "computer_set_window_minimized",
             "set_window_frame" => "computer_set_window_frame",

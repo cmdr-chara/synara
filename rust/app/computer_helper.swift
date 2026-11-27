@@ -457,6 +457,23 @@ case "axaction":
     }
     out(result)
 
+case "clipboard":
+    let a = args()
+    let board = NSPasteboard.general
+    switch a["op"] as? String ?? "read" {
+    case "read":
+        out(["ok": true, "text": board.string(forType: .string) as Any])
+    case "write":
+        guard let text = a["text"] as? String else {
+            out(["ok": false, "error": "text is required"])
+            exit(0)
+        }
+        board.clearContents()
+        out(["ok": board.setString(text, forType: .string)])
+    default:
+        out(["ok": false, "error": "unknown clipboard operation"])
+    }
+
 case "windowattr":
     let a = args()
     guard let parsed = axParseWindowId(a["windowId"] as? String),

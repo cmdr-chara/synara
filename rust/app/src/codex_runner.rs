@@ -1231,6 +1231,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
 
     let mut active_provider_thread_id: Option<String> = None;
     let mut usage_windows = json!({});
+    let mut final_usage: Option<Value> = None;
     let mut usage_limit_error = false;
     let result = (|| -> Result<String, WsErr> {
         let provider_thread_id = if let Some(reused) = reused_thread.clone() {
@@ -1419,7 +1420,10 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         text_buf.push_str(d);
                     }
                 }
-                "turn/completed" => break "completed",
+                "turn/completed" => {
+                    final_usage = v.get("params").cloned();
+                    break "completed";
+                }
                 "turn/aborted" => break "cancelled",
                 "error" => {
                     let will_retry = v
@@ -1526,6 +1530,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let interrupted = cancelled_flag || reason == "cancelled";
             let state = if interrupted { "interrupted" } else { "completed" };
             let status = if interrupted { "interrupted" } else { "ready" };
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "codex", final_usage.as_ref(), None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
@@ -1550,6 +1555,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             } else {
                 ("error", "error")
             };
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "codex", final_usage.as_ref(), Some(&format!("{:?}", e)));
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             if !cancelled_flag && usage_limit_error {
                 let now_ms = std::time::SystemTime::now()

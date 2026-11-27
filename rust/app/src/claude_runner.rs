@@ -1131,7 +1131,7 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
 /// `turn.completed` row per settled turn; token/cost analytics read its
 /// payload, so the runner must emit it even when the provider reported no
 /// usage at all.
-fn write_turn_completed_activity(
+pub(crate) fn write_turn_completed_activity(
     conn: &rusqlite::Connection,
     thread_id: &str,
     turn_id: &str,

@@ -510,6 +510,11 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["connectorId"]),
         ),
         def(
+            "synara_import_mcp_servers",
+            "Discover MCP servers in Claude Code user/project config, Codex, workspace .mcp.json and Claude Desktop. Shows a separate approval card for each candidate. Only entries the user accepts are added.",
+            schema(json!({}), &[]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -3091,6 +3096,86 @@ fn remove_mcp_connector(args: &Value, caller_thread: Option<&str>) -> Result<Val
     crate::mcp_connectors::propose_remove(&connector_id, caller_thread).map_err(|e| e.0)
 }
 
+fn scan_mcp_config_file(path: &std::path::Path, source: &str, out: &mut Vec<(Value, String)>) {
+    let Ok(text) = std::fs::read_to_string(path) else { return };
+    let Ok(doc) = serde_json::from_str::<Value>(&text) else { return };
+    let Some(servers) = doc.get("mcpServers").and_then(Value::as_object) else { return };
+    for (name, server) in servers {
+        let Some(command) = server.get("command").and_then(Value::as_str) else { continue };
+        let mut input = json!({
+            "name": name,
+            "command": command,
+            "args": server.get("args").cloned().unwrap_or(json!([])),
+        });
+        if let Some(env) = server.get("env").and_then(Value::as_object) {
+            // Never carry secret values into the proposal: keys only.
+            let keys: serde_json::Map<String, Value> = env
+                .keys()
+                .map(|k| (k.clone(), json!("")))
+                .collect();
+            input.as_object_mut().unwrap().insert("env".into(), Value::Object(keys));
+        }
+        out.push((input, source.to_string()));
+    }
+}
+
+fn import_mcp_servers(caller_thread: Option<&str>) -> Result<Value, String> {
+    let home = std::env::var("HOME").unwrap_or_else(|_| "/".into());
+    let mut candidates: Vec<(Value, String)> = Vec::new();
+    scan_mcp_config_file(
+        std::path::Path::new(&home).join(".claude.json").as_path(),
+        "claude-code-user",
+        &mut candidates,
+    );
+    scan_mcp_config_file(
+        std::path::Path::new(&home)
+            .join("Library/Application Support/Claude/claude_desktop_config.json")
+            .as_path(),
+        "claude-desktop",
+        &mut candidates,
+    );
+    // Workspace .mcp.json relative to the caller thread's working directory.
+    if let Some(thread) = caller_thread {
+        if let Ok(conn) = state_conn() {
+            let cwd: Option<String> = conn
+                .query_row(
+                    "SELECT COALESCE(t.worktree_path, t.working_directory, \
+                     (SELECT p.workspace_root FROM projection_projects p WHERE p.project_id = t.project_id)) \
+                     FROM projection_threads t WHERE t.thread_id = ?1",
+                    [thread],
+                    |r| r.get(0),
+                )
+                .ok();
+            if let Some(cwd) = cwd {
+                scan_mcp_config_file(
+                    std::path::Path::new(&cwd).join(".mcp.json").as_path(),
+                    "workspace",
+                    &mut candidates,
+                );
+            }
+        }
+    }
+    let mut proposals = Vec::new();
+    let mut errors = Vec::new();
+    for (input, source) in &candidates {
+        match crate::mcp_connectors::propose_add(input, caller_thread) {
+            Ok(mut proposal) => {
+                proposal
+                    .as_object_mut()
+                    .map(|o| o.insert("source".into(), json!(source)));
+                proposals.push(proposal);
+            }
+            Err(e) => errors.push(format!("{}: {}", source, e.0)),
+        }
+    }
+    Ok(json!({
+        "candidatesFound": candidates.len(),
+        "proposalsCreated": proposals.len(),
+        "proposals": proposals,
+        "errors": errors,
+    }))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -3313,6 +3398,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_update_plan" => update_plan(args),
         "synara_add_mcp_connector" => add_mcp_connector(args, caller_thread),
         "synara_remove_mcp_connector" => remove_mcp_connector(args, caller_thread),
+        "synara_import_mcp_servers" => import_mcp_servers(caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

@@ -935,7 +935,27 @@ fn authed_json(method: reqwest::Method, path: &str, body: Option<Value>, fallbac
     })
 }
 
+
+fn account_profile_sync_enabled() -> bool {
+    let flavor = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+        Some("com.emanueledipietro.synara") => "production",
+        Some("com.emanueledipietro.synara.remote") => "remote",
+        _ => "other",
+    };
+    std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").ok().as_deref() == Some("1")
+        || ((flavor == "production" || flavor == "remote") && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err())
+}
+
+fn require_account_profile_sync() -> Result<(), WsErr> {
+    if account_profile_sync_enabled() {
+        Ok(())
+    } else {
+        Err(err("Account profile sync is unavailable until SYNARA_ACCOUNT_PROFILE_SYNC=1 is set."))
+    }
+}
+
 fn update_profile(payload: &Value) -> Result<Value, WsErr> {
+    require_account_profile_sync()?;
     let workspace_name = payload.get("workspaceName").and_then(Value::as_str).map(str::to_string);
     let mut profile = payload.clone();
     if let Some(object) = profile.as_object_mut() {
@@ -948,6 +968,7 @@ fn update_profile(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn upload_avatar(payload: &Value) -> Result<Value, WsErr> {
+    require_account_profile_sync()?;
     let encoded = payload.get("bytes").and_then(Value::as_str).unwrap_or_default();
     let content_type = payload.get("contentType").and_then(Value::as_str).unwrap_or_default();
     if encoded.is_empty() || encoded.len() > 400_000 || !matches!(content_type, "image/webp" | "image/jpeg" | "image/png") {
@@ -976,6 +997,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "account.cancelSso" => cancel_sso(payload),
         "account.openVerificationUrl" => verification_url_allowed(payload),
         "account.usageSummary" => {
+            require_account_profile_sync()?;
             let offset = payload.get("utcOffsetMinutes").and_then(Value::as_i64).unwrap_or(0);
             authed_json(reqwest::Method::GET, &format!("/api/v1/usage/summary?utcOffsetMinutes={offset}"), None, "Failed to load account usage")
         }
@@ -993,7 +1015,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         }
         "account.updateProfile" => update_profile(payload),
         "account.uploadAvatar" => upload_avatar(payload),
-        "account.deleteAvatar" => authed_json(reqwest::Method::DELETE, "/api/v1/profile/avatar", None, "Failed to remove your avatar"),
+        "account.deleteAvatar" => { require_account_profile_sync()?; authed_json(reqwest::Method::DELETE, "/api/v1/profile/avatar", None, "Failed to remove your avatar") },
         "account.delete" => {
             let result = authed_json(reqwest::Method::DELETE, "/api/v1/me", Some(payload.clone()), "Could not confirm account deletion")?;
             let path = credentials_path();

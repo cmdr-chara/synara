@@ -25895,15 +25895,20 @@ impl Render for Native {
             .h_full()
             .items_center()
             .justify_center()
-            .gap_2()
+            // Upstream <Empty>: title font-heading semibold text-xl (20/28),
+            // desc mt-1 13px muted; the optical center sits ~33px above the
+            // geometric pane center in the reference capture.
+            .pb(px(60.))
             .child(
                 div()
-                    .text_base()
-                    .font_weight(FontWeight::MEDIUM)
+                    .text_size(px(20.))
+                    .line_height(px(28.))
+                    .font_weight(FontWeight::SEMIBOLD)
                     .child("No hubs yet"),
             )
             .child(
                 div()
+                    .mt(px(4.))
                     .text_size(px(13.))
                     .text_color(theme.muted_foreground)
                     .child("Create one from the sidebar to coordinate work across repos."),

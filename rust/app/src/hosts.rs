@@ -122,8 +122,20 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
     let mut tls_identity = crate::remote_tls::load_remote_tls_identity(&tls_path, &environment_id).ok();
     let mut scope = rp::local_scope(&secrets_dir, &environment_id);
     if matches!(operation, "create-invitation" | "create-code") && scope.is_none() && !tls_path.exists() {
+        if rp::has_identity(&conn, &environment_id)? {
+            return Err("The host root is missing. Restore it or explicitly reset remote trust before pairing again.".to_string());
+        }
         tls_identity = crate::remote_tls::initialize_remote_tls_identity(&tls_path, &environment_id).ok();
         scope = rp::local_scope(&secrets_dir, &environment_id);
+    }
+    if operation == "list" && tls_identity.is_none() {
+        return Ok(json!({
+            "kind": "host-state",
+            "invitations": [],
+            "devices": [],
+            "rootExpiresAt": Value::Null,
+            "rootNeedsRepair": rp::has_identity(&conn, &environment_id)?,
+        }));
     }
     let Some(scope) = scope else {
         return Err("Remote access operation failed".to_string());

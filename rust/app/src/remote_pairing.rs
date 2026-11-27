@@ -325,6 +325,19 @@ pub fn enroll(
     Ok(true)
 }
 
+/// Whether this environment has ever had a remote trust chain. Upstream uses
+/// this to distinguish a never-paired install (safe to initialize a root)
+/// from a lost root (operator must explicitly reset remote trust).
+pub fn has_identity(conn: &Connection, environment_id: &str) -> Result<bool, String> {
+    conn.query_row(
+        "SELECT EXISTS(SELECT 1 FROM remote_device_trust WHERE environment_id = ?1)",
+        params![environment_id],
+        |row| row.get::<_, i64>(0),
+    )
+    .map(|value| value != 0)
+    .map_err(|e| e.to_string())
+}
+
 pub fn list_invites(conn: &Connection, scope: &TrustScope) -> Result<Vec<Value>, String> {
     Ok(query(conn, scope, None)?.iter().map(PairingRecord::status).collect())
 }
@@ -395,8 +408,8 @@ pub fn reset_environment(conn: &Connection, environment_id: &str, now: &str) -> 
         params![now, environment_id],
     ).map_err(|e| e.to_string())?;
     conn.execute(
-        "UPDATE auth_pairing_links SET revoked_at = ?1 WHERE purpose = 'remote-device' AND consumed_at IS NULL AND revoked_at IS NULL",
-        params![now],
+        "UPDATE auth_pairing_links SET revoked_at = ?1 WHERE purpose = 'remote-device' AND consumed_at IS NULL AND revoked_at IS NULL AND json_extract(remote_metadata, '$.environmentId') = ?2",
+        params![now, environment_id],
     ).map_err(|e| e.to_string())?;
     Ok(())
 }

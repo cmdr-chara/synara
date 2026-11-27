@@ -21546,9 +21546,12 @@ impl Render for Native {
                 // Upstream SettingsToggleGroup: two equal columns spanning the
                 // card interior, each row's switch right-aligned at the column
                 // edge (not trailing the label).
+                // Upstream SettingsToggleItem: min-h-8 row, label left, switch
+                // right; the grid is gap-x-6 (24px) columns, gap-y-1 (4px) rows.
                 let mtog = |label: &'static str, on: bool| {
                     h_flex()
                         .w_full()
+                        .min_h(px(32.))
                         .items_center()
                         .justify_between()
                         .child(div().text_size(px(13.)).child(label))
@@ -21559,14 +21562,14 @@ impl Render for Native {
                                  left: Vec<gpui::AnyElement>,
                                  right: Vec<gpui::AnyElement>| {
                     v_flex()
-                        .gap_2()
-                        .child(div().text_xs().text_color(theme.muted_foreground).child(label))
+                        .gap(px(8.))
+                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(label))
                         .child(
                             h_flex()
                                 .w_full()
-                                .gap_8()
-                                .child(v_flex().flex_1().min_w_0().gap_2().children(left))
-                                .child(v_flex().flex_1().min_w_0().gap_2().children(right)),
+                                .gap(px(24.))
+                                .child(v_flex().flex_1().min_w_0().gap(px(4.)).children(left))
+                                .child(v_flex().flex_1().min_w_0().gap(px(4.)).children(right)),
                         )
                         .into_any_element()
                 };

@@ -340,6 +340,23 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             schema(json!({}), &[]),
         ),
         def(
+            "synara_project_library_list",
+            "List files in the hub's Library (optionally under relativePath). Returns the library root path and entries.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "relativePath": {"type": "string"},
+            }), &["projectId"]),
+        ),
+        def(
+            "synara_project_library_add",
+            "Copy a file or folder from this thread's own workspace into the hub's Library. sourcePath must resolve inside your workspace; destinationPath defaults to the source name at the library root.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "sourcePath": {"type": "string"},
+                "destinationPath": {"type": "string"},
+            }), &["projectId", "sourcePath"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -2130,6 +2147,164 @@ fn wait_for_threads(args: &Value) -> Result<Value, String> {
     }
 }
 
+fn library_root(project_id: &str) -> std::path::PathBuf {
+    project_context_root(project_id).join("library")
+}
+
+fn safe_relative(path: &str) -> Result<std::path::PathBuf, String> {
+    let rel = std::path::Path::new(path);
+    if rel.is_absolute() || path.split(['/', '\\']).any(|s| s == "..") {
+        return Err("Path must be relative without '..' segments.".into());
+    }
+    Ok(rel.to_path_buf())
+}
+
+fn library_list(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let root = library_root(&project_id);
+    let rel = match arg_str(args, "relativePath") {
+        Some(r) if !r.is_empty() => safe_relative(&r)?,
+        _ => std::path::PathBuf::new(),
+    };
+    let dir = root.join(&rel);
+    if dir.strip_prefix(&root).is_err() {
+        return Err("Path escapes the library root.".into());
+    }
+    let mut entries = Vec::new();
+    if dir.is_dir() {
+        if let Ok(read) = std::fs::read_dir(&dir) {
+            for entry in read.flatten().take(500) {
+                let meta = entry.metadata().ok();
+                entries.push(json!({
+                    "name": entry.file_name().to_string_lossy(),
+                    "kind": if meta.as_ref().map(|m| m.is_dir()).unwrap_or(false) { "directory" } else { "file" },
+                    "sizeBytes": meta.map(|m| m.len()).unwrap_or(0),
+                }));
+            }
+        }
+    }
+    entries.sort_by_key(|e| e.get("name").and_then(Value::as_str).unwrap_or("").to_string());
+    Ok(json!({
+        "libraryRoot": root.to_string_lossy(),
+        "path": rel.to_string_lossy(),
+        "entries": entries,
+    }))
+}
+
+fn copy_tree_guarded(
+    source: &std::path::Path,
+    target: &std::path::Path,
+    filter_name: bool,
+    file_count: &mut usize,
+    total_bytes: &mut u64,
+) -> Result<(), String> {
+    let meta = std::fs::symlink_metadata(source).map_err(|e| e.to_string())?;
+    if meta.file_type().is_symlink() {
+        return Ok(());
+    }
+    if meta.is_dir() {
+        if filter_name {
+            let name = source.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+            if name == ".git" || name == "node_modules" {
+                return Ok(());
+            }
+        }
+        std::fs::create_dir_all(target).map_err(|e| e.to_string())?;
+        for entry in std::fs::read_dir(source).map_err(|e| e.to_string())?.flatten() {
+            copy_tree_guarded(&entry.path(), &target.join(entry.file_name()), true, file_count, total_bytes)?;
+        }
+        return Ok(());
+    }
+    if !meta.is_file() {
+        return Ok(());
+    }
+    *file_count += 1;
+    *total_bytes += meta.len();
+    if *file_count > 10_000 {
+        return Err("A library add is limited to 10000 files.".into());
+    }
+    if *total_bytes > 256 * 1024 * 1024 {
+        return Err("A library add is limited to 256 MB total.".into());
+    }
+    if let Some(parent) = target.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+    std::fs::copy(source, target).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+fn library_add(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let source_path = arg_str(args, "sourcePath").ok_or("Missing required argument: sourcePath")?;
+    let caller = caller_thread.ok_or("This tool requires a calling thread.")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let workspace: String = conn
+        .query_row(
+            "SELECT COALESCE(t.worktree_path, t.working_directory, (SELECT p.workspace_root FROM projection_projects p WHERE p.project_id = t.project_id)) FROM projection_threads t WHERE t.thread_id = ?1",
+            [caller],
+            |r| r.get(0),
+        )
+        .map_err(|_| "This thread does not belong to a Hub.".to_string())?;
+    let source_raw = std::path::Path::new(&source_path);
+    let source = if source_raw.is_absolute() {
+        source_raw.to_path_buf()
+    } else {
+        std::path::Path::new(&workspace).join(source_raw)
+    };
+    let canonical_source = source.canonicalize().map_err(|_| format!("Source \"{source_path}\" was not found."))?;
+    let canonical_workspace = std::path::Path::new(&workspace)
+        .canonicalize()
+        .unwrap_or_else(|_| std::path::PathBuf::from(&workspace));
+    if !canonical_source.starts_with(&canonical_workspace) {
+        return Err("sourcePath must resolve inside your workspace.".into());
+    }
+    let default_name = canonical_source
+        .file_name()
+        .map(|n| n.to_string_lossy().to_string())
+        .unwrap_or_else(|| "library-item".into());
+    let dest_rel = match arg_str(args, "destinationPath") {
+        Some(d) if !d.is_empty() => safe_relative(&d)?,
+        _ => std::path::PathBuf::from(&default_name),
+    };
+    let root = library_root(&project_id);
+    let target = root.join(&dest_rel);
+    if target.strip_prefix(&root).is_err() {
+        return Err("destinationPath escapes the library root.".into());
+    }
+    let mut file_count = 0usize;
+    let mut total_bytes = 0u64;
+    copy_tree_guarded(&canonical_source, &target, false, &mut file_count, &mut total_bytes)?;
+    // Commit inside the library when it is a git repo, mirroring upstream.
+    if root.join(".git").exists() {
+        let root_str = root.to_string_lossy().to_string();
+        std::thread::spawn(move || {
+            let _ = std::process::Command::new("git")
+                .args(["-C", &root_str, "add", "-A"])
+                .output();
+            let _ = std::process::Command::new("git")
+                .args([
+                    "-C",
+                    &root_str,
+                    "-c",
+                    "user.name=Synara Hub",
+                    "-c",
+                    "user.email=hub@synara.local",
+                    "commit",
+                    "-m",
+                    "library add",
+                    "--no-verify",
+                ])
+                .output();
+        });
+    }
+    Ok(json!({
+        "path": dest_rel.to_string_lossy(),
+        "filesCopied": file_count,
+        "bytesCopied": total_bytes,
+    }))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -2335,6 +2510,8 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_read_thread_runtime_events" => read_thread_runtime_events(args),
         "synara_wait_for_threads" => wait_for_threads(args),
         "synara_list_connections" => list_connections(),
+        "synara_project_library_list" => library_list(args),
+        "synara_project_library_add" => library_add(args, caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),
@@ -2348,5 +2525,48 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn copy_tree_skips_symlinks_and_git() {
+        let base = std::env::temp_dir().join(format!("synara-libtest-{}", std::process::id()));
+        let source = base.join("src");
+        let target = base.join("dst");
+        std::fs::create_dir_all(source.join(".git")).unwrap();
+        std::fs::create_dir_all(source.join("node_modules")).unwrap();
+        std::fs::write(source.join("keep.txt"), "kept").unwrap();
+        std::fs::write(source.join(".git/config"), "gitdir").unwrap();
+        std::fs::write(source.join("node_modules/pkg.js"), "module").unwrap();
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(source.join("keep.txt"), source.join("link.txt")).unwrap();
+        let mut files = 0usize;
+        let mut bytes = 0u64;
+        copy_tree_guarded(&source, &target, false, &mut files, &mut bytes).unwrap();
+        assert!(target.join("keep.txt").exists());
+        assert!(!target.join(".git/config").exists());
+        assert!(!target.join("node_modules/pkg.js").exists());
+        assert!(!target.join("link.txt").exists());
+        assert_eq!(files, 1);
+        let _ = std::fs::remove_dir_all(&base);
+    }
+
+    #[test]
+    fn safe_relative_rejects_traversal() {
+        assert!(safe_relative("../etc").is_err());
+        assert!(safe_relative("/abs/path").is_err());
+        assert!(safe_relative("a/b/c.txt").is_ok());
+    }
+
+    #[test]
+    fn memory_note_helpers_match_upstream() {
+        assert_eq!(normalize_memory_note("Hello, World!"), "hello world");
+        assert_eq!(memory_note_body("# Title\n\nSome note here"), "some note here");
+        assert_eq!(slugify_memory_title("Release Schedule!"), "release-schedule");
+        assert_eq!(sanitize_memory_title("a\n\tb"), "a b");
     }
 }

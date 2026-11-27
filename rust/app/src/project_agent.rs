@@ -3975,6 +3975,11 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.resume"
             | "projectAgent.archive"
             | "projectAgent.unarchive"
+            | "projectAgent.pauseGroup"
+            | "projectAgent.resumeGroup"
+            | "projectAgent.archiveGroup"
+            | "projectAgent.unarchiveGroup"
+            | "projectAgent.deleteGroup"
             | "projectAgent.exportDocuments"
             | "projectAgent.restartCoordinator"
             | "projectAgent.delete"
@@ -4025,21 +4030,22 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.linkProject" => link_project(payload, false),
         "projectAgent.unlinkProject" => link_project(payload, true),
         "projectAgent.writeDocument" => write_document(payload),
-        "projectAgent.pause" => {
+        "projectAgent.pause" | "projectAgent.pauseGroup" => {
             lifecycle_group(payload, "pause", "Paused hub.", "Failed to pause the hub.")
         }
-        "projectAgent.resume" => {
+        "projectAgent.resume" | "projectAgent.resumeGroup" => {
             lifecycle_group(payload, "resume", "Resumed hub.", "Failed to resume the hub.")
         }
-        "projectAgent.archive" => {
+        "projectAgent.archive" | "projectAgent.archiveGroup" => {
             lifecycle_group(payload, "archive", "Archived hub.", "Failed to archive the hub.")
         }
-        "projectAgent.unarchive" => lifecycle_group(
+        "projectAgent.unarchive" | "projectAgent.unarchiveGroup" => lifecycle_group(
             payload,
             "unarchive",
             "Unarchived hub.",
             "Failed to unarchive the hub.",
         ),
+        "projectAgent.deleteGroup" => delete_group(payload),
         "projectAgent.exportDocuments" => export_documents(payload),
         "projectAgent.restartCoordinator" => restart_coordinator(payload),
         "projectAgent.delete" => delete_group(payload),

@@ -20,7 +20,19 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
             let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
             let mut body = payload.clone();
             if let Some(object) = body.as_object_mut() { object.remove("hostId"); }
-            authed(reqwest::Method::PATCH, &format!("/api/v1/hosts/{host_id}"), Some(body), "Failed to update the host")
+            let response = authed(reqwest::Method::PATCH, &format!("/api/v1/hosts/{host_id}"), Some(body), "Failed to update the host")?;
+            if payload.get("discoverable").is_some()
+                && let Some(mut stored) = crate::account::read_session_file()
+                && let Some(object) = stored.as_object_mut()
+            {
+                let mut acknowledged = object.remove("discoverabilityAcknowledgedByHostId").unwrap_or(json!({}));
+                if let Some(map) = acknowledged.as_object_mut() {
+                    map.insert(host_id.to_string(), json!(true));
+                }
+                object.insert("discoverabilityAcknowledgedByHostId".into(), acknowledged);
+                let _ = crate::account::write_account_file(&stored);
+            }
+            Ok(response.get("host").cloned().unwrap_or(Value::Null))
         }
         "hosts.delete" => {
             let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
@@ -29,10 +41,34 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
         "hosts.listDevices" => authed(reqwest::Method::GET, "/api/v1/devices", None, "Failed to list devices"),
         "hosts.revokeDevice" => {
             let device_id = payload.get("deviceId").and_then(Value::as_str).unwrap_or_default();
-            authed(reqwest::Method::DELETE, &format!("/api/v1/devices/{device_id}"), None, "Failed to revoke the device")
+            let result = authed(reqwest::Method::DELETE, &format!("/api/v1/devices/{device_id}"), None, "Failed to revoke the device")?;
+            if let Some(mut stored) = crate::account::read_session_file()
+                && stored.get("deviceId").and_then(Value::as_str) == Some(device_id)
+                && let Some(object) = stored.as_object_mut()
+            {
+                object.remove("deviceId");
+                object.remove("deviceJkt");
+                let _ = crate::account::write_account_file(&stored);
+            }
+            Ok(result)
         }
         "hosts.approveDeviceLink" => authed(reqwest::Method::POST, "/api/v1/hosts/link/approve", Some(payload.clone()), "Failed to approve the device link"),
-        "hosts.requestGrant" => Err(err("Failed to request a host grant")),
+                "hosts.requestGrant" => {
+            let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
+            let user_id = crate::account::read_session_file()
+                .and_then(|stored| stored.get("userId").and_then(Value::as_str).map(str::to_string))
+                .ok_or_else(|| err("Failed to request a host grant"))?;
+            crate::account::register_shell_device(&user_id)?;
+            let device_jkt = crate::account::read_session_file()
+                .and_then(|stored| stored.get("deviceJkt").and_then(Value::as_str).map(str::to_string))
+                .ok_or_else(|| err("Failed to request a host grant"))?;
+            authed(
+                reqwest::Method::POST,
+                &format!("/api/v1/hosts/{host_id}/grant"),
+                Some(json!({"deviceJkt": device_jkt})),
+                "Failed to request a host grant",
+            )
+        }
         "hosts.enrollment" => local_enrollment().map_err(|m| err(&m)),
         "hosts.unlinkLocalHost" => unlink_local_host(payload).map_err(|m| err(&m)),
         "hosts.beginSyncKeyPairing" => Err(err("Failed to start Sync-Key pairing")),

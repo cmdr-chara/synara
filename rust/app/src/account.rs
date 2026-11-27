@@ -412,7 +412,7 @@ fn sign_device_registration(
     Ok((proof, device_thumbprint(&identity.public_key_jwk)))
 }
 
-fn register_shell_device(user_id: &str) -> Result<(), WsErr> {
+pub(crate) fn register_shell_device(user_id: &str) -> Result<(), WsErr> {
     let stored = read_session_file().ok_or_else(session_expired)?;
     let account_url = stored["accountUrl"].as_str().unwrap_or_default().to_string();
     let identity = load_or_create_identity(&device_identity_path())?;
@@ -808,7 +808,19 @@ fn account_status() -> Result<Value, WsErr> {
         return Ok(json!({"state": "signed-out"}));
     }
     match authenticated_request("Failed to read the account", |client, access| client.get("/api/v1/me", Some(access))) {
-        Ok(me) => signed_in_status(me),
+        Ok(me) => {
+            if let Some(user_id) = me.get("id").and_then(Value::as_str) {
+                let incomplete = read_session_file().is_some_and(|stored| {
+                    stored.get("deviceId").is_none()
+                        || stored.get("hostId").is_none()
+                        || stored.get("hostKeyGeneration").is_none()
+                });
+                if incomplete {
+                    enroll_desktop(user_id);
+                }
+            }
+            signed_in_status(me)
+        }
         Err(error) if error.0.contains("Session expired") => Ok(json!({"state": "signed-out"})),
         Err(error) => Err(error),
     }
@@ -909,7 +921,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         }
         "account.billingStatus" => authed_json(reqwest::Method::GET, "/api/v1/billing/status", None, "Could not load the subscription"),
         "account.billingCheckout" => authed_json(reqwest::Method::POST, "/api/v1/billing/checkout", Some(payload.clone()), "Could not open the test checkout"),
-        "account.billingPortal" => authed_json(reqwest::Method::POST, "/api/v1/billing/portal", Some(json!({})), "Could not open subscription settings"),
+        "account.billingPortal" => authed_json(reqwest::Method::POST, "/api/v1/billing/portal", None, "Could not open subscription settings"),
         _ => Err(err("unhandled native tag")),
     }
 }

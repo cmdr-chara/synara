@@ -774,7 +774,7 @@ fn read_thread_activity(args: &Value) -> Result<Value, String> {
     let sql = format!(
         "SELECT activity_id, turn_id, tone, kind, summary, payload_json, created_at \
          FROM projection_thread_activities \
-         WHERE stream_id = ?1 AND aggregate_kind = 'thread' {} ORDER BY sequence DESC LIMIT ?2",
+         WHERE thread_id = ?1 {} ORDER BY sequence DESC LIMIT ?2",
         if turn_filter.is_some() { "AND turn_id = ?3" } else { "" }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;

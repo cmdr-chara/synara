@@ -257,6 +257,8 @@ fn connect_host(payload: &Value) -> Result<Value, String> {
         transport: None,
         started_at: None,
         credential_expires_at: None,
+        credential: None,
+        credential_expires_at_seconds: 0,
     });
     if let Err(error) = crate::remote_connections::probe_blocking(host_id, Value::Null) {
         crate::remote_connections::mark_state(host_id, "reconnecting");
@@ -342,6 +344,8 @@ pub(crate) fn restore_desired_connections() {
             transport: None,
             started_at: None,
             credential_expires_at: None,
+            credential: None,
+            credential_expires_at_seconds: 0,
         });
     }
 }

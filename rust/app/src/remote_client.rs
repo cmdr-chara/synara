@@ -309,6 +309,29 @@ async fn open_tls_channel(endpoint: &RemoteEndpoint, root_certificate: &str, env
     Ok(tls)
 }
 
+
+/// Opens the pinned TLS byte channel without an inner websocket upgrade.
+/// `/v2/resource` is plain HTTP inside this channel, unlike `/v2/rpc` and
+/// `/v2/pairing`, which are websocket upgrades.
+pub async fn open_tls_channel_endpoints(
+    endpoints: Vec<RemoteEndpoint>,
+    root_certificate: &str,
+    environment_id: &str,
+) -> Result<(TlsStream, RemoteEndpoint), String> {
+    if endpoints.is_empty() {
+        return Err("That host has no published route".to_string());
+    }
+    let ordered = order_by_probe(endpoints).await;
+    let mut last_error = "No route completed the verified host handshake".to_string();
+    for endpoint in ordered {
+        match open_tls_channel(&endpoint, root_certificate, environment_id).await {
+            Ok(socket) => return Ok((socket, endpoint)),
+            Err(error) => last_error = error,
+        }
+    }
+    Err(last_error)
+}
+
 pub async fn open_inner_websocket(
     endpoints: Vec<RemoteEndpoint>,
     root_certificate: &str,

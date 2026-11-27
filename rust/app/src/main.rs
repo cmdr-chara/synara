@@ -25,6 +25,7 @@ mod host_secrets;
 mod pairing_gateway;
 mod remote_client;
 mod remote_connections;
+mod remote_resource_client;
 mod remote_host_trust;
 mod remote_pairing;
 mod remote_resource;
@@ -284,6 +285,7 @@ async fn main() {
         .route("/oauth/mcp/callback", axum::routing::get(oauth_mcp_callback))
         .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
         .route("/api/browser/frame", axum::routing::get(browser_frame::browser_frame))
+        .route("/api/remote/resource/{host_id}", axum::routing::get(remote_resource_client::handle_remote_resource).post(remote_resource_client::handle_remote_resource))
         .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
         .route("/api/editor-icon", axum::routing::get(editor_icon::editor_icon))
         .route("/health", axum::routing::get(health))

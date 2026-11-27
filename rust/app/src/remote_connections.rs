@@ -31,6 +31,8 @@ pub struct DesiredHost {
     pub transport: Option<String>,
     pub started_at: Option<String>,
     pub credential_expires_at: Option<String>,
+    pub credential: Option<String>,
+    pub credential_expires_at_seconds: u64,
 }
 
 struct Attachment {
@@ -185,6 +187,17 @@ pub fn retry_reconnecting_once() -> usize {
     started
 }
 
+
+pub fn resource_credential(host_id: &str) -> Option<(DesiredHost, String)> {
+    let host = desired(host_id)?;
+    let credential = host.credential.clone()?;
+    let now = unix_now();
+    if host.credential_expires_at_seconds <= now + 30 {
+        return None;
+    }
+    Some((host, credential))
+}
+
 pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
     let desired = desired(host_id).ok_or_else(|| "Connect to this host from the local controller first".to_string())?;
     if matches!(desired.state, "needs-sign-in" | "revoked" | "incompatible" | "stopped") {
@@ -201,6 +214,8 @@ pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
         host.transport = Some(transport);
         host.started_at = Some(now_iso());
         host.credential_expires_at = Some(credential_expires);
+        host.credential = Some(session.credential.clone());
+        host.credential_expires_at_seconds = session.credential_expires_at_seconds;
     }
     let id = crate::orchestration_engine::uuid_v4();
     let (write, read) = session.socket.split();

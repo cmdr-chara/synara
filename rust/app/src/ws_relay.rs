@@ -483,6 +483,8 @@ async fn intercept_todo(
         && !text.contains("projects.resolveOutOfRootFileReference")
         && !text.contains("projects.readFile")
         && !text.contains("projects.writeFile")
+        && !text.contains("projects.formatText")
+        && !text.contains("projects.formatFile")
         && !text.contains("projects.searchContent")
         && !text.contains("projects.createLocalFilePreviewGrant")
         && !text.contains("projects.listDevServers")
@@ -563,6 +565,8 @@ async fn intercept_todo(
         && tag != "projects.resolveOutOfRootFileReference"
         && tag != "projects.readFile"
         && tag != "projects.writeFile"
+        && tag != "projects.formatText"
+        && tag != "projects.formatFile"
         && tag != "projects.searchContent"
         && tag != "projects.createLocalFilePreviewGrant"
         && tag != "projects.listDevServers"
@@ -1482,6 +1486,8 @@ async fn intercept_todo(
             .map_err(error_json)
     } else if tag.starts_with("projects.readFile")
         || tag == "projects.writeFile"
+        || tag == "projects.formatText"
+        || tag == "projects.formatFile"
         || tag == "projects.searchContent"
         || tag == "projects.createLocalFilePreviewGrant"
     {

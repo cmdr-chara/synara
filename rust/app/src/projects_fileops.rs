@@ -29,6 +29,8 @@ const SEARCH_MAX_LIMIT: usize = 100;
 const SEARCH_MAX_FILE_BYTES: u64 = 4 * 1024 * 1024;
 const SEARCH_MAX_LINE: usize = 1024;
 const GRANT_TTL: Duration = Duration::from_secs(120);
+const FORMAT_TEXT_MAX_BYTES: usize = 1_000_000;
+const FORMAT_OUTPUT_MAX_BYTES: usize = 2_000_000;
 
 fn err(msg: impl Into<String>) -> WsErr {
     WsErr(msg.into(), Some("FILE_IO"))
@@ -238,6 +240,262 @@ fn encode_text(contents: &str, encoding: &str, line_ending: &str) -> Vec<u8> {
     out
 }
 
+// ─── tidy formatting ────────────────────────────────────────────────────────
+
+fn format_err(msg: impl Into<String>) -> WsErr {
+    WsErr(msg.into(), Some("FORMAT_ERROR"))
+}
+
+fn tidy_failure(error: tidy::Error) -> WsErr {
+    match error {
+        tidy::Error::Syntax { message, at } => WsErr(
+            format!("Syntax error at byte {at}: {message}"),
+            Some("FORMAT_SYNTAX"),
+        ),
+        tidy::Error::TooDeep => WsErr(
+            "The document nests too deeply to format.".to_string(),
+            Some("FORMAT_TOO_DEEP"),
+        ),
+        _ => format_err("The document could not be formatted."),
+    }
+}
+
+fn language_name(language: tidy::Language) -> &'static str {
+    match language {
+        tidy::Language::Html => "html",
+        tidy::Language::Vue => "vue",
+        tidy::Language::Mjml => "mjml",
+        tidy::Language::Handlebars => "handlebars",
+        tidy::Language::Css(tidy::css::Dialect::Css) => "css",
+        tidy::Language::Css(tidy::css::Dialect::Scss) => "scss",
+        tidy::Language::Css(tidy::css::Dialect::Less) => "less",
+        tidy::Language::Json(tidy::json::Dialect::Json) => "json",
+        tidy::Language::Json(tidy::json::Dialect::Jsonc) => "jsonc",
+        tidy::Language::Json(tidy::json::Dialect::Json5) => "json5",
+        tidy::Language::Json(tidy::json::Dialect::Stringify) => "json-stringify",
+        tidy::Language::Toml => "toml",
+        tidy::Language::Xml => "xml",
+        tidy::Language::Yaml => "yaml",
+        tidy::Language::Markdown => "markdown",
+        tidy::Language::Dockerfile => "dockerfile",
+        tidy::Language::Ini(tidy::ini::Dialect::Ini) => "ini",
+        tidy::Language::Ini(tidy::ini::Dialect::Git) => "gitconfig",
+        tidy::Language::Graphql => "graphql",
+        tidy::Language::Js(tidy::js::Dialect::Js) => "javascript",
+        tidy::Language::Js(tidy::js::Dialect::Ts) => "typescript",
+        _ => "unknown",
+    }
+}
+
+fn language_from_input(
+    path: Option<&str>,
+    language: Option<&str>,
+) -> Result<tidy::Language, WsErr> {
+    if let Some(name) = language.filter(|name| !name.trim().is_empty()) {
+        return tidy::Language::hint(name.trim())
+            .ok_or_else(|| format_err(format!("tidy does not format language '{name}'")));
+    }
+    let path = path.ok_or_else(|| format_err("path or language is required"))?;
+    tidy::Language::file(path)
+        .ok_or_else(|| format_err(format!("tidy does not format this file type: {path}")))
+}
+
+fn tidy_options(path: Option<&Path>, _payload: &Value) -> Result<tidy::Options, WsErr> {
+    let resolver = tidy::config::Resolver::default();
+    match path {
+        Some(path) => resolver
+            .options(path)
+            .map_err(|error| format_err(format!("tidy config error: {error}"))),
+        None => Ok(resolver.without_path()),
+    }
+}
+
+fn preserve_line_endings(options: &mut tidy::Options, line_ending: Option<&str>) {
+    let eol = match line_ending {
+        Some("crlf") => Some(tidy::Eol::Crlf),
+        Some("cr") => Some(tidy::Eol::Cr),
+        Some("lf") => Some(tidy::Eol::Lf),
+        _ => None,
+    };
+    if let Some(eol) = eol {
+        options.share(&tidy::Shared {
+            eol: Some(eol),
+            ..tidy::Shared::default()
+        });
+    }
+}
+
+fn format_document(
+    text: &str,
+    language: tidy::Language,
+    options: &tidy::Options,
+    path: Option<&str>,
+) -> Result<String, WsErr> {
+    if text.len() > FORMAT_TEXT_MAX_BYTES {
+        return Err(format_err("text exceeds the 1 MB formatting limit"));
+    }
+    let formatted = tidy::format(text, language, options, path, &mut tidy::embed::Verbatim)
+        .map_err(tidy_failure)?;
+    if formatted.len() > FORMAT_OUTPUT_MAX_BYTES {
+        return Err(format_err("formatted output exceeds the 2 MB limit"));
+    }
+    Ok(formatted)
+}
+
+fn apply_request_config(options: &mut tidy::Options, payload: &Value) -> Result<(), WsErr> {
+    if let Some(config) = payload.get("config") {
+        let config = tidy::config::Config::from_value(config)
+            .map_err(|error| format_err(format!("invalid tidy config: {error}")))?;
+        config.apply(options);
+    }
+    Ok(())
+}
+
+pub fn format_text(payload: &Value) -> Result<Value, WsErr> {
+    let text = payload
+        .get("text")
+        .or_else(|| payload.get("contents"))
+        .and_then(Value::as_str)
+        .ok_or_else(|| format_err("text is required"))?;
+    let path = payload.get("path").and_then(Value::as_str);
+    let language = language_from_input(path, payload.get("language").and_then(Value::as_str))?;
+    let line_ending = payload.get("lineEnding").and_then(Value::as_str);
+    let config_path = path.map(|path| {
+        let raw = PathBuf::from(path);
+        if raw.is_absolute() {
+            raw
+        } else if let Some(cwd) = payload.get("cwd").and_then(Value::as_str) {
+            PathBuf::from(shellexpand(cwd)).join(raw)
+        } else {
+            raw
+        }
+    });
+    let mut options = tidy_options(config_path.as_deref(), payload)?;
+    if payload.get("preserveLineEnding").and_then(Value::as_bool) != Some(false) {
+        preserve_line_endings(
+            &mut options,
+            line_ending.or_else(|| detect_line_ending(text)),
+        );
+    }
+    // A caller-supplied config is authoritative even over line-ending preservation.
+    apply_request_config(&mut options, payload)?;
+    let formatted = format_document(text, language, &options, path)?;
+    Ok(json!({
+        "formatted": formatted,
+        "changed": formatted != text,
+        "language": language_name(language),
+    }))
+}
+
+fn atomic_write(target: &Path, bytes: &[u8]) -> Result<(), WsErr> {
+    let parent = target
+        .parent()
+        .ok_or_else(|| err("path has no parent directory"))?;
+    let name = target
+        .file_name()
+        .ok_or_else(|| err("path has no file name"))?
+        .to_string_lossy();
+    let temp = parent.join(format!(
+        ".{name}.{}.{}.tmp",
+        std::process::id(),
+        grant_token()
+    ));
+    {
+        let mut f = std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&temp)
+            .map_err(|e| err(format!("cannot create temp file: {e}")))?;
+        if let Err(e) = f.write_all(bytes).and_then(|_| f.sync_all()) {
+            let _ = std::fs::remove_file(&temp);
+            return Err(err(format!("cannot write temp file: {e}")));
+        }
+        if let Ok(meta) = std::fs::metadata(target) {
+            let _ = std::fs::set_permissions(&temp, meta.permissions());
+        }
+    }
+    if std::fs::rename(&temp, target).is_err() {
+        let _ = std::fs::remove_file(&temp);
+        return Err(err("atomic rename failed"));
+    }
+    Ok(())
+}
+
+pub fn format_file(payload: &Value) -> Result<Value, WsErr> {
+    let cwd = cwd_of(payload)?;
+    let rel = payload
+        .get("relativePath")
+        .or_else(|| payload.get("path"))
+        .and_then(Value::as_str)
+        .filter(|s| !s.is_empty() && s.len() <= WRITE_FILE_PATH_MAX)
+        .ok_or_else(|| format_err("relativePath is required"))?;
+    let raw_path = PathBuf::from(shellexpand(rel));
+    let cwd_canon = canon(&cwd);
+    let target = if raw_path.is_absolute() {
+        canon(&raw_path)
+    } else {
+        canon(&cwd.join(&raw_path))
+    };
+    if !target.starts_with(&cwd_canon) {
+        return Err(err("path escapes the workspace"));
+    }
+    let raw = std::fs::read(&target).map_err(|_| err(format!("file not found: {rel}")))?;
+    if raw.len() > FORMAT_TEXT_MAX_BYTES {
+        return Err(format_err("file exceeds the 1 MB formatting limit"));
+    }
+    if let Some(expected) = payload.get("expectedVersion").and_then(Value::as_str) {
+        if expected.len() > VERSION_MAX {
+            return Err(err("expectedVersion too long"));
+        }
+        let version = format!("sha256:{}", hex_digest(&raw));
+        if version != expected {
+            return Err(err("file has been modified since it was read"));
+        }
+    }
+    let (text, encoding) = decode_text(&raw)?;
+    let line_ending = detect_line_ending(&text);
+    let path_string = target.to_string_lossy().into_owned();
+    let language = language_from_input(
+        Some(&path_string),
+        payload.get("language").and_then(Value::as_str),
+    )?;
+    let mut options = tidy_options(Some(&target), payload)?;
+    if payload.get("preserveLineEnding").and_then(Value::as_bool) != Some(false) {
+        preserve_line_endings(&mut options, line_ending);
+    }
+    apply_request_config(&mut options, payload)?;
+    let normalized = text.replace("\r\n", "\n").replace('\r', "\n");
+    let formatted = format_document(&normalized, language, &options, Some(&path_string))?;
+    let write = payload.get("write").and_then(Value::as_bool) == Some(true);
+    let preserve_eol = payload.get("preserveLineEnding").and_then(Value::as_bool) != Some(false);
+    let output_line_ending = if preserve_eol {
+        match line_ending {
+            Some("crlf") => "crlf",
+            Some("cr") => "cr",
+            _ => "lf",
+        }
+    } else {
+        detect_line_ending(&formatted).unwrap_or("lf")
+    };
+    let output_bytes = encode_text(&formatted, encoding, output_line_ending);
+    let changed = output_bytes != raw;
+    let mut version = format!("sha256:{}", hex_digest(&raw));
+    if write && changed {
+        atomic_write(&target, &output_bytes)?;
+        version = format!("sha256:{}", hex_digest(&output_bytes));
+    }
+    Ok(json!({
+        "relativePath": rel,
+        "formatted": formatted,
+        "changed": changed,
+        "written": write && changed,
+        "language": language_name(language),
+        "version": version,
+        "encoding": encoding,
+        "lineEnding": output_line_ending,
+    }))
+}
+
 // ─── methods ────────────────────────────────────────────────────────────────
 
 pub fn read_file(payload: &Value) -> Result<Value, WsErr> {
@@ -374,36 +632,7 @@ pub fn write_file(payload: &Value) -> Result<Value, WsErr> {
         _ => contents.as_bytes().to_vec(),
     };
 
-    let parent = target
-        .parent()
-        .ok_or_else(|| err("path has no parent directory"))?;
-    let name = target
-        .file_name()
-        .ok_or_else(|| err("path has no file name"))?
-        .to_string_lossy();
-    let temp = parent.join(format!(
-        ".{name}.{}.{}.tmp",
-        std::process::id(),
-        grant_token()
-    ));
-    {
-        let mut f = std::fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&temp)
-            .map_err(|e| err(format!("cannot create temp file: {e}")))?;
-        if let Err(e) = f.write_all(&bytes).and_then(|_| f.sync_all()) {
-            let _ = std::fs::remove_file(&temp);
-            return Err(err(format!("cannot write temp file: {e}")));
-        }
-        if let Ok(meta) = std::fs::metadata(&target) {
-            let _ = std::fs::set_permissions(&temp, meta.permissions());
-        }
-    }
-    if std::fs::rename(&temp, &target).is_err() {
-        let _ = std::fs::remove_file(&temp);
-        return Err(err("atomic rename failed"));
-    }
+    atomic_write(&target, &bytes)?;
 
     let version = format!("sha256:{}", hex_digest(&bytes));
     Ok(json!({ "relativePath": rel, "version": version }))
@@ -566,10 +795,99 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
     match tag {
         "projects.readFile" => Ok(Some(read_file(payload)?)),
         "projects.writeFile" => Ok(Some(write_file(payload)?)),
+        "projects.formatText" => Ok(Some(format_text(payload)?)),
+        "projects.formatFile" => Ok(Some(format_file(payload)?)),
         "projects.searchContent" => Ok(Some(search_content(payload)?)),
         "projects.createLocalFilePreviewGrant" => {
             Ok(Some(create_local_file_preview_grant(payload)?))
         }
         _ => Err(WsErr(format!("unknown tag {tag}"), None)),
+    }
+}
+
+#[cfg(test)]
+mod format_tests {
+    use super::*;
+
+    fn temp_workspace(name: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join(format!(
+            "synara-format-test-{}-{}",
+            name,
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    #[test]
+    fn formats_javascript_text() {
+        let result = format_text(&json!({
+            "text": "const x={a:1,b:2}\n",
+            "language": "js"
+        }))
+        .unwrap();
+        assert_eq!(result["formatted"], "const x = { a: 1, b: 2 };\n");
+        assert_eq!(result["changed"], true);
+        assert_eq!(result["language"], "javascript");
+    }
+
+    #[test]
+    fn formats_json_by_path_and_applies_config() {
+        let result = format_text(&json!({
+            "text": "{\"a\":1,\"b\":[1,2]}",
+            "path": "data.json",
+            "config": {"width": 8}
+        }))
+        .unwrap();
+        assert!(result["formatted"].as_str().unwrap().contains("\n"));
+        assert_eq!(result["language"], "json");
+    }
+
+    #[test]
+    fn rejects_unsupported_language_and_syntax_errors() {
+        assert!(format_text(&json!({"text":"fn main() {}","language":"rust"})).is_err());
+        let error = format_text(&json!({"text":"const = {","language":"js"})).unwrap_err();
+        assert_eq!(error.1.as_deref(), Some("FORMAT_SYNTAX"));
+    }
+
+    #[test]
+    fn format_file_writes_atomically_and_preserves_crlf() {
+        let cwd = temp_workspace("crlf");
+        std::fs::write(cwd.join("x.js"), "const x={a:1}\r\n").unwrap();
+        let result = format_file(&json!({
+            "cwd": cwd,
+            "relativePath": "x.js",
+            "write": true
+        }))
+        .unwrap();
+        assert_eq!(result["written"], true);
+        let written = std::fs::read_to_string(cwd.join("x.js")).unwrap();
+        assert!(written.ends_with("\r\n"));
+        assert!(written.contains("const x = { a: 1 };"));
+        std::fs::remove_dir_all(&cwd).ok();
+    }
+
+    #[test]
+    fn format_file_enforces_workspace_and_expected_version() {
+        let cwd = temp_workspace("guard");
+        assert!(
+            format_file(&json!({
+                "cwd": cwd,
+                "relativePath": "../x.js"
+            }))
+            .is_err()
+        );
+        std::fs::write(cwd.join("x.js"), "const x={a:1}\n").unwrap();
+        assert!(
+            format_file(&json!({
+                "cwd": cwd,
+                "relativePath": "x.js",
+                "write": true,
+                "expectedVersion": "sha256:bad"
+            }))
+            .is_err()
+        );
+        std::fs::remove_dir_all(&cwd).ok();
     }
 }

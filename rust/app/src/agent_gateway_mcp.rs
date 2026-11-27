@@ -314,6 +314,16 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "computer_move_cursor",
+            "Move the pointer to exact desktop coordinates without clicking.",
+            object_schema(json!({"x":{"type":"number"},"y":{"type":"number"},"window_id":{"type":"string"}}), &["x","y"]),
+        ),
+        tool(
+            "computer_drag",
+            "Drag from exact desktop coordinates to exact desktop coordinates.",
+            object_schema(json!({"from":{"type":"object"},"to":{"type":"object"}}), &["from","to"]),
+        ),
+        tool(
             "computer_click",
             "Click exact desktop coordinates. Verify with fresh state afterward; never replay uncertain input.",
             object_schema(
@@ -756,6 +766,19 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             &json!({"windowId": string_arg(args,"window_id").ok_or("window_id is required")?}),
             thread,
         ),
+        "computer_move_cursor" => native_call_scoped(
+            "computer.moveCursor",
+            &json!({"x":number(args,"x")?,"y":number(args,"y")?,"windowId":string_arg(args,"window_id")}),
+            thread,
+        ),
+        "computer_drag" => native_call_scoped(
+            "computer.drag",
+            &json!({
+                "from": args.get("from").cloned().unwrap_or(json!({})),
+                "to": args.get("to").cloned().unwrap_or(json!({})),
+            }),
+            thread,
+        ),
         "computer_click" => {
             let button = string_arg(args, "button").unwrap_or("left");
             let count = number_opt(args, "count").unwrap_or(1.0) as i64;
@@ -904,6 +927,8 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
             "set_window_frame" => "computer_set_window_frame",
             "kill_app" => "computer_kill_app",
             "get_state" => "computer_get_state",
+            "move_cursor" => "computer_move_cursor",
+            "drag" => "computer_drag",
             "click" => "computer_click",
             "type_text" => "computer_type_text",
             "press_key" => "computer_press_key",

@@ -166,6 +166,52 @@ pub(crate) fn remote_owner_authorized(headers: &HeaderMap, uri: &Uri) -> Result<
     Ok(())
 }
 
+/// Feature RPC and frame sockets share upstream's upgrade admission: trusted
+/// origin first, then either local loopback trust, the private legacy token,
+/// or an explicit authenticated session/ticket. `/ws/bootstrap` stays
+/// unauthenticated because it is only the legacy negotiation transport.
+fn reject_untrusted_websocket_origin(headers: &HeaderMap) -> bool {
+    let cfg = crate::native_ws::config();
+    let request_origin = crate::native_ws::request_origin(headers);
+    let raw_origin = headers.get("origin").and_then(|value| value.to_str().ok());
+    crate::native_ws::should_reject_untrusted_request_origin(raw_origin, &request_origin, cfg)
+}
+
+fn websocket_auth_not_required_response(status: axum::http::StatusCode) -> Response {
+    (status, [(axum::http::header::CACHE_CONTROL, "no-store")], "Unauthorized").into_response()
+}
+
+fn authenticate_rpc_websocket_upgrade(
+    headers: &HeaderMap,
+    uri: &Uri,
+) -> Result<Option<crate::auth_http::AuthenticatedSession>, axum::http::StatusCode> {
+    let legacy_token = query_value(uri, "token");
+    if trusted_local_legacy_token(legacy_token.as_deref()) {
+        return Ok(None);
+    }
+    let ws_ticket = query_value(uri, "wsToken");
+    let explicit = ws_ticket.is_some()
+        || headers.get(axum::http::header::AUTHORIZATION).is_some()
+        || headers
+            .get(axum::http::header::COOKIE)
+            .and_then(|value| value.to_str().ok())
+            .is_some_and(has_session_cookie);
+    if !explicit && !websocket_auth_required() {
+        return Ok(None);
+    }
+    let session = ws_ticket
+        .as_deref()
+        .and_then(crate::auth_http::authenticate_websocket_ticket)
+        .or_else(|| crate::auth_http::authenticate(headers));
+    session
+        .map(Some)
+        .ok_or(axum::http::StatusCode::UNAUTHORIZED)
+}
+
+fn authenticated_websocket_path(path: &str) -> bool {
+    path == "/ws" || path == "/ws/device-frames" || path == "/ws/computer-frames"
+}
+
 async fn remote_negotiate(
     axum::extract::Path(host_id): axum::extract::Path<String>,
     uri: Uri,
@@ -281,6 +327,12 @@ async fn device_frames_upgrade(
     uri: Uri,
     headers: HeaderMap,
 ) -> Response {
+    if reject_untrusted_websocket_origin(&headers) {
+        return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
+    }
+    if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
+        return websocket_auth_not_required_response(status);
+    }
     if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
         return upgrade(State(original), ws, uri, headers, false).await;
     }
@@ -304,6 +356,12 @@ async fn computer_frames_upgrade(
     uri: Uri,
     headers: HeaderMap,
 ) -> Response {
+    if reject_untrusted_websocket_origin(&headers) {
+        return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
+    }
+    if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
+        return websocket_auth_not_required_response(status);
+    }
     if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
         return upgrade(State(original), ws, uri, headers, false).await;
     }
@@ -432,12 +490,24 @@ async fn upgrade(
     headers: HeaderMap,
     intercept: bool,
 ) -> Response {
+    if reject_untrusted_websocket_origin(&headers) {
+        return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
+    }
     // `/ws` is the feature socket negotiated by `/ws/negotiate`; the legacy
     // bootstrap socket is itself the negotiation transport and stays exempt.
-    if !intercept && let Some(refusal) = compatibility_refusal(&uri) {
+    // Frame sockets have their own query shape and are never compatibility-gated.
+    if uri.path() == "/ws" && let Some(refusal) = compatibility_refusal(&uri) {
         return refusal;
     }
-    ws.on_upgrade(move |socket| relay(socket, original, uri, headers, intercept))
+    let authenticated_session = if authenticated_websocket_path(uri.path()) {
+        match authenticate_rpc_websocket_upgrade(&headers, &uri) {
+            Ok(session) => session,
+            Err(status) => return websocket_auth_not_required_response(status),
+        }
+    } else {
+        None
+    };
+    ws.on_upgrade(move |socket| relay(socket, original, uri, headers, intercept, authenticated_session))
 }
 
 /// `todo.*` requests served by the native store; the string check is a fast
@@ -1875,9 +1945,10 @@ async fn relay(
     uri: Uri,
     headers: HeaderMap,
     intercept: bool,
+    authenticated_session: Option<crate::auth_http::AuthenticatedSession>,
 ) {
     let todos = original.todos.clone();
-    let desktop_update_authority = crate::auth_http::authenticate(&headers).and_then(|session| {
+    let desktop_update_authority = authenticated_session.and_then(|session| {
         (session.role == "owner").then(|| format!("owner:{}", session.session_id))
     });
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() || !original.upstream_running() {
@@ -2125,6 +2196,52 @@ async fn relay(
 
 #[cfg(test)]
 mod admission_tests {
+    use axum::http::{HeaderMap, Uri};
+
+    fn headers(pairs: &[(&str, &str)]) -> HeaderMap {
+        let mut out = HeaderMap::new();
+        for (name, value) in pairs {
+            out.insert(
+                axum::http::header::HeaderName::from_bytes(name.as_bytes()).unwrap(),
+                axum::http::HeaderValue::from_str(value).unwrap(),
+            );
+        }
+        out
+    }
+
+    #[test]
+    fn loopback_feature_socket_without_credentials_is_local() {
+        let headers = headers(&[]);
+        let uri: Uri = "/ws".parse().unwrap();
+        assert!(super::authenticate_rpc_websocket_upgrade(&headers, &uri).unwrap().is_none());
+    }
+
+    #[test]
+    fn explicit_invalid_websocket_ticket_is_rejected() {
+        let headers = headers(&[]);
+        let uri: Uri = "/ws?wsToken=not-a-valid-ticket".parse().unwrap();
+        assert!(matches!(
+            super::authenticate_rpc_websocket_upgrade(&headers, &uri),
+            Err(axum::http::StatusCode::UNAUTHORIZED)
+        ));
+    }
+
+    #[test]
+    fn authenticated_socket_paths_match_upstream() {
+        assert!(super::authenticated_websocket_path("/ws"));
+        assert!(super::authenticated_websocket_path("/ws/device-frames"));
+        assert!(super::authenticated_websocket_path("/ws/computer-frames"));
+        assert!(!super::authenticated_websocket_path("/ws/bootstrap"));
+    }
+
+    #[test]
+    fn unrelated_browser_origin_is_rejected_but_absent_origin_is_allowed() {
+        let browser = headers(&[("host", "127.0.0.1:8080"), ("origin", "http://evil.example")]);
+        assert!(super::reject_untrusted_websocket_origin(&browser));
+        let cli = headers(&[("host", "127.0.0.1:8080")]);
+        assert!(!super::reject_untrusted_websocket_origin(&cli));
+    }
+
     #[test]
     fn session_cookie_detection_matches_upstream_shape() {
         assert!(super::has_session_cookie("synara_session=abc"));

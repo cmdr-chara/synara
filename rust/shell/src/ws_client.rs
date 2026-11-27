@@ -36,7 +36,7 @@ fn default_ws_url(base: &str, token: &str, revision: u64, server_instance: &str)
         "ws://127.0.0.1:8080".to_string()
     };
     format!(
-        "{ws_base}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision={revision}&x-synara-server-instance={}&token={}",
+        "{ws_base}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision={revision}&x-synara-server-instance={}&wsToken={}",
         urlencoding::encode(server_instance),
         urlencoding::encode(token)
     )
@@ -460,7 +460,7 @@ mod tests {
     fn derives_ws_url_from_http_base() {
         let url = default_ws_url("http://127.0.0.1:8091", "token.with+chars", 3, "inst-1");
         assert!(url.starts_with("ws://127.0.0.1:8091/ws?"));
-        assert!(url.ends_with("token=token.with%2Bchars"));
+        assert!(url.ends_with("wsToken=token.with%2Bchars"));
     }
 
     #[test]

@@ -26387,11 +26387,11 @@ impl Render for Native {
                                     .bg(gpui::linear_gradient(
                                         180.,
                                         gpui::linear_color_stop(
-                                            rgb(0xc74614).opacity(0.03),
+                                            rgb(0xc74614).opacity(0.015),
                                             0.,
                                         ),
                                         gpui::linear_color_stop(
-                                            rgb(0xc74614).opacity(0.09),
+                                            rgb(0xc74614).opacity(0.045),
                                             0.55,
                                         ),
                                     )),

@@ -173,8 +173,10 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
 /// thread, reads the provider-native transcript straight from disk (the same
 /// files the discovery catalog scans), projects messages with
 /// `import:{thread}:{provider}:{sourceId}` ids, and binds the external resume
-/// cursor so the next turn continues that session. OMP/OpenCode/Droid imports
-/// remain documented gaps — their transcripts need the live adapter protocol.
+/// cursor so the next turn continues that session. OMP file-backed sessions are
+/// imported through the same local history reader as the upstream adapter.
+/// OpenCode/Droid imports remain documented gaps — their transcripts need the
+/// live adapter protocol.
 fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload
         .get("threadId")
@@ -211,146 +213,180 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             "Thread '{thread_id}' already has an active provider session."
         )));
     }
-    let provider = serde_json::from_str::<Value>(&model_selection)
-        .ok()
-        .and_then(|v| v.get("provider").and_then(Value::as_str).map(str::to_string))
+    let model_selection_value = serde_json::from_str::<Value>(&model_selection).unwrap_or(json!({}));
+    let provider = model_selection_value
+        .get("provider")
+        .and_then(Value::as_str)
+        .map(str::to_string)
         .unwrap_or_else(|| "claudeAgent".to_string());
+    let instance_id = model_selection_value
+        .get("instanceId")
+        .and_then(Value::as_str)
+        .map(str::to_string);
 
     // Locate the provider-native transcript by external id.
     let home = std::env::var("HOME").unwrap_or_default();
-    let transcript_path: Option<std::path::PathBuf> = match provider.as_str() {
-        "claudeAgent" | "claude" => {
-            let projects = std::path::PathBuf::from(&home).join(".claude/projects");
-            let target = format!("{external_id}.jsonl");
-            let mut found = None;
-            if let Ok(dirs) = std::fs::read_dir(&projects) {
-                for dir in dirs.flatten() {
-                    let candidate = dir.path().join(&target);
-                    if candidate.is_file() {
-                        found = Some(candidate);
-                        break;
-                    }
-                }
-            }
-            found
-        }
-        "codex" => {
-            // Codex rollout files embed the session id in the file name.
-            let sessions = std::path::PathBuf::from(&home).join(".codex/sessions");
-            let mut found = None;
-            fn scan(dir: &std::path::Path, needle: &str, depth: u32) -> Option<std::path::PathBuf> {
-                if depth == 0 {
-                    return None;
-                }
-                for entry in std::fs::read_dir(dir).ok()?.flatten() {
-                    let path = entry.path();
-                    if path.is_dir() {
-                        if let Some(hit) = scan(&path, needle, depth - 1) {
-                            return Some(hit);
+    let omp_history = if provider == "omp" {
+        let agent_dir = crate::omp_import::resolve_omp_agent_dir(instance_id.as_deref());
+        Some(
+            crate::omp_import::read_omp_session_history(&agent_dir, external_id)
+                .ok_or_else(|| err(format!("Oh My Pi session '{external_id}' was not found locally.")))?,
+        )
+    } else {
+        None
+    };
+    let transcript_path: Option<std::path::PathBuf> = if provider == "omp" {
+        None
+    } else {
+        match provider.as_str() {
+            "claudeAgent" | "claude" => {
+                let projects = std::path::PathBuf::from(&home).join(".claude/projects");
+                let target = format!("{external_id}.jsonl");
+                let mut found = None;
+                if let Ok(dirs) = std::fs::read_dir(&projects) {
+                    for dir in dirs.flatten() {
+                        let candidate = dir.path().join(&target);
+                        if candidate.is_file() {
+                            found = Some(candidate);
+                            break;
                         }
-                    } else if entry.file_name().to_string_lossy().contains(needle) {
-                        return Some(path);
                     }
                 }
-                None
+                found
             }
-            if sessions.is_dir() {
-                found = scan(&sessions, external_id, 4);
+            "codex" => {
+                // Codex rollout files embed the session id in the file name.
+                let sessions = std::path::PathBuf::from(&home).join(".codex/sessions");
+                let mut found = None;
+                fn scan(dir: &std::path::Path, needle: &str, depth: u32) -> Option<std::path::PathBuf> {
+                    if depth == 0 {
+                        return None;
+                    }
+                    for entry in std::fs::read_dir(dir).ok()?.flatten() {
+                        let path = entry.path();
+                        if path.is_dir() {
+                            if let Some(hit) = scan(&path, needle, depth - 1) {
+                                return Some(hit);
+                            }
+                        } else if entry.file_name().to_string_lossy().contains(needle) {
+                            return Some(path);
+                        }
+                    }
+                    None
+                }
+                if sessions.is_dir() {
+                    found = scan(&sessions, external_id, 4);
+                }
+                found
             }
-            found
-        }
-        other => {
-            return Err(err(format!(
-                "Session import is not available for provider '{other}' in the native server."
-            )))
+            other => {
+                return Err(err(format!(
+                    "Session import is not available for provider '{other}' in the native server."
+                )))
+            }
         }
     };
-    let Some(path) = transcript_path else {
-        return Err(err(format!(
-            "Session '{external_id}' was not found on this machine."
-        )));
-    };
-    let content = std::fs::read(&path).map_err(|e| err(format!("Failed to read session history: {e}")))?;
 
+    let mut omp_last_model: Option<String> = None;
+    let mut omp_thinking_level: Option<String> = None;
     // Map transcript lines to (role, text, timestamp, source id) tuples.
     let mut imported: Vec<(String, String, Option<String>, String)> = Vec::new();
-    for (index, line) in content.split(|b| *b == b'\n').enumerate() {
-        if line.len() < 4 || line.len() > 8 * 1024 * 1024 {
-            continue;
+    if let Some(history) = omp_history.as_ref() {
+        omp_last_model = history.last_model.clone();
+        omp_thinking_level = history.last_thinking_level.clone();
+        for (index, message) in history.messages.iter().enumerate() {
+            imported.push((
+                message.role.clone(),
+                message.text.clone(),
+                message.timestamp.clone(),
+                format!("{index}:0:{}", message.id),
+            ));
         }
-        let Ok(entry) = serde_json::from_slice::<Value>(line) else { continue };
-        let timestamp = entry
-            .get("timestamp")
-            .and_then(Value::as_str)
-            .map(str::to_string);
-        if provider == "codex" {
-            // Rollout lines wrap payload items; user/assistant messages carry
-            // content parts with text.
-            let item = entry.get("payload").cloned().unwrap_or(entry.clone());
-            let item_type = item.get("type").and_then(Value::as_str).unwrap_or("");
-            if item_type != "user_message" && item_type != "assistant_message" && item_type != "message" {
+    } else {
+        let Some(path) = transcript_path else {
+            return Err(err(format!(
+                "Session '{external_id}' was not found on this machine."
+            )));
+        };
+        let content = std::fs::read(&path).map_err(|e| err(format!("Failed to read session history: {e}")))?;
+        for (index, line) in content.split(|b| *b == b'\n').enumerate() {
+            if line.len() < 4 || line.len() > 8 * 1024 * 1024 {
                 continue;
             }
-            let role = item
-                .get("role")
+            let Ok(entry) = serde_json::from_slice::<Value>(line) else { continue };
+            let timestamp = entry
+                .get("timestamp")
                 .and_then(Value::as_str)
-                .unwrap_or(if item_type == "user_message" { "user" } else { "assistant" })
-                .to_string();
-            if role != "user" && role != "assistant" {
-                continue;
+                .map(str::to_string);
+            if provider == "codex" {
+                // Rollout lines wrap payload items; user/assistant messages carry
+                // content parts with text.
+                let item = entry.get("payload").cloned().unwrap_or(entry.clone());
+                let item_type = item.get("type").and_then(Value::as_str).unwrap_or("");
+                if item_type != "user_message" && item_type != "assistant_message" && item_type != "message" {
+                    continue;
+                }
+                let role = item
+                    .get("role")
+                    .and_then(Value::as_str)
+                    .unwrap_or(if item_type == "user_message" { "user" } else { "assistant" })
+                    .to_string();
+                if role != "user" && role != "assistant" {
+                    continue;
+                }
+                let text_out = item
+                    .get("content")
+                    .and_then(Value::as_array)
+                    .map(|parts| {
+                        parts
+                            .iter()
+                            .filter_map(|p| p.get("text").and_then(Value::as_str))
+                            .collect::<Vec<_>>()
+                            .join("")
+                    })
+                    .or_else(|| item.get("text").and_then(Value::as_str).map(str::to_string))
+                    .unwrap_or_default();
+                if text_out.trim().is_empty() {
+                    continue;
+                }
+                let source_id = item
+                    .get("id")
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
+                    .unwrap_or_else(|| index.to_string());
+                imported.push((role, text_out, timestamp, source_id));
+            } else {
+                let entry_type = entry.get("type").and_then(Value::as_str).unwrap_or("");
+                if entry_type != "user" && entry_type != "assistant" {
+                    continue;
+                }
+                if entry.get("isSidechain").and_then(Value::as_bool) == Some(true) {
+                    continue;
+                }
+                let message = entry.get("message").cloned().unwrap_or(json!({}));
+                let text_out = message
+                    .get("content")
+                    .and_then(Value::as_array)
+                    .map(|parts| {
+                        parts
+                            .iter()
+                            .filter(|p| p.get("type").and_then(Value::as_str) == Some("text"))
+                            .filter_map(|p| p.get("text").and_then(Value::as_str))
+                            .collect::<Vec<_>>()
+                            .join("\n")
+                    })
+                    .or_else(|| message.get("content").and_then(Value::as_str).map(str::to_string))
+                    .unwrap_or_default();
+                if text_out.trim().is_empty() {
+                    continue;
+                }
+                let source_id = entry
+                    .get("uuid")
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
+                    .unwrap_or_else(|| index.to_string());
+                imported.push((entry_type.to_string(), text_out, timestamp, source_id));
             }
-            let text_out = item
-                .get("content")
-                .and_then(Value::as_array)
-                .map(|parts| {
-                    parts
-                        .iter()
-                        .filter_map(|p| p.get("text").and_then(Value::as_str))
-                        .collect::<Vec<_>>()
-                        .join("")
-                })
-                .or_else(|| item.get("text").and_then(Value::as_str).map(str::to_string))
-                .unwrap_or_default();
-            if text_out.trim().is_empty() {
-                continue;
-            }
-            let source_id = item
-                .get("id")
-                .and_then(Value::as_str)
-                .map(str::to_string)
-                .unwrap_or_else(|| index.to_string());
-            imported.push((role, text_out, timestamp, source_id));
-        } else {
-            let entry_type = entry.get("type").and_then(Value::as_str).unwrap_or("");
-            if entry_type != "user" && entry_type != "assistant" {
-                continue;
-            }
-            if entry.get("isSidechain").and_then(Value::as_bool) == Some(true) {
-                continue;
-            }
-            let message = entry.get("message").cloned().unwrap_or(json!({}));
-            let text_out = message
-                .get("content")
-                .and_then(Value::as_array)
-                .map(|parts| {
-                    parts
-                        .iter()
-                        .filter(|p| p.get("type").and_then(Value::as_str) == Some("text"))
-                        .filter_map(|p| p.get("text").and_then(Value::as_str))
-                        .collect::<Vec<_>>()
-                        .join("\n")
-                })
-                .or_else(|| message.get("content").and_then(Value::as_str).map(str::to_string))
-                .unwrap_or_default();
-            if text_out.trim().is_empty() {
-                continue;
-            }
-            let source_id = entry
-                .get("uuid")
-                .and_then(Value::as_str)
-                .map(str::to_string)
-                .unwrap_or_else(|| index.to_string());
-            imported.push((entry_type.to_string(), text_out, timestamp, source_id));
         }
     }
     if imported.is_empty() {
@@ -365,7 +401,11 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             .map(|d| d.as_secs())
             .unwrap_or(0),
     );
-    let provider_key = if provider == "codex" { "codex" } else { "claude" };
+    let provider_key = match provider.as_str() {
+        "codex" => "codex",
+        "omp" => "omp",
+        _ => "claude",
+    };
     for (seq, (role, text_out, timestamp, source_id)) in imported.iter().enumerate() {
         let message_id = format!("import:{thread_id}:{provider_key}:{source_id}");
         let created = timestamp.clone().unwrap_or_else(|| now.clone());
@@ -377,8 +417,27 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         // already preserves transcript order through insertion sequence.
         let _ = seq;
     }
+    if provider == "omp" {
+        if let Some(model) = omp_last_model.as_deref() {
+            let mut effective = model_selection_value.clone();
+            effective["provider"] = json!("omp");
+            effective["model"] = json!(model);
+            const OMP_THINKING_LEVELS: &[&str] = &["off", "auto", "minimal", "low", "medium", "high", "xhigh", "max"];
+            if let Some(level) = omp_thinking_level.as_deref().filter(|level| OMP_THINKING_LEVELS.contains(level)) {
+                if !effective.get("options").is_some_and(Value::is_object) {
+                    effective["options"] = json!({});
+                }
+                effective["options"]["thinkingLevel"] = json!(level);
+            }
+            let _ = conn.execute(
+                "UPDATE projection_threads SET model_selection_json = ?2 WHERE thread_id = ?1",
+                params![thread_id, effective.to_string()],
+            );
+        }
+    }
     let cursor = match provider_key {
         "codex" => json!({ "resume": external_id }),
+        "omp" => json!({ "schemaVersion": 1, "sessionId": external_id }),
         _ => json!({ "resume": external_id }),
     };
     let now2 = now.clone();

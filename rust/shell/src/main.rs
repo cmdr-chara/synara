@@ -12,6 +12,7 @@ actions!(shell, [QuitApp, HideApp, HideOthers]);
 
 mod backdrop;
 mod backend;
+mod beta_diagnostics;
 mod beta_channel;
 mod appsnap;
 mod browser_host;
@@ -200,12 +201,20 @@ impl Render for Shell {
 
 fn main() {
     reliability::initialize();
+    let diagnostics_home = backend::configured_home_dir();
+    let diagnostics_version = std::env::var("SYNARA_DESKTOP_VERSION").unwrap_or_else(|_| "0.1.0".into());
+    let _beta_diagnostics = beta_diagnostics::initialize(
+        &diagnostics_home,
+        desktop_identity::runtime_flavor(),
+        &diagnostics_version,
+    );
     let shell_environment = synara_shellenv::sync_shell_environment(&backend::configured_home_dir());
     synara_shellenv::apply_hydration_marker(shell_environment.path_hydrated);
     if let Err(error) = updater::start_desktop_update_bridge() {
         eprintln!("desktop updater bridge unavailable: {error}");
     }
     let backend_launch = backend::ensure_backend();
+    beta_diagnostics::track_beta_installed_once();
     eprintln!(
         "backend supervision: {}",
         backend::launch_summary(&backend_launch)
@@ -231,7 +240,10 @@ fn main() {
 
     app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);
-        cx.on_action(|_: &QuitApp, cx| cx.quit());
+        cx.on_action(|_: &QuitApp, cx| {
+            beta_diagnostics::track_exit(None);
+            cx.quit();
+        });
         cx.on_action(|_: &HideApp, cx| cx.hide());
         cx.on_action(|_: &HideOthers, cx| cx.hide_other_apps());
         cx.set_menus([

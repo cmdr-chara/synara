@@ -1587,6 +1587,34 @@ fn updater_cache_name(flavor: UpdateFlavor) -> &'static str {
     }
 }
 
+fn track_update_transition(previous: &UpdateState, next: &UpdateState) {
+    if next.error_context.is_some()
+        && (next.status != previous.status || next.error_context != previous.error_context || next.message != previous.message)
+    {
+        let mut payload = serde_json::json!({"kind":"update","outcome":"error"});
+        if let Some(context) = next.error_context.as_deref() { payload["errorContext"] = serde_json::json!(context); }
+        crate::beta_diagnostics::track("update.error", payload);
+        return;
+    }
+    if next.status == previous.status { return; }
+    match next.status {
+        UpdateStatus::Checking => {
+            crate::beta_diagnostics::track("update.check", serde_json::json!({"kind":"update","outcome":"ok"}));
+        }
+        UpdateStatus::Available => {
+            crate::beta_diagnostics::track("update.available", serde_json::json!({
+                "kind":"update","outcome":"ok","targetVersion":next.available_version
+            }));
+        }
+        UpdateStatus::Downloaded => {
+            crate::beta_diagnostics::track("update.downloaded", serde_json::json!({
+                "kind":"update","outcome":"ok","targetVersion":next.downloaded_version
+            }));
+        }
+        _ => {}
+    }
+}
+
 impl DesktopUpdateService {
     fn new() -> Self {
         let arch = runtime_arch();
@@ -1683,9 +1711,16 @@ impl DesktopUpdateService {
     }
 
     fn set_state(&self, update: impl FnOnce(UpdateState) -> UpdateState) {
-        if let Ok(mut state) = self.state.lock() {
-            let next = update(state.clone());
-            *state = next;
+        let transition = if let Ok(mut state) = self.state.lock() {
+            let previous = state.clone();
+            let next = update(previous.clone());
+            *state = next.clone();
+            Some((previous, next))
+        } else {
+            None
+        };
+        if let Some((previous, next)) = transition {
+            track_update_transition(&previous, &next);
         }
     }
 

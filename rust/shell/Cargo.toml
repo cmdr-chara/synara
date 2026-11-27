@@ -30,6 +30,8 @@ tokio = { version = "1", features = ["rt-multi-thread"] }
 libc = "0.2"
 signal-hook = "0.3"
 synara-shellenv = { path = "../shellenv" }
+betadiagnostics-rs = { path = "../betadiagnostics-rs" }
+url = "2"
 
 [workspace]
 

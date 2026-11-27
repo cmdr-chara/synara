@@ -220,14 +220,25 @@ fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
     s.code_block.corner_radii.top_right = Some(px(10.4).into());
     s.code_block.corner_radii.bottom_left = Some(px(10.4).into());
     s.code_block.corner_radii.bottom_right = Some(px(10.4).into());
+    // Upstream chat code uses shiki's github-dark / github-light
+    // (apps/web/src/lib/diffTheme.ts), not gpui-component's default palette.
     s.highlight_theme = if dark {
-        gpui_kit::component::highlighter::HighlightTheme::default_dark()
+        GITHUB_DARK_CODE.clone()
     } else {
-        gpui_kit::component::highlighter::HighlightTheme::default_light()
+        GITHUB_LIGHT_CODE.clone()
     };
     s.is_dark = dark;
     s
 }
+
+fn code_theme(json: &str) -> Arc<gpui_kit::component::highlighter::HighlightTheme> {
+    Arc::new(serde_json::from_str(json).expect("bundled code theme is valid"))
+}
+
+static GITHUB_DARK_CODE: std::sync::LazyLock<Arc<gpui_kit::component::highlighter::HighlightTheme>> =
+    std::sync::LazyLock::new(|| code_theme(include_str!("../assets/themes/github-dark.json")));
+static GITHUB_LIGHT_CODE: std::sync::LazyLock<Arc<gpui_kit::component::highlighter::HighlightTheme>> =
+    std::sync::LazyLock::new(|| code_theme(include_str!("../assets/themes/github-light.json")));
 
 // Latest context-window usage emitted by the runtime, scanning activities
 // backwards (upstream deriveLatestContextWindowState): a fresh configuration

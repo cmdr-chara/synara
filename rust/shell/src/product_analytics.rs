@@ -7,6 +7,7 @@
 
 use hostusagerelay_rs::port::HostUsageRelay;
 use serde_json::{Map, Value, json};
+use sha2::{Digest as _, Sha256};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
@@ -89,6 +90,27 @@ fn now_iso() -> String {
 
 fn today() -> String {
     chrono::Utc::now().format("%Y-%m-%d").to_string()
+}
+
+fn cohort_event_id(install_id: &str, day: &str, stage: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(format!("synara-cohort-v1:{}:{day}:{stage}", install_id.to_lowercase()));
+    let mut bytes = hasher.finalize();
+    bytes[6] = (bytes[6] & 15) | 128;
+    bytes[8] = (bytes[8] & 63) | 128;
+    let hex: String = bytes[..16].iter().map(|byte| format!("{byte:02x}")).collect();
+    format!("{}-{}-{}-{}-{}", &hex[..8], &hex[8..12], &hex[12..16], &hex[16..20], &hex[20..])
+}
+
+fn parse_day(day: &str) -> Option<chrono::NaiveDate> {
+    chrono::NaiveDate::parse_from_str(day, "%Y-%m-%d").ok()
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct CohortState {
+    day: String,
+    entry_ts: String,
+    completed: Vec<String>,
 }
 
 fn platform() -> &'static str {
@@ -188,6 +210,8 @@ struct AnalyticsState {
     install_id: Option<String>,
     queue: Vec<Value>,
     active_day: Option<String>,
+    cohort: Option<CohortState>,
+    cohort_supported: bool,
     failures: u32,
     next_retry_ms: Option<i64>,
     next_flush_ms: Option<i64>,
@@ -254,6 +278,10 @@ impl ProductAnalytics {
         self.root.join("install-id")
     }
 
+    fn cohort_path(&self) -> PathBuf {
+        self.root.join("cohort.json")
+    }
+
     fn identity_version_path(&self) -> PathBuf {
         self.root.join("identity-version")
     }
@@ -316,6 +344,58 @@ impl ProductAnalytics {
         let id = uuid::Uuid::new_v4().to_string();
         write_atomic(&self.install_id_path(), &format!("{id}\n"), true)?;
         Ok(id)
+    }
+
+    fn persist_cohort(&self, install_id: &str, cohort: &CohortState) -> Result<(), String> {
+        write_atomic(
+            &self.cohort_path(),
+            &json!({"v":1,"installId":install_id,"day":cohort.day,"entryTs":cohort.entry_ts,"completed":cohort.completed}).to_string(),
+            true,
+        )
+    }
+
+    fn read_cohort(&self, install_id: &str, queue: &[Value]) -> Option<CohortState> {
+        let mut state = std::fs::read_to_string(self.cohort_path())
+            .ok()
+            .and_then(|text| serde_json::from_str::<Value>(&text).ok())
+            .and_then(|raw| {
+                let day = raw.get("day").and_then(Value::as_str)?.to_string();
+                let entry_ts = raw.get("entryTs").and_then(Value::as_str)?.to_string();
+                let completed = raw.get("completed").and_then(Value::as_array)?.iter()
+                    .filter_map(Value::as_str)
+                    .filter(|stage| ["new", "week1", "month1"].contains(stage))
+                    .map(str::to_string)
+                    .collect::<Vec<_>>();
+                (raw.get("v").and_then(Value::as_u64) == Some(1)
+                    && raw.get("installId").and_then(Value::as_str) == Some(install_id)
+                    && parse_day(&day).is_some()
+                    && entry_ts.starts_with(&day)
+                    && valid_stored_timestamp(&entry_ts)
+                    && chrono::DateTime::parse_from_rfc3339(&entry_ts).ok()?.timestamp_millis() <= now_ms() + 300_000)
+                    .then(|| CohortState { day, entry_ts, completed })
+            });
+        let mut queued_entry: Option<(i64, String, String)> = None;
+        for event in queue {
+            if event.get("installId").is_some()
+                && event.get("cohortStage").and_then(Value::as_str) == Some("new")
+            {
+                let Some(ts) = event.get("ts").and_then(Value::as_str) else { continue };
+                let Some(day) = event.get("cohortDay").and_then(Value::as_str) else { continue };
+                let Ok(parsed) = chrono::DateTime::parse_from_rfc3339(ts) else { continue };
+                if queued_entry.as_ref().is_none_or(|(time, _, _)| parsed.timestamp_millis() > *time) {
+                    queued_entry = Some((parsed.timestamp_millis(), ts.to_string(), day.to_string()));
+                }
+            }
+        }
+        if let Some((time, ts, day)) = queued_entry {
+            let current_time = state.as_ref().and_then(|cohort| {
+                chrono::DateTime::parse_from_rfc3339(&cohort.entry_ts).ok().map(|entry| entry.timestamp_millis())
+            });
+            if current_time.is_none_or(|current| time > current) {
+                state = Some(CohortState { day, entry_ts: ts, completed: Vec::new() });
+            }
+        }
+        state
     }
 
     fn build_envelope(&self, input: &Value, install_id: &str) -> Option<Value> {
@@ -506,6 +586,29 @@ impl ProductAnalytics {
         if let Value::Object(ref mut rebuilt) = rebuilt {
             rebuilt.insert("id".into(), row.get("id")?.clone());
             rebuilt.insert("ts".into(), row.get("ts")?.clone());
+            if row.get("cohortDay").is_some() || row.get("cohortStage").is_some() {
+                let cohort_day = row.get("cohortDay").and_then(Value::as_str)?;
+                let stage = row.get("cohortStage").and_then(Value::as_str)?;
+                let id = row.get("id").and_then(Value::as_str)?;
+                let event_day = parse_day(&row.get("ts").and_then(Value::as_str)?[..10])?;
+                let cohort_date = parse_day(cohort_day)?;
+                let age = (event_day - cohort_date).num_days();
+                let valid_age = match stage {
+                    "new" => age == 0,
+                    "week1" => (7..=13).contains(&age),
+                    "month1" => (30..=36).contains(&age),
+                    _ => false,
+                };
+                if row.get("event").and_then(Value::as_str) != Some("app.active")
+                    || row.get("outcome").and_then(Value::as_str) != Some("succeeded")
+                    || !valid_age
+                    || id != cohort_event_id(install_id, cohort_day, stage)
+                {
+                    return None;
+                }
+                rebuilt.insert("cohortDay".into(), Value::String(cohort_day.into()));
+                rebuilt.insert("cohortStage".into(), Value::String(stage.into()));
+            }
         }
         Some(rebuilt)
     }
@@ -601,6 +704,7 @@ impl ProductAnalytics {
                 if let Ok(install_id) = self.read_or_create_install_id() {
                     state.install_id = Some(install_id.clone());
                     state.queue = self.read_queue(&install_id);
+                    state.cohort = self.read_cohort(&install_id, &state.queue);
                     persisted_queue = state.queue.clone();
                     let _ = relay.enable();
                 } else {
@@ -722,7 +826,73 @@ impl ProductAnalytics {
         }
     }
 
+    fn queue_cohort_stage(self: &Arc<Self>) {
+        let (snapshot, cohort_write) = {
+            let Ok(mut state) = self.state.lock() else { return };
+            if !state.cohort_supported || !state.enabled || state.install_id.is_none() { return; }
+            let install_id = state.install_id.clone().unwrap_or_default();
+            let now = now_ms();
+            let day = today();
+            let mut cohort = state.cohort.clone().unwrap_or(CohortState {
+                day: day.clone(),
+                entry_ts: now_iso(),
+                completed: Vec::new(),
+            });
+            if !cohort.completed.iter().any(|stage| stage == "new")
+                && chrono::DateTime::parse_from_rfc3339(&cohort.entry_ts)
+                    .ok()
+                    .is_some_and(|entry| entry.timestamp_millis() < now - MAX_EVENT_AGE_MS)
+            {
+                cohort = CohortState { day: day.clone(), entry_ts: now_iso(), completed: Vec::new() };
+            }
+            let age = parse_day(&day)
+                .and_then(|today| parse_day(&cohort.day).map(|entry| (today - entry).num_days()))
+                .unwrap_or(i64::MAX);
+            let stage = if !cohort.completed.iter().any(|stage| stage == "new") {
+                Some("new")
+            } else if (7..=13).contains(&age) && !cohort.completed.iter().any(|stage| stage == "week1") {
+                Some("week1")
+            } else if (30..=36).contains(&age) && !cohort.completed.iter().any(|stage| stage == "month1") {
+                Some("month1")
+            } else {
+                None
+            };
+            let Some(stage) = stage else { return };
+            if state.queue.iter().any(|event| {
+                event.get("cohortDay").and_then(Value::as_str) == Some(cohort.day.as_str())
+                    && event.get("cohortStage").and_then(Value::as_str) == Some(stage)
+            }) {
+                return;
+            }
+            let Some(mut envelope) = self.build_envelope(&json!({"event":"app.active","outcome":"succeeded"}), &install_id) else { return };
+            if let Value::Object(ref mut row) = envelope {
+                row.insert("id".into(), Value::String(cohort_event_id(&install_id, &cohort.day, stage)));
+                if stage != "new" {
+                    row.insert("ts".into(), Value::String(now_iso()));
+                } else {
+                    row.insert("ts".into(), Value::String(cohort.entry_ts.clone()));
+                }
+                row.insert("cohortDay".into(), Value::String(cohort.day.clone()));
+                row.insert("cohortStage".into(), Value::String(stage.into()));
+            }
+            state.queue.push(envelope);
+            Self::prune_expired(&mut state.queue);
+            if state.queue.len() > MAX_QUEUE {
+                let overflow = state.queue.len() - MAX_QUEUE;
+                state.queue.drain(..overflow);
+            }
+            state.cohort = Some(cohort.clone());
+            (state.queue.clone(), Some((install_id, cohort)))
+        };
+        // Durable queue first, then cohort state; a crash can only replay the UUID.
+        let _ = self.persist_queue(&snapshot);
+        if let Some((install_id, cohort)) = cohort_write {
+            let _ = self.persist_cohort(&install_id, &cohort);
+        }
+    }
+
     fn track_active_day(self: &Arc<Self>) {
+        self.queue_cohort_stage();
         let day = today();
         let should_track = self
             .state
@@ -841,12 +1011,18 @@ impl ProductAnalytics {
         } else {
             (json!({"events": batch}), false)
         };
-        let response = ureq::post(&self.endpoint)
-            .timeout(Duration::from_secs(8))
-            .set("content-type", "application/json")
-            .send_json(body)
-            .map_err(|error| format!("product analytics request failed: {error}"))?;
-        let status = response.status();
+        let mut response = Some(
+            ureq::post(&self.endpoint)
+                .timeout(Duration::from_secs(8))
+                .set("content-type", "application/json")
+                .send_json(body)
+                .map_err(|error| format!("product analytics request failed: {error}"))?,
+        );
+        let status = response.as_ref().map(|response| response.status()).unwrap_or(500);
+        let cohorts_supported = response
+            .as_ref()
+            .and_then(|response| response.header("x-synara-product-cohorts"))
+            == Some("1");
         if !(200..300).contains(&status) {
             if !host_mode && matches!(status, 400 | 413 | 422) {
                 let rejected: std::collections::HashSet<String> = batch
@@ -874,7 +1050,7 @@ impl ProductAnalytics {
             return Ok(());
         }
         if let Some(window) = host_window {
-            let receipt: Value = response.into_json().map_err(|e| e.to_string())?;
+            let receipt: Value = response.take().ok_or("product analytics response consumed")?.into_json().map_err(|e| e.to_string())?;
             if receipt.get("stored").and_then(Value::as_bool) != Some(true)
                 || receipt.get("windowId") != window.get("windowId")
             {
@@ -893,21 +1069,65 @@ impl ProductAnalytics {
             return Ok(());
         }
         if anonymous {
-            let receipt: Value = response.into_json().map_err(|e| e.to_string())?;
+            let receipt: Value = response.take().ok_or("product analytics response consumed")?.into_json().map_err(|e| e.to_string())?;
             if receipt.get("stored").and_then(Value::as_bool) != Some(true) {
                 return Err("anonymous product receipt missing".into());
             }
         }
+        let mut cohort_acknowledged = std::collections::HashSet::new();
+        if !anonymous {
+            if cohorts_supported && batch.iter().any(|event| event.get("cohortStage").is_some()) {
+                let receipt: Value = response.take().ok_or("product analytics response consumed")?.into_json().map_err(|e| e.to_string())?;
+                if let Some(ids) = receipt.get("cohortAcknowledged").and_then(Value::as_array) {
+                    for id in ids.iter().filter_map(Value::as_str) {
+                        cohort_acknowledged.insert(id.to_string());
+                    }
+                }
+            }
+        }
         let sent: std::collections::HashSet<String> = batch
             .iter()
+            .filter(|event| {
+                event.get("cohortStage").is_none()
+                    || event
+                        .get("id")
+                        .and_then(Value::as_str)
+                        .is_some_and(|id| cohort_acknowledged.contains(id))
+            })
             .filter_map(|event| event.get("id").and_then(Value::as_str).map(str::to_string))
             .collect();
-        let snapshot = {
+        let (snapshot, cohort_write) = {
             let Ok(mut state) = self.state.lock() else {
                 return Ok(());
             };
             if !state.enabled {
                 return Ok(());
+            }
+            state.cohort_supported = cohorts_supported;
+            let mut cohort_write = None;
+            if let Some(cohort) = &state.cohort {
+                let mut completed = cohort.completed.clone();
+                for event in &batch {
+                    if event.get("cohortDay").and_then(Value::as_str) == Some(cohort.day.as_str())
+                        && event
+                            .get("id")
+                            .and_then(Value::as_str)
+                            .is_some_and(|id| cohort_acknowledged.contains(id))
+                    {
+                        if let Some(stage) = event.get("cohortStage").and_then(Value::as_str) {
+                            if !completed.iter().any(|existing| existing == stage) {
+                                completed.push(stage.to_string());
+                            }
+                        }
+                    }
+                }
+                if completed != cohort.completed {
+                    let updated = CohortState { completed, ..cohort.clone() };
+                    state.cohort = Some(updated.clone());
+                    if let Some(install_id) = state.install_id.clone() {
+                        cohort_write = Some((install_id, updated));
+                    }
+                }
             }
             state.queue.retain(|event| {
                 event
@@ -915,9 +1135,17 @@ impl ProductAnalytics {
                     .and_then(Value::as_str)
                     .is_none_or(|id| !sent.contains(id))
             });
-            state.queue.clone()
+            (state.queue.clone(), cohort_write)
         };
-        self.persist_queue(&snapshot)
+        // Completion is durable before the envelope leaves the retry queue.
+        if let Some((install_id, cohort)) = cohort_write {
+            self.persist_cohort(&install_id, &cohort)?;
+        }
+        let result = self.persist_queue(&snapshot);
+        if result.is_ok() {
+            self.queue_cohort_stage();
+        }
+        result
     }
 
     pub fn start(self: &Arc<Self>) {
@@ -1029,6 +1257,37 @@ mod tests {
                 .join("product-analytics/host-usage-policy.json")
                 .exists()
         );
+        let _ = std::fs::remove_dir_all(home);
+    }
+
+    #[test]
+    fn cohort_stage_is_deterministic_and_durable() {
+        let home = std::env::temp_dir().join(format!("synara-product-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&home).unwrap();
+        let analytics = ProductAnalytics::with_endpoint(&home, "stable", "1.2.3", false, "http://127.0.0.1:1");
+        analytics.initialize();
+        assert!(analytics.set_enabled(true));
+        {
+            let mut state = analytics.state.lock().unwrap();
+            state.cohort_supported = true;
+        }
+        analytics.queue_cohort_stage();
+        let (install, event) = {
+            let state = analytics.state.lock().unwrap();
+            let event = state
+                .queue
+                .iter()
+                .find(|event| event.get("cohortStage").and_then(Value::as_str) == Some("new"))
+                .cloned()
+                .unwrap();
+            (state.install_id.clone().unwrap(), event)
+        };
+        let day = event["cohortDay"].as_str().unwrap();
+        assert_eq!(event["id"].as_str().unwrap(), cohort_event_id(&install, day, "new"));
+        assert_eq!(event["event"], "app.active");
+        assert!(home.join("product-analytics/cohort.json").exists());
+        assert!(!analytics.set_enabled(false));
+        assert!(!home.join("product-analytics/cohort.json").exists());
         let _ = std::fs::remove_dir_all(home);
     }
 

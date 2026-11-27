@@ -786,4 +786,123 @@ mod appsnap_capture_tests {
         let windows = parse_appsnap_windows(&message, "req-1").unwrap();
         assert_eq!(windows[0].window_id, 42);
     }
+
+    #[test]
+    fn parses_permission_report() {
+        let parsed = parse_appsnap_permissions(r#"{"type":"permissions","inputMonitoring":"granted","screenRecording":"denied"}"#).unwrap();
+        assert_eq!(parsed.input_monitoring, Some(true));
+        assert_eq!(parsed.screen_recording, Some(false));
+        assert!(parse_appsnap_permissions(r#"{"type":"permissions"}"#).is_none());
+    }
+}
+
+// ---- AppSnap permission commands ------------------------------------------------------------
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+pub enum AppSnapPermissionKind {
+    Accessibility,
+    InputMonitoring,
+    ScreenRecording,
+}
+
+impl AppSnapPermissionKind {
+    pub fn cli_name(self) -> &'static str {
+        match self {
+            Self::Accessibility => "accessibility",
+            Self::InputMonitoring => "inputMonitoring",
+            Self::ScreenRecording => "screenRecording",
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct AppSnapPermissions {
+    pub accessibility: Option<bool>,
+    pub input_monitoring: Option<bool>,
+    pub screen_recording: Option<bool>,
+}
+
+fn parse_permission(value: Option<&Value>) -> Option<bool> {
+    match value.and_then(Value::as_str) {
+        Some("granted") => Some(true),
+        Some("denied") => Some(false),
+        _ => None,
+    }
+}
+
+pub fn parse_appsnap_permissions(line: &str) -> Option<AppSnapPermissions> {
+    let value: Value = serde_json::from_str(line).ok()?;
+    if value.get("type").and_then(Value::as_str) != Some("permissions") { return None; }
+    let parsed = AppSnapPermissions {
+        accessibility: parse_permission(value.get("accessibility")),
+        input_monitoring: parse_permission(value.get("inputMonitoring")),
+        screen_recording: parse_permission(value.get("screenRecording")),
+    };
+    (parsed.accessibility.is_some() || parsed.input_monitoring.is_some() || parsed.screen_recording.is_some()).then_some(parsed)
+}
+
+/// Executes the helper's one-shot permission modes. Legacy calls pass no
+/// selectors, matching the helper default of Input Monitoring + Screen Recording.
+pub fn run_appsnap_permission_command(
+    helper: &std::path::Path,
+    command: &str,
+    permissions: &[AppSnapPermissionKind],
+    app_bundle_path: Option<&std::path::Path>,
+) -> Result<AppSnapPermissions, String> {
+    if !matches!(command, "--check-permissions" | "--request-permissions" | "--prepare-permission-setup") {
+        return Err("Unsupported AppSnap permission command.".into());
+    }
+    let mut args = vec![command.to_string()];
+    let mut unique = Vec::new();
+    for permission in permissions {
+        if !unique.contains(permission) { unique.push(*permission); }
+    }
+    let legacy = unique.len() == 2 && unique.contains(&AppSnapPermissionKind::InputMonitoring) && unique.contains(&AppSnapPermissionKind::ScreenRecording);
+    if !legacy {
+        for permission in unique { args.extend(["--permission".into(), permission.cli_name().into()]); }
+    }
+    if command != "--check-permissions" {
+        let app_bundle_path = app_bundle_path.ok_or("Permission setup requires the running app bundle path.")?;
+        args.extend(["--app-path".into(), app_bundle_path.to_string_lossy().into_owned()]);
+    }
+    let mut child = Command::new(helper)
+        .args(args)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .map_err(|error| format!("Could not inspect AppSnap permissions: {error}"))?;
+    let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
+    let receiver = ndjson_receiver(stdout);
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    let mut report: Option<AppSnapPermissions> = None;
+    let mut failure: Option<String> = None;
+    let result = loop {
+        let Some(remaining) = deadline.checked_duration_since(std::time::Instant::now()) else {
+            break Err("Checking macOS permissions timed out. Try Set up again.".into());
+        };
+        let line = match receiver.recv_timeout(remaining) {
+            Ok(line) => line,
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => break Err("Checking macOS permissions timed out. Try Set up again.".into()),
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break Err("The AppSnap helper did not report its permission state.".into()),
+        };
+        if let Some(parsed) = parse_appsnap_permissions(&line) {
+            report = Some(match report {
+                Some(existing) => AppSnapPermissions {
+                    accessibility: parsed.accessibility.or(existing.accessibility),
+                    input_monitoring: parsed.input_monitoring.or(existing.input_monitoring),
+                    screen_recording: parsed.screen_recording.or(existing.screen_recording),
+                },
+                None => parsed,
+            });
+        } else if let Ok(value) = serde_json::from_str::<Value>(&line) {
+            if value.get("type").and_then(Value::as_str) == Some("error") {
+                failure = Some(value.get("message").and_then(Value::as_str).unwrap_or("AppSnap permission command failed.").to_string());
+            }
+        }
+        if child.try_wait().ok().flatten().is_some() { break report.ok_or_else(|| failure.unwrap_or_else(|| "The AppSnap helper did not report its permission state.".into())); }
+    };
+    let _ = child.kill();
+    let _ = child.wait();
+    result
 }

@@ -562,9 +562,10 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         // already preserves transcript order through insertion sequence.
         let _ = seq;
     }
+    let mut effective_model_selection = model_selection_value.clone();
     if provider == "omp" {
         if let Some(model) = omp_last_model.as_deref() {
-            let mut effective = model_selection_value.clone();
+            let mut effective = effective_model_selection.clone();
             effective["provider"] = json!("omp");
             effective["model"] = json!(model);
             const OMP_THINKING_LEVELS: &[&str] = &["off", "auto", "minimal", "low", "medium", "high", "xhigh", "max"];
@@ -578,6 +579,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 "UPDATE projection_threads SET model_selection_json = ?2 WHERE thread_id = ?1",
                 params![thread_id, effective.to_string()],
             );
+            effective_model_selection = effective;
         }
     }
     let cursor = match provider_key {
@@ -587,9 +589,21 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         _ => json!({ "resume": external_id }),
     };
     let now2 = now.clone();
+    let runtime_payload = json!({
+        "providerInstanceId": selected_instance.instance_id,
+        "modelSelection": effective_model_selection,
+        "importedAt": now,
+    });
     conn.execute(
-        "INSERT INTO provider_session_runtime (thread_id, provider_name, adapter_key, status, last_seen_at, resume_cursor_json) VALUES (?1, ?2, ?2, 'stopped', ?3, ?4) ON CONFLICT(thread_id) DO UPDATE SET resume_cursor_json = excluded.resume_cursor_json, last_seen_at = excluded.last_seen_at",
-        params![thread_id, provider_key, now2, cursor.to_string()],
+        "INSERT INTO provider_session_runtime (thread_id, provider_name, adapter_key, status, last_seen_at, resume_cursor_json, provider_instance_id, runtime_payload_json) VALUES (?1, ?2, ?2, 'stopped', ?3, ?4, ?5, ?6) ON CONFLICT(thread_id) DO UPDATE SET provider_name = excluded.provider_name, adapter_key = excluded.adapter_key, resume_cursor_json = excluded.resume_cursor_json, last_seen_at = excluded.last_seen_at, provider_instance_id = excluded.provider_instance_id, runtime_payload_json = excluded.runtime_payload_json",
+        params![
+            thread_id,
+            provider_key,
+            now2,
+            cursor.to_string(),
+            selected_instance.instance_id,
+            runtime_payload.to_string(),
+        ],
     )
     .map_err(|e| err(format!("resume cursor binding: {e}")))?;
     Ok(json!({ "threadId": thread_id }))

@@ -631,7 +631,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         "omp" => "omp",
         "droid" => "droid",
         "opencode" => "opencode",
-        _ => "claude",
+        _ => "claudeAgent",
     };
     let imported_messages: Vec<Value> = imported
         .iter()
@@ -675,7 +675,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         }
     }
     let cursor = match provider_key {
-        "codex" => json!({ "resume": external_id }),
+        "codex" => json!({ "threadId": external_id }),
         "omp" | "droid" => json!({ "schemaVersion": 1, "sessionId": external_id }),
         "opencode" => json!({ "openCodeSessionId": external_id }),
         _ => json!({ "resume": external_id }),

@@ -1175,9 +1175,11 @@ fn thread_mode_set(
 pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
-    if command.contains_key("providerHandoff") {
+    if command.get("providerHandoffStopsBackgroundTasks") == Some(&json!(true))
+        && command.get("providerHandoff") != Some(&json!(true))
+    {
         return Err(err(
-            "thread.meta.update with providerHandoff fields is not ported yet",
+            "Stopping background tasks is only allowed as part of a provider handoff.",
         ));
     }
     let conn = open_state_rw()?;
@@ -1193,6 +1195,93 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
         )
         .unwrap_or_else(|_| "project".to_string());
     let is_group = is_group_container_kind(&project_kind);
+
+    let mut provider_handoff: Option<(Value, Value, bool, String)> = None;
+    if command.get("providerHandoff") == Some(&json!(true)) {
+        let Some(target) = command.get("modelSelection").filter(|value| value.is_object()).cloned() else {
+            return Err(err("A provider handoff needs a target model selection."));
+        };
+        let source: Value = conn
+            .query_row(
+                "SELECT model_selection_json FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get::<_, String>(0),
+            )
+            .ok()
+            .and_then(|raw| serde_json::from_str(&raw).ok())
+            .unwrap_or(json!({}));
+        let endpoint = |selection: &Value| {
+            let provider = selection
+                .get("provider")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
+            let instance = selection
+                .get("instanceId")
+                .and_then(Value::as_str)
+                .unwrap_or(provider.as_str())
+                .to_string();
+            (provider, instance)
+        };
+        let (source_provider, source_instance) = endpoint(&source);
+        let (target_provider, target_instance) = endpoint(&target);
+        if source_provider == target_provider && source_instance == target_instance {
+            return Err(err(format!(
+                "Thread '{thread_id}' already runs on '{target_instance}'."
+            )));
+        }
+        let settings = crate::server_settings::current();
+        let resolved_target = crate::provider_instances::resolve_instance(
+            &settings,
+            Some(target_instance.as_str()),
+            Some(target_provider.as_str()),
+        );
+        let Some(resolved_target) = resolved_target else {
+            return Err(err(format!(
+                "Unknown provider instance '{target_instance}' for provider handoff."
+            )));
+        };
+        if !resolved_target.enabled {
+            return Err(err(format!(
+                "Provider instance '{target_instance}' is disabled for provider handoff."
+            )));
+        }
+        let session_running: bool = conn
+            .query_row(
+                "SELECT COUNT(1) FROM projection_thread_sessions WHERE thread_id = ?1 AND status IN ('starting', 'running')",
+                params![thread_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .map(|count| count > 0)
+            .unwrap_or(false);
+        let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
+            || crate::codex_runner::has_running_turn(&thread_id)
+            || crate::claude_runner::has_running_turn(&thread_id)
+            || crate::opencode_runner::has_running_turn(&thread_id)
+            || crate::pi_runner::has_running_turn(&thread_id);
+        if session_running || provider_turn_live {
+            return Err(err(format!(
+                "Thread '{thread_id}' still has a running turn."
+            )));
+        }
+        let pending: i64 = conn
+            .query_row(
+                "SELECT COALESCE(pending_approval_count, 0) + COALESCE(pending_user_input_count, 0) FROM projection_threads WHERE thread_id = ?1",
+                params![thread_id],
+                |r| r.get(0),
+            )
+            .unwrap_or(0);
+        if pending > 0 {
+            return Err(err(format!(
+                "Thread '{thread_id}' is waiting for an approval or an answer."
+            )));
+        }
+        let stop_background = command
+            .get("providerHandoffStopsBackgroundTasks")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
+        provider_handoff = Some((source, target, stop_background, target_instance));
+    }
 
     let mut ep = Map::new();
     ep.insert("threadId".into(), json!(thread_id));
@@ -1333,6 +1422,14 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
         ep.insert("modelSelection".into(), v.clone());
         sets.push(("model_selection_json", json!(v.to_string())));
     }
+    if let Some((source, _, stop_background, _)) = provider_handoff.as_ref() {
+        let mut handoff = Map::new();
+        handoff.insert("sourceModelSelection".into(), source.clone());
+        if *stop_background {
+            handoff.insert("stopBackgroundTasks".into(), json!(true));
+        }
+        ep.insert("providerHandoff".into(), Value::Object(handoff));
+    }
     if let Some(v) = command.get("isPinned") {
         ep.insert("isPinned".into(), v.clone());
         sets.push(("is_pinned", v.clone()));
@@ -1418,9 +1515,66 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
     ep.insert("updatedAt".into(), json!(occurred_at));
     sets.push(("updated_at", json!(occurred_at)));
 
-    let events = vec![out_event("thread.meta-updated", &thread_id, &occurred_at, Value::Object(ep))];
+    let mut events = vec![out_event("thread.meta-updated", &thread_id, &occurred_at, Value::Object(ep))];
+    let handoff_activity = provider_handoff.as_ref().map(|(source, target, _, _)| {
+        let text = |selection: &Value| {
+            format!(
+                "{} ({})",
+                selection.get("provider").and_then(Value::as_str).unwrap_or("provider"),
+                selection.get("model").and_then(Value::as_str).unwrap_or("default")
+            )
+        };
+        json!({
+            "id": format!("provider-handoff:{command_id}"),
+            "tone": "info",
+            "kind": "provider.handoff",
+            "summary": format!("Handed off from {} to {}", text(source), text(target)),
+            "createdAt": occurred_at,
+            "payload": {
+                "sourceProvider": source.get("provider").cloned().unwrap_or(Value::Null),
+                "sourceModel": source.get("model").cloned().unwrap_or(Value::Null),
+                "targetProvider": target.get("provider").cloned().unwrap_or(Value::Null),
+                "targetModel": target.get("model").cloned().unwrap_or(Value::Null),
+                "sourceModelSelection": source,
+                "targetModelSelection": target,
+            },
+        })
+    });
+    if let Some(activity) = handoff_activity.as_ref() {
+        events.push(out_event(
+            "thread.activity-appended",
+            &thread_id,
+            &occurred_at,
+            json!({"threadId": thread_id, "activity": activity}),
+        ));
+    }
     let seq = commit_events(&conn, &events, &command_id)?;
     update_projection(&conn, &thread_id, &sets)?;
+    if let (Some(activity), Some((_, target, stop_background, target_instance))) =
+        (handoff_activity.as_ref(), provider_handoff.as_ref())
+    {
+        append_activity_projection(&conn, &thread_id, activity, seq + 1)?;
+        if *stop_background {
+            cancel_any_provider_turn(&thread_id);
+        }
+        let target_provider = target
+            .get("provider")
+            .and_then(Value::as_str)
+            .unwrap_or("codex");
+        let runtime_payload = json!({
+            "providerInstanceId": target_instance,
+            "modelSelection": target,
+            "providerHandoffAt": occurred_at,
+        });
+        let _ = conn.execute(
+            "INSERT INTO provider_session_runtime (thread_id, provider_name, adapter_key, status, last_seen_at, resume_cursor_json, provider_instance_id, runtime_payload_json) VALUES (?1, ?2, ?2, 'stopped', ?3, NULL, ?4, ?5) ON CONFLICT(thread_id) DO UPDATE SET provider_name = excluded.provider_name, adapter_key = excluded.adapter_key, status = 'stopped', last_seen_at = excluded.last_seen_at, resume_cursor_json = NULL, provider_instance_id = excluded.provider_instance_id, runtime_payload_json = excluded.runtime_payload_json",
+            params![thread_id, target_provider, occurred_at, target_instance, runtime_payload.to_string()],
+        );
+        let _ = conn.execute(
+            "INSERT OR REPLACE INTO projection_thread_sessions (thread_id, status, provider_name, provider_session_id, provider_thread_id, active_turn_id, last_error, updated_at, runtime_mode) VALUES (?1, 'stopped', ?2, NULL, NULL, NULL, NULL, ?3, COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'))",
+            params![thread_id, target_provider, occurred_at],
+        );
+    }
     if starts_with_message && let Some(goal) = start_goal_text {
         let lower = goal.to_lowercase();
         let needs_escape = goal.starts_with("--")

@@ -219,6 +219,109 @@ fn configured_divergence_consent() -> Option<String> {
     std::env::var("SYNARA_MIGRATION_DIVERGENCE_CONSENT").ok().filter(|value| !value.is_empty())
 }
 
+fn inspect_backup_migration_lineage(backup: &std::path::Path) -> Result<(u32, &'static str), String> {
+    let parent = backup.parent().ok_or("migration backup has no parent")?;
+    let basename = backup.file_name().and_then(|name| name.to_str()).unwrap_or("backup.sqlite");
+    let temporary = parent.join(format!(".{basename}.{}.partial", crate::orchestration_engine::uuid_v4()));
+    copy_restore_backup(backup, &temporary)?;
+    let result = (|| {
+        let conn = Connection::open(&temporary).map_err(|e| format!("backup sqlite open: {e}"))?;
+        if !table_exists(&conn, "effect_sql_migrations") {
+            return Ok((0, "canonical"));
+        }
+        let mut rows = tracker_rows(&conn).map_err(|e| e.0)?;
+        // Apply the metadata-only repairs before classifying, matching the
+        // upstream backup inspector. Private account tails classify as imported
+        // post-shared divergence, which remains restorable with consent.
+        let prefix31_valid = rows.iter().take(31).enumerate().all(|(index, (id, name))| {
+            *id == index as u32 + 1 && canonical_migration_name(*id) == Some(name.as_str())
+        });
+        if prefix31_valid && rows.iter().any(|(id, name)| *id == 32 && canonical_migration_name(32) != Some(name.as_str())) {
+            if let Some(canonical32) = canonical_migration_name(32) {
+                for (id, name) in &mut rows {
+                    if *id == 32 { *name = canonical32.into(); }
+                }
+            }
+        }
+        if rows.iter().any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins") {
+            let mut aliased = rows.clone();
+            if let Some(canonical54) = canonical_migration_name(54) {
+                for (id, name) in &mut aliased {
+                    if *id == 54 { *name = canonical54.into(); }
+                }
+            }
+            let high_water = aliased.iter().map(|(id, _)| *id).max().unwrap_or(0);
+            if first_lineage_divergence(&aliased, high_water).is_none() {
+                rows = aliased;
+            }
+        }
+        let migration_id = rows.iter().map(|(id, _)| *id).max().unwrap_or(0);
+        let released_gap = is_released_main_migration_gap(&rows);
+        let lineage = match first_lineage_divergence(&rows, migration_id) {
+            None => "canonical",
+            _ if released_gap => "canonical",
+            Some((first, _)) if first > 16 => "imported",
+            Some(_) => "incompatible",
+        };
+        Ok((migration_id, lineage))
+    })();
+    let _ = std::fs::remove_file(&temporary);
+    result
+}
+
+fn schema_too_new_recovery(db: &std::path::Path, database_migration_id: u32, latest_supported: u32) -> serde_json::Value {
+    let unavailable = |reason: &str| serde_json::json!({"kind":"restore-unavailable","reason":reason});
+    let provenance_path = migration_backup_provenance_path(db);
+    let text = match std::fs::read_to_string(&provenance_path) {
+        Ok(text) => text,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return unavailable("missing-provenance"),
+        Err(_) => return unavailable("invalid-provenance"),
+    };
+    let provenance: serde_json::Value = match serde_json::from_str(&text) {
+        Ok(value) => value,
+        Err(_) => return unavailable("invalid-provenance"),
+    };
+    if provenance.get("phase").and_then(serde_json::Value::as_str) != Some("migration-completed")
+        || provenance.get("targetVersion").and_then(serde_json::Value::as_u64) != Some(database_migration_id as u64)
+    {
+        return unavailable("invalid-provenance");
+    }
+    let backup = match validate_restore_backup_path(db, &provenance) {
+        Ok(path) => path,
+        Err(_) => return unavailable("invalid-backup"),
+    };
+    let Ok((backup_migration_id, lineage)) = inspect_backup_migration_lineage(&backup) else {
+        return unavailable("invalid-backup");
+    };
+    if lineage == "incompatible" || (lineage == "canonical" && backup_migration_id > latest_supported) {
+        return unavailable("incompatible-backup");
+    }
+    serde_json::json!({
+        "kind":"restore-available",
+        "backupPath": backup.to_string_lossy(),
+        "provenancePath": provenance_path.to_string_lossy(),
+        "backupMigrationId": backup_migration_id,
+    })
+}
+
+fn schema_too_new_error(db_path: Option<&std::path::Path>, database_migration_id: u32, latest_supported: u32) -> WsErr {
+    let database_path = db_path.map(|path| path.to_string_lossy().into_owned()).unwrap_or_default();
+    let recovery = db_path
+        .map(|db| schema_too_new_recovery(db, database_migration_id, latest_supported))
+        .unwrap_or_else(|| serde_json::json!({"kind":"restore-unavailable","reason":"missing-provenance"}));
+    let block = serde_json::json!({
+        "version": 1,
+        "databasePath": database_path,
+        "databaseMigrationId": database_migration_id,
+        "latestSupportedMigrationId": latest_supported,
+        "recovery": recovery,
+    });
+    err(format!(
+        "database schema v{database_migration_id} is newer than this build supports (v{latest_supported}). Update Synara before opening this data home.\nSYNARA_MIGRATION_SCHEMA_TOO_NEW={}",
+        serde_json::to_string(&block).unwrap_or_else(|_| "{}".into()),
+    ))
+}
+
 /// Inspect tracker rows against the canonical list without mutating the
 /// database. The returned repair plan is executed inside the migration
 /// transaction only after the pre-migration backup marker is durable.
@@ -366,9 +469,7 @@ fn inspect_lineage_with_consent(
 
     let latest = canonical.iter().map(|(id, _, _)| *id).max().unwrap_or(0);
     if high_water_mark > latest {
-        return Err(err(format!(
-            "database schema v{high_water_mark} is newer than this build supports (v{latest}). Update Synara before opening this data home."
-        )));
+        return Err(schema_too_new_error(db_path, high_water_mark, latest));
     }
     Ok(LineageInspection { rows: effective, repair })
 }
@@ -987,11 +1088,25 @@ pub fn restore_marked_migration_backup(db: &std::path::Path) -> Result<(), Strin
     Ok(())
 }
 
+fn repair_private_database_files(db: &std::path::Path) {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        for suffix in ["", "-wal", "-shm"] {
+            let path = if suffix.is_empty() { db.to_path_buf() } else { std::path::PathBuf::from(format!("{}{suffix}", db.display())) };
+            if std::fs::symlink_metadata(&path).is_ok_and(|meta| meta.file_type().is_file()) {
+                let _ = std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600));
+            }
+        }
+    }
+}
+
 pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
     use std::path::PathBuf;
     let dir = crate::todo::state_dir();
     std::fs::create_dir_all(&dir).ok();
     let db = PathBuf::from(dir).join("state.sqlite");
+    repair_private_database_files(&db);
     let marker = migration_recovery_marker_path(&db);
     let conn = Connection::open(&db)
         .map_err(|e| crate::acp_runner::err(format!("could not open state.sqlite: {e}")))?;
@@ -1162,6 +1277,46 @@ mod tests {
     }
 
     #[test]
+    fn schema_too_new_block_points_to_completed_compatible_backup() {
+        let root = std::env::temp_dir().join(format!("synara-schema-newer-test-{}", crate::orchestration_engine::uuid_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let db = root.join("state.sqlite");
+        let conn = Connection::open(&db).unwrap();
+        conn.execute_batch("CREATE TABLE effect_sql_migrations (migration_id integer PRIMARY KEY NOT NULL, created_at datetime NOT NULL DEFAULT current_timestamp, name VARCHAR(255) NOT NULL); INSERT INTO effect_sql_migrations (migration_id, name) VALUES (1, 'OrchestrationEvents'); CREATE TABLE user_data (id INTEGER PRIMARY KEY);").unwrap();
+        let plan = MigrationBackupPlan { source_version: "v1".into(), target_version: latest_migration_id() };
+        let backup = create_migration_backup(&conn, &db, &plan).unwrap();
+        let payload = recovery_payload(&db, &backup);
+        write_completed_provenance(&db, &payload).unwrap();
+        // The newer build's completed provenance records its target, and the
+        // tracker carries one future row past this build's ledger.
+        conn.execute("UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 1", params![canonical_migration_name(1).unwrap()]).unwrap();
+        for (id, name, _) in canonical_migrations().into_iter().skip(1) {
+            conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)", params![id, name]).unwrap();
+        }
+        let future = latest_migration_id() + 1;
+        conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, 'FutureMigration')", params![future]).unwrap();
+        std::fs::write(migration_backup_provenance_path(&db), serde_json::to_string(&serde_json::json!({
+            "version":1,
+            "databasePath":db.to_string_lossy(),
+            "backupPath":backup.backup_path.to_string_lossy(),
+            "sourceVersion":plan.source_version,
+            "targetVersion":future,
+            "lineageDivergence":serde_json::Value::Null,
+            "phase":"migration-completed",
+            "createdAt":backup.created_at,
+            "resumeAttempts":0,
+            "completedAt":now_iso(),
+        })).unwrap()).unwrap();
+        let rows = tracker_rows(&conn).map_err(|e| e.0).unwrap();
+        let error = inspect_lineage(&conn, &rows, Some(&db)).unwrap_err().0;
+        assert!(error.contains("SYNARA_MIGRATION_SCHEMA_TOO_NEW="));
+        assert!(error.contains("restore-available"));
+        assert!(error.contains("backupMigrationId"));
+        drop(conn);
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    #[test]
     fn schema_newer_than_build_fails_with_update_guidance() {
         let conn = Connection::open_in_memory().unwrap();
         ensure_tracker(&conn).map_err(|e| e.0).unwrap();
@@ -1173,6 +1328,8 @@ mod tests {
         let error = pending_migrations(&conn).unwrap_err().0;
         assert!(error.contains("newer than this build supports"));
         assert!(error.contains("Update Synara"));
+        assert!(error.contains("SYNARA_MIGRATION_SCHEMA_TOO_NEW="));
+        assert!(error.contains("missing-provenance"));
     }
 
     fn canonical_rows_through(count: u32) -> Vec<(u32, String)> {

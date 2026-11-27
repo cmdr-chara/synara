@@ -336,4 +336,5 @@ fn main() {
             });
         }
     });
+    beta_diagnostics::dispose(std::time::Duration::from_secs(3));
 }

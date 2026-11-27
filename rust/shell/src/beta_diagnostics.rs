@@ -20,6 +20,11 @@ const FLUSH_INTERVAL: Duration = Duration::from_secs(5 * 60);
 const ERROR_FINGERPRINT_WINDOW_MS: u64 = 10 * 60 * 1000;
 const ERROR_HOURLY_CAP: usize = 30;
 const ISSUE_MAX_DURATION_MS: u64 = 604_800_000;
+const CONTEXT_MAX_ENTRIES: usize = 24;
+const CONTEXT_MAX_AGE_MS: u64 = 10 * 60 * 1000;
+const MEMORY_SAMPLE_INTERVAL: Duration = Duration::from_secs(30);
+const DIAGNOSTICS_STACK_MAX_LENGTH: usize = 8 * 1024;
+const DIAGNOSTICS_LOG_TAIL_MAX_LENGTH: usize = 16 * 1024;
 
 const EVENTS: [&str; 13] = [
     "app.start", "app.exit", "app.error", "app.renderer-crash", "app.child-process-crash",
@@ -209,6 +214,78 @@ fn diagnostic_error_fingerprint(message: &str) -> String {
     format!("{hash:016x}")
 }
 
+
+const ACTIVITIES: [&str; 17] = [
+    "chat.send", "chat.stop", "chat.open", "chat.unblock", "workspace.change",
+    "project.create", "project.import", "project.import.preview", "project.import.catalog",
+    "workspace.search", "workspace.read", "browser.open", "browser.navigate", "browser.resize",
+    "window.resize", "transport.reconnect", "renderer.ready",
+];
+
+#[derive(Clone, Copy, Debug, Default)]
+struct MemoryCounters {
+    main_rss_mb: f64,
+    renderer_rss_mb: f64,
+    gpu_rss_mb: f64,
+    utility_rss_mb: f64,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct MemorySample {
+    at_ms: u64,
+    counters: MemoryCounters,
+}
+
+#[derive(Clone, Debug)]
+struct Breadcrumb {
+    activity: String,
+    phase: String,
+    at_ms: u64,
+}
+
+fn now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_millis() as u64)
+        .unwrap_or(0)
+}
+
+fn iso_at(ms: u64) -> String {
+    chrono::DateTime::from_timestamp_millis(ms as i64)
+        .map(|at| at.to_rfc3339_opts(chrono::SecondsFormat::Millis, true))
+        .unwrap_or_else(|| "1970-01-01T00:00:00.000Z".into())
+}
+
+/// Best-effort shell RSS. GPUI has no Electron renderer/GPU/utility process
+/// split, so those upstream categories stay zero rather than inventing data.
+fn sample_memory_counters() -> MemoryCounters {
+    let output = std::process::Command::new("ps")
+        .args(["-o", "rss=", "-p", &std::process::id().to_string()])
+        .output();
+    let rss_kb = output
+        .ok()
+        .filter(|output| output.status.success())
+        .and_then(|output| String::from_utf8(output.stdout).ok())
+        .and_then(|text| text.trim().parse::<f64>().ok())
+        .filter(|value| value.is_finite() && *value >= 0.0)
+        .unwrap_or(0.0);
+    MemoryCounters {
+        main_rss_mb: rss_kb / 1024.0,
+        renderer_rss_mb: 0.0,
+        gpu_rss_mb: 0.0,
+        utility_rss_mb: 0.0,
+    }
+}
+
+
+struct FlushReset<'a>(&'a std::sync::atomic::AtomicBool);
+
+impl Drop for FlushReset<'_> {
+    fn drop(&mut self) {
+        self.0.store(false, std::sync::atomic::Ordering::SeqCst);
+    }
+}
+
 pub struct BetaDiagnosticsReporter {
     home_dir: PathBuf,
     queue_path: PathBuf,
@@ -220,6 +297,11 @@ pub struct BetaDiagnosticsReporter {
     error_sent_timestamps: Mutex<VecDeque<u64>>,
     error_fingerprint_sent_at: Mutex<HashMap<String, u64>>,
     issue_reports: Mutex<HashMap<String, (String, u64)>>,
+    report_statuses: Mutex<HashMap<String, &'static str>>,
+    recent_activity: Mutex<Vec<Breadcrumb>>,
+    memory_samples: Mutex<Vec<MemorySample>>,
+    disposed: std::sync::atomic::AtomicBool,
+    flushing: std::sync::atomic::AtomicBool,
 }
 
 impl BetaDiagnosticsReporter {
@@ -242,10 +324,16 @@ impl BetaDiagnosticsReporter {
             error_sent_timestamps: Mutex::new(VecDeque::new()),
             error_fingerprint_sent_at: Mutex::new(HashMap::new()),
             issue_reports: Mutex::new(HashMap::new()),
+            report_statuses: Mutex::new(HashMap::new()),
+            recent_activity: Mutex::new(Vec::new()),
+            memory_samples: Mutex::new(Vec::new()),
+            disposed: std::sync::atomic::AtomicBool::new(false),
+            flushing: std::sync::atomic::AtomicBool::new(false),
         }))
     }
 
     fn is_enabled(&self) -> bool {
+        if self.disposed.load(std::sync::atomic::Ordering::SeqCst) { return false; }
         let local = self.enabled.lock().map(|enabled| *enabled).unwrap_or(false);
         if self.flavor == "remote" {
             local && crate::product_analytics::enabled()
@@ -263,6 +351,27 @@ impl BetaDiagnosticsReporter {
         if !self.is_enabled() || !EVENTS.contains(&event) { return None; }
         let kind = payload_kind(event)?;
         if payload.get("kind").and_then(Value::as_str) != Some(kind.as_str()) { return None; }
+        let payload = match payload.get("kind").and_then(Value::as_str) {
+            Some("crash") => {
+                let mut payload = payload;
+                if let Some(log_tail) = payload.get("logTail").and_then(Value::as_str) {
+                    payload["logTail"] = json!(self.attach_context(Some(log_tail), DIAGNOSTICS_LOG_TAIL_MAX_LENGTH, true));
+                } else if let Some(context) = self.attach_context(None, DIAGNOSTICS_LOG_TAIL_MAX_LENGTH, true) {
+                    payload["logTail"] = json!(context);
+                }
+                payload
+            }
+            Some("error") => {
+                let mut payload = payload;
+                if let Some(stack) = payload.get("stack").and_then(Value::as_str) {
+                    payload["stack"] = json!(self.attach_context(Some(stack), DIAGNOSTICS_STACK_MAX_LENGTH, false));
+                } else if let Some(context) = self.attach_context(None, DIAGNOSTICS_STACK_MAX_LENGTH, false) {
+                    payload["stack"] = json!(context);
+                }
+                payload
+            }
+            _ => payload,
+        };
         let payload = sanitize_payload(payload, &self.home_dir, event).ok()?;
         if payload.get("kind").and_then(Value::as_str) == Some("beta") && payload.get("outcome").is_none() { return None; }
         let id = uuid::Uuid::new_v4().to_string();
@@ -323,12 +432,22 @@ impl BetaDiagnosticsReporter {
         }
         kept.reverse();
         self.rewrite_queue(&kept);
+        let kept_ids = kept.iter().filter_map(|line| {
+            serde_json::from_str::<Value>(line).ok()?.get("id")?.as_str().map(str::to_string)
+        }).collect::<std::collections::HashSet<_>>();
+        if let Ok(mut statuses) = self.report_statuses.lock() {
+            for (id, status) in statuses.iter_mut() {
+                if *status == "queued" && !kept_ids.contains(id) { *status = "unavailable"; }
+            }
+        }
     }
 
     /// Synchronously upload the oldest valid batch. Successfully accepted ids
     /// are removed by id so concurrent appends and head trims cannot be lost.
     pub fn flush(&self) {
         if !self.is_enabled() { return; }
+        if self.flushing.compare_exchange(false, true, std::sync::atomic::Ordering::SeqCst, std::sync::atomic::Ordering::SeqCst).is_err() { return; }
+        let _reset = FlushReset(&self.flushing);
         let lines = self.scrubbed_lines();
         self.rewrite_queue(&lines);
         let mut batch = Vec::new();
@@ -348,6 +467,11 @@ impl BetaDiagnosticsReporter {
         let sent: std::collections::HashSet<String> = batch.iter().filter_map(|line| {
             serde_json::from_str::<Value>(line).ok()?.get("id")?.as_str().map(str::to_string)
         }).collect();
+        if let Ok(mut statuses) = self.report_statuses.lock() {
+            for id in &sent {
+                if statuses.contains_key(id) { statuses.insert(id.clone(), "sent"); }
+            }
+        }
         let rest = self.scrubbed_lines().into_iter().filter(|line| {
             serde_json::from_str::<Value>(line).ok().and_then(|record| record.get("id")?.as_str().map(str::to_string)).is_none_or(|id| !sent.contains(&id))
         }).collect::<Vec<_>>();
@@ -373,6 +497,87 @@ impl BetaDiagnosticsReporter {
         true
     }
 
+
+    /// Fixed-category renderer/application breadcrumb ring. Inputs are
+    /// reconstructed field-by-field so payloads never carry free-form data.
+    pub fn record_activity(&self, input: &Value) {
+        if !self.is_enabled() { return; }
+        let Some(activity) = input.get("activity").and_then(Value::as_str) else { return };
+        let Some(phase) = input.get("phase").and_then(Value::as_str) else { return };
+        if !ACTIVITIES.contains(&activity) || !matches!(phase, "started" | "succeeded" | "failed") { return; }
+        let at_ms = now_ms();
+        let Ok(mut activity_log) = self.recent_activity.lock() else { return };
+        if activity_log.last().is_some_and(|last| {
+            last.activity == activity && last.phase == phase && at_ms.saturating_sub(last.at_ms) < 1000
+        }) {
+            return;
+        }
+        activity_log.push(Breadcrumb { activity: activity.into(), phase: phase.into(), at_ms });
+        if activity_log.len() > CONTEXT_MAX_ENTRIES {
+            let overflow = activity_log.len() - CONTEXT_MAX_ENTRIES;
+            activity_log.drain(..overflow);
+        }
+    }
+
+    fn capture_memory_sample(&self) {
+        if !self.is_enabled() { return; }
+        let counters = sample_memory_counters();
+        if ![counters.main_rss_mb, counters.renderer_rss_mb, counters.gpu_rss_mb, counters.utility_rss_mb]
+            .iter().all(|value| value.is_finite() && *value >= 0.0 && *value <= 16_777_216.0)
+        {
+            return;
+        }
+        if let Ok(mut samples) = self.memory_samples.lock() {
+            samples.push(MemorySample { at_ms: now_ms(), counters });
+            while samples.len() > 4 { samples.remove(0); }
+        }
+    }
+
+    fn truncate_chars(text: &str, limit: usize, keep_tail: bool) -> String {
+        if text.chars().count() <= limit { return text.to_string(); }
+        if keep_tail {
+            text.chars().rev().take(limit).collect::<Vec<_>>().into_iter().rev().collect()
+        } else {
+            text.chars().take(limit).collect()
+        }
+    }
+
+    fn attach_context(&self, text: Option<&str>, limit: usize, keep_tail: bool) -> Option<String> {
+        let cutoff = now_ms().saturating_sub(CONTEXT_MAX_AGE_MS);
+        let mut lines = Vec::new();
+        if let Ok(samples) = self.memory_samples.lock() {
+            for sample in samples.iter().filter(|sample| sample.at_ms >= cutoff) {
+                lines.push(format!(
+                    "{} memory MiB main={} renderer={} gpu={} utility={}",
+                    iso_at(sample.at_ms),
+                    sample.counters.main_rss_mb.round() as u64,
+                    sample.counters.renderer_rss_mb.round() as u64,
+                    sample.counters.gpu_rss_mb.round() as u64,
+                    sample.counters.utility_rss_mb.round() as u64,
+                ));
+            }
+        }
+        if let Ok(activity_log) = self.recent_activity.lock() {
+            for entry in activity_log.iter().filter(|entry| entry.at_ms >= cutoff) {
+                lines.push(format!("{} {} {}", iso_at(entry.at_ms), entry.activity, entry.phase));
+            }
+        }
+        if lines.is_empty() { return text.map(str::to_string); }
+        let context = format!("
+[Beta diagnostic context]
+{}", lines.join("
+"));
+        let available = limit.saturating_sub(context.chars().count());
+        let original = Self::truncate_chars(text.unwrap_or(""), available, keep_tail);
+        Some(format!("{original}{context}"))
+    }
+
+    pub fn report_status(&self, id: &str) -> &'static str {
+        self.report_statuses.lock().ok()
+            .and_then(|statuses| statuses.get(id).copied())
+            .unwrap_or("unavailable")
+    }
+
     /// Reuse the bounded app.error envelope for handled operational issues.
     /// Input is untrusted backend output, so only exact fixed categories pass.
     pub fn track_issue(&self, source: &str, input: &Value) -> Option<String> {
@@ -389,7 +594,9 @@ impl BetaDiagnosticsReporter {
         let now_ms = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).ok()?.as_millis() as u64;
         if let Ok(reports) = self.issue_reports.lock() {
             if let Some((id, at)) = reports.get(&fingerprint) {
-                if now_ms.saturating_sub(*at) < ERROR_FINGERPRINT_WINDOW_MS {
+                if now_ms.saturating_sub(*at) < ERROR_FINGERPRINT_WINDOW_MS
+                    && self.report_status(id) != "unavailable"
+                {
                     return Some(id.clone());
                 }
             }
@@ -406,6 +613,12 @@ impl BetaDiagnosticsReporter {
         }
         let id = self.track("app.error", payload)?;
         let _ = self.allow_error(&fingerprint, true, now_ms);
+        if let Ok(mut statuses) = self.report_statuses.lock() {
+            statuses.insert(id.clone(), "queued");
+            if statuses.len() > 128 {
+                if let Some(oldest) = statuses.keys().next().cloned() { statuses.remove(&oldest); }
+            }
+        }
         if let Ok(mut reports) = self.issue_reports.lock() {
             reports.insert(fingerprint, (id.clone(), now_ms));
             if reports.len() > 128 {
@@ -435,6 +648,9 @@ impl BetaDiagnosticsReporter {
             let _ = std::fs::remove_file(path);
         }
         if let Ok(mut reports) = self.issue_reports.lock() { reports.clear(); }
+        if let Ok(mut statuses) = self.report_statuses.lock() { statuses.clear(); }
+        if let Ok(mut activity_log) = self.recent_activity.lock() { activity_log.clear(); }
+        if let Ok(mut samples) = self.memory_samples.lock() { samples.clear(); }
         if let Ok(mut timestamps) = self.error_sent_timestamps.lock() { timestamps.clear(); }
         if let Ok(mut fingerprints) = self.error_fingerprint_sent_at.lock() { fingerprints.clear(); }
     }
@@ -472,12 +688,33 @@ impl BetaDiagnosticsReporter {
     }
 
     pub fn start(self: &Arc<Self>) {
+        self.capture_memory_sample();
+        let memory_reporter = Arc::clone(self);
+        std::thread::spawn(move || loop {
+            std::thread::sleep(MEMORY_SAMPLE_INTERVAL);
+            memory_reporter.capture_memory_sample();
+        });
         let reporter = Arc::clone(self);
         std::thread::spawn(move || loop {
             std::thread::sleep(FLUSH_INTERVAL);
             reporter.track_daily_usage();
             reporter.flush();
         });
+    }
+
+    /// Best-effort final flush bounded for application shutdown. The blocking
+    /// ureq call runs on a helper thread so a hung endpoint cannot stall quit.
+    pub fn dispose(self: &Arc<Self>, timeout: Duration) {
+        if self.disposed.load(std::sync::atomic::Ordering::SeqCst) { return; }
+        self.track_daily_usage();
+        let (tx, rx) = std::sync::mpsc::channel();
+        let reporter = Arc::clone(self);
+        std::thread::spawn(move || {
+            reporter.flush();
+            let _ = tx.send(());
+        });
+        let _ = rx.recv_timeout(timeout);
+        self.disposed.store(true, std::sync::atomic::Ordering::SeqCst);
     }
 
     pub fn has_install_pending(&self) -> bool {
@@ -564,6 +801,22 @@ pub fn track_issue(source: &str, input: &Value) -> Option<String> {
     REPORTER.get().and_then(Option::as_ref).and_then(|reporter| reporter.track_issue(source, input))
 }
 
+pub fn record_activity(input: &Value) {
+    if let Some(Some(reporter)) = REPORTER.get() {
+        reporter.record_activity(input);
+    }
+}
+
+pub fn report_status(id: &str) -> &'static str {
+    REPORTER.get().and_then(Option::as_ref).map(|reporter| reporter.report_status(id)).unwrap_or("unavailable")
+}
+
+pub fn dispose(timeout: Duration) {
+    if let Some(Some(reporter)) = REPORTER.get() {
+        reporter.dispose(timeout);
+    }
+}
+
 pub fn track_beta_installed_once() {
     static EMITTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
     if EMITTED.swap(true, std::sync::atomic::Ordering::SeqCst) { return; }
@@ -575,7 +828,6 @@ pub fn track_beta_installed_once() {
 pub fn track_exit(duration_ms: Option<u64>) {
     if let Some(reporter) = REPORTER.get().and_then(Option::as_ref) {
         reporter.track_lifecycle("app.exit", duration_ms);
-        reporter.flush();
     }
 }
 
@@ -593,6 +845,11 @@ impl BetaDiagnosticsReporter {
             error_sent_timestamps: Mutex::new(VecDeque::new()),
             error_fingerprint_sent_at: Mutex::new(HashMap::new()),
             issue_reports: Mutex::new(HashMap::new()),
+            report_statuses: Mutex::new(HashMap::new()),
+            recent_activity: Mutex::new(Vec::new()),
+            memory_samples: Mutex::new(Vec::new()),
+            disposed: std::sync::atomic::AtomicBool::new(false),
+            flushing: std::sync::atomic::AtomicBool::new(false),
         };
         Arc::new(reporter)
     }
@@ -659,10 +916,40 @@ mod tests {
         });
         let home = std::env::temp_dir().join(format!("diag-upload-{}", uuid::Uuid::new_v4()));
         let reporter = BetaDiagnosticsReporter::with_endpoint(&home, "beta", "1.2.3-beta.1", &format!("http://127.0.0.1:{port}"));
-        reporter.track("app.start", json!({"kind":"lifecycle"})).unwrap();
+        let issue = json!({"code":"server.event-loop.stall","durationMs":1200});
+        let id = reporter.track_issue("main", &issue).unwrap();
+        assert_eq!(reporter.report_status(&id), "queued");
         reporter.flush();
+        assert_eq!(reporter.report_status(&id), "sent");
         assert!(reporter.scrubbed_lines().is_empty());
         server.join().unwrap();
+        let _ = std::fs::remove_dir_all(home);
+    }
+
+    #[test]
+    fn diagnostic_context_is_bounded_and_fixed_shape() {
+        let home = std::env::temp_dir().join(format!("diag-context-{}", uuid::Uuid::new_v4()));
+        let reporter = BetaDiagnosticsReporter::with_endpoint(&home, "beta", "1.2.3-beta.1", "http://127.0.0.1:1");
+        reporter.capture_memory_sample();
+        reporter.record_activity(&json!({"activity":"chat.send","phase":"started"}));
+        reporter.record_activity(&json!({"activity":"chat.send","phase":"started"}));
+        reporter.record_activity(&json!({"activity":"chat.content","phase":"started"}));
+        let id = reporter.track("app.error", json!({
+            "kind":"error",
+            "source":"main",
+            "message":"bounded failure",
+            "fingerprint":"abc123",
+            "stack":"safe stack"
+        })).unwrap();
+        assert!(uuid::Uuid::parse_str(&id).is_ok());
+        let line = reporter.scrubbed_lines().pop().unwrap();
+        // Context is local-only diagnostic evidence: the upstream allowlist
+        // strips it before retention/upload, exactly as it strips free-form stacks.
+        assert!(!line.contains("safe stack"));
+        assert!(!line.contains("[Beta diagnostic context]"));
+        assert!(!line.contains("chat.send started"));
+        assert!(!line.contains("chat.content"));
+        assert_eq!(reporter.recent_activity.lock().unwrap().len(), 1);
         let _ = std::fs::remove_dir_all(home);
     }
 

@@ -27,10 +27,10 @@ use crate::original::Original;
 
 const WS_NEGOTIATE_HTTP_PATH: &str = "/ws/negotiate";
 
-const PROTOCOL_EPOCH: i64 = 1;
-const MIN_REVISION: i64 = 3;
-const MAX_REVISION: i64 = 3;
-const SERVER_BUILD: &str = env!("SYNARA_SERVER_BUILD");
+pub(crate) const PROTOCOL_EPOCH: i64 = 1;
+pub(crate) const MIN_REVISION: i64 = 3;
+pub(crate) const MAX_REVISION: i64 = 3;
+pub(crate) const SERVER_BUILD: &str = env!("SYNARA_SERVER_BUILD");
 
 /// `WS_SERVER_CAPABILITIES` from `packages/contracts/src/wsCompatibility.ts`,
 /// order preserved.
@@ -79,7 +79,7 @@ fn config() -> &'static Config {
     })
 }
 
-fn server_instance_id() -> &'static str {
+pub(crate) fn server_instance_id() -> &'static str {
     static ID: OnceLock<String> = OnceLock::new();
     ID.get_or_init(new_uuid_v4)
 }

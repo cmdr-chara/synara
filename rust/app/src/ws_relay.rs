@@ -130,6 +130,110 @@ async fn computer_frames_upgrade(
     crate::computer_frames::upgrade(ws, axum::extract::Query(params)).await
 }
 
+
+fn compatibility_error_body(
+    action: &str,
+    message: &str,
+    code: &str,
+) -> serde_json::Value {
+    json!({
+        "_tag": "WsCompatibilityError",
+        "message": message,
+        "code": code,
+        "retryable": false,
+        "action": action,
+        "serverBuild": crate::native_ws::SERVER_BUILD,
+        "protocolEpoch": crate::native_ws::PROTOCOL_EPOCH,
+        "minRevision": crate::native_ws::MIN_REVISION,
+        "maxRevision": crate::native_ws::MAX_REVISION,
+    })
+}
+
+fn compatibility_refusal(uri: &Uri) -> Option<Response> {
+    let params: std::collections::HashMap<String, String> = uri
+        .query()
+        .map(|query| {
+            qstring_pairs(query).into_iter().collect()
+        })
+        .unwrap_or_default();
+    let epoch = params
+        .get("x-synara-protocol-epoch")
+        .and_then(|value| value.parse::<i64>().ok())
+        .unwrap_or(-1);
+    let revision = params
+        .get("x-synara-protocol-revision")
+        .and_then(|value| value.parse::<i64>().ok())
+        .unwrap_or(-1);
+    let client_build = params
+        .get("x-synara-client-build")
+        .map(|value| value.trim().to_string())
+        .unwrap_or_default();
+    let expected_instance = params
+        .get("x-synara-server-instance")
+        .map(|value| value.trim().to_string())
+        .unwrap_or_default();
+    let (action, message, code) = if epoch != crate::native_ws::PROTOCOL_EPOCH {
+        ("reload", "Feature RPC rejected before compatible WebSocket protocol negotiation.", "WS_NEGOTIATION_REQUIRED")
+    } else if revision < crate::native_ws::MIN_REVISION || revision > crate::native_ws::MAX_REVISION {
+        if revision < crate::native_ws::MIN_REVISION {
+            ("update-client", "Feature RPC rejected because its negotiated protocol revision is unsupported.", "WS_PROTOCOL_INCOMPATIBLE")
+        } else {
+            ("update-server", "Feature RPC rejected because its negotiated protocol revision is unsupported.", "WS_PROTOCOL_INCOMPATIBLE")
+        }
+    } else if client_build.is_empty() {
+        ("reload", "Feature RPC rejected because the client build identity is missing.", "WS_NEGOTIATION_REQUIRED")
+    } else if expected_instance != crate::native_ws::server_instance_id() {
+        ("reload", "The Synara server restarted during WebSocket negotiation. Reload to reconnect to the new server generation.", "WS_SERVER_GENERATION_CHANGED")
+    } else {
+        return None;
+    };
+    let body = compatibility_error_body(action, message, code).to_string();
+    Some(Response::builder()
+        .status(axum::http::StatusCode::UPGRADE_REQUIRED)
+        .header(axum::http::header::CONTENT_TYPE, "application/json")
+        .header(axum::http::header::CACHE_CONTROL, "no-store")
+        .body(axum::body::Body::from(body))
+        .expect("compatibility refusal"))
+}
+
+fn qstring_pairs(query: &str) -> Vec<(String, String)> {
+    query
+        .split('&')
+        .filter_map(|pair| {
+            let mut parts = pair.splitn(2, '=');
+            let key = urlencoding_decode(parts.next()?);
+            let value = urlencoding_decode(parts.next().unwrap_or(""));
+            Some((key, value))
+        })
+        .collect()
+}
+
+fn urlencoding_decode(input: &str) -> String {
+    let bytes = input.as_bytes();
+    let mut out = Vec::with_capacity(bytes.len());
+    let mut index = 0usize;
+    while index < bytes.len() {
+        if bytes[index] == b'%' && index + 2 < bytes.len() {
+            let hex = |byte: u8| -> Option<u8> {
+                match byte {
+                    b'0'..=b'9' => Some(byte - b'0'),
+                    b'a'..=b'f' => Some(byte - b'a' + 10),
+                    b'A'..=b'F' => Some(byte - b'A' + 10),
+                    _ => None,
+                }
+            };
+            if let (Some(high), Some(low)) = (hex(bytes[index + 1]), hex(bytes[index + 2])) {
+                out.push((high << 4) | low);
+                index += 3;
+                continue;
+            }
+        }
+        out.push(if bytes[index] == b'+' { b' ' } else { bytes[index] });
+        index += 1;
+    }
+    String::from_utf8_lossy(&out).into_owned()
+}
+
 async fn upgrade(
     State(original): State<Original>,
     ws: WebSocketUpgrade,
@@ -137,6 +241,11 @@ async fn upgrade(
     headers: HeaderMap,
     intercept: bool,
 ) -> Response {
+    // `/ws` is the feature socket negotiated by `/ws/negotiate`; the legacy
+    // bootstrap socket is itself the negotiation transport and stays exempt.
+    if !intercept && let Some(refusal) = compatibility_refusal(&uri) {
+        return refusal;
+    }
     ws.on_upgrade(move |socket| relay(socket, original, uri, headers, intercept))
 }
 

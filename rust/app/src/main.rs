@@ -1,4 +1,5 @@
 mod account;
+mod account_usage;
 mod input_monitor;
 mod beta_operational_issue;
 mod database_lifecycle_lock;
@@ -209,6 +210,7 @@ async fn main() {
                 }
                 server_beta_usage::start_beta_usage_snapshot_job();
                 host_usage_snapshot::start_host_usage_snapshot_job();
+                account_usage::start_account_usage_reporter_job();
             }
             Err(e) => {
                 beta_operational_issue::report_startup_migration_error(&e.0);

@@ -527,6 +527,34 @@ fn kill_window_app(payload: &Value) -> Result<Value, String> {
     }))
 }
 
+fn list_apps() -> Result<Value, String> {
+    let result = helper("apps", &json!({}))?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "apps": result.get("apps").cloned().unwrap_or(json!([])),
+    }))
+}
+
+fn set_app_visibility(payload: &Value) -> Result<Value, String> {
+    let pid = payload.get("pid").and_then(Value::as_i64).filter(|pid| *pid > 0).ok_or("pid is required")?;
+    let hidden = payload.get("hidden").and_then(Value::as_bool).ok_or("hidden must be a boolean")?;
+    let apps = helper("apps", &json!({}))?;
+    let target = apps.get("apps").and_then(Value::as_array).and_then(|apps| {
+        apps.iter().find(|app| app.get("pid").and_then(Value::as_i64) == Some(pid)).cloned()
+    }).ok_or("The target application is not running.")?;
+    crate::computer_manager::assert_not_denied(
+        target.get("appName").and_then(Value::as_str),
+        target.get("bundleId").and_then(Value::as_str),
+    )?;
+    let result = checked_window_helper("appvisibility", json!({"pid":pid,"hidden":hidden}))?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_set_app_visibility",
+        "pid": pid,
+        "hidden": result.get("hidden").cloned().unwrap_or(json!(hidden)),
+    }))
+}
+
 fn read_clipboard() -> Result<Value, String> {
     let result = helper("clipboard", &json!({"op":"read"}))?;
     Ok(json!({
@@ -716,7 +744,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
             | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp" | "computer.activateWindow"
             | "computer.setWindowMinimized" | "computer.setWindowFrame" | "computer.killApp"
-            | "computer.writeClipboard" | "computer.paste"
+            | "computer.writeClipboard" | "computer.paste" | "computer.setAppVisibility"
     );
     if mutating && !owner.is_empty() {
         if let Err(e) = crate::computer_manager::assert_control_authority(Some(owner)) {
@@ -847,6 +875,8 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 let r = ax_action(payload, "selecttext")?;
                 Ok(ax_result("computer_select_text", &r))
             }
+            "computer.listApps" => list_apps(),
+            "computer.setAppVisibility" => set_app_visibility(payload),
             "computer.readClipboard" => read_clipboard(),
             "computer.writeClipboard" => write_clipboard(payload),
             "computer.paste" => paste_clipboard_text(payload),

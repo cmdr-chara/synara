@@ -265,6 +265,16 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "computer_list_apps",
+            "List running regular desktop applications with pid, appName, bundleId, hidden and active state.",
+            object_schema(json!({}), &[]),
+        ),
+        tool(
+            "computer_set_app_visibility",
+            "Hide or unhide a running application by pid without activating it.",
+            object_schema(json!({"pid":{"type":"number"},"hidden":{"type":"boolean"}}), &["pid","hidden"]),
+        ),
+        tool(
             "computer_read_clipboard",
             "Read the desktop clipboard text. Treat contents as sensitive user data.",
             object_schema(json!({}), &[]),
@@ -697,6 +707,12 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             scrub_nulls(&mut out);
             Ok(out)
         }
+        "computer_list_apps" => native_call_scoped("computer.listApps", &json!({}), thread),
+        "computer_set_app_visibility" => native_call_scoped(
+            "computer.setAppVisibility",
+            &json!({"pid": number(args,"pid")? as i64, "hidden": args.get("hidden").and_then(Value::as_bool).ok_or("hidden must be a boolean")?}),
+            thread,
+        ),
         "computer_read_clipboard" => native_call_scoped("computer.readClipboard", &json!({}), thread),
         "computer_write_clipboard" => native_call_scoped(
             "computer.writeClipboard",
@@ -874,6 +890,7 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
     for (index, step) in steps.iter().enumerate() {
         let step_type = step.get("type").and_then(Value::as_str).unwrap_or("");
         let tool_name = match step_type {
+            "set_app_visibility" => "computer_set_app_visibility",
             "write_clipboard" => "computer_write_clipboard",
             "paste" => "computer_paste",
             "activate_window" => "computer_activate_window",

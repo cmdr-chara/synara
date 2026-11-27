@@ -457,6 +457,33 @@ case "axaction":
     }
     out(result)
 
+case "apps":
+    var apps: [[String: Any]] = []
+    for app in NSWorkspace.shared.runningApplications {
+        guard app.activationPolicy == .regular, let pid = Optional(app.processIdentifier), pid > 0 else { continue }
+        apps.append([
+            "pid": Int(pid),
+            "appName": app.localizedName as Any,
+            "bundleId": app.bundleIdentifier as Any,
+            "hidden": app.isHidden,
+            "active": app.isActive,
+        ])
+    }
+    apps.sort { (($0["appName"] as? String) ?? "") < (($1["appName"] as? String) ?? "") }
+    out(["ok": true, "apps": apps])
+
+case "appvisibility":
+    let a = args()
+    guard let pidValue = a["pid"] as? NSNumber,
+          let app = NSRunningApplication(processIdentifier: pid_t(pidValue.intValue)),
+          let hidden = a["hidden"] as? Bool
+    else {
+        out(["ok": false, "error": "pid and hidden are required"])
+        exit(0)
+    }
+    let ok = hidden ? app.hide() : app.unhide()
+    out(["ok": ok, "pid": pidValue.intValue, "hidden": hidden])
+
 case "clipboard":
     let a = args()
     let board = NSPasteboard.general

@@ -4860,6 +4860,8 @@ impl Native {
                             .with_mode(gpui_kit::component::diff::DiffMode::Unified)
                     }));
                     this.changes_diff = Some((format!("turn {to_turn}"), patch));
+                    this.view_changes = true;
+                    this.dock_tab = 0;
                 }
                 cx.notify();
             });
@@ -4925,6 +4927,8 @@ impl Native {
                             .with_mode(gpui_kit::component::diff::DiffMode::Unified)
                     }));
                     this.changes_diff = Some((path.clone(), patch));
+                    this.view_changes = true;
+                    this.dock_tab = 0;
                 }
                 cx.notify();
             });

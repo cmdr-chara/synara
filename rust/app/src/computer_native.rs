@@ -671,6 +671,42 @@ fn invoke_menu(payload: &Value) -> Result<Value, String> {
     }))
 }
 
+fn zoom_window(payload: &Value) -> Result<Value, String> {
+    require_ax()?;
+    let target = window_target(payload)?;
+    let window_id = target.get("id").and_then(Value::as_str).unwrap_or_default().to_string();
+    let x = payload.get("x").and_then(Value::as_f64).unwrap_or(f64::NAN);
+    let y = payload.get("y").and_then(Value::as_f64).unwrap_or(f64::NAN);
+    let width = payload.get("width").and_then(Value::as_f64).unwrap_or(f64::NAN);
+    let height = payload.get("height").and_then(Value::as_f64).unwrap_or(f64::NAN);
+    let bounds = target.get("bounds").cloned().unwrap_or(json!({}));
+    let bw = bounds.get("width").and_then(Value::as_f64).unwrap_or(0.0);
+    let bh = bounds.get("height").and_then(Value::as_f64).unwrap_or(0.0);
+    if ![x,y,width,height].iter().all(|v| v.is_finite()) || width<=0.0 || height<=0.0 || x<0.0 || y<0.0 || x+width>bw+0.5 || y+height>bh+0.5 {
+        return Err("The zoom region lies outside the target window.".into());
+    }
+    let result = checked_window_helper("zoom", json!({"windowId":window_id,"x":x,"y":y,"width":width,"height":height}))?;
+    Ok(json!({"computerId":COMPUTER_ID,"mimeType":"image/jpeg","width":result.get("width").cloned().unwrap_or(json!(0)),"height":result.get("height").cloned().unwrap_or(json!(0)),"sizeBytes":result.get("sizeBytes").cloned().unwrap_or(json!(0)),"bytesBase64":result.get("bytesBase64").cloned().unwrap_or(json!("")),"windowId":window_id,"capturedAt":crate::todo::iso_now_ms()}))
+}
+
+fn accessibility_inventory(payload: &Value) -> Result<Value, String> {
+    require_ax()?;
+    let scoped = payload.get("windowId").and_then(Value::as_str).filter(|value| numeric_window_id(value).is_some()).map(str::to_string);
+    let windows = list_windows()?;
+    let rows_all = windows;
+    let target = scoped.as_deref().and_then(|id| rows_all.iter().find(|row| row.get("id").and_then(Value::as_str)==Some(id)));
+    if scoped.is_some() && target.is_none() { return Err("Target window no longer exists.".into()); }
+    let scope_pid = target.and_then(|row| row.get("pid").and_then(Value::as_i64));
+    let apps_all = helper("apps", &json!({}))?.get("apps").and_then(Value::as_array).cloned().unwrap_or_default();
+    let mut apps: Vec<Value> = apps_all.into_iter().filter(|app| scope_pid.is_none() || app.get("pid").and_then(Value::as_i64)==scope_pid)
+        .map(|app| json!({"pid":app.get("pid").cloned().unwrap_or(json!(0)),"name":app.get("appName").cloned().unwrap_or(json!("")),"bundleId":app.get("bundleId").cloned().unwrap_or(Value::Null)})).collect();
+    let mut rows: Vec<Value> = rows_all.into_iter().filter(|window| scope_pid.is_none() || window.get("pid").and_then(Value::as_i64)==scope_pid)
+        .enumerate().map(|(index,window)| json!({"id":window.get("id").cloned().unwrap_or(Value::Null),"pid":window.get("pid").cloned().unwrap_or(json!(0)),"appName":window.get("appName").cloned().unwrap_or(Value::Null),"title":window.get("title").cloned().unwrap_or(json!("")),"bounds":window.get("bounds").cloned().unwrap_or(Value::Null),"onScreen":!window.get("minimized").and_then(Value::as_bool).unwrap_or(false),"zIndex":index})).collect();
+    let truncated = apps.len()>1024 || rows.len()>256;
+    apps.truncate(1024); rows.truncate(256);
+    Ok(json!({"computerId":COMPUTER_ID,"apps":apps,"windows":rows,"windowId":scoped,"truncated":truncated,"availability":availability()}))
+}
+
 fn desktop_state_json() -> Value {
     let (epoch, interruptions, pauses) = crate::computer_manager::desktop_interruption_state();
     json!({
@@ -841,6 +877,8 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     let r = (|| -> Result<Value, String> {
         match tag {
             "computer.getStatus" => Ok(status_json()),
+            "computer.zoomWindow" => zoom_window(payload),
+            "computer.getAccessibilityTree" => accessibility_inventory(payload),
             "computer.getCursorPosition" => {
                 let cursor = helper("cursor", &json!({}))?;
                 Ok(json!({

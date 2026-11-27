@@ -194,6 +194,11 @@ func axParseWindowId(_ s: String?) -> (pid: Int, wid: Int)? {
     return (pid, wid)
 }
 
+func dbl(_ raw: Any?) -> Double {
+    if let value = raw as? NSNumber { return value.doubleValue }
+    return 0
+}
+
 func normalizeMenuTitle(_ value: String) -> String {
     value.replacingOccurrences(of: "\u{00a0}", with: " ")
         .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -511,6 +516,67 @@ case "axaction":
         exit(0)
     }
     out(result)
+
+case "zoom":
+    let a = args()
+    guard let parsed = axParseWindowId(a["windowId"] as? String) else {
+        out(["ok": false, "error": "windowId is required"])
+        exit(0)
+    }
+    guard let bounds = cgWindowBounds(wid: parsed.wid) else {
+        out(["ok": false, "error": "Target window no longer exists"])
+        exit(0)
+    }
+    let x = dbl(a["x"]), y = dbl(a["y"]), w = dbl(a["width"]), h = dbl(a["height"])
+    guard [x,y,w,h].allSatisfy({ $0.isFinite }), w > 0, h > 0,
+          x >= 0, y >= 0, x + w <= bounds.width + 0.5, y + h <= bounds.height + 0.5
+    else {
+        out(["ok": false, "error": "The zoom region lies outside the target window"])
+        exit(0)
+    }
+    let capturePath = NSTemporaryDirectory() + "synara-zoom-\(UUID().uuidString).png"
+    let capture = Process()
+    capture.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
+    capture.arguments = ["-x", "-o", "-l\(parsed.wid)", capturePath]
+    do { try capture.run() } catch {
+        out(["ok": false, "error": "Screen capture is unavailable or not permitted"])
+        exit(0)
+    }
+    capture.waitUntilExit()
+    defer { try? FileManager.default.removeItem(atPath: capturePath) }
+    guard capture.terminationStatus == 0,
+          let captureData = try? Data(contentsOf: URL(fileURLWithPath: capturePath)),
+          let captureImage = NSImage(data: captureData),
+          let image = captureImage.cgImage(forProposedRect: nil, context: nil, hints: nil)
+    else {
+        out(["ok": false, "error": "Screen capture is unavailable or not permitted"])
+        exit(0)
+    }
+    let scale = bounds.width > 0 ? Double(image.width) / Double(bounds.width) : 1.0
+    let crop = CGRect(
+        x: (x * scale).rounded(.down),
+        y: (y * scale).rounded(.down),
+        width: max(1.0, (w * scale).rounded()),
+        height: max(1.0, (h * scale).rounded())
+    ).integral.intersection(CGRect(x: 0, y: 0, width: image.width, height: image.height))
+    guard let cropped = image.cropping(to: crop) else {
+        out(["ok": false, "error": "The zoom region is empty"])
+        exit(0)
+    }
+    let rep = NSBitmapImageRep(cgImage: cropped)
+    guard let jpeg = rep.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [NSBitmapImageRep.PropertyKey.compressionFactor: NSNumber(value: 0.88)])
+    else {
+        out(["ok": false, "error": "JPEG encoding failed"])
+        exit(0)
+    }
+    out([
+        "ok": true,
+        "mimeType": "image/jpeg",
+        "width": cropped.width,
+        "height": cropped.height,
+        "sizeBytes": jpeg.count,
+        "bytesBase64": jpeg.base64EncodedString(),
+    ])
 
 case "menu":
     let a = args()

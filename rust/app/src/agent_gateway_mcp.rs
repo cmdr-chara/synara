@@ -227,6 +227,19 @@ fn tool_definitions() -> Vec<Value> {
             object_schema(json!({}), &[]),
         ),
         tool(
+            "computer_zoom",
+            "Capture a magnified JPEG of a rectangle inside an exact window. x/y/width/height are window-local desktop points.",
+            object_schema(
+                json!({"window_id":{"type":"string"},"x":{"type":"number"},"y":{"type":"number"},"width":{"type":"number"},"height":{"type":"number"}}),
+                &["window_id","x","y","width","height"],
+            ),
+        ),
+        tool(
+            "computer_get_accessibility_tree",
+            "List running applications and on-screen windows as a lightweight desktop inventory. Optionally scope to the app owning window_id.",
+            object_schema(json!({"window_id":{"type":"string"}}), &[]),
+        ),
+        tool(
             "computer_get_cursor_position",
             "Read the current desktop pointer coordinates.",
             object_schema(json!({}), &[]),
@@ -1005,6 +1018,16 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             thread,
         ),
         "computer_get_screen_size" => native_call_scoped("computer.getScreenSize", &json!({}), thread),
+        "computer_zoom" => native_call_scoped(
+            "computer.zoomWindow",
+            &json!({"windowId":string_arg(args,"window_id"),"x":number_opt(args,"x"),"y":number_opt(args,"y"),"width":number_opt(args,"width"),"height":number_opt(args,"height")}),
+            thread,
+        ),
+        "computer_get_accessibility_tree" => native_call_scoped(
+            "computer.getAccessibilityTree",
+            &json!({"windowId":string_arg(args,"window_id")}),
+            thread,
+        ),
         "computer_get_cursor_position" => native_call_scoped("computer.getCursorPosition", &json!({}), thread),
         "computer_screenshot" => native_call_scoped("computer.screenshot", &json!({}), thread),
         "computer_read_clipboard" => native_call_scoped("computer.readClipboard", &json!({}), thread),
@@ -1231,6 +1254,8 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
             "write_clipboard" => "computer_write_clipboard",
             "paste" => "computer_paste",
             "activate_window" => "computer_activate_window",
+            "zoom" => "computer_zoom",
+            "get_accessibility_tree" => "computer_get_accessibility_tree",
             "invoke_menu" => "computer_invoke_menu",
             "set_window_minimized" => "computer_set_window_minimized",
             "set_window_frame" => "computer_set_window_frame",

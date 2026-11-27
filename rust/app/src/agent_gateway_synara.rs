@@ -89,6 +89,15 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["threadId"]),
         ),
         def(
+            "synara_read_thread_events",
+            "Read the durable orchestration events of one thread (turn lifecycle, meta updates, checkpoint events), newest last. Use read_thread_activity for the human-facing feed; events are the raw record.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "limit": {"type": "number", "description": "Max events (default 50, max 200)."},
+                "type": {"type": "string", "description": "Only events of this type, e.g. thread.turn-started."},
+            }), &["threadId"]),
+        ),
+        def(
             "synara_list_projects",
             "List the user's projects with their workspace roots.",
             schema(json!({
@@ -317,7 +326,7 @@ fn read_thread_activity(args: &Value) -> Result<Value, String> {
     let sql = format!(
         "SELECT activity_id, turn_id, tone, kind, summary, payload_json, created_at \
          FROM projection_thread_activities \
-         WHERE thread_id = ?1 {} ORDER BY sequence DESC LIMIT ?2",
+         WHERE stream_id = ?1 AND aggregate_kind = 'thread' {} ORDER BY sequence DESC LIMIT ?2",
         if turn_filter.is_some() { "AND turn_id = ?3" } else { "" }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
@@ -401,6 +410,46 @@ fn list_automations() -> Result<Value, String> {
     Ok(json!({"automations": rows}))
 }
 
+fn read_thread_events(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let limit = args
+        .get("limit")
+        .and_then(Value::as_i64)
+        .unwrap_or(50)
+        .clamp(1, 200);
+    let type_filter = arg_str(args, "type");
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let sql = format!(
+        "SELECT event_type, payload_json, occurred_at, sequence FROM orchestration_events \
+         WHERE stream_id = ?1 AND aggregate_kind = 'thread' {} ORDER BY sequence DESC LIMIT ?2",
+        if type_filter.is_some() { "AND event_type = ?3" } else { "" }
+    );
+    let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
+    let map_row = |r: &rusqlite::Row| -> rusqlite::Result<Value> {
+        let payload_raw: Option<String> = r.get(1)?;
+        Ok(json!({
+            "type": r.get::<_, String>(0)?,
+            "payload": payload_raw.and_then(|p| serde_json::from_str::<Value>(&p).ok()).unwrap_or(Value::Null),
+            "occurredAt": r.get::<_, Option<String>>(2)?,
+            "sequence": r.get::<_, i64>(3)?,
+        }))
+    };
+    let mut rows: Vec<Value> = if let Some(t) = type_filter {
+        stmt.query_map(rusqlite::params![thread_id, limit, t], map_row)
+            .map_err(|e| e.to_string())?
+            .filter_map(|r| r.ok())
+            .collect()
+    } else {
+        stmt.query_map(rusqlite::params![thread_id, limit], map_row)
+            .map_err(|e| e.to_string())?
+            .filter_map(|r| r.ok())
+            .collect()
+    };
+    rows.reverse();
+    Ok(json!({"events": rows}))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -409,6 +458,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String
         "synara_list_threads" => list_threads(args),
         "synara_read_thread" => read_thread(args),
         "synara_read_thread_activity" => read_thread_activity(args),
+        "synara_read_thread_events" => read_thread_events(args),
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),

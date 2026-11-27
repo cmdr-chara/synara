@@ -9,7 +9,8 @@ use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-const WINDOW: &str = "-2 days";
+const RECENT_WINDOW: &str = "-2 days";
+const BACKFILL_WINDOW: &str = "-20 years";
 const MAX_BUCKETS: usize = 500;
 
 fn enabled() -> bool {
@@ -45,7 +46,7 @@ fn tokens_from_usage(raw: Option<&str>) -> u64 {
         .sum()
 }
 
-fn model_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
+fn model_buckets(conn: &Connection, window: &str) -> Result<Vec<Value>, String> {
     let mut grouped: HashMap<String, Value> = HashMap::new();
     let mut statement = conn
         .prepare(
@@ -64,7 +65,7 @@ fn model_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
         )
         .map_err(|e| format!("prepare account usage turns: {e}"))?;
     let rows = statement
-        .query_map(params![WINDOW], |row| {
+        .query_map(params![window], |row| {
             Ok((
                 row.get::<_, String>(0)?,
                 row.get::<_, Option<String>>(1)?,
@@ -117,7 +118,7 @@ fn model_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
         )
         .map_err(|e| format!("prepare account usage tokens: {e}"))?;
     let rows = token_statement
-        .query_map(params![WINDOW], |row| {
+        .query_map(params![window], |row| {
             Ok((
                 row.get::<_, String>(0)?,
                 row.get::<_, Option<String>>(1)?,
@@ -169,7 +170,7 @@ fn reference_names(raw: Option<&str>) -> Vec<String> {
         .collect()
 }
 
-fn skill_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
+fn skill_buckets(conn: &Connection, window: &str) -> Result<Vec<Value>, String> {
     let mut grouped: HashMap<String, Value> = HashMap::new();
     let mut statement = conn
         .prepare(
@@ -178,7 +179,7 @@ fn skill_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
         )
         .map_err(|e| format!("prepare account usage skills: {e}"))?;
     let rows = statement
-        .query_map(params![WINDOW], |row| {
+        .query_map(params![window], |row| {
             Ok((
                 row.get::<_, String>(0)?,
                 row.get::<_, Option<String>>(1)?,
@@ -233,6 +234,27 @@ fn chunks_by_minute(buckets: Vec<Value>) -> Vec<Vec<Value>> {
     chunks
 }
 
+fn sync_state_path() -> PathBuf {
+    std::path::Path::new(&crate::todo::state_dir()).join("account-usage-sync.json")
+}
+
+fn backfill_completed() -> bool {
+    std::fs::read_to_string(sync_state_path())
+        .ok()
+        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok())
+        .and_then(|value| value.get("backfillCompleted").and_then(Value::as_bool))
+        == Some(true)
+}
+
+fn mark_backfill_completed() {
+    let path = sync_state_path();
+    let body = json!({"version": 1, "backfillCompleted": true}).to_string();
+    let tmp = path.with_extension("json.tmp");
+    if std::fs::write(&tmp, body).is_ok() {
+        let _ = std::fs::rename(tmp, path);
+    }
+}
+
 fn account_file_exists() -> bool {
     let state = PathBuf::from(crate::todo::state_dir());
     let root = if state.file_name().and_then(|name| name.to_str()) == Some("userdata") {
@@ -253,8 +275,9 @@ fn flush() -> Result<(), String> {
         return Ok(());
     }
     let conn = Connection::open(&db_path).map_err(|e| format!("open state database for account usage: {e}"))?;
-    let models = model_buckets(&conn)?;
-    let skills = skill_buckets(&conn)?;
+    let window = if backfill_completed() { RECENT_WINDOW } else { BACKFILL_WINDOW };
+    let models = model_buckets(&conn, window)?;
+    let skills = skill_buckets(&conn, window)?;
     if models.is_empty() && skills.is_empty() {
         return Ok(());
     }
@@ -283,6 +306,9 @@ fn flush() -> Result<(), String> {
         if index + 1 < pushes {
             std::thread::sleep(std::time::Duration::from_millis(100));
         }
+    }
+    if window == BACKFILL_WINDOW {
+        mark_backfill_completed();
     }
     Ok(())
 }

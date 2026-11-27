@@ -21418,6 +21418,12 @@ impl Render for Native {
                     ))
                     .child(divider())
                     .child(srow(
+                        "Format agent edits",
+                        "After each agent turn, format supported files changed during that turn with tidy. Unsupported files and syntax errors are left unchanged.",
+                        sw(cx, "formatAgentFiles", false),
+                    ))
+                    .child(divider())
+                    .child(srow(
                         "Fold finished turns",
                         "Hide a finished turn's tool calls and intermediate messages behind a single \"Worked for…\" line. A turn stays open while it runs or while its background subagents are still working. Turn this off to keep every step visible.",
                         sw(cx, "collapseFinishedTurns", true),

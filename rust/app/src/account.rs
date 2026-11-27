@@ -440,6 +440,7 @@ fn link_local_host() -> Result<(), WsErr> {
         && stored.get("hostKeyGeneration").is_some()
         && crate::host_identity::read_host_identity(&host_identity_file_path()).ok().flatten().is_some()
     {
+        let _ = publish_local_host_endpoints();
         return Ok(());
     }
     let state_dir = crate::todo::state_dir();
@@ -490,6 +491,123 @@ fn link_local_host() -> Result<(), WsErr> {
         object.insert("hostKeyGeneration".into(), host.get("keyGeneration").cloned().unwrap_or(json!(0)));
     }
     write_account_file(&current)
+}
+
+
+fn host_is_wildcard(host: &str) -> bool {
+    matches!(host, "0.0.0.0" | "::" | "*")
+}
+
+fn host_is_loopback(host: &str) -> bool {
+    let normalized = host.trim_matches(['[', ']']).trim_end_matches('.').to_ascii_lowercase();
+    normalized == "localhost" || normalized == "::1" || normalized.strip_prefix("127.").is_some()
+}
+
+fn tailscale_endpoint(local_port: u16) -> Option<Value> {
+    let status = std::process::Command::new("tailscale")
+        .args(["status", "--json"])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())?;
+    let serve = std::process::Command::new("tailscale")
+        .args(["serve", "status", "--json"])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())?;
+    let status: Value = serde_json::from_slice(&status.stdout).ok()?;
+    let serve: Value = serde_json::from_slice(&serve.stdout).ok()?;
+    if status.get("BackendState").and_then(Value::as_str) != Some("Running")
+        || status.pointer("/Self/Online").and_then(Value::as_bool) == Some(false)
+    {
+        return None;
+    }
+    let dns_name = status
+        .pointer("/Self/DNSName")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .trim_end_matches('.')
+        .to_string();
+    if dns_name.is_empty()
+        || !status.get("CertDomains").and_then(Value::as_array).is_some_and(|domains| {
+            domains.iter().any(|domain| domain.as_str().unwrap_or_default().trim_end_matches('.') == dns_name)
+        })
+    {
+        return None;
+    }
+    for (host_port, entry) in serve.get("Web").and_then(Value::as_object)? {
+        for handler in entry.get("Handlers").and_then(Value::as_object).map(|handlers| handlers.values()).into_iter().flatten() {
+            let proxy = handler.get("Proxy").and_then(Value::as_str).unwrap_or_default();
+            let Ok(url) = reqwest::Url::parse(proxy) else { continue };
+            if url.port_or_known_default() != Some(local_port) { continue; }
+            let port = host_port.rsplit(':').next().and_then(|part| part.parse::<u16>().ok()).unwrap_or(443);
+            return Some(json!({
+                "url": if port == 443 { format!("https://{dns_name}") } else { format!("https://{dns_name}:{port}") },
+                "transport": "tailscale",
+            }));
+        }
+    }
+    None
+}
+
+fn local_endpoints() -> Vec<Value> {
+    let state_path = PathBuf::from(crate::todo::state_dir()).join("server-runtime.json");
+    let state: Value = std::fs::read_to_string(state_path)
+        .ok()
+        .and_then(|raw| serde_json::from_str(&raw).ok())
+        .unwrap_or(Value::Null);
+    let mut endpoints = Vec::new();
+    let host = state.get("host").and_then(Value::as_str).unwrap_or_default();
+    let origin = state.get("origin").and_then(Value::as_str).unwrap_or_default();
+    if !host.is_empty() && !host_is_wildcard(host) && !host_is_loopback(host) && !origin.is_empty() {
+        endpoints.push(json!({"url": origin, "transport": "lan"}));
+    }
+    if let Some(port) = state.get("port").and_then(Value::as_u64).filter(|port| *port <= u16::MAX as u64)
+        && let Some(endpoint) = tailscale_endpoint(port as u16)
+    {
+        endpoints.push(endpoint);
+    }
+    endpoints.truncate(8);
+    endpoints
+}
+
+pub(crate) fn publish_local_host_endpoints() -> Result<(), WsErr> {
+    let stored = read_session_file().ok_or_else(session_expired)?;
+    let host_id = stored.get("hostId").and_then(Value::as_str).unwrap_or_default();
+    let owner = stored.get("hostOwnerUserId").and_then(Value::as_str).unwrap_or_default();
+    let key_generation = stored.get("hostKeyGeneration").and_then(Value::as_u64).unwrap_or(0);
+    if host_id.is_empty() || owner.is_empty() {
+        return Ok(());
+    }
+    let endpoints = local_endpoints();
+    if endpoints.is_empty() {
+        return Ok(());
+    }
+    let identity = crate::host_identity::read_host_identity(&host_identity_file_path())
+        .map_err(err)?
+        .ok_or_else(|| err("The host identity is missing"))?;
+    let state_dir = crate::todo::state_dir();
+    let environment_id = crate::server_env::environment_id(&state_dir)
+        .ok_or_else(|| err("Failed to resolve the environment id"))?;
+    let proof = crate::host_identity::mint_host_proof(
+        &identity,
+        &account_api_issuer(stored["accountUrl"].as_str().unwrap_or_default()),
+        &environment_id,
+        host_id,
+        key_generation,
+    ).map_err(err)?;
+    let client = reqwest::blocking::Client::builder().build().map_err(|e| err(e.to_string()))?;
+    let response = client
+        .put(format!("{}/api/v1/hosts/{host_id}/endpoints", stored["accountUrl"].as_str().unwrap_or_default().trim_end_matches('/')))
+        .header(reqwest::header::AUTHORIZATION, format!("HostProof {proof}"))
+        .header(reqwest::header::CONTENT_TYPE, "application/json")
+        .body(json!({"endpoints": endpoints, "appVersion": env!("CARGO_PKG_VERSION")}).to_string())
+        .timeout(REQUEST_TIMEOUT)
+        .send()
+        .map_err(|_| err("Failed to publish host endpoints"))?;
+    if !(200..300).contains(&response.status().as_u16()) {
+        return Err(err("Failed to publish host endpoints"));
+    }
+    Ok(())
 }
 
 fn enroll_desktop(user_id: &str) {

@@ -16868,7 +16868,16 @@ impl Render for Native {
                     );
                     self.backdrop_key = key;
                 }
-                let mut field = div().size_full().overflow_hidden().relative();
+                // Upstream empty-chat pane is OPAQUE: the window atmosphere
+                // does not bleed into the pane — the only dots visible here
+                // come from the landing canvas itself. Without this the
+                // atmosphere shows through the transparent dots-mask and
+                // double-density noise covers the sky.
+                let mut field = div()
+                    .size_full()
+                    .overflow_hidden()
+                    .relative()
+                    .bg(content_bg);
                 if !dark {
                     // Light temple prints on tinted paper: accent wash
                     // 3% -> 9% toward the bottom (upstream skyMask paper div).

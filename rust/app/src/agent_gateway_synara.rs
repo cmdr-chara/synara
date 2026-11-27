@@ -2151,11 +2151,22 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
         obj.insert("worktreePath".into(), json!(path));
         obj.insert("workingDirectory".into(), json!(path));
     }
-    if let Some(provider) = arg_str(args, "provider") {
-        create.as_object_mut().unwrap().insert("provider".into(), json!(provider));
-    }
-    if let Some(model) = arg_str(args, "model") {
-        create.as_object_mut().unwrap().insert("model".into(), json!(model));
+    // The engine consumes a modelSelection object (upstream ThreadCreatedPayload);
+    // the flat provider/model gateway arguments are conveniences over it.
+    // "claude" is accepted as the friendly alias of the upstream provider key.
+    let provider = arg_str(args, "provider").map(|p| {
+        if p == "claude" { "claudeAgent".to_string() } else { p }
+    });
+    let model = arg_str(args, "model");
+    if provider.is_some() || model.is_some() {
+        let mut selection = serde_json::Map::new();
+        if let Some(p) = provider {
+            selection.insert("provider".into(), json!(p));
+        }
+        if let Some(m) = model {
+            selection.insert("model".into(), json!(m));
+        }
+        create.as_object_mut().unwrap().insert("modelSelection".into(), Value::Object(selection));
     }
     if let Err(e) = dispatch_command(create) {
         if e.contains("UNIQUE") || e.contains("already exists") {

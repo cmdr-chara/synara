@@ -18937,13 +18937,15 @@ impl Render for Native {
             c.a = 0.55;
             c
         };
+        // Upstream in-thread composer: the input row is a fully-rounded white
+        // pill inside the grey shell; permission/model chips sit on the grey
+        // tray below, outside the pill.
         let composer_card: Div = if row_composer {
             div()
                 .w_full()
-                .max_w(px(755.))
                 .border_1()
                 .border_color(composer_border)
-                .rounded(px(19.2))
+                .rounded(px(9999.))
                 .bg(composer_card_bg)
                 .shadow_md()
                 .px_2()
@@ -20366,33 +20368,47 @@ impl Render for Native {
                         .child(composer_card),
                 )
         } else {
+            // In-thread tray (upstream chat-composer-shell): opaque grey
+            // squircle spanning the chat column; the white pill sits inside,
+            // and the permission/model chips row rides on the grey below it.
+            let tray_inner = if row_composer {
+                v_flex()
+                    .w_full()
+                    .max_w(chat_mw)
+                    .rounded(px(24.2))
+                    .border_1()
+                    .border_color(theme.border.opacity(0.5))
+                    .bg(composer_shell_bg)
+                    .p(px(4.))
+                    .gap(px(4.))
+                    .child(composer_card)
+                    .child(
+                        h_flex()
+                            .w_full()
+                            .px(px(4.))
+                            .items_center()
+                            .child(build_mode_chip(cx))
+                            .child(div().flex_1())
+                            .child(build_model_chip()),
+                    )
+            } else {
+                v_flex()
+                    .w_full()
+                    .max_w(chat_mw)
+                    .rounded(px(24.2))
+                    .border_1()
+                    .border_color(theme.border.opacity(0.5))
+                    .bg(composer_shell_bg)
+                    .p(px(4.))
+                    .child(composer_card)
+            };
             div()
                 .flex()
                 .justify_center()
                 .w_full()
-                .child(
-                    div()
-                        .rounded(px(24.2))
-                        .bg(composer_shell_bg)
-                        .p(px(4.))
-                        .child(composer_card),
-                )
+                .child(tray_inner)
         };
         composer_col = composer_col.child(composer_shelled);
-        if row_composer {
-            // Pickers row under the composer card (upstream "row" layout):
-            // interaction mode on the left, model picker on the right.
-            composer_col = composer_col.child(
-                h_flex()
-                    .w_full()
-                    .pt(px(8.))
-                    .px(px(4.))
-                    .items_center()
-                    .child(build_mode_chip(cx))
-                    .child(div().flex_1())
-                    .child(build_model_chip()),
-            );
-        }
         let composer_bar = div()
             .w_full()
             .pb(px(18.))

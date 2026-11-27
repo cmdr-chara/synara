@@ -26083,7 +26083,19 @@ impl Render for Native {
         // behind an active thread — the atmosphere reads only through the
         // transparent chrome. The landing paints its own texture instance on
         // top of this surface, so empty chats are unaffected.
-        let mut main = v_flex().flex_1().min_w_0().h_full().relative();
+        // Upstream content card: inset 3px (--app-rail-inset-gap) from the
+        // right and bottom window edges, bottom corners rounded 13px — the
+        // shell atmosphere frame peeks through the gap.
+        let mut main = v_flex()
+            .flex_1()
+            .min_w_0()
+            .h_full()
+            .relative()
+            .mr(px(3.))
+            .mb(px(3.))
+            .rounded_br(px(13.))
+            .rounded_bl(px(13.))
+            .overflow_hidden();
         if !show_landing || other_surface_active {
             // The content surface is opaque over active threads and the
             // utility surfaces (tasks/inbox/settings/...): it is what covers
@@ -27996,10 +28008,11 @@ impl Render for Native {
         // 47px #f7f7f7 band, borderless, over rail+panel+content: sidebar
         // toggle centered over the rail at left, Environment + dock toggles
         // at right (Hugeicons panel-top-open / layout-right).
+        // Upstream top strip is transparent chrome over the shell atmosphere
+        // (part of the frame clip), not an opaque band.
         let strip = h_flex()
             .w_full()
             .h(px(47.))
-            .bg(well_bg)
             .items_center()
             .pr(px(19.))
             .child(
@@ -28420,29 +28433,8 @@ impl Render for Native {
         }
 
         let mut body = h_flex().flex_1().min_h_0().relative();
-        // Upstream .app-shell-atmosphere: the texture always prints behind
-        // the window chrome. Default mode clips it to the frame strips (top
-        // strip, rail, thin bottom/right inset) at a third of the landing
-        // weight (35% light / 80% dark); data-atmosphere-full opens the clip
-        // to the whole window at full strength. Opaque content surfaces cover
-        // the center either way, so the full-window paint is equivalent.
-        if let Some(atmo) = atmosphere_layer.take() {
-            let frame_op = if self.backdrop_full {
-                1.0
-            } else if dark_ui {
-                0.8
-            } else {
-                0.35
-            };
-            body = body.child(
-                div()
-                    .absolute()
-                    .inset_0()
-                    .overflow_hidden()
-                    .opacity(frame_op)
-                    .child(atmo),
-            );
-        }
+        // (atmosphere mounts at the root below, behind strip + body)
+
         body = body.child(left_well).child(main);
         if self.view_changes {
             body = body.child(changes_pane.border_l_1().border_color(theme.border));
@@ -33444,6 +33436,27 @@ impl Render for Native {
             }))
             .bg(content_bg)
             .text_color(theme.foreground)
+            // Upstream .app-shell-atmosphere: the texture always prints
+            // behind the window chrome. Default mode shows it in the frame
+            // strips (top strip, rail, thin bottom/right inset) at a third of
+            // the landing weight (35% light / 80% dark); data-atmosphere-full
+            // opens the clip to the whole window at full strength. Opaque
+            // content surfaces cover the center either way.
+            .children(atmosphere_layer.take().map(|atmo| {
+                let frame_op = if self.backdrop_full {
+                    1.0
+                } else if dark_ui {
+                    0.8
+                } else {
+                    0.35
+                };
+                div()
+                    .absolute()
+                    .inset_0()
+                    .overflow_hidden()
+                    .opacity(frame_op)
+                    .child(atmo)
+            }))
             .child(strip)
             .child(body)
             // Overlays mount only while active — an empty full-size overlay

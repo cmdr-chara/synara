@@ -1078,14 +1078,15 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                         if window.is_null() { reason = json!(if hidden { "hidden" } else { "no_window" }); }
                     }
                 }
-                Ok(json!({
+                let mut result = json!({
                     "computerId": COMPUTER_ID, "app": app,
                     "focusChangedDuringLaunch": focus_changed,
-                    "pid": pid,
                     "windowStatus": status,
-                    "windowReason": reason,
                     "window": window
-                }))
+                });
+                if let Some(pid) = pid { result["pid"] = json!(pid); }
+                if !reason.is_null() { result["windowReason"] = reason; }
+                Ok(result)
             }
             "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click" => {
                 require_ax()?;

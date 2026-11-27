@@ -3024,6 +3024,108 @@ pub fn persist_runtime_event(thread_id: &str, turn_id: Option<&str>, event_type:
     );
 }
 
+
+/// Hard-delete counterpart of upstream's deletion purge: soft-deleted threads
+/// past a one-hour grace are physically removed with their dependent rows,
+/// after their token rows are snapshotted into the deleted-stats table so
+/// profile statistics survive the purge. Retention-archived threads are never
+/// purged — archiving is the user's keep-signal; only explicit deletes are.
+pub fn purge_deleted_threads() -> usize {
+    let Ok(conn) = open_state_rw() else { return 0 };
+    let grace_ms: i64 = 60 * 60 * 1000;
+    let now_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0);
+    let rows: Vec<(String, String)> = conn
+        .prepare(
+            "SELECT thread_id, deleted_at FROM projection_threads \
+             WHERE deleted_at IS NOT NULL",
+        )
+        .and_then(|mut st| {
+            Ok(st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
+                .filter_map(|row| row.ok())
+                .collect::<Vec<_>>())
+        })
+        .unwrap_or_default();
+    let mut purged = 0usize;
+    for (thread_id, deleted_at) in rows {
+        let Some(ms) = iso_ms(&deleted_at) else { continue };
+        if now_ms - ms < grace_ms {
+            continue;
+        }
+        // Never purge while anything is still in flight for the thread.
+        let busy: bool = conn
+            .query_row(
+                "SELECT COUNT(*) FROM projection_turns WHERE thread_id = ?1 AND state = 'running'",
+                [&thread_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .map(|c| c > 0)
+            .unwrap_or(true);
+        if busy {
+            continue;
+        }
+        // Snapshot the recorded token total so stats survive the purge,
+        // matching the upstream stats-archive shape. Tokens come from the
+        // turn.completed usage payloads, never from message counts.
+        let mut tokens: i64 = 0;
+        let mut provider: Option<String> = None;
+        if let Ok(mut st) = conn.prepare(
+            "SELECT payload_json FROM projection_thread_activities WHERE thread_id = ?1 AND kind = 'turn.completed'",
+        ) {
+            if let Ok(rows) = st.query_map([&thread_id], |r| r.get::<_, String>(0)) {
+                for raw in rows.filter_map(|r| r.ok()) {
+                    if let Ok(p) = serde_json::from_str::<Value>(&raw) {
+                        if provider.is_none() {
+                            provider = p
+                                .get("provider")
+                                .and_then(Value::as_str)
+                                .map(str::to_string);
+                        }
+                        if let Some(usage) = p.get("modelUsage").and_then(Value::as_object) {
+                            for u in usage.values() {
+                                for key in ["inputTokens", "outputTokens", "cacheReadInputTokens", "cacheCreationInputTokens"] {
+                                    tokens += u.get(key).and_then(Value::as_i64).unwrap_or(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        let _ = conn.execute(
+            "INSERT INTO profile_stats_deleted_tokens (thread_id, created_at, provider, tokens) \
+             VALUES (?1, ?2, ?3, ?4)",
+            rusqlite::params![thread_id, iso_now_ms(), provider, tokens],
+        );
+        for table in [
+            "projection_thread_messages",
+            "projection_thread_activities",
+            "projection_turns",
+            "projection_thread_sessions",
+            "projection_pending_interactions",
+            "provider_runtime_events",
+            "provider_session_runtime",
+        ] {
+            let _ = conn.execute(
+                &format!("DELETE FROM {table} WHERE thread_id = ?1"),
+                [&thread_id],
+            );
+        }
+        let removed = conn
+            .execute(
+                "DELETE FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NOT NULL",
+                [&thread_id],
+            )
+            .unwrap_or(0);
+        if removed > 0 {
+            purged += 1;
+        }
+    }
+    purged
+}
+
 /// Snooze expiry counterpart of upstream's ThreadSnoozeReactor: rows whose
 /// `snoozed_until` passed are woken by clearing the deadline through the same
 /// guarded `thread.meta.update` (expectedSnoozedUntil), so a newer schedule or

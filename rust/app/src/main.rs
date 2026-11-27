@@ -341,6 +341,10 @@ async fn main() {
                 if archived > 0 {
                     eprintln!("thread retention: archived {archived} inactive thread(s)");
                 }
+                let purged = orchestration_engine::purge_deleted_threads();
+                if purged > 0 {
+                    eprintln!("thread retention: purged {purged} deleted thread(s)");
+                }
                 std::thread::sleep(std::time::Duration::from_secs(3600));
             }
         });

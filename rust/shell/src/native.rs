@@ -17524,6 +17524,34 @@ impl Render for Native {
                 div().rounded(px(18.)).bg(fill).child(children)
             };
 
+            let unread_ids: Vec<String> = finished
+                .iter()
+                .map(|t| str_at(t, "id").to_string())
+                .collect();
+            let header_right = if unread_ids.is_empty() {
+                None
+            } else {
+                Some(
+                    Button::new("inbox-mark-all-read")
+                        .outline()
+                        .label("Mark all read")
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            let now = now_iso();
+                            for id in &unread_ids {
+                                let prev = this
+                                    .visited_threads
+                                    .get(id)
+                                    .cloned()
+                                    .unwrap_or_default();
+                                if now > prev {
+                                    this.visited_threads.insert(id.clone(), now.clone());
+                                }
+                            }
+                            this.persist_sidebar_ui(cx);
+                            cx.notify();
+                        })),
+                )
+            };
             let header = h_flex()
                 .items_baseline()
                 .gap_2()
@@ -17541,6 +17569,12 @@ impl Render for Native {
                         .text_color(theme.muted_foreground)
                         .child(format!("{greeting} {sub}")),
                 );
+            let header = h_flex()
+                .w_full()
+                .items_end()
+                .justify_between()
+                .child(header)
+                .children(header_right);
 
             // Tasks card (left column, 4/12 of the upstream @5xl grid)
             let tasks_card = v_flex()
@@ -18342,28 +18376,13 @@ impl Render for Native {
             }
             right_col = right_col.child(tile_rows);
 
-            let grid = h_flex()
-                .gap(px(16.))
-                .items_start()
-                .child(
-                    tile(tasks_card.into_any_element())
-                        .w(gpui::relative(4.0 / 12.0)),
-                )
-                .child(right_col);
-
-            // Upstream page: p-10 under the top bar, gap-7 between sections
-            // (title lands 40px below the 44px bar, like the web Inbox).
-            let mut page = v_flex()
-                .flex_1()
-                .px(px(24.))
-                .pt(px(20.))
-                .pb(px(32.))
-                .gap(px(28.))
-                .child(header)
-                .child(grid);
-
-            // Upstream InboxTaskList groups (computed above for the greeting).
-            if !(needs_you.is_empty()
+            // Upstream InboxTaskList groups (computed above for the greeting):
+            // the left column stacks this card above the day's tasks.
+            let has_inbox_groups = !(needs_you.is_empty()
+                && working.is_empty()
+                && finished.is_empty()
+                && failed.is_empty());
+            let groups_tile = if !(needs_you.is_empty()
                 && working.is_empty()
                 && finished.is_empty()
                 && failed.is_empty())
@@ -18454,8 +18473,35 @@ impl Render for Native {
                     }
                     tcard = tcard.child(sec);
                 }
-                page = page.child(tile(tcard.into_any_element()));
+                tile(tcard.into_any_element()).into_any_element()
+            } else {
+                div().into_any_element()
+            };
+
+            let mut left_col = v_flex()
+                .w(gpui::relative(4.0 / 12.0))
+                .gap(px(16.));
+            if has_inbox_groups {
+                left_col = left_col.child(groups_tile);
             }
+            left_col = left_col.child(tile(tasks_card.into_any_element()).into_any_element());
+            let grid = h_flex()
+                .gap(px(16.))
+                .items_start()
+                .child(left_col)
+                .child(right_col);
+
+            // Upstream page: p-10 under the top bar, gap-7 between sections
+            // (title lands 40px below the 44px bar, like the web Inbox).
+            let mut page = v_flex()
+                .flex_1()
+                .px(px(24.))
+                .pt(px(20.))
+                .pb(px(32.))
+                .gap(px(28.))
+                .child(header)
+                .child(grid);
+
             if self.inbox_signed_in != Some(true) {
                 page = page.child(
                     h_flex()

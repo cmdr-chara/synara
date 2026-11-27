@@ -7934,6 +7934,30 @@ pub fn recover_orphaned_turns() -> Vec<String> {
                 "detail": detail,
             }),
         );
+        // Upstream startupTurnReconciliation also settles the durable pending
+        // interactions of the dead runtime: approval and user-input callbacks
+        // are in-memory, so a restarted server can never resolve them and the
+        // composer would stay blocked forever. Settle them as cancelled and
+        // zero the projected pending counts.
+        let _ = conn.execute(
+            "UPDATE projection_pending_approvals              SET status = 'resolved', decision = 'cancel', resolved_at = ?2              WHERE thread_id = ?1 AND status = 'pending'",
+            params![thread_id, now],
+        );
+        let _ = conn.execute(
+            "UPDATE projection_threads              SET pending_approval_count = 0, pending_user_input_count = 0, updated_at = ?2              WHERE thread_id = ?1                AND (COALESCE(pending_approval_count, 0) > 0 OR COALESCE(pending_user_input_count, 0) > 0)",
+            params![thread_id, now],
+        );
+        let _ = crate::acp_runner::append_event(
+            &conn,
+            thread_id,
+            "thread.pending-interactions-settled",
+            &now,
+            json!({
+                "threadId": thread_id,
+                "reason": "server-restart",
+                "detail": "Pending approvals and inputs were cancelled because Synara restarted.",
+            }),
+        );
     }
     affected_threads.into_iter().collect()
 }

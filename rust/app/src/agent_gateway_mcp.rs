@@ -191,12 +191,35 @@ async fn handle_mcp(
     (StatusCode::OK, Json(response)).into_response()
 }
 
+fn mcp_content(value: &Value) -> Vec<Value> {
+    let mut content = Vec::new();
+    if let (Some(mime), Some(data)) = (
+        value.get("mimeType").and_then(Value::as_str),
+        value.get("bytesBase64").and_then(Value::as_str).filter(|text| !text.is_empty()),
+    ) {
+        if mime.starts_with("image/") {
+            content.push(json!({"type":"image","data":data,"mimeType":mime}));
+        }
+    }
+    if let (Some(mime), Some(data)) = (
+        value.pointer("/screenshot/mimeType").and_then(Value::as_str),
+        value.pointer("/screenshot/bytesBase64").and_then(Value::as_str).filter(|text| !text.is_empty()),
+    ) {
+        if mime.starts_with("image/") {
+            content.push(json!({"type":"image","data":data,"mimeType":mime}));
+        }
+    }
+    content.push(json!({
+        "type": "text",
+        "text": serde_json::to_string_pretty(value).unwrap_or_else(|_| value.to_string()),
+    }));
+    content
+}
+
 fn tool_json(value: Value) -> Value {
     json!({
-        "content": [{
-            "type": "text",
-            "text": serde_json::to_string_pretty(&value).unwrap_or_else(|_| value.to_string()),
-        }]
+        "content": mcp_content(&value),
+        "structuredContent": value,
     })
 }
 
@@ -584,13 +607,7 @@ pub async fn handle_ws_call(payload: &Value) -> Result<Value, crate::todo::WsErr
         .and_then(Value::as_str)
         .map(str::to_string);
     match call_tool(tool, &args, thread.as_deref()).await {
-        Ok(value) => Ok(json!({
-            "content": [{
-                "type": "text",
-                "text": serde_json::to_string_pretty(&value).unwrap_or_else(|_| value.to_string()),
-            }],
-            "structuredContent": value,
-        })),
+        Ok(value) => Ok(tool_json(value)),
         Err(message) => Ok(json!({
             "content": [{"type": "text", "text": message}],
             "isError": true,

@@ -1305,6 +1305,13 @@ pub struct Native {
     fast_mode: bool,
     /// Composer model selection: (provider, model slug, display label).
     composer_model: (String, String, String),
+    /// Model picker panel open (upstream ComposerModelPicker popup).
+    model_picker_open: bool,
+    /// Search input inside the model picker panel.
+    model_picker_search: Entity<InputState>,
+    /// Catalog rows (slug, display name, provider) from provider.listModels,
+    /// empty until the first successful fetch.
+    model_catalog: Vec<(String, String, String)>,
     queued_turns: Vec<String>,
     queue_paused: bool,
     /// Debug task-list popover open (upstream ComposerCapsulePopover state).
@@ -3324,6 +3331,11 @@ impl Native {
                     "gpt-6-astra".to_string(),
                     "GPT-6 Astra".to_string(),
                 ),
+                model_picker_open: false,
+                model_picker_search: cx.new(|cx| {
+                    InputState::new(window, cx).placeholder("Search models...")
+                }),
+                model_catalog: Vec::new(),
                 queued_turns: Vec::new(),
                 queue_paused: false,
                 task_card_open: false,
@@ -18933,33 +18945,44 @@ impl Render for Native {
                 .icon(svg_icon(model_icon).size(px(14.)))
                 .label(model_label.clone())
                 .dropdown_caret(true)
-                .dropdown_menu(move |menu, _, _| {
-                    let mut menu = menu.min_w(px(220.));
-                    for (slug, label, prov) in [
-                        ("gpt-6-astra", "GPT-6 Astra", "codex"),
-                        ("adaptive", "Adaptive", "devin"),
-                        ("swe-1-7", "SWE 1.7", "devin"),
-                        ("swe-2", "SWE 2", "devin"),
-                    ] {
-                        let mark = if cur.1 == slug { "\u{2713} " } else { "  " };
-                        let weak = weak.clone();
-                        let label = label.to_string();
-                        let prov = prov.to_string();
-                        let slug = slug.to_string();
-                        menu = menu.item(
-                            PopupMenuItem::new(format!("{mark}{label} ({prov})"))
-                                .on_click(move |_, _w, cx| {
-                                    let slug = slug.clone();
-                                    let prov = prov.clone();
-                                    let label = label.clone();
-                                    let _ = weak.update(cx, |this, cx| {
-                                        this.composer_model = (prov, slug, label);
-                                        cx.notify();
-                                    });
-                                }),
-                        );
-                    }
-                    menu
+                .on_click(move |_, window, cx| {
+                    let _ = weak.update(cx, |this, cx| {
+                        this.model_picker_open = !this.model_picker_open;
+                        if this.model_picker_open && this.model_catalog.is_empty() {
+                            // Lazy-fill the catalog from the backend once; the
+                            // picker re-renders with real rows when it lands.
+                            if let Some(client) = ensure_client(&this.client) {
+                                let prov = this.composer_model.0.clone();
+                                if let Some(v) = client.call(
+                                    "provider.listModels",
+                                    json!({"provider": prov, "instanceId": prov, "cwd": null}),
+                                ) {
+                                    let rows = v
+                                        .get("models")
+                                        .or_else(|| v.get("values"))
+                                        .and_then(Value::as_array)
+                                        .cloned()
+                                        .unwrap_or_default();
+                                    let mut out: Vec<(String, String, String)> = Vec::new();
+                                    for m in rows {
+                                        let slug = str_at(&m, "slug");
+                                        let name = {
+                                            let n = str_at(&m, "name");
+                                            if n.is_empty() { slug.to_string() } else { n.to_string() }
+                                        };
+                                        if !slug.is_empty() {
+                                            out.push((slug.to_string(), name, prov.clone()));
+                                        }
+                                    }
+                                    if !out.is_empty() {
+                                        this.model_catalog = out;
+                                    }
+                                }
+                            }
+                        }
+                        cx.notify();
+                        let _ = window;
+                    });
                 })
         };
         // While the selected thread's turn is live, upstream swaps the send
@@ -30199,6 +30222,309 @@ impl Render for Native {
             }
         }
 
+        // ---- model picker panel (upstream ComposerModelPicker): anchored
+        // bottom-right above the composer — tab row, search input, model rows
+        // with ⌘N shortcut hints and star buttons, effort slider section.
+        let mut mp_overlay = div().absolute().left_0().top_0().w_0().h_0();
+        if self.model_picker_open {
+            let mp_vs = window.viewport_size();
+            mp_overlay = mp_overlay.child(
+                div()
+                    .absolute()
+                    .left_0()
+                    .top_0()
+                    .w(mp_vs.width)
+                    .h(mp_vs.height)
+                    .on_mouse_down(gpui::MouseButton::Left, cx.listener(|this, _ev, _w, cx| {
+                        this.model_picker_open = false;
+                        cx.notify();
+                    })),
+            );
+            let dark_ui = theme.is_dark();
+            let panel_bg: gpui::Hsla = if dark_ui {
+                hsla(0.0, 0.0, 0.075, 1.0)
+            } else {
+                gpui::hsla(0.0, 0.0, 1.0, 1.0)
+            };
+            let muted_fg = if dark_ui {
+                hsla(0.0, 0.0, 0.62, 1.0)
+            } else {
+                hsla(0.0, 0.0, 0.42, 1.0)
+            };
+            let accent_orange = if dark_ui {
+                hsla(0.048, 0.98, 0.63, 1.0)
+            } else {
+                hsla(0.048, 0.9, 0.45, 1.0)
+            };
+            // Rows: catalog when loaded, fallback to the seeded list.
+            let mut rows: Vec<(String, String, String)> = self.model_catalog.clone();
+            if rows.is_empty() {
+                rows = vec![
+                    ("gpt-6-astra".into(), "6 Astra".into(), "codex".into()),
+                    ("gpt-6-sol".into(), "6 Sol".into(), "codex".into()),
+                    ("gpt-6-luna".into(), "6 Luna".into(), "codex".into()),
+                    ("gpt-5.5".into(), "5.5".into(), "codex".into()),
+                    ("gpt-5.4".into(), "5.4".into(), "codex".into()),
+                    ("gpt-5.4-mini".into(), "5.4 Mini".into(), "codex".into()),
+                    ("gpt-5.3-codex".into(), "5.3 Codex".into(), "codex".into()),
+                ];
+            }
+            let query = self.model_picker_search.read(cx).value().to_lowercase();
+            let cur_slug = self.composer_model.1.clone();
+            let mut list = v_flex().w_full().py(px(4.));
+            let mut idx = 0;
+            for (slug, name, prov) in rows.iter() {
+                if !query.is_empty() && !name.to_lowercase().contains(query.as_str()) {
+                    continue;
+                }
+                idx += 1;
+                let selected = *slug == cur_slug;
+                let hint = if idx <= 9 { format!("\u{2318}{idx}") } else { String::new() };
+                let slug_c = slug.clone();
+                let name_c = name.clone();
+                let prov_c = prov.clone();
+                let star_rows = h_flex()
+                    .gap_1()
+                    .items_center()
+                    .child(
+                        // Upstream ShortcutKbd: rounded-full pill, fg 12% in
+                        // dark, text-ui-2xs (~10px), h-4 min-w-4 px-2.
+                        h_flex()
+                            .h(px(16.))
+                            .min_w(px(16.))
+                            .px(px(6.))
+                            .rounded(px(8.))
+                            .bg(if dark_ui {
+                                hsla(0.0, 0.0, 1.0, 0.12)
+                            } else {
+                                hsla(0.0, 0.0, 0.0, 0.05)
+                            })
+                            .items_center()
+                            .justify_center()
+                            .child(
+                                div()
+                                    .text_size(px(10.))
+                                    .text_color(if dark_ui {
+                                        hsla(0.0, 0.0, 0.8, 1.0)
+                                    } else {
+                                        hsla(0.0, 0.0, 0.3, 1.0)
+                                    })
+                                    .child(hint),
+                            ),
+                    )
+                    .child(svg_icon(icons::STAR).size(px(14.)).text_color(muted_fg));
+                let row = h_flex()
+                    .id(ElementId::Name(format!("mp-{slug}").into()))
+                    .w_full()
+                    .px(px(10.))
+                    .h(px(28.))
+                    .items_center()
+                    .gap_2()
+                    .cursor_pointer()
+                    .rounded(px(6.))
+                    .when(selected, |d| d.bg(if dark_ui {
+                        hsla(0.0, 0.0, 0.16, 1.0)
+                    } else {
+                        hsla(0.0, 0.0, 0.94, 1.0)
+                    }))
+                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                        this.composer_model = (prov_c.clone(), slug_c.clone(), name_c.clone());
+                        this.model_picker_open = false;
+                        cx.notify();
+                    }))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .text_size(px(12.))
+                            .text_color(theme.foreground)
+                            .child(name.clone()),
+                    )
+                    .child(star_rows);
+                list = list.child(row);
+            }
+            let search_input = Input::new(&self.model_picker_search)
+                .w_full()
+                .text_size(px(12.));
+            let panel = v_flex()
+                .w(px(300.))
+                .rounded(px(14.))
+                .border_1()
+                .border_color(theme.border.opacity(0.6))
+                .bg(panel_bg)
+                .shadow_lg()
+                .overflow_hidden()
+                // tab row: starred tab + provider tab + add
+                .child(
+                    h_flex()
+                        .w_full()
+                        .px(px(8.))
+                        .h(px(36.))
+                        .items_center()
+                        .gap(px(4.))
+                        .border_b_1()
+                        .border_color(theme.border.opacity(0.5))
+                        .child(
+                            div()
+                                .h_full()
+                                .flex()
+                                .items_center()
+                                .px(px(6.))
+                                .child(svg_icon(icons::STAR).size(px(14.)).text_color(theme.foreground)),
+                        )
+                        .child(
+                            div()
+                                .h_full()
+                                .flex()
+                                .items_center()
+                                .px(px(6.))
+                                .border_b_2()
+                                .border_color(accent_orange)
+                                .child(svg_icon(model_icon).size(px(14.)).text_color(theme.foreground)),
+                        )
+                        .child(div().flex_1())
+                        .child(svg_icon(icons::PLUS).size(px(14.)).text_color(muted_fg)),
+                )
+                // search row
+                .child(
+                    h_flex()
+                        .w_full()
+                        .px(px(10.))
+                        .h(px(34.))
+                        .items_center()
+                        .gap_2()
+                        .border_b_1()
+                        .border_color(theme.border.opacity(0.5))
+                        .child(svg_icon(icons::SEARCH).size(px(13.)).text_color(muted_fg))
+                        .child(div().flex_1().child(search_input)),
+                )
+                .child(div().w_full().max_h(px(260.)).overflow_y_scrollbar().child(list))
+                // effort section
+                .child(
+                    v_flex()
+                        .w_full()
+                        .px(px(10.))
+                        .py(px(8.))
+                        .gap(px(6.))
+                        .border_t_1()
+                        .border_color(theme.border.opacity(0.5))
+                        // Upstream grid-cols-[1.5rem_1fr_1.5rem]: fast/zap
+                        // left, centered accent label, reset button right.
+                        .child(
+                            h_flex()
+                                .w_full()
+                                .items_center()
+                                .child(
+                                    div()
+                                        .w(px(24.))
+                                        .child(svg_icon(icons::ZAP).size(px(14.)).text_color(muted_fg)),
+                                )
+                                .child(
+                                    div()
+                                        .flex_1()
+                                        .text_center()
+                                        .text_size(px(12.))
+                                        .font_weight(gpui::FontWeight::MEDIUM)
+                                        .text_color(accent_orange)
+                                        .child("Medium"),
+                                )
+                                .child(
+                                    div()
+                                        .w(px(24.))
+                                        .flex()
+                                        .justify_end()
+                                        .child(svg_icon(icons::UNDO).size(px(13.)).text_color(muted_fg)),
+                                ),
+                        )
+                        // Upstream Slider size="large": track 24px rounded-full
+                        // fg 14%, accent fill edge-aligned under a 28px white
+                        // thumb, 4px step dots along the thumb-inset rail.
+                        .child(
+                            div()
+                                .w_full()
+                                .h(px(28.))
+                                .mt(px(4.))
+                                .child(
+                                    div()
+                                        .absolute()
+                                        .left_0()
+                                        .top(px(2.))
+                                        .w_full()
+                                        .h(px(24.))
+                                        .rounded(px(12.))
+                                        .bg(if dark_ui {
+                                            hsla(0.0, 0.0, 1.0, 0.14)
+                                        } else {
+                                            hsla(0.0, 0.0, 0.0, 0.14)
+                                        }),
+                                )
+                                .child(
+                                    div()
+                                        .absolute()
+                                        .left_0()
+                                        .top(px(2.))
+                                        .w(px(76.))
+                                        .h(px(24.))
+                                        .rounded(px(12.))
+                                        .bg(accent_orange),
+                                )
+                                // step dots: 5 stops along the rail inset by
+                                // half the thumb (14px) on each side — panel
+                                // inner width 280px, rail spans 14..266.
+                                .children((0..5).map(|i| {
+                                    let frac = i as f32 / 4.0;
+                                    let x = 14.0 + frac * (266.0 - 14.0) - 2.0;
+                                    let covered = x + 2.0 < 76.0;
+                                    div()
+                                        .absolute()
+                                        .left(px(x))
+                                        .top(px(12.))
+                                        .w(px(4.))
+                                        .h(px(4.))
+                                        .rounded(px(2.))
+                                        .bg(if covered {
+                                            hsla(0.0, 0.0, 1.0, 0.85)
+                                        } else if dark_ui {
+                                            hsla(0.0, 0.0, 1.0, 0.35)
+                                        } else {
+                                            hsla(0.0, 0.0, 0.0, 0.3)
+                                        })
+                                }))
+                                .child(
+                                    div()
+                                        .absolute()
+                                        .left(px(62.))
+                                        .top_0()
+                                        .w(px(28.))
+                                        .h(px(28.))
+                                        .rounded(px(14.))
+                                        .bg(gpui::white())
+                                        .shadow_sm(),
+                                ),
+                        ),
+                );
+            let panel = panel.on_mouse_down(gpui::MouseButton::Left, cx.listener(|_this, _ev: &gpui::MouseDownEvent, _w, cx| {
+                cx.stop_propagation();
+            }));
+            // Anchor: bottom-right above the composer — composer bottom edge
+            // sits ~10px over the window bottom padding, panel rises over it.
+            mp_overlay = mp_overlay.child(
+                div()
+                    .absolute()
+                    .left_0()
+                    .top_0()
+                    .w(mp_vs.width)
+                    .h(mp_vs.height)
+                    .flex()
+                    .flex_col()
+                    .items_end()
+                    .justify_end()
+                    .pr(px(16.))
+                    .pb(px(148.))
+                    .child(panel),
+            );
+        }
+
         // ---- shared RenameDialog (upstream RenameDialog): centered card with
         // a single field and Cancel/Save — covers the thread rename (mounted
         // for the first time here) and the project "Edit project" action.
@@ -33910,6 +34236,7 @@ impl Render for Native {
             )
             .when(self.hover_card.is_some(), |d| d.child(hc_overlay))
             .when(self.project_card.is_some(), |d| d.child(pc_overlay))
+            .when(self.model_picker_open, |d| d.child(mp_overlay))
             .when(self.blame_pop.is_some(), |d| d.child(bp_overlay))
             .when(
                 self.renaming || self.proj_rename.is_some() || self.proj_relocate.is_some(),

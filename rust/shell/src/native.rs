@@ -1300,6 +1300,7 @@ pub struct Native {
     tools_expanded: bool,
     subagents_expanded: bool,
     pending_attachments: Vec<Value>,
+    attachment_thumbs: std::collections::HashMap<String, std::sync::Arc<RenderImage>>,
     composer_thread_id: Option<String>,
     uploading: bool,
     interaction_mode: &'static str,
@@ -2088,6 +2089,18 @@ fn fetch_decode_image(url: &str) -> Option<std::sync::Arc<RenderImage>> {
         .ok()?;
     let decoded = image::load_from_memory(&bytes).ok()?;
     let rgba = decoded.to_rgba8();
+    Some(std::sync::Arc::new(RenderImage::new(smallvec::smallvec![
+        image::Frame::new(rgba)
+    ])))
+}
+
+fn decode_bytes_to_render_image(bytes: &[u8]) -> Option<std::sync::Arc<RenderImage>> {
+    let decoded = image::load_from_memory(bytes).ok()?;
+    let mut rgba = decoded.to_rgba8();
+    // gpui frames are BGRA (same conversion as the platform image decoder).
+    for pixel in rgba.chunks_exact_mut(4) {
+        pixel.swap(0, 2);
+    }
     Some(std::sync::Arc::new(RenderImage::new(smallvec::smallvec![
         image::Frame::new(rgba)
     ])))
@@ -3340,6 +3353,7 @@ impl Native {
                 tools_expanded: false,
                 subagents_expanded: false,
                 pending_attachments: Vec::new(),
+                attachment_thumbs: std::collections::HashMap::new(),
                 interaction_mode: "default",
                 fast_mode: false,
                 composer_model: (
@@ -10056,19 +10070,25 @@ impl Native {
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
             let tid = thread_id.unwrap_or_default();
-            let uploaded: Option<Value> = cx
+            let uploaded: Option<(Value, Option<std::sync::Arc<RenderImage>>)> = cx
                 .background_executor()
                 .spawn(async move {
                     let Some(c) = ensure_client(&cell) else {
                         return None;
                     };
+                    let thumb = decode_bytes_to_render_image(&bytes);
                     let name = format!("pasted-image.{ext}");
                     c.upload_attachment(&tid, "image", &name, &mime, &bytes)
+                        .map(|att| (att, thumb))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.uploading = false;
-                if let Some(att) = uploaded {
+                if let Some((att, thumb)) = uploaded {
+                    if let Some(img) = thumb {
+                        let key = str_at(&att, "id").to_string();
+                        this.attachment_thumbs.insert(key, img);
+                    }
                     this.pending_attachments.push(att);
                 }
                 cx.notify();
@@ -10094,7 +10114,7 @@ impl Native {
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
             let tid = thread_id.unwrap_or_default();
-            let uploaded: Option<Value> = cx
+            let uploaded: Option<(Value, Option<std::sync::Arc<RenderImage>>)> = cx
                 .background_executor()
                 .spawn(async move {
                     let Some(c) = ensure_client(&cell) else {
@@ -10119,12 +10139,18 @@ impl Native {
                     } else {
                         format!("{title}.png")
                     };
+                    let thumb = decode_bytes_to_render_image(&bytes);
                     c.upload_attachment(&tid, "image", &name, "image/png", &bytes)
+                        .map(|att| (att, thumb))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.uploading = false;
-                if let Some(att) = uploaded {
+                if let Some((att, thumb)) = uploaded {
+                    if let Some(img) = thumb {
+                        let key = str_at(&att, "id").to_string();
+                        this.attachment_thumbs.insert(key, img);
+                    }
                     this.pending_attachments.push(att);
                 }
                 cx.notify();
@@ -19385,25 +19411,107 @@ impl Render for Native {
                 } else {
                     label.to_string()
                 };
-                chips = chips.child(
-                    h_flex()
-                        .id(ElementId::Name(format!("att-{i}").into()))
-                        .cursor_pointer()
-                        .gap_1()
-                        .items_center()
-                        .border_1()
-                        .border_color(theme.border)
-                        .rounded_md()
-                        .px_2()
-                        .py_0p5()
-                        .on_click(cx.listener(move |this, _ev, _w, cx| {
-                            if i < this.pending_attachments.len() {
-                                this.pending_attachments.remove(i);
-                            }
-                            cx.notify();
-                        }))
-                        .child(div().text_xs().child(format!("{label} \u{00d7}"))),
-                );
+                let thumb = self.attachment_thumbs.get(str_at(a, "id")).cloned();
+                if let Some(render) = thumb {
+                    // Upstream ComposerImageAttachmentChip: h-32 w-52 rounded-xl
+                    // thumbnail card, image contained, gradient provenance strip
+                    // at the bottom, removal on the trailing control.
+                    let name = label.clone();
+                    chips = chips.child(
+                        div()
+                            .id(ElementId::Name(format!("att-{i}").into()))
+                            .h(px(128.))
+                            .w(px(208.))
+                            .flex_none()
+                            .overflow_hidden()
+                            .rounded(px(12.))
+                            .border_1()
+                            .border_color(theme.border)
+                            .relative()
+                            .child(
+                                div()
+                                    .size_full()
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .child(
+                                        gpui::img(gpui::ImageSource::Render(render))
+                                            .object_fit(gpui::ObjectFit::Contain)
+                                            .max_w_full()
+                                            .max_h_full(),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .absolute()
+                                    .bottom_0()
+                                    .left_0()
+                                    .right_0()
+                                    .h(px(44.))
+                                    .bg(gpui::linear_gradient(
+                                        270.0,
+                                        gpui::linear_color_stop(gpui::black().opacity(0.), 0.0),
+                                        gpui::linear_color_stop(gpui::black().opacity(0.9), 1.0),
+                                    )),
+                            )
+                            .child(
+                                div()
+                                    .absolute()
+                                    .bottom(px(8.))
+                                    .left(px(10.))
+                                    .right(px(10.))
+                                    .text_size(px(12.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .text_color(gpui::white())
+                                    .overflow_hidden()
+                                    .child(name),
+                            )
+                            .child(
+                                div()
+                                    .absolute()
+                                    .top(px(4.))
+                                    .right(px(4.))
+                                    .id(ElementId::Name(format!("att-x-{i}").into()))
+                                    .cursor_pointer()
+                                    .size(px(20.))
+                                    .rounded_full()
+                                    .bg(gpui::black().opacity(0.55))
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .text_color(gpui::white())
+                                    .text_size(px(11.))
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        if i < this.pending_attachments.len() {
+                                            let removed = this.pending_attachments.remove(i);
+                                            this.attachment_thumbs.remove(str_at(&removed, "id"));
+                                        }
+                                        cx.notify();
+                                    }))
+                                    .child("\u{00d7}"),
+                            ),
+                    );
+                } else {
+                    chips = chips.child(
+                        h_flex()
+                            .id(ElementId::Name(format!("att-{i}").into()))
+                            .cursor_pointer()
+                            .gap_1()
+                            .items_center()
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded_md()
+                            .px_2()
+                            .py_0p5()
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if i < this.pending_attachments.len() {
+                                    this.pending_attachments.remove(i);
+                                }
+                                cx.notify();
+                            }))
+                            .child(div().text_xs().child(format!("{label} \u{00d7}"))),
+                    );
+                }
             }
             composer_col = composer_col.child(chips);
         }

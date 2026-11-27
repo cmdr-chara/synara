@@ -885,7 +885,8 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
             |r| r.get(0),
         )
         .ok()
-        .flatten();
+        .flatten()
+        .or_else(|| crate::provider_resume::imported_session_id(&conn, thread_id, "codex"));
     let cwd = if !raw_cwd.is_empty() && std::path::Path::new(&raw_cwd).is_dir() {
         raw_cwd
     } else {
@@ -1081,7 +1082,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             |r| r.get(0),
         )
         .ok()
-        .flatten();
+        .flatten()
+        .or_else(|| crate::provider_resume::imported_session_id(&conn, thread_id, "codex"));
 
     let turn_id = uuid_v4();
     let assistant_msg_id = uuid_v4();

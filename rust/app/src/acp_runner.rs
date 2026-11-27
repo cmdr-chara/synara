@@ -1013,7 +1013,8 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
             |r| r.get(0),
         )
         .ok()
-        .flatten();
+        .flatten()
+        .or_else(|| crate::provider_resume::imported_session_id(&conn, thread_id, provider));
     let turn_runtime_mode: String = conn
         .query_row(
             "SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1",
@@ -2529,7 +2530,8 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
             |r| r.get(0),
         )
         .ok()
-        .flatten();
+        .flatten()
+        .or_else(|| crate::provider_resume::imported_session_id(&conn, thread_id, provider));
 
     let turn_id = uuid_v4();
     let assistant_msg_id = uuid_v4();

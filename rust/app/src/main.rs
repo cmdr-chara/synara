@@ -13,6 +13,7 @@ mod claude_workflow_runtime;
 mod claude_tasks;
 mod provider_env;
 mod provider_instances;
+mod provider_resume;
 mod claude_environment;
 mod codex_runner;
 mod device;

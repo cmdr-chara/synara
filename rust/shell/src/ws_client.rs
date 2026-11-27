@@ -26,7 +26,7 @@ pub struct Client {
     cookie: Option<String>,
 }
 
-fn default_ws_url(base: &str, token: &str) -> String {
+fn default_ws_url(base: &str, token: &str, revision: u64, server_instance: &str) -> String {
     let base = base.trim_end_matches('/');
     let ws_base = if let Some(rest) = base.strip_prefix("http://") {
         format!("ws://{rest}")
@@ -36,9 +36,36 @@ fn default_ws_url(base: &str, token: &str) -> String {
         "ws://127.0.0.1:8080".to_string()
     };
     format!(
-        "{ws_base}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision=3&x-synara-server-instance=inst-1&token={}",
+        "{ws_base}/ws?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-revision={revision}&x-synara-server-instance={}&token={}",
+        urlencoding::encode(server_instance),
         urlencoding::encode(token)
     )
+}
+
+fn negotiate_ws(base: &str) -> Option<(u64, String)> {
+    let base = base.trim_end_matches('/');
+    let mut url = format!(
+        "{base}/ws/negotiate?x-synara-client-build=1.0.0&x-synara-protocol-epoch=1&x-synara-protocol-min-revision=3&x-synara-protocol-max-revision=3"
+    );
+    for capability in [
+        "orchestration.cursor-safe-streams",
+        "orchestration.thread-detail-snapshot",
+        "rpc.typed-errors",
+        "git.worktree-setup-progress",
+    ] {
+        url.push_str("&x-synara-required-capability=");
+        url.push_str(capability);
+    }
+    let response = ureq::AgentBuilder::new()
+        .build()
+        .get(&url)
+        .set("Origin", base)
+        .call()
+        .ok()?;
+    let body = response.into_json::<Value>().ok()?;
+    let revision = body.get("negotiatedRevision")?.as_u64()?;
+    let instance = body.get("serverInstanceId")?.as_str()?.to_string();
+    Some((revision, instance))
 }
 
 /// Session cookie + backend base captured at connect time so auxiliary
@@ -101,7 +128,13 @@ impl Client {
             let _ = SESSION_COOKIE.set(c.clone());
         }
         let _ = BACKEND_BASE.set(base.clone());
-        let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| default_ws_url(&base, &token));
+        let negotiated = negotiate_ws(&base);
+        let url = std::env::var("SYNARA_WS").unwrap_or_else(|_| {
+            let (revision, instance) = negotiated
+                .clone()
+                .unwrap_or_else(|| (3, "inst-1".to_string()));
+            default_ws_url(&base, &token, revision, &instance)
+        });
         let host = http::Uri::try_from(&url)
             .ok()
             .and_then(|u| u.authority().map(|a| a.as_str().to_string()))
@@ -425,7 +458,7 @@ mod tests {
 
     #[test]
     fn derives_ws_url_from_http_base() {
-        let url = default_ws_url("http://127.0.0.1:8091", "token.with+chars");
+        let url = default_ws_url("http://127.0.0.1:8091", "token.with+chars", 3, "inst-1");
         assert!(url.starts_with("ws://127.0.0.1:8091/ws?"));
         assert!(url.ends_with("token=token.with%2Bchars"));
     }
@@ -433,7 +466,7 @@ mod tests {
     #[test]
     fn derives_wss_url_from_https_base() {
         assert!(
-            default_ws_url("https://synara.example/", "t").starts_with("wss://synara.example/ws?")
+            default_ws_url("https://synara.example/", "t", 3, "inst-1").starts_with("wss://synara.example/ws?")
         );
     }
 }

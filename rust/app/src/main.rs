@@ -31,6 +31,7 @@ mod automation_executor;
 mod automation_schedule;
 mod automation;
 mod beta_import;
+mod device_identity;
 mod browser_automation;
 mod browser_frame;
 mod fs_browse;

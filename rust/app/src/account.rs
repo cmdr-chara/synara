@@ -362,60 +362,23 @@ fn display_hostname() -> String {
         .unwrap_or_else(|| "Synara host".to_string())
 }
 
-fn device_thumbprint(public_key_jwk: &Value) -> String {
-    let canonical = format!(
-        "{{\"crv\":\"{}\",\"kty\":\"{}\",\"x\":\"{}\"}}",
-        public_key_jwk["crv"].as_str().unwrap_or_default(),
-        public_key_jwk["kty"].as_str().unwrap_or_default(),
-        public_key_jwk["x"].as_str().unwrap_or_default(),
-    );
-    let digest = <sha2::Sha256 as sha2::Digest>::digest(canonical.as_bytes());
-    base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(digest)
-}
-
-fn now_unix() -> u64 {
-    std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map(|duration| duration.as_secs())
-        .unwrap_or(0)
-}
-
-fn load_or_create_identity(path: &std::path::Path) -> Result<crate::host_identity::HostIdentity, WsErr> {
-    if let Some(identity) = crate::host_identity::read_host_identity(path).map_err(err)? {
-        return Ok(identity);
-    }
-    if let Some(parent) = path.parent() {
-        let _ = std::fs::create_dir_all(parent);
-    }
-    crate::host_identity::generate_and_persist_host_identity(path).map_err(err)
-}
-
 fn sign_device_registration(
-    identity: &crate::host_identity::HostIdentity,
+    identity: &crate::device_identity::DeviceIdentity,
     user_id: &str,
     audience: &str,
 ) -> Result<(String, String), WsErr> {
-    let now = now_unix();
-    let payload = json!({
-        "publicKeyJwk": identity.public_key_jwk,
-        "displayName": display_hostname(),
-        "platform": account_platform(),
-        "iss": "synara-device",
-        "sub": user_id,
-        "aud": audience,
-        "iat": now,
-        "exp": now + 60,
-        "jti": crate::orchestration_engine::uuid_v4(),
-    });
-    let header = json!({"alg":"EdDSA","typ":"synara-device-register+jwt"});
-    let proof = identity.sign_jwt(header, payload).map_err(err)?;
-    Ok((proof, device_thumbprint(&identity.public_key_jwk)))
+    let proof = identity
+        .sign_registration(user_id, &display_hostname(), account_platform(), audience)
+        .map_err(err)?;
+    Ok((proof, identity.jkt.clone()))
 }
 
 pub(crate) fn register_shell_device(user_id: &str) -> Result<(), WsErr> {
     let stored = read_session_file().ok_or_else(session_expired)?;
     let account_url = stored["accountUrl"].as_str().unwrap_or_default().to_string();
-    let identity = load_or_create_identity(&device_identity_path())?;
+    let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(
+        secrets_dir().to_string_lossy().as_ref(),
+    )).map_err(err)?;
     let (proof, jkt) = sign_device_registration(&identity, user_id, &account_api_issuer(&account_url))?;
     let response = authenticated_request("Failed to register this device", |client, access| {
         client.post("/api/v1/devices", Some(access), json!({"proof": proof}))

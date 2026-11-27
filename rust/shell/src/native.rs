@@ -2088,7 +2088,11 @@ fn fetch_decode_image(url: &str) -> Option<std::sync::Arc<RenderImage>> {
         .read_to_end(&mut bytes)
         .ok()?;
     let decoded = image::load_from_memory(&bytes).ok()?;
-    let rgba = decoded.to_rgba8();
+    let mut rgba = decoded.to_rgba8();
+    // gpui frames are BGRA (same conversion as the platform image decoder).
+    for pixel in rgba.chunks_exact_mut(4) {
+        pixel.swap(0, 2);
+    }
     Some(std::sync::Arc::new(RenderImage::new(smallvec::smallvec![
         image::Frame::new(rgba)
     ])))

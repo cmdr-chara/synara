@@ -381,6 +381,39 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["requestId", "projectId", "taskId", "summary"]),
         ),
         def(
+            "synara_update_automation_memory",
+            "Fully replace an automation's persistent memory. Maximum size: 32 KiB. Omit automationId only when the current user message is the automation run envelope.",
+            schema(json!({
+                "memory": {"type": "string", "maxLength": 32768},
+                "automationId": {"type": "string"},
+            }), &["memory"]),
+        ),
+        def(
+            "synara_report_automation_result",
+            "Report the structured result only when the current user message is the automation run envelope. Use decision silent only when a successful run needs no user attention.",
+            schema(json!({
+                "decision": {"type": "string", "enum": ["notify", "silent"]},
+                "title": {"type": "string", "maxLength": 160},
+                "summary": {"type": "string", "maxLength": 2000},
+            }), &["decision"]),
+        ),
+        def(
+            "synara_set_thread_pull_request",
+            "Link a GitHub pull request to a thread.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "pullRequestUrl": {"type": "string"},
+            }), &["pullRequestUrl"]),
+        ),
+        def(
+            "synara_unlink_thread_pull_request",
+            "Unlink a pull request from a thread.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "pullRequestUrl": {"type": "string"},
+            }), &["pullRequestUrl"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -2526,6 +2559,123 @@ fn project_report_result(args: &Value, caller_thread: Option<&str>) -> Result<Va
     Ok(result)
 }
 
+fn update_automation_memory(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let memory = arg_str(args, "memory").ok_or("Missing required argument: memory")?;
+    if memory.len() > 32 * 1024 {
+        return Err("Automation memory is limited to 32 KiB.".into());
+    }
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let automation_id = match arg_str(args, "automationId") {
+        Some(id) => id,
+        None => {
+            // Resolve from the caller thread's latest automation run.
+            let caller = caller_thread.ok_or(
+                "automationId is required outside an automation run envelope.",
+            )?;
+            conn.query_row(
+                "SELECT automation_id FROM automation_runs WHERE thread_id = ?1 \
+                 ORDER BY created_at DESC LIMIT 1",
+                [caller],
+                |r| r.get::<_, String>(0),
+            )
+            .map_err(|_| {
+                "automationId is required: no automation run found for this thread.".to_string()
+            })?
+        }
+    };
+    conn.query_row(
+        "SELECT 1 FROM automation_definitions WHERE automation_id = ?1",
+        [&automation_id],
+        |_| Ok(()),
+    )
+    .map_err(|_| format!("Automation \"{automation_id}\" was not found."))?;
+    conn.execute(
+        "INSERT INTO automation_memory (automation_id, content, updated_at) VALUES (?1,?2,?3) \
+         ON CONFLICT(automation_id) DO UPDATE SET content = excluded.content, updated_at = excluded.updated_at",
+        rusqlite::params![automation_id, memory, crate::todo::iso_now_ms()],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(json!({"memory": memory, "automationId": automation_id}))
+}
+
+fn report_automation_result(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let decision = arg_str(args, "decision").ok_or("Missing required argument: decision")?;
+    if decision != "notify" && decision != "silent" {
+        return Err("Argument \"decision\" must be \"notify\" or \"silent\".".into());
+    }
+    let caller = caller_thread.ok_or(
+        "This tool must be called from the automation run thread.",
+    )?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let (run_id, automation_id, status): (String, String, String) = conn
+        .query_row(
+            "SELECT run_id, automation_id, status FROM automation_runs WHERE thread_id = ?1 \
+             ORDER BY created_at DESC LIMIT 1",
+            [caller],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .map_err(|_| "No automation run found for this thread.".to_string())?;
+    let mut result = json!({"decision": decision});
+    if let Some(title) = arg_str(args, "title") {
+        result.as_object_mut().unwrap().insert("title".into(), json!(title));
+    }
+    if let Some(summary) = arg_str(args, "summary") {
+        result.as_object_mut().unwrap().insert("summary".into(), json!(summary));
+    }
+    conn.execute(
+        "UPDATE automation_runs SET result_json = ?1, updated_at = ?2 WHERE run_id = ?3",
+        rusqlite::params![result.to_string(), crate::todo::iso_now_ms(), run_id],
+    )
+    .map_err(|e| e.to_string())?;
+    let _ = status;
+    Ok(json!({
+        "automationId": automation_id,
+        "runId": run_id,
+        "decision": decision,
+    }))
+}
+
+fn resolve_thread_pr_url(input: &str) -> String {
+    input.trim().to_string()
+}
+
+fn set_thread_pull_request(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId")
+        .or_else(|| caller_thread.map(str::to_string))
+        .ok_or("Missing required argument: threadId")?;
+    let url = arg_str(args, "pullRequestUrl").ok_or("Missing required argument: pullRequestUrl")?;
+    let url = resolve_thread_pr_url(&url);
+    if !url.contains("github.com") && !url.chars().all(|c| c.is_ascii_digit()) {
+        return Err("pullRequestUrl must be a GitHub pull request URL or number.".into());
+    }
+    dispatch_command(json!({
+        "type": "thread.pull-request.link",
+        "commandId": format!("gateway-mcp-{}-pr-link", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+        "source": "user",
+        "pullRequest": {"url": url},
+    }))?;
+    Ok(json!({"threadId": thread_id, "linked": true, "pullRequestUrl": url}))
+}
+
+fn unlink_thread_pull_request(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId")
+        .or_else(|| caller_thread.map(str::to_string))
+        .ok_or("Missing required argument: threadId")?;
+    let url = arg_str(args, "pullRequestUrl").ok_or("Missing required argument: pullRequestUrl")?;
+    dispatch_command(json!({
+        "type": "thread.pull-request.unlink",
+        "commandId": format!("gateway-mcp-{}-pr-unlink", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+        "pullRequest": {"url": url.trim()},
+    }))?;
+    Ok(json!({"threadId": thread_id, "unlinked": true}))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -2736,6 +2886,10 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_project_get_overview" => project_get_overview(args),
         "synara_project_context" => project_context(args),
         "synara_project_report_result" => project_report_result(args, caller_thread),
+        "synara_update_automation_memory" => update_automation_memory(args, caller_thread),
+        "synara_report_automation_result" => report_automation_result(args, caller_thread),
+        "synara_set_thread_pull_request" => set_thread_pull_request(args, caller_thread),
+        "synara_unlink_thread_pull_request" => unlink_thread_pull_request(args, caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

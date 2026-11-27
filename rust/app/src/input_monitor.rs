@@ -303,6 +303,21 @@ impl Drop for EscapeKillSwitchMonitor {
     }
 }
 
+
+fn pause_uncertain_input_after_listener_loss() {
+    if !crate::computer_manager::any_input_in_flight() {
+        return;
+    }
+    crate::computer_manager::note_desktop_interruption("input-listener-lost");
+    crate::computer_manager::record_global_input_pause(serde_json::json!({
+        "kind": "input-listener-lost",
+        "message": "The computer input listener disconnected while input was in flight. Read fresh computer state before continuing; do not replay an uncertain action."
+    }));
+    std::thread::spawn(|| {
+        let _ = release_held_input_sync();
+    });
+}
+
 impl MonitorInner {
     fn set_starting(&self) {
         if let Ok(mut state) = self.state.lock() {
@@ -415,6 +430,7 @@ impl MonitorInner {
                 })
                 .unwrap_or(false);
             if should_restart {
+                pause_uncertain_input_after_listener_loss();
                 waiter.schedule_restart();
             }
         });
@@ -447,6 +463,7 @@ impl MonitorInner {
                 let _ = child.kill();
                 let _ = child.wait();
             }
+            pause_uncertain_input_after_listener_loss();
             (readiness.on_error)(
                 "The Escape monitor helper did not acknowledge readiness; restarting.".into(),
             );

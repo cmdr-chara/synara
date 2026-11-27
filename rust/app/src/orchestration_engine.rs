@@ -465,6 +465,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         .or_else(|| factory_history.as_ref().and_then(|history| history.cwd.clone()))
         .or_else(|| opencode_history.as_ref().and_then(|history| history.cwd.clone()));
     // Map transcript lines to (role, text, timestamp, source id) tuples.
+    let mut claude_session_cwd: Option<String> = None;
     let mut imported: Vec<(String, String, Option<String>, String)> = Vec::new();
     if let Some(history) = omp_history.as_ref() {
         omp_last_model = history.last_model.clone();
@@ -556,6 +557,11 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                     .unwrap_or_else(|| index.to_string());
                 imported.push((role, text_out, timestamp, source_id));
             } else {
+                if claude_session_cwd.is_none()
+                    && let Some(cwd) = entry.get("cwd").and_then(Value::as_str).filter(|cwd| !cwd.trim().is_empty())
+                {
+                    claude_session_cwd = Some(cwd.to_string());
+                }
                 let entry_type = entry.get("type").and_then(Value::as_str).unwrap_or("");
                 if entry_type != "user" && entry_type != "assistant" {
                     continue;
@@ -588,6 +594,14 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 imported.push((entry_type.to_string(), text_out, timestamp, source_id));
             }
         }
+    }
+    if matches!(provider.as_str(), "claudeAgent" | "claude")
+        && let (Some(expected), Some(actual)) = (thread_cwd.as_deref(), claude_session_cwd.as_deref())
+        && !import_paths_equal(expected, actual)
+    {
+        return Err(err(format!(
+            "Claude session '{external_id}' exists, but not for this workspace. Claude resume only works when the session file is stored for '{expected}'."
+        )));
     }
     imported = finalize_imported_timestamps(imported);
     if imported.is_empty() {

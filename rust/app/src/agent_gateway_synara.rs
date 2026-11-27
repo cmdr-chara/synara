@@ -515,6 +515,16 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             schema(json!({}), &[]),
         ),
         def(
+            "synara_context",
+            "Inspect the current Synara harness identity, caller thread/turn, and authorized coordination capabilities.",
+            schema(json!({}), &[]),
+        ),
+        def(
+            "synara_e2e_review",
+            "Load Synara's E2E testing workflow for web apps and iOS simulator apps: delegate a test subagent, verify real journeys, and report screenshot proof. Call only for an explicit E2E request.",
+            schema(json!({}), &[]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -3176,6 +3186,60 @@ fn import_mcp_servers(caller_thread: Option<&str>) -> Result<Value, String> {
     }))
 }
 
+const E2E_REVIEW_GUIDANCE: &str = r#"When the user explicitly requests an E2E/end-to-end test or review, follow this workflow. A discussion about E2E testing is not a request to run it.
+1. Read repository instructions; identify the exact feature, running target, test fixtures and allowed side effects. Build a short journey matrix with passed, failed, blocked or not-applicable outcomes. Do not seed/reset production or shared data.
+2. Use the provider-native subagent/Task capability to delegate a bounded E2E verification lane. Give it exact URLs, fixtures, roles, steps, expected outcomes, prohibited side effects and required screenshot evidence. Use a subagent, not a new Synara task. If native delegation is unavailable, say so and test directly; never pretend a subagent ran.
+3. One agent owns the shared embedded browser at a time. While the child tests, the parent can inspect code or run local tests, but must not drive that browser concurrently. All tabs share the user's login session; test different identities sequentially with test accounts, never assume tab isolation.
+4. Use browser_* for real visible interactions, one focused action per call. Verify state after each important action, persistence after reload, negative/permission cases, loading/error recovery and desktop/mobile layout where relevant. Use the project's test runner for durable E2E tests and viewport matrices, not shell-launched replacements for the embedded browser. Respect repository restrictions on commands. A screenshot or passing unit suite alone is not an E2E pass.
+5. Inspect final-state screenshots; use browser_screenshot kind:proof for important completed flows. Do not capture exposed secrets. Child returns scope, exact commands and counts, findings, proof paths and untested areas. Wait for the child, verify its evidence, fix authorized failures and rerun affected paths.
+iOS apps (device_* tools; the same delegation, proof and reporting rules apply):
+- Build the exact scheme with the project's own tooling, then device_install and device_launch with restart: true, so the run starts from a known process. Pass test flags through launch environment.
+- Remove nondeterminism first: device_configure for appearance, Dynamic Type, location and privacy grants, so no permission prompt interrupts a journey. Answer prompts it cannot pre-grant (notifications, camera) with device_tap.
+- One owner drives the simulator at a time, like the browser. Prefer identifier taps over labels, which change with locale and copy, and coordinates last.
+- Every input returns the settled screen: read the asserted text, values and toggle states from it. screenChanged: false means the step did nothing; settled: false means it is still loading, so device_wait for the expected element rather than repeating the input.
+- Check persistence with device_launch restart: true, and failures with device_logs (unified log, print output, crash reports) before concluding.
+- Capture device_screenshot proof: true for completed journeys and embed its artifactPath.
+6. Finish with a completion report in this chat: outcome, journeys tested, commands/results, bugs fixed or remaining, and explicit limitations. Embed inspected proof images using ![Result description](/absolute/artifactPath.png). Report failures and blocked steps honestly; never present simulated or untested flows as verified."#;
+
+fn synara_context_tool(caller_thread: Option<&str>) -> Result<Value, String> {
+    let (thread, turn_id) = match caller_thread {
+        Some(t) => {
+            let conn = state_conn()?;
+            conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+            let title: Option<String> = conn
+                .query_row(
+                    "SELECT title FROM projection_threads WHERE thread_id = ?1",
+                    [t],
+                    |r| r.get(0),
+                )
+                .ok();
+            let running_turn: Option<String> = conn
+                .query_row(
+                    "SELECT turn_id FROM projection_turns WHERE thread_id = ?1 AND state IN ('running','starting') \
+                     ORDER BY COALESCE(started_at, requested_at) DESC LIMIT 1",
+                    [t],
+                    |r| r.get(0),
+                )
+                .ok();
+            (
+                json!({"threadId": t, "title": title}),
+                running_turn,
+            )
+        }
+        None => (Value::Null, None),
+    };
+    Ok(json!({
+        "harness": "synara",
+        "runtime": "rust",
+        "callerThread": thread,
+        "callerTurnId": turn_id,
+        "capabilities": [
+            "thread:read", "thread:write", "kanban", "automation",
+            "project-memory", "hub-work", "mcp-connectors",
+        ],
+    }))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -3399,6 +3463,8 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_add_mcp_connector" => add_mcp_connector(args, caller_thread),
         "synara_remove_mcp_connector" => remove_mcp_connector(args, caller_thread),
         "synara_import_mcp_servers" => import_mcp_servers(caller_thread),
+        "synara_context" => synara_context_tool(caller_thread),
+        "synara_e2e_review" => Ok(json!({"guidance": E2E_REVIEW_GUIDANCE})),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

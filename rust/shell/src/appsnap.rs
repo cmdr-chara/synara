@@ -815,6 +815,46 @@ mod appsnap_capture_tests {
         assert!(list_pending_captures(&root).is_empty());
         let _ = std::fs::remove_dir_all(root);
     }
+
+    #[test]
+    fn watcher_starts_and_persists_capture() {
+        let root = std::env::temp_dir().join(format!("appsnap-watch-test-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        std::fs::create_dir_all(&root).unwrap();
+        let helper = root.join("helper.sh");
+        std::fs::write(&helper, r#"#!/bin/sh
+if [ "$1" = "--check-permissions" ]; then
+  printf '%s\n' '{"type":"permissions","inputMonitoring":"granted","screenRecording":"granted"}'
+  exit 0
+fi
+out=""
+while [ $# -gt 0 ]; do
+  if [ "$1" = "--output-dir" ]; then shift; out="$1"; fi
+  shift || break
+done
+printf '\211PNG\015\012\032\012png' > "$out/capture-1.png"
+printf '%s\n' '{"type":"ready"}'
+printf '%s\n' "{\"type\":\"captured\",\"id\":\"capture-1\",\"capturedAt\":\"now\",\"path\":\"$out/capture-1.png\",\"name\":\"capture.png\"}"
+sleep 30
+"#).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            std::fs::set_permissions(&helper, std::fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        let captures = root.join("captures");
+        let watcher = Arc::new(AppSnapWatcher::new(helper, captures.clone(), "com.test.synara"));
+        watcher.set_enabled(true);
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+        while std::time::Instant::now() < deadline && watcher.pending_captures().is_empty() {
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        assert_eq!(watcher.state().status, "ready", "state: {:?}", watcher.state());
+        assert_eq!(watcher.pending_captures().len(), 1);
+        watcher.set_enabled(false);
+        assert_eq!(watcher.state().status, "disabled");
+        let _ = std::fs::remove_dir_all(root);
+    }
 }
 
 // ---- AppSnap permission commands ------------------------------------------------------------
@@ -905,7 +945,7 @@ pub fn run_appsnap_permission_command(
         let line = match receiver.recv_timeout(remaining) {
             Ok(line) => line,
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => break Err("Checking macOS permissions timed out. Try Set up again.".into()),
-            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break Err("The AppSnap helper did not report its permission state.".into()),
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break report.ok_or_else(|| failure.clone().unwrap_or_else(|| "The AppSnap helper did not report its permission state.".into())),
         };
         if let Some(parsed) = parse_appsnap_permissions(&line) {
             report = Some(match report {
@@ -921,7 +961,6 @@ pub fn run_appsnap_permission_command(
                 failure = Some(value.get("message").and_then(Value::as_str).unwrap_or("AppSnap permission command failed.").to_string());
             }
         }
-        if child.try_wait().ok().flatten().is_some() { break report.ok_or_else(|| failure.unwrap_or_else(|| "The AppSnap helper did not report its permission state.".into())); }
     };
     let _ = child.kill();
     let _ = child.wait();
@@ -1027,4 +1066,218 @@ pub fn acknowledge_pending_capture(capture_directory: &std::path::Path, id: &str
     let image_removed = std::fs::remove_file(&image_path).is_ok();
     let metadata_removed = std::fs::remove_file(&metadata_path).is_ok();
     image_removed && metadata_removed
+}
+
+// ---- Persistent AppSnap watcher -------------------------------------------------------------
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct AppSnapWatcherState {
+    pub enabled: bool,
+    pub status: String,
+    pub error: Option<String>,
+    pub input_monitoring: Option<bool>,
+    pub screen_recording: Option<bool>,
+}
+
+struct WatchInner {
+    child: Option<Child>,
+    state: AppSnapWatcherState,
+    generation: u64,
+}
+
+pub struct AppSnapWatcher {
+    helper: PathBuf,
+    capture_directory: PathBuf,
+    excluded_bundle_id: String,
+    inner: Arc<Mutex<WatchInner>>,
+}
+
+impl AppSnapWatcher {
+    pub fn new(helper: PathBuf, capture_directory: PathBuf, excluded_bundle_id: impl Into<String>) -> Self {
+        Self {
+            helper,
+            capture_directory,
+            excluded_bundle_id: excluded_bundle_id.into(),
+            inner: Arc::new(Mutex::new(WatchInner {
+                child: None,
+                state: AppSnapWatcherState {
+                    enabled: false,
+                    status: "disabled".into(),
+                    error: None,
+                    input_monitoring: None,
+                    screen_recording: None,
+                },
+                generation: 0,
+            })),
+        }
+    }
+
+    pub fn state(&self) -> AppSnapWatcherState {
+        self.inner.lock().map(|inner| inner.state.clone()).unwrap_or(AppSnapWatcherState {
+            enabled: false,
+            status: "error".into(),
+            error: Some("AppSnap state lock failed.".into()),
+            input_monitoring: None,
+            screen_recording: None,
+        })
+    }
+
+    fn set_state(&self, status: &str, error: Option<String>) {
+        if let Ok(mut inner) = self.inner.lock() {
+            inner.state.status = status.into();
+            inner.state.error = error;
+        }
+    }
+
+    fn stop_child(&self) {
+        let child = self.inner.lock().ok().and_then(|mut inner| {
+            inner.generation = inner.generation.saturating_add(1);
+            inner.child.take()
+        });
+        if let Some(mut child) = child {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    }
+
+    /// Starts the native watch process after a fresh permission probe. This
+    /// implements the upstream default both-Option-keys listener. Custom key
+    /// chords still need a host-global shortcut reservation layer.
+    pub fn set_enabled(self: &Arc<Self>, enabled: bool) -> AppSnapWatcherState {
+        if !enabled {
+            self.stop_child();
+            if let Ok(mut inner) = self.inner.lock() {
+                inner.state.enabled = false;
+                inner.state.status = "disabled".into();
+                inner.state.error = None;
+            }
+            return self.state();
+        }
+        self.stop_child();
+        if let Ok(mut inner) = self.inner.lock() { inner.state.enabled = true; }
+        self.set_state("starting", None);
+        let permissions = match run_appsnap_permission_command(
+            &self.helper,
+            "--check-permissions",
+            &[AppSnapPermissionKind::InputMonitoring, AppSnapPermissionKind::ScreenRecording],
+            None,
+        ) {
+            Ok(permissions) => permissions,
+            Err(message) => {
+                self.set_state("error", Some(message));
+                return self.state();
+            }
+        };
+        if let Ok(mut inner) = self.inner.lock() {
+            inner.state.input_monitoring = permissions.input_monitoring;
+            inner.state.screen_recording = permissions.screen_recording;
+        }
+        if permissions.input_monitoring != Some(true) || permissions.screen_recording != Some(true) {
+            self.set_state("permission-required", Some("Grant Input Monitoring and Screen Recording to use AppSnap.".into()));
+            return self.state();
+        }
+        if let Err(error) = std::fs::create_dir_all(&self.capture_directory) {
+            self.set_state("error", Some(format!("Could not prepare AppSnap storage: {error}")));
+            return self.state();
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            let _ = std::fs::set_permissions(&self.capture_directory, std::fs::Permissions::from_mode(0o700));
+        }
+        let child = Command::new(&self.helper)
+            .arg("--watch")
+            .arg("--output-dir")
+            .arg(&self.capture_directory)
+            .arg("--excluded-bundle-id")
+            .arg(&self.excluded_bundle_id)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn();
+        let mut child = match child {
+            Ok(child) => child,
+            Err(error) => {
+                self.set_state("error", Some(format!("Could not start AppSnap: {error}")));
+                return self.state();
+            }
+        };
+        let Some(stdout) = child.stdout.take() else {
+            self.set_state("error", Some("The AppSnap helper output is unavailable.".into()));
+            return self.state();
+        };
+        let generation = {
+            let Ok(mut inner) = self.inner.lock() else { return self.state() };
+            inner.generation = inner.generation.saturating_add(1);
+            inner.child = Some(child);
+            inner.generation
+        };
+        let watcher = Arc::clone(self);
+        std::thread::spawn(move || watcher.read_watch(stdout, generation));
+        self.state()
+    }
+
+    fn read_watch(self: &Arc<Self>, stdout: impl std::io::Read + Send + 'static, generation: u64) {
+        let receiver = ndjson_receiver(stdout);
+        loop {
+            let Ok(line) = receiver.recv() else { break };
+            if !self.current_generation(generation) { return; }
+            let Ok(value) = serde_json::from_str::<Value>(&line) else { continue };
+            match value.get("type").and_then(Value::as_str) {
+                Some("ready") => self.set_state("ready", None),
+                Some("permissions") => {
+                    if let Some(permissions) = parse_appsnap_permissions(&line) {
+                        if let Ok(mut inner) = self.inner.lock() {
+                            inner.state.input_monitoring = permissions.input_monitoring.or(inner.state.input_monitoring);
+                            inner.state.screen_recording = permissions.screen_recording.or(inner.state.screen_recording);
+                        }
+                    }
+                }
+                Some("captured") => {
+                    if let Ok(capture) = capture_from_message(&value, &self.capture_directory) {
+                        if let Err(error) = persist_pending_capture(&self.capture_directory, &capture) {
+                            self.set_state("error", Some(error));
+                        }
+                    } else {
+                        self.set_state("error", Some("Invalid AppSnap capture image.".into()));
+                    }
+                }
+                Some("error") => {
+                    let message = value.get("message").and_then(Value::as_str).unwrap_or("AppSnap capture failed.");
+                    self.set_state("error", Some(message.to_string()));
+                }
+                _ => {}
+            }
+        }
+        if !self.current_generation(generation) { return; }
+        let unexpected = self.inner.lock().ok().is_some_and(|inner| inner.state.enabled);
+        if unexpected {
+            self.set_state("error", Some("The AppSnap helper stopped unexpectedly.".into()));
+        }
+    }
+
+    fn current_generation(&self, generation: u64) -> bool {
+        self.inner.lock().ok().is_some_and(|inner| inner.generation == generation && inner.child.is_some())
+    }
+
+    pub fn pending_captures(&self) -> Vec<PendingAppSnapCapture> {
+        list_pending_captures(&self.capture_directory)
+    }
+
+    pub fn acknowledge_capture(&self, id: &str) -> bool {
+        acknowledge_pending_capture(&self.capture_directory, id)
+    }
+}
+
+impl Drop for AppSnapWatcher {
+    fn drop(&mut self) {
+        let child = self.inner.lock().ok().and_then(|mut inner| {
+            inner.generation = inner.generation.saturating_add(1);
+            inner.child.take()
+        });
+        if let Some(mut child) = child {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    }
 }

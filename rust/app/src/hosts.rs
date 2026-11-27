@@ -39,19 +39,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
             authed(reqwest::Method::DELETE, &format!("/api/v1/hosts/{host_id}"), None, "Failed to delete the host")
         }
         "hosts.listDevices" => authed(reqwest::Method::GET, "/api/v1/devices", None, "Failed to list devices"),
-        "hosts.revokeDevice" => {
-            let device_id = payload.get("deviceId").and_then(Value::as_str).unwrap_or_default();
-            let result = authed(reqwest::Method::DELETE, &format!("/api/v1/devices/{device_id}"), None, "Failed to revoke the device")?;
-            if let Some(mut stored) = crate::account::read_session_file()
-                && stored.get("deviceId").and_then(Value::as_str) == Some(device_id)
-                && let Some(object) = stored.as_object_mut()
-            {
-                object.remove("deviceId");
-                object.remove("deviceJkt");
-                let _ = crate::account::write_account_file(&stored);
-            }
-            Ok(result)
-        }
+        "hosts.revokeDevice" => revoke_device(payload).map_err(|error| err(&error.0)),
         "hosts.approveDeviceLink" => authed(reqwest::Method::POST, "/api/v1/hosts/link/approve", Some(payload.clone()), "Failed to approve the device link"),
                 "hosts.requestGrant" => {
             let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
@@ -265,5 +253,223 @@ fn confirm_sync_key(payload: &Value) -> Result<Value, crate::todo::WsErr> {
     let (account_url, user_id, _device_id) = account_identity()?;
     let code = payload.get("verificationCode").and_then(Value::as_str).unwrap_or_default();
     crate::host_secrets::confirm_received_wrap(code, &account_url, &user_id)?;
+    Ok(json!({}))
+}
+
+
+fn delete_device_remote(device_id: &str) -> Result<Value, crate::todo::WsErr> {
+    let result = authed(
+        reqwest::Method::DELETE,
+        &format!("/api/v1/devices/{device_id}"),
+        None,
+        "Failed to revoke the device",
+    )?;
+    if let Some(mut stored) = crate::account::read_session_file()
+        && stored.get("deviceId").and_then(Value::as_str) == Some(device_id)
+        && let Some(object) = stored.as_object_mut()
+    {
+        object.remove("deviceId");
+        object.remove("deviceJkt");
+        let _ = crate::account::write_account_file(&stored);
+    }
+    Ok(result)
+}
+
+fn get_host_secret(host_id: &str) -> Result<Value, crate::todo::WsErr> {
+    authed(
+        reqwest::Method::GET,
+        &format!("/api/v1/hosts/{host_id}/secrets"),
+        None,
+        "Failed to read the host secret",
+    )
+}
+
+fn put_host_secret(host_id: &str, expected_version: i64, envelope: &Value) -> Result<(), crate::todo::WsErr> {
+    authed(
+        reqwest::Method::PUT,
+        &format!("/api/v1/hosts/{host_id}/secrets"),
+        Some(json!({"expectedVersion": expected_version, "envelope": envelope})),
+        "Failed to rotate Host Secrets",
+    )?;
+    Ok(())
+}
+
+fn owned_host_secret_entries(user_id: &str) -> Result<Vec<Value>, crate::todo::WsErr> {
+    let listed = authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to rotate Host Secrets")?;
+    let mut entries = Vec::new();
+    for host in listed.get("hosts").and_then(Value::as_array).cloned().unwrap_or_default() {
+        if host.get("mine").and_then(Value::as_bool) != Some(true)
+            || host.get("ownerUserId").and_then(Value::as_str) != Some(user_id)
+        {
+            continue;
+        }
+        let host_id = host.get("id").and_then(Value::as_str).unwrap_or_default();
+        if host_id.is_empty() { continue; }
+        let response = get_host_secret(host_id)?;
+        let Some(secret) = response.get("secret").filter(|secret| !secret.is_null()) else { continue };
+        entries.push(json!({
+            "hostId": host_id,
+            "ownerUserId": host.get("ownerUserId").cloned().unwrap_or(json!(user_id)),
+            "envelope": {
+                "ciphertext": secret.get("ciphertext").cloned().unwrap_or(Value::Null),
+                "iv": secret.get("iv").cloned().unwrap_or(Value::Null),
+                "version": secret.get("version").cloned().unwrap_or(Value::Null),
+            },
+        }));
+    }
+    Ok(entries)
+}
+
+fn device_is_active(device_id: &str) -> Result<bool, crate::todo::WsErr> {
+    let listed = authed(reqwest::Method::GET, "/api/v1/devices", None, "Failed to rotate Host Secrets")?;
+    Ok(listed.get("devices").and_then(Value::as_array).is_some_and(|devices| {
+        devices.iter().any(|device| {
+            device.get("id").and_then(Value::as_str) == Some(device_id)
+                && device.get("revokedAt").is_some_and(Value::is_null)
+        })
+    }))
+}
+
+fn persist_pending(
+    account_url: &str,
+    user_id: &str,
+    old_key: &[u8; 32],
+    pending: &Value,
+) -> Result<(), crate::todo::WsErr> {
+    crate::host_secrets::write_pending_rotation(account_url, user_id, old_key, pending)
+}
+
+fn continue_rotation(
+    account_url: &str,
+    user_id: &str,
+    old_key: &[u8; 32],
+    mut pending: Value,
+) -> Result<(), crate::todo::WsErr> {
+    if pending.get("revocationCompleted").and_then(Value::as_bool) != Some(true) {
+        let device_id = pending.get("deviceId").and_then(Value::as_str).unwrap_or_default();
+        if device_is_active(device_id)? {
+            authed(
+                reqwest::Method::DELETE,
+                &format!("/api/v1/devices/{device_id}"),
+                None,
+                "Failed to revoke the device",
+            )?;
+        }
+        pending["revocationCompleted"] = json!(true);
+        persist_pending(account_url, user_id, old_key, &pending)?;
+    }
+
+    loop {
+        let entries = pending.get("entries").and_then(Value::as_array).cloned().unwrap_or_default();
+        let Some(entry) = entries.first().cloned() else { break };
+        let remaining = json!(entries.iter().skip(1).cloned().collect::<Vec<_>>());
+        let host_id = entry.get("hostId").and_then(Value::as_str).unwrap_or_default().to_string();
+        let owner = entry.get("ownerUserId").and_then(Value::as_str).unwrap_or_default().to_string();
+        let current = get_host_secret(&host_id)?.get("secret").cloned().unwrap_or(Value::Null);
+        if current.is_null() {
+            pending["entries"] = remaining;
+            persist_pending(account_url, user_id, old_key, &pending)?;
+            continue;
+        }
+        let envelope = entry.get("envelope").cloned().unwrap_or(Value::Null);
+        let already_uploaded = current.get("version") == envelope.get("version")
+            && current.get("ciphertext") == envelope.get("ciphertext")
+            && current.get("iv") == envelope.get("iv");
+        if !already_uploaded {
+            let mut upload_entry = entry.clone();
+            let mut expected_version = envelope.get("version").and_then(Value::as_i64).unwrap_or(1) - 1;
+            let current_version = current.get("version").and_then(Value::as_i64).unwrap_or(0);
+            if current_version != expected_version {
+                let next_key_bytes = crate::host_secrets::read_pending_rotation(account_url, user_id)?
+                    .and_then(|pending| pending.get("nextKey").and_then(Value::as_str).map(str::to_string))
+                    .and_then(|encoded| base64::Engine::decode(&base64::engine::general_purpose::URL_SAFE_NO_PAD, encoded).ok())
+                    .filter(|bytes: &Vec<u8>| bytes.len() == 32)
+                    .map(|bytes| {
+                        let mut key = [0u8; 32];
+                        key.copy_from_slice(&bytes);
+                        key
+                    })
+                    .ok_or_else(|| crate::todo::WsErr("The Host Secrets rotation journal has no next key".into(), None))?;
+                let secret = crate::host_secrets::open_host_secret(
+                    old_key,
+                    &host_id,
+                    &owner,
+                    current_version,
+                    &current,
+                )?;
+                let envelope = crate::host_secrets::seal_host_secret(
+                    &next_key_bytes,
+                    &host_id,
+                    &owner,
+                    current_version + 1,
+                    &secret,
+                )?;
+                upload_entry["envelope"] = envelope;
+                expected_version = current_version;
+                let mut rewritten_entries = vec![upload_entry.clone()];
+                rewritten_entries.extend(entries.iter().skip(1).cloned());
+                pending["entries"] = json!(rewritten_entries);
+                persist_pending(account_url, user_id, old_key, &pending)?;
+            }
+            let upload_envelope = upload_entry.get("envelope").cloned().unwrap_or(Value::Null);
+            put_host_secret(&host_id, expected_version, &upload_envelope)?;
+        }
+        pending["entries"] = remaining;
+        persist_pending(account_url, user_id, old_key, &pending)?;
+    }
+
+    let next_key = pending
+        .get("nextKey")
+        .and_then(Value::as_str)
+        .and_then(|encoded| base64::Engine::decode(&base64::engine::general_purpose::URL_SAFE_NO_PAD, encoded).ok())
+        .filter(|bytes: &Vec<u8>| bytes.len() == 32)
+        .map(|bytes| {
+            let mut key = [0u8; 32];
+            key.copy_from_slice(&bytes);
+            key
+        })
+        .ok_or_else(|| crate::todo::WsErr("The Host Secrets rotation journal has no next key".into(), None))?;
+    crate::host_secrets::write_sync_key(account_url, user_id, &next_key)
+}
+
+fn revoke_device(payload: &Value) -> Result<Value, crate::todo::WsErr> {
+    let device_id = payload.get("deviceId").and_then(Value::as_str).unwrap_or_default();
+    let (account_url, user_id, own_device_id) = account_identity()?;
+    if device_id == own_device_id {
+        return Err(crate::todo::WsErr("Revoke this device from another device that is paired so it can rotate".into(), None));
+    }
+    let mut old_key = crate::host_secrets::read_sync_key(&account_url, &user_id)?;
+    if let Some(pending) = crate::host_secrets::read_pending_rotation(&account_url, &user_id)? {
+        let Some(key) = old_key else {
+            return Err(crate::todo::WsErr("The Host Secrets rotation journal has no current key".into(), None));
+        };
+        let pending_device = pending.get("deviceId").and_then(Value::as_str).unwrap_or_default().to_string();
+        continue_rotation(&account_url, &user_id, &key, pending)?;
+        if pending_device == device_id {
+            return Ok(json!({}));
+        }
+        old_key = crate::host_secrets::read_sync_key(&account_url, &user_id)?;
+    }
+
+    let entries = owned_host_secret_entries(&user_id)?;
+    if entries.is_empty() {
+        return delete_device_remote(device_id);
+    }
+    let Some(old_key) = old_key else {
+        return Err(crate::todo::WsErr("Pair this device before revoking another device with Host Secrets".into(), None));
+    };
+    if !device_is_active(device_id)? {
+        return Err(crate::todo::WsErr("Device not found or already revoked".into(), None));
+    }
+    let new_key = crate::host_secrets::generate_sync_key();
+    let rotated = crate::host_secrets::rotate_host_secret_entries(&old_key, &new_key, &entries)?;
+    let pending = json!({
+        "deviceId": device_id,
+        "revocationCompleted": false,
+        "nextKey": base64::Engine::encode(&base64::engine::general_purpose::URL_SAFE_NO_PAD, new_key),
+        "entries": rotated,
+    });
+    persist_pending(&account_url, &user_id, &old_key, &pending)?;
+    continue_rotation(&account_url, &user_id, &old_key, pending)?;
     Ok(json!({}))
 }

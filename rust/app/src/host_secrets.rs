@@ -350,6 +350,46 @@ fn write_private_json(path: &PathBuf, value: &Value) -> Result<(), WsErr> {
     Ok(())
 }
 
+
+fn read_stored_file() -> Result<Option<Value>, WsErr> {
+    let raw = match std::fs::read_to_string(sync_key_path()) {
+        Ok(raw) => raw,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => return Err(err(format!("Failed to read the Host Secrets Sync Key: {error}"))),
+    };
+    let stored: Value = serde_json::from_str(&raw).map_err(|_| err("Stored Host Secrets Sync Key is invalid"))?;
+    Ok(Some(stored))
+}
+
+fn stored_belongs(stored: &Value, account_url: &str, user_id: &str) -> bool {
+    stored.get("version").and_then(Value::as_i64) == Some(1)
+        && stored.get("accountUrl").and_then(Value::as_str) == Some(account_url)
+        && stored.get("userId").and_then(Value::as_str) == Some(user_id)
+}
+
+pub(crate) fn read_pending_rotation(account_url: &str, user_id: &str) -> Result<Option<Value>, WsErr> {
+    let Some(stored) = read_stored_file()? else { return Ok(None) };
+    if !stored_belongs(&stored, account_url, user_id) {
+        return Ok(None);
+    }
+    Ok(stored.get("pendingRotation").cloned().filter(|pending| !pending.is_null()))
+}
+
+pub(crate) fn write_pending_rotation(
+    account_url: &str,
+    user_id: &str,
+    current_key: &[u8; 32],
+    pending_rotation: &Value,
+) -> Result<(), WsErr> {
+    write_private_json(&sync_key_path(), &json!({
+        "version": 1,
+        "accountUrl": account_url,
+        "userId": user_id,
+        "key": b64u(current_key),
+        "pendingRotation": pending_rotation,
+    }))
+}
+
 pub(crate) fn read_sync_key(account_url: &str, user_id: &str) -> Result<Option<[u8; 32]>, WsErr> {
     let raw = match std::fs::read_to_string(sync_key_path()) {
         Ok(raw) => raw,

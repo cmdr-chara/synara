@@ -184,8 +184,8 @@ where
     };
     let mut context: Option<PairingContext> = None;
     let mut state = "begin";
-    let mut pending_bytes = 0usize;
-    let mut pending_frames = 0usize;
+    let mut total_bytes = 0usize;
+    let mut total_frames = 0usize;
 
     macro_rules! close_fail {
         () => {{
@@ -211,9 +211,9 @@ where
                 close_fail!();
             }
         };
-        pending_bytes += frame.len();
-        pending_frames += 1;
-        if pending_bytes > MAX_PAIRING_BYTES || pending_frames > MAX_PAIRING_FRAMES {
+        total_bytes += frame.len();
+        total_frames += 1;
+        if total_bytes > MAX_PAIRING_BYTES || total_frames > MAX_PAIRING_FRAMES {
             let _ = tx
                 .send(Message::Close(Some(tokio_tungstenite::tungstenite::protocol::CloseFrame {
                     code: tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode::Size,
@@ -222,9 +222,6 @@ where
                 .await;
             return;
         }
-        pending_bytes = pending_bytes.saturating_sub(frame.len());
-        pending_frames = pending_frames.saturating_sub(1);
-
         let parsed: Value = match serde_json::from_str(&frame) {
             Ok(v) => v,
             Err(_) => close_fail!(),

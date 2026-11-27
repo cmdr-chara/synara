@@ -1420,12 +1420,25 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
             patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
             patch.push(("goalAchievements", "goal_achievements_json", json!(achievements)));
         } else if let Some(next_goal) = command.get("goal").and_then(Value::as_str) {
+            // Oversized objectives live on disk; the stored goal is the
+            // resolvable reference, identical to the upstream normalization.
+            let stored_goal: String = if next_goal.chars().count() > THREAD_GOAL_INLINE_MAX_CHARS {
+                materialize_thread_goal(
+                    thread_id.as_str(),
+                    &command.get("commandId").and_then(Value::as_str).unwrap_or("unknown").to_string(),
+                    next_goal,
+                )
+                .map(|path| goal_file_reference(&path))
+                .unwrap_or_else(|| next_goal.to_string())
+            } else {
+                next_goal.to_string()
+            };
             if next_goal.trim().is_empty() {
                 patch.push(("goal", "goal", json!(next_goal)));
                 patch.push(("goalStartedAt", "goal_started_at", Value::Null));
                 patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
             } else if active_goal.is_empty() {
-                patch.push(("goal", "goal", json!(next_goal)));
+                patch.push(("goal", "goal", json!(stored_goal)));
                 patch.push(("goalStartedAt", "goal_started_at", json!(occurred_at)));
                 patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
                 if command.get("goalStartBehavior").and_then(Value::as_str) == Some("start-with-message") {
@@ -2782,6 +2795,42 @@ pub fn fire_due_usage_limit_recoveries() -> usize {
 }
 
 
+
+
+/// Oversized goals would blow up every provider turn (the persisted goal is
+/// injected into each prompt), so past the inline threshold the full text is
+/// materialized to a per-thread file and the stored goal becomes a short
+/// "read this file" reference — one immutable file per command so a rejected
+/// update can never overwrite a live reference.
+const THREAD_GOAL_INLINE_MAX_CHARS: usize = 1_000;
+
+fn sha256_hex(input: &str) -> String {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    // Bounded lowercase segment; collision resistance here only needs to
+    // separate ids inside one directory, not survive adversarial input.
+    let mut h1 = DefaultHasher::new();
+    input.hash(&mut h1);
+    let mut h2 = DefaultHasher::new();
+    (input.len(), input).hash(&mut h2);
+    format!("{:016x}{:016x}", h1.finish(), h2.finish())
+}
+
+fn materialize_thread_goal(thread_id: &str, command_id: &str, goal: &str) -> Option<String> {
+    let dir = std::path::PathBuf::from(crate::todo::state_dir())
+        .join("thread-goals")
+        .join(sha256_hex(thread_id));
+    if std::fs::create_dir_all(&dir).is_err() {
+        return None;
+    }
+    let file = dir.join(format!("goal-{}.md", sha256_hex(command_id)));
+    std::fs::write(&file, goal).ok()?;
+    Some(file.to_string_lossy().into_owned())
+}
+
+fn goal_file_reference(path: &str) -> String {
+    format!("Read this file: {path}")
+}
 
 /// Thread retention sweep, port of upstream threadRetention.ts: threads
 /// inactive for seven days archive themselves so the inbox stays the working

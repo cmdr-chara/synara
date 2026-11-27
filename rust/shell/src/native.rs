@@ -24509,23 +24509,47 @@ impl Render for Native {
                             .text_color(theme.muted_foreground)
                             .child(when),
                     );
+                    // Upstream meta tail: column-state label with its status
+                    // icon (KanbanStatusIcon). Derived from latestTurn like the
+                    // inbox: settled turn -> Done (filled check), error ->
+                    // Failed, no turn yet -> Draft (hollow), else Working.
+                    let lt_completed = !str_at(get(t, "latestTurn"), "completedAt").is_empty();
+                    let lt_error = str_at(get(t, "latestTurn"), "state") == "error";
+                    let lt_none = get(t, "latestTurn").is_null()
+                        || str_at(get(t, "latestTurn"), "turnId").is_empty();
+                    let (klabel, kcolor): (&'static str, gpui::Hsla) = if lt_error {
+                        ("Failed", rgb(0xff453a).into())
+                    } else if lt_completed {
+                        ("Done", rgb(0x34c759).into())
+                    } else if lt_none {
+                        ("Draft", theme.muted_foreground)
+                    } else {
+                        ("Working", theme.muted_foreground)
+                    };
+                    let icon_el: gpui::AnyElement = if lt_completed {
+                        svg_icon(icons::CHECK)
+                            .size(px(10.))
+                            .text_color(kcolor)
+                            .into_any_element()
+                    } else {
+                        div()
+                            .size(px(8.))
+                            .rounded_full()
+                            .border_1()
+                            .border_color(kcolor)
+                            .into_any_element()
+                    };
                     meta = meta.child(
                         h_flex()
                             .ml_auto()
                             .gap(px(4.))
                             .items_center()
-                            .child(
-                                div()
-                                    .size(px(8.))
-                                    .rounded_full()
-                                    .border_1()
-                                    .border_color(theme.muted_foreground),
-                            )
+                            .child(icon_el)
                             .child(
                                 div()
                                     .text_xs()
-                                    .text_color(theme.muted_foreground)
-                                    .child("Draft"),
+                                    .text_color(if lt_completed || lt_error { kcolor } else { theme.muted_foreground })
+                                    .child(klabel),
                             ),
                     );
                     col = col.child(

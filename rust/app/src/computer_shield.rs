@@ -348,6 +348,20 @@ pub fn resolve_appsnap_helper() -> Option<PathBuf> {
     development.is_file().then_some(development)
 }
 
+
+/// Process-wide shield host. The computer backend owns one helper generation;
+/// explicit shutdown is required because a process-static value never runs Drop.
+pub fn shared_host() -> Option<&'static ComputerShield> {
+    static HOST: std::sync::OnceLock<Option<ComputerShield>> = std::sync::OnceLock::new();
+    HOST.get_or_init(|| resolve_appsnap_helper().map(ComputerShield::new)).as_ref()
+}
+
+pub fn stop_shared_host() {
+    if let Some(host) = shared_host() {
+        host.stop();
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

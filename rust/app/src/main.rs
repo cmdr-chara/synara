@@ -322,6 +322,7 @@ async fn main() {
     crate::opencode_runner::drop_all_resources();
     crate::pi_runner::drop_all_resources();
     crate::browser_automation::shutdown_browser_automation().await;
+    crate::computer_shield::stop_shared_host();
     if let Some(lock) = DATABASE_LIFECYCLE_LOCK
         .get()
         .and_then(|slot| slot.lock().ok().and_then(|mut guard| guard.take()))

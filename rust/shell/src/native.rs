@@ -16111,7 +16111,8 @@ impl Render for Native {
             let mut row_head = h_flex()
                 .gap_1p5()
                 .items_center()
-                .h(px(26.))
+                .h(px(28.))
+                .mb(px(4.))
                 .child(glyph_el)
                 .child(
                     div()
@@ -16243,7 +16244,8 @@ impl Render for Native {
                 let pid_less = pid_key.clone();
                 let mut page_row = h_flex()
                     .id(ElementId::Name(format!("pg-{pid_key}").into()))
-                    .h(px(26.))
+                    .h(px(28.))
+                .mb(px(4.))
                     .items_center()
                     .pl(px(34.))
                     .gap_2();
@@ -16350,7 +16352,8 @@ impl Render for Native {
             if chat_threads.len() > 5 {
                 let mut page_row = h_flex()
                     .id("pg-chats")
-                    .h(px(26.))
+                    .h(px(28.))
+                .mb(px(4.))
                     .items_center()
                     .pl(px(8.))
                     .gap_2();

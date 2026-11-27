@@ -350,6 +350,7 @@ pub async fn logout(headers: HeaderMap) -> Response {
             params![session.session_id, now_iso()],
         );
     }
+    crate::auth_sessions::clear_websocket_tickets(&[session.session_id.clone()]);
     crate::auth_connections::interrupt_sessions(&[session.session_id]);
     json_response(StatusCode::OK, json!({ "revoked": true }))
 }
@@ -419,6 +420,7 @@ pub async fn clients_revoke(headers: HeaderMap, body: Bytes) -> Response {
             params![target, now_iso()],
         );
     }
+    crate::auth_sessions::clear_websocket_tickets(&[target.to_string()]);
     crate::auth_connections::interrupt_sessions(&[target.to_string()]);
     json_response(StatusCode::OK, json!({ "revoked": true }))
 }
@@ -541,6 +543,7 @@ pub async fn clients_revoke_others(headers: HeaderMap) -> Response {
             "UPDATE auth_sessions SET revoked_at = ?2 WHERE session_id != ?1 AND revoked_at IS NULL",
             params![session.session_id, now_iso()],
         );
+        crate::auth_sessions::clear_websocket_tickets(&revoked_ids);
         crate::auth_connections::interrupt_sessions(&revoked_ids);
     }
     json_response(StatusCode::OK, json!({ "revoked": true }))

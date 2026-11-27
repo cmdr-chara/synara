@@ -236,6 +236,11 @@ pub fn verify_token(token: &str) -> Option<VerifiedClaims> {
 /// Like upstream, the jti is removed before the session-row check, so every
 /// upgrade attempt is single-use even when the underlying session has since
 /// been revoked.
+pub fn clear_websocket_tickets(session_ids: &[String]) {
+    let Ok(mut tickets) = outstanding_tickets().lock() else { return };
+    tickets.retain(|_, (session_id, _)| !session_ids.contains(session_id));
+}
+
 pub fn consume_websocket_ticket(claims: &VerifiedClaims) -> bool {
     if claims.kind != "websocket" {
         return false;

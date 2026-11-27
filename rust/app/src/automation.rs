@@ -74,7 +74,15 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     d.insert("schedule".into(), json_col(row, 5));
     d.insert("enabled".into(), json!(row.get::<_, i64>(6).unwrap_or(0) == 1));
     d.insert("nextRunAt".into(), opt_str(row, 7));
-    d.insert("modelSelection".into(), json_col(row, 8));
+    // Schema requires a concrete ModelSelection; legacy rows may carry null
+    // when the automation never pinned one — fall back to the engine default.
+    let ms = json_col(row, 8);
+    let ms = if ms.is_null() {
+        json!({"provider": "codex", "instanceId": "codex", "model": "gpt-6-astra"})
+    } else {
+        ms
+    };
+    d.insert("modelSelection".into(), ms);
     // providerOptions (col 9) is stripped from the wire list shape.
     d.insert("runtimeMode".into(), sval(row, 10));
     d.insert("interactionMode".into(), sval(row, 11));
@@ -82,7 +90,13 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     d.insert("mode".into(), sval(row, 13));
     d.insert("targetThreadId".into(), opt_str(row, 14));
     d.insert("proposalState".into(), opt_str(row, 15));
-    d.insert("notificationPolicy".into(), sval(row, 16));
+    // optional non-nullable on the wire: fall back to the upstream default
+    {
+        let v = sval(row, 16);
+        if !v.is_null() {
+            d.insert("notificationPolicy".into(), v);
+        }
+    }
     d.insert("heartbeatCooldownSeconds".into(), json!(row.get::<_, i64>(17).unwrap_or(60)));
     d.insert("maxIterations".into(), opt_int(row, 18));
     d.insert(
@@ -95,16 +109,39 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     );
     d.insert("disabledReason".into(), opt_str(row, 21));
     d.insert("disabledAt".into(), opt_str(row, 22));
-    d.insert("completionPolicy".into(), json_col(row, 23));
+    {
+        let v = json_col(row, 23);
+        d.insert(
+            "completionPolicy".into(),
+            if v.is_null() { json!({"type": "none"}) } else { v },
+        );
+    }
     d.insert(
         "completionPolicyVersion".into(),
         json!(row.get::<_, i64>(24).unwrap_or(0)),
     );
-    d.insert("completionPolicyUpdatedAt".into(), sval(row, 25));
+    {
+        let v = sval(row, 25);
+        if !v.is_null() {
+            d.insert("completionPolicyUpdatedAt".into(), v);
+        }
+    }
     d.insert("minimumIntervalSeconds".into(), json!(row.get::<_, i64>(26).unwrap_or(60)));
     d.insert("maxRuntimeSeconds".into(), opt_int(row, 27));
-    d.insert("retryPolicy".into(), json_col(row, 28));
-    d.insert("misfirePolicy".into(), sval(row, 29));
+    {
+        let v = json_col(row, 28);
+        d.insert(
+            "retryPolicy".into(),
+            if v.is_null() { json!({"type": "none"}) } else { v },
+        );
+    }
+    {
+        let v = sval(row, 29);
+        d.insert(
+            "misfirePolicy".into(),
+            if v.is_null() { json!("coalesce") } else { v },
+        );
+    }
     d.insert(
         "acknowledgedRisks".into(),
         match json_col(row, 30) {
@@ -141,9 +178,17 @@ fn run_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     r.insert("projectId".into(), sval(row, 2));
     r.insert("threadId".into(), opt_str(row, 3));
     r.insert("turnId".into(), opt_str(row, 4));
+    // DB rows written by the executor use 'schedule'; the wire schema literal
+    // is 'scheduled'. Map at read time so existing rows decode.
+    let trigger_type = sval(row, 5);
+    let trigger_type = if trigger_type.as_str() == Some("schedule") {
+        json!("scheduled")
+    } else {
+        trigger_type
+    };
     r.insert(
         "trigger".into(),
-        json!({ "type": sval(row, 5) }),
+        json!({ "type": trigger_type }),
     );
     r.insert("status".into(), sval(row, 6));
     r.insert("scheduledFor".into(), sval(row, 7));
@@ -170,7 +215,7 @@ fn run_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     let snap = if snap.as_object().map(|o| o.is_empty()).unwrap_or(true) {
         json!({
             "provider": "codex",
-            "modelSelection": {"provider": "codex", "model": "gpt-6-astra"},
+            "modelSelection": {"provider": "codex", "instanceId": "codex", "model": "gpt-6-astra"},
             "runtimeMode": "approval-required",
             "interactionMode": "default",
             "worktreeMode": "auto",

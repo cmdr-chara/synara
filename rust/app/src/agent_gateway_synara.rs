@@ -2182,7 +2182,7 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
                 "threadId": thread_id,
                 "createdAt": crate::todo::iso_now_ms(),
                 "dispatchMode": "queue",
-                "dispatchOrigin": "agentGateway",
+                "dispatchOrigin": "agent",
                 "message": {
                     "messageId": format!("gateway-mcp-{request_id}-message"),
                     "text": prompt,
@@ -2237,7 +2237,7 @@ fn send_message_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value,
         "threadId": thread_id,
         "createdAt": crate::todo::iso_now_ms(),
         "dispatchMode": mode,
-        "dispatchOrigin": "agentGateway",
+        "dispatchOrigin": "agent",
         "message": {
             "messageId": format!("gateway-mcp-{key}-message"),
             "text": message,

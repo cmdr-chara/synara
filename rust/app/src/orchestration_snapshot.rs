@@ -415,6 +415,11 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
         }
         for message in &mut messages {
             let Some(obj) = message.as_object_mut() else { continue };
+            // Legacy gateway rows predate the contract literal set
+            // (user|automation|agent); normalize so the wire decodes.
+            if obj.get("dispatchOrigin").and_then(Value::as_str) == Some("agentGateway") {
+                obj.insert("dispatchOrigin".into(), json!("agent"));
+            }
             let missing_turn = obj.get("turnId").is_none_or(Value::is_null);
             if missing_turn
                 && let Some(message_id) = obj.get("id").and_then(Value::as_str)

@@ -342,9 +342,15 @@ fn fire_occurrence(automation: &DueAutomation, now: &str, now_ms: i64) -> Result
         automation.worktree_mode.clone()
     };
     let ms = if automation.model_selection.is_null() {
-        json!({"provider": "codex", "model": "gpt-6-astra"})
+        json!({"provider": "codex", "instanceId": "codex", "model": "gpt-6-astra"})
     } else {
-        automation.model_selection.clone()
+        let mut ms = automation.model_selection.clone();
+        if ms.get("instanceId").is_none() {
+            if let Some(p) = ms.get("provider").and_then(|v| v.as_str()) {
+                ms["instanceId"] = json!(p);
+            }
+        }
+        ms
     };
     let provider = ms
         .get("provider")

@@ -125,6 +125,18 @@ fn trusted_local_legacy_token(token: Option<&str>) -> bool {
     })
 }
 
+
+fn has_session_cookie(cookie_header: &str) -> bool {
+    cookie_header.split(';').any(|part| {
+        let Some((name, value)) = part.trim().split_once('=') else { return false };
+        !value.is_empty()
+            && (name == "synara_session"
+                || (name.strip_prefix("synara_session_").is_some_and(|suffix| {
+                    !suffix.is_empty() && suffix.bytes().all(|byte| byte.is_ascii_digit())
+                })))
+    })
+}
+
 /// Owner admission for the remote-host pivot. This intentionally mirrors the
 /// local trust split of the main `/ws` upgrade: authless loopback stays local,
 /// the private legacy token stays local, but every explicit browser credential
@@ -134,7 +146,7 @@ pub(crate) fn remote_owner_authorized(headers: &HeaderMap, uri: &Uri) -> Result<
     let ws_ticket = query_value(uri, "wsToken");
     let explicit = ws_ticket.is_some()
         || headers.get(axum::http::header::AUTHORIZATION).is_some()
-        || headers.get(axum::http::header::COOKIE).and_then(|value| value.to_str().ok()).is_some_and(|cookie| cookie.contains("synara_session"));
+        || headers.get(axum::http::header::COOKIE).and_then(|value| value.to_str().ok()).is_some_and(has_session_cookie);
     if !explicit && (!websocket_auth_required() || trusted_local_legacy_token(legacy_token.as_deref())) {
         return Ok(());
     }
@@ -2101,5 +2113,18 @@ async fn relay(
     tokio::select! {
         _ = to_upstream => {}
         _ = to_client => {}
+    }
+}
+
+
+#[cfg(test)]
+mod admission_tests {
+    #[test]
+    fn session_cookie_detection_matches_upstream_shape() {
+        assert!(super::has_session_cookie("synara_session=abc"));
+        assert!(super::has_session_cookie("other=1; synara_session_8580=abc"));
+        assert!(!super::has_session_cookie("x-synara_session=abc"));
+        assert!(!super::has_session_cookie("synara_session_x=abc"));
+        assert!(!super::has_session_cookie("synara_session="));
     }
 }

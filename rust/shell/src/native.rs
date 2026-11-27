@@ -13528,7 +13528,9 @@ impl Native {
                     ),
                 );
             } else {
-                let mut wrap = div();
+                // Upstream transcript body: 13px chat font at 1.625 line-height
+                // (measured computed web values); the markdown TextView inherits both.
+                let mut wrap = div().text_size(px(13.)).line_height(relative(1.625));
                 if is_match {
                     wrap = wrap.border_l_2().border_color(theme.warning).pl_2();
                 }

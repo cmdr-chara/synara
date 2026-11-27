@@ -240,3 +240,12 @@ exactly this — the earlier "structural divergence" note was wrong. Hubs surfac
 (upstream label key `common:hubs`), correctly wired to view_studio.
 Remaining real gap here: upstream landing heading is project-scoped "What should we do in
 {project}?" when a project is selected; shell always "What should we work on?".
+
+## Transcript detail pass status (2026-11-27 ~03:20)
+DONE: body font 13px + line-height 1.625 (measured upstream computed values) — line pitch now 21px matching web.
+MEASURED upstream typography: p 13px/21.125px margins 10.4px vert; h2 20.15px/25.19px marginBottom 7.05.
+OPEN: (1) inline image sizing — shell renders wider/taller than web column constraint; needs
+upstream remarkImageRows/expandable-image box model. (2) scroll-sync for anaglyph comparisons —
+script scrolls both to top before capture. (3) paragraph_gap: TextViewStyle default 0.75rem vs
+upstream effective 10.4px — verify visually after line-height fix. (4) heading scale: TextView
+default heading_base 14px vs upstream proportional-to-chat (h2=1.55x chat).

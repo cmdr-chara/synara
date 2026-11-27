@@ -19626,8 +19626,27 @@ impl Render for Native {
                 }
                 composer_col = composer_col.child(card);
             }
-            let chip_label = self
-                .landing_project_id
+            // In an empty project thread the composer is bound to the
+            // thread's project (upstream): the chip shows that folder even
+            // though the home picker state is empty.
+            let thread_project_id: Option<String> = if self.selected_thread.is_some()
+                && arr(
+                    get(self.detail.as_ref().unwrap_or(&Value::Null), "thread"),
+                    "messages",
+                )
+                .is_empty()
+            {
+                let tid = self.selected_thread.as_deref().unwrap_or("");
+                arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                    .iter()
+                    .find(|t| str_at(t, "id") == tid)
+                    .map(|t| str_at(t, "projectId").to_string())
+                    .filter(|p| !p.is_empty())
+            } else {
+                None
+            };
+            let effective_project_id = self.landing_project_id.clone().or(thread_project_id);
+            let chip_label = effective_project_id
                 .as_ref()
                 .and_then(|pid| {
                     arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
@@ -19681,7 +19700,7 @@ impl Render for Native {
                             ),
                     ),
             );
-            if self.landing_project_id.is_some() {
+            if effective_project_id.is_some() {
                 let temp_active = self.landing_temporary;
                 controls = controls
                     .child(div().flex_1())

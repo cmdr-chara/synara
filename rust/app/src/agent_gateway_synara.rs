@@ -98,6 +98,25 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["threadId"]),
         ),
         def(
+            "synara_create_kanban_task",
+            "Create a Kanban task from a title and optional description: starts a new thread and immediately starts a turn, so the card renders In Progress. requestId is required; retries with the same requestId replay exactly-once.",
+            schema(json!({
+                "title": {"type": "string", "maxLength": 200},
+                "description": {"type": "string", "description": "Used as the first-turn prompt."},
+                "projectId": {"type": "string"},
+                "requestId": {"type": "string", "maxLength": 256, "description": "Idempotency key."},
+            }), &["title", "requestId"]),
+        ),
+        def(
+            "synara_create_kanban_draft",
+            "Create a Kanban draft card: a thread with no turn started, so the card renders in Draft. requestId is the idempotency key.",
+            schema(json!({
+                "title": {"type": "string", "maxLength": 200},
+                "projectId": {"type": "string"},
+                "requestId": {"type": "string", "maxLength": 256},
+            }), &["title", "requestId"]),
+        ),
+        def(
             "synara_create_automation",
             "Create a heartbeat, standalone, or dedicated Synara automation. heartbeat appends turns to an existing thread; standalone opens a fresh thread per run; dedicated reuses one owned thread. Omitting mode/schedule creates a heartbeat on your thread using everyMinutes (default 5).",
             schema(json!({
@@ -782,6 +801,91 @@ fn cancel_automation(args: &Value) -> Result<Value, String> {
     crate::automation::handle("automation.update", &Value::Object(payload)).map_err(|e| e.0)
 }
 
+fn create_kanban_card(args: &Value, start_turn: bool) -> Result<Value, String> {
+    let title = arg_str(args, "title").ok_or("Missing required argument: title")?;
+    if title.chars().count() > 200 {
+        return Err("title must be at most 200 characters.".into());
+    }
+    let request_id = arg_str(args, "requestId").ok_or("Missing required argument: requestId")?;
+    let conn = state_conn()?;
+    let project_id = arg_str(args, "projectId").ok_or(
+        "Missing required argument: projectId (the kanban board's project).",
+    )?;
+    // Idempotency: the engine dedupes commands by commandId through the
+    // receipts table, so a retried call replays exactly-once.
+    let key: String = request_id.chars().filter(|c| c.is_ascii_alphanumeric() || *c == '-').take(200).collect();
+    // The thread id derives from the requestId, so a retried call targets the
+    // same thread; the command receipt dedup then replays exactly-once.
+    let thread_id = {
+        use std::collections::hash_map::DefaultHasher;
+        use std::hash::{Hash, Hasher};
+        let mut h1 = DefaultHasher::new();
+        format!("kanban-mcp\0{request_id}\0a").hash(&mut h1);
+        let mut h2 = DefaultHasher::new();
+        format!("kanban-mcp\0{request_id}\0b").hash(&mut h2);
+        let a = h1.finish();
+        let b = h2.finish();
+        format!(
+            "{:08x}-{:04x}-4{:03x}-{:04x}-{:012x}",
+            (a >> 32) as u32,
+            (a >> 16) as u16,
+            a as u16 & 0xfff,
+            (b as u16 & 0x3fff) | 0x8000,
+            b & 0xffffffffffff
+        )
+    };
+    let now = crate::todo::iso_now_ms();
+    let create = json!({
+        "type": "thread.create",
+        "commandId": format!("kanban-mcp-{key}-thread-create"),
+        "threadId": thread_id,
+        "projectId": project_id,
+        "title": title,
+        "createdAt": now,
+    });
+    let created = match crate::orchestration_engine::handle(
+        "orchestration.dispatchCommand",
+        &create,
+    ) {
+        Ok(_) => true,
+        Err(e) if e.0.contains("UNIQUE constraint") || e.0.contains("already exists") => false, // retry replay
+        Err(e) => return Err(format!("kanban thread create failed: {}", e.0)),
+    };
+    drop(conn);
+    if !created {
+        return Ok(json!({
+            "threadId": thread_id,
+            "title": title,
+            "started": start_turn,
+            "replayed": true,
+        }));
+    }
+
+    if start_turn {
+        let prompt = arg_str(args, "description").unwrap_or_else(|| title.clone());
+        let turn = json!({
+            "type": "thread.turn.start",
+            "commandId": format!("kanban-mcp-{key}-turn-start"),
+            "threadId": thread_id,
+            "createdAt": now,
+            "dispatchMode": "queue",
+            "dispatchOrigin": "kanban",
+            "message": {
+                "messageId": format!("kanban-mcp-{key}-message"),
+                "text": prompt,
+                "attachments": [],
+            },
+        });
+        crate::orchestration_engine::handle("orchestration.dispatchCommand", &turn)
+            .map_err(|e| format!("kanban turn start failed: {}", e.0))?;
+    }
+    Ok(json!({
+        "threadId": thread_id,
+        "title": title,
+        "started": start_turn,
+    }))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -796,6 +900,8 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),
         "synara_cancel_automation" => cancel_automation(args),
+        "synara_create_kanban_task" => create_kanban_card(args, true),
+        "synara_create_kanban_draft" => create_kanban_card(args, false),
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),

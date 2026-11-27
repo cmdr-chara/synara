@@ -382,6 +382,7 @@ pub async fn clients(headers: HeaderMap) -> Response {
                 "issuedAt": r.get::<_, String>(6)?,
                 "expiresAt": r.get::<_, String>(7)?,
                 "lastConnectedAt": r.get::<_, Option<String>>(8)?,
+                "connected": crate::auth_connections::is_session_connected(&r.get::<_, String>(0)?),
             }))
         })
         .map(|rows| rows.filter_map(|r| r.ok()).collect())

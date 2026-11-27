@@ -55,9 +55,19 @@ pub(crate) fn register_authenticated_connection(
     if count >= MAX_AUTHENTICATED_CONNECTIONS_PER_SESSION {
         return Err(count);
     }
+    let was_disconnected = count == 0;
     let connection_id = crate::orchestration_engine::uuid_v4();
     let (close_tx, close_rx) = tokio::sync::watch::channel(());
     connections.insert(connection_id.clone(), close_tx);
+    drop(active);
+    if was_disconnected {
+        if let Ok(conn) = crate::orchestration_engine::open_state_rw() {
+            let _ = conn.execute(
+                "UPDATE auth_sessions SET last_connected_at = ?2 WHERE session_id = ?1",
+                rusqlite::params![session_id, chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)],
+            );
+        }
+    }
     Ok(ActiveConnectionLease {
         session_id: session_id.to_string(),
         connection_id,
@@ -69,6 +79,13 @@ pub(crate) fn register_authenticated_connection(
 /// sender is process-local by design, mirroring upstream: revocation cannot
 /// reach sockets owned by another server process, but every socket this
 /// backend accepted is closed before the management RPC completes.
+pub(crate) fn is_session_connected(session_id: &str) -> bool {
+    active_connections()
+        .lock()
+        .map(|active| active.contains_key(session_id))
+        .unwrap_or(false)
+}
+
 pub(crate) fn interrupt_sessions(session_ids: &[String]) {
     let Ok(active) = active_connections().lock() else { return };
     for session_id in session_ids {

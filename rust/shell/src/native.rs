@@ -10040,6 +10040,43 @@ impl Native {
         cx.notify();
     }
 
+    /// Composer paste-image: upstream inserts clipboard images as image
+    /// attachments of the draft thread (same upload path as window captures).
+    fn attach_clipboard_image(&mut self, bytes: Vec<u8>, mime: String, ext: String, cx: &mut Context<Self>) {
+        let client = self.client.clone();
+        if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
+            self.composer_thread_id = Some(uuid());
+        }
+        let thread_id = self
+            .selected_thread
+            .clone()
+            .or_else(|| self.composer_thread_id.clone());
+        self.uploading = true;
+        cx.notify();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let tid = thread_id.unwrap_or_default();
+            let uploaded: Option<Value> = cx
+                .background_executor()
+                .spawn(async move {
+                    let Some(c) = ensure_client(&cell) else {
+                        return None;
+                    };
+                    let name = format!("pasted-image.{ext}");
+                    c.upload_attachment(&tid, "image", &name, &mime, &bytes)
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.uploading = false;
+                if let Some(att) = uploaded {
+                    this.pending_attachments.push(att);
+                }
+                cx.notify();
+            });
+        })
+        .detach();
+    }
+
     /// Attach-window rows: capture the CG window and upload it as an image
     /// attachment, mirroring upstream appSnap.captureWindow.
     fn capture_window(&mut self, window_id: String, title: String, cx: &mut Context<Self>) {
@@ -18677,7 +18714,38 @@ impl Render for Native {
                     } else {
                         42.25
                     }))
-                    .child(Input::new(&self.composer).appearance(false).w_full()),
+                    .child({
+                        // Upstream: pasting an image into the composer attaches it
+                        // to the draft instead of inserting text.
+                        let weak = cx.weak_entity();
+                        Input::new(&self.composer)
+                            .appearance(false)
+                            .w_full()
+                            .on_paste(move |item, _window, cx| {
+                                let mut handled = false;
+                                for entry in &item.entries {
+                                    if let gpui::ClipboardEntry::Image(image) = entry {
+                                        let (mime, ext) = match image.format {
+                                            gpui::ImageFormat::Png => ("image/png", "png"),
+                                            gpui::ImageFormat::Jpeg => ("image/jpeg", "jpg"),
+                                            gpui::ImageFormat::Gif => ("image/gif", "gif"),
+                                            gpui::ImageFormat::Webp => ("image/webp", "webp"),
+                                            gpui::ImageFormat::Bmp => ("image/bmp", "bmp"),
+                                            gpui::ImageFormat::Svg => ("image/svg+xml", "svg"),
+                                            _ => ("image/png", "png"),
+                                        };
+                                        let bytes = image.bytes.clone();
+                                        let mime = mime.to_string();
+                                        let ext = ext.to_string();
+                                        let _ = weak.update(cx, |this: &mut Self, cx| {
+                                            this.attach_clipboard_image(bytes, mime, ext, cx);
+                                        });
+                                        handled = true;
+                                    }
+                                }
+                                handled
+                            })
+                    }),
             );
         if draft_empty {
             // Placeholder rendered on top: the web uses muted-foreground/40,

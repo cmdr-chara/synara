@@ -1312,6 +1312,8 @@ pub struct Native {
     /// Catalog rows (slug, display name, provider) from provider.listModels,
     /// empty until the first successful fetch.
     model_catalog: Vec<(String, String, String)>,
+    /// Effort ladder index for the picker slider (upstream trait effort).
+    composer_effort_idx: usize,
     queued_turns: Vec<String>,
     queue_paused: bool,
     /// Debug task-list popover open (upstream ComposerCapsulePopover state).
@@ -3336,6 +3338,7 @@ impl Native {
                     InputState::new(window, cx).placeholder("Search models...")
                 }),
                 model_catalog: Vec::new(),
+                composer_effort_idx: 2,
                 queued_turns: Vec::new(),
                 queue_paused: false,
                 task_card_open: false,
@@ -18934,6 +18937,7 @@ impl Render for Native {
         } else {
             icons::CODEX
         };
+        let chip_effort_idx = self.composer_effort_idx.min(4);
         let build_model_chip = move || {
             let cur = model_cur.clone();
             let weak = model_weak.clone();
@@ -18943,7 +18947,13 @@ impl Render for Native {
                 .with_size(gpui_kit::component::Size::XSmall)
                 .h(px(28.))
                 .icon(svg_icon(model_icon).size(px(14.)))
-                .label(model_label.clone())
+                .label({
+                // Upstream: the chip reads "<model> <Effort>" — the effort
+                // label reflects the current trait selection.
+                const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
+                let eff = EFFORTS[chip_effort_idx].to_string();
+                format!("{} {}", model_label.clone(), eff)
+            })
                 .dropdown_caret(true)
                 .on_click(move |_, window, cx| {
                     let _ = weak.update(cx, |this, cx| {
@@ -30344,6 +30354,7 @@ impl Render for Native {
                 list = list.child(row);
             }
             let search_input = Input::new(&self.model_picker_search)
+                .appearance(false)
                 .w_full()
                 .text_size(px(12.));
             let panel = v_flex()
@@ -30426,7 +30437,10 @@ impl Render for Native {
                                         .text_size(px(12.))
                                         .font_weight(gpui::FontWeight::MEDIUM)
                                         .text_color(accent_orange)
-                                        .child("Medium"),
+                                        .child({
+                                            const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
+                                            EFFORTS[self.composer_effort_idx.min(4)].to_string()
+                                        }),
                                 )
                                 .child(
                                     div()
@@ -30439,11 +30453,32 @@ impl Render for Native {
                         // Upstream Slider size="large": track 24px rounded-full
                         // fg 14%, accent fill edge-aligned under a 28px white
                         // thumb, 4px step dots along the thumb-inset rail.
-                        .child(
-                            div()
+                        // Rail spans half-thumb insets: 14..266 of the 280px
+                        // inner width; the thumb centre sits exactly on the
+                        // active stop.
+                        .child({
+                            let idx = self.composer_effort_idx.min(4);
+                            let frac = idx as f32 / 4.0;
+                            let stop_x = 14.0 + frac * 252.0;
+                            let mut track = div()
+                                .id("effort-slider")
                                 .w_full()
                                 .h(px(28.))
                                 .mt(px(4.))
+                                .cursor_pointer()
+                                .on_mouse_down(gpui::MouseButton::Left, cx.listener(|this, ev: &gpui::MouseDownEvent, _w, cx| {
+                                    cx.stop_propagation();
+                                    // Rail 14..266 over the 280px inner width:
+                                    // map the click x to the nearest stop.
+                                    let x: f32 = ev.position.x.into();
+                                    // position is window-space; the listener
+                                    // re-bases via the element bounds — use the
+                                    // relative fraction gpui provides instead.
+                                    let _ = x;
+                                    let _ = this;
+                                }));
+                            let _ = &mut track;
+                            track = track
                                 .child(
                                     div()
                                         .absolute()
@@ -30463,18 +30498,15 @@ impl Render for Native {
                                         .absolute()
                                         .left_0()
                                         .top(px(2.))
-                                        .w(px(76.))
+                                        .w(px(stop_x))
                                         .h(px(24.))
                                         .rounded(px(12.))
                                         .bg(accent_orange),
                                 )
-                                // step dots: 5 stops along the rail inset by
-                                // half the thumb (14px) on each side — panel
-                                // inner width 280px, rail spans 14..266.
                                 .children((0..5).map(|i| {
-                                    let frac = i as f32 / 4.0;
-                                    let x = 14.0 + frac * (266.0 - 14.0) - 2.0;
-                                    let covered = x + 2.0 < 76.0;
+                                    let f = i as f32 / 4.0;
+                                    let x = 14.0 + f * 252.0 - 2.0;
+                                    let covered = x + 2.0 <= stop_x + 1.0;
                                     div()
                                         .absolute()
                                         .left(px(x))
@@ -30493,15 +30525,37 @@ impl Render for Native {
                                 .child(
                                     div()
                                         .absolute()
-                                        .left(px(62.))
+                                        .left(px(stop_x - 14.0))
                                         .top_0()
                                         .w(px(28.))
                                         .h(px(28.))
                                         .rounded(px(14.))
                                         .bg(gpui::white())
                                         .shadow_sm(),
-                                ),
-                        ),
+                                );
+                            // stop click zones: five invisible slabs each
+                            // covering one stop's segment — simpler and more
+                            // reliable than coordinate math on the track.
+                            for i in 0..5usize {
+                                let f = i as f32 / 4.0;
+                                let cx_pos = 14.0 + f * 252.0;
+                                track = track.child(
+                                    div()
+                                        .id(ElementId::Name(format!("effort-stop-{i}").into()))
+                                        .absolute()
+                                        .left(px(cx_pos - 25.0))
+                                        .top_0()
+                                        .w(px(50.))
+                                        .h(px(28.))
+                                        .on_mouse_down(gpui::MouseButton::Left, cx.listener(move |this, _ev: &gpui::MouseDownEvent, _w, cx| {
+                                            cx.stop_propagation();
+                                            this.composer_effort_idx = i;
+                                            cx.notify();
+                                        })),
+                                );
+                            }
+                            track
+                        }),
                 );
             let panel = panel.on_mouse_down(gpui::MouseButton::Left, cx.listener(|_this, _ev: &gpui::MouseDownEvent, _w, cx| {
                 cx.stop_propagation();

@@ -704,7 +704,9 @@ fn accessibility_inventory(payload: &Value) -> Result<Value, String> {
         .enumerate().map(|(index,window)| json!({"id":window.get("id").cloned().unwrap_or(Value::Null),"pid":window.get("pid").cloned().unwrap_or(json!(0)),"appName":window.get("appName").cloned().unwrap_or(Value::Null),"title":window.get("title").cloned().unwrap_or(json!("")),"bounds":window.get("bounds").cloned().unwrap_or(Value::Null),"onScreen":!window.get("minimized").and_then(Value::as_bool).unwrap_or(false),"zIndex":index})).collect();
     let truncated = apps.len()>1024 || rows.len()>256;
     apps.truncate(1024); rows.truncate(256);
-    Ok(json!({"computerId":COMPUTER_ID,"apps":apps,"windows":rows,"windowId":scoped,"truncated":truncated,"availability":availability()}))
+    let mut result = json!({"computerId":COMPUTER_ID,"apps":apps,"windows":rows,"truncated":truncated,"availability":availability()});
+    if let Some(scoped) = scoped { result["windowId"] = json!(scoped); }
+    Ok(result)
 }
 
 fn desktop_state_json() -> Value {

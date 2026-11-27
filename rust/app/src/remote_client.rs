@@ -357,6 +357,13 @@ where
         return Err("Unexpected remote handshake response".to_string());
     };
     let parsed: Value = serde_json::from_str(&text).map_err(|_| "Unexpected remote handshake response".to_string())?;
+    if parsed.get("type").and_then(Value::as_str) == Some("session_incompatible") {
+        let message = parsed
+            .pointer("/error/message")
+            .and_then(Value::as_str)
+            .unwrap_or("Remote host protocol is incompatible");
+        return Err(message.to_string());
+    }
     if parsed.get("type").and_then(Value::as_str) != Some(response_type) {
         return Err("Unexpected remote handshake response".to_string());
     }
@@ -458,4 +465,93 @@ pub async fn pair_remote_host(
         tokio::time::sleep(std::time::Duration::from_secs(1)).await;
         status = exchange_frame(&mut socket, json!({"v": 2, "type": "pairing_status"}), "pairing_status").await?;
     }
+}
+
+
+pub struct DialedSession {
+    pub socket: tokio_tungstenite::WebSocketStream<TlsStream>,
+    pub transport: String,
+    pub credential: String,
+    pub credential_expires_at_seconds: u64,
+    pub compatibility: Value,
+}
+
+fn credential_expiration(credential: &str) -> Result<u64, String> {
+    let parts: Vec<&str> = credential.split('.').collect();
+    if parts.len() != 3 {
+        return Err("Host returned an expired credential".to_string());
+    }
+    let payload = base64::engine::general_purpose::URL_SAFE_NO_PAD
+        .decode(parts[1])
+        .map_err(|_| "Host returned an expired credential".to_string())?;
+    let parsed: Value = serde_json::from_slice(&payload).map_err(|_| "Host returned an expired credential".to_string())?;
+    let exp = parsed.get("exp").and_then(Value::as_u64).unwrap_or(0);
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_secs()).unwrap_or(0);
+    if exp <= now {
+        return Err("Host returned an expired credential".to_string());
+    }
+    Ok(exp)
+}
+
+/// Opens the post-pairing RPC channel and completes mint_request →
+/// session_credential → session_authorize → session_ready. No plaintext RPC
+/// fallback exists: this socket is already inside the pinned TLS channel.
+pub async fn dial_remote_host(
+    endpoints: Vec<RemoteEndpoint>,
+    anchor_environment_id: &str,
+    root_certificate: &str,
+    identity: &DeviceIdentity,
+    user_id: &str,
+    request_grant: impl Fn() -> Result<String, String> + Send + Sync,
+) -> Result<DialedSession, String> {
+    let (mut socket, endpoint) = open_inner_websocket(
+        endpoints,
+        root_certificate,
+        anchor_environment_id,
+        crate::remote_tunnel::REMOTE_INNER_RPC_PATH,
+    ).await?;
+    let grant = request_grant()?;
+    let mint_request = identity.sign_mint_request(user_id, &grant, anchor_environment_id)?;
+    let minted = exchange_frame(
+        &mut socket,
+        json!({"v":1,"type":"mint_request","request":mint_request}),
+        "session_credential",
+    ).await?;
+    let credential = minted.get("credential").and_then(Value::as_str).unwrap_or_default().to_string();
+    if credential.is_empty() {
+        return Err("Host returned no session credential".to_string());
+    }
+    let dpop = identity.sign_dpop("CONNECT", "synara://remote/session", Some(&credential))?;
+    let client = json!({
+        "protocolEpoch": crate::native_ws::PROTOCOL_EPOCH,
+        "minRevision": crate::native_ws::MIN_REVISION,
+        "maxRevision": crate::native_ws::MAX_REVISION,
+        "clientBuild": crate::native_ws::SERVER_BUILD,
+        "requiredCapabilities": [
+            "orchestration.cursor-safe-streams",
+            "orchestration.thread-detail-snapshot",
+            "rpc.typed-errors",
+            "git.worktree-setup-progress",
+        ],
+    });
+    let ready = exchange_frame(
+        &mut socket,
+        json!({"v":1,"type":"session_authorize","credential":credential,"dpop":dpop,"client":client}),
+        "session_ready",
+    ).await?;
+    if ready.get("environmentId").and_then(Value::as_str) != Some(anchor_environment_id) {
+        return Err("Host protocol identity does not match its paired root".to_string());
+    }
+    let compatibility = ready.get("compatibility").cloned().unwrap_or(Value::Null);
+    if compatibility.get("negotiatedRevision").and_then(Value::as_i64).is_none() {
+        return Err("Host returned an incomplete protocol negotiation".to_string());
+    }
+    let credential_expires_at_seconds = credential_expiration(&credential)?;
+    Ok(DialedSession {
+        socket,
+        transport: endpoint.transport,
+        credential,
+        credential_expires_at_seconds,
+        compatibility,
+    })
 }

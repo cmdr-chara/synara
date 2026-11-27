@@ -442,10 +442,31 @@ pub async fn serve_inner(
             }
             let (session_id, close_rx) = crate::remote_sessions::add(&verified.device_jkt, &verified.user_id, "direct");
             session_registration = Some((session_id, close_rx));
+            let client = parsed.get("client").cloned().unwrap_or_else(|| serde_json::json!({}));
+            let required: Vec<String> = client
+                .get("requiredCapabilities")
+                .and_then(serde_json::Value::as_array)
+                .map(|items| items.iter().filter_map(|item| item.as_str().map(str::to_string)).collect())
+                .unwrap_or_default();
+            let compatibility = crate::native_ws::negotiate(
+                client.get("protocolEpoch").and_then(serde_json::Value::as_i64).unwrap_or(-1),
+                client.get("minRevision").and_then(serde_json::Value::as_i64).unwrap_or(-1),
+                client.get("maxRevision").and_then(serde_json::Value::as_i64).unwrap_or(-1),
+                &required,
+            );
+            let Ok(compatibility) = compatibility else {
+                let refusal = compatibility.err().unwrap_or_else(|| serde_json::json!({"message":"incompatible"}));
+                let frame = serde_json::json!({"v":2,"type":"session_incompatible","error":refusal});
+                let _ = client_tx
+                    .send(tokio_tungstenite::tungstenite::Message::Text(frame.to_string().into()))
+                    .await;
+                return;
+            };
             let ready = serde_json::json!({
                 "v": 2,
                 "type": "session_ready",
                 "environmentId": environment_id,
+                "compatibility": compatibility,
             });
             if client_tx
                 .send(tokio_tungstenite::tungstenite::Message::Text(ready.to_string().into()))

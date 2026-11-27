@@ -24330,13 +24330,12 @@ impl Render for Native {
                     );
             }
         }
-        // Center the content column at upstream max-w-2xl (672px); upstream's
-        // scrollbar gutter shifts the center ~6px left, so reserve it.
+        // Center the content column at upstream max-w-2xl (672px); macOS
+        // overlay scrollbars take no layout space, so the centering is exact.
         let settings_pane = h_flex()
             .flex_1()
             .w_full()
             .justify_center()
-            .pr(px(13.))
             .child(settings_pane);
         if std::env::var("SYNARA_SCROLL_BOTTOM").is_ok() {
             self.settings_scroll.scroll_to_bottom();

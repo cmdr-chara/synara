@@ -62,6 +62,18 @@ fn inspect_lineage(rows: &[(u32, String)]) -> Result<(Vec<(u32, String)>, Option
     let canonical_name = |id: u32| -> Option<&'static str> {
         canonical.iter().find(|(cid, _, _)| *cid == id).map(|(_, n, _)| *n)
     };
+    if rows.len() > canonical.len() {
+        let canonical_prefix_valid = rows.iter().take(canonical.len()).enumerate().all(|(index, (id, name))| {
+            *id == index as u32 + 1 && canonical_name(*id) == Some(name.as_str())
+        });
+        if canonical_prefix_valid {
+            let schema = rows.last().map(|(id, _)| *id).unwrap_or(0);
+            return Err(err(format!(
+                "database schema v{schema} is newer than this build supports (v{}). Update Synara before opening this data home.",
+                canonical.len()
+            )));
+        }
+    }
     let mut mismatches = Vec::new();
     for (index, (id, name)) in rows.iter().enumerate() {
         let expected_id = index as u32 + 1;
@@ -634,6 +646,20 @@ mod tests {
         let plan = inspect_migration_backup_plan(&conn).map_err(|e| e.0).unwrap().unwrap();
         assert_eq!(plan.source_version, "untracked");
         assert!(!table_exists(&conn, "effect_sql_migrations"));
+    }
+
+    #[test]
+    fn schema_newer_than_build_fails_with_update_guidance() {
+        let conn = Connection::open_in_memory().unwrap();
+        ensure_tracker(&conn).map_err(|e| e.0).unwrap();
+        for (id, name, _) in canonical_migrations() {
+            conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)", params![id, name]).unwrap();
+        }
+        let next = canonical_migrations().len() as u32 + 1;
+        conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, 'FutureMigration')", params![next]).unwrap();
+        let error = pending_migrations(&conn).unwrap_err().0;
+        assert!(error.contains("newer than this build supports"));
+        assert!(error.contains("Update Synara"));
     }
 
     #[test]

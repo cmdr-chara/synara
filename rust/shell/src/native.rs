@@ -17062,11 +17062,14 @@ impl Render for Native {
                 home.child(svg_icon(icons::LOGO).size(px(40.)))
                     .child(
                         div()
-                            .text_size(px(24.))
-                            .font_weight(FontWeight::SEMIBOLD)
+                            // Upstream empty-landing h2: text-[30px] (sm:) /
+                            // font-normal / leading 1.15 / foreground 95%.
+                            .text_size(px(30.))
+                            .line_height(px(34.5))
+                            .font_weight(FontWeight::NORMAL)
                             .text_color({
                                 let mut c = theme.foreground;
-                                c.a *= 0.9;
+                                c.a *= 0.95;
                                 c
                             })
                             .child(landing_title.clone().unwrap_or_default()),

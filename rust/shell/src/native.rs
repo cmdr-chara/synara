@@ -24594,7 +24594,7 @@ impl Render for Native {
                     meta = meta.child(
                         tail.child(
                             div()
-                                .text_size(px(13.))
+                                .text_size(px(12.))
                                 .text_color(theme.muted_foreground.opacity(0.7))
                                 .child(when),
                         )
@@ -24605,7 +24605,7 @@ impl Render for Native {
                                 .child(icon_el)
                                 .child(
                                     div()
-                                        .text_size(px(13.))
+                                        .text_size(px(12.))
                                         .text_color(theme.muted_foreground.opacity(0.8))
                                         .child(klabel),
                                 ),
@@ -24614,15 +24614,14 @@ impl Render for Native {
                     col = col.child(
                         v_flex()
                             .rounded(px(8.))
-                            .bg(theme.background)
-                            .border_1()
-                            .border_color(theme.border)
+                            // Upstream kanban card: bg-card/70, no border.
+                            .bg(theme.popover.opacity(0.7))
                             .px(px(12.))
                             .py(px(10.))
                             .gap(px(6.))
                             .child(
                                 div()
-                                    .text_size(px(15.))
+                                    .text_size(px(14.))
                                     .line_height(relative(1.375))
                                     .font_weight(FontWeight::MEDIUM)
                                     .whitespace_nowrap()

@@ -19368,18 +19368,21 @@ impl Render for Native {
         // reflects that thread's persisted modelSelection — including the
         // effort in its options — not the global picker slider. The global
         // slider only seeds new drafts.
-        let chip_effort_idx = if in_thread {
+        // Upstream: a thread chip shows the effort only when the thread's
+        // modelSelection pins one in its options; drafts always reflect the
+        // picker slider.
+        let chip_effort: Option<usize> = if in_thread {
             let eff = str_at(get(get(thread_v, "modelSelection"), "options"), "effort");
             match eff {
-                "minimal" => 0,
-                "low" => 1,
-                "medium" => 2,
-                "high" => 3,
-                "max" => 4,
-                _ => self.composer_effort_idx.min(4),
+                "minimal" => Some(0),
+                "low" => Some(1),
+                "medium" => Some(2),
+                "high" => Some(3),
+                "max" => Some(4),
+                _ => None,
             }
         } else {
-            self.composer_effort_idx.min(4)
+            Some(self.composer_effort_idx.min(4))
         };
         let theme_chip = theme.clone();
         let build_model_chip = move |cx: &mut Context<Self>| {
@@ -19405,15 +19408,15 @@ impl Render for Native {
                             .text_color(fg)
                             .child(model_label.clone()),
                     )
-                    .child(
+                    .children(chip_effort.map(|idx| {
                         div()
                             .text_size(px(13.))
                             .text_color(eff_muted)
                             .child({
                                 const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
-                                EFFORTS[chip_effort_idx].to_string()
-                            }),
-                    )
+                                EFFORTS[idx].to_string()
+                            })
+                    }))
                     .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(eff_muted))
                     .on_click(cx.listener(move |this, _ev, window, cx| {
 

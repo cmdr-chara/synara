@@ -510,6 +510,27 @@ async fn upgrade(
     ws.on_upgrade(move |socket| relay(socket, original, uri, headers, intercept, authenticated_session))
 }
 
+fn owner_only_rpc(tag: &str, payload: &serde_json::Value) -> bool {
+    tag.starts_with("account.")
+        || tag.starts_with("hosts.")
+        || (tag == "server.updateSettings"
+            && (payload.get("legacyProviders").is_some()
+                || payload.get("legacyProviderInstances").is_some()))
+}
+
+fn strip_provider_account_identity(value: &mut serde_json::Value) {
+    let Some(providers) = value.get_mut("providers").and_then(serde_json::Value::as_array_mut)
+    else {
+        return;
+    };
+    for status in providers {
+        if let Some(object) = status.as_object_mut() {
+            object.remove("accountEmail");
+            object.remove("accountOrganization");
+        }
+    }
+}
+
 /// `todo.*` requests served by the native store; the string check is a fast
 /// prefilter so ordinary traffic still takes the relay path unparsed.
 /// `Some(None)` marks a handled stream request (the reply is the chunk flow).
@@ -523,8 +544,9 @@ pub(crate) async fn intercept_todo_pub(
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
     desktop_update_authority: Option<&str>,
+    session_role: &str,
 ) -> Option<Option<ClientMessage>> {
-    intercept_todo(text, todos, native_tx, streams, desktop_update_authority).await
+    intercept_todo(text, todos, native_tx, streams, desktop_update_authority, session_role).await
 }
 
 async fn intercept_todo(
@@ -535,6 +557,7 @@ async fn intercept_todo(
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     >,
     desktop_update_authority: Option<&str>,
+    session_role: &str,
 ) -> Option<Option<ClientMessage>> {
     if !text.contains("\"todo.")
         && !text.contains("\"server.get")
@@ -705,6 +728,18 @@ async fn intercept_todo(
         .get("payload")
         .cloned()
         .unwrap_or(serde_json::Value::Null);
+    if session_role != "owner" && owner_only_rpc(tag, &payload) {
+        let reply = serde_json::json!({
+            "_tag": "Exit", "requestId": request_id,
+            "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
+                "_tag": "WsRpcError",
+                "message": "Owner authorization is required for this operation.",
+                "code": null,
+                "retryable": false
+            }}]}
+        });
+        return Some(Some(ClientMessage::Text(reply.to_string().into())));
+    }
     if tag == "git.createDetachedWorktree" {
         // Same streaming shape as runStackedAction: phase progress chunks, the
         // terminal `completed` event carries the worktree result.
@@ -1404,12 +1439,21 @@ async fn intercept_todo(
     if tag == "server.subscribeProviderStatuses" {
         let tx = native_tx.clone();
         let rid = request_id.clone();
+        let hide_identity = session_role != "owner";
         let task = tokio::spawn(async move {
             // Serve the cached provider-status snapshots upstream writes to
             // userdata/provider-status/*.json; re-emit when they change.
             let mut last = String::new();
             loop {
-                let providers = crate::provider_cache::provider_statuses();
+                let mut providers = crate::provider_cache::provider_statuses();
+                if hide_identity {
+                    for status in &mut providers {
+                        if let Some(object) = status.as_object_mut() {
+                            object.remove("accountEmail");
+                            object.remove("accountOrganization");
+                        }
+                    }
+                }
                 let text = serde_json::to_string(&providers).unwrap_or_default();
                 if text != last {
                     last = text;
@@ -1755,6 +1799,16 @@ async fn intercept_todo(
     } else {
         todos.handle(tag, payload).map(Some).map_err(error_json)
     };
+    let outcome = outcome.map(|value| {
+        value.map(|mut value| {
+            if session_role != "owner"
+                && (tag == "server.refreshProviders" || tag == "server.updateProvider")
+            {
+                strip_provider_account_identity(&mut value);
+            }
+            value
+        })
+    });
     let exit = match outcome {
         // `Schema.Void` successes encode without a `value` key.
         Ok(value) => match value {
@@ -1870,6 +1924,7 @@ async fn serve_native_socket(
     client: WebSocket,
     todos: std::sync::Arc<crate::todo::TodoStore>,
     desktop_update_authority: Option<String>,
+    session_role: String,
 ) {
         // No usable original is running: serve every frame natively. Handled tags get
         // their normal reply; anything else answers an Exit failure so callers
@@ -1904,7 +1959,7 @@ async fn serve_native_socket(
                         ));
                         continue;
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref()).await {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), session_role.as_str()).await {
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
                         }
@@ -1948,12 +2003,16 @@ async fn relay(
     authenticated_session: Option<crate::auth_http::AuthenticatedSession>,
 ) {
     let todos = original.todos.clone();
+    let session_role = authenticated_session
+        .as_ref()
+        .map(|session| session.role.clone())
+        .unwrap_or_else(|| "owner".to_string());
     let desktop_update_authority = authenticated_session.and_then(|session| {
         (session.role == "owner").then(|| format!("owner:{}", session.session_id))
     });
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() || !original.upstream_running() {
         eprintln!("ws_relay: serving socket natively (upstream unavailable or disabled)");
-        return serve_native_socket(client, todos, desktop_update_authority).await;
+        return serve_native_socket(client, todos, desktop_update_authority, session_role.clone()).await;
     }
     // The native `/ws/negotiate` issues OUR server-instance id, but upstream
     // gates upgrades on its own — swap the param so relayed sockets pass the
@@ -1993,7 +2052,7 @@ async fn relay(
                 // upstream: degrade this same connection to native serving. Tags
                 // still missing natively fail fast instead of hanging forever.
                 eprintln!("ws_relay: upstream unavailable after upgrade; serving socket natively");
-                return serve_native_socket(client, todos, desktop_update_authority).await;
+                return serve_native_socket(client, todos, desktop_update_authority, session_role.clone()).await;
             }
         }
     };
@@ -2039,7 +2098,7 @@ async fn relay(
                             continue;
                         }
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref()).await {
+                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), session_role.as_str()).await {
                         eprintln!("ws_relay: native todo reply");
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
@@ -2232,6 +2291,55 @@ mod admission_tests {
         assert!(super::authenticated_websocket_path("/ws/device-frames"));
         assert!(super::authenticated_websocket_path("/ws/computer-frames"));
         assert!(!super::authenticated_websocket_path("/ws/bootstrap"));
+    }
+
+    #[test]
+    fn provider_identity_filter_removes_only_account_labels() {
+        let mut value = serde_json::json!({"providers": [{
+            "provider": "codex",
+            "accountEmail": "owner@example.com",
+            "accountOrganization": "private-org",
+            "available": true
+        }]});
+        super::strip_provider_account_identity(&mut value);
+        let status = &value["providers"][0];
+        assert!(status.get("accountEmail").is_none());
+        assert!(status.get("accountOrganization").is_none());
+        assert_eq!(status.get("available"), Some(&serde_json::json!(true)));
+    }
+
+    #[test]
+    fn owner_only_rpc_tags_match_upstream_boundary() {
+        assert!(super::owner_only_rpc("account.status", &serde_json::json!({})));
+        assert!(super::owner_only_rpc("hosts.list", &serde_json::json!({})));
+        assert!(super::owner_only_rpc(
+            "server.updateSettings",
+            &serde_json::json!({"legacyProviders": {}})
+        ));
+        assert!(!super::owner_only_rpc("server.updateSettings", &serde_json::json!({})));
+        assert!(!super::owner_only_rpc("orchestration.getSnapshot", &serde_json::json!({})));
+    }
+
+    #[tokio::test]
+    async fn client_role_cannot_read_owner_account_state() {
+        let dir = std::env::temp_dir().join(format!(
+            "synara-ws-auth-test-{}",
+            crate::orchestration_engine::uuid_v4()
+        ));
+        let todos = crate::todo::TodoStore::open(dir.to_str().unwrap());
+        let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
+        let streams = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
+        let request = r#"{"_tag":"Request","id":"1","tag":"account.status","payload":{}}"#;
+        let reply = super::intercept_todo(request, &todos, &tx, &streams, None, "client")
+            .await
+            .flatten()
+            .expect("owner-only RPC should produce a refusal");
+        let text = match reply {
+            super::ClientMessage::Text(text) => text.to_string(),
+            _ => panic!("expected text refusal"),
+        };
+        assert!(text.contains("Owner authorization is required"));
+        let _ = std::fs::remove_dir_all(dir);
     }
 
     #[test]

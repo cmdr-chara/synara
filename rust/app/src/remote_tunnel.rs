@@ -525,7 +525,7 @@ pub async fn serve_inner(
         match msg {
             Ok(tokio_tungstenite::tungstenite::Message::Text(t)) => {
                 if let Some(reply) =
-                    crate::ws_relay::intercept_todo_pub(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref()).await
+                    crate::ws_relay::intercept_todo_pub(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), "client").await
                 {
                     if let Some(reply) = reply {
                         let _ = native_tx.send(reply);

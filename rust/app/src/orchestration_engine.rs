@@ -5609,7 +5609,7 @@ fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value,
 
 // ---- thread.usage-limit.* ----
 
-fn iso_ms(s: &str) -> Option<i64> {
+pub(crate) fn iso_ms(s: &str) -> Option<i64> {
     // "YYYY-MM-DDTHH:MM:SS.mmm(Z|+hh:mm)" → epoch ms; enough for comparisons.
     let b = s.as_bytes();
     if b.len() < 20 {

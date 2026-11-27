@@ -54,6 +54,7 @@ mod editor_icon;
 mod auth_sessions;
 mod server_secrets;
 mod thread_export;
+mod turn_format;
 mod local_image;
 mod list_worktrees;
 mod native_ws;

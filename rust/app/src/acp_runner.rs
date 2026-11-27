@@ -210,6 +210,31 @@ pub(crate) fn set_turn_state(
     completed: bool,
 ) -> Result<(), WsErr> {
     let now = iso_now_ms();
+    let format_context = if completed {
+        let workspace: Option<String> = conn
+            .query_row(
+                "SELECT p.workspace_root FROM projection_projects p \
+                 JOIN projection_threads t ON t.project_id = p.project_id \
+                 WHERE t.thread_id = ?1",
+                params![thread_id],
+                |row| row.get(0),
+            )
+            .ok();
+        let started_at: Option<String> = conn
+            .query_row(
+                "SELECT started_at FROM projection_turns WHERE thread_id = ?1 AND turn_id = ?2",
+                params![thread_id, turn_id],
+                |row| row.get(0),
+            )
+            .ok();
+        workspace.and_then(|root| {
+            started_at
+                .and_then(|started| crate::orchestration_engine::iso_ms(&started))
+                .map(|since| (PathBuf::from(root), since))
+        })
+    } else {
+        None
+    };
     conn.execute(
         "UPDATE projection_turns SET state = ?3, completed_at = ?4 \
          WHERE thread_id = ?1 AND turn_id = ?2",
@@ -227,6 +252,9 @@ pub(crate) fn set_turn_state(
         params![thread_id, turn_id, now],
     )
     .map_err(|e| err(format!("message settle: {e}")))?;
+    if let Some((root, since)) = format_context {
+        crate::turn_format::spawn_after_turn(root, since);
+    }
     Ok(())
 }
 

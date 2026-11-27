@@ -2984,6 +2984,77 @@ fn create_threads_batch(args: &Value, caller_thread: Option<&str>) -> Result<Val
             _ => return Err(format!("threads[{i}].prompt is required.")),
         }
     }
+    // Hub coordinators never create threads directly: their tasks go into the
+    // durable hub work queue, where keys freeze at first decision and the
+    // admission loop spawns workers. `accepted` does not mean `started`.
+    if let Some(caller) = caller_thread {
+        let is_coordinator = state_conn()
+            .ok()
+            .and_then(|conn| {
+                conn.query_row(
+                    "SELECT project_id FROM project_agent_configs WHERE coordinator_thread_id = ?1 AND enabled = 1",
+                    [caller],
+                    |r| r.get::<_, String>(0),
+                )
+                .ok()
+            })
+            .is_some();
+        if is_coordinator {
+            let tasks: Vec<Value> = threads
+                .iter()
+                .map(|item| {
+                    let mut spec = json!({
+                        "prompt": item.get("prompt").cloned().unwrap_or(Value::Null),
+                    });
+                    for key in ["title", "projectId", "taskKey", "contextMessageIds"] {
+                        if let Some(v) = item.get(key) {
+                            spec.as_object_mut().unwrap().insert(key.into(), v.clone());
+                        }
+                    }
+                    json!({"spec": spec, "title": item.get("title").cloned().unwrap_or(Value::Null)})
+                })
+                .collect();
+            // The calling turn's latest user message freezes as the source request.
+            let source_messages = state_conn()
+                .ok()
+                .and_then(|conn| {
+                    conn.query_row(
+                        "SELECT message_id FROM projection_thread_messages \
+                         WHERE thread_id = ?1 AND role = 'user' ORDER BY created_at DESC LIMIT 1",
+                        [caller],
+                        |r| r.get::<_, String>(0),
+                    )
+                    .ok()
+                })
+                .map(|mid| vec![json!({"threadId": caller, "messageId": mid})])
+                .unwrap_or_else(|| vec![json!({"threadId": caller, "messageId": format!("gateway-{request_id}")})]);
+            let outcome = crate::hub_work::submit(
+                caller,
+                None,
+                &request_id,
+                &source_messages,
+                &tasks,
+            )
+            .map_err(|e| e.0)?;
+            let items: Vec<Value> = outcome
+                .items
+                .iter()
+                .map(|record| {
+                    json!({
+                        "workItemId": record.get("workItemId"),
+                        "state": record.get("state"),
+                        "title": record.get("title"),
+                        "accepted": true,
+                    })
+                })
+                .collect();
+            return Ok(json!({
+                "hubWork": true,
+                "replayed": outcome.replayed,
+                "workItems": items,
+            }));
+        }
+    }
     let mut results = Vec::new();
     for (i, item) in threads.iter().enumerate() {
         let mut item_args = json!({

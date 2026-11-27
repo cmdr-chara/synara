@@ -249,3 +249,24 @@ upstream remarkImageRows/expandable-image box model. (2) scroll-sync for anaglyp
 script scrolls both to top before capture. (3) paragraph_gap: TextViewStyle default 0.75rem vs
 upstream effective 10.4px — verify visually after line-height fix. (4) heading scale: TextView
 default heading_base 14px vs upstream proportional-to-chat (h2=1.55x chat).
+
+## OVERNIGHT PIXEL-PERFECT SCOREBOARD (updated 2026-11-27 ~04:00, deadline 13:00)
+Surface status vs web reference (anaglyph + numeric measurements, 1600x1088):
+- tasks list: CONVERGED (strip 4-way control + title + New task added, positions exact)
+- inbox: CONVERGED heading (93,92 exact both); tiles structurally correct
+- automations empty: CONVERGED (center_y 560=560)
+- settings General: CONVERGED (mean abs diff 3.8/255, mostly rail texture noise)
+- code review: NEARLY — sidebar empty-state text block ~10-15px vertical offset, rest aligned
+- kanban cards: status badge divergence (shell "Draft" vs web "Done" — DATA issue not layout);
+  card meta row missing leading icon; strip converged
+- transcript: typography FIXED (13px/1.625); OPEN: image sizing vs column, block spacing detail,
+  scroll-sync needed per capture (script scrollTop=0 both)
+- landing composer: empty-state correct ("Work in a project" IS upstream empty state — verified
+  in ProjectPicker.tsx); project-scoped heading exists in code but project-row click shows hover
+  preview instead of navigating — project navigation is a FEATURE GAP not pixel gap
+- dark mode: structure verified inbox/landing; backdrop ink-blending gap documented below
+REMAINING QUEUE (priority order): transcript image/block detail, dark sweep all surfaces,
+code review vertical offset, kanban card meta icon, strip tab bar detail in thread view,
+settings sub-pages spot checks, pull-requests detail rows.
+Method reminder: captures in /tmp/pxcmp/, anaglyph.py ref test out; measure numerically with
+PIL ink-position scripts before editing; rebuild+relaunch+reposition shell per cycle.

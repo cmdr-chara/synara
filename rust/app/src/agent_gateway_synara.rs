@@ -282,6 +282,8 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
                 "projectId": {"type": "string"},
                 "provider": {"type": "string"},
                 "model": {"type": "string"},
+                "environment": {"type": "string", "enum": ["local", "worktree"]},
+                "baseRef": {"type": "string", "description": "Local git revision the worktree is pinned at. Defaults to HEAD."},
             }), &["requestId"]),
         ),
         def(
@@ -2048,6 +2050,58 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
                 .ok_or("No project found: pass projectId explicitly.")?
         }
     };
+    // Isolated worktree environment: the worktree is created before dispatch
+    // so the thread projection is born pointing at it. Managed branch naming
+    // matches the reclaim rule (`synara/*` branches are disposable).
+    let mut worktree: Option<(String, String)> = None; // (path, branch)
+    if arg_str(args, "environment").as_deref() == Some("worktree") {
+        let repo_root: String = conn
+            .query_row(
+                "SELECT workspace_root FROM projection_projects WHERE project_id = ?1",
+                [&project_id],
+                |r| r.get(0),
+            )
+            .map_err(|_| "Project has no workspace to isolate.".to_string())?;
+        let is_repo = std::process::Command::new("git")
+            .args(["rev-parse", "--is-inside-work-tree"])
+            .current_dir(&repo_root)
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false);
+        if !is_repo {
+            return Err("Worktree isolation requires a git repository workspace.".into());
+        }
+        let base_ref = arg_str(args, "baseRef").unwrap_or_else(|| "HEAD".into());
+        if base_ref.starts_with('#') || base_ref.starts_with("http") {
+            return Err("Pull-request baseRef resolution is not supported yet; pass a local ref.".into());
+        }
+        if base_ref.starts_with('-') {
+            return Err("Invalid baseRef.".into());
+        }
+        let branch = format!("synara/thread-{}", &thread_id[..13]);
+        let repo_name = std::path::Path::new(&repo_root)
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("repo")
+            .to_string();
+        let path = format!(
+            "{}/{repo_name}/{thread_id}",
+            crate::git_domain::worktrees_dir()
+        );
+        let out = std::process::Command::new("git")
+            .args(["worktree", "add", "-b", &branch, &path, &base_ref])
+            .current_dir(&repo_root)
+            .output()
+            .map_err(|e| format!("git worktree add failed: {e}"))?;
+        if !out.status.success() {
+            let stderr = String::from_utf8_lossy(&out.stderr);
+            return Err(format!(
+                "git worktree add failed: {}",
+                stderr.trim().lines().next().unwrap_or("git failed")
+            ));
+        }
+        worktree = Some((path, branch));
+    }
     let mut create = json!({
         "type": "thread.create",
         "commandId": format!("gateway-mcp-{request_id}-thread-create"),
@@ -2056,6 +2110,12 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
         "title": title,
         "createdAt": now,
     });
+    if let Some((path, _branch)) = &worktree {
+        let obj = create.as_object_mut().unwrap();
+        obj.insert("envMode".into(), json!("worktree"));
+        obj.insert("worktreePath".into(), json!(path));
+        obj.insert("workingDirectory".into(), json!(path));
+    }
     if let Some(provider) = arg_str(args, "provider") {
         create.as_object_mut().unwrap().insert("provider".into(), json!(provider));
     }

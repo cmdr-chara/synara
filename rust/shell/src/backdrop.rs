@@ -17,6 +17,19 @@ const LIGHT_INK_SOFTEN: f32 = 0.28;
 const GROUND_DIM: (f32, f32, f32, f32, f32) = (0.55, 0.6, 0.16, 0.07, 0.18);
 const STRAY_RADIUS_CELLS: i32 = 2;
 
+// Upstream ripple constants (EmptyChatBackdrop.tsx): rings expand at 0.5px/ms,
+// live 2.4s, band 26px with angular wobble; light mode clears dots (pale ring),
+// dark adds them lit toward the accent highlight.
+pub const RIPPLE_SPEED_PX_PER_MS: f32 = 0.5;
+pub const RIPPLE_BAND_PX: f32 = 26.0;
+pub const RIPPLE_LIFETIME_MS: f32 = 2400.0;
+pub const RIPPLE_WOBBLE_PX: f32 = 22.0;
+pub const RIPPLE_STRENGTH: f32 = 0.7;
+pub const RIPPLE_TROUGH_STRENGTH: f32 = 0.6;
+pub const RIPPLE_TROUGH_LAG_PX: f32 = 30.0;
+pub const RIPPLE_REACH_PX: f32 = RIPPLE_BAND_PX * 2.5 + RIPPLE_WOBBLE_PX + RIPPLE_TROUGH_LAG_PX;
+pub const RIPPLE_SETTLED: f32 = 0.04;
+
 struct Levels {
     low: f32,
     high: f32,
@@ -252,7 +265,18 @@ fn quiet_factor(x: f32, y: f32, zones: &[(f32, f32, f32, f32)], floor: f32) -> f
 /// Builds the dot field and renders it into a BGRA bitmap at logical
 /// resolution (each cell is 2x2 px; the dot circle is anti-aliased by
 /// coverage). Returns None when nothing would show.
-pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<RenderImage>> {
+pub struct BackdropField {
+    pub density: Vec<u8>,
+    pub dots: Vec<u8>,
+    pub cols: usize,
+    pub rows: usize,
+    pub ink: [u8; 3],
+}
+
+/// Density pipeline + ordered dither + stray cleanup, cacheable per geometry:
+/// the expensive part (scene sampling, blurs) runs once per resize, while
+/// ripples re-dither cheaply per frame from the cached density.
+pub fn compute_backdrop_field(spec: &BackdropSpec) -> Option<BackdropField> {
     let width = spec.width;
     let height = spec.height;
     if width < 8.0 || height < 8.0 {
@@ -403,6 +427,30 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
         })
     };
 
+
+    Some(BackdropField {
+        density: density.clone(),
+        dots: clean,
+        cols,
+        rows,
+        ink,
+    })
+}
+
+/// Rasterizes the dot field into the device-resolution BGRA bitmap. With
+/// ripples non-empty (x, y, phase_a, phase_b, age_ms in pane coordinates) the
+/// dither is re-evaluated live inside ring reach, matching upstream paintCell.
+pub fn rasterize_backdrop(
+    spec: &BackdropSpec,
+    field: &BackdropField,
+    ripples: &[(f32, f32, f32, f32, f32)],
+) -> Option<std::sync::Arc<RenderImage>> {
+    let width = spec.width;
+    let height = spec.height;
+    let cols = field.cols;
+    let rows = field.rows;
+    let levels = if spec.dark { &DARK_LEVELS } else { &LIGHT_LEVELS };
+    let ink = field.ink;
     // Upstream renders one bitmap pixel per cell and the browser upscales it
     // with `image-rendering: pixelated` (nearest, crisp), then intersects a
     // per-cell radial mask: a circle of `dot` px radius solid, fading to
@@ -421,7 +469,44 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
     // (upstream LIGHT_SKY_MASK intersecting the dot mask).
     for row in 0..rows {
         for col in 0..cols {
-            if clean[row * cols + col] == 0 {
+            let cell_index = row * cols + col;
+            let mut dot_on = field.dots[cell_index] == 1;
+            if !ripples.is_empty() {
+                let x = col as f32 * CELL_PX + CELL_PX / 2.0;
+                let y = row as f32 * CELL_PX + CELL_PX / 2.0;
+                let mut value = field.density[cell_index] as f32 / 255.0;
+                let mut disturbance = 0.0f32;
+                let crest_sign = if spec.dark { 1.0f32 } else { -1.0f32 };
+                for &(rx, ry, pa, pb, age) in ripples {
+                    let radius = age * RIPPLE_SPEED_PX_PER_MS;
+                    let dx = x - rx;
+                    let dy = y - ry;
+                    let distance = (dx * dx + dy * dy).sqrt();
+                    if (distance - radius).abs() > RIPPLE_REACH_PX {
+                        continue;
+                    }
+                    let angle = dy.atan2(dx);
+                    let wobble = RIPPLE_WOBBLE_PX
+                        * (0.6 * (angle * 3.0 + pa + age / 400.0).sin()
+                            + 0.4 * (angle * 5.0 + pb).sin());
+                    let offset = (distance + wobble - radius) / RIPPLE_BAND_PX;
+                    let trough_offset = offset + RIPPLE_TROUGH_LAG_PX / RIPPLE_BAND_PX;
+                    let life = 1.0 - age / RIPPLE_LIFETIME_MS;
+                    let fade = life * life;
+                    let ring = (-offset * offset).exp() * fade;
+                    let trough = (-trough_offset * trough_offset).exp() * fade;
+                    let delta = crest_sign
+                        * (RIPPLE_STRENGTH * ring - RIPPLE_TROUGH_STRENGTH * trough);
+                    value += delta;
+                    disturbance += delta.abs();
+                }
+                // Upstream: settled cells keep the cleaned still dots; inside a
+                // ring the ordered dither runs live on the distorted value.
+                if disturbance >= RIPPLE_SETTLED {
+                    dot_on = value * 255.0 > BAYER_8[(row & 7) * 8 + (col & 7)] as f32;
+                }
+            }
+            if !dot_on {
                 continue;
             }
             let cy = row as f32 * CELL_PX + CELL_PX / 2.0;
@@ -491,3 +576,10 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
         image::Frame::new(img)
     ])))
 }
+
+/// Static convenience wrapper: compute + rasterize with no ripples.
+pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<RenderImage>> {
+    let field = compute_backdrop_field(spec)?;
+    rasterize_backdrop(spec, &field, &[])
+}
+

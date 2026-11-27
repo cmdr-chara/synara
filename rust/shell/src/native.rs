@@ -1342,6 +1342,8 @@ pub struct Native {
     /// Dithered temple backdrop (upstream EmptyChatBackdrop): cached rendered
     /// dot field plus the (w,h,dark) key it was built at.
     backdrop_img: Option<Arc<gpui::RenderImage>>,
+    backdrop_field: Option<crate::backdrop::BackdropField>,
+    backdrop_spec: Option<crate::backdrop::BackdropSpec>,
     backdrop_key: (u32, u32, bool),
     /// Full-window atmosphere layer (upstream .app-shell-atmosphere):
     /// window-coordinated texture composited at 35%/80% opacity under the
@@ -3343,6 +3345,8 @@ impl Native {
             ascii_seed: 0.0,
             ascii_cells: Vec::new(),
             backdrop_img: None,
+            backdrop_field: None,
+            backdrop_spec: None,
             backdrop_key: (0, 0, false),
             atmosphere_img: None,
             atmosphere_key: (0, 0, false, 0),
@@ -16890,8 +16894,7 @@ impl Render for Native {
                         (cx0, bh * 0.30, col_w, bh * 0.22),
                         (cx0, bh - 210.0, col_w, 180.0),
                     ];
-                    self.backdrop_img = crate::backdrop::build_backdrop_image(
-                        &crate::backdrop::BackdropSpec {
+                    let spec = crate::backdrop::BackdropSpec {
                             width: bw,
                             height: bh,
                             dark,
@@ -16900,8 +16903,14 @@ impl Render for Native {
                             scale: window.scale_factor(),
                             alpha_scale: 1.0,
                             chrome_clip: None,
-                        },
-                    );
+
+                    };
+                    self.backdrop_field = crate::backdrop::compute_backdrop_field(&spec);
+                    self.backdrop_img = self
+                        .backdrop_field
+                        .as_ref()
+                        .and_then(|f| crate::backdrop::rasterize_backdrop(&spec, f, &[]));
+                    self.backdrop_spec = Some(spec);
                     self.backdrop_key = key;
                 }
                 // Upstream: the empty-chat pane is opaque only in normal
@@ -26371,7 +26380,36 @@ impl Render for Native {
                     None
                 };
                 let mut landing_bd_main = if show_landing && !other_surface_active && self.show_ascii_bg {
-                    self.backdrop_img.clone().map(|img| {
+                    // Live ripple frames: while any click ripple is alive the
+                    // bitmap is re-rasterized per frame from the cached density
+                    // field (upstream re-dithers ring cells at 25fps).
+                    let now = std::time::Instant::now();
+                    let live: Vec<(f32, f32, f32, f32, f32)> = self
+                        .ascii_ripples
+                        .iter()
+                        .map(|r| {
+                            (
+                                r.0,
+                                r.1,
+                                r.2,
+                                r.3,
+                                now.saturating_duration_since(r.4).as_millis() as f32,
+                            )
+                        })
+                        .filter(|r| r.4 < crate::backdrop::RIPPLE_LIFETIME_MS)
+                        .collect();
+                    let frame_img = if !live.is_empty() {
+                        match (&self.backdrop_spec, &self.backdrop_field) {
+                            (Some(spec), Some(field)) => {
+                                crate::backdrop::rasterize_backdrop(spec, field, &live)
+                                    .or_else(|| self.backdrop_img.clone())
+                            }
+                            _ => self.backdrop_img.clone(),
+                        }
+                    } else {
+                        self.backdrop_img.clone()
+                    };
+                    frame_img.map(|img| {
                         // Window-sized canvas mounted at the root: the scene
                         // continues under the floating sidebar (upstream
                         // data-sidebar-layout=rail empty-chat geometry).

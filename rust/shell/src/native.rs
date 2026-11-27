@@ -18941,13 +18941,16 @@ impl Render for Native {
         };
         // Upstream light composer card is color(srgb 1 1 1 / 0.55); dark keeps the
         // surface tint at the same alpha so the backdrop reads through.
+        // Upstream composer surface is opaque in Solid window mode (measured
+        // 252 over the tray's 249); translucency only applies in the
+        // Translucent window setting, which the shell does not implement.
         let composer_card_bg = {
             let mut c = if theme.is_dark() {
                 sidebar_bg
             } else {
                 gpui::hsla(0.0, 0.0, 1.0, 1.0)
             };
-            c.a = 0.55;
+            c.a = 1.0;
             c
         };
         // Upstream in-thread composer: the input row is a fully-rounded white

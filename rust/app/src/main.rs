@@ -60,6 +60,7 @@ mod turn_format;
 mod checkpointing;
 mod pr_command_detection;
 mod thread_git_metadata;
+mod sidechat_expiry;
 mod local_image;
 mod list_worktrees;
 mod native_ws;
@@ -325,6 +326,7 @@ async fn main() {
         });
         claude_runner::spawn_credential_keepalive();
         crate::pull_requests::spawn_auto_fix_watcher();
+    crate::sidechat_expiry::spawn_expiry_watcher();
         std::thread::spawn(|| loop {
             crate::remote_connections::retry_reconnecting_once();
             std::thread::sleep(std::time::Duration::from_secs(5));

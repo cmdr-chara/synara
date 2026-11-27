@@ -237,7 +237,8 @@ fn tool(name: &str, description: &str, schema: Value) -> Value {
 }
 
 fn tool_definitions() -> Vec<Value> {
-    let mut definitions = crate::browser_automation::browser_tool_definitions();
+    let mut definitions = crate::agent_gateway_synara::synara_tool_definitions();
+    definitions.extend(crate::browser_automation::browser_tool_definitions());
     definitions.extend(vec![
         tool(
             "computer_list_windows",
@@ -616,6 +617,9 @@ pub async fn handle_ws_call(payload: &Value) -> Result<Value, crate::todo::WsErr
 }
 
 async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
+    if name.starts_with("synara_") {
+        return crate::agent_gateway_synara::call_synara_tool(name, args);
+    }
     if name.starts_with("browser_") {
         return crate::browser_automation::call_browser_tool(name, args, thread).await;
     }

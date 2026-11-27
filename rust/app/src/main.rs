@@ -5,6 +5,7 @@ mod beta_operational_issue;
 mod database_lifecycle_lock;
 mod migrations;
 mod agent_gateway_mcp;
+mod agent_gateway_synara;
 mod acp_runner;
 mod claude_runner;
 mod claude_monitor;

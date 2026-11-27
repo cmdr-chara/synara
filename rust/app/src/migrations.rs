@@ -49,75 +49,329 @@ fn tracker_rows(conn: &Connection) -> Result<Vec<(u32, String)>, WsErr> {
         .map_err(|e| err(format!("read migrations tracker: {e}")))?;
     let rows = stmt
         .query_map([], |r| Ok((r.get::<_, u32>(0)?, r.get::<_, String>(1)?)))
+        .map_err(|e| err(format!("read migrations tracker rows: {e}")))?
+        .collect::<Result<Vec<_>, _>>()
         .map_err(|e| err(format!("read migrations tracker rows: {e}")))?;
-    Ok(rows.filter_map(|r| r.ok()).collect())
+    Ok(rows)
+}
+
+#[derive(Clone, Debug, Default)]
+struct LineageRepair {
+    delete_after: Option<u32>,
+    truncate_from: Option<u32>,
+    rename_migration32: bool,
+    rename_migration54: bool,
+}
+
+#[derive(Clone, Debug)]
+struct LineageInspection {
+    rows: Vec<(u32, String)>,
+    repair: LineageRepair,
+}
+
+fn canonical_migration_name(id: u32) -> Option<&'static str> {
+    canonical_migrations().iter().find(|(cid, _, _)| *cid == id).map(|(_, name, _)| *name)
+}
+
+fn migration_lineage_fingerprint(rows: &[(u32, String)]) -> String {
+    use sha2::{Digest as _, Sha256};
+    let mut text = String::from("[");
+    for (index, (id, name)) in rows.iter().enumerate() {
+        if index > 0 { text.push(','); }
+        text.push_str(&format!("[{},{}]", id, serde_json::to_string(name).unwrap_or_else(|_| "\"\"".into())));
+    }
+    text.push(']');
+    let digest = Sha256::digest(text.as_bytes());
+    digest.iter().map(|byte| format!("{byte:02x}")).collect()
+}
+
+fn json_string(value: &str) -> String {
+    serde_json::to_string(value).unwrap_or_else(|_| "\"\"".into())
+}
+
+fn divergence_consent_token(
+    database_path: &str,
+    source_version: &str,
+    target_version: u32,
+    first_diverged_id: u32,
+    expected_name: &str,
+    recorded_name: &str,
+    high_water_mark: u32,
+    lineage_fingerprint: &str,
+) -> String {
+    use sha2::{Digest as _, Sha256};
+    let binding = format!(
+        "{{\"version\":1,\"databasePath\":{},\"sourceVersion\":{},\"targetVersion\":{},\"firstDivergedId\":{},\"expectedName\":{},\"recordedName\":{},\"highWaterMark\":{},\"lineageFingerprint\":{}}}",
+        json_string(database_path),
+        json_string(source_version),
+        target_version,
+        first_diverged_id,
+        json_string(expected_name),
+        json_string(recorded_name),
+        high_water_mark,
+        json_string(lineage_fingerprint),
+    );
+    Sha256::digest(binding.as_bytes()).iter().map(|byte| format!("{byte:02x}")).collect()
+}
+
+fn divergence_challenge_json(
+    database_path: &str,
+    backup_directory: &str,
+    source_version: &str,
+    target_version: u32,
+    first_diverged_id: u32,
+    expected_name: &str,
+    recorded_name: &str,
+    high_water_mark: u32,
+    lineage_fingerprint: &str,
+    consent_token: &str,
+) -> String {
+    format!(
+        "{{\"version\":1,\"databasePath\":{},\"backupDirectory\":{},\"sourceVersion\":{},\"targetVersion\":{},\"firstDivergedId\":{},\"expectedName\":{},\"recordedName\":{},\"highWaterMark\":{},\"lineageFingerprint\":{},\"consentToken\":{}}}",
+        json_string(database_path),
+        json_string(backup_directory),
+        json_string(source_version),
+        target_version,
+        first_diverged_id,
+        json_string(expected_name),
+        json_string(recorded_name),
+        high_water_mark,
+        json_string(lineage_fingerprint),
+        json_string(consent_token),
+    )
+}
+
+fn validate_account_migration_schema(conn: &Connection, requires_identity: bool) -> Result<(), WsErr> {
+    let mut stmt = conn
+        .prepare("PRAGMA table_info(account_usage_sync)")
+        .map_err(|e| err(format!("inspect private account schema: {e}")))?;
+    let columns = stmt
+        .query_map([], |row| {
+            Ok((
+                row.get::<_, String>(1)?,
+                row.get::<_, String>(2).unwrap_or_default().to_ascii_uppercase(),
+                row.get::<_, i64>(3)?,
+                row.get::<_, i64>(5)?,
+            ))
+        })
+        .map_err(|e| err(format!("inspect private account schema: {e}")))?
+        .filter_map(|row| row.ok())
+        .collect::<Vec<_>>();
+    let mut names = vec!["id", "watermark_minute", "last_failure_at"];
+    if requires_identity || columns.iter().any(|(name, _, _, _)| name == "account_identity") {
+        names.push("account_identity");
+    }
+    let valid_columns = columns.len() == names.len() && names.iter().all(|expected| {
+        columns.iter().any(|(name, ty, notnull, pk)| {
+            name == expected
+                && *ty == if *expected == "id" { "INTEGER" } else { "TEXT" }
+                && if *expected == "id" { *pk == 1 } else { *notnull == 0 }
+        })
+    });
+    if !valid_columns {
+        return Err(err("private account migration schema is incompatible; restore a verified backup"));
+    }
+    let count: i64 = conn
+        .query_row("SELECT COUNT(*) FROM account_usage_sync", [], |row| row.get(0))
+        .map_err(|e| err(format!("inspect private account singleton: {e}")))?;
+    if count != 1 {
+        return Err(err("private account migration singleton is incompatible; restore a verified backup"));
+    }
+    Ok(())
+}
+
+fn normalized_lineage_name(rows: &[(u32, String)], index: usize, canonical: &[(u32, &'static str, MigrationFn)]) -> String {
+    let (id, name) = &rows[index];
+    if *id == 32 {
+        let prefix_valid = rows.iter().take(31).enumerate().all(|(prefix_index, (row_id, row_name))| {
+            *row_id == prefix_index as u32 + 1
+                && canonical.iter().find(|(cid, _, _)| *cid == *row_id).map(|(_, canonical, _)| *canonical) == Some(row_name.as_str())
+        });
+        if prefix_valid {
+            if let Some(canonical32) = canonical.iter().find(|(cid, _, _)| *cid == 32).map(|(_, name, _)| *name) {
+                return canonical32.into();
+            }
+        }
+    }
+    if *id == 54 && name == "ProjectPullRequestPins" {
+        if let Some(canonical54) = canonical.iter().find(|(cid, _, _)| *cid == 54).map(|(_, name, _)| *name) {
+            return canonical54.into();
+        }
+    }
+    name.clone()
+}
+
+fn first_lineage_divergence(rows: &[(u32, String)], high_water_mark: u32) -> Option<(u32, &'static str)> {
+    let recorded: std::collections::HashMap<u32, &str> = rows.iter().map(|(id, name)| (*id, name.as_str())).collect();
+    canonical_migrations().into_iter().find(|(id, name, _)| {
+        *id <= high_water_mark && recorded.get(id).copied() != Some(*name)
+    }).map(|(id, name, _)| (id, name))
+}
+
+fn is_released_main_migration_gap(rows: &[(u32, String)]) -> bool {
+    let expected_count = canonical_migrations().iter().filter(|(id, _, _)| *id <= 135 || *id == 141).count();
+    rows.len() == expected_count && canonical_migrations().iter()
+        .filter(|(id, _, _)| *id <= 135 || *id == 141)
+        .all(|(id, name, _)| rows.iter().any(|(row_id, row_name)| row_id == id && row_name == name))
+}
+
+fn configured_divergence_consent() -> Option<String> {
+    std::env::var("SYNARA_MIGRATION_DIVERGENCE_CONSENT").ok().filter(|value| !value.is_empty())
 }
 
 /// Inspect tracker rows against the canonical list without mutating the
-/// database. Private-build account lineage tails are recognized and represented
-/// as a repair plan (`delete_above`), which `run_pending` executes inside the
-/// migration transaction only after a pre-migration backup exists.
-fn inspect_lineage(rows: &[(u32, String)]) -> Result<(Vec<(u32, String)>, Option<u32>), WsErr> {
+/// database. The returned repair plan is executed inside the migration
+/// transaction only after the pre-migration backup marker is durable.
+fn inspect_lineage_with_consent(
+    conn: &Connection,
+    rows: &[(u32, String)],
+    db_path: Option<&std::path::Path>,
+    divergence_consent: Option<&str>,
+) -> Result<LineageInspection, WsErr> {
     let canonical = canonical_migrations();
-    let canonical_name = |id: u32| -> Option<&'static str> {
-        canonical.iter().find(|(cid, _, _)| *cid == id).map(|(_, n, _)| *n)
-    };
-    if rows.len() > canonical.len() {
-        let canonical_prefix_valid = rows.iter().take(canonical.len()).enumerate().all(|(index, (id, name))| {
-            *id == index as u32 + 1 && canonical_name(*id) == Some(name.as_str())
-        });
-        if canonical_prefix_valid {
-            let schema = rows.last().map(|(id, _)| *id).unwrap_or(0);
+    let canonical_name = |id: u32| canonical.iter().find(|(cid, _, _)| *cid == id).map(|(_, name, _)| *name);
+    let mut repair = LineageRepair::default();
+    let mut effective = rows.to_vec();
+
+    // Private account lineages are whole incompatible tails. They are removed
+    // after validating the singleton schema they created; no foreign replay is
+    // allowed to guess around a malformed account table.
+    let has_private_rows = rows.iter().any(|(id, name)| {
+        name.starts_with("AccountUsageSync") && canonical_name(*id) != Some(name.as_str())
+    });
+    if has_private_rows {
+        let mut matched = None;
+        for lineage in ACCOUNT_LINEAGES {
+            let prefix = lineage.0;
+            let tail = lineage.1;
+            let tail_len = rows.len() as u32 as i64 - prefix as i64;
+            if rows.len() as u32 <= prefix || tail_len < 1 || tail_len > tail.len() as i64 {
+                continue;
+            }
+            let matches = rows.iter().enumerate().all(|(index, (id, _name))| {
+                let pos = index as u32 + 1;
+                if *id != pos { return false; }
+                let name = normalized_lineage_name(rows, index, &canonical);
+                if pos <= prefix {
+                    canonical_name(pos) == Some(name.as_str())
+                } else {
+                    tail.get((pos - prefix - 1) as usize) == Some(&name.as_str())
+                }
+            });
+            if matches {
+                matched = Some((prefix, rows.iter().skip(prefix as usize).any(|(_, name)| name == "AccountUsageSyncIdentity")));
+                break;
+            }
+        }
+        let Some((prefix, requires_identity)) = matched else {
+            return Err(err("unrecognized private account migration lineage; no tracker changes were made"));
+        };
+        validate_account_migration_schema(conn, requires_identity)?;
+        repair.delete_after = Some(prefix);
+        effective = rows.iter().take(prefix as usize).cloned().collect();
+    }
+
+    // Older imported databases recorded a foreign name at migration 32. When
+    // the shared prefix is exactly ours this is metadata-only and is repaired
+    // in place rather than replaying the early shared lineage.
+    let prefix31_valid = effective.iter().take(31).enumerate().all(|(index, (id, name))| {
+        *id == index as u32 + 1 && canonical_name(*id) == Some(name.as_str())
+    });
+    if prefix31_valid
+        && effective.iter().any(|(id, name)| *id == 32 && canonical_name(32) != Some(name.as_str()))
+    {
+        repair.rename_migration32 = true;
+        if let Some(canonical32) = canonical_name(32) {
+            for (id, name) in &mut effective {
+                if *id == 32 { *name = canonical32.into(); }
+            }
+        }
+    }
+
+    // v0.5.5 recorded ProjectPullRequestPins at 54; that migration now lives at
+    // 69 while 54 is a reserved no-op. Rename only when doing so produces an
+    // exact canonical prefix, exactly like upstream's alias guard.
+    if effective.iter().any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins") {
+        let mut aliased = effective.clone();
+        if let Some(canonical54) = canonical_name(54) {
+            for (id, name) in &mut aliased {
+                if *id == 54 { *name = canonical54.into(); }
+            }
+        }
+        let high_water = aliased.iter().map(|(id, _)| *id).max().unwrap_or(0);
+        if first_lineage_divergence(&aliased, high_water).is_none() {
+            repair.rename_migration54 = true;
+            effective = aliased;
+        }
+    }
+
+    let high_water_mark = effective.iter().map(|(id, _)| *id).max().unwrap_or(0);
+    if is_released_main_migration_gap(&effective) {
+        // Released main reserved 136–140 and wrote 141. Replaying 136+ is the
+        // normal upgrade path and does not require imported-lineage consent.
+        repair.truncate_from = Some(136);
+        effective.retain(|(id, _)| *id < 136);
+        return Ok(LineageInspection { rows: effective, repair });
+    }
+
+    if let Some((first_diverged, expected_name)) = first_lineage_divergence(&effective, high_water_mark) {
+        if first_diverged <= 16 {
             return Err(err(format!(
-                "database schema v{schema} is newer than this build supports (v{}). Update Synara before opening this data home.",
-                canonical.len()
+                "migration lineage mismatch in shared prefix at {first_diverged}: expected {expected_name}"
             )));
         }
-    }
-    let mut mismatches = Vec::new();
-    for (index, (id, name)) in rows.iter().enumerate() {
-        let expected_id = index as u32 + 1;
-        if *id != expected_id {
-            mismatches.push(format!("tracker id {id} at position {expected_id}"));
-            continue;
+        let recorded_name = effective.iter().find(|(id, _)| *id == first_diverged)
+            .map(|(_, name)| name.as_str())
+            .unwrap_or("<missing>");
+        let source_version = if repair.rename_migration32 {
+            format!("v{high_water_mark}-legacy32")
+        } else {
+            format!("imported-v{high_water_mark}-from{first_diverged}")
+        };
+        let target_version = canonical.iter().map(|(id, _, _)| *id).max().unwrap_or(0);
+        let fingerprint = migration_lineage_fingerprint(rows);
+        let database_path = db_path.map(|path| path.to_string_lossy().into_owned()).unwrap_or_default();
+        let token = divergence_consent_token(
+            &database_path,
+            &source_version,
+            target_version,
+            first_diverged,
+            expected_name,
+            recorded_name,
+            high_water_mark,
+            &fingerprint,
+        );
+        if divergence_consent != Some(token.as_str()) {
+            let backup_directory = db_path.map(|db| migration_backup_directory(db).to_string_lossy().into_owned()).unwrap_or_default();
+            let challenge = divergence_challenge_json(
+                &database_path,
+                &backup_directory,
+                &source_version,
+                target_version,
+                first_diverged,
+                expected_name,
+                recorded_name,
+                high_water_mark,
+                &fingerprint,
+                &token,
+            );
+            return Err(err(format!(
+                "Migration {first_diverged} in {database_path} is recorded as \"{recorded_name}\" but this build expects \"{expected_name}\". Repair would rewrite migration tracker rows from {first_diverged} and replay through {target_version}. To approve only this inspected database and lineage, restart once with SYNARA_MIGRATION_DIVERGENCE_CONSENT={token}. Synara will first create a recovery backup in {backup_directory}.\nSYNARA_MIGRATION_DIVERGENCE_CONSENT_REQUIRED={challenge}"
+            )));
         }
-        if canonical_name(*id) != Some(name.as_str()) {
-            mismatches.push(format!("tracker {id} named {name}"));
-        }
+        repair.truncate_from = Some(first_diverged);
+        effective.retain(|(id, _)| *id < first_diverged);
+        return Ok(LineageInspection { rows: effective, repair });
     }
-    if mismatches.is_empty() {
-        return Ok((rows.to_vec(), None));
-    }
-    for lineage in ACCOUNT_LINEAGES {
-        let prefix = lineage.0;
-        let tail: &[&str] = lineage.1;
-        let tail_len = rows.len() as u32 - prefix;
-        if rows.len() as u32 <= prefix || tail_len < 1 || tail_len > tail.len() as u32 {
-            continue;
-        }
-        let matches = rows.iter().enumerate().all(|(index, (id, name))| {
-            let pos = index as u32 + 1;
-            if *id != pos {
-                return false;
-            }
-            if pos <= prefix {
-                canonical_name(pos) == Some(name.as_str())
-            } else {
-                tail.get((pos - prefix - 1) as usize) == Some(&name.as_str())
-            }
-        });
-        if matches {
-            let remaining: Vec<(u32, String)> =
-                rows.iter().take(prefix as usize).cloned().collect();
-            return Ok((remaining, Some(prefix)));
-        }
-    }
-    Err(err(format!(
-        "migration lineage mismatch: {}",
-        mismatches.join(", ")
-    )))
-}
 
+    let latest = canonical.iter().map(|(id, _, _)| *id).max().unwrap_or(0);
+    if high_water_mark > latest {
+        return Err(err(format!(
+            "database schema v{high_water_mark} is newer than this build supports (v{latest}). Update Synara before opening this data home."
+        )));
+    }
+    Ok(LineageInspection { rows: effective, repair })
+}
 /// Private account lineages from upstream AccountMigrationLineage.ts: prefix
 /// id after which the canonical run resumes, then the private tail names.
 const ACCOUNT_LINEAGES: &[(u32, &[&str])] = &[
@@ -133,6 +387,10 @@ const ACCOUNT_LINEAGES: &[(u32, &[&str])] = &[
     (126, &["AccountUsageSync", "AccountUsageSyncIdentity", "RemoteDeviceTrust", "RemoteConnectionPreferences"]),
 ];
 
+fn inspect_lineage(conn: &Connection, rows: &[(u32, String)], db_path: Option<&std::path::Path>) -> Result<LineageInspection, WsErr> {
+    inspect_lineage_with_consent(conn, rows, db_path, configured_divergence_consent().as_deref())
+}
+
 /// Run every pending migration inside one transaction, mirroring the effect
 /// Migrator run: insert tracker rows for all pending migrations first (the
 /// lock), then execute in id order. Any failure rolls everything back.
@@ -141,8 +399,8 @@ const ACCOUNT_LINEAGES: &[(u32, &[&str])] = &[
 pub fn pending_migrations(conn: &Connection) -> Result<Vec<u32>, WsErr> {
     ensure_tracker(conn)?;
     let rows = tracker_rows(conn)?;
-    let (validated, _) = inspect_lineage(rows.as_slice())?;
-    let latest = validated.iter().map(|(id, _)| *id).max().unwrap_or(0);
+    let inspection = inspect_lineage(conn, rows.as_slice(), None)?;
+    let latest = inspection.rows.iter().map(|(id, _)| *id).max().unwrap_or(0);
     Ok(canonical_migrations()
         .iter()
         .filter(|(id, _, _)| *id > latest)
@@ -150,26 +408,45 @@ pub fn pending_migrations(conn: &Connection) -> Result<Vec<u32>, WsErr> {
         .collect())
 }
 
-pub fn run_pending(conn: &Connection) -> Result<Vec<u32>, WsErr> {
+fn run_pending_with_db(conn: &Connection, db_path: Option<&std::path::Path>) -> Result<Vec<u32>, WsErr> {
     ensure_tracker(conn)?;
     let rows = tracker_rows(conn)?;
-    let (validated, repair_delete_above) = inspect_lineage(rows.as_slice())?;
-    let latest = validated.iter().map(|(id, _)| *id).max().unwrap_or(0);
+    let inspection = inspect_lineage(conn, rows.as_slice(), db_path)?;
+    let latest = inspection.rows.iter().map(|(id, _)| *id).max().unwrap_or(0);
     let all = canonical_migrations();
     let pending: Vec<&(u32, &'static str, MigrationFn)> =
         all.iter().filter(|(id, _, _)| *id > latest).collect();
-    if pending.is_empty() {
+    if pending.is_empty() && inspection.repair.truncate_from.is_none() && inspection.repair.delete_after.is_none()
+        && !inspection.repair.rename_migration32 && !inspection.repair.rename_migration54
+    {
         return Ok(Vec::new());
     }
     let tx = conn
         .unchecked_transaction()
         .map_err(|e| err(format!("migration transaction: {e}")))?;
-    if let Some(prefix) = repair_delete_above {
-        tx.execute(
-            "DELETE FROM effect_sql_migrations WHERE migration_id > ?1",
-            params![prefix],
-        )
-        .map_err(|e| err(format!("lineage repair delete: {e}")))?;
+    let current_rows = tracker_rows(&tx)?;
+    if migration_lineage_fingerprint(&current_rows) != migration_lineage_fingerprint(&rows) {
+        return Err(err("migration tracker changed during repair"));
+    }
+    if let Some(prefix) = inspection.repair.delete_after {
+        tx.execute("DELETE FROM effect_sql_migrations WHERE migration_id > ?1", params![prefix])
+            .map_err(|e| err(format!("account lineage repair delete: {e}")))?;
+    }
+    if inspection.repair.rename_migration32 {
+        if let Some(name) = canonical_migration_name(32) {
+            tx.execute("UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 32", params![name])
+                .map_err(|e| err(format!("legacy migration 32 rename: {e}")))?;
+        }
+    }
+    if inspection.repair.rename_migration54 {
+        if let Some(name) = canonical_migration_name(54) {
+            tx.execute("UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 54", params![name])
+                .map_err(|e| err(format!("migration lineage alias repair: {e}")))?;
+        }
+    }
+    if let Some(first) = inspection.repair.truncate_from {
+        tx.execute("DELETE FROM effect_sql_migrations WHERE migration_id >= ?1", params![first])
+            .map_err(|e| err(format!("lineage divergence repair delete: {e}")))?;
     }
     for (id, name, _) in &pending {
         tx.execute(
@@ -185,6 +462,10 @@ pub fn run_pending(conn: &Connection) -> Result<Vec<u32>, WsErr> {
     }
     tx.commit().map_err(|e| err(format!("migration commit: {e}")))?;
     Ok(ran)
+}
+
+pub fn run_pending(conn: &Connection) -> Result<Vec<u32>, WsErr> {
+    run_pending_with_db(conn, None)
 }
 
 /// Open `state.sqlite` in the state directory and run every pending migration.
@@ -267,6 +548,48 @@ fn inspect_migration_backup_plan(conn: &Connection) -> Result<Option<MigrationBa
         return Ok((user_tables > 0).then_some(MigrationBackupPlan { source_version: "untracked".into(), target_version }));
     }
     let high_water_mark = recorded.iter().map(|(id, _)| *id).max().unwrap_or(0);
+    let mut rows: Vec<(u32, String)> = recorded.iter().map(|(id, name)| (*id, name.clone())).collect();
+    if is_released_main_migration_gap(&rows) {
+        return Ok(Some(MigrationBackupPlan {
+            source_version: "v141-released-main".into(),
+            target_version,
+        }));
+    }
+    // Metadata-only repairs do not make a database an imported foreign lineage.
+    let prefix31_valid = rows.iter().take(31).enumerate().all(|(index, (id, name))| {
+        *id == index as u32 + 1 && canonical_migration_name(*id) == Some(name.as_str())
+    });
+    if prefix31_valid && rows.iter().any(|(id, name)| *id == 32 && canonical_migration_name(32) != Some(name.as_str())) {
+        if let Some(canonical32) = canonical_migration_name(32) {
+            for (id, name) in &mut rows {
+                if *id == 32 { *name = canonical32.into(); }
+            }
+        }
+    }
+    if rows.iter().any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins") {
+        let mut aliased = rows.clone();
+        if let Some(canonical54) = canonical_migration_name(54) {
+            for (id, name) in &mut aliased {
+                if *id == 54 { *name = canonical54.into(); }
+            }
+        }
+        let high_water = aliased.iter().map(|(id, _)| *id).max().unwrap_or(0);
+        if first_lineage_divergence(&aliased, high_water).is_none() {
+            rows = aliased;
+        }
+    }
+    if let Some((first_diverged, _expected_name)) = first_lineage_divergence(&rows, high_water_mark) {
+        // Shared-prefix corruption is fatal before mutation and gets no backup
+        // plan here. Post-shared divergence is an import replay candidate and
+        // must always be snapshotted even when its high-water mark is current.
+        if first_diverged > 16 {
+            return Ok(Some(MigrationBackupPlan {
+                source_version: format!("imported-v{high_water_mark}-from{first_diverged}"),
+                target_version,
+            }));
+        }
+        return Ok(None);
+    }
     Ok((high_water_mark < target_version).then_some(MigrationBackupPlan {
         source_version: format!("v{high_water_mark}"),
         target_version,
@@ -704,7 +1027,7 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
         write_recovery_marker(&db, &payload)
             .map_err(|e| crate::acp_runner::err(format!("migration recovery marker update failed: {e}")))?;
         eprintln!("migrations: resuming interrupted migration (attempt {})", attempts + 1);
-        let result = run_pending(&conn);
+        let result = run_pending_with_db(&conn, Some(&db));
         if result.is_ok() {
             let completed: u32 = conn
                 .query_row("SELECT COALESCE(MAX(migration_id), 0) FROM effect_sql_migrations", [], |row| row.get(0))
@@ -720,9 +1043,16 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
         return result;
     }
 
+    // Consent and lineage validation happen before the backup/marker write:
+    // a refused import must not leave a recovery marker for a mutation that
+    // never started.
+    if table_exists(&conn, "effect_sql_migrations") {
+        let rows = tracker_rows(&conn)?;
+        let _ = inspect_lineage(&conn, &rows, Some(&db))?;
+    }
     let plan = inspect_migration_backup_plan(&conn)?;
     let Some(plan) = plan else {
-        return run_pending(&conn);
+        return run_pending_with_db(&conn, Some(&db));
     };
     let backup = create_migration_backup(&conn, &db, &plan)
         .map_err(|e| crate::acp_runner::err(format!("pre-migration backup failed: {e}")))?;
@@ -730,7 +1060,7 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
     let payload = recovery_payload(&db, &backup);
     write_recovery_marker(&db, &payload)
         .map_err(|e| crate::acp_runner::err(format!("migration recovery marker failed: {e}")))?;
-    let result = run_pending(&conn);
+    let result = run_pending_with_db(&conn, Some(&db));
     if result.is_ok() {
         write_completed_provenance(&db, &payload)
             .map_err(|e| crate::acp_runner::err(format!("migration backup provenance failed: {e}")))?;
@@ -843,6 +1173,66 @@ mod tests {
         let error = pending_migrations(&conn).unwrap_err().0;
         assert!(error.contains("newer than this build supports"));
         assert!(error.contains("Update Synara"));
+    }
+
+    fn canonical_rows_through(count: u32) -> Vec<(u32, String)> {
+        canonical_migrations().into_iter().take(count as usize).map(|(id, name, _)| (id, name.into())).collect()
+    }
+
+    #[test]
+    fn legacy_migration32_is_planned_as_metadata_rename() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut rows = canonical_rows_through(31);
+        rows.push((32, "ForeignImportReconciliation".into()));
+        let inspection = inspect_lineage_with_consent(&conn, &rows, None, None).map_err(|e| e.0).unwrap();
+        assert!(inspection.repair.rename_migration32);
+        assert_eq!(inspection.rows.last().map(|(_, name)| name.as_str()), canonical_migration_name(32));
+    }
+
+    #[test]
+    fn released_project_pins_alias_is_planned_as_metadata_rename() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut rows = canonical_rows_through(53);
+        rows.push((54, "ProjectPullRequestPins".into()));
+        let inspection = inspect_lineage_with_consent(&conn, &rows, None, None).map_err(|e| e.0).unwrap();
+        assert!(inspection.repair.rename_migration54);
+        assert!(inspection.repair.truncate_from.is_none());
+    }
+
+    #[test]
+    fn foreign_lineage_requires_exact_consent_then_truncates() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut rows = canonical_rows_through(16);
+        rows.push((17, "ForeignThreadRuntime".into()));
+        let blocked = inspect_lineage_with_consent(&conn, &rows, Some(std::path::Path::new("/tmp/state.sqlite")), None).unwrap_err().0;
+        assert!(blocked.contains("SYNARA_MIGRATION_DIVERGENCE_CONSENT_REQUIRED="));
+        assert!(blocked.contains("restart once with SYNARA_MIGRATION_DIVERGENCE_CONSENT="));
+        let token = divergence_consent_token(
+            "/tmp/state.sqlite",
+            "imported-v17-from17",
+            latest_migration_id(),
+            17,
+            canonical_migration_name(17).unwrap(),
+            "ForeignThreadRuntime",
+            17,
+            &migration_lineage_fingerprint(&rows),
+        );
+        let inspection = inspect_lineage_with_consent(&conn, &rows, Some(std::path::Path::new("/tmp/state.sqlite")), Some(&token)).map_err(|e| e.0).unwrap();
+        assert_eq!(inspection.repair.truncate_from, Some(17));
+        assert_eq!(inspection.rows.len(), 16);
+    }
+
+    #[test]
+    fn backup_plan_covers_current_highwater_foreign_divergence() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch("CREATE TABLE effect_sql_migrations (migration_id integer PRIMARY KEY NOT NULL, created_at datetime NOT NULL DEFAULT current_timestamp, name VARCHAR(255) NOT NULL); CREATE TABLE user_data (id INTEGER);").unwrap();
+        let mut rows = canonical_rows_through(latest_migration_id());
+        rows[16].1 = "ForeignThreadRuntime".into();
+        for (id, name) in &rows {
+            conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)", params![id, name]).unwrap();
+        }
+        let plan = inspect_migration_backup_plan(&conn).map_err(|e| e.0).unwrap().unwrap();
+        assert!(plan.source_version.starts_with("imported-v"));
     }
 
     #[test]

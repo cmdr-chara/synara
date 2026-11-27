@@ -712,6 +712,11 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         ],
     )
     .map_err(|e| err(format!("resume cursor binding: {e}")))?;
+    conn.execute(
+        "INSERT OR REPLACE INTO projection_thread_sessions (thread_id, status, provider_name, provider_session_id, provider_thread_id, active_turn_id, last_error, updated_at, runtime_mode, provider_instance_id) VALUES (?1, 'stopped', ?2, NULL, NULL, NULL, NULL, ?3, COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'), ?4)",
+        params![thread_id, provider_key, now, selected_instance.instance_id],
+    )
+    .map_err(|e| err(format!("imported session binding: {e}")))?;
     Ok(json!({ "threadId": thread_id }))
 }
 

@@ -357,10 +357,20 @@ impl AudioLevelMonitor {
                         _ => {}
                     }
                 }
-                if let Ok(mut state) = state_ref.lock() {
+                let ended_child = state_ref.lock().ok().and_then(|mut state| {
                     if state.generation == generation && state.child.is_some() {
                         state.status = AudioLevelStatus::Unavailable;
+                        state.child_subscription = None;
+                        state.child.take()
+                    } else {
+                        None
                     }
+                });
+                if let Some(mut child) = ended_child {
+                    let _ = child.wait();
+                    // A dead helper leaves the level trail at rest rather than
+                    // frozen at its final sample.
+                    on_level(0.0);
                 }
             });
         }
@@ -387,10 +397,25 @@ impl AudioLevelMonitor {
             state.child.take()
         });
         if let Some(mut child) = child {
-            let _ = child.kill();
+            terminate_child_gracefully(&mut child);
             let _ = child.wait();
         }
     }
+}
+
+fn terminate_child_gracefully(child: &mut Child) {
+    #[cfg(unix)]
+    {
+        // SIGTERM first: the helper unregisters its audio tap and the privacy
+        // indicator disappears immediately. Escalate only if it cannot exit.
+        let pid = child.id().to_string();
+        let _ = Command::new("/bin/kill").arg("-TERM").arg(&pid).status();
+        for _ in 0..20 {
+            if matches!(child.try_wait(), Ok(Some(_))) { return; }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+    }
+    let _ = child.kill();
 }
 
 impl Drop for AudioLevelMonitor {
@@ -437,6 +462,34 @@ mod tests {
     fn parses_input_devices_and_falls_back_to_id_name() {
         let devices = parse_audio_inputs_message(r#"{"type":"audio-inputs","devices":[{"id":"mic-1","bluetooth":true,"default":true}]}"#);
         assert_eq!(devices, vec![AudioInputDevice { id: "mic-1".into(), name: "mic-1".into(), bluetooth: true, default: true }]);
+    }
+
+    #[test]
+    fn exited_audio_helper_resets_level_and_marks_unavailable() {
+        let directory = std::env::temp_dir().join(format!("synara-audio-test-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&directory).unwrap();
+        let helper = directory.join("helper.sh");
+        std::fs::write(&helper, "#!/bin/sh\nprintf '%s\\n' '{\"type\":\"audio-level\",\"level\":0.7}'\n").unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            std::fs::set_permissions(&helper, std::fs::Permissions::from_mode(0o700)).unwrap();
+        }
+        let (levels_tx, levels) = std::sync::mpsc::channel();
+        let monitor = AudioLevelMonitor::new(
+            helper,
+            move |level| { let _ = levels_tx.send(level); },
+            |_| {},
+        );
+        assert_eq!(monitor.set_subscription(1, Some(AudioLevelSubscription { source: AudioLevelSource::System, microphone_id: None })), AudioLevelStatus::Active);
+        let mut seen = Vec::new();
+        for _ in 0..2 {
+            if let Ok(level) = levels.recv_timeout(std::time::Duration::from_secs(2)) { seen.push(level); }
+        }
+        assert!(seen.iter().any(|level| (*level - 0.7).abs() < f64::EPSILON), "levels: {seen:?}");
+        assert_eq!(seen.last().copied(), Some(0.0), "levels: {seen:?}");
+        assert_eq!(monitor.status(), AudioLevelStatus::Unavailable);
+        let _ = std::fs::remove_dir_all(directory);
     }
 
     #[test]

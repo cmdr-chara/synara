@@ -384,6 +384,17 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "computer_set_value",
+            "Replace an accessible control's complete value atomically through its exact AX element.",
+            object_schema(
+                json!({
+                    "ref":{"type":"number"},"node_path":{"type":"array"},"role":{"type":"string"},"label":{"type":"string"},
+                    "window_id":{"type":"string"},"value":{"type":"string"},
+                }),
+                &["value"],
+            ),
+        ),
+        tool(
             "computer_perform_action",
             "Perform an accessibility action on an exact semantic target; ambiguous targets are refused.",
             object_schema(
@@ -428,7 +439,7 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
-            "computer_batch",
+            "computer_run",
             "Run an ordered batch of computer observations, waits and inputs. Conditional readiness is a hard barrier: control_not_ready or surface_not_settled stops later input even when continue_on_error is true.",
             object_schema(
                 json!({
@@ -543,7 +554,7 @@ async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Val
     if name.starts_with("browser_") {
         return crate::browser_automation::call_browser_tool(name, args, thread).await;
     }
-    if name == "computer_batch" {
+    if name == "computer_run" || name == "computer_batch" {
         return computer_batch(args, thread).await;
     }
     call_simple_tool(name, args, thread).await
@@ -848,6 +859,13 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
                 }),
                 thread,
             )
+        }
+        "computer_set_value" => {
+            let Some(mut target) = semantic_target(args) else {
+                return Err("computer_set_value requires an exact ref, node_path, role or label target.".into());
+            };
+            target["value"] = json!(string_value_arg(args,"value").ok_or("value is required")?);
+            native_call_scoped("computer.setValue", &target, thread)
         }
         "computer_perform_action" => {
             let Some(mut target) = semantic_target(args) else {

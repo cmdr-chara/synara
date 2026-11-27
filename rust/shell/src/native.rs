@@ -24866,6 +24866,12 @@ impl Render for Native {
             &gh_query,
             self.gh_sort,
         );
+        // Upstream repositoryProjects: only kind=="project" entries count.
+        let no_projects = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+            .iter()
+            .filter(|p| str_at(p, "kind") == "project")
+            .count()
+            == 0;
         let mut pr_rows = v_flex().px_2().pt_2().gap(px(4.));
         if self.gh_loading && self.gh_items.is_empty() {
             for i in 0..7 {
@@ -24888,12 +24894,15 @@ impl Render for Native {
                     .p(px(48.))
                     .child(
                         div()
-                            .w(px(384.))
+                            .w_full()
+                            .max_w(px(384.))
                             .text_center()
                             .text_size(px(20.))
                             .line_height(px(28.))
                             .font_weight(FontWeight::SEMIBOLD)
-                            .child(if self.gh_items.is_empty() {
+                            .child(if no_projects {
+                                "No projects yet"
+                            } else if self.gh_items.is_empty() {
                                 "No pull requests and issues found"
                             } else {
                                 "No matching pull requests or issues"
@@ -24901,12 +24910,15 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .w(px(384.))
+                            .w_full()
+                            .max_w(px(384.))
                             .mt(px(4.))
                             .text_center()
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
-                            .child(if self.gh_items.is_empty() {
+                            .child(if no_projects {
+                                "Code review lists pull requests and issues from the GitHub repositories of your projects."
+                            } else if self.gh_items.is_empty() {
                                 "Nothing here in the repositories of your projects."
                             } else {
                                 "Try clearing the search or filters."

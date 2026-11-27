@@ -138,11 +138,21 @@ pub fn get_environment(state_dir: &str) -> Result<Value, String> {
         .ok_or_else(|| "environment-id file is missing or empty".to_string())?;
     let channel = environment_channel();
     let label = hostname().unwrap_or_else(|| "Synara".to_string());
-    // Remote connections and profile sync report unavailable until they are
-    // served natively; the reasons are operator-facing strings upstream.
-    let remote_reason = "Remote connections are not served by this build yet.";
-    let profile_sync_reason = "Account profile sync is not served by this build yet.";
-    let _ = profile_sync_reason;
+    let flavor = desktop_flavor();
+    let account_profile_enabled = std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").ok().as_deref() == Some("1")
+        || ((flavor == "production" || flavor == "remote") && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err());
+    let remote_opted_in = std::env::var("SYNARA_REMOTE_CONNECTIONS").ok().as_deref() == Some("1");
+    let remote_reason = if flavor == "production" && !remote_opted_in {
+        Some("Remote connections are unavailable in Stable.")
+    } else if flavor == "unknown" && !remote_opted_in {
+        Some("Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections.")
+    } else if std::path::Path::new(state_dir).join("remote-suspended-after-import.json").exists() {
+        Some("Reconnect this installation after the data import.")
+    } else {
+        // The Rust runtime terminates the remote v2 tunnel natively; outbound
+        // host connections remain a separate implementation surface.
+        None
+    };
     let mut descriptor = json!({
         "environmentId": environment_id,
         "channel": channel,
@@ -152,13 +162,15 @@ pub fn get_environment(state_dir: &str) -> Result<Value, String> {
         "capabilities": {
             "desktopUpdates": desktop_update_bridge_available(state_dir),
             "repositoryIdentity": true,
-            "accountProfileSync": false,
-            "remoteConnections": false,
-            "remoteResources": false,
-            "remoteUnavailableReason": remote_reason,
+            "accountProfileSync": account_profile_enabled,
+            "remoteConnections": remote_reason.is_none(),
+            "remoteResources": remote_reason.is_none(),
             "composerPredictions": true,
         },
     });
+    if let Some(reason) = remote_reason {
+        descriptor["capabilities"]["remoteUnavailableReason"] = json!(reason);
+    }
     if let Some(id) = raw_machine_id().and_then(|raw| hash_machine_id(&raw)) {
         descriptor["machineId"] = json!(id);
     }

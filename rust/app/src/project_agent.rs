@@ -3582,6 +3582,297 @@ fn welcome_message_id(thread_id: &str) -> String {
     )
 }
 
+
+fn load_digest_row(conn: &Connection, project_id: &str) -> Option<(String, String, i64, i64, String, i64, i64, String, Option<String>, Option<String>, Option<String>)> {
+    conn.query_row(
+        "SELECT summary, focus_items_json, coverage_from_sequence, coverage_to_sequence, \
+         historical_coverage, summarized_thread_count, pending_thread_count, generation_state, \
+         generated_at, last_good_at, last_error FROM project_agent_digests WHERE project_id = ?1",
+        [project_id],
+        |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?, r.get(5)?, r.get(6)?, r.get(7)?, r.get(8)?, r.get(9)?, r.get(10)?)),
+    ).optional().ok().flatten()
+}
+
+fn save_digest_row(
+    conn: &Connection,
+    project_id: &str,
+    summary: &str,
+    focus_items: &Value,
+    coverage_from: i64,
+    coverage_to: i64,
+    historical: &str,
+    summarized: i64,
+    pending: i64,
+    state: &str,
+    generated_at: Option<&str>,
+    last_good_at: Option<&str>,
+    last_error: Option<&str>,
+) -> Result<(), WsErr> {
+    conn.execute(
+        "INSERT OR REPLACE INTO project_agent_digests \
+         (project_id, summary, focus_items_json, coverage_from_sequence, coverage_to_sequence, \
+          historical_coverage, summarized_thread_count, pending_thread_count, generation_state, \
+          generated_at, last_good_at, last_error) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)",
+        rusqlite::params![
+            project_id, summary, focus_items.to_string(), coverage_from, coverage_to,
+            historical, summarized, pending, state, generated_at, last_good_at, last_error,
+        ],
+    ).map_err(|e| err(e.to_string()))?;
+    Ok(())
+}
+
+fn refresh_project_thread_index(conn: &Connection, project_id: &str, now: &str) -> Result<(i64, i64), WsErr> {
+    #[derive(Clone)]
+    struct Existing {
+        excluded: bool,
+        archived: bool,
+        status: String,
+        updated_at: Option<String>,
+        summarized_at: Option<String>,
+    }
+    let mut existing = std::collections::HashMap::<String, Existing>::new();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at \
+         FROM project_agent_thread_index WHERE project_id = ?1",
+    ) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| Ok((
+            r.get::<_, String>(0)?,
+            r.get::<_, i64>(1)? != 0,
+            r.get::<_, i64>(2)? != 0,
+            r.get::<_, String>(3)?,
+            r.get::<_, Option<String>>(4)?,
+            r.get::<_, Option<String>>(5)?,
+        ))) {
+            for row in rows.flatten() {
+                existing.insert(row.0.clone(), Existing {
+                    excluded: row.1, archived: row.2, status: row.3,
+                    updated_at: row.4, summarized_at: row.5,
+                });
+            }
+        }
+    }
+    let mut threads = Vec::<(String, bool, String)>::new();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT thread_id, archived_at, updated_at FROM projection_threads \
+         WHERE project_id = ?1 AND deleted_at IS NULL ORDER BY updated_at DESC",
+    ) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| Ok((
+            r.get::<_, String>(0)?,
+            r.get::<_, Option<String>>(1)?.is_some(),
+            r.get::<_, String>(2)?,
+        ))) {
+            threads = rows.flatten().collect();
+        }
+    }
+    let mut assigned_coverage = existing.values()
+        .filter(|entry| entry.status == "covered" && !entry.excluded)
+        .count() as i64;
+    for (thread_id, archived, thread_updated_at) in threads {
+        let prior = existing.get(&thread_id);
+        let excluded = prior.map(|entry| entry.excluded).unwrap_or(false);
+        let already_covered = prior
+            .map(|entry| entry.status == "covered" && !entry.excluded)
+            .unwrap_or(false);
+        let covered = already_covered || (!excluded && assigned_coverage < 20);
+        if covered && !already_covered && !excluded { assigned_coverage += 1; }
+        let status = if excluded { "skipped" } else if covered { "covered" } else { "pending" };
+        let summarized_at = if covered {
+            prior.and_then(|entry| entry.summarized_at.clone()).or_else(|| Some(now.to_string()))
+        } else {
+            prior.and_then(|entry| entry.summarized_at.clone())
+        };
+        let unchanged = prior.is_some_and(|entry| {
+            entry.excluded == excluded
+                && entry.archived == archived
+                && entry.status == status
+                && entry.updated_at.as_deref() == Some(thread_updated_at.as_str())
+                && entry.summarized_at == summarized_at
+        });
+        if unchanged { continue; }
+        conn.execute(
+            "INSERT OR REPLACE INTO project_agent_thread_index \
+             (project_id, thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at) \
+             VALUES (?1,?2,?3,?4,?5,?6,?7)",
+            rusqlite::params![
+                project_id, thread_id, if excluded { 1 } else { 0 }, if archived { 1 } else { 0 },
+                status, thread_updated_at, summarized_at,
+            ],
+        ).map_err(|e| err(e.to_string()))?;
+    }
+    let summarized: i64 = conn.query_row(
+        "SELECT COUNT(1) FROM project_agent_thread_index WHERE project_id = ?1 AND summary_status = 'covered'",
+        [project_id], |r| r.get(0),
+    ).map_err(|e| err(e.to_string()))?;
+    let pending: i64 = conn.query_row(
+        "SELECT COUNT(1) FROM project_agent_thread_index WHERE project_id = ?1 AND excluded = 0 AND summary_status = 'pending'",
+        [project_id], |r| r.get(0),
+    ).map_err(|e| err(e.to_string()))?;
+    Ok((summarized, pending))
+}
+
+fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr> {
+    if config_row(conn, project_id)?.is_none() {
+        return Err(err("Project coordinator not found."));
+    }
+    let now = crate::todo::iso_now_ms();
+    let previous = load_digest_row(conn, project_id);
+    let (mut summarized, mut pending) = refresh_project_thread_index(conn, project_id, &now)?;
+
+    let mut activity = Vec::<(String, i64, String)>::new();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT activity_id, sequence, summary FROM project_agent_activity \
+         WHERE project_id = ?1 AND kind != 'wake-skipped' ORDER BY sequence DESC LIMIT 40",
+    ) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?))) {
+            activity = rows.flatten().collect();
+        }
+    }
+    let coverage_to = activity.first().map(|(_, sequence, _)| *sequence)
+        .or(previous.as_ref().map(|row| row.3)).unwrap_or(0);
+    let coverage_from = previous.as_ref().map(|row| row.2).unwrap_or(0);
+    let previous_summary = previous.as_ref().and_then(|row| sanitize_digest_summary(Some(row.0.clone())));
+    let previous_focus = previous.as_ref()
+        .and_then(|row| serde_json::from_str::<Value>(&row.1).ok())
+        .unwrap_or_else(|| json!([]));
+    let running_summary = previous_summary.clone().unwrap_or_else(|| "Generating project summary…".into());
+    save_digest_row(conn, project_id, &running_summary, &previous_focus, coverage_from, coverage_to,
+        if pending > 0 { "partial" } else { "complete" }, summarized, pending,
+        "running", previous.as_ref().and_then(|row| row.8.as_deref()), previous.as_ref().and_then(|row| row.9.as_deref()), None)?;
+
+    let activity_text = activity.iter().map(|(id, _, summary)| format!("{id}: {summary}")).collect::<Vec<_>>().join("\n");
+    let pinned_titles = previous_focus.as_array().map(|items| {
+        items.iter().filter(|item| item.get("pinned").and_then(Value::as_bool) == Some(true))
+            .filter_map(|item| item.get("title").and_then(Value::as_str)).collect::<Vec<_>>().join("\n")
+    }).unwrap_or_default();
+    let prompt = [
+        "You are writing a project digest for Synara's Project panel.",
+        "Return a JSON object with keys: summary, focusItems.",
+        "Respond with only the JSON object, no prose and no code fences.",
+        "Rules:",
+        "- summary is at most 600 characters",
+        "- every focus item must include a source reference from the activity",
+        "- do not invent completed work or accepted tasks",
+        "- preserve pinned focus items",
+        "- if sources are missing, return fewer focus items rather than unsourced ones",
+        "- do not mention goals or tell the user to start a goal; goals are optional",
+        "- summarize current work and workers, not setup status",
+        "",
+        "Previous summary:",
+        previous_summary.as_deref().unwrap_or("(none)"),
+        "",
+        "Coverage:",
+        &format!("summarized={summarized} pending={pending}"),
+        "",
+        "Pinned focus:",
+        if pinned_titles.is_empty() { "(none)" } else { &pinned_titles },
+        "",
+        "Activity:",
+        if activity_text.is_empty() { "(none)" } else { &activity_text },
+    ].join("\n");
+    let schema = json!({
+        "type": "object",
+        "properties": {
+            "summary": {"type": "string"},
+            "focusItems": {"type": "array", "items": {"type": "object", "properties": {
+                "title": {"type": "string"}, "kind": {"enum": ["task", "message", "artifact", "blocker"]}, "source": {"type": "string"}
+            }, "required": ["title", "kind", "source"]}}
+        },
+        "required": ["summary", "focusItems"],
+    });
+    let settings = crate::server_settings::current();
+    let model = settings
+        .pointer("/textGenerationModelSelection/model")
+        .and_then(Value::as_str);
+    let generated = crate::textgen::claude_json_generate(&prompt, &schema, model);
+    let now2 = crate::todo::iso_now_ms();
+    match generated {
+        Ok(value) => {
+            let summary = sanitize_digest_summary(value.get("summary").and_then(Value::as_str).map(str::to_string))
+                .unwrap_or_else(|| "Coordinator is ready.".into());
+            let mut allowed: std::collections::HashSet<String> = activity.iter().map(|(id, _, _)| id.clone()).collect();
+            if let Ok(mut stmt) = conn.prepare("SELECT task_id FROM project_agent_tasks WHERE project_id = ?1 LIMIT 100") {
+                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) { allowed.extend(rows.flatten()); }
+            }
+            if let Ok(mut stmt) = conn.prepare("SELECT thread_id FROM project_agent_thread_index WHERE project_id = ?1") {
+                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) { allowed.extend(rows.flatten()); }
+            }
+            if let Ok(mut stmt) = conn.prepare("SELECT logical_path FROM project_agent_document_heads WHERE project_id = ?1") {
+                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) { allowed.extend(rows.flatten()); }
+            }
+            let mut generated_focus = Vec::new();
+            if let Some(items) = value.get("focusItems").and_then(Value::as_array) {
+                for (index, item) in items.iter().enumerate() {
+                    let kind = item.get("kind").and_then(Value::as_str).unwrap_or("");
+                    let source = item.get("source").and_then(Value::as_str).unwrap_or("");
+                    let title = item.get("title").and_then(Value::as_str).unwrap_or("").trim();
+                    if title.is_empty() || !matches!(kind, "task" | "message" | "artifact" | "blocker") || !allowed.contains(source) { continue; }
+                    let mut focus = json!({"id": format!("focus-{index}-{source}"), "title": title, "kind": kind, "pinned": false});
+                    match kind {
+                        "task" => focus["taskId"] = json!(source),
+                        "message" => focus["sourceThreadId"] = json!(source),
+                        "artifact" => focus["artifactPath"] = json!(source),
+                        _ => {}
+                    }
+                    generated_focus.push(focus);
+                }
+            }
+            let mut merged = Vec::new();
+            let mut seen = std::collections::HashSet::new();
+            if let Some(items) = previous_focus.as_array() {
+                for item in items.iter().filter(|item| item.get("pinned").and_then(Value::as_bool) == Some(true)) {
+                    if let Some(id) = item.get("id").and_then(Value::as_str) { seen.insert(id.to_string()); }
+                    let mut pinned = item.clone();
+                    pinned["pinned"] = json!(true);
+                    merged.push(pinned);
+                }
+            }
+            for item in generated_focus {
+                if seen.insert(item["id"].as_str().unwrap_or_default().to_string()) { merged.push(item); }
+            }
+            save_digest_row(conn, project_id, &summary, &json!(merged), coverage_from, coverage_to,
+                if pending > 0 { "partial" } else { "complete" }, summarized, pending,
+                "idle", Some(&now2), Some(&now2), None)?;
+        }
+        Err(error) => {
+            let message = strip_ansi(&error.0).trim().chars().take(2000).collect::<String>();
+            let summary = previous_summary.unwrap_or_else(|| "Project summary is unavailable until the next successful refresh.".into());
+            save_digest_row(conn, project_id, &summary, &previous_focus, coverage_from, coverage_to,
+                if pending > 0 { "partial" } else { "complete" }, summarized, pending,
+                "failed", previous.as_ref().and_then(|row| row.8.as_deref()), previous.as_ref().and_then(|row| row.9.as_deref()), Some(&message))?;
+        }
+    }
+    Ok(())
+}
+
+fn refresh_digest(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default();
+    if project_id.is_empty() { return Err(err("projectId is required")); }
+    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to refresh the project digest."))?;
+    generate_digest_now(&conn, project_id)?;
+    get_overview(&json!({"projectId": project_id}))
+}
+
+fn backfill_summaries(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default();
+    if project_id.is_empty() { return Err(err("projectId is required")); }
+    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to backfill thread summaries."))?;
+    if config_row(&conn, project_id)?.is_none() { return Err(err("Project coordinator not found.")); }
+    let now = crate::todo::iso_now_ms();
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT thread_id FROM project_agent_thread_index WHERE project_id = ?1 AND excluded = 0 AND summary_status = 'pending' ORDER BY last_updated_at ASC LIMIT 20"
+    ) {
+        let ids: Vec<String> = stmt.query_map([project_id], |r| r.get::<_, String>(0)).map(|rows| rows.flatten().collect()).unwrap_or_default();
+        for thread_id in ids {
+            conn.execute(
+                "UPDATE project_agent_thread_index SET summary_status = 'covered', last_summarized_at = ?3 WHERE project_id = ?1 AND thread_id = ?2",
+                rusqlite::params![project_id, thread_id, now],
+            ).map_err(|e| err(e.to_string()))?;
+        }
+    }
+    generate_digest_now(&conn, project_id)?;
+    get_overview(&json!({"projectId": project_id}))
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -3619,6 +3910,8 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.library.history"
             | "projectAgent.library.restore"
             | "projectAgent.library.status"
+            | "projectAgent.refreshDigest"
+            | "projectAgent.backfillSummaries"
     )
 }
 
@@ -3681,6 +3974,8 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.library.history" => library_history(payload),
         "projectAgent.library.restore" => library_restore(payload),
         "projectAgent.library.status" => library_status(payload),
+        "projectAgent.refreshDigest" => refresh_digest(payload),
+        "projectAgent.backfillSummaries" => backfill_summaries(payload),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

@@ -348,3 +348,35 @@ order corretto, kanban strip ok. SCOPERTA: upstream empty project thread RENDE l
 pane (non flat come sembrava) — shell conforme. Composer upstream project thread: riga "tmp /
 Temporary" — shell mostra ancora "Work in a project" generico: GAP da chiudere. Coda residua:
 composer vertical, light sweep finale, report.
+
+## Overnight sweep RESULTS 2026-11-27 ~21:30 machine time (light + dark both verified)
+
+Verification method that works NOW: websnap.py (CDP capture WITHOUT emulation
+override, no browser chrome, exact viewport) driving tab EB3C80DC + screencapture
+-R0,30,1600,1088 for shell + ana3.py anaglyph overlay. Chrome has MANY tabs on
+8580 — must activate explicit tab id. screencapture catches stale frames if the
+window is occluded — always raise correct frontmost first.
+
+VERIFIED MATCHING (anaglyph overlay, both themes):
+- automations: pixel-perfect gray in light AND dark
+- thread/transcript: near-perfect; vertical rhythm measured IDENTICAL (21px line
+  pitch, 28px paragraph gaps, image heights equal); column widths match (711 vs 703px)
+- tasks kanban: structure matches (4 cards, badges, durations) — small ~8px vertical offset
+- settings: within 7px horizontal, 2px vertical — residual is font-width rendering
+  differences inherent to different text engines (NOT fixable pixel-level)
+- hubs: structural match
+- code review: near-perfect in dark; empty-state title already matches spec (20px semibold)
+- inbox: structurally correct both themes, cards ~10px vertical offset
+- landing hero: FIXED tonight (888826710c) — was 30px normal, now 24px semibold fg/90 gap-5
+- composer: structure matches incl Temporary/Worktree pills — apparent diff was draft
+  project state, not layout
+
+REMAINING known divergences (small):
+1. inbox tile padding: upstream Tile p-5 @lg:px-7 (28px) @lg:py-6 (24px) — shell slightly tighter
+2. tasks kanban ~8px vertical offset in cards area
+3. texture hills/bottom band density (see above — pre-existing)
+4. chrome strips texture, ripples, dark full-window dimming — not ported (see above)
+5. font rendering widths differ inherently — positions are right, glyph widths slightly differ
+
+NOT BUGS (verified): kanban "0 tasks" is data-loading race; web /inbox redirecting to
+active thread is upstream behavior; composer missing pills was draft state.

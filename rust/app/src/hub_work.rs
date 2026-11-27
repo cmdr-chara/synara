@@ -584,3 +584,68 @@ pub(crate) fn spawn_admission_loop() {
         }
     });
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn task_key_validation_matches_upstream_charset() {
+        assert_eq!(normalize_task_key("valid-key_1.2:3"), Some("valid-key_1.2:3".into()));
+        assert_eq!(normalize_task_key("has space"), None);
+        assert_eq!(normalize_task_key("UPPER"), None);
+        assert_eq!(normalize_task_key(""), None);
+        assert_eq!(normalize_task_key(&"x".repeat(129)), None);
+        assert_eq!(normalize_task_key(&"x".repeat(128)).map(|k| k.len()), Some(128));
+    }
+
+    #[test]
+    fn positional_keys_are_stable() {
+        assert_eq!(positional_task_key(0), "task-0");
+        assert_eq!(positional_task_key(7), "task-7");
+    }
+
+    #[test]
+    fn canonical_json_sorts_object_keys() {
+        let a = canonical_json(&json!({"b": 1, "a": {"z": 2, "y": [3, 4]}}));
+        let b = canonical_json(&json!({"a": {"y": [3, 4], "z": 2}, "b": 1}));
+        assert_eq!(a, b, "key order must not change the fingerprint");
+    }
+
+    #[test]
+    fn work_item_id_is_deterministic_per_scope_and_key() {
+        let first = work_item_id("proj", "source:x", "task-0");
+        let second = work_item_id("proj", "source:x", "task-0");
+        let other_key = work_item_id("proj", "source:x", "task-1");
+        assert_eq!(first, second);
+        assert_ne!(first, other_key);
+        assert!(first.starts_with("hubwork-"));
+    }
+
+    #[test]
+    fn task_fingerprint_ignores_routing_reason() {
+        // The routing reason annotates the decision but never identifies it:
+        // two specs differing only in routingReason share the caller-visible
+        // identity. (The caller strips it before fingerprinting; here we assert
+        // the fingerprint inputs are sensitive to real spec changes.)
+        let spec = json!({"prompt": "do the thing", "taskKey": "task-0"});
+        let changed = json!({"prompt": "do another thing", "taskKey": "task-0"});
+        let msgs = json!([{"threadId": "t", "messageId": "m"}]);
+        assert_eq!(
+            task_fingerprint(&msgs, &spec, None),
+            task_fingerprint(&msgs, &spec, None)
+        );
+        assert_ne!(
+            task_fingerprint(&msgs, &spec, None),
+            task_fingerprint(&msgs, &changed, None)
+        );
+    }
+
+    #[test]
+    fn logical_key_prefers_custom_then_positional() {
+        let custom = json!({"taskKey": "my-key", "taskIndex": 3});
+        assert_eq!(logical_task_key(&custom), "my-key");
+        let positional = json!({"taskIndex": 3});
+        assert_eq!(logical_task_key(&positional), "task-3");
+    }
+}

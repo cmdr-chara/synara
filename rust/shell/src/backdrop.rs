@@ -43,11 +43,12 @@ const DARK_LEVELS: Levels = Levels {
     fade: 0.12,
     thin_from: 1.0,
     thin_to: 1.0,
-    // Upstream SCENE_LEVELS.dark declares invert:false, but the shipped
-    // Electron rendering inks the dark sky densely and leaves the bright
-    // cloud/temple stone black — i.e. inverted. Match what ships.
+    // Upstream SCENE_LEVELS.dark invert:false — confirmed against a settled
+    // Electron capture: the night sky stays black with sparse dots, the
+    // bright temple stone inks densely. (Earlier mid-fade captures misled
+    // the inversion analysis.)
     dot: 0.8,
-    invert: true,
+    invert: false,
     blur: 0.6,
     sharpen: 0.0,
     sharpen_from: 0.0,

@@ -273,6 +273,50 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["workItemId"]),
         ),
         def(
+            "synara_create_thread",
+            "Create a new thread. Pass prompt to start it immediately, or omit it for a draft. requestId is the idempotency key: retries with the same requestId replay the original result exactly once.",
+            schema(json!({
+                "requestId": {"type": "string", "maxLength": 256},
+                "prompt": {"type": "string"},
+                "title": {"type": "string"},
+                "projectId": {"type": "string"},
+                "provider": {"type": "string"},
+                "model": {"type": "string"},
+            }), &["requestId"]),
+        ),
+        def(
+            "synara_send_message",
+            "Send a follow-up message to a thread. mode queue (default) waits for the current turn; steer interrupts the active turn and redirects it.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "message": {"type": "string"},
+                "mode": {"type": "string", "enum": ["queue", "steer"]},
+            }), &["threadId", "message"]),
+        ),
+        def(
+            "synara_interrupt_thread",
+            "Interrupt the active turn on a thread. The thread settles with its work so far.",
+            schema(json!({
+                "threadId": {"type": "string"},
+            }), &["threadId"]),
+        ),
+        def(
+            "synara_set_thread_title",
+            "Rename a thread.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "title": {"type": "string", "maxLength": 200},
+            }), &["threadId", "title"]),
+        ),
+        def(
+            "synara_set_thread_archived",
+            "Archive or unarchive a thread.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "archived": {"type": "boolean"},
+            }), &["threadId", "archived"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -1670,6 +1714,203 @@ fn hub_cancel_work(args: &Value) -> Result<Value, String> {
     )))
 }
 
+fn dispatch_command(command: Value) -> Result<Value, String> {
+    crate::orchestration_engine::handle("orchestration.dispatchCommand", &command)
+        .map_err(|e| e.0)
+}
+
+fn deterministic_thread_id(request_id: &str) -> String {
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    let mut h = DefaultHasher::new();
+    request_id.hash(&mut h);
+    let a = h.finish();
+    let mut h2 = DefaultHasher::new();
+    (request_id, "synara-thread").hash(&mut h2);
+    let b = h2.finish();
+    format!(
+        "{:08x}-{:04x}-4{:03x}-{:04x}-{:012x}",
+        (a >> 32) as u32,
+        (a >> 16) as u16,
+        (a as u16) & 0x0fff,
+        ((b >> 48) as u16 & 0x3fff) | 0x8000,
+        b & 0xffffffffffff
+    )
+}
+
+fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let request_id = arg_str(args, "requestId").ok_or("Missing required argument: requestId")?;
+    let thread_id = deterministic_thread_id(&format!("gateway:{request_id}"));
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    if conn
+        .query_row(
+            "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
+            [&thread_id],
+            |_| Ok(()),
+        )
+        .is_ok()
+    {
+        return Ok(json!({"threadId": thread_id, "replayed": true}));
+    }
+    let now = crate::todo::iso_now_ms();
+    let title = {
+        let t = arg_str(args, "title").unwrap_or_default();
+        let t = t.trim();
+        if t.is_empty() {
+            let prompt = arg_str(args, "prompt").unwrap_or_default();
+            let first = prompt.lines().next().unwrap_or("New thread").trim();
+            first.chars().take(80).collect::<String>()
+        } else {
+            t.chars().take(200).collect()
+        }
+    };
+    let project_id = match arg_str(args, "projectId") {
+        Some(p) if !p.trim().is_empty() => p,
+        _ => {
+            // Resolve from the calling thread, else fall back to the first project.
+            let from_caller = caller_thread.and_then(|t| {
+                conn.query_row(
+                    "SELECT project_id FROM projection_threads WHERE thread_id = ?1",
+                    [t],
+                    |r| r.get::<_, String>(0),
+                )
+                .ok()
+            });
+            from_caller
+                .or_else(|| {
+                    conn.query_row("SELECT project_id FROM projection_projects LIMIT 1", [], |r| {
+                        r.get::<_, String>(0)
+                    })
+                    .ok()
+                })
+                .ok_or("No project found: pass projectId explicitly.")?
+        }
+    };
+    let mut create = json!({
+        "type": "thread.create",
+        "commandId": format!("gateway-mcp-{request_id}-thread-create"),
+        "threadId": thread_id,
+        "projectId": project_id,
+        "title": title,
+        "createdAt": now,
+    });
+    if let Some(provider) = arg_str(args, "provider") {
+        create.as_object_mut().unwrap().insert("provider".into(), json!(provider));
+    }
+    if let Some(model) = arg_str(args, "model") {
+        create.as_object_mut().unwrap().insert("model".into(), json!(model));
+    }
+    if let Err(e) = dispatch_command(create) {
+        if e.contains("UNIQUE") || e.contains("already exists") {
+            return Ok(json!({"threadId": thread_id, "replayed": true}));
+        }
+        return Err(format!("thread create failed: {e}"));
+    }
+    let started = if let Some(prompt) = arg_str(args, "prompt") {
+        if !prompt.trim().is_empty() {
+            dispatch_command(json!({
+                "type": "thread.turn.start",
+                "commandId": format!("gateway-mcp-{request_id}-turn-start"),
+                "threadId": thread_id,
+                "createdAt": crate::todo::iso_now_ms(),
+                "dispatchMode": "queue",
+                "dispatchOrigin": "agentGateway",
+                "message": {
+                    "messageId": format!("gateway-mcp-{request_id}-message"),
+                    "text": prompt,
+                    "attachments": [],
+                },
+            }))
+            .map_err(|e| format!("turn start failed: {e}"))?;
+            true
+        } else {
+            false
+        }
+    } else {
+        false
+    };
+    Ok(json!({"threadId": thread_id, "started": started}))
+}
+
+fn send_message_tool(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let message = arg_str(args, "message").ok_or("Missing required argument: message")?;
+    if message.trim().is_empty() {
+        return Err("message must not be empty.".into());
+    }
+    let mode = arg_str(args, "mode").unwrap_or_else(|| "queue".into());
+    if mode != "queue" && mode != "steer" {
+        return Err(format!("Unknown mode \"{mode}\": use queue or steer."));
+    }
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.query_row(
+        "SELECT 1 FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
+        [&thread_id],
+        |_| Ok(()),
+    )
+    .map_err(|_| format!("Thread \"{thread_id}\" was not found."))?;
+    let key = crate::orchestration_engine::uuid_v4();
+    dispatch_command(json!({
+        "type": "thread.turn.start",
+        "commandId": format!("gateway-mcp-{key}-turn-start"),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+        "dispatchMode": mode,
+        "dispatchOrigin": "agentGateway",
+        "message": {
+            "messageId": format!("gateway-mcp-{key}-message"),
+            "text": message,
+            "attachments": [],
+        },
+    }))?;
+    Ok(json!({"threadId": thread_id, "mode": mode, "sent": true}))
+}
+
+fn interrupt_thread_tool(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    dispatch_command(json!({
+        "type": "thread.turn.interrupt",
+        "commandId": format!("gateway-mcp-{}-interrupt", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+    }))?;
+    Ok(json!({"threadId": thread_id, "interrupted": true}))
+}
+
+fn set_thread_title_tool(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let title = arg_str(args, "title").ok_or("Missing required argument: title")?;
+    let title: String = title.trim().chars().take(200).collect();
+    if title.is_empty() {
+        return Err("title must not be empty.".into());
+    }
+    dispatch_command(json!({
+        "type": "thread.meta.update",
+        "commandId": format!("gateway-mcp-{}-meta", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+        "title": title,
+    }))?;
+    Ok(json!({"threadId": thread_id, "title": title}))
+}
+
+fn set_thread_archived_tool(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let archived = args
+        .get("archived")
+        .and_then(Value::as_bool)
+        .ok_or("Missing required argument: archived")?;
+    dispatch_command(json!({
+        "type": if archived { "thread.archive" } else { "thread.unarchive" },
+        "commandId": format!("gateway-mcp-{}-archive", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+    }))?;
+    Ok(json!({"threadId": thread_id, "archived": archived}))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -1867,6 +2108,11 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_hub_list_work" => hub_list_work(caller_thread),
         "synara_hub_update_progress" => hub_update_progress(args, caller_thread),
         "synara_hub_cancel_work" => hub_cancel_work(args),
+        "synara_create_thread" => create_thread_tool(args, caller_thread),
+        "synara_send_message" => send_message_tool(args),
+        "synara_interrupt_thread" => interrupt_thread_tool(args),
+        "synara_set_thread_title" => set_thread_title_tool(args),
+        "synara_set_thread_archived" => set_thread_archived_tool(args),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

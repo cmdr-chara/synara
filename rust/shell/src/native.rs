@@ -16870,24 +16870,30 @@ impl Render for Native {
                 // quiet zones are offset by the rail+sidebar+strip geometry.
                 let vpw = window.viewport_size().width.as_f32().max(200.0);
                 let vph = window.viewport_size().height.as_f32().max(200.0);
+                // Upstream EmptyChatBackdrop geometry: the landing canvas is
+                // inset-0 of the CONTENT PANE (right of rail+sidebar 308,
+                // below the top strip 44) — never full-window. What reads
+                // through the transparent chrome is only the separate dim
+                // shell atmosphere, so the scene scale and position follow
+                // the pane size, not the window.
+                let bw = (vpw - 308.0).max(200.0);
+                let bh = (vph - 44.0).max(200.0);
                 let dark = theme.is_dark();
-                let key = (vpw as u32, vph as u32, dark);
+                let key = (bw as u32, bh as u32, dark);
                 if self.backdrop_key != key || self.backdrop_img.is_none() {
                     // Quiet zones approximated from the landing layout: the
                     // centered heading band and the composer card (upstream
-                    // measures the DOM rects), shifted into window coordinates
-                    // by the rail+sidebar width (308) and top strip (44).
-                    let pane_w = (vpw - 308.0).max(200.0);
-                    let col_w = 736.0f32.min(pane_w * 0.9);
-                    let cx0 = 308.0 + (pane_w - col_w) / 2.0;
+                    // measures the DOM rects), in pane coordinates.
+                    let col_w = 736.0f32.min(bw * 0.9);
+                    let cx0 = (bw - col_w) / 2.0;
                     let quiet = vec![
-                        (cx0, 44.0 + vph * 0.30, col_w, vph * 0.22),
-                        (cx0, vph - 210.0, col_w, 180.0),
+                        (cx0, bh * 0.30, col_w, bh * 0.22),
+                        (cx0, bh - 210.0, col_w, 180.0),
                     ];
                     self.backdrop_img = crate::backdrop::build_backdrop_image(
                         &crate::backdrop::BackdropSpec {
-                            width: vpw,
-                            height: vph,
+                            width: bw,
+                            height: bh,
                             dark,
                             accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
                             quiet,
@@ -26383,7 +26389,10 @@ impl Render for Native {
                             field = field.child(
                                 div()
                                     .absolute()
-                                    .inset_0()
+                                    .top(px(44.))
+                                    .left(px(308.))
+                                    .w(px((vpw - 308.0).max(200.0)))
+                                    .h(px((vph - 44.0).max(200.0)))
                                     .bg(gpui::linear_gradient(
                                         180.,
                                         gpui::linear_color_stop(
@@ -26404,10 +26413,10 @@ impl Render for Native {
                             .child(field.child(
                                 gpui::img(ImageSource::Render(img))
                                     .absolute()
-                                    .top_0()
-                                    .left_0()
-                                    .w(px(vpw))
-                                    .h(px(vph)),
+                                    .top(px(44.))
+                                    .left(px(308.))
+                                    .w(px((vpw - 308.0).max(200.0)))
+                                    .h(px((vph - 44.0).max(200.0))),
                             ))
                     })
                 } else {

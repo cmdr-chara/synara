@@ -436,3 +436,151 @@ pub(crate) fn reconcile_queue_reasons(project_id: &str) -> Result<(), crate::tod
     }
     Ok(())
 }
+
+/// Admit one queued item into a fresh worker thread: claims the item, creates
+/// the worker thread in the target project with the frozen creation spec,
+/// starts the first turn with the spec prompt, and records the worker mapping.
+/// Admission is exactly-once per item: the worker thread id derives from the
+/// work item id, so a crash before the attach write replays into the same
+/// thread instead of forking a second worker.
+pub(crate) fn admit_next(project_id: &str) -> Result<bool, crate::todo::WsErr> {
+    let Some(record) = claim_next(project_id)? else {
+        return Ok(false);
+    };
+    let work_item_id = record
+        .get("workItemId")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let spec = record.get("creationSpec").cloned().unwrap_or_else(|| json!({}));
+    let target_project = record
+        .get("targetProjectId")
+        .and_then(Value::as_str)
+        .unwrap_or(project_id)
+        .to_string();
+    let prompt = spec
+        .get("prompt")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    if prompt.trim().is_empty() {
+        release_failed(&work_item_id);
+        return Err(err("Hub work item has no prompt."));
+    }
+    let title = record
+        .get("title")
+        .and_then(Value::as_str)
+        .unwrap_or("Hub task")
+        .to_string();
+    let thread_id = format!("{}-worker", work_item_id);
+    let now = crate::todo::iso_now_ms();
+    let create = json!({
+        "type": "thread.create",
+        "commandId": format!("{work_item_id}-thread-create"),
+        "threadId": thread_id,
+        "projectId": target_project,
+        "title": title,
+        "createdAt": now,
+    });
+    if let Err(e) = crate::orchestration_engine::handle("orchestration.dispatchCommand", &create) {
+        if !e.0.contains("UNIQUE") && !e.0.contains("already exists") {
+            release_failed(&work_item_id);
+            return Err(err(format!("hub worker thread create: {}", e.0)));
+        }
+    }
+    let turn = json!({
+        "type": "thread.turn.start",
+        "commandId": format!("{work_item_id}-turn-start"),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+        "dispatchMode": "queue",
+        "dispatchOrigin": "hubWork",
+        "message": {
+            "messageId": format!("{work_item_id}-message"),
+            "text": prompt,
+            "attachments": [],
+        },
+    });
+    if let Err(e) = crate::orchestration_engine::handle("orchestration.dispatchCommand", &turn) {
+        release_failed(&work_item_id);
+        return Err(err(format!("hub worker turn start: {}", e.0)));
+    }
+    // Attach the worker and mark the item running.
+    if let Ok(conn) = state_conn() {
+        if let Ok(raw) = conn.query_row(
+            "SELECT record_json, revision FROM project_agent_work_items WHERE work_item_id = ?1",
+            [&work_item_id],
+            |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)),
+        ) {
+            let (raw, revision) = raw;
+            let mut current = serde_json::from_str::<Value>(&raw).unwrap_or_else(|_| json!({}));
+            current.as_object_mut().map(|o| {
+                o.insert("workerThreadId".into(), json!(thread_id));
+                o.insert("state".into(), json!("running"));
+                o.insert("admittedAt".into(), json!(crate::todo::iso_now_ms()));
+                o.insert("revision".into(), json!(revision + 1));
+            });
+            let _ = conn.execute(
+                "UPDATE project_agent_work_items SET state = 'running', worker_thread_id = ?1, \
+                 revision = revision + 1, record_json = ?2 WHERE work_item_id = ?3",
+                rusqlite::params![thread_id, current.to_string(), work_item_id],
+            );
+        }
+    }
+    Ok(true)
+}
+
+fn release_failed(work_item_id: &str) {
+    if let Ok(conn) = state_conn() {
+        if let Ok((raw, revision)) = conn.query_row(
+            "SELECT record_json, revision FROM project_agent_work_items WHERE work_item_id = ?1",
+            [work_item_id],
+            |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)),
+        ) {
+            let mut record = serde_json::from_str::<Value>(&raw).unwrap_or_else(|_| json!({}));
+            record.as_object_mut().map(|o| {
+                o.insert("state".into(), json!("queued"));
+                o.insert("slotHeld".into(), json!(false));
+                o.insert("revision".into(), json!(revision + 1));
+            });
+            let _ = conn.execute(
+                "UPDATE project_agent_work_items SET state = 'queued', slot_held = 0, \
+                 revision = revision + 1, record_json = ?1 WHERE work_item_id = ?2",
+                rusqlite::params![record.to_string(), work_item_id],
+            );
+        }
+    }
+}
+
+/// Background admission loop: every few seconds each enabled hub project
+/// reconciles its queue reasons and admits waiting work while slots allow.
+pub(crate) fn spawn_admission_loop() {
+    std::thread::spawn(|| loop {
+        std::thread::sleep(std::time::Duration::from_secs(5));
+        let Ok(conn) = state_conn() else { continue };
+        let projects: Vec<String> = {
+            let mut stmt = match conn.prepare(
+                "SELECT project_id FROM project_agent_configs WHERE enabled = 1",
+            ) {
+                Ok(s) => s,
+                Err(_) => continue,
+            };
+            stmt.query_map([], |r| r.get::<_, String>(0))
+                .map(|rows| rows.filter_map(|r| r.ok()).collect())
+                .unwrap_or_default()
+        };
+        drop(conn);
+        for project_id in projects {
+            let _ = reconcile_queue_reasons(&project_id);
+            // Admit while items claim successfully; each admission spawns a
+            // worker thread so the loop naturally paces itself.
+            for _ in 0..4 {
+                match admit_next(&project_id) {
+                    Ok(true) => {}
+                    Ok(false) => break,
+                    Err(_) => break,
+                }
+            }
+        }
+    });
+}

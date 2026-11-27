@@ -141,3 +141,38 @@ Upstream InboxView.tsx is a container-query adaptive layout:
 - Component spec: apps/web/src/components/inbox/InboxView.tsx — port the grid
   structure faithfully (task column + recap column), not just spacing.
 Shell padding fix (p-10/gap-7) already in, uncommitted at time of writing.
+
+## Progress log (cont.)
+- `fa313681d0` in-thread composer = upstream tray: white pill (rounded 9999) inside opaque grey squircle 24.2 spanning chat col; Full-access/model chips ON the grey, not floating. Verified vs web crop.
+- Transcript comparison session: both clients on "Sessione piccola" (web thread id ddf3cb33-8a94-4f9a-b64b-43bef61fd9e4, reachable by clicking inbox row). Captures: /tmp/pxcmp/{web,shell}_thread.png + anaglyph_thread.png.
+- NEXT: transcript content column too wide in shell — upstream constrains assistant content to 46rem (728px measured firstP x=384 w=728 at 1600w); shell spans nearly full pane. Also user-attachment layout (image+pdf chips) diverges; "Worked for 11s" row missing in web capture position. Scroll-sync problem: captures differ in scroll — compare structurally not pixelwise until scroll synced.
+
+## HANDOFF STATE (nov 27 ~01:15, pre-compaction dump)
+Deadline 13:00. Mandate: pixel-perfect ALL frontend sections, identical to Electron. Child session does backend.
+
+### Verified facts this hour
+- `/tasks` is NOT a web route (redirects to thread). Routes are nested under chat shell; only `/settings` `/inbox` confirmed as top-level. Non-thread surfaces (tasks/kanban/automations/pull-requests/hubs) are reached via RAIL ICONS in both clients, not URLs.
+- Transcript horizontal metrics ALREADY MATCH: text ink x=338..1099 identical both clients (measured). The composer tray now matches too (`fa313681d0`).
+- Anaglyph vertical mismatches in transcript were SCROLL desync, not layout. For valid comparison must scroll-sync both (web via JS scrollTop; shell autoscrolls to bottom on open).
+- Shell sidebar border at x=307 (1600w). Web rail shows dither texture noise x<40.
+- web nav: clicking inbox rows via JS works (row.click() then location.pathname changes). Thread "Sessione piccola" id = ddf3cb33-8a94-4f9a-b64b-43bef61fd9e4.
+- Shell rail icon y-coords (1024x768 computer space): home 62, inbox 92; more icons below (tasks ~122?, kanban, automations...). Verify visually.
+- Web rail navigation: evaluate JS click on rail buttons. Rail aria labels unknown — inspect DOM `document.querySelectorAll('a[href],button')` in the rail container to find targets.
+
+### Remaining surface passes (do in order)
+1. transcript fine detail — scroll-sync first, then compare: attachment layout (image+pdf chips diverge), user bubbles, activity rows, timestamps
+2. kanban — navigate via rail both sides
+3. tasks list — same
+4. pull-requests (code review)
+5. automations
+6. hubs
+7. settings sub-pages beyond first (20+ sections in shell sidebar)
+8. dark mode — NEVER verified yet, do a full pass
+9. inbox two-column restructure (left review+tasks stacked, right recaps; spec in earlier section of this file)
+10. sky density backdrop refinement (low priority per user)
+
+### Method reminders
+- harness: /tmp/pxcmp/*.py, captures via CDP port 57012 + screencapture -R0,30,1600,1088
+- ALWAYS `git pull --rebase origin feat/rust-port` before push (child pushes constantly); commit as Commander Chara with --no-verify
+- shell relaunch: pkill -f synara-shell; SYNARA_URL=http://127.0.0.1:8580 SYNARA_HTTP=http://127.0.0.1:8580 SYNARA_HOME=/tmp/synara-bisect ./target/debug/synara-shell
+- backend: cd rust/app && PORT=8580 SYNARA_HOME=/tmp/synara-bisect ./target/debug/index (check if still running first)

@@ -42,6 +42,39 @@ fn arch() -> &'static str {
     }
 }
 
+fn read_launch_version(home_dir: &Path) -> Option<String> {
+    let text = std::fs::read_to_string(home_dir.join("last-launch-version.json")).ok()?;
+    serde_json::from_str::<Value>(&text).ok()?
+        .get("version").and_then(Value::as_str).map(str::to_string)
+}
+
+fn write_launch_version(home_dir: &Path, version: &str) {
+    let body = format!("{}\n", serde_json::to_string(&json!({"version": version})).unwrap_or_else(|_| "{}".into()));
+    let _ = write_private_atomic(&home_dir.join("last-launch-version.json"), body.as_bytes());
+}
+fn os_version() -> Option<String> {
+    #[cfg(target_os = "macos")]
+    {
+        let output = std::process::Command::new("sw_vers").arg("-productVersion").output().ok()?;
+        output.status.success().then(|| String::from_utf8_lossy(&output.stdout).trim().to_string()).filter(|value| !value.is_empty())
+    }
+    #[cfg(target_os = "linux")]
+    {
+        let release = std::fs::read_to_string("/etc/os-release").ok()?;
+        release.lines().find_map(|line| line.strip_prefix("VERSION_ID=").map(|value| value.trim_matches('"').to_string()))
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "linux")))]
+    {
+        std::env::var("OS").ok().filter(|value| !value.is_empty())
+    }
+}
+
+fn locale() -> Option<String> {
+    ["LC_ALL", "LC_MESSAGES", "LANG"].iter().find_map(|name| std::env::var(name).ok())
+        .map(|value| value.split('.').next().unwrap_or(&value).replace('_', "-"))
+        .filter(|value| !value.is_empty() && value != "C" && value != "POSIX")
+}
+
 fn valid_version(value: &str) -> bool {
     let (core, suffix) = value.split_once('-').unwrap_or((value, ""));
     let numeric = |part: &str| !part.is_empty() && part.len() <= 8 && part.bytes().all(|b| b.is_ascii_digit());
@@ -349,7 +382,15 @@ static REPORTER: std::sync::OnceLock<Option<Arc<BetaDiagnosticsReporter>>> = std
 
 pub fn initialize(home_dir: &Path, flavor: &str, app_version: &str) -> Option<Arc<BetaDiagnosticsReporter>> {
     let reporter = REPORTER.get_or_init(|| BetaDiagnosticsReporter::create(home_dir, flavor, app_version)).clone()?;
-    reporter.track_lifecycle("app.start", None);
+    let previous_launch_version = read_launch_version(home_dir);
+    let mut start_payload = json!({"kind":"lifecycle"});
+    if let Some(version) = os_version() { start_payload["osVersion"] = json!(version); }
+    if let Some(locale) = locale() { start_payload["locale"] = json!(locale); }
+    reporter.track("app.start", start_payload);
+    if previous_launch_version.as_deref().is_some_and(|version| version != reporter.app_version) {
+        reporter.track("update.installed", json!({"kind":"update","outcome":"ok","targetVersion":reporter.app_version}));
+    }
+    write_launch_version(home_dir, &reporter.app_version);
     reporter.start();
     Some(reporter)
 }

@@ -133,7 +133,19 @@ async fn main() {
             std::process::exit(2);
         }
         eprintln!("WARNING: Stop every Synara process before restoring a migration backup.");
-        match migrations::restore_marked_migration_backup(&path) {
+        let lifecycle_lock = match database_lifecycle_lock::acquire_database_lifecycle_lock(&path) {
+            Ok(lock) => lock,
+            Err(error) => {
+                eprintln!("Failed to restore migration backup for {}: {error}", path.display());
+                std::process::exit(1);
+            }
+        };
+        let restore_result = migrations::restore_marked_migration_backup(&path);
+        let release_result = lifecycle_lock.release();
+        if let Err(error) = release_result {
+            eprintln!("database lifecycle lock release failed after restore: {error}");
+        }
+        match restore_result {
             Ok(()) => {
                 println!("Restored migration backup for {}", path.display());
                 std::process::exit(0);

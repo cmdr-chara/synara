@@ -19158,67 +19158,84 @@ impl Render for Native {
             icons::CODEX
         };
         let chip_effort_idx = self.composer_effort_idx.min(4);
-        let build_model_chip = move || {
+        let theme_chip = theme.clone();
+        let build_model_chip = move |cx: &mut Context<Self>| {
             let cur = model_cur.clone();
             let weak = model_weak.clone();
-            Button::new("composer-model")
-                .ghost()
-                .compact()
-                .with_size(gpui_kit::component::Size::XSmall)
-                .h(px(28.))
-                .icon(svg_icon(model_icon).size(px(14.)))
-                .label({
-                // Upstream: the chip reads "<model> <Effort>" — the effort
-                // label reflects the current trait selection.
-                const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
-                let eff = EFFORTS[chip_effort_idx].to_string();
-                format!("{} {}", model_label.clone(), eff)
-            })
-                .dropdown_caret(true)
-                .on_click(move |_, window, cx| {
-                    let _ = weak.update(cx, |this, cx| {
-                        this.model_picker_open = !this.model_picker_open;
-                        if this.model_picker_open {
-                            // Open on the tab of the current model's provider.
-                            this.model_picker_provider = this.composer_model.0.clone();
-                        }
-                        if this.model_picker_open && this.model_catalog.is_empty() {
-                            // Lazy-fill the catalog from the backend once per
-                            // provider; rows render when they land.
-                            if let Some(client) = ensure_client(&this.client) {
-                                let mut out: Vec<(String, String, String)> = Vec::new();
-                                for prov in ["codex", "devin", "claudeAgent"] {
-                                    if let Some(v) = client.call(
-                                        "provider.listModels",
-                                        json!({"provider": prov, "instanceId": prov, "cwd": null}),
-                                    ) {
-                                        let rows = v
-                                            .get("models")
-                                            .or_else(|| v.get("values"))
-                                            .and_then(Value::as_array)
-                                            .cloned()
-                                            .unwrap_or_default();
-                                        for m in rows {
-                                            let slug = str_at(&m, "slug");
-                                            let name = {
-                                                let n = str_at(&m, "name");
-                                                if n.is_empty() { slug.to_string() } else { n.to_string() }
-                                            };
-                                            if !slug.is_empty() {
-                                                out.push((slug.to_string(), name, prov.to_string()));
-                                            }
-                                        }
+            {
+                let eff_muted = theme_chip.muted_foreground;
+                let fg = theme_chip.foreground;
+                div()
+                    .id("composer-model")
+                    .h(px(28.))
+                    .px(px(8.))
+                    .gap(px(6.))
+                    .flex()
+                    .items_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .hover(|s| s.bg(theme_chip.muted.opacity(0.6)))
+                    .child(svg_icon(model_icon).size(px(14.)))
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(fg)
+                            .child(model_label.clone()),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(eff_muted)
+                            .child({
+                                const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
+                                EFFORTS[chip_effort_idx].to_string()
+                            }),
+                    )
+                    .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(eff_muted))
+                    .on_click(cx.listener(move |this, _ev, window, cx| {
+
+                this.model_picker_open = !this.model_picker_open;
+                if this.model_picker_open {
+                    // Open on the tab of the current model's provider.
+                    this.model_picker_provider = this.composer_model.0.clone();
+                }
+                if this.model_picker_open && this.model_catalog.is_empty() {
+                    // Lazy-fill the catalog from the backend once per
+                    // provider; rows render when they land.
+                    if let Some(client) = ensure_client(&this.client) {
+                        let mut out: Vec<(String, String, String)> = Vec::new();
+                        for prov in ["codex", "devin", "claudeAgent"] {
+                            if let Some(v) = client.call(
+                                "provider.listModels",
+                                json!({"provider": prov, "instanceId": prov, "cwd": null}),
+                            ) {
+                                let rows = v
+                                    .get("models")
+                                    .or_else(|| v.get("values"))
+                                    .and_then(Value::as_array)
+                                    .cloned()
+                                    .unwrap_or_default();
+                                for m in rows {
+                                    let slug = str_at(&m, "slug");
+                                    let name = {
+                                        let n = str_at(&m, "name");
+                                        if n.is_empty() { slug.to_string() } else { n.to_string() }
+                                    };
+                                    if !slug.is_empty() {
+                                        out.push((slug.to_string(), name, prov.to_string()));
                                     }
-                                }
-                                if !out.is_empty() {
-                                    this.model_catalog = out;
                                 }
                             }
                         }
-                        cx.notify();
-                        let _ = window;
-                    });
-                })
+                        if !out.is_empty() {
+                            this.model_catalog = out;
+                        }
+                    }
+                }
+                cx.notify();
+                let _ = window;
+                    }))
+            }
         };
         // While the selected thread's turn is live, upstream swaps the send
         // button for a prominent dark stop square (thread.turn.interrupt).
@@ -19439,7 +19456,7 @@ impl Render for Native {
                                 None.into_iter()
                             },
                         )
-                        .child(build_model_chip())
+                        .child(build_model_chip(cx))
                         .children(if voice_visible {
                             Some(make_mic_btn(cx)).into_iter()
                         } else {
@@ -20811,7 +20828,7 @@ impl Render for Native {
                             .items_center()
                             .child(build_mode_chip(cx))
                             .child(div().flex_1())
-                            .child(build_model_chip()),
+                            .child(build_model_chip(cx)),
                     )
             } else {
                 v_flex()

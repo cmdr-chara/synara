@@ -650,7 +650,7 @@ fn view_automation(args: &Value) -> Result<Value, String> {
         },
     )
     .map(|v| json!({"automation": v}))
-    .map_err(|_| format!("Automation "{automation_id}" was not found."))
+    .map_err(|_| format!("Automation \"{automation_id}\" was not found."))
 }
 
 pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String> {

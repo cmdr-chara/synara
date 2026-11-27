@@ -10,6 +10,8 @@ use axum::http::{header, HeaderMap, HeaderName, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use serde_json::Value;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::sync::Semaphore;
+use std::sync::{Arc, Mutex, OnceLock};
 
 use crate::remote_resource::{resource_route, REMOTE_RESOURCE_PATH};
 
@@ -109,6 +111,17 @@ fn response_headers(remote_head: &str) -> HeaderMap {
     result
 }
 
+
+fn host_semaphore(host_id: &str, transfer: bool) -> Arc<Semaphore> {
+    static PENDING: OnceLock<Mutex<std::collections::HashMap<String, Arc<Semaphore>>>> = OnceLock::new();
+    static TRANSFERS: OnceLock<Mutex<std::collections::HashMap<String, Arc<Semaphore>>>> = OnceLock::new();
+    let (cell, permits) = if transfer { (&TRANSFERS, 2) } else { (&PENDING, 32) };
+    let map = cell.get_or_init(|| Mutex::new(std::collections::HashMap::new()));
+    map.lock().ok()
+        .and_then(|mut entries| Some(entries.entry(host_id.to_string()).or_insert_with(|| Arc::new(Semaphore::new(permits))).clone()))
+        .unwrap_or_else(|| Arc::new(Semaphore::new(permits)))
+}
+
 fn bad(status: StatusCode, text: &'static str) -> Response {
     (status, [(header::CACHE_CONTROL, "no-store")], text).into_response()
 }
@@ -170,6 +183,17 @@ pub async fn handle_remote_resource(
     {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     }
+    let pending = host_semaphore(&host_id, false);
+    let Ok(_pending_permit) = pending.try_acquire_owned() else {
+        return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
+    };
+    let transfers = host_semaphore(&host_id, true);
+    let Ok(_transfer_permit) = tokio::time::timeout(
+        std::time::Duration::from_secs(30),
+        transfers.acquire_owned(),
+    ).await else {
+        return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
+    };
     let Ok(forward_headers) = filtered_request_headers(&headers, route.max_body_bytes as usize) else {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     };

@@ -264,6 +264,7 @@ async fn main() {
             eprintln!("startup recovery: fenced {fenced} interrupted git handoff(s), replayed {recovered}");
         }
         auth_http::seed_bootstrap_credential();
+        hosts::restore_desired_connections();
     attachments_http::start_cleanup_worker();
     automation_executor::start();
         let resumed = orchestration_engine::consume_quit_resume_record();

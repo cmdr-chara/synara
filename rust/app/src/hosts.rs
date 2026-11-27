@@ -299,6 +299,53 @@ fn paired_host_rows() -> Vec<Value> {
         .collect()
 }
 
+
+pub(crate) fn fresh_host_endpoints(host_id: &str, environment_id: &str) -> Result<Vec<crate::remote_client::RemoteEndpoint>, String> {
+    let listed = authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to list hosts").map_err(|error| error.0)?;
+    let host = listed.get("hosts").and_then(Value::as_array).and_then(|hosts| {
+        hosts.iter().find(|candidate| candidate.get("id").and_then(Value::as_str) == Some(host_id)).cloned()
+    }).ok_or_else(|| "That host is not on your account".to_string())?;
+    if host.get("linked").and_then(Value::as_bool) != Some(true)
+        || host.get("environmentId").and_then(Value::as_str) != Some(environment_id)
+    {
+        return Err("Remote host identity changed".to_string());
+    }
+    let endpoints = remote_endpoints(&host);
+    if endpoints.is_empty() {
+        return Err("The host published no reachable remote endpoints".to_string());
+    }
+    Ok(endpoints)
+}
+
+pub(crate) fn restore_desired_connections() {
+    let Some(account) = crate::account::read_session_file() else { return };
+    let state_dir = crate::todo::state_dir();
+    let Some(controller_environment) = crate::server_env::environment_id(&state_dir) else { return };
+    let Ok(binding) = controller_binding(&account, &controller_environment) else { return };
+    let Ok(conn) = crate::remote_host_trust::open() else { return };
+    let Ok(hosts) = crate::remote_host_trust::list_desired(&conn, &binding) else { return };
+    for host in hosts {
+        crate::remote_connections::set_desired(crate::remote_connections::DesiredHost {
+            host_id: host.host_id.clone(),
+            host_name: host.label.clone(),
+            environment_id: host.environment_id.clone(),
+            endpoints: Vec::new(),
+            root_certificate: host.root_certificate,
+            execution_scope: json!({
+                "environmentId": host.environment_id,
+                "accountAuthority": binding.account_authority,
+                "userId": binding.user_id,
+                "organizationId": binding.organization_id,
+                "channel": host.channel,
+            }),
+            state: "reconnecting",
+            transport: None,
+            started_at: None,
+            credential_expires_at: None,
+        });
+    }
+}
+
 fn cancel_published_pairing_code(invite_id: &str) {
     let Some(account) = crate::account::read_session_file() else { return };
     let state_dir = crate::todo::state_dir();

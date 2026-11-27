@@ -130,9 +130,13 @@ async fn dial(desired: &DesiredHost, client: Value) -> Result<crate::remote_clie
     let user_id = desired.execution_scope.get("userId").and_then(Value::as_str).unwrap_or_default().to_string();
     let host_id = desired.host_id.clone();
     let grant_user_id = user_id.clone();
+    // Endpoint reachability is account-directory state, not pairing trust.
+    // Refresh it for every stream so restored desired hosts and network moves
+    // do not reuse stale LAN/Tailscale addresses.
+    let endpoints = crate::hosts::fresh_host_endpoints(&desired.host_id, &desired.environment_id)?;
     crate::remote_client::dial_remote_host(
         DialSessionInput {
-            endpoints: desired.endpoints.clone(),
+            endpoints,
             anchor_environment_id: desired.environment_id.clone(),
             root_certificate: desired.root_certificate.clone(),
             client,

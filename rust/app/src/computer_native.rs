@@ -778,6 +778,14 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     let r = (|| -> Result<Value, String> {
         match tag {
             "computer.getStatus" => Ok(status_json()),
+            "computer.getCursorPosition" => {
+                let cursor = helper("cursor", &json!({}))?;
+                Ok(json!({
+                    "computerId": COMPUTER_ID,
+                    "x": cursor.get("x").cloned().unwrap_or(Value::Null),
+                    "y": cursor.get("y").cloned().unwrap_or(Value::Null),
+                }))
+            }
             "computer.getScreenSize" => Ok(json!({
                 "computerId": COMPUTER_ID,
                 "screenSize": screen_size()?,

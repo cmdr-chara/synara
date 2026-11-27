@@ -450,6 +450,28 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             schema(json!({}), &[]),
         ),
         def(
+            "synara_create_threads",
+            "Create an exact batch of 1-20 standalone Synara threads. Each item needs prompt and optional target/projectId/title. Validation failures create nothing; durable retries with the same requestId replay the exact operation.",
+            schema(json!({
+                "requestId": {"type": "string", "maxLength": 256},
+                "threads": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "prompt": {"type": "string"},
+                            "title": {"type": "string"},
+                            "projectId": {"type": "string"},
+                            "target": {"type": "object"},
+                        },
+                        "required": ["prompt"],
+                    },
+                },
+            }), &["requestId", "threads"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -2893,6 +2915,63 @@ fn list_mcp_connectors_tool() -> Result<Value, String> {
         .map_err(|e| e.0)
 }
 
+fn create_threads_batch(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let request_id = arg_str(args, "requestId").ok_or("Missing required argument: requestId")?;
+    let threads = args
+        .get("threads")
+        .and_then(Value::as_array)
+        .ok_or("Missing required argument: threads")?;
+    if threads.is_empty() || threads.len() > 20 {
+        return Err("threads must contain 1-20 items.".into());
+    }
+    // Pre-validate everything before creating anything.
+    for (i, item) in threads.iter().enumerate() {
+        match item.get("prompt").and_then(Value::as_str) {
+            Some(p) if !p.trim().is_empty() => {}
+            _ => return Err(format!("threads[{i}].prompt is required.")),
+        }
+    }
+    let mut results = Vec::new();
+    for (i, item) in threads.iter().enumerate() {
+        let mut item_args = json!({
+            "requestId": format!("batch-{request_id}-{i}"),
+            "prompt": item.get("prompt").cloned().unwrap_or(Value::Null),
+        });
+        for key in ["title", "projectId"] {
+            if let Some(v) = item.get(key) {
+                item_args.as_object_mut().unwrap().insert(key.into(), v.clone());
+            }
+        }
+        if let Some(target) = item.get("target").and_then(Value::as_object) {
+            for key in ["provider", "model"] {
+                if let Some(v) = target.get(key) {
+                    item_args.as_object_mut().unwrap().insert(key.into(), v.clone());
+                }
+            }
+        }
+        match create_thread_tool(&item_args, caller_thread) {
+            Ok(mut result) => {
+                let link = result
+                    .get("threadId")
+                    .and_then(Value::as_str)
+                    .map(|tid| format!("thread://{tid}"));
+                if let Some(link) = link {
+                    result
+                        .as_object_mut()
+                        .unwrap()
+                        .insert("link".into(), json!(link));
+                }
+                result.as_object_mut().unwrap().insert("index".into(), json!(i));
+                results.push(result);
+            }
+            Err(e) => {
+                return Err(format!("threads[{i}] creation failed: {e}"));
+            }
+        }
+    }
+    Ok(json!({"threads": results}))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -3111,6 +3190,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_project_link_repository" => link_repository(args),
         "synara_diagnose_thread" => diagnose_thread(args),
         "synara_list_mcp_connectors" => list_mcp_connectors_tool(),
+        "synara_create_threads" => create_threads_batch(args, caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

@@ -146,7 +146,9 @@ pub async fn handle_remote_resource(
     if method.as_str() != route.method {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     }
-    if body.len() > route.max_body_bytes as usize && route.max_body_bytes != 0 {
+    if (route.max_body_bytes == 0 && !body.is_empty())
+        || (route.max_body_bytes != 0 && body.len() > route.max_body_bytes as usize)
+    {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     }
     let Ok(forward_headers) = filtered_request_headers(&headers, route.max_body_bytes as usize) else {

@@ -361,7 +361,7 @@ pub async fn close_attachment(id: &str) {
     let attachment = attachments().lock().ok().and_then(|mut live| live.remove(id));
     if let Some(attachment) = attachment {
         attachment.active.store(false, Ordering::SeqCst);
-        let _ = attachment.write.lock().await.send(WsMessage::Close(None)).await;
+        let _ = attachment.write.lock().await.send(close_frame(1000, "Remote stream closed")).await;
     }
 }
 
@@ -527,6 +527,9 @@ pub async fn attach(host_id: &str, attachment_id: &str, server_instance_id: Opti
     }
     attachment.active.store(false, Ordering::SeqCst);
     remote_to_local.abort();
+    let _ = attachment.write.lock().await
+        .send(close_frame(1000, "Renderer detached"))
+        .await;
     close_attachment(attachment_id).await;
     if attachments().lock().ok().is_some_and(|live| !live.values().any(|item| item.host_id == host_id)) {
         mark_state(host_id, "idle");

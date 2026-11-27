@@ -169,6 +169,13 @@ fn create_todo(args: &Value) -> Result<Value, String> {
     let store = todos_store()?;
     let title = arg_str(args, "title").ok_or("Missing required argument: title")?;
     let mut payload = serde_json::Map::new();
+    // Upstream derives the id from the caller thread and requestId so retries
+    // land on the same to-do; MCP calls here carry no request id, so a fresh
+    // id per call is the correct fallback.
+    payload.insert(
+        "id".into(),
+        json!(format!("todo:{}", crate::orchestration_engine::uuid_v4().replace('-', ""))),
+    );
     payload.insert("title".into(), json!(title));
     for key in ["notes", "priority", "dueDate", "projectId"] {
         if let Some(v) = args.get(key) {

@@ -117,6 +117,38 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["title", "requestId"]),
         ),
         def(
+            "synara_read_kanban_card",
+            "Read one Kanban card: its thread metadata and derived column with attention flags.",
+            schema(json!({
+                "threadId": {"type": "string"},
+            }), &["threadId"]),
+        ),
+        def(
+            "synara_move_kanban_card",
+            "Move a card between actionable columns. target inProgress starts or resumes work, optionally with a message — required when restarting a settled thread. target done requests the running turn to interrupt.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "target": {"type": "string", "enum": ["inProgress", "done"]},
+                "message": {"type": "string", "description": "Required when restarting a settled thread."},
+            }), &["threadId", "target"]),
+        ),
+        def(
+            "synara_update_kanban_card",
+            "Edit a card's title and/or description (stored as the thread notes). At least one of title/description required.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "title": {"type": "string", "maxLength": 200},
+                "description": {"type": "string"},
+            }), &["threadId"]),
+        ),
+        def(
+            "synara_delete_kanban_card",
+            "Delete a card: permanently deletes the thread behind it. Cannot be undone.",
+            schema(json!({
+                "threadId": {"type": "string"},
+            }), &["threadId"]),
+        ),
+        def(
             "synara_create_automation",
             "Create a heartbeat, standalone, or dedicated Synara automation. heartbeat appends turns to an existing thread; standalone opens a fresh thread per run; dedicated reuses one owned thread. Omitting mode/schedule creates a heartbeat on your thread using everyMinutes (default 5).",
             schema(json!({
@@ -886,6 +918,189 @@ fn create_kanban_card(args: &Value, start_turn: bool) -> Result<Value, String> {
     }))
 }
 
+fn kanban_card_state(
+    conn: &rusqlite::Connection,
+    thread_id: &str,
+) -> Result<(String, Vec<&'static str>, bool), String> {
+    let row: Option<(String, Option<String>, Option<String>, i64, i64, Option<String>)> = conn
+        .query_row(
+            "SELECT t.updated_at, t.archived_at, t.deleted_at, t.pending_approval_count, t.pending_user_input_count, \
+             (SELECT status FROM projection_thread_sessions s WHERE s.thread_id = t.thread_id) \
+             FROM projection_threads t WHERE t.thread_id = ?1",
+            [thread_id],
+            |r| {
+                Ok((
+                    r.get(0)?,
+                    r.get(1)?,
+                    r.get(2)?,
+                    r.get(3)?,
+                    r.get(4)?,
+                    r.get(5)?,
+                ))
+            },
+        )
+        .ok();
+    let Some((updated_at, archived, deleted, approvals, inputs, session_status)) = row else {
+        return Err(format!("Thread \"{thread_id}\" was not found."));
+    };
+    if deleted.is_some() {
+        return Err(format!("Thread \"{thread_id}\" was deleted."));
+    }
+    let latest_turn: Option<(String, bool, bool, Option<String>)> = conn
+        .query_row(
+            "SELECT state, started_at IS NOT NULL, completed_at IS NOT NULL, last_error \
+             FROM projection_turns WHERE thread_id = ?1 \
+             ORDER BY COALESCE(started_at, requested_at) DESC LIMIT 1",
+            [thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
+        )
+        .ok();
+    let heartbeat = crate::orchestration_engine::iso_ms(&updated_at);
+    let (col, flags) = match &latest_turn {
+        Some((state, started, completed, last_err)) => derive_kanban_card(
+            Some(state.as_str()),
+            *started,
+            *completed,
+            session_status.as_deref(),
+            last_err.as_deref(),
+            heartbeat,
+            approvals > 0,
+            inputs > 0,
+            now_unix_ms(),
+        ),
+        None => derive_kanban_card(
+            None,
+            false,
+            false,
+            session_status.as_deref(),
+            None,
+            heartbeat,
+            approvals > 0,
+            inputs > 0,
+            now_unix_ms(),
+        ),
+    };
+    Ok((col.to_string(), flags, archived.is_some()))
+}
+
+fn read_kanban_card(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let conn = state_conn()?;
+    let (column, flags, archived) = kanban_card_state(&conn, &thread_id)?;
+    let meta: Option<(Option<String>, Option<String>)> = conn
+        .query_row(
+            "SELECT title, branch FROM projection_threads WHERE thread_id = ?1",
+            [&thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .ok();
+    Ok(json!({
+        "threadId": thread_id,
+        "title": meta.as_ref().and_then(|m| m.0.clone()),
+        "branch": meta.and_then(|m| m.1),
+        "column": column,
+        "attention": flags,
+        "archived": archived,
+    }))
+}
+
+fn move_kanban_card(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let target = arg_str(args, "target").ok_or("Missing required argument: target")?;
+    let conn = state_conn()?;
+    let (column, flags, archived) = kanban_card_state(&conn, &thread_id)?;
+    if archived {
+        return Err("Archived threads cannot be moved on the board.".into());
+    }
+    let failed = flags.contains(&"failed");
+    drop(conn);
+    let now = crate::todo::iso_now_ms();
+    match target.as_str() {
+        "inProgress" => {
+            if column == "awaitingYou" && !failed {
+                return Ok(json!({"threadId": thread_id, "column": "awaitingYou", "attention": flags, "moved": false, "reason": "awaitingYou is a human-attention state"}));
+            }
+            if column == "inProgress" {
+                return Ok(json!({"threadId": thread_id, "column": "inProgress", "attention": flags, "moved": false, "alreadyInProgress": true}));
+            }
+            let message = arg_str(args, "message").ok_or(
+                "message is required when restarting a settled thread.",
+            )?;
+            let turn = json!({
+                "type": "thread.turn.start",
+                "commandId": format!("kanban-move-{}", crate::orchestration_engine::uuid_v4()),
+                "threadId": thread_id,
+                "createdAt": now,
+                "dispatchMode": "queue",
+                "dispatchOrigin": "kanban",
+                "message": {"messageId": format!("kanban-move-msg-{}", crate::orchestration_engine::uuid_v4()), "text": message, "attachments": []},
+            });
+            crate::orchestration_engine::handle("orchestration.dispatchCommand", &turn)
+                .map_err(|e| format!("turn start failed: {}", e.0))?;
+            Ok(json!({"threadId": thread_id, "column": "inProgress", "moved": true}))
+        }
+        "done" => {
+            if column == "done" {
+                return Ok(json!({"threadId": thread_id, "column": "done", "moved": false, "alreadyDone": true}));
+            }
+            if column == "awaitingYou" && !failed {
+                return Err("A card awaiting human attention cannot be moved to done.".into());
+            }
+            if column != "inProgress" {
+                return Ok(json!({"threadId": thread_id, "column": column, "moved": false}));
+            }
+            let interrupt = json!({
+                "type": "thread.turn.interrupt",
+                "commandId": format!("kanban-done-{}", crate::orchestration_engine::uuid_v4()),
+                "threadId": thread_id,
+                "createdAt": now,
+            });
+            crate::orchestration_engine::handle("orchestration.dispatchCommand", &interrupt)
+                .map_err(|e| format!("turn interrupt failed: {}", e.0))?;
+            Ok(json!({"threadId": thread_id, "column": "done", "moved": true}))
+        }
+        _ => Err("Argument \"target\" must be inProgress or done.".into()),
+    }
+}
+
+fn update_kanban_card(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let title = arg_str(args, "title");
+    let description = arg_str(args, "description");
+    if title.is_none() && description.is_none() {
+        return Err("Provide at least one of title/description.".into());
+    }
+    let now = crate::todo::iso_now_ms();
+    let mut cmd = serde_json::Map::new();
+    cmd.insert("type".into(), json!("thread.meta.update"));
+    cmd.insert("commandId".into(), json!(format!("kanban-edit-{}", crate::orchestration_engine::uuid_v4())));
+    cmd.insert("threadId".into(), json!(thread_id));
+    cmd.insert("createdAt".into(), json!(now));
+    if let Some(t) = title {
+        cmd.insert("title".into(), json!(t));
+    }
+    if let Some(d) = description {
+        cmd.insert("notes".into(), json!(d));
+    }
+    crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(cmd))
+        .map_err(|e| format!("card update failed: {}", e.0))?;
+    read_kanban_card(&json!({"threadId": thread_id}))
+}
+
+fn delete_kanban_card(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let now = crate::todo::iso_now_ms();
+    let cmd = json!({
+        "type": "thread.delete",
+        "commandId": format!("kanban-delete-{}", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": now,
+    });
+    crate::orchestration_engine::handle("orchestration.dispatchCommand", &cmd)
+        .map_err(|e| format!("card delete failed: {}", e.0))?;
+    Ok(json!({"threadId": thread_id, "deleted": true}))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -902,6 +1117,10 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_cancel_automation" => cancel_automation(args),
         "synara_create_kanban_task" => create_kanban_card(args, true),
         "synara_create_kanban_draft" => create_kanban_card(args, false),
+        "synara_read_kanban_card" => read_kanban_card(args),
+        "synara_move_kanban_card" => move_kanban_card(args),
+        "synara_update_kanban_card" => update_kanban_card(args),
+        "synara_delete_kanban_card" => delete_kanban_card(args),
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),

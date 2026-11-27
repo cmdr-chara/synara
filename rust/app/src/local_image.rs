@@ -4,9 +4,9 @@
 //! and root (symlink escapes fail closed), the extension allowlist matches
 //! upstream shared/localPreviewFiles.ts, and bytes never come from inline
 //! payloads. Grants are validated against the same realpath-issued token store
-//! as workspace file access. Enumeration of every per-account CODEX_HOME
-//! overlay remains a documented gap; the ambient CODEX_HOME, default home, and
-//! SYNARA_HOME overlay cover the configurations this server launches directly.
+//! as workspace file access. Codex generated-image roots include the ambient
+//! home, the Synara overlay, and every configured Codex provider-instance home;
+//! those roots remain image-only as upstream requires.
 
 use axum::{
     extract::RawQuery,
@@ -209,23 +209,45 @@ fn allowlisted_roots(cwd: Option<&str>) -> Vec<PathBuf> {
             roots.push(real);
         }
     }
-    let codex_homes: Vec<PathBuf> = {
-        let mut v = Vec::new();
-        if let Ok(ch) = std::env::var("CODEX_HOME") {
-            v.push(PathBuf::from(ch));
+    roots
+}
+
+fn codex_generated_roots() -> Vec<PathBuf> {
+    let mut homes: Vec<PathBuf> = Vec::new();
+    let mut push_home = |home: PathBuf| {
+        if !homes.contains(&home) {
+            homes.push(home);
         }
-        if let Some(home) = std::env::var_os("HOME") {
-            v.push(Path::new(&home).join(".codex"));
-        }
-        v
     };
-    for codex_home in codex_homes {
-        let generated = codex_home.join("generated_images");
-        if let Some(real) = realpath(&generated) {
-            roots.push(real);
+    if let Ok(ch) = std::env::var("CODEX_HOME") {
+        if !ch.trim().is_empty() {
+            push_home(PathBuf::from(ch));
         }
     }
-    roots
+    if let Some(home) = std::env::var_os("HOME") {
+        push_home(Path::new(&home).join(".codex"));
+    }
+    if let Ok(home) = std::env::var("SYNARA_HOME") {
+        push_home(Path::new(&home).join("codex-home-overlay"));
+    }
+    let settings = crate::server_settings::current();
+    for instance in crate::provider_instances::derive_instances(&settings) {
+        if instance.driver != "codex" || !instance.enabled {
+            continue;
+        }
+        if let Some(home) = crate::provider_instances::instance_home_path(&instance) {
+            push_home(PathBuf::from(home));
+        }
+        for (key, value) in crate::provider_instances::instance_start_environment(&instance) {
+            if key == "CODEX_HOME" && !value.trim().is_empty() {
+                push_home(PathBuf::from(value));
+            }
+        }
+    }
+    homes
+        .into_iter()
+        .filter_map(|home| realpath(&home.join("generated_images")))
+        .collect()
 }
 
 fn is_video(path: &str) -> bool {
@@ -274,10 +296,17 @@ fn resolve_allowed_with_grant(
         }
     }
     // Temp roots serve images and videos (agent tools write recordings such
-    // as simulator-*.mp4 to the temp dir); they never serve documents.
+    // as simulator-*.mp4 to the temp dir); they never serve documents. Codex
+    // generated-image roots are stricter and serve images only.
     if is_image(real_str) || is_video(real_str) {
         let temp_roots = temporary_roots();
         if temp_roots.iter().any(|root| is_inside(&real, root)) {
+            return Some((real, meta.len()));
+        }
+    }
+    if is_image(real_str) {
+        let generated_roots = codex_generated_roots();
+        if generated_roots.iter().any(|root| is_inside(&real, root)) {
             return Some((real, meta.len()));
         }
     }

@@ -27998,6 +27998,7 @@ impl Render for Native {
             .w_full()
             .h(px(47.))
             .items_center()
+            .relative()
             .pr(px(19.))
             .child(
                 div()
@@ -28338,13 +28339,42 @@ impl Render for Native {
                     .when(active, |d| d.bg(theme.foreground.opacity(0.06)))
                     .child(label)
             };
+            // Upstream strip row: [checkbox] [view title] [N tasks] then the
+            // 4-way List|Kanban|Attention|Classic control, spacer, "+ New task".
+            // Attention/Classic views are a documented feature gap: their
+            // chips render for parity and fall back to the kanban view.
             strip.child(
                 h_flex()
-                    .flex_1()
+                    .absolute()
+                    .inset_0()
+                    .w_full()
                     .items_center()
-                    .justify_end()
                     .gap(px(4.))
+                    .pl(px(62.))
                     .pr(px(8.))
+                    .child(
+                        div()
+                            .w(px(14.))
+                            .h(px(14.))
+                            .rounded(px(4.))
+                            .border_1()
+                            .border_color(theme.muted_foreground.opacity(0.5)),
+                    )
+                    .child(
+                        div()
+                            .ml(px(4.))
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .child(if self.view_kanban { "Kanban" } else { "Tasks" }),
+                    )
+                    .child(
+                        div()
+                            .ml(px(6.))
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(format!("{} tasks", kanban_count)),
+                    )
+                    .child(div().w(px(10.)))
                     .child(
                         chip("strip-seg-list", "List", self.view_tasks)
                             .on_click(cx.listener(|this, _e, _w, cx| this.open_route(1, cx))),
@@ -28352,6 +28382,37 @@ impl Render for Native {
                     .child(
                         chip("strip-seg-kanban", "Kanban", self.view_kanban)
                             .on_click(cx.listener(|this, _e, _w, cx| this.open_route(2, cx))),
+                    )
+                    .child(
+                        chip("strip-seg-attention", "Attention", false)
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(2, cx))),
+                    )
+                    .child(
+                        chip("strip-seg-classic", "Classic", false)
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(2, cx))),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        h_flex()
+                            .id("strip-new-task")
+                            .items_center()
+                            .gap(px(4.))
+                            .px(px(8.))
+                            .h(px(24.))
+                            .rounded(px(6.))
+                            .cursor_pointer()
+                            .child(
+                                svg_icon(icons::PLUS)
+                                    .size(px(12.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("New task"),
+                            )
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(1, cx))),
                     ),
             )
         } else {

@@ -82,6 +82,27 @@ fn hostname() -> Option<String> {
     if name.is_empty() { None } else { Some(name) }
 }
 
+
+fn desktop_flavor() -> &'static str {
+    match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+        Some("com.emanueledipietro.synara") => "production",
+        Some("com.emanueledipietro.synara.dev") => "development",
+        Some("com.emanueledipietro.synara.canary") => "canary",
+        Some("com.emanueledipietro.synara.cua") => "cua",
+        Some("com.emanueledipietro.synara.beta") => "beta",
+        Some("com.emanueledipietro.synara.remote") => "remote",
+        _ => "unknown",
+    }
+}
+
+fn environment_channel() -> &'static str {
+    match desktop_flavor() {
+        "production" => "stable",
+        "beta" | "canary" => desktop_flavor(),
+        _ => "dev",
+    }
+}
+
 /// `apps/server/package.json` version — the server build string the
 /// descriptor reports (`packageJson.version` upstream).
 fn server_version() -> String {
@@ -115,7 +136,7 @@ pub(crate) fn environment_id(state_dir: &str) -> Option<String> {
 pub fn get_environment(state_dir: &str) -> Result<Value, String> {
     let environment_id = environment_id(state_dir)
         .ok_or_else(|| "environment-id file is missing or empty".to_string())?;
-    let channel = "dev";
+    let channel = environment_channel();
     let label = hostname().unwrap_or_else(|| "Synara".to_string());
     // Remote connections and profile sync report unavailable until they are
     // served natively; the reasons are operator-facing strings upstream.

@@ -110,6 +110,29 @@ use original::shutdown_signal;
 
 #[tokio::main]
 async fn main() {
+    let args: Vec<String> = std::env::args().collect();
+    if args.get(1).is_some_and(|arg| arg == "--restore-migration-backup") {
+        let Some(db) = args.get(2) else {
+            eprintln!("Usage: index --restore-migration-backup <absolute-database-path>");
+            std::process::exit(2);
+        };
+        let path = std::path::PathBuf::from(db);
+        if !path.is_absolute() {
+            eprintln!("Database path must be absolute: {db}");
+            std::process::exit(2);
+        }
+        eprintln!("WARNING: Stop every Synara process before restoring a migration backup.");
+        match migrations::restore_marked_migration_backup(&path) {
+            Ok(()) => {
+                println!("Restored migration backup for {}", path.display());
+                std::process::exit(0);
+            }
+            Err(error) => {
+                eprintln!("Failed to restore migration backup for {}: {error}", path.display());
+                std::process::exit(1);
+            }
+        }
+    }
     {
         let state_dir = std::path::PathBuf::from(todo::state_dir());
         let home_dir = state_dir.parent().map(std::path::Path::to_path_buf).unwrap_or(state_dir);

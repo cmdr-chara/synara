@@ -509,6 +509,161 @@ fn write_completed_provenance(db: &std::path::Path, payload: &serde_json::Value)
     write_private_json(&migration_backup_provenance_path(db), &completed)
 }
 
+
+fn read_restore_record(db: &std::path::Path, path: &std::path::Path, label: &str) -> Result<Option<serde_json::Value>, String> {
+    let text = match std::fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => return Err(format!("{label} could not be read: {error}")),
+    };
+    let value: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|e| format!("invalid {label}: {e}"))?;
+    if value.get("databasePath").and_then(serde_json::Value::as_str) != Some(db.to_string_lossy().as_ref()) {
+        return Err(format!("invalid {label}: database path mismatch"));
+    }
+    if value.get("resumeAttempts").and_then(serde_json::Value::as_u64).is_none() {
+        return Err(format!("invalid {label}: unreadable resume counter"));
+    }
+    Ok(Some(value))
+}
+
+fn validate_restore_backup_path(db: &std::path::Path, value: &serde_json::Value) -> Result<std::path::PathBuf, String> {
+    let raw = value.get("backupPath").and_then(serde_json::Value::as_str).ok_or("migration record does not reference a backup")?;
+    let backup = std::path::PathBuf::from(raw);
+    let directory = migration_backup_directory(db);
+    if backup.parent() != Some(directory.as_path()) {
+        return Err(format!("migration backup escapes its backup directory: {}", backup.display()));
+    }
+    let basename = db.file_name().and_then(|name| name.to_str()).unwrap_or("state.sqlite");
+    let name = backup.file_name().and_then(|name| name.to_str()).unwrap_or("");
+    if !name.starts_with(&format!("{basename}.pre-migration-")) || !(name.ends_with(".sqlite.gz") || name.ends_with(".sqlite")) {
+        return Err(format!("migration backup has an invalid generated name: {name}"));
+    }
+    let meta = std::fs::symlink_metadata(&backup).map_err(|e| format!("migration backup is unavailable: {e}"))?;
+    if !meta.file_type().is_file() || meta.file_type().is_symlink() {
+        return Err(format!("migration backup is not a regular file: {}", backup.display()));
+    }
+    let canonical_directory = directory.canonicalize().map_err(|e| format!("backup directory canonicalization: {e}"))?;
+    let canonical_backup = backup.canonicalize().map_err(|e| format!("backup canonicalization: {e}"))?;
+    if canonical_backup.parent() != Some(canonical_directory.as_path()) {
+        return Err(format!("migration backup escapes its canonical directory: {}", backup.display()));
+    }
+    Ok(backup)
+}
+
+fn restore_file_fingerprint(path: &std::path::Path) -> Option<String> {
+    let meta = std::fs::symlink_metadata(path).ok()?;
+    if !meta.file_type().is_file() { return None; }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::MetadataExt as _;
+        return Some(format!("{}:{}:{}:{}", meta.dev(), meta.ino(), meta.size(), meta.mtime_nsec()));
+    }
+    #[cfg(not(unix))]
+    Some(format!("{}", meta.len()))
+}
+
+fn copy_restore_backup(backup: &std::path::Path, temporary: &std::path::Path) -> Result<(), String> {
+    use std::io::{Read as _, Write as _};
+    let input = std::fs::File::open(backup).map_err(|e| format!("backup open: {e}"))?;
+    if let Ok(meta) = std::fs::symlink_metadata(temporary) {
+        if !meta.file_type().is_file() || meta.file_type().is_symlink() {
+            return Err(format!("restore temporary path is not a regular file: {}", temporary.display()));
+        }
+        std::fs::remove_file(temporary).map_err(|e| format!("restore temporary cleanup: {e}"))?;
+    }
+    let mut output = std::fs::OpenOptions::new().create_new(true).write(true).open(temporary)
+        .map_err(|e| format!("restore temporary open: {e}"))?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        let _ = std::fs::set_permissions(temporary, std::fs::Permissions::from_mode(0o600));
+    }
+    if backup.extension().and_then(|ext| ext.to_str()) == Some("gz") {
+        let mut decoder = flate2::read::GzDecoder::new(input);
+        let mut buffer = [0_u8; 64 * 1024];
+        loop {
+            let size = decoder.read(&mut buffer).map_err(|e| format!("backup decompression: {e}"))?;
+            if size == 0 { break; }
+            output.write_all(&buffer[..size]).map_err(|e| format!("restore write: {e}"))?;
+        }
+    } else {
+        let mut input = input;
+        let mut buffer = [0_u8; 64 * 1024];
+        loop {
+            let size = input.read(&mut buffer).map_err(|e| format!("backup read: {e}"))?;
+            if size == 0 { break; }
+            output.write_all(&buffer[..size]).map_err(|e| format!("restore write: {e}"))?;
+        }
+    }
+    output.sync_all().map_err(|e| format!("restore sync: {e}"))?;
+    drop(output);
+    let head = std::fs::read(temporary).map_err(|e| format!("restored database validation: {e}"))?;
+    if !head.starts_with(b"SQLite format 3") {
+        return Err("restored migration backup is not a SQLite database".into());
+    }
+    Ok(())
+}
+
+fn move_existing_database_bundle_aside(db: &std::path::Path, restore_id: &str) -> Result<(), String> {
+    for suffix in ["", "-wal", "-shm"] {
+        let source = std::path::PathBuf::from(format!("{}{}", db.display(), suffix));
+        if !source.exists() { continue; }
+        let target = std::path::PathBuf::from(format!("{}.pre-restore-{}{}", db.display(), restore_id, suffix));
+        if target.exists() && !source.exists() { continue; }
+        std::fs::rename(&source, &target).map_err(|e| format!("move live database aside: {e}"))?;
+    }
+    Ok(())
+}
+
+/// Explicit one-shot restore for the active recovery marker or, when no active
+/// marker exists, the latest completed migration provenance. Startup never calls
+/// this: the operator invokes it after stopping every Synara process.
+pub fn restore_marked_migration_backup(db: &std::path::Path) -> Result<(), String> {
+    let marker_path = migration_recovery_marker_path(db);
+    let provenance_path = migration_backup_provenance_path(db);
+    let mut marker = read_restore_record(db, &marker_path, "migration recovery marker")?;
+    if marker.is_none() {
+        marker = read_restore_record(db, &provenance_path, "migration backup provenance")?;
+        if marker.as_ref().and_then(|value| value.get("phase")).and_then(serde_json::Value::as_str) != Some("migration-completed") {
+            return Err(format!("no migration recovery marker or completed backup provenance exists for {}", db.display()));
+        }
+    }
+    let mut marker = marker.ok_or("missing migration recovery record")?;
+    let backup = validate_restore_backup_path(db, &marker)?;
+    let restore_id = marker.get("restoreId").and_then(serde_json::Value::as_str).map(str::to_string)
+        .unwrap_or_else(crate::orchestration_engine::uuid_v4);
+    let temporary = db.parent().unwrap_or(std::path::Path::new(".")).join(format!(".restore-{restore_id}.partial"));
+
+    // If a previous restore died after the atomic install rename, the stored
+    // fingerprint proves the live file is already the restored snapshot. Do not
+    // move it aside again; only finish the durable bookkeeping.
+    let expected_fingerprint = marker.get("restoredDatabaseFingerprint").and_then(serde_json::Value::as_str);
+    let already_installed = expected_fingerprint.is_some_and(|expected| {
+        restore_file_fingerprint(db).as_deref() == Some(expected)
+            && !std::path::PathBuf::from(format!("{}-wal", db.display())).exists()
+            && !std::path::PathBuf::from(format!("{}-shm", db.display())).exists()
+    });
+    if !already_installed {
+        copy_restore_backup(&backup, &temporary)?;
+        let fingerprint = restore_file_fingerprint(&temporary).ok_or("restored database fingerprint unavailable")?;
+        marker["phase"] = serde_json::json!("migration-restore-in-progress");
+        marker["restoreId"] = serde_json::json!(restore_id);
+        marker["restoredDatabaseFingerprint"] = serde_json::json!(fingerprint);
+        write_private_json(&marker_path, &marker)?;
+        move_existing_database_bundle_aside(db, &restore_id)?;
+        std::fs::rename(&temporary, db).map_err(|e| format!("install restored database: {e}"))?;
+    }
+    let mut completed = marker.clone();
+    completed["phase"] = serde_json::json!("migration-restored");
+    completed["restoredAt"] = serde_json::json!(now_iso());
+    write_private_json(&provenance_path, &completed)?;
+    let _ = std::fs::remove_file(&temporary);
+    std::fs::remove_file(&marker_path).map_err(|e| format!("remove migration recovery marker: {e}"))?;
+    sync_directory(db.parent().unwrap_or(std::path::Path::new(".")));
+    Ok(())
+}
+
 pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
     use std::path::PathBuf;
     let dir = crate::todo::state_dir();
@@ -635,6 +790,34 @@ mod tests {
         use std::io::Read as _;
         decoder.read_to_end(&mut sqlite).unwrap();
         assert!(sqlite.starts_with(b"SQLite format 3"));
+        drop(conn);
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn explicit_restore_recovers_compressed_backup_and_records_provenance() {
+        let root = std::env::temp_dir().join(format!("synara-migration-restore-test-{}", crate::orchestration_engine::uuid_v4()));
+        std::fs::create_dir_all(&root).unwrap();
+        let db = root.join("state.sqlite");
+        {
+            let conn = Connection::open(&db).unwrap();
+            conn.execute_batch("CREATE TABLE effect_sql_migrations (migration_id integer PRIMARY KEY NOT NULL, created_at datetime NOT NULL DEFAULT current_timestamp, name VARCHAR(255) NOT NULL); INSERT INTO effect_sql_migrations (migration_id, name) VALUES (1, 'OrchestrationEvents'); CREATE TABLE user_data (value TEXT); INSERT INTO user_data VALUES ('before');").unwrap();
+            let plan = MigrationBackupPlan { source_version: "v1".into(), target_version: latest_migration_id() };
+            let backup = create_migration_backup(&conn, &db, &plan).unwrap();
+            let payload = recovery_payload(&db, &backup);
+            write_recovery_marker(&db, &payload).unwrap();
+        }
+        {
+            let conn = Connection::open(&db).unwrap();
+            conn.execute("UPDATE user_data SET value = 'after'", []).unwrap();
+        }
+        restore_marked_migration_backup(&db).unwrap();
+        let conn = Connection::open(&db).unwrap();
+        let value: String = conn.query_row("SELECT value FROM user_data", [], |row| row.get(0)).unwrap();
+        assert_eq!(value, "before");
+        assert!(!migration_recovery_marker_path(&db).exists());
+        let provenance: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(migration_backup_provenance_path(&db)).unwrap()).unwrap();
+        assert_eq!(provenance["phase"], "migration-restored");
         drop(conn);
         let _ = std::fs::remove_dir_all(root);
     }

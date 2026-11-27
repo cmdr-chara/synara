@@ -30252,7 +30252,12 @@ impl Render for Native {
             );
             let dark_ui = theme.is_dark();
             let panel_bg: gpui::Hsla = if dark_ui {
-                hsla(0.0, 0.0, 0.075, 1.0)
+                // Upstream frosts the dither texture through the picker glass
+                // (blur(40px) + 55% popover). gpui has no blur-behind, and the
+                // blur averages the orange texture into a warm haze — the
+                // faithful approximation is the measured warm tone
+                // rgb(26,21,18), not the neutral popover rgb(19,19,19).
+                hsla(0.059, 0.18, 0.0865, 1.0)
             } else {
                 gpui::hsla(0.0, 0.0, 1.0, 1.0)
             };
@@ -30289,7 +30294,7 @@ impl Render for Native {
                 }
                 idx += 1;
                 let selected = *slug == cur_slug;
-                let hint = if idx <= 9 { format!("\u{2318}{idx}") } else { String::new() };
+                let hint = if idx <= 9 { format!("\u{2318} {idx}") } else { String::new() };
                 let slug_c = slug.clone();
                 let name_c = name.clone();
                 let prov_c = prov.clone();
@@ -30326,7 +30331,7 @@ impl Render for Native {
                 let row = h_flex()
                     .id(ElementId::Name(format!("mp-{slug}").into()))
                     .w_full()
-                    .px(px(10.))
+                    .px(px(6.))
                     .h(px(28.))
                     .items_center()
                     .gap_2()
@@ -30415,7 +30420,8 @@ impl Render for Native {
                     v_flex()
                         .w_full()
                         .px(px(10.))
-                        .py(px(8.))
+                        .pt(px(8.))
+                        .pb(px(12.))
                         .gap(px(6.))
                         .border_t_1()
                         .border_color(theme.border.opacity(0.5))

@@ -87,7 +87,7 @@ async fn remote_tunnel_upgrade(
 /// Computer frame streaming serves natively when the backend owns the
 /// computer; upstream mode relays exactly like every other socket.
 
-fn query_value(uri: &Uri, wanted: &str) -> Option<String> {
+pub(crate) fn query_value(uri: &Uri, wanted: &str) -> Option<String> {
     uri.query()?.split('&').filter_map(|pair| {
         let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
         (key == wanted).then(|| urlencoding_decode(raw))
@@ -129,7 +129,7 @@ fn trusted_local_legacy_token(token: Option<&str>) -> bool {
 /// local trust split of the main `/ws` upgrade: authless loopback stays local,
 /// the private legacy token stays local, but every explicit browser credential
 /// must verify and client-role sessions may not pivot to another machine.
-fn remote_owner_authorized(headers: &HeaderMap, uri: &Uri) -> Result<(), axum::http::StatusCode> {
+pub(crate) fn remote_owner_authorized(headers: &HeaderMap, uri: &Uri) -> Result<(), axum::http::StatusCode> {
     let legacy_token = query_value(uri, "token");
     let ws_ticket = query_value(uri, "wsToken");
     let explicit = ws_ticket.is_some()
@@ -387,7 +387,7 @@ fn qstring_pairs(query: &str) -> Vec<(String, String)> {
         .collect()
 }
 
-fn urlencoding_decode(input: &str) -> String {
+pub(crate) fn urlencoding_decode(input: &str) -> String {
     let bytes = input.as_bytes();
     let mut out = Vec::with_capacity(bytes.len());
     let mut index = 0usize;

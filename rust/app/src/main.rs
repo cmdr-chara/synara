@@ -313,6 +313,10 @@ async fn main() {
             }
         });
         claude_runner::spawn_credential_keepalive();
+        std::thread::spawn(|| loop {
+            crate::remote_connections::retry_reconnecting_once();
+            std::thread::sleep(std::time::Duration::from_secs(5));
+        });
     }
     let listener = tokio::net::TcpListener::bind(SocketAddr::from(([0, 0, 0, 0], port)))
         .await

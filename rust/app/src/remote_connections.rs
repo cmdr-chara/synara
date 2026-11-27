@@ -148,6 +148,43 @@ async fn dial(desired: &DesiredHost, client: Value) -> Result<crate::remote_clie
     ).await
 }
 
+
+fn retry_deadlines() -> &'static Mutex<HashMap<String, u64>> {
+    static DEADLINES: OnceLock<Mutex<HashMap<String, u64>>> = OnceLock::new();
+    DEADLINES.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn unix_now() -> u64 {
+    std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_secs()).unwrap_or(0)
+}
+
+/// One bounded supervisor pass. Desired relationships restore as
+/// `reconnecting`; each attempt gets a fresh account grant/endpoints and a
+/// thirty-second retry deadline. Probe streams close immediately — renderer
+/// streams are still negotiated one at a time.
+pub fn retry_reconnecting_once() -> usize {
+    let now = unix_now();
+    let hosts: Vec<String> = desired_hosts().lock().ok().map(|hosts| {
+        hosts.values()
+            .filter(|host| host.state == "reconnecting")
+            .map(|host| host.host_id.clone())
+            .collect()
+    }).unwrap_or_default();
+    let mut started = 0;
+    for host_id in hosts {
+        let due = retry_deadlines().lock().ok().and_then(|deadlines| deadlines.get(&host_id).copied()).unwrap_or(0);
+        if due > now { continue }
+        if let Ok(mut deadlines) = retry_deadlines().lock() {
+            deadlines.insert(host_id.clone(), now + 30);
+        }
+        started += 1;
+        std::thread::spawn(move || {
+            let _ = probe_blocking(&host_id, Value::Null);
+        });
+    }
+    started
+}
+
 pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
     let desired = desired(host_id).ok_or_else(|| "Connect to this host from the local controller first".to_string())?;
     if matches!(desired.state, "needs-sign-in" | "revoked" | "incompatible" | "stopped") {

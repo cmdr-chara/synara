@@ -239,6 +239,40 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["projectId", "path"]),
         ),
         def(
+            "synara_hub_list_work",
+            "Read durable Hub task cards, queue state and progress revisions for your Hub.",
+            schema(json!({}), &[]),
+        ),
+        def(
+            "synara_hub_update_progress",
+            "Persist your own Hub task checklist. Pass the last progress revision (0 initially). Checklist completion does not finish the task or release its worker slot.",
+            schema(json!({
+                "workItemId": {"type": "string"},
+                "expectedRevision": {"type": "integer", "minimum": 0},
+                "summary": {"type": "string", "maxLength": 2000},
+                "steps": {
+                    "type": "array",
+                    "maxItems": 32,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "string"},
+                            "text": {"type": "string"},
+                            "status": {"type": "string", "enum": ["pending", "inProgress", "completed"]},
+                        },
+                        "required": ["id", "text", "status"],
+                    },
+                },
+            }), &["workItemId", "expectedRevision", "steps"]),
+        ),
+        def(
+            "synara_hub_cancel_work",
+            "Cancel queued or idle Hub work. Stop active workers using the existing interrupt tool before cancelling.",
+            schema(json!({
+                "workItemId": {"type": "string"},
+            }), &["workItemId"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -1456,6 +1490,186 @@ fn project_forget(args: &Value) -> Result<Value, String> {
     Ok(json!({"deleted": true}))
 }
 
+fn hub_work_item_json(row: (&str, &str, i64, i64, &str, Option<String>, i64, i64, &str)) -> Value {
+    let (work_item_id, project_id, _seq, task_index, state, worker_thread_id, slot_held, revision, record_json) = row;
+    let mut item = serde_json::from_str::<Value>(record_json).unwrap_or_else(|_| json!({}));
+    if !item.is_object() {
+        item = json!({});
+    }
+    let obj = item.as_object_mut().unwrap();
+    obj.insert("workItemId".into(), json!(work_item_id));
+    obj.insert("projectId".into(), json!(project_id));
+    obj.insert("taskIndex".into(), json!(task_index));
+    obj.insert("state".into(), json!(state));
+    obj.insert("workerThreadId".into(), json!(worker_thread_id));
+    obj.insert("slotHeld".into(), json!(slot_held != 0));
+    obj.insert("revision".into(), json!(revision));
+    item
+}
+
+fn hub_list_work(caller_thread: Option<&str>) -> Result<Value, String> {
+    let caller = caller_thread.ok_or("This tool requires a calling thread.")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let project_id: String = conn
+        .query_row(
+            "SELECT project_id FROM projection_threads WHERE thread_id = ?1",
+            [caller],
+            |r| r.get(0),
+        )
+        .map_err(|_| "This thread does not belong to a Hub.".to_string())?;
+    let mut stmt = conn
+        .prepare(
+            "SELECT work_item_id, project_id, sequence, task_index, state, worker_thread_id, \
+             slot_held, revision, record_json FROM project_agent_work_items \
+             WHERE project_id = ?1 ORDER BY sequence LIMIT 200",
+        )
+        .map_err(|e| e.to_string())?;
+    let items: Vec<Value> = stmt
+        .query_map([&project_id], |r| {
+            Ok(hub_work_item_json((
+                &r.get::<_, String>(0)?,
+                &r.get::<_, String>(1)?,
+                r.get::<_, i64>(2)?,
+                r.get::<_, i64>(3)?,
+                &r.get::<_, String>(4)?,
+                r.get::<_, Option<String>>(5)?,
+                r.get::<_, i64>(6)?,
+                r.get::<_, i64>(7)?,
+                &r.get::<_, String>(8)?,
+            )))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    Ok(json!({"workItems": items}))
+}
+
+fn hub_load_work_row(
+    conn: &rusqlite::Connection,
+    work_item_id: &str,
+) -> Result<(String, String, i64, i64, String, Option<String>, i64, i64, String), String> {
+    conn.query_row(
+        "SELECT work_item_id, project_id, sequence, task_index, state, worker_thread_id, \
+         slot_held, revision, record_json FROM project_agent_work_items WHERE work_item_id = ?1",
+        [work_item_id],
+        |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, String>(1)?,
+                r.get::<_, i64>(2)?,
+                r.get::<_, i64>(3)?,
+                r.get::<_, String>(4)?,
+                r.get::<_, Option<String>>(5)?,
+                r.get::<_, i64>(6)?,
+                r.get::<_, i64>(7)?,
+                r.get::<_, String>(8)?,
+            ))
+        },
+    )
+    .map_err(|_| format!("Hub work item \"{work_item_id}\" was not found."))
+}
+
+fn hub_update_progress(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let caller = caller_thread.ok_or("This tool requires a calling thread.")?;
+    let work_item_id = arg_str(args, "workItemId").ok_or("Missing required argument: workItemId")?;
+    let expected_revision = args
+        .get("expectedRevision")
+        .and_then(Value::as_i64)
+        .ok_or("Missing required argument: expectedRevision")?;
+    let steps = args
+        .get("steps")
+        .and_then(Value::as_array)
+        .ok_or("Missing required argument: steps")?;
+    if steps.len() > 32 {
+        return Err("A progress checklist is limited to 32 steps.".into());
+    }
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let row = hub_load_work_row(&conn, &work_item_id)?;
+    let (_id, _pid, seq, _ti, state, worker_thread_id, slot_held, revision, record_json) = row;
+    if worker_thread_id.as_deref() != Some(caller) {
+        return Err("Only the assigned worker can update progress on this work item.".into());
+    }
+    if revision != expected_revision {
+        return Err(format!(
+            "Progress revision mismatch: expected {expected_revision}, current {revision}. Re-read with synara_hub_list_work."
+        ));
+    }
+    let mut record = serde_json::from_str::<Value>(&record_json).unwrap_or_else(|_| json!({}));
+    if !record.is_object() {
+        record = json!({});
+    }
+    let mut progress = json!({"revision": expected_revision + 1, "steps": steps});
+    if let Some(summary) = arg_str(args, "summary") {
+        progress
+            .as_object_mut()
+            .unwrap()
+            .insert("summary".into(), json!(summary));
+    }
+    record
+        .as_object_mut()
+        .unwrap()
+        .insert("progress".into(), progress);
+    let new_revision = revision + 1;
+    conn.execute(
+        "UPDATE project_agent_work_items SET revision = ?1, record_json = ?2 WHERE sequence = ?3",
+        rusqlite::params![new_revision, record.to_string(), seq],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(hub_work_item_json((
+        &work_item_id,
+        &_pid,
+        seq,
+        _ti,
+        &state,
+        worker_thread_id,
+        slot_held,
+        new_revision,
+        &record.to_string(),
+    )))
+}
+
+fn hub_cancel_work(args: &Value) -> Result<Value, String> {
+    let work_item_id = arg_str(args, "workItemId").ok_or("Missing required argument: workItemId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let row = hub_load_work_row(&conn, &work_item_id)?;
+    let (_id, _pid, seq, _ti, state, worker_thread_id, slot_held, revision, record_json) = row;
+    match state.as_str() {
+        "queued" | "idle" | "pending" | "admitted" => {}
+        _ => {
+            return Err(format!(
+                "Hub work item \"{work_item_id}\" is {state} and cannot be cancelled directly."
+            ))
+        }
+    }
+    let mut record = serde_json::from_str::<Value>(&record_json).unwrap_or_else(|_| json!({}));
+    if record.is_object() {
+        record
+            .as_object_mut()
+            .unwrap()
+            .insert("cancelledAt".into(), json!(crate::todo::iso_now_ms()));
+    }
+    let new_revision = revision + 1;
+    conn.execute(
+        "UPDATE project_agent_work_items SET state = 'cancelled', revision = ?1, record_json = ?2, slot_held = 0 WHERE sequence = ?3",
+        rusqlite::params![new_revision, record.to_string(), seq],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(hub_work_item_json((
+        &work_item_id,
+        &_pid,
+        seq,
+        _ti,
+        "cancelled",
+        worker_thread_id,
+        0,
+        new_revision,
+        &record.to_string(),
+    )))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -1650,6 +1864,9 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_project_write_document" => project_write_document(args, caller_thread),
         "synara_project_remember" => project_remember(args, caller_thread),
         "synara_project_forget" => project_forget(args),
+        "synara_hub_list_work" => hub_list_work(caller_thread),
+        "synara_hub_update_progress" => hub_update_progress(args, caller_thread),
+        "synara_hub_cancel_work" => hub_cancel_work(args),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

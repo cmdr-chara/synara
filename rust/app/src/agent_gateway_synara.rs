@@ -750,7 +750,13 @@ fn read_thread(args: &Value) -> Result<Value, String> {
         .unwrap_or_default();
     let mut messages = messages;
     messages.reverse(); // chronological
-    Ok(json!({"thread": meta, "messages": messages}))
+    // Cost telemetry rides along so a coordinator can see what a task cost
+    // without a second round trip.
+    let cost = state_conn()
+        .ok()
+        .map(|conn| thread_cost_summary(&conn, &thread_id))
+        .unwrap_or(Value::Null);
+    Ok(json!({"thread": meta, "messages": messages, "cost": cost}))
 }
 
 fn read_thread_activity(args: &Value) -> Result<Value, String> {
@@ -1925,6 +1931,53 @@ fn hub_cancel_work(args: &Value) -> Result<Value, String> {
 fn dispatch_command(command: Value) -> Result<Value, String> {
     crate::orchestration_engine::handle("orchestration.dispatchCommand", &command)
         .map_err(|e| e.0)
+}
+
+
+/// Cost telemetry for one thread: total USD, token splits and provider set,
+/// read from `turn.completed` activities. Powers the gateway cost surface.
+fn thread_cost_summary(conn: &rusqlite::Connection, thread_id: &str) -> Value {
+    let mut stmt = match conn.prepare(
+        "SELECT payload_json FROM projection_thread_activities WHERE thread_id = ?1 AND kind = 'turn.completed'",
+    ) {
+        Ok(s) => s,
+        Err(_) => return Value::Null,
+    };
+    let rows = stmt
+        .query_map([thread_id], |r| r.get::<_, String>(0))
+        .map(|r| r.filter_map(|x| x.ok()).collect::<Vec<_>>())
+        .unwrap_or_default();
+    if rows.is_empty() {
+        return Value::Null;
+    }
+    let mut cost = 0.0_f64;
+    let mut input = 0.0_f64;
+    let mut output = 0.0_f64;
+    let mut providers: std::collections::HashSet<String> = std::collections::HashSet::new();
+    let mut turns = 0_i64;
+    for raw in rows {
+        let Ok(p) = serde_json::from_str::<Value>(&raw) else { continue };
+        turns += 1;
+        if let Some(c) = p.get("totalCostUsd").and_then(Value::as_f64) {
+            cost += c;
+        }
+        if let Some(pr) = p.get("provider").and_then(Value::as_str) {
+            providers.insert(pr.to_string());
+        }
+        if let Some(usage) = p.get("modelUsage").and_then(Value::as_object) {
+            for u in usage.values() {
+                input += u.get("inputTokens").and_then(Value::as_f64).unwrap_or(0.0);
+                output += u.get("outputTokens").and_then(Value::as_f64).unwrap_or(0.0);
+            }
+        }
+    }
+    json!({
+        "costUsd": cost,
+        "inputTokens": input,
+        "outputTokens": output,
+        "turns": turns,
+        "providers": providers.into_iter().collect::<Vec<_>>(),
+    })
 }
 
 fn deterministic_thread_id(request_id: &str) -> String {

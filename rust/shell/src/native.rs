@@ -32940,16 +32940,17 @@ impl Render for Native {
                     .text_color(theme.muted_foreground)
                     .child("Schedule"),
             );
-            let mut chip_row = h_flex().gap_1().flex_wrap();
+            let mut chip_row = h_flex().w_full().gap_1();
             for (i, label) in AUTOM_KINDS.iter().enumerate() {
                 let sel = kind == i;
                 chip_row = chip_row.child(
                     div()
                         .id(ElementId::Name(format!("autkind-{i}").into()))
                         .h(px(24.))
-                        .px_2()
+                        .flex_1()
                         .flex()
                         .items_center()
+                        .justify_center()
                         .rounded(px(6.))
                         .border_1()
                         .border_color(if sel { theme.primary } else { theme.border })

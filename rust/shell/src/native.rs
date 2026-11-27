@@ -24503,54 +24503,86 @@ impl Render for Native {
                                 ),
                         );
                     }
-                    meta = meta.child(
-                        div()
-                            .text_xs()
-                            .text_color(theme.muted_foreground)
-                            .child(when),
-                    );
                     // Upstream meta tail: column-state label with its status
                     // icon (KanbanStatusIcon). Derived from latestTurn like the
                     // inbox: settled turn -> Done (filled check), error ->
                     // Failed, no turn yet -> Draft (hollow), else Working.
+                    // Upstream meta tail (KanbanCardView.tsx): relative timestamp,
+                    // then the COLUMN label with KanbanStatusIcon — never a
+                    // status pill for Working/Connecting/Completed (redundant).
+                    // done = filled #5e6ad2 circle with white check cutout;
+                    // inProgress = #f2c94c half-filled ring; draft = hollow.
                     let lt_completed = !str_at(get(t, "latestTurn"), "completedAt").is_empty();
                     let lt_error = str_at(get(t, "latestTurn"), "state") == "error";
                     let lt_none = get(t, "latestTurn").is_null()
                         || str_at(get(t, "latestTurn"), "turnId").is_empty();
-                    let (klabel, kcolor): (&'static str, gpui::Hsla) = if lt_error {
-                        ("Failed", rgb(0xff453a).into())
-                    } else if lt_completed {
-                        ("Done", rgb(0x34c759).into())
+                    let klabel: &'static str = if lt_completed {
+                        "Done"
                     } else if lt_none {
-                        ("Draft", theme.muted_foreground)
+                        "Draft"
                     } else {
-                        ("Working", theme.muted_foreground)
+                        "In Progress"
                     };
                     let icon_el: gpui::AnyElement = if lt_completed {
-                        svg_icon(icons::CHECK)
-                            .size(px(10.))
-                            .text_color(kcolor)
+                        div()
+                            .size(px(12.))
+                            .rounded_full()
+                            .bg(rgb(0x5e6ad2))
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .child(
+                                svg_icon(icons::CHECK)
+                                    .size(px(8.))
+                                    .text_color(rgb(0xffffff)),
+                            )
+                            .into_any_element()
+                    } else if lt_none {
+                        div()
+                            .size(px(11.))
+                            .rounded_full()
+                            .border_1()
+                            .border_color(theme.muted_foreground.opacity(0.6))
                             .into_any_element()
                     } else {
                         div()
-                            .size(px(8.))
+                            .size(px(11.))
                             .rounded_full()
                             .border_1()
-                            .border_color(kcolor)
+                            .border_color(rgb(0xf2c94c))
                             .into_any_element()
                     };
+                    let mut tail = h_flex()
+                        .ml_auto()
+                        .gap(px(8.))
+                        .items_center();
+                    if lt_error {
+                        tail = tail.child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(rgb(0xff453a))
+                                .child("Failed"),
+                        );
+                    }
                     meta = meta.child(
-                        h_flex()
-                            .ml_auto()
-                            .gap(px(4.))
-                            .items_center()
-                            .child(icon_el)
-                            .child(
-                                div()
-                                    .text_xs()
-                                    .text_color(if lt_completed || lt_error { kcolor } else { theme.muted_foreground })
-                                    .child(klabel),
-                            ),
+                        tail.child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground.opacity(0.7))
+                                .child(when),
+                        )
+                        .child(
+                            h_flex()
+                                .gap(px(4.))
+                                .items_center()
+                                .child(icon_el)
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .text_color(theme.muted_foreground.opacity(0.8))
+                                        .child(klabel),
+                                ),
+                        ),
                     );
                     col = col.child(
                         v_flex()
@@ -24563,7 +24595,8 @@ impl Render for Native {
                             .gap(px(6.))
                             .child(
                                 div()
-                                    .text_size(px(14.))
+                                    .text_size(px(15.))
+                                    .line_height(relative(1.375))
                                     .font_weight(FontWeight::MEDIUM)
                                     .whitespace_nowrap()
                                     .overflow_hidden()
@@ -28390,7 +28423,7 @@ impl Render for Native {
                         .w_full()
                         .items_center()
                         .gap(px(8.))
-                        .pl(px(62.))
+                        .pl(px(78.))
                         .pr(px(10.))
                         .child(
                             div()

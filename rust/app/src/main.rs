@@ -72,6 +72,7 @@ mod web_static;
 mod device_sim;
 mod device_stream;
 mod computer_native;
+mod computer_shield;
 mod opencode_runner;
 mod pi_runner;
 mod pi_opencode_catalog;

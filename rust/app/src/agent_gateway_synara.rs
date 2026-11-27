@@ -357,6 +357,30 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["projectId", "sourcePath"]),
         ),
         def(
+            "synara_project_get_overview",
+            "Read the current hub's coordinator overview: goal, focus, blockers, last summary, and linked repositories. Does not include document bodies.",
+            schema(json!({
+                "projectId": {"type": "string"},
+            }), &["projectId"]),
+        ),
+        def(
+            "synara_project_context",
+            "Load the bounded project context packet (goal, instructions, decisions, tasks) capped at 32,000 characters.",
+            schema(json!({
+                "projectId": {"type": "string"},
+            }), &["projectId"]),
+        ),
+        def(
+            "synara_project_report_result",
+            "Report worker findings into the project inbox. This records evidence and moves the task to review. It does not mark the task done.",
+            schema(json!({
+                "requestId": {"type": "string"},
+                "projectId": {"type": "string"},
+                "taskId": {"type": "string"},
+                "summary": {"type": "string"},
+            }), &["requestId", "projectId", "taskId", "summary"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -2305,6 +2329,203 @@ fn library_add(args: &Value, caller_thread: Option<&str>) -> Result<Value, Strin
     }))
 }
 
+fn project_get_overview(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let goal: Option<Value> = conn
+        .query_row(
+            "SELECT goal_id, objective, status, revision FROM project_agent_goals \
+             WHERE project_id = ?1 ORDER BY created_at DESC LIMIT 1",
+            [&project_id],
+            |r| {
+                Ok(json!({
+                    "goalId": r.get::<_, String>(0)?,
+                    "objective": r.get::<_, String>(1)?,
+                    "status": r.get::<_, String>(2)?,
+                    "revision": r.get::<_, i64>(3)?,
+                }))
+            },
+        )
+        .ok();
+    let focus: Option<String> = conn
+        .query_row(
+            "SELECT content FROM project_agent_documents \
+             WHERE project_id = ?1 AND logical_path = 'focus.md' ORDER BY revision DESC LIMIT 1",
+            [&project_id],
+            |r| r.get(0),
+        )
+        .ok();
+    let mut blockers_stmt = conn
+        .prepare(
+            "SELECT task_id, title, status FROM project_agent_tasks \
+             WHERE project_id = ?1 AND archived_at IS NULL AND status IN ('blocked','failed','review') \
+             ORDER BY task_id LIMIT 50",
+        )
+        .map_err(|e| e.to_string())?;
+    let blockers: Vec<Value> = blockers_stmt
+        .query_map([&project_id], |r| {
+            Ok(json!({
+                "taskId": r.get::<_, String>(0)?,
+                "title": r.get::<_, Option<String>>(1)?,
+                "status": r.get::<_, Option<String>>(2)?,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    let last_summary: Option<String> = conn
+        .query_row(
+            "SELECT summary FROM project_agent_activity \
+             WHERE project_id = ?1 ORDER BY created_at DESC LIMIT 1",
+            [&project_id],
+            |r| r.get(0),
+        )
+        .ok();
+    let mut repos_stmt = conn
+        .prepare(
+            "SELECT linked_project_id FROM project_agent_linked_projects WHERE project_id = ?1",
+        )
+        .map_err(|e| e.to_string())?;
+    let linked: Vec<String> = repos_stmt
+        .query_map([&project_id], |r| r.get::<_, String>(0))
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    Ok(json!({
+        "projectId": project_id,
+        "goal": goal,
+        "focus": focus,
+        "blockers": blockers,
+        "lastSummary": last_summary,
+        "linkedRepositories": linked,
+    }))
+}
+
+fn project_context(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    const CAP: usize = 32_000;
+    let mut packet = String::new();
+    let mut push_section = |title: &str, body: &str| {
+        if packet.len() >= CAP {
+            return;
+        }
+        let section = format!("## {title}\n\n{}\n\n", body.trim());
+        let remaining = CAP - packet.len();
+        if section.len() <= remaining {
+            packet.push_str(&section);
+        } else {
+            packet.push_str(&section[..remaining]);
+        }
+    };
+    if let Some((objective, status)) = conn
+        .query_row(
+            "SELECT objective, status FROM project_agent_goals \
+             WHERE project_id = ?1 ORDER BY created_at DESC LIMIT 1",
+            [&project_id],
+            |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)),
+        )
+        .ok()
+    {
+        push_section("Goal", &format!("{objective}\n\nStatus: {status}"));
+    }
+    for (title, path) in [
+        ("Instructions", "instructions.md"),
+        ("Memory index", "memory/MEMORY.md"),
+        ("Decisions", "decisions.md"),
+        ("Focus", "focus.md"),
+    ] {
+        if let Some((content, _rev)) = doc_head(&conn, &project_id, path) {
+            if !content.trim().is_empty() {
+                push_section(title, &content);
+            }
+        }
+    }
+    let mut tasks_stmt = conn
+        .prepare(
+            "SELECT task_id, title, status FROM project_agent_tasks \
+             WHERE project_id = ?1 AND archived_at IS NULL ORDER BY task_id LIMIT 100",
+        )
+        .map_err(|e| e.to_string())?;
+    let tasks: Vec<String> = tasks_stmt
+        .query_map([&project_id], |r| {
+            Ok(format!(
+                "- {} ({})",
+                r.get::<_, Option<String>>(1)?.unwrap_or_default(),
+                r.get::<_, Option<String>>(2)?.unwrap_or_default()
+            ))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    if !tasks.is_empty() {
+        push_section("Tasks", &tasks.join("\n"));
+    }
+    Ok(json!({
+        "projectId": project_id,
+        "packet": packet,
+        "truncated": packet.len() >= CAP,
+    }))
+}
+
+fn project_report_result(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let request_id = arg_str(args, "requestId").ok_or("Missing required argument: requestId")?;
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let task_id = arg_str(args, "taskId").ok_or("Missing required argument: taskId")?;
+    let summary = arg_str(args, "summary").ok_or("Missing required argument: summary")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    // Exactly-once replay on requestId via the receipts table.
+    let receipt_key = format!("report-result:{request_id}");
+    if let Ok(json) = conn.query_row(
+        "SELECT result_json FROM project_agent_receipts WHERE request_id = ?1",
+        [&receipt_key],
+        |r| r.get::<_, String>(0),
+    ) {
+        return serde_json::from_str::<Value>(&json).map_err(|e| e.to_string());
+    }
+    let status: String = conn
+        .query_row(
+            "SELECT status FROM project_agent_tasks WHERE project_id = ?1 AND task_id = ?2",
+            rusqlite::params![project_id, task_id],
+            |r| r.get(0),
+        )
+        .map_err(|_| format!("Task \"{task_id}\" was not found in this project."))?;
+    let now = crate::todo::iso_now_ms();
+    conn.execute(
+        "INSERT INTO project_agent_evidence \
+         (evidence_id, project_id, task_id, attempt_id, kind, classification, author_kind, \
+          author_thread_id, source_thread_id, summary, created_at) \
+         VALUES (?1,?2,?3,NULL,'result','worker','worker',?4,?4,?5,?6)",
+        rusqlite::params![
+            crate::orchestration_engine::uuid_v4(),
+            project_id,
+            task_id,
+            caller_thread,
+            summary,
+            now,
+        ],
+    )
+    .map_err(|e| e.to_string())?;
+    if status != "review" {
+        conn.execute(
+            "UPDATE project_agent_tasks SET status = 'review', revision = revision + 1 \
+             WHERE project_id = ?1 AND task_id = ?2",
+            rusqlite::params![project_id, task_id],
+        )
+        .map_err(|e| e.to_string())?;
+    }
+    let result = json!({"taskId": task_id, "status": "review", "recorded": true});
+    let _ = conn.execute(
+        "INSERT OR IGNORE INTO project_agent_receipts (request_id, project_id, operation, result_json, created_at) \
+         VALUES (?1,?2,'report_result',?3,?4)",
+        rusqlite::params![receipt_key, project_id, result.to_string(), now],
+    );
+    Ok(result)
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -2512,6 +2733,9 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_list_connections" => list_connections(),
         "synara_project_library_list" => library_list(args),
         "synara_project_library_add" => library_add(args, caller_thread),
+        "synara_project_get_overview" => project_get_overview(args),
+        "synara_project_context" => project_context(args),
+        "synara_project_report_result" => project_report_result(args, caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

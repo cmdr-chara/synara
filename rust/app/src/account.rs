@@ -331,6 +331,175 @@ fn scope_token_to_workspace(client: &AccountClient, token: &Value) -> Result<Val
     }
 }
 
+
+fn secrets_dir() -> PathBuf {
+    PathBuf::from(crate::todo::state_dir()).join("secrets")
+}
+
+fn device_identity_path() -> PathBuf {
+    secrets_dir().join("device-identity.json")
+}
+
+fn host_identity_file_path() -> PathBuf {
+    crate::host_identity::host_identity_path(secrets_dir().to_string_lossy().as_ref())
+}
+
+fn account_platform() -> &'static str {
+    match std::env::consts::OS {
+        "macos" => "darwin",
+        "linux" => "linux",
+        "windows" => "windows",
+        other => other,
+    }
+}
+
+fn display_hostname() -> String {
+    let output = std::process::Command::new("hostname").output().ok();
+    output
+        .and_then(|output| String::from_utf8(output.stdout).ok())
+        .map(|name| name.trim().chars().take(200).collect())
+        .filter(|name: &String| !name.is_empty())
+        .unwrap_or_else(|| "Synara host".to_string())
+}
+
+fn device_thumbprint(public_key_jwk: &Value) -> String {
+    let canonical = format!(
+        "{{\"crv\":\"{}\",\"kty\":\"{}\",\"x\":\"{}\"}}",
+        public_key_jwk["crv"].as_str().unwrap_or_default(),
+        public_key_jwk["kty"].as_str().unwrap_or_default(),
+        public_key_jwk["x"].as_str().unwrap_or_default(),
+    );
+    let digest = <sha2::Sha256 as sha2::Digest>::digest(canonical.as_bytes());
+    base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(digest)
+}
+
+fn now_unix() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0)
+}
+
+fn load_or_create_identity(path: &std::path::Path) -> Result<crate::host_identity::HostIdentity, WsErr> {
+    if let Some(identity) = crate::host_identity::read_host_identity(path).map_err(err)? {
+        return Ok(identity);
+    }
+    if let Some(parent) = path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    crate::host_identity::generate_and_persist_host_identity(path).map_err(err)
+}
+
+fn sign_device_registration(
+    identity: &crate::host_identity::HostIdentity,
+    user_id: &str,
+    audience: &str,
+) -> Result<(String, String), WsErr> {
+    let now = now_unix();
+    let payload = json!({
+        "publicKeyJwk": identity.public_key_jwk,
+        "displayName": display_hostname(),
+        "platform": account_platform(),
+        "iss": "synara-device",
+        "sub": user_id,
+        "aud": audience,
+        "iat": now,
+        "exp": now + 60,
+        "jti": crate::orchestration_engine::uuid_v4(),
+    });
+    let header = json!({"alg":"EdDSA","typ":"synara-device-register+jwt"});
+    let proof = identity.sign_jwt(header, payload).map_err(err)?;
+    Ok((proof, device_thumbprint(&identity.public_key_jwk)))
+}
+
+fn register_shell_device(user_id: &str) -> Result<(), WsErr> {
+    let stored = read_session_file().ok_or_else(session_expired)?;
+    let account_url = stored["accountUrl"].as_str().unwrap_or_default().to_string();
+    let identity = load_or_create_identity(&device_identity_path())?;
+    let (proof, jkt) = sign_device_registration(&identity, user_id, &account_api_issuer(&account_url))?;
+    let response = authenticated_request("Failed to register this device", |client, access| {
+        client.post("/api/v1/devices", Some(access), json!({"proof": proof}))
+    })?;
+    let device = response.get("device").cloned().unwrap_or(Value::Null);
+    if device.get("jkt").and_then(Value::as_str) != Some(jkt.as_str()) || !device.get("revokedAt").is_some_and(Value::is_null) {
+        return Err(err("The account did not register this shell's device key"));
+    }
+    let mut current = read_session_file().ok_or_else(session_expired)?;
+    if let Some(object) = current.as_object_mut() {
+        object.insert("deviceId".into(), device.get("id").cloned().unwrap_or(Value::Null));
+        object.insert("deviceJkt".into(), json!(jkt));
+        object.insert("userId".into(), json!(user_id));
+    }
+    write_account_file(&current)
+}
+
+fn link_local_host() -> Result<(), WsErr> {
+    let stored = read_session_file().ok_or_else(session_expired)?;
+    if stored.get("hostId").and_then(Value::as_str).is_some()
+        && stored.get("hostOwnerUserId").and_then(Value::as_str) == stored.get("userId").and_then(Value::as_str)
+        && stored.get("hostKeyGeneration").is_some()
+        && crate::host_identity::read_host_identity(&host_identity_file_path()).ok().flatten().is_some()
+    {
+        return Ok(());
+    }
+    let state_dir = crate::todo::state_dir();
+    let environment_id = crate::server_env::environment_id(&state_dir).ok_or_else(|| err("Failed to resolve the environment id"))?;
+    let name = display_hostname();
+    let platform = account_platform();
+    let challenge = authenticated_request("Failed to link this host", |client, access| {
+        client.post("/api/v1/hosts/link/start", Some(access), json!({
+            "environmentId": environment_id,
+            "name": name,
+            "platform": platform,
+            "kind": "local",
+        }))
+    })?;
+    if let Some(parent) = host_identity_file_path().parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let identity = crate::host_identity::generate_and_persist_host_identity(&host_identity_file_path()).map_err(err)?;
+    let proof = crate::host_identity::mint_host_link_proof(
+        &identity,
+        &account_api_issuer(stored["accountUrl"].as_str().unwrap_or_default()),
+        &environment_id,
+        challenge.get("challengeId").and_then(Value::as_str).unwrap_or_default(),
+        challenge.get("nonce").and_then(Value::as_str).unwrap_or_default(),
+        &name,
+        platform,
+        Some(env!("CARGO_PKG_VERSION")),
+    ).map_err(err)?;
+    let linked = AccountClient::new(stored["accountUrl"].as_str().unwrap_or_default())
+        .post("/api/v1/hosts/link/complete", None, json!({
+            "challengeId": challenge.get("challengeId").and_then(Value::as_str).unwrap_or_default(),
+            "proof": proof,
+        }))
+        .map_err(|error| service_error(&error, "Failed to link this host"))?;
+    let host = linked.get("host").cloned().unwrap_or(Value::Null);
+    let host_id = host.get("id").and_then(Value::as_str).unwrap_or_default();
+    let owner = host.get("ownerUserId").and_then(Value::as_str).unwrap_or_default();
+    if host_id.is_empty() || owner.is_empty() {
+        return Err(err("The account service returned an incomplete host link"));
+    }
+    let mut current = read_session_file().ok_or_else(session_expired)?;
+    if current.get("userId").and_then(Value::as_str) != Some(owner) {
+        return Err(err("Your workspace access changed — sign in again from the Synara app."));
+    }
+    if let Some(object) = current.as_object_mut() {
+        object.insert("hostId".into(), json!(host_id));
+        object.insert("hostOwnerUserId".into(), json!(owner));
+        object.insert("hostKeyGeneration".into(), host.get("keyGeneration").cloned().unwrap_or(json!(0)));
+    }
+    write_account_file(&current)
+}
+
+fn enroll_desktop(user_id: &str) {
+    // Enrollment is best-effort and retried by later account operations; the
+    // durable user session must remain useful when device/host registration is
+    // temporarily unavailable.
+    let _ = register_shell_device(user_id);
+    let _ = link_local_host();
+}
+
 fn establish_session(token: Value) -> Result<Value, WsErr> {
     let account_url = configured_account_url();
     let client = AccountClient::new(&account_url);
@@ -363,6 +532,7 @@ fn establish_session(token: Value) -> Result<Value, WsErr> {
         }
     }
     write_account_file(&stored)?;
+    enroll_desktop(scoped["userId"].as_str().unwrap_or_default());
     let me = authenticated_request("Failed to read the signed-in account", |client, access| client.get("/api/v1/me", Some(access)))?;
     signed_in_status(me)
 }

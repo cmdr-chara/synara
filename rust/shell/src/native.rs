@@ -24950,10 +24950,25 @@ impl Render for Native {
         // /tasks — rail only: List|Kanban toggle top-right, centered column.
         // Upstream puts List|Kanban in the top bar, so it doesn't push the
         // column down: overlay it at the top-right instead of a row.
+        let tasks_header = h_flex()
+            .absolute()
+            .top(topbar_y)
+            .left(px(56.))
+            .right(px(19.))
+            .h(px(28.))
+            .items_center()
+            .child(div().flex_1())
+            .child(seg_chip("seg-tasks-list", "List", true))
+            .child(
+                seg_chip("seg-tasks-kanban", "Kanban", false).on_click(cx.listener(
+                    |this, _e, _w, cx| this.open_route(2, cx),
+                )),
+            );
         let tasks_pane = v_flex()
             .flex_1()
             .h_full()
             .relative()
+            .child(tasks_header)
             .child(
                 // Upstream: a centered fixed-width column, contents
                 // left-aligned; add-task row is a faint borderless row.

@@ -1547,9 +1547,9 @@ pub(crate) fn run_stacked_action_streaming(
 
 // ---------------------------------------------------------------------------------------------
 // git.handoffThread — transactional thread re-homing between Local and a worktree,
-// ported from upstream GitManager.handoffThread. The durable operation journal
-// (beginGitHandoff/completeGitHandoff crash recovery) is a documented gap: the
-// git state machine and its rollback paths are faithful.
+// ported from upstream GitManager.handoffThread. The WS entry point lives in
+// git_handoff.rs, which wraps this filesystem state machine in the durable
+// operation journal and startup recovery.
 // ---------------------------------------------------------------------------------------------
 
 fn handoff_opt_str(payload: &Value, key: &str) -> Option<String> {

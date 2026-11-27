@@ -3,9 +3,10 @@
 //! an allowlisted root are served, the decision uses the realpath of both file
 //! and root (symlink escapes fail closed), the extension allowlist matches
 //! upstream shared/localPreviewFiles.ts, and bytes never come from inline
-//! payloads. Grant tokens and the multi-home overlay enumeration
-//! are documented gaps — the default CODEX_HOME plus the
-//! SYNARA_HOME overlay cover the configurations this server actually launches.
+//! payloads. Grants are validated against the same realpath-issued token store
+//! as workspace file access. Enumeration of every per-account CODEX_HOME
+//! overlay remains a documented gap; the ambient CODEX_HOME, default home, and
+//! SYNARA_HOME overlay cover the configurations this server launches directly.
 
 use axum::{
     extract::RawQuery,

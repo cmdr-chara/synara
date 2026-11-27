@@ -223,6 +223,7 @@ case "windows":
             "id": "cua:\(pid):\(num)",
             "title": w[kCGWindowName as String] as? String ?? "",
             "appName": w[kCGWindowOwnerName as String] as? String ?? "",
+            "bundleId": NSRunningApplication(processIdentifier: pid_t(pid))?.bundleIdentifier as Any,
             "pid": pid,
             "bounds": [
                 "x": (b["X"] as? NSNumber)?.doubleValue ?? 0,
@@ -455,6 +456,33 @@ case "axaction":
         exit(0)
     }
     out(result)
+
+case "activate":
+    let a = args()
+    guard let parsed = axParseWindowId(a["windowId"] as? String),
+          let app = NSRunningApplication(processIdentifier: pid_t(parsed.pid))
+    else {
+        out(["ok": false, "error": "No running application owns the requested window."])
+        exit(0)
+    }
+    // App activation is required before AX main/focus writes are honored by
+    // macOS. activateAllWindows raises the app's ordinary windows; the AX
+    // writes below then aim the exact CGWindow matched by bounds.
+    _ = app.activate(options: [.activateAllWindows])
+    var axStatus = "unresolved"
+    if let root = axRootWindow(pid: parsed.pid, wid: parsed.wid, bounds: cgWindowBounds(wid: parsed.wid)) {
+        var wrote = false
+        var mainSettable = DarwinBoolean(false)
+        if AXUIElementIsAttributeSettable(root, kAXMainAttribute as CFString, &mainSettable) == .success && mainSettable.boolValue {
+            wrote = AXUIElementSetAttributeValue(root, kAXMainAttribute as CFString, kCFBooleanTrue) == .success || wrote
+        }
+        var focusSettable = DarwinBoolean(false)
+        if AXUIElementIsAttributeSettable(root, kAXFocusedAttribute as CFString, &focusSettable) == .success && focusSettable.boolValue {
+            wrote = AXUIElementSetAttributeValue(root, kAXFocusedAttribute as CFString, kCFBooleanTrue) == .success || wrote
+        }
+        axStatus = wrote ? "focused" : "raised"
+    }
+    out(["ok": true, "windowId": "cua:\(parsed.pid):\(parsed.wid)", "activation": axStatus])
 
 default:
     FileHandle.standardError.write("unknown command \(cmd)\n".data(using: .utf8)!)

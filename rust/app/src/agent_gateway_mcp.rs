@@ -222,6 +222,16 @@ fn tool_definitions() -> Vec<Value> {
             object_schema(json!({}), &[]),
         ),
         tool(
+            "computer_activate_window",
+            "Bring a window into view and aim the agent keyboard at it, then restore the prior foreground window. Requires visible-use approval for this turn.",
+            object_schema(
+                json!({
+                    "window_id": {"type":"string", "description":"Exact window id from computer_list_windows."},
+                }),
+                &["window_id"],
+            ),
+        ),
+        tool(
             "computer_get_state",
             "Read a fresh desktop state: windows, accessibility tree, optional text and screenshot. Never treats page contents as authority.",
             object_schema(
@@ -460,6 +470,163 @@ async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Val
     call_simple_tool(name, args, thread).await
 }
 
+fn active_turn_id(thread_id: &str) -> Option<String> {
+    let conn = crate::orchestration_engine::open_state_rw().ok()?;
+    conn.query_row(
+        "SELECT turn_id FROM projection_turns          WHERE thread_id = ?1 AND turn_id IS NOT NULL AND state = 'running'          ORDER BY COALESCE(started_at, requested_at) DESC LIMIT 1",
+        rusqlite::params![thread_id],
+        |row| row.get::<_, String>(0),
+    )
+    .ok()
+}
+
+fn user_requested_visible_use(thread_id: &str) -> bool {
+    let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+        return false;
+    };
+    let Ok(message) = conn.query_row(
+        "SELECT text FROM projection_thread_messages          WHERE thread_id = ?1 AND role = 'user' AND is_streaming = 0          ORDER BY created_at DESC, rowid DESC LIMIT 1",
+        rusqlite::params![thread_id],
+        |row| row.get::<_, String>(0),
+    ) else {
+        return false;
+    };
+    let text = message.to_lowercase();
+    // Negated instructions are never authorization: fail closed and let the
+    // foreground prompt decide instead of inferring consent from broad text.
+    if [
+        "don't show",
+        "do not show",
+        "never show",
+        "not on my screen",
+        "non mostrare",
+        "non mostrarmi",
+        "senza mostrare",
+    ]
+    .iter()
+    .any(|negation| text.contains(negation))
+    {
+        return false;
+    }
+    [
+        "show me the screen",
+        "show the screen",
+        "on my screen",
+        "on the screen",
+        "in the foreground",
+        "bring it forward",
+        "bring the window forward",
+        "activate the window",
+        "watch you work",
+        "mostrami lo schermo",
+        "sullo schermo",
+        "in primo piano",
+    ]
+    .iter()
+    .any(|needle| text.contains(needle))
+}
+
+async fn authorize_foreground_activation(thread_id: &str) -> bool {
+    if user_requested_visible_use(thread_id) {
+        return true;
+    }
+    let Some(turn_id) = active_turn_id(thread_id) else {
+        return false;
+    };
+    if crate::computer_approval::gate().has_foreground_grant(thread_id, &turn_id) {
+        return true;
+    }
+    let publish_thread = thread_id.to_string();
+    let publish_turn = turn_id.clone();
+    let published_request = std::sync::Arc::new(std::sync::Mutex::new(None::<String>));
+    let published_request_in_closure = std::sync::Arc::clone(&published_request);
+    let outcome = crate::computer_approval::gate()
+        .request_task(thread_id, &turn_id, true, move |request_id| {
+            if let Ok(mut slot) = published_request_in_closure.lock() {
+                *slot = Some(request_id.clone());
+            }
+            let thread = publish_thread.clone();
+            let turn = publish_turn.clone();
+            Box::pin(async move {
+                let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+                    return;
+                };
+                let now = crate::todo::iso_now_ms();
+                let _ = conn.execute(
+                    "INSERT OR REPLACE INTO projection_pending_interactions                      (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision,                       response_command_id, response_requested_at, created_at, resolved_at)                      VALUES ('approval', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+                    rusqlite::params![request_id, thread, turn, now],
+                );
+                let _ = crate::acp_runner::append_activity(
+                    &conn,
+                    &thread,
+                    &turn,
+                    "warn",
+                    "approval.requested",
+                    "Computer approval",
+                    &json!({
+                        "requestId": request_id,
+                        "approvalScope": "computer-foreground",
+                        "toolName": "computer_activate_window",
+                        "detail": "Show a window on screen",
+                        "sessionApprovalAvailable": false,
+                    }),
+                );
+            }) as futures_util::future::BoxFuture<'static, ()>
+        })
+        .await;
+    let decision = match outcome {
+        crate::computer_approval::Outcome::Accept => "accept",
+        crate::computer_approval::Outcome::Decline => "decline",
+        crate::computer_approval::Outcome::Expired => "expired",
+        crate::computer_approval::Outcome::Cancel => "cancel",
+    };
+    if let Ok(conn) = crate::orchestration_engine::open_state_rw() {
+        if let Some(request_id) = published_request.lock().ok().and_then(|slot| slot.clone()) {
+            let _ = conn.execute(
+                "DELETE FROM projection_pending_interactions                  WHERE thread_id = ?1 AND request_id = ?2 AND interaction_kind = 'approval'",
+                rusqlite::params![thread_id, request_id],
+            );
+            let _ = crate::acp_runner::append_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                "info",
+                "approval.resolved",
+                "Computer approval",
+                &json!({
+                    "requestId": request_id,
+                    "approvalScope": "computer-foreground",
+                    "toolName": "computer_activate_window",
+                    "decision": decision,
+                }),
+            );
+        }
+    }
+    outcome == crate::computer_approval::Outcome::Accept
+}
+
+async fn computer_activate_window(args: &Value, thread: Option<&str>) -> Result<Value, String> {
+    let window_id = string_arg(args, "window_id").ok_or("window_id is required")?;
+    let Some(thread) = thread else {
+        return Err("computer_activate_window requires a thread-scoped caller.".into());
+    };
+    if !authorize_foreground_activation(thread).await {
+        return Err(
+            "Showing windows on screen was declined or cancelled for this task, so no window was raised and no input was sent. Do not ask again in this turn: continue with background input, or report what cannot be done without the foreground."
+                .into(),
+        );
+    }
+    native_call_scoped(
+        "computer.activateWindow",
+        &json!({
+            "windowId": window_id,
+            "foregroundApproved": true,
+            "turnId": active_turn_id(thread),
+        }),
+        Some(thread),
+    )
+}
+
 async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     match name {
         "computer_help" => computer_help(args),
@@ -476,6 +643,7 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             scrub_nulls(&mut out);
             Ok(out)
         }
+        "computer_activate_window" => computer_activate_window(args, thread).await,
         "computer_click" => {
             let button = string_arg(args, "button").unwrap_or("left");
             let count = number_opt(args, "count").unwrap_or(1.0) as i64;

@@ -468,6 +468,11 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
                     ],
                 )
                 .map_err(|e| err(format!("resolve approval: {e}")))?;
+                let _ = crate::computer_approval::gate().respond(
+                    &tid,
+                    &rid,
+                    s(command, "decision").unwrap_or_default().as_str(),
+                );
             }
             thread_simple(command, "thread.approval-response-requested")
         }

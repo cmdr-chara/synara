@@ -278,6 +278,168 @@ fn action_result(action: &str, point: Option<(f64, f64)>) -> Value {
     v
 }
 
+fn numeric_window_id(id: &str) -> Option<(u32, u32)> {
+    let mut parts = id.split(':');
+    if parts.next()? != "cua" {
+        return None;
+    }
+    Some((parts.next()?.parse().ok()?, parts.next()?.parse().ok()?))
+}
+
+fn masked_activation_opted_in(bundle_id: Option<&str>) -> bool {
+    let enabled = std::env::var("SYNARA_CUA_MASKED_ACTIVATION")
+        .ok()
+        .is_some_and(|value| matches!(value.trim().to_ascii_lowercase().as_str(), "1" | "true" | "yes" | "on"));
+    if !enabled {
+        return false;
+    }
+    let Some(bundle_id) = bundle_id.map(str::trim).filter(|value| !value.is_empty()) else {
+        return false;
+    };
+    std::env::var("SYNARA_CUA_MASKED_APPS")
+        .unwrap_or_default()
+        .split([',', ';', ' ', '\t', '\n', '\r'])
+        .any(|entry| entry.trim().eq_ignore_ascii_case(bundle_id))
+}
+
+fn activate_one(window_id: &str) -> Result<Value, String> {
+    let result = helper("activate", &json!({"windowId": window_id}))?;
+    if result.get("ok").and_then(Value::as_bool) == Some(true) {
+        Ok(result)
+    } else {
+        Err(result
+            .get("error")
+            .and_then(Value::as_str)
+            .unwrap_or("The window could not be activated.")
+            .to_string())
+    }
+}
+
+/// Foreground-with-restore primitive behind the agent-gateway visible-use
+/// gate. Records the frontmost window, optionally masks the target, raises and
+/// focuses it, then restores the prior window with explicit restore status.
+fn activate_window_with_restore(payload: &Value) -> Result<Value, String> {
+    require_ax()?;
+    let window_id = payload
+        .get("windowId")
+        .and_then(Value::as_str)
+        .filter(|value| numeric_window_id(value).is_some())
+        .ok_or("windowId is required")?;
+    let thread_id = payload.get("threadId").and_then(Value::as_str).filter(|value| !value.is_empty());
+    if let Some(thread) = thread_id {
+        crate::computer_manager::assert_control_authority(Some(thread))?;
+        crate::computer_manager::assert_input_not_paused(Some(thread))?;
+        crate::computer_manager::assert_foreground_allowed(
+            Some(thread),
+            payload.get("foregroundApproved").and_then(Value::as_bool).unwrap_or(false),
+        )?;
+    }
+
+    let windows = list_windows()?;
+    let Some(target) = windows.iter().find(|window| window.get("id").and_then(Value::as_str) == Some(window_id)).cloned() else {
+        return Err(format!("Window {window_id} was not found."));
+    };
+    let app_name = target.get("appName").and_then(Value::as_str);
+    let bundle_id = target.get("bundleId").and_then(Value::as_str);
+    crate::computer_manager::assert_not_denied(app_name, bundle_id)?;
+    let previous_id = windows
+        .iter()
+        .find(|window| {
+            window.get("visible").and_then(Value::as_bool).unwrap_or(true)
+                && !window.get("minimized").and_then(Value::as_bool).unwrap_or(false)
+        })
+        .and_then(|window| window.get("id").and_then(Value::as_str))
+        .map(str::to_string);
+
+    let mut shield_id = None;
+    if masked_activation_opted_in(bundle_id) {
+        let (pid, wid) = numeric_window_id(window_id).ok_or("Invalid window id.")?;
+        let bounds = target.get("bounds").cloned().unwrap_or_else(|| json!({}));
+        let host = crate::computer_shield::shared_host()
+            .ok_or("Masked activation is opted in for this app, but the activation shield is unavailable.")?;
+        let id = format!("shield-{}", crate::orchestration_engine::uuid_v4());
+        let task = thread_id.map(|thread| crate::computer_shield::ShieldTask {
+            thread_id: thread.to_string(),
+            turn_id: payload.get("turnId").and_then(Value::as_str).map(str::to_string),
+        });
+        host.engage(
+            crate::computer_shield::ShieldEngagement {
+                shield_id: id.clone(),
+                frame: crate::computer_shield::ShieldFrame {
+                    x: bounds.get("x").and_then(Value::as_f64).unwrap_or(0.0),
+                    y: bounds.get("y").and_then(Value::as_f64).unwrap_or(0.0),
+                    width: bounds.get("width").and_then(Value::as_f64).unwrap_or(1.0),
+                    height: bounds.get("height").and_then(Value::as_f64).unwrap_or(1.0),
+                },
+                window_id: wid,
+                pid,
+                label: app_name.map(str::to_string),
+            },
+            task.as_ref(),
+        )?;
+        shield_id = Some(id);
+    }
+
+    let activation_result = activate_one(window_id);
+    let (restore_status, restored_window_id, note) = if activation_result.is_ok() {
+        match previous_id.as_deref() {
+            None => (
+                "frontmost-unobservable",
+                None,
+                Some("No frontmost window was observable before activation, so nothing was restored.".to_string()),
+            ),
+            Some(previous) if previous == window_id => ("already-frontmost", None, None),
+            Some(previous) => match activate_one(previous) {
+                Ok(_) => ("restored", Some(previous.to_string()), None),
+                Err(_) => (
+                    "restore-missed",
+                    Some(previous.to_string()),
+                    Some(format!(
+                        "Activated window {window_id:?} but could not restore the previously frontmost window {previous:?}; the desktop was left with {window_id:?} raised."
+                    )),
+                ),
+            },
+        }
+    } else {
+        ("not-attempted", None, None)
+    };
+    if let Some(id) = &shield_id
+        && let Some(host) = crate::computer_shield::shared_host()
+    {
+        host.release(id);
+    }
+    activation_result?;
+
+    let mut result = json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_activate_window",
+        "windowId": window_id,
+        "restoreStatus": restore_status,
+        "masked": shield_id.is_some(),
+    });
+    if let Some(restored) = restored_window_id {
+        result["restoredWindowId"] = json!(restored);
+    }
+    if let Some(note) = &note {
+        result["note"] = json!(note.clone());
+    }
+    let mut event = json!({
+        "type": "computer.action",
+        "action": "computer_activate_window",
+        "ok": true,
+        "windowId": window_id,
+        "restoreStatus": restore_status,
+    });
+    if let Some(note) = note {
+        event["note"] = json!(note);
+    }
+    if shield_id.is_some() {
+        event["masked"] = json!(true);
+    }
+    let _ = action_channel().send(event);
+    Ok(result)
+}
+
 fn desktop_state_json() -> Value {
     let (epoch, interruptions, pauses) = crate::computer_manager::desktop_interruption_state();
     json!({
@@ -412,7 +574,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
         "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click"
             | "computer.moveCursor" | "computer.drag" | "computer.scroll" | "computer.input.scroll"
             | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
-            | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp"
+            | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp" | "computer.activateWindow"
     );
     if mutating && !owner.is_empty() {
         if let Err(e) = crate::computer_manager::assert_control_authority(Some(owner)) {
@@ -558,6 +720,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 Ok(json!({"accepted": true, "computerId": COMPUTER_ID}))
             }
             "computer.setControlEnabled" => set_control_enabled(payload),
+            "computer.activateWindow" => activate_window_with_restore(payload),
             "computer.shield" => handle_shield(payload),
             "computer.launchApp" => {
                 let app = payload["app"].as_str().unwrap_or("");

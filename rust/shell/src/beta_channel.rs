@@ -683,7 +683,12 @@ impl DesktopBetaChannel {
         };
         let stable_home = self.env.get("SYNARA_STABLE_HOME").map(PathBuf::from);
         match launch_stable(&executable, stable_home.as_deref()) {
-            Ok(()) => beta_action(true, None, None),
+            Ok(()) => {
+                // The current Rust handoff never deletes the beta bundle, so the
+                // fixed outcome is exactly upstream's keep branch.
+                crate::beta_diagnostics::track("beta.left", serde_json::json!({"kind":"beta","outcome":"keep"}));
+                beta_action(true, None, None)
+            }
             Err(message) => beta_action(false, Some("launch-failed"), Some(message)),
         }
     }

@@ -98,6 +98,14 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["threadId"]),
         ),
         def(
+            "synara_read_kanban_board",
+            "Read the kanban board of a project: every thread as a card in one of Draft / In Progress / Awaiting you / Done, with attention flags (failed, stuck, awaiting approval/input).",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "includeArchived": {"type": "boolean"},
+            }), &["projectId"]),
+        ),
+        def(
             "synara_list_projects",
             "List the user's projects with their workspace roots.",
             schema(json!({
@@ -450,6 +458,157 @@ fn read_thread_events(args: &Value) -> Result<Value, String> {
     Ok(json!({"events": rows}))
 }
 
+const KANBAN_STUCK_WARN_MS: i64 = 20 * 60_000;
+const KANBAN_STUCK_HARD_MS: i64 = 40 * 60_000;
+
+fn now_unix_ms() -> i64 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0)
+}
+
+/// Port of the shared `kanban.ts` v2 derivation: awaitingYou (failed >
+/// pending approval/input > stuck) wins over inProgress, then draft, then done.
+fn derive_kanban_card(
+    turn_state: Option<&str>,
+    turn_started: bool,
+    turn_completed: bool,
+    session_status: Option<&str>,
+    session_last_error: Option<&str>,
+    heartbeat_ms: Option<i64>,
+    has_pending_approvals: bool,
+    has_pending_input: bool,
+    now: i64,
+) -> (&'static str, Vec<&'static str>) {
+    let can_answer = !matches!(session_status, Some("stopped") | Some("error"));
+    let settled = turn_started
+        && turn_completed
+        && (matches!(turn_state, Some("interrupted") | Some("error"))
+            || session_status != Some("running"));
+    let mut live = false;
+    if (has_pending_approvals || has_pending_input) && can_answer {
+        live = true;
+    }
+    if turn_state == Some("running") || (turn_started && !settled) {
+        live = true;
+    }
+    if matches!(session_status, Some("starting") | Some("running")) {
+        live = true;
+    }
+
+    let hard_stuck = heartbeat_ms.map_or(false, |hb| now - hb >= KANBAN_STUCK_HARD_MS);
+    let warn_stuck = heartbeat_ms.map_or(false, |hb| now - hb >= KANBAN_STUCK_WARN_MS);
+
+    // awaitingYou reason precedence: failed > pending > stuck
+    let mut reason: Option<&str> = None;
+    if turn_state == Some("error")
+        || session_status == Some("error")
+        || session_last_error.is_some()
+    {
+        reason = Some("failed");
+    } else if can_answer && has_pending_approvals {
+        reason = Some("pending-approval");
+    } else if can_answer && has_pending_input {
+        reason = Some("pending-input");
+    } else if live && hard_stuck {
+        reason = Some("stuck");
+    }
+
+    let column = if reason.is_some() {
+        "awaitingYou"
+    } else if live {
+        "inProgress"
+    } else if turn_state.is_none() {
+        "draft"
+    } else {
+        "done"
+    };
+
+    let mut flags = Vec::new();
+    match reason {
+        Some("failed") => flags.push("failed"),
+        Some("pending-approval") => flags.push("awaiting-approval"),
+        Some("pending-input") => flags.push("awaiting-input"),
+        Some("stuck") => flags.push("stuck"),
+        _ => {}
+    }
+    if live && warn_stuck && reason != Some("stuck") {
+        flags.push("stuck");
+    }
+    (column, flags)
+}
+
+fn read_kanban_board(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let include_archived = args.get("includeArchived").and_then(Value::as_bool).unwrap_or(false);
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let sql = format!(
+        "SELECT t.thread_id, t.title, t.branch, t.updated_at, \
+         t.pending_approval_count, t.pending_user_input_count, \
+         (SELECT state FROM projection_turns tu WHERE tu.thread_id = t.thread_id \
+           ORDER BY COALESCE(tu.started_at, tu.requested_at) DESC LIMIT 1), \
+         (SELECT started_at IS NOT NULL FROM projection_turns tu WHERE tu.thread_id = t.thread_id \
+           ORDER BY COALESCE(tu.started_at, tu.requested_at) DESC LIMIT 1), \
+         (SELECT completed_at IS NOT NULL FROM projection_turns tu WHERE tu.thread_id = t.thread_id \
+           ORDER BY COALESCE(tu.started_at, tu.requested_at) DESC LIMIT 1), \
+         (SELECT status FROM projection_thread_sessions s WHERE s.thread_id = t.thread_id), \
+         (SELECT last_error FROM projection_thread_sessions s WHERE s.thread_id = t.thread_id), \
+         (SELECT updated_at FROM projection_thread_sessions s WHERE s.thread_id = t.thread_id) \
+         FROM projection_threads t \
+         WHERE t.project_id = ?1 AND t.deleted_at IS NULL {} \
+         ORDER BY t.updated_at DESC LIMIT 300",
+        if include_archived { "" } else { "AND t.archived_at IS NULL" }
+    );
+    let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
+    let now = now_unix_ms();
+    let rows: Vec<Value> = stmt
+        .query_map([&project_id], |r| {
+            let thread_updated: Option<String> = r.get(3)?;
+            let session_updated: Option<String> = r.get(11)?;
+            let heartbeat = [thread_updated, session_updated]
+                .into_iter()
+                .flatten()
+                .filter_map(|s| crate::orchestration_engine::iso_ms(&s))
+                .max();
+            let turn_state: Option<String> = r.get(6)?;
+            let (column, flags) = derive_kanban_card(
+                turn_state.as_deref(),
+                r.get::<_, bool>(7)?,
+                r.get::<_, bool>(8)?,
+                r.get::<_, Option<String>>(9)?.as_deref(),
+                r.get::<_, Option<String>>(10)?.as_deref(),
+                heartbeat,
+                r.get::<_, i64>(4)? > 0,
+                r.get::<_, i64>(5)? > 0,
+                now,
+            );
+            Ok(json!({
+                "threadId": r.get::<_, String>(0)?,
+                "title": r.get::<_, Option<String>>(1)?,
+                "branch": r.get::<_, Option<String>>(2)?,
+                "column": column,
+                "attention": flags,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    let mut columns: serde_json::Map<String, Value> = serde_json::Map::new();
+    for key in ["draft", "inProgress", "awaitingYou", "done"] {
+        columns.insert(key.into(), json!([]));
+    }
+    for card in &rows {
+        let col = card.get("column").and_then(Value::as_str).unwrap_or("done");
+        if let Some(arr) = columns.get_mut(col).and_then(Value::as_array_mut) {
+            arr.push(card.clone());
+        }
+    }
+    Ok(json!({"projectId": project_id, "columns": Value::Object(columns), "cardCount": rows.len()}))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -459,6 +618,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String
         "synara_read_thread" => read_thread(args),
         "synara_read_thread_activity" => read_thread_activity(args),
         "synara_read_thread_events" => read_thread_events(args),
+        "synara_read_kanban_board" => read_kanban_board(args),
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),

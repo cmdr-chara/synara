@@ -301,3 +301,17 @@ row dentro una card unica, verificare geometria shell; (3) scroll sync per confr
 richiede scrollBottom su entrambi; (4) sidebar dark 21 vs web 17; (5) strip tab position:
 web tab piu' centrata (~x543) vs shell (~x429). Surface light tutte convergenti entro 3px
 tranne texture density. METODO: batch_capture.py + anaglyph + PIL ink-position numerico.
+
+
+## Update 08:10 — committed 2339f2b2ee: attachment pill compatte upstream (file: icona+nome+"25 B";
+selection: "N selections" pill) + sidebar dark #151515→#111111. VERIFICATO numericamente: sidebar
+dark ora 17=17 identico web; rail texture width ~51px entrambi; shell thread piccola mostra pill
+report.pdf corretta sotto la bubble. INBOX dark: struttura coincidente (nessuna sidebar in inbox
+in ENTRAMBI — corretto). Web thread ref catturato in dark: ha "1 selection" pill + report.pdf pill
++ thumb, status bar "Reconnecting" (artefatto test). Shell thread: bubble+pill+thumb tutti presenti,
+posizioni plausibili ma NON ancora misurate numericamente al pixel.
+CODA residua: (1) strip tab position web x543 vs shell x429 — non ancora affrontato; (2) composer
+in-thread geometria fine — misurare tray top edge/width entrambi; (3) kanban pitch residuo 79v74;
+(4) code review sidebar offset verticale; (5) regression sweep light finale. METODO invariato.
+Shell di test attiva: backend porta 8580 pid vario, SYNARA_HOME=/tmp/synara-bisect. Catture in
+/tmp/pxcmp: web_thread_now.png + shell_thread_now2.png sono la coppia thread dark piu' fresca.

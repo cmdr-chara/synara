@@ -16955,7 +16955,7 @@ impl Render for Native {
                 .h_full()
                 .items_center()
                 .justify_center()
-                .gap_4()
+                .gap_5()
                 .on_click(cx.listener(move |this, ev: &ClickEvent, _w, cx| {
                     let fx = ev.position().x.as_f32() - pane_ox;
                     let fy = ev.position().y.as_f32() - 47.;
@@ -17076,12 +17076,11 @@ impl Render for Native {
                 home.child(svg_icon(icons::LOGO).size(px(40.)))
                     .child(
                         div()
-                            .mt(px(-17.))
-                            .text_size(px(30.))
-                            .font_weight(FontWeight::NORMAL)
+                            .text_size(px(24.))
+                            .font_weight(FontWeight::SEMIBOLD)
                             .text_color({
                                 let mut c = theme.foreground;
-                                c.a *= 0.95;
+                                c.a *= 0.9;
                                 c
                             })
                             .child(landing_title.clone().unwrap_or_default()),

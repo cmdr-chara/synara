@@ -16862,23 +16862,26 @@ impl Render for Native {
             // scene replaced the ascii wave — same toggle, same click-ripple
             // surface below. Static port: no ripples/gradient style yet.
             let wm = if self.show_ascii_bg {
-                // The texture lives inside the content pane (right of the
-                // rail+sidebar, below the top strip): upstream's landing
-                // canvas spans exactly that rect, so the scene geometry and
-                // quiet zones are computed in pane coordinates, not full
-                // window ones.
-                let vpw = (window.viewport_size().width.as_f32() - 308.0).max(200.0);
-                let vph = (window.viewport_size().height.as_f32() - 44.0).max(200.0);
+                // Upstream floating-sidebar layout: the landing canvas spans
+                // the FULL window and the transparent sidebar floats over it —
+                // the temple columns visibly continue into the sidebar region
+                // in the Electron capture. The bitmap is therefore built in
+                // window coordinates and mounted at the root behind everything;
+                // quiet zones are offset by the rail+sidebar+strip geometry.
+                let vpw = window.viewport_size().width.as_f32().max(200.0);
+                let vph = window.viewport_size().height.as_f32().max(200.0);
                 let dark = theme.is_dark();
                 let key = (vpw as u32, vph as u32, dark);
                 if self.backdrop_key != key || self.backdrop_img.is_none() {
                     // Quiet zones approximated from the landing layout: the
                     // centered heading band and the composer card (upstream
-                    // measures the DOM rects).
-                    let col_w = 736.0f32.min(vpw * 0.9);
-                    let cx0 = (vpw - col_w) / 2.0;
+                    // measures the DOM rects), shifted into window coordinates
+                    // by the rail+sidebar width (308) and top strip (44).
+                    let pane_w = (vpw - 308.0).max(200.0);
+                    let col_w = 736.0f32.min(pane_w * 0.9);
+                    let cx0 = 308.0 + (pane_w - col_w) / 2.0;
                     let quiet = vec![
-                        (cx0, vph * 0.30, col_w, vph * 0.22),
+                        (cx0, 44.0 + vph * 0.30, col_w, vph * 0.22),
                         (cx0, vph - 210.0, col_w, 180.0),
                     ];
                     self.backdrop_img = crate::backdrop::build_backdrop_image(
@@ -16901,46 +16904,14 @@ impl Render for Native {
                 // [data-atmosphere-full]) and the shell atmosphere double-
                 // prints with the landing canvas — that composite density
                 // is the reference look, not a bug.
-                let mut field = div()
+                // The landing canvas is window-sized and mounted at the root
+                // behind rail+sidebar+strip, so the pane stays fully clear here
+                // (the sidebar floats over the same continuous scene, matching
+                // upstream's floating-sidebar layout).
+                let field = div()
                     .size_full()
                     .overflow_hidden()
                     .relative();
-                if !self.backdrop_full {
-                    field = field.bg(content_bg);
-                }
-                if !dark {
-                    // Light temple prints on tinted paper: accent wash
-                    // 3% -> 9% toward the bottom (upstream skyMask paper div).
-                    field = field.child(
-                        div()
-                            .absolute()
-                            .inset_0()
-                            .bg(gpui::linear_gradient(
-                                180.,
-                                gpui::linear_color_stop(
-                                    rgb(0xc74614).opacity(0.03),
-                                    0.,
-                                ),
-                                gpui::linear_color_stop(
-                                    rgb(0xc74614).opacity(0.09),
-                                    0.55,
-                                ),
-                            )),
-                    );
-                }
-                if let Some(img) = self.backdrop_img.clone() {
-                    // The bitmap is logical-resolution; without an explicit
-                    // size the retina scale factor would display it at half
-                    // the pane. Stretching 1:1 logical is exact.
-                    field = field.child(
-                        gpui::img(ImageSource::Render(img))
-                            .absolute()
-                            .top_0()
-                            .left_0()
-                            .w(px(vpw))
-                            .h(px(vph)),
-                    );
-                }
                 field
             } else {
                 div().size_full()
@@ -26375,8 +26346,11 @@ impl Render for Native {
                 };
                 let mut landing_bd_main = if show_landing && !other_surface_active && self.show_ascii_bg {
                     self.backdrop_img.clone().map(|img| {
-                        let vpw = (window.viewport_size().width.as_f32() - 308.0).max(200.0);
-                        let vph = (window.viewport_size().height.as_f32() - 44.0).max(200.0);
+                        // Window-sized canvas mounted at the root: the scene
+                        // continues under the floating sidebar (upstream
+                        // data-sidebar-layout=rail empty-chat geometry).
+                        let vpw = window.viewport_size().width.as_f32();
+                        let vph = window.viewport_size().height.as_f32();
                         let mut field = div().size_full().overflow_hidden().relative();
                         // Window-coordinated atmosphere under the landing
                         // texture (upstream .app-shell-atmosphere at 35%/80%).
@@ -26419,9 +26393,9 @@ impl Render for Native {
                 } else {
                     None
                 };
-        if let Some(bd) = landing_bd_main.take() {
-            main = main.child(bd);
-        }
+        // landing_bd_main mounts at the window root below, behind strip+body,
+        // so the texture runs under the transparent rail/sidebar chrome.
+        let landing_bd_root = landing_bd_main.take();
         if self.view_settings {
             main = main.child(div().flex_1().child(settings_pane));
         } else if self.view_dev {
@@ -28707,10 +28681,10 @@ impl Render for Native {
                     .w(px(self.side_panel_w()))
                     .h_full()
                     .mb(px(4.))
-                    .bg(if self.backdrop_full && self.show_ascii_bg {
-                        // Full-window atmosphere: the floating sidebar card
-                        // goes clear so the texture runs behind it (upstream
-                        // [data-atmosphere-full] sidebar-inner surfaces).
+                    .bg(if (self.backdrop_full || self.landing_active()) && self.show_ascii_bg {
+                        // Empty-chat landing and full-window atmosphere: the
+                        // floating sidebar card goes clear so the texture runs
+                        // behind it (upstream sidebar over EmptyChatBackdrop).
                         gpui::transparent_black()
                     } else {
                         sidebar_bg
@@ -33792,6 +33766,7 @@ impl Render for Native {
                     .opacity(frame_op)
                     .child(atmo)
             }))
+            .children(landing_bd_root)
             .child(strip)
             .child(body)
             // Overlays mount only while active — an empty full-size overlay

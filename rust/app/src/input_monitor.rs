@@ -747,6 +747,9 @@ fn global_monitor() -> Option<&'static Arc<EscapeKillSwitchMonitor>> {
                         "physicalKind": input.kind,
                         "message": "You used the keyboard or mouse while the agent was controlling the computer. Read fresh computer state before continuing; no further input was dispatched."
                     }));
+                    // A human action overlapping synthetic input makes the held
+                    // key/button state uncertain. Release it before any fresh input.
+                    let _ = release_held_input_sync();
                 }
             },
             |message| eprintln!("input monitor: {message}"),

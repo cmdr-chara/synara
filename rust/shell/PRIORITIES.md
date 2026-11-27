@@ -25,6 +25,19 @@ vs 4.7.
 - Hills bottom band may still read slightly denser; verify after the
   blur compensation at other window sizes.
 
+
+## MEDIUM — composer picker feature gaps (visible in pixel sweep 2026-11-27)
+
+- The model chip lacks the upstream trait status label: upstream renders
+  "ModelName · Effort" (e.g. "GPT-6 Astra · Medium") from
+  resolveComposerTraitStatusLabel driven by the server model catalog's
+  effort levels; the shell chip is a hardcoded four-model list with no
+  effort state. Full fix needs the catalog RPC plumbed into the shell and
+  the trait-selection state machine ported.
+- Narrow-composer degradation is not implemented: upstream drops the model
+  name and/or status label as the composer shrinks (hideModelLabel /
+  hideStatusLabel in ComposerModelPicker). Verified divergent at 1100px.
+
 ## MEDIUM — empty-state vertical rhythm
 
 Automations/code-review empty states drift 3-5px per element vs the

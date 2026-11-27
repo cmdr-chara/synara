@@ -490,17 +490,16 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
                     }
                     let a = 255.0 * sky_alpha * cover;
                     let idx = (py as usize * w_px + px_ as usize) * 4;
-                    // BGRA premultiplied; max-merge so overlapping cell
-                    // circles never exceed full ink.
-                    let s = a / 255.0;
-                    let ib = (ink[2] as f32 * s).round() as u8;
-                    let ig = (ink[1] as f32 * s).round() as u8;
-                    let ir = (ink[0] as f32 * s).round() as u8;
+                    // Straight (non-premultiplied) alpha, same byte order as
+                    // before: gpui premultiplies during texture upload
+                    // itself, so premultiplying here squared the alpha and
+                    // printed faint sky dots as dark grey noise. Max-merge
+                    // so overlapping cell circles never exceed full ink.
                     let ia = a.round() as u8;
                     if ia > buf[idx + 3] {
-                        buf[idx] = ib;
-                        buf[idx + 1] = ig;
-                        buf[idx + 2] = ir;
+                        buf[idx] = ink[2];
+                        buf[idx + 1] = ink[1];
+                        buf[idx + 2] = ink[0];
                         buf[idx + 3] = ia;
                     }
                 }

@@ -169,6 +169,45 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
 }
 
 
+fn import_paths_equal(left: &str, right: &str) -> bool {
+    let canonical = |value: &str| {
+        std::fs::canonicalize(value)
+            .unwrap_or_else(|_| std::path::PathBuf::from(value))
+            .to_string_lossy()
+            .trim_end_matches('/')
+            .to_string()
+    };
+    canonical(left) == canonical(right)
+}
+
+fn import_path_inside(root: &str, child: &str) -> bool {
+    let root = std::path::Path::new(root);
+    let child = std::path::Path::new(child);
+    child.starts_with(root) && child != root
+}
+
+fn import_managed_worktree_path(external_cwd: &str, project_root: &str) -> Option<String> {
+    let mut current = std::path::PathBuf::from(external_cwd);
+    loop {
+        let git_pointer = current.join(".git");
+        if git_pointer.is_file() {
+            if let Ok(contents) = std::fs::read_to_string(&git_pointer) {
+                if let Some(root) = crate::project_imports::parse_worktree_root(
+                    &contents,
+                    &current.to_string_lossy(),
+                ) {
+                    if import_paths_equal(&root, project_root) {
+                        return Some(current.to_string_lossy().to_string());
+                    }
+                }
+            }
+        }
+        if !current.pop() {
+            return None;
+        }
+    }
+}
+
 fn import_iso_to_ms(value: &str) -> Option<i64> {
     chrono::DateTime::parse_from_rfc3339(value)
         .ok()
@@ -236,7 +275,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             |r| Ok((r.get(0)?, r.get(1)?)),
         )
         .ok();
-    let Some((model_selection, _project_id)) = thread else {
+    let Some((model_selection, project_id)) = thread else {
         return Err(err(format!("Thread '{thread_id}' was not found.")));
     };
     // Upstream refuses to import into a thread with a live provider session.
@@ -299,6 +338,13 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         )
         .ok()
         .flatten();
+    let project_workspace_root: Option<String> = conn
+        .query_row(
+            "SELECT workspace_root FROM projection_projects WHERE project_id = ?1",
+            params![project_id],
+            |row| row.get(0),
+        )
+        .ok();
     let omp_history = if provider == "omp" {
         let agent_dir = crate::omp_import::resolve_omp_agent_dir(instance_id.as_deref());
         Some(
@@ -413,6 +459,11 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
 
     let mut omp_last_model: Option<String> = None;
     let mut omp_thinking_level: Option<String> = None;
+    let mut external_cwd: Option<String> = omp_history
+        .as_ref()
+        .and_then(|history| history.cwd.clone())
+        .or_else(|| factory_history.as_ref().and_then(|history| history.cwd.clone()))
+        .or_else(|| opencode_history.as_ref().and_then(|history| history.cwd.clone()));
     // Map transcript lines to (role, text, timestamp, source id) tuples.
     let mut imported: Vec<(String, String, Option<String>, String)> = Vec::new();
     if let Some(history) = omp_history.as_ref() {
@@ -463,6 +514,13 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             if provider == "codex" {
                 // Rollout lines wrap payload items; user/assistant messages carry
                 // content parts with text.
+                if entry.get("type").and_then(Value::as_str) == Some("session_meta") && external_cwd.is_none() {
+                    external_cwd = entry
+                        .get("payload")
+                        .and_then(|payload| payload.get("cwd"))
+                        .and_then(Value::as_str)
+                        .map(str::to_string);
+                }
                 let item = entry.get("payload").cloned().unwrap_or(entry.clone());
                 let item_type = item.get("type").and_then(Value::as_str).unwrap_or("");
                 if item_type != "user_message" && item_type != "assistant_message" && item_type != "message" {
@@ -536,14 +594,38 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         return Err(err("The session transcript has no importable messages."));
     }
 
-    // Project messages with upstream-exact id derivation, then bind the
-    // resume cursor so the next turn continues the external session.
     let now = crate::projects_fileops::iso8601(
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .map(|d| d.as_secs())
             .unwrap_or(0),
     );
+
+    // Provider-native sessions remember the workspace they were created in.
+    // Match upstream imported provider context: a session from the project
+    // root resets the thread to local mode, while one inside a managed
+    // worktree of that project binds the thread to that worktree. Nested
+    // project directories and unrelated paths do not rewrite thread metadata.
+    if let (Some(project_root), Some(external_cwd)) =
+        (project_workspace_root.as_deref(), external_cwd.as_deref())
+    {
+        if import_paths_equal(project_root, external_cwd) {
+            let _ = conn.execute(
+                "UPDATE projection_threads SET env_mode = 'local', worktree_path = NULL, associated_worktree_path = NULL, associated_worktree_branch = NULL, associated_worktree_ref = NULL, updated_at = ?2 WHERE thread_id = ?1",
+                params![thread_id, now],
+            );
+        } else if !import_path_inside(project_root, external_cwd) {
+            if let Some(worktree_path) = import_managed_worktree_path(external_cwd, project_root) {
+                let _ = conn.execute(
+                    "UPDATE projection_threads SET env_mode = 'worktree', branch = NULL, worktree_path = ?2, associated_worktree_path = ?2, associated_worktree_branch = NULL, associated_worktree_ref = NULL, updated_at = ?3 WHERE thread_id = ?1",
+                    params![thread_id, worktree_path, now],
+                );
+            }
+        }
+    }
+
+    // Project messages with upstream-exact id derivation, then bind the
+    // resume cursor so the next turn continues the external session.
     let provider_key = match provider.as_str() {
         "codex" => "codex",
         "omp" => "omp",

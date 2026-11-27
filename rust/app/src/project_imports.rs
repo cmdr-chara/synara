@@ -296,7 +296,7 @@ fn find_git_workspace(cwd: &str) -> Option<(String, Option<String>)> {
     }
 }
 
-fn parse_worktree_root(contents: &str, worktree_path: &str) -> Option<String> {
+pub(crate) fn parse_worktree_root(contents: &str, worktree_path: &str) -> Option<String> {
     let first = contents.lines().next()?.trim().to_string();
     if !first.to_lowercase().starts_with("gitdir:") {
         return None;

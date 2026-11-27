@@ -205,6 +205,23 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["projectId"]),
         ),
         def(
+            "synara_project_read_document",
+            "Read a shared project document by relative path (e.g. memory/MEMORY.md or memory/<date>-<slug>.md).",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "logicalPath": {"type": "string"},
+            }), &["projectId", "logicalPath"]),
+        ),
+        def(
+            "synara_project_write_document",
+            "Write a shared project document at a relative path, creating a new revision.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "logicalPath": {"type": "string"},
+                "content": {"type": "string"},
+            }), &["projectId", "logicalPath", "content"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -1225,6 +1242,78 @@ fn project_list_threads(args: &Value) -> Result<Value, String> {
     Ok(json!({"threads": rows}))
 }
 
+fn project_read_document(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let logical_path = arg_str(args, "logicalPath").ok_or("Missing required argument: logicalPath")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.query_row(
+        "SELECT content, revision, author_kind, created_at FROM project_agent_documents \
+         WHERE project_id = ?1 AND logical_path = ?2 ORDER BY revision DESC LIMIT 1",
+        rusqlite::params![project_id, logical_path],
+        |r| {
+            Ok(json!({
+                "logicalPath": logical_path,
+                "content": r.get::<_, String>(0)?,
+                "revision": r.get::<_, i64>(1)?,
+                "authorKind": r.get::<_, Option<String>>(2)?,
+                "createdAt": r.get::<_, Option<String>>(3)?,
+            }))
+        },
+    )
+    .map(|doc| json!({"document": doc}))
+    .map_err(|_| format!("Document \"{logical_path}\" was not found in this project."))
+}
+
+fn project_write_document(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let logical_path = arg_str(args, "logicalPath").ok_or("Missing required argument: logicalPath")?;
+    let content = arg_str(args, "content").ok_or("Missing required argument: content")?;
+    if logical_path.contains("..") || logical_path.starts_with('/') {
+        return Err("logicalPath must be a project-relative path without traversal.".into());
+    }
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let next_revision: i64 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(revision), 0) + 1 FROM project_agent_documents \
+             WHERE project_id = ?1 AND logical_path = ?2",
+            rusqlite::params![project_id, logical_path],
+            |r| r.get(0),
+        )
+        .unwrap_or(1);
+    let revision_id = crate::orchestration_engine::uuid_v4();
+    let hash = {
+        use std::collections::hash_map::DefaultHasher;
+        use std::hash::{Hash, Hasher};
+        let mut h = DefaultHasher::new();
+        content.hash(&mut h);
+        format!("{:x}", h.finish())
+    };
+    conn.execute(
+        "INSERT INTO project_agent_documents \
+         (revision_id, project_id, logical_path, revision, content, content_hash, \
+          author_kind, author_thread_id, sources_json, created_at) \
+         VALUES (?1,?2,?3,?4,?5,?6,'thread',?7,'[]',?8)",
+        rusqlite::params![
+            revision_id,
+            project_id,
+            logical_path,
+            next_revision,
+            content,
+            hash,
+            caller_thread,
+            crate::todo::iso_now_ms(),
+        ],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(json!({
+        "logicalPath": logical_path,
+        "revision": next_revision,
+        "written": true,
+    }))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -1238,6 +1327,8 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_capabilities" => capabilities(),
         "synara_project_list_tasks" => project_list_tasks(args),
         "synara_project_list_threads" => project_list_threads(args),
+        "synara_project_read_document" => project_read_document(args),
+        "synara_project_write_document" => project_write_document(args, caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

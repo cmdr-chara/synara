@@ -9,7 +9,7 @@
 
 use axum::Router;
 use axum::extract::State;
-use axum::extract::ws::{CloseFrame, Message as ClientMessage, WebSocket, WebSocketUpgrade};
+use axum::extract::ws::{Message as ClientMessage, WebSocket, WebSocketUpgrade};
 use axum::response::IntoResponse;
 use axum::http::{HeaderMap, Uri};
 use axum::response::Response;
@@ -1490,18 +1490,11 @@ fn build_upstream_request(
     Some(request)
 }
 
-async fn relay(
+async fn serve_native_socket(
     client: WebSocket,
-    original: Original,
-    uri: Uri,
-    headers: HeaderMap,
-    intercept: bool,
+    todos: std::sync::Arc<crate::todo::TodoStore>,
+    desktop_update_authority: Option<String>,
 ) {
-    let todos = original.todos.clone();
-    let desktop_update_authority = crate::auth_http::authenticate(&headers).and_then(|session| {
-        (session.role == "owner").then(|| format!("owner:{}", session.session_id))
-    });
-    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() || !original.upstream_running() {
         // No usable original is running: serve every frame natively. Handled tags get
         // their normal reply; anything else answers an Exit failure so callers
         // never hang waiting for an upstream that does not exist.
@@ -1568,7 +1561,22 @@ async fn relay(
         }
         drop(native_tx);
         let _ = writer.await;
-        return;
+}
+
+async fn relay(
+    client: WebSocket,
+    original: Original,
+    uri: Uri,
+    headers: HeaderMap,
+    intercept: bool,
+) {
+    let todos = original.todos.clone();
+    let desktop_update_authority = crate::auth_http::authenticate(&headers).and_then(|session| {
+        (session.role == "owner").then(|| format!("owner:{}", session.session_id))
+    });
+    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() || !original.upstream_running() {
+        eprintln!("ws_relay: serving socket natively (upstream unavailable or disabled)");
+        return serve_native_socket(client, todos, desktop_update_authority).await;
     }
     // The native `/ws/negotiate` issues OUR server-instance id, but upstream
     // gates upgrades on its own — swap the param so relayed sockets pass the
@@ -1604,18 +1612,11 @@ async fn relay(
                     continue;
                 }
                 eprintln!("ws_relay: upstream connect to {target} failed: {e}");
-                // The upgrade was already accepted, so make the failure visible
-                // instead of dropping the socket into a silent black hole. The
-                // next attempt takes the native path once upstream_running()
-                // observes the dead child.
-                let mut client = client;
-                let _ = client
-                    .send(ClientMessage::Close(Some(CloseFrame {
-                        code: 1011,
-                        reason: "upstream server unavailable".into(),
-                    })))
-                    .await;
-                return;
+                // Do not strand an already accepted cold-boot socket on a dead
+                // upstream: degrade this same connection to native serving. Tags
+                // still missing natively fail fast instead of hanging forever.
+                eprintln!("ws_relay: upstream unavailable after upgrade; serving socket natively");
+                return serve_native_socket(client, todos, desktop_update_authority).await;
             }
         }
     };

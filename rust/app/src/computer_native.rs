@@ -783,6 +783,14 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 "screenSize": screen_size()?,
                 "availability": availability()
             })),
+            "computer.screenshot" => {
+                let screenshot = capture_screenshot()?;
+                Ok(json!({
+                    "computerId": COMPUTER_ID,
+                    "screenshot": screenshot,
+                    "capturedAt": iso_now(),
+                }))
+            }
             "computer.listWindows" => Ok(json!({
                 "computerId": COMPUTER_ID,
                 "windows": list_windows()?,

@@ -26084,12 +26084,12 @@ impl Render for Native {
         // transparent chrome. The landing paints its own texture instance on
         // top of this surface, so empty chats are unaffected.
         let mut main = v_flex().flex_1().min_w_0().h_full().relative();
-        if !show_landing {
-            // The content surface is opaque over active threads: in
-            // full-window mode it is what covers the persistent shell
-            // atmosphere, so the texture reads only through the chrome.
-            // The empty landing stays clear — its own texture instance
-            // (default) or the shell-wide one (full-window) shows through.
+        if !show_landing || other_surface_active {
+            // The content surface is opaque over active threads and the
+            // utility surfaces (tasks/inbox/settings/...): it is what covers
+            // the persistent shell atmosphere, so the texture reads only
+            // through the chrome strips. The empty landing stays clear —
+            // its own texture instance shows through.
             main = main.bg(content_bg);
         }
                 // Full-window atmosphere (upstream .app-shell-atmosphere):
@@ -26097,7 +26097,7 @@ impl Render for Native {
                 // (dark) under the landing texture — the fork's two-canvas
                 // structure. Never overwrites backdrop_img: the landing canvas
                 // keeps its own pane-sized geometry.
-                if (show_landing || self.backdrop_full) && self.show_ascii_bg {
+                if self.show_ascii_bg {
                     let vpw = window.viewport_size().width.as_f32();
                     let vph = window.viewport_size().height.as_f32();
                     let dark = theme.is_dark();
@@ -26116,12 +26116,12 @@ impl Render for Native {
                         self.atmosphere_key = key;
                     }
                 }
-                let atmosphere_img_c = if (show_landing || self.backdrop_full) && self.show_ascii_bg {
+                let atmosphere_img_c = if self.show_ascii_bg {
                     self.atmosphere_img.clone()
                 } else {
                     None
                 };
-                let mut atmosphere_layer = if self.backdrop_full && self.show_ascii_bg {
+                let mut atmosphere_layer = if self.show_ascii_bg {
                     self.atmosphere_img.clone().map(|img| {
                         let vpw = window.viewport_size().width.as_f32();
                         let vph = window.viewport_size().height.as_f32();
@@ -26144,25 +26144,9 @@ impl Render for Native {
                         // texture (upstream .app-shell-atmosphere at 35%/80%).
                         // In full-window mode the body-level layer already
                         // paints it at full strength — skip the dim copy.
-                        if !self.backdrop_full {
-                            if let Some(atmo) = atmosphere_img_c.clone() {
-                                let win_w = window.viewport_size().width.as_f32();
-                                let win_h = window.viewport_size().height.as_f32();
-                                let atmo_op = if theme.is_dark() { 0.8 } else { 0.35 };
-                                field = field.child(
-                                    div()
-                                        .absolute()
-                                        .top(px(-44.))
-                                        .left(px(-308.))
-                                        .opacity(atmo_op)
-                                        .child(
-                                            gpui::img(ImageSource::Render(atmo))
-                                                .w(px(win_w))
-                                                .h(px(win_h)),
-                                        ),
-                                );
-                            }
-                        }
+                        // The body-level shell atmosphere (35%/80% frame
+                        // weight) already reads through the transparent
+                        // landing field — no separate dim copy needed.
                         if !theme.is_dark() {
                             field = field.child(
                                 div()
@@ -28349,9 +28333,10 @@ impl Render for Native {
         } else {
             well_bg
         };
+        // Upstream rail strip is transparent over the shell atmosphere; the
+        // sidebar card paints its own fill, so the well itself stays clear.
         let mut left_well = h_flex()
             .h_full()
-            .bg(well_bg)
             .child(rail.border_r_1().border_color(hairline));
         if !self.sidebar_collapsed
             && !self.view_inbox
@@ -28435,19 +28420,28 @@ impl Render for Native {
         }
 
         let mut body = h_flex().flex_1().min_h_0().relative();
-        if self.backdrop_full {
-            // Full-window mode: the atmosphere texture spans the whole window
-            // at full strength, painted behind the sidebar and the chat column
-            // (upstream data-atmosphere-full opening the clip).
-            if let Some(atmo) = atmosphere_layer.take() {
-                body = body.child(
-                    div()
-                        .absolute()
-                        .inset_0()
-                        .overflow_hidden()
-                        .child(atmo),
-                );
-            }
+        // Upstream .app-shell-atmosphere: the texture always prints behind
+        // the window chrome. Default mode clips it to the frame strips (top
+        // strip, rail, thin bottom/right inset) at a third of the landing
+        // weight (35% light / 80% dark); data-atmosphere-full opens the clip
+        // to the whole window at full strength. Opaque content surfaces cover
+        // the center either way, so the full-window paint is equivalent.
+        if let Some(atmo) = atmosphere_layer.take() {
+            let frame_op = if self.backdrop_full {
+                1.0
+            } else if dark_ui {
+                0.8
+            } else {
+                0.35
+            };
+            body = body.child(
+                div()
+                    .absolute()
+                    .inset_0()
+                    .overflow_hidden()
+                    .opacity(frame_op)
+                    .child(atmo),
+            );
         }
         body = body.child(left_well).child(main);
         if self.view_changes {

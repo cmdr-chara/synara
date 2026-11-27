@@ -25773,8 +25773,8 @@ impl Render for Native {
                     .flex_1()
                     .items_center()
                     .justify_center()
-                    .gap_2()
-                    // measured vs upstream web: center sat 30px high with pb(120)
+                    // Upstream <Empty>: gap-6 (24px) between media/header/content,
+                    // title font-heading semibold text-xl (20/28), desc mt-1 13px.
                     .pb(px(60.))
                     .child(
                         svg_icon(icons::AUTOMATIONS)
@@ -25783,12 +25783,15 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .text_base()
-                            .font_weight(FontWeight::MEDIUM)
+                            .mt(px(24.))
+                            .text_size(px(20.))
+                            .line_height(px(28.))
+                            .font_weight(FontWeight::SEMIBOLD)
                             .child("Automations"),
                     )
                     .child(
                         div()
+                            .mt(px(4.))
                             .text_size(px(13.))
                             .text_color(theme.muted_foreground)
                             .child("Pick an automation in the panel to see its runs, or"),
@@ -25802,7 +25805,7 @@ impl Render for Native {
                     .child(
                         div()
                             .id("autom-new2")
-                            .mt_2()
+                            .mt(px(24.))
                             .h(px(30.))
                             .px_4()
                             .flex()

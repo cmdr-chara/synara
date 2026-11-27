@@ -204,3 +204,21 @@ Measurements needed from upstream: exact card inset margins, corner radius, chro
 - Tasks column: `mx-auto max-w-[36rem]` (576px) `flex-col gap-7` — header h1 `text-2xl font-semibold tracking-tight` (24px), subtitle "Add anything you need to do" muted, then input row
 - Tasks input placeholder: "Add a task, or press Tab to hand it to an agent" with dashed-circle checkbox icon at left
 - List/Kanban segmented control sits in the TOP STRIP at right (visible at y~15)
+
+## Chrome structure DONE (01:45)
+- `caf27fdd1c`+`767ea30bb3`+`40ff76b15e`: atmosphere frame mounted at root always (35%/80%), transparent strip+rail, content opaque, card inset 3px right/bottom + rounded bottom corners 13px, List/Kanban toggle in strip. Tasks view now matches upstream structure. macOS notification was photobombing captures — dismissed; keep it dismissed.
+- Landing density VERIFIED correct: upstream landing is dense orange everywhere (web_landing.png) — shell matches geometrically (anaglyph black overlap on temple).
+
+## Kanban gaps (documented, not fixed)
+- Upstream strip in kanban: [☑ Kanban | 4 tasks] + 4-way segmented [List|Kanban|Attention|Classic] at LEFT, [+ New task] at RIGHT. Shell: 2-way toggle at right only. Attention/Classic views DO NOT EXIST in shell — feature-level gap beyond pixels.
+- Card status divergence: shell shows "Draft", upstream shows blue "Done" badge for the same threads — status derivation differs. Times also differ (32m vs 5h — freshness or derivation).
+- Upstream kanban cards: provider glyph under title, time+badge row. Roughly matching already.
+
+## Remaining queue
+1. pull-requests surface compare
+2. automations compare
+3. hubs compare
+4. inbox two-column restructure (spec earlier in file)
+5. dark mode pass — ALL surfaces
+6. transcript detail pass (scroll-sync, attachments layout)
+7. landing composer upstream controls (tmp/Select branch/Temporary/Worktree row) — shell has simplified "Work in a project" row; heading should be "What should we do in {project}?" when project selected

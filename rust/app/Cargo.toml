@@ -42,6 +42,9 @@ rusqlite = { version = "0.40", features = ["bundled", "backup"] }
 flate2 = "1"
 base64 = "0.22"
 sha2 = "0.10"
+hkdf = "0.12"
+aes-gcm = "0.10"
+aes = "0.8"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 chrono-tz = "0.10"
 portable-pty = "0.9"
@@ -51,7 +54,7 @@ rand_core = { version = "0.6", features = ["getrandom"] }
 rcgen = { version = "0.13", features = ["pem", "x509-parser"] }
 x509-parser = "0.16"
 time = "0.3"
-p256 = { version = "0.13", features = ["pkcs8", "pem", "ecdsa"] }
+p256 = { version = "0.13", features = ["pkcs8", "pem", "ecdsa", "ecdh"] }
 tokio-rustls = { version = "0.26", features = ["ring"] }
 rustls-pemfile = "2"
 synara-shellenv = { path = "../shellenv" }

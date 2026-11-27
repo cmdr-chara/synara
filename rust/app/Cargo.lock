@@ -911,6 +911,7 @@ dependencies = [
  "ff",
  "generic-array",
  "group",
+ "hkdf",
  "pem-rfc7468",
  "pkcs8",
  "rand_core 0.6.4",
@@ -1306,6 +1307,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
+name = "hkdf"
+version = "0.12.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b5f8eb2ad728638ea2c7d47a21db23b7b58a72ed6a38256b8a1849f15fbbdf7"
+dependencies = [
+ "hmac",
+]
+
+[[package]]
 name = "hmac"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1571,6 +1581,8 @@ dependencies = [
 name = "index"
 version = "0.1.0"
 dependencies = [
+ "aes",
+ "aes-gcm",
  "axum",
  "base64 0.22.1",
  "browserhost-rs",
@@ -1579,6 +1591,7 @@ dependencies = [
  "ed25519-dalek",
  "flate2",
  "futures-util",
+ "hkdf",
  "hostusage-rs",
  "http",
  "keybindingrules-rs",

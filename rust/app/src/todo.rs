@@ -22,6 +22,7 @@ pub struct TodoStore {
     events: broadcast::Sender<Value>,
 }
 
+#[derive(Debug)]
 pub struct WsErr(pub String, pub Option<&'static str>);
 
 fn err(message: impl Into<String>) -> WsErr {

@@ -71,12 +71,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
         }
         "hosts.enrollment" => local_enrollment().map_err(|m| err(&m)),
         "hosts.unlinkLocalHost" => unlink_local_host(payload).map_err(|m| err(&m)),
-        "hosts.beginSyncKeyPairing" => Err(err("Failed to start Sync-Key pairing")),
-        "hosts.offerSyncKey" => Err(err("Failed to offer the Sync Key")),
-        "hosts.receiveSyncKey" => Err(err("Failed to receive the Sync Key")),
+        "hosts.beginSyncKeyPairing" => begin_sync_key_pairing().map_err(|error| err(&error.0)),
+        "hosts.offerSyncKey" => offer_sync_key(payload).map_err(|error| err(&error.0)),
+        "hosts.receiveSyncKey" => receive_sync_key().map_err(|error| err(&error.0)),
         "hosts.connect" => Err(err("Failed to connect to the host")),
         "hosts.disconnect" => Err(err("Failed to disconnect from the host")),
-        "hosts.confirmSyncKey" => Err(err("Failed to confirm Sync-Key pairing")),
+                "hosts.confirmSyncKey" => confirm_sync_key(payload).map_err(|error| err(&error.0)),
         _ => Err(err("unhandled native tag")),
     }
 }
@@ -197,5 +197,73 @@ fn unlink_local_host(payload: &Value) -> Result<Value, String> {
         let _ = crate::account::write_account_file(&stored);
     }
     crate::host_identity::delete_host_identity(&crate::account::host_identity_file_path());
+    Ok(json!({}))
+}
+
+
+fn account_identity() -> Result<(String, String, String), crate::todo::WsErr> {
+    let stored = crate::account::read_session_file()
+        .ok_or_else(|| crate::todo::WsErr("Session expired — sign in again from the Synara app.".into(), None))?;
+    let account_url = stored.get("accountUrl").and_then(Value::as_str).unwrap_or_default().to_string();
+    let user_id = stored.get("userId").and_then(Value::as_str).unwrap_or_default().to_string();
+    let device_id = stored.get("deviceId").and_then(Value::as_str).unwrap_or_default().to_string();
+    if account_url.is_empty() || user_id.is_empty() || device_id.is_empty() {
+        return Err(crate::todo::WsErr("This device is not registered with the account".into(), None));
+    }
+    Ok((account_url, user_id, device_id))
+}
+
+fn begin_sync_key_pairing() -> Result<Value, crate::todo::WsErr> {
+    let (account_url, user_id, device_id) = account_identity()?;
+    crate::host_secrets::begin_pairing(&device_id, &account_url, &user_id)
+}
+
+fn offer_sync_key(payload: &Value) -> Result<Value, crate::todo::WsErr> {
+    let (account_url, user_id, _device_id) = account_identity()?;
+    let recipient_device_id = payload.get("recipientDeviceId").and_then(Value::as_str).unwrap_or_default();
+    let recipient_public_jwk = payload.get("recipientPublicJwk").cloned().unwrap_or(Value::Null);
+    if recipient_device_id.is_empty() || recipient_public_jwk.is_null() {
+        return Err(crate::todo::WsErr("Failed to offer the Sync Key".into(), None));
+    }
+    let key = match crate::host_secrets::read_sync_key(&account_url, &user_id)? {
+        Some(key) => key,
+        None => {
+            let key = crate::host_secrets::generate_sync_key();
+            crate::host_secrets::write_sync_key(&account_url, &user_id, &key)?;
+            key
+        }
+    };
+    let wrap = crate::host_secrets::wrap_sync_key(&key, &recipient_public_jwk)?;
+    let code = crate::host_secrets::pairing_verification_for_wrap(&wrap)?;
+    authed(
+        reqwest::Method::PUT,
+        "/api/v1/sync-key-wraps",
+        Some(json!({"recipientDeviceId": recipient_device_id, "wrap": wrap})),
+        "Failed to offer the Sync Key",
+    )?;
+    Ok(json!({"verificationCode": code}))
+}
+
+fn receive_sync_key() -> Result<Value, crate::todo::WsErr> {
+    let (_account_url, _user_id, device_id) = account_identity()?;
+    let response = authed(
+        reqwest::Method::GET,
+        &format!("/api/v1/sync-key-wraps/{device_id}"),
+        None,
+        "Failed to receive the Sync Key",
+    )?;
+    let wrap = response.get("wrap").cloned().unwrap_or(Value::Null);
+    if wrap.is_null() {
+        return Err(crate::todo::WsErr("Failed to receive the Sync Key".into(), None));
+    }
+    let code = crate::host_secrets::pairing_verification_for_wrap(&wrap)?;
+    crate::host_secrets::remember_received_wrap(wrap, code.clone());
+    Ok(json!({"verificationCode": code}))
+}
+
+fn confirm_sync_key(payload: &Value) -> Result<Value, crate::todo::WsErr> {
+    let (account_url, user_id, _device_id) = account_identity()?;
+    let code = payload.get("verificationCode").and_then(Value::as_str).unwrap_or_default();
+    crate::host_secrets::confirm_received_wrap(code, &account_url, &user_id)?;
     Ok(json!({}))
 }

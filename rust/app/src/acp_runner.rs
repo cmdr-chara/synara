@@ -74,6 +74,8 @@ struct RunningTurn {
 
 static RUNNING: LazyLock<Mutex<HashMap<String, RunningTurn>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
+static TURN_USAGE: LazyLock<Mutex<HashMap<String, Value>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
 
 /// Whether a Devin turn is currently live for the thread.
 pub fn drop_thread_resources(thread_id: &str) {
@@ -3034,6 +3036,9 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                     }
                     "usage_update" => {
                         if let Some(usage) = acp_usage_snapshot(&update) {
+                            if let Ok(mut map) = TURN_USAGE.lock() {
+                                map.insert(t_id.clone(), usage.clone());
+                            }
                             if let Ok(c) = open_state_rw() {
                                 let payload = json!({
                                     "threadId": tid,
@@ -3161,12 +3166,20 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
+    let captured_usage = TURN_USAGE
+        .lock()
+        .ok()
+        .and_then(|mut map| map.remove(&turn_id));
     match result {
         Ok(reason) => {
             let interrupted = cancelled_flag || reason == "cancelled";
             let state = if interrupted { "interrupted" } else { "completed" };
             let status = if interrupted { "interrupted" } else { "ready" };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, provider, None, None);
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, provider, captured_usage.as_ref().map(|u| json!({
+                "usage": u,
+                "modelUsage": Value::Null,
+                "totalCostUsd": Value::Null,
+            })).as_ref(), None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
@@ -3191,7 +3204,11 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
             } else {
                 ("error", "error")
             };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, provider, None, None);
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, provider, captured_usage.as_ref().map(|u| json!({
+                "usage": u,
+                "modelUsage": Value::Null,
+                "totalCostUsd": Value::Null,
+            })).as_ref(), None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;
             session_set_event(

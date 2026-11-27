@@ -276,6 +276,10 @@ pub struct BackdropSpec {
     /// Device scale factor: the bitmap is rasterized at logical*scale so dots
     /// stay crisp instead of being bilinear-smoothed by the renderer.
     pub scale: f32,
+    /// Multiplier on every dot's alpha — the shell atmosphere prints at a
+    /// fraction of the landing canvas's weight (upstream .app-shell-atmosphere
+    /// opacity: 0.35 light, 0.8 dark chrome, 0.6 dark full-window).
+    pub alpha_scale: f32,
 }
 
 const QUIET_PADDING_PX: f32 = 12.0;
@@ -368,6 +372,14 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
             if tone == 0.0 {
                 continue;
             }
+            // Empirical calibration: the browser's drawImage upscale +
+            // canvas blur chain low-passes the scene noise far more than the
+            // exact area-average this port performs, so raw upstream tone
+            // over-inks every region roughly quadratically. Matching the
+            // upstream Electron capture region-for-region in dark mode
+            // requires steepening the tone response by ~2.1. Applies to dark
+            // only; light mode already matches with the unsharp mask.
+            let tone = if spec.dark { tone.powf(2.1) } else { tone };
             let right = if levels.thin_right > 0.0 {
                 1.0 - levels.thin_right
                     * row_bottom
@@ -488,7 +500,7 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
                     if cover <= 0.0 {
                         continue;
                     }
-                    let a = 255.0 * sky_alpha * cover;
+                    let a = 255.0 * sky_alpha * cover * spec.alpha_scale;
                     let idx = (py as usize * w_px + px_ as usize) * 4;
                     // Straight (non-premultiplied) alpha, same byte order as
                     // before: gpui premultiplies during texture upload

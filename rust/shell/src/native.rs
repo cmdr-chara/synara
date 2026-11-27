@@ -1347,7 +1347,7 @@ pub struct Native {
     /// window-coordinated texture composited at 35%/80% opacity under the
     /// landing texture, exactly like the fork's two-canvas structure.
     atmosphere_img: Option<Arc<gpui::RenderImage>>,
-    atmosphere_key: (u32, u32, bool),
+    atmosphere_key: (u32, u32, bool, u32),
     ascii_ripples: Vec<(f32, f32, f32, f32, std::time::Instant)>,
     /// Cell pitch measured like upstream (`measureText("M").width + 1` in the
     /// UI font); 0 until first measured.
@@ -3344,7 +3344,7 @@ impl Native {
             backdrop_img: None,
             backdrop_key: (0, 0, false),
             atmosphere_img: None,
-            atmosphere_key: (0, 0, false),
+            atmosphere_key: (0, 0, false, 0),
             ascii_ripples: Vec::new(),
             ascii_cell_w: 0.0,
             ascii_fresh: true,
@@ -16864,6 +16864,7 @@ impl Render for Native {
                             accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
                             quiet,
                             scale: window.scale_factor(),
+                            alpha_scale: 1.0,
                         },
                     );
                     self.backdrop_key = key;
@@ -18821,7 +18822,15 @@ impl Render for Native {
                 // Upstream seeds temporary chat threads with Devin Small.
                 "Devin Small".to_string()
             } else {
-                thread_model
+                // Upstream shows the model display name in the chip, not the
+                // raw slug ("GPT-6 Astra", not "gpt-6-astra").
+                match thread_model.as_str() {
+                    "gpt-6-astra" => "GPT-6 Astra".to_string(),
+                    "adaptive" => "Adaptive".to_string(),
+                    "swe-1-7" => "SWE 1.7".to_string(),
+                    "swe-2" => "SWE 2".to_string(),
+                    other => other.to_string(),
+                }
             }
         } else {
             self.composer_model.2.clone()
@@ -26225,16 +26234,32 @@ impl Render for Native {
                     let vpw = window.viewport_size().width.as_f32();
                     let vph = window.viewport_size().height.as_f32();
                     let dark = theme.is_dark();
-                    let key = (vpw as u32, vph as u32, dark);
+                    let key = (vpw as u32, vph as u32, dark, self.backdrop_full as u32);
                     if self.atmosphere_key != key || self.atmosphere_img.is_none() {
+                        // Upstream .app-shell-atmosphere weight: 35% light in
+                        // both window modes; 80% dark over the chrome, but in
+                        // full-window mode it settles to 60% AND dims
+                        // (brightness 0.75 saturate 0.6 — #f2612d becomes
+                        // rgb(146,81,57)) so the spread texture does not
+                        // drown the content.
+                        let (accent, alpha_scale) = if dark {
+                            if self.backdrop_full {
+                                ([146, 81, 57], 0.6)
+                            } else {
+                                ([0xf2, 0x61, 0x2d], 0.8)
+                            }
+                        } else {
+                            ([0xc7, 0x46, 0x14], 0.35)
+                        };
                         self.atmosphere_img = crate::backdrop::build_backdrop_image(
                             &crate::backdrop::BackdropSpec {
                                 width: vpw,
                                 height: vph,
                                 dark,
-                                accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
+                                accent_rgb: accent,
                                 quiet: Vec::new(),
                                 scale: window.scale_factor(),
+                                alpha_scale,
                             },
                         );
                         self.atmosphere_key = key;

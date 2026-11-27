@@ -419,12 +419,15 @@ pub async fn serve_inner(
                 let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
                 let identity = crate::host_identity::read_host_identity(&identity_path)?
                     .ok_or_else(|| "host identity missing".to_string())?;
+                let key_generation = crate::account::read_session_file()
+                    .and_then(|account| account.get("hostKeyGeneration").and_then(serde_json::Value::as_u64))
+                    .unwrap_or(0);
                 crate::host_auth_verify::verify_session_credential(
                     credential,
                     dpop,
                     &identity,
                     &environment_id,
-                    1,
+                    key_generation,
                     "synara://remote/session",
                     "CONNECT",
                     None,

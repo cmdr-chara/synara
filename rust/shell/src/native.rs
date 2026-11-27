@@ -16890,6 +16890,7 @@ impl Render for Native {
                             quiet,
                             scale: window.scale_factor(),
                             alpha_scale: 1.0,
+                            chrome_clip: None,
                         },
                     );
                     self.backdrop_key = key;
@@ -26338,6 +26339,16 @@ impl Render for Native {
                                 quiet: Vec::new(),
                                 scale: window.scale_factor(),
                                 alpha_scale,
+                                // Upstream .app-shell-atmosphere clip-path:
+                                // in normal window mode the texture prints
+                                // only in the top strip (44px), the rail
+                                // (51px) and the 3px outer gaps. Full-window
+                                // mode lifts the clip.
+                                chrome_clip: if self.backdrop_full {
+                                    None
+                                } else {
+                                    Some((51.0, 44.0, 3.0))
+                                },
                             },
                         );
                         self.atmosphere_key = key;

@@ -2782,6 +2782,116 @@ pub fn fire_due_usage_limit_recoveries() -> usize {
 }
 
 
+
+/// Thread retention sweep, port of upstream threadRetention.ts: threads
+/// inactive for seven days archive themselves so the inbox stays the working
+/// set. The guards match upstream exactly: never archived/deleted threads,
+/// never a busy one (running session or turn, unanswered approvals or input),
+/// never a thread an enabled automation still continues. Inactivity reads the
+/// newest of the user-message, update and creation timestamps because forked
+/// threads can inherit old message times.
+pub fn archive_inactive_threads() -> usize {
+    const RETENTION_UNUSED_MS: i64 = 7 * 24 * 60 * 60 * 1000;
+    let Ok(conn) = open_state_rw() else { return 0 };
+    let now_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0);
+    // Threads an enabled automation continues stay protected.
+    let mut protected: std::collections::HashSet<String> = std::collections::HashSet::new();
+    if let Ok(mut st) = conn.prepare(
+        "SELECT target_thread_id FROM automation_definitions WHERE enabled = 1 AND target_thread_id IS NOT NULL",
+    ) {
+        if let Ok(rows) = st.query_map([], |r| r.get::<_, String>(0)) {
+            for row in rows.filter_map(|r| r.ok()) {
+                protected.insert(row);
+            }
+        }
+    }
+    let rows: Vec<(String, Option<String>, Option<String>, Option<String>, i64, i64)> = conn
+        .prepare(
+            "SELECT thread_id, latest_user_message_at, updated_at, created_at, \
+                    pending_approval_count, pending_user_input_count \
+             FROM projection_threads \
+             WHERE archived_at IS NULL AND deleted_at IS NULL",
+        )
+        .and_then(|mut st| {
+            Ok(st
+                .query_map([], |r| {
+                    Ok((
+                        r.get::<_, String>(0)?,
+                        r.get::<_, Option<String>>(1)?,
+                        r.get::<_, Option<String>>(2)?,
+                        r.get::<_, Option<String>>(3)?,
+                        r.get::<_, i64>(4)?,
+                        r.get::<_, i64>(5)?,
+                    ))
+                })?
+                .filter_map(|row| row.ok())
+                .collect::<Vec<_>>())
+        })
+        .unwrap_or_default();
+    let mut candidates: Vec<String> = Vec::new();
+    for (thread_id, user_at, updated_at, created_at, approvals, inputs) in rows {
+        if protected.contains(&thread_id) {
+            continue;
+        }
+        if approvals > 0 || inputs > 0 {
+            continue;
+        }
+        // Busy: running session or in-flight turn.
+        let busy: bool = conn
+            .query_row(
+                "SELECT COUNT(*) FROM projection_thread_sessions \
+                 WHERE thread_id = ?1 AND (status IN ('starting','running') OR active_turn_id IS NOT NULL)",
+                [&thread_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .map(|c| c > 0)
+            .unwrap_or(true);
+        if busy {
+            continue;
+        }
+        let turn_busy: bool = conn
+            .query_row(
+                "SELECT COUNT(*) FROM projection_turns WHERE thread_id = ?1 AND state = 'running'",
+                [&thread_id],
+                |r| r.get::<_, i64>(0),
+            )
+            .map(|c| c > 0)
+            .unwrap_or(true);
+        if turn_busy {
+            continue;
+        }
+        let mut last_activity: i64 = 0;
+        for value in [user_at, updated_at, created_at].into_iter().flatten() {
+            if let Some(ms) = iso_ms(&value) {
+                last_activity = last_activity.max(ms);
+            }
+        }
+        if last_activity == 0 || now_ms - last_activity < RETENTION_UNUSED_MS {
+            continue;
+        }
+        candidates.push(thread_id);
+    }
+    drop(conn);
+    let mut archived = 0usize;
+    for thread_id in candidates.into_iter().take(25) {
+        let mut cmd = Map::new();
+        cmd.insert("type".into(), json!("thread.archive"));
+        cmd.insert(
+            "commandId".into(),
+            json!(format!("thread-retention:{}", uuid_v4())),
+        );
+        cmd.insert("threadId".into(), json!(thread_id));
+        cmd.insert("createdAt".into(), json!(iso_now_ms()));
+        if handle("orchestration.dispatchCommand", &Value::Object(cmd)).is_ok() {
+            archived += 1;
+        }
+    }
+    archived
+}
+
 /// Snooze expiry counterpart of upstream's ThreadSnoozeReactor: rows whose
 /// `snoozed_until` passed are woken by clearing the deadline through the same
 /// guarded `thread.meta.update` (expectedSnoozedUntil), so a newer schedule or

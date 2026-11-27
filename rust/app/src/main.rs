@@ -331,6 +331,19 @@ async fn main() {
                 eprintln!("thread snooze: woke {woken} thread(s) past deadline");
             }
         });
+        // Retention sweep: upstream archives inactive threads daily after a
+        // five-minute startup delay; one pass an hour converges to the same
+        // steady state with no extra scheduler.
+        std::thread::spawn(|| {
+            std::thread::sleep(std::time::Duration::from_secs(300));
+            loop {
+                let archived = orchestration_engine::archive_inactive_threads();
+                if archived > 0 {
+                    eprintln!("thread retention: archived {archived} inactive thread(s)");
+                }
+                std::thread::sleep(std::time::Duration::from_secs(3600));
+            }
+        });
         claude_runner::spawn_credential_keepalive();
         crate::pull_requests::spawn_auto_fix_watcher();
     crate::sidechat_expiry::spawn_expiry_watcher();

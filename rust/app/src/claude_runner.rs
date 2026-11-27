@@ -1126,6 +1126,51 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     }
 }
 
+
+/// Upstream providerRuntimeActivityProjection writes exactly one
+/// `turn.completed` row per settled turn; token/cost analytics read its
+/// payload, so the runner must emit it even when the provider reported no
+/// usage at all.
+fn write_turn_completed_activity(
+    conn: &rusqlite::Connection,
+    thread_id: &str,
+    turn_id: &str,
+    state: &str,
+    provider: &str,
+    final_usage: Option<&Value>,
+    error_message: Option<&str>,
+) {
+    let summary = match state {
+        "completed" => "Turn completed",
+        "interrupted" => "Turn interrupted",
+        _ => "Turn failed",
+    };
+    let tone = if state == "completed" || state == "interrupted" { "info" } else { "error" };
+    let mut payload = serde_json::Map::new();
+    payload.insert("state".into(), json!(state));
+    payload.insert("provider".into(), json!(provider));
+    if let Some(usage) = final_usage {
+        if let Some(mu) = usage.get("modelUsage").filter(|v| !v.is_null()) {
+            payload.insert("modelUsage".into(), mu.clone());
+        }
+        if let Some(c) = usage.get("totalCostUsd").filter(|v| !v.is_null()) {
+            payload.insert("totalCostUsd".into(), c.clone());
+        }
+    }
+    if let Some(msg) = error_message {
+        payload.insert("errorMessage".into(), json!(msg));
+    }
+    let _ = append_activity(
+        conn,
+        thread_id,
+        turn_id,
+        tone,
+        "turn.completed",
+        summary,
+        &Value::Object(payload),
+    );
+}
+
 fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
@@ -1255,6 +1300,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let mut edge_attempt = 0usize;
     let mut tracked_tasks: HashMap<String, crate::claude_tasks::TrackedTask> = HashMap::new();
     let mut pending_tools: HashMap<String, (String, Value)> = HashMap::new();
+    let mut final_usage: Option<Value> = None;
     let result = (|| -> Result<String, WsErr> {
         loop {
             let Some(v) = read_json_line(&mut reader)? else {
@@ -1538,6 +1584,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         }
                     }
                     let subtype = v.get("subtype").and_then(Value::as_str).unwrap_or("");
+                    // Capture the provider-reported accounting regardless of
+                    // outcome: upstream's turn.completed payload carries it
+                    // for both success and failure frames.
+                    final_usage = Some(json!({
+                        "modelUsage": v.get("modelUsage").cloned().unwrap_or(Value::Null),
+                        "totalCostUsd": v.get("total_cost_usd").cloned().unwrap_or(Value::Null),
+                        "usage": v.get("usage").cloned().unwrap_or(Value::Null),
+                    }));
                     if subtype == "success" {
                         break Ok("completed".to_string());
                     }
@@ -1617,6 +1671,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let interrupted = cancelled_flag;
             let state = if interrupted { "interrupted" } else { "completed" };
             let status = if interrupted { "interrupted" } else { "ready" };
+            write_turn_completed_activity(&conn, thread_id, &turn_id, state, "claudeAgent", final_usage.as_ref(), None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, session_id.as_deref())?;
             session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}))?;
@@ -1625,6 +1680,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         }
         Err(e) => {
             let (state, status) = if cancelled_flag { ("interrupted", "interrupted") } else { ("error", "error") };
+            write_turn_completed_activity(&conn, thread_id, &turn_id, state, "claudeAgent", final_usage.as_ref(), Some(&format!("{:?}", e)));
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             // Usage-limit evidence: schedule automatic recovery while the
             // session still carries the active turn (`source` requires it).

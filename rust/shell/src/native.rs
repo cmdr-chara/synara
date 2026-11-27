@@ -19081,19 +19081,22 @@ impl Render for Native {
         } else {
             theme.border
         };
-        // Upstream light composer card is color(srgb 1 1 1 / 0.55); dark keeps the
-        // surface tint at the same alpha so the backdrop reads through.
-        // Upstream composer surface is opaque in Solid window mode (measured
-        // 252 over the tray's 249); translucency only applies in the
-        // Translucent window setting, which the shell does not implement.
-        let composer_card_bg = {
-            let mut c = if theme.is_dark() {
-                sidebar_bg
-            } else {
-                gpui::hsla(0.0, 0.0, 1.0, 1.0)
-            };
-            c.a = 1.0;
-            c
+        // Light: white 55% over the #F9F9F9 tray reads 252 — matches the
+        // Electron measurement exactly. Dark: the whole composer interior
+        // measures a uniform rgb 23 in the real Electron capture (input zone
+        // included) — the visible structure comes from the border and shadow,
+        // not from a second fill. Before this fix the shell used the flat
+        // sidebar black (17), so the composer read as a black hole against
+        // the window background.
+        let composer_card_bg = if theme.is_dark() {
+            gpui::hsla(0.0, 0.0, 0.0902, 1.0)
+        } else {
+            // Opaque 252: the measured Electron input surface. Upstream
+            // reaches it through white/0.55 over the opaque tray; gpui's
+            // compositing chain does not reproduce that exactly, so the
+            // resolved tone is hardcoded — the opaque tray beneath makes the
+            // shortcut invisible.
+            gpui::hsla(0.0, 0.0, 0.988, 1.0)
         };
         // Upstream in-thread composer: the input row is a fully-rounded white
         // pill inside the grey shell; permission/model chips sit on the grey
@@ -20522,8 +20525,12 @@ impl Render for Native {
         // near-white shell so the texture does not wash it out.
         // Upstream tray tone measured in the Electron capture: #F9F9F9
         // (foreground 2% over the white background) with a #F1F1F1 hairline.
+        // Upstream tray tone: light is foreground 2% over background (measured
+        // #F9F9F9); dark is foreground 4% over background (measured rgb 23 —
+        // NOT the flat sidebar black, which is what made the composer read as
+        // a black slab).
         let composer_shell_bg: gpui::Hsla = if theme.is_dark() {
-            sidebar_bg
+            gpui::hsla(0.0, 0.0, 0.0902, 1.0)
         } else {
             gpui::hsla(0.0, 0.0, 0.976, 1.0)
         };
@@ -20533,7 +20540,7 @@ impl Render for Native {
             // project strip sits on the grey, and the composer inside keeps
             // its own white surface, border, shadow and radius.
             let tray_bg: gpui::Hsla = if theme.is_dark() {
-                gpui::hsla(0.0, 0.0, 0.14, 1.0)
+                gpui::hsla(0.0, 0.0, 0.0902, 1.0)
             } else {
                 gpui::hsla(0.0, 0.0, 0.975, 1.0)
             };

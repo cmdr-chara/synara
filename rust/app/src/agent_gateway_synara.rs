@@ -317,6 +317,29 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["threadId", "archived"]),
         ),
         def(
+            "synara_read_thread_runtime_events",
+            "Read retained provider-runtime events for one thread. This source has a global retention cap; inspect coverage before treating absence as evidence.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "limit": {"type": "number", "description": "Default 50, max 200."},
+                "turnId": {"type": "string"},
+            }), &["threadId"]),
+        ),
+        def(
+            "synara_wait_for_threads",
+            "Wait for the pinned turns of 1-20 Synara threads and return every outcome in input order. When results are required, keep calling until allTerminal is true, passing the returned runIds to each subsequent call. A timedOut response is progress, not completion.",
+            schema(json!({
+                "threadIds": {"type": "array", "minItems": 1, "maxItems": 20, "items": {"type": "string"}},
+                "runIds": {"type": "array", "maxItems": 20, "items": {"type": ["string", "null"]}},
+                "timeoutMs": {"type": "integer", "minimum": 0, "maximum": 60000},
+            }), &["threadIds"]),
+        ),
+        def(
+            "synara_list_connections",
+            "Discover this computer and its paired execution connections. Use the returned environmentId on Synara project/thread tools.",
+            schema(json!({}), &[]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -1911,6 +1934,202 @@ fn set_thread_archived_tool(args: &Value) -> Result<Value, String> {
     Ok(json!({"threadId": thread_id, "archived": archived}))
 }
 
+fn read_thread_runtime_events(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let limit = args
+        .get("limit")
+        .and_then(Value::as_i64)
+        .unwrap_or(50)
+        .clamp(1, 200);
+    let turn_id = arg_str(args, "turnId");
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.query_row(
+        "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
+        [&thread_id],
+        |_| Ok(()),
+    )
+    .map_err(|_| format!("Thread \"{thread_id}\" was not found."))?;
+    let (high_water, oldest, retained): (i64, i64, i64) = conn
+        .query_row(
+            "SELECT COALESCE(MAX(sequence),0), COALESCE(MIN(sequence),0), COUNT(*) \
+             FROM provider_runtime_events WHERE thread_id = ?1",
+            [&thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+        )
+        .unwrap_or((0, 0, 0));
+    let (sql, params): (String, Vec<Box<dyn rusqlite::types::ToSql>>) = match &turn_id {
+        Some(t) => (
+            "SELECT sequence, event_id, event_type, turn_id, event_json, persisted_at \
+             FROM provider_runtime_events WHERE thread_id = ?1 AND turn_id = ?2 \
+             ORDER BY sequence DESC LIMIT ?3"
+                .to_string(),
+            vec![
+                Box::new(thread_id.clone()),
+                Box::new(t.clone()),
+                Box::new(limit),
+            ],
+        ),
+        None => (
+            "SELECT sequence, event_id, event_type, turn_id, event_json, persisted_at \
+             FROM provider_runtime_events WHERE thread_id = ?1 \
+             ORDER BY sequence DESC LIMIT ?2"
+                .to_string(),
+            vec![Box::new(thread_id.clone()), Box::new(limit)],
+        ),
+    };
+    let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
+    let param_refs: Vec<&dyn rusqlite::types::ToSql> = params.iter().map(|p| p.as_ref()).collect();
+    let mut events: Vec<Value> = stmt
+        .query_map(param_refs.as_slice(), |r| {
+            let raw: String = r.get(4)?;
+            let event = serde_json::from_str::<Value>(&raw).unwrap_or(Value::Null);
+            Ok(json!({
+                "sequence": r.get::<_, i64>(0)?,
+                "eventId": r.get::<_, String>(1)?,
+                "type": r.get::<_, String>(2)?,
+                "turnId": r.get::<_, Option<String>>(3)?,
+                "createdAt": r.get::<_, String>(5)?,
+                "provider": event.get("provider").cloned().unwrap_or(Value::Null),
+                "itemId": event.get("itemId").cloned().unwrap_or(Value::Null),
+                "requestId": event.get("requestId").cloned().unwrap_or(Value::Null),
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    events.reverse();
+    Ok(json!({
+        "threadId": thread_id,
+        "events": events,
+        "coverage": {
+            "source": "provider_runtime_events",
+            "highWaterSequence": high_water,
+            "oldestRetainedSequence": oldest,
+            "retainedForThread": retained,
+            "sourceComplete": false,
+        },
+    }))
+}
+
+fn list_connections() -> Result<Value, String> {
+    let env = crate::server_env::get_environment(&crate::todo::state_dir()).map_err(|e| e)?;
+    let environment_id = env.get("environmentId").cloned().unwrap_or(Value::Null);
+    let label = env.pointer("/label").cloned().unwrap_or(Value::Null);
+    let remote = env
+        .pointer("/capabilities/remoteConnections")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
+    Ok(json!({
+        "currentEnvironmentId": environment_id,
+        "remoteAvailable": remote,
+        "computers": [{
+            "environmentId": environment_id,
+            "label": label,
+            "local": true,
+        }],
+    }))
+}
+
+fn wait_for_threads(args: &Value) -> Result<Value, String> {
+    let thread_ids: Vec<String> = args
+        .get("threadIds")
+        .and_then(Value::as_array)
+        .ok_or("Missing required argument: threadIds")?
+        .iter()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
+    if thread_ids.is_empty() || thread_ids.len() > 20 {
+        return Err("threadIds must contain 1-20 threads.".into());
+    }
+    let timeout_ms = args
+        .get("timeoutMs")
+        .and_then(Value::as_i64)
+        .unwrap_or(30_000)
+        .clamp(0, 60_000);
+    let started = std::time::Instant::now();
+    let deadline = started + std::time::Duration::from_millis(timeout_ms as u64);
+    loop {
+        let conn = state_conn()?;
+        conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+        let mut results = Vec::new();
+        let mut all_terminal = true;
+        for tid in &thread_ids {
+            let exists = conn
+                .query_row(
+                    "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
+                    [tid],
+                    |_| Ok(()),
+                )
+                .is_ok();
+            if !exists {
+                results.push(json!({
+                    "threadId": tid,
+                    "runId": Value::Null,
+                    "status": "missing",
+                }));
+                continue;
+            }
+            let turn: Option<(String, String, Option<String>)> = conn
+                .query_row(
+                    "SELECT turn_id, state, completed_at FROM projection_turns \
+                     WHERE thread_id = ?1 ORDER BY COALESCE(started_at, requested_at) DESC LIMIT 1",
+                    [tid],
+                    |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+                )
+                .ok();
+            let Some((turn_id, state, completed_at)) = turn else {
+                results.push(json!({
+                    "threadId": tid,
+                    "runId": Value::Null,
+                    "status": "idle",
+                }));
+                continue;
+            };
+            let terminal = matches!(
+                state.as_str(),
+                "completed" | "failed" | "interrupted" | "cancelled" | "error"
+            );
+            if !terminal {
+                all_terminal = false;
+            }
+            let status = if terminal { state.clone() } else { "running".to_string() };
+            let mut row = json!({
+                "threadId": tid,
+                "runId": turn_id,
+                "status": status,
+            });
+            if terminal {
+                if let Some(ca) = completed_at {
+                    row.as_object_mut().unwrap().insert("completedAt".into(), json!(ca));
+                }
+                let summary: Option<String> = conn
+                    .query_row(
+                        "SELECT substr(content, 1, 500) FROM projection_thread_messages \
+                         WHERE thread_id = ?1 AND role = 'assistant' ORDER BY created_at DESC LIMIT 1",
+                        [tid],
+                        |r| r.get(0),
+                    )
+                    .ok();
+                if let Some(s) = summary.filter(|s| !s.trim().is_empty()) {
+                    row.as_object_mut().unwrap().insert("summary".into(), json!(s));
+                }
+            }
+            results.push(row);
+        }
+        let timed_out = !all_terminal && std::time::Instant::now() >= deadline;
+        if all_terminal || timed_out || timeout_ms == 0 {
+            return Ok(json!({
+                "allTerminal": all_terminal,
+                "timedOut": timed_out,
+                "results": results,
+            }));
+        }
+        drop(conn);
+        std::thread::sleep(std::time::Duration::from_millis(400));
+    }
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -2113,6 +2332,9 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_interrupt_thread" => interrupt_thread_tool(args),
         "synara_set_thread_title" => set_thread_title_tool(args),
         "synara_set_thread_archived" => set_thread_archived_tool(args),
+        "synara_read_thread_runtime_events" => read_thread_runtime_events(args),
+        "synara_wait_for_threads" => wait_for_threads(args),
+        "synara_list_connections" => list_connections(),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

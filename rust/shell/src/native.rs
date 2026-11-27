@@ -3704,6 +3704,48 @@ impl Native {
                 }
             })
             .detach();
+            // Parity captures (rust/shell/parity): open straight onto one
+            // screen so it can be compared with the web reference.
+            // SYNARA_PARITY_OPEN=thread:<id> | settings:<section> | rail:<name>
+            if let Ok(spec) = std::env::var("SYNARA_PARITY_OPEN") {
+                cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+                    cx.background_executor()
+                        .timer(std::time::Duration::from_millis(2500))
+                        .await;
+                    let _ = this.update(cx, |this: &mut Self, cx| {
+                        let (k, v) = spec.split_once(':').unwrap_or((spec.as_str(), ""));
+                        match k {
+                            "thread" => this.open_thread(v.to_string(), cx),
+                            "settings" => {
+                                this.clear_views();
+                                this.view_settings = true;
+                                if let Some((id, _)) =
+                                    SETTINGS_SEARCH_ORDER.iter().find(|(id, _)| *id == v)
+                                {
+                                    this.settings_section = id;
+                                }
+                                this.fetch_settings(cx);
+                            }
+                            "rail" => match v {
+                                "inbox" => {
+                                    this.clear_views();
+                                    this.toggle_inbox(cx);
+                                }
+                                "tasks" => this.open_route(1, cx),
+                                "kanban" => this.open_route(2, cx),
+                                "pullreq" | "pull-requests" | "review" => this.open_route(3, cx),
+                                "automations" => this.open_route(4, cx),
+                                "hubs" | "studio" => this.open_route(5, cx),
+                                "spaces" => this.open_route(6, cx),
+                                _ => {}
+                            },
+                            _ => {}
+                        }
+                        cx.notify();
+                    });
+                })
+                .detach();
+            }
             this
         })
     }

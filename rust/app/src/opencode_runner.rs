@@ -1280,6 +1280,224 @@ fn flatten_opencode_inventory_models(provider_list: &Value) -> Vec<Value> {
     models
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct OpenCodeImportedMessage {
+    pub id: String,
+    pub role: String,
+    pub text: String,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OpenCodeImportHistory {
+    pub cwd: Option<String>,
+    pub messages: Vec<OpenCodeImportedMessage>,
+}
+
+fn opencode_location_query(cwd: &str) -> String {
+    format!("location%5Bdirectory%5D={}", urlencode_component(cwd))
+}
+
+fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Option<String>), WsErr> {
+    let parsed: Value = serde_json::from_str(body)
+        .map_err(|e| err(format!("opencode session messages parse: {e}")))?;
+    let entries = if let Some(entries) = parsed.as_array() {
+        entries.clone()
+    } else if let Some(entries) = parsed.get("data").and_then(Value::as_array) {
+        entries.clone()
+    } else {
+        return Err(err("opencode session messages response had no entries"));
+    };
+    let next_cursor = parsed
+        .pointer("/cursor/next")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_string);
+    let mut out = Vec::new();
+    for (index, entry) in entries.iter().enumerate() {
+        // V1 and the adapter bridge use `{info, parts}`. Native V2 uses the
+        // flatter SessionMessageInfo union; user text is direct and assistant
+        // visible text lives in text content blocks (reasoning is excluded,
+        // exactly like upstream readOpenCodeSessionMessageText).
+        let (id, role, text) = if entry.get("info").is_some() {
+            let info = entry.get("info").cloned().unwrap_or_else(|| json!({}));
+            let role = info.get("role").and_then(Value::as_str).unwrap_or("").to_string();
+            let text = entry
+                .get("parts")
+                .and_then(Value::as_array)
+                .map(|parts| {
+                    parts
+                        .iter()
+                        .filter(|part| part.get("type").and_then(Value::as_str) == Some("text"))
+                        .filter_map(|part| part.get("text").and_then(Value::as_str))
+                        .collect::<Vec<_>>()
+                        .join("\n\n")
+                        .trim()
+                        .to_string()
+                })
+                .unwrap_or_default();
+            let id = info.get("id").and_then(Value::as_str).unwrap_or("").to_string();
+            (id, role, text)
+        } else {
+            let kind = entry.get("type").and_then(Value::as_str).unwrap_or("");
+            let role = match kind {
+                "user" => "user".to_string(),
+                "assistant" => "assistant".to_string(),
+                _ => continue,
+            };
+            let text = if kind == "user" {
+                entry.get("text").and_then(Value::as_str).unwrap_or("").trim().to_string()
+            } else {
+                entry
+                    .get("content")
+                    .and_then(Value::as_array)
+                    .map(|parts| {
+                        parts
+                            .iter()
+                            .filter(|part| part.get("type").and_then(Value::as_str) == Some("text"))
+                            .filter_map(|part| part.get("text").and_then(Value::as_str))
+                            .collect::<Vec<_>>()
+                            .join("\n\n")
+                            .trim()
+                            .to_string()
+                    })
+                    .unwrap_or_default()
+            };
+            let id = entry.get("id").and_then(Value::as_str).unwrap_or("").to_string();
+            (id, role, text)
+        };
+        if role != "user" && role != "assistant" {
+            continue;
+        }
+        if text.is_empty() {
+            continue;
+        }
+        let id = if id.trim().is_empty() { index.to_string() } else { id.trim().to_string() };
+        out.push(OpenCodeImportedMessage { id, role, text });
+    }
+    Ok((out, next_cursor))
+}
+
+fn opencode_messages_from_body(body: &str) -> Result<Vec<OpenCodeImportedMessage>, WsErr> {
+    opencode_message_page(body).map(|(messages, _)| messages)
+}
+
+/// Read one external OpenCode session through a short-lived managed server,
+/// the Rust counterpart of upstream `OpenCodeAdapter.readExternalThread` for
+/// local installations. Externally hosted OpenCode server URLs remain outside
+/// this lean transport, which only speaks loopback HTTP.
+pub fn read_external_history(
+    cwd: &str,
+    external_id: &str,
+    instance_id: Option<&str>,
+) -> Result<OpenCodeImportHistory, WsErr> {
+    let cwd = if !cwd.trim().is_empty() && std::path::Path::new(cwd).is_dir() {
+        cwd.to_string()
+    } else {
+        std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
+    };
+    let port = std::net::TcpListener::bind("127.0.0.1:0")
+        .and_then(|l| l.local_addr())
+        .map(|a| a.port())
+        .unwrap_or(4096);
+    let password = random_token();
+    let mut command = Command::new(opencode_binary());
+    crate::provider_env::sanitize_provider_child(&mut command);
+    crate::provider_instances::apply_instance_environment_for(&mut command, "opencode", instance_id);
+    command
+        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+        .current_dir(&cwd)
+        .env("OPENCODE_SERVER_USERNAME", "opencode")
+        .env("OPENCODE_SERVER_PASSWORD", &password)
+        .env("OPENCODE_PASSWORD", &password)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    let mut child = command
+        .spawn()
+        .map_err(|e| err(format!("could not launch `opencode serve`: {e}")))?;
+    let auth = basic_auth_header(&password);
+    let result = (|| -> Result<OpenCodeImportHistory, WsErr> {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+        let mut protocol = detect_protocol(port, &auth);
+        loop {
+            protocol = detect_protocol(port, &auth);
+            let ready = if protocol == OpenCodeProtocol::V2 {
+                true
+            } else {
+                http_request(port, "GET", "/provider", &auth, None)
+                    .map(|(status, _)| status > 0)
+                    .unwrap_or(false)
+            };
+            if ready {
+                break;
+            }
+            if std::time::Instant::now() >= deadline {
+                return Err(err("opencode import server did not become ready in 20s"));
+            }
+            std::thread::sleep(std::time::Duration::from_millis(150));
+        }
+        protocol = detect_protocol(port, &auth);
+        let encoded_id = urlencode_component(external_id);
+        let location = opencode_location_query(&cwd);
+        let session_path = if protocol == OpenCodeProtocol::V2 {
+            format!("/api/session/{encoded_id}")
+        } else {
+            format!("/session/{encoded_id}")
+        };
+        let (status, body) = http_request(port, "GET", &session_path, &auth, None)?;
+        if status >= 400 {
+            return Err(err(format!("opencode session lookup HTTP {status}: {body}")));
+        }
+        let session: Value = serde_json::from_str(&body)
+            .map_err(|e| err(format!("opencode session lookup parse: {e}")))?;
+        let session_cwd = session
+            .pointer("/data/directory")
+            .and_then(Value::as_str)
+            .or_else(|| session.get("directory").and_then(Value::as_str))
+            .map(str::to_string);
+        let mut messages = Vec::new();
+        let mut cursor: Option<String> = None;
+        let mut seen_cursors = std::collections::HashSet::new();
+        loop {
+            let page_query = if protocol == OpenCodeProtocol::V2 {
+                match cursor.as_deref() {
+                    Some(cursor) => format!("limit=200&cursor={}", urlencode_component(cursor)),
+                    None => "limit=200&order=asc".to_string(),
+                }
+            } else {
+                location.clone()
+            };
+            let messages_path = if protocol == OpenCodeProtocol::V2 {
+                format!("/api/session/{encoded_id}/message?{page_query}")
+            } else {
+                format!("/session/{encoded_id}/message")
+            };
+            let (status, body) = http_request(port, "GET", &messages_path, &auth, None)?;
+            if status >= 400 {
+                return Err(err(format!("opencode session messages HTTP {status}: {body}")));
+            }
+            let (page, next_cursor) = opencode_message_page(&body)?;
+            messages.extend(page);
+            if protocol != OpenCodeProtocol::V2 {
+                break;
+            }
+            let Some(next) = next_cursor else { break };
+            if !seen_cursors.insert(next.clone()) {
+                return Err(err("OpenCode returned a repeated message cursor."));
+            }
+            cursor = Some(next);
+        }
+        Ok(OpenCodeImportHistory {
+            cwd: session_cwd,
+            messages,
+        })
+    })();
+    let _ = child.kill();
+    let _ = child.wait();
+    result
+}
+
 /// Discover the server-side model inventory through a temporary official
 /// OpenCode server. The server owns provider credentials and availability;
 /// Synara only reads its public model metadata.
@@ -2209,5 +2427,40 @@ mod tests {
         assert_eq!(super::base64_encode(b"fo"), "Zm8=");
         assert_eq!(super::base64_encode(b"foo"), "Zm9v");
         assert_eq!(super::base64_encode(b"opencode:abc"), "b3BlbmNvZGU6YWJj");
+    }
+
+
+    #[test]
+    fn import_message_parser_accepts_v1_arrays_and_v2_data_wrappers() {
+        let v1 = serde_json::json!([
+            {"info":{"id":"u1","role":"user"},"parts":[{"type":"text","text":"hello"}]},
+            {"info":{"id":"x","role":"tool"},"parts":[{"type":"text","text":"hidden"}]},
+            {"info":{"id":"a1","role":"assistant"},"parts":[{"type":"text","text":"answer"}]},
+        ]);
+        let parsed = super::opencode_messages_from_body(&v1.to_string()).unwrap();
+        assert_eq!(parsed.len(), 2);
+        assert_eq!(parsed[0].id, "u1");
+        assert_eq!(parsed[1].role, "assistant");
+        let v2 = serde_json::json!({"data": v1, "cursor": {}});
+        assert_eq!(super::opencode_messages_from_body(&v2.to_string()).unwrap().len(), 2);
+    }
+
+
+    #[test]
+    fn import_message_parser_accepts_native_v2_message_infos() {
+        let native = serde_json::json!({
+            "data": [
+                {"id":"u1","type":"user","text":"hello","time":{"created":1}},
+                {"id":"meta","type":"system","text":"hidden","time":{"created":1}},
+                {"id":"a1","type":"assistant","time":{"created":2},"agent":"build","model":{"providerID":"p","id":"m"},"content":[
+                    {"type":"reasoning","text":"hidden"},{"type":"text","text":"answer"}
+                ]}
+            ],
+            "cursor": {"next": null}
+        });
+        let parsed = super::opencode_messages_from_body(&native.to_string()).unwrap();
+        assert_eq!(parsed.len(), 2);
+        assert_eq!(parsed[0].text, "hello");
+        assert_eq!(parsed[1].text, "answer");
     }
 }

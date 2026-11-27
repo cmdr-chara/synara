@@ -224,8 +224,18 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         .and_then(Value::as_str)
         .map(str::to_string);
 
-    // Locate the provider-native transcript by external id.
+    // Locate the provider-native transcript by external id. OpenCode sessions
+    // are workspace-scoped, so resolve the same cwd the runners use before
+    // launching its short-lived managed server.
     let home = std::env::var("HOME").unwrap_or_default();
+    let thread_cwd: Option<String> = conn
+        .query_row(
+            "SELECT COALESCE(NULLIF(working_directory, ''), NULLIF(worktree_path, ''), NULLIF(associated_worktree_path, ''), (SELECT workspace_root FROM projection_projects WHERE project_id=projection_threads.project_id)) FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok()
+        .flatten();
     let omp_history = if provider == "omp" {
         let agent_dir = crate::omp_import::resolve_omp_agent_dir(instance_id.as_deref());
         Some(
@@ -243,7 +253,16 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     } else {
         None
     };
-    let transcript_path: Option<std::path::PathBuf> = if provider == "omp" || provider == "droid" {
+    let opencode_history = if provider == "opencode" {
+        Some(crate::opencode_runner::read_external_history(
+            thread_cwd.as_deref().unwrap_or(""),
+            external_id,
+            instance_id.as_deref(),
+        )?)
+    } else {
+        None
+    };
+    let transcript_path: Option<std::path::PathBuf> = if provider == "omp" || provider == "droid" || provider == "opencode" {
         None
     } else {
         match provider.as_str() {
@@ -316,6 +335,15 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 message.role.clone(),
                 message.text.clone(),
                 message.timestamp.clone(),
+                format!("{index}:0:{}", message.id),
+            ));
+        }
+    } else if let Some(history) = opencode_history.as_ref() {
+        for (index, message) in history.messages.iter().enumerate() {
+            imported.push((
+                message.role.clone(),
+                message.text.clone(),
+                None,
                 format!("{index}:0:{}", message.id),
             ));
         }
@@ -422,6 +450,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         "codex" => "codex",
         "omp" => "omp",
         "droid" => "droid",
+        "opencode" => "opencode",
         _ => "claude",
     };
     for (seq, (role, text_out, timestamp, source_id)) in imported.iter().enumerate() {
@@ -456,6 +485,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let cursor = match provider_key {
         "codex" => json!({ "resume": external_id }),
         "omp" | "droid" => json!({ "schemaVersion": 1, "sessionId": external_id }),
+        "opencode" => json!({ "openCodeSessionId": external_id }),
         _ => json!({ "resume": external_id }),
     };
     let now2 = now.clone();

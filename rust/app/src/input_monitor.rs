@@ -633,6 +633,21 @@ mod tests {
     }
 }
 
+    #[test]
+    fn release_acknowledgement_requires_released_true() {
+        let dir = std::env::temp_dir().join(format!("release-held-test-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let helper = dir.join("helper.sh");
+        std::fs::write(&helper, "#!/bin/sh\nprintf '%s\n' '{\"type\":\"release-held-input\",\"released\":true}'\n").unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            std::fs::set_permissions(&helper, std::fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        assert!(release_held_input_from_helper(&helper));
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
 fn resolve_helper() -> Option<PathBuf> {
     if let Some(path) = std::env::var_os("SYNARA_APPSNAP_HELPER") {
         let path = PathBuf::from(path);
@@ -660,6 +675,50 @@ fn resolve_helper() -> Option<PathBuf> {
     None
 }
 
+
+/// Ask the AppSnap helper to synthesize releases for any modifier/button the
+/// helper still believes is held. Only the explicit `released: true` protocol
+/// acknowledgement counts; a silent helper exit leaves the leak unproven.
+fn release_held_input_from_helper(helper: &std::path::Path) -> bool {
+    let mut child = match std::process::Command::new(helper)
+        .arg("--release-held-input")
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+    {
+        Ok(child) => child,
+        Err(_) => return false,
+    };
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+    loop {
+        match child.try_wait() {
+            Ok(Some(_)) => break,
+            Ok(None) if std::time::Instant::now() < deadline => std::thread::sleep(std::time::Duration::from_millis(10)),
+            _ => {
+                let _ = child.kill();
+                let _ = child.wait();
+                return false;
+            }
+        }
+    }
+    let mut output = String::new();
+    if let Some(mut stdout) = child.stdout.take() {
+        use std::io::Read as _;
+        let _ = stdout.read_to_string(&mut output);
+    }
+    output.lines().any(|line| {
+        serde_json::from_str::<serde_json::Value>(line).ok().is_some_and(|value| {
+            value.get("type").and_then(serde_json::Value::as_str) == Some("release-held-input")
+                && value.get("released").and_then(serde_json::Value::as_bool) == Some(true)
+        })
+    })
+}
+
+pub fn release_held_input_sync() -> bool {
+    resolve_helper().is_some_and(|helper| release_held_input_from_helper(&helper))
+}
+
 static ACTIVE_THREAD: Mutex<Option<String>> = Mutex::new(None);
 
 fn global_monitor() -> Option<&'static Arc<EscapeKillSwitchMonitor>> {
@@ -672,6 +731,9 @@ fn global_monitor() -> Option<&'static Arc<EscapeKillSwitchMonitor>> {
                 let thread = ACTIVE_THREAD.lock().ok().and_then(|value| value.clone());
                 let _ = thread;
                 crate::computer_manager::emergency_stop_input_sync();
+                // Escape interrupts can leave the native driver between keyDown
+                // and keyUp. Clear held input before fresh observation resumes.
+                let _ = release_held_input_sync();
             },
             |input| {
                 let thread = ACTIVE_THREAD.lock().ok().and_then(|value| value.clone());
@@ -760,4 +822,5 @@ pub fn control_disarmed(thread_id: &str) {
             monitor.set_armed(false);
         }
     }
+
 }

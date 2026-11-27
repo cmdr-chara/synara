@@ -3,6 +3,8 @@
 //! message upstream emits when its hosts service fails (wsHostsRpc).
 
 use serde_json::{json, Value};
+use std::collections::HashMap;
+use std::sync::{Mutex, OnceLock};
 
 pub fn handles(tag: &str) -> bool {
     tag.starts_with("hosts.")
@@ -69,9 +71,26 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
     }
 }
 
-/// Local subset of upstream remotePairing/management.ts operations: invite
-/// and device-trust management needs no account connectivity. Operations that
-/// publish to or redeem through the account API still answer the fallback.
+/// Owner-side remote pairing management, mirroring upstream
+/// remotePairing/management.ts. Pairing previews are deliberately in-memory:
+/// a restart requires redeeming a fresh public code.
+fn pairing_previews() -> &'static Mutex<HashMap<String, Value>> {
+    static PREVIEWS: OnceLock<Mutex<HashMap<String, Value>>> = OnceLock::new();
+    PREVIEWS.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn prune_pairing_previews() {
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as i64).unwrap_or(0);
+    if let Ok(mut previews) = pairing_previews().lock() {
+        previews.retain(|_, preview| {
+            preview.pointer("/bundle/expiresAt")
+                .and_then(Value::as_str)
+                .and_then(|text| chrono::DateTime::parse_from_rfc3339(text).ok())
+                .is_some_and(|expires| expires.timestamp_millis() > now)
+        });
+    }
+}
+
 fn local_host_proof(account: &Value, environment_id: &str) -> Result<String, String> {
     let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
     let key_generation = account.get("hostKeyGeneration").and_then(Value::as_u64).unwrap_or(0);
@@ -153,6 +172,74 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
                 "rootExpiresAt": root_expires,
                 "rootNeedsRepair": tls_identity.as_ref().is_some_and(|identity| crate::remote_tls::root_needs_repair(identity, now_ms)),
                 "allowConnections": rp::allows_connections(&conn, &scope)?,
+            }))
+        }
+        "redeem-code" => {
+            prune_pairing_previews();
+            if pairing_previews().lock().map(|previews| previews.len()).unwrap_or(0) >= 8 {
+                return Err("Finish or cancel the pending pairing first".to_string());
+            }
+            let raw_code = request.get("code").and_then(Value::as_str).unwrap_or_default().to_uppercase();
+            let filtered: String = raw_code.chars().filter(|c| c.is_ascii_uppercase() || ('2'..='9').contains(c)).collect();
+            let code = if filtered.len() == 8 {
+                format!("{}-{}", &filtered[..4], &filtered[4..])
+            } else {
+                filtered
+            };
+            let account = crate::account::read_session_file().ok_or_else(|| "Remote access operation failed".to_string())?;
+            let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+            let user_id = account.get("userId").and_then(Value::as_str).unwrap_or_default();
+            let organization_id = account.get("organizationId").and_then(Value::as_str).unwrap_or_default();
+            if account_url.is_empty() || user_id.is_empty() || organization_id.is_empty() {
+                return Err("Remote access operation failed".to_string());
+            }
+            let authority = crate::account::account_api_issuer(account_url);
+            let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(&secrets_dir))
+                .map_err(|_| "Remote access operation failed".to_string())?;
+            let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+            let proof = identity.sign_jwt(
+                json!({"typ":"synara-pairing-code+jwt"}),
+                json!({
+                    "code": code,
+                    "iss": "synara-device",
+                    "sub": user_id,
+                    "aud": authority,
+                    "iat": now,
+                    "exp": now + 60,
+                    "jti": crate::orchestration_engine::uuid_v4(),
+                }),
+            ).map_err(|_| "Remote access operation failed".to_string())?;
+            let bundle = authed(
+                reqwest::Method::POST,
+                "/api/v1/remote/pairing-codes/redeem",
+                Some(json!({"code": code, "deviceJkt": identity.jkt, "proof": proof})),
+                "Remote access operation failed",
+            ).map_err(|error| error.0)?;
+            if bundle.get("accountAuthority").and_then(Value::as_str) != Some(authority.as_str())
+                || bundle.get("userId").and_then(Value::as_str) != Some(user_id)
+                || bundle.get("organizationId").and_then(Value::as_str) != Some(organization_id)
+            {
+                return Err("Pairing belongs to another account".to_string());
+            }
+            let invite_id = bundle.get("inviteId").and_then(Value::as_str).unwrap_or_default();
+            if invite_id.is_empty() {
+                return Err("Remote access operation failed".to_string());
+            }
+            if let Ok(mut previews) = pairing_previews().lock() {
+                previews.insert(invite_id.to_string(), json!({
+                    "bundle": bundle,
+                    "deviceJkt": identity.jkt,
+                    "binding": {"accountAuthority": authority, "userId": user_id, "organizationId": organization_id},
+                }));
+            }
+            Ok(json!({
+                "kind": "pairing-preview",
+                "inviteId": invite_id,
+                "environmentId": bundle.get("environmentId").cloned().unwrap_or(Value::Null),
+                "label": bundle.get("label").cloned().unwrap_or(Value::Null),
+                "rootFingerprint": bundle.get("rootFingerprint").cloned().unwrap_or(Value::Null),
+                "expiresAt": bundle.get("expiresAt").cloned().unwrap_or(Value::Null),
+                "deviceJkt": identity.jkt,
             }))
         }
         "device-info" => {

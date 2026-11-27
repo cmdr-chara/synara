@@ -101,18 +101,18 @@ fn is_spool_name(name: &str) -> bool {
     let Some(rest) = name.strip_suffix(".json") else {
         return false;
     };
-    if rest.len() != 46 {
+    if rest.len() != 47 {
         return false;
     }
     let (id, date) = rest.split_at(36);
     is_policy_id(id)
-        && date.len() == 10
+        && date.len() == 11
         && date.as_bytes()[0] == b'-'
         && date.as_bytes()[5] == b'-'
         && date.as_bytes()[8] == b'-'
         && date[1..5].chars().all(|c| c.is_ascii_digit())
         && date[6..8].chars().all(|c| c.is_ascii_digit())
-        && date[9..10].chars().all(|c| c.is_ascii_digit())
+        && date[9..11].chars().all(|c| c.is_ascii_digit())
 }
 
 fn day_prefix(s: &str) -> String {

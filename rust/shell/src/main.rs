@@ -19,6 +19,7 @@ mod browser_host;
 mod cua;
 mod desktop_identity;
 mod native;
+mod product_analytics;
 mod reliability;
 mod updater;
 mod voice;
@@ -226,6 +227,7 @@ fn start_appsnap_watcher() {
 fn start_appsnap_watcher() {}
 
 fn main() {
+    product_analytics::initialize();
     reliability::initialize();
     let diagnostics_home = backend::configured_home_dir();
     let diagnostics_version = std::env::var("SYNARA_DESKTOP_VERSION").unwrap_or_else(|_| "0.1.0".into());

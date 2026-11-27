@@ -462,6 +462,12 @@ fn reporter() -> Option<&'static Arc<ReliabilityReporter>> {
     REPORTER.get()
 }
 
+pub fn set_enabled(enabled: bool) {
+    if let Some(reporter) = reporter() {
+        reporter.set_enabled(enabled, true);
+    }
+}
+
 pub fn initialize() {
     let home = crate::backend::configured_home_dir();
     let flavor = crate::desktop_identity::runtime_flavor();

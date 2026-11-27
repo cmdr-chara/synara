@@ -31,6 +31,8 @@ libc = "0.2"
 signal-hook = "0.3"
 synara-shellenv = { path = "../shellenv" }
 betadiagnostics-rs = { path = "../betadiagnostics-rs" }
+hostusagerelay-rs = { path = "../hostusagerelay-rs" }
+productanalytics-rs = { path = "../productanalytics-rs" }
 url = "2"
 
 [workspace]

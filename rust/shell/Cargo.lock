@@ -3861,6 +3861,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "hostusagerelay-rs"
+version = "0.1.0"
+dependencies = [
+ "napi",
+ "napi-build",
+ "napi-derive",
+ "serde",
+ "serde_json",
+ "sha2 0.11.1",
+]
+
+[[package]]
 name = "html5ever"
 version = "0.27.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6612,6 +6624,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "productanalytics-rs"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "profiling"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8202,10 +8223,12 @@ dependencies = [
  "cpal",
  "gpui-kit",
  "gpui-webview",
+ "hostusagerelay-rs",
  "http",
  "image",
  "lb-wry",
  "libc",
+ "productanalytics-rs",
  "serde",
  "serde_json",
  "sha2 0.10.9",

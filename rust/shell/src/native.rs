@@ -19258,6 +19258,97 @@ impl Render for Native {
             // shortcut invisible.
             gpui::hsla(0.0, 0.0, 0.988, 1.0)
         };
+        let attachment_row = if !self.pending_attachments.is_empty() || self.uploading {
+            let mut chips = h_flex().gap_1().flex_wrap().pb_1();
+            if self.uploading {
+                chips = chips.child(
+                    div()
+                        .text_xs()
+                        .text_color(theme.muted_foreground)
+                        .child("uploading\u{2026}"),
+                );
+            }
+            for (i, a) in self.pending_attachments.iter().enumerate() {
+                let label = str_at(a, "name");
+                let label = if label.is_empty() {
+                    str_at(a, "fileName").to_string()
+                } else {
+                    label.to_string()
+                };
+                let thumb = self.attachment_thumbs.get(str_at(a, "id")).cloned();
+                if let Some(render) = thumb {
+                    // Upstream ComposerImageAttachmentChip (plain image): size-16
+                    // rounded-xl cover thumbnail, circular solid remove button
+                    // overlapping the top-right corner.
+                    chips = chips.child(
+                        div()
+                            .id(ElementId::Name(format!("att-{i}").into()))
+                            .flex_none()
+                            .relative()
+                            .child(
+                                div()
+                                    .size(px(64.))
+                                    .overflow_hidden()
+                                    .rounded(px(12.))
+                                    .border_1()
+                                    .border_color(theme.border)
+                                    .child(
+                                        gpui::img(gpui::ImageSource::Render(render))
+                                            .object_fit(gpui::ObjectFit::Cover)
+                                            .size_full(),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .absolute()
+                                    .top(px(4.))
+                                    .right(px(4.))
+                                    .id(ElementId::Name(format!("att-x-{i}").into()))
+                                    .cursor_pointer()
+                                    .size(px(20.))
+                                    .rounded_full()
+                                    .bg(theme.foreground.opacity(0.8))
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .text_color(theme.background)
+                                    .text_size(px(11.))
+                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                        if i < this.pending_attachments.len() {
+                                            let removed = this.pending_attachments.remove(i);
+                                            this.attachment_thumbs.remove(str_at(&removed, "id"));
+                                        }
+                                        cx.notify();
+                                    }))
+                                    .child("\u{00d7}"),
+                            ),
+                    );
+                } else {
+                    chips = chips.child(
+                        h_flex()
+                            .id(ElementId::Name(format!("att-{i}").into()))
+                            .cursor_pointer()
+                            .gap_1()
+                            .items_center()
+                            .border_1()
+                            .border_color(theme.border)
+                            .rounded_md()
+                            .px_2()
+                            .py_0p5()
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if i < this.pending_attachments.len() {
+                                    this.pending_attachments.remove(i);
+                                }
+                                cx.notify();
+                            }))
+                            .child(div().text_xs().child(format!("{label} \u{00d7}"))),
+                    );
+                }
+            }
+            Some(chips)
+        } else {
+            None
+        };
         // Upstream in-thread composer: the input row is a fully-rounded white
         // pill inside the grey shell; permission/model chips sit on the grey
         // tray below, outside the pill.
@@ -19297,6 +19388,7 @@ impl Render for Native {
                 .pt(px(4.))
                 .pb(px(8.))
                 .gap(px(8.))
+                .children(attachment_row)
                 .child(input_zone)
                 .child(
                     h_flex()
@@ -19398,127 +19490,6 @@ impl Render for Native {
                     cx.notify();
                 },
             ));
-        if !self.pending_attachments.is_empty() || self.uploading {
-            let mut chips = h_flex().gap_1().flex_wrap().pb_1();
-            if self.uploading {
-                chips = chips.child(
-                    div()
-                        .text_xs()
-                        .text_color(theme.muted_foreground)
-                        .child("uploading\u{2026}"),
-                );
-            }
-            for (i, a) in self.pending_attachments.iter().enumerate() {
-                let label = str_at(a, "name");
-                let label = if label.is_empty() {
-                    str_at(a, "fileName").to_string()
-                } else {
-                    label.to_string()
-                };
-                let thumb = self.attachment_thumbs.get(str_at(a, "id")).cloned();
-                if let Some(render) = thumb {
-                    // Upstream ComposerImageAttachmentChip: h-32 w-52 rounded-xl
-                    // thumbnail card, image contained, gradient provenance strip
-                    // at the bottom, removal on the trailing control.
-                    let name = label.clone();
-                    chips = chips.child(
-                        div()
-                            .id(ElementId::Name(format!("att-{i}").into()))
-                            .h(px(128.))
-                            .w(px(208.))
-                            .flex_none()
-                            .overflow_hidden()
-                            .rounded(px(12.))
-                            .border_1()
-                            .border_color(theme.border)
-                            .relative()
-                            .child(
-                                div()
-                                    .size_full()
-                                    .flex()
-                                    .items_center()
-                                    .justify_center()
-                                    .child(
-                                        gpui::img(gpui::ImageSource::Render(render))
-                                            .object_fit(gpui::ObjectFit::Contain)
-                                            .max_w_full()
-                                            .max_h_full(),
-                                    ),
-                            )
-                            .child(
-                                div()
-                                    .absolute()
-                                    .bottom_0()
-                                    .left_0()
-                                    .right_0()
-                                    .h(px(44.))
-                                    .bg(gpui::linear_gradient(
-                                        270.0,
-                                        gpui::linear_color_stop(gpui::black().opacity(0.), 0.0),
-                                        gpui::linear_color_stop(gpui::black().opacity(0.9), 1.0),
-                                    )),
-                            )
-                            .child(
-                                div()
-                                    .absolute()
-                                    .bottom(px(8.))
-                                    .left(px(10.))
-                                    .right(px(10.))
-                                    .text_size(px(12.))
-                                    .font_weight(FontWeight::MEDIUM)
-                                    .text_color(gpui::white())
-                                    .overflow_hidden()
-                                    .child(name),
-                            )
-                            .child(
-                                div()
-                                    .absolute()
-                                    .top(px(4.))
-                                    .right(px(4.))
-                                    .id(ElementId::Name(format!("att-x-{i}").into()))
-                                    .cursor_pointer()
-                                    .size(px(20.))
-                                    .rounded_full()
-                                    .bg(gpui::black().opacity(0.55))
-                                    .flex()
-                                    .items_center()
-                                    .justify_center()
-                                    .text_color(gpui::white())
-                                    .text_size(px(11.))
-                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                        if i < this.pending_attachments.len() {
-                                            let removed = this.pending_attachments.remove(i);
-                                            this.attachment_thumbs.remove(str_at(&removed, "id"));
-                                        }
-                                        cx.notify();
-                                    }))
-                                    .child("\u{00d7}"),
-                            ),
-                    );
-                } else {
-                    chips = chips.child(
-                        h_flex()
-                            .id(ElementId::Name(format!("att-{i}").into()))
-                            .cursor_pointer()
-                            .gap_1()
-                            .items_center()
-                            .border_1()
-                            .border_color(theme.border)
-                            .rounded_md()
-                            .px_2()
-                            .py_0p5()
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                if i < this.pending_attachments.len() {
-                                    this.pending_attachments.remove(i);
-                                }
-                                cx.notify();
-                            }))
-                            .child(div().text_xs().child(format!("{label} \u{00d7}"))),
-                    );
-                }
-            }
-            composer_col = composer_col.child(chips);
-        }
         // Upstream floats context chips above the card only for threads bound
         // to a worktree (envMode != "local"): project chip left, env chip right.
         let wt_path = str_at(thread_v, "worktreePath").to_string();

@@ -1007,6 +1007,8 @@ async fn computer_verify_state(args: &Value, thread: Option<&str>) -> Result<Val
     Ok(json!({
         "status": status,
         "stable": status == "satisfied",
+        "samples": 1,
+        "elapsedMs": 0,
         "windowId": window_id,
         "predicates": results,
     }))

@@ -143,6 +143,9 @@ func nodeDict(_ el: AXUIElement, path: [Int], windowId: String, walk: inout AxWa
         "children": kids,
     ]
     if axEditable(el) { d["editable"] = true }
+    if let enabled = axBool(el, kAXEnabledAttribute) { d["enabled"] = enabled }
+    if let selected = axBool(el, kAXSelectedAttribute) { d["selected"] = selected }
+    if let focused = axBool(el, kAXFocusedAttribute) { d["focused"] = focused }
     if nodeTruncated { d["truncated"] = true }
     return d
 }

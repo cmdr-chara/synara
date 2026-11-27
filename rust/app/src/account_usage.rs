@@ -155,6 +155,84 @@ fn model_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
     Ok(buckets)
 }
 
+
+fn reference_names(raw: Option<&str>) -> Vec<String> {
+    let Some(raw) = raw else { return Vec::new() };
+    let Ok(Value::Array(entries)) = serde_json::from_str::<Value>(raw) else { return Vec::new() };
+    entries
+        .iter()
+        .filter_map(|entry| entry.get("name").and_then(Value::as_str))
+        .filter_map(|name| {
+            let normalized = name.trim_start_matches(['$', '/', '@']).trim();
+            (!normalized.is_empty()).then(|| normalized.chars().take(200).collect::<String>())
+        })
+        .collect()
+}
+
+fn skill_buckets(conn: &Connection) -> Result<Vec<Value>, String> {
+    let mut grouped: HashMap<String, Value> = HashMap::new();
+    let mut statement = conn
+        .prepare(
+            "SELECT created_at, skills_json, mentions_json FROM projection_thread_messages \
+             WHERE role = 'user' AND julianday(created_at) >= julianday('now', ?1)",
+        )
+        .map_err(|e| format!("prepare account usage skills: {e}"))?;
+    let rows = statement
+        .query_map(params![WINDOW], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, Option<String>>(1)?,
+                row.get::<_, Option<String>>(2)?,
+            ))
+        })
+        .map_err(|e| format!("read account usage skills: {e}"))?;
+    for row in rows {
+        let (created_at, skills_json, mentions_json) = row.map_err(|e| e.to_string())?;
+        let Some(minute) = minute(&created_at) else { continue };
+        for (kind, names) in [
+            ("skill", reference_names(skills_json.as_deref())),
+            ("agent", reference_names(mentions_json.as_deref())),
+        ] {
+            for name in names {
+                let key = format!("{minute}\0{kind}\0{}", name.to_lowercase());
+                let entry = grouped.entry(key).or_insert_with(|| json!({
+                    "minute": minute,
+                    "name": name,
+                    "kind": kind,
+                    "runs": 0,
+                }));
+                entry["runs"] = json!(entry["runs"].as_u64().unwrap_or(0) + 1);
+            }
+        }
+    }
+    let mut buckets: Vec<Value> = grouped.into_values().collect();
+    buckets.sort_by_key(|bucket| bucket["minute"].as_str().unwrap_or("").to_string());
+    Ok(buckets)
+}
+
+fn chunks_by_minute(buckets: Vec<Value>) -> Vec<Vec<Value>> {
+    let mut chunks: Vec<Vec<Value>> = Vec::new();
+    let mut current: Vec<Value> = Vec::new();
+    let mut index = 0;
+    while index < buckets.len() {
+        let minute = buckets[index]["minute"].as_str().unwrap_or("").to_string();
+        let mut end = index;
+        while end < buckets.len() && buckets[end]["minute"].as_str() == Some(minute.as_str()) {
+            end += 1;
+        }
+        let group_len = end - index;
+        if !current.is_empty() && current.len() + group_len > MAX_BUCKETS {
+            chunks.push(std::mem::take(&mut current));
+        }
+        current.extend(buckets[index..end].iter().cloned());
+        index = end;
+    }
+    if !current.is_empty() {
+        chunks.push(current);
+    }
+    chunks
+}
+
 fn account_file_exists() -> bool {
     let state = PathBuf::from(crate::todo::state_dir());
     let root = if state.file_name().and_then(|name| name.to_str()) == Some("userdata") {
@@ -176,27 +254,36 @@ fn flush() -> Result<(), String> {
     }
     let conn = Connection::open(&db_path).map_err(|e| format!("open state database for account usage: {e}"))?;
     let models = model_buckets(&conn)?;
-    if models.is_empty() {
+    let skills = skill_buckets(&conn)?;
+    if models.is_empty() && skills.is_empty() {
         return Ok(());
     }
     let environment_id = crate::server_env::environment_id(&state_dir)
         .ok_or_else(|| "environment id unavailable".to_string())?;
-    let body = json!({
-        "environmentId": environment_id,
-        "models": models,
-        "skills": [],
-    });
-    crate::account::authenticated_request("Failed to sync account usage", |client, access| {
-        client.request(
-            reqwest::Method::POST,
-            "/api/v1/usage",
-            Some(access),
-            Some(body.clone()),
-            None,
-            std::time::Duration::from_secs(15),
-        )
-    })
-    .map_err(|e| e.0)?;
+    let model_chunks = chunks_by_minute(models);
+    let skill_chunks = chunks_by_minute(skills);
+    let pushes = model_chunks.len().max(skill_chunks.len());
+    for index in 0..pushes {
+        let body = json!({
+            "environmentId": environment_id,
+            "models": model_chunks.get(index).cloned().unwrap_or_default(),
+            "skills": skill_chunks.get(index).cloned().unwrap_or_default(),
+        });
+        crate::account::authenticated_request("Failed to sync account usage", |client, access| {
+            client.request(
+                reqwest::Method::POST,
+                "/api/v1/usage",
+                Some(access),
+                Some(body.clone()),
+                None,
+                std::time::Duration::from_secs(15),
+            )
+        })
+        .map_err(|e| e.0)?;
+        if index + 1 < pushes {
+            std::thread::sleep(std::time::Duration::from_millis(100));
+        }
+    }
     Ok(())
 }
 
@@ -229,4 +316,10 @@ mod tests {
             18
         );
     }
+
+    #[test]
+    fn structured_reference_names_are_normalized() {
+        assert_eq!(reference_names(Some(r#"[{"name":"$rust-anything"},{"name":"/review"}]"#)), vec!["rust-anything", "review"]);
+    }
+
 }

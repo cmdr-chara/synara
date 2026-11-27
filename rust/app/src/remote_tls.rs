@@ -182,6 +182,26 @@ pub fn anchor_for(environment_id: &str, root_certificate: &str) -> Result<Remote
     })
 }
 
+/// Validates a controller-pinned root exactly as upstream does before trust is
+/// imported: environment shape, root fingerprint, CA constraint, and a valid
+/// self-signature. PEM parse failures are deliberately untrusted input errors.
+pub fn validate_anchor(environment_id: &str, root_certificate: &str, root_fingerprint: &str) -> Result<(), String> {
+    remote_tls_server_name(environment_id)?;
+    let anchor = anchor_for(environment_id, root_certificate)?;
+    if anchor.root_fingerprint != root_fingerprint {
+        return Err("Remote root does not match the locally approved fingerprint".to_string());
+    }
+    let pem = x509_parser::pem::parse_x509_pem(root_certificate.as_bytes())
+        .map_err(|e| format!("root pem parse failed: {e}"))?.1;
+    let cert = x509_parser::certificate::X509Certificate::from_der(&pem.contents)
+        .map_err(|e| format!("root cert parse failed: {e}"))?.1;
+    let is_ca = cert.basic_constraints().ok().flatten().is_some_and(|bc| bc.value.ca);
+    if !is_ca || cert.verify_signature(None).is_err() {
+        return Err("Remote root does not match the locally approved fingerprint".to_string());
+    }
+    Ok(())
+}
+
 pub fn root_validity(identity: &RemoteTlsIdentity) -> Result<(i64, i64), String> {
     cert_validity(&identity.root_certificate)
 }

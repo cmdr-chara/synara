@@ -25289,12 +25289,13 @@ impl Render for Native {
             .flex_1()
             .h_full()
             .px(px(6.))
-            .py(px(6.))
+            .pt(px(8.))
+            .pb(px(6.))
             .gap(px(2.))
             .child(
                 h_flex()
+                    .h(px(42.))
                     .px_2()
-                    .pb_2()
                     .items_center()
                     .child(
                         // Upstream panel title: font-display (Cal Sans) 17px.
@@ -25435,15 +25436,20 @@ impl Render for Native {
             .flex_1()
             .h_full()
             .px(px(6.))
-            .py(px(6.))
+            .pt(px(8.))
+            .pb(px(6.))
             .gap(px(2.))
             .child(
-                div()
+                h_flex()
+                    .h(px(42.))
                     .px_2()
-                    .pb_2()
-                    .text_base()
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .child("Automations"),
+                    .items_center()
+                    .child(
+                        div()
+                            .text_size(px(17.))
+                            .font_family("Cal Sans")
+                            .child("Automations"),
+                    ),
             )
             .child(
                 h_flex()

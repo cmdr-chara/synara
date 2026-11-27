@@ -19348,12 +19348,39 @@ impl Render for Native {
         };
         let model_weak = cx.weak_entity();
         let model_cur = self.composer_model.clone();
-        let model_icon = if self.composer_model.0 == "devin" {
+        // Chip icon follows the thread's own provider inside threads.
+        let chip_provider = if in_thread {
+            let p = str_at(get(thread_v, "modelSelection"), "provider");
+            if p.is_empty() {
+                self.composer_model.0.clone()
+            } else {
+                p.to_string()
+            }
+        } else {
+            self.composer_model.0.clone()
+        };
+        let model_icon = if chip_provider == "devin" {
             icons::P_DEVIN
         } else {
             icons::CODEX
         };
-        let chip_effort_idx = self.composer_effort_idx.min(4);
+        // Upstream deriveEffectiveComposerModelState: inside a thread the chip
+        // reflects that thread's persisted modelSelection — including the
+        // effort in its options — not the global picker slider. The global
+        // slider only seeds new drafts.
+        let chip_effort_idx = if in_thread {
+            let eff = str_at(get(get(thread_v, "modelSelection"), "options"), "effort");
+            match eff {
+                "minimal" => 0,
+                "low" => 1,
+                "medium" => 2,
+                "high" => 3,
+                "max" => 4,
+                _ => self.composer_effort_idx.min(4),
+            }
+        } else {
+            self.composer_effort_idx.min(4)
+        };
         let theme_chip = theme.clone();
         let build_model_chip = move |cx: &mut Context<Self>| {
             let cur = model_cur.clone();

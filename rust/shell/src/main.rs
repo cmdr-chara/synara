@@ -199,6 +199,32 @@ impl Render for Shell {
     }
 }
 
+#[cfg(target_os = "macos")]
+fn start_appsnap_watcher() {
+    static WATCHER: std::sync::OnceLock<Option<std::sync::Arc<appsnap::AppSnapWatcher>>> = std::sync::OnceLock::new();
+    WATCHER.get_or_init(|| {
+        let helper = appsnap::resolve_appsnap_helper()?;
+        let flavor = desktop_identity::runtime_flavor();
+        let bundle_id = match flavor {
+            "beta" => "com.emanueledipietro.synara.beta",
+            "remote" => "com.emanueledipietro.synara.remote",
+            "canary" => "com.emanueledipietro.synara.canary",
+            "cua" => "com.emanueledipietro.synara.cua",
+            _ => "com.emanueledipietro.synara",
+        };
+        let watcher = std::sync::Arc::new(appsnap::AppSnapWatcher::new(
+            helper,
+            backend::configured_home_dir().join("userdata").join("appsnap").join("tmp"),
+            bundle_id,
+        ));
+        watcher.set_enabled(true);
+        Some(watcher)
+    });
+}
+
+#[cfg(not(target_os = "macos"))]
+fn start_appsnap_watcher() {}
+
 fn main() {
     reliability::initialize();
     let diagnostics_home = backend::configured_home_dir();
@@ -237,6 +263,7 @@ fn main() {
 
     // Upstream desktop role: host visible browser automation for the server.
     browser_host::start_browser_host();
+    start_appsnap_watcher();
 
     app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);

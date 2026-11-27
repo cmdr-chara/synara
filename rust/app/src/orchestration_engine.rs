@@ -4106,6 +4106,19 @@ fn checkpoint_revert(command: &Map<String, Value>) -> Result<Value, WsErr> {
         ],
     )
     .map_err(|e| err(format!("activity projection: {e}")))?;
+    // Execute the actual worktree restore off-thread (upstream does this in
+    // the CheckpointReactor); completion is reported back through
+    // `thread.revert.complete` internally.
+    let workspace: Option<String> = conn
+        .query_row(
+            "SELECT p.workspace_root FROM projection_projects p              JOIN projection_threads t ON t.project_id = p.project_id              WHERE t.thread_id = ?1",
+            params![thread_id],
+            |r| r.get(0),
+        )
+        .ok();
+    if let Some(root) = workspace {
+        crate::checkpointing::spawn_revert(thread_id.clone(), turn_count, std::path::PathBuf::from(root));
+    }
     Ok(json!({ "sequence": seq }))
 }
 

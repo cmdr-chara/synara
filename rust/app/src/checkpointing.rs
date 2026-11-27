@@ -376,6 +376,106 @@ pub(crate) fn spawn_capture(thread_id: String, turn_id: String, root: PathBuf) {
 }
 
 
+/// Restore the worktree to the checkpoint recorded for `turn_count`, then
+/// report completion through the internal command channel so the projection
+/// lifecycle matches upstream (`checkpoint.revert.succeeded` /
+/// `.failed` activities). Runs off the caller thread.
+pub(crate) fn spawn_revert(thread_id: String, turn_count: i64, root: PathBuf) {
+    std::thread::spawn(move || {
+        let outcome = revert_inner(&thread_id, turn_count, &root);
+        let now = crate::todo::iso_now_ms();
+        let mut command = serde_json::Map::new();
+        command.insert("type".into(), json!("thread.revert.complete"));
+        command.insert("commandId".into(), json!(format!("revert-complete:{thread_id}:{turn_count}")));
+        command.insert("threadId".into(), json!(thread_id));
+        command.insert("createdAt".into(), json!(now));
+        command.insert("turnCount".into(), json!(turn_count));
+        match outcome {
+            Ok(()) => {
+                let _ = crate::orchestration_engine::handle(
+                    "orchestration.dispatchCommand",
+                    &serde_json::Value::Object(command),
+                );
+            }
+            Err(e) => {
+                let mut fail = serde_json::Map::new();
+                fail.insert("type".into(), json!("thread.activity.append"));
+                fail.insert(
+                    "commandId".into(),
+                    json!(format!("revert-failed:{thread_id}:{turn_count}")),
+                );
+                fail.insert("threadId".into(), json!(thread_id.clone()));
+                fail.insert("createdAt".into(), json!(crate::todo::iso_now_ms()));
+                fail.insert(
+                    "activity".into(),
+                    json!({
+                        "id": uuid_v4(),
+                        "tone": "error",
+                        "kind": "checkpoint.revert.failed",
+                        "summary": "Checkpoint revert failed",
+                        "payload": {"turnCount": turn_count, "error": e.0},
+                        "turnId": null,
+                        "createdAt": crate::todo::iso_now_ms(),
+                    }),
+                );
+                let _ = crate::orchestration_engine::handle(
+                    "orchestration.dispatchCommand",
+                    &serde_json::Value::Object(fail),
+                );
+            }
+        }
+    });
+}
+
+fn revert_inner(thread_id: &str, turn_count: i64, root: &Path) -> Result<(), WsErr> {
+    let reference = ref_for_turn(thread_id, turn_count);
+    if ref_commit(root, &reference).is_none() {
+        return Err(err(format!("checkpoint ref {reference} not found")));
+    }
+    // Rescue snapshot of the pre-revert worktree, mirroring upstream
+    // revert-rescue refs: if the restore itself fails midway, the user's
+    // pre-revert state is recoverable from the hidden ref.
+    let rescue = format!(
+        "{REFS_PREFIX}/{}/revert-rescue/{}",
+        thread_token(thread_id),
+        uuid_v4()
+    );
+    let _ = capture(root, &rescue);
+
+    // read-tree --reset -u syncs index and worktree to the checkpoint tree.
+    // Because captures record `git add -A`, every non-ignored file present at
+    // capture time is tracked afterward; `git clean -fd` then removes exactly
+    // the files created after the checkpoint, which is the revert semantic.
+    let reset = Command::new("git")
+        .arg("-C")
+        .arg(root)
+        .args(["read-tree", "--reset", "-u", &reference])
+        .output()
+        .map_err(|e| err(format!("read-tree spawn: {e}")))?;
+    if !reset.status.success() {
+        return Err(err(format!(
+            "read-tree --reset failed: {}",
+            String::from_utf8_lossy(&reset.stderr).trim()
+        )));
+    }
+    let clean = Command::new("git")
+        .arg("-C")
+        .arg(root)
+        .args(["clean", "-fd"])
+        .output()
+        .map_err(|e| err(format!("clean spawn: {e}")))?;
+    if !clean.status.success() {
+        return Err(err(format!(
+            "git clean failed: {}",
+            String::from_utf8_lossy(&clean.stderr).trim()
+        )));
+    }
+    // The rescue ref stays in place — it is the user's only copy of the
+    // pre-revert state. Upstream deletes it after the conversation rollback
+    // commits; the Rust port keeps it since refs cost nothing and are hidden.
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

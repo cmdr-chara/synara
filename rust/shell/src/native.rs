@@ -18884,8 +18884,11 @@ impl Render for Native {
             } else {
                 // Upstream shows the model display name in the chip, not the
                 // raw slug ("GPT-6 Astra", not "gpt-6-astra").
+                // Upstream composerModelDisplayName: the provider's family
+                // prefix repeats the icon, so the chip drops it — "GPT-6
+                // Astra" reads "6 Astra", "Claude Opus 5" reads "Opus 5".
                 match thread_model.as_str() {
-                    "gpt-6-astra" => "GPT-6 Astra".to_string(),
+                    "gpt-6-astra" | "GPT-6 Astra" => "6 Astra".to_string(),
                     "adaptive" => "Adaptive".to_string(),
                     "swe-1-7" => "SWE 1.7".to_string(),
                     "swe-2" => "SWE 2".to_string(),
@@ -18893,7 +18896,15 @@ impl Render for Native {
                 }
             }
         } else {
-            self.composer_model.2.clone()
+            // Same composerModelDisplayName stripping for the draft chip.
+            let lbl = self.composer_model.2.clone();
+            if self.composer_model.0 == "codex" {
+                lbl.replacen("GPT-", "", 1)
+            } else if self.composer_model.0 == "claudeAgent" {
+                lbl.replacen("Claude ", "", 1)
+            } else {
+                lbl
+            }
         };
         let model_weak = cx.weak_entity();
         let model_cur = self.composer_model.clone();

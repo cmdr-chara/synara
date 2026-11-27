@@ -190,6 +190,11 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["automationId"]),
         ),
         def(
+            "synara_capabilities",
+            "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
+            schema(json!({}), &[]),
+        ),
+        def(
             "synara_read_kanban_board",
             "Read the kanban board of a project: every thread as a card in one of Draft / In Progress / Awaiting you / Done, with attention flags (failed, stuck, awaiting approval/input).",
             schema(json!({
@@ -1101,6 +1106,40 @@ fn delete_kanban_card(args: &Value) -> Result<Value, String> {
     Ok(json!({"threadId": thread_id, "deleted": true}))
 }
 
+fn capabilities() -> Result<Value, String> {
+    let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
+    let instances = crate::provider_instances::derive_instances(&settings);
+    let mut providers: serde_json::Map<String, Value> = serde_json::Map::new();
+    for inst in &instances {
+        let entry = providers
+            .entry(inst.driver.clone())
+            .or_insert_with(|| json!({"provider": inst.driver, "instances": []}));
+        if let Some(arr) = entry.get_mut("instances").and_then(Value::as_array_mut) {
+            arr.push(json!({
+                "instanceId": inst.instance_id,
+                "driver": inst.driver,
+                "enabled": inst.enabled,
+                "isDefault": inst.is_default,
+            }));
+        }
+    }
+    // The model catalog is cached per provider by provider.listModels.
+    for (driver, entry) in providers.iter_mut() {
+        let catalog = crate::provider_cache::handle(
+            "provider.listModels",
+            &json!({"provider": driver}),
+        );
+        if let Ok(cat) = catalog {
+            if let Some(models) = cat.get("models") {
+                entry.as_object_mut().map(|m| m.insert("models".into(), models.clone()));
+            }
+        }
+    }
+    let mut list: Vec<Value> = providers.into_values().collect();
+    list.sort_by_key(|p| p.get("provider").and_then(Value::as_str).unwrap_or("").to_string());
+    Ok(json!({"providers": list}))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -1111,6 +1150,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_read_thread_activity" => read_thread_activity(args),
         "synara_read_thread_events" => read_thread_events(args),
         "synara_read_kanban_board" => read_kanban_board(args),
+        "synara_capabilities" => capabilities(),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

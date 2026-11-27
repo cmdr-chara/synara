@@ -1587,12 +1587,101 @@ fn updater_cache_name(flavor: UpdateFlavor) -> &'static str {
     }
 }
 
+fn classify_update_failure(message: Option<&str>) -> &'static str {
+    let Some(message) = message else { return "unknown" };
+    let text = &message[..message.len().min(1024)];
+    if text == "cancelled" || text == "net::ERR_ABORTED" {
+        return "cancelled";
+    }
+    if text == "Timed out while checking for updates. Try again."
+        || text == "Request timed out"
+        || text == "The update couldn’t be installed automatically."
+        || text.starts_with("Request timed out after ")
+        || text.starts_with("Download stalled after ")
+        || text.contains("net::ERR_TIMED_OUT")
+        || text.contains("net::ERR_CONNECTION_TIMED_OUT")
+        || text.contains("idle-timeout")
+    {
+        return "timeout";
+    }
+    const NETWORK_ERRORS: [&str; 12] = [
+        "net::ERR_INTERNET_DISCONNECTED",
+        "net::ERR_NAME_NOT_RESOLVED",
+        "net::ERR_NETWORK_CHANGED",
+        "net::ERR_CONNECTION_CLOSED",
+        "net::ERR_CONNECTION_RESET",
+        "net::ERR_CONNECTION_REFUSED",
+        "net::ERR_CONNECTION_ABORTED",
+        "net::ERR_ADDRESS_UNREACHABLE",
+        "net::ERR_PROXY_CONNECTION_FAILED",
+        "net::ERR_TUNNEL_CONNECTION_FAILED",
+        "net::ERR_CERT_AUTHORITY_INVALID",
+        "net::ERR_CERT_DATE_INVALID",
+    ];
+    if NETWORK_ERRORS.iter().any(|error| text.contains(error))
+        || text.contains("response-error")
+        || text.contains("response-aborted")
+        || text.contains("premature-end")
+        || text.contains("request-abort")
+    {
+        return "network";
+    }
+    let status_error = |prefix: char| {
+        text.as_bytes().get(0) == Some(&(prefix as u8))
+            && text.as_bytes().get(1).is_some_and(|byte| byte.is_ascii_digit())
+            && text.as_bytes().get(2).is_some_and(|byte| byte.is_ascii_digit())
+    };
+    if status_error('4')
+        || text.starts_with("Cannot download update: HTTP 4")
+        || text.starts_with("Could not download update: server returned HTTP 4")
+        || text.contains("http-4")
+    {
+        return "http-client";
+    }
+    if status_error('5')
+        || text.starts_with("Cannot download update: HTTP 5")
+        || text.starts_with("Could not download update: server returned HTTP 5")
+        || text.contains("http-5")
+    {
+        return "http-server";
+    }
+    if text.starts_with("Cannot find remote")
+        || text.starts_with("Cannot find beta")
+        || text.starts_with("Cannot find synara")
+        || text.starts_with("Cannot parse update info from")
+        || text.starts_with("could not parse update manifest")
+    {
+        return "manifest";
+    }
+    if text == "No published versions on GitHub"
+        || text.starts_with("Cannot parse releases feed: ")
+        || text.starts_with("Unable to find latest version on GitHub (")
+    {
+        return "release-feed";
+    }
+    if text.starts_with("sha256 checksum mismatch")
+        || text.starts_with("sha512 checksum mismatch")
+        || text.starts_with("checksum mismatch")
+        || text.starts_with("The downloaded update could not be verified: ")
+        || text.starts_with("The downloaded update did not match its signed checksum")
+        || text == "The downloaded update could not be reverified. Download it again."
+        || text == "The downloaded update changed during install preparation. Download it again."
+        || text == "The update download did not produce a verified update. Try again."
+        || text.contains("is not signed by the application owner")
+        || text.contains("is not signed by the application publisher")
+    {
+        return "verification";
+    }
+    "unknown"
+}
+
 fn track_update_transition(previous: &UpdateState, next: &UpdateState) {
     if next.error_context.is_some()
         && (next.status != previous.status || next.error_context != previous.error_context || next.message != previous.message)
     {
         let mut payload = serde_json::json!({"kind":"update","outcome":"error"});
         if let Some(context) = next.error_context.as_deref() { payload["errorContext"] = serde_json::json!(context); }
+        payload["reason"] = serde_json::json!(classify_update_failure(next.message.as_deref()));
         crate::beta_diagnostics::track("update.error", payload);
         return;
     }
@@ -2377,6 +2466,14 @@ files:
         assert_eq!(manifest.version, "0.9.1-beta.1");
         assert_eq!(select_update_download_file(&manifest.files, "arm64", ".zip").unwrap().sha512, "abc");
         assert!(select_update_download_file(&manifest.files, "x86_64", ".zip").is_err());
+    }
+
+    #[test]
+    fn update_failure_classification_is_fixed_category() {
+        assert_eq!(classify_update_failure(Some("Could not download update: server returned HTTP 503")), "http-server");
+        assert_eq!(classify_update_failure(Some("The downloaded update could not be reverified. Download it again.")), "verification");
+        assert_eq!(classify_update_failure(Some("net::ERR_CONNECTION_RESET")), "network");
+        assert_eq!(classify_update_failure(Some("unstructured private detail")), "unknown");
     }
 
 }

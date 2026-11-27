@@ -392,7 +392,15 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
         spec.accent_rgb
             .map(|c| (c as f32 + (255.0 - c as f32) * LIGHT_INK_SOFTEN).round() as u8)
     } else {
-        spec.accent_rgb
+        // Upstream dark full-window atmosphere: brightness(0.75) saturate(0.6).
+        spec.accent_rgb.map(|c| {
+            let f = c as f32 / 255.0;
+            let gray = 0.2126 * spec.accent_rgb[0] as f32 / 255.0
+                + 0.7152 * spec.accent_rgb[1] as f32 / 255.0
+                + 0.0722 * spec.accent_rgb[2] as f32 / 255.0;
+            let desat = gray + (f - gray) * 0.6;
+            (desat * 0.75 * 255.0).round() as u8
+        })
     };
 
     // Upstream renders one bitmap pixel per cell and the browser upscales it

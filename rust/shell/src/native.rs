@@ -15661,7 +15661,9 @@ impl Render for Native {
             h_flex()
                 .items_center()
                 .gap_1()
-                .mb_1()
+                // Measured against the web reference: upstream leaves ~8px
+                // below the workspace row before the first action row.
+                .mb_2()
                 .child(
                     // Upstream wordmark: font-display (Cal Sans) 17px, normal
                     // weight (the face is already semibold-looking).
@@ -16050,7 +16052,7 @@ impl Render for Native {
         }
         sidebar = sidebar.child(
             div()
-                .mt(px(15.))
+                .mt(px(20.))
                 .text_size(px(13.))
                 .text_color(theme.muted_foreground)
                 .child(if self.view_spaces {

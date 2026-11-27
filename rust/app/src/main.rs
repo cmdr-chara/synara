@@ -82,6 +82,7 @@ mod device_sim;
 mod device_stream;
 mod computer_native;
 mod computer_shield;
+mod factory_import;
 mod omp_import;
 mod opencode_runner;
 mod pi_runner;

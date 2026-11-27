@@ -173,10 +173,10 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
 /// thread, reads the provider-native transcript straight from disk (the same
 /// files the discovery catalog scans), projects messages with
 /// `import:{thread}:{provider}:{sourceId}` ids, and binds the external resume
-/// cursor so the next turn continues that session. OMP file-backed sessions are
-/// imported through the same local history reader as the upstream adapter.
-/// OpenCode/Droid imports remain documented gaps — their transcripts need the
-/// live adapter protocol.
+/// cursor so the next turn continues that session. OMP and Droid file-backed
+/// sessions are imported through the same local
+/// history readers as the upstream adapters. OpenCode import remains a
+/// documented gap — its transcript needs the live adapter/server protocol.
 fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload
         .get("threadId")
@@ -235,7 +235,15 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     } else {
         None
     };
-    let transcript_path: Option<std::path::PathBuf> = if provider == "omp" {
+    let factory_history = if provider == "droid" {
+        Some(
+            crate::factory_import::read_factory_session_history(std::path::Path::new(&home), external_id)
+                .ok_or_else(|| err(format!("Droid session '{external_id}' was not found locally.")))?,
+        )
+    } else {
+        None
+    };
+    let transcript_path: Option<std::path::PathBuf> = if provider == "omp" || provider == "droid" {
         None
     } else {
         match provider.as_str() {
@@ -294,6 +302,15 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     if let Some(history) = omp_history.as_ref() {
         omp_last_model = history.last_model.clone();
         omp_thinking_level = history.last_thinking_level.clone();
+        for (index, message) in history.messages.iter().enumerate() {
+            imported.push((
+                message.role.clone(),
+                message.text.clone(),
+                message.timestamp.clone(),
+                format!("{index}:0:{}", message.id),
+            ));
+        }
+    } else if let Some(history) = factory_history.as_ref() {
         for (index, message) in history.messages.iter().enumerate() {
             imported.push((
                 message.role.clone(),
@@ -404,6 +421,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let provider_key = match provider.as_str() {
         "codex" => "codex",
         "omp" => "omp",
+        "droid" => "droid",
         _ => "claude",
     };
     for (seq, (role, text_out, timestamp, source_id)) in imported.iter().enumerate() {
@@ -437,7 +455,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     }
     let cursor = match provider_key {
         "codex" => json!({ "resume": external_id }),
-        "omp" => json!({ "schemaVersion": 1, "sessionId": external_id }),
+        "omp" | "droid" => json!({ "schemaVersion": 1, "sessionId": external_id }),
         _ => json!({ "resume": external_id }),
     };
     let now2 = now.clone();

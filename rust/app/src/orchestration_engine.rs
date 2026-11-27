@@ -283,7 +283,30 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             }
             "codex" => {
                 // Codex rollout files embed the session id in the file name.
-                let sessions = std::path::PathBuf::from(&home).join(".codex/sessions");
+                // Imports must look in the same account boundary that created
+                // the session: ambient/default homes plus configured instance
+                // homes and explicit CODEX_HOME environments.
+                let mut homes = vec![std::path::PathBuf::from(&home).join(".codex")];
+                if let Ok(value) = std::env::var("CODEX_HOME") {
+                    if !value.trim().is_empty() {
+                        homes.push(std::path::PathBuf::from(value));
+                    }
+                }
+                if let Ok(value) = std::env::var("SYNARA_HOME") {
+                    homes.push(std::path::PathBuf::from(value).join("codex-home-overlay"));
+                }
+                let settings = crate::server_settings::current();
+                if let Some(instance) = crate::provider_instances::resolve_instance(&settings, instance_id.as_deref(), Some("codex")) {
+                    if let Some(value) = crate::provider_instances::instance_home_path(&instance) {
+                        homes.push(std::path::PathBuf::from(value));
+                    }
+                    for (key, value) in crate::provider_instances::instance_start_environment(&instance) {
+                        if key == "CODEX_HOME" && !value.trim().is_empty() {
+                            homes.push(std::path::PathBuf::from(value));
+                        }
+                    }
+                }
+                homes.dedup();
                 let mut found = None;
                 fn scan(dir: &std::path::Path, needle: &str, depth: u32) -> Option<std::path::PathBuf> {
                     if depth == 0 {
@@ -301,8 +324,14 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                     }
                     None
                 }
-                if sessions.is_dir() {
-                    found = scan(&sessions, external_id, 4);
+                for home in homes {
+                    let sessions = home.join("sessions");
+                    if sessions.is_dir() {
+                        found = scan(&sessions, external_id, 4);
+                        if found.is_some() {
+                            break;
+                        }
+                    }
                 }
                 found
             }

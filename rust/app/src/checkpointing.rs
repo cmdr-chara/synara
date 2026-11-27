@@ -56,7 +56,7 @@ fn git_stdout(cwd: &Path, args: &[&str]) -> Option<String> {
     Some(String::from_utf8_lossy(&out.stdout).trim().to_string())
 }
 
-fn is_git_repo(cwd: &Path) -> bool {
+pub(crate) fn is_git_repo(cwd: &Path) -> bool {
     git_stdout(cwd, &["rev-parse", "--is-inside-work-tree"])
         .map(|v| v == "true")
         .unwrap_or(false)

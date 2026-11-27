@@ -263,6 +263,7 @@ pub(crate) fn set_turn_state(
                 root,
             );
             crate::thread_git_metadata::spawn_capture(thread_id.to_string());
+            crate::hub_outputs::capture_outputs(thread_id, turn_id);
         }
     }
     Ok(())
@@ -1749,6 +1750,7 @@ fn acp_usage_snapshot(update: &Value) -> Option<Value> {
 /// Called after a `thread.turn-start-requested` event is committed for an
 /// ACP-capable provider thread. Spawns the runner thread that drives the session.
 pub fn start_turn(provider: String, thread_id: String, message_id: String, text: String, cwd: String) {
+    crate::hub_outputs::capture_baseline(&thread_id);
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&provider, &thread_id, &message_id, &text, &cwd) {
             tracing_error(&thread_id, &e);

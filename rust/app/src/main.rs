@@ -61,6 +61,7 @@ mod checkpointing;
 mod pr_command_detection;
 mod thread_git_metadata;
 mod sidechat_expiry;
+mod hub_outputs;
 mod local_image;
 mod list_worktrees;
 mod native_ws;

@@ -127,6 +127,69 @@ fn local_host_proof(account: &Value, environment_id: &str) -> Result<String, Str
     )
 }
 
+fn remote_endpoints(host: &Value) -> Vec<crate::remote_client::RemoteEndpoint> {
+    host.get("endpoints")
+        .and_then(Value::as_array)
+        .map(|endpoints| endpoints.iter().filter_map(|endpoint| {
+            let transport = endpoint.get("transport").and_then(Value::as_str)?.to_string();
+            let url = endpoint.get("url").and_then(Value::as_str)?.to_string();
+            if transport.is_empty() || url.is_empty() { None } else { Some(crate::remote_client::RemoteEndpoint { transport, url }) }
+        }).collect())
+        .unwrap_or_default()
+}
+
+fn preview_matches_binding(preview: &Value, account: &Value) -> bool {
+    let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+    let authority = crate::account::account_api_issuer(account_url);
+    preview.pointer("/binding/accountAuthority").and_then(Value::as_str) == Some(authority.as_str())
+        && preview.pointer("/binding/userId").and_then(Value::as_str) == account.get("userId").and_then(Value::as_str)
+        && preview.pointer("/binding/organizationId").and_then(Value::as_str) == account.get("organizationId").and_then(Value::as_str)
+}
+
+fn run_remote_pairing(
+    endpoints: Vec<crate::remote_client::RemoteEndpoint>,
+    bundle: Value,
+    secrets_dir: String,
+    label: String,
+    host_id: String,
+    user_id: String,
+) -> Result<crate::remote_client::PairingOutcome, String> {
+    std::thread::spawn(move || {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .map_err(|error| format!("Remote pairing runtime unavailable: {error}"))?;
+        runtime.block_on(async move {
+            let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(&secrets_dir))
+                .map_err(|_| "Remote access operation failed".to_string())?;
+            let grant_host_id = host_id.clone();
+            let grant_user_id = user_id.clone();
+            crate::remote_client::pair_remote_host(
+                endpoints,
+                &bundle,
+                &identity,
+                &label,
+                move || {
+                    crate::account::register_shell_device(&grant_user_id).map_err(|error| error.0)?;
+                    let device_jkt = crate::account::read_session_file()
+                        .and_then(|stored| stored.get("deviceJkt").and_then(Value::as_str).map(str::to_string))
+                        .ok_or_else(|| "Failed to request a host grant".to_string())?;
+                    let response = authed(
+                        reqwest::Method::POST,
+                        &format!("/api/v1/hosts/{grant_host_id}/grant"),
+                        Some(json!({"deviceJkt": device_jkt})),
+                        "Failed to request a host grant",
+                    ).map_err(|error| error.0)?;
+                    response.get("grant").and_then(Value::as_str).map(str::to_string)
+                        .ok_or_else(|| "Failed to request a host grant".to_string())
+                },
+            ).await
+        })
+    })
+    .join()
+    .map_err(|_| "Remote pairing worker failed".to_string())?
+}
+
 fn cancel_published_pairing_code(invite_id: &str) {
     let Some(account) = crate::account::read_session_file() else { return };
     let state_dir = crate::todo::state_dir();
@@ -202,6 +265,79 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
                 "rootNeedsRepair": tls_identity.as_ref().is_some_and(|identity| crate::remote_tls::root_needs_repair(identity, now_ms)),
                 "allowConnections": rp::allows_connections(&conn, &scope)?,
             }))
+        }
+        "pair" | "confirm-code" => {
+            prune_pairing_previews();
+            let account = crate::account::read_session_file().ok_or_else(|| "Remote access operation failed".to_string())?;
+            let binding = controller_binding(&account, &environment_id)?;
+            let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(&secrets_dir))
+                .map_err(|_| "Remote access operation failed".to_string())?;
+            let bundle = if operation == "pair" {
+                request.get("bundle").cloned().unwrap_or(Value::Null)
+            } else {
+                let invite_id = request.get("inviteId").and_then(Value::as_str).unwrap_or_default();
+                let preview = pairing_previews().lock().ok().and_then(|previews| previews.get(invite_id).cloned())
+                    .ok_or_else(|| "Review a fresh pairing code and compare the host fingerprint".to_string())?;
+                if !preview_matches_binding(&preview, &account)
+                    || preview.get("deviceJkt").and_then(Value::as_str) != Some(identity.jkt.as_str())
+                    || request.get("rootFingerprint").and_then(Value::as_str) != preview.pointer("/bundle/rootFingerprint").and_then(Value::as_str)
+                {
+                    return Err("Review a fresh pairing code and compare the host fingerprint".to_string());
+                }
+                preview.get("bundle").cloned().unwrap_or(Value::Null)
+            };
+            if bundle.get("v").and_then(Value::as_u64) != Some(2)
+                || bundle.get("accountAuthority").and_then(Value::as_str) != Some(binding.account_authority.as_str())
+                || bundle.get("userId").and_then(Value::as_str) != Some(binding.user_id.as_str())
+                || bundle.get("organizationId").and_then(Value::as_str) != Some(binding.organization_id.as_str())
+            {
+                return Err("Pairing belongs to another account".to_string());
+            }
+            let host_id = bundle.get("hostId").and_then(Value::as_str).unwrap_or_default().to_string();
+            let target_environment = bundle.get("environmentId").and_then(Value::as_str).unwrap_or_default().to_string();
+            if host_id.is_empty() || target_environment.is_empty() {
+                return Err("Review a fresh pairing code and compare the host fingerprint".to_string());
+            }
+            let trust_conn = crate::remote_host_trust::open()?;
+            crate::remote_host_trust::import_invitation(&trust_conn, &binding, &bundle)?;
+            let listed = authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to list hosts").map_err(|error| error.0)?;
+            let host = listed.get("hosts").and_then(Value::as_array).and_then(|hosts| {
+                hosts.iter().find(|candidate| {
+                    candidate.get("id").and_then(Value::as_str) == Some(host_id.as_str())
+                        && candidate.get("environmentId").and_then(Value::as_str) == Some(target_environment.as_str())
+                }).cloned()
+            }).ok_or_else(|| "The invitation host is not available in this account".to_string())?;
+            let endpoints = remote_endpoints(&host);
+            let outcome = run_remote_pairing(
+                endpoints,
+                bundle.clone(),
+                secrets_dir.clone(),
+                crate::account::display_hostname(),
+                host_id.clone(),
+                binding.user_id.clone(),
+            )?;
+            let current = crate::account::read_session_file().ok_or_else(|| "Account changed during pairing".to_string())?;
+            let current_binding = controller_binding(&current, &environment_id)?;
+            if current_binding.account_authority != binding.account_authority
+                || current_binding.user_id != binding.user_id
+                || current_binding.organization_id != binding.organization_id
+            {
+                return Err("Account changed during pairing".to_string());
+            }
+            if !crate::remote_host_trust::confirm(
+                &trust_conn,
+                &binding,
+                &target_environment,
+                bundle.get("rootFingerprint").and_then(Value::as_str).unwrap_or_default(),
+                &crate::todo::iso_now_ms(),
+            )? {
+                return Err("Local trust changed during pairing".to_string());
+            }
+            if let Ok(mut previews) = pairing_previews().lock() {
+                previews.remove(bundle.get("inviteId").and_then(Value::as_str).unwrap_or_default());
+            }
+            let _ = outcome;
+            Ok(json!({"kind":"paired","environmentId":target_environment,"hostId":host_id}))
         }
         "forget-host" => {
             let target_environment = request.get("environmentId").and_then(Value::as_str).unwrap_or_default();

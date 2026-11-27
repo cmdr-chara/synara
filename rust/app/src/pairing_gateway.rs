@@ -278,14 +278,11 @@ where
             {
                 close_fail!();
             }
-            // Account grants do not exist in the local-only build: enrolment
-            // through the owner's QR path runs whenever connections are
-            // allowed, otherwise the device waits for explicit approval.
-            let recorded = if rp::allows_connections(&conn, &scope).unwrap_or(false) {
-                rp::enroll(&conn, &scope, &ctx.invite_id, &ctx.device).unwrap_or(false)
-            } else {
-                rp::request_approval(&conn, &scope, &ctx.invite_id, &ctx.device).unwrap_or(false)
-            };
+            // Pairing never self-enrolls on the invite secret alone. Upstream
+            // enrolls immediately only after verifying the owner account grant;
+            // until that verifier is wired here, every device must wait for the
+            // host owner's explicit approval.
+            let recorded = rp::request_approval(&conn, &scope, &ctx.invite_id, &ctx.device).unwrap_or(false);
             if !recorded {
                 close_fail!();
             }

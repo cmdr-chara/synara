@@ -16111,11 +16111,11 @@ impl Render for Native {
                 .gap(px(8.))
                 .items_center()
                 .cursor_pointer()
-                .rounded(px(8.))
+                .rounded(px(6.))
                 .child(
                     svg_icon(provider_icon)
-                        .size(px(12.))
-                        .text_color(theme.muted_foreground),
+                        .size(px(14.))
+                        .text_color(theme.foreground.opacity(0.95)),
                 )
                 .child(
                     div()
@@ -16128,7 +16128,10 @@ impl Render for Native {
                         .text_color(if is_sel {
                             theme.foreground
                         } else {
-                            theme.muted_foreground
+                            // Upstream SIDEBAR_ROW_IDLE_TEXT_CLASS_NAME is
+                            // text-foreground/89 — resting rows read almost full
+                            // foreground, not muted.
+                            theme.foreground.opacity(0.89)
                         })
                         .child(if title.is_empty() {
                             "(untitled)".to_string()
@@ -16451,7 +16454,7 @@ impl Render for Native {
             } else {
                 svg_icon(glyph)
                     .size(px(16.))
-                    .text_color(theme.muted_foreground)
+                    .text_color(theme.foreground.opacity(0.95))
                     .into_any_element()
             };
             // The disclosure chevron only appears beside the title when the

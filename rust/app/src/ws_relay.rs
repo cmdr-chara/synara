@@ -516,6 +516,7 @@ fn owner_only_rpc(tag: &str, payload: &serde_json::Value) -> bool {
         || (tag == "server.updateSettings"
             && (payload.get("legacyProviders").is_some()
                 || payload.get("legacyProviderInstances").is_some()))
+        || (tag == "stats.getUsageAnalytics" && payload.get("scope").and_then(serde_json::Value::as_str) == Some("mac"))
 }
 
 fn strip_provider_account_identity(value: &mut serde_json::Value) {
@@ -2312,6 +2313,14 @@ mod admission_tests {
     fn owner_only_rpc_tags_match_upstream_boundary() {
         assert!(super::owner_only_rpc("account.status", &serde_json::json!({})));
         assert!(super::owner_only_rpc("hosts.list", &serde_json::json!({})));
+        assert!(super::owner_only_rpc(
+            "stats.getUsageAnalytics",
+            &serde_json::json!({"scope": "mac"})
+        ));
+        assert!(!super::owner_only_rpc(
+            "stats.getUsageAnalytics",
+            &serde_json::json!({"scope": "synara"})
+        ));
         assert!(super::owner_only_rpc(
             "server.updateSettings",
             &serde_json::json!({"legacyProviders": {}})

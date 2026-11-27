@@ -784,6 +784,7 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
     for (index, step) in steps.iter().enumerate() {
         let step_type = step.get("type").and_then(Value::as_str).unwrap_or("");
         let tool_name = match step_type {
+            "activate_window" => "computer_activate_window",
             "get_state" => "computer_get_state",
             "click" => "computer_click",
             "type_text" => "computer_type_text",

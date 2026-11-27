@@ -171,9 +171,23 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
             "rootNeedsRepair": rp::has_identity(&conn, &environment_id)?,
         }));
     }
-    let Some(scope) = scope else {
+    // Controller operations (redeem/forget/device-info) must not depend on
+    // this installation already being a host with a TLS root. Only the
+    // host-side invitation/device operations require a local trust scope.
+    let requires_scope = matches!(
+        operation,
+        "list" | "create-invitation" | "create-code" | "approve" | "cancel-invitation" | "set-allow-connections" | "revoke-device"
+    );
+    if requires_scope && scope.is_none() {
         return Err("Remote access operation failed".to_string());
-    };
+    }
+    let scope = scope.unwrap_or(crate::remote_pairing::TrustScope {
+        environment_id: environment_id.clone(),
+        root_fingerprint: String::new(),
+        account_authority: String::new(),
+        user_id: String::new(),
+        organization_id: String::new(),
+    });
     match operation {
         "list" => {
             let now_ms = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as i64).unwrap_or(0);

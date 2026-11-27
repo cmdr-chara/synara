@@ -20924,6 +20924,26 @@ impl Render for Native {
                 )
                 .child(ctrl)
         };
+        // SettingsRow with upstream `status` line (pt-1 text-ui-sm muted) below the description.
+        let srow_st = |title: &'static str, desc: &'static str, status: &'static str, ctrl: gpui::AnyElement| {
+            h_flex()
+                .w_full()
+                .items_center()
+                .justify_between()
+                .gap_3()
+                .px_3()
+                .py(px(10. * dscale))
+                .child(
+                    v_flex()
+                        .flex_1()
+                        .min_w_0()
+                        .gap(px(2.))
+                        .child(div().text_size(px(13.)).line_height(px(19.5)).font_weight(FontWeight::MEDIUM).child(title))
+                        .child(div().w_full().text_size(px(13.)).line_height(px(19.5)).text_color(theme.muted_foreground).child(desc))
+                        .child(div().pt(px(4.)).text_size(px(12.)).text_color(theme.muted_foreground).child(status)),
+                )
+                .child(ctrl)
+        };
         let divider = || div().h(px(1.)).w_full().bg(theme.border);
         // Select-style control pill (static parity render).
         let select_pill = |label: String, icon: Option<&'static [u8]>| {
@@ -21352,9 +21372,10 @@ impl Render for Native {
                                     Self::setting_switch(cx, "enableTaskCompletionToasts", self.setting_bool("enableTaskCompletionToasts", true), accent),
                                 ))
                                 .child(divider())
-                                .child(srow(
+                                .child(srow_st(
                                     "Desktop notifications",
                                     "Show an OS notification when a chat or managed terminal agent finishes or needs input while the app is in the background.",
+                                    "Desktop app notifications use your operating system notification center.",
                                     h_flex()
                                         .items_center()
                                         .gap_3()

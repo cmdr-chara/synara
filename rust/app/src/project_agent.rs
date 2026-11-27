@@ -3873,6 +3873,81 @@ fn backfill_summaries(payload: &Value) -> Result<Value, WsErr> {
     get_overview(&json!({"projectId": project_id}))
 }
 
+
+fn resolve_worker(payload: &Value) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"].as_str().unwrap_or_default();
+    let thread_id = payload["threadId"].as_str().unwrap_or_default();
+    let action = payload["action"].as_str().unwrap_or_default();
+    let request_id = payload["requestId"].as_str().unwrap_or_default();
+    if project_id.is_empty() || thread_id.is_empty() || !matches!(action, "stop" | "retry") {
+        return Err(err("Invalid worker resolution request."));
+    }
+    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to resolve the worker alert."))?;
+    if config_row(&conn, project_id)?.is_none() { return Err(err("Project coordinator not found.")); }
+    let worker: Option<(String, Option<String>, String)> = conn.query_row(
+        "SELECT project_id, task_prompt, updated_at FROM project_agent_managed_workers WHERE thread_id = ?1",
+        [thread_id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
+    ).optional().map_err(|e| err(e.to_string()))?;
+    let Some((worker_project, task_prompt, expected_updated)) = worker else {
+        return Err(err("Managed worker not found."));
+    };
+    if worker_project != project_id { return Err(err("Managed worker not found.")); }
+    let now = crate::todo::iso_now_ms();
+    let persist = |conn: &Connection, extra_sql: &str, extra_params: Vec<String>| -> Result<(), WsErr> {
+        let sql = format!(
+            "UPDATE project_agent_managed_workers SET needs_you = 0, needs_you_at = NULL, updated_at = ?2{extra_sql} \
+             WHERE thread_id = ?1 AND updated_at = ?3"
+        );
+        let mut params: Vec<rusqlite::types::Value> = vec![thread_id.to_string().into(), now.clone().into(), expected_updated.clone().into()];
+        params.extend(extra_params.clone().into_iter().map(Into::into));
+        let changed = conn.execute(&sql, params_from_iter(params)).map_err(|e| err(e.to_string()))?;
+        if changed == 0 {
+            conn.execute(
+                &format!("UPDATE project_agent_managed_workers SET needs_you = 0, needs_you_at = NULL{extra_sql} WHERE thread_id = ?1"),
+                {
+                    let mut params: Vec<rusqlite::types::Value> = vec![thread_id.to_string().into()];
+                    params.extend(extra_params.into_iter().map(Into::into));
+                    params_from_iter(params)
+                },
+            ).map_err(|e| err(e.to_string()))?;
+        }
+        Ok(())
+    };
+    if action == "stop" {
+        let command_id = format!("agent-resolve:{request_id}:stop");
+        let result = crate::orchestration_engine::handle(
+            "orchestration.dispatchCommand",
+            &json!({"type":"thread.turn.interrupt","commandId":command_id,"threadId":thread_id,"createdAt":now}),
+        );
+        if result.is_err() { return Err(err("Failed to interrupt the worker thread.")); }
+        persist(&conn, "", Vec::new())?;
+        return Ok(json!({"resolved": true}));
+    }
+    let prompt = task_prompt.map(|p| p.trim().to_string()).filter(|p| !p.is_empty())
+        .ok_or_else(|| err("This worker has no recorded task prompt to retry."))?;
+    let shell: Option<(String, String)> = conn.query_row(
+        "SELECT runtime_mode, interaction_mode FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
+        [thread_id], |r| Ok((r.get(0)?, r.get(1)?)),
+    ).optional().map_err(|e| err(e.to_string()))?;
+    let Some((runtime_mode, interaction_mode)) = shell else {
+        return Err(err("Worker thread was not found."));
+    };
+    let command_id = format!("agent-resolve:{request_id}:retry");
+    let message_id = format!("{command_id}:message");
+    let result = crate::orchestration_engine::handle(
+        "orchestration.dispatchCommand",
+        &json!({
+            "type":"thread.turn.start","commandId":command_id,"threadId":thread_id,
+            "message":{"messageId":message_id,"role":"user","text":prompt,"attachments":[]},
+            "dispatchMode":"queue","dispatchOrigin":"user","runtimeMode":runtime_mode,
+            "interactionMode":interaction_mode,"createdAt":now,
+        }),
+    );
+    if result.is_err() { return Err(err("Failed to re-dispatch the worker turn.")); }
+    persist(&conn, ", active_turn_origin = 'user', active_turn_command_id = ?4, settled_at = NULL, settle_outcome = NULL", vec![command_id])?;
+    Ok(json!({"resolved": true}))
+}
+
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
@@ -3912,6 +3987,7 @@ pub fn handles(tag: &str) -> bool {
             | "projectAgent.library.status"
             | "projectAgent.refreshDigest"
             | "projectAgent.backfillSummaries"
+            | "projectAgent.resolveWorker"
     )
 }
 
@@ -3976,6 +4052,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.library.status" => library_status(payload),
         "projectAgent.refreshDigest" => refresh_digest(payload),
         "projectAgent.backfillSummaries" => backfill_summaries(payload),
+        "projectAgent.resolveWorker" => resolve_worker(payload),
         _ => Err(err("Unknown projectAgent method")),
     }
 }

@@ -449,3 +449,329 @@ mod tests {
         }
     }
 }
+
+// ---- AppSnap capture operations -------------------------------------------------------------
+
+const APPSNAP_PNG_SIGNATURE: [u8; 8] = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+const APPSNAP_MAX_IMAGE_BYTES: usize = 10 * 1024 * 1024;
+
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct AppSnapCapture {
+    pub id: String,
+    pub captured_at: String,
+    pub name: String,
+    pub size_bytes: usize,
+    pub bytes: Vec<u8>,
+    pub source_app_name: Option<String>,
+    pub source_bundle_identifier: Option<String>,
+    pub source_app_icon_data_url: Option<String>,
+    pub source_window_title: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct AppSnapWindowEntry {
+    pub window_id: u64,
+    pub app_name: Option<String>,
+    pub bundle_identifier: Option<String>,
+    pub window_title: Option<String>,
+    pub app_icon_data_url: Option<String>,
+}
+
+fn valid_appsnap_id(value: &str) -> bool {
+    !value.is_empty() && value.len() <= 128 && value.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')
+}
+
+fn path_inside(directory: &std::path::Path, path: &std::path::Path) -> bool {
+    let Ok(directory) = directory.canonicalize() else { return false };
+    let Ok(path) = path.canonicalize() else { return false };
+    path.starts_with(directory)
+}
+
+fn read_validated_png(path: &std::path::Path, output_directory: &std::path::Path) -> Result<Vec<u8>, String> {
+    if !path_inside(output_directory, path) {
+        return Err("Invalid AppSnap capture path.".into());
+    }
+    let metadata = std::fs::metadata(path).map_err(|_| "Invalid AppSnap capture path.".to_string())?;
+    if !metadata.is_file() || metadata.len() == 0 || metadata.len() as usize > APPSNAP_MAX_IMAGE_BYTES {
+        return Err("Invalid AppSnap capture image.".into());
+    }
+    let bytes = std::fs::read(path).map_err(|_| "The AppSnap capture changed while it was read.".to_string())?;
+    if bytes.len() as u64 != metadata.len() || bytes.len() < APPSNAP_PNG_SIGNATURE.len() || bytes[..8] != APPSNAP_PNG_SIGNATURE {
+        return Err("Invalid AppSnap capture image.".into());
+    }
+    Ok(bytes)
+}
+
+fn optional_text(value: &Value, key: &str) -> Option<String> {
+    value.get(key).and_then(Value::as_str).map(str::trim).filter(|s| !s.is_empty()).map(|s| s.chars().take(240).collect())
+}
+
+fn capture_from_message(message: &Value, output_directory: &std::path::Path) -> Result<AppSnapCapture, String> {
+    let id = message.get("id").and_then(Value::as_str).filter(|id| valid_appsnap_id(id)).ok_or("Invalid AppSnap capture id.")?;
+    let path = message.get("path").and_then(Value::as_str).ok_or("Invalid AppSnap capture path.")?;
+    let bytes = read_validated_png(std::path::Path::new(path), output_directory)?;
+    Ok(AppSnapCapture {
+        id: id.to_string(),
+        captured_at: message.get("capturedAt").and_then(Value::as_str).unwrap_or_default().to_string(),
+        name: message.get("name").and_then(Value::as_str).filter(|name| !name.is_empty()).unwrap_or("AppSnap capture.png").chars().take(240).collect(),
+        size_bytes: bytes.len(),
+        bytes,
+        source_app_name: optional_text(message, "sourceAppName"),
+        source_bundle_identifier: optional_text(message, "sourceBundleIdentifier"),
+        source_app_icon_data_url: message.get("sourceAppIconDataUrl").and_then(Value::as_str).filter(|v| v.starts_with("data:image/png;base64,") && v.len() <= 256_000).map(str::to_string),
+        source_window_title: optional_text(message, "sourceWindowTitle"),
+    })
+}
+
+fn spawn_capture_helper(
+    helper: &std::path::Path,
+    output_directory: &std::path::Path,
+    excluded_bundle_id: &str,
+) -> Result<Child, String> {
+    Command::new(helper)
+        .arg("--watch")
+        .arg("--external-trigger")
+        .arg("--output-dir")
+        .arg(output_directory)
+        .arg("--excluded-bundle-id")
+        .arg(excluded_bundle_id)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn()
+        .map_err(|error| format!("Could not start the AppSnap helper: {error}"))
+}
+
+fn write_helper_line(child: &mut Child, line: &str) -> Result<(), String> {
+    use std::io::Write as _;
+    let Some(stdin) = child.stdin.as_mut() else { return Err("The AppSnap helper input is unavailable.".into()) };
+    stdin.write_all(line.as_bytes()).and_then(|_| stdin.write_all(b"\n")).and_then(|_| stdin.flush())
+        .map_err(|error| format!("Could not ask the AppSnap helper for a capture: {error}"))
+}
+
+fn read_capture_messages(
+    child: &mut Child,
+    output_directory: &std::path::Path,
+    request: &str,
+    expected_capture_id: Option<&str>,
+    timeout: std::time::Duration,
+) -> Result<Value, String> {
+    use std::io::{BufRead as _, BufReader};
+    let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
+    let mut reader = BufReader::new(stdout);
+    let deadline = std::time::Instant::now() + timeout;
+    let mut triggered = false;
+    loop {
+        if std::time::Instant::now() >= deadline {
+            return Err("AppSnap capture timed out.".into());
+        }
+        let mut line = String::new();
+        match reader.read_line(&mut line) {
+            Ok(0) => return Err("The AppSnap helper exited before capturing.".into()),
+            Ok(_) => {}
+            Err(error) => return Err(format!("Could not read the AppSnap helper: {error}")),
+        }
+        let Ok(message) = serde_json::from_str::<Value>(&line) else { continue };
+        match message.get("type").and_then(Value::as_str) {
+            Some("ready") if !triggered => {
+                write_helper_line(child, request)?;
+                triggered = true;
+            }
+            Some("error") => {
+                let matches_request = expected_capture_id.is_none_or(|id| {
+                    message.get("id").and_then(Value::as_str) == Some(id)
+                        || message.get("requestId").and_then(Value::as_str) == Some(id)
+                        || message.get("id").is_none()
+                });
+                if matches_request {
+                    return Err(message.get("message").and_then(Value::as_str).unwrap_or("AppSnap capture failed.").to_string());
+                }
+            }
+            Some("captured") => {
+                if expected_capture_id.is_some_and(|id| message.get("id").and_then(Value::as_str) != Some(id)) {
+                    continue;
+                }
+                let capture = capture_from_message(&message, output_directory)?;
+                return serde_json::to_value(capture).map_err(|error| error.to_string());
+            }
+            _ => {}
+        }
+    }
+}
+
+fn finish_capture_helper(child: &mut Child) {
+    let _ = child.kill();
+    let _ = child.wait();
+}
+
+fn requested_capture(
+    helper: &std::path::Path,
+    capture_directory: &std::path::Path,
+    excluded_bundle_id: &str,
+    request: &str,
+    expected_capture_id: Option<&str>,
+    timeout: std::time::Duration,
+) -> Result<AppSnapCapture, String> {
+    std::fs::create_dir_all(capture_directory).map_err(|error| error.to_string())?;
+    let output_directory = capture_directory.join(format!("requested-{}", uuid::Uuid::new_v4()));
+    std::fs::create_dir_all(&output_directory).map_err(|error| error.to_string())?;
+    let result = (|| {
+        let mut child = spawn_capture_helper(helper, &output_directory, excluded_bundle_id)?;
+        let result = read_capture_messages(&mut child, &output_directory, request, expected_capture_id, timeout);
+        finish_capture_helper(&mut child);
+        result.and_then(|value| serde_json::from_value(value).map_err(|error| error.to_string()))
+    })();
+    let _ = std::fs::remove_dir_all(&output_directory);
+    result
+}
+
+/// User-requested capture of the current foreground application. The helper
+/// resolves the target before Synara can react, so focus restoration cannot
+/// silently substitute a different app.
+pub fn capture_current_app(
+    helper: &std::path::Path,
+    capture_directory: &std::path::Path,
+    excluded_bundle_id: &str,
+) -> Result<AppSnapCapture, String> {
+    requested_capture(
+        helper,
+        capture_directory,
+        excluded_bundle_id,
+        "trigger",
+        None,
+        std::time::Duration::from_secs(10),
+    )
+}
+
+/// Capture one exact macOS window selected by the owner.
+pub fn capture_window(
+    helper: &std::path::Path,
+    capture_directory: &std::path::Path,
+    excluded_bundle_id: &str,
+    window_id: u64,
+) -> Result<AppSnapCapture, String> {
+    if window_id == 0 || window_id > 0xffff_ffff {
+        return Err("captureWindow requires a valid macOS window id.".into());
+    }
+    let request_id = uuid::Uuid::new_v4().to_string();
+    requested_capture(
+        helper,
+        capture_directory,
+        excluded_bundle_id,
+        &format!("capture-window {request_id} {window_id}"),
+        Some(&request_id),
+        std::time::Duration::from_secs(20),
+    )
+}
+
+pub fn parse_appsnap_windows(message: &Value, request_id: &str) -> Option<Vec<AppSnapWindowEntry>> {
+    if message.get("type").and_then(Value::as_str) != Some("windows")
+        || message.get("requestId").and_then(Value::as_str) != Some(request_id)
+    {
+        return None;
+    }
+    let mut windows = Vec::new();
+    for raw in message.get("windows").and_then(Value::as_array)? {
+        let window_id = raw.get("windowId").and_then(Value::as_u64).filter(|id| *id > 0 && *id <= 0xffff_ffff)?;
+        windows.push(AppSnapWindowEntry {
+            window_id,
+            app_name: optional_text(raw, "appName"),
+            bundle_identifier: optional_text(raw, "bundleIdentifier"),
+            window_title: optional_text(raw, "windowTitle"),
+            app_icon_data_url: raw.get("appIconDataUrl").and_then(Value::as_str).filter(|v| v.starts_with("data:image/png;base64,") && v.len() <= 256_000).map(str::to_string),
+        });
+    }
+    Some(windows)
+}
+
+/// Lists capturable visible windows through the real helper. This operation is
+/// synchronous like the upstream picker IPC and bounded to five seconds.
+pub fn list_windows(
+    helper: &std::path::Path,
+    capture_directory: &std::path::Path,
+    excluded_bundle_id: &str,
+) -> Result<Vec<AppSnapWindowEntry>, String> {
+    std::fs::create_dir_all(capture_directory).map_err(|error| error.to_string())?;
+    let output_directory = capture_directory.join(format!("windows-{}", uuid::Uuid::new_v4()));
+    std::fs::create_dir_all(&output_directory).map_err(|error| error.to_string())?;
+    let result = (|| {
+        let mut child = spawn_capture_helper(helper, &output_directory, excluded_bundle_id)?;
+        let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
+        use std::io::{BufRead as _, BufReader};
+        let mut reader = BufReader::new(stdout);
+        let request_id = uuid::Uuid::new_v4().to_string();
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+        let mut sent = false;
+        let outcome = loop {
+            if std::time::Instant::now() >= deadline {
+                break Err("Listing AppSnap windows timed out.".into());
+            }
+            let mut line = String::new();
+            match reader.read_line(&mut line) {
+                Ok(0) => break Err("The AppSnap helper exited before listing windows.".into()),
+                Ok(_) => {}
+                Err(error) => break Err(format!("Could not read the AppSnap helper: {error}")),
+            }
+            let Ok(message) = serde_json::from_str::<Value>(&line) else { continue };
+            match message.get("type").and_then(Value::as_str) {
+                Some("ready") if !sent => {
+                    write_helper_line(&mut child, &format!("list-windows {request_id}"))?;
+                    sent = true;
+                }
+                Some("windows") => {
+                    if let Some(windows) = parse_appsnap_windows(&message, &request_id) {
+                        break Ok(windows);
+                    }
+                }
+                Some("error") if message.get("requestId").and_then(Value::as_str) == Some(request_id.as_str()) => {
+                    break Err(message.get("message").and_then(Value::as_str).unwrap_or("Could not list AppSnap windows.").to_string());
+                }
+                _ => {}
+            }
+        };
+        finish_capture_helper(&mut child);
+        outcome
+    })();
+    let _ = std::fs::remove_dir_all(&output_directory);
+    result
+}
+
+#[cfg(test)]
+mod appsnap_capture_tests {
+    use super::*;
+
+    #[test]
+    fn capture_message_validates_png_and_metadata() {
+        let root = std::env::temp_dir().join(format!("appsnap-capture-test-{}", std::process::id()));
+        std::fs::create_dir_all(&root).unwrap();
+        let image = root.join("capture.png");
+        let mut png = APPSNAP_PNG_SIGNATURE.to_vec();
+        png.extend_from_slice(b"png-bytes");
+        std::fs::write(&image, &png).unwrap();
+        let message = serde_json::json!({
+            "type": "captured",
+            "id": "capture-1",
+            "capturedAt": "2026-01-01T00:00:00Z",
+            "path": image,
+            "name": "capture.png",
+            "sourceAppName": "Safari",
+            "sourceWindowTitle": "Example",
+        });
+        let capture = capture_from_message(&message, &root).unwrap();
+        assert_eq!(capture.size_bytes, png.len());
+        assert_eq!(capture.source_app_name.as_deref(), Some("Safari"));
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn window_message_requires_matching_request() {
+        let message = serde_json::json!({
+            "type": "windows",
+            "requestId": "req-1",
+            "windows": [{"windowId": 42, "appName": "Finder"}]
+        });
+        assert!(parse_appsnap_windows(&message, "other").is_none());
+        let windows = parse_appsnap_windows(&message, "req-1").unwrap();
+        assert_eq!(windows[0].window_id, 42);
+    }
+}

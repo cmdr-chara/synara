@@ -25578,7 +25578,8 @@ impl Render for Native {
                     .items_center()
                     .justify_center()
                     .gap_2()
-                    .pb(px(120.))
+                    // measured vs upstream web: center sat 30px high with pb(120)
+                    .pb(px(60.))
                     .child(
                         svg_icon(icons::AUTOMATIONS)
                             .size(px(32.))

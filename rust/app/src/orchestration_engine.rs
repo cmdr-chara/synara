@@ -1267,7 +1267,7 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
         }
         let session_running: bool = conn
             .query_row(
-                "SELECT COUNT(1) FROM projection_thread_sessions WHERE thread_id = ?1 AND status IN ('starting', 'running')",
+                "SELECT COUNT(1) FROM projection_thread_sessions WHERE thread_id = ?1 AND (active_turn_id IS NOT NULL OR status IN ('starting', 'running'))",
                 params![thread_id],
                 |r| r.get::<_, i64>(0),
             )

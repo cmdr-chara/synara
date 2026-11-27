@@ -13468,7 +13468,7 @@ impl Native {
                                     let mut pill_row = v_flex().gap(px(6.)).items_end();
                                     let n_sel = msg_atts
                                         .iter()
-                                        .filter(|a| str_at(a, "type") == "selection")
+                                        .filter(|a| str_at(a, "type") == "assistant-selection")
                                         .count();
                                     let mut has_pills = false;
                                     if n_sel > 0 {
@@ -13541,20 +13541,6 @@ impl Native {
                                     }
                                     if has_pills {
                                         content = content.child(pill_row);
-                                    }
-                                    for a in msg_atts
-                                        .iter()
-                                        .filter(|a| str_at(a, "type") == "assistant-selection")
-                                    {
-                                        content = content.child(
-                                            div()
-                                                .border_l_2()
-                                                .border_color(theme.border)
-                                                .pl(px(8.))
-                                                .text_size(px(12.))
-                                                .text_color(theme.muted_foreground)
-                                                .child(str_at(a, "text").to_string()),
-                                        );
                                     }
                                     content.child(div().text_size(px(13.)).child(text))
                                 }))

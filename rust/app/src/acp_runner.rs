@@ -262,6 +262,7 @@ pub(crate) fn set_turn_state(
                 turn_id.to_string(),
                 root,
             );
+            crate::thread_git_metadata::spawn_capture(thread_id.to_string());
         }
     }
     Ok(())

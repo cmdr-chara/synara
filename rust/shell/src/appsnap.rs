@@ -549,6 +549,24 @@ fn write_helper_line(child: &mut Child, line: &str) -> Result<(), String> {
         .map_err(|error| format!("Could not ask the AppSnap helper for a capture: {error}"))
 }
 
+fn ndjson_receiver(stdout: impl std::io::Read + Send + 'static) -> std::sync::mpsc::Receiver<String> {
+    use std::io::{BufRead as _, BufReader};
+    let (sender, receiver) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        let mut reader = BufReader::new(stdout);
+        let mut line = String::new();
+        loop {
+            line.clear();
+            match reader.read_line(&mut line) {
+                Ok(0) | Err(_) => return,
+                Ok(_) if sender.send(line.trim_end().to_string()).is_err() => return,
+                Ok(_) => {}
+            }
+        }
+    });
+    receiver
+}
+
 fn read_capture_messages(
     child: &mut Child,
     output_directory: &std::path::Path,
@@ -556,21 +574,17 @@ fn read_capture_messages(
     expected_capture_id: Option<&str>,
     timeout: std::time::Duration,
 ) -> Result<Value, String> {
-    use std::io::{BufRead as _, BufReader};
     let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
-    let mut reader = BufReader::new(stdout);
+    let receiver = ndjson_receiver(stdout);
     let deadline = std::time::Instant::now() + timeout;
     let mut triggered = false;
     loop {
-        if std::time::Instant::now() >= deadline {
-            return Err("AppSnap capture timed out.".into());
-        }
-        let mut line = String::new();
-        match reader.read_line(&mut line) {
-            Ok(0) => return Err("The AppSnap helper exited before capturing.".into()),
-            Ok(_) => {}
-            Err(error) => return Err(format!("Could not read the AppSnap helper: {error}")),
-        }
+        let remaining = deadline.checked_duration_since(std::time::Instant::now()).ok_or("AppSnap capture timed out.")?;
+        let line = match receiver.recv_timeout(remaining) {
+            Ok(line) => line,
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => return Err("AppSnap capture timed out.".into()),
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => return Err("The AppSnap helper exited before capturing.".into()),
+        };
         let Ok(message) = serde_json::from_str::<Value>(&line) else { continue };
         match message.get("type").and_then(Value::as_str) {
             Some("ready") if !triggered => {
@@ -697,21 +711,19 @@ pub fn list_windows(
     let result = (|| {
         let mut child = spawn_capture_helper(helper, &output_directory, excluded_bundle_id)?;
         let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
-        use std::io::{BufRead as _, BufReader};
-        let mut reader = BufReader::new(stdout);
+        let receiver = ndjson_receiver(stdout);
         let request_id = uuid::Uuid::new_v4().to_string();
         let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
         let mut sent = false;
         let outcome = loop {
-            if std::time::Instant::now() >= deadline {
+            let Some(remaining) = deadline.checked_duration_since(std::time::Instant::now()) else {
                 break Err("Listing AppSnap windows timed out.".into());
-            }
-            let mut line = String::new();
-            match reader.read_line(&mut line) {
-                Ok(0) => break Err("The AppSnap helper exited before listing windows.".into()),
-                Ok(_) => {}
-                Err(error) => break Err(format!("Could not read the AppSnap helper: {error}")),
-            }
+            };
+            let line = match receiver.recv_timeout(remaining) {
+                Ok(line) => line,
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => break Err("Listing AppSnap windows timed out.".into()),
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break Err("The AppSnap helper exited before listing windows.".into()),
+            };
             let Ok(message) = serde_json::from_str::<Value>(&line) else { continue };
             match message.get("type").and_then(Value::as_str) {
                 Some("ready") if !sent => {

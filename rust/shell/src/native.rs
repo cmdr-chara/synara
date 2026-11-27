@@ -15541,6 +15541,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
         let mode = self.runtime_mode;
         let imode = self.interaction_mode;
         let composer_model = self.composer_model.clone();
+        let this_effort = self.composer_effort_idx;
         // Attachments uploaded earlier keep the thread id they were staged
         // under (a fresh thread adopts it as its id).
         if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
@@ -15566,10 +15567,16 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 });
                 return;
             };
+            // Upstream commits the trait row selection with the model: the
+            // effort ladder position rides modelSelection.options.effort,
+            // which the provider runners read back when spawning the CLI.
+            let effort_names = ["minimal", "low", "medium", "high", "max"];
+            let effort = effort_names[this_effort.min(4)];
             let model_selection = json!({
                 "provider": composer_model.0,
                 "instanceId": composer_model.0,
                 "model": composer_model.1,
+                "options": {"effort": effort},
             });
             let tid = selected.clone().unwrap_or_else(|| {
                 att_thread.clone().unwrap_or_else(uuid)
@@ -15605,6 +15612,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 },
                 "runtimeMode": mode,
                 "interactionMode": imode,
+                "modelSelection": model_selection,
                 "createdAt": now_iso(),
             }));
             for cmd in cmds {

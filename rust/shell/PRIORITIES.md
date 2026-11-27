@@ -270,3 +270,12 @@ code review vertical offset, kanban card meta icon, strip tab bar detail in thre
 settings sub-pages spot checks, pull-requests detail rows.
 Method reminder: captures in /tmp/pxcmp/, anaglyph.py ref test out; measure numerically with
 PIL ink-position scripts before editing; rebuild+relaunch+reposition shell per cycle.
+
+## Update 04:45 — kanban status derivation DONE (Done/Failed/Draft/Working from latestTurn,
+green check for Done matches upstream). Sidebar rows pitch fixed (28+4). NOTE for next pass:
+shell light-mode landing texture still reads far denser/more saturated than upstream pale-light
+rendering — user deprioritized texture quality for tonight BUT it dominates first impression;
+if time remains after structural queue, one more density pass on LIGHT_LEVELS curve is worth it.
+Queue still open: transcript inline-image sizing (unverified — needs web on thread to measure),
+code review sidebar empty-block ~10px vertical offset, thread strip tab bar detail compare,
+settings sub-pages beyond General, pull-request rows detail, kanban card bg dark (#0a vs #11).

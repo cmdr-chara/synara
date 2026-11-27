@@ -195,3 +195,12 @@ Measurements needed from upstream: exact card inset margins, corner radius, chro
 - settings: aligned y174
 - inbox: padding fixed; two-column restructure pending
 - kanban/pull-requests/automations/hubs: NOT YET compared — after chrome fix, since chrome dominates all
+
+## Chrome exact measurements (CDP, tasks surface, 1600w — right side truncated by panel/measurement quirk but key dims valid)
+- Top chrome strip: `h-[44px]` full width, contains sidebar-toggle; consistent with shell's y44 pane start
+- Rail width: 51px total
+- Content card corner radius: `0 0 13px 13px` — bottom corners rounded 13px (atmosphere peeks at bottom edges/margins)
+- Card container chain: `MAIN.relative.flex-1.bg-transparent` → inner `flex flex-col` with the 13px bottom rounding, `overflow-hidden`
+- Tasks column: `mx-auto max-w-[36rem]` (576px) `flex-col gap-7` — header h1 `text-2xl font-semibold tracking-tight` (24px), subtitle "Add anything you need to do" muted, then input row
+- Tasks input placeholder: "Add a task, or press Tab to hand it to an agent" with dashed-circle checkbox icon at left
+- List/Kanban segmented control sits in the TOP STRIP at right (visible at y~15)

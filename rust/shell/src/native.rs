@@ -20967,6 +20967,17 @@ impl Render for Native {
                 .child(t)
         };
 
+        // Upstream settings group: section label sits 6px above its card
+        // (SETTINGS_PANEL_SECTION gap-1.5); groups separate by the pane gap (16px).
+        let lgroup = |label: &'static str, content: gpui::Div| {
+            v_flex()
+                .w_full()
+                .gap(px(6.))
+                .child(section_label(label))
+                .child(content)
+                .into_any_element()
+        };
+
         // ---- shared controls for ported settings sections ----
         let accent_c = text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
         let switch_theme = theme.clone();
@@ -21118,11 +21129,11 @@ impl Render for Native {
             .px_6()
             .pt(px(32.))
             .pb_8()
-            .gap_5();
+            .gap(px(16.));
         {
             // Upstream header row carries mb-8 (32px); the pane's uniform gap_5
             // covers 20 of it, so the head itself contributes the remaining 12.
-            let mut head = h_flex().w_full().items_start().justify_between().gap_4().pb(px(3.));
+            let mut head = h_flex().w_full().items_start().justify_between().gap_4().pb(px(7.));
             if self.settings_section == "profile" {
                 head = h_flex().items_start().w_full().justify_end().gap_4();
             } else {
@@ -21333,8 +21344,7 @@ impl Render for Native {
                 settings_pane = settings_pane.child(
                     v_flex()
                         .gap_1p5()
-                        .child(section_label("Activity alerts"))
-                        .child(card(
+                        .child(lgroup("Activity alerts", card(
                             v_flex()
                                 .child(srow(
                                     "Activity toasts",
@@ -21359,7 +21369,7 @@ impl Render for Native {
                                     Self::setting_switch(cx, "notifyAfterSubagentsFinish", self.setting_bool("notifyAfterSubagentsFinish", true), accent),
                                 ))
                                 .into_any_element(),
-                        )),
+                        ))),
                 );
             }
 
@@ -22277,8 +22287,7 @@ impl Render for Native {
                             }))
                             .into_any_element(),
                     ))
-                    .child(section_label("Performance"))
-                    .child(card(
+                    .child(lgroup("Performance", card(
                         v_flex()
                             .child(
                                 v_flex()
@@ -22299,9 +22308,8 @@ impl Render for Native {
                                         "Applies to newly launched agent processes. Restart existing sessions to apply consistently.")),
                             )
                             .into_any_element(),
-                    ))
-                    .child(section_label("Updates"))
-                    .child(card(
+                    )))
+                    .child(lgroup("Updates", card(
                         v_flex()
                             .child(srow("Automatic CLI update checks",
                                 "Check Codex, Claude, and other provider CLIs for newer versions in the background.",
@@ -22319,14 +22327,13 @@ impl Render for Native {
                                         "1 update available")),
                             )
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             // ---------- Models ----------
             if self.settings_section == "models" {
                 settings_pane = settings_pane
-                    .child(section_label("Generation defaults"))
-                    .child(card(
+                    .child(lgroup("Generation defaults", card(
                         v_flex()
                             .child(srow("Source control writing style", "In each project, matches recent change descriptions and change request titles.", select_pill("Repository conventions".into(), None)))
                             .child(divider())
@@ -22334,9 +22341,8 @@ impl Render for Native {
                             .child(divider())
                             .child(srow("Git writing model", "Used for generated commit messages, PR titles, and branch names.", select_pill("GPT-6 Luna".into(), None)))
                             .into_any_element(),
-                    ))
-                    .child(section_label("Custom models"))
-                    .child(card(
+                    )))
+                    .child(lgroup("Custom models", card(
                         v_flex()
                             .px_3()
                             .py(px(10.))
@@ -22374,7 +22380,7 @@ impl Render for Native {
                                     ),
                             )
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             // ---------- Skills ----------
@@ -22382,8 +22388,7 @@ impl Render for Native {
                 let skills = arr(get(sdata, "skills"), "skills").to_vec();
                 let skills = if skills.is_empty() { arr(get(sdata, "skills"), "items").to_vec() } else { skills };
                 settings_pane = settings_pane
-                    .child(section_label("Portable skills"))
-                    .child(card(
+                    .child(lgroup("Portable skills", card(
                         v_flex()
                             .px_3()
                             .py(px(10.))
@@ -22400,7 +22405,7 @@ impl Render for Native {
                                 "Skills placed here are available on every provider. When a provider already ships its own copy of a skill, that copy is used; otherwise Synara's copy is the fallback."))
                             .child(div().w_full().text_xs().text_color(theme.muted_foreground).child("~/.synara/skills"))
                             .into_any_element(),
-                    ))
+                    )))
                     .child(section_label("Skills"));
                 if skills.is_empty() {
                     settings_pane = settings_pane.child(card(
@@ -22461,8 +22466,7 @@ impl Render for Native {
                             )
                             .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("Analytics")),
                     )
-                    .child(section_label("Sidebar \u{b7} up to 2 accounts"))
-                    .child(card(
+                    .child(lgroup("Sidebar \u{b7} up to 2 accounts", card(
                         v_flex()
                             .children(sidebar_rows.iter().enumerate().flat_map(|(i, (pid, name, on))| {
                                 let row = h_flex()
@@ -22486,9 +22490,8 @@ impl Render for Native {
                                 seg(&["Both", "5h", "Weekly"], 0),
                             ))
                             .into_any_element(),
-                    ))
-                    .child(section_label("Usage popovers"))
-                    .child(card(
+                    )))
+                    .child(lgroup("Usage popovers", card(
                         v_flex()
                             .child(srow("Show details by default",
                                 "Open the details below the limits. When off, they stay behind the Details toggle; your last toggle also updates this preference.",
@@ -22502,7 +22505,7 @@ impl Render for Native {
                                 "Include credit balances and recent token totals (24h, 7d, 30d) in the details.",
                                 toggle(true)))
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             // ---------- Connectors ----------
@@ -22656,8 +22659,7 @@ impl Render for Native {
                 let exts = arr(get(sdata, "external"), "integrations").to_vec();
                 let exts = if exts.is_empty() { arr(get(sdata, "external"), "items").to_vec() } else { exts };
                 settings_pane = settings_pane
-                    .child(section_label("Connect a coding agent"))
-                    .child(card(
+                    .child(lgroup("Connect a coding agent", card(
                         v_flex()
                             .child(
                                 h_flex()
@@ -22742,7 +22744,7 @@ impl Render for Native {
                                     .into_any_element(),
                             )
                             .into_any_element(),
-                    ))
+                    )))
                     .child(section_label("Connected agents"));
                 if exts.is_empty() {
                     settings_pane = settings_pane.child(card(
@@ -22773,8 +22775,7 @@ impl Render for Native {
             // ---------- Devices (connections) ----------
             if self.settings_section == "devices" {
                 settings_pane = settings_pane
-                    .child(section_label("Connections"))
-                    .child(card(
+                    .child(lgroup("Connections", card(
                         v_flex()
                             .px_3()
                             .py(px(10.))
@@ -22783,7 +22784,7 @@ impl Render for Native {
                             .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(
                                 "Remote connections require the Node 24 server runtime."))
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             // ---------- Computer use ----------
@@ -22948,8 +22949,7 @@ impl Render for Native {
                             )
                             .into_any_element(),
                     ))
-                    .child(section_label("Capture"))
-                    .child(card(
+                    .child(lgroup("Capture", card(
                         v_flex()
                             .child(
                                 v_flex()
@@ -23024,7 +23024,7 @@ impl Render for Native {
                                     .into_any_element(),
                             )
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             // ---------- Worktrees ----------
@@ -23032,13 +23032,12 @@ impl Render for Native {
                 let wts = arr(get(sdata, "worktrees"), "worktrees").to_vec();
                 let wts = if wts.is_empty() { arr(get(sdata, "worktrees"), "items").to_vec() } else { wts };
                 settings_pane = settings_pane
-                    .child(section_label("Defaults"))
-                    .child(card(
+                    .child(lgroup("Defaults", card(
                         srow("Delete worktree on archive",
                             "After Archive's Undo period, remove a clean worktree only if the task has stopped and no other task uses it. Its branch remains available for recovery.",
                             toggle(false))
                         .into_any_element(),
-                    ));
+                    )));
                 if wts.is_empty() {
                     settings_pane = settings_pane.child(
                         div()
@@ -23141,8 +23140,7 @@ impl Render for Native {
                     let autosave = settings.get("autosave").and_then(Value::as_bool).unwrap_or(false);
 
                     settings_pane = settings_pane
-                        .child(section_label("Protection"))
-                        .child(card(
+                        .child(lgroup("Protection", card(
                             v_flex()
                                 .child(
                                     h_flex()
@@ -23217,9 +23215,8 @@ impl Render for Native {
                                     )
                                 })
                                 .into_any_element(),
-                        ))
-                        .child(section_label("Saving and access"))
-                        .child(card(
+                        )))
+                        .child(lgroup("Saving and access", card(
                             v_flex()
                                 .child(srow(
                                     "Offer to save passwords",
@@ -23239,7 +23236,7 @@ impl Render for Native {
                                     Self::vault_switch(cx, "agentUse", agent_use, theme.primary),
                                 ))
                                 .into_any_element(),
-                        ));
+                        )));
 
                     let pending_prompts = arr(&snapshot, "pending").to_vec();
                     if !pending_prompts.is_empty() {
@@ -23608,8 +23605,7 @@ impl Render for Native {
             // ---------- Advanced ----------
             if self.settings_section == "advanced" {
                 settings_pane = settings_pane
-                    .child(section_label("Developer tools"))
-                    .child(card(
+                    .child(lgroup("Developer tools", card(
                         v_flex()
                             .child(
                                 h_flex()
@@ -23646,7 +23642,7 @@ impl Render for Native {
                                     .into_any_element(),
                             )
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             // ---------- Beta channel ----------
@@ -23696,14 +23692,13 @@ impl Render for Native {
                         div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.muted_foreground).child(message)
                     );
                 }
-                settings_pane = settings_pane.child(section_label("Beta channel")).child(card(rows.into_any_element()));
+                settings_pane = settings_pane.child(lgroup("Beta channel", card(rows.into_any_element())));
             }
 
             // ---------- About ----------
             if self.settings_section == "about" {
                 settings_pane = settings_pane
-                    .child(section_label("About"))
-                    .child(card(
+                    .child(lgroup("About", card(
                         v_flex()
                             .child(srow("Version", "Current application version.",
                                 div().text_size(px(13.)).text_color(theme.muted_foreground).child("1.6.4").into_any_element()))
@@ -23712,7 +23707,7 @@ impl Render for Native {
                                 "A running log of every update, newest first. Same notes the post-update dialog shows, kept here so you can revisit them any time.",
                                 outline_btn("View release history")))
                             .into_any_element(),
-                    ));
+                    )));
             }
 
             if self.settings_section == "appearance" {

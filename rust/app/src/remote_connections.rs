@@ -34,6 +34,7 @@ pub struct DesiredHost {
 }
 
 struct Attachment {
+    created_at: std::time::Instant,
     host_id: String,
     server_instance_id: String,
     write: Arc<AsyncMutex<SplitWrite>>,
@@ -167,6 +168,7 @@ pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
     let id = crate::orchestration_engine::uuid_v4();
     let (write, read) = session.socket.split();
     let attachment = Arc::new(Attachment {
+        created_at: std::time::Instant::now(),
         host_id: host_id.to_string(),
         server_instance_id,
         write: Arc::new(AsyncMutex::new(write)),
@@ -304,7 +306,8 @@ fn tungstenite_to_axum(message: WsMessage) -> Option<axum::extract::ws::Message>
 }
 
 pub fn attachment_valid(host_id: &str, attachment_id: &str, server_instance_id: Option<&str>) -> bool {
-    attachments().lock().ok().is_some_and(|live| {
+    attachments().lock().ok().is_some_and(|mut live| {
+        live.retain(|_, attachment| attachment.created_at.elapsed() < Duration::from_secs(30));
         live.get(attachment_id).is_some_and(|attachment| {
             attachment.host_id == host_id
                 && server_instance_id.is_some_and(|expected| expected == attachment.server_instance_id)

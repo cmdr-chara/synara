@@ -380,24 +380,50 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
                 &[],
             )),
         );
-        tobj.insert(
-            "messages".into(),
-            json!(query_objects(
-                conn,
-                &format!(
-                    "SELECT message_id AS id, turn_id, role, text, is_streaming, created_at, \
-                     updated_at, attachments_json, source, skills_json, mentions_json, \
-                     dispatch_mode, dispatch_origin, sequence, text_event_sequence, text_json, \
-                     starts_new_turn, async_user_input_json \
-                     FROM projection_thread_messages \
-                     WHERE thread_id = '{}' ORDER BY created_at, sequence, message_id",
-                    tid.replace('\'', "''")
-                ),
-                &[("is_streaming", "streaming"), ("text_json", "textSegments")],
-                &[],
-                &["is_streaming", "starts_new_turn"],
-            )),
+        let mut messages = query_objects(
+            conn,
+            &format!(
+                "SELECT message_id AS id, turn_id, role, text, is_streaming, created_at, \
+                 updated_at, attachments_json, source, skills_json, mentions_json, \
+                 dispatch_mode, dispatch_origin, sequence, text_event_sequence, text_json, \
+                 starts_new_turn, async_user_input_json \
+                 FROM projection_thread_messages \
+                 WHERE thread_id = '{}' ORDER BY created_at, sequence, message_id",
+                tid.replace('\'', "''")
+            ),
+            &[("is_streaming", "streaming"), ("text_json", "textSegments")],
+            &[],
+            &["is_streaming", "starts_new_turn"],
         );
+        // Client detail snapshots link a user message to the turn accepted for
+        // it even before `thread.message.user.bind-turn` rewrites the message
+        // row. Without this, a provider that fails before launch leaves the
+        // transcript waiting for attribution that can never arrive.
+        let mut requested_turn_by_message = std::collections::HashMap::new();
+        if let Ok(mut stmt) = conn.prepare(
+            "SELECT pending_message_id, turn_id FROM projection_turns \
+             WHERE thread_id = ?1 AND turn_id IS NOT NULL AND pending_message_id IS NOT NULL",
+        ) && let Ok(mut rows) = stmt.query([tid.as_str()])
+        {
+            while let Ok(Some(row)) = rows.next() {
+                if let (Ok(message_id), Ok(turn_id)) =
+                    (row.get::<_, String>(0), row.get::<_, String>(1))
+                {
+                    requested_turn_by_message.insert(message_id, turn_id);
+                }
+            }
+        }
+        for message in &mut messages {
+            let Some(obj) = message.as_object_mut() else { continue };
+            let missing_turn = obj.get("turnId").is_none_or(Value::is_null);
+            if missing_turn
+                && let Some(message_id) = obj.get("id").and_then(Value::as_str)
+                && let Some(turn_id) = requested_turn_by_message.get(message_id)
+            {
+                obj.insert("turnId".into(), json!(turn_id));
+            }
+        }
+        tobj.insert("messages".into(), json!(messages));
         tobj.insert(
             "pendingInteractions".into(),
             json!(query_objects(

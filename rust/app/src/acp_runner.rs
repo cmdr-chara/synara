@@ -26,6 +26,46 @@ pub(crate) fn err(msg: impl Into<String>) -> WsErr {
     WsErr(msg.into(), None)
 }
 
+/// Adopt the durable pending turn-start row projected when the command was
+/// accepted, falling back to a direct insert for older databases and hidden
+/// continuation turns that have no pending row. Adoption preserves the original
+/// `requested_at` and `pending_message_id`, which are the transcript's link
+/// back to the user message.
+pub(crate) fn adopt_or_insert_turn(
+    conn: &Connection,
+    thread_id: &str,
+    turn_id: &str,
+    message_id: &str,
+    assistant_message_id: &str,
+    now: &str,
+) -> Result<(), WsErr> {
+    let adopted = conn
+        .execute(
+            "UPDATE projection_turns \
+             SET turn_id = ?2, assistant_message_id = ?4, state = 'running', started_at = ?5 \
+             WHERE rowid = ( \
+               SELECT rowid FROM projection_turns \
+               WHERE thread_id = ?1 AND turn_id IS NULL AND state = 'pending' \
+                 AND pending_message_id = ?3 \
+               ORDER BY requested_at DESC, rowid DESC LIMIT 1 \
+             )",
+            params![thread_id, turn_id, message_id, assistant_message_id, now],
+        )
+        .map_err(|e| err(format!("adopt pending turn: {e}")))?;
+    if adopted != 0 {
+        return Ok(());
+    }
+    conn.execute(
+        "INSERT INTO projection_turns \
+         (thread_id, turn_id, pending_message_id, assistant_message_id, state, \
+          requested_at, started_at, checkpoint_files_json) \
+         VALUES (?1, ?2, ?3, ?4, 'running', ?5, ?5, '[]')",
+        params![thread_id, turn_id, message_id, assistant_message_id, now],
+    )
+    .map_err(|e| err(format!("insert turn: {e}")))?;
+    Ok(())
+}
+
 struct RunningTurn {
     stdin: Arc<Mutex<ChildStdin>>,
     session_id: String,
@@ -2466,14 +2506,14 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
     let turn_id = uuid_v4();
     let assistant_msg_id = uuid_v4();
     let now = iso_now_ms();
-    conn.execute(
-        "INSERT INTO projection_turns \
-         (thread_id, turn_id, pending_message_id, assistant_message_id, state, \
-          requested_at, started_at, checkpoint_files_json) \
-         VALUES (?1, ?2, ?3, ?4, 'running', ?5, ?5, '[]')",
-        params![thread_id, turn_id, message_id, assistant_msg_id, now],
-    )
-    .map_err(|e| err(format!("insert turn: {e}")))?;
+    adopt_or_insert_turn(
+        &conn,
+        thread_id,
+        &turn_id,
+        message_id,
+        &assistant_msg_id,
+        &now,
+    )?;
     // The turn-start event already persisted the command's runtimeMode on
     // the session row; reuse it for every session-set event this turn
     // emits so replay_session_projection keeps the value (an event
@@ -3307,6 +3347,64 @@ mod tests {
             assert!(super::is_executable_file(&path));
         }
         let _ = std::fs::remove_file(path);
+    }
+
+
+    #[test]
+    fn adopt_or_insert_turn_adopts_pending_start() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE projection_turns (
+                thread_id TEXT NOT NULL,
+                turn_id TEXT,
+                pending_message_id TEXT,
+                source_proposed_plan_thread_id TEXT,
+                source_proposed_plan_id TEXT,
+                assistant_message_id TEXT,
+                state TEXT,
+                requested_at TEXT,
+                started_at TEXT,
+                completed_at TEXT,
+                started_without_git_workspace INTEGER DEFAULT 0,
+                checkpoint_turn_count INTEGER,
+                checkpoint_ref TEXT,
+                checkpoint_status TEXT,
+                checkpoint_files_json TEXT,
+                PRIMARY KEY (thread_id, turn_id)
+            );",
+        )
+        .unwrap();
+        conn.execute(
+            "INSERT INTO projection_turns (
+                thread_id, turn_id, pending_message_id, state, requested_at, checkpoint_files_json
+             ) VALUES ('thread', NULL, 'message', 'pending', '2026-01-01T00:00:00.000Z', '[]')",
+            [],
+        )
+        .unwrap();
+
+        adopt_or_insert_turn(
+            &conn,
+            "thread",
+            "turn",
+            "message",
+            "assistant",
+            "2026-01-01T00:00:01.000Z",
+        )
+        .unwrap();
+
+        let row: (String, String, String, String, Option<String>) = conn
+            .query_row(
+                "SELECT turn_id, pending_message_id, state, requested_at, started_at \
+                 FROM projection_turns WHERE thread_id = 'thread'",
+                [],
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?)),
+            )
+            .unwrap();
+        assert_eq!(row.0, "turn");
+        assert_eq!(row.1, "message");
+        assert_eq!(row.2, "running");
+        assert_eq!(row.3, "2026-01-01T00:00:00.000Z");
+        assert_eq!(row.4.as_deref(), Some("2026-01-01T00:00:01.000Z"));
     }
 
 }

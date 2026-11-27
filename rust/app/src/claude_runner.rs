@@ -1175,11 +1175,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let turn_id = uuid_v4();
     let assistant_msg_id = uuid_v4();
     let now = iso_now_ms();
-    conn.execute(
-        "INSERT INTO projection_turns (thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at, started_at, checkpoint_files_json) VALUES (?1, ?2, ?3, ?4, 'running', ?5, ?5, '[]')",
-        params![thread_id, turn_id, message_id, assistant_msg_id, now],
-    )
-    .map_err(|e| err(format!("insert turn: {e}")))?;
+    crate::acp_runner::adopt_or_insert_turn(
+        &conn,
+        thread_id,
+        &turn_id,
+        message_id,
+        &assistant_msg_id,
+        &now,
+    )?;
     conn.execute(
         "INSERT OR REPLACE INTO projection_thread_sessions (thread_id, status, provider_name, provider_session_id, provider_thread_id, active_turn_id, last_error, updated_at, runtime_mode) VALUES (?1, 'running', 'claudeAgent', NULL, ?2, ?3, NULL, ?4, COALESCE((SELECT runtime_mode FROM projection_thread_sessions WHERE thread_id = ?1), 'full-access'))",
         params![thread_id, stored_session, turn_id, now],

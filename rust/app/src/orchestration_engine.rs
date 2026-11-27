@@ -1784,6 +1784,35 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     // Drive a real provider turn unless the message queued or rode the live turn.
     if !should_queue && !native_steer {
         conn.execute(
+            "DELETE FROM projection_turns \
+             WHERE thread_id = ?1 AND turn_id IS NULL AND state = 'pending' \
+               AND checkpoint_turn_count IS NULL",
+            params![thread_id],
+        )
+        .map_err(|e| err(format!("clear pending turn: {e}")))?;
+        conn.execute(
+            "INSERT INTO projection_turns \
+             (thread_id, turn_id, pending_message_id, source_proposed_plan_thread_id, \
+              source_proposed_plan_id, assistant_message_id, state, requested_at, started_at, \
+              completed_at, started_without_git_workspace, checkpoint_turn_count, checkpoint_ref, \
+              checkpoint_status, checkpoint_files_json) \
+             VALUES (?1, NULL, ?2, ?3, ?4, NULL, 'pending', ?5, NULL, NULL, 0, NULL, NULL, NULL, '[]')",
+            params![
+                thread_id,
+                message_id,
+                command
+                    .get("sourceProposedPlan")
+                    .and_then(|v| v.get("threadId"))
+                    .and_then(Value::as_str),
+                command
+                    .get("sourceProposedPlan")
+                    .and_then(|v| v.get("planId"))
+                    .and_then(Value::as_str),
+                created_at,
+            ],
+        )
+        .map_err(|e| err(format!("insert pending turn: {e}")))?;
+        conn.execute(
             "INSERT OR REPLACE INTO projection_thread_sessions \
              (thread_id, status, provider_name, provider_session_id, provider_thread_id, \
               active_turn_id, last_error, updated_at, runtime_mode) \
@@ -5154,6 +5183,10 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
             }
         }),
     );
+    let requested_message_id = payload
+        .get("messageId")
+        .and_then(Value::as_str)
+        .map(str::to_string);
     let mut requested = out_event(
         "thread.turn-start-requested",
         &thread_id,
@@ -5176,6 +5209,42 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
         ],
     )
     .map_err(|e| err(e.to_string()))?;
+
+    // Upstream projects every accepted turn start before provider launch. The
+    // pending row preserves the requested user message even when the provider
+    // binary is missing, so transcript hydration and queued-turn attribution do
+    // not depend on runner startup succeeding.
+    if let Some(message_id) = requested_message_id.as_deref() {
+        conn.execute(
+            "DELETE FROM projection_turns \
+             WHERE thread_id = ?1 AND turn_id IS NULL AND state = 'pending' \
+               AND checkpoint_turn_count IS NULL",
+            params![thread_id],
+        )
+        .map_err(|e| err(format!("clear pending turn: {e}")))?;
+        conn.execute(
+            "INSERT INTO projection_turns \
+             (thread_id, turn_id, pending_message_id, source_proposed_plan_thread_id, \
+              source_proposed_plan_id, assistant_message_id, state, requested_at, started_at, \
+              completed_at, started_without_git_workspace, checkpoint_turn_count, checkpoint_ref, \
+              checkpoint_status, checkpoint_files_json) \
+             VALUES (?1, NULL, ?2, ?3, ?4, NULL, 'pending', ?5, NULL, NULL, 0, NULL, NULL, NULL, '[]')",
+            params![
+                thread_id,
+                message_id,
+                command
+                    .get("sourceProposedPlan")
+                    .and_then(|v| v.get("threadId"))
+                    .and_then(Value::as_str),
+                command
+                    .get("sourceProposedPlan")
+                    .and_then(|v| v.get("planId"))
+                    .and_then(Value::as_str),
+                created_at,
+            ],
+        )
+        .map_err(|e| err(format!("insert pending turn: {e}")))?;
+    }
 
     // A queued provider turn starts the same runner once dispatched.
     let provider = provider_for_start;

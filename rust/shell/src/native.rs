@@ -18949,6 +18949,30 @@ impl Render for Native {
         // inert while a clip is with the transcription backend. Built through
         // a closure because AnyElement is not Clone and the two composer
         // layouts are mutually exclusive per render.
+        // Upstream deriveComposerVoiceState: the mic renders only when the
+        // active provider is enabled and authenticated (voice input itself is
+        // always available in the native shell). Signed-out providers hide it.
+        let active_provider = if in_thread {
+            str_at(thread_v, "providerName").to_string()
+        } else {
+            self.composer_model.0.clone()
+        };
+        let voice_visible = self
+            .provider_statuses
+            .iter()
+            .find(|p| {
+                let pid = str_at(p, "provider");
+                let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
+                pid == active_provider
+            })
+            .map(|p| {
+                get(p, "enabled").as_bool().unwrap_or(true)
+                    && get(p, "available").as_bool().unwrap_or(false)
+                    && str_at(p, "authStatus") != "unauthenticated"
+            })
+            // Upstream: available is `=== true` strict — a provider missing
+            // from the status list (CLI absent) renders no mic.
+            .unwrap_or(false);
         let make_mic_btn = |cx: &mut Context<Self>| {
             let recording = self.voice_capture.is_some();
             let busy = self.voice_transcribing;
@@ -19074,7 +19098,11 @@ impl Render for Native {
                         .items_center()
                         .child(plus_btn)
                         .child(div().flex_1().min_w_0().child(input_zone))
-                        .child(make_mic_btn(cx))
+                        .children(if voice_visible {
+                            Some(make_mic_btn(cx)).into_iter()
+                        } else {
+                            None.into_iter()
+                        })
                         .child(send_btn),
                 )
         } else {
@@ -19126,7 +19154,11 @@ impl Render for Native {
                             },
                         )
                         .child(build_model_chip())
-                        .child(make_mic_btn(cx))
+                        .children(if voice_visible {
+                            Some(make_mic_btn(cx)).into_iter()
+                        } else {
+                            None.into_iter()
+                        })
                         .child(send_btn),
                 )
         };

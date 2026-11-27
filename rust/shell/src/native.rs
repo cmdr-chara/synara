@@ -24917,7 +24917,7 @@ impl Render for Native {
                     .p(px(48.))
                     .child(
                         div()
-                            .w(px(272.))
+                            .w(px(384.))
                             .text_center()
                             .text_size(px(20.))
                             .line_height(px(28.))
@@ -24930,7 +24930,7 @@ impl Render for Native {
                     )
                     .child(
                         div()
-                            .w(px(272.))
+                            .w(px(384.))
                             .mt(px(4.))
                             .text_center()
                             .text_size(px(13.))

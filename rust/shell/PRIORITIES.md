@@ -326,3 +326,13 @@ right ink web1300 vs shell1294 (6px). bottom-edge: shell mostra texture strip al
 web flush 17 — DA VERIFICARE se corretto upstream (card radius bottom) o bug shell. Selection:
 shell renderizza contenuto inline, web pill "1 selection" collassata — tipo attachment forse
 non "selection" o content nel testo; da investigare il payload. Build pulita, shell rilanciata.
+
+
+## Update 09:10 — committed 5d201a21f4: selection pill (tipo reale assistant-selection) + niente
+piu inline expansion. VERIFICATO sul vivo: shell ora mostra "1 selection" pill + "report.pdf"
+pill + thumbnail. IN CORSO build: riordino pill-prima-immagine-dopo (upstream: pill sopra, thumb
+sotto — la shell le aveva invertite). Commit dopo verifica compile. SCOPERTA da ref Chrome dark:
+il thread vuoto di progetto upstream NON mostra texture nel content (flat dark) — la home landing
+si'. Composer upstream in project thread: riga progetto "tmp / Temporary" sopra input. Trigger
+Full access arancione confermato upstream (shell ora uguale). Coda invariata: kanban pitch, bottom
+texture strip, composer vertical ~10px (forse artefatto banner reconnect nel ref — non fidarsi).

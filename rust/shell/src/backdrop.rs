@@ -67,7 +67,7 @@ const LIGHT_LEVELS: Levels = Levels {
     thin_to: 0.7,
     dot: 1.0,
     invert: true,
-    blur: 0.3,
+    blur: 0.6,
     sharpen: 1.6,
     sharpen_from: 0.24,
     sharpen_to: 0.36,

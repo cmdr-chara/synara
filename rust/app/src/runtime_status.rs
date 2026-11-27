@@ -32,6 +32,7 @@ struct Stats {
     discarded_idle_gap_ms: u64,
     last_stall_at: Option<Instant>,
     last_stall_ms: u64,
+    last_reported_stall_at: Option<Instant>,
 }
 
 static STATS: OnceLock<Mutex<Stats>> = OnceLock::new();
@@ -48,6 +49,7 @@ fn stats() -> &'static Mutex<Stats> {
             discarded_idle_gap_ms: 0,
             last_stall_at: None,
             last_stall_ms: 0,
+            last_reported_stall_at: None,
         })
     })
 }
@@ -84,6 +86,11 @@ pub fn start_sampler() {
                 }
                 s.last_stall_at = Some(now);
                 s.last_stall_ms = drift;
+                if s.last_reported_stall_at.is_none_or(|at| now.duration_since(at).as_millis() >= 10_000) {
+                    s.last_reported_stall_at = Some(now);
+                    drop(s);
+                    crate::beta_operational_issue::report("server.event-loop.stall", None, Some(drift));
+                }
             }
         }
     });

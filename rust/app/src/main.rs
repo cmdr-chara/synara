@@ -1,5 +1,6 @@
 mod account;
 mod input_monitor;
+mod beta_operational_issue;
 mod migrations;
 mod agent_gateway_mcp;
 mod acp_runner;
@@ -173,6 +174,7 @@ async fn main() {
                 server_beta_usage::start_beta_usage_snapshot_job();
             }
             Err(e) => {
+                beta_operational_issue::report_startup_migration_error(&e.0);
                 eprintln!("migrations failed: {} — refusing to serve orchestration against an unvalidated schema", e.0);
                 std::process::exit(1);
             }

@@ -7,6 +7,7 @@
 use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
+use std::collections::{HashMap, VecDeque};
 use std::time::Duration;
 
 const ENDPOINT: &str = "https://synara-beta-diagnostics.synara-orgs.workers.dev";
@@ -16,6 +17,9 @@ const QUEUE_TRIM_TARGET_BYTES: u64 = 512 * 1024;
 const FLUSH_BATCH_MAX_EVENTS: usize = 200;
 const FLUSH_BATCH_MAX_BYTES: usize = 256 * 1024;
 const FLUSH_INTERVAL: Duration = Duration::from_secs(5 * 60);
+const ERROR_FINGERPRINT_WINDOW_MS: u64 = 10 * 60 * 1000;
+const ERROR_HOURLY_CAP: usize = 30;
+const ISSUE_MAX_DURATION_MS: u64 = 604_800_000;
 
 const EVENTS: [&str; 13] = [
     "app.start", "app.exit", "app.error", "app.renderer-crash", "app.child-process-crash",
@@ -185,6 +189,26 @@ fn valid_record(record: &Value, flavor: &str, install_id: &str, home_dir: &Path)
     })).ok()
 }
 
+const ISSUE_CODES: [&str; 19] = [
+    "server.event-loop.stall", "git.request.failed", "git.branch.failed", "git.commit.failed",
+    "git.push.failed", "git.pr.failed", "voice.record.failed", "voice.transcribe.failed",
+    "claude.compaction.request-failed", "claude.compaction.uncertain", "claude.cache.request-failed",
+    "claude.cache.failed", "claude.cache.uncertain", "startup.database-locked",
+    "startup.migration-recovery-required", "startup.migration-divergence-consent-required",
+    "startup.migration-runtime-identity-mismatch", "startup.migration-schema-too-new",
+    "startup.migration-startup-block-invalid",
+];
+const ISSUE_REASONS: [&str; 7] = ["unknown", "auth", "invalid-response", "timeout", "output-limit", "live-owner", "unknown-owner"];
+
+/// FNV-1a over UTF-16 code units, the upstream handled-issue fingerprint.
+fn diagnostic_error_fingerprint(message: &str) -> String {
+    let mut hash: u64 = 0xcbf29ce484222325;
+    for unit in message.encode_utf16() {
+        hash = (hash ^ u64::from(unit)).wrapping_mul(0x100000001b3);
+    }
+    format!("{hash:016x}")
+}
+
 pub struct BetaDiagnosticsReporter {
     home_dir: PathBuf,
     queue_path: PathBuf,
@@ -193,6 +217,9 @@ pub struct BetaDiagnosticsReporter {
     flavor: String,
     app_version: String,
     enabled: Arc<Mutex<bool>>,
+    error_sent_timestamps: Mutex<VecDeque<u64>>,
+    error_fingerprint_sent_at: Mutex<HashMap<String, u64>>,
+    issue_reports: Mutex<HashMap<String, (String, u64)>>,
 }
 
 impl BetaDiagnosticsReporter {
@@ -210,6 +237,9 @@ impl BetaDiagnosticsReporter {
             flavor: flavor.into(),
             app_version: if valid_version(app_version) { app_version.into() } else { "0.0.0".into() },
             enabled: Arc::new(Mutex::new(enabled)),
+            error_sent_timestamps: Mutex::new(VecDeque::new()),
+            error_fingerprint_sent_at: Mutex::new(HashMap::new()),
+            issue_reports: Mutex::new(HashMap::new()),
         }))
     }
 
@@ -317,6 +347,68 @@ impl BetaDiagnosticsReporter {
         self.rewrite_queue(&rest);
     }
 
+    fn allow_error(&self, fingerprint: &str, record: bool, now_ms: u64) -> bool {
+        let Ok(mut timestamps) = self.error_sent_timestamps.lock() else { return false };
+        while timestamps.front().is_some_and(|at| now_ms.saturating_sub(*at) > 60 * 60 * 1000) {
+            timestamps.pop_front();
+        }
+        if timestamps.len() >= ERROR_HOURLY_CAP { return false; }
+        let Ok(mut sent_at) = self.error_fingerprint_sent_at.lock() else { return false };
+        if sent_at.get(fingerprint).is_some_and(|at| now_ms.saturating_sub(*at) < ERROR_FINGERPRINT_WINDOW_MS) {
+            return false;
+        }
+        if !record { return true; }
+        sent_at.insert(fingerprint.into(), now_ms);
+        if sent_at.len() > 256 {
+            sent_at.retain(|_, at| now_ms.saturating_sub(*at) <= ERROR_FINGERPRINT_WINDOW_MS);
+        }
+        timestamps.push_back(now_ms);
+        true
+    }
+
+    /// Reuse the bounded app.error envelope for handled operational issues.
+    /// Input is untrusted backend output, so only exact fixed categories pass.
+    pub fn track_issue(&self, source: &str, input: &Value) -> Option<String> {
+        if source != "main" && source != "renderer" { return None; }
+        let code = input.get("code").and_then(Value::as_str)?;
+        if !ISSUE_CODES.contains(&code) { return None; }
+        let reason = input.get("reason").and_then(Value::as_str);
+        if reason.is_some_and(|value| !ISSUE_REASONS.contains(&value)) { return None; }
+        let duration = input.get("durationMs").and_then(Value::as_u64);
+        if input.get("durationMs").is_some() && duration.is_none() { return None; }
+        if duration.is_some_and(|value| value > ISSUE_MAX_DURATION_MS) { return None; }
+        let message = format!("Handled issue: {code} ({})", reason.unwrap_or("unknown"));
+        let fingerprint = diagnostic_error_fingerprint(&message);
+        let now_ms = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).ok()?.as_millis() as u64;
+        if let Ok(reports) = self.issue_reports.lock() {
+            if let Some((id, at)) = reports.get(&fingerprint) {
+                if now_ms.saturating_sub(*at) < ERROR_FINGERPRINT_WINDOW_MS {
+                    return Some(id.clone());
+                }
+            }
+        }
+        if !self.allow_error(&fingerprint, false, now_ms) { return None; }
+        let mut payload = json!({
+            "kind":"error",
+            "source":source,
+            "message":message,
+            "fingerprint":fingerprint,
+        });
+        if let Some(duration) = duration {
+            payload["stack"] = json!(format!("durationMs={duration}"));
+        }
+        let id = self.track("app.error", payload)?;
+        let _ = self.allow_error(&fingerprint, true, now_ms);
+        if let Ok(mut reports) = self.issue_reports.lock() {
+            reports.insert(fingerprint, (id.clone(), now_ms));
+            if reports.len() > 128 {
+                let cutoff = now_ms.saturating_sub(ERROR_FINGERPRINT_WINDOW_MS);
+                reports.retain(|_, (_, at)| *at >= cutoff);
+            }
+        }
+        Some(id)
+    }
+
     fn track_daily_usage(&self) {
         let path = self.home_dir.join("diagnostics").join("usage-snapshot.json");
         let Ok(text) = std::fs::read_to_string(path) else { return };
@@ -422,6 +514,10 @@ pub fn track(event: &str, payload: Value) -> Option<String> {
     REPORTER.get().and_then(Option::as_ref).and_then(|reporter| reporter.track(event, payload))
 }
 
+pub fn track_issue(source: &str, input: &Value) -> Option<String> {
+    REPORTER.get().and_then(Option::as_ref).and_then(|reporter| reporter.track_issue(source, input))
+}
+
 pub fn track_beta_installed_once() {
     static EMITTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
     if EMITTED.swap(true, std::sync::atomic::Ordering::SeqCst) { return; }
@@ -448,6 +544,9 @@ impl BetaDiagnosticsReporter {
             flavor: flavor.into(),
             app_version: if valid_version(app_version) { app_version.into() } else { "0.0.0".into() },
             enabled: Arc::new(Mutex::new(true)),
+            error_sent_timestamps: Mutex::new(VecDeque::new()),
+            error_fingerprint_sent_at: Mutex::new(HashMap::new()),
+            issue_reports: Mutex::new(HashMap::new()),
         };
         Arc::new(reporter)
     }
@@ -519,5 +618,19 @@ mod tests {
         assert!(reporter.scrubbed_lines().is_empty());
         server.join().unwrap();
         let _ = std::fs::remove_dir_all(home);
+    }
+
+    #[test]
+    fn handled_issue_tracking_is_fixed_shape_and_deduplicated() {
+        let home = std::env::temp_dir().join(format!("diag-issue-{}", uuid::Uuid::new_v4()));
+        let reporter = BetaDiagnosticsReporter::with_endpoint(&home, "beta", "1.2.3-beta.1", "http://127.0.0.1:1");
+        let issue = json!({"code":"server.event-loop.stall","durationMs":2400});
+        let first = reporter.track_issue("main", &issue).unwrap();
+        assert_eq!(reporter.track_issue("main", &issue).as_deref(), Some(first.as_str()));
+        assert!(reporter.track_issue("main", &json!({"code":"chat.content"})).is_none());
+        assert!(reporter.track_issue("main", &json!({"code":"server.event-loop.stall","reason":"private detail"})).is_none());
+        let line = reporter.scrubbed_lines().pop().unwrap();
+        assert!(line.contains("Handled issue: server.event-loop.stall (unknown)"));
+        assert!(line.contains("durationMs=2400"));
     }
 }

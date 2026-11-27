@@ -141,14 +141,54 @@ fn prune_overflow_backups(path: &Path, max_files: usize) {
     }
 }
 
+struct BackendIssueDetector {
+    line: String,
+    oversized: bool,
+}
+
+impl BackendIssueDetector {
+    const MAX_LINE: usize = 2048;
+
+    fn new() -> Self {
+        Self { line: String::new(), oversized: false }
+    }
+
+    fn push(&mut self, chunk: &[u8]) {
+        let text = String::from_utf8_lossy(chunk);
+        let mut start = 0usize;
+        while start < text.len() {
+            let end = text[start..].find('\n').map(|index| start + index).unwrap_or(text.len());
+            if !self.oversized {
+                if self.line.len() + end - start > Self::MAX_LINE {
+                    self.line.clear();
+                    self.oversized = true;
+                } else {
+                    self.line.push_str(&text[start..end]);
+                }
+            }
+            if end == text.len() { return; }
+            if !self.oversized && self.line.starts_with("SYNARA_DIAGNOSTIC_ISSUE ") {
+                if let Ok(issue) = serde_json::from_str::<serde_json::Value>(&self.line["SYNARA_DIAGNOSTIC_ISSUE ".len()..]) {
+                    let _ = crate::beta_diagnostics::track_issue("main", &issue);
+                }
+            }
+            self.line.clear();
+            self.oversized = false;
+            start = end + 1;
+        }
+    }
+}
+
 fn forward_backend_output(mut reader: impl Read + Send + 'static, sink: Arc<Mutex<RotatingFile>>, tail: OutputTail) {
     thread::spawn(move || {
+        let mut issue_detector = BackendIssueDetector::new();
         let mut buffer = [0u8; 8192];
         loop {
             match reader.read(&mut buffer) {
                 Ok(0) => return,
                 Ok(count) => {
                     tail.push(&buffer[..count]);
+                    issue_detector.push(&buffer[..count]);
                     if let Ok(mut sink) = sink.lock() {
                         let _ = sink.write_chunk(&buffer[..count]);
                     }
@@ -430,6 +470,16 @@ fn interruptible_sleep(inner: &SupervisorInner, duration: Duration) {
     }
 }
 
+fn backend_bundle_id() -> &'static str {
+    match crate::desktop_identity::runtime_flavor() {
+        "beta" => "com.emanueledipietro.synara.beta",
+        "remote" => "com.emanueledipietro.synara.remote",
+        "canary" => "com.emanueledipietro.synara.canary",
+        "cua" => "com.emanueledipietro.synara.cua",
+        _ => "com.emanueledipietro.synara",
+    }
+}
+
 fn spawn_backend(config: &BackendConfig) -> io::Result<(Child, OutputTail)> {
     if let Some(parent) = config.log_path.parent() {
         fs::create_dir_all(parent)?;
@@ -449,6 +499,7 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<(Child, OutputTail)> {
         .env("SYNARA_NO_UPSTREAM", "1")
         .env("SYNARA_MODE", "desktop")
         .env("SYNARA_DESKTOP_FLAVOR", crate::desktop_identity::runtime_flavor())
+        .env("SYNARA_DESKTOP_BUNDLE_ID", backend_bundle_id())
         .stdin(Stdio::null());
     match rotating_log {
         Ok(sink) => {
@@ -838,5 +889,16 @@ mod tests {
         fs::write(&backend, b"").unwrap();
         assert_eq!(dev_backend_binary_from_exe(&exe), Some(backend));
         let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn backend_issue_detector_frames_bounded_lines() {
+        let mut detector = BackendIssueDetector::new();
+        detector.push(b"noise\nSYNARA_DIAGNOSTIC_ISSUE {\"code\":\"server.event-loop.stall\"");
+        detector.push(b",\"durationMs\":2400}\n");
+        assert!(detector.line.is_empty());
+        detector.push(&vec![b'x'; 3000]);
+        detector.push(b"\nSYNARA_DIAGNOSTIC_ISSUE {\"code\":\"server.event-loop.stall\"}\n");
+        assert!(!detector.oversized);
     }
 }

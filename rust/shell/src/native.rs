@@ -19609,6 +19609,8 @@ impl Render for Native {
         // pill inside the grey shell; permission/model chips sit on the grey
         // tray below, outside the pill.
         let composer_card: Div = if row_composer {
+            // Upstream COMPOSER_SINGLE_ROW_SURFACE_CLASS_NAME: one grid row,
+            // p-1.5 (6px) all around, gap-x-1 (4px) between the cells.
             div()
                 .w_full()
                 .border_1()
@@ -19616,11 +19618,10 @@ impl Render for Native {
                 .rounded(px(9999.))
                 .bg(composer_card_bg)
                 .shadow_md()
-                .px_2()
-                .py(px(4.))
+                .p(px(6.))
                 .child(
                     h_flex()
-                        .gap_2()
+                        .gap_1()
                         .items_center()
                         .child(plus_btn)
                         .child(div().flex_1().min_w_0().child(input_zone))
@@ -21034,10 +21035,16 @@ impl Render for Native {
             // squircle spanning the chat column; the white pill sits inside,
             // and the permission/model chips row rides on the grey below it.
             let tray_inner = if row_composer {
+                // Upstream .chat-composer-shell[data-composer-tray]: the tray
+                // keeps squircle corners at --composer-tray-radius (1.2rem +
+                // 0.25rem + 1px = 24.2px) in every layout — only the input
+                // surface inside the tray becomes a pill in row mode. The
+                // stadium shape here is what made the thread composer read
+                // as a blob.
                 v_flex()
                     .w_full()
                     .max_w(chat_mw)
-                    .rounded(px(9999.))
+                    .rounded(px(24.2))
                     .border_1()
                     .border_color(theme.border.opacity(0.5))
                     .bg(composer_shell_bg)
@@ -21045,9 +21052,13 @@ impl Render for Native {
                     .gap(px(4.))
                     .child(composer_card)
                     .child(
+                        // Upstream COMPOSER_FOOTER_ROW_CLASS_NAME: pl 6px,
+                        // pr 8px, pb 6px inside the tray's own 4px padding.
                         h_flex()
                             .w_full()
-                            .px(px(4.))
+                            .pl(px(6.))
+                            .pr(px(8.))
+                            .pb(px(2.))
                             .items_center()
                             .child(build_mode_chip(cx))
                             .child(div().flex_1())

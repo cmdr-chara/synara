@@ -174,9 +174,9 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
 /// files the discovery catalog scans), projects messages with
 /// `import:{thread}:{provider}:{sourceId}` ids, and binds the external resume
 /// cursor so the next turn continues that session. OMP and Droid file-backed
-/// sessions are imported through the same local
-/// history readers as the upstream adapters. OpenCode import remains a
-/// documented gap — its transcript needs the live adapter/server protocol.
+/// sessions are imported through the same local history readers as the
+/// upstream adapters. OpenCode sessions are read through the managed server
+/// message APIs; externally hosted OpenCode server URLs remain a transport gap.
 fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload
         .get("threadId")

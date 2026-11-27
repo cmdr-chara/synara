@@ -281,6 +281,7 @@ async fn main() {
         .route("/__tap_client", axum::routing::post(original::tap_client))
         .route("/api/local-image", axum::routing::get(local_image::local_image))
         .route("/api/attachments/upload", axum::routing::post(attachments_http::upload))
+        .route("/api/attachments/cancel", axum::routing::post(attachments_http::cancel))
         .route("/attachments/{id}", axum::routing::get(attachments_http::serve))
         .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
         .route("/oauth/mcp/callback", axum::routing::get(oauth_mcp_callback))

@@ -405,7 +405,7 @@ where
         Ok((route, verified.device_jkt))
     })();
 
-    let (route, _device_jkt) = match validated {
+    let (route, device_jkt) = match validated {
         Ok(value) => value,
         Err(_) => {
             write_refusal(stream).await;
@@ -413,13 +413,17 @@ where
         }
     };
 
-    let headers = match rebuild_headers(&head, route.max_body_bytes) {
+    let mut headers = match rebuild_headers(&head, route.max_body_bytes) {
         Ok(value) => value,
         Err(_) => {
             write_refusal(stream).await;
             return Ok(());
         }
     };
+    // The credential has already been verified and the caller's own
+    // authorization/cookie headers are stripped. This internal principal is
+    // what keeps one remote device from cancelling another device's staging.
+    headers.push(("x-synara-remote-device-jkt".to_string(), device_jkt));
 
     let mut loopback = match tokio::net::TcpStream::connect(("127.0.0.1", listening_port)).await {
         Ok(value) => value,

@@ -8,7 +8,7 @@
 //! att_v2_{32hex}, bytes live at objects/{hex-prefix}/{id}{ext}, every upload
 //! is tracked in managed_attachment_blobs (staged with a 1h TTL, claimed once
 //! a turn message references it), and a sweep worker reclaims expired staging
-//! plus rows marked for deletion. Upload cancellation is a documented gap.
+//! plus rows marked for deletion.
 
 use axum::{
     body::Bytes,
@@ -282,7 +282,78 @@ pub fn start_cleanup_worker() {
     });
 }
 
-pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
+fn attachment_principal(headers: &axum::http::HeaderMap) -> (String, String) {
+    if let Some(device_jkt) = headers
+        .get("x-synara-remote-device-jkt")
+        .and_then(|value| value.to_str().ok())
+        .filter(|value| !value.is_empty() && value.len() <= 256)
+    {
+        return ("session".to_string(), format!("remote-device:{device_jkt}"));
+    }
+    crate::auth_http::authenticate(headers)
+        .map(|session| ("session".to_string(), session.session_id))
+        .unwrap_or_else(|| ("local-loopback".to_string(), "local-loopback".to_string()))
+}
+
+fn cancel_staged(
+    conn: &rusqlite::Connection,
+    attachment_id: &str,
+    owner_kind: &str,
+    owner_id: &str,
+    reason: &str,
+    requested_at: &str,
+) -> &'static str {
+    let row = conn.query_row(
+        "SELECT state FROM managed_attachment_blobs WHERE attachment_id=?1 AND owner_kind=?2 AND owner_id=?3",
+        params![attachment_id, owner_kind, owner_id],
+        |r| r.get::<_, String>(0),
+    );
+    let Ok(state) = row else { return "not-found" };
+    if state == "claimed" {
+        return "already-claimed";
+    }
+    if state == "deleting" || state == "deleted" {
+        return "cancelled";
+    }
+    let updated = conn.execute(
+        "UPDATE managed_attachment_blobs SET state='deleting', delete_reason=?4, delete_requested_at=?5, updated_at=?5 WHERE attachment_id=?1 AND owner_kind=?2 AND owner_id=?3 AND state IN ('uploading','staged')",
+        params![attachment_id, owner_kind, owner_id, reason, requested_at],
+    ).unwrap_or(0);
+    if updated == 0 { "not-found" } else { "cancelled" }
+}
+
+fn valid_attachment_cancel_id(id: &str) -> bool {
+    !id.is_empty()
+        && id.len() <= 128
+        && id.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
+}
+
+pub async fn cancel(headers: axum::http::HeaderMap, body: Bytes) -> Response {
+    let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
+    let attachment_id = payload.get("attachmentId").and_then(Value::as_str).unwrap_or("").trim();
+    if !valid_attachment_cancel_id(attachment_id) {
+        return json_error(StatusCode::BAD_REQUEST, "Attachment cancellation payload is invalid.");
+    }
+    let (owner_kind, owner_id) = attachment_principal(&headers);
+    let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+        return json_error(StatusCode::INTERNAL_SERVER_ERROR, "attachment store unavailable");
+    };
+    ensure_managed_schema(&conn);
+    match cancel_staged(
+        &conn,
+        attachment_id,
+        &owner_kind,
+        &owner_id,
+        "client-cancelled",
+        &now_iso(),
+    ) {
+        "not-found" => json_error(StatusCode::NOT_FOUND, "Attachment not found."),
+        "already-claimed" => json_error(StatusCode::CONFLICT, "Attachment is already committed."),
+        _ => (StatusCode::OK, axum::Json(json!({"cancelled": true}))).into_response(),
+    }
+}
+
+pub async fn upload(headers: axum::http::HeaderMap, RawQuery(query): RawQuery, body: Bytes) -> Response {
     let query = query.unwrap_or_default();
     let thread_id = query_param(&query, "threadId").unwrap_or_default();
     let kind = query_param(&query, "type").unwrap_or_default();
@@ -336,8 +407,9 @@ pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
     if let Ok(conn) = crate::orchestration_engine::open_state_rw() {
         ensure_managed_schema(&conn);
         let now = now_iso();
+        let (owner_kind, owner_id) = attachment_principal(&headers);
         let _ = conn.execute(
-            "INSERT OR REPLACE INTO managed_attachment_blobs (attachment_id, owner_thread_id, owner_kind, owner_id, kind, original_name, mime_type, reserved_bytes, size_bytes, sha256, relative_path, state, staging_expires_at, created_at, updated_at) VALUES (?1,?2,'session','local',?3,?4,?5,?6,?6,?7,?8,'staged',?9,?10,?10)",
+            "INSERT OR REPLACE INTO managed_attachment_blobs (attachment_id, owner_thread_id, owner_kind, owner_id, kind, original_name, mime_type, reserved_bytes, size_bytes, sha256, relative_path, state, staging_expires_at, created_at, updated_at) VALUES (?1,?2,?11,?12,?3,?4,?5,?6,?6,?7,?8,'staged',?9,?10,?10)",
             params![
                 id,
                 thread_id,
@@ -349,6 +421,8 @@ pub async fn upload(RawQuery(query): RawQuery, body: Bytes) -> Response {
                 relative,
                 iso_in(3600),
                 now,
+                owner_kind,
+                owner_id,
             ],
         );
     }
@@ -434,5 +508,35 @@ mod tests {
     #[test]
     fn serve_rejects_path_segments() {
         assert!("/etc/passwd".contains('/'));
+    }
+
+    #[test]
+    fn remote_device_principal_isolated_from_local_loopback() {
+        let mut headers = axum::http::HeaderMap::new();
+        headers.insert("x-synara-remote-device-jkt", axum::http::HeaderValue::from_static("device-jkt"));
+        assert_eq!(attachment_principal(&headers), ("session".into(), "remote-device:device-jkt".into()));
+        assert_eq!(attachment_principal(&axum::http::HeaderMap::new()), ("local-loopback".into(), "local-loopback".into()));
+    }
+
+    #[test]
+    fn cancellation_is_owner_scoped_stateful_and_idempotent() {
+        let conn = rusqlite::Connection::open_in_memory().unwrap();
+        ensure_managed_schema(&conn);
+        conn.execute(
+            "INSERT INTO managed_attachment_blobs (attachment_id, owner_thread_id, owner_kind, owner_id, kind, original_name, mime_type, reserved_bytes, size_bytes, sha256, relative_path, state, staging_expires_at, created_at, updated_at) VALUES ('att','thread','session','one','image','a.png','image/png',1,1,'x','objects/aa/att.png','staged','soon','now','now')",
+            [],
+        ).unwrap();
+        assert_eq!(cancel_staged(&conn, "att", "session", "two", "client-cancelled", "later"), "not-found");
+        assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "cancelled");
+        assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "cancelled");
+        conn.execute("UPDATE managed_attachment_blobs SET state='claimed' WHERE attachment_id='att'", []).unwrap();
+        assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "already-claimed");
+    }
+
+    #[test]
+    fn cancellation_id_shape_matches_upstream() {
+        assert!(!valid_attachment_cancel_id("att_v2 abc"));
+        assert!(valid_attachment_cancel_id("att_v2_abcd-123"));
+        assert!(!valid_attachment_cancel_id("att/../x"));
     }
 }

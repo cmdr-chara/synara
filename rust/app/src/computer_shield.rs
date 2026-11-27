@@ -349,6 +349,67 @@ pub fn resolve_appsnap_helper() -> Option<PathBuf> {
 }
 
 
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum ShieldArgs {
+    Engage(ShieldEngagement),
+    Release { shield_id: String },
+    ReleaseAll,
+}
+
+fn valid_shield_id(id: &str) -> bool {
+    !id.is_empty() && id.len() <= 64 && id.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
+}
+
+fn coordinate(value: &Value) -> Option<f64> {
+    value.as_f64().filter(|number| number.is_finite() && number.abs() <= 1_000_000.0)
+}
+
+fn extent(value: &Value) -> Option<f64> {
+    value.as_f64().filter(|number| number.is_finite() && *number > 0.0 && *number <= 32_768.0)
+}
+
+fn sanitized_label(value: &Value) -> Option<String> {
+    let label = value.as_str()?
+        .chars()
+        .filter(|character| !character.is_control() && !matches!(character, '\u{00ad}' | '\u{200b}'..='\u{200f}' | '\u{202a}'..='\u{202e}' | '\u{2060}'..='\u{2064}' | '\u{2066}'..='\u{206f}' | '\u{feff}'))
+        .collect::<String>()
+        .trim()
+        .chars()
+        .take(160)
+        .collect::<String>();
+    (!label.is_empty()).then_some(label)
+}
+
+/// Validate the wire shape shared with upstream `parseCuaShieldArgs`. A
+/// malformed request must be refused before any helper command is written.
+pub fn parse_shield_args(value: &Value) -> Option<ShieldArgs> {
+    if value.get("action").and_then(Value::as_str) == Some("release_all") {
+        return Some(ShieldArgs::ReleaseAll);
+    }
+    let shield_id = value.get("shield_id").and_then(Value::as_str)?;
+    if !valid_shield_id(shield_id) { return None; }
+    match value.get("action").and_then(Value::as_str)? {
+        "release" => Some(ShieldArgs::Release { shield_id: shield_id.to_string() }),
+        "engage" => {
+            let frame = value.get("frame")?;
+            Some(ShieldArgs::Engage(ShieldEngagement {
+                shield_id: shield_id.to_string(),
+                frame: ShieldFrame {
+                    x: coordinate(frame.get("x")?)?,
+                    y: coordinate(frame.get("y")?)?,
+                    width: extent(frame.get("width")?)?,
+                    height: extent(frame.get("height")?)?,
+                },
+                window_id: value.get("window_id")?.as_u64().filter(|id| *id > 0 && *id <= u32::MAX as u64)? as u32,
+                pid: value.get("pid")?.as_u64().filter(|id| *id > 0 && *id <= i32::MAX as u64)? as u32,
+                label: sanitized_label(value.get("label")?),
+            }))
+        }
+        _ => None,
+    }
+}
+
 /// Process-wide shield host. The computer backend owns one helper generation;
 /// explicit shutdown is required because a process-static value never runs Drop.
 pub fn shared_host() -> Option<&'static ComputerShield> {
@@ -423,4 +484,19 @@ mod tests {
         assert!(error.contains("exited") || error.contains("confirm"), "{error}");
         let _ = std::fs::remove_dir_all(directory);
     }
+    #[test]
+    fn parses_wire_shield_arguments() {
+        let args = parse_shield_args(&serde_json::json!({
+            "action":"engage","shield_id":"ok_1","frame":{"x":1.0,"y":2.0,"width":3.0,"height":4.0},
+            "window_id":10,"pid":20,"label":" agent\u{202e} label "
+        })).unwrap();
+        assert_eq!(args, ShieldArgs::Engage(ShieldEngagement {
+            shield_id: "ok_1".into(),
+            frame: ShieldFrame { x: 1.0, y: 2.0, width: 3.0, height: 4.0 },
+            window_id: 10, pid: 20, label: Some("agent label".into()),
+        }));
+        assert!(parse_shield_args(&serde_json::json!({"action":"engage","shield_id":"bad id"})).is_none());
+        assert_eq!(parse_shield_args(&serde_json::json!({"action":"release_all"})), Some(ShieldArgs::ReleaseAll));
+    }
+
 }

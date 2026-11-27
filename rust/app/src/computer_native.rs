@@ -314,8 +314,41 @@ fn set_control_enabled(payload: &Value) -> Result<Value, String> {
         crate::input_monitor::control_armed(tid);
     } else {
         crate::input_monitor::control_disarmed(tid);
+        if let Some(host) = crate::computer_shield::shared_host() {
+            host.end_task(&crate::computer_shield::ShieldTask { thread_id: tid.to_string(), turn_id: None });
+        }
     }
     Ok(json!({"enabled": enabled, "generation": generation}))
+}
+
+fn handle_shield(payload: &Value) -> Result<Value, String> {
+    let args = crate::computer_shield::parse_shield_args(&payload["args"])
+        .ok_or("Invalid computer shield request.")?;
+    let host = crate::computer_shield::shared_host()
+        .ok_or("The activation shield is not available in this build.")?;
+    let thread_id = payload["threadId"].as_str().unwrap_or_default();
+    let turn_id = payload["turnId"].as_str().filter(|value| !value.is_empty());
+    let task = (!thread_id.is_empty()).then(|| crate::computer_shield::ShieldTask {
+        thread_id: thread_id.to_string(),
+        turn_id: turn_id.map(str::to_string),
+    });
+    match args {
+        crate::computer_shield::ShieldArgs::Engage(engagement) => {
+            if !thread_id.is_empty() {
+                crate::computer_manager::assert_control_authority(Some(thread_id))?;
+                crate::computer_manager::assert_input_not_paused(Some(thread_id))?;
+            }
+            host.engage(engagement.clone(), task.as_ref())?;
+            Ok(json!({"engaged": true, "shield_id": engagement.shield_id}))
+        }
+        crate::computer_shield::ShieldArgs::Release { shield_id } => {
+            host.release(&shield_id);
+            Ok(json!({"released": true}))
+        }
+        crate::computer_shield::ShieldArgs::ReleaseAll => {
+            Ok(json!({"released": host.release_all()}))
+        }
+    }
 }
 
 /// Resolve a semantic target (windowId/nodePath/ref/role/label) to a live AX
@@ -525,6 +558,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 Ok(json!({"accepted": true, "computerId": COMPUTER_ID}))
             }
             "computer.setControlEnabled" => set_control_enabled(payload),
+            "computer.shield" => handle_shield(payload),
             "computer.launchApp" => {
                 let app = payload["app"].as_str().unwrap_or("");
                 if app.is_empty() {

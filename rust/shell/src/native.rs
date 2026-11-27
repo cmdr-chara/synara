@@ -17449,7 +17449,15 @@ impl Render for Native {
 
         // ---- inbox pane (upstream /inbox recap layout) ----
         // Upstream inbox column: p-10 (40px) and gap-7 (28px) at desktop width.
-        let mut inbox_pane = v_flex().flex_1().h_full().p(px(40.)).gap(px(28.));
+        // measured vs upstream web capture: content block sat +24x/+21y with uniform p(40)
+        let mut inbox_pane = v_flex()
+            .flex_1()
+            .h_full()
+            .pl(px(16.))
+            .pr(px(40.))
+            .pt(px(19.))
+            .pb(px(40.))
+            .gap(px(28.));
         if self.view_inbox {
             use chrono::Timelike as _;
             let now = chrono::Local::now();

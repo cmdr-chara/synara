@@ -794,6 +794,27 @@ mod appsnap_capture_tests {
         assert_eq!(parsed.screen_recording, Some(false));
         assert!(parse_appsnap_permissions(r#"{"type":"permissions"}"#).is_none());
     }
+
+    #[test]
+    fn pending_capture_round_trips_and_acknowledges() {
+        let root = std::env::temp_dir().join(format!("appsnap-pending-test-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let mut bytes = APPSNAP_PNG_SIGNATURE.to_vec();
+        bytes.extend_from_slice(b"image");
+        let capture = AppSnapCapture {
+            id: "capture-1".into(), captured_at: "now".into(), name: "capture.png".into(),
+            size_bytes: bytes.len(), bytes,
+            source_app_name: Some("Safari".into()), source_bundle_identifier: None,
+            source_app_icon_data_url: None, source_window_title: None,
+        };
+        persist_pending_capture(&root, &capture).unwrap();
+        let listed = list_pending_captures(&root);
+        assert_eq!(listed.len(), 1);
+        assert_eq!(listed[0].capture.id, "capture-1");
+        assert!(acknowledge_pending_capture(&root, "capture-1"));
+        assert!(list_pending_captures(&root).is_empty());
+        let _ = std::fs::remove_dir_all(root);
+    }
 }
 
 // ---- AppSnap permission commands ------------------------------------------------------------
@@ -905,4 +926,105 @@ pub fn run_appsnap_permission_command(
     let _ = child.kill();
     let _ = child.wait();
     result
+}
+
+// ---- Durable pending captures ---------------------------------------------------------------
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct PendingAppSnapCapture {
+    pub capture: AppSnapCapture,
+    pub image_path: PathBuf,
+    pub metadata_path: PathBuf,
+}
+
+fn pending_paths(capture_directory: &std::path::Path, id: &str) -> (PathBuf, PathBuf) {
+    (capture_directory.join(format!("{id}.png")), capture_directory.join(format!("{id}.json")))
+}
+
+/// Stores a completed capture durably before the UI acknowledges it. Both
+/// writes are owner-only and atomic; either both paths exist or the capture is
+/// not admitted as pending.
+pub fn persist_pending_capture(
+    capture_directory: &std::path::Path,
+    capture: &AppSnapCapture,
+) -> Result<PendingAppSnapCapture, String> {
+    if !valid_appsnap_id(&capture.id) || capture.bytes.len() != capture.size_bytes || capture.bytes.len() < 8 || capture.bytes[..8] != APPSNAP_PNG_SIGNATURE {
+        return Err("Invalid AppSnap capture.".into());
+    }
+    std::fs::create_dir_all(capture_directory).map_err(|error| error.to_string())?;
+    let (image_path, metadata_path) = pending_paths(capture_directory, &capture.id);
+    let body = serde_json::json!({
+        "version": 1,
+        "id": capture.id,
+        "capturedAt": capture.captured_at,
+        "name": capture.name,
+        "mimeType": "image/png",
+        "sizeBytes": capture.size_bytes,
+        "sourceAppName": capture.source_app_name,
+        "sourceBundleIdentifier": capture.source_bundle_identifier,
+        "sourceAppIconDataUrl": capture.source_app_icon_data_url,
+        "sourceWindowTitle": capture.source_window_title,
+    });
+    let write_atomic = |path: &std::path::Path, bytes: &[u8]| -> Result<(), String> {
+        let tmp = path.with_extension(format!("{}.tmp", uuid::Uuid::new_v4()));
+        std::fs::write(&tmp, bytes).map_err(|error| error.to_string())?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            let _ = std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o600));
+        }
+        std::fs::rename(&tmp, path).map_err(|error| error.to_string())
+    };
+    write_atomic(&image_path, &capture.bytes)?;
+    if let Err(error) = write_atomic(&metadata_path, serde_json::to_string(&body).map_err(|e| e.to_string())?.as_bytes()) {
+        let _ = std::fs::remove_file(&image_path);
+        return Err(error);
+    }
+    Ok(PendingAppSnapCapture { capture: capture.clone(), image_path, metadata_path })
+}
+
+fn pending_capture_from_metadata(metadata_path: &std::path::Path) -> Option<PendingAppSnapCapture> {
+    let value: Value = serde_json::from_str(&std::fs::read_to_string(metadata_path).ok()?).ok()?;
+    if value.get("version").and_then(Value::as_u64) != Some(1) { return None; }
+    let id = value.get("id").and_then(Value::as_str)?.to_string();
+    if !valid_appsnap_id(&id) { return None; }
+    let (image_path, expected_metadata) = pending_paths(metadata_path.parent()?, &id);
+    if expected_metadata != *metadata_path { return None; }
+    let bytes = read_validated_png(&image_path, metadata_path.parent()?).ok()?;
+    let size_bytes = value.get("sizeBytes").and_then(Value::as_u64)? as usize;
+    if size_bytes != bytes.len() { return None; }
+    let capture = AppSnapCapture {
+        id,
+        captured_at: value.get("capturedAt").and_then(Value::as_str)?.to_string(),
+        name: value.get("name").and_then(Value::as_str)?.to_string(),
+        size_bytes,
+        bytes,
+        source_app_name: value.get("sourceAppName").and_then(Value::as_str).map(str::to_string),
+        source_bundle_identifier: value.get("sourceBundleIdentifier").and_then(Value::as_str).map(str::to_string),
+        source_app_icon_data_url: value.get("sourceAppIconDataUrl").and_then(Value::as_str).map(str::to_string),
+        source_window_title: value.get("sourceWindowTitle").and_then(Value::as_str).map(str::to_string),
+    };
+    Some(PendingAppSnapCapture { capture, image_path, metadata_path: metadata_path.to_path_buf() })
+}
+
+pub fn list_pending_captures(capture_directory: &std::path::Path) -> Vec<PendingAppSnapCapture> {
+    let Ok(entries) = std::fs::read_dir(capture_directory) else { return Vec::new() };
+    let mut captures: Vec<_> = entries.flatten()
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().and_then(|e| e.to_str()) == Some("json"))
+        .filter_map(|path| pending_capture_from_metadata(&path))
+        .collect();
+    captures.sort_by(|left, right| left.capture.captured_at.cmp(&right.capture.captured_at));
+    captures
+}
+
+/// Acknowledgement is the only path that deletes a pending capture. Invalid or
+/// mismatched ids fail closed and keep the files for diagnostics/retry.
+pub fn acknowledge_pending_capture(capture_directory: &std::path::Path, id: &str) -> bool {
+    if !valid_appsnap_id(id) { return false; }
+    let (image_path, metadata_path) = pending_paths(capture_directory, id);
+    if !image_path.is_file() || !metadata_path.is_file() { return false; }
+    let image_removed = std::fs::remove_file(&image_path).is_ok();
+    let metadata_removed = std::fs::remove_file(&metadata_path).is_ok();
+    image_removed && metadata_removed
 }

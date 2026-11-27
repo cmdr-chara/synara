@@ -2136,6 +2136,17 @@ fn ascii_hash3(x: i64, y: i64, z: i64) -> f32 {
 /// Off = color-mix(foreground 20%, control-opaque) under a foreground/14%
 /// border; control-opaque is the surface in light and rgb(23,23,23) on the
 /// default dark #111111 surface (6/235 toward the ink).
+/// Upstream `--color-text-accent`, measured on the live web app: switch
+/// tracks and accent controls read this token, not `primary` (which is the
+/// ink color at zero contrast). Dark #F58056 / light #C74614.
+fn text_accent(dark: bool) -> gpui::Hsla {
+    if dark {
+        hsla(0.048, 0.89, 0.649, 1.0) // #F58056
+    } else {
+        hsla(0.048, 0.9, 0.45, 1.0) // #C74614 family
+    }
+}
+
 fn switch_track(on: bool, accent: gpui::Hsla, theme: &gpui_kit::component::Theme) -> gpui::Div {
     let mix = |a: gpui::Hsla, b: gpui::Hsla, t: f32| -> gpui::Hsla {
         let (a, b) = (gpui::Rgba::from(a), gpui::Rgba::from(b));
@@ -16563,7 +16574,7 @@ impl Render for Native {
                 );
                 for (i, (label, desc)) in FLAG_ROWS.iter().enumerate() {
                     let on = self.feature_flags[i];
-                    let track = switch_track(on, theme.primary, &theme);
+                    let track = switch_track(on, text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark)), &theme);
                     menu = menu.child(
                         div()
                             .id(ElementId::Name(format!("ff-row-{i}").into()))
@@ -20957,7 +20968,7 @@ impl Render for Native {
         };
 
         // ---- shared controls for ported settings sections ----
-        let accent_c = theme.primary;
+        let accent_c = text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
         let switch_theme = theme.clone();
         let toggle = move |on: bool| switch_track(on, accent_c, &switch_theme).into_any_element();
         // Upstream segmented = ghost buttons gap-1; active gets a gray "secondary" fill.

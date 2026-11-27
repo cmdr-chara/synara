@@ -1557,6 +1557,7 @@ pub struct Native {
     >,
     md_images_pending: std::sync::Arc<std::sync::Mutex<std::collections::HashSet<String>>>,
     activity_open: Vec<String>,
+    turn_files_collapsed: Vec<String>,
     /// Live voice-note capture while the composer mic is recording.
     voice_capture: Option<crate::voice::VoiceCapture>,
     /// True while a finished clip is with the transcription backend.
@@ -3538,6 +3539,7 @@ impl Native {
             md_images: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new())),
             md_images_pending: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashSet::new())),
             activity_open: Vec::new(),
+            turn_files_collapsed: Vec::new(),
             voice_capture: None,
             voice_transcribing: false,
             voice_send_after: false,
@@ -4822,6 +4824,47 @@ impl Native {
         })
         .detach();
         cx.notify();
+    }
+
+    /// End-of-turn files card: open the precomputed checkpoint diff for one
+    /// turn in the diff panel (upstream Review on the Edited-files card).
+    fn open_turn_diff(&mut self, thread_id: String, from_turn: i64, to_turn: i64, cx: &mut Context<Self>) {
+        let client = self.client.clone();
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let cell = client.clone();
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
+            let Some(client) = client else { return };
+            let res = cx
+                .background_executor()
+                .spawn(async move {
+                    client.call(
+                        "orchestration.getTurnDiff",
+                        json!({"threadId": thread_id, "fromTurnCount": from_turn, "toTurnCount": to_turn}),
+                    )
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                if let Some(v) = res {
+                    let patch = str_at(&v, "diff").to_string();
+                    if patch.is_empty() {
+                        return;
+                    }
+                    this.blame_pop = None;
+                    let files =
+                        gpui_kit::component::diff::DiffFile::parse(&patch).unwrap_or_default();
+                    this.changes_diff_state = Some(cx.new(|cx| {
+                        gpui_kit::component::diff::DiffState::new(files, cx)
+                            .with_mode(gpui_kit::component::diff::DiffMode::Unified)
+                    }));
+                    this.changes_diff = Some((format!("turn {to_turn}"), patch));
+                }
+                cx.notify();
+            });
+        })
+        .detach();
     }
 
     fn stage_paths(&mut self, paths: Vec<String>, unstage: bool, cx: &mut Context<Self>) {
@@ -14331,6 +14374,152 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     ),
                 );
             }
+        }
+
+        // End-of-turn files card (upstream MessagesTimeline turnSummary):
+        // after a settled turn with checkpoint files, an "Edited N files"
+        // card with per-file rows (+adds/-dels); a row click opens the
+        // precomputed checkpoint diff in the diff panel.
+        for cp in arr(thread_v, "checkpoints") {
+            let cp_files = arr(cp, "files");
+            if cp_files.is_empty() {
+                continue;
+            }
+            let cp_status = str_at(cp, "status");
+            if cp_status == "missing" || cp_status == "error" {
+                continue;
+            }
+            let turn_id = str_at(cp, "turnId").to_string();
+            let tc = cp.get("checkpointTurnCount").and_then(Value::as_i64).unwrap_or(0);
+            if tc <= 0 {
+                continue;
+            }
+            let collapsed = self.turn_files_collapsed.iter().any(|t| t == &turn_id);
+            let total_adds: i64 = cp_files
+                .iter()
+                .map(|f| f.get("additions").and_then(Value::as_i64).unwrap_or(0))
+                .sum();
+            let total_dels: i64 = cp_files
+                .iter()
+                .map(|f| f.get("deletions").and_then(Value::as_i64).unwrap_or(0))
+                .sum();
+            let turn_id_h = turn_id.clone();
+            let mut fcard = v_flex()
+                .w_full()
+                .max_w(chat_mw)
+                .border_1()
+                .border_color(theme.border)
+                .rounded_lg()
+                .p_2()
+                .gap_1()
+                .child(
+                    h_flex()
+                        .id(ElementId::Name(format!("turnfiles-{turn_id}").into()))
+                        .cursor_pointer()
+                        .gap_2()
+                        .items_center()
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            if this.turn_files_collapsed.iter().any(|t| t == &turn_id_h) {
+                                this.turn_files_collapsed.retain(|t| t != &turn_id_h);
+                            } else {
+                                this.turn_files_collapsed.push(turn_id_h.clone());
+                            }
+                            cx.notify();
+                        }))
+                        .child(
+                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
+                                "Edited {} {}{}",
+                                cp_files.len(),
+                                if cp_files.len() == 1 { "file" } else { "files" },
+                                if collapsed { " \u{25b8}" } else { " \u{25be}" },
+                            )),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child(format!("+{total_adds} -{total_dels}")),
+                        ),
+                );
+            if !collapsed {
+                let review_tid = this_tid.clone();
+                let thread_id_r = str_at(thread_v, "id").to_string();
+                let _ = review_tid;
+                fcard = fcard.child(
+                    h_flex()
+                        .id(ElementId::Name(format!("turnfiles-review-{turn_id}").into()))
+                        .cursor_pointer()
+                        .gap_1()
+                        .py(px(2.))
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.open_turn_diff(thread_id_r.clone(), tc - 1, tc, cx);
+                        }))
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child("Review diff"),
+                        ),
+                );
+                for f in cp_files.iter().take(8) {
+                    let fpath = str_at(f, "path").to_string();
+                    let adds = f.get("additions").and_then(Value::as_i64).unwrap_or(0);
+                    let dels = f.get("deletions").and_then(Value::as_i64).unwrap_or(0);
+                    let fkind = str_at(f, "kind");
+                    let fname = fpath.rsplit('/').next().unwrap_or(&fpath).to_string();
+                    let fdir = if fpath.len() > fname.len() {
+                        fpath[..fpath.len() - fname.len()].trim_end_matches('/').to_string()
+                    } else {
+                        String::new()
+                    };
+                    let kind_label = match fkind {
+                        "added" => "A",
+                        "deleted" => "D",
+                        _ => "M",
+                    };
+                    fcard = fcard.child(
+                        h_flex()
+                            .w_full()
+                            .gap_2()
+                            .items_center()
+                            .py(px(1.))
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child(kind_label),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .overflow_hidden()
+                                    .whitespace_nowrap()
+                                    .child(if fdir.is_empty() {
+                                        fname
+                                    } else {
+                                        format!("{fdir}/{fname}")
+                                    }),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child(format!("+{adds} -{dels}")),
+                            ),
+                    );
+                }
+                if cp_files.len() > 8 {
+                    fcard = fcard.child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(format!("… {} more", cp_files.len() - 8)),
+                    );
+                }
+            }
+            col = col.child(
+                h_flex().w_full().justify_center().child(fcard),
+            );
         }
 
         // SubagentRunCard: the thread's child threads fold into one

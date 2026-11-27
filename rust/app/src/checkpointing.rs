@@ -13,7 +13,7 @@
 
 use base64::Engine;
 use rusqlite::{params, Connection};
-use serde_json::json;
+use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -185,20 +185,67 @@ fn diff_refs(cwd: &Path, from_ref: &str, to_ref: &str) -> Option<String> {
 }
 
 /// Names of files differing between two refs, newline-free `-z` parsing.
-fn changed_files(cwd: &Path, from_ref: &str, to_ref: &str) -> Vec<String> {
-    let out = Command::new("git")
+/// Upstream turnSummary files carry per-file stats; capture them at write
+/// time via --numstat + --name-status so readers never re-parse the diff.
+fn changed_files(cwd: &Path, from_ref: &str, to_ref: &str) -> Vec<Value> {
+    let stats = Command::new("git")
         .arg("-C")
         .arg(cwd)
-        .args(["diff", "--name-only", "-z", from_ref, to_ref])
+        .args(["diff", "--numstat", "-z", from_ref, to_ref])
         .output();
-    match out {
-        Ok(o) if o.status.success() => o
-            .stdout
-            .split(|b| *b == 0)
-            .filter_map(|p| std::str::from_utf8(p).ok())
-            .filter(|p| !p.is_empty())
-            .map(str::to_string)
-            .collect(),
+    let names = Command::new("git")
+        .arg("-C")
+        .arg(cwd)
+        .args(["diff", "--name-status", "-z", from_ref, to_ref])
+        .output();
+    let mut kinds: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+    if let Ok(o) = names {
+        if o.status.success() {
+            let parts: Vec<&str> = o
+                .stdout
+                .split(|b| *b == 0)
+                .filter_map(|p| std::str::from_utf8(p).ok())
+                .filter(|p| !p.is_empty())
+                .collect();
+            let mut it = parts.iter();
+            while let Some(status) = it.next() {
+                if let Some(path) = it.next() {
+                    let kind = match status.chars().next() {
+                        Some('A') => "added",
+                        Some('D') => "deleted",
+                        Some('R') => "renamed",
+                        _ => "modified",
+                    };
+                    kinds.insert(path.to_string(), kind.to_string());
+                }
+            }
+        }
+    }
+    match stats {
+        Ok(o) if o.status.success() => {
+            let mut out = Vec::new();
+            // With -z each record is NUL-terminated: `<adds>\t<dels>\t<path>\0`.
+            for rec in String::from_utf8_lossy(&o.stdout).split('\0') {
+                if rec.is_empty() {
+                    continue;
+                }
+                let mut cols = rec.splitn(3, '\t');
+                let (Some(adds), Some(dels), Some(path)) = (cols.next(), cols.next(), cols.next())
+                else {
+                    continue;
+                };
+                if path.is_empty() {
+                    continue;
+                }
+                out.push(json!({
+                    "path": path,
+                    "additions": adds.parse::<i64>().unwrap_or(0),
+                    "deletions": dels.parse::<i64>().unwrap_or(0),
+                    "kind": kinds.get(path).cloned().unwrap_or_else(|| "modified".to_string()),
+                }));
+            }
+            out
+        }
         _ => Vec::new(),
     }
 }
@@ -536,7 +583,7 @@ mod tests {
         assert!(diff.contains("a.txt"), "diff missing a.txt: {diff}");
         assert!(diff.contains("+two"));
         let files = changed_files(&dir, "refs/synara/checkpoints/t/turn/0", "refs/synara/checkpoints/t/turn/1");
-        assert_eq!(files, vec!["a.txt".to_string()]);
+        assert_eq!(files[0].get("path").and_then(Value::as_str), Some("a.txt"));
         let _ = std::fs::remove_dir_all(&dir);
     }
 

@@ -387,6 +387,20 @@ pub fn device_trust_generation(conn: &Connection, scope: &TrustScope, device_jkt
     .map_err(|_| "Device has no current local approval".to_string())
 }
 
+/// Explicit owner reset of one environment's remote trust chain. Device rows
+/// remain auditable but are revoked before the TLS root is replaced.
+pub fn reset_environment(conn: &Connection, environment_id: &str, now: &str) -> Result<(), String> {
+    conn.execute(
+        "UPDATE remote_device_trust SET revoked_at = ?1 WHERE environment_id = ?2 AND revoked_at IS NULL",
+        params![now, environment_id],
+    ).map_err(|e| e.to_string())?;
+    conn.execute(
+        "UPDATE auth_pairing_links SET revoked_at = ?1 WHERE purpose = 'remote-device' AND consumed_at IS NULL AND revoked_at IS NULL",
+        params![now],
+    ).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 pub fn authorize_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<bool, String> {
     let found = conn.query_row(
         "SELECT 1 FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2 AND device_jkt = ?3 AND revoked_at IS NULL",
@@ -420,16 +434,25 @@ pub fn set_allow_connections(conn: &Connection, scope: &TrustScope, enabled: boo
 /// Local trust scope: root fingerprint is the sha256 of the host identity
 /// public key — stable per environment, needs no account connectivity.
 pub fn local_scope(secrets_dir: &str, environment_id: &str) -> Option<TrustScope> {
-    let path = crate::host_identity::host_identity_path(secrets_dir);
-    let identity = crate::host_identity::read_host_identity(&path).ok()??;
-    let x = identity.public_key_jwk.get("x").and_then(Value::as_str)?;
-    let fingerprint = sha256_hex(x);
+    // The pairing trust anchor is the remote TLS root, not the host-link
+    // identity. Upstream scopes invitations and device trust to the root
+    // fingerprint plus the exact account authority/user/organization tuple.
+    let tls_path = crate::remote_tls::remote_tls_identity_path(secrets_dir);
+    let identity = crate::remote_tls::load_remote_tls_identity(&tls_path, environment_id).ok()?;
+    let anchor = crate::remote_tls::anchor_for(environment_id, &identity.root_certificate).ok()?;
+    let stored = crate::account::read_session_file()?;
+    let account_url = stored.get("accountUrl").and_then(Value::as_str)?;
+    let user_id = stored.get("userId").and_then(Value::as_str)?;
+    let organization_id = stored.get("organizationId").and_then(Value::as_str)?;
+    if account_url.is_empty() || user_id.is_empty() || organization_id.is_empty() {
+        return None;
+    }
     Some(TrustScope {
         environment_id: environment_id.to_string(),
-        root_fingerprint: fingerprint,
-        account_authority: String::new(),
-        user_id: String::new(),
-        organization_id: String::new(),
+        root_fingerprint: anchor.root_fingerprint,
+        account_authority: crate::account::account_api_issuer(account_url),
+        user_id: user_id.to_string(),
+        organization_id: organization_id.to_string(),
     })
 }
 

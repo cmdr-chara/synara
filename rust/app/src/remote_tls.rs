@@ -182,6 +182,17 @@ pub fn anchor_for(environment_id: &str, root_certificate: &str) -> Result<Remote
     })
 }
 
+pub fn root_validity(identity: &RemoteTlsIdentity) -> Result<(i64, i64), String> {
+    cert_validity(&identity.root_certificate)
+}
+
+pub fn reset_remote_tls_identity(path: &Path, environment_id: &str) -> Result<RemoteTlsIdentity, String> {
+    if path.exists() {
+        std::fs::remove_file(path).map_err(|e| format!("identity reset failed: {e}"))?;
+    }
+    initialize_remote_tls_identity(path, environment_id)
+}
+
 pub fn root_needs_repair(identity: &RemoteTlsIdentity, now: i64) -> bool {
     match cert_validity(&identity.root_certificate) {
         Ok((_, not_after)) => not_after - now <= ROOT_REPAIR_THRESHOLD_DAYS * DAY_MS,

@@ -74,59 +74,111 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
 /// publish to or redeem through the account API still answer the fallback.
 fn remote_access(payload: &Value) -> Result<Value, String> {
     use crate::remote_pairing as rp;
-    let operation = payload.get("operation").and_then(Value::as_str).unwrap_or("");
+    // The RPC envelope is `{request: ...}`; accepting the bare request keeps
+    // internal/test callers compatible without weakening the wire shape.
+    let request = payload.get("request").unwrap_or(payload);
+    let operation = request.get("operation").and_then(Value::as_str).unwrap_or("");
     let state_dir = crate::todo::state_dir();
     let secrets_dir = format!("{state_dir}/secrets");
     let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
     let conn = rp::open()?;
-    let Some(scope) = rp::local_scope(&secrets_dir, &environment_id) else {
+    let tls_path = crate::remote_tls::remote_tls_identity_path(&secrets_dir);
+    let mut tls_identity = crate::remote_tls::load_remote_tls_identity(&tls_path, &environment_id).ok();
+    let mut scope = rp::local_scope(&secrets_dir, &environment_id);
+    if matches!(operation, "create-invitation" | "create-code") && scope.is_none() && !tls_path.exists() {
+        tls_identity = crate::remote_tls::initialize_remote_tls_identity(&tls_path, &environment_id).ok();
+        scope = rp::local_scope(&secrets_dir, &environment_id);
+    }
+    let Some(scope) = scope else {
         return Err("Remote access operation failed".to_string());
     };
     match operation {
-        "list" => Ok(json!({
-            "kind": "host-state",
-            "invitations": rp::list_invites(&conn, &scope)?,
-            "activeSessions": crate::remote_sessions::list(),
-            "devices": rp::list_devices(&conn, &scope)?,
-            "rootFingerprint": scope.root_fingerprint,
-            "allowConnections": rp::allows_connections(&conn, &scope)?,
-        })),
-        "create-invitation" => {
-            let invite = rp::create_invite(&conn, &scope)?;
+        "list" => {
+            let now_ms = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as i64).unwrap_or(0);
+            let root_expires = tls_identity.as_ref().and_then(|identity| crate::remote_tls::root_validity(identity).ok()).map(|(_, end)| end);
+            let root_expires = root_expires.and_then(|ms| chrono::DateTime::from_timestamp_millis(ms)).map(|d| d.to_rfc3339_opts(chrono::SecondsFormat::Millis, true));
             Ok(json!({
-                "kind": "invitation",
+                "kind": "host-state",
+                "invitations": rp::list_invites(&conn, &scope)?,
+                "devices": rp::list_devices(&conn, &scope)?,
+                "rootFingerprint": scope.root_fingerprint,
+                "rootExpiresAt": root_expires,
+                "rootNeedsRepair": tls_identity.as_ref().is_some_and(|identity| crate::remote_tls::root_needs_repair(identity, now_ms)),
+                "allowConnections": rp::allows_connections(&conn, &scope)?,
+            }))
+        }
+        "device-info" => {
+            let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(&secrets_dir))
+                .map_err(|_| "Remote access operation failed".to_string())?;
+            Ok(json!({"kind":"device-info","deviceJkt":identity.jkt,"label":crate::account::display_hostname()}))
+        }
+        "reset-identity" => {
+            if request.get("environmentId").and_then(Value::as_str) != Some(environment_id.as_str()) {
+                return Err("The environment changed. Review the reset on this computer.".to_string());
+            }
+            rp::reset_environment(&conn, &environment_id, &crate::todo::iso_now_ms())?;
+            crate::remote_tls::reset_remote_tls_identity(&tls_path, &environment_id)?;
+            Ok(json!({"kind":"done"}))
+        }
+        "create-invitation" => {
+            let Some(identity) = tls_identity.as_ref() else {
+                return Err("The host root is missing. Restore it or explicitly reset remote trust before pairing again.".to_string());
+            };
+            let account = crate::account::read_session_file().ok_or_else(|| "Link this host to your own account first".to_string())?;
+            let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
+            if host_id.is_empty() {
+                return Err("Link this host to your own account first".to_string());
+            }
+            let channel = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+                Some("com.emanueledipietro.synara.beta") => "beta",
+                Some("com.emanueledipietro.synara.canary") => "canary",
+                Some("com.emanueledipietro.synara") => "stable",
+                _ => "dev",
+            };
+            let invite = rp::create_invite(&conn, &scope)?;
+            let bundle = json!({
+                "v": 2,
+                "environmentId": scope.environment_id,
+                "rootFingerprint": scope.root_fingerprint,
+                "accountAuthority": scope.account_authority,
+                "userId": scope.user_id,
+                "organizationId": scope.organization_id,
+                "channel": channel,
+                "rootCertificate": identity.root_certificate,
+                "hostId": host_id,
+                "label": crate::account::display_hostname(),
                 "inviteId": invite.invite_id,
                 "secret": invite.secret,
                 "expiresAt": invite.expires_at,
-            }))
+            });
+            Ok(json!({"kind": "invitation", "bundle": bundle}))
         }
         "approve" => {
-            let invite_id = payload.get("inviteId").and_then(Value::as_str).unwrap_or("");
-            let device_jkt = payload.get("deviceJkt").and_then(Value::as_str).unwrap_or("");
+            let invite_id = request.get("inviteId").and_then(Value::as_str).unwrap_or("");
+            let device_jkt = request.get("deviceJkt").and_then(Value::as_str).unwrap_or("");
             if !rp::approve(&conn, &scope, invite_id, device_jkt, "approval")? {
                 return Err("The invitation or requested device changed. Review it again on this host.".to_string());
             }
             Ok(json!({"kind": "done"}))
         }
         "cancel-invitation" => {
-            let invite_id = payload.get("inviteId").and_then(Value::as_str).unwrap_or("");
+            let invite_id = request.get("inviteId").and_then(Value::as_str).unwrap_or("");
             rp::revoke(&conn, &scope, invite_id)?;
             Ok(json!({"kind": "done"}))
         }
         "set-allow-connections" => {
-            let enabled = payload.get("enabled").and_then(Value::as_bool).unwrap_or(false);
+            let enabled = request.get("enabled").and_then(Value::as_bool).unwrap_or(false);
             rp::set_allow_connections(&conn, &scope, enabled)?;
             Ok(json!({"kind": "done"}))
         }
         "revoke-device" => {
-            let device_jkt = payload.get("deviceJkt").and_then(Value::as_str).unwrap_or("");
+            let device_jkt = request.get("deviceJkt").and_then(Value::as_str).unwrap_or("");
             rp::revoke_device(&conn, &scope, device_jkt)?;
             Ok(json!({"kind": "done"}))
         }
         _ => Err("Remote access operation failed".to_string()),
     }
 }
-
 
 fn authed(
     method: reqwest::Method,

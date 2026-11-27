@@ -17,27 +17,46 @@ const MAX_METADATA_BYTES: usize = 16 * 1024;
 const MAX_RESPONSE_HEAD_BYTES: usize = 64 * 1024;
 const MAX_RESPONSE_BODY_BYTES: usize = 32 * 1024 * 1024;
 
-fn percent_encode_query(input: &str) -> String {
-    input.chars().flat_map(|ch| {
-        match ch {
-            'A'..='Z' | 'a'..='z' | '0'..='9' | '-' | '_' | '.' | '~' => vec![ch],
-            _ => {
-                let mut bytes = [0u8; 4];
-                ch.encode_utf8(&mut bytes).as_bytes().iter().flat_map(|byte| {
-                    const HEX: &[u8; 16] = b"0123456789ABCDEF";
-                    vec!['%', (HEX[(byte >> 4) as usize]) as char, (HEX[(byte & 15) as usize]) as char]
-                }).collect()
-            }
+fn percent_encode(input: &str, component: bool) -> String {
+    let mut out = String::new();
+    for byte in input.as_bytes() {
+        let ch = *byte as char;
+        let unreserved = byte.is_ascii_alphanumeric()
+            || if component {
+                matches!(ch, '-' | '_' | '.' | '!' | '~' | '*' | '\'' | '(' | ')')
+            } else {
+                matches!(ch, '*' | '-' | '.' | '_')
+            };
+        if unreserved {
+            out.push(ch);
+        } else if !component && *byte == b' ' {
+            out.push('+');
+        } else {
+            const HEX: &[u8; 16] = b"0123456789ABCDEF";
+            out.push('%');
+            out.push(HEX[(byte >> 4) as usize] as char);
+            out.push(HEX[(byte & 15) as usize] as char);
         }
-    }).collect()
+    }
+    out
+}
+
+/// JavaScript `encodeURIComponent`, used in the DPoP presentation URL.
+fn encode_uri_component(input: &str) -> String {
+    percent_encode(input, true)
+}
+
+/// JavaScript `URLSearchParams` byte encoding, used in the actual HTTP query.
+fn encode_query_param(input: &str) -> String {
+    percent_encode(input, false)
 }
 
 fn presentation_url(environment_id: &str, encoded_reference: &str) -> String {
     format!(
         "synara://remote/{}{}/{}",
-        percent_encode_query(environment_id),
+        encode_uri_component(environment_id),
         REMOTE_RESOURCE_PATH,
-        percent_encode_query(encoded_reference),
+        encode_uri_component(encoded_reference),
     )
 }
 
@@ -169,7 +188,7 @@ pub async fn handle_remote_resource(
     let target_path = format!(
         "{}?reference={}",
         REMOTE_RESOURCE_PATH,
-        percent_encode_query(&encoded_reference),
+        encode_query_param(&encoded_reference),
     );
     let mut head = format!(
         "{} {} HTTP/1.1\r\nHost: {}\r\nAuthorization: DPoP {}\r\nDPoP: {}\r\nContent-Length: {}\r\nConnection: close\r\n",
@@ -248,6 +267,8 @@ mod tests {
             presentation_url("env 1", "{\"environmentId\":\"env 1\"}"),
             "synara://remote/env%201/v2/resource/%7B%22environmentId%22%3A%22env%201%22%7D",
         );
+        assert_eq!(encode_uri_component(" !~*()'"), "%20!~*()'");
+        assert_eq!(encode_query_param(" !~*()'"), "+%21%7E*%28%29%27");
     }
 
     #[test]

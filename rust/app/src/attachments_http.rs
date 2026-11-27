@@ -174,7 +174,29 @@ fn sha256_hex(bytes: &[u8]) -> String {
 /// Claims staged attachments referenced by a persisted turn message, mirroring
 /// upstream claim semantics: the blob survives past its staging TTL once a
 /// message actually carries it.
-pub(crate) fn claim_attachments_for_message(message_id: &str, attachment_ids: &[String]) {
+fn claim_staged(
+    conn: &rusqlite::Connection,
+    attachment_id: &str,
+    thread_id: &str,
+    message_id: &str,
+    now: &str,
+) -> bool {
+    // The upstream CHECK requires both claim_command_id and claim_message_id
+    // on claimed rows. Dispatch-time command ids are not threaded into the
+    // projection layer, so the message id stands in as the command linkage —
+    // the audit trail still resolves the exact message and turn. Claims are
+    // thread-scoped and cannot resurrect an expired staging row.
+    conn.execute(
+        "UPDATE managed_attachment_blobs SET state='claimed', claim_command_id=?3, claim_message_id=?3, claimed_at=?4, staging_expires_at=NULL, updated_at=?4 WHERE attachment_id=?1 AND owner_thread_id=?2 AND state='staged' AND (staging_expires_at IS NULL OR staging_expires_at >= ?4)",
+        params![attachment_id, thread_id, message_id, now],
+    ).unwrap_or(0) == 1
+}
+
+pub(crate) fn claim_attachments_for_message(
+    message_id: &str,
+    thread_id: &str,
+    attachment_ids: &[String],
+) {
     if attachment_ids.is_empty() {
         return;
     }
@@ -183,16 +205,14 @@ pub(crate) fn claim_attachments_for_message(message_id: &str, attachment_ids: &[
     };
     ensure_managed_schema(&conn);
     let now = now_iso();
+    let mut seen = std::collections::HashSet::new();
     for id in attachment_ids {
-        // The upstream CHECK requires both claim_command_id and
-        // claim_message_id on claimed rows. Dispatch-time command ids are not
-        // threaded into the projection layer, so the message id stands in as
-        // the command linkage — the audit trail still resolves the exact
-        // message and through it the turn that claimed the blob.
-        let _ = conn.execute(
-            "UPDATE managed_attachment_blobs SET state='claimed', claim_command_id=?2, claim_message_id=?2, claimed_at=?3, staging_expires_at=NULL, updated_at=?3 WHERE attachment_id=?1 AND state='staged'",
-            params![id, message_id, now],
-        );
+        // Duplicate ids reject the upstream command. Projection has no error
+        // path by this point, so a duplicate is conservatively ignored after
+        // its first valid claim instead of claiming the row twice.
+        if seen.insert(id.as_str()) {
+            let _ = claim_staged(&conn, id, thread_id, message_id, &now);
+        }
     }
 }
 
@@ -531,6 +551,26 @@ mod tests {
         assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "cancelled");
         conn.execute("UPDATE managed_attachment_blobs SET state='claimed' WHERE attachment_id='att'", []).unwrap();
         assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "already-claimed");
+    }
+
+    #[test]
+    fn claims_are_thread_scoped_and_expire() {
+        let conn = rusqlite::Connection::open_in_memory().unwrap();
+        ensure_managed_schema(&conn);
+        for (id, thread, expiry) in [
+            ("att-live", "thread-1", "2999-01-01T00:00:00Z"),
+            ("att-wrong-thread", "thread-2", "2999-01-01T00:00:00Z"),
+            ("att-expired", "thread-1", "2000-01-01T00:00:00Z"),
+        ] {
+            conn.execute(
+                "INSERT INTO managed_attachment_blobs (attachment_id, owner_thread_id, owner_kind, owner_id, kind, original_name, mime_type, reserved_bytes, size_bytes, sha256, relative_path, state, staging_expires_at, created_at, updated_at) VALUES (?1,?2,'local-loopback','local-loopback','image','a.png','image/png',1,1,'x',?3,'staged',?4,'now','now')",
+                params![id, thread, format!("objects/aa/{id}.png"), expiry],
+            ).unwrap();
+        }
+        let now = "2026-01-01T00:00:00Z";
+        assert!(claim_staged(&conn, "att-live", "thread-1", "message-1", now));
+        assert!(!claim_staged(&conn, "att-wrong-thread", "thread-1", "message-1", now));
+        assert!(!claim_staged(&conn, "att-expired", "thread-1", "message-1", now));
     }
 
     #[test]

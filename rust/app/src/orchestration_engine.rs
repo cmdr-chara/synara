@@ -6366,7 +6366,7 @@ fn project_message_sent(
             .collect();
         if !ids.is_empty() {
             if let Some(mid) = message_id.as_str() {
-                crate::attachments_http::claim_attachments_for_message(mid, &ids);
+                crate::attachments_http::claim_attachments_for_message(mid, thread_id, &ids);
             }
         }
     }

@@ -322,6 +322,7 @@ async fn main() {
             }
         });
         claude_runner::spawn_credential_keepalive();
+        crate::pull_requests::spawn_auto_fix_watcher();
         std::thread::spawn(|| loop {
             crate::remote_connections::retry_reconnecting_once();
             std::thread::sleep(std::time::Duration::from_secs(5));

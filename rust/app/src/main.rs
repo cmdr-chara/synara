@@ -50,6 +50,7 @@ mod git_pr;
 mod github_inbox;
 mod attachments_http;
 mod favicons;
+mod auth_connections;
 mod auth_http;
 mod editor_icon;
 mod auth_sessions;

@@ -330,11 +330,11 @@ async fn device_frames_upgrade(
     if reject_untrusted_websocket_origin(&headers) {
         return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
     }
-    if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
-        return websocket_auth_not_required_response(status);
-    }
     if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
         return upgrade(State(original), ws, uri, headers, false).await;
+    }
+    if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
+        return websocket_auth_not_required_response(status);
     }
     let params: std::collections::HashMap<String, String> = uri
         .query()
@@ -359,11 +359,11 @@ async fn computer_frames_upgrade(
     if reject_untrusted_websocket_origin(&headers) {
         return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
     }
-    if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
-        return websocket_auth_not_required_response(status);
-    }
     if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
         return upgrade(State(original), ws, uri, headers, false).await;
+    }
+    if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
+        return websocket_auth_not_required_response(status);
     }
     let params: std::collections::HashMap<String, String> = uri
         .query()
@@ -507,7 +507,33 @@ async fn upgrade(
     } else {
         None
     };
-    ws.on_upgrade(move |socket| relay(socket, original, uri, headers, intercept, authenticated_session))
+    let connection_lease = authenticated_session
+        .as_ref()
+        .map(|session| crate::auth_connections::register_authenticated_connection(&session.session_id));
+    let connection_lease = match connection_lease {
+        Some(Ok(lease)) => Some(lease),
+        Some(Err(active)) => {
+            return (
+                axum::http::StatusCode::TOO_MANY_REQUESTS,
+                [(axum::http::header::RETRY_AFTER, "1")],
+                axum::Json(json!({
+                    "error": "Authenticated websocket connection capacity exceeded.",
+                    "scope": "connections",
+                    "active": active,
+                    "limit": crate::auth_connections::MAX_AUTHENTICATED_CONNECTIONS_PER_SESSION,
+                    "retryAfterSeconds": 1,
+                })),
+            ).into_response();
+        }
+        None => None,
+    };
+    ws.on_upgrade(move |socket| {
+        let connection_lease = connection_lease;
+        async move {
+            let _connection_lease = connection_lease;
+            relay(socket, original, uri, headers, intercept, authenticated_session).await
+        }
+    })
 }
 
 fn owner_only_rpc(tag: &str, payload: &serde_json::Value) -> bool {

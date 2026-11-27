@@ -110,7 +110,7 @@ pub(crate) fn authenticate(headers: &HeaderMap) -> Option<AuthenticatedSession> 
 /// cookies/bearer tokens, this is the credential browsers use for upgrades.
 pub(crate) fn authenticate_websocket_ticket(token: &str) -> Option<AuthenticatedSession> {
     let claims = auth_sessions::verify_token(token)?;
-    if claims.kind != "websocket" {
+    if claims.kind != "websocket" || !auth_sessions::consume_websocket_ticket(&claims) {
         return None;
     }
     let conn = open_state_rw().ok()?;
@@ -243,18 +243,61 @@ pub async fn session_state(headers: HeaderMap) -> Response {
     }
 }
 
+fn iso_millis(text: &str) -> Option<u64> {
+    chrono::DateTime::parse_from_rfc3339(text)
+        .ok()
+        .and_then(|value| u64::try_from(value.timestamp_millis()).ok())
+}
+
+fn iso_from_millis(ms: u64) -> String {
+    crate::projects_fileops::iso8601(ms / 1000)
+}
+
 pub async fn ws_token(headers: HeaderMap) -> Response {
     let Some(session) = authenticate(&headers) else {
         return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
     };
-    let Some(token) = auth_sessions::issue_websocket_ticket(&session.session_id) else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "ticket issuance failed"}));
+    let session_expires_at_ms = open_state_rw()
+        .ok()
+        .and_then(|conn| {
+            conn.query_row(
+                "SELECT expires_at FROM auth_sessions WHERE session_id = ?1",
+                params![session.session_id],
+                |row| row.get::<_, String>(0),
+            )
+            .ok()
+        })
+        .and_then(|expires| iso_millis(&expires))
+        .unwrap_or_else(|| {
+            let now_ms = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|duration| duration.as_millis() as u64)
+                .unwrap_or(0);
+            now_ms + auth_sessions::WEBSOCKET_TOKEN_TTL_MS
+        });
+    let (token, expires_at_ms) = match auth_sessions::issue_websocket_ticket(&session.session_id, session_expires_at_ms) {
+        Ok(issued) => issued,
+        Err(auth_sessions::WebSocketTicketIssueError::Capacity { active }) => {
+            return json_response(
+                StatusCode::TOO_MANY_REQUESTS,
+                json!({
+                    "error": "Outstanding websocket ticket capacity exceeded.",
+                    "scope": "websocket-tickets",
+                    "active": active,
+                    "limit": auth_sessions::MAX_OUTSTANDING_WEBSOCKET_TICKETS_PER_SESSION,
+                    "retryAfterSeconds": 1,
+                }),
+            );
+        }
+        Err(auth_sessions::WebSocketTicketIssueError::SigningUnavailable) => {
+            return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "ticket issuance failed"}));
+        }
     };
     json_response(
         StatusCode::OK,
         json!({
             "token": token,
-            "expiresAt": iso_plus_ms(auth_sessions::WEBSOCKET_TOKEN_TTL_MS),
+            "expiresAt": iso_from_millis(expires_at_ms),
         }),
     )
 }

@@ -1443,6 +1443,14 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
             handoff.insert("stopBackgroundTasks".into(), json!(true));
         }
         ep.insert("providerHandoff".into(), Value::Object(handoff));
+        let handoff_metadata = json!({
+            "sourceThreadId": thread_id,
+            "sourceProvider": source.get("provider").cloned().unwrap_or(Value::Null),
+            "importedAt": occurred_at,
+            "bootstrapStatus": "completed",
+        });
+        ep.insert("handoff".into(), handoff_metadata.clone());
+        sets.push(("handoff_json", handoff_metadata));
     }
     if let Some(v) = command.get("isPinned") {
         ep.insert("isPinned".into(), v.clone());

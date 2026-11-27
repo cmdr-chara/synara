@@ -633,17 +633,27 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         "opencode" => "opencode",
         _ => "claude",
     };
-    for (seq, (role, text_out, timestamp, source_id)) in imported.iter().enumerate() {
-        let message_id = format!("import:{thread_id}:{provider_key}:{source_id}");
-        let created = timestamp.clone().unwrap_or_else(|| now.clone());
-        let _ = conn.execute(
-            "INSERT OR IGNORE INTO projection_thread_messages (message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at, source) VALUES (?1, ?2, NULL, ?3, ?4, 0, ?5, ?5, 'imported')",
-            params![message_id, thread_id, role, text_out, created],
-        );
-        // Distinct ordering guard: imported rows share timestamps; rowid order
-        // already preserves transcript order through insertion sequence.
-        let _ = seq;
-    }
+    let imported_messages: Vec<Value> = imported
+        .iter()
+        .map(|(role, text_out, timestamp, source_id)| {
+            json!({
+                "messageId": format!("import:{thread_id}:{provider_key}:{source_id}"),
+                "role": role,
+                "text": text_out,
+                "createdAt": timestamp.clone().unwrap_or_else(|| now.clone()),
+                "updatedAt": timestamp.clone().unwrap_or_else(|| now.clone()),
+                "source": "imported",
+            })
+        })
+        .collect();
+    let import_command = json!({
+        "type": "thread.messages.import",
+        "commandId": uuid_v4(),
+        "threadId": thread_id,
+        "createdAt": now,
+        "messages": imported_messages,
+    });
+    messages_import(import_command.as_object().unwrap())?;
     let mut effective_model_selection = model_selection_value.clone();
     if provider == "omp" {
         if let Some(model) = omp_last_model.as_deref() {
@@ -6720,7 +6730,10 @@ fn messages_import(command: &Map<String, Value>) -> Result<Value, WsErr> {
         }
         payload.insert("turnId".into(), Value::Null);
         payload.insert("streaming".into(), json!(false));
-        payload.insert("source".into(), json!("native"));
+        payload.insert(
+            "source".into(),
+            m.get("source").cloned().unwrap_or(json!("native")),
+        );
         payload.insert("createdAt".into(), m.get("createdAt").cloned().unwrap_or(Value::Null));
         payload.insert("updatedAt".into(), m.get("updatedAt").cloned().unwrap_or(Value::Null));
         events.push(out_event(

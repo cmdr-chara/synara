@@ -1982,6 +1982,35 @@ fn thread_cost_summary(conn: &rusqlite::Connection, thread_id: &str) -> Value {
     })
 }
 
+
+/// Isolation rule from the upstream creation coordinator: a caller isolated
+/// in a worktree cannot drive threads on the shared local checkout — steering
+/// shared state from an isolated sandbox would leak unreviewed changes into
+/// the user's working tree. Local callers may drive both.
+fn caller_env_mode(conn: &rusqlite::Connection, caller: &str) -> Option<String> {
+    conn.query_row(
+        "SELECT env_mode FROM projection_threads WHERE thread_id = ?1",
+        [caller],
+        |r| r.get::<_, Option<String>>(0),
+    )
+    .ok()
+    .flatten()
+}
+
+fn assert_may_drive_local(conn: &rusqlite::Connection, caller: Option<&str>, target_is_local: bool) -> Result<(), String> {
+    if !target_is_local {
+        return Ok(());
+    }
+    let Some(caller) = caller else { return Ok(()) };
+    if caller_env_mode(conn, caller).as_deref() == Some("worktree") {
+        return Err(
+            "Your thread is isolated in a worktree; you cannot drive local-checkout threads. Ask the user to do this from a local thread."
+                .into(),
+        );
+    }
+    Ok(())
+}
+
 fn deterministic_thread_id(request_id: &str) -> String {
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
@@ -2050,6 +2079,12 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
                 .ok_or("No project found: pass projectId explicitly.")?
         }
     };
+    {
+        let wants_local = arg_str(args, "environment").as_deref() != Some("worktree");
+        if let Err(e) = assert_may_drive_local(&conn, caller_thread, wants_local) {
+            return Err(e);
+        }
+    }
     // Isolated worktree environment: the worktree is created before dispatch
     // so the thread projection is born pointing at it. Managed branch naming
     // matches the reclaim rule (`synara/*` branches are disposable).
@@ -2154,7 +2189,7 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
     Ok(json!({"threadId": thread_id, "started": started}))
 }
 
-fn send_message_tool(args: &Value) -> Result<Value, String> {
+fn send_message_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
     let message = arg_str(args, "message").ok_or("Missing required argument: message")?;
     if message.trim().is_empty() {
@@ -2172,6 +2207,18 @@ fn send_message_tool(args: &Value) -> Result<Value, String> {
         |_| Ok(()),
     )
     .map_err(|_| format!("Thread \"{thread_id}\" was not found."))?;
+    {
+        let target_env: Option<String> = conn
+            .query_row(
+                "SELECT env_mode FROM projection_threads WHERE thread_id = ?1",
+                [&thread_id],
+                |r| r.get::<_, Option<String>>(0),
+            )
+            .ok()
+            .flatten();
+        let target_is_local = target_env.as_deref() != Some("worktree");
+        assert_may_drive_local(&conn, caller_thread, target_is_local)?;
+    }
     let key = crate::orchestration_engine::uuid_v4();
     dispatch_command(json!({
         "type": "thread.turn.start",
@@ -3622,7 +3669,7 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_hub_update_progress" => hub_update_progress(args, caller_thread),
         "synara_hub_cancel_work" => hub_cancel_work(args),
         "synara_create_thread" => create_thread_tool(args, caller_thread),
-        "synara_send_message" => send_message_tool(args),
+        "synara_send_message" => send_message_tool(args, caller_thread),
         "synara_interrupt_thread" => interrupt_thread_tool(args),
         "synara_set_thread_title" => set_thread_title_tool(args),
         "synara_set_thread_archived" => set_thread_archived_tool(args),

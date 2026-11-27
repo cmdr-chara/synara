@@ -575,6 +575,15 @@ async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Val
     if name.starts_with("browser_") {
         return crate::browser_automation::call_browser_tool(name, args, thread).await;
     }
+    let approval_name = if name == "computer_batch" { "computer_run" } else { name };
+    if computer_tool_requires_approval(approval_name) {
+        let Some(thread_id) = thread else {
+            return Err("Computer action requires a thread-scoped caller.".into());
+        };
+        if !authorize_computer_task(thread_id, approval_name).await {
+            return Err("Computer action was denied or cancelled; no input was sent.".into());
+        }
+    }
     if name == "computer_run" || name == "computer_batch" {
         return computer_batch(args, thread).await;
     }
@@ -635,6 +644,110 @@ fn user_requested_visible_use(thread_id: &str) -> bool {
     ]
     .iter()
     .any(|needle| text.contains(needle))
+}
+
+fn computer_tool_requires_approval(name: &str) -> bool {
+    matches!(
+        name,
+        "computer_read_clipboard"
+            | "computer_launch_app"
+            | "computer_click"
+            | "computer_move_cursor"
+            | "computer_drag"
+            | "computer_scroll"
+            | "computer_type_text"
+            | "computer_press_key"
+            | "computer_write_clipboard"
+            | "computer_set_value"
+            | "computer_perform_action"
+            | "computer_select_text"
+            | "computer_paste"
+            | "computer_run"
+            | "computer_activate_window"
+            | "computer_set_window_frame"
+            | "computer_kill_app"
+            | "computer_set_window_minimized"
+            | "computer_set_app_visibility"
+    )
+}
+
+/// One routine Computer task approval per turn, shared by every ordinary
+/// computer action in that turn. The approval row and activity use the same
+/// projection path as provider approvals; `thread.approval.respond` settles
+/// the in-memory gate as well as the durable row.
+async fn authorize_computer_task(thread_id: &str, tool_name: &str) -> bool {
+    let Some(turn_id) = active_turn_id(thread_id) else {
+        return false;
+    };
+    let publish_thread = thread_id.to_string();
+    let publish_turn = turn_id.clone();
+    let publish_tool = tool_name.to_string();
+    let published_request = std::sync::Arc::new(std::sync::Mutex::new(None::<String>));
+    let published_request_in_closure = std::sync::Arc::clone(&published_request);
+    let outcome = crate::computer_approval::gate()
+        .request_task(thread_id, &turn_id, false, move |request_id| {
+            if let Ok(mut slot) = published_request_in_closure.lock() {
+                *slot = Some(request_id.clone());
+            }
+            let thread = publish_thread.clone();
+            let turn = publish_turn.clone();
+            let tool = publish_tool.clone();
+            Box::pin(async move {
+                let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+                    return;
+                };
+                let now = crate::todo::iso_now_ms();
+                let _ = conn.execute(
+                    "INSERT OR REPLACE INTO projection_pending_interactions                      (interaction_kind, request_id, thread_id, turn_id, lifecycle_generation, status, decision,                       response_command_id, response_requested_at, created_at, resolved_at)                      VALUES ('approval', ?1, ?2, ?3, NULL, 'pending', NULL, NULL, NULL, ?4, NULL)",
+                    rusqlite::params![request_id, thread, turn, now],
+                );
+                let _ = crate::acp_runner::append_activity(
+                    &conn,
+                    &thread,
+                    &turn,
+                    "warn",
+                    "approval.requested",
+                    "Computer approval",
+                    &json!({
+                        "requestId": request_id,
+                        "approvalScope": "computer-task",
+                        "toolName": tool,
+                        "detail": "Use the computer for this task",
+                        "sessionApprovalAvailable": false,
+                    }),
+                );
+            }) as futures_util::future::BoxFuture<'static, ()>
+        })
+        .await;
+    let decision = match outcome {
+        crate::computer_approval::Outcome::Accept => "accept",
+        crate::computer_approval::Outcome::Decline => "decline",
+        crate::computer_approval::Outcome::Expired => "expired",
+        crate::computer_approval::Outcome::Cancel => "cancel",
+    };
+    if let Ok(conn) = crate::orchestration_engine::open_state_rw()
+        && let Some(request_id) = published_request.lock().ok().and_then(|slot| slot.clone())
+    {
+        let _ = conn.execute(
+            "DELETE FROM projection_pending_interactions              WHERE thread_id = ?1 AND request_id = ?2 AND interaction_kind = 'approval'",
+            rusqlite::params![thread_id, request_id],
+        );
+        let _ = crate::acp_runner::append_activity(
+            &conn,
+            thread_id,
+            &turn_id,
+            "info",
+            "approval.resolved",
+            "Computer approval",
+            &json!({
+                "requestId": request_id,
+                "approvalScope": "computer-task",
+                "toolName": tool_name,
+                "decision": decision,
+            }),
+        );
+    }
+    outcome == crate::computer_approval::Outcome::Accept
 }
 
 async fn authorize_foreground_activation(thread_id: &str) -> bool {

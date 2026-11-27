@@ -254,8 +254,8 @@ fn finalize_imported_timestamps(
 /// `import:{thread}:{provider}:{sourceId}` ids, and binds the external resume
 /// cursor so the next turn continues that session. OMP and Droid file-backed
 /// sessions are imported through the same local history readers as the
-/// upstream adapters. OpenCode sessions are read through the managed server
-/// message APIs; externally hosted OpenCode server URLs remain a transport gap.
+/// upstream adapters. OpenCode sessions are read through configured external
+/// server URLs or a short-lived managed server.
 fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload
         .get("threadId")

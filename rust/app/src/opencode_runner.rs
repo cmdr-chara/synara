@@ -1382,15 +1382,133 @@ fn opencode_messages_from_body(body: &str) -> Result<Vec<OpenCodeImportedMessage
     opencode_message_page(body).map(|(messages, _)| messages)
 }
 
-/// Read one external OpenCode session through a short-lived managed server,
-/// the Rust counterpart of upstream `OpenCodeAdapter.readExternalThread` for
-/// local installations. Externally hosted OpenCode server URLs remain outside
-/// this lean transport, which only speaks loopback HTTP.
+fn configured_opencode_server_url(instance_id: Option<&str>) -> Option<String> {
+    let settings = crate::server_settings::current();
+    crate::provider_instances::resolve_instance(&settings, instance_id, Some("opencode"))
+        .and_then(|instance| {
+            instance
+                .config
+                .get("serverUrl")
+                .and_then(Value::as_str)
+                .map(str::trim)
+                .filter(|url| !url.is_empty())
+                .map(str::to_string)
+        })
+}
+
+fn external_http_request(
+    client: &reqwest::blocking::Client,
+    base_url: &str,
+    method: &str,
+    path: &str,
+    body: Option<&Value>,
+) -> Result<(u16, String), WsErr> {
+    let url = format!("{}{}", base_url.trim_end_matches('/'), path);
+    let method = reqwest::Method::from_bytes(method.as_bytes())
+        .map_err(|e| err(format!("opencode external method: {e}")))?;
+    let mut request = client.request(method, url);
+    if let Some(body) = body {
+        request = request.json(body);
+    }
+    let response = request
+        .send()
+        .map_err(|e| err(format!("opencode external server request: {e}")))?;
+    let status = response.status().as_u16();
+    let text = response
+        .text()
+        .map_err(|e| err(format!("opencode external server response: {e}")))?;
+    Ok((status, text))
+}
+
+fn external_detect_protocol(
+    client: &reqwest::blocking::Client,
+    base_url: &str,
+) -> OpenCodeProtocol {
+    if let Ok((status, body)) = external_http_request(client, base_url, "GET", "/api/info", None) {
+        if (200..300).contains(&status)
+            && serde_json::from_str::<Value>(&body).ok().is_some_and(|info| {
+                info.get("version").and_then(Value::as_str).is_some()
+                    && info.get("pid").and_then(Value::as_i64).is_some()
+                    && info.get("urls").and_then(Value::as_array).is_some()
+            })
+        {
+            return OpenCodeProtocol::V2;
+        }
+    }
+    OpenCodeProtocol::V1
+}
+
+fn read_external_history_from_server(
+    base_url: &str,
+    external_id: &str,
+) -> Result<OpenCodeImportHistory, WsErr> {
+    let client = reqwest::blocking::Client::builder()
+        .timeout(std::time::Duration::from_secs(30))
+        .build()
+        .map_err(|e| err(format!("opencode external client: {e}")))?;
+    let protocol = external_detect_protocol(&client, base_url);
+    let encoded_id = urlencode_component(external_id);
+    let session_path = if protocol == OpenCodeProtocol::V2 {
+        format!("/api/session/{encoded_id}")
+    } else {
+        format!("/session/{encoded_id}")
+    };
+    let (status, body) = external_http_request(&client, base_url, "GET", &session_path, None)?;
+    if status >= 400 {
+        return Err(err(format!("opencode session lookup HTTP {status}: {body}")));
+    }
+    let session: Value = serde_json::from_str(&body)
+        .map_err(|e| err(format!("opencode session lookup parse: {e}")))?;
+    let session_cwd = session
+        .pointer("/data/directory")
+        .and_then(Value::as_str)
+        .or_else(|| session.get("directory").and_then(Value::as_str))
+        .map(str::to_string);
+    let mut messages = Vec::new();
+    let mut cursor: Option<String> = None;
+    let mut seen_cursors = std::collections::HashSet::new();
+    loop {
+        let messages_path = if protocol == OpenCodeProtocol::V2 {
+            let page_query = match cursor.as_deref() {
+                Some(cursor) => format!("limit=200&cursor={}", urlencode_component(cursor)),
+                None => "limit=200&order=asc".to_string(),
+            };
+            format!("/api/session/{encoded_id}/message?{page_query}")
+        } else {
+            format!("/session/{encoded_id}/message")
+        };
+        let (status, body) = external_http_request(&client, base_url, "GET", &messages_path, None)?;
+        if status >= 400 {
+            return Err(err(format!("opencode session messages HTTP {status}: {body}")));
+        }
+        let (page, next_cursor) = opencode_message_page(&body)?;
+        messages.extend(page);
+        if protocol != OpenCodeProtocol::V2 {
+            break;
+        }
+        let Some(next) = next_cursor else { break };
+        if !seen_cursors.insert(next.clone()) {
+            return Err(err("OpenCode returned a repeated message cursor."));
+        }
+        cursor = Some(next);
+    }
+    Ok(OpenCodeImportHistory {
+        cwd: session_cwd,
+        messages,
+    })
+}
+
+/// Read one external OpenCode session. A configured `serverUrl` is queried
+/// directly like upstream's externally hosted server path; otherwise this
+/// starts a short-lived managed loopback server for the local installation.
 pub fn read_external_history(
     cwd: &str,
     external_id: &str,
     instance_id: Option<&str>,
 ) -> Result<OpenCodeImportHistory, WsErr> {
+    if let Some(server_url) = configured_opencode_server_url(instance_id) {
+        return read_external_history_from_server(&server_url, external_id);
+    }
     let cwd = if !cwd.trim().is_empty() && std::path::Path::new(cwd).is_dir() {
         cwd.to_string()
     } else {
@@ -2464,5 +2582,45 @@ mod tests {
         assert_eq!(parsed.len(), 2);
         assert_eq!(parsed[0].text, "hello");
         assert_eq!(parsed[1].text, "answer");
+    }
+
+
+    #[test]
+    fn external_server_import_reads_v1_history_without_launching_managed_server() {
+        use std::io::{Read, Write};
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let server = std::thread::spawn(move || {
+            for _ in 0..3 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buf = [0u8; 8192];
+                let n = stream.read(&mut buf).unwrap();
+                let request = String::from_utf8_lossy(&buf[..n]);
+                let body = if request.starts_with("GET /api/info") {
+                    serde_json::json!({"error":"missing"}).to_string()
+                } else if request.starts_with("GET /session/ext-1 ") {
+                    serde_json::json!({"id":"ext-1","directory":"/work/repo"}).to_string()
+                } else {
+                    serde_json::json!([
+                        {"info":{"id":"u","role":"user"},"parts":[{"type":"text","text":"hello"}]},
+                        {"info":{"id":"a","role":"assistant"},"parts":[{"type":"text","text":"answer"}]}
+                    ]).to_string()
+                };
+                let status = if request.starts_with("GET /api/info") { "404 Not Found" } else { "200 OK" };
+                write!(
+                    stream,
+                    "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                ).unwrap();
+            }
+        });
+        let history = super::read_external_history_from_server(
+            &format!("http://127.0.0.1:{port}"),
+            "ext-1",
+        ).unwrap();
+        server.join().unwrap();
+        assert_eq!(history.cwd.as_deref(), Some("/work/repo"));
+        assert_eq!(history.messages.len(), 2);
+        assert_eq!(history.messages[1].text, "answer");
     }
 }

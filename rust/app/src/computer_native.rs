@@ -608,6 +608,69 @@ fn paste_clipboard_text(payload: &Value) -> Result<Value, String> {
     }))
 }
 
+fn menu_path(payload: &Value) -> Result<Vec<String>, String> {
+    let path: Vec<String> = payload
+        .get("path")
+        .and_then(Value::as_array)
+        .map(|items| {
+            items.iter()
+                .filter_map(Value::as_str)
+                .map(str::trim)
+                .filter(|item| !item.is_empty())
+                .map(str::to_string)
+                .collect()
+        })
+        .unwrap_or_default();
+    if path.is_empty() || path.len() > 6 {
+        return Err("path must contain one to six menu titles".into());
+    }
+    Ok(path)
+}
+
+fn invoke_menu(payload: &Value) -> Result<Value, String> {
+    require_ax()?;
+    let thread_id = payload.get("threadId").and_then(Value::as_str).filter(|value| !value.is_empty());
+    if let Some(thread) = thread_id {
+        crate::computer_manager::assert_control_authority(Some(thread))?;
+        crate::computer_manager::assert_input_not_paused(Some(thread))?;
+        crate::computer_manager::assert_foreground_allowed(
+            Some(thread),
+            payload.get("foregroundApproved").and_then(Value::as_bool).unwrap_or(false),
+        )?;
+    }
+    let path = menu_path(payload)?;
+    let mut request = json!({"path": path});
+    let mut app_name = None;
+    let mut bundle_id = None;
+    if let Some(window_id) = payload.get("windowId").and_then(Value::as_str).filter(|value| numeric_window_id(value).is_some()) {
+        let target = window_target(&json!({"windowId": window_id}))?;
+        app_name = target.get("appName").and_then(Value::as_str).map(str::to_string);
+        bundle_id = target.get("bundleId").and_then(Value::as_str).map(str::to_string);
+        request["windowId"] = json!(window_id);
+    } else if let Some(pid) = payload.get("pid").and_then(Value::as_i64).filter(|pid| *pid > 0) {
+        let apps = helper("apps", &json!({}))?;
+        let target = apps.get("apps").and_then(Value::as_array).and_then(|apps| {
+            apps.iter().find(|app| app.get("pid").and_then(Value::as_i64) == Some(pid)).cloned()
+        }).ok_or("The target application is not running.")?;
+        app_name = target.get("appName").and_then(Value::as_str).map(str::to_string);
+        bundle_id = target.get("bundleId").and_then(Value::as_str).map(str::to_string);
+        request["pid"] = json!(pid);
+    } else if let Some(app) = payload.get("app").and_then(Value::as_str).filter(|value| !value.trim().is_empty()) {
+        app_name = Some(app.to_string());
+        request["app"] = json!(app);
+    } else {
+        return Err("windowId, pid, or app is required".into());
+    }
+    crate::computer_manager::assert_not_denied(app_name.as_deref(), bundle_id.as_deref())?;
+    let result = checked_window_helper("menu", request)?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_invoke_menu",
+        "pid": result.get("pid").cloned().unwrap_or(Value::Null),
+        "path": result.get("path").cloned().unwrap_or(json!(path)),
+    }))
+}
+
 fn desktop_state_json() -> Value {
     let (epoch, interruptions, pauses) = crate::computer_manager::desktop_interruption_state();
     json!({
@@ -743,7 +806,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             | "computer.moveCursor" | "computer.drag" | "computer.scroll" | "computer.input.scroll"
             | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
             | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp" | "computer.activateWindow"
-            | "computer.setWindowMinimized" | "computer.setWindowFrame" | "computer.killApp"
+            | "computer.setWindowMinimized" | "computer.setWindowFrame" | "computer.killApp" | "computer.invokeMenu"
             | "computer.writeClipboard" | "computer.paste" | "computer.setAppVisibility"
     );
     if mutating && !owner.is_empty() {
@@ -912,6 +975,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             }
             "computer.setControlEnabled" => set_control_enabled(payload),
             "computer.activateWindow" => activate_window_with_restore(payload),
+            "computer.invokeMenu" => invoke_menu(payload),
             "computer.setWindowMinimized" => set_window_minimized(payload),
             "computer.setWindowFrame" => set_window_frame(payload),
             "computer.killApp" => kill_window_app(payload),
@@ -1095,7 +1159,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
 const ACTION_TAGS: &[&str] = &[
     "click", "doubleClick", "rightClick", "moveCursor", "drag", "scroll",
     "typeText", "pressKey", "hotkey", "setValue", "performAction",
-    "selectText", "input.click", "input.scroll", "input.key",
+    "selectText", "input.click", "input.scroll", "input.key", "invokeMenu",
 ];
 
 fn collect_text(node: &Value, out: &mut Vec<String>) {

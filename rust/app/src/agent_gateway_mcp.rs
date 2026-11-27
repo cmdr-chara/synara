@@ -247,6 +247,19 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "computer_invoke_menu",
+            "Invoke an exact menu-bar path such as [\"File\", \"Save\"]. This activates the target app and requires visible-use approval.",
+            object_schema(
+                json!({
+                    "window_id":{"type":"string", "description":"A window owned by the target app."},
+                    "app":{"type":"string", "description":"Exact app name or bundle id."},
+                    "pid":{"type":"number", "description":"Running app process id."},
+                    "path":{"type":"array","items":{"type":"string"},"minItems":1,"maxItems":6},
+                }),
+                &["path"],
+            ),
+        ),
+        tool(
             "computer_set_window_minimized",
             "Minimize or restore the exact window in place without activating it.",
             object_schema(
@@ -665,6 +678,7 @@ fn computer_tool_requires_approval(name: &str) -> bool {
             | "computer_run"
             | "computer_activate_window"
             | "computer_set_window_frame"
+            | "computer_invoke_menu"
             | "computer_kill_app"
             | "computer_set_window_minimized"
             | "computer_set_app_visibility"
@@ -750,7 +764,7 @@ async fn authorize_computer_task(thread_id: &str, tool_name: &str) -> bool {
     outcome == crate::computer_approval::Outcome::Accept
 }
 
-async fn authorize_foreground_activation(thread_id: &str) -> bool {
+async fn authorize_foreground_activation(thread_id: &str, tool_name: &str, detail: &str) -> bool {
     if user_requested_visible_use(thread_id) {
         return true;
     }
@@ -762,6 +776,8 @@ async fn authorize_foreground_activation(thread_id: &str) -> bool {
     }
     let publish_thread = thread_id.to_string();
     let publish_turn = turn_id.clone();
+    let publish_tool = tool_name.to_string();
+    let publish_detail = detail.to_string();
     let published_request = std::sync::Arc::new(std::sync::Mutex::new(None::<String>));
     let published_request_in_closure = std::sync::Arc::clone(&published_request);
     let outcome = crate::computer_approval::gate()
@@ -771,6 +787,8 @@ async fn authorize_foreground_activation(thread_id: &str) -> bool {
             }
             let thread = publish_thread.clone();
             let turn = publish_turn.clone();
+            let tool = publish_tool.clone();
+            let detail = publish_detail.clone();
             Box::pin(async move {
                 let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
                     return;
@@ -790,8 +808,8 @@ async fn authorize_foreground_activation(thread_id: &str) -> bool {
                     &json!({
                         "requestId": request_id,
                         "approvalScope": "computer-foreground",
-                        "toolName": "computer_activate_window",
-                        "detail": "Show a window on screen",
+                        "toolName": tool,
+                        "detail": detail,
                         "sessionApprovalAvailable": false,
                     }),
                 );
@@ -820,7 +838,7 @@ async fn authorize_foreground_activation(thread_id: &str) -> bool {
                 &json!({
                     "requestId": request_id,
                     "approvalScope": "computer-foreground",
-                    "toolName": "computer_activate_window",
+                    "toolName": tool_name,
                     "decision": decision,
                 }),
             );
@@ -834,7 +852,7 @@ async fn computer_activate_window(args: &Value, thread: Option<&str>) -> Result<
     let Some(thread) = thread else {
         return Err("computer_activate_window requires a thread-scoped caller.".into());
     };
-    if !authorize_foreground_activation(thread).await {
+    if !authorize_foreground_activation(thread, "computer_activate_window", "Show a window on screen").await {
         return Err(
             "Showing windows on screen was declined or cancelled for this task, so no window was raised and no input was sent. Do not ask again in this turn: continue with background input, or report what cannot be done without the foreground."
                 .into(),
@@ -1004,6 +1022,29 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             thread,
         ),
         "computer_activate_window" => computer_activate_window(args, thread).await,
+        "computer_invoke_menu" => {
+            let Some(thread_id) = thread else {
+                return Err("computer_invoke_menu requires a thread-scoped caller.".into());
+            };
+            if !authorize_foreground_activation(thread_id, "computer_invoke_menu", "Invoke a menu item on screen").await {
+                return Err(
+                    "Showing windows on screen was declined or cancelled for this task, so the menu was not invoked. Do not ask again in this turn."
+                        .into(),
+                );
+            }
+            native_call_scoped(
+                "computer.invokeMenu",
+                &json!({
+                    "windowId": string_arg(args,"window_id"),
+                    "app": string_arg(args,"app"),
+                    "pid": number_opt(args,"pid"),
+                    "path": args.get("path").cloned().unwrap_or(json!([])),
+                    "foregroundApproved": true,
+                    "turnId": active_turn_id(thread_id),
+                }),
+                thread,
+            )
+        }
         "computer_set_window_minimized" => native_call_scoped(
             "computer.setWindowMinimized",
             &json!({
@@ -1190,6 +1231,7 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
             "write_clipboard" => "computer_write_clipboard",
             "paste" => "computer_paste",
             "activate_window" => "computer_activate_window",
+            "invoke_menu" => "computer_invoke_menu",
             "set_window_minimized" => "computer_set_window_minimized",
             "set_window_frame" => "computer_set_window_frame",
             "kill_app" => "computer_kill_app",

@@ -194,6 +194,61 @@ func axParseWindowId(_ s: String?) -> (pid: Int, wid: Int)? {
     return (pid, wid)
 }
 
+func normalizeMenuTitle(_ value: String) -> String {
+    value.replacingOccurrences(of: "\u{00a0}", with: " ")
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
+func axBool(_ el: AXUIElement, _ attr: String) -> Bool? {
+    axCopy(el, attr) as? Bool
+}
+
+func menuEntries(for item: AXUIElement) -> [AXUIElement] {
+    // A menu-bar item owns one AXMenu; a submenu item has the same shape one
+    // level down. Some applications expose the menu itself as the only child.
+    for child in axChildren(item) where axStr(child, kAXRoleAttribute) == "AXMenu" {
+        return axChildren(child)
+    }
+    return axChildren(item)
+}
+
+func findMenuPath(menuBar: AXUIElement, path: [String]) -> (element: AXUIElement?, missing: String?, disabled: Bool) {
+    var entries = axChildren(menuBar)
+    var current: AXUIElement? = nil
+    for (index, wantedRaw) in path.enumerated() {
+        let wanted = normalizeMenuTitle(wantedRaw)
+        guard let hit = entries.first(where: { normalizeMenuTitle(axStr($0, kAXTitleAttribute) ?? "") == wanted }) else {
+            return (nil, wantedRaw, false)
+        }
+        current = hit
+        if index + 1 < path.count {
+            entries = menuEntries(for: hit)
+        }
+    }
+    guard let element = current else { return (nil, path.first, false) }
+    return (element, nil, axBool(element, kAXEnabledAttribute) == false)
+}
+
+func resolveMenuTarget(_ a: [String: Any]) -> (pid: Int?, error: String?) {
+    if let parsed = axParseWindowId(a["windowId"] as? String) {
+        return (parsed.pid, nil)
+    }
+    if let pidNumber = a["pid"] as? NSNumber {
+        return (pidNumber.intValue, nil)
+    }
+    guard let wanted = (a["app"] as? String)?.lowercased(), !wanted.isEmpty else {
+        return (nil, "windowId, pid, or app is required")
+    }
+    for app in NSWorkspace.shared.runningApplications {
+        let name = app.localizedName?.lowercased() ?? ""
+        let bundle = app.bundleIdentifier?.lowercased() ?? ""
+        if name == wanted || bundle == wanted {
+            return (Int(app.processIdentifier), nil)
+        }
+    }
+    return (nil, "The target application is not running")
+}
+
 let cmd = CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : ""
 
 switch cmd {
@@ -456,6 +511,46 @@ case "axaction":
         exit(0)
     }
     out(result)
+
+case "menu":
+    let a = args()
+    let path = (a["path"] as? [String] ?? []).filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    guard !path.isEmpty, path.count <= 6 else {
+        out(["ok": false, "error": "path must contain one to six menu titles"])
+        exit(0)
+    }
+    let resolved = resolveMenuTarget(a)
+    guard let pid = resolved.pid, pid > 0,
+          let app = NSRunningApplication(processIdentifier: pid_t(pid))
+    else {
+        out(["ok": false, "error": resolved.error ?? "The target application is not running"])
+        exit(0)
+    }
+    // Menu activation is intrinsically foreground: macOS does not faithfully
+    // open another app's menu bar without making that app active first.
+    _ = app.activate(options: [.activateAllWindows])
+    usleep(120000)
+    let appElement = AXUIElementCreateApplication(pid_t(pid))
+    guard let menuBar = axCopy(appElement, kAXMenuBarAttribute) else {
+        out(["ok": false, "error": "The target application exposes no menu bar"])
+        exit(0)
+    }
+    let menuBarElement = unsafeBitCast(menuBar, to: AXUIElement.self)
+    let found = findMenuPath(menuBar: menuBarElement, path: path)
+    guard let element = found.element else {
+        out(["ok": false, "error": "Menu item not found: \(found.missing ?? path.last ?? "")"])
+        exit(0)
+    }
+    if found.disabled {
+        out(["ok": false, "error": "Menu item is disabled: \(path.last ?? "")"])
+        exit(0)
+    }
+    let err = AXUIElementPerformAction(element, kAXPressAction as CFString)
+    guard err == .success else {
+        out(["ok": false, "error": "Menu item press failed (\(err.rawValue))"])
+        exit(0)
+    }
+    out(["ok": true, "pid": pid, "path": path])
 
 case "apps":
     var apps: [[String: Any]] = []

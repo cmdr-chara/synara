@@ -13429,38 +13429,6 @@ impl Native {
                                         .iter()
                                         .filter(|a| str_at(a, "type") == "image")
                                         .collect();
-                                    if !img_atts.is_empty() {
-                                        let mut row = h_flex().gap(px(8.)).flex_wrap();
-                                        for a in &img_atts {
-                                            let aid = str_at(a, "id").to_string();
-                                            let cached = crate::ws_client::BACKEND_BASE
-                                                .get()
-                                                .and_then(|base| {
-                                                    self.md_images
-                                                        .lock()
-                                                        .unwrap()
-                                                        .get(&format!("{base}/attachments/{aid}"))
-                                                        .cloned()
-                                                });
-                                            row = row.child(match cached {
-                                                Some(render) => div()
-                                                    .rounded(px(8.))
-                                                    .overflow_hidden()
-                                                    .child(
-                                                        img(ImageSource::Render(render))
-                                                            .h(px(96.))
-                                                            .rounded(px(8.)),
-                                                    )
-                                                    .into_any_element(),
-                                                None => div()
-                                                    .size(px(96.))
-                                                    .rounded(px(8.))
-                                                    .bg(subtle)
-                                                    .into_any_element(),
-                                            });
-                                        }
-                                        content = content.child(row);
-                                    }
                                     // Upstream transcript attachments render as
                                     // compact pills: tiny icon, name, size ("25 B").
                                     // Upstream stacks attachment pills vertically,
@@ -13541,6 +13509,38 @@ impl Native {
                                     }
                                     if has_pills {
                                         content = content.child(pill_row);
+                                    }
+                                    if !img_atts.is_empty() {
+                                        let mut row = h_flex().gap(px(8.)).flex_wrap();
+                                        for a in &img_atts {
+                                            let aid = str_at(a, "id").to_string();
+                                            let cached = crate::ws_client::BACKEND_BASE
+                                                .get()
+                                                .and_then(|base| {
+                                                    self.md_images
+                                                        .lock()
+                                                        .unwrap()
+                                                        .get(&format!("{base}/attachments/{aid}"))
+                                                        .cloned()
+                                                });
+                                            row = row.child(match cached {
+                                                Some(render) => div()
+                                                    .rounded(px(8.))
+                                                    .overflow_hidden()
+                                                    .child(
+                                                        img(ImageSource::Render(render))
+                                                            .h(px(96.))
+                                                            .rounded(px(8.)),
+                                                    )
+                                                    .into_any_element(),
+                                                None => div()
+                                                    .size(px(96.))
+                                                    .rounded(px(8.))
+                                                    .bg(subtle)
+                                                    .into_any_element(),
+                                            });
+                                        }
+                                        content = content.child(row);
                                     }
                                     content.child(div().text_size(px(13.)).child(text))
                                 }))

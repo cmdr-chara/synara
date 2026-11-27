@@ -326,6 +326,10 @@ async fn main() {
             if fired > 0 {
                 eprintln!("usage-limit recovery: resumed {fired} thread(s) after reset");
             }
+            let woken = orchestration_engine::fire_due_thread_snoozes();
+            if woken > 0 {
+                eprintln!("thread snooze: woke {woken} thread(s) past deadline");
+            }
         });
         claude_runner::spawn_credential_keepalive();
         crate::pull_requests::spawn_auto_fix_watcher();

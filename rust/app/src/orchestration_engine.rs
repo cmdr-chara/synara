@@ -2781,6 +2781,52 @@ pub fn fire_due_usage_limit_recoveries() -> usize {
     fired
 }
 
+
+/// Snooze expiry counterpart of upstream's ThreadSnoozeReactor: rows whose
+/// `snoozed_until` passed are woken by clearing the deadline through the same
+/// guarded `thread.meta.update` (expectedSnoozedUntil), so a newer schedule or
+/// cancellation always wins the race instead of being clobbered.
+pub fn fire_due_thread_snoozes() -> usize {
+    let Ok(conn) = open_state_rw() else { return 0 };
+    let rows: Vec<(String, String)> = conn
+        .prepare(
+            "SELECT thread_id, snoozed_until FROM projection_threads \
+             WHERE snoozed_until IS NOT NULL AND deleted_at IS NULL AND archived_at IS NULL",
+        )
+        .and_then(|mut st| {
+            Ok(st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
+                .filter_map(|row| row.ok())
+                .collect::<Vec<_>>())
+        })
+        .unwrap_or_default();
+    drop(conn);
+    let now_ms = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as i64)
+        .unwrap_or(0);
+    let mut fired = 0usize;
+    for (thread_id, deadline) in rows {
+        let Some(deadline_ms) = iso_ms(&deadline) else { continue };
+        if deadline_ms > now_ms {
+            continue;
+        }
+        let mut cmd = Map::new();
+        cmd.insert("type".into(), json!("thread.meta.update"));
+        cmd.insert(
+            "commandId".into(),
+            json!(format!("snooze-expire:{}:{}", thread_id, deadline)),
+        );
+        cmd.insert("threadId".into(), json!(thread_id));
+        cmd.insert("snoozedUntil".into(), Value::Null);
+        cmd.insert("expectedSnoozedUntil".into(), json!(deadline));
+        cmd.insert("createdAt".into(), json!(iso_now_ms()));
+        if handle("orchestration.dispatchCommand", &Value::Object(cmd)).is_ok() {
+            fired += 1;
+        }
+    }
+    fired
+}
+
 /// Crash counterpart of the quit-resume flow: turns orphaned by a hard kill
 /// are first settled as interrupted (so the precondition "nothing in flight"
 /// holds) and then continued exactly like a clean quit would. Threads whose

@@ -440,6 +440,93 @@ fn activate_window_with_restore(payload: &Value) -> Result<Value, String> {
     Ok(result)
 }
 
+fn window_target(payload: &Value) -> Result<Value, String> {
+    require_ax()?;
+    let window_id = payload
+        .get("windowId")
+        .and_then(Value::as_str)
+        .filter(|value| numeric_window_id(value).is_some())
+        .ok_or("windowId is required")?;
+    let windows = list_windows()?;
+    let target = windows
+        .iter()
+        .find(|window| window.get("id").and_then(Value::as_str) == Some(window_id))
+        .cloned()
+        .ok_or_else(|| format!("Window {window_id} was not found."))?;
+    crate::computer_manager::assert_not_denied(
+        target.get("appName").and_then(Value::as_str),
+        target.get("bundleId").and_then(Value::as_str),
+    )?;
+    Ok(target)
+}
+
+fn checked_window_helper(command: &str, payload: Value) -> Result<Value, String> {
+    let result = helper(command, &payload)?;
+    if result.get("ok").and_then(Value::as_bool) == Some(true) {
+        Ok(result)
+    } else {
+        Err(result
+            .get("error")
+            .and_then(Value::as_str)
+            .unwrap_or("The window operation was refused.")
+            .to_string())
+    }
+}
+
+fn finite_frame(payload: &Value) -> Result<Value, String> {
+    let x = payload.get("x").and_then(Value::as_f64);
+    let y = payload.get("y").and_then(Value::as_f64);
+    let width = payload.get("width").and_then(Value::as_f64);
+    let height = payload.get("height").and_then(Value::as_f64);
+    let (Some(x), Some(y), Some(width), Some(height)) = (x, y, width, height) else {
+        return Err("x/y/width/height must be finite, with positive size.".into());
+    };
+    if !(x.is_finite() && y.is_finite() && width.is_finite() && height.is_finite()) || width <= 0.0 || height <= 0.0 {
+        return Err("x/y/width/height must be finite, with positive size.".into());
+    }
+    Ok(json!({"x":x,"y":y,"width":width,"height":height}))
+}
+
+fn set_window_minimized(payload: &Value) -> Result<Value, String> {
+    let target = window_target(payload)?;
+    let window_id = target.get("id").and_then(Value::as_str).ok_or("Invalid window id.")?;
+    let minimized = payload.get("minimized").and_then(Value::as_bool).ok_or("minimized must be a boolean")?;
+    let result = checked_window_helper("windowattr", json!({"windowId":window_id,"minimized":minimized}))?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_set_window_minimized",
+        "windowId": window_id,
+        "minimized": result.get("minimized").cloned().unwrap_or(json!(minimized)),
+    }))
+}
+
+fn set_window_frame(payload: &Value) -> Result<Value, String> {
+    let target = window_target(payload)?;
+    let window_id = target.get("id").and_then(Value::as_str).ok_or("Invalid window id.")?;
+    let frame = finite_frame(payload)?;
+    let result = checked_window_helper("windowattr", json!({"windowId":window_id,"frame":frame}))?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_set_window_frame",
+        "windowId": window_id,
+        "frame": result.get("frame").cloned().unwrap_or(Value::Null),
+    }))
+}
+
+fn kill_window_app(payload: &Value) -> Result<Value, String> {
+    let target = window_target(payload)?;
+    let window_id = target.get("id").and_then(Value::as_str).ok_or("Invalid window id.")?;
+    let pid = target.get("pid").and_then(Value::as_i64).ok_or("The target window has no owning process.")?;
+    let result = checked_window_helper("killapp", json!({"pid":pid}))?;
+    Ok(json!({
+        "computerId": COMPUTER_ID,
+        "action": "computer_kill_app",
+        "windowId": window_id,
+        "pid": pid,
+        "terminated": result.get("ok").cloned().unwrap_or(json!(true)),
+    }))
+}
+
 fn desktop_state_json() -> Value {
     let (epoch, interruptions, pauses) = crate::computer_manager::desktop_interruption_state();
     json!({
@@ -575,6 +662,7 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             | "computer.moveCursor" | "computer.drag" | "computer.scroll" | "computer.input.scroll"
             | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
             | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp" | "computer.activateWindow"
+            | "computer.setWindowMinimized" | "computer.setWindowFrame" | "computer.killApp"
     );
     if mutating && !owner.is_empty() {
         if let Err(e) = crate::computer_manager::assert_control_authority(Some(owner)) {
@@ -721,6 +809,9 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
             }
             "computer.setControlEnabled" => set_control_enabled(payload),
             "computer.activateWindow" => activate_window_with_restore(payload),
+            "computer.setWindowMinimized" => set_window_minimized(payload),
+            "computer.setWindowFrame" => set_window_frame(payload),
+            "computer.killApp" => kill_window_app(payload),
             "computer.shield" => handle_shield(payload),
             "computer.launchApp" => {
                 let app = payload["app"].as_str().unwrap_or("");

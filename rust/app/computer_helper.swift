@@ -457,6 +457,58 @@ case "axaction":
     }
     out(result)
 
+case "windowattr":
+    let a = args()
+    guard let parsed = axParseWindowId(a["windowId"] as? String),
+          let root = axRootWindow(pid: parsed.pid, wid: parsed.wid, bounds: cgWindowBounds(wid: parsed.wid))
+    else {
+        out(["ok": false, "error": "No window could be resolved for the target."])
+        exit(0)
+    }
+    if let minimized = a["minimized"] as? Bool {
+        let err = AXUIElementSetAttributeValue(root, kAXMinimizedAttribute as CFString, minimized as CFTypeRef)
+        guard err == .success else {
+            out(["ok": false, "error": "AXMinimized write failed (\(err.rawValue))."])
+            exit(0)
+        }
+        var value: AnyObject?
+        AXUIElementCopyAttributeValue(root, kAXMinimizedAttribute as CFString, &value)
+        out(["ok": true, "minimized": (value as? Bool) ?? minimized])
+        exit(0)
+    }
+    if a["frame"] != nil {
+        let frame = a["frame"] as? [String: Any] ?? [:]
+        var point = CGPoint(x: num(frame, "x"), y: num(frame, "y"))
+        var size = CGSize(width: num(frame, "width"), height: num(frame, "height"))
+        guard size.width > 0, size.height > 0,
+              let posValue = AXValueCreate(.cgPoint, &point),
+              let sizeValue = AXValueCreate(.cgSize, &size)
+        else {
+            out(["ok": false, "error": "A positive finite frame is required."])
+            exit(0)
+        }
+        let posErr = AXUIElementSetAttributeValue(root, kAXPositionAttribute as CFString, posValue)
+        let sizeErr = AXUIElementSetAttributeValue(root, kAXSizeAttribute as CFString, sizeValue)
+        guard posErr == .success, sizeErr == .success else {
+            out(["ok": false, "error": "AX frame write failed (position \(posErr.rawValue), size \(sizeErr.rawValue))."])
+            exit(0)
+        }
+        let actual = axFrame(root)
+        out(["ok": true, "frame": ["x": actual.origin.x, "y": actual.origin.y, "width": actual.size.width, "height": actual.size.height]])
+        exit(0)
+    }
+    out(["ok": false, "error": "windowattr requires minimized or frame."])
+
+case "killapp":
+    let a = args()
+    guard let pidValue = a["pid"] as? NSNumber,
+          let app = NSRunningApplication(processIdentifier: pid_t(pidValue.intValue))
+    else {
+        out(["ok": false, "error": "No running application owns the target window."])
+        exit(0)
+    }
+    out(["ok": app.forceTerminate(), "pid": pidValue.intValue])
+
 case "activate":
     let a = args()
     guard let parsed = axParseWindowId(a["windowId"] as? String),

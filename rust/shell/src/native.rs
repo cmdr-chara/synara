@@ -30339,9 +30339,18 @@ impl Render for Native {
                     .cursor_pointer()
                     .rounded(px(6.))
                     .when(selected, |d| d.bg(if dark_ui {
-                        hsla(0.0, 0.0, 0.16, 1.0)
+                        // Upstream bg-[--color-background-elevated-secondary]
+                        // over the warm frost: barely-there warm lift
+                        // (measured rgb(26,21,19) vs the rows' rgb(24,21,19)),
+                        // not a gray slab.
+                        hsla(0.055, 0.14, 0.105, 1.0)
                     } else {
                         hsla(0.0, 0.0, 0.94, 1.0)
+                    }))
+                    .hover(|d| d.bg(if dark_ui {
+                        hsla(0.055, 0.13, 0.125, 1.0)
+                    } else {
+                        hsla(0.0, 0.0, 0.92, 1.0)
                     }))
                     .on_click(cx.listener(move |this, _ev, _w, cx| {
                         this.composer_model = (prov_c.clone(), slug_c.clone(), name_c.clone());

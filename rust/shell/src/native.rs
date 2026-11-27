@@ -1574,6 +1574,7 @@ pub struct Native {
     /// Project hover card (upstream ProjectHoverCardContent): hovered id and
     /// the delayed card (id, x, y).
     hover_project: Option<String>,
+    hover_user_msg: Option<String>,
     project_card: Option<(String, f32, f32)>,
     project_card_seq: u64,
     /// Project rename dialog (upstream EditProjectDialog): id + input entity.
@@ -3499,6 +3500,7 @@ impl Native {
             proj_ctx_menu: None,
             proj_ctx_confirm: false,
             hover_project: None,
+            hover_user_msg: None,
             project_card: None,
             project_card_seq: 0,
             proj_rename: None,
@@ -13415,9 +13417,31 @@ impl Native {
                             ),
                     );
                 }
+                let msg_hover_id = msg_id.clone();
+                let msg_hover_id2 = msg_id.clone();
+                let reveal = if self.hover_user_msg.as_deref() == Some(msg_id.as_str()) {
+                    1.0f32
+                } else {
+                    0.0f32
+                };
                 col = col.child(
                     h_flex().w_full().justify_center().child(
                         h_flex().w_full().max_w(chat_mw).justify_end().child(
+                            div()
+                                .id(ElementId::Name(format!("umsg-hover-{msg_id}").into()))
+                                .w_full()
+                                .on_hover(cx.listener(move |this, hovered: &bool, _w, cx| {
+                                    if *hovered {
+                                        if this.hover_user_msg.as_deref() != Some(msg_hover_id.as_str()) {
+                                            this.hover_user_msg = Some(msg_hover_id.clone());
+                                            cx.notify();
+                                        }
+                                    } else if this.hover_user_msg.as_deref() == Some(msg_hover_id2.as_str()) {
+                                        this.hover_user_msg = None;
+                                        cx.notify();
+                                    }
+                                }))
+                                .child(
                             stack
                                 .child(pill.child({
                                     // User attachments (upstream UserMessageImageAttachments
@@ -13544,7 +13568,8 @@ impl Native {
                                     }
                                     content.child(div().text_size(px(13.)).child(text))
                                 }))
-                                .child(ufooter),
+                                .child(ufooter.opacity(reveal))
+                            ),
                         ),
                     ),
                 );

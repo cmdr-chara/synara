@@ -14,7 +14,11 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
     let err = |m: &str| crate::todo::WsErr(m.to_string(), None);
     match tag {
         "hosts.listSessions" => Ok(json!({"sessions": []})),
-        "hosts.listConnections" => Ok(json!({"connections": []})),
+        "hosts.listConnections" => Ok(json!({
+            "connections": crate::remote_connections::list(),
+            "pairedHosts": paired_host_rows(),
+            "desiredHosts": desired_host_rows(),
+        })),
         "hosts.endSession" => Ok(json!({})),
         "hosts.remoteAccess" => remote_access(payload).map_err(|m| err(&m)),
         "hosts.list" => authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to list hosts"),
@@ -64,8 +68,19 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
         "hosts.beginSyncKeyPairing" => begin_sync_key_pairing().map_err(|error| err(&error.0)),
         "hosts.offerSyncKey" => offer_sync_key(payload).map_err(|error| err(&error.0)),
         "hosts.receiveSyncKey" => receive_sync_key().map_err(|error| err(&error.0)),
-        "hosts.connect" => Err(err("Failed to connect to the host")),
-        "hosts.disconnect" => Err(err("Failed to disconnect from the host")),
+        "hosts.connect" => connect_host(payload).map_err(|m| err(&m)),
+        "hosts.disconnect" => {
+            let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
+            if let Some(account) = crate::account::read_session_file()
+                && let Some(environment_id) = crate::server_env::environment_id(&crate::todo::state_dir())
+                && let Ok(binding) = controller_binding(&account, &environment_id)
+                && let Ok(conn) = crate::remote_host_trust::open()
+            {
+                let _ = crate::remote_host_trust::set_desired(&conn, &binding, host_id, false);
+            }
+            crate::remote_connections::disconnect_blocking(host_id);
+            Ok(json!({}))
+        },
                 "hosts.confirmSyncKey" => confirm_sync_key(payload).map_err(|error| err(&error.0)),
         _ => Err(err("unhandled native tag")),
     }
@@ -146,6 +161,21 @@ fn preview_matches_binding(preview: &Value, account: &Value) -> bool {
         && preview.pointer("/binding/organizationId").and_then(Value::as_str) == account.get("organizationId").and_then(Value::as_str)
 }
 
+pub(crate) fn request_host_grant(host_id: &str, user_id: &str) -> Result<String, String> {
+    crate::account::register_shell_device(user_id).map_err(|error| error.0)?;
+    let device_jkt = crate::account::read_session_file()
+        .and_then(|stored| stored.get("deviceJkt").and_then(Value::as_str).map(str::to_string))
+        .ok_or_else(|| "Failed to request a host grant".to_string())?;
+    let response = authed(
+        reqwest::Method::POST,
+        &format!("/api/v1/hosts/{host_id}/grant"),
+        Some(json!({"deviceJkt": device_jkt})),
+        "Failed to request a host grant",
+    ).map_err(|error| error.0)?;
+    response.get("grant").and_then(Value::as_str).map(str::to_string)
+        .ok_or_else(|| "Failed to request a host grant".to_string())
+}
+
 fn run_remote_pairing(
     endpoints: Vec<crate::remote_client::RemoteEndpoint>,
     bundle: Value,
@@ -169,25 +199,104 @@ fn run_remote_pairing(
                 &bundle,
                 &identity,
                 &label,
-                move || {
-                    crate::account::register_shell_device(&grant_user_id).map_err(|error| error.0)?;
-                    let device_jkt = crate::account::read_session_file()
-                        .and_then(|stored| stored.get("deviceJkt").and_then(Value::as_str).map(str::to_string))
-                        .ok_or_else(|| "Failed to request a host grant".to_string())?;
-                    let response = authed(
-                        reqwest::Method::POST,
-                        &format!("/api/v1/hosts/{grant_host_id}/grant"),
-                        Some(json!({"deviceJkt": device_jkt})),
-                        "Failed to request a host grant",
-                    ).map_err(|error| error.0)?;
-                    response.get("grant").and_then(Value::as_str).map(str::to_string)
-                        .ok_or_else(|| "Failed to request a host grant".to_string())
-                },
+                move || request_host_grant(&grant_host_id, &grant_user_id),
             ).await
         })
     })
     .join()
     .map_err(|_| "Remote pairing worker failed".to_string())?
+}
+
+fn connect_host(payload: &Value) -> Result<Value, String> {
+    let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
+    if host_id.is_empty() {
+        return Err("Failed to connect to the host".to_string());
+    }
+    let account = crate::account::read_session_file().ok_or_else(|| "Connect this installation to your account first".to_string())?;
+    let state_dir = crate::todo::state_dir();
+    let controller_environment = crate::server_env::environment_id(&state_dir).unwrap_or_default();
+    let binding = controller_binding(&account, &controller_environment)?;
+    let listed = authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to list hosts").map_err(|error| error.0)?;
+    let host = listed.get("hosts").and_then(Value::as_array).and_then(|hosts| {
+        hosts.iter().find(|candidate| candidate.get("id").and_then(Value::as_str) == Some(host_id)).cloned()
+    }).ok_or_else(|| "That host is not on your account".to_string())?;
+    if host.get("linked").and_then(Value::as_bool) != Some(true) {
+        return Err("That host has not completed its key exchange yet".to_string());
+    }
+    let target_environment = host.get("environmentId").and_then(Value::as_str).unwrap_or_default().to_string();
+    if target_environment.is_empty() {
+        return Err("Remote host identity changed".to_string());
+    }
+    let trust_conn = crate::remote_host_trust::open()?;
+    let trusted = crate::remote_host_trust::get(&trust_conn, &binding, &target_environment)?
+        .filter(|trusted| trusted.paired_at.is_some())
+        .ok_or_else(|| "Pair this device on the host before connecting.".to_string())?;
+    if trusted.host_id != host_id {
+        return Err("Remote host identity changed".to_string());
+    }
+    let endpoints = remote_endpoints(&host);
+    if endpoints.is_empty() {
+        return Err("The host published no reachable remote endpoints".to_string());
+    }
+    crate::remote_host_trust::set_desired(&trust_conn, &binding, host_id, true)?;
+    let execution_scope = json!({
+        "environmentId": trusted.environment_id,
+        "accountAuthority": binding.account_authority,
+        "userId": binding.user_id,
+        "organizationId": binding.organization_id,
+        "channel": trusted.channel,
+    });
+    crate::remote_connections::set_desired(crate::remote_connections::DesiredHost {
+        host_id: host_id.to_string(),
+        host_name: host.get("name").and_then(Value::as_str).unwrap_or(&trusted.label).to_string(),
+        environment_id: target_environment,
+        endpoints,
+        root_certificate: trusted.root_certificate,
+        execution_scope,
+        state: "connecting",
+        transport: None,
+        started_at: None,
+        credential_expires_at: None,
+    });
+    if let Err(error) = crate::remote_connections::probe_blocking(host_id, Value::Null) {
+        crate::remote_connections::mark_state(host_id, "reconnecting");
+        return Err(error);
+    }
+    Ok(crate::remote_connections::list()
+        .into_iter()
+        .find(|connection| connection.get("hostId").and_then(Value::as_str) == Some(host_id))
+        .ok_or_else(|| "Remote connection closed during startup".to_string())?)
+}
+
+fn desired_host_rows() -> Vec<Value> {
+    let Some(account) = crate::account::read_session_file() else { return Vec::new() };
+    let state_dir = crate::todo::state_dir();
+    let Some(environment_id) = crate::server_env::environment_id(&state_dir) else { return Vec::new() };
+    let Ok(binding) = controller_binding(&account, &environment_id) else { return Vec::new() };
+    let Ok(conn) = crate::remote_host_trust::open() else { return Vec::new() };
+    crate::remote_host_trust::list_desired(&conn, &binding)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|host| json!({
+            "hostId": host.host_id,
+            "environmentId": host.environment_id,
+            "label": host.label,
+            "state": crate::remote_connections::state(&host.host_id),
+        }))
+        .collect()
+}
+
+fn paired_host_rows() -> Vec<Value> {
+    let Some(account) = crate::account::read_session_file() else { return Vec::new() };
+    let state_dir = crate::todo::state_dir();
+    let Some(environment_id) = crate::server_env::environment_id(&state_dir) else { return Vec::new() };
+    let Ok(binding) = controller_binding(&account, &environment_id) else { return Vec::new() };
+    let Ok(conn) = crate::remote_host_trust::open() else { return Vec::new() };
+    crate::remote_host_trust::list_paired(&conn, &binding)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|host| json!({"hostId": host.host_id, "environmentId": host.environment_id}))
+        .collect()
 }
 
 fn cancel_published_pairing_code(invite_id: &str) {

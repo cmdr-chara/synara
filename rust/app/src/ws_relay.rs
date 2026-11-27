@@ -55,6 +55,8 @@ pub fn router() -> Router<Original> {
         .route("/ws/computer-frames", get(computer_frames_upgrade))
         .route("/ws/device-frames", get(device_frames_upgrade))
         .route("/ws/host/v2", get(remote_tunnel_upgrade))
+        .route("/ws/remote/{host_id}/ws/negotiate", get(remote_negotiate))
+        .route("/ws/remote/{host_id}/ws", get(remote_renderer_upgrade))
 }
 
 
@@ -84,6 +86,109 @@ async fn remote_tunnel_upgrade(
 
 /// Computer frame streaming serves natively when the backend owns the
 /// computer; upstream mode relays exactly like every other socket.
+async fn remote_negotiate(
+    axum::extract::Path(host_id): axum::extract::Path<String>,
+    uri: Uri,
+    headers: HeaderMap,
+) -> Response {
+    let cfg = crate::native_ws::config();
+    let request_origin = crate::native_ws::request_origin(&headers);
+    let raw_origin = headers.get("origin").and_then(|value| value.to_str().ok());
+    let no_store = [(axum::http::header::CACHE_CONTROL, "no-store")];
+    if crate::native_ws::should_reject_untrusted_request_origin(raw_origin, &request_origin, cfg) {
+        return (axum::http::StatusCode::FORBIDDEN, no_store, "Forbidden").into_response();
+    }
+    if crate::remote_connections::desired(&host_id).is_none() {
+        return (axum::http::StatusCode::NOT_FOUND, no_store, "No open connection to that host").into_response();
+    }
+    let query = uri.query().unwrap_or_default();
+    let mut epoch = None;
+    let mut min_revision = None;
+    let mut max_revision = None;
+    let mut client_build = None;
+    let mut required = Vec::new();
+    for pair in query.split('&').filter(|pair| !pair.is_empty()) {
+        let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
+        let value = urlencoding_decode(raw);
+        let integer = (!value.is_empty() && value.bytes().all(|byte| byte.is_ascii_digit()))
+            .then(|| value.parse::<i64>().ok()).flatten();
+        match key {
+            "x-synara-protocol-epoch" => epoch = integer,
+            "x-synara-protocol-min-revision" => min_revision = integer,
+            "x-synara-protocol-max-revision" => max_revision = integer,
+            "x-synara-client-build" => client_build = (!value.trim().is_empty()).then_some(value),
+            "x-synara-required-capability" => required.push(value),
+            _ => {}
+        }
+    }
+    let valid = epoch.is_some() && min_revision.is_some() && max_revision.is_some() && client_build.is_some();
+    if !valid {
+        let error = crate::native_ws::error_body(
+            "WebSocket negotiation parameters are missing or invalid.",
+            "WS_NEGOTIATION_REQUIRED",
+            "reload",
+        );
+        return (axum::http::StatusCode::UPGRADE_REQUIRED, no_store, axum::Json(error)).into_response();
+    }
+    let client = json!({
+        "protocolEpoch": epoch.unwrap_or_default(),
+        "minRevision": min_revision.unwrap_or_default(),
+        "maxRevision": max_revision.unwrap_or_default(),
+        "clientBuild": client_build.unwrap_or_default(),
+        "requiredCapabilities": required,
+    });
+    let host_for_worker = host_id.clone();
+    let result = tokio::task::spawn_blocking(move || {
+        crate::remote_connections::prepare_blocking(&host_for_worker, client)
+    }).await;
+    match result {
+        Ok(Ok(value)) => (axum::http::StatusCode::OK, no_store, axum::Json(value)).into_response(),
+        Ok(Err(error)) if error.starts_with("Remote connection requires attention:") => {
+            let state = crate::remote_connections::state(&host_id);
+            (axum::http::StatusCode::CONFLICT, no_store, axum::Json(json!({
+                "code":"REMOTE_CONNECTION_REQUIRES_ATTENTION",
+                "state":state,
+            }))).into_response()
+        }
+        _ => (axum::http::StatusCode::SERVICE_UNAVAILABLE, no_store, "Remote host unavailable").into_response(),
+    }
+}
+
+async fn remote_renderer_upgrade(
+    ws: WebSocketUpgrade,
+    axum::extract::Path(host_id): axum::extract::Path<String>,
+    uri: Uri,
+    headers: HeaderMap,
+) -> Response {
+    let cfg = crate::native_ws::config();
+    let request_origin = crate::native_ws::request_origin(&headers);
+    let raw_origin = headers.get("origin").and_then(|value| value.to_str().ok());
+    if crate::native_ws::should_reject_untrusted_request_origin(raw_origin, &request_origin, cfg) {
+        return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
+    }
+    let query = uri.query().unwrap_or_default();
+    let mut attachment_id = None;
+    let mut server_instance = None;
+    for pair in query.split('&').filter(|pair| !pair.is_empty()) {
+        let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
+        let value = urlencoding_decode(raw);
+        match key {
+            "remoteAttachment" => attachment_id = Some(value),
+            "x-synara-server-instance" => server_instance = Some(value),
+            _ => {}
+        }
+    }
+    let (Some(attachment_id), Some(server_instance)) = (attachment_id, server_instance) else {
+        return (axum::http::StatusCode::NOT_FOUND, "Remote stream negotiation expired").into_response();
+    };
+    if !crate::remote_connections::attachment_valid(&host_id, &attachment_id, Some(&server_instance)) {
+        return (axum::http::StatusCode::NOT_FOUND, "Remote stream negotiation expired").into_response();
+    }
+    ws.on_upgrade(move |socket| async move {
+        let _ = crate::remote_connections::attach(&host_id, &attachment_id, Some(&server_instance), socket).await;
+    })
+}
+
 async fn device_frames_upgrade(
     State(original): State<Original>,
     ws: WebSocketUpgrade,

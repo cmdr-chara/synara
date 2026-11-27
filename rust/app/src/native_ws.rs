@@ -58,13 +58,13 @@ const DESKTOP_APP_CORS_ORIGINS: &[&str] = &[
     "synara-remote://app",
 ];
 
-struct Config {
+pub(crate) struct Config {
     host: Option<String>,
     public_url: Option<String>,
     dev_url: Option<String>,
 }
 
-fn config() -> &'static Config {
+pub(crate) fn config() -> &'static Config {
     static CONFIG: OnceLock<Config> = OnceLock::new();
     CONFIG.get_or_init(|| Config {
         host: std::env::var("SYNARA_HOST")
@@ -225,7 +225,7 @@ fn is_trusted_app_origin(origin: Option<&str>, request_origin: &str, cfg: &Confi
 
 /// `shouldRejectUntrustedRequestOrigin`: an absent Origin header is allowed
 /// (CLI/non-browser); a present-but-invalid or unrelated one rejects.
-fn should_reject_untrusted_request_origin(
+pub(crate) fn should_reject_untrusted_request_origin(
     raw_origin: Option<&str>,
     request_origin: &str,
     cfg: &Config,
@@ -309,7 +309,7 @@ pub fn negotiate(
     }))
 }
 
-fn error_body(message: &str, code: &str, action: &str) -> Value {
+pub(crate) fn error_body(message: &str, code: &str, action: &str) -> Value {
     json!({
         "_tag": "WsCompatibilityError",
         "message": message,
@@ -335,7 +335,7 @@ fn error_response(status: StatusCode, err: Value, cors: Option<&str>) -> Respons
     (status, headers, axum::Json(err)).into_response()
 }
 
-fn request_origin(headers: &HeaderMap) -> String {
+pub(crate) fn request_origin(headers: &HeaderMap) -> String {
     let host = headers
         .get("host")
         .and_then(|v| v.to_str().ok())

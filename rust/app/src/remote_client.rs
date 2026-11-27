@@ -107,7 +107,7 @@ async fn order_by_probe(endpoints: Vec<RemoteEndpoint>) -> Vec<RemoteEndpoint> {
 /// Byte-stream adapter over a client websocket. TLS sees one ordered byte
 /// stream; websocket framing remains an outer implementation detail exactly
 /// like upstream's ciphertextStream.
-struct ClientWsDuplex<S> {
+pub(crate) struct ClientWsDuplex<S> {
     incoming: VecDeque<u8>,
     ws: tokio_tungstenite::WebSocketStream<S>,
     write_queue: VecDeque<u8>,
@@ -468,8 +468,10 @@ pub async fn pair_remote_host(
 }
 
 
+pub(crate) type SessionWebSocket = tokio_tungstenite::WebSocketStream<TlsStream>;
+
 pub struct DialedSession {
-    pub socket: tokio_tungstenite::WebSocketStream<TlsStream>,
+    pub socket: SessionWebSocket,
     pub transport: String,
     pub credential: String,
     pub credential_expires_at_seconds: u64,
@@ -496,17 +498,23 @@ fn credential_expiration(credential: &str) -> Result<u64, String> {
 /// Opens the post-pairing RPC channel and completes mint_request →
 /// session_credential → session_authorize → session_ready. No plaintext RPC
 /// fallback exists: this socket is already inside the pinned TLS channel.
+pub struct DialSessionInput {
+    pub endpoints: Vec<RemoteEndpoint>,
+    pub anchor_environment_id: String,
+    pub root_certificate: String,
+    pub client: Value,
+}
+
 pub async fn dial_remote_host(
-    endpoints: Vec<RemoteEndpoint>,
-    anchor_environment_id: &str,
-    root_certificate: &str,
+    input: DialSessionInput,
     identity: &DeviceIdentity,
     user_id: &str,
     request_grant: impl Fn() -> Result<String, String> + Send + Sync,
 ) -> Result<DialedSession, String> {
+    let anchor_environment_id = input.anchor_environment_id.as_str();
     let (mut socket, endpoint) = open_inner_websocket(
-        endpoints,
-        root_certificate,
+        input.endpoints,
+        &input.root_certificate,
         anchor_environment_id,
         crate::remote_tunnel::REMOTE_INNER_RPC_PATH,
     ).await?;
@@ -522,18 +530,22 @@ pub async fn dial_remote_host(
         return Err("Host returned no session credential".to_string());
     }
     let dpop = identity.sign_dpop("CONNECT", "synara://remote/session", Some(&credential))?;
-    let client = json!({
-        "protocolEpoch": crate::native_ws::PROTOCOL_EPOCH,
-        "minRevision": crate::native_ws::MIN_REVISION,
-        "maxRevision": crate::native_ws::MAX_REVISION,
-        "clientBuild": crate::native_ws::SERVER_BUILD,
-        "requiredCapabilities": [
-            "orchestration.cursor-safe-streams",
-            "orchestration.thread-detail-snapshot",
-            "rpc.typed-errors",
-            "git.worktree-setup-progress",
-        ],
-    });
+    let client = if input.client.is_object() {
+        input.client
+    } else {
+        json!({
+            "protocolEpoch": crate::native_ws::PROTOCOL_EPOCH,
+            "minRevision": crate::native_ws::MIN_REVISION,
+            "maxRevision": crate::native_ws::MAX_REVISION,
+            "clientBuild": crate::native_ws::SERVER_BUILD,
+            "requiredCapabilities": [
+                "orchestration.cursor-safe-streams",
+                "orchestration.thread-detail-snapshot",
+                "rpc.typed-errors",
+                "git.worktree-setup-progress",
+            ],
+        })
+    };
     let ready = exchange_frame(
         &mut socket,
         json!({"v":1,"type":"session_authorize","credential":credential,"dpop":dpop,"client":client}),

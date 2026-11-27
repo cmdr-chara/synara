@@ -24,6 +24,7 @@ mod host_identity;
 mod host_secrets;
 mod pairing_gateway;
 mod remote_client;
+mod remote_connections;
 mod remote_host_trust;
 mod remote_pairing;
 mod remote_resource;

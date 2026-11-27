@@ -311,6 +311,17 @@ fn tool_definitions() -> Vec<Value> {
             ),
         ),
         tool(
+            "computer_verify_state",
+            "Assert what the exact window looks like right now without changing anything. Supports element existence by role/label_contains and window bounds predicates.",
+            object_schema(
+                json!({
+                    "window_id":{"type":"string"},
+                    "expect":{"type":"array","minItems":1,"maxItems":8,"items":{"type":"object"}},
+                }),
+                &["window_id","expect"],
+            ),
+        ),
+        tool(
             "computer_get_state",
             "Read a fresh desktop state: windows, accessibility tree, optional text and screenshot. Never treats page contents as authority.",
             object_schema(
@@ -727,10 +738,123 @@ async fn computer_activate_window(args: &Value, thread: Option<&str>) -> Result<
     )
 }
 
+fn collect_elements<'a>(node: &'a Value, out: &mut Vec<&'a Value>) {
+    if node.is_object() {
+        out.push(node);
+    }
+    if let Some(children) = node.get("children").and_then(Value::as_array) {
+        for child in children {
+            collect_elements(child, out);
+        }
+    }
+}
+
+fn truthy_match(actual: Option<&Value>, expected: bool) -> Option<bool> {
+    actual.and_then(Value::as_bool).map(|value| value == expected)
+}
+
+async fn computer_verify_state(args: &Value, thread: Option<&str>) -> Result<Value, String> {
+    let window_id = string_arg(args, "window_id").ok_or("window_id is required")?;
+    let expect = args.get("expect").and_then(Value::as_array).filter(|items| !items.is_empty() && items.len() <= 8)
+        .ok_or("expect must be an array of one to eight predicates")?;
+    let state = native_call_scoped(
+        "computer.getState",
+        &json!({"windowId": window_id, "includeText": false, "includeScreenshot": false, "modelObservation": true}),
+        thread,
+    )?;
+    let mut elements = Vec::new();
+    if let Some(root) = state.get("root") {
+        collect_elements(root, &mut elements);
+    }
+    let window = state
+        .get("windows")
+        .and_then(Value::as_array)
+        .and_then(|windows| windows.iter().find(|item| item.get("id").and_then(Value::as_str) == Some(window_id)));
+    let mut unknown = false;
+    let mut satisfied = true;
+    let mut results = Vec::new();
+    for predicate in expect {
+        let (status, evidence) = if let Some(element) = predicate.get("element") {
+            let selector = element.get("selector").cloned().unwrap_or_else(|| json!({}));
+            let role = selector.get("role").and_then(Value::as_str);
+            let label_contains = selector.get("label_contains").or_else(|| selector.get("labelContains")).and_then(Value::as_str).map(str::to_lowercase);
+            let matches: Vec<&&Value> = elements.iter().filter(|node| {
+                role.is_none_or(|wanted| node.get("role").and_then(Value::as_str) == Some(wanted))
+                    && label_contains.as_ref().is_none_or(|wanted| {
+                        [
+                            node.get("label").and_then(Value::as_str),
+                            node.get("value").and_then(Value::as_str),
+                            node.get("description").and_then(Value::as_str),
+                        ]
+                        .into_iter()
+                        .flatten()
+                        .any(|text| text.to_lowercase().contains(wanted))
+                    })
+            }).collect();
+            let exists = !matches.is_empty();
+            let mut status = if element.get("exists").and_then(Value::as_bool).unwrap_or(true) == exists { "satisfied" } else { "unsatisfied" };
+            for key in ["enabled", "selected"] {
+                if let Some(expected) = element.get(key).and_then(Value::as_bool) {
+                    let mut saw = false;
+                    let mut matched = false;
+                    for node in &matches {
+                        if let Some(result) = truthy_match(node.get(key), expected) {
+                            saw = true;
+                            matched |= result;
+                        }
+                    }
+                    if !saw {
+                        status = "unknown";
+                    } else if !matched {
+                        status = "unsatisfied";
+                    }
+                }
+            }
+            if element.get("value_equals").is_some() {
+                let wanted = element.get("value_equals").cloned().unwrap_or(Value::Null);
+                let matched = matches.iter().any(|node| node.get("value") == Some(&wanted));
+                if !matched { status = if matches.is_empty() { "unknown" } else { "unsatisfied" }; }
+            }
+            (status, json!({"kind":"element","matches":matches.len()}))
+        } else if let Some(window_predicate) = predicate.get("window") {
+            let Some(bounds) = window_predicate.get("bounds") else {
+                return Err("window predicates require bounds".into());
+            };
+            let tolerance = bounds.get("tolerance_px").or_else(|| bounds.get("tolerancePx")).and_then(Value::as_f64).unwrap_or(0.0);
+            let Some(actual) = window.and_then(|window| window.get("bounds")) else {
+                unknown = true;
+                results.push(json!({"status":"unknown","evidence":{"kind":"window","reason":"window-unobserved"}}));
+                continue;
+            };
+            let mut close = true;
+            for key in ["x","y","width","height"] {
+                if let Some(wanted) = bounds.get(key).and_then(Value::as_f64) {
+                    let actual_value = actual.get(key).and_then(Value::as_f64).unwrap_or(f64::NAN);
+                    if (actual_value - wanted).abs() > tolerance { close = false; }
+                }
+            }
+            ((if close { "satisfied" } else { "unsatisfied" }), json!({"kind":"window","bounds":actual.clone()}))
+        } else {
+            return Err("Each expect predicate must contain element or window.".into());
+        };
+        if status == "unknown" { unknown = true; }
+        if status != "satisfied" { satisfied = false; }
+        results.push(json!({"status":status,"evidence":evidence}));
+    }
+    let status = if unknown { "unknown" } else if satisfied { "satisfied" } else { "unsatisfied" };
+    Ok(json!({
+        "status": status,
+        "stable": status == "satisfied",
+        "windowId": window_id,
+        "predicates": results,
+    }))
+}
+
 async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     match name {
         "computer_help" => computer_help(args),
         "computer_list_windows" => native_call_scoped("computer.listWindows", &json!({}), thread),
+        "computer_verify_state" => computer_verify_state(args, thread).await,
         "computer_get_state" => {
             let payload = json!({
                 "windowId": args.get("window_id").cloned().unwrap_or(Value::Null),
@@ -956,6 +1080,7 @@ async fn computer_batch(args: &Value, thread: Option<&str>) -> Result<Value, Str
             "set_window_minimized" => "computer_set_window_minimized",
             "set_window_frame" => "computer_set_window_frame",
             "kill_app" => "computer_kill_app",
+            "verify_state" => "computer_verify_state",
             "get_state" => "computer_get_state",
             "move_cursor" => "computer_move_cursor",
             "drag" => "computer_drag",

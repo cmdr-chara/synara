@@ -550,6 +550,48 @@ pub fn current_snapshot_sequence() -> Option<i64> {
     open_state_copy().map(|copy| snapshot_sequence(&copy.conn))
 }
 
+/// Process-wide shell snapshot cache. Every websocket subscriber used to
+/// rebuild the full shell (a byte copy of state.sqlite plus a projection
+/// re-read) on its own poll timer; a handful of StrictMode-driven overlapping
+/// subscriptions multiplied that into continuous copying and lock contention,
+/// which starved the very streams the client was waiting on. The cache
+/// rebuilds at most once per projection sequence change, single-flight, and
+/// hands out the pre-serialized JSON to every subscriber.
+static SHELL_SNAPSHOT_CACHE: std::sync::Mutex<Option<(i64, std::sync::Arc<String>)>> =
+    std::sync::Mutex::new(None);
+static SHELL_SNAPSHOT_REBUILD: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
+pub fn shell_snapshot_cached() -> Option<(i64, std::sync::Arc<String>)> {
+    let sequence = current_snapshot_sequence()?;
+    if let Ok(cache) = SHELL_SNAPSHOT_CACHE.lock() {
+        if let Some((cached_sequence, json)) = cache.as_ref() {
+            if *cached_sequence == sequence {
+                return Some((sequence, json.clone()));
+            }
+        }
+    }
+    // Single-flight: only one thread rebuilds; the rest either serve the
+    // refreshed cache or retry on their next poll tick.
+    let Ok(_rebuild) = SHELL_SNAPSHOT_REBUILD.try_lock() else {
+        return None;
+    };
+    // Re-check after acquiring: another caller may have just refreshed.
+    if let Ok(cache) = SHELL_SNAPSHOT_CACHE.lock() {
+        if let Some((cached_sequence, json)) = cache.as_ref() {
+            if *cached_sequence == sequence {
+                return Some((sequence, json.clone()));
+            }
+        }
+    }
+    let snapshot = get_shell_snapshot().ok()?;
+    let serialized = serde_json::to_string(&snapshot).ok()?;
+    let shared = std::sync::Arc::new(serialized);
+    if let Ok(mut cache) = SHELL_SNAPSHOT_CACHE.lock() {
+        *cache = Some((sequence, shared.clone()));
+    }
+    Some((sequence, shared))
+}
+
 pub fn get_snapshot() -> Result<Value, WsErr> {
     let Some(copy) = open_state_copy() else {
         return Err(err("state.sqlite is unavailable"));

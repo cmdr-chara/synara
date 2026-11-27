@@ -1120,33 +1120,40 @@ async fn intercept_todo(
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
-            let mut last_sequence = -1i64;
+            // The shell snapshot is rebuilt at most once per sequence change
+            // process-wide and shared by every subscriber. Without this, each
+            // StrictMode double-mount spawns overlapping pollers that each
+            // rebuild the full multi-hundred-KB snapshot behind the single
+            // sqlite writer lock — subscribers starve and the client resubscribes,
+            // compounding the contention (the "Loading projects…" oscillation).
+            let tap = std::env::var("SYNARA_TAP_NATIVE").is_ok();
+            if tap {
+                eprintln!("shell_stream: spawn for rid {rid}");
+            }
+            let mut last_sent_sequence = -1i64;
             loop {
-                let sequence = crate::orchestration_snapshot::current_snapshot_sequence().unwrap_or(-1);
-                // The projection sequence is the dirty bit. Rebuilding and
-                // sending a full shell on a wall-clock-only `updatedAt` floods
-                // cold boot with multi-megabyte duplicates every 1.2 seconds.
-                if sequence != last_sequence {
-                    if let Ok(snapshot) = crate::orchestration_snapshot::get_shell_snapshot() {
-                        if !snapshot.is_null() {
-                            last_sequence = snapshot
-                                .get("snapshotSequence")
-                                .and_then(|value| value.as_i64())
-                                .unwrap_or(sequence);
-                            let chunk = serde_json::json!({
-                                "_tag": "Chunk", "requestId": rid,
-                                "values": [{"kind": "snapshot", "snapshot": snapshot}],
-                            });
-                            if tx
-                                .send(ClientMessage::Text(chunk.to_string().into()))
-                                .is_err()
-                            {
-                                return;
+                let cached = crate::orchestration_snapshot::shell_snapshot_cached();
+                if let Some((sequence, snapshot_json)) = cached {
+                    if sequence != last_sent_sequence {
+                        last_sent_sequence = sequence;
+                        let chunk = format!(
+                            "{{\"_tag\":\"Chunk\",\"requestId\":{},\"values\":[{{\"kind\":\"snapshot\",\"snapshot\":{}}}]}}",
+                            rid, snapshot_json
+                        );
+                        if tx.send(ClientMessage::Text(chunk.into())).is_err() {
+                            if tap {
+                                eprintln!("shell_stream: send failed for rid {rid}, exiting");
                             }
+                            return;
+                        }
+                        if tap {
+                            eprintln!("shell_stream: sent snapshot seq {sequence} to rid {rid}");
                         }
                     }
+                } else if tap && last_sent_sequence < 0 {
+                    eprintln!("shell_stream: cache empty for rid {rid}");
                 }
-                tokio::time::sleep(std::time::Duration::from_millis(1200)).await;
+                tokio::time::sleep(std::time::Duration::from_millis(400)).await;
             }
         });
         if let Ok(mut map) = streams.lock() {
@@ -2000,6 +2007,23 @@ async fn serve_native_socket(
                         ));
                         continue;
                     }
+                    // Effect-rpc stream cancellation: the client interrupts
+                    // streams on unmount/reconnect (React StrictMode double
+                    // mounts every subscription at boot). Without this the
+                    // aborted pollers leak and keep hammering the snapshot
+                    // cache for the rest of the connection.
+                    if t.contains("\"_tag\":\"Interrupt\"") {
+                        if let Ok(m) = serde_json::from_str::<serde_json::Value>(&t) {
+                            let rid = m.get("requestId").cloned().unwrap_or(serde_json::Value::Null);
+                            let key = rpc_id_key(&rid);
+                            if let Ok(mut map) = streams_in.lock() {
+                                if let Some(task) = map.remove(&key) {
+                                    task.abort();
+                                }
+                            }
+                        }
+                        continue;
+                    }
                     if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), session_role.as_str()).await {
                         if let Some(reply) = reply {
                             let _ = native_tx.send(reply);
@@ -2027,9 +2051,23 @@ async fn serve_native_socket(
                 Ok(ClientMessage::Ping(p)) => {
                     let _ = native_tx.send(ClientMessage::Pong(p));
                 }
-                Ok(ClientMessage::Close(_)) | Err(_) => break,
+                Ok(ClientMessage::Close(frame)) => {
+                    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+                        eprintln!("ws_native: client closed connection: {frame:?}");
+                    }
+                    break;
+                }
+                Err(e) => {
+                    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+                        eprintln!("ws_native: socket read error, dropping connection: {e}");
+                    }
+                    break;
+                }
                 _ => {}
             }
+        }
+        if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+            eprintln!("ws_native: connection read loop ended");
         }
         drop(native_tx);
         let _ = writer.await;

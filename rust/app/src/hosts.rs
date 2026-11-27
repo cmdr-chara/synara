@@ -15,15 +15,26 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
         "hosts.listConnections" => Ok(json!({"connections": []})),
         "hosts.endSession" => Ok(json!({})),
         "hosts.remoteAccess" => remote_access(payload).map_err(|m| err(&m)),
-        "hosts.list" => Err(err("Failed to list hosts")),
-        "hosts.update" => Err(err("Failed to update the host")),
-        "hosts.delete" => Err(err("Failed to delete the host")),
-        "hosts.listDevices" => Err(err("Failed to list devices")),
-        "hosts.revokeDevice" => Err(err("Failed to revoke the device")),
-        "hosts.approveDeviceLink" => Err(err("Failed to approve the device link")),
+        "hosts.list" => authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to list hosts"),
+        "hosts.update" => {
+            let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
+            let mut body = payload.clone();
+            if let Some(object) = body.as_object_mut() { object.remove("hostId"); }
+            authed(reqwest::Method::PATCH, &format!("/api/v1/hosts/{host_id}"), Some(body), "Failed to update the host")
+        }
+        "hosts.delete" => {
+            let host_id = payload.get("hostId").and_then(Value::as_str).unwrap_or_default();
+            authed(reqwest::Method::DELETE, &format!("/api/v1/hosts/{host_id}"), None, "Failed to delete the host")
+        }
+        "hosts.listDevices" => authed(reqwest::Method::GET, "/api/v1/devices", None, "Failed to list devices"),
+        "hosts.revokeDevice" => {
+            let device_id = payload.get("deviceId").and_then(Value::as_str).unwrap_or_default();
+            authed(reqwest::Method::DELETE, &format!("/api/v1/devices/{device_id}"), None, "Failed to revoke the device")
+        }
+        "hosts.approveDeviceLink" => authed(reqwest::Method::POST, "/api/v1/hosts/link/approve", Some(payload.clone()), "Failed to approve the device link"),
         "hosts.requestGrant" => Err(err("Failed to request a host grant")),
-        "hosts.enrollment" => Err(err("Failed to read local host enrollment")),
-        "hosts.unlinkLocalHost" => Err(err("Failed to unlink the local host")),
+        "hosts.enrollment" => local_enrollment().map_err(|m| err(&m)),
+        "hosts.unlinkLocalHost" => unlink_local_host(payload).map_err(|m| err(&m)),
         "hosts.beginSyncKeyPairing" => Err(err("Failed to start Sync-Key pairing")),
         "hosts.offerSyncKey" => Err(err("Failed to offer the Sync Key")),
         "hosts.receiveSyncKey" => Err(err("Failed to receive the Sync Key")),
@@ -90,4 +101,65 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
         }
         _ => Err("Remote access operation failed".to_string()),
     }
+}
+
+
+fn authed(
+    method: reqwest::Method,
+    path: &str,
+    body: Option<Value>,
+    fallback: &str,
+) -> Result<Value, crate::todo::WsErr> {
+    crate::account::authenticated_request(fallback, |client, access| {
+        client.request(method.clone(), path, Some(access), body.clone(), None, std::time::Duration::from_secs(15))
+    })
+}
+
+fn local_enrollment() -> Result<Value, String> {
+    let stored = crate::account::read_session_file().ok_or_else(|| "Failed to read local host enrollment".to_string())?;
+    let listed = authed(reqwest::Method::GET, "/api/v1/hosts", None, "Failed to read local host enrollment")
+        .map_err(|error| error.0)?;
+    let member_count = authed(reqwest::Method::GET, "/api/v1/organization/member-count", None, "Failed to read local host enrollment")
+        .ok()
+        .and_then(|value| value.get("count").cloned())
+        .unwrap_or(Value::Null);
+    let host = stored
+        .get("hostId")
+        .and_then(Value::as_str)
+        .and_then(|host_id| {
+            listed.get("hosts").and_then(Value::as_array).and_then(|hosts| {
+                hosts.iter().find(|host| host.get("id").and_then(Value::as_str) == Some(host_id)).cloned()
+            })
+        })
+        .unwrap_or(Value::Null);
+    let acknowledged = stored
+        .get("hostId")
+        .and_then(Value::as_str)
+        .is_some_and(|host_id| stored.pointer(&format!("/discoverabilityAcknowledgedByHostId/{host_id}")).and_then(Value::as_bool) == Some(true));
+    Ok(json!({
+        "host": host,
+        "organizationMemberCount": member_count,
+        "discoverabilityAcknowledged": acknowledged,
+    }))
+}
+
+fn unlink_local_host(payload: &Value) -> Result<Value, String> {
+    let host_id = payload
+        .get("hostId")
+        .and_then(Value::as_str)
+        .map(str::to_string)
+        .or_else(|| crate::account::read_session_file().and_then(|stored| stored.get("hostId").and_then(Value::as_str).map(str::to_string)))
+        .ok_or_else(|| "Failed to unlink the local host".to_string())?;
+    authed(reqwest::Method::DELETE, &format!("/api/v1/hosts/{host_id}"), None, "Failed to unlink the local host")
+        .map_err(|error| error.0)?;
+    if let Some(mut stored) = crate::account::read_session_file()
+        && let Some(object) = stored.as_object_mut()
+    {
+        for key in ["hostId", "hostOwnerUserId", "hostKeyGeneration", "remoteBillingPolicy", "discoverabilityAcknowledgedByHostId"] {
+            object.remove(key);
+        }
+        let _ = crate::account::write_account_file(&stored);
+    }
+    crate::host_identity::delete_host_identity(&crate::account::host_identity_file_path());
+    Ok(json!({}))
 }

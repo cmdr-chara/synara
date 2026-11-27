@@ -53,7 +53,7 @@ fn read_account_file() -> Option<Value> {
     Some(value)
 }
 
-fn write_account_file(value: &Value) -> Result<(), WsErr> {
+pub(crate) fn write_account_file(value: &Value) -> Result<(), WsErr> {
     let path = credentials_path();
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent).map_err(|e| err(format!("Failed to save the account session: {e}")))?;
@@ -70,7 +70,7 @@ fn write_account_file(value: &Value) -> Result<(), WsErr> {
     Ok(())
 }
 
-fn read_session_file() -> Option<Value> {
+pub(crate) fn read_session_file() -> Option<Value> {
     let value = read_account_file()?;
     for key in ["accessToken", "refreshToken", "organizationId"] {
         value.get(key).and_then(Value::as_str)?;
@@ -100,7 +100,7 @@ fn account_api_issuer(account_url: &str) -> String {
 }
 
 #[derive(Debug, Clone)]
-struct AccountError {
+pub(crate) struct AccountError {
     status: u16,
     code: String,
     message: String,
@@ -117,7 +117,7 @@ impl AccountError {
 }
 
 #[derive(Clone)]
-struct AccountClient {
+pub(crate) struct AccountClient {
     base_url: String,
 }
 
@@ -126,7 +126,7 @@ impl AccountClient {
         Self { base_url: base_url.trim_end_matches('/').to_string() }
     }
 
-    fn request(
+    pub(crate) fn request(
         &self,
         method: reqwest::Method,
         path: &str,
@@ -241,7 +241,7 @@ fn refresh_session(mut stored: Value, organization_override: Option<&str>) -> Re
     }
 }
 
-fn authenticated_request(
+pub(crate) fn authenticated_request(
     fallback: &str,
     operation: impl Fn(&AccountClient, &str) -> Result<Value, AccountError>,
 ) -> Result<Value, WsErr> {
@@ -340,7 +340,7 @@ fn device_identity_path() -> PathBuf {
     secrets_dir().join("device-identity.json")
 }
 
-fn host_identity_file_path() -> PathBuf {
+pub(crate) fn host_identity_file_path() -> PathBuf {
     crate::host_identity::host_identity_path(secrets_dir().to_string_lossy().as_ref())
 }
 

@@ -21543,9 +21543,12 @@ impl Render for Native {
             }
 
             if self.settings_section == "layout" {
+                // Upstream SettingsToggleGroup: two equal columns spanning the
+                // card interior, each row's switch right-aligned at the column
+                // edge (not trailing the label).
                 let mtog = |label: &'static str, on: bool| {
                     h_flex()
-                        .w(px(170.))
+                        .w_full()
                         .items_center()
                         .justify_between()
                         .child(div().text_size(px(13.)).child(label))
@@ -21560,9 +21563,10 @@ impl Render for Native {
                         .child(div().text_xs().text_color(theme.muted_foreground).child(label))
                         .child(
                             h_flex()
+                                .w_full()
                                 .gap_8()
-                                .child(v_flex().gap_2().children(left))
-                                .child(v_flex().gap_2().children(right)),
+                                .child(v_flex().flex_1().min_w_0().gap_2().children(left))
+                                .child(v_flex().flex_1().min_w_0().gap_2().children(right)),
                         )
                         .into_any_element()
                 };

@@ -1548,12 +1548,137 @@ fn get_usage_analytics(payload: &Value) -> Result<Value, WsErr> {
     .map_err(err)
 }
 
+
+fn thread_project_info(conn: &rusqlite::Connection, thread: &str) -> (Value, Value) {
+    let pid: Option<String> = conn
+        .query_row(
+            "SELECT project_id FROM projection_threads WHERE thread_id = ?1",
+            [thread],
+            |r| r.get(0),
+        )
+        .ok();
+    match pid {
+        Some(id) => {
+            let title: Option<String> = conn
+                .query_row(
+                    "SELECT title FROM projection_projects WHERE project_id = ?1",
+                    [&id],
+                    |r| r.get(0),
+                )
+                .ok();
+            (
+                Value::String(id),
+                title.map(Value::String).unwrap_or(Value::Null),
+            )
+        }
+        None => (Value::Null, Value::Null),
+    }
+}
+
+/// `stats.getThreadCosts` — per-task cost telemetry: each thread's cost in USD
+/// and token totals, attributed by provider/harness and model. Threads are
+/// tasks in Synara (kanban cards are threads), so this is the per-task view
+/// the aggregate analytics cannot answer.
+fn get_thread_costs(payload: &Value) -> Result<Value, WsErr> {
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to open state."))?;
+    let project_filter = payload["projectId"].as_str().map(str::to_string);
+    let limit = payload["limit"].as_i64().unwrap_or(200).clamp(1, 1000);
+    let mut sql = "SELECT a.thread_id, a.turn_id, a.payload_json FROM projection_thread_activities a \
+         WHERE a.kind = 'turn.completed' ORDER BY a.sequence".to_string();
+    let rows = query_rows(&conn, &sql);
+    sql.clear();
+    struct Agg {
+        cost: f64,
+        input: f64,
+        output: f64,
+        cache_read: f64,
+        cache_write: f64,
+        turns: i64,
+        providers: std::collections::HashSet<String>,
+        models: std::collections::HashSet<String>,
+        last_at: String,
+    }
+    let mut by_thread: std::collections::HashMap<String, Agg> = std::collections::HashMap::new();
+    for row in rows {
+        let Some(thread) = s(member(&row, "thread_id")).map(str::to_string) else {
+            continue;
+        };
+        if let Some(pid) = &project_filter {
+            let (tpid, _) = thread_project_info(&conn, &thread);
+            if tpid.as_str() != Some(pid.as_str()) {
+                continue;
+            }
+        }
+        let Some(p) = s(member(&row, "payload_json")).and_then(|t| serde_json::from_str::<Value>(t).ok())
+        else {
+            continue;
+        };
+        let agg = by_thread.entry(thread.clone()).or_insert_with(|| Agg {
+            cost: 0.0,
+            input: 0.0,
+            output: 0.0,
+            cache_read: 0.0,
+            cache_write: 0.0,
+            turns: 0,
+            providers: std::collections::HashSet::new(),
+            models: std::collections::HashSet::new(),
+            last_at: String::new(),
+        });
+        agg.turns += 1;
+        if let Some(provider) = s(member(&p, "provider")) {
+            agg.providers.insert(provider.to_string());
+        }
+        if let Some(cost) = member(&p, "totalCostUsd").as_f64() {
+            agg.cost += cost;
+        }
+        if let Some(usage) = member(&p, "modelUsage").as_object() {
+            for (model, u) in usage {
+                agg.models.insert(model.clone());
+                agg.input += finite_counter(u, "inputTokens").unwrap_or(0.0);
+                agg.output += finite_counter(u, "outputTokens").unwrap_or(0.0);
+                agg.cache_read += finite_counter(u, "cacheReadInputTokens").unwrap_or(0.0);
+                agg.cache_write += finite_counter(u, "cacheCreationInputTokens").unwrap_or(0.0);
+            }
+        }
+    }
+    let mut out: Vec<Value> = by_thread
+        .into_iter()
+        .map(|(thread, agg)| {
+            let (pid, title) = thread_project_info(&conn, &thread);
+            json!({
+                "threadId": thread,
+                "projectId": pid,
+                "title": title,
+                "costUsd": agg.cost,
+                "inputTokens": agg.input,
+                "outputTokens": agg.output,
+                "cacheReadTokens": agg.cache_read,
+                "cacheWriteTokens": agg.cache_write,
+                "turns": agg.turns,
+                "providers": agg.providers.into_iter().collect::<Vec<_>>(),
+                "models": agg.models.into_iter().collect::<Vec<_>>(),
+            })
+        })
+        .collect();
+    out.sort_by(|a, b| {
+        b["costUsd"]
+            .as_f64()
+            .unwrap_or(0.0)
+            .partial_cmp(&a["costUsd"].as_f64().unwrap_or(0.0))
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+    out.truncate(limit as usize);
+    Ok(json!({ "threads": out }))
+}
+
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
     match tag {
         "stats.getProfileStats" => get_profile_stats(payload),
         "stats.getProfileTokenStats" => get_profile_token_stats(payload),
         "stats.getRecap" => get_recap(payload),
         "stats.getUsageAnalytics" => get_usage_analytics(payload),
+        "stats.getThreadCosts" => get_thread_costs(payload),
         _ => Err(err("unknown stats tag")),
     }
 }

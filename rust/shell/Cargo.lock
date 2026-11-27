@@ -8220,6 +8220,7 @@ dependencies = [
  "betadiagnostics-rs",
  "browserhost-rs",
  "chrono",
+ "core-foundation-sys",
  "cpal",
  "gpui-kit",
  "gpui-webview",

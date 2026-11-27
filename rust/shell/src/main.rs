@@ -226,7 +226,42 @@ fn start_appsnap_watcher() {
 #[cfg(not(target_os = "macos"))]
 fn start_appsnap_watcher() {}
 
+// Chromium/Skia rasterizes glyphs without the stroke dilation CoreGraphics
+// applies when font smoothing is on. Synara's reference UI is Electron, so the
+// shell disables that dilation for itself: glyphs stay antialiased but are not
+// thickened, matching the web text weight. Must run before the first glyph
+// render (the text system caches the preference).
+#[cfg(target_os = "macos")]
+fn disable_font_smoothing_dilation() {
+    use core_foundation_sys::number::{CFNumberCreate, kCFNumberIntType};
+    use core_foundation_sys::preferences::{CFPreferencesSetAppValue, kCFPreferencesCurrentApplication};
+    use core_foundation_sys::string::CFStringCreateWithCString;
+    const K_CF_STRING_ENCODING_UTF8: u32 = 0x08000100;
+    unsafe {
+        let key = CFStringCreateWithCString(
+            std::ptr::null(),
+            c"AppleFontSmoothing".as_ptr(),
+            K_CF_STRING_ENCODING_UTF8,
+        );
+        let zero: i32 = 0;
+        let value = CFNumberCreate(
+            std::ptr::null(),
+            kCFNumberIntType,
+            &zero as *const i32 as *const std::ffi::c_void,
+        );
+        CFPreferencesSetAppValue(
+            key as *const _,
+            value as *const _,
+            kCFPreferencesCurrentApplication,
+        );
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn disable_font_smoothing_dilation() {}
+
 fn main() {
+    disable_font_smoothing_dilation();
     product_analytics::initialize();
     reliability::initialize();
     let diagnostics_home = backend::configured_home_dir();

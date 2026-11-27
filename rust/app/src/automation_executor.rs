@@ -103,7 +103,7 @@ fn manual_pass() -> Result<(), WsErr> {
 fn load_automation_any(conn: &rusqlite::Connection, automation_id: &str) -> Option<DueAutomation> {
     conn.query_row(
         "SELECT automation_id, project_id, name, prompt, schedule_json, COALESCE(next_run_at,''),
-                model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id
+                model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id, worktree_mode
          FROM automation_definitions WHERE automation_id = ?1 AND archived_at IS NULL",
         params![automation_id],
         |r| {
@@ -119,11 +119,12 @@ fn load_automation_any(conn: &rusqlite::Connection, automation_id: &str) -> Opti
                 r.get::<_, String>(8)?,
                 r.get::<_, String>(9)?,
                 r.get::<_, Option<String>>(10)?,
+                r.get::<_, String>(11)?,
             ))
         },
     )
     .ok()
-    .map(|(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt)| {
+    .map(|(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt, wm)| {
         DueAutomation {
             id,
             project_id,
@@ -138,6 +139,7 @@ fn load_automation_any(conn: &rusqlite::Connection, automation_id: &str) -> Opti
             interaction_mode: im,
             mode,
             target_thread_id: tt,
+            worktree_mode: wm,
         }
     })
 }
@@ -191,7 +193,7 @@ fn deferred_pass() -> Result<(), WsErr> {
 fn load_automation(conn: &rusqlite::Connection, automation_id: &str) -> Option<DueAutomation> {
     conn.query_row(
         "SELECT automation_id, project_id, name, prompt, schedule_json, COALESCE(next_run_at,''),
-                model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id
+                model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id, worktree_mode
          FROM automation_definitions WHERE automation_id = ?1 AND enabled = 1 AND archived_at IS NULL",
         params![automation_id],
         |r| {
@@ -207,11 +209,12 @@ fn load_automation(conn: &rusqlite::Connection, automation_id: &str) -> Option<D
                 r.get::<_, String>(8)?,
                 r.get::<_, String>(9)?,
                 r.get::<_, Option<String>>(10)?,
+                r.get::<_, String>(11)?,
             ))
         },
     )
     .ok()
-    .map(|(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt)| {
+    .map(|(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt, wm)| {
         DueAutomation {
             id,
             project_id,
@@ -226,6 +229,7 @@ fn load_automation(conn: &rusqlite::Connection, automation_id: &str) -> Option<D
             interaction_mode: im,
             mode,
             target_thread_id: tt,
+            worktree_mode: wm,
         }
     })
 }
@@ -242,6 +246,7 @@ struct DueAutomation {
     interaction_mode: String,
     mode: String,
     target_thread_id: Option<String>,
+    worktree_mode: String,
 }
 
 /// Fire every due occurrence: transactional run-insert + schedule advance,
@@ -254,7 +259,7 @@ fn due_pass() -> Result<(), WsErr> {
         let mut stmt = conn
             .prepare(
                 "SELECT automation_id, project_id, name, prompt, schedule_json, next_run_at,
-                        model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id
+                        model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id, worktree_mode
                  FROM automation_definitions
                  WHERE enabled = 1 AND archived_at IS NULL AND next_run_at IS NOT NULL AND next_run_at <= ?1",
             )
@@ -273,12 +278,13 @@ fn due_pass() -> Result<(), WsErr> {
                     r.get::<_, String>(8)?,
                     r.get::<_, String>(9)?,
                     r.get::<_, Option<String>>(10)?,
+                    r.get::<_, String>(11)?,
                 ))
             })
             .map_err(|e| err(format!("automation due scan: {e}")))?;
         rows.filter_map(|r| r.ok())
             .map(
-                |(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt)| {
+                |(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt, wm)| {
                     DueAutomation {
                         id,
                         project_id,
@@ -293,6 +299,7 @@ fn due_pass() -> Result<(), WsErr> {
                         interaction_mode: im,
                         mode,
                         target_thread_id: tt,
+            worktree_mode: wm,
                     }
                 },
             )
@@ -324,6 +331,34 @@ fn fire_occurrence(automation: &DueAutomation, now: &str, now_ms: i64) -> Result
 
     let run_id = uuid_v4();
     let conn = open_state_rw()?;
+    // AutomationPermissionSnapshot is a required, schema-validated object on
+    // the wire: an empty '{}' fails the client's stream decode and takes the
+    // whole transport down. Build it from the definition like upstream does,
+    // falling back to the engine's default model selection when the
+    // automation has none of its own.
+    let worktree_mode: String = if automation.worktree_mode.is_empty() {
+        "auto".to_string()
+    } else {
+        automation.worktree_mode.clone()
+    };
+    let ms = if automation.model_selection.is_null() {
+        json!({"provider": "codex", "model": "gpt-6-astra"})
+    } else {
+        automation.model_selection.clone()
+    };
+    let provider = ms
+        .get("provider")
+        .and_then(|v| v.as_str())
+        .unwrap_or("codex");
+    let permission_snapshot = json!({
+        "provider": provider,
+        "modelSelection": ms,
+        "runtimeMode": automation.runtime_mode,
+        "interactionMode": automation.interaction_mode,
+        "worktreeMode": worktree_mode,
+        "allowedCapabilities": [],
+        "createdAt": now,
+    });
     let tx = conn.unchecked_transaction().map_err(|e| err(format!("automation tx: {e}")))?;
     let inserted = tx
         .execute(
@@ -331,7 +366,7 @@ fn fire_occurrence(automation: &DueAutomation, now: &str, now_ms: i64) -> Result
              (run_id, automation_id, project_id, thread_id, turn_id, trigger_type, status,
               scheduled_for, thread_create_command_id, turn_start_command_id, message_id,
               permission_snapshot_json, created_at, updated_at)
-             VALUES (?1, ?2, ?3, NULL, NULL, 'schedule', 'pending', ?4, ?5, ?6, ?7, '{}', ?8, ?8)",
+             VALUES (?1, ?2, ?3, NULL, NULL, 'schedule', 'pending', ?4, ?5, ?6, ?7, ?9, ?8, ?8)",
             params![
                 run_id,
                 automation.id,
@@ -341,6 +376,7 @@ fn fire_occurrence(automation: &DueAutomation, now: &str, now_ms: i64) -> Result
                 format!("{run_id}-turn-start"),
                 format!("{run_id}-message"),
                 now,
+                permission_snapshot.to_string(),
             ],
         )
         .map_err(|e| err(format!("automation run insert: {e}")))?;

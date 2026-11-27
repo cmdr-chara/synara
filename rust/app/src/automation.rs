@@ -163,7 +163,24 @@ fn run_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     } else {
         r.insert("result".into(), result);
     }
-    r.insert("permissionSnapshot".into(), json_col(row, 19));
+    // Legacy rows written before the permission snapshot capture have '{}'
+    // here, which fails the client's schema decode and takes the whole
+    // transport down. Backfill a schema-valid object on read.
+    let snap = json_col(row, 19);
+    let snap = if snap.as_object().map(|o| o.is_empty()).unwrap_or(true) {
+        json!({
+            "provider": "codex",
+            "modelSelection": {"provider": "codex", "model": "gpt-6-astra"},
+            "runtimeMode": "approval-required",
+            "interactionMode": "default",
+            "worktreeMode": "auto",
+            "allowedCapabilities": [],
+            "createdAt": sval(row, 20),
+        })
+    } else {
+        snap
+    };
+    r.insert("permissionSnapshot".into(), snap);
     r.insert("createdAt".into(), sval(row, 20));
     r.insert("updatedAt".into(), sval(row, 21));
     r

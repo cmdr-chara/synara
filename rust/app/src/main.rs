@@ -89,6 +89,7 @@ mod projects_refs;
 mod projects_search;
 mod pull_requests;
 mod runtime_status;
+mod host_usage_snapshot;
 mod server_beta_usage;
 mod server_desktop_update;
 mod server_diagnostics;
@@ -199,11 +200,12 @@ async fn main() {
         // databases validate against the canonical lineage before any reader
         // touches state.sqlite.
         match migrations::run_state_migrations() {
-            Ok(applied) if !applied.is_empty() => {
-                eprintln!("migrations: applied {} migration(s) through {}", applied.len(), applied.last().copied().unwrap_or(0));
-            }
-            Ok(_) => {
+            Ok(applied) => {
+                if !applied.is_empty() {
+                    eprintln!("migrations: applied {} migration(s) through {}", applied.len(), applied.last().copied().unwrap_or(0));
+                }
                 server_beta_usage::start_beta_usage_snapshot_job();
+                host_usage_snapshot::start_host_usage_snapshot_job();
             }
             Err(e) => {
                 beta_operational_issue::report_startup_migration_error(&e.0);

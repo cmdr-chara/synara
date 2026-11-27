@@ -298,6 +298,23 @@ fn usage_model_category(provider: &str, model: &Value) -> String {
     }
 }
 
+/// Port of `usageTurnCategories` (`packages/shared/src/usageAnalytics.ts`).
+/// Every dimension is reconstructed independently; private or unknown values
+/// become the finite `other` bucket before they can cross a file/network boundary.
+pub fn usage_turn_categories(raw: &Value) -> serde_json::Value {
+    let empty = Value::Null;
+    let provider = category(raw.get("provider").unwrap_or(&empty), PROVIDERS).to_string();
+    let model = usage_model_category(&provider, raw.get("model").unwrap_or(&empty));
+    serde_json::json!({
+        "provider": provider,
+        "model": model,
+        "effort": category(raw.get("effort").unwrap_or(&empty), EFFORTS),
+        "interactionMode": category(raw.get("interactionMode").unwrap_or(&empty), INTERACTION_MODES),
+        "runtimeMode": category(raw.get("runtimeMode").unwrap_or(&empty), RUNTIME_MODES),
+        "origin": category(raw.get("origin").unwrap_or(&empty), ORIGINS),
+    })
+}
+
 fn num_field(m: &serde_json::Map<String, Value>, k: &str) -> f64 {
     m.get(k).and_then(Value::as_f64).unwrap_or(f64::NAN)
 }

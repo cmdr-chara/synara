@@ -278,3 +278,13 @@ nella shell); card duration shell (1h/7h) != web (6h/9h) — SEMANTICA diversa, 
 KanbanCardView duration; pill Done web sembra violet/blu non verde — verificare colore esatto.
 Coda: kanban card positions numeriche, thread strip tab bar, code review sidebar offset verticale,
 landing light texture density, transcript images, dark sweep.
+
+## Update 06:50 — composer opacity FIXED (1c7e9cd95a) ora bianco opaco come upstream.
+Kanban card meta FIXED (148af8e87b): colonna label + icona #5e6ad2 done, no pill verde.
+TEXTURE DARK mystery: sorgente jpg è foto notturna (sky lum 0.22, temple 0.40) già halftone.
+Upstream dark invert:false → dots dove luminoso, ma web dark mostra cielo denso e tempio nero
+(come invertito) — possibile che la capture web fosse mid-fade o che il blur+downscale della
+sorgente halftone alzi la luminanza media oltre soglia. Shell dark attuale: cielo sparso,
+tempio denso — coerente con invert:false letterale. Serve confronto con web SETTLED (attendere
+3s dopo navigazione prima di catturare). Dark surfaces: sidebar shell 21 vs web 17,
+composer tray shell 36 vs web 23 — piccoli scostamenti da limare.

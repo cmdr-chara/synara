@@ -1315,6 +1315,8 @@ pub struct Native {
     model_catalog: Vec<(String, String, String)>,
     /// Effort ladder index for the picker slider (upstream trait effort).
     composer_effort_idx: usize,
+    /// Provider tab open in the model picker (upstream ComposerModelPickerTab).
+    model_picker_provider: String,
     queued_turns: Vec<String>,
     queue_paused: bool,
     /// Debug task-list popover open (upstream ComposerCapsulePopover state).
@@ -3340,6 +3342,7 @@ impl Native {
                 }),
                 model_catalog: Vec::new(),
                 composer_effort_idx: 2,
+                model_picker_provider: "codex".to_string(),
                 queued_turns: Vec::new(),
                 queue_paused: false,
                 task_card_open: false,
@@ -18959,35 +18962,40 @@ impl Render for Native {
                 .on_click(move |_, window, cx| {
                     let _ = weak.update(cx, |this, cx| {
                         this.model_picker_open = !this.model_picker_open;
+                        if this.model_picker_open {
+                            // Open on the tab of the current model's provider.
+                            this.model_picker_provider = this.composer_model.0.clone();
+                        }
                         if this.model_picker_open && this.model_catalog.is_empty() {
-                            // Lazy-fill the catalog from the backend once; the
-                            // picker re-renders with real rows when it lands.
+                            // Lazy-fill the catalog from the backend once per
+                            // provider; rows render when they land.
                             if let Some(client) = ensure_client(&this.client) {
-                                let prov = this.composer_model.0.clone();
-                                if let Some(v) = client.call(
-                                    "provider.listModels",
-                                    json!({"provider": prov, "instanceId": prov, "cwd": null}),
-                                ) {
-                                    let rows = v
-                                        .get("models")
-                                        .or_else(|| v.get("values"))
-                                        .and_then(Value::as_array)
-                                        .cloned()
-                                        .unwrap_or_default();
-                                    let mut out: Vec<(String, String, String)> = Vec::new();
-                                    for m in rows {
-                                        let slug = str_at(&m, "slug");
-                                        let name = {
-                                            let n = str_at(&m, "name");
-                                            if n.is_empty() { slug.to_string() } else { n.to_string() }
-                                        };
-                                        if !slug.is_empty() {
-                                            out.push((slug.to_string(), name, prov.clone()));
+                                let mut out: Vec<(String, String, String)> = Vec::new();
+                                for prov in ["codex", "devin", "claudeAgent"] {
+                                    if let Some(v) = client.call(
+                                        "provider.listModels",
+                                        json!({"provider": prov, "instanceId": prov, "cwd": null}),
+                                    ) {
+                                        let rows = v
+                                            .get("models")
+                                            .or_else(|| v.get("values"))
+                                            .and_then(Value::as_array)
+                                            .cloned()
+                                            .unwrap_or_default();
+                                        for m in rows {
+                                            let slug = str_at(&m, "slug");
+                                            let name = {
+                                                let n = str_at(&m, "name");
+                                                if n.is_empty() { slug.to_string() } else { n.to_string() }
+                                            };
+                                            if !slug.is_empty() {
+                                                out.push((slug.to_string(), name, prov.to_string()));
+                                            }
                                         }
                                     }
-                                    if !out.is_empty() {
-                                        this.model_catalog = out;
-                                    }
+                                }
+                                if !out.is_empty() {
+                                    this.model_catalog = out;
                                 }
                             }
                         }
@@ -30278,18 +30286,37 @@ impl Render for Native {
             } else {
                 hsla(0.048, 0.9, 0.45, 1.0)
             };
-            // Rows: catalog when loaded, fallback to the seeded list.
-            let mut rows: Vec<(String, String, String)> = self.model_catalog.clone();
+            // Rows: the open provider tab's catalog slice, or its seeded list.
+            let active_prov = self.model_picker_provider.clone();
+            let mut rows: Vec<(String, String, String)> = self
+                .model_catalog
+                .iter()
+                .filter(|(_, _, prov)| *prov == active_prov)
+                .cloned()
+                .collect();
             if rows.is_empty() {
-                rows = vec![
-                    ("gpt-6-astra".into(), "6 Astra".into(), "codex".into()),
-                    ("gpt-6-sol".into(), "6 Sol".into(), "codex".into()),
-                    ("gpt-6-luna".into(), "6 Luna".into(), "codex".into()),
-                    ("gpt-5.5".into(), "5.5".into(), "codex".into()),
-                    ("gpt-5.4".into(), "5.4".into(), "codex".into()),
-                    ("gpt-5.4-mini".into(), "5.4 Mini".into(), "codex".into()),
-                    ("gpt-5.3-codex".into(), "5.3 Codex".into(), "codex".into()),
-                ];
+                rows = match active_prov.as_str() {
+                    "devin" => vec![
+                        ("adaptive".into(), "Adaptive".into(), "devin".into()),
+                        ("swe-2".into(), "SWE 2".into(), "devin".into()),
+                        ("swe-1.7".into(), "SWE 1.7".into(), "devin".into()),
+                        ("devin-small".into(), "Devin Small".into(), "devin".into()),
+                    ],
+                    "claudeAgent" => vec![
+                        ("claude-opus-5".into(), "Opus 5".into(), "claudeAgent".into()),
+                        ("claude-sonnet-5".into(), "Sonnet 5".into(), "claudeAgent".into()),
+                        ("claude-haiku-5".into(), "Haiku 5".into(), "claudeAgent".into()),
+                    ],
+                    _ => vec![
+                        ("gpt-6-astra".into(), "6 Astra".into(), "codex".into()),
+                        ("gpt-6-sol".into(), "6 Sol".into(), "codex".into()),
+                        ("gpt-6-luna".into(), "6 Luna".into(), "codex".into()),
+                        ("gpt-5.5".into(), "5.5".into(), "codex".into()),
+                        ("gpt-5.4".into(), "5.4".into(), "codex".into()),
+                        ("gpt-5.4-mini".into(), "5.4 Mini".into(), "codex".into()),
+                        ("gpt-5.3-codex".into(), "5.3 Codex".into(), "codex".into()),
+                    ],
+                };
             }
             let query = self.model_picker_search.read(cx).value().to_lowercase();
             let cur_slug = self.composer_model.1.clone();
@@ -30369,7 +30396,20 @@ impl Render for Native {
                             .min_w_0()
                             .text_size(px(12.))
                             .text_color(theme.foreground)
-                            .child(name.clone()),
+                            .child({
+                                // Upstream composerModelDisplayName: the
+                                // provider family prefix repeats the tab icon,
+                                // so rows drop it — "GPT-6 Astra" reads
+                                // "6 Astra", "Claude Opus 5.5" reads "Opus 5.5".
+                                let mut n = name.clone();
+                                for prefix in ["Claude ", "claude ", "GPT-", "gpt-"] {
+                                    if let Some(rest) = n.strip_prefix(prefix) {
+                                        n = rest.to_string();
+                                        break;
+                                    }
+                                }
+                                n
+                            }),
                     )
                     .child(star_rows);
                 list = list.child(row);
@@ -30428,26 +30468,50 @@ impl Render for Native {
                                 .px(px(6.))
                                 .child(svg_icon(icons::STAR_FILLED).size(px(16.)).text_color(theme.foreground)),
                         )
-                        .child(
-                            div()
-                                .h(px(28.))
-                                .min_w(px(28.))
-                                .flex()
-                                .items_center()
-                                .justify_center()
-                                .rounded(px(8.))
-                                .px(px(6.))
-                                .child(svg_icon(model_icon).size(px(16.)).text_color(theme.foreground))
-                                .child(
-                                    div()
-                                        .absolute()
-                                        .left(px(6.))
-                                        .top(px(32.))
-                                        .right(px(6.))
-                                        .h(px(2.))
-                                        .rounded(px(1.))
-                                        .bg(accent_orange),
-                                ),
+                        .children(
+                            // One icon tab per provider account (upstream
+                            // ComposerModelPickerTabs); the open tab carries
+                            // the accent marker.
+                            [("codex", icons::CODEX), ("devin", icons::P_DEVIN), ("claudeAgent", icons::P_CLAUDE)]
+                                .into_iter()
+                                .map(|(prov, icon)| {
+                                    let is_active = prov == active_prov;
+                                    let prov_c = prov.to_string();
+                                    let mut tab = div()
+                                        .id(ElementId::Name(format!("mp-tab-{prov}").into()))
+                                        .h(px(28.))
+                                        .min_w(px(28.))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .rounded(px(8.))
+                                        .px(px(6.))
+                                        .cursor_pointer()
+                                        .on_mouse_down(gpui::MouseButton::Left, cx.listener(move |this, _ev: &gpui::MouseDownEvent, _w, cx| {
+                                            cx.stop_propagation();
+                                            this.model_picker_provider = prov_c.clone();
+                                            cx.notify();
+                                        }))
+                                        .child(svg_icon(icon).size(px(16.)).text_color(if is_active {
+                                            theme.foreground
+                                        } else {
+                                            muted_fg
+                                        }));
+                                    if is_active {
+                                        tab = tab.child(
+                                            div()
+                                                .absolute()
+                                                .left(px(6.))
+                                                .top(px(32.))
+                                                .right(px(6.))
+                                                .h(px(2.))
+                                                .rounded(px(1.))
+                                                .bg(accent_orange),
+                                        );
+                                    }
+                                    tab
+                                })
+                                .collect::<Vec<_>>(),
                         )
                         .child(div().flex_1())
                         .child(svg_icon(icons::PLUS).size(px(16.)).text_color(muted_fg)),

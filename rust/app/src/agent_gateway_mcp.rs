@@ -618,7 +618,7 @@ pub async fn handle_ws_call(payload: &Value) -> Result<Value, crate::todo::WsErr
 
 async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Value, String> {
     if name.starts_with("synara_") {
-        return crate::agent_gateway_synara::call_synara_tool(name, args);
+        return crate::agent_gateway_synara::call_synara_tool(name, args, thread);
     }
     if name.starts_with("browser_") {
         return crate::browser_automation::call_browser_tool(name, args, thread).await;

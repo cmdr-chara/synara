@@ -98,6 +98,40 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["threadId"]),
         ),
         def(
+            "synara_create_automation",
+            "Create a heartbeat, standalone, or dedicated Synara automation. heartbeat appends turns to an existing thread; standalone opens a fresh thread per run; dedicated reuses one owned thread. Omitting mode/schedule creates a heartbeat on your thread using everyMinutes (default 5).",
+            schema(json!({
+                "name": {"type": "string"},
+                "prompt": {"type": "string"},
+                "mode": {"type": "string", "enum": ["heartbeat", "standalone", "dedicated"]},
+                "everyMinutes": {"type": "number", "description": "Interval shorthand, default 5."},
+                "targetThreadId": {"type": "string", "description": "Heartbeat only; defaults to the caller thread."},
+                "projectId": {"type": "string", "description": "Standalone/dedicated; defaults to the caller's project."},
+                "worktreeMode": {"type": "string", "enum": ["auto", "local", "worktree"]},
+                "maxIterations": {"type": "number", "minimum": 1},
+                "enabled": {"type": "boolean"},
+            }), &["name", "prompt"]),
+        ),
+        def(
+            "synara_update_automation",
+            "Replace an automation's mutable configuration. Call synara_view_automation first and resend every field, including unchanged ones; partial updates are rejected.",
+            schema(json!({
+                "automationId": {"type": "string"},
+                "name": {"type": "string"},
+                "prompt": {"type": "string"},
+                "everyMinutes": {"type": "number"},
+                "enabled": {"type": "boolean"},
+                "maxIterations": {"type": ["number", "null"]},
+            }), &["automationId"]),
+        ),
+        def(
+            "synara_cancel_automation",
+            "Disable an automation so it stops scheduling runs. Existing runs finish.",
+            schema(json!({
+                "automationId": {"type": "string"},
+            }), &["automationId"]),
+        ),
+        def(
             "synara_view_automation",
             "Read one automation's full configuration. Get automationId from synara_list_automations.",
             schema(json!({
@@ -653,7 +687,102 @@ fn view_automation(args: &Value) -> Result<Value, String> {
     .map_err(|_| format!("Automation \"{automation_id}\" was not found."))
 }
 
-pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String> {
+fn caller_project_id(conn: &rusqlite::Connection, thread_id: &str) -> Option<String> {
+    conn.query_row(
+        "SELECT project_id FROM projection_threads WHERE thread_id = ?1",
+        [thread_id],
+        |r| r.get(0),
+    )
+    .ok()
+}
+
+fn create_automation(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let name = arg_str(args, "name").ok_or("Missing required argument: name")?;
+    let prompt = arg_str(args, "prompt").ok_or("Missing required argument: prompt")?;
+    let mode = arg_str(args, "mode").unwrap_or_else(|| "heartbeat".into());
+    if mode == "heartbeat" && args.get("target").is_some() {
+        return Err("Heartbeat automations continue their target thread's session and reject target.".into());
+    }
+    let conn = state_conn()?;
+    let every_minutes = args.get("everyMinutes").and_then(Value::as_f64).unwrap_or(5.0).max(1.0);
+    let schedule = json!({"type": "interval", "everySeconds": (every_minutes * 60.0).round() as i64});
+    let target_thread_id = arg_str(args, "targetThreadId").or_else(|| {
+        if mode == "heartbeat" {
+            caller_thread.map(str::to_string)
+        } else {
+            None
+        }
+    });
+    let project_id = arg_str(args, "projectId")
+        .or_else(|| caller_thread.and_then(|t| caller_project_id(&conn, t)))
+        .ok_or("Could not resolve a project: pass projectId explicitly.")?;
+    let mut payload = serde_json::Map::new();
+    payload.insert("projectId".into(), json!(project_id));
+    payload.insert("name".into(), json!(name));
+    payload.insert("prompt".into(), json!(prompt));
+    payload.insert("schedule".into(), schedule);
+    payload.insert("mode".into(), json!(mode));
+    payload.insert("enabled".into(), json!(args.get("enabled").and_then(Value::as_bool).unwrap_or(true)));
+    if let Some(t) = target_thread_id {
+        payload.insert("targetThreadId".into(), json!(t));
+    }
+    if let Some(t) = caller_thread {
+        payload.insert("sourceThreadId".into(), json!(t));
+    }
+    if let Some(w) = arg_str(args, "worktreeMode") {
+        payload.insert("worktreeMode".into(), json!(w));
+    }
+    if let Some(m) = args.get("maxIterations").and_then(Value::as_i64) {
+        payload.insert("maxIterations".into(), json!(m));
+    }
+    crate::automation::handle("automation.create", &Value::Object(payload)).map_err(|e| e.0)
+}
+
+fn update_automation(args: &Value) -> Result<Value, String> {
+    let automation_id = arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
+    // Upstream requires a full replacement payload; read the stored definition
+    // and overlay the sent fields so partial input cannot blank the rest.
+    let current = view_automation(args)?;
+    let current = current.get("automation").cloned().unwrap_or(Value::Null);
+    let mut payload = serde_json::Map::new();
+    payload.insert("automationId".into(), json!(automation_id));
+    payload.insert(
+        "name".into(),
+        arg_str(args, "name").map(|s| json!(s)).unwrap_or_else(|| current.get("name").cloned().unwrap_or(Value::Null)),
+    );
+    payload.insert(
+        "prompt".into(),
+        arg_str(args, "prompt").map(|s| json!(s)).unwrap_or_else(|| current.get("prompt").cloned().unwrap_or(Value::Null)),
+    );
+    let schedule = if let Some(mins) = args.get("everyMinutes").and_then(Value::as_f64) {
+        json!({"type": "interval", "everySeconds": (mins.max(1.0) * 60.0).round() as i64})
+    } else {
+        current.get("schedule").cloned().unwrap_or(Value::Null)
+    };
+    payload.insert("schedule".into(), schedule);
+    payload.insert(
+        "enabled".into(),
+        args.get("enabled").cloned().unwrap_or_else(|| current.get("enabled").cloned().unwrap_or(json!(true))),
+    );
+    for key in ["maxIterations"] {
+        if let Some(v) = args.get(key) {
+            payload.insert(key.into(), v.clone());
+        } else if let Some(v) = current.get(key) {
+            payload.insert(key.into(), v.clone());
+        }
+    }
+    crate::automation::handle("automation.update", &Value::Object(payload)).map_err(|e| e.0)
+}
+
+fn cancel_automation(args: &Value) -> Result<Value, String> {
+    let automation_id = arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
+    let mut payload = serde_json::Map::new();
+    payload.insert("automationId".into(), json!(automation_id));
+    payload.insert("enabled".into(), json!(false));
+    crate::automation::handle("automation.update", &Value::Object(payload)).map_err(|e| e.0)
+}
+
+pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
         "synara_create_todo" => create_todo(args),
@@ -664,6 +793,9 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value) -> Result<Value, String
         "synara_read_thread_events" => read_thread_events(args),
         "synara_read_kanban_board" => read_kanban_board(args),
         "synara_view_automation" => view_automation(args),
+        "synara_create_automation" => create_automation(args, caller_thread),
+        "synara_update_automation" => update_automation(args),
+        "synara_cancel_automation" => cancel_automation(args),
         "synara_list_projects" => list_projects(args),
         "synara_list_automations" => list_automations(),
         _ => Err(format!("Unknown tool: {name}")),

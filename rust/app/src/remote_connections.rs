@@ -7,6 +7,7 @@
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use futures_util::{SinkExt, StreamExt};
@@ -33,12 +34,19 @@ pub struct DesiredHost {
     pub credential_expires_at: Option<String>,
     pub credential: Option<String>,
     pub credential_expires_at_seconds: u64,
+    pub failures: u32,
+    pub retry_at_unix: u64,
 }
 
 struct Attachment {
     created_at: std::time::Instant,
     host_id: String,
     server_instance_id: String,
+    compatibility: Value,
+    client: Value,
+    replacement_for: Option<String>,
+    credential_expires_at_seconds: u64,
+    active: AtomicBool,
     write: Arc<AsyncMutex<SplitWrite>>,
     read: Arc<AsyncMutex<SplitRead>>,
 }
@@ -168,14 +176,17 @@ pub fn retry_reconnecting_once() -> usize {
     let now = unix_now();
     let hosts: Vec<String> = desired_hosts().lock().ok().map(|hosts| {
         hosts.values()
-            .filter(|host| host.state == "reconnecting")
+            .filter(|host| host.state == "reconnecting" && host.retry_at_unix <= now)
             .map(|host| host.host_id.clone())
             .collect()
     }).unwrap_or_default();
     let mut started = 0;
     for host_id in hosts {
-        let due = retry_deadlines().lock().ok().and_then(|deadlines| deadlines.get(&host_id).copied()).unwrap_or(0);
-        if due > now { continue }
+        if let Ok(mut hosts) = desired_hosts().lock()
+            && let Some(host) = hosts.get_mut(&host_id)
+        {
+            host.retry_at_unix = now + retry_delay_seconds(host.failures.max(1));
+        }
         if let Ok(mut deadlines) = retry_deadlines().lock() {
             deadlines.insert(host_id.clone(), now + 30);
         }
@@ -198,12 +209,80 @@ pub fn resource_credential(host_id: &str) -> Option<(DesiredHost, String)> {
     Some((host, credential))
 }
 
+
+fn client_key(client: &Value) -> String {
+    serde_json::to_string(client).unwrap_or_else(|_| "null".to_string())
+}
+
+
+fn retry_delay_seconds(failures: u32) -> u64 {
+    (500u64 << failures.min(6)).min(30_000) / 1000
+}
+
+fn classify_failure(error: &str) -> &'static str {
+    let lower = error.to_ascii_lowercase();
+    if lower.contains("incompatible") {
+        "incompatible"
+    } else if lower.contains("sign in") || lower.contains("grant") || lower.contains("unauthorized") {
+        "needs-sign-in"
+    } else if lower.contains("revoked") || lower.contains("not paired") || lower.contains("trust") {
+        "revoked"
+    } else {
+        "reconnecting"
+    }
+}
+
 pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
     let desired = desired(host_id).ok_or_else(|| "Connect to this host from the local controller first".to_string())?;
     if matches!(desired.state, "needs-sign-in" | "revoked" | "incompatible" | "stopped") {
         return Err(format!("Remote connection requires attention: {}", desired.state));
     }
-    let session = dial(&desired, client).await?;
+    if attachments().lock().ok().is_some_and(|live| {
+        live.values().filter(|attachment| attachment.host_id == host_id).count() >= 8 || live.len() >= 32
+    }) {
+        return Err("Remote renderer connection limit reached".to_string());
+    }
+    let key = client_key(&client);
+    let replacement = attachments().lock().ok().and_then(|mut live| {
+        let id = live.iter().find_map(|(id, attachment)| {
+            (attachment.host_id == host_id && attachment.replacement_for.as_deref() == Some(key.as_str()))
+                .then(|| id.clone())
+        })?;
+        if let Some(attachment) = live.get_mut(&id)
+            && let Some(attachment) = Arc::get_mut(attachment)
+        {
+            attachment.replacement_for = None;
+        }
+        Some((id.clone(), live.get(&id).cloned()))
+    });
+    if let Some((id, Some(attachment))) = replacement {
+        let mut result = attachment.compatibility.clone();
+        if let Some(object) = result.as_object_mut() {
+            object.insert("remoteAttachmentId".into(), json!(id));
+        }
+        return Ok(result);
+    }
+    let session = match dial(&desired, client.clone()).await {
+        Ok(session) => session,
+        Err(error) => {
+            let failure_state = classify_failure(&error);
+            if let Ok(mut hosts) = desired_hosts().lock()
+                && let Some(host) = hosts.get_mut(host_id)
+            {
+                let keep_connected = failure_state == "reconnecting"
+                    && host.state == "connected"
+                    && attachments().lock().ok().is_some_and(|live| live.values().any(|attachment| {
+                        attachment.host_id == host_id && attachment.active.load(Ordering::SeqCst)
+                    }));
+                host.state = if keep_connected { "connected" } else { failure_state };
+                host.failures = host.failures.saturating_add(1);
+                host.retry_at_unix = if failure_state == "reconnecting" {
+                    unix_now() + retry_delay_seconds(host.failures)
+                } else { 0 };
+            }
+            return Err(error);
+        }
+    };
     let server_instance_id = session.compatibility.get("serverInstanceId").and_then(Value::as_str).unwrap_or_default().to_string();
     let transport = session.transport.clone();
     let credential_expires = iso_from_unix(session.credential_expires_at_seconds);
@@ -216,6 +295,8 @@ pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
         host.credential_expires_at = Some(credential_expires);
         host.credential = Some(session.credential.clone());
         host.credential_expires_at_seconds = session.credential_expires_at_seconds;
+        host.failures = 0;
+        host.retry_at_unix = 0;
     }
     let id = crate::orchestration_engine::uuid_v4();
     let (write, read) = session.socket.split();
@@ -223,6 +304,11 @@ pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
         created_at: std::time::Instant::now(),
         host_id: host_id.to_string(),
         server_instance_id,
+        compatibility: session.compatibility.clone(),
+        client,
+        replacement_for: None,
+        credential_expires_at_seconds: session.credential_expires_at_seconds,
+        active: AtomicBool::new(false),
         write: Arc::new(AsyncMutex::new(write)),
         read: Arc::new(AsyncMutex::new(read)),
     });
@@ -274,6 +360,7 @@ pub fn probe_blocking(host_id: &str, client: Value) -> Result<(), String> {
 pub async fn close_attachment(id: &str) {
     let attachment = attachments().lock().ok().and_then(|mut live| live.remove(id));
     if let Some(attachment) = attachment {
+        attachment.active.store(false, Ordering::SeqCst);
         let _ = attachment.write.lock().await.send(WsMessage::Close(None)).await;
     }
 }
@@ -367,6 +454,45 @@ pub fn attachment_valid(host_id: &str, attachment_id: &str, server_instance_id: 
     })
 }
 
+
+fn close_frame(code: u16, reason: &str) -> WsMessage {
+    WsMessage::Close(Some(tokio_tungstenite::tungstenite::protocol::CloseFrame {
+        code: tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode::from(code),
+        reason: reason.into(),
+    }))
+}
+
+/// Mirrors upstream authorization renewal: prepare a fresh stream while the
+/// old presentation is still valid, reserve it for the same client input, then
+/// close the old stream with 1012. The renderer negotiates again; no bytes or
+/// mutations are replayed by this layer.
+fn schedule_renewal(attachment: Arc<Attachment>) {
+    let now = unix_now();
+    let Some(seconds_left) = attachment.credential_expires_at_seconds.checked_sub(now + 45) else {
+        return;
+    };
+    tokio::spawn(async move {
+        tokio::time::sleep(Duration::from_secs(seconds_left.max(1))).await;
+        if !attachment.active.load(Ordering::SeqCst) {
+            return;
+        }
+        let key = client_key(&attachment.client);
+        if let Ok(prepared) = prepare(&attachment.host_id, attachment.client.clone()).await
+            && let Some(replacement_id) = prepared.get("remoteAttachmentId").and_then(Value::as_str)
+            && let Ok(mut live) = attachments().lock()
+            && let Some(replacement) = live.get_mut(replacement_id)
+            && let Some(replacement) = Arc::get_mut(replacement)
+        {
+            replacement.replacement_for = Some(key);
+        }
+        if attachment.active.load(Ordering::SeqCst) {
+            let _ = attachment.write.lock().await
+                .send(close_frame(1012, "Renewing remote authorization"))
+                .await;
+        }
+    });
+}
+
 /// Bridges one local renderer websocket to its freshly negotiated remote
 /// stream. Either side closing consumes the stream; renewal requires another
 /// negotiation, so no mutation bytes are replayed.
@@ -381,6 +507,8 @@ pub async fn attach(host_id: &str, attachment_id: &str, server_instance_id: Opti
     {
         return Err("Remote stream negotiation expired".to_string());
     }
+    attachment.active.store(true, Ordering::SeqCst);
+    schedule_renewal(attachment.clone());
     let (mut local_write, mut local_read) = socket.split();
     let remote_read = attachment.read.clone();
     let remote_write = attachment.write.clone();
@@ -397,6 +525,7 @@ pub async fn attach(host_id: &str, attachment_id: &str, server_instance_id: Opti
         let Some(message) = axum_to_tungstenite(message) else { continue };
         if remote_write.lock().await.send(message).await.is_err() { break }
     }
+    attachment.active.store(false, Ordering::SeqCst);
     remote_to_local.abort();
     close_attachment(attachment_id).await;
     if attachments().lock().ok().is_some_and(|live| !live.values().any(|item| item.host_id == host_id)) {

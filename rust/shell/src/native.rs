@@ -13461,51 +13461,84 @@ impl Native {
                                         }
                                         content = content.child(row);
                                     }
-                                    for a in msg_atts.iter().filter(|a| str_at(a, "type") == "file") {
-                                        let name = str_at(a, "name").to_string();
-                                        let kb = a.get("sizeBytes").and_then(Value::as_u64).unwrap_or(0) / 1024;
-                                        content = content.child(
+                                    // Upstream transcript attachments render as
+                                    // compact pills: tiny icon, name, size ("25 B").
+                                    let mut pill_row = h_flex().gap(px(6.)).flex_wrap().justify_end();
+                                    let n_sel = msg_atts
+                                        .iter()
+                                        .filter(|a| str_at(a, "type") == "selection")
+                                        .count();
+                                    let mut has_pills = false;
+                                    if n_sel > 0 {
+                                        has_pills = true;
+                                        pill_row = pill_row.child(
                                             h_flex()
-                                                .max_w(px(256.))
-                                                .gap(px(8.))
-                                                .rounded(px(8.))
-                                                .py(px(4.))
-                                                .pl(px(4.))
-                                                .pr(px(8.))
+                                                .gap(px(5.))
+                                                .items_center()
+                                                .rounded_full()
                                                 .border_1()
                                                 .border_color(theme.border)
-                                                .items_center()
+                                                .px(px(8.))
+                                                .py(px(3.))
                                                 .child(
-                                                    div()
-                                                        .size(px(24.))
-                                                        .rounded(px(6.))
-                                                        .bg(subtle)
-                                                        .flex()
-                                                        .items_center()
-                                                        .justify_center()
-                                                        .child(
-                                                            svg_icon(icons::COPY)
-                                                                .size(px(12.))
-                                                                .text_color(theme.muted_foreground),
-                                                        ),
+                                                    svg_icon(icons::COPY)
+                                                        .size(px(11.))
+                                                        .text_color(theme.muted_foreground),
                                                 )
                                                 .child(
-                                                    v_flex()
-                                                        .child(
-                                                            div()
-                                                                .text_size(px(13.))
-                                                                .whitespace_nowrap()
-                                                                .overflow_hidden()
-                                                                .child(name),
-                                                        )
-                                                        .child(
-                                                            div()
-                                                                .text_size(px(11.))
-                                                                .text_color(theme.muted_foreground)
-                                                                .child(format!("{kb} KB")),
-                                                        ),
+                                                    div()
+                                                        .text_size(px(12.))
+                                                        .text_color(theme.muted_foreground)
+                                                        .child(format!(
+                                                            "{} selection{}",
+                                                            n_sel,
+                                                            if n_sel == 1 { "" } else { "s" }
+                                                        )),
                                                 ),
                                         );
+                                    }
+                                    for a in msg_atts.iter().filter(|a| str_at(a, "type") == "file") {
+                                        let name = str_at(a, "name").to_string();
+                                        let bytes = a.get("sizeBytes").and_then(Value::as_u64).unwrap_or(0);
+                                        let size_label = if bytes < 1024 {
+                                            format!("{bytes} B")
+                                        } else if bytes < 1024 * 1024 {
+                                            format!("{} KB", bytes / 1024)
+                                        } else {
+                                            format!("{:.1} MB", bytes as f64 / 1048576.0)
+                                        };
+                                        has_pills = true;
+                                        pill_row = pill_row.child(
+                                            h_flex()
+                                                .gap(px(5.))
+                                                .items_center()
+                                                .rounded_full()
+                                                .border_1()
+                                                .border_color(theme.border)
+                                                .px(px(8.))
+                                                .py(px(3.))
+                                                .child(
+                                                    svg_icon(icons::PAPERCLIP)
+                                                        .size(px(11.))
+                                                        .text_color(theme.muted_foreground),
+                                                )
+                                                .child(
+                                                    div()
+                                                        .text_size(px(12.))
+                                                        .whitespace_nowrap()
+                                                        .overflow_hidden()
+                                                        .child(name),
+                                                )
+                                                .child(
+                                                    div()
+                                                        .text_size(px(12.))
+                                                        .text_color(theme.muted_foreground)
+                                                        .child(size_label),
+                                                ),
+                                        );
+                                    }
+                                    if has_pills {
+                                        content = content.child(pill_row);
                                     }
                                     for a in msg_atts
                                         .iter()
@@ -15583,7 +15616,7 @@ impl Render for Native {
             theme.background
         };
         let sidebar_bg: gpui::Hsla = if dark_ui {
-            rgb(0x151515).into()
+            rgb(0x111111).into()
         } else {
             theme.background
         };

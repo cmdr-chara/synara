@@ -923,6 +923,48 @@ struct OutEvent {
     metadata: Option<Value>,
 }
 
+
+/// Upstream providerOptionsSecurity: provider launch credentials must never
+/// enter durable orchestration events. `environment` maps carry account
+/// tokens and opencode `serverPassword` is a credential; both are stripped
+/// before persistence. An explicit empty environment is preserved as an
+/// isolation marker so replay does not inherit the server's ambient account.
+fn sanitize_provider_options(value: &Value) -> Value {
+    let Some(obj) = value.as_object() else {
+        return value.clone();
+    };
+    const PROVIDER_KEYS: &[&str] = &[
+        "codex", "claudeAgent", "cursor", "devin", "antigravity", "grok", "droid",
+        "opencode", "pi", "omp",
+    ];
+    let mut out = obj.clone();
+    let mut changed = false;
+    for key in PROVIDER_KEYS {
+        let Some(raw) = out.get(*key).and_then(Value::as_object) else {
+            continue;
+        };
+        let mut sanitized = raw.clone();
+        let mut touched = false;
+        if raw.contains_key("environment") {
+            sanitized.insert("environment".into(), json!({}));
+            touched = true;
+        }
+        if *key == "opencode" && raw.contains_key("serverPassword") {
+            sanitized.remove("serverPassword");
+            touched = true;
+        }
+        if touched {
+            out.insert(key.to_string(), Value::Object(sanitized));
+            changed = true;
+        }
+    }
+    if changed {
+        Value::Object(out)
+    } else {
+        value.clone()
+    }
+}
+
 fn out_event(
     event_type: &'static str,
     thread_id: &str,
@@ -2270,7 +2312,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         tp.insert("modelSelection".into(), v.clone());
     }
     if let Some(v) = command.get("providerOptions") {
-        tp.insert("providerOptions".into(), v.clone());
+        tp.insert("providerOptions".into(), sanitize_provider_options(v));
     }
     if let Some(v) = command.get("computerControlMode") {
         tp.insert("computerControlMode".into(), v.clone());
@@ -4722,7 +4764,12 @@ fn message_edit_resend(command: &Map<String, Value>) -> Result<Value, WsErr> {
     payload.insert("removedTurnIds".into(), json!(removed));
     for k in ["modelSelection", "providerOptions", "assistantDeliveryMode"] {
         if let Some(v) = command.get(k) {
-            payload.insert(k.to_string(), v.clone());
+            let v = if k == "providerOptions" {
+                sanitize_provider_options(v)
+            } else {
+                v.clone()
+            };
+            payload.insert(k.to_string(), v);
         }
     }
     // computerActivationMetadata passthrough fields
@@ -5790,7 +5837,12 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
         "sourceProposedPlan",
     ] {
         if let Some(v) = command.get(k) {
-            payload.insert(k.to_string(), v.clone());
+            let v = if k == "providerOptions" {
+                sanitize_provider_options(v)
+            } else {
+                v.clone()
+            };
+            payload.insert(k.to_string(), v);
         }
     }
     payload.insert(

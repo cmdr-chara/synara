@@ -414,6 +414,42 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["pullRequestUrl"]),
         ),
         def(
+            "synara_set_thread_goal",
+            "Set or clear the persistent goal on a thread.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "goal": {"type": ["string", "null"], "maxLength": 4000},
+            }), &["threadId", "goal"]),
+        ),
+        def(
+            "synara_set_kanban_goal",
+            "Set the persistent goal on a card's thread in your own project, from any column including live cards. Pass null or empty string to clear.",
+            schema(json!({
+                "threadId": {"type": "string"},
+                "goal": {"type": ["string", "null"], "maxLength": 4000},
+            }), &["threadId", "goal"]),
+        ),
+        def(
+            "synara_project_link_repository",
+            "Link a repository project to the hub so the coordinator may create threads there.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "linkedProjectId": {"type": "string"},
+            }), &["projectId", "linkedProjectId"]),
+        ),
+        def(
+            "synara_diagnose_thread",
+            "Build one bounded forensic snapshot from projected status/messages/activity, durable events, and runtime incidents.",
+            schema(json!({
+                "threadId": {"type": "string"},
+            }), &["threadId"]),
+        ),
+        def(
+            "synara_list_mcp_connectors",
+            "List configured MCP connectors on this server.",
+            schema(json!({}), &[]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -2676,6 +2712,187 @@ fn unlink_thread_pull_request(args: &Value, caller_thread: Option<&str>) -> Resu
     Ok(json!({"threadId": thread_id, "unlinked": true}))
 }
 
+fn set_thread_goal_impl(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let goal = match args.get("goal") {
+        Some(Value::String(g)) if !g.trim().is_empty() => Some(g.trim().chars().take(4000).collect::<String>()),
+        _ => None,
+    };
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let archived: bool = conn
+        .query_row(
+            "SELECT archived_at IS NOT NULL FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
+            [&thread_id],
+            |r| r.get(0),
+        )
+        .map_err(|_| format!("Thread \"{thread_id}\" was not found."))?;
+    if archived {
+        return Err("Archived threads cannot take a new goal.".into());
+    }
+    let mut command = json!({
+        "type": "thread.meta.update",
+        "commandId": format!("gateway-mcp-{}-goal", crate::orchestration_engine::uuid_v4()),
+        "threadId": thread_id,
+        "createdAt": crate::todo::iso_now_ms(),
+    });
+    match &goal {
+        Some(g) => {
+            command.as_object_mut().unwrap().insert("goal".into(), json!(g));
+        }
+        None => {
+            command.as_object_mut().unwrap().insert("goal".into(), json!(""));
+        }
+    }
+    dispatch_command(command)?;
+    Ok(json!({"threadId": thread_id, "goal": goal}))
+}
+
+fn link_repository(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let linked = arg_str(args, "linkedProjectId").ok_or("Missing required argument: linkedProjectId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    for id in [&project_id, &linked] {
+        conn.query_row(
+            "SELECT 1 FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
+            [id],
+            |_| Ok(()),
+        )
+        .map_err(|_| format!("Project \"{id}\" was not found."))?;
+    }
+    conn.execute(
+        "INSERT OR IGNORE INTO project_agent_linked_projects (project_id, linked_project_id, created_at) \
+         VALUES (?1,?2,?3)",
+        rusqlite::params![project_id, linked, crate::todo::iso_now_ms()],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(json!({"projectId": project_id, "linkedProjectId": linked, "linked": true}))
+}
+
+fn diagnose_thread(args: &Value) -> Result<Value, String> {
+    let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let shell: Option<(String, Option<String>, Option<String>, i64, i64)> = conn
+        .query_row(
+            "SELECT title, archived_at, deleted_at, pending_approval_count, pending_user_input_count \
+             FROM projection_threads WHERE thread_id = ?1",
+            [&thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?)),
+        )
+        .ok();
+    let Some((title, archived_at, deleted_at, pending_approvals, pending_inputs)) = shell else {
+        return Err(format!("Thread \"{thread_id}\" was not found."));
+    };
+    let session: Option<(String, Option<String>)> = conn
+        .query_row(
+            "SELECT status, last_error FROM projection_thread_sessions WHERE thread_id = ?1",
+            [&thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .ok();
+    let turn: Option<(String, String)> = conn
+        .query_row(
+            "SELECT turn_id, state FROM projection_turns WHERE thread_id = ?1 \
+             ORDER BY COALESCE(started_at, requested_at) DESC LIMIT 1",
+            [&thread_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .ok();
+    let message_count: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM projection_thread_messages WHERE thread_id = ?1",
+            [&thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    let last_message_at: Option<String> = conn
+        .query_row(
+            "SELECT created_at FROM projection_thread_messages WHERE thread_id = ?1 \
+             ORDER BY created_at DESC LIMIT 1",
+            [&thread_id],
+            |r| r.get(0),
+        )
+        .ok();
+    let runtime_events: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM provider_runtime_events WHERE thread_id = ?1",
+            [&thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    let runtime_errors: Vec<String> = {
+        let mut stmt = conn.prepare(
+            "SELECT event_json FROM provider_runtime_events WHERE thread_id = ?1 \
+             AND event_type LIKE '%error%' ORDER BY sequence DESC LIMIT 5",
+        ).map_err(|e| e.to_string())?;
+        stmt.query_map([&thread_id], |r| r.get::<_, String>(0))
+            .map_err(|e| e.to_string())?
+            .filter_map(|r| r.ok())
+            .collect()
+    };
+    let durable_events: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM orchestration_events WHERE stream_id = ?1",
+            [&thread_id],
+            |r| r.get(0),
+        )
+        .unwrap_or(0);
+    let mut findings: Vec<String> = Vec::new();
+    if deleted_at.is_some() {
+        findings.push("thread is deleted".into());
+    }
+    if let Some((status, last_error)) = &session {
+        if status == "error" || status == "failed" {
+            findings.push(format!(
+                "session status is {status}{}",
+                last_error.as_deref().map(|e| format!(": {e}")).unwrap_or_default()
+            ));
+        }
+    }
+    if let Some((_, state)) = &turn {
+        if state == "failed" || state == "error" {
+            findings.push(format!("latest turn is {state}"));
+        }
+        if state == "interrupted" {
+            findings.push("latest turn was interrupted".into());
+        }
+    }
+    if pending_approvals > 0 {
+        findings.push(format!("{pending_approvals} pending approval(s) blocking progress"));
+    }
+    if pending_inputs > 0 {
+        findings.push(format!("{pending_inputs} pending user input request(s)"));
+    }
+    if !runtime_errors.is_empty() {
+        findings.push(format!("{} recent provider runtime error event(s)", runtime_errors.len()));
+    }
+    if findings.is_empty() {
+        findings.push("no obvious blockers found in projections".into());
+    }
+    Ok(json!({
+        "threadId": thread_id,
+        "title": title,
+        "archived": archived_at.is_some(),
+        "session": session.map(|(s, e)| json!({"status": s, "lastError": e})),
+        "latestTurn": turn.map(|(id, state)| json!({"turnId": id, "state": state})),
+        "messageCount": message_count,
+        "lastMessageAt": last_message_at,
+        "durableEventCount": durable_events,
+        "runtimeEventCount": runtime_events,
+        "pendingApprovals": pending_approvals,
+        "pendingUserInputs": pending_inputs,
+        "findings": findings,
+    }))
+}
+
+fn list_mcp_connectors_tool() -> Result<Value, String> {
+    crate::mcp_connectors::handle("server.listMcpConnectors", &Value::Null)
+        .map(|v| json!({"connectors": v}))
+        .map_err(|e| e.0)
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -2890,6 +3107,10 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_report_automation_result" => report_automation_result(args, caller_thread),
         "synara_set_thread_pull_request" => set_thread_pull_request(args, caller_thread),
         "synara_unlink_thread_pull_request" => unlink_thread_pull_request(args, caller_thread),
+        "synara_set_thread_goal" | "synara_set_kanban_goal" => set_thread_goal_impl(args),
+        "synara_project_link_repository" => link_repository(args),
+        "synara_diagnose_thread" => diagnose_thread(args),
+        "synara_list_mcp_connectors" => list_mcp_connectors_tool(),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

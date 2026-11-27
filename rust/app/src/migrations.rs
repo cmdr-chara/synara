@@ -1236,6 +1236,14 @@ mod tests {
     }
 
     #[test]
+    fn canonical_historical_lineage_names_match_released_upstream() {
+        assert_eq!(canonical_migration_name(32), Some("ReconcileImportedSchemaLineage"));
+        assert_eq!(canonical_migration_name(54), Some("DurableProviderCommandDelivery"));
+        assert_eq!(canonical_migration_name(64), Some("DurableProviderCommandDeliveryCutover"));
+        assert_eq!(canonical_migration_name(69), Some("ProjectPullRequestPins"));
+    }
+
+    #[test]
     fn canonical_ids_are_contiguous() {
         let canonical = canonical_migrations();
         for (index, (id, _, _)) in canonical.iter().enumerate() {

@@ -1,6 +1,7 @@
 mod account;
 mod input_monitor;
 mod beta_operational_issue;
+mod database_lifecycle_lock;
 mod migrations;
 mod agent_gateway_mcp;
 mod acp_runner;
@@ -109,6 +110,10 @@ use std::net::SocketAddr;
 use axum::serve::ListenerExt;
 use original::shutdown_signal;
 
+static DATABASE_LIFECYCLE_LOCK: std::sync::OnceLock<
+    std::sync::Mutex<Option<database_lifecycle_lock::DatabaseLifecycleLock>>,
+> = std::sync::OnceLock::new();
+
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -154,6 +159,21 @@ async fn main() {
     if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
         // Stable→Beta handoff consumption must happen before migrations open
         // state.sqlite: the imported snapshot can carry a different schema.
+        let lifecycle_lock = match database_lifecycle_lock::acquire_database_lifecycle_lock(
+            std::path::Path::new(&todo::state_dir()).join("state.sqlite").as_path(),
+        ) {
+            Ok(lock) => lock,
+            Err(error) => {
+                beta_operational_issue::report("startup.database-locked", None, None);
+                eprintln!("{error}");
+                std::process::exit(1);
+            }
+        };
+        DATABASE_LIFECYCLE_LOCK
+            .get_or_init(|| std::sync::Mutex::new(None))
+            .lock()
+            .expect("database lifecycle lock slot")
+            .replace(lifecycle_lock);
         let beta_import = beta_import::run_beta_import_if_requested();
         if beta_import.consumed {
             if beta_import.ok {
@@ -287,6 +307,14 @@ async fn main() {
     crate::opencode_runner::drop_all_resources();
     crate::pi_runner::drop_all_resources();
     crate::browser_automation::shutdown_browser_automation().await;
+    if let Some(lock) = DATABASE_LIFECYCLE_LOCK
+        .get()
+        .and_then(|slot| slot.lock().ok().and_then(|mut guard| guard.take()))
+    {
+        if let Err(error) = lock.release() {
+            eprintln!("database lifecycle lock release failed: {error}");
+        }
+    }
 }
 
 /// GET /oauth/mcp/callback — completes an MCP connector OAuth sign-in: the

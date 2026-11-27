@@ -1023,26 +1023,68 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 if app.is_empty() {
                     return Err("app is required".into());
                 }
+                crate::computer_manager::assert_not_denied(Some(app), None)?;
+                let hidden = payload["hidden"].as_bool() == Some(true);
+                let before = helper("apps", &json!({})).unwrap_or(json!({"apps":[]}));
+                let before_active = before.get("apps").and_then(Value::as_array).and_then(|apps| {
+                    apps.iter().find(|app| app.get("active").and_then(Value::as_bool)==Some(true))
+                        .and_then(|app| app.get("pid").and_then(Value::as_i64))
+                });
                 let mut cmd = Command::new("open");
-                cmd.args(["-n", "-a", app]);
+                // `-g` is the upstream default: a launch is delivery, not a
+                // foreground request. `-j` adds an explicitly hidden launch.
+                cmd.args(["-n", "-g"]);
+                if hidden { cmd.arg("-j"); }
+                cmd.args(["-a", app]);
                 if let Some(args) = payload["arguments"].as_array() {
                     cmd.arg("--args");
-                    for a in args {
-                        if let Some(s) = a.as_str() {
-                            cmd.arg(s);
-                        }
-                    }
+                    for a in args { if let Some(s) = a.as_str() { cmd.arg(s); } }
                 }
                 let out = cmd.output().map_err(|e| format!("Failed to launch {app}: {e}"))?;
                 if !out.status.success() {
-                    return Err(format!(
-                        "Failed to launch {app}: {}",
-                        String::from_utf8_lossy(&out.stderr).trim()
-                    ));
+                    return Err(format!("Failed to launch {app}: {}", String::from_utf8_lossy(&out.stderr).trim()));
+                }
+                let wanted = app.to_ascii_lowercase();
+                let mut pid = None;
+                let mut after_apps = json!({"apps":[]});
+                for _ in 0..20 {
+                    std::thread::sleep(std::time::Duration::from_millis(100));
+                    if let Ok(value) = helper("apps", &json!({})) {
+                        after_apps = value;
+                        pid = after_apps.get("apps").and_then(Value::as_array).and_then(|apps| {
+                            apps.iter().filter(|row| {
+                                let name = row.get("appName").and_then(Value::as_str).unwrap_or_default().to_ascii_lowercase();
+                                let bundle = row.get("bundleId").and_then(Value::as_str).unwrap_or_default().to_ascii_lowercase();
+                                name == wanted || bundle == wanted
+                            }).filter_map(|row| row.get("pid").and_then(Value::as_i64)).max()
+                        });
+                        if pid.is_some() { break; }
+                    }
+                }
+                let focus_changed = after_apps.get("apps").and_then(Value::as_array).and_then(|apps| {
+                    apps.iter().find(|app| app.get("active").and_then(Value::as_bool)==Some(true))
+                        .and_then(|app| app.get("pid").and_then(Value::as_i64))
+                }) != before_active;
+                let mut window = Value::Null;
+                let mut status = "not_checked";
+                let mut reason = Value::Null;
+                if let Some(pid) = pid {
+                    if let Ok(windows) = list_windows() {
+                        window = windows.into_iter().find(|window| {
+                            window.get("pid").and_then(Value::as_i64)==Some(pid)
+                                && !window.get("minimized").and_then(Value::as_bool).unwrap_or(false)
+                        }).unwrap_or(Value::Null);
+                        status = if window.is_null() { "no_usable_window" } else { "ready" };
+                        if window.is_null() { reason = json!(if hidden { "hidden" } else { "no_window" }); }
+                    }
                 }
                 Ok(json!({
                     "computerId": COMPUTER_ID, "app": app,
-                    "windowStatus": "not_checked", "window": null
+                    "focusChangedDuringLaunch": focus_changed,
+                    "pid": pid,
+                    "windowStatus": status,
+                    "windowReason": reason,
+                    "window": window
                 }))
             }
             "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click" => {

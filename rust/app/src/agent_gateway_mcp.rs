@@ -481,6 +481,7 @@ fn tool_definitions() -> Vec<Value> {
                 json!({
                     "app":{"type":"string"},
                     "arguments":{"type":"array","items":{"type":"string"},"default":[]},
+                    "hidden":{"type":"boolean","default":false},
                 }),
                 &["app"],
             ),
@@ -1211,6 +1212,7 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             &json!({
                 "app": string_arg(args,"app").ok_or("app is required")?,
                 "arguments": args.get("arguments").cloned().unwrap_or(json!([])),
+                "hidden": args.get("hidden").and_then(Value::as_bool).unwrap_or(false),
             }),
             thread,
         ),

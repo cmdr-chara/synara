@@ -190,6 +190,21 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["automationId"]),
         ),
         def(
+            "synara_project_list_tasks",
+            "List project coordinator tasks, including review state and dependencies.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "includeArchived": {"type": "boolean"},
+            }), &["projectId"]),
+        ),
+        def(
+            "synara_project_list_threads",
+            "List every hub thread in the project with its live state, PR link, last update time, and task id.",
+            schema(json!({
+                "projectId": {"type": "string"},
+            }), &["projectId"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -1140,6 +1155,76 @@ fn capabilities() -> Result<Value, String> {
     Ok(json!({"providers": list}))
 }
 
+fn project_list_tasks(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let include_archived = args.get("includeArchived").and_then(Value::as_bool).unwrap_or(false);
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let sql = format!(
+        "SELECT task_id, goal_id, title, status, assigned_thread_id, revision \
+         FROM project_agent_tasks WHERE project_id = ?1 {} ORDER BY task_id LIMIT 200",
+        if include_archived { "" } else { "AND archived_at IS NULL" }
+    );
+    let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
+    let rows: Vec<Value> = stmt
+        .query_map([&project_id], |r| {
+            Ok(json!({
+                "taskId": r.get::<_, String>(0)?,
+                "goalId": r.get::<_, Option<String>>(1)?,
+                "title": r.get::<_, Option<String>>(2)?,
+                "status": r.get::<_, Option<String>>(3)?,
+                "assignedThreadId": r.get::<_, Option<String>>(4)?,
+                "revision": r.get::<_, i64>(5)?,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    Ok(json!({"tasks": rows}))
+}
+
+fn project_list_threads(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let mut stmt = conn
+        .prepare(
+            "SELECT t.thread_id, t.title, t.branch, t.updated_at, t.archived_at, t.pull_requests_json, \
+             (SELECT status FROM projection_thread_sessions s WHERE s.thread_id = t.thread_id), \
+             (SELECT state FROM projection_turns tu WHERE tu.thread_id = t.thread_id \
+               ORDER BY COALESCE(tu.started_at, tu.requested_at) DESC LIMIT 1) \
+             FROM projection_threads t \
+             WHERE t.project_id = ?1 AND t.deleted_at IS NULL \
+             ORDER BY t.updated_at DESC LIMIT 200",
+        )
+        .map_err(|e| e.to_string())?;
+    let rows: Vec<Value> = stmt
+        .query_map([&project_id], |r| {
+            let prs_raw: Option<String> = r.get(5)?;
+            let pr_url = prs_raw
+                .and_then(|p| serde_json::from_str::<Value>(&p).ok())
+                .and_then(|v| v.as_array().cloned())
+                .and_then(|arr| {
+                    arr.iter()
+                        .find_map(|l| l.pointer("/pullRequest/url").and_then(Value::as_str).map(str::to_string))
+                });
+            Ok(json!({
+                "threadId": r.get::<_, String>(0)?,
+                "title": r.get::<_, Option<String>>(1)?,
+                "branch": r.get::<_, Option<String>>(2)?,
+                "updatedAt": r.get::<_, Option<String>>(3)?,
+                "archived": r.get::<_, Option<String>>(4)?.is_some(),
+                "pullRequestUrl": pr_url,
+                "sessionStatus": r.get::<_, Option<String>>(6)?,
+                "latestTurnState": r.get::<_, Option<String>>(7)?,
+            }))
+        })
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    Ok(json!({"threads": rows}))
+}
+
 pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
@@ -1151,6 +1236,8 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_read_thread_events" => read_thread_events(args),
         "synara_read_kanban_board" => read_kanban_board(args),
         "synara_capabilities" => capabilities(),
+        "synara_project_list_tasks" => project_list_tasks(args),
+        "synara_project_list_threads" => project_list_threads(args),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

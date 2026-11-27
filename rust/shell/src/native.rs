@@ -103,6 +103,7 @@ mod icons {
     pub const LAYOUT_RIGHT: &[u8] = include_bytes!("../assets/icons/layout-right.svg");
     pub const PIN_FILL: &[u8] = include_bytes!("../assets/icons/pin-fill.svg");
     pub const STAR: &[u8] = include_bytes!("../assets/icons/star.svg");
+    pub const STAR_FILLED: &[u8] = include_bytes!("../assets/icons/star-filled.svg");
     pub const FOLDER_OPEN: &[u8] = include_bytes!("../assets/icons/folder-open.svg");
     pub const CODEX: &[u8] = include_bytes!("../assets/icons/codex.svg");
     pub const P_CLAUDE: &[u8] = include_bytes!("../assets/icons/claude.svg");
@@ -30362,12 +30363,30 @@ impl Render for Native {
                 .appearance(false)
                 .w_full()
                 .text_size(px(12.));
+            let _ = panel_bg;
             let panel = v_flex()
                 .w(px(300.))
                 .rounded(px(14.))
                 .border_1()
                 .border_color(theme.border.opacity(0.6))
-                .bg(panel_bg)
+                .bg(if dark_ui {
+                    // Upstream frost: blur(40px) over the dither texture turns
+                    // the dense orange behind the panel top into a warm wash
+                    // (measured rgb(44,25,17)) cooling to the rows-zone tone
+                    // rgb(26,21,18) further down. gpui has no blur-behind, so
+                    // the haze is reproduced as this vertical gradient.
+                    gpui::linear_gradient(
+                        180.,
+                        gpui::linear_color_stop(hsla(0.062, 0.44, 0.118, 1.0), 0.),
+                        gpui::linear_color_stop(hsla(0.059, 0.18, 0.0865, 1.0), 0.45),
+                    )
+                } else {
+                    gpui::linear_gradient(
+                        180.,
+                        gpui::linear_color_stop(gpui::hsla(0.0, 0.0, 1.0, 1.0), 0.),
+                        gpui::linear_color_stop(gpui::hsla(0.0, 0.0, 1.0, 1.0), 1.),
+                    )
+                })
                 .shadow_lg()
                 .overflow_hidden()
                 // tab row: starred tab + provider tab + add
@@ -30386,7 +30405,7 @@ impl Render for Native {
                                 .flex()
                                 .items_center()
                                 .px(px(6.))
-                                .child(svg_icon(icons::STAR).size(px(14.)).text_color(theme.foreground)),
+                                .child(svg_icon(icons::STAR_FILLED).size(px(14.)).text_color(theme.foreground)),
                         )
                         .child(
                             div()

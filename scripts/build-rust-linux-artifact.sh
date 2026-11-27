@@ -95,7 +95,8 @@ mkdir -p \
 
 cp "$SHELL_BIN" "$APPDIR/usr/bin/$EXECUTABLE"
 cp "$BACKEND_BIN" "$APPDIR/usr/bin/synara-backend"
-chmod 755 "$APPDIR/usr/bin/$EXECUTABLE" "$APPDIR/usr/bin/synara-backend"
+cp "$BACKEND_BIN" "$APPDIR/usr/bin/synara-restore-migration-backup"
+chmod 755 "$APPDIR/usr/bin/$EXECUTABLE" "$APPDIR/usr/bin/synara-backend" "$APPDIR/usr/bin/synara-restore-migration-backup"
 cp "$ICON_SOURCE" "$APPDIR/usr/share/icons/hicolor/1024x1024/apps/$EXECUTABLE.png"
 
 cat > "$APPDIR/usr/share/synara/app-update.yml" <<YML

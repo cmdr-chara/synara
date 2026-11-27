@@ -71,10 +71,12 @@ rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources" "$APP_DIR/Contents/Helpers"
 cp "$SHELL_BIN" "$APP_DIR/Contents/MacOS/synara-shell"
 cp "$BACKEND_BIN" "$APP_DIR/Contents/MacOS/synara-backend"
+cp "$BACKEND_BIN" "$APP_DIR/Contents/MacOS/synara-restore-migration-backup"
 cp "$APPSNAP_HELPER_SRC" "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
 chmod 755 \
   "$APP_DIR/Contents/MacOS/synara-shell" \
   "$APP_DIR/Contents/MacOS/synara-backend" \
+  "$APP_DIR/Contents/MacOS/synara-restore-migration-backup" \
   "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
 cp "$ROOT/apps/desktop/resources/icon.icns" "$APP_DIR/Contents/Resources/icon.icns"
 
@@ -121,6 +123,8 @@ if [[ -n "$SIGN_IDENTITY" ]]; then
     "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
   codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
     "$APP_DIR/Contents/MacOS/synara-backend"
+  codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
+    "$APP_DIR/Contents/MacOS/synara-restore-migration-backup"
   codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" \
     "$APP_DIR/Contents/MacOS/synara-shell"
   codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$APP_DIR"

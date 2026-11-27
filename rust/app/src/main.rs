@@ -111,9 +111,14 @@ use original::shutdown_signal;
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
-    if args.get(1).is_some_and(|arg| arg == "--restore-migration-backup") {
-        let Some(db) = args.get(2) else {
-            eprintln!("Usage: index --restore-migration-backup <absolute-database-path>");
+    let restore_executable = args.first()
+        .and_then(|arg| std::path::Path::new(arg).file_name())
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.trim_end_matches(".exe") == "synara-restore-migration-backup");
+    if restore_executable || args.get(1).is_some_and(|arg| arg == "--restore-migration-backup") {
+        let index = if restore_executable { 1 } else { 2 };
+        let Some(db) = args.get(index) else {
+            eprintln!("Usage: synara-restore-migration-backup <absolute-database-path>");
             std::process::exit(2);
         };
         let path = std::path::PathBuf::from(db);

@@ -336,3 +336,15 @@ il thread vuoto di progetto upstream NON mostra texture nel content (flat dark) 
 si'. Composer upstream in project thread: riga progetto "tmp / Temporary" sopra input. Trigger
 Full access arancione confermato upstream (shell ora uguale). Coda invariata: kanban pitch, bottom
 texture strip, composer vertical ~10px (forse artefatto banner reconnect nel ref — non fidarsi).
+
+
+## Update 10:00 — BREAKTHROUGH texture dark: cattura settled web_home_dark.png mostra upstream
+dark = puntini arancioni SPARSI su nero (cielo vuoto, tempio denso). La shell era invertita
+(invert:true rendeva tutto fango rosso). FIX in build: invert:false ripristinato — la cattura
+web precedente era mid-fade, analisi corretta solo ora. Altre correzioni committed 5eb182c9c9:
+kanban card ui-lg 14/ui-sm 12/no border bg-card/70 — pitch ora ~72-73 vs web 74 (CONVERGENTE).
+Needs review checkbox kanban e legit upstream (kanbanNeedsReviewFilter). Verified live: pill
+order corretto, kanban strip ok. SCOPERTA: upstream empty project thread RENDE la texture nel
+pane (non flat come sembrava) — shell conforme. Composer upstream project thread: riga "tmp /
+Temporary" — shell mostra ancora "Work in a project" generico: GAP da chiudere. Coda residua:
+composer vertical, light sweep finale, report.

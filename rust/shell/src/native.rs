@@ -20564,7 +20564,7 @@ impl Render for Native {
         composer_col = composer_col.child(composer_shelled);
         let composer_bar = div()
             .w_full()
-            .pb(px(18.))
+            .pb(px(10.))
             .child(
                 h_flex()
                     .w_full()

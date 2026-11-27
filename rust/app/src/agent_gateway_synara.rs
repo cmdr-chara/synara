@@ -472,6 +472,44 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["requestId", "threads"]),
         ),
         def(
+            "synara_update_plan",
+            "Keep the checklist Synara pins under your latest message while you work. Start: the whole plan in order with the step you are starting in_progress. Progress: send the whole list again with exactly one in_progress. Finish: leave the last step in_progress; Synara checks it off when your turn ends.",
+            schema(json!({
+                "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "content": {"type": "string"},
+                            "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+                        },
+                        "required": ["content", "status"],
+                    },
+                },
+            }), &["items"]),
+        ),
+        def(
+            "synara_add_mcp_connector",
+            "Propose adding an MCP connector. Always requires the user's approval card; never executes a command or connects before approval. Pass command and args separately, not a shell string.",
+            schema(json!({
+                "name": {"type": "string"},
+                "url": {"type": "string"},
+                "command": {"type": "string"},
+                "args": {"type": "array", "items": {"type": "string"}},
+                "env": {"type": "object"},
+                "cwd": {"type": "string"},
+            }), &[]),
+        ),
+        def(
+            "synara_remove_mcp_connector",
+            "Propose removing a connector. Removal happens only when the user accepts the confirmation card.",
+            schema(json!({
+                "connectorId": {"type": "string"},
+            }), &["connectorId"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -2972,6 +3010,87 @@ fn create_threads_batch(args: &Value, caller_thread: Option<&str>) -> Result<Val
     Ok(json!({"threads": results}))
 }
 
+fn update_plan(args: &Value) -> Result<Value, String> {
+    let items = args
+        .get("items")
+        .and_then(Value::as_array)
+        .ok_or("items needs at least one step: [{content, status}].")?;
+    if items.is_empty() {
+        return Err("items needs at least one step: [{content, status}].".into());
+    }
+    if items.len() > 12 {
+        return Err(format!("items has {} steps; keep the plan to 12.", items.len()));
+    }
+    let mut in_progress = 0usize;
+    let mut remaining = 0usize;
+    let mut steps = Vec::new();
+    for (index, item) in items.iter().enumerate() {
+        let content = item
+            .get("content")
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .unwrap_or("");
+        if content.is_empty() {
+            return Err(format!("items[{index}].content must be a non-empty string."));
+        }
+        let status = item.get("status").and_then(Value::as_str).unwrap_or("");
+        if !matches!(status, "pending" | "in_progress" | "completed") {
+            return Err(format!(
+                "items[{index}].status must be one of pending, in_progress, completed."
+            ));
+        }
+        if status == "in_progress" {
+            in_progress += 1;
+        }
+        if status != "completed" {
+            remaining += 1;
+        }
+        steps.push(json!({"content": content, "status": status}));
+    }
+    let mut notes: Vec<String> = Vec::new();
+    if in_progress > 1 {
+        notes.push("Keep only one step in_progress.".into());
+    }
+    if in_progress == 0 && remaining > 0 {
+        notes.push("No step is in_progress; mark the one you are on.".into());
+    }
+    Ok(json!({
+        "acknowledged": true,
+        "steps": steps,
+        "notes": notes,
+    }))
+}
+
+fn add_mcp_connector(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let has_command = args.get("command").and_then(Value::as_str).is_some();
+    let has_url = args.get("url").and_then(Value::as_str).is_some();
+    if !has_command && !has_url {
+        return Err("Pass either a stdio command or an HTTP url.".into());
+    }
+    let mut input = json!({});
+    for key in ["name", "url", "command", "args", "env", "cwd"] {
+        if let Some(v) = args.get(key) {
+            input.as_object_mut().unwrap().insert(key.into(), v.clone());
+        }
+    }
+    crate::mcp_connectors::propose_add(&input, caller_thread)
+        .map_err(|e| e.0)
+        .map(|mut v| {
+            v.as_object_mut().map(|o| {
+                o.insert(
+                    "approvalRequired".into(),
+                    json!("The connector activates only after the user accepts the proposal in Settings."),
+                )
+            });
+            v
+        })
+}
+
+fn remove_mcp_connector(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let connector_id = arg_str(args, "connectorId").ok_or("Missing required argument: connectorId")?;
+    crate::mcp_connectors::propose_remove(&connector_id, caller_thread).map_err(|e| e.0)
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -3191,6 +3310,9 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_diagnose_thread" => diagnose_thread(args),
         "synara_list_mcp_connectors" => list_mcp_connectors_tool(),
         "synara_create_threads" => create_threads_batch(args, caller_thread),
+        "synara_update_plan" => update_plan(args),
+        "synara_add_mcp_connector" => add_mcp_connector(args, caller_thread),
+        "synara_remove_mcp_connector" => remove_mcp_connector(args, caller_thread),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

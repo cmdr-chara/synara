@@ -164,6 +164,62 @@ fn disconnect(payload: &Value) -> Result<Value, WsErr> {
 
 /// `server.resolveMcpConnectorProposal`: mark a pending proposal accepted or
 /// dismissed. Accepting a "remove" disconnects the connector; accepting an
+/// Gateway proposal creation (`synara_add_mcp_connector` /
+/// `synara_remove_mcp_connector`): upstream semantics never connect or remove
+/// directly — the agent writes a pending proposal and only the user's
+/// approval card (resolveMcpConnectorProposal) mutates the document.
+pub(crate) fn propose_add(input: &Value, source_thread: Option<&str>) -> Result<Value, WsErr> {
+    let mut doc = document().unwrap_or(json!({
+        "version": 1, "connectors": [], "stdio": [], "proposals": [], "unreadable": []
+    }));
+    let proposal_id = crate::orchestration_engine::uuid_v4();
+    let proposal = json!({
+        "proposalId": proposal_id,
+        "state": "pending",
+        "action": "add",
+        "createdAt": crate::todo::iso_now_ms(),
+        "sourceThreadId": source_thread,
+    });
+    let entry = json!({"proposal": proposal.clone(), "input": input});
+    let proposals = doc
+        .get_mut("proposals")
+        .and_then(|v| v.as_array_mut())
+        .ok_or_else(|| err("malformed connectors document"))?;
+    proposals.push(entry);
+    write_document(&doc)?;
+    Ok(json!({"proposal": proposal}))
+}
+
+pub(crate) fn propose_remove(connector_id: &str, source_thread: Option<&str>) -> Result<Value, WsErr> {
+    let mut doc = document().ok_or_else(|| err("no connectors document"))?;
+    let connector = doc
+        .get("stdio")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .chain(doc.get("connectors").and_then(|v| v.as_array()).into_iter())
+        .flatten()
+        .find(|e| e.get("connectorId").and_then(|v| v.as_str()) == Some(connector_id))
+        .cloned()
+        .ok_or_else(|| err("Connector not found."))?;
+    let proposal_id = crate::orchestration_engine::uuid_v4();
+    let proposal = json!({
+        "proposalId": proposal_id,
+        "state": "pending",
+        "action": "remove",
+        "connector": connector,
+        "createdAt": crate::todo::iso_now_ms(),
+        "sourceThreadId": source_thread,
+    });
+    let entry = json!({"proposal": proposal.clone()});
+    let proposals = doc
+        .get_mut("proposals")
+        .and_then(|v| v.as_array_mut())
+        .ok_or_else(|| err("malformed connectors document"))?;
+    proposals.push(entry);
+    write_document(&doc)?;
+    Ok(json!({"proposal": proposal}))
+}
+
 /// "add" applies its stored stdio input (HTTP adds need the OAuth sign-in
 /// flow, which requires the connector runtime).
 fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {

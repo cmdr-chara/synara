@@ -222,6 +222,23 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
             }), &["projectId", "logicalPath", "content"]),
         ),
         def(
+            "synara_project_remember",
+            "Save a note to the hub's shared memory (memory/<date>-<slug>.md) and update the MEMORY.md index every hub thread reads. Near-identical notes are deduplicated onto the existing memory file.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "note": {"type": "string"},
+                "title": {"type": "string"},
+            }), &["projectId", "note"]),
+        ),
+        def(
+            "synara_project_forget",
+            "Remove a hub memory note file (memory/<date>-<slug>.md) and its index line in MEMORY.md.",
+            schema(json!({
+                "projectId": {"type": "string"},
+                "path": {"type": "string"},
+            }), &["projectId", "path"]),
+        ),
+        def(
             "synara_capabilities",
             "List the provider instances and models automations and threads can target, with each instance's enabled state. Use exact slugs from here when creating automations or threads.",
             schema(json!({}), &[]),
@@ -694,7 +711,7 @@ fn read_kanban_board(args: &Value) -> Result<Value, String> {
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let now = now_unix_ms();
     let rows: Vec<Value> = stmt
-        .query_map([&project_id], |r| {
+        .query_map(rusqlite::params![project_id], |r| {
             let thread_updated: Option<String> = r.get(3)?;
             let session_updated: Option<String> = r.get(11)?;
             let heartbeat = [thread_updated, session_updated]
@@ -1138,6 +1155,307 @@ fn delete_kanban_card(args: &Value) -> Result<Value, String> {
     Ok(json!({"threadId": thread_id, "deleted": true}))
 }
 
+fn normalize_memory_note(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    let mut last_space = true;
+    for ch in value.chars().flat_map(char::to_lowercase) {
+        if ch.is_ascii_alphanumeric() {
+            out.push(ch);
+            last_space = false;
+        } else if !last_space {
+            out.push(' ');
+            last_space = true;
+        }
+    }
+    out.trim().to_string()
+}
+
+fn memory_note_body(content: &str) -> String {
+    let stripped = if content.starts_with('#') {
+        content.splitn(2, '\n').nth(1).unwrap_or("")
+    } else {
+        content
+    };
+    normalize_memory_note(stripped)
+}
+
+fn memory_note_summary(note: &str) -> String {
+    note.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim().chars().take(140).collect())
+        .unwrap_or_else(|| note.chars().take(140).collect())
+}
+
+fn sanitize_memory_title(value: &str) -> String {
+    let cleaned: String = value
+        .chars()
+        .map(|c| if c.is_control() { ' ' } else { c })
+        .collect();
+    let mut out = String::with_capacity(cleaned.len());
+    let mut last_space = true;
+    for c in cleaned.chars() {
+        if c == ' ' {
+            if !last_space {
+                out.push(c);
+            }
+            last_space = true;
+        } else {
+            out.push(c);
+            last_space = false;
+        }
+    }
+    out.trim().to_string()
+}
+
+fn slugify_memory_title(value: &str) -> String {
+    let mut slug = String::new();
+    let mut last_dash = true;
+    for ch in value.chars().flat_map(char::to_lowercase) {
+        if ch.is_ascii_alphanumeric() {
+            slug.push(ch);
+            last_dash = false;
+        } else if !last_dash {
+            slug.push('-');
+            last_dash = true;
+        }
+    }
+    let slug: String = slug.trim_matches('-').chars().take(48).collect::<String>().trim_end_matches('-').to_string();
+    if slug.is_empty() { "note".into() } else { slug }
+}
+
+fn project_context_root(project_id: &str) -> std::path::PathBuf {
+    std::path::Path::new(&crate::todo::state_dir())
+        .join("project-context")
+        .join(project_id)
+}
+
+fn mirror_document(project_id: &str, logical_path: &str, content: &str) {
+    let root = project_context_root(&project_id);
+    let target = root.join(logical_path);
+    if target.strip_prefix(&root).is_err() || logical_path.contains("..") {
+        return;
+    }
+    if let Some(parent) = target.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let tmp = target.with_extension("tmp");
+    if std::fs::write(&tmp, content).is_ok() {
+        let _ = std::fs::rename(&tmp, &target);
+    }
+}
+
+fn doc_head(conn: &rusqlite::Connection, project_id: &str, logical_path: &str) -> Option<(String, i64)> {
+    conn.query_row(
+        "SELECT content, revision FROM project_agent_documents \
+         WHERE project_id = ?1 AND logical_path = ?2 ORDER BY revision DESC LIMIT 1",
+        rusqlite::params![project_id, logical_path],
+        |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)),
+    )
+    .ok()
+}
+
+fn upsert_document(conn: &rusqlite::Connection, project_id: &str, logical_path: &str, content: &str, author_thread: Option<&str>) -> Result<(), String> {
+    let next_revision = conn
+        .query_row(
+            "SELECT COALESCE(MAX(revision), 0) + 1 FROM project_agent_documents \
+             WHERE project_id = ?1 AND logical_path = ?2",
+            rusqlite::params![project_id, logical_path],
+            |r| r.get::<_, i64>(0),
+        )
+        .unwrap_or(1);
+    let hash = {
+        use std::collections::hash_map::DefaultHasher;
+        use std::hash::{Hash, Hasher};
+        let mut h = DefaultHasher::new();
+        content.hash(&mut h);
+        format!("{:x}", h.finish())
+    };
+    conn.execute(
+        "INSERT INTO project_agent_documents \
+         (revision_id, project_id, logical_path, revision, content, content_hash, \
+          author_kind, author_thread_id, sources_json, created_at) \
+         VALUES (?1,?2,?3,?4,?5,?6,'thread',?7,'[]',?8)",
+        rusqlite::params![
+            crate::orchestration_engine::uuid_v4(),
+            project_id,
+            logical_path,
+            next_revision,
+            content,
+            hash,
+            author_thread,
+            crate::todo::iso_now_ms(),
+        ],
+    )
+    .map_err(|e| e.to_string())?;
+    mirror_document(&project_id, logical_path, &content);
+    Ok(())
+}
+
+const MEMORY_INDEX_PATH: &str = "memory/MEMORY.md";
+
+fn update_memory_index(
+    conn: &rusqlite::Connection,
+    project_id: &str,
+    logical_path: &str,
+    title: &str,
+    summary: Option<&str>,
+) -> Result<(), String> {
+    let current = doc_head(conn, project_id, MEMORY_INDEX_PATH)
+        .map(|(c, _)| c)
+        .unwrap_or_else(|| "# Memory\n".into());
+    let mut lines: Vec<String> = current.split('\n').map(str::to_string).collect();
+    let target_suffix = format!("]({logical_path})");
+    let matches_path = |line: &str| -> bool {
+        if !line.starts_with("- [") {
+            return false;
+        }
+        let link_segment = line.split(" \u{2014} ").next().unwrap_or(line);
+        let link_segment = line.split('\u{2014}').next().unwrap_or(link_segment);
+        link_segment.trim_end().ends_with(&target_suffix)
+    };
+    let index = lines.iter().position(|l| matches_path(l));
+    match summary {
+        None => {
+            if let Some(i) = index {
+                lines.remove(i);
+            }
+        }
+        Some(summary) => {
+            let entry = format!("- [{title}]({logical_path}) \u{2014} {summary}");
+            match index {
+                Some(i) => {
+                    lines[i] = entry;
+                }
+                None => {
+                    if !lines.last().map(|l| l.trim().is_empty()).unwrap_or(true) {
+                        lines.push(String::new());
+                    }
+                    lines.push(entry);
+                }
+            }
+            // Cap the index at 256 entries, dropping the oldest that is not
+            // the one just written.
+            while lines.iter().filter(|l| l.starts_with("- [")).count() > 256 {
+                if let Some(oldest) = lines
+                    .iter()
+                    .position(|l| l.starts_with("- [") && !matches_path(l))
+                {
+                    lines.remove(oldest);
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+    let mut next = lines.join("\n");
+    while next.contains("\n\n\n") {
+        next = next.replace("\n\n\n", "\n\n");
+    }
+    if !next.ends_with('\n') {
+        next.push('\n');
+    }
+    upsert_document(conn, project_id, MEMORY_INDEX_PATH, &next, None)
+}
+
+fn project_remember(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let note = arg_str(args, "note").ok_or("Missing required argument: note")?;
+    let note = note.trim();
+    if note.is_empty() {
+        return Err("note must not be empty.".into());
+    }
+    let raw_title = arg_str(args, "title").unwrap_or_default();
+    let mut title = sanitize_memory_title(&raw_title);
+    if title.is_empty() {
+        title = memory_note_summary(note).chars().take(60).collect();
+    }
+    if title.is_empty() {
+        title = "Note".into();
+    }
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    let wanted = normalize_memory_note(note);
+    // Scan existing dated memory notes for a near-duplicate.
+    let mut stmt = conn
+        .prepare(
+            "SELECT logical_path, content FROM project_agent_documents d \
+             WHERE project_id = ?1 AND logical_path LIKE 'memory/%.md' \
+             AND revision = (SELECT MAX(revision) FROM project_agent_documents d2 \
+               WHERE d2.project_id = d.project_id AND d2.logical_path = d.logical_path)",
+        )
+        .map_err(|e| e.to_string())?;
+    let existing: Vec<(String, String)> = stmt
+        .query_map(rusqlite::params![project_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect();
+    let existing_paths: std::collections::HashSet<String> =
+        existing.iter().map(|(p, _)| p.clone()).collect();
+    if let Some((dup_path, dup_content)) = existing.iter().find(|(_, content)| {
+        let have = memory_note_body(content);
+        have == wanted
+            || (have.len() >= 40 && wanted.len() >= 40 && (have.contains(&wanted) || wanted.contains(&have)))
+    }) {
+        let have = memory_note_body(dup_content);
+        let extends_existing = wanted != have && wanted.contains(&have);
+        if extends_existing {
+            upsert_document(
+                &conn,
+                &project_id,
+                dup_path,
+                &format!("# {title}\n\n{note}\n"),
+                caller_thread,
+            )?;
+        }
+        update_memory_index(&conn, &project_id, dup_path, &title, Some(&memory_note_summary(note)))?;
+        return Ok(json!({
+            "path": dup_path,
+            "updated": extends_existing,
+            "deduplicated": true,
+        }));
+    }
+    let today = crate::todo::iso_now_ms().get(..10).unwrap_or("1970-01-01").to_string();
+    let slug = slugify_memory_title(&title);
+    let mut logical_path = format!("memory/{today}-{slug}.md");
+    let mut counter = 2;
+    while existing_paths.contains(&logical_path) {
+        logical_path = format!("memory/{today}-{slug}-{counter}.md");
+        counter += 1;
+    }
+    upsert_document(&conn, &project_id, &logical_path, &format!("# {title}\n\n{note}\n"), caller_thread)?;
+    update_memory_index(&conn, &project_id, &logical_path, &title, Some(&memory_note_summary(note)))?;
+    Ok(json!({
+        "path": logical_path,
+        "updated": true,
+        "deduplicated": false,
+    }))
+}
+
+fn project_forget(args: &Value) -> Result<Value, String> {
+    let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
+    let path = arg_str(args, "path").ok_or("Missing required argument: path")?;
+    static NOTE_PATTERN: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+    let re = NOTE_PATTERN.get_or_init(|| {
+        regex::Regex::new(r"^memory/\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9-]*\.md$").unwrap()
+    });
+    if !re.is_match(&path) {
+        return Err("Only hub memory notes (memory/<date>-<slug>.md) can be forgotten.".into());
+    }
+    let conn = state_conn()?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    if doc_head(&conn, &project_id, &path).is_none() {
+        return Ok(json!({"deleted": false}));
+    }
+    conn.execute(
+        "DELETE FROM project_agent_documents WHERE project_id = ?1 AND logical_path = ?2",
+        rusqlite::params![project_id, path],
+    )
+    .map_err(|e| e.to_string())?;
+    let _ = std::fs::remove_file(project_context_root(&project_id).join(&path));
+    update_memory_index(&conn, &project_id, &path, "", None)?;
+    Ok(json!({"deleted": true}))
+}
+
 fn capabilities() -> Result<Value, String> {
     let settings = crate::server_settings::get_settings(&Value::Null).map_err(|e| e.0)?;
     let instances = crate::provider_instances::derive_instances(&settings);
@@ -1184,7 +1502,7 @@ fn project_list_tasks(args: &Value) -> Result<Value, String> {
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let rows: Vec<Value> = stmt
-        .query_map([&project_id], |r| {
+        .query_map(rusqlite::params![project_id], |r| {
             Ok(json!({
                 "taskId": r.get::<_, String>(0)?,
                 "goalId": r.get::<_, Option<String>>(1)?,
@@ -1216,7 +1534,7 @@ fn project_list_threads(args: &Value) -> Result<Value, String> {
         )
         .map_err(|e| e.to_string())?;
     let rows: Vec<Value> = stmt
-        .query_map([&project_id], |r| {
+        .query_map(rusqlite::params![project_id], |r| {
             let prs_raw: Option<String> = r.get(5)?;
             let pr_url = prs_raw
                 .and_then(|p| serde_json::from_str::<Value>(&p).ok())
@@ -1307,6 +1625,7 @@ fn project_write_document(args: &Value, caller_thread: Option<&str>) -> Result<V
         ],
     )
     .map_err(|e| e.to_string())?;
+    mirror_document(&project_id, &logical_path, &content);
     Ok(json!({
         "logicalPath": logical_path,
         "revision": next_revision,
@@ -1329,6 +1648,8 @@ pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&
         "synara_project_list_threads" => project_list_threads(args),
         "synara_project_read_document" => project_read_document(args),
         "synara_project_write_document" => project_write_document(args, caller_thread),
+        "synara_project_remember" => project_remember(args, caller_thread),
+        "synara_project_forget" => project_forget(args),
         "synara_view_automation" => view_automation(args),
         "synara_create_automation" => create_automation(args, caller_thread),
         "synara_update_automation" => update_automation(args),

@@ -19,6 +19,7 @@ mod device;
 mod editor_intelligence;
 mod editor;
 mod host_auth_verify;
+mod host_grant_verify;
 mod host_identity;
 mod host_secrets;
 mod pairing_gateway;

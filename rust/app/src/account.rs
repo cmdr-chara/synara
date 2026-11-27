@@ -220,6 +220,10 @@ impl AccountClient {
         Err(AccountError { status, code, message, organizations })
     }
 
+    pub(crate) fn get_public(&self, path: &str) -> Result<Value, AccountError> {
+        self.get(path, None)
+    }
+
     fn get(&self, path: &str, bearer: Option<&str>) -> Result<Value, AccountError> {
         self.request(reqwest::Method::GET, path, bearer, None, None, REQUEST_TIMEOUT)
     }

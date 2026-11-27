@@ -139,6 +139,34 @@ fn random_nonce() -> String {
     b64url(&bytes)
 }
 
+async fn accept_owner_grant(grant: &str, scope: &rp::TrustScope, device_jkt: &str) -> bool {
+    let grant = grant.to_string();
+    let scope = scope.clone();
+    let device_jkt = device_jkt.to_string();
+    tokio::task::spawn_blocking(move || {
+        let Some(account) = crate::account::read_session_file() else { return false };
+        let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+        let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
+        if account_url.is_empty() || host_id.is_empty() {
+            return false;
+        }
+        let verified = crate::host_grant_verify::verify_host_grant(
+            &grant,
+            account_url,
+            &scope.account_authority,
+            &scope.environment_id,
+            host_id,
+            &scope.user_id,
+            &device_jkt,
+            Some(&scope.user_id),
+        );
+        let Ok(verified) = verified else { return false };
+        crate::host_grant_verify::consume_host_grant(&verified).is_ok()
+    })
+    .await
+    .unwrap_or(false)
+}
+
 /// The pairing frame loop over the already-upgraded inner websocket. Mirrors
 /// upstream's message sequencing exactly; any protocol violation closes with
 /// the generic policy-close reason.
@@ -278,11 +306,15 @@ where
             {
                 close_fail!();
             }
-            // Pairing never self-enrolls on the invite secret alone. Upstream
-            // enrolls immediately only after verifying the owner account grant;
-            // until that verifier is wired here, every device must wait for the
-            // host owner's explicit approval.
-            let recorded = rp::request_approval(&conn, &scope, &ctx.invite_id, &ctx.device).unwrap_or(false);
+            let owner_grant = parsed.get("grant").and_then(Value::as_str).unwrap_or_default();
+            let owner_grant_accepted = !owner_grant.is_empty()
+                && rp::allows_connections(&conn, &scope).unwrap_or(false)
+                && accept_owner_grant(owner_grant, &scope, &ctx.device.device_jkt).await;
+            let recorded = if owner_grant_accepted {
+                rp::enroll(&conn, &scope, &ctx.invite_id, &ctx.device).unwrap_or(false)
+            } else {
+                rp::request_approval(&conn, &scope, &ctx.invite_id, &ctx.device).unwrap_or(false)
+            };
             if !recorded {
                 close_fail!();
             }

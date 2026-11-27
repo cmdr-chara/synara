@@ -57,7 +57,7 @@ fn now_seconds() -> u64 {
         .unwrap_or(0)
 }
 
-fn split_jwt(jwt: &str) -> Result<(Value, Value, Vec<u8>, String), String> {
+pub(crate) fn split_jwt(jwt: &str) -> Result<(Value, Value, Vec<u8>, String), String> {
     let parts: Vec<&str> = jwt.split('.').collect();
     if parts.len() != 3 {
         return Err("not a compact JWT".to_string());
@@ -70,7 +70,7 @@ fn split_jwt(jwt: &str) -> Result<(Value, Value, Vec<u8>, String), String> {
     Ok((header, payload, signature, format!("{}.{}", parts[0], parts[1])))
 }
 
-fn verify_ed25519(signing_input: &str, signature: &[u8], x_b64: &str) -> Result<(), String> {
+pub(crate) fn verify_ed25519(signing_input: &str, signature: &[u8], x_b64: &str) -> Result<(), String> {
     let x = b64url_decode(x_b64)?;
     let x: [u8; 32] = x.try_into().map_err(|_| "ed25519 public key is not 32 bytes".to_string())?;
     let key = ed25519_dalek::VerifyingKey::from_bytes(&x)
@@ -429,7 +429,7 @@ pub fn mint_session_credential(
     identity: &HostIdentity,
     environment_id: &str,
     key_generation: u64,
-    authorize: impl FnOnce(&str) -> Result<u64, String>,
+    authorize_with_grant: impl FnOnce(&str, &str, &str) -> Result<u64, String>,
 ) -> Result<MintedSessionCredential, String> {
     let now = now_seconds();
     let (header, claims, signature, signing_input) = split_jwt(mint_request_jwt)?;
@@ -471,11 +471,15 @@ pub fn mint_session_credential(
         return Err("mint request claims are invalid".to_string());
     }
     let device_jkt = jwk_thumbprint(&jwk);
-    let trust_generation = authorize(&device_jkt)?;
+    let subject = str_of("sub");
+    let grant = str_of("grant");
+    if grant.is_empty() {
+        return Err("grant is not bound to this host, user, and device key".to_string());
+    }
+    let trust_generation = authorize_with_grant(&device_jkt, grant, subject)?;
     if trust_generation < 1 {
         return Err("Device has no current local approval".to_string());
     }
-    let subject = str_of("sub");
     let expires_at = now + SESSION_CREDENTIAL_MAX_AGE_SECONDS;
     let header_out = json!({"alg": "EdDSA", "typ": SESSION_CREDENTIAL_JWT_TYP});
     let payload = json!({

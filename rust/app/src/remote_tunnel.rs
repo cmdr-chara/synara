@@ -363,12 +363,34 @@ pub async fn serve_inner(
                     let conn = crate::remote_pairing::open()?;
                     let scope = crate::remote_pairing::local_scope(&secrets_dir, &environment_id)
                         .ok_or_else(|| "scope unavailable".to_string())?;
+                    let account = crate::account::read_session_file()
+                        .ok_or_else(|| "Remote authorization unavailable".to_string())?;
+                    let account_url = account.get("accountUrl").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
+                    let host_id = account.get("hostId").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
+                    let key_generation = account.get("hostKeyGeneration").and_then(serde_json::Value::as_u64).unwrap_or(0);
+                    if account_url.is_empty() || host_id.is_empty() || key_generation == 0 {
+                        return Err("Remote authorization unavailable".to_string());
+                    }
                     crate::host_auth_verify::mint_session_credential(
                         request,
                         &identity,
                         &environment_id,
-                        1,
-                        |device_jkt| crate::remote_pairing::device_trust_generation(&conn, &scope, device_jkt),
+                        key_generation,
+                        |device_jkt, grant, subject| {
+                            let verified = crate::host_grant_verify::verify_host_grant(
+                                grant,
+                                &account_url,
+                                &scope.account_authority,
+                                &environment_id,
+                                &host_id,
+                                &scope.user_id,
+                                device_jkt,
+                                Some(subject),
+                            )?;
+                            let generation = crate::remote_pairing::device_trust_generation(&conn, &scope, device_jkt)?;
+                            crate::host_grant_verify::consume_host_grant(&verified)?;
+                            Ok(generation)
+                        },
                     )
                 })();
                 let Ok(minted) = minted else { return };

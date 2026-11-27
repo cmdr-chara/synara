@@ -350,6 +350,7 @@ pub async fn logout(headers: HeaderMap) -> Response {
             params![session.session_id, now_iso()],
         );
     }
+    crate::auth_connections::interrupt_sessions(&[session.session_id]);
     json_response(StatusCode::OK, json!({ "revoked": true }))
 }
 
@@ -417,6 +418,7 @@ pub async fn clients_revoke(headers: HeaderMap, body: Bytes) -> Response {
             params![target, now_iso()],
         );
     }
+    crate::auth_connections::interrupt_sessions(&[target.to_string()]);
     json_response(StatusCode::OK, json!({ "revoked": true }))
 }
 
@@ -522,10 +524,23 @@ pub async fn clients_revoke_others(headers: HeaderMap) -> Response {
         return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
     };
     if let Ok(conn) = open_state_rw() {
+        let mut stmt = conn.prepare(
+            "SELECT session_id FROM auth_sessions WHERE session_id != ?1 AND revoked_at IS NULL",
+        );
+        let revoked_ids: Vec<String> = stmt
+            .ok()
+            .and_then(|mut statement| {
+                statement
+                    .query_map(params![session.session_id], |row| row.get::<_, String>(0))
+                    .ok()
+                    .map(|rows| rows.filter_map(Result::ok).collect())
+            })
+            .unwrap_or_default();
         let _ = conn.execute(
             "UPDATE auth_sessions SET revoked_at = ?2 WHERE session_id != ?1 AND revoked_at IS NULL",
             params![session.session_id, now_iso()],
         );
+        crate::auth_connections::interrupt_sessions(&revoked_ids);
     }
     json_response(StatusCode::OK, json!({ "revoked": true }))
 }

@@ -483,6 +483,10 @@ pub(crate) fn urlencoding_decode(input: &str) -> String {
     String::from_utf8_lossy(&out).into_owned()
 }
 
+async fn wait_for_close_signal(mut signal: tokio::sync::watch::Receiver<()>) {
+    let _ = signal.changed().await;
+}
+
 async fn upgrade(
     State(original): State<Original>,
     ws: WebSocketUpgrade,
@@ -530,8 +534,18 @@ async fn upgrade(
     ws.on_upgrade(move |socket| {
         let connection_lease = connection_lease;
         async move {
+            let close_signal = connection_lease
+                .as_ref()
+                .map(crate::auth_connections::ActiveConnectionLease::close_signal);
             let _connection_lease = connection_lease;
-            relay(socket, original, uri, headers, intercept, authenticated_session).await
+            if let Some(close_signal) = close_signal {
+                tokio::select! {
+                    _ = relay(socket, original, uri, headers, intercept, authenticated_session) => {}
+                    _ = wait_for_close_signal(close_signal) => {}
+                }
+            } else {
+                relay(socket, original, uri, headers, intercept, authenticated_session).await;
+            }
         }
     })
 }

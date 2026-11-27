@@ -104,6 +104,30 @@ pub(crate) fn authenticate(headers: &HeaderMap) -> Option<AuthenticatedSession> 
     .ok()
 }
 
+
+/// Validates a short-lived websocket ticket and the still-active session row
+/// it points at. Unlike `authenticate`, which accepts long-lived session
+/// cookies/bearer tokens, this is the credential browsers use for upgrades.
+pub(crate) fn authenticate_websocket_ticket(token: &str) -> Option<AuthenticatedSession> {
+    let claims = auth_sessions::verify_token(token)?;
+    if claims.kind != "websocket" {
+        return None;
+    }
+    let conn = open_state_rw().ok()?;
+    let now = now_iso();
+    conn.query_row(
+        "SELECT session_id, role, method, subject FROM auth_sessions WHERE session_id = ?1 AND revoked_at IS NULL AND expires_at > ?2",
+        params![claims.session_id, now],
+        |r| Ok(AuthenticatedSession {
+            session_id: r.get(0)?,
+            role: r.get(1)?,
+            method: r.get(2)?,
+            subject: r.get(3)?,
+        }),
+    )
+    .ok()
+}
+
 fn json_response(status: StatusCode, body: Value) -> Response {
     (status, axum::Json(body)).into_response()
 }

@@ -152,3 +152,102 @@ pub fn _grant_wire_type_for_test() -> &'static str {
 pub fn _b64_for_test(bytes: &[u8]) -> String {
     base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(bytes)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use base64::Engine;
+    use ed25519_dalek::Signer;
+    use serde_json::json;
+    use std::io::{Read, Write};
+
+    fn b64(bytes: &[u8]) -> String {
+        base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(bytes)
+    }
+
+    fn serve_once(body: String) -> (String, std::thread::JoinHandle<()>) {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let handle = std::thread::spawn(move || {
+            // The verifier may fetch twice when the first lookup misses; answer
+            // every request on this test listener with the same JWKS document.
+            while let Ok((mut stream, _)) = listener.accept() {
+                let mut buffer = [0u8; 4096];
+                let _ = stream.read(&mut buffer);
+                let response = format!(
+                    "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{}",
+                    body.len(),
+                    body
+                );
+                let _ = stream.write_all(response.as_bytes());
+            }
+        });
+        (format!("http://127.0.0.1:{port}"), handle)
+    }
+
+    fn signed_grant(
+        signing: &ed25519_dalek::SigningKey,
+        kid: &str,
+        issuer: &str,
+        host_id: &str,
+        environment_id: &str,
+        user_id: &str,
+        device_jkt: &str,
+        jti: &str,
+    ) -> String {
+        let now = now_seconds();
+        let header = b64(json!({"alg":"EdDSA","typ":GRANT_JWT_TYP,"kid":kid}).to_string().as_bytes());
+        let payload = b64(json!({
+            "iss": issuer,
+            "sub": user_id,
+            "aud": SYNARA_RELAY_AUDIENCE,
+            "iat": now,
+            "exp": now + 30,
+            "jti": jti,
+            "hostId": host_id,
+            "environmentId": environment_id,
+            "cnf": {"jkt": device_jkt},
+            "scope": [crate::host_auth_verify::HOST_CONNECT_SCOPE],
+        }).to_string().as_bytes());
+        let input = format!("{header}.{payload}");
+        let signature = signing.sign(input.as_bytes());
+        format!("{input}.{}", b64(&signature.to_bytes()))
+    }
+
+    #[test]
+    fn verifies_binds_and_spends_account_grants() {
+        let signing = ed25519_dalek::SigningKey::generate(&mut rand_core::OsRng);
+        let verifying = signing.verifying_key();
+        let kid = "account-key-1";
+        let jwks = json!({"keys":[{"kty":"OKP","crv":"Ed25519","alg":"EdDSA","use":"sig","kid":kid,"x":b64(&verifying.to_bytes())}]}).to_string();
+        let (account_url, _server) = serve_once(jwks);
+        let issuer = crate::account::account_api_issuer(&account_url);
+        let grant = signed_grant(&signing, kid, &issuer, "host-1", "env-1", "user-1", "device-jkt", "grant-1");
+        let verified = verify_host_grant(
+            &grant,
+            &account_url,
+            &issuer,
+            "env-1",
+            "host-1",
+            "user-1",
+            "device-jkt",
+            Some("user-1"),
+        ).unwrap();
+        assert_eq!(verified.jti, "grant-1");
+        consume_host_grant(&verified).unwrap();
+        assert!(consume_host_grant(&verified).is_err());
+    }
+
+    #[test]
+    fn rejects_wrong_device_and_host_binding() {
+        let signing = ed25519_dalek::SigningKey::generate(&mut rand_core::OsRng);
+        let verifying = signing.verifying_key();
+        let kid = "account-key-2";
+        let jwks = json!({"keys":[{"kty":"OKP","crv":"Ed25519","alg":"EdDSA","use":"sig","kid":kid,"x":b64(&verifying.to_bytes())}]}).to_string();
+        let (account_url, _server) = serve_once(jwks);
+        let issuer = crate::account::account_api_issuer(&account_url);
+        let grant = signed_grant(&signing, kid, &issuer, "host-1", "env-1", "user-1", "device-jkt", "grant-2");
+        assert!(verify_host_grant(&grant, &account_url, &issuer, "env-1", "host-1", "user-1", "other-device", Some("user-1")).is_err());
+        assert!(verify_host_grant(&grant, &account_url, &issuer, "env-1", "other-host", "user-1", "device-jkt", Some("user-1")).is_err());
+    }
+}

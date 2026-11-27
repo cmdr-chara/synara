@@ -86,6 +86,74 @@ async fn remote_tunnel_upgrade(
 
 /// Computer frame streaming serves natively when the backend owns the
 /// computer; upstream mode relays exactly like every other socket.
+
+fn query_value(uri: &Uri, wanted: &str) -> Option<String> {
+    uri.query()?.split('&').filter_map(|pair| {
+        let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
+        (key == wanted).then(|| urlencoding_decode(raw))
+    }).next()
+}
+
+fn configured_auth_token() -> Option<String> {
+    std::env::var("SYNARA_AUTH_TOKEN").ok().filter(|value| !value.trim().is_empty()).or_else(|| {
+        let args: Vec<String> = std::env::args().collect();
+        args.windows(2)
+            .find(|pair| pair[0] == "--auth-token")
+            .map(|pair| pair[1].clone())
+            .or_else(|| args.iter().find_map(|arg| arg.strip_prefix("--auth-token=").map(str::to_string)))
+            .filter(|value| !value.trim().is_empty())
+    })
+}
+
+fn loopback_host(value: Option<&str>) -> bool {
+    let Some(value) = value else { return true };
+    matches!(value, "localhost" | "127.0.0.1" | "::1" | "[::1]")
+}
+
+fn websocket_auth_required() -> bool {
+    configured_auth_token().is_some()
+        || std::env::var("SYNARA_PUBLIC_URL").ok().is_some_and(|value| !value.trim().is_empty())
+        || !loopback_host(std::env::var("SYNARA_HOST").ok().as_deref())
+        || std::env::var("SYNARA_SSH_FORWARD_PORT").ok().is_some_and(|value| !value.trim().is_empty())
+}
+
+fn trusted_local_legacy_token(token: Option<&str>) -> bool {
+    configured_auth_token().is_some_and(|expected| {
+        Some(expected.as_str()) == token
+            && loopback_host(std::env::var("SYNARA_HOST").ok().as_deref())
+            && std::env::var("SYNARA_PUBLIC_URL").ok().is_none_or(|value| value.trim().is_empty())
+    })
+}
+
+/// Owner admission for the remote-host pivot. This intentionally mirrors the
+/// local trust split of the main `/ws` upgrade: authless loopback stays local,
+/// the private legacy token stays local, but every explicit browser credential
+/// must verify and client-role sessions may not pivot to another machine.
+fn remote_owner_authorized(headers: &HeaderMap, uri: &Uri) -> Result<(), axum::http::StatusCode> {
+    let legacy_token = query_value(uri, "token");
+    let ws_ticket = query_value(uri, "wsToken");
+    let explicit = ws_ticket.is_some()
+        || headers.get(axum::http::header::AUTHORIZATION).is_some()
+        || headers.get(axum::http::header::COOKIE).and_then(|value| value.to_str().ok()).is_some_and(|cookie| cookie.contains("synara_session"));
+    if !explicit && (!websocket_auth_required() || trusted_local_legacy_token(legacy_token.as_deref())) {
+        return Ok(());
+    }
+    if trusted_local_legacy_token(legacy_token.as_deref()) {
+        return Ok(());
+    }
+    let session = ws_ticket
+        .as_deref()
+        .and_then(crate::auth_http::authenticate_websocket_ticket)
+        .or_else(|| crate::auth_http::authenticate(headers));
+    let Some(session) = session else {
+        return Err(axum::http::StatusCode::UNAUTHORIZED);
+    };
+    if session.role != "owner" {
+        return Err(axum::http::StatusCode::FORBIDDEN);
+    }
+    Ok(())
+}
+
 async fn remote_negotiate(
     axum::extract::Path(host_id): axum::extract::Path<String>,
     uri: Uri,
@@ -97,6 +165,9 @@ async fn remote_negotiate(
     let no_store = [(axum::http::header::CACHE_CONTROL, "no-store")];
     if crate::native_ws::should_reject_untrusted_request_origin(raw_origin, &request_origin, cfg) {
         return (axum::http::StatusCode::FORBIDDEN, no_store, "Forbidden").into_response();
+    }
+    if let Err(status) = remote_owner_authorized(&headers, &uri) {
+        return (status, no_store, "Unauthorized").into_response();
     }
     if crate::remote_connections::desired(&host_id).is_none() {
         return (axum::http::StatusCode::NOT_FOUND, no_store, "No open connection to that host").into_response();
@@ -165,6 +236,9 @@ async fn remote_renderer_upgrade(
     let raw_origin = headers.get("origin").and_then(|value| value.to_str().ok());
     if crate::native_ws::should_reject_untrusted_request_origin(raw_origin, &request_origin, cfg) {
         return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
+    }
+    if let Err(status) = remote_owner_authorized(&headers, &uri) {
+        return (status, "Unauthorized").into_response();
     }
     let query = uri.query().unwrap_or_default();
     let mut attachment_id = None;

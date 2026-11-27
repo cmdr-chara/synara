@@ -288,3 +288,16 @@ sorgente halftone alzi la luminanza media oltre soglia. Shell dark attuale: ciel
 tempio denso — coerente con invert:false letterale. Serve confronto con web SETTLED (attendere
 3s dopo navigazione prima di catturare). Dark surfaces: sidebar shell 21 vs web 17,
 composer tray shell 36 vs web 23 — piccoli scostamenti da limare.
+
+## Update 07:45 — stato a meta' mattina. Committed: e914b3e965 invert dark (texture densa
+come upstream), 1c7e9cd95a composer opaco. VERIFICATO: shell thread dark renderizza transcript
+completo (markdown/img/code/bubble) su pannello opaco — modello Kartik corretto.
+NOTA hydration: shell ci mette ~60-90s a mostrare progetti/chats dopo il launch NEL SETUP DI
+TEST perche' la shell prova a spawnare un backend supervised che fallisce (porta occupata) e
+fa fallback lento. In uso reale non succede, ma indagare se il fallback può essere più veloce.
+DA VERIFICARE next: (1) attachment chips "1 selection"/"report.pdf" sotto user message nel
+thread — web li mostra, shell forse no; (2) composer in-thread: web ha input row + controls
+row dentro una card unica, verificare geometria shell; (3) scroll sync per confronti thread
+richiede scrollBottom su entrambi; (4) sidebar dark 21 vs web 17; (5) strip tab position:
+web tab piu' centrata (~x543) vs shell (~x429). Surface light tutte convergenti entro 3px
+tranne texture density. METODO: batch_capture.py + anaglyph + PIL ink-position numerico.

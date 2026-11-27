@@ -211,8 +211,9 @@ fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
     s.code_block.padding.top = Some(px(28.).into());
     // Upstream: code surface follows the user-message token (3% ink in light),
     // radius 0.65rem = 10.4px.
+    // Measured on main (dark): .chat-markdown-codeblock is foreground at 2.7%.
     s.code_block.background = Some(if dark {
-        gpui::hsla(0.0, 0.0, 1.0, 0.06).into()
+        gpui::hsla(0.0, 0.0, 0.988, 0.027).into()
     } else {
         gpui::hsla(0.0, 0.0, 0.0, 0.03).into()
     });
@@ -224,6 +225,17 @@ fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
         gpui_kit::component::highlighter::HighlightTheme::default_dark()
     } else {
         gpui_kit::component::highlighter::HighlightTheme::default_light()
+    };
+    // Inline code: a faint chip in the text colour (upstream code element:
+    // foreground 2.7% fill). gpui-component's default paints it with
+    // theme.accent, the orange brand colour.
+    s.inline_code = gpui::HighlightStyle {
+        background_color: Some(if dark {
+            gpui::hsla(0.0, 0.0, 0.988, 0.027)
+        } else {
+            gpui::hsla(0.0, 0.0, 0.0, 0.03)
+        }),
+        ..Default::default()
     };
     s.is_dark = dark;
     s
@@ -13056,8 +13068,9 @@ impl Native {
         };
         // Upstream light bubble: rgba(13,13,13,0.03) — neutral ink, not the
         // list-selection tint.
+        // Upstream --app-user-message-background (dark): foreground at 2.7%.
         let user_bubble: gpui::Hsla = if dark_ui {
-            rgb(0x181818).into()
+            theme.foreground.opacity(0.027)
         } else {
             gpui::hsla(0.0, 0.0, 0.05, 0.03)
         };
@@ -13667,7 +13680,7 @@ impl Native {
                                         }
                                         content = content.child(row);
                                     }
-                                    content.child(div().text_size(px(13.)).child(text))
+                                    content.child(div().text_size(px(13.)).line_height(relative(1.625)).child(text))
                                 }))
                                 .child(ufooter.opacity(reveal))
                             ),

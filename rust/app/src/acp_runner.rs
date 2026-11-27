@@ -3166,6 +3166,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
             let interrupted = cancelled_flag || reason == "cancelled";
             let state = if interrupted { "interrupted" } else { "completed" };
             let status = if interrupted { "interrupted" } else { "ready" };
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "acp", None, None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
@@ -3190,6 +3191,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
             } else {
                 ("error", "error")
             };
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "acp", None, None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;
             session_set_event(

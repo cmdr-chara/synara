@@ -642,6 +642,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let interrupted = cancelled_flag || reason == "cancelled";
             let state = if interrupted { "interrupted" } else { "completed" };
             let status = if interrupted { "interrupted" } else { "ready" };
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "pi", None, None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, Some(thread_id))?;
             session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "pi", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}))?;
@@ -650,6 +651,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         }
         Err(e) => {
             let (state, status) = if cancelled_flag { ("interrupted", "interrupted") } else { ("error", "error") };
+            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "pi", None, None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), Some(thread_id))?;
             session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "pi", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}))?;

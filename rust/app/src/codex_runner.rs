@@ -1532,6 +1532,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let status = if interrupted { "interrupted" } else { "ready" };
             crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "codex", final_usage.as_ref(), None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
+            if state == "completed" {
+                crate::checkpointing::capture_turn_checkpoint(thread_id, &turn_id, std::path::PathBuf::from(&cwd));
+            }
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
                 &conn,

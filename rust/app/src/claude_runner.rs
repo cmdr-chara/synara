@@ -1673,6 +1673,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let status = if interrupted { "interrupted" } else { "ready" };
             write_turn_completed_activity(&conn, thread_id, &turn_id, state, "claudeAgent", final_usage.as_ref(), None);
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
+            if state == "completed" {
+                crate::checkpointing::capture_turn_checkpoint(thread_id, &turn_id, std::path::PathBuf::from(&cwd));
+            }
             set_session(&conn, thread_id, status, Some(""), None, session_id.as_deref())?;
             session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}))?;
             crate::orchestration_engine::continue_queued_turn(thread_id);

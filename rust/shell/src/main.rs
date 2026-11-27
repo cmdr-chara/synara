@@ -269,6 +269,11 @@ fn main() {
 
     app.with_assets(gpui_kit::assets::AllAssets).run(move |cx| {
         gpui_kit::init(cx);
+        // Upstream renders UI text in the platform system face (-apple-system
+        // = SF Pro on macOS). gpui's virtual `.SystemUIFont` does not resolve
+        // to it through the gpui-fast text system — the fallback stack lands
+        // on a narrower grotesque — so name the Apple system family directly.
+        gpui_kit::component::Theme::global_mut(cx).font_family = ".AppleSystemUIFont".into();
         cx.on_action(|_: &QuitApp, cx| {
             beta_diagnostics::track_exit(None);
             cx.quit();

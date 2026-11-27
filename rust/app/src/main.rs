@@ -87,6 +87,7 @@ mod projects_refs;
 mod projects_search;
 mod pull_requests;
 mod runtime_status;
+mod server_beta_usage;
 mod server_desktop_update;
 mod server_diagnostics;
 mod server_env;
@@ -140,7 +141,9 @@ async fn main() {
             Ok(applied) if !applied.is_empty() => {
                 eprintln!("migrations: applied {} migration(s) through {}", applied.len(), applied.last().copied().unwrap_or(0));
             }
-            Ok(_) => {}
+            Ok(_) => {
+                server_beta_usage::start_beta_usage_snapshot_job();
+            }
             Err(e) => {
                 eprintln!("migrations failed: {} — refusing to serve orchestration against an unvalidated schema", e.0);
                 std::process::exit(1);

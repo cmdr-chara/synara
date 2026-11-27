@@ -317,10 +317,33 @@ impl BetaDiagnosticsReporter {
         self.rewrite_queue(&rest);
     }
 
+    fn track_daily_usage(&self) {
+        let path = self.home_dir.join("diagnostics").join("usage-snapshot.json");
+        let Ok(text) = std::fs::read_to_string(path) else { return };
+        let Ok(value) = serde_json::from_str::<Value>(&text) else { return };
+        let Some(generated) = value.get("generatedAt").and_then(Value::as_str) else { return };
+        let Ok(generated_at) = chrono::DateTime::parse_from_rfc3339(generated) else { return };
+        let age = chrono::Utc::now().signed_duration_since(generated_at.with_timezone(&chrono::Utc));
+        if age < chrono::Duration::zero() || age > chrono::Duration::hours(12) { return; }
+        let day = generated_at.format("%Y-%m-%d").to_string();
+        let marker = self.home_dir.join("diagnostics").join("usage-last-day");
+        if std::fs::read_to_string(&marker).ok().is_some_and(|last| last.trim() == day) { return; }
+        let payload = json!({
+            "kind":"usage",
+            "projects": value.get("projects").and_then(Value::as_u64).unwrap_or(0),
+            "activeThreads": value.get("activeThreads").and_then(Value::as_u64).unwrap_or(0),
+        });
+        if self.track("usage.daily", payload).is_some() {
+            let _ = write_private_atomic(&marker, format!("{day}
+").as_bytes());
+        }
+    }
+
     pub fn start(self: &Arc<Self>) {
         let reporter = Arc::clone(self);
         std::thread::spawn(move || loop {
             std::thread::sleep(FLUSH_INTERVAL);
+            reporter.track_daily_usage();
             reporter.flush();
         });
     }
@@ -446,6 +469,26 @@ mod tests {
         assert_eq!(reporter.scrubbed_lines().len(), 1);
         assert!(reporter.track("chat.content", json!({"kind":"lifecycle"})).is_none());
         let _ = std::fs::remove_dir_all(stable_home);
+        let _ = std::fs::remove_dir_all(home);
+    }
+
+    #[test]
+    fn usage_snapshot_relays_once_per_generated_utc_day() {
+        let home = std::env::temp_dir().join(format!("diag-usage-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(home.join("diagnostics")).unwrap();
+        let snapshot = serde_json::to_string(&json!({
+            "v": 1,
+            "generatedAt": chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true),
+            "projects": 3,
+            "activeThreads": 2,
+        })).unwrap();
+        std::fs::write(home.join("diagnostics").join("usage-snapshot.json"), format!("{snapshot}\n")).unwrap();
+        let reporter = BetaDiagnosticsReporter::with_endpoint(&home, "beta", "1.2.3-beta.1", "http://127.0.0.1:1");
+        reporter.track_daily_usage();
+        reporter.track_daily_usage();
+        let lines = reporter.scrubbed_lines();
+        assert_eq!(lines.len(), 1);
+        assert!(lines[0].contains("usage.daily") && lines[0].contains("\"projects\":3"));
         let _ = std::fs::remove_dir_all(home);
     }
 

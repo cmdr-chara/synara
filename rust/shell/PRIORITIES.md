@@ -176,3 +176,22 @@ Deadline 13:00. Mandate: pixel-perfect ALL frontend sections, identical to Elect
 - ALWAYS `git pull --rebase origin feat/rust-port` before push (child pushes constantly); commit as Commander Chara with --no-verify
 - shell relaunch: pkill -f synara-shell; SYNARA_URL=http://127.0.0.1:8580 SYNARA_HTTP=http://127.0.0.1:8580 SYNARA_HOME=/tmp/synara-bisect ./target/debug/synara-shell
 - backend: cd rust/app && PORT=8580 SYNARA_HOME=/tmp/synara-bisect ./target/debug/index (check if still running first)
+
+## CHROME STRUCTURE FINDING (highest priority structural gap — affects ALL surfaces)
+Web upstream (web_tasks.png): the main content is a ROUNDED-CORNER CARD inset in the window, NOT edge-to-edge:
+- atmosphere texture shows around the card: behind the left rail (narrow strip x<40) AND in a thin top chrome strip AND around card margins
+- card has rounded top-left/top-right corners (visible radius ~12px), starts x~40 y~30ish, inset from window edges
+- thin top chrome strip (~28px) spanning full width with sidebar-toggle icon at far left
+- segmented "List | Kanban" toggle at TOP RIGHT of the tasks surface (in the strip or card header area)
+- heading "Tasks" bold ~x400/y68 inside card; input row "Add a task, or press Tab..." below it
+Shell currently: content edge-to-edge rectangular, no card inset, no visible chrome strip, no List/Kanban toggle in tasks view.
+=> This is the Kartik #2323 window-chrome model fully realized: persistent atmosphere behind EVERYTHING + opaque rounded content card floating inside. Port this structure: it changes every surface comparison at once. Implement in native.rs root layout: window = atmosphere layer full + rounded content card inset (margins ~8-12px?) + chrome strip row on top.
+Measurements needed from upstream: exact card inset margins, corner radius, chrome strip height, whether bottom also inset. Get via CDP getBoundingClientRect on the card container when implementing.
+
+## Surface pass status (01:30)
+- tasks: structural gap = chrome card above; content itself minimal (empty state matches: same strings)
+- transcript: horizontal metrics match; composer tray fixed; scroll-sync needed for detail pass
+- landing: converged earlier
+- settings: aligned y174
+- inbox: padding fixed; two-column restructure pending
+- kanban/pull-requests/automations/hubs: NOT YET compared — after chrome fix, since chrome dominates all

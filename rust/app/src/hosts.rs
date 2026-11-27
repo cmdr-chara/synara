@@ -72,6 +72,42 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
 /// Local subset of upstream remotePairing/management.ts operations: invite
 /// and device-trust management needs no account connectivity. Operations that
 /// publish to or redeem through the account API still answer the fallback.
+fn local_host_proof(account: &Value, environment_id: &str) -> Result<String, String> {
+    let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
+    let key_generation = account.get("hostKeyGeneration").and_then(Value::as_u64).unwrap_or(0);
+    if host_id.is_empty() || key_generation == 0 {
+        return Err("Link this host to your own account first".to_string());
+    }
+    let secrets_dir = format!("{}/secrets", crate::todo::state_dir());
+    let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
+    let identity = crate::host_identity::read_host_identity(&identity_path)
+        .map_err(|_| "Remote access operation failed".to_string())?
+        .ok_or_else(|| "Link this host to your own account first".to_string())?;
+    let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+    crate::host_identity::mint_host_proof(
+        &identity,
+        &crate::account::account_api_issuer(account_url),
+        environment_id,
+        host_id,
+        key_generation,
+    )
+}
+
+fn cancel_published_pairing_code(invite_id: &str) {
+    let Some(account) = crate::account::read_session_file() else { return };
+    let state_dir = crate::todo::state_dir();
+    let Some(environment_id) = crate::server_env::environment_id(&state_dir) else { return };
+    let Ok(proof) = local_host_proof(&account, &environment_id) else { return };
+    let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+    let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
+    let _ = crate::account::AccountClient::new(account_url).request_host_proof(
+        reqwest::Method::DELETE,
+        &format!("/api/v1/hosts/{host_id}/pairing-codes/{invite_id}"),
+        &proof,
+        None,
+    );
+}
+
 fn remote_access(payload: &Value) -> Result<Value, String> {
     use crate::remote_pairing as rp;
     // The RPC envelope is `{request: ...}`; accepting the bare request keeps
@@ -120,6 +156,83 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
             crate::remote_tls::reset_remote_tls_identity(&tls_path, &environment_id)?;
             Ok(json!({"kind":"done"}))
         }
+        "create-code" => {
+            let Some(identity) = tls_identity.as_ref() else {
+                return Err("The host root is missing. Restore it or explicitly reset remote trust before pairing again.".to_string());
+            };
+            let account = crate::account::read_session_file().ok_or_else(|| "Link this host to your own account first".to_string())?;
+            let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
+            if host_id.is_empty() {
+                return Err("Link this host to your own account first".to_string());
+            }
+            for old in rp::list_invites(&conn, &scope)? {
+                let open = old.get("approved").and_then(Value::as_bool) == Some(false)
+                    && old.get("revoked").and_then(Value::as_bool) == Some(false);
+                if open {
+                    if let Some(id) = old.get("inviteId").and_then(Value::as_str) {
+                        let _ = rp::revoke(&conn, &scope, id);
+                    }
+                }
+            }
+            let invite = rp::create_invite(&conn, &scope)?;
+            let channel = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+                Some("com.emanueledipietro.synara.beta") => "beta",
+                Some("com.emanueledipietro.synara.canary") => "canary",
+                Some("com.emanueledipietro.synara") => "stable",
+                _ => "dev",
+            };
+            let bundle = json!({
+                "v": 2,
+                "environmentId": scope.environment_id,
+                "rootFingerprint": scope.root_fingerprint,
+                "accountAuthority": scope.account_authority,
+                "userId": scope.user_id,
+                "organizationId": scope.organization_id,
+                "channel": channel,
+                "rootCertificate": identity.root_certificate,
+                "hostId": host_id,
+                "label": crate::account::display_hostname(),
+                "inviteId": invite.invite_id,
+                "secret": invite.secret,
+                "expiresAt": invite.expires_at,
+            });
+            let published = (|| -> Result<Value, String> {
+                let proof = local_host_proof(&account, &environment_id)?;
+                let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
+                crate::account::AccountClient::new(account_url)
+                    .request_host_proof(
+                        reqwest::Method::POST,
+                        &format!("/api/v1/hosts/{host_id}/pairing-codes"),
+                        &proof,
+                        Some(bundle),
+                    )
+                    .map_err(|error| crate::account::service_error(&error, "Remote access operation failed").0)
+            })();
+            let published = match published {
+                Ok(value) => value,
+                Err(error) => {
+                    let _ = rp::revoke(&conn, &scope, &invite.invite_id);
+                    return Err(error);
+                }
+            };
+            let published_invite = published.get("inviteId").and_then(Value::as_str).unwrap_or_default();
+            if published_invite != invite.invite_id {
+                let _ = rp::revoke(&conn, &scope, &invite.invite_id);
+                return Err("Remote access operation failed".to_string());
+            }
+            let result = json!({
+                "kind": "pairing-code",
+                "code": published.get("code").cloned().unwrap_or(Value::Null),
+                "inviteId": published_invite,
+                "expiresAt": published.get("expiresAt").cloned().unwrap_or(json!(invite.expires_at)),
+                "rootFingerprint": scope.root_fingerprint,
+            });
+            if result.get("code").is_none_or(Value::is_null) {
+                let _ = rp::revoke(&conn, &scope, &invite.invite_id);
+                return Err("Remote access operation failed".to_string());
+            }
+            Ok(result)
+        }
         "create-invitation" => {
             let Some(identity) = tls_identity.as_ref() else {
                 return Err("The host root is missing. Restore it or explicitly reset remote trust before pairing again.".to_string());
@@ -164,6 +277,7 @@ fn remote_access(payload: &Value) -> Result<Value, String> {
         "cancel-invitation" => {
             let invite_id = request.get("inviteId").and_then(Value::as_str).unwrap_or("");
             rp::revoke(&conn, &scope, invite_id)?;
+            cancel_published_pairing_code(invite_id);
             Ok(json!({"kind": "done"}))
         }
         "set-allow-connections" => {

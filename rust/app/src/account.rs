@@ -122,7 +122,7 @@ pub(crate) struct AccountClient {
 }
 
 impl AccountClient {
-    fn new(base_url: &str) -> Self {
+    pub(crate) fn new(base_url: &str) -> Self {
         Self { base_url: base_url.trim_end_matches('/').to_string() }
     }
 
@@ -131,6 +131,42 @@ impl AccountClient {
         method: reqwest::Method,
         path: &str,
         bearer: Option<&str>,
+        body: Option<Value>,
+        raw_body: Option<(Vec<u8>, String)>,
+        timeout: Duration,
+    ) -> Result<Value, AccountError> {
+        self.request_with_authorization(
+            method,
+            path,
+            bearer.map(|token| format!("Bearer {token}")),
+            body,
+            raw_body,
+            timeout,
+        )
+    }
+
+    pub(crate) fn request_host_proof(
+        &self,
+        method: reqwest::Method,
+        path: &str,
+        proof: &str,
+        body: Option<Value>,
+    ) -> Result<Value, AccountError> {
+        self.request_with_authorization(
+            method,
+            path,
+            Some(format!("HostProof {proof}")),
+            body,
+            None,
+            REQUEST_TIMEOUT,
+        )
+    }
+
+    fn request_with_authorization(
+        &self,
+        method: reqwest::Method,
+        path: &str,
+        authorization: Option<String>,
         body: Option<Value>,
         raw_body: Option<(Vec<u8>, String)>,
         timeout: Duration,
@@ -144,8 +180,8 @@ impl AccountClient {
                 organizations: Vec::new(),
             })?;
         let mut request = client.request(method, format!("{}{path}", self.base_url)).timeout(timeout);
-        if let Some(token) = bearer {
-            request = request.header(reqwest::header::AUTHORIZATION, format!("Bearer {token}"));
+        if let Some(authorization) = authorization {
+            request = request.header(reqwest::header::AUTHORIZATION, authorization);
         }
         if let Some((bytes, content_type)) = raw_body {
             request = request.header(reqwest::header::CONTENT_TYPE, content_type).body(bytes);
@@ -197,7 +233,7 @@ impl AccountClient {
     }
 }
 
-fn service_error(error: &AccountError, fallback: &str) -> WsErr {
+pub(crate) fn service_error(error: &AccountError, fallback: &str) -> WsErr {
     if error.message.trim().is_empty() { err(fallback) } else { err(error.message.clone()) }
 }
 

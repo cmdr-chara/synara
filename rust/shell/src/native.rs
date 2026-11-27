@@ -24249,22 +24249,6 @@ impl Render for Native {
             .h_full()
             .relative()
             .child(
-                h_flex()
-                    .absolute()
-                    .top(topbar_y)
-                    .right(px(19.))
-                    .child(
-                        h_flex()
-                            .gap(px(4.))
-                            .child(seg_chip("seg-tasks-list", "List", true).on_click(cx.listener(
-                                |this, _e, _w, cx| this.open_route(1, cx),
-                            )))
-                            .child(seg_chip("seg-tasks-kanban", "Kanban", false).on_click(
-                                cx.listener(|this, _e, _w, cx| this.open_route(2, cx)),
-                            )),
-                    ),
-            )
-            .child(
                 // Upstream: a centered fixed-width column, contents
                 // left-aligned; add-task row is a faint borderless row.
                 v_flex()
@@ -28337,6 +28321,42 @@ impl Render for Native {
                 ),
             )
             });
+        // Tasks/kanban routes: upstream puts the List|Kanban segmented
+        // control in the top strip at the right end.
+        let strip = if self.view_tasks || self.view_kanban {
+            let chip = |id: &'static str, label: &'static str, active: bool| {
+                div()
+                    .id(ElementId::Name(id.into()))
+                    .px(px(10.))
+                    .h(px(24.))
+                    .flex()
+                    .items_center()
+                    .rounded(px(6.))
+                    .cursor_pointer()
+                    .text_size(px(12.))
+                    .text_color(if active { theme.foreground } else { theme.muted_foreground })
+                    .when(active, |d| d.bg(theme.foreground.opacity(0.06)))
+                    .child(label)
+            };
+            strip.child(
+                h_flex()
+                    .flex_1()
+                    .items_center()
+                    .justify_end()
+                    .gap(px(4.))
+                    .pr(px(8.))
+                    .child(
+                        chip("strip-seg-list", "List", self.view_tasks)
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(1, cx))),
+                    )
+                    .child(
+                        chip("strip-seg-kanban", "Kanban", self.view_kanban)
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(2, cx))),
+                    ),
+            )
+        } else {
+            strip
+        };
 
         // ---- left column: #f7f7f7 well holding the rail and the floating
         // white sidebar card (bordered right+bottom, rounded corners, ~4px

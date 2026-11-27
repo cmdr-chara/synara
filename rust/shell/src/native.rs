@@ -20461,10 +20461,12 @@ impl Render for Native {
         // controls row — not a floating chip above a separate card. The
         // surface keeps upstream's translucent white/0.55 over an opaque
         // near-white shell so the texture does not wash it out.
+        // Upstream tray tone measured in the Electron capture: #F9F9F9
+        // (foreground 2% over the white background) with a #F1F1F1 hairline.
         let composer_shell_bg: gpui::Hsla = if theme.is_dark() {
             sidebar_bg
         } else {
-            gpui::hsla(0.0, 0.0, 0.983, 1.0)
+            gpui::hsla(0.0, 0.0, 0.976, 1.0)
         };
         let composer_shelled = if let Some(controls) = landing_controls {
             // Canonical upstream tray (#2306): a soft opaque GREY squircle —
@@ -20501,7 +20503,7 @@ impl Render for Native {
                 v_flex()
                     .w_full()
                     .max_w(chat_mw)
-                    .rounded(px(24.2))
+                    .rounded(px(9999.))
                     .border_1()
                     .border_color(theme.border.opacity(0.5))
                     .bg(composer_shell_bg)
@@ -24700,8 +24702,13 @@ impl Render for Native {
                     col = col.child(
                         v_flex()
                             .rounded(px(8.))
-                            // Upstream kanban card: bg-card/70, no border.
+                            // Upstream kanban card: bg-card/70 with the raised-surface
+                            // hairline border and soft shadow — without them the card
+                            // is invisible on the white board.
                             .bg(theme.popover.opacity(0.7))
+                            .border_1()
+                            .border_color(theme.border.opacity(0.6))
+                            .shadow_sm()
                             .px(px(12.))
                             .py(px(10.))
                             .gap(px(6.))

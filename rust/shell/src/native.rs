@@ -21315,7 +21315,7 @@ impl Render for Native {
             }
 
             if self.settings_section == "notifications" {
-                let accent = theme.primary;
+                let accent = text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
                 let test_notification = Button::new("test-system-notification")
                     .ghost()
                     .compact()
@@ -21366,7 +21366,7 @@ impl Render for Native {
             // Upstream ChatsSettingsView (web section id "behavior"): Conversation,
             // Review and Safety confirmations, same copy, controls and defaults.
             if self.settings_section == "chats" {
-                let accent = theme.primary;
+                let accent = text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
                 let sw = |cx: &mut Context<Self>, key: &'static str, default: bool| {
                     let on = self.setting_bool(key, default);
                     Self::setting_switch(cx, key, on, accent)

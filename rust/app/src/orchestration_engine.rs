@@ -256,6 +256,28 @@ fn finalize_imported_timestamps(
 /// sessions are imported through the same local history readers as the
 /// upstream adapters. OpenCode sessions are read through configured external
 /// server URLs or a short-lived managed server.
+fn import_provider_binary_available(instance: &crate::provider_instances::ResolvedInstance) -> bool {
+    let configured = instance
+        .config
+        .get("binaryPath")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty());
+    let default = match instance.driver.as_str() {
+        "claudeAgent" | "claude" => "claude",
+        other => other,
+    };
+    let binary = configured.unwrap_or(default);
+    if binary.contains('/') || binary.contains('\\') {
+        return std::path::Path::new(binary).is_file();
+    }
+    #[cfg(windows)]
+    let probe = std::process::Command::new("where").arg(binary).output();
+    #[cfg(not(windows))]
+    let probe = std::process::Command::new("sh").args(["-lc", "command -v \"$1\"", "synara-probe", binary]).output();
+    probe.map(|output| output.status.success()).unwrap_or(false)
+}
+
 fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload
         .get("threadId")
@@ -322,6 +344,12 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     if !selected_instance.enabled {
         return Err(err(format!(
             "Provider instance '{}' is disabled for thread import.",
+            selected_instance.instance_id
+        )));
+    }
+    if !import_provider_binary_available(&selected_instance) {
+        return Err(err(format!(
+            "Provider instance '{}' cannot start because its CLI is unavailable.",
             selected_instance.instance_id
         )));
     }

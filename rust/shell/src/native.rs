@@ -30391,34 +30391,51 @@ impl Render for Native {
                 .overflow_hidden()
                 // tab row: starred tab + provider tab + add
                 .child(
+                    // Upstream SurfaceTabStrip: 40px strip, h-7 min-w-7
+                    // rounded-lg tab buttons, active marker a 2px bar 4px
+                    // below the button inset 6px from its sides.
                     h_flex()
                         .w_full()
                         .px(px(8.))
-                        .h(px(36.))
+                        .h(px(40.))
                         .items_center()
                         .gap(px(4.))
                         .border_b_1()
                         .border_color(theme.border.opacity(0.5))
                         .child(
                             div()
-                                .h_full()
+                                .h(px(28.))
+                                .min_w(px(28.))
                                 .flex()
                                 .items_center()
+                                .justify_center()
+                                .rounded(px(8.))
                                 .px(px(6.))
-                                .child(svg_icon(icons::STAR_FILLED).size(px(14.)).text_color(theme.foreground)),
+                                .child(svg_icon(icons::STAR_FILLED).size(px(16.)).text_color(theme.foreground)),
                         )
                         .child(
                             div()
-                                .h_full()
+                                .h(px(28.))
+                                .min_w(px(28.))
                                 .flex()
                                 .items_center()
+                                .justify_center()
+                                .rounded(px(8.))
                                 .px(px(6.))
-                                .border_b_2()
-                                .border_color(accent_orange)
-                                .child(svg_icon(model_icon).size(px(14.)).text_color(theme.foreground)),
+                                .child(svg_icon(model_icon).size(px(16.)).text_color(theme.foreground))
+                                .child(
+                                    div()
+                                        .absolute()
+                                        .left(px(6.))
+                                        .top(px(32.))
+                                        .right(px(6.))
+                                        .h(px(2.))
+                                        .rounded(px(1.))
+                                        .bg(accent_orange),
+                                ),
                         )
                         .child(div().flex_1())
-                        .child(svg_icon(icons::PLUS).size(px(14.)).text_color(muted_fg)),
+                        .child(svg_icon(icons::PLUS).size(px(16.)).text_color(muted_fg)),
                 )
                 // search row
                 .child(

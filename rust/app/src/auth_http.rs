@@ -152,22 +152,22 @@ fn create_session_row(
     Some((session_id, token))
 }
 
-/// Seeds a one-time bootstrap pairing credential at boot when none is active,
-/// written into the secrets dir for the local shell — exact upstream
-/// alphabet/length, 5-minute TTL replaced by a fresh reseed on each boot.
+/// Seeds the one-time bootstrap pairing credential for the local shell into
+/// the secrets dir — exact upstream alphabet/length. Rotated on every boot so
+/// the file always matches the one active bootstrap row.
 pub fn seed_bootstrap_credential() {
     let Ok(conn) = open_state_rw() else { return };
     let now = now_iso();
-    let active: i64 = conn
-        .query_row(
-            "SELECT COUNT(1) FROM auth_pairing_links WHERE revoked_at IS NULL AND consumed_at IS NULL AND expires_at > ?1",
-            params![now],
-            |r| r.get(0),
-        )
-        .unwrap_or(0);
-    if active > 0 {
-        return;
-    }
+    // The shell reads exactly one credential from the secrets dir, so the
+    // active bootstrap row must always be the one in that file. Skipping the
+    // reseed whenever an unrelated pairing link was active (a browser pairing
+    // in progress) stranded the desktop shell after the next consume: the
+    // file still held the old, already-consumed credential and every
+    // reconnect failed with 401. Rotate the bootstrap rows every boot.
+    let _ = conn.execute(
+        "UPDATE auth_pairing_links SET revoked_at = ?1 WHERE method = 'browser-session-cookie' AND subject = 'bootstrap' AND revoked_at IS NULL",
+        params![now],
+    );
     let credential = generate_pairing_token();
     let expires = iso_plus_ms(24 * 60 * 60 * 1000);
     let _ = conn.execute(

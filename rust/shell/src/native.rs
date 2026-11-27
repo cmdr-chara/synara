@@ -18674,18 +18674,20 @@ impl Render for Native {
         let extras_cell = self.client.clone();
         let imode = self.interaction_mode;
         let fast_on = self.fast_mode;
+        // Upstream ComposerExtrasTrigger: a size-7 (28px) circle with a
+        // size-3.5 (14px) plus icon — not the 36/20 the shell started with.
         let plus_btn = Button::new("composer-attach")
             .compact()
-            .icon(svg_icon(icons::PLUS).size(px(20.)))
-            .rounded(ButtonRounded::Size(px(10.)))
+            .icon(svg_icon(icons::PLUS).size(px(14.)))
+            .rounded(ButtonRounded::Size(px(14.)))
             .with_variant(ButtonVariant::Custom(
                 ButtonCustomVariant::new(cx)
                     .color(chip_bg.into())
                     .foreground(theme.foreground)
                     .hover(subtle.into()),
             ))
-            .w(px(36.))
-            .h(px(36.))
+            .w(px(28.))
+            .h(px(28.))
             .dropdown_menu(move |menu, window, cx| {
                 let wins: Vec<(String, String, String)> = ensure_client(&extras_cell)
                     .and_then(|c| c.call("computer.listWindows", json!({})))
@@ -18804,8 +18806,13 @@ impl Render for Native {
         let build_mode_chip = move |cx: &mut Context<Self>| {
             let weak = mode_weak.clone();
             let active = cur_mode;
+            // Upstream composer chips: h-7 (28px) pill with text-ui-sm (12px)
+            // label, size-3.5 icon, gap-1.5. gpui-kit XSmall gives the 12px
+            // text; the height is overridden back to the upstream 28.
             Button::new("composer-mode")
                 .compact()
+                .with_size(gpui_kit::component::Size::XSmall)
+                .h(px(28.))
                 .icon(
                     svg_icon(match active {
                         "auto" => icons::SHIELD_CODE,
@@ -18921,7 +18928,9 @@ impl Render for Native {
             Button::new("composer-model")
                 .ghost()
                 .compact()
-                .icon(svg_icon(model_icon))
+                .with_size(gpui_kit::component::Size::XSmall)
+                .h(px(28.))
+                .icon(svg_icon(model_icon).size(px(14.)))
                 .label(model_label.clone())
                 .dropdown_caret(true)
                 .dropdown_menu(move |menu, _, _| {

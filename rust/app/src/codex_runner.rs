@@ -1390,6 +1390,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         let terminal = loop {
             let v = rpc.read_msg()?;
             let method = v.get("method").and_then(Value::as_str).unwrap_or("");
+            if !method.is_empty() {
+                crate::orchestration_engine::persist_runtime_event(
+                    thread_id,
+                    Some(&turn_id),
+                    method,
+                    v.get("params").unwrap_or(&v),
+                );
+            }
             if method == "account/rateLimits/updated" {
                 let now_ms = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)

@@ -2994,6 +2994,36 @@ pub fn archive_inactive_threads() -> usize {
     archived
 }
 
+
+/// Durable provider-runtime event feed, lean port of upstream ingestion's
+/// persistence half: every significant raw provider event lands in
+/// `provider_runtime_events` so diagnose/read tools have real forensics.
+/// Retention is per-thread: past the cap the oldest rows are dropped in the
+/// same write, so a runaway turn cannot grow the table without bound.
+const RUNTIME_EVENTS_RETENTION_PER_THREAD: i64 = 5_000;
+
+pub fn persist_runtime_event(thread_id: &str, turn_id: Option<&str>, event_type: &str, event: &Value) {
+    let Ok(conn) = open_state_rw() else { return };
+    let serialized = event.to_string();
+    if serialized.len() > 2 * 1024 * 1024 {
+        return;
+    }
+    let event_id = uuid_v4();
+    let now = iso_now_ms();
+    let _ = conn.execute(
+        "INSERT OR IGNORE INTO provider_runtime_events \
+         (event_id, thread_id, turn_id, event_type, event_json, persisted_at) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+        rusqlite::params![event_id, thread_id, turn_id, event_type, serialized, now],
+    );
+    let _ = conn.execute(
+        "DELETE FROM provider_runtime_events WHERE thread_id = ?1 AND sequence < \
+         (SELECT MIN(sequence) FROM (SELECT sequence FROM provider_runtime_events \
+          WHERE thread_id = ?1 ORDER BY sequence DESC LIMIT ?2))",
+        rusqlite::params![thread_id, RUNTIME_EVENTS_RETENTION_PER_THREAD],
+    );
+}
+
 /// Snooze expiry counterpart of upstream's ThreadSnoozeReactor: rows whose
 /// `snoozed_until` passed are woken by clearing the deadline through the same
 /// guarded `thread.meta.update` (expectedSnoozedUntil), so a newer schedule or

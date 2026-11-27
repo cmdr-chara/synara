@@ -1260,6 +1260,22 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             let Some(v) = read_json_line(&mut reader)? else {
                 return Err(err("claude exited before turn result"));
             };
+            {
+                // Durable forensics feed: the raw stream event exactly as the
+                // CLI emitted it, typed by type[/subtype].
+                let base_type = v.get("type").and_then(Value::as_str).unwrap_or("unknown");
+                let subtype = v.get("subtype").and_then(Value::as_str);
+                let event_type = match subtype {
+                    Some(st) if !st.is_empty() => format!("{base_type}.{st}"),
+                    _ => base_type.to_string(),
+                };
+                crate::orchestration_engine::persist_runtime_event(
+                    thread_id,
+                    Some(&turn_id),
+                    &event_type,
+                    &v,
+                );
+            }
             // Not in the SDK's declared message union; it carries no
             // transcript content. Once a queued command leaves "queued" the
             // model has the steer (or the CLI dropped it) — ported from

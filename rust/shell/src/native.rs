@@ -20931,17 +20931,19 @@ impl Render for Native {
                 .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(theme.muted_foreground))
                 .into_any_element()
         };
+        // Upstream Button size="xs" variant="outline": h-6, px 7px, text-ui-xs,
+        // rounded-sm, medium weight.
         let outline_btn = |label: &'static str| {
             div()
                 .flex_shrink_0()
-                .h(px(28.))
-                .px_3()
+                .h(px(24.))
+                .px(px(7.))
                 .flex()
                 .items_center()
-                .rounded(px(8.))
+                .rounded(px(4.))
                 .border_1()
                 .border_color(theme.border)
-                .child(div().text_size(px(13.)).whitespace_nowrap().child(label))
+                .child(div().text_size(px(11.)).font_weight(FontWeight::MEDIUM).whitespace_nowrap().child(label))
                 .into_any_element()
         };
         let section_label = |t: &'static str| {
@@ -24426,7 +24428,7 @@ impl Render for Native {
                     nav_list = nav_list.child(
                         div()
                             .flex_shrink_0()
-                            .mt(px(5.))
+                            .mt(px(12.))
                             .px_2()
                             .py_1()
                             .text_size(px(13.))

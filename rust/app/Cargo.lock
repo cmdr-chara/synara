@@ -1699,6 +1699,7 @@ dependencies = [
  "rand_core 0.6.4",
  "rcgen",
  "recapstats-rs",
+ "regex",
  "reqwest",
  "rusqlite",
  "rustls-pemfile",

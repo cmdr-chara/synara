@@ -3053,6 +3053,39 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                             .get("status")
                             .and_then(Value::as_str)
                             .unwrap_or("");
+                        // Upstream pullRequestCommandDetection: when a finished
+                        // command created a PR with `gh pr create`, link it even
+                        // if the agent forgot the link tool.
+                        if status == "completed" {
+                            let mut merged = update.clone();
+                            if let (Some(tool_calls), Some(tool_call_id)) = (
+                                approval_tool_calls.as_ref(),
+                                update.get("toolCallId").and_then(Value::as_str),
+                            ) {
+                                if let Ok(map) = tool_calls.lock() {
+                                    if let Some(tracked) = map.get(tool_call_id) {
+                                        if let (Some(base), Some(extra)) =
+                                            (tracked.as_object(), merged.as_object_mut())
+                                        {
+                                            for (k, v) in base {
+                                                extra.entry(k.clone()).or_insert_with(|| v.clone());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            let urls = crate::pr_command_detection::detect_created_pull_request_urls(
+                                "command_execution",
+                                Some("completed"),
+                                &json!({ "item": merged }),
+                            );
+                            if !urls.is_empty() {
+                                let tid2 = tid.clone();
+                                std::thread::spawn(move || {
+                                    crate::pr_command_detection::link_command_created_pull_requests(&tid2, urls);
+                                });
+                            }
+                        }
                         if status == "failed" {
                             let title = update
                                 .get("title")

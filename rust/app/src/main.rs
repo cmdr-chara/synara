@@ -58,6 +58,7 @@ mod server_secrets;
 mod thread_export;
 mod turn_format;
 mod checkpointing;
+mod pr_command_detection;
 mod local_image;
 mod list_worktrees;
 mod native_ws;

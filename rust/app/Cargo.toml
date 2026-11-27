@@ -41,6 +41,7 @@ http = "1"
 rusqlite = { version = "0.40", features = ["bundled", "backup"] }
 flate2 = "1"
 base64 = "0.22"
+regex = "1"
 sha2 = "0.10"
 hkdf = "0.12"
 aes-gcm = "0.10"

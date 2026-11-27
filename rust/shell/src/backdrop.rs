@@ -322,14 +322,9 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
             if tone == 0.0 {
                 continue;
             }
-            // Empirical calibration: the browser's drawImage upscale +
-            // canvas blur chain low-passes the scene noise far more than the
-            // exact area-average this port performs, so raw upstream tone
-            // over-inks every region roughly quadratically. Matching the
-            // upstream Electron capture region-for-region in dark mode
-            // requires steepening the tone response by ~2.1. Applies to dark
-            // only; light mode already matches with the unsharp mask.
-            let tone = if spec.dark { tone.powf(2.1) } else { tone };
+            // (No tone gamma: with exact fractional bilinear sampling the
+            // field reproduces the upstream canvas dot-for-dot — the earlier
+            // powf(2.1) hack compensated the wrong area-average sampling.)
             let right = if levels.thin_right > 0.0 {
                 1.0 - levels.thin_right
                     * row_bottom

@@ -148,8 +148,18 @@ fn event_row(
         "correlationId": correlation_id,
         "metadata": serde_json::from_str::<Value>(&metadata_json).unwrap_or(json!({})),
         "type": event_type,
-        "payload": serde_json::from_str::<Value>(&payload_json).unwrap_or(Value::Null),
+        "payload": normalized_payload(&payload_json),
     })
+}
+
+fn normalized_payload(payload_json: &str) -> Value {
+    let mut p = serde_json::from_str::<Value>(payload_json).unwrap_or(Value::Null);
+    // Legacy gateway rows predate the contract literal set
+    // (user|automation|agent); normalize so the wire decodes.
+    if p.get("dispatchOrigin").and_then(Value::as_str) == Some("agentGateway") {
+        p["dispatchOrigin"] = json!("agent");
+    }
+    p
 }
 
 /// `orchestration.replayEvents`: events after a cursor, optionally scoped to

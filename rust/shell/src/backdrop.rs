@@ -411,20 +411,15 @@ pub fn compute_backdrop_field(spec: &BackdropSpec) -> Option<BackdropField> {
         }
     }
 
-    // ink color: light mode softens the accent toward white
+    // ink color: light mode softens the accent toward white. Dark keeps the
+    // accent raw — upstream dims nothing on the landing canvas; the
+    // brightness(0.75) saturate(0.6) filter applies only to the full-window
+    // atmosphere layer in dark mode, whose caller passes a pre-dimmed accent.
     let ink = if !spec.dark {
         spec.accent_rgb
             .map(|c| (c as f32 + (255.0 - c as f32) * LIGHT_INK_SOFTEN).round() as u8)
     } else {
-        // Upstream dark full-window atmosphere: brightness(0.75) saturate(0.6).
-        spec.accent_rgb.map(|c| {
-            let f = c as f32 / 255.0;
-            let gray = 0.2126 * spec.accent_rgb[0] as f32 / 255.0
-                + 0.7152 * spec.accent_rgb[1] as f32 / 255.0
-                + 0.0722 * spec.accent_rgb[2] as f32 / 255.0;
-            let desat = gray + (f - gray) * 0.6;
-            (desat * 0.75 * 255.0).round() as u8
-        })
+        spec.accent_rgb
     };
 
 

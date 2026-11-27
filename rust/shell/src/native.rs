@@ -13463,7 +13463,9 @@ impl Native {
                                     }
                                     // Upstream transcript attachments render as
                                     // compact pills: tiny icon, name, size ("25 B").
-                                    let mut pill_row = h_flex().gap(px(6.)).flex_wrap().justify_end();
+                                    // Upstream stacks attachment pills vertically,
+                                    // one right-aligned row per attachment.
+                                    let mut pill_row = v_flex().gap(px(6.)).items_end();
                                     let n_sel = msg_atts
                                         .iter()
                                         .filter(|a| str_at(a, "type") == "selection")
@@ -18555,7 +18557,10 @@ impl Render for Native {
         // ---- composer ----
         // chat-composer-shell squircle: 19px radius card, hairline border,
         // soft surface shadow (approximated by the border + card tone).
-        let mode_accent = rgb(0xc24904);
+        // Upstream approval-mode chip tint: light = theme accent orange,
+        // dark = the brightened warning orange measured in the web client
+        // (rgb(254,133,73) on the "Full access" menu item).
+        let mode_accent = if dark_ui { rgb(0xfe8549) } else { rgb(0xc74614) };
         let draft_text = self.composer.read(cx).value().to_string();
         let draft_empty = draft_text.trim().is_empty();
         // Upstream ComposerPromptEditor: font-system-ui text-chat (13px)

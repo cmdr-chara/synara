@@ -1217,13 +1217,66 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     crate::claude_runner::drop_thread_resources(&thread_id);
     crate::opencode_runner::drop_thread_resources(&thread_id);
     crate::pi_runner::drop_thread_resources(&thread_id);
+    crate::terminal::close_thread_sessions(&thread_id);
+    // Reclaim the managed worktree while the projection row still names it.
+    // Dirty worktrees are left in place with their data, matching upstream:
+    // deletion never force-destroys uncommitted work.
+    let worktree_info: Option<(String, String)> = conn
+        .query_row(
+            "SELECT associated_worktree_path, (SELECT workspace_root FROM projection_projects WHERE project_id = projection_threads.project_id) FROM projection_threads WHERE thread_id = ?1",
+            params![thread_id],
+            |r| Ok((r.get::<_, Option<String>>(0)?, r.get::<_, Option<String>>(1)?)),
+        )
+        .ok()
+        .and_then(|(w, r)| w.zip(r));
     let seq = commit_events(&conn, &events, &command_id)?;
     let mut sets: Vec<(&str, Value)> = vec![("deleted_at", json!(occurred_at))];
     if row.claude_cache_review.is_some() {
         sets.push(("claude_cache_review_json", Value::Null));
     }
     update_projection(&conn, &thread_id, &sets)?;
+    if let Some((worktree_path, repo_root)) = worktree_info {
+        prune_managed_worktree_if_clean(&repo_root, &worktree_path);
+    }
     Ok(json!({ "sequence": seq }))
+}
+
+/// Removal is never forced: a dirty worktree keeps its uncommitted work and
+/// stays behind, exactly the upstream lifecycle cleanup rule. Managed
+/// `synara/*` branches are reclaimed only when the removal succeeds.
+fn prune_managed_worktree_if_clean(repo_root: &str, worktree_path: &str) {
+    let dirty = std::process::Command::new("git")
+        .args(["status", "--porcelain"])
+        .current_dir(worktree_path)
+        .output()
+        .map(|out| !out.stdout.is_empty())
+        .unwrap_or(true);
+    if dirty {
+        return;
+    }
+    let branch = std::process::Command::new("git")
+        .args(["branch", "--show-current"])
+        .current_dir(worktree_path)
+        .output()
+        .ok()
+        .map(|out| String::from_utf8_lossy(&out.stdout).trim().to_string())
+        .filter(|b| !b.is_empty());
+    let removed = std::process::Command::new("git")
+        .args(["worktree", "remove", worktree_path])
+        .current_dir(repo_root)
+        .output()
+        .map(|out| out.status.success())
+        .unwrap_or(false);
+    if removed {
+        if let Some(branch) = branch {
+            if branch.starts_with("synara/") {
+                let _ = std::process::Command::new("git")
+                    .args(["branch", "-D", &branch])
+                    .current_dir(repo_root)
+                    .output();
+            }
+        }
+    }
 }
 
 fn thread_mode_set(

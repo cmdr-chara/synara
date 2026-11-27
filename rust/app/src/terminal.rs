@@ -26,6 +26,26 @@ const HISTORY_MAX: usize = 1_048_576;
 const EVENT_BUFFER: usize = 256;
 const ACK_MAX: u64 = 8_388_608;
 
+/// Lifecycle cleanup: close every terminal session a thread owns. Deletion
+/// never leaves the shell processes behind; history cleanup follows the same
+/// path as an explicit `terminal.close` without the idle guard.
+pub(crate) fn close_thread_sessions(thread_id: &str) {
+    let prefix = format!("{thread_id}:");
+    let keys: Vec<String> = STORE
+        .sessions
+        .lock()
+        .unwrap()
+        .keys()
+        .filter(|k| k.starts_with(&prefix))
+        .cloned()
+        .collect();
+    for key in keys {
+        if let Some(session) = STORE.sessions.lock().unwrap().remove(&key) {
+            let _ = session.child.lock().unwrap().kill();
+        }
+    }
+}
+
 fn now_iso() -> String {
     let secs = SystemTime::now()
         .duration_since(UNIX_EPOCH)

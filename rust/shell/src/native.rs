@@ -3634,8 +3634,13 @@ impl Native {
             // server websocket. Poll only while the owner surface is visible.
             cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
                 loop {
+                    let fast = this
+                        .update(cx, |this: &mut Self, _cx| {
+                            this.view_settings && this.settings_section == "saved-logins"
+                        })
+                        .unwrap_or(false);
                     cx.background_executor()
-                        .timer(std::time::Duration::from_millis(500))
+                        .timer(std::time::Duration::from_millis(if fast { 500 } else { 3000 }))
                         .await;
                     let keep = this
                         .update(cx, |this: &mut Self, cx| {
@@ -3674,7 +3679,7 @@ impl Native {
             cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
                 loop {
                     cx.background_executor()
-                        .timer(std::time::Duration::from_millis(1000))
+                        .timer(std::time::Duration::from_millis(5000))
                         .await;
                     let keep = this
                         .update(cx, |this: &mut Self, cx| this.refresh_desktop_update_state(cx))
@@ -3698,7 +3703,7 @@ impl Native {
                         .unwrap_or(false);
                     cx.background_executor()
                         .timer(std::time::Duration::from_millis(
-                            if ripples { 66 } else { 200 },
+                            if ripples { 66 } else { 1000 },
                         ))
                         .await;
                     let keep = this

@@ -1131,10 +1131,13 @@ async fn intercept_todo(
                 eprintln!("shell_stream: spawn for rid {rid}");
             }
             let mut last_sent_sequence = -1i64;
+            let mut quiet_ticks: u64 = 0;
             loop {
                 let cached = crate::orchestration_snapshot::shell_snapshot_cached();
+                let mut sequence_changed = false;
                 if let Some((sequence, snapshot_json)) = cached {
                     if sequence != last_sent_sequence {
+                        sequence_changed = true;
                         last_sent_sequence = sequence;
                         let chunk = format!(
                             "{{\"_tag\":\"Chunk\",\"requestId\":{},\"values\":[{{\"kind\":\"snapshot\",\"snapshot\":{}}}]}}",
@@ -1153,7 +1156,19 @@ async fn intercept_todo(
                 } else if tap && last_sent_sequence < 0 {
                     eprintln!("shell_stream: cache empty for rid {rid}");
                 }
-                tokio::time::sleep(std::time::Duration::from_millis(400)).await;
+                // Adaptive backoff: while the projection is quiet there is
+                // nothing to send, so the poll stretches out (400ms floor,
+                // 2.4s ceiling); any sequence change snaps it back to the
+                // floor so active turns keep their latency.
+                if sequence_changed {
+                    quiet_ticks = 0;
+                } else {
+                    quiet_ticks = (quiet_ticks + 1).min(5);
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(
+                    400 + quiet_ticks * 400,
+                ))
+                .await;
             }
         });
         if let Ok(mut map) = streams.lock() {
@@ -1248,11 +1263,17 @@ async fn intercept_todo(
                     }
                 }
             }
+            let mut quiet_ticks: u64 = 0;
             loop {
-                tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                tokio::time::sleep(std::time::Duration::from_millis(
+                    1000 + quiet_ticks * 500,
+                ))
+                .await;
                 match crate::orchestration_reads::thread_events_after(&thread_id, last_seen) {
                     Ok(events) => {
+                        let mut any = false;
                         for (seq, event) in events {
+                            any = true;
                             last_seen = last_seen.max(seq);
                             let chunk = serde_json::json!({
                                 "_tag": "Chunk", "requestId": rid,
@@ -1261,6 +1282,11 @@ async fn intercept_todo(
                             if !send(&tx, chunk) {
                                 return;
                             }
+                        }
+                        if any {
+                            quiet_ticks = 0;
+                        } else {
+                            quiet_ticks = (quiet_ticks + 1).min(4);
                         }
                     }
                     Err(_) => {}

@@ -8,6 +8,7 @@ use gpui_kit::assets::IconName as AssetIcon;
 use gpui_kit::base::Disableable as _;
 use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
+    ActiveTheme as _, Icon, IconName, Sizable as _,
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
@@ -17,10 +18,10 @@ use gpui_kit::component::{
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
+    v_flex,
 };
 use gpui_kit::*;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::{Arc, Mutex};
 
 pub(super) struct NativeOverlays {
@@ -1608,7 +1609,6 @@ impl Native {
                         ("gpt-6-astra".into(), "6 Astra".into(), "codex".into()),
                         ("gpt-6-sol".into(), "6 Sol".into(), "codex".into()),
                         ("gpt-6-luna".into(), "6 Luna".into(), "codex".into()),
-                        ("gpt-5.5".into(), "5.5".into(), "codex".into()),
                         ("gpt-5.4".into(), "5.4".into(), "codex".into()),
                         ("gpt-5.4-mini".into(), "5.4 Mini".into(), "codex".into()),
                         ("gpt-5.3-codex".into(), "5.3 Codex".into(), "codex".into()),

@@ -21,10 +21,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust/shell
-      - name: fmt (non-blocking, tree not yet rustfmt-clean)
+      - name: fmt
         run: cargo fmt --check
         working-directory: rust/shell
-        continue-on-error: true
       - name: build
         run: cargo build --locked
         working-directory: rust/shell
@@ -51,10 +50,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust/app
-      - name: fmt (non-blocking, tree not yet rustfmt-clean)
+      - name: fmt
         run: cargo fmt --check
         working-directory: rust/app
-        continue-on-error: true
       - name: build
         run: cargo build --locked
         working-directory: rust/app

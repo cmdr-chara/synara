@@ -86,7 +86,7 @@ fn load() -> ControlFile {
 }
 
 pub fn get(thread_id: &str) -> ThreadControlState {
-    let guard = state().lock().unwrap();
+    let guard = state().lock().unwrap_or_else(|e| e.into_inner());
     if guard.load_error {
         return ThreadControlState {
             disabled: true,
@@ -145,7 +145,7 @@ fn persist(guard: &ControlFile) -> Result<(), String> {
 /// no-op upstream — the generation must NOT move, or consent recorded moments
 /// ago would silently freeze. Disabling always increments.
 pub fn set(thread_id: &str, disabled: bool) -> Result<i64, String> {
-    let mut guard = state().lock().unwrap();
+    let mut guard = state().lock().unwrap_or_else(|e| e.into_inner());
     if guard.load_error {
         return Err(
             "Computer authorization state could not be loaded; control remains disabled."
@@ -181,7 +181,7 @@ pub fn set(thread_id: &str, disabled: bool) -> Result<i64, String> {
 /// The intent only sticks when the generation still matches — recording it
 /// for a generation control has since moved past is meaningless.
 pub fn record_chat_intent(thread_id: &str, enabled: bool, generation: i64) -> Result<(), String> {
-    let mut guard = state().lock().unwrap();
+    let mut guard = state().lock().unwrap_or_else(|e| e.into_inner());
     if guard.load_error {
         return if enabled {
             Err(

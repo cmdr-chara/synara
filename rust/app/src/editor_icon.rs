@@ -135,7 +135,7 @@ pub async fn editor_icon(RawQuery(query): RawQuery) -> Response {
     // Negative cache: a missing editor stays missing for 5 minutes so the UI
     // rescan does not hit the filesystem on every render.
     {
-        let cache = negative_cache().lock().unwrap();
+        let cache = negative_cache().lock().unwrap_or_else(|e| e.into_inner());
         if let Some(at) = cache.get(&editor_id) {
             if at.elapsed() < NEGATIVE_CACHE_TTL {
                 return (StatusCode::NOT_FOUND, "Not Found").into_response();

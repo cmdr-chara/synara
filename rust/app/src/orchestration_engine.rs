@@ -1723,9 +1723,9 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
         );
     }
     let copy_field = |ep: &mut Map<String, Value>,
-                          sets: &mut Vec<(&'static str, Value)>,
-                          key: &'static str,
-                          column: &'static str| {
+                      sets: &mut Vec<(&'static str, Value)>,
+                      key: &'static str,
+                      column: &'static str| {
         if let Some(v) = command.get(key) {
             ep.insert(key.to_string(), v.clone());
             sets.push((column, v.clone()));

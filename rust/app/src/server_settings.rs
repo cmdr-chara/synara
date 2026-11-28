@@ -239,20 +239,25 @@ fn apply_patch(settings: &mut Value, patch: &Value) {
 }
 
 pub fn get_settings(_payload: &Value) -> Result<Value, WsErr> {
-    let doc = STORE.doc.lock().unwrap();
+    let doc = STORE.doc.lock().unwrap_or_else(|e| e.into_inner());
     Ok(doc.settings.clone())
 }
 
 pub fn subscribe() -> (Value, broadcast::Receiver<Value>) {
     let snapshot = {
-        let doc = STORE.doc.lock().unwrap();
+        let doc = STORE.doc.lock().unwrap_or_else(|e| e.into_inner());
         doc.settings.clone()
     };
     (snapshot, STORE.changes.subscribe())
 }
 
 pub fn current() -> Value {
-    STORE.doc.lock().unwrap().settings.clone()
+    STORE
+        .doc
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .settings
+        .clone()
 }
 
 pub fn changes() -> broadcast::Receiver<Value> {
@@ -294,7 +299,7 @@ pub fn update_settings(payload: &Value) -> Result<Value, WsErr> {
         }
     }
     let settings = {
-        let mut doc = STORE.doc.lock().unwrap();
+        let mut doc = STORE.doc.lock().unwrap_or_else(|e| e.into_inner());
         apply_patch(&mut doc.settings, &patch);
         // Legacy provider imports land as the authoritative provider config.
         if let Some(providers) = payload.get("legacyProviders") {

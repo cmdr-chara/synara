@@ -533,7 +533,7 @@ pub fn stop_shared_host() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     static TEST_COUNTER: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
 
     fn fake_helper(script: &str) -> (PathBuf, PathBuf) {

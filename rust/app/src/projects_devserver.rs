@@ -49,12 +49,12 @@ fn server_json(project_id: &str, s: &DevServer) -> Value {
         "cwd": s.cwd,
         "pid": s.pid,
         "startedAt": s.started_at,
-        "status": *s.status.lock().unwrap(),
+        "status": *s.status.lock().unwrap_or_else(|e| e.into_inner()),
     })
 }
 
 fn snapshot_event() -> Value {
-    let servers = SERVERS.lock().unwrap();
+    let servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
     json!({
         "type": "snapshot",
         "servers": servers.iter().map(|(id, s)| server_json(id, s)).collect::<Vec<_>>(),
@@ -76,7 +76,7 @@ pub fn has_active_dev_servers() -> bool {
 }
 
 fn refresh_status(s: &DevServer) {
-    let mut status = s.status.lock().unwrap();
+    let mut status = s.status.lock().unwrap_or_else(|e| e.into_inner());
     if *status == "starting" && s.started_instant.elapsed() >= Duration::from_secs(2) {
         *status = "running";
     }
@@ -92,11 +92,11 @@ fn watch_child(project_id: String) {
     tokio::spawn(async move {
         loop {
             let exited = {
-                let servers = SERVERS.lock().unwrap();
+                let servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
                 match servers.get(&project_id) {
                     None => return,
                     Some(s) => {
-                        let mut slot = s.child.lock().unwrap();
+                        let mut slot = s.child.lock().unwrap_or_else(|e| e.into_inner());
                         match slot.as_mut() {
                             Some(child) => match child.try_wait() {
                                 Ok(Some(_)) => true,
@@ -110,7 +110,7 @@ fn watch_child(project_id: String) {
             };
             if exited {
                 let removed = {
-                    let mut servers = SERVERS.lock().unwrap();
+                    let mut servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
                     servers.remove(&project_id)
                 };
                 if removed.is_some() {
@@ -151,7 +151,7 @@ pub fn run_dev_server(payload: &Value) -> Result<Value, WsErr> {
     }
 
     {
-        let servers = SERVERS.lock().unwrap();
+        let servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
         if let Some(existing) = servers.get(&project_id) {
             return Ok(json!({ "server": server_json(&project_id, existing) }));
         }
@@ -184,7 +184,7 @@ pub fn run_dev_server(payload: &Value) -> Result<Value, WsErr> {
         started_instant: Instant::now(),
     };
     let out = {
-        let mut servers = SERVERS.lock().unwrap();
+        let mut servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
         servers.insert(project_id.clone(), server);
         server_json(&project_id, servers.get(&project_id).unwrap())
     };
@@ -200,12 +200,12 @@ pub fn stop_dev_server(payload: &Value) -> Result<Value, WsErr> {
         .filter(|s| !s.trim().is_empty())
         .ok_or_else(|| err("projectId is required"))?;
     let removed = {
-        let mut servers = SERVERS.lock().unwrap();
+        let mut servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
         servers.remove(project_id)
     };
     match removed {
         Some(s) => {
-            if let Some(mut child) = s.child.lock().unwrap().take() {
+            if let Some(mut child) = s.child.lock().unwrap_or_else(|e| e.into_inner()).take() {
                 let _ = child.kill();
             }
             broadcast(json!({
@@ -220,7 +220,7 @@ pub fn stop_dev_server(payload: &Value) -> Result<Value, WsErr> {
 }
 
 pub fn list_dev_servers() -> Result<Value, WsErr> {
-    let servers = SERVERS.lock().unwrap();
+    let servers = SERVERS.lock().unwrap_or_else(|e| e.into_inner());
     let list: Vec<Value> = servers
         .iter()
         .map(|(id, s)| {

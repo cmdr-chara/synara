@@ -394,7 +394,7 @@ async fn fetch_favicon_for_host(host: &str) -> Option<(Vec<u8>, String)> {
 
 async fn resolve_site_favicon(host: &str) -> SiteCacheEntry {
     {
-        let cache = site_cache().lock().unwrap();
+        let cache = site_cache().lock().unwrap_or_else(|e| e.into_inner());
         if let Some(entry) = cache.get(host) {
             if entry.expires_at > Instant::now() {
                 return SiteCacheEntry {
@@ -417,7 +417,7 @@ async fn resolve_site_favicon(host: &str) -> SiteCacheEntry {
                 FAVICON_FAILURE_TTL
             },
     };
-    let mut cache = site_cache().lock().unwrap();
+    let mut cache = site_cache().lock().unwrap_or_else(|e| e.into_inner());
     while cache.len() >= FAVICON_CACHE_MAX {
         if let Some(oldest) = cache.keys().next().cloned() {
             if oldest == host {

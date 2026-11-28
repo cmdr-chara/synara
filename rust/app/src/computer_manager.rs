@@ -112,7 +112,7 @@ fn now_ms() -> u64 {
 pub const COMPUTER_USER_INTERACTION_QUIET_MS: u64 = 4_000;
 
 fn control_disabled(thread_id: &str) -> bool {
-    let guard = manager().lock().unwrap();
+    let guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     guard.disabled_threads.contains(thread_id) || crate::computer_control::get(thread_id).disabled
 }
 
@@ -180,7 +180,7 @@ pub fn can_continue_chat_control(thread_id: &str) -> bool {
 /// prompts cancelled, leases released, input stopped.
 pub async fn set_control_enabled(thread_id: &str, enabled: bool) -> Result<Value, String> {
     let request = {
-        let mut guard = manager().lock().unwrap();
+        let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
         let token = guard.control_requests.get(thread_id).copied().unwrap_or(0) + 1;
         guard.control_requests.insert(thread_id.to_string(), token);
         token
@@ -188,7 +188,7 @@ pub async fn set_control_enabled(thread_id: &str, enabled: bool) -> Result<Value
     if enabled {
         crate::computer_control::set(thread_id, false)?;
         crate::input_monitor::control_armed(thread_id);
-        let mut guard = manager().lock().unwrap();
+        let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
         if guard.control_requests.get(thread_id).copied() == Some(request) {
             guard.disabled_threads.remove(thread_id);
         }
@@ -196,7 +196,7 @@ pub async fn set_control_enabled(thread_id: &str, enabled: bool) -> Result<Value
         crate::computer_control::set(thread_id, true)?;
         crate::input_monitor::control_disarmed(thread_id);
         {
-            let mut guard = manager().lock().unwrap();
+            let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
             guard.disabled_threads.insert(thread_id.to_string());
             if let Some(runtime) = guard.threads.get_mut(thread_id) {
                 runtime.pane_surfaced = false;
@@ -205,7 +205,7 @@ pub async fn set_control_enabled(thread_id: &str, enabled: bool) -> Result<Value
         revoke_control(thread_id).await?;
     }
     {
-        let mut guard = manager().lock().unwrap();
+        let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
         if guard.control_requests.get(thread_id).copied() == Some(request) {
             guard.control_requests.remove(thread_id);
         }
@@ -241,7 +241,7 @@ pub fn assert_control_authority(owner: Option<&str>) -> Result<(), String> {
 /// A backend-reported input pause blocks dispatch until it clears.
 pub fn assert_input_not_paused(owner: Option<&str>) -> Result<(), String> {
     let Some(owner) = owner else { return Ok(()) };
-    let guard = manager().lock().unwrap();
+    let guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     if let Some(pause) = &guard.global_input_pause {
         let message = pause
             .get("message")
@@ -262,7 +262,7 @@ pub fn assert_input_not_paused(owner: Option<&str>) -> Result<(), String> {
 }
 
 pub fn record_input_pause(owner: &str, pause: Value) {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     if guard.suspended_threads.contains(owner) || guard.disabled_threads.contains(owner) {
         return;
     }
@@ -274,11 +274,14 @@ pub fn record_input_pause(owner: &str, pause: Value) {
 }
 
 pub fn record_global_input_pause(pause: Value) {
-    manager().lock().unwrap().global_input_pause = Some(pause);
+    manager()
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .global_input_pause = Some(pause);
 }
 
 pub fn input_pause_active(owner: Option<&str>) -> bool {
-    let guard = manager().lock().unwrap();
+    let guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     if guard.global_input_pause.is_some() {
         return true;
     }
@@ -294,7 +297,7 @@ pub fn input_started(thread_id: &str) {
     if thread_id.is_empty() {
         return;
     }
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     *guard
         .input_in_flight
         .entry(thread_id.to_string())
@@ -302,7 +305,7 @@ pub fn input_started(thread_id: &str) {
 }
 
 pub fn input_finished(thread_id: &str) {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     if let Some(count) = guard.input_in_flight.get_mut(thread_id) {
         *count = count.saturating_sub(1);
         if *count == 0 {
@@ -321,11 +324,14 @@ pub fn any_input_in_flight() -> bool {
 }
 
 pub fn desktop_epoch() -> u64 {
-    manager().lock().unwrap().desktop_epoch
+    manager()
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .desktop_epoch
 }
 
 pub fn desktop_interruption_state() -> (u64, u64, Vec<String>) {
-    let guard = manager().lock().unwrap();
+    let guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     (
         guard.desktop_epoch,
         guard.desktop_interruptions,
@@ -334,7 +340,7 @@ pub fn desktop_interruption_state() -> (u64, u64, Vec<String>) {
 }
 
 pub fn note_desktop_interruption(reason: &str) {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     guard.desktop_interruptions = guard.desktop_interruptions.saturating_add(1);
     if !reason.is_empty()
         && guard.desktop_pause_reasons.len() < 16
@@ -350,7 +356,7 @@ pub fn note_desktop_interruption(reason: &str) {
 /// A fresh desktop observation clears the human-takeover pause. Only direct
 /// observations call this: status/control reads must not silently re-arm input.
 pub fn clear_input_pause(owner: &str) {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     // A successful fresh model observation proves the shared desktop state
     // again, so it clears both the host-wide gate and this thread's pause.
     guard.global_input_pause = None;
@@ -375,7 +381,7 @@ pub fn assert_foreground_allowed(
             "The user did not ask or allow this app or window to be shown for this task. Stay in the background: keep observing and acting through background input. Do not ask again in this turn.".to_string(),
         );
     }
-    let guard = manager().lock().unwrap();
+    let guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     if let Some(last) = guard.last_user_desktop_input_at {
         if now_ms().saturating_sub(last) < COMPUTER_USER_INTERACTION_QUIET_MS {
             return Err(
@@ -387,7 +393,7 @@ pub fn assert_foreground_allowed(
 }
 
 pub fn note_user_desktop_input() {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     guard.last_user_desktop_input_at = Some(now_ms());
     guard.desktop_epoch = guard.desktop_epoch.saturating_add(1);
 }
@@ -396,7 +402,7 @@ pub fn note_user_desktop_input() {
 /// conversation owns the pointer at a time; a different thread holding it
 /// raises the lease error the model sees verbatim upstream.
 pub fn acquire_desktop_lease(thread_id: &str, turn_id: Option<&str>) -> Result<(), String> {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     if let Some(lease) = &guard.lease {
         if lease.thread_id != thread_id {
             return Err(
@@ -433,7 +439,7 @@ pub fn acquire_desktop_lease(thread_id: &str, turn_id: Option<&str>) -> Result<(
 /// calls could still be landing; an in-flight release is honoured on
 /// completion rather than silently dropped.
 pub async fn release_desktop_control(thread_id: &str, turn_id: Option<&str>) {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     // Background leases for this thread always release immediately.
     guard.background_leases.retain(|_, lease| {
         lease.thread_id != thread_id || turn_id.is_none() || lease.turn_id.as_deref() != turn_id
@@ -480,7 +486,7 @@ pub async fn release_desktop_control(thread_id: &str, turn_id: Option<&str>) {
 /// Agent-call accounting: callers mark entry and exit so release defers
 /// correctly. On exit, a deferred release completes.
 pub fn agent_call_started(thread_id: &str) {
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     *guard
         .agent_calls_in_flight
         .entry(thread_id.to_string())
@@ -489,7 +495,7 @@ pub fn agent_call_started(thread_id: &str) {
 
 pub async fn agent_call_finished(thread_id: &str) {
     let deferred = {
-        let mut guard = manager().lock().unwrap();
+        let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
         let count = guard.agent_calls_in_flight.get_mut(thread_id);
         if let Some(count) = count {
             *count = count.saturating_sub(1);
@@ -508,7 +514,7 @@ pub async fn agent_call_finished(thread_id: &str) {
 
 fn emergency_stop_input_now() {
     crate::computer_approval::gate().revoke_task_grants();
-    let mut guard = manager().lock().unwrap();
+    let mut guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     guard.lease = None;
     guard.background_leases.clear();
     guard.authority_turns.clear();
@@ -550,7 +556,7 @@ pub fn assert_not_denied(app: Option<&str>, bundle_id: Option<&str>) -> Result<(
 /// Snapshot for the thread-state surface: whether this thread holds the
 /// desktop lease, plus its pause state.
 pub fn thread_state_snapshot(thread_id: &str) -> Value {
-    let guard = manager().lock().unwrap();
+    let guard = manager().lock().unwrap_or_else(|e| e.into_inner());
     let holds_lease = guard
         .lease
         .as_ref()
@@ -599,7 +605,7 @@ mod tests {
         assert!(acquire_desktop_lease(&second, Some("turn1")).is_err());
         // Renewal by the holder succeeds.
         acquire_desktop_lease(&first, Some("turn1")).unwrap();
-        manager().lock().unwrap().lease = None;
+        manager().lock().unwrap_or_else(|e| e.into_inner()).lease = None;
     }
 
     #[tokio::test]
@@ -607,7 +613,7 @@ mod tests {
         let thread = unique_thread();
         // The manager is a process-wide singleton: evict any lease a
         // concurrent test holds so this one measures its own lifecycle.
-        manager().lock().unwrap().lease = None;
+        manager().lock().unwrap_or_else(|e| e.into_inner()).lease = None;
         acquire_desktop_lease(&thread, Some("turn1")).unwrap();
         agent_call_started(&thread);
         release_desktop_control(&thread, Some("turn1")).await;
@@ -634,7 +640,7 @@ mod tests {
     async fn disable_tears_down_lease_and_control() {
         let thread = unique_thread();
         let _ = crate::computer_control::set(&thread, false);
-        manager().lock().unwrap().lease = None;
+        manager().lock().unwrap_or_else(|e| e.into_inner()).lease = None;
         acquire_desktop_lease(&thread, Some("turn1")).unwrap();
         set_control_enabled(&thread, false).await.unwrap();
         let held = manager()

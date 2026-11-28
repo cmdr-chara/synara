@@ -50,19 +50,25 @@ pub fn add(
         via: via.to_string(),
         close_signal: tx,
     };
-    registry().lock().unwrap().insert(id.clone(), session);
+    registry()
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .insert(id.clone(), session);
     (id, rx)
 }
 
 pub fn remove(id: &str) {
-    registry().lock().unwrap().remove(id);
+    registry()
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .remove(id);
 }
 
 /// Closes every live session a device holds — the revoke path calls this so a
 /// trust change reaches open sockets immediately instead of at credential
 /// expiry, exactly upstream's closeForDevice.
 pub fn close_for_device(device_jkt: &str) {
-    let sessions = registry().lock().unwrap();
+    let sessions = registry().lock().unwrap_or_else(|e| e.into_inner());
     for session in sessions.values() {
         if session.device_jkt == device_jkt {
             let _ = session.close_signal.send(HOST_SESSION_CLOSE_REVOKED);

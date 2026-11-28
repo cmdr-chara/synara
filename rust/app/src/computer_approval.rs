@@ -59,7 +59,7 @@ fn cancel_map_entries(
     thread_id: &str,
     turn_id: Option<&str>,
 ) {
-    let mut guard = tasks.lock().unwrap();
+    let mut guard = tasks.lock().unwrap_or_else(|e| e.into_inner());
     let remove = match (guard.get(thread_id), turn_id) {
         (Some(task), Some(turn)) => task.turn_id != turn,
         (Some(_), None) => true,
@@ -76,7 +76,7 @@ impl ComputerApprovalGate {
     pub fn cancel_thread(&self, thread_id: &str, turn_id: Option<&str>) {
         cancel_map_entries(&self.tasks, thread_id, turn_id);
         cancel_map_entries(&self.foreground_tasks, thread_id, turn_id);
-        let mut pending = self.pending.lock().unwrap();
+        let mut pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
         let ids: Vec<String> = pending
             .iter()
             .filter(|(_, p)| {
@@ -96,7 +96,7 @@ impl ComputerApprovalGate {
     /// not silently authorize the post-interruption desktop.
     pub fn revoke_task_grants(&self) {
         for tasks in [&self.tasks, &self.foreground_tasks] {
-            let mut guard = tasks.lock().unwrap();
+            let mut guard = tasks.lock().unwrap_or_else(|e| e.into_inner());
             for task in guard.values_mut() {
                 if task.granted == Some(true) {
                     task.granted = None;
@@ -117,7 +117,7 @@ impl ComputerApprovalGate {
     /// Settles a published prompt. acceptForSession is deliberately
     /// unavailable for this gate — it degrades to decline.
     pub fn respond(&self, thread_id: &str, request_id: &str, decision: &str) -> bool {
-        let mut pending = self.pending.lock().unwrap();
+        let mut pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
         let Some(entry) = pending.get(request_id) else {
             return false;
         };
@@ -132,7 +132,7 @@ impl ComputerApprovalGate {
         let _ = entry.settle.send(outcome);
         // Wake any shared waiters of this turn's task prompt.
         for tasks in [&self.tasks, &self.foreground_tasks] {
-            let mut guard = tasks.lock().unwrap();
+            let mut guard = tasks.lock().unwrap_or_else(|e| e.into_inner());
             if let Some(task) = guard.get_mut(thread_id) {
                 if let Some(rx) = &task.pending {
                     let _ = rx.clone();
@@ -170,7 +170,7 @@ impl ComputerApprovalGate {
             Publish,
         }
         let action = {
-            let guard = tasks_map.lock().unwrap();
+            let guard = tasks_map.lock().unwrap_or_else(|e| e.into_inner());
             match guard.get(thread_id) {
                 Some(task) if task.turn_id == turn_id => {
                     if let Some(granted) = task.granted {
@@ -189,7 +189,7 @@ impl ComputerApprovalGate {
                     // A new turn ends every earlier turn's consent.
                     drop(guard);
                     self.cancel_stale_turns(thread_id, turn_id);
-                    let mut guard = tasks_map.lock().unwrap();
+                    let mut guard = tasks_map.lock().unwrap_or_else(|e| e.into_inner());
                     guard.insert(
                         thread_id.to_string(),
                         TaskApproval {
@@ -232,7 +232,7 @@ impl ComputerApprovalGate {
         // Queue limits: a stuck turn must not starve every other chat, and a
         // full queue is a retryable refusal — never implicit denial.
         {
-            let pending = self.pending.lock().unwrap();
+            let pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
             let thread_pending = pending
                 .values()
                 .filter(|p| p.thread_id == thread_id)
@@ -247,15 +247,18 @@ impl ComputerApprovalGate {
         let (settle_tx, settle_rx) = tokio::sync::oneshot::channel::<Outcome>();
         let (watch_tx, watch_rx) = tokio::sync::watch::channel::<Option<Outcome>>(None);
         {
-            self.pending.lock().unwrap().insert(
-                request_id.clone(),
-                PendingApproval {
-                    thread_id: thread_id.to_string(),
-                    turn_id: Some(turn_id.to_string()),
-                    settle: settle_tx,
-                },
-            );
-            let mut guard = tasks_map.lock().unwrap();
+            self.pending
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .insert(
+                    request_id.clone(),
+                    PendingApproval {
+                        thread_id: thread_id.to_string(),
+                        turn_id: Some(turn_id.to_string()),
+                        settle: settle_tx,
+                    },
+                );
+            let mut guard = tasks_map.lock().unwrap_or_else(|e| e.into_inner());
             if let Some(task) = guard.get_mut(thread_id) {
                 task.pending = Some(watch_rx);
             }
@@ -267,8 +270,11 @@ impl ComputerApprovalGate {
             Err(_) => Outcome::Expired,
         };
         {
-            self.pending.lock().unwrap().remove(&request_id);
-            let mut guard = tasks_map.lock().unwrap();
+            self.pending
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .remove(&request_id);
+            let mut guard = tasks_map.lock().unwrap_or_else(|e| e.into_inner());
             if let Some(task) = guard.get_mut(thread_id) {
                 if task.turn_id == turn_id && task.granted.is_none() {
                     if matches!(outcome, Outcome::Accept | Outcome::Decline) {
@@ -284,12 +290,12 @@ impl ComputerApprovalGate {
 
     fn cancel_stale_turns(&self, thread_id: &str, turn_id: &str) {
         for tasks in [&self.tasks, &self.foreground_tasks] {
-            let mut guard = tasks.lock().unwrap();
+            let mut guard = tasks.lock().unwrap_or_else(|e| e.into_inner());
             if guard.get(thread_id).is_some_and(|t| t.turn_id != turn_id) {
                 guard.remove(thread_id);
             }
         }
-        let mut pending = self.pending.lock().unwrap();
+        let mut pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
         let ids: Vec<String> = pending
             .iter()
             .filter(|(_, p)| p.thread_id == thread_id && p.turn_id.as_deref() != Some(turn_id))
@@ -327,7 +333,14 @@ mod tests {
             _ = &mut request => panic!("prompt resolved before any answer"),
             _ = tokio::time::sleep(std::time::Duration::from_millis(60)) => {}
         }
-        let request_id = gate.pending.lock().unwrap().keys().next().cloned().unwrap();
+        let request_id = gate
+            .pending
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .keys()
+            .next()
+            .cloned()
+            .unwrap();
         assert!(gate.respond("t1", &request_id, "accept"));
         let outcome = request.await;
         assert_eq!(outcome, Outcome::Accept);
@@ -351,7 +364,14 @@ mod tests {
             _ = &mut request => panic!("prompt resolved before any answer"),
             _ = tokio::time::sleep(std::time::Duration::from_millis(60)) => {}
         }
-        let request_id = gate.pending.lock().unwrap().keys().next().cloned().unwrap();
+        let request_id = gate
+            .pending
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .keys()
+            .next()
+            .cloned()
+            .unwrap();
         assert!(gate.respond("t2", &request_id, "acceptForSession"));
         assert_eq!(request.await, Outcome::Decline);
     }
@@ -359,7 +379,7 @@ mod tests {
     #[test]
     fn revoke_clears_grants_but_not_declines() {
         let gate = fresh_gate();
-        gate.tasks.lock().unwrap().insert(
+        gate.tasks.lock().unwrap_or_else(|e| e.into_inner()).insert(
             "t3".to_string(),
             TaskApproval {
                 turn_id: "turn1".to_string(),
@@ -367,7 +387,7 @@ mod tests {
                 pending: None,
             },
         );
-        gate.tasks.lock().unwrap().insert(
+        gate.tasks.lock().unwrap_or_else(|e| e.into_inner()).insert(
             "t4".to_string(),
             TaskApproval {
                 turn_id: "turn1".to_string(),
@@ -376,9 +396,22 @@ mod tests {
             },
         );
         gate.revoke_task_grants();
-        assert_eq!(gate.tasks.lock().unwrap().get("t3").unwrap().granted, None);
         assert_eq!(
-            gate.tasks.lock().unwrap().get("t4").unwrap().granted,
+            gate.tasks
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .get("t3")
+                .unwrap()
+                .granted,
+            None
+        );
+        assert_eq!(
+            gate.tasks
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .get("t4")
+                .unwrap()
+                .granted,
             Some(false)
         );
     }

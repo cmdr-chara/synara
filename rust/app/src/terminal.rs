@@ -40,8 +40,17 @@ pub(crate) fn close_thread_sessions(thread_id: &str) {
         .cloned()
         .collect();
     for key in keys {
-        if let Some(session) = STORE.sessions.lock().unwrap().remove(&key) {
-            let _ = session.child.lock().unwrap().kill();
+        if let Some(session) = STORE
+            .sessions
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .remove(&key)
+        {
+            let _ = session
+                .child
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .kill();
         }
     }
 }
@@ -94,18 +103,18 @@ impl Session {
     }
 
     fn snapshot(&self) -> Value {
-        let status = *self.status.lock().unwrap();
-        let (code, signal) = *self.exit.lock().unwrap();
+        let status = *self.status.lock().unwrap_or_else(|e| e.into_inner());
+        let (code, signal) = *self.exit.lock().unwrap_or_else(|e| e.into_inner());
         json!({
             "threadId": self.thread_id,
             "terminalId": self.terminal_id,
-            "cwd": self.cwd.lock().unwrap().clone(),
+            "cwd": self.cwd.lock().unwrap_or_else(|e| e.into_inner()).clone(),
             "status": status,
             "pid": if status == "exited" { Value::Null } else { json!(self.pid) },
-            "history": self.history.lock().unwrap().clone(),
+            "history": self.history.lock().unwrap_or_else(|e| e.into_inner()).clone(),
             "exitCode": code.map(Value::from).unwrap_or(Value::Null),
             "exitSignal": signal.map(Value::from).unwrap_or(Value::Null),
-            "updatedAt": self.updated_at.lock().unwrap().clone(),
+            "updatedAt": self.updated_at.lock().unwrap_or_else(|e| e.into_inner()).clone(),
         })
     }
 
@@ -113,7 +122,7 @@ impl Session {
         if self.retired.load(Ordering::Relaxed) {
             return;
         }
-        *self.updated_at.lock().unwrap() = now_iso();
+        *self.updated_at.lock().unwrap_or_else(|e| e.into_inner()) = now_iso();
         let obj = event.as_object_mut().unwrap();
         obj.insert("threadId".into(), json!(self.thread_id));
         obj.insert("terminalId".into(), json!(self.terminal_id));
@@ -277,7 +286,7 @@ fn spawn(
                 Ok(n) => {
                     let data = String::from_utf8_lossy(&buf[..n]).to_string();
                     {
-                        let mut history = drain.history.lock().unwrap();
+                        let mut history = drain.history.lock().unwrap_or_else(|e| e.into_inner());
                         history.push_str(&data);
                         if history.len() > HISTORY_MAX {
                             let cut = history.len() - HISTORY_MAX;
@@ -301,7 +310,7 @@ fn spawn(
     std::thread::spawn(move || {
         let code = loop {
             {
-                let mut child = watch.child.lock().unwrap();
+                let mut child = watch.child.lock().unwrap_or_else(|e| e.into_inner());
                 match child.try_wait() {
                     Ok(Some(status)) => break Some(status.exit_code() as i64),
                     _ => {}
@@ -309,8 +318,8 @@ fn spawn(
             }
             std::thread::sleep(std::time::Duration::from_millis(50));
         };
-        *watch.exit.lock().unwrap() = (code, None);
-        *watch.status.lock().unwrap() = "exited";
+        *watch.exit.lock().unwrap_or_else(|e| e.into_inner()) = (code, None);
+        *watch.status.lock().unwrap_or_else(|e| e.into_inner()) = "exited";
         watch.emit(json!({"type": "exited", "exitCode": code.map(Value::from).unwrap_or(Value::Null), "exitSignal": Value::Null}));
     });
     // Retire any session already occupying this key before replacing it.
@@ -324,7 +333,7 @@ fn spawn(
     };
     if let Some(old) = old {
         old.retired.store(true, Ordering::Relaxed);
-        let _ = old.child.lock().unwrap().kill();
+        let _ = old.child.lock().unwrap_or_else(|e| e.into_inner()).kill();
     }
     Ok(session)
 }
@@ -360,13 +369,21 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
             let env = {
                 let merged = env_pairs(payload);
                 if merged.is_empty() {
-                    session.env.lock().unwrap().clone()
+                    session
+                        .env
+                        .lock()
+                        .unwrap_or_else(|e| e.into_inner())
+                        .clone()
                 } else {
                     merged
                 }
             };
             session.retired.store(true, Ordering::Relaxed);
-            let _ = session.child.lock().unwrap().kill();
+            let _ = session
+                .child
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .kill();
             let fresh = spawn(
                 &session.thread_id,
                 &session.terminal_id,
@@ -403,11 +420,11 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
                 .get("onlyIfIdle")
                 .and_then(|v| v.as_bool())
                 .unwrap_or(false)
-                && *session.status.lock().unwrap() == "running"
+                && *session.status.lock().unwrap_or_else(|e| e.into_inner()) == "running"
             {
                 return Ok(None);
             }
-            let mut w = session.writer.lock().unwrap();
+            let mut w = session.writer.lock().unwrap_or_else(|e| e.into_inner());
             w.write_all(data.as_bytes())
                 .and_then(|_| w.flush())
                 .map_err(|_| terminal_error())?;
@@ -442,20 +459,28 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
                     pixel_height: 0,
                 })
                 .map_err(|_| terminal_error())?;
-            *session.cols.lock().unwrap() = cols;
-            *session.rows.lock().unwrap() = rows;
+            *session.cols.lock().unwrap_or_else(|e| e.into_inner()) = cols;
+            *session.rows.lock().unwrap_or_else(|e| e.into_inner()) = rows;
             Ok(None)
         }
         "terminal.clear" => {
             let session = find_session(payload)?;
-            session.history.lock().unwrap().clear();
+            session
+                .history
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .clear();
             session.emit(json!({"type": "cleared"}));
             Ok(None)
         }
         "terminal.close" => {
             let (thread_id, terminal_id) = session_key(payload)?;
             let key = format!("{thread_id}:{terminal_id}");
-            let session = STORE.sessions.lock().unwrap().remove(&key);
+            let session = STORE
+                .sessions
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .remove(&key);
             let Some(session) = session else {
                 return Err(WsErr(format!("Unknown terminal: {key}"), Some("NOT_FOUND")));
             };
@@ -463,7 +488,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
                 .get("onlyIfIdle")
                 .and_then(|v| v.as_bool())
                 .unwrap_or(false)
-                && *session.status.lock().unwrap() == "running"
+                && *session.status.lock().unwrap_or_else(|e| e.into_inner()) == "running"
             {
                 STORE
                     .sessions
@@ -472,13 +497,21 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
                     .insert(key, Arc::clone(&session));
                 return Err(WsErr("terminal is busy".to_string(), Some("TERMINAL_BUSY")));
             }
-            let _ = session.child.lock().unwrap().kill();
+            let _ = session
+                .child
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .kill();
             if payload
                 .get("deleteHistory")
                 .and_then(|v| v.as_bool())
                 .unwrap_or(false)
             {
-                session.history.lock().unwrap().clear();
+                session
+                    .history
+                    .lock()
+                    .unwrap_or_else(|e| e.into_inner())
+                    .clear();
             }
             Ok(None)
         }

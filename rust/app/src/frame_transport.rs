@@ -157,7 +157,7 @@ impl FrameTransport {
 
     pub fn subscribe(&self, stream_id: &str, sink: Box<dyn FrameSink>) {
         let id = {
-            let mut next = self.next_id.lock().unwrap();
+            let mut next = self.next_id.lock().unwrap_or_else(|e| e.into_inner());
             *next += 1;
             *next
         };
@@ -187,7 +187,13 @@ impl FrameTransport {
                 self.socket_budget_bytes,
             );
         }
-        if let Some(keyframe) = self.latest_keyframe.lock().unwrap().get(stream_id).cloned() {
+        if let Some(keyframe) = self
+            .latest_keyframe
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .get(stream_id)
+            .cloned()
+        {
             subscriber.awaiting_keyframe = false;
             deliver(
                 &mut subscriber,
@@ -215,14 +221,17 @@ impl FrameTransport {
                 .lock()
                 .unwrap()
                 .insert(stream_id.clone(), encoded.clone());
-            self.latest_keyframe.lock().unwrap().remove(stream_id);
+            self.latest_keyframe
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .remove(stream_id);
         } else if envelope.header.keyframe {
             self.latest_keyframe
                 .lock()
                 .unwrap()
                 .insert(stream_id.clone(), encoded.clone());
         }
-        let mut subscribers = self.subscribers.lock().unwrap();
+        let mut subscribers = self.subscribers.lock().unwrap_or_else(|e| e.into_inner());
         let Some(list) = subscribers.get_mut(stream_id) else {
             return;
         };
@@ -265,9 +274,20 @@ impl FrameTransport {
     }
 
     pub fn reset(&self, stream_id: &str) {
-        self.latest_keyframe.lock().unwrap().remove(stream_id);
-        self.codec_config_frames.lock().unwrap().remove(stream_id);
-        if let Some(list) = self.subscribers.lock().unwrap().get_mut(stream_id) {
+        self.latest_keyframe
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .remove(stream_id);
+        self.codec_config_frames
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .remove(stream_id);
+        if let Some(list) = self
+            .subscribers
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .get_mut(stream_id)
+        {
             for subscriber in list.iter_mut() {
                 subscriber.queue.clear();
                 subscriber.queued_bytes = 0;
@@ -376,7 +396,10 @@ mod tests {
     }
     impl FrameSink for TestSink {
         fn send(&mut self, bytes: &[u8]) {
-            self.received.lock().unwrap().push(bytes.to_vec());
+            self.received
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .push(bytes.to_vec());
         }
         fn is_open(&self) -> bool {
             self.open
@@ -420,14 +443,21 @@ mod tests {
             received: StdMutex::new(Vec::new()),
             open: true,
         });
-        let received = sink.received.lock().unwrap().len();
+        let received = sink
+            .received
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .len();
         drop(received);
         // We need shared access to inspect: use an Arc-shared sink instead.
         let shared = std::sync::Arc::new(StdMutex::new(Vec::new()));
         struct SharedSink(std::sync::Arc<StdMutex<Vec<Vec<u8>>>>);
         impl FrameSink for SharedSink {
             fn send(&mut self, bytes: &[u8]) {
-                self.0.lock().unwrap().push(bytes.to_vec());
+                self.0
+                    .lock()
+                    .unwrap_or_else(|e| e.into_inner())
+                    .push(bytes.to_vec());
             }
             fn is_open(&self) -> bool {
                 true
@@ -435,10 +465,10 @@ mod tests {
         }
         transport.subscribe("s", Box::new(SharedSink(shared.clone())));
         // The replayed keyframe arrives immediately.
-        assert_eq!(shared.lock().unwrap().len(), 1);
+        assert_eq!(shared.lock().unwrap_or_else(|e| e.into_inner()).len(), 1);
         // Delta frames flow now that the subscriber is past the gate.
         transport.publish(&frame("s", 2, false, false, b"delta"));
-        assert_eq!(shared.lock().unwrap().len(), 2);
+        assert_eq!(shared.lock().unwrap_or_else(|e| e.into_inner()).len(), 2);
     }
 
     #[test]
@@ -448,7 +478,10 @@ mod tests {
         struct SharedSink(std::sync::Arc<StdMutex<Vec<Vec<u8>>>>);
         impl FrameSink for SharedSink {
             fn send(&mut self, bytes: &[u8]) {
-                self.0.lock().unwrap().push(bytes.to_vec());
+                self.0
+                    .lock()
+                    .unwrap_or_else(|e| e.into_inner())
+                    .push(bytes.to_vec());
             }
             fn is_open(&self) -> bool {
                 true
@@ -456,9 +489,9 @@ mod tests {
         }
         transport.subscribe("fresh", Box::new(SharedSink(shared.clone())));
         transport.publish(&frame("fresh", 1, false, false, b"delta"));
-        assert_eq!(shared.lock().unwrap().len(), 0);
+        assert_eq!(shared.lock().unwrap_or_else(|e| e.into_inner()).len(), 0);
         transport.publish(&frame("fresh", 2, true, false, b"key"));
-        assert_eq!(shared.lock().unwrap().len(), 1);
+        assert_eq!(shared.lock().unwrap_or_else(|e| e.into_inner()).len(), 1);
         let stats = transport.stats_for("fresh");
         assert_eq!(stats[0].dropped, 1);
     }

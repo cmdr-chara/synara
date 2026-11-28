@@ -17,24 +17,10 @@ use axum::routing::get;
 use futures_util::{SinkExt, StreamExt};
 use serde_json::json;
 use tokio::sync::mpsc::unbounded_channel;
-use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 
 use crate::state::AppState;
 
-/// Forward the headers that matter to the original's admission and auth.
-/// `origin` is deliberately excluded: the original gates upgrades on a trusted
-/// origin list and the webview's dev-server origin (e.g. localhost:4577) is not
-/// on it — omitting the header passes admission while `token` still auths.
-const FORWARDED: &[&str] = &[
-    "cookie",
-    "authorization",
-    "sec-websocket-protocol",
-    "user-agent",
-    "x-forwarded-for",
-    "x-forwarded-proto",
-];
 
-const BOOTSTRAP_NEGOTIATE: &str = "bootstrap.negotiate";
 
 fn rpc_id_key(v: &serde_json::Value) -> String {
     // Effect RPC clients use numeric request ids while the native shell uses
@@ -2040,85 +2026,8 @@ fn error_json(crate::todo::WsErr(message, code): crate::todo::WsErr) -> serde_js
     })
 }
 
-/// A `bootstrap.negotiate` request answered natively, or `None` to relay.
-fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
-    let msg: serde_json::Value = serde_json::from_str(text).ok()?;
-    if msg.get("_tag")?.as_str()? != "Request" || msg.get("tag")?.as_str()? != BOOTSTRAP_NEGOTIATE {
-        return None;
-    }
-    let request_id = msg
-        .get("id")
-        .cloned()
-        .unwrap_or(serde_json::Value::String(String::new()));
-    let payload = msg
-        .get("payload")
-        .cloned()
-        .unwrap_or(serde_json::Value::Null);
-    let get_int = |k: &str| payload.get(k).and_then(|v| v.as_i64()).unwrap_or(-1);
-    let required: Vec<String> = payload
-        .get("requiredCapabilities")
-        .and_then(|v| v.as_array())
-        .map(|a| {
-            a.iter()
-                .filter_map(|c| c.as_str().map(String::from))
-                .collect()
-        })
-        .unwrap_or_default();
-    let exit = match crate::native_ws::negotiate(
-        get_int("protocolEpoch"),
-        get_int("minRevision"),
-        get_int("maxRevision"),
-        &required,
-    ) {
-        Ok(value) => json!({"_tag": "Success", "value": value}),
-        Err(err) => json!({
-            "_tag": "Failure",
-            "cause": [{"_tag": "Fail", "error": err}]
-        }),
-    };
-    let reply = json!({"_tag": "Exit", "requestId": request_id, "exit": exit});
-    Some((
-        rpc_id_key(&request_id),
-        ClientMessage::Text(reply.to_string().into()),
-    ))
-}
 
-/// Replaces the `x-synara-server-instance` query value in a socket target.
-fn rewrite_server_instance(target: &str, id: &str) -> String {
-    let Some((base, query)) = target.split_once('?') else {
-        return target.to_string();
-    };
-    let mut params: Vec<String> = query
-        .split('&')
-        .filter(|p| !p.starts_with("x-synara-server-instance="))
-        .map(str::to_string)
-        .collect();
-    params.push(format!("x-synara-server-instance={id}"));
-    format!("{base}?{}", params.join("&"))
-}
 
-/// Client request for the upstream socket with the admission headers copied.
-fn build_upstream_request(
-    target: &str,
-    headers: &HeaderMap,
-) -> Option<tokio_tungstenite::tungstenite::handshake::client::Request> {
-    let mut request = target.into_client_request().ok()?;
-    for name in FORWARDED {
-        if let Some(value) = headers.get(*name)
-            && let Ok(header_name) =
-                tokio_tungstenite::tungstenite::http::header::HeaderName::from_bytes(
-                    name.as_bytes(),
-                )
-            && let Ok(header_value) =
-                tokio_tungstenite::tungstenite::http::header::HeaderValue::from_bytes(
-                    value.as_bytes(),
-                )
-        {
-            request.headers_mut().insert(header_name, header_value);
-        }
-    }
-    Some(request)
-}
 
 async fn serve_native_socket(
     client: WebSocket,

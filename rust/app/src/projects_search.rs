@@ -148,7 +148,7 @@ pub fn index_entries(root: &Path) -> Vec<IndexEntry> {
 }
 
 fn index_for(root: &Path) -> usize {
-    let mut map = INDEXES.lock().unwrap();
+    let mut map = INDEXES.lock().unwrap_or_else(|e| e.into_inner());
     let index = map
         .entry(root.to_path_buf())
         .and_modify(|i| {
@@ -207,7 +207,7 @@ fn required_cwd(payload: &Value) -> Result<PathBuf, WsErr> {
 
 fn search_ranked(root: &Path, query: &str) -> Vec<(u64, String, &'static str)> {
     index_for(root);
-    let map = INDEXES.lock().unwrap();
+    let map = INDEXES.lock().unwrap_or_else(|e| e.into_inner());
     let Some(index) = map.get(root) else {
         return Vec::new();
     };

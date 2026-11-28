@@ -118,7 +118,22 @@ fn role_heading(role: &str) -> &str {
     }
 }
 
-pub async fn thread_export(RawQuery(query): RawQuery) -> Response {
+pub async fn thread_export(
+    headers: axum::http::HeaderMap,
+    RawQuery(query): RawQuery,
+) -> Response {
+    // Full thread contents: unauthenticated export on a non-loopback bind
+    // would expose every conversation to the network. Browser downloads are
+    // same-origin and carry the session cookie, so first-party export keeps
+    // working.
+    let remote_device = headers
+        .get("x-synara-remote-device-jkt")
+        .and_then(|value| value.to_str().ok())
+        .filter(|value| !value.is_empty() && value.len() <= 256)
+        .is_some();
+    if !remote_device && crate::auth_http::authenticate(&headers).is_none() {
+        return StatusCode::UNAUTHORIZED.into_response();
+    }
     let query = query.unwrap_or_default();
     let thread_id = crate::attachments_http::attachments_http_query(&query, "threadId").unwrap_or_default();
     if thread_id.trim().is_empty() {

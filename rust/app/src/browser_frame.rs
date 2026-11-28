@@ -13,7 +13,21 @@ use axum::{
 use base64::Engine;
 use serde_json::Value;
 
-pub async fn browser_frame(RawQuery(query): RawQuery) -> Response {
+pub async fn browser_frame(
+    headers: axum::http::HeaderMap,
+    RawQuery(query): RawQuery,
+) -> Response {
+    // Screenshots of the embedded browser contents: the server binds beyond
+    // loopback, so an unauthenticated frame endpoint would hand live screen
+    // captures of possibly signed-in pages to anyone on the network.
+    let remote_device = headers
+        .get("x-synara-remote-device-jkt")
+        .and_then(|value| value.to_str().ok())
+        .filter(|value| !value.is_empty() && value.len() <= 256)
+        .is_some();
+    if !remote_device && crate::auth_http::authenticate(&headers).is_none() {
+        return StatusCode::UNAUTHORIZED.into_response();
+    }
     // Thread ids are URL-safe, so plain query splitting needs no decoding.
     let thread = query
         .as_deref()

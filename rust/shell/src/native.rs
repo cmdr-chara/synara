@@ -27,7 +27,7 @@ use gpui::prelude::FluentBuilder as _;
 
 use crate::ws_client::Client;
 
-actions!(native, [ToggleFind, ToggleTerminal]);
+actions!(native, [ToggleFind, ToggleTerminal, ToggleBrowser, ToggleComputer]);
 
 // Real upstream icon assets: Hugeicons glyphs regenerated as SVG, Central
 // icons copied verbatim from apps/web/public/central-icons-reversed.
@@ -34855,6 +34855,12 @@ impl Render for Native {
             }))
             .on_action(cx.listener(|this, _: &ToggleTerminal, w, cx| {
                 this.toggle_terminal(w, cx);
+            }))
+            .on_action(cx.listener(|this, _: &ToggleBrowser, w, cx| {
+                this.toggle_browser(w, cx);
+            }))
+            .on_action(cx.listener(|this, _: &ToggleComputer, w, cx| {
+                this.toggle_cua(w, cx);
             }))
             .bg(content_bg)
             .text_color(theme.foreground)

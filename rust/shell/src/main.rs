@@ -336,6 +336,8 @@ fn main() {
             Menu::new("View").items([
                 MenuItem::action("Find", native::ToggleFind),
                 MenuItem::action("Toggle Terminal", native::ToggleTerminal),
+                MenuItem::action("Toggle Browser", native::ToggleBrowser),
+                MenuItem::action("Toggle Computer", native::ToggleComputer),
             ]),
         ]);
         // Upstream display face for the wordmark (--font-display-family:

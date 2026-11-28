@@ -1,0 +1,127 @@
+{
+  "name": "GitHub Light",
+  "appearance": "light",
+  "style": {
+    "editor.foreground": "#24292E",
+    "syntax": {
+      "attribute": {
+        "color": "#6F42C1"
+      },
+      "boolean": {
+        "color": "#005CC5"
+      },
+      "comment": {
+        "color": "#6A737D"
+      },
+      "comment.doc": {
+        "color": "#6A737D"
+      },
+      "constant": {
+        "color": "#005CC5"
+      },
+      "constructor": {
+        "color": "#6F42C1"
+      },
+      "embedded": {
+        "color": "#24292E"
+      },
+      "emphasis": {
+        "font_style": "italic"
+      },
+      "emphasis.strong": {
+        "font_weight": 700
+      },
+      "enum": {
+        "color": "#6F42C1"
+      },
+      "function": {
+        "color": "#6F42C1"
+      },
+      "keyword": {
+        "color": "#D73A49"
+      },
+      "label": {
+        "color": "#D73A49"
+      },
+      "link_text": {
+        "color": "#032F62"
+      },
+      "link_uri": {
+        "color": "#005CC5"
+      },
+      "number": {
+        "color": "#005CC5"
+      },
+      "operator": {
+        "color": "#D73A49"
+      },
+      "preproc": {
+        "color": "#D73A49"
+      },
+      "primary": {
+        "color": "#24292E"
+      },
+      "property": {
+        "color": "#24292E"
+      },
+      "punctuation": {
+        "color": "#24292E"
+      },
+      "punctuation.bracket": {
+        "color": "#24292E"
+      },
+      "punctuation.delimiter": {
+        "color": "#24292E"
+      },
+      "punctuation.list_marker": {
+        "color": "#E36209"
+      },
+      "punctuation.special": {
+        "color": "#D73A49"
+      },
+      "string": {
+        "color": "#032F62"
+      },
+      "string.escape": {
+        "color": "#005CC5"
+      },
+      "string.regex": {
+        "color": "#032F62"
+      },
+      "string.special": {
+        "color": "#032F62"
+      },
+      "string.special.symbol": {
+        "color": "#005CC5"
+      },
+      "tag": {
+        "color": "#22863A"
+      },
+      "tag.doctype": {
+        "color": "#D73A49"
+      },
+      "text.code.span": {
+        "color": "#005CC5"
+      },
+      "text.literal": {
+        "color": "#032F62"
+      },
+      "title": {
+        "color": "#005CC5",
+        "font_weight": 600
+      },
+      "type": {
+        "color": "#6F42C1"
+      },
+      "variable": {
+        "color": "#24292E"
+      },
+      "variable.special": {
+        "color": "#005CC5"
+      },
+      "variant": {
+        "color": "#005CC5"
+      }
+    }
+  }
+}

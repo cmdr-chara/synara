@@ -6,7 +6,6 @@
 //! every handled method returns upstream wire shapes.
 
 use serde_json::{Value, json};
-use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
 

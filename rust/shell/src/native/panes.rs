@@ -54,12 +54,12 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui {
+        let _well_bg = if dark_ui {
             rgb(0x1d1d1d)
         } else {
             rgb(0xf7f7f7)
         };
-        let hairline = if dark_ui {
+        let _hairline = if dark_ui {
             rgb(0x2e2e2e)
         } else {
             rgb(0xe5e5e5)
@@ -89,7 +89,7 @@ impl Native {
         } else {
             theme.background
         };
-        let sidebar_bg: gpui::Hsla = if dark_ui {
+        let _sidebar_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
@@ -1421,7 +1421,7 @@ impl Native {
             // ==================== remaining sections ====================
             let sdata = &self.settings_data;
             let cfg_providers: Vec<Value> = arr(get(sdata, "config"), "providers").to_vec();
-            let usage_rows: Vec<Value> = arr(get(sdata, "usage"), "snapshots")
+            let _usage_rows: Vec<Value> = arr(get(sdata, "usage"), "snapshots")
                 .to_vec()
                 .into_iter()
                 .chain(arr(get(sdata, "usage"), "rows").to_vec())
@@ -1432,7 +1432,7 @@ impl Native {
                     Vec::new()
                 })
                 .collect();
-            let dash = |v: &Value| {
+            let _dash = |_v: &Value| {
                 div()
                     .text_size(px(13.))
                     .text_color(theme.muted_foreground)
@@ -6205,7 +6205,7 @@ impl Native {
             .items_end()
             .border_b_1()
             .border_color(rgba(0x00000012));
-        for (ti, tab) in self.term_tabs.iter().enumerate() {
+        for (ti, _tab) in self.term_tabs.iter().enumerate() {
             let is_sel = ti == self.term_sel;
             let mut chip = div()
                 .id(SharedString::from(format!("term-tab-{ti}")))

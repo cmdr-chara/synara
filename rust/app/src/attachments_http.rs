@@ -406,7 +406,7 @@ pub async fn upload(
     if kind != "image" && kind != "file" {
         return json_error(StatusCode::BAD_REQUEST, "type must be image or file");
     }
-    let Some(segment) = safe_thread_segment(&thread_id) else {
+    let Some(_segment) = safe_thread_segment(&thread_id) else {
         return json_error(StatusCode::BAD_REQUEST, "threadId is invalid");
     };
     if kind == "image" && !mime.to_ascii_lowercase().starts_with("image/") {

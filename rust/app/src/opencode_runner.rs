@@ -196,7 +196,7 @@ fn random_token() -> String {
 }
 
 fn basic_auth_header(password: &str) -> String {
-    use sha1::Digest as _;
+    
     // base64 of "opencode:<password>" — minimal encoder, no new dependency.
     let raw = format!("opencode:{password}");
     base64_encode(raw.as_bytes())

@@ -8,7 +8,6 @@
 
 use axum::{
     body::Bytes,
-    extract::RawQuery,
     http::{HeaderMap, StatusCode, header},
     response::{IntoResponse, Response},
 };
@@ -636,7 +635,7 @@ pub async fn clients_revoke_others(headers: HeaderMap) -> Response {
         );
     };
     if let Ok(conn) = open_state_rw() {
-        let mut stmt = conn.prepare(
+        let stmt = conn.prepare(
             "SELECT session_id FROM auth_sessions WHERE session_id != ?1 AND revoked_at IS NULL",
         );
         let revoked_ids: Vec<String> = stmt

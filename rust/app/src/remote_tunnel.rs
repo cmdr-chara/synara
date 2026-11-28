@@ -561,7 +561,7 @@ pub async fn serve_inner(
     loop {
         let msg = if let Some(rx) = close_rx.as_mut() {
             tokio::select! {
-                signal = rx.recv() => {
+                _signal = rx.recv() => {
                     break;
                 }
                 frame = client_rx.next() => match frame {

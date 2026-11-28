@@ -170,7 +170,7 @@ impl ComputerApprovalGate {
             Publish,
         }
         let action = {
-            let mut guard = tasks_map.lock().unwrap();
+            let guard = tasks_map.lock().unwrap();
             match guard.get(thread_id) {
                 Some(task) if task.turn_id == turn_id => {
                     if let Some(granted) = task.granted {

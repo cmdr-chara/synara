@@ -10,14 +10,12 @@ use gpui_kit::assets::IconName as AssetIcon;
 use gpui_kit::base::Disableable as _;
 use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
-    button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
+    button::{Button, ButtonVariants as _},
     h_flex,
-    input::{Editor, EditorState, Input, InputEvent, InputState},
+    input::{EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
     scroll::ScrollableElement as _,
-    slider::{Slider, SliderEvent, SliderState},
-    spinner::Spinner,
-    text::TextView,
+    slider::{SliderEvent, SliderState},
     theme::Theme,
     v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
@@ -3338,7 +3336,7 @@ impl Native {
             cx.subscribe_in(
                 &gh_search,
                 window,
-                |this: &mut Self, _state, event, _window, cx| {
+                |_this: &mut Self, _state, event, _window, cx| {
                     if let InputEvent::Change = event {
                         cx.notify();
                     }
@@ -3950,18 +3948,18 @@ impl Render for Native {
         } else {
             rgba(0x0000000d)
         };
-        let chip_bg = if dark_ui {
+        let _chip_bg = if dark_ui {
             rgba(0xffffff12)
         } else {
             rgba(0x00000008)
         };
-        let soft_bg: gpui::Hsla = if dark_ui {
+        let _soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
             rgb(0xf7f7f7).into()
         };
         // Upstream selection fills are neutral, not gpui's navy list_active.
-        let sel_fill: gpui::Hsla = if dark_ui {
+        let _sel_fill: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
             theme.list_active
@@ -3995,11 +3993,11 @@ impl Render for Native {
             split_pane,
             provider_banner,
             thread_error_banner,
-            query,
+            query: _,
             mut toast_shown,
             has_thread,
             show_landing,
-            thread_v,
+            thread_v: _,
         } = ws_parts;
 
         let pane_parts = self.build_panes(window, cx);
@@ -4207,7 +4205,7 @@ impl Render for Native {
                 self.atmosphere_key = key;
             }
         }
-        let atmosphere_img_c = if self.show_ascii_bg {
+        let _atmosphere_img_c = if self.show_ascii_bg {
             self.atmosphere_img.clone()
         } else {
             None
@@ -5724,7 +5722,7 @@ impl Render for Native {
         // ---- left column: #f7f7f7 well holding the rail and the floating
         // white sidebar card (bordered right+bottom, rounded corners, ~4px
         // bottom inset) exactly like upstream's app-rail-panel.
-        let well_bg = if self.backdrop_full && self.show_ascii_bg {
+        let _well_bg = if self.backdrop_full && self.show_ascii_bg {
             rgba(0x00000000)
         } else {
             well_bg

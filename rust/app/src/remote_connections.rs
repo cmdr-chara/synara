@@ -629,7 +629,7 @@ pub async fn attach(
     let (mut local_write, mut local_read) = socket.split();
     let remote_read = attachment.read.clone();
     let remote_write = attachment.write.clone();
-    let mut remote_to_local = tokio::spawn(async move {
+    let remote_to_local = tokio::spawn(async move {
         let mut read = remote_read.lock().await;
         while let Some(message) = read.next().await {
             let Ok(message) = message else { break };

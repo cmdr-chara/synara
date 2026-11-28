@@ -1185,7 +1185,7 @@ impl Native {
                             Some(n) if n > 1 => format!("Merge {n}"),
                             _ => "Merge".to_string(),
                         };
-                        if let Some(reason) = blocker {
+                        if let Some(_reason) = blocker {
                             right = right.child(
                                 div()
                                     .h(px(28.))
@@ -2265,7 +2265,7 @@ impl Native {
         &mut self,
         detail: &Value,
         theme: &Theme,
-        cx: &mut Context<Self>,
+        _cx: &mut Context<Self>,
     ) -> AnyElement {
         let muted = theme.muted_foreground;
         let mut pane = v_flex().flex_1().min_h_0().w_full();

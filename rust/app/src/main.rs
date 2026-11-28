@@ -552,7 +552,7 @@ fn persist_oauth_connector(
     input: &serde_json::Value,
     tokens: &serde_json::Value,
 ) -> Result<(), String> {
-    use serde_json::json;
+    
     let url = input
         .get("url")
         .and_then(serde_json::Value::as_str)

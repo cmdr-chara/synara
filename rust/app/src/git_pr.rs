@@ -1362,7 +1362,7 @@ pub(crate) fn run_stacked_action_streaming(
         emit("action_started", m);
     }
     #[allow(dead_code)]
-    let phase_started =
+    let _phase_started =
         |emit: &mut dyn FnMut(&str, serde_json::Map<String, Value>), phase: &str, label: &str| {
             let mut m = serde_json::Map::new();
             m.insert("phase".into(), json!(phase));

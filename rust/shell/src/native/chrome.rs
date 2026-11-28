@@ -30,7 +30,7 @@ pub(super) struct NativeChrome {
 impl Native {
     pub(super) fn build_chrome(
         &mut self,
-        window: &mut Window,
+        _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> NativeChrome {
         let theme = cx.theme().clone();
@@ -42,12 +42,12 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui {
+        let _well_bg = if dark_ui {
             rgb(0x1d1d1d)
         } else {
             rgb(0xf7f7f7)
         };
-        let hairline = if dark_ui {
+        let _hairline = if dark_ui {
             rgb(0x2e2e2e)
         } else {
             rgb(0xe5e5e5)
@@ -57,32 +57,32 @@ impl Native {
         } else {
             rgba(0x0000000d)
         };
-        let chip_bg = if dark_ui {
+        let _chip_bg = if dark_ui {
             rgba(0xffffff12)
         } else {
             rgba(0x00000008)
         };
-        let soft_bg: gpui::Hsla = if dark_ui {
+        let _soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
             rgb(0xf7f7f7).into()
         };
-        let sel_fill: gpui::Hsla = if dark_ui {
+        let _sel_fill: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
             theme.list_active
         };
-        let content_bg: gpui::Hsla = if dark_ui {
+        let _content_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
         };
-        let sidebar_bg: gpui::Hsla = if dark_ui {
+        let _sidebar_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
         };
-        let popover_bg: gpui::Hsla = if dark_ui {
+        let _popover_bg: gpui::Hsla = if dark_ui {
             rgb(0x161616).into()
         } else {
             theme.popover

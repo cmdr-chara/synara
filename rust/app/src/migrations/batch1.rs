@@ -189,7 +189,7 @@ fn m008(conn: &Connection) -> Result<(), WsErr> {
 }
 
 // 009 ProviderSessionRuntimeMode
-fn m009(conn: &Connection) -> Result<(), WsErr> {
+fn m009(_conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 
@@ -1125,7 +1125,7 @@ fn m053(conn: &Connection) -> Result<(), WsErr> {
 }
 
 // 054 ReservedDurableProviderCommandDelivery
-fn m054(conn: &Connection) -> Result<(), WsErr> {
+fn m054(_conn: &Connection) -> Result<(), WsErr> {
     Ok(())
 }
 

@@ -57,12 +57,12 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui {
+        let _well_bg = if dark_ui {
             rgb(0x1d1d1d)
         } else {
             rgb(0xf7f7f7)
         };
-        let hairline = if dark_ui {
+        let _hairline = if dark_ui {
             rgb(0x2e2e2e)
         } else {
             rgb(0xe5e5e5)
@@ -87,12 +87,12 @@ impl Native {
         } else {
             theme.list_active
         };
-        let content_bg: gpui::Hsla = if dark_ui {
+        let _content_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
         };
-        let sidebar_bg: gpui::Hsla = if dark_ui {
+        let _sidebar_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
@@ -2283,7 +2283,7 @@ impl Native {
             let prev_models = arr(&prev, "models").to_vec();
             let busiest = slot_sums
                 .iter()
-                .filter(|s| slot_sums.len() >= 2)
+                .filter(|_s| slot_sums.len() >= 2)
                 .max_by(|a, b| a.3.partial_cmp(&b.3).unwrap_or(std::cmp::Ordering::Equal))
                 .map(|s| s.0);
             // changeAmount: "17% more" / "20% fewer" vs yesterday (tone good/bad).
@@ -3736,8 +3736,8 @@ impl Native {
         let theme_chip = theme.clone();
         let build_model_chip =
             move |cx: &mut Context<Self>| {
-                let cur = model_cur.clone();
-                let weak = model_weak.clone();
+                let _cur = model_cur.clone();
+                let _weak = model_weak.clone();
                 {
                     let eff_muted = theme_chip.muted_foreground;
                     let fg = theme_chip.foreground;
@@ -4015,7 +4015,7 @@ impl Native {
                         .children(if in_thread {
                             context_window_usage(thread_v)
                                 .map(|(pct, used, max_t)| {
-                                    let label = if let Some(m) = max_t {
+                                    let _label = if let Some(m) = max_t {
                                         format!(
                                             "{:.0}% — {} of {} tokens used",
                                             pct, used as u64, m as u64

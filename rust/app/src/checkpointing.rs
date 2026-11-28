@@ -377,7 +377,7 @@ fn capture_turn_checkpoint_inner(thread_id: &str, turn_id: &str, root: &Path) ->
     )
     .map_err(|e| err(format!("checkpoint projection: {e}")))?;
 
-    let mut insert_blob = |from: i64, to: i64, diff_text: &str| -> Result<(), WsErr> {
+    let insert_blob = |from: i64, to: i64, diff_text: &str| -> Result<(), WsErr> {
         conn.execute(
             "INSERT OR REPLACE INTO checkpoint_diff_blobs \
              (thread_id, from_turn_count, to_turn_count, diff, created_at) \

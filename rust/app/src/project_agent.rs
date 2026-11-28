@@ -4240,7 +4240,7 @@ fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr>
     }
     let now = crate::todo::iso_now_ms();
     let previous = load_digest_row(conn, project_id);
-    let (mut summarized, mut pending) = refresh_project_thread_index(conn, project_id, &now)?;
+    let (summarized, pending) = refresh_project_thread_index(conn, project_id, &now)?;
 
     let mut activity = Vec::<(String, i64, String)>::new();
     if let Ok(mut stmt) = conn.prepare(

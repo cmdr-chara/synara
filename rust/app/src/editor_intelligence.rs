@@ -7,7 +7,7 @@
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, Command, Stdio};
-use std::sync::mpsc::{Receiver, Sender, channel};
+use std::sync::mpsc::{Receiver, channel};
 use std::sync::{Mutex, OnceLock};
 
 use serde_json::Value;
@@ -68,7 +68,7 @@ impl Worker {
             .stdin
             .take()
             .ok_or_else(|| err("editor worker stdin missing"))?;
-        let mut worker = Worker {
+        let worker = Worker {
             child,
             stdin,
             rx,

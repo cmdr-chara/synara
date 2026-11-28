@@ -22,7 +22,7 @@ mod batch1;
 mod helpers;
 mod model_selection_compat;
 
-pub use helpers::{column_exists, primary_key_columns, table_exists};
+pub use helpers::{column_exists, table_exists};
 
 /// (id, name) in canonical order — the same list `Migrations.ts` assembles
 /// and `scripts/check-migration-lineage.ts` parses. Keep ids literal.

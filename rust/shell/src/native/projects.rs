@@ -141,7 +141,7 @@ impl Native {
     /// `workspaceRoot` (no implicit mkdir, like upstream).
     pub(super) fn start_project_relocate(
         &mut self,
-        project_id: String,
+        _project_id: String,
         current_root: String,
         window: &mut Window,
         cx: &mut Context<Self>,
@@ -231,7 +231,7 @@ impl Native {
                         })
                     })
                     .await;
-                let _ = this.update(cx, |this: &mut Self, cx| {
+                let _ = this.update(cx, |this: &mut Self, _cx| {
                     if r.is_none() {
                         this.feedback_toast =
                             Some(("Failed to add the project.".to_string(), true));

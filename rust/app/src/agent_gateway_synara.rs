@@ -2199,7 +2199,7 @@ fn hub_cancel_work(args: &Value) -> Result<Value, String> {
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| e.to_string())?;
     let row = hub_load_work_row(&conn, &work_item_id)?;
-    let (_id, _pid, seq, _ti, state, worker_thread_id, slot_held, revision, record_json) = row;
+    let (_id, _pid, seq, _ti, state, worker_thread_id, _slot_held, revision, record_json) = row;
     match state.as_str() {
         "queued" | "idle" | "pending" | "admitted" => {}
         _ => {

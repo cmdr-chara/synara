@@ -17,8 +17,6 @@ use axum::routing::get;
 use futures_util::{SinkExt, StreamExt};
 use serde_json::json;
 use tokio::sync::mpsc::unbounded_channel;
-use tokio_tungstenite::connect_async;
-use tokio_tungstenite::tungstenite::Message as UpstreamMessage;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 
 use crate::state::AppState;
@@ -2253,9 +2251,9 @@ async fn serve_native_socket(
 async fn relay(
     client: WebSocket,
     original: AppState,
-    uri: Uri,
-    headers: HeaderMap,
-    intercept: bool,
+    _uri: Uri,
+    _headers: HeaderMap,
+    _intercept: bool,
     authenticated_session: Option<crate::auth_http::AuthenticatedSession>,
 ) {
     let todos = original.todos.clone();

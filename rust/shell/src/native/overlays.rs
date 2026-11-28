@@ -60,42 +60,42 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui {
+        let _well_bg = if dark_ui {
             rgb(0x1d1d1d)
         } else {
             rgb(0xf7f7f7)
         };
-        let hairline = if dark_ui {
+        let _hairline = if dark_ui {
             rgb(0x2e2e2e)
         } else {
             rgb(0xe5e5e5)
         };
-        let subtle = if dark_ui {
+        let _subtle = if dark_ui {
             rgba(0xffffff14)
         } else {
             rgba(0x0000000d)
         };
-        let chip_bg = if dark_ui {
+        let _chip_bg = if dark_ui {
             rgba(0xffffff12)
         } else {
             rgba(0x00000008)
         };
-        let soft_bg: gpui::Hsla = if dark_ui {
+        let _soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
             rgb(0xf7f7f7).into()
         };
-        let sel_fill: gpui::Hsla = if dark_ui {
+        let _sel_fill: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
             theme.list_active
         };
-        let content_bg: gpui::Hsla = if dark_ui {
+        let _content_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
         };
-        let sidebar_bg: gpui::Hsla = if dark_ui {
+        let _sidebar_bg: gpui::Hsla = if dark_ui {
             rgb(0x111111).into()
         } else {
             theme.background
@@ -3201,7 +3201,7 @@ impl Native {
                     theme.muted_foreground
                 }));
             }
-            let mut card = v_flex()
+            let card = v_flex()
                 .w(px(300.))
                 .bg(popover_bg)
                 .border_1()
@@ -5421,7 +5421,7 @@ impl Native {
             }
             let can_confirm = self.pr_resolved.is_some() && !self.pr_busy;
             let btn =
-                |id: &'static str, label: &'static str, primary: bool, cx: &mut Context<Self>| {
+                |id: &'static str, label: &'static str, primary: bool, _cx: &mut Context<Self>| {
                     let mut b = div()
                         .id(id)
                         .h(px(32.))

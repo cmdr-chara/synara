@@ -1722,7 +1722,7 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
             },
         );
     }
-    let mut copy_field = |ep: &mut Map<String, Value>,
+    let copy_field = |ep: &mut Map<String, Value>,
                           sets: &mut Vec<(&'static str, Value)>,
                           key: &'static str,
                           column: &'static str| {
@@ -2659,7 +2659,7 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     // Record the async-user-input answer on the referenced question message so
     // the card settles as responded; resolve any open pending interaction too.
     if let Some(resp) = async_response.as_ref().and_then(Value::as_object) {
-        if let Some(mid) = s(resp, "messageId") {
+        if let Some(_mid) = s(resp, "messageId") {
             let answers = resp.get("answers").cloned().unwrap_or(json!([]));
             // The response row and sequence are written after commit, when the
             // async-user-input-answered event sequence is known.
@@ -3651,7 +3651,7 @@ fn thread_simple(command: &Map<String, Value>, event_type: &'static str) -> Resu
             .map_err(|e| err(e.to_string()))?;
         if goal.as_deref().map_or(false, |g| !g.trim().is_empty()) && paused.is_none() {
             let pause_at = iso_now_ms();
-            let mut pause = out_event(
+            let pause = out_event(
                 "thread.meta-updated",
                 &thread_id,
                 &pause_at,

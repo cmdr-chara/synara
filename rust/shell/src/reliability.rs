@@ -363,7 +363,7 @@ impl ReliabilityReporter {
                 }
             }
         }
-        let Ok(mut state) = self.state.lock() else {
+        let Ok(state) = self.state.lock() else {
             return Vec::new();
         };
         if !state.enabled {

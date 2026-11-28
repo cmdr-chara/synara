@@ -146,7 +146,7 @@ mod tests {
     fn interrupt_sessions_signals_live_leases() {
         let session = format!("interrupt-{}", crate::orchestration_engine::uuid_v4());
         let lease = register_authenticated_connection(&session).unwrap();
-        let mut signal = lease.close_signal();
+        let signal = lease.close_signal();
         interrupt_sessions(&[session.clone()]);
         assert!(signal.has_changed().unwrap());
         drop(lease);

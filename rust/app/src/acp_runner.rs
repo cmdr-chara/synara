@@ -132,7 +132,7 @@ pub(crate) fn append_event(
         "INSERT INTO orchestration_events \
          (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
           command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
-         VALUES (?1, 'thread', ?2, ?3, ?4, ?5, NULL, NULL, NULL, 'provider', ?6, '{}')",
+         VALUES (?1, 'thread', ?2, ?3, ?4, ?5, NULL, NULL, NULL, 'provider', ?6, ?7)",
         params![
             uuid_v4(),
             thread_id,
@@ -140,6 +140,7 @@ pub(crate) fn append_event(
             event_type,
             occurred_at,
             payload.to_string(),
+            crate::orchestration_engine::persisted_metadata_json(None),
         ],
     )
     .map_err(|e| err(format!("append {event_type}: {e}")))?;

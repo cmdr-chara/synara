@@ -146,7 +146,7 @@ fn event_row(
         "commandId": command_id,
         "causationEventId": causation_event_id,
         "correlationId": correlation_id,
-        "metadata": serde_json::from_str::<Value>(&metadata_json).unwrap_or(json!({})),
+        "metadata": crate::orchestration_engine::wire_metadata_json(&metadata_json),
         "type": event_type,
         "payload": normalized_payload(&payload_json),
     })

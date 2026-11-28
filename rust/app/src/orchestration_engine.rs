@@ -16,6 +16,85 @@ fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
 }
 
+pub(crate) const PERSISTED_EVENT_SCHEMA_VERSION_KEY: &str = "persistedEventSchemaVersion";
+pub(crate) const CURRENT_PERSISTED_EVENT_SCHEMA_VERSION: i64 = 1;
+
+/// Durable rows carry the schema version in metadata exactly like upstream;
+/// the key is storage-only and is stripped again before events hit the wire.
+pub(crate) fn persisted_metadata_json(metadata: Option<&Value>) -> String {
+    let mut object = metadata
+        .and_then(Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+    object.insert(
+        PERSISTED_EVENT_SCHEMA_VERSION_KEY.to_string(),
+        json!(CURRENT_PERSISTED_EVENT_SCHEMA_VERSION),
+    );
+    Value::Object(object).to_string()
+}
+
+pub(crate) fn wire_metadata_json(metadata_json: &str) -> Value {
+    let mut metadata = serde_json::from_str::<Value>(metadata_json).unwrap_or(json!({}));
+    if let Some(object) = metadata.as_object_mut() {
+        object.remove(PERSISTED_EVENT_SCHEMA_VERSION_KEY);
+    }
+    metadata
+}
+
+#[cfg(test)]
+mod persisted_metadata_tests {
+    use super::*;
+
+    #[test]
+    fn persisted_metadata_merges_schema_version_and_wire_strips_it() {
+        let source = json!({"providerTurnId":"turn-1"});
+        let stored = persisted_metadata_json(Some(&source));
+        let stored_value: Value = serde_json::from_str(&stored).unwrap();
+        assert_eq!(
+            stored_value.get(PERSISTED_EVENT_SCHEMA_VERSION_KEY),
+            Some(&json!(CURRENT_PERSISTED_EVENT_SCHEMA_VERSION))
+        );
+        assert_eq!(wire_metadata_json(&stored), source);
+    }
+
+    #[test]
+    fn commit_events_persists_schema_version_metadata() {
+        let conn = Connection::open_in_memory().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE orchestration_events (
+                event_id TEXT, aggregate_kind TEXT, stream_id TEXT, stream_version INTEGER,
+                event_type TEXT, occurred_at TEXT, command_id TEXT, causation_event_id TEXT,
+                correlation_id TEXT, actor_kind TEXT, payload_json TEXT, metadata_json TEXT
+            );
+            CREATE TABLE orchestration_command_receipts (
+                command_id TEXT, aggregate_kind TEXT, aggregate_id TEXT, accepted_at TEXT,
+                result_sequence INTEGER, status TEXT, error TEXT,
+                fingerprint_version TEXT, command_fingerprint TEXT
+            );",
+        )
+        .unwrap();
+        let event = out_event(
+            "thread.session-set",
+            "thread-1",
+            "2026-01-01T00:00:00.000Z",
+            json!({"threadId":"thread-1"}),
+        );
+        commit_events(&conn, &[event], "command-1").unwrap();
+        let metadata: String = conn
+            .query_row(
+                "SELECT metadata_json FROM orchestration_events",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        let metadata: Value = serde_json::from_str(&metadata).unwrap();
+        assert_eq!(
+            metadata.get(PERSISTED_EVENT_SCHEMA_VERSION_KEY),
+            Some(&json!(CURRENT_PERSISTED_EVENT_SCHEMA_VERSION))
+        );
+    }
+}
+
 pub(crate) fn uuid_v4() -> String {
     let mut bytes = [0u8; 16];
     if let Ok(mut f) = std::fs::File::open("/dev/urandom") {
@@ -1146,7 +1225,7 @@ fn commit_events(conn: &Connection, events: &[OutEvent], command_id: &str) -> Re
                 command_id,
                 ev.causation_event_id,
                 ev.payload.to_string(),
-                ev.metadata.as_ref().map_or("{}".to_string(), |m| m.to_string()),
+                persisted_metadata_json(ev.metadata.as_ref()),
                 ev.agg_kind,
             ],
         )
@@ -2200,7 +2279,7 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
         "INSERT INTO orchestration_events \
          (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
           command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
-         VALUES (?1, 'thread', ?2, ?3, 'thread.created', ?4, ?5, NULL, ?5, 'client', ?6, '{}')",
+         VALUES (?1, 'thread', ?2, ?3, 'thread.created', ?4, ?5, NULL, ?5, 'client', ?6, ?7)",
         params![
             uuid_v4(),
             thread_id,
@@ -2208,6 +2287,7 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
             created_at,
             command_id,
             Value::Object(ep.clone()).to_string(),
+            persisted_metadata_json(None),
         ],
     )
     .map_err(|e| err(format!("append thread.created event: {e}")))?;
@@ -9655,8 +9735,15 @@ fn reconcile_provider_delivery(payload: &Value) -> Result<Value, WsErr> {
                 "INSERT INTO orchestration_events \
                  (event_id, aggregate_kind, stream_id, stream_version, event_type, occurred_at, \
                   command_id, causation_event_id, correlation_id, actor_kind, payload_json, metadata_json) \
-                 VALUES (?1, 'thread', ?2, ?3, 'thread.session-set', ?4, NULL, NULL, NULL, 'client', ?5, '{}')",
-                params![uuid_v4(), thread_id, stream_version, reconciled_at, event_payload.to_string()],
+                 VALUES (?1, 'thread', ?2, ?3, 'thread.session-set', ?4, NULL, NULL, NULL, 'client', ?5, ?6)",
+                params![
+                    uuid_v4(),
+                    thread_id,
+                    stream_version,
+                    reconciled_at,
+                    event_payload.to_string(),
+                    persisted_metadata_json(None),
+                ],
             )
             .map_err(|e| err(format!("append session-set event: {e}")))?;
         }

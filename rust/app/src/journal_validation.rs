@@ -33,7 +33,7 @@ pub fn validate_state_journal() -> Result<(), String> {
 pub(crate) fn validate_journal(conn: &Connection) -> Result<(), String> {
     let mut statement = conn
         .prepare(
-            "SELECT sequence, event_type, payload_json FROM orchestration_events ORDER BY sequence",
+            "SELECT sequence, event_type, payload_json, metadata_json FROM orchestration_events ORDER BY sequence",
         )
         .map_err(|error| format!("could not read orchestration journal: {error}"))?;
     let mut rows = statement
@@ -52,9 +52,16 @@ pub(crate) fn validate_journal(conn: &Connection) -> Result<(), String> {
         let payload_json: String = row.get(2).map_err(|error| {
             format!("journal sequence {sequence} ({event_type}): unreadable payload_json: {error}")
         })?;
+        let metadata_json: String = row.get(3).map_err(|error| {
+            format!("journal sequence {sequence} ({event_type}): unreadable metadata_json: {error}")
+        })?;
         let payload: Value = serde_json::from_str(&payload_json).map_err(|error| {
             format!("journal sequence {sequence} ({event_type}): payload_json is not valid JSON: {error}")
         })?;
+        let metadata: Value = serde_json::from_str(&metadata_json).map_err(|error| {
+            format!("journal sequence {sequence} ({event_type}): metadata_json is not valid JSON: {error}")
+        })?;
+        validate_event_metadata(sequence, &event_type, &metadata)?;
         validate_event_payload(sequence, &event_type, &payload)?;
     }
     Ok(())
@@ -359,6 +366,47 @@ fn validate_project_created(
     require_string(sequence, event_type, payload, "updatedAt")
 }
 
+fn validate_event_metadata(
+    sequence: i64,
+    event_type: &str,
+    metadata: &Value,
+) -> Result<(), String> {
+    let object = require_object(sequence, event_type, "metadata", Some(metadata))?;
+    let Some(version_value) =
+        object.get(crate::orchestration_engine::PERSISTED_EVENT_SCHEMA_VERSION_KEY)
+    else {
+        // Missing means the legacy v0 row format; the upcaster handles those rows.
+        return Ok(());
+    };
+    let version = version_value.as_i64().or_else(|| {
+        version_value
+            .as_u64()
+            .and_then(|v| i64::try_from(v).ok())
+            .or_else(|| {
+                version_value.as_f64().and_then(|v| {
+                    (v.fract() == 0.0 && v.abs() <= 9_007_199_254_740_992.0).then(|| v as i64)
+                })
+            })
+    });
+    let Some(version) = version else {
+        return Err(format!(
+            "journal sequence {sequence} ({event_type}): invalid persisted event schema version; expected a non-negative safe integer"
+        ));
+    };
+    if version < 0 {
+        return Err(format!(
+            "journal sequence {sequence} ({event_type}): invalid persisted event schema version {version}; expected a non-negative safe integer"
+        ));
+    }
+    if version > crate::orchestration_engine::CURRENT_PERSISTED_EVENT_SCHEMA_VERSION {
+        return Err(format!(
+            "journal sequence {sequence} ({event_type}): unsupported persisted event schema version {version}; this build supports through {}",
+            crate::orchestration_engine::CURRENT_PERSISTED_EVENT_SCHEMA_VERSION
+        ));
+    }
+    Ok(())
+}
+
 fn validate_event_payload(sequence: i64, event_type: &str, payload: &Value) -> Result<(), String> {
     require_object(sequence, event_type, "payload", Some(payload))?;
     match event_type {
@@ -378,7 +426,7 @@ mod tests {
 
     fn insert_event(conn: &Connection, sequence: i64, event_type: &str, payload: &str) {
         conn.execute(
-            "INSERT INTO orchestration_events (sequence, event_type, payload_json) VALUES (?1, ?2, ?3)",
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (?1, ?2, ?3, '{}')",
             rusqlite::params![sequence, event_type, payload],
         )
         .unwrap();
@@ -387,7 +435,7 @@ mod tests {
     fn fixture() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute_batch(
-            "CREATE TABLE orchestration_events (sequence INTEGER PRIMARY KEY, event_type TEXT, payload_json TEXT);",
+            "CREATE TABLE orchestration_events (sequence INTEGER PRIMARY KEY, event_type TEXT, payload_json TEXT, metadata_json TEXT);",
         )
         .unwrap();
         conn
@@ -475,6 +523,34 @@ mod tests {
         );
         let error = validate_journal(&conn).unwrap_err();
         assert!(error.contains("session.status"));
+    }
+
+    #[test]
+    fn rejects_unsupported_persisted_event_schema_version() {
+        let conn = fixture();
+        conn.execute(
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (11, 'thread.created', '{}', '{\"persistedEventSchemaVersion\":2}')",
+            [],
+        )
+        .unwrap();
+        let error = validate_journal(&conn).unwrap_err();
+        assert!(error.contains("sequence 11"));
+        assert!(error.contains("unsupported persisted event schema version 2"));
+    }
+
+    #[test]
+    fn accepts_current_persisted_event_schema_version() {
+        let conn = fixture();
+        conn.execute(
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (12, 'thread.created', '{}', '{\"persistedEventSchemaVersion\":1}')",
+            [],
+        )
+        .unwrap();
+        // The unknown-shape payload still fails payload validation after the
+        // version gate, proving the current version itself was accepted.
+        let error = validate_journal(&conn).unwrap_err();
+        assert!(error.contains("threadId"));
+        assert!(!error.contains("schema version"));
     }
 
     #[test]

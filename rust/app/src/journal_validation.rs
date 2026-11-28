@@ -33,7 +33,7 @@ pub fn validate_state_journal() -> Result<(), String> {
 pub(crate) fn validate_journal(conn: &Connection) -> Result<(), String> {
     let mut statement = conn
         .prepare(
-            "SELECT sequence, event_type, payload_json, metadata_json FROM orchestration_events ORDER BY sequence",
+            "SELECT sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at FROM orchestration_events ORDER BY sequence",
         )
         .map_err(|error| format!("could not read orchestration journal: {error}"))?;
     let mut rows = statement
@@ -61,7 +61,29 @@ pub(crate) fn validate_journal(conn: &Connection) -> Result<(), String> {
         let metadata: Value = serde_json::from_str(&metadata_json).map_err(|error| {
             format!("journal sequence {sequence} ({event_type}): metadata_json is not valid JSON: {error}")
         })?;
+        let event_id: String = row.get(4).map_err(|error| {
+            format!("journal sequence {sequence} ({event_type}): unreadable event_id: {error}")
+        })?;
+        let aggregate_kind: String = row.get(5).map_err(|error| {
+            format!(
+                "journal sequence {sequence} ({event_type}): unreadable aggregate_kind: {error}"
+            )
+        })?;
+        let stream_id: String = row.get(6).map_err(|error| {
+            format!("journal sequence {sequence} ({event_type}): unreadable stream_id: {error}")
+        })?;
+        let occurred_at: String = row.get(7).map_err(|error| {
+            format!("journal sequence {sequence} ({event_type}): unreadable occurred_at: {error}")
+        })?;
         validate_event_metadata(sequence, &event_type, &metadata)?;
+        validate_event_envelope(
+            sequence,
+            &event_type,
+            &event_id,
+            &aggregate_kind,
+            &stream_id,
+            &occurred_at,
+        )?;
         let payload = crate::orchestration_engine::payload_after_persisted_upcast(
             &event_type,
             &payload,
@@ -170,6 +192,53 @@ fn require_nullable_string(
     key: &str,
 ) -> Result<(), String> {
     require_nullable_string_at(sequence, event_type, object, key, key)
+}
+
+fn optional_string(
+    sequence: i64,
+    event_type: &str,
+    object: &Value,
+    key: &str,
+) -> Result<(), String> {
+    if object.get(key).is_none() {
+        return Ok(());
+    }
+    require_string(sequence, event_type, object, key)
+}
+
+fn optional_nullable_string(
+    sequence: i64,
+    event_type: &str,
+    object: &Value,
+    key: &str,
+) -> Result<(), String> {
+    if object.get(key).is_none() {
+        return Ok(());
+    }
+    require_nullable_string(sequence, event_type, object, key)
+}
+
+fn optional_array(
+    sequence: i64,
+    event_type: &str,
+    object: &Value,
+    key: &str,
+) -> Result<(), String> {
+    if object.get(key).is_none() {
+        return Ok(());
+    }
+    require_array(sequence, event_type, object, key)
+}
+
+fn optional_bool(sequence: i64, event_type: &str, object: &Value, key: &str) -> Result<(), String> {
+    let Some(value) = object.get(key) else {
+        return Ok(());
+    };
+    if value.is_boolean() {
+        Ok(())
+    } else {
+        Err(invalid(sequence, event_type, key, "boolean", Some(value)))
+    }
 }
 
 fn optional_enum_at(
@@ -369,6 +438,93 @@ fn validate_project_created(
     require_string(sequence, event_type, payload, "updatedAt")
 }
 
+fn validate_thread_meta_updated(
+    sequence: i64,
+    event_type: &str,
+    payload: &Value,
+) -> Result<(), String> {
+    require_string(sequence, event_type, payload, "threadId")?;
+    optional_string(sequence, event_type, payload, "title")?;
+    if let Some(value) = payload.get("modelSelection") {
+        require_object(sequence, event_type, "modelSelection", Some(value))?;
+    }
+    optional_enum(sequence, event_type, payload, "envMode", ENV_MODES)?;
+    for key in [
+        "branch",
+        "worktreePath",
+        "workingDirectory",
+        "associatedWorktreePath",
+        "associatedWorktreeBranch",
+        "associatedWorktreeRef",
+        "settledAt",
+        "snoozedUntil",
+        "snoozeReminderAt",
+        "parentThreadId",
+        "subagentAgentId",
+        "subagentNickname",
+        "subagentRole",
+    ] {
+        optional_nullable_string(sequence, event_type, payload, key)?;
+    }
+    optional_bool(sequence, event_type, payload, "createBranchFlowCompleted")?;
+    optional_bool(sequence, event_type, payload, "isPinned")?;
+    require_string(sequence, event_type, payload, "updatedAt")
+}
+
+fn validate_project_meta_updated(
+    sequence: i64,
+    event_type: &str,
+    payload: &Value,
+) -> Result<(), String> {
+    require_string(sequence, event_type, payload, "projectId")?;
+    optional_enum(
+        sequence,
+        event_type,
+        payload,
+        "kind",
+        &["project", "chat", "studio", "group"],
+    )?;
+    optional_string(sequence, event_type, payload, "title")?;
+    optional_string(sequence, event_type, payload, "workspaceRoot")?;
+    if let Some(value) = payload.get("defaultModelSelection") {
+        if !value.is_null() {
+            require_object(sequence, event_type, "defaultModelSelection", Some(value))?;
+        }
+    }
+    optional_array(sequence, event_type, payload, "scripts")?;
+    optional_array(sequence, event_type, payload, "additionalFolders")?;
+    optional_bool(sequence, event_type, payload, "isPinned")?;
+    optional_nullable_string(sequence, event_type, payload, "spaceId")?;
+    require_string(sequence, event_type, payload, "updatedAt")
+}
+
+fn validate_event_envelope(
+    sequence: i64,
+    event_type: &str,
+    event_id: &str,
+    aggregate_kind: &str,
+    stream_id: &str,
+    occurred_at: &str,
+) -> Result<(), String> {
+    for (path, value) in [
+        ("eventId", event_id),
+        ("aggregateId", stream_id),
+        ("occurredAt", occurred_at),
+    ] {
+        if value.trim().is_empty() {
+            return Err(format!(
+                "journal sequence {sequence} ({event_type}): {path} expected non-empty string, got string"
+            ));
+        }
+    }
+    if !matches!(aggregate_kind, "space" | "project" | "thread") {
+        return Err(format!(
+            "journal sequence {sequence} ({event_type}): aggregateKind expected one of space, project, thread, got string"
+        ));
+    }
+    Ok(())
+}
+
 fn validate_event_metadata(
     sequence: i64,
     event_type: &str,
@@ -419,6 +575,8 @@ fn validate_event_payload(sequence: i64, event_type: &str, payload: &Value) -> R
         }
         "thread.session-set" => validate_session_set(sequence, event_type, payload),
         "project.created" => validate_project_created(sequence, event_type, payload),
+        "thread.meta-updated" => validate_thread_meta_updated(sequence, event_type, payload),
+        "project.meta-updated" => validate_project_meta_updated(sequence, event_type, payload),
         _ => Ok(()),
     }
 }
@@ -429,7 +587,7 @@ mod tests {
 
     fn insert_event(conn: &Connection, sequence: i64, event_type: &str, payload: &str) {
         conn.execute(
-            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (?1, ?2, ?3, '{}')",
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at) VALUES (?1, ?2, ?3, '{}', 'event-test', 'thread', 'stream-test', '2026-01-01T00:00:00.000Z')",
             rusqlite::params![sequence, event_type, payload],
         )
         .unwrap();
@@ -438,7 +596,7 @@ mod tests {
     fn fixture() -> Connection {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute_batch(
-            "CREATE TABLE orchestration_events (sequence INTEGER PRIMARY KEY, event_type TEXT, payload_json TEXT, metadata_json TEXT);",
+            "CREATE TABLE orchestration_events (sequence INTEGER PRIMARY KEY, event_type TEXT, payload_json TEXT, metadata_json TEXT, event_id TEXT, aggregate_kind TEXT, stream_id TEXT, occurred_at TEXT);",
         )
         .unwrap();
         conn
@@ -544,7 +702,7 @@ mod tests {
     fn rejects_missing_model_selection_on_v1_rows() {
         let conn = fixture();
         conn.execute(
-            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (14, 'thread.created', '{\"threadId\":\"t1\",\"projectId\":\"p1\",\"title\":\"Thread\",\"branch\":null,\"worktreePath\":null}', '{\"persistedEventSchemaVersion\":1}')",
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at) VALUES (14, 'thread.created', '{\"threadId\":\"t1\",\"projectId\":\"p1\",\"title\":\"Thread\",\"branch\":null,\"worktreePath\":null}', '{\"persistedEventSchemaVersion\":1}', 'event-test', 'thread', 'stream-test', '2026-01-01T00:00:00.000Z')",
             [],
         )
         .unwrap();
@@ -556,7 +714,7 @@ mod tests {
     fn rejects_unsupported_persisted_event_schema_version() {
         let conn = fixture();
         conn.execute(
-            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (11, 'thread.created', '{}', '{\"persistedEventSchemaVersion\":2}')",
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at) VALUES (11, 'thread.created', '{}', '{\"persistedEventSchemaVersion\":2}', 'event-test', 'thread', 'stream-test', '2026-01-01T00:00:00.000Z')",
             [],
         )
         .unwrap();
@@ -569,7 +727,7 @@ mod tests {
     fn accepts_current_persisted_event_schema_version() {
         let conn = fixture();
         conn.execute(
-            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (12, 'thread.created', '{}', '{\"persistedEventSchemaVersion\":1}')",
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at) VALUES (12, 'thread.created', '{}', '{\"persistedEventSchemaVersion\":1}', 'event-test', 'thread', 'stream-test', '2026-01-01T00:00:00.000Z')",
             [],
         )
         .unwrap();
@@ -578,6 +736,72 @@ mod tests {
         let error = validate_journal(&conn).unwrap_err();
         assert!(error.contains("threadId"));
         assert!(!error.contains("schema version"));
+    }
+
+    #[test]
+    fn accepts_valid_meta_updated_events() {
+        let conn = fixture();
+        insert_event(
+            &conn,
+            20,
+            "thread.meta-updated",
+            r#"{"threadId":"t1","title":"Thread","modelSelection":{"provider":"codex","model":"gpt"},"branch":null,"isPinned":true,"updatedAt":"2026-01-01T00:00:00.000Z"}"#,
+        );
+        insert_event(
+            &conn,
+            21,
+            "project.meta-updated",
+            r#"{"projectId":"p1","kind":"project","defaultModelSelection":null,"scripts":[],"additionalFolders":[],"isPinned":false,"spaceId":null,"updatedAt":"2026-01-01T00:00:00.000Z"}"#,
+        );
+        assert!(validate_journal(&conn).is_ok());
+    }
+
+    #[test]
+    fn rejects_invalid_meta_updated_shapes() {
+        let conn = fixture();
+        insert_event(
+            &conn,
+            22,
+            "thread.meta-updated",
+            r#"{"threadId":"t1","modelSelection":null,"updatedAt":"2026-01-01T00:00:00.000Z"}"#,
+        );
+        assert!(
+            validate_journal(&conn)
+                .unwrap_err()
+                .contains("modelSelection")
+        );
+
+        let conn = fixture();
+        insert_event(
+            &conn,
+            23,
+            "project.meta-updated",
+            r#"{"projectId":"p1","kind":"bad","updatedAt":"2026-01-01T00:00:00.000Z"}"#,
+        );
+        assert!(validate_journal(&conn).unwrap_err().contains("kind"));
+    }
+
+    #[test]
+    fn rejects_invalid_event_envelope() {
+        let conn = fixture();
+        conn.execute(
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at) VALUES (30, 'thread.created', '{}', '{}', '', 'thread', 'stream-test', '2026-01-01T00:00:00.000Z')",
+            [],
+        )
+        .unwrap();
+        assert!(validate_journal(&conn).unwrap_err().contains("eventId"));
+
+        let conn = fixture();
+        conn.execute(
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json, event_id, aggregate_kind, stream_id, occurred_at) VALUES (31, 'thread.created', '{}', '{}', 'event-test', 'bad', 'stream-test', '2026-01-01T00:00:00.000Z')",
+            [],
+        )
+        .unwrap();
+        assert!(
+            validate_journal(&conn)
+                .unwrap_err()
+                .contains("aggregateKind")
+        );
     }
 
     #[test]

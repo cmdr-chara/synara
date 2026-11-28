@@ -28936,9 +28936,14 @@ impl Render for Native {
                         let sel = ot.clone();
                         let close = ot.clone();
                         let ctx_tid = ot.clone();
+                        // Upstream dock tab: w-[18em] (216px at 12px), shrinks to
+                        // 12em (144px), 32px tall, 12px title clipped at the edge.
                         let mut pill = h_flex()
                             .id(ElementId::Name(format!("strip-tab-{ot}").into()))
-                            .h(px(28.))
+                            .h(px(32.))
+                            .w(px(216.))
+                            .min_w(px(144.))
+                            .flex_shrink(1.)
                             .items_center()
                             .gap(px(6.))
                             .pl(px(9.))
@@ -28970,7 +28975,11 @@ impl Render for Native {
                             )
                             .child(
                                 div()
-                                    .text_size(px(13.))
+                                    .flex_1()
+                                    .min_w_0()
+                                    .overflow_hidden()
+                                    .text_size(px(12.))
+                                    .line_height(px(18.))
                                     .whitespace_nowrap()
                                     .child(ot_title),
                             )

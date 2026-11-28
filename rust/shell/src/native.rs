@@ -18937,7 +18937,9 @@ impl Render for Native {
         // Upstream approval-mode chip tint: light = theme accent orange,
         // dark = the brightened warning orange measured in the web client
         // (rgb(254,133,73) on the "Full access" menu item).
-        let mode_accent = if dark_ui { rgb(0xfe8549) } else { rgb(0xc74614) };
+        // Upstream --runtime-full-access-accent: #c24904 light, #fe8549 dark
+        // (apps/web/src/index.css).
+        let mode_accent = if dark_ui { rgb(0xfe8549) } else { rgb(0xc24904) };
         let draft_text = self.composer.read(cx).value().to_string();
         let draft_empty = draft_text.trim().is_empty();
         // Upstream ComposerPromptEditor: font-system-ui text-chat (13px)
@@ -19089,13 +19091,17 @@ impl Render for Native {
                     }),
             );
         if draft_empty {
-            // Placeholder rendered on top: the web uses muted-foreground/40,
-            // much lighter than the editor's own muted foreground tone.
+            // Placeholder rendered on top: the web uses muted-foreground/40
+            // (foreground at 58% x 40%), much lighter than the editor's own
+            // muted foreground tone.
+            // In a thread (single-row composer) it sits at the editor's own
+            // 10px text inset and its 21.125px line is centred on the
+            // [+ | input | send] row, as upstream's editor cell does.
             input_zone = input_zone.child(
                 div()
                     .absolute()
                     .top(px(if self.selected_thread.is_some() {
-                        1.
+                        4.
                     } else {
                         12.
                     } + if !self.pending_attachments.is_empty() || self.uploading {
@@ -19106,10 +19112,10 @@ impl Render for Native {
                     } else {
                         0.
                     }))
-                    .left(px(12.))
+                    .left(px(if self.selected_thread.is_some() { 10. } else { 12. }))
                     .text_size(px(13.))
                     .line_height(px(21.125))
-                    .text_color(rgba(0x67676766))
+                    .text_color(theme.foreground.opacity(0.58 * 0.4))
                     .child("Do anything in Synara"),
             );
         }
@@ -19124,6 +19130,9 @@ impl Render for Native {
         // size-3.5 (14px) plus icon — not the 36/20 the shell started with.
         let plus_btn = Button::new("composer-attach")
             .compact()
+            // The button sizes its icon from the size preset (Medium = 16px);
+            // Small gives the upstream 14px. Width/height stay 28 below.
+            .with_size(gpui_kit::component::Size::Small)
             .icon(svg_icon(icons::PLUS).size(px(14.)))
             .rounded(ButtonRounded::Size(px(14.)))
             .with_variant(ButtonVariant::Custom(
@@ -19252,26 +19261,40 @@ impl Render for Native {
         let build_mode_chip = move |cx: &mut Context<Self>| {
             let weak = mode_weak.clone();
             let active = cur_mode;
-            // Upstream composer chips: h-7 (28px) pill with text-ui-sm (12px)
-            // label, size-3.5 icon, gap-1.5. gpui-kit XSmall gives the 12px
-            // text; the height is overridden back to the upstream 28.
+            // Upstream composer chips: h-7 (28px), px-2.5, rounded-[10px],
+            // text-ui-sm (12px) label, size-3.5 (14px) icon, gap-1.5 (6px),
+            // then a size-3 (12px) chevron at 70% opacity. gpui-kit XSmall
+            // gives the 12px text but pads 4px and shrinks `.icon()` to 12px,
+            // so the row is built as children with the upstream sizes.
+            let caret_ink = gpui::Hsla::from(mode_accent).opacity(0.7);
             Button::new("composer-mode")
                 .compact()
                 .with_size(gpui_kit::component::Size::XSmall)
                 .h(px(28.))
-                .icon(
-                    svg_icon(match active {
-                        "auto" => icons::SHIELD_CODE,
-                        _ => icons::SHIELD_ACCESS,
-                    })
-                    .size(px(14.)),
+                .px(px(10.))
+                .rounded(px(10.))
+                .child(
+                    h_flex()
+                        .gap(px(6.))
+                        .items_center()
+                        .child(
+                            svg_icon(match active {
+                                "auto" => icons::SHIELD_CODE,
+                                _ => icons::SHIELD_ACCESS,
+                            })
+                            .size(px(14.)),
+                        )
+                        .child(div().whitespace_nowrap().child(match active {
+                            "approval-required" => "Ask for approval",
+                            "auto" => "Approve for me",
+                            _ => "Full access",
+                        }))
+                        .child(
+                            svg_icon(icons::CHEVRON_DOWN)
+                                .size(px(12.))
+                                .text_color(caret_ink),
+                        ),
                 )
-                .label(match active {
-                    "approval-required" => "Ask for approval",
-                    "auto" => "Approve for me",
-                    _ => "Full access",
-                })
-                .dropdown_caret(true)
                 .with_variant(ButtonVariant::Custom(
                     ButtonCustomVariant::new(cx)
                         .color(rgba(0x00000000).into())
@@ -19406,33 +19429,40 @@ impl Render for Native {
             {
                 let eff_muted = theme_chip.muted_foreground;
                 let fg = theme_chip.foreground;
+                // Upstream model picker trigger: px-2.5, rounded-[10px],
+                // text-ui-sm (12px) for both the model and the effort, and a
+                // size-3 chevron at opacity-60 over the muted tone.
                 div()
                     .id("composer-model")
                     .h(px(28.))
-                    .px(px(8.))
+                    .px(px(10.))
                     .gap(px(6.))
                     .flex()
                     .items_center()
-                    .rounded(px(6.))
+                    .rounded(px(10.))
                     .cursor_pointer()
                     .hover(|s| s.bg(theme_chip.muted.opacity(0.6)))
                     .child(svg_icon(model_icon).size(px(14.)))
                     .child(
                         div()
-                            .text_size(px(13.))
+                            .text_size(px(12.))
                             .text_color(fg)
                             .child(model_label.clone()),
                     )
                     .children(chip_effort.map(|idx| {
                         div()
-                            .text_size(px(13.))
+                            .text_size(px(12.))
                             .text_color(eff_muted)
                             .child({
                                 const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
                                 EFFORTS[idx].to_string()
                             })
                     }))
-                    .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(eff_muted))
+                    .child(
+                        svg_icon(icons::CHEVRON_DOWN)
+                            .size(px(12.))
+                            .text_color(eff_muted.opacity(0.6)),
+                    )
                     .on_click(cx.listener(move |this, _ev, window, cx| {
 
                 this.model_picker_open = !this.model_picker_open;
@@ -19636,13 +19666,19 @@ impl Render for Native {
                 .rounded(px(9999.))
                 .bg(composer_card_bg)
                 .shadow_md()
-                .p(px(6.))
+                // Horizontal p-1.5 and gap-x-1 as upstream; 4px vertical because
+                // the input is 32px tall (upstream's editor cell is 29.125px),
+                // which keeps the pill at upstream's 42.7px. The editor cell's
+                // own px-1.5 is covered by the input's 10px text inset, so the
+                // input sits flush against the "+" button.
+                .px(px(6.))
+                .py(px(4.))
                 .child(
                     h_flex()
-                        .gap_1()
+                        .gap(px(4.))
                         .items_center()
                         .child(plus_btn)
-                        .child(div().flex_1().min_w_0().child(input_zone))
+                        .child(div().flex_1().min_w_0().ml(px(-4.)).child(input_zone))
                         .children(if voice_visible {
                             Some(make_mic_btn(cx)).into_iter()
                         } else {
@@ -21070,12 +21106,15 @@ impl Render for Native {
                     .gap(px(4.))
                     .child(composer_card)
                     .child(
-                        // Upstream COMPOSER_FOOTER_ROW_CLASS_NAME: pl 6px,
-                        // pr 8px, pb 6px inside the tray's own 4px padding.
+                        // Upstream in-thread footer (ChatView: px-0.5 pb-0.5
+                        // pt-1, model group pr-0.5) — measured 2px left / 4px
+                        // right / 2px bottom inside the tray's 4px padding.
+                        // COMPOSER_FOOTER_ROW_CLASS_NAME (6/8/6) is the block
+                        // composer's footer, not this row.
                         h_flex()
                             .w_full()
-                            .pl(px(6.))
-                            .pr(px(8.))
+                            .pl(px(2.))
+                            .pr(px(4.))
                             .pb(px(2.))
                             .items_center()
                             .child(build_mode_chip(cx))

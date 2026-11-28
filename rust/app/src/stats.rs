@@ -865,22 +865,18 @@ fn get_profile_stats(payload: &Value) -> Result<Value, WsErr> {
 
     // Identity from $HOME.
     let home = std::env::var("HOME").unwrap_or_default();
-    let base = home.rsplit('/').next().unwrap_or("").to_string();
-    let initials: String = base
-        .split(|c: char| !c.is_alphanumeric())
-        .filter(|w| !w.is_empty())
-        .take(2)
-        .filter_map(|w| w.chars().next())
-        .collect::<String>()
-        .to_uppercase();
-    let initials = if initials.is_empty() {
-        base.chars()
-            .next()
-            .map(|c| c.to_uppercase().collect())
-            .unwrap_or_default()
+    let base = home
+        .trim_end_matches('/')
+        .rsplit('/')
+        .next()
+        .unwrap_or("")
+        .to_string();
+    let base = if base.is_empty() {
+        "synara".to_string()
     } else {
-        initials
+        base
     };
+    let initials = derive_initials(&base);
 
     // Active hours: peak prompt local hour.
     let active_hours = hour_counts
@@ -908,7 +904,7 @@ fn get_profile_stats(payload: &Value) -> Result<Value, WsErr> {
         "identity": {
             "homeDirBasename": base,
             "initials": initials,
-            "defaultHandle": format!("@{base}"),
+            "defaultHandle": sanitize_handle(&base),
         },
         "activity": {
             "currentStreakDays": current,
@@ -1680,5 +1676,63 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "stats.getUsageAnalytics" => get_usage_analytics(payload),
         "stats.getThreadCosts" => get_thread_costs(payload),
         _ => Err(err("unknown stats tag")),
+    }
+}
+
+/// Port of `deriveInitials` (apps/server/src/profileStats.ts): first letters of
+/// the first two words split on whitespace, '.', '_' and '-'; a single word
+/// gives its first two letters; empty gives "SY".
+fn derive_initials(name: &str) -> String {
+    let parts: Vec<&str> = name
+        .split(|c: char| c.is_whitespace() || matches!(c, '.' | '_' | '-'))
+        .filter(|p| !p.is_empty())
+        .collect();
+    let out: String = if parts.len() >= 2 {
+        parts[..2].iter().filter_map(|p| p.chars().next()).collect()
+    } else {
+        parts
+            .first()
+            .copied()
+            .unwrap_or(name)
+            .chars()
+            .take(2)
+            .collect()
+    };
+    if out.is_empty() {
+        "SY".to_string()
+    } else {
+        out.to_uppercase()
+    }
+}
+
+/// Port of `sanitizeHandle` (apps/server/src/profileStats.ts): lowercase, keep
+/// only [a-z0-9_], fall back to "synara".
+fn sanitize_handle(basename: &str) -> String {
+    let slug: String = basename
+        .to_lowercase()
+        .chars()
+        .filter(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || *c == '_')
+        .collect();
+    format!("@{}", if slug.is_empty() { "synara" } else { &slug })
+}
+
+#[cfg(test)]
+mod identity_tests {
+    use super::{derive_initials, sanitize_handle};
+
+    #[test]
+    fn handle_matches_ts_server() {
+        assert_eq!(sanitize_handle("sandbox-home"), "@sandboxhome");
+        assert_eq!(sanitize_handle("Jane.Doe_2"), "@janedoe_2");
+        assert_eq!(sanitize_handle("---"), "@synara");
+    }
+
+    #[test]
+    fn initials_match_ts_server() {
+        assert_eq!(derive_initials("sandbox-home"), "SH");
+        assert_eq!(derive_initials("alex"), "AL");
+        assert_eq!(derive_initials("jane.doe"), "JD");
+        assert_eq!(derive_initials("x"), "X");
+        assert_eq!(derive_initials("--"), "--");
     }
 }

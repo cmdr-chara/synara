@@ -103,12 +103,10 @@ fn environment_channel() -> &'static str {
     }
 }
 
-/// `apps/server/package.json` version — the server build string the
-/// descriptor reports (`packageJson.version` upstream).
+/// Server build string reported in the environment descriptor —
+/// single source of truth is rust/VERSION, shared with the packaging scripts.
 fn server_version() -> String {
-    // Frozen at the TypeScript elimination: the rust backend is the server now,
-    // and this string feeds only the environment descriptor's build field.
-    "1.6.6".to_string()
+    include_str!("../../VERSION").trim().to_string()
 }
 
 fn desktop_update_bridge_available(state_dir: &str) -> bool {

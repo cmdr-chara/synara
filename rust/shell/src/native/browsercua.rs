@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -50,9 +48,8 @@ impl Native {
                 });
             }
             if self.browser_input.is_none() {
-                let input = cx.new(|cx| {
-                    InputState::new(window, cx).placeholder("http://127.0.0.1:3000")
-                });
+                let input =
+                    cx.new(|cx| InputState::new(window, cx).placeholder("http://127.0.0.1:3000"));
                 cx.subscribe_in(&input, window, |this: &mut Self, state, ev, _w, cx| {
                     if let InputEvent::PressEnter { .. } = ev {
                         let mut url = state.read(cx).value().to_string();
@@ -127,9 +124,9 @@ impl Native {
                                     .await;
                                 let _ = cx
                                     .background_executor()
-                                    .spawn(async move {
-                                        crate::cua::key(&client, &thread, "return")
-                                    })
+                                    .spawn(
+                                        async move { crate::cua::key(&client, &thread, "return") },
+                                    )
                                     .await;
                             }
                         })
@@ -150,13 +147,15 @@ impl Native {
                     {
                         let result = cx
                             .background_executor()
-                            .spawn(async move {
-                                client.call("computer.getScreenSize", json!({}))
-                            })
+                            .spawn(async move { client.call("computer.getScreenSize", json!({})) })
                             .await;
                         if let Some(v) = result {
-                            let w = v["screenSize"]["width"].as_f64().or_else(|| v["screenSize"]["width"].as_u64().map(|u| u as f64));
-                            let h = v["screenSize"]["height"].as_f64().or_else(|| v["screenSize"]["height"].as_u64().map(|u| u as f64));
+                            let w = v["screenSize"]["width"]
+                                .as_f64()
+                                .or_else(|| v["screenSize"]["width"].as_u64().map(|u| u as f64));
+                            let h = v["screenSize"]["height"]
+                                .as_f64()
+                                .or_else(|| v["screenSize"]["height"].as_u64().map(|u| u as f64));
                             if let (Some(w), Some(h)) = (w, h) {
                                 let _ = this.update(cx, |view, cx| {
                                     view.cua_screen_points = Some((w, h));

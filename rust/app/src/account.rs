@@ -7,7 +7,7 @@
 //! account-credentials file.
 
 use base64::Engine as _;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::io::{Read, Write};
 use std::path::PathBuf;
@@ -56,17 +56,23 @@ fn read_account_file() -> Option<Value> {
 pub(crate) fn write_account_file(value: &Value) -> Result<(), WsErr> {
     let path = credentials_path();
     if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent).map_err(|e| err(format!("Failed to save the account session: {e}")))?;
+        std::fs::create_dir_all(parent)
+            .map_err(|e| err(format!("Failed to save the account session: {e}")))?;
     }
     let tmp = path.with_extension("json.tmp");
-    let body = format!("{}\n", serde_json::to_string_pretty(value).map_err(|e| err(e.to_string()))?);
-    std::fs::write(&tmp, body).map_err(|e| err(format!("Failed to save the account session: {e}")))?;
+    let body = format!(
+        "{}\n",
+        serde_json::to_string_pretty(value).map_err(|e| err(e.to_string()))?
+    );
+    std::fs::write(&tmp, body)
+        .map_err(|e| err(format!("Failed to save the account session: {e}")))?;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
         let _ = std::fs::set_permissions(&tmp, std::fs::Permissions::from_mode(0o600));
     }
-    std::fs::rename(&tmp, &path).map_err(|e| err(format!("Failed to save the account session: {e}")))?;
+    std::fs::rename(&tmp, &path)
+        .map_err(|e| err(format!("Failed to save the account session: {e}")))?;
     Ok(())
 }
 
@@ -80,7 +86,13 @@ pub(crate) fn read_session_file() -> Option<Value> {
 
 fn clear_user_session(mut value: Value) {
     if let Some(object) = value.as_object_mut() {
-        for key in ["accessToken", "refreshToken", "organizationId", "userId", "refreshPendingTokenHash"] {
+        for key in [
+            "accessToken",
+            "refreshToken",
+            "organizationId",
+            "userId",
+            "refreshPendingTokenHash",
+        ] {
             object.remove(key);
         }
     }
@@ -123,7 +135,9 @@ pub(crate) struct AccountClient {
 
 impl AccountClient {
     pub(crate) fn new(base_url: &str) -> Self {
-        Self { base_url: base_url.trim_end_matches('/').to_string() }
+        Self {
+            base_url: base_url.trim_end_matches('/').to_string(),
+        }
     }
 
     pub(crate) fn request(
@@ -179,14 +193,20 @@ impl AccountClient {
                 message: error.to_string(),
                 organizations: Vec::new(),
             })?;
-        let mut request = client.request(method, format!("{}{path}", self.base_url)).timeout(timeout);
+        let mut request = client
+            .request(method, format!("{}{path}", self.base_url))
+            .timeout(timeout);
         if let Some(authorization) = authorization {
             request = request.header(reqwest::header::AUTHORIZATION, authorization);
         }
         if let Some((bytes, content_type)) = raw_body {
-            request = request.header(reqwest::header::CONTENT_TYPE, content_type).body(bytes);
+            request = request
+                .header(reqwest::header::CONTENT_TYPE, content_type)
+                .body(bytes);
         } else if let Some(body) = body {
-            request = request.header(reqwest::header::CONTENT_TYPE, "application/json").body(body.to_string());
+            request = request
+                .header(reqwest::header::CONTENT_TYPE, "application/json")
+                .body(body.to_string());
         }
         let response = match request.send() {
             Ok(response) => response,
@@ -210,14 +230,23 @@ impl AccountClient {
             .and_then(Value::as_array)
             .cloned()
             .unwrap_or_default();
-        let code = value.get("error").and_then(Value::as_str).unwrap_or("internal_error").to_string();
+        let code = value
+            .get("error")
+            .and_then(Value::as_str)
+            .unwrap_or("internal_error")
+            .to_string();
         let message = value
             .get("message")
             .and_then(Value::as_str)
             .or_else(|| value.get("error_description").and_then(Value::as_str))
             .unwrap_or("The account service request failed.")
             .to_string();
-        Err(AccountError { status, code, message, organizations })
+        Err(AccountError {
+            status,
+            code,
+            message,
+            organizations,
+        })
     }
 
     pub(crate) fn get_public(&self, path: &str) -> Result<Value, AccountError> {
@@ -225,20 +254,45 @@ impl AccountClient {
     }
 
     fn get(&self, path: &str, bearer: Option<&str>) -> Result<Value, AccountError> {
-        self.request(reqwest::Method::GET, path, bearer, None, None, REQUEST_TIMEOUT)
+        self.request(
+            reqwest::Method::GET,
+            path,
+            bearer,
+            None,
+            None,
+            REQUEST_TIMEOUT,
+        )
     }
 
     fn post(&self, path: &str, bearer: Option<&str>, body: Value) -> Result<Value, AccountError> {
-        self.request(reqwest::Method::POST, path, bearer, Some(body), None, REQUEST_TIMEOUT)
+        self.request(
+            reqwest::Method::POST,
+            path,
+            bearer,
+            Some(body),
+            None,
+            REQUEST_TIMEOUT,
+        )
     }
 
     fn post_grant(&self, path: &str, body: Value) -> Result<Value, AccountError> {
-        self.request(reqwest::Method::POST, path, None, Some(body), None, GRANT_TIMEOUT)
+        self.request(
+            reqwest::Method::POST,
+            path,
+            None,
+            Some(body),
+            None,
+            GRANT_TIMEOUT,
+        )
     }
 }
 
 pub(crate) fn service_error(error: &AccountError, fallback: &str) -> WsErr {
-    if error.message.trim().is_empty() { err(fallback) } else { err(error.message.clone()) }
+    if error.message.trim().is_empty() {
+        err(fallback)
+    } else {
+        err(error.message.clone())
+    }
 }
 
 fn session_expired() -> WsErr {
@@ -246,8 +300,14 @@ fn session_expired() -> WsErr {
 }
 
 fn refresh_session(mut stored: Value, organization_override: Option<&str>) -> Result<Value, WsErr> {
-    let account_url = stored["accountUrl"].as_str().unwrap_or_default().to_string();
-    let refresh_token = stored["refreshToken"].as_str().unwrap_or_default().to_string();
+    let account_url = stored["accountUrl"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let refresh_token = stored["refreshToken"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let organization_id = organization_override
         .map(str::to_string)
         .or_else(|| stored["organizationId"].as_str().map(str::to_string));
@@ -261,7 +321,11 @@ fn refresh_session(mut stored: Value, organization_override: Option<&str>) -> Re
             if let Some(object) = stored.as_object_mut() {
                 object.insert("accessToken".into(), tokens["accessToken"].clone());
                 object.insert("refreshToken".into(), tokens["refreshToken"].clone());
-                if let Some(user) = tokens.get("user").and_then(|user| user.get("id")).and_then(Value::as_str) {
+                if let Some(user) = tokens
+                    .get("user")
+                    .and_then(|user| user.get("id"))
+                    .and_then(Value::as_str)
+                {
                     object.insert("userId".into(), json!(user));
                 }
                 if let Some(organization) = tokens.get("organizationId").and_then(Value::as_str) {
@@ -276,7 +340,10 @@ fn refresh_session(mut stored: Value, organization_override: Option<&str>) -> Re
                 clear_user_session(stored);
                 return Err(session_expired());
             }
-            Err(service_error(&error, "Failed to refresh the account session"))
+            Err(service_error(
+                &error,
+                "Failed to refresh the account session",
+            ))
         }
     }
 }
@@ -286,9 +353,15 @@ pub(crate) fn authenticated_request(
     operation: impl Fn(&AccountClient, &str) -> Result<Value, AccountError>,
 ) -> Result<Value, WsErr> {
     let stored = read_session_file().ok_or_else(session_expired)?;
-    let account_url = stored["accountUrl"].as_str().unwrap_or_default().to_string();
+    let account_url = stored["accountUrl"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let client = AccountClient::new(&account_url);
-    let access = stored["accessToken"].as_str().unwrap_or_default().to_string();
+    let access = stored["accessToken"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     match operation(&client, &access) {
         Ok(value) => Ok(value),
         Err(first) => {
@@ -296,7 +369,12 @@ pub(crate) fn authenticated_request(
                 if first.organizations.len() > 1 {
                     return Err(err("Multiple workspaces aren't supported yet"));
                 }
-                first.organizations.first().and_then(|org| org.get("id")).and_then(Value::as_str).map(str::to_string)
+                first
+                    .organizations
+                    .first()
+                    .and_then(|org| org.get("id"))
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
             } else {
                 None
             };
@@ -307,7 +385,10 @@ pub(crate) fn authenticated_request(
                 return Err(service_error(&first, fallback));
             }
             let refreshed = refresh_session(stored, organization_override.as_deref())?;
-            let access = refreshed["accessToken"].as_str().unwrap_or_default().to_string();
+            let access = refreshed["accessToken"]
+                .as_str()
+                .unwrap_or_default()
+                .to_string();
             operation(&client, &access).map_err(|error| service_error(&error, fallback))
         }
     }
@@ -318,7 +399,10 @@ fn signed_in_status(me: Value) -> Result<Value, WsErr> {
         return Ok(json!({"state": "signed-out"}));
     };
     let user_id = me.get("id").and_then(Value::as_str).unwrap_or_default();
-    let organization_id = me.pointer("/organization/id").and_then(Value::as_str).unwrap_or_default();
+    let organization_id = me
+        .pointer("/organization/id")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     if stored.get("userId").and_then(Value::as_str) != Some(user_id)
         || stored.get("organizationId").and_then(Value::as_str) != Some(organization_id)
     {
@@ -336,10 +420,15 @@ fn scope_token_to_workspace(client: &AccountClient, token: &Value) -> Result<Val
     let refresh = token["refreshToken"].as_str().unwrap_or_default();
     match client.get("/api/v1/me", Some(access)) {
         Ok(me) => {
-            let organization_id = me.pointer("/organization/id").and_then(Value::as_str).unwrap_or_default();
+            let organization_id = me
+                .pointer("/organization/id")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
             let user_id = me.get("id").and_then(Value::as_str).unwrap_or_default();
             if organization_id.is_empty() || user_id.is_empty() {
-                return Err(err("The account service returned an incomplete workspace session."));
+                return Err(err(
+                    "The account service returned an incomplete workspace session.",
+                ));
             }
             Ok(json!({
                 "accessToken": access,
@@ -350,16 +439,27 @@ fn scope_token_to_workspace(client: &AccountClient, token: &Value) -> Result<Val
         }
         Err(error) if error.organization_required() => {
             if error.organizations.is_empty() {
-                return Err(err("Your account has no workspace to sign in to. Contact your administrator, or create one in the WorkOS dashboard."));
+                return Err(err(
+                    "Your account has no workspace to sign in to. Contact your administrator, or create one in the WorkOS dashboard.",
+                ));
             }
             if error.organizations.len() > 1 {
                 return Err(err("Multiple workspaces aren't supported yet"));
             }
-            let organization_id = error.organizations[0].get("id").and_then(Value::as_str).unwrap_or_default();
+            let organization_id = error.organizations[0]
+                .get("id")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
             let refreshed = client
-                .post_grant("/api/v1/auth/refresh", json!({"refreshToken": refresh, "organizationId": organization_id}))
+                .post_grant(
+                    "/api/v1/auth/refresh",
+                    json!({"refreshToken": refresh, "organizationId": organization_id}),
+                )
                 .map_err(|error| service_error(&error, "Failed to scope the account session"))?;
-            let user_id = refreshed.pointer("/user/id").and_then(Value::as_str).unwrap_or_default();
+            let user_id = refreshed
+                .pointer("/user/id")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
             Ok(json!({
                 "accessToken": refreshed["accessToken"].clone(),
                 "refreshToken": refreshed["refreshToken"].clone(),
@@ -367,10 +467,12 @@ fn scope_token_to_workspace(client: &AccountClient, token: &Value) -> Result<Val
                 "userId": user_id,
             }))
         }
-        Err(error) => Err(service_error(&error, "Failed to read the account workspace")),
+        Err(error) => Err(service_error(
+            &error,
+            "Failed to read the account workspace",
+        )),
     }
 }
-
 
 fn secrets_dir() -> PathBuf {
     PathBuf::from(crate::todo::state_dir()).join("secrets")
@@ -415,21 +517,31 @@ fn sign_device_registration(
 
 pub(crate) fn register_shell_device(user_id: &str) -> Result<(), WsErr> {
     let stored = read_session_file().ok_or_else(session_expired)?;
-    let account_url = stored["accountUrl"].as_str().unwrap_or_default().to_string();
-    let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(
-        secrets_dir().to_string_lossy().as_ref(),
-    )).map_err(err)?;
-    let (proof, jkt) = sign_device_registration(&identity, user_id, &account_api_issuer(&account_url))?;
+    let account_url = stored["accountUrl"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let identity = crate::device_identity::load_or_create(
+        &crate::device_identity::device_identity_path(secrets_dir().to_string_lossy().as_ref()),
+    )
+    .map_err(err)?;
+    let (proof, jkt) =
+        sign_device_registration(&identity, user_id, &account_api_issuer(&account_url))?;
     let response = authenticated_request("Failed to register this device", |client, access| {
         client.post("/api/v1/devices", Some(access), json!({"proof": proof}))
     })?;
     let device = response.get("device").cloned().unwrap_or(Value::Null);
-    if device.get("jkt").and_then(Value::as_str) != Some(jkt.as_str()) || !device.get("revokedAt").is_some_and(Value::is_null) {
+    if device.get("jkt").and_then(Value::as_str) != Some(jkt.as_str())
+        || !device.get("revokedAt").is_some_and(Value::is_null)
+    {
         return Err(err("The account did not register this shell's device key"));
     }
     let mut current = read_session_file().ok_or_else(session_expired)?;
     if let Some(object) = current.as_object_mut() {
-        object.insert("deviceId".into(), device.get("id").cloned().unwrap_or(Value::Null));
+        object.insert(
+            "deviceId".into(),
+            device.get("id").cloned().unwrap_or(Value::Null),
+        );
         object.insert("deviceJkt".into(), json!(jkt));
         object.insert("userId".into(), json!(user_id));
     }
@@ -439,39 +551,57 @@ pub(crate) fn register_shell_device(user_id: &str) -> Result<(), WsErr> {
 fn link_local_host() -> Result<(), WsErr> {
     let stored = read_session_file().ok_or_else(session_expired)?;
     if stored.get("hostId").and_then(Value::as_str).is_some()
-        && stored.get("hostOwnerUserId").and_then(Value::as_str) == stored.get("userId").and_then(Value::as_str)
+        && stored.get("hostOwnerUserId").and_then(Value::as_str)
+            == stored.get("userId").and_then(Value::as_str)
         && stored.get("hostKeyGeneration").is_some()
-        && crate::host_identity::read_host_identity(&host_identity_file_path()).ok().flatten().is_some()
+        && crate::host_identity::read_host_identity(&host_identity_file_path())
+            .ok()
+            .flatten()
+            .is_some()
     {
         let _ = publish_local_host_endpoints();
         return Ok(());
     }
     let state_dir = crate::todo::state_dir();
-    let environment_id = crate::server_env::environment_id(&state_dir).ok_or_else(|| err("Failed to resolve the environment id"))?;
+    let environment_id = crate::server_env::environment_id(&state_dir)
+        .ok_or_else(|| err("Failed to resolve the environment id"))?;
     let name = display_hostname();
     let platform = account_platform();
     let challenge = authenticated_request("Failed to link this host", |client, access| {
-        client.post("/api/v1/hosts/link/start", Some(access), json!({
-            "environmentId": environment_id,
-            "name": name,
-            "platform": platform,
-            "kind": "local",
-        }))
+        client.post(
+            "/api/v1/hosts/link/start",
+            Some(access),
+            json!({
+                "environmentId": environment_id,
+                "name": name,
+                "platform": platform,
+                "kind": "local",
+            }),
+        )
     })?;
     if let Some(parent) = host_identity_file_path().parent() {
         let _ = std::fs::create_dir_all(parent);
     }
-    let identity = crate::host_identity::generate_and_persist_host_identity(&host_identity_file_path()).map_err(err)?;
+    let identity =
+        crate::host_identity::generate_and_persist_host_identity(&host_identity_file_path())
+            .map_err(err)?;
     let proof = crate::host_identity::mint_host_link_proof(
         &identity,
         &account_api_issuer(stored["accountUrl"].as_str().unwrap_or_default()),
         &environment_id,
-        challenge.get("challengeId").and_then(Value::as_str).unwrap_or_default(),
-        challenge.get("nonce").and_then(Value::as_str).unwrap_or_default(),
+        challenge
+            .get("challengeId")
+            .and_then(Value::as_str)
+            .unwrap_or_default(),
+        challenge
+            .get("nonce")
+            .and_then(Value::as_str)
+            .unwrap_or_default(),
         &name,
         platform,
         Some(env!("CARGO_PKG_VERSION")),
-    ).map_err(err)?;
+    )
+    .map_err(err)?;
     let linked = AccountClient::new(stored["accountUrl"].as_str().unwrap_or_default())
         .post("/api/v1/hosts/link/complete", None, json!({
             "challengeId": challenge.get("challengeId").and_then(Value::as_str).unwrap_or_default(),
@@ -480,29 +610,39 @@ fn link_local_host() -> Result<(), WsErr> {
         .map_err(|error| service_error(&error, "Failed to link this host"))?;
     let host = linked.get("host").cloned().unwrap_or(Value::Null);
     let host_id = host.get("id").and_then(Value::as_str).unwrap_or_default();
-    let owner = host.get("ownerUserId").and_then(Value::as_str).unwrap_or_default();
+    let owner = host
+        .get("ownerUserId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     if host_id.is_empty() || owner.is_empty() {
         return Err(err("The account service returned an incomplete host link"));
     }
     let mut current = read_session_file().ok_or_else(session_expired)?;
     if current.get("userId").and_then(Value::as_str) != Some(owner) {
-        return Err(err("Your workspace access changed — sign in again from the Synara app."));
+        return Err(err(
+            "Your workspace access changed — sign in again from the Synara app.",
+        ));
     }
     if let Some(object) = current.as_object_mut() {
         object.insert("hostId".into(), json!(host_id));
         object.insert("hostOwnerUserId".into(), json!(owner));
-        object.insert("hostKeyGeneration".into(), host.get("keyGeneration").cloned().unwrap_or(json!(0)));
+        object.insert(
+            "hostKeyGeneration".into(),
+            host.get("keyGeneration").cloned().unwrap_or(json!(0)),
+        );
     }
     write_account_file(&current)
 }
-
 
 fn host_is_wildcard(host: &str) -> bool {
     matches!(host, "0.0.0.0" | "::" | "*")
 }
 
 fn host_is_loopback(host: &str) -> bool {
-    let normalized = host.trim_matches(['[', ']']).trim_end_matches('.').to_ascii_lowercase();
+    let normalized = host
+        .trim_matches(['[', ']'])
+        .trim_end_matches('.')
+        .to_ascii_lowercase();
     normalized == "localhost" || normalized == "::1" || normalized.strip_prefix("127.").is_some()
 }
 
@@ -531,18 +671,40 @@ fn tailscale_endpoint(local_port: u16) -> Option<Value> {
         .trim_end_matches('.')
         .to_string();
     if dns_name.is_empty()
-        || !status.get("CertDomains").and_then(Value::as_array).is_some_and(|domains| {
-            domains.iter().any(|domain| domain.as_str().unwrap_or_default().trim_end_matches('.') == dns_name)
-        })
+        || !status
+            .get("CertDomains")
+            .and_then(Value::as_array)
+            .is_some_and(|domains| {
+                domains.iter().any(|domain| {
+                    domain.as_str().unwrap_or_default().trim_end_matches('.') == dns_name
+                })
+            })
     {
         return None;
     }
     for (host_port, entry) in serve.get("Web").and_then(Value::as_object)? {
-        for handler in entry.get("Handlers").and_then(Value::as_object).map(|handlers| handlers.values()).into_iter().flatten() {
-            let proxy = handler.get("Proxy").and_then(Value::as_str).unwrap_or_default();
-            let Ok(url) = reqwest::Url::parse(proxy) else { continue };
-            if url.port_or_known_default() != Some(local_port) { continue; }
-            let port = host_port.rsplit(':').next().and_then(|part| part.parse::<u16>().ok()).unwrap_or(443);
+        for handler in entry
+            .get("Handlers")
+            .and_then(Value::as_object)
+            .map(|handlers| handlers.values())
+            .into_iter()
+            .flatten()
+        {
+            let proxy = handler
+                .get("Proxy")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+            let Ok(url) = reqwest::Url::parse(proxy) else {
+                continue;
+            };
+            if url.port_or_known_default() != Some(local_port) {
+                continue;
+            }
+            let port = host_port
+                .rsplit(':')
+                .next()
+                .and_then(|part| part.parse::<u16>().ok())
+                .unwrap_or(443);
             return Some(json!({
                 "url": if port == 443 { format!("https://{dns_name}") } else { format!("https://{dns_name}:{port}") },
                 "transport": "tailscale",
@@ -559,12 +721,22 @@ fn local_endpoints() -> Vec<Value> {
         .and_then(|raw| serde_json::from_str(&raw).ok())
         .unwrap_or(Value::Null);
     let mut endpoints = Vec::new();
-    let host = state.get("host").and_then(Value::as_str).unwrap_or_default();
-    let origin = state.get("origin").and_then(Value::as_str).unwrap_or_default();
-    if !host.is_empty() && !host_is_wildcard(host) && !host_is_loopback(host) && !origin.is_empty() {
+    let host = state
+        .get("host")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let origin = state
+        .get("origin")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    if !host.is_empty() && !host_is_wildcard(host) && !host_is_loopback(host) && !origin.is_empty()
+    {
         endpoints.push(json!({"url": origin, "transport": "lan"}));
     }
-    if let Some(port) = state.get("port").and_then(Value::as_u64).filter(|port| *port <= u16::MAX as u64)
+    if let Some(port) = state
+        .get("port")
+        .and_then(Value::as_u64)
+        .filter(|port| *port <= u16::MAX as u64)
         && let Some(endpoint) = tailscale_endpoint(port as u16)
     {
         endpoints.push(endpoint);
@@ -575,9 +747,18 @@ fn local_endpoints() -> Vec<Value> {
 
 pub(crate) fn publish_local_host_endpoints() -> Result<(), WsErr> {
     let stored = read_session_file().ok_or_else(session_expired)?;
-    let host_id = stored.get("hostId").and_then(Value::as_str).unwrap_or_default();
-    let owner = stored.get("hostOwnerUserId").and_then(Value::as_str).unwrap_or_default();
-    let key_generation = stored.get("hostKeyGeneration").and_then(Value::as_u64).unwrap_or(0);
+    let host_id = stored
+        .get("hostId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let owner = stored
+        .get("hostOwnerUserId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let key_generation = stored
+        .get("hostKeyGeneration")
+        .and_then(Value::as_u64)
+        .unwrap_or(0);
     if host_id.is_empty() || owner.is_empty() {
         return Ok(());
     }
@@ -597,10 +778,19 @@ pub(crate) fn publish_local_host_endpoints() -> Result<(), WsErr> {
         &environment_id,
         host_id,
         key_generation,
-    ).map_err(err)?;
-    let client = reqwest::blocking::Client::builder().build().map_err(|e| err(e.to_string()))?;
+    )
+    .map_err(err)?;
+    let client = reqwest::blocking::Client::builder()
+        .build()
+        .map_err(|e| err(e.to_string()))?;
     let response = client
-        .put(format!("{}/api/v1/hosts/{host_id}/endpoints", stored["accountUrl"].as_str().unwrap_or_default().trim_end_matches('/')))
+        .put(format!(
+            "{}/api/v1/hosts/{host_id}/endpoints",
+            stored["accountUrl"]
+                .as_str()
+                .unwrap_or_default()
+                .trim_end_matches('/')
+        ))
         .header(reqwest::header::AUTHORIZATION, format!("HostProof {proof}"))
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .body(json!({"endpoints": endpoints, "appVersion": env!("CARGO_PKG_VERSION")}).to_string())
@@ -624,14 +814,17 @@ fn enroll_desktop(user_id: &str) {
 fn establish_session(token: Value) -> Result<Value, WsErr> {
     let account_url = configured_account_url();
     let client = AccountClient::new(&account_url);
-    let instance = client.get("/api/v1/instance", None)
+    let instance = client
+        .get("/api/v1/instance", None)
         .map_err(|error| service_error(&error, "Failed to read the account service"))?;
     let scoped = scope_token_to_workspace(&client, &token)?;
     let previous = read_account_file();
     let same_account_and_workspace = previous.as_ref().is_some_and(|previous| {
         previous.get("accountUrl").and_then(Value::as_str) == Some(account_url.as_str())
-            && previous.get("hostOwnerUserId").and_then(Value::as_str) == scoped.get("userId").and_then(Value::as_str)
-            && (previous.get("organizationId").and_then(Value::as_str) == scoped.get("organizationId").and_then(Value::as_str)
+            && previous.get("hostOwnerUserId").and_then(Value::as_str)
+                == scoped.get("userId").and_then(Value::as_str)
+            && (previous.get("organizationId").and_then(Value::as_str)
+                == scoped.get("organizationId").and_then(Value::as_str)
                 || (previous.get("organizationId").is_none() && previous.get("hostId").is_some()))
     });
     let mut stored = json!({
@@ -645,7 +838,12 @@ fn establish_session(token: Value) -> Result<Value, WsErr> {
     });
     if same_account_and_workspace {
         if let (Some(object), Some(previous)) = (stored.as_object_mut(), previous.as_ref()) {
-            for key in ["hostId", "hostOwnerUserId", "hostKeyGeneration", "discoverabilityAcknowledgedByHostId"] {
+            for key in [
+                "hostId",
+                "hostOwnerUserId",
+                "hostKeyGeneration",
+                "discoverabilityAcknowledgedByHostId",
+            ] {
                 if let Some(value) = previous.get(key) {
                     object.insert(key.into(), value.clone());
                 }
@@ -654,7 +852,9 @@ fn establish_session(token: Value) -> Result<Value, WsErr> {
     }
     write_account_file(&stored)?;
     enroll_desktop(scoped["userId"].as_str().unwrap_or_default());
-    let me = authenticated_request("Failed to read the signed-in account", |client, access| client.get("/api/v1/me", Some(access)))?;
+    let me = authenticated_request("Failed to read the signed-in account", |client, access| {
+        client.get("/api/v1/me", Some(access))
+    })?;
     signed_in_status(me)
 }
 
@@ -704,7 +904,11 @@ fn decode_query_param(query: &str, key: &str) -> Option<String> {
                     continue;
                 }
             }
-            out.push(if bytes[index] == b'+' { b' ' } else { bytes[index] });
+            out.push(if bytes[index] == b'+' {
+                b' '
+            } else {
+                bytes[index]
+            });
             index += 1;
         }
         return Some(String::from_utf8_lossy(&out).into_owned());
@@ -712,11 +916,25 @@ fn decode_query_param(query: &str, key: &str) -> Option<String> {
     None
 }
 
-fn start_sso_listener(state: String) -> Result<(String, Arc<(Mutex<Option<Result<String, String>>>, Condvar)>, Arc<std::sync::atomic::AtomicBool>), WsErr> {
+fn start_sso_listener(
+    state: String,
+) -> Result<
+    (
+        String,
+        Arc<(Mutex<Option<Result<String, String>>>, Condvar)>,
+        Arc<std::sync::atomic::AtomicBool>,
+    ),
+    WsErr,
+> {
     let listener = std::net::TcpListener::bind("127.0.0.1:0")
         .map_err(|error| err(format!("Failed to start sign-in listener: {error}")))?;
-    let port = listener.local_addr().map_err(|error| err(error.to_string()))?.port();
-    listener.set_nonblocking(true).map_err(|error| err(error.to_string()))?;
+    let port = listener
+        .local_addr()
+        .map_err(|error| err(error.to_string()))?
+        .port();
+    listener
+        .set_nonblocking(true)
+        .map_err(|error| err(error.to_string()))?;
     let outcome = Arc::new((Mutex::new(None), Condvar::new()));
     let cancel = Arc::new(std::sync::atomic::AtomicBool::new(false));
     let thread_outcome = Arc::clone(&outcome);
@@ -747,15 +965,23 @@ fn start_sso_listener(state: String) -> Result<(String, Arc<(Mutex<Option<Result
                     let mut buffer = [0u8; 8192];
                     let size = stream.read(&mut buffer).unwrap_or(0);
                     let request = String::from_utf8_lossy(&buffer[..size]);
-                    let target = request.lines().next().and_then(|line| line.split_whitespace().nth(1)).unwrap_or("/");
+                    let target = request
+                        .lines()
+                        .next()
+                        .and_then(|line| line.split_whitespace().nth(1))
+                        .unwrap_or("/");
                     let (path, query) = target.split_once('?').unwrap_or((target, ""));
                     if path != "/callback" {
                         let _ = stream.write_all(b"HTTP/1.1 404 Not Found\r\ncontent-type: text/plain\r\ncontent-length: 9\r\nconnection: close\r\n\r\nNot found");
                         continue;
                     }
                     let result = if decode_query_param(query, "error").is_some() {
-                        (400, Err("The sign-in was cancelled or denied in the browser.".to_string()))
-                    } else if decode_query_param(query, "state").as_deref() != Some(state.as_str()) {
+                        (
+                            400,
+                            Err("The sign-in was cancelled or denied in the browser.".to_string()),
+                        )
+                    } else if decode_query_param(query, "state").as_deref() != Some(state.as_str())
+                    {
                         (400, Err("The sign-in callback did not match this attempt. Start a new sign-in.".to_string()))
                     } else if let Some(code) = decode_query_param(query, "code") {
                         (200, Ok(code))
@@ -763,7 +989,11 @@ fn start_sso_listener(state: String) -> Result<(String, Arc<(Mutex<Option<Result
                         (400, Err("The sign-in callback carried no authorization code. Start a new sign-in.".to_string()))
                     };
                     let (status, result) = result;
-                    let page = if result.is_ok() { SSO_SUCCESS_PAGE } else { SSO_FAILURE_PAGE };
+                    let page = if result.is_ok() {
+                        SSO_SUCCESS_PAGE
+                    } else {
+                        SSO_FAILURE_PAGE
+                    };
                     let response = format!(
                         "HTTP/1.1 {} {}\r\ncontent-type: text/html; charset=utf-8\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{}",
                         status,
@@ -779,7 +1009,9 @@ fn start_sso_listener(state: String) -> Result<(String, Arc<(Mutex<Option<Result
                     std::thread::sleep(Duration::from_millis(40));
                 }
                 Err(_) => {
-                    finish(Err("The sign-in listener failed. Start a new sign-in.".into()));
+                    finish(Err(
+                        "The sign-in listener failed. Start a new sign-in.".into()
+                    ));
                     return;
                 }
             }
@@ -789,7 +1021,10 @@ fn start_sso_listener(state: String) -> Result<(String, Arc<(Mutex<Option<Result
 }
 
 fn begin_sso(payload: &Value) -> Result<Value, WsErr> {
-    let provider = payload.get("provider").and_then(Value::as_str).unwrap_or_default();
+    let provider = payload
+        .get("provider")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     if !matches!(provider, "google" | "apple" | "github") {
         return Err(err("Unsupported sign-in provider"));
     }
@@ -798,20 +1033,30 @@ fn begin_sso(payload: &Value) -> Result<Value, WsErr> {
     let (redirect_uri, outcome, cancel) = start_sso_listener(state.clone())?;
     let client = AccountClient::new(&configured_account_url());
     let response = client
-        .post("/api/v1/auth/authorize", None, json!({
-            "provider": provider,
-            "redirectUri": redirect_uri,
-            "codeChallenge": challenge,
-            "state": state,
-        }))
+        .post(
+            "/api/v1/auth/authorize",
+            None,
+            json!({
+                "provider": provider,
+                "redirectUri": redirect_uri,
+                "codeChallenge": challenge,
+                "state": state,
+            }),
+        )
         .map_err(|error| service_error(&error, "Failed to start sign-in"))?;
-    let authorize_url = response.get("authorizeUrl").and_then(Value::as_str).unwrap_or_default().to_string();
+    let authorize_url = response
+        .get("authorizeUrl")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     if authorize_url.is_empty() {
         cancel.store(true, std::sync::atomic::Ordering::SeqCst);
         return Err(err("Failed to start sign-in"));
     }
     let sso_id = crate::orchestration_engine::uuid_v4();
-    let mut attempts = sso_attempts().lock().map_err(|_| err("Failed to start sign-in"))?;
+    let mut attempts = sso_attempts()
+        .lock()
+        .map_err(|_| err("Failed to start sign-in"))?;
     while attempts.len() >= MAX_SSO_ATTEMPTS {
         if let Some(oldest) = attempts.keys().next().cloned() {
             if let Some(old) = attempts.remove(&oldest) {
@@ -821,14 +1066,24 @@ fn begin_sso(payload: &Value) -> Result<Value, WsErr> {
             break;
         }
     }
-    attempts.insert(sso_id.clone(), SsoAttempt { authorize_url: authorize_url.clone(), verifier, outcome, cancel });
+    attempts.insert(
+        sso_id.clone(),
+        SsoAttempt {
+            authorize_url: authorize_url.clone(),
+            verifier,
+            outcome,
+            cancel,
+        },
+    );
     Ok(json!({"ssoId": sso_id, "authorizeUrl": authorize_url}))
 }
 
 fn wait_for_sso_code(attempt: &SsoAttempt) -> Result<String, WsErr> {
     let outcome = Arc::clone(&attempt.outcome);
     let (lock, cvar) = &*outcome;
-    let mut guard = lock.lock().map_err(|_| err("Failed to finish signing in"))?;
+    let mut guard = lock
+        .lock()
+        .map_err(|_| err("Failed to finish signing in"))?;
     let deadline = Instant::now() + SSO_TIMEOUT;
     loop {
         if let Some(result) = guard.take() {
@@ -838,16 +1093,25 @@ fn wait_for_sso_code(attempt: &SsoAttempt) -> Result<String, WsErr> {
         if now >= deadline {
             return Err(err("The sign-in attempt timed out. Start a new one."));
         }
-        let remaining = deadline.saturating_duration_since(now).min(Duration::from_millis(250));
-        let (next, _) = cvar.wait_timeout(guard, remaining).map_err(|_| err("Failed to finish signing in"))?;
+        let remaining = deadline
+            .saturating_duration_since(now)
+            .min(Duration::from_millis(250));
+        let (next, _) = cvar
+            .wait_timeout(guard, remaining)
+            .map_err(|_| err("Failed to finish signing in"))?;
         guard = next;
     }
 }
 
 fn complete_sso(payload: &Value) -> Result<Value, WsErr> {
-    let sso_id = payload.get("ssoId").and_then(Value::as_str).unwrap_or_default();
+    let sso_id = payload
+        .get("ssoId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     let attempt = {
-        let attempts = sso_attempts().lock().map_err(|_| err("Failed to finish signing in"))?;
+        let attempts = sso_attempts()
+            .lock()
+            .map_err(|_| err("Failed to finish signing in"))?;
         attempts.get(sso_id).map(|attempt| SsoAttempt {
             authorize_url: attempt.authorize_url.clone(),
             verifier: attempt.verifier.clone(),
@@ -861,22 +1125,32 @@ fn complete_sso(payload: &Value) -> Result<Value, WsErr> {
     let code = wait_for_sso_code(&attempt)?;
     let client = AccountClient::new(&configured_account_url());
     let token = client
-        .post_grant("/api/v1/auth/authorize/token", json!({"code": code, "codeVerifier": attempt.verifier}))
+        .post_grant(
+            "/api/v1/auth/authorize/token",
+            json!({"code": code, "codeVerifier": attempt.verifier}),
+        )
         .map_err(|error| service_error(&error, "Failed to finish signing in"))?;
     let status = establish_session(token)?;
     if let Ok(mut attempts) = sso_attempts().lock() {
         attempts.remove(sso_id);
     }
-    attempt.cancel.store(true, std::sync::atomic::Ordering::SeqCst);
+    attempt
+        .cancel
+        .store(true, std::sync::atomic::Ordering::SeqCst);
     Ok(status)
 }
 
 fn cancel_sso(payload: &Value) -> Result<Value, WsErr> {
-    let sso_id = payload.get("ssoId").and_then(Value::as_str).unwrap_or_default();
+    let sso_id = payload
+        .get("ssoId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     if let Ok(mut attempts) = sso_attempts().lock()
         && let Some(attempt) = attempts.remove(sso_id)
     {
-        attempt.cancel.store(true, std::sync::atomic::Ordering::SeqCst);
+        attempt
+            .cancel
+            .store(true, std::sync::atomic::Ordering::SeqCst);
         let (lock, cvar) = &*attempt.outcome;
         if let Ok(mut guard) = lock.lock()
             && guard.is_none()
@@ -889,10 +1163,17 @@ fn cancel_sso(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn verification_url_allowed(payload: &Value) -> Result<Value, WsErr> {
-    let url = payload.get("url").and_then(Value::as_str).unwrap_or_default();
+    let url = payload
+        .get("url")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     let allowed = sso_attempts()
         .lock()
-        .map(|attempts| attempts.values().any(|attempt| attempt.authorize_url == url))
+        .map(|attempts| {
+            attempts
+                .values()
+                .any(|attempt| attempt.authorize_url == url)
+        })
         .unwrap_or(false);
     if allowed {
         #[cfg(target_os = "macos")]
@@ -908,14 +1189,22 @@ fn verification_url_allowed(payload: &Value) -> Result<Value, WsErr> {
         let _ = command.arg(url).spawn();
         Ok(json!({}))
     } else {
-        Err(err("That link is not a sign-in verification URL from this server."))
+        Err(err(
+            "That link is not a sign-in verification URL from this server.",
+        ))
     }
 }
 
 fn sign_out() -> Result<Value, WsErr> {
     if let Some(mut stored) = read_account_file() {
         if let Some(object) = stored.as_object_mut() {
-            for key in ["accessToken", "refreshToken", "organizationId", "userId", "refreshPendingTokenHash"] {
+            for key in [
+                "accessToken",
+                "refreshToken",
+                "organizationId",
+                "userId",
+                "refreshPendingTokenHash",
+            ] {
                 object.remove(key);
             }
         }
@@ -932,7 +1221,9 @@ fn account_status() -> Result<Value, WsErr> {
     if read_session_file().is_none() {
         return Ok(json!({"state": "signed-out"}));
     }
-    match authenticated_request("Failed to read the account", |client, access| client.get("/api/v1/me", Some(access))) {
+    match authenticated_request("Failed to read the account", |client, access| {
+        client.get("/api/v1/me", Some(access))
+    }) {
         Ok(me) => {
             if let Some(user_id) = me.get("id").and_then(Value::as_str) {
                 let incomplete = read_session_file().is_some_and(|stored| {
@@ -952,7 +1243,10 @@ fn account_status() -> Result<Value, WsErr> {
 }
 
 fn send_otp(payload: &Value) -> Result<Value, WsErr> {
-    let email = payload.get("email").and_then(Value::as_str).unwrap_or_default();
+    let email = payload
+        .get("email")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     if email.trim().is_empty() || email.len() > 320 {
         return Err(err("Could not send the code. Try again in a minute."));
     }
@@ -962,67 +1256,127 @@ fn send_otp(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn authenticate_otp(payload: &Value) -> Result<Value, WsErr> {
-    let email = payload.get("email").and_then(Value::as_str).unwrap_or_default();
-    let code = payload.get("code").and_then(Value::as_str).unwrap_or_default();
-    if email.trim().is_empty() || !(code.len() == 6 && code.bytes().all(|byte| byte.is_ascii_digit())) {
+    let email = payload
+        .get("email")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let code = payload
+        .get("code")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    if email.trim().is_empty()
+        || !(code.len() == 6 && code.bytes().all(|byte| byte.is_ascii_digit()))
+    {
         return Err(err("Could not sign in. Check the code and try again."));
     }
     let token = AccountClient::new(&configured_account_url())
-        .post_grant("/api/v1/auth/otp/authenticate", json!({"email": email, "code": code}))
-        .map_err(|error| service_error(&error, "Could not sign in. Check the code and try again."))?;
+        .post_grant(
+            "/api/v1/auth/otp/authenticate",
+            json!({"email": email, "code": code}),
+        )
+        .map_err(|error| {
+            service_error(&error, "Could not sign in. Check the code and try again.")
+        })?;
     establish_session(token)
 }
 
-fn authed_json(method: reqwest::Method, path: &str, body: Option<Value>, fallback: &str) -> Result<Value, WsErr> {
+fn authed_json(
+    method: reqwest::Method,
+    path: &str,
+    body: Option<Value>,
+    fallback: &str,
+) -> Result<Value, WsErr> {
     authenticated_request(fallback, |client, access| {
-        client.request(method.clone(), path, Some(access), body.clone(), None, REQUEST_TIMEOUT)
+        client.request(
+            method.clone(),
+            path,
+            Some(access),
+            body.clone(),
+            None,
+            REQUEST_TIMEOUT,
+        )
     })
 }
 
-
 fn account_profile_sync_enabled() -> bool {
-    let flavor = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+    let flavor = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID")
+        .ok()
+        .as_deref()
+        .map(str::trim)
+    {
         Some("com.emanueledipietro.synara") => "production",
         Some("com.emanueledipietro.synara.remote") => "remote",
         _ => "other",
     };
     std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").ok().as_deref() == Some("1")
-        || ((flavor == "production" || flavor == "remote") && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err())
+        || ((flavor == "production" || flavor == "remote")
+            && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err())
 }
 
 fn require_account_profile_sync() -> Result<(), WsErr> {
     if account_profile_sync_enabled() {
         Ok(())
     } else {
-        Err(err("Account profile sync is unavailable until SYNARA_ACCOUNT_PROFILE_SYNC=1 is set."))
+        Err(err(
+            "Account profile sync is unavailable until SYNARA_ACCOUNT_PROFILE_SYNC=1 is set.",
+        ))
     }
 }
 
 fn update_profile(payload: &Value) -> Result<Value, WsErr> {
     require_account_profile_sync()?;
-    let workspace_name = payload.get("workspaceName").and_then(Value::as_str).map(str::to_string);
+    let workspace_name = payload
+        .get("workspaceName")
+        .and_then(Value::as_str)
+        .map(str::to_string);
     let mut profile = payload.clone();
     if let Some(object) = profile.as_object_mut() {
         object.remove("workspaceName");
     }
     if let Some(name) = workspace_name {
-        authed_json(reqwest::Method::PATCH, "/api/v1/organization", Some(json!({"name": name})), "Failed to save your workspace")?;
+        authed_json(
+            reqwest::Method::PATCH,
+            "/api/v1/organization",
+            Some(json!({"name": name})),
+            "Failed to save your workspace",
+        )?;
     }
-    authed_json(reqwest::Method::PUT, "/api/v1/profile", Some(profile), "Failed to save your profile")
+    authed_json(
+        reqwest::Method::PUT,
+        "/api/v1/profile",
+        Some(profile),
+        "Failed to save your profile",
+    )
 }
 
 fn upload_avatar(payload: &Value) -> Result<Value, WsErr> {
     require_account_profile_sync()?;
-    let encoded = payload.get("bytes").and_then(Value::as_str).unwrap_or_default();
-    let content_type = payload.get("contentType").and_then(Value::as_str).unwrap_or_default();
-    if encoded.is_empty() || encoded.len() > 400_000 || !matches!(content_type, "image/webp" | "image/jpeg" | "image/png") {
+    let encoded = payload
+        .get("bytes")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let content_type = payload
+        .get("contentType")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    if encoded.is_empty()
+        || encoded.len() > 400_000
+        || !matches!(content_type, "image/webp" | "image/jpeg" | "image/png")
+    {
         return Err(err("Failed to upload your avatar"));
     }
     let bytes = base64::engine::general_purpose::STANDARD
         .decode(encoded)
         .map_err(|_| err("Failed to upload your avatar"))?;
     authenticated_request("Failed to upload your avatar", |client, access| {
-        client.request(reqwest::Method::PUT, "/api/v1/profile/avatar", Some(access), None, Some((bytes.clone(), content_type.to_string())), REQUEST_TIMEOUT)
+        client.request(
+            reqwest::Method::PUT,
+            "/api/v1/profile/avatar",
+            Some(access),
+            None,
+            Some((bytes.clone(), content_type.to_string())),
+            REQUEST_TIMEOUT,
+        )
     })
 }
 
@@ -1042,33 +1396,95 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "account.openVerificationUrl" => verification_url_allowed(payload),
         "account.usageSummary" => {
             require_account_profile_sync()?;
-            let offset = payload.get("utcOffsetMinutes").and_then(Value::as_i64).unwrap_or(0);
-            authed_json(reqwest::Method::GET, &format!("/api/v1/usage/summary?utcOffsetMinutes={offset}"), None, "Failed to load account usage")
+            let offset = payload
+                .get("utcOffsetMinutes")
+                .and_then(Value::as_i64)
+                .unwrap_or(0);
+            authed_json(
+                reqwest::Method::GET,
+                &format!("/api/v1/usage/summary?utcOffsetMinutes={offset}"),
+                None,
+                "Failed to load account usage",
+            )
         }
-        "account.saveInboxRecap" => authed_json(reqwest::Method::PUT, "/api/v1/inbox/recaps", Some(payload.clone()), "Failed to save the private recap"),
+        "account.saveInboxRecap" => authed_json(
+            reqwest::Method::PUT,
+            "/api/v1/inbox/recaps",
+            Some(payload.clone()),
+            "Failed to save the private recap",
+        ),
         "account.listInboxRecaps" => {
             let mut query = Vec::new();
-            if let Some(limit) = payload.get("limit").and_then(Value::as_i64) { query.push(format!("limit={limit}")); }
-            if let Some(cursor) = payload.get("cursor").and_then(Value::as_str) { query.push(format!("cursor={}", cursor)); }
-            let suffix = if query.is_empty() { String::new() } else { format!("?{}", query.join("&")) };
-            authed_json(reqwest::Method::GET, &format!("/api/v1/inbox/recaps{suffix}"), None, "Failed to load saved recaps")
+            if let Some(limit) = payload.get("limit").and_then(Value::as_i64) {
+                query.push(format!("limit={limit}"));
+            }
+            if let Some(cursor) = payload.get("cursor").and_then(Value::as_str) {
+                query.push(format!("cursor={}", cursor));
+            }
+            let suffix = if query.is_empty() {
+                String::new()
+            } else {
+                format!("?{}", query.join("&"))
+            };
+            authed_json(
+                reqwest::Method::GET,
+                &format!("/api/v1/inbox/recaps{suffix}"),
+                None,
+                "Failed to load saved recaps",
+            )
         }
         "account.deleteInboxRecap" => {
-            let id = payload.get("id").and_then(Value::as_str).unwrap_or_default();
-            authed_json(reqwest::Method::DELETE, &format!("/api/v1/inbox/recaps/{id}"), None, "Failed to delete the saved recap")
+            let id = payload
+                .get("id")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+            authed_json(
+                reqwest::Method::DELETE,
+                &format!("/api/v1/inbox/recaps/{id}"),
+                None,
+                "Failed to delete the saved recap",
+            )
         }
         "account.updateProfile" => update_profile(payload),
         "account.uploadAvatar" => upload_avatar(payload),
-        "account.deleteAvatar" => { require_account_profile_sync()?; authed_json(reqwest::Method::DELETE, "/api/v1/profile/avatar", None, "Failed to remove your avatar") },
+        "account.deleteAvatar" => {
+            require_account_profile_sync()?;
+            authed_json(
+                reqwest::Method::DELETE,
+                "/api/v1/profile/avatar",
+                None,
+                "Failed to remove your avatar",
+            )
+        }
         "account.delete" => {
-            let result = authed_json(reqwest::Method::DELETE, "/api/v1/me", Some(payload.clone()), "Could not confirm account deletion")?;
+            let result = authed_json(
+                reqwest::Method::DELETE,
+                "/api/v1/me",
+                Some(payload.clone()),
+                "Could not confirm account deletion",
+            )?;
             let path = credentials_path();
             let _ = std::fs::remove_file(path);
             Ok(result)
         }
-        "account.billingStatus" => authed_json(reqwest::Method::GET, "/api/v1/billing/status", None, "Could not load the subscription"),
-        "account.billingCheckout" => authed_json(reqwest::Method::POST, "/api/v1/billing/checkout", Some(payload.clone()), "Could not open the test checkout"),
-        "account.billingPortal" => authed_json(reqwest::Method::POST, "/api/v1/billing/portal", None, "Could not open subscription settings"),
+        "account.billingStatus" => authed_json(
+            reqwest::Method::GET,
+            "/api/v1/billing/status",
+            None,
+            "Could not load the subscription",
+        ),
+        "account.billingCheckout" => authed_json(
+            reqwest::Method::POST,
+            "/api/v1/billing/checkout",
+            Some(payload.clone()),
+            "Could not open the test checkout",
+        ),
+        "account.billingPortal" => authed_json(
+            reqwest::Method::POST,
+            "/api/v1/billing/portal",
+            None,
+            "Could not open subscription settings",
+        ),
         _ => Err(err("unhandled native tag")),
     }
 }

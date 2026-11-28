@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -28,9 +26,7 @@ impl Native {
     pub(super) fn toggle_find(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         self.find_open = !self.find_open;
         if self.find_open {
-            let input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Find in thread")
-            });
+            let input = cx.new(|cx| InputState::new(window, cx).placeholder("Find in thread"));
             cx.subscribe_in(&input, window, |this: &mut Self, state, ev, _w, cx| {
                 if let InputEvent::Change = ev {
                     this.find_query = state.read(cx).value().to_string();
@@ -50,7 +46,12 @@ impl Native {
     /// Open the workspace search palette: "search" = ⌘K chats+projects
     /// (upstream SidebarSearchPalette), "files" = ⌘P projects.searchEntries,
     /// "snippets" = ⇧⌘F projects.searchContent (WorkspaceSearchPalette).
-    pub(super) fn open_palette(&mut self, mode: &'static str, window: &mut Window, cx: &mut Context<Self>) {
+    pub(super) fn open_palette(
+        &mut self,
+        mode: &'static str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         if self.palette_mode == Some(mode) && mode != "search" {
             return;
         }
@@ -145,9 +146,8 @@ impl Native {
             let v = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell).and_then(|c| {
-                        c.call(tag, json!({"cwd": cwd, "query": query, "limit": 30}))
-                    })
+                    ensure_client(&cell)
+                        .and_then(|c| c.call(tag, json!({"cwd": cwd, "query": query, "limit": 30})))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
@@ -472,7 +472,12 @@ impl Native {
 
     /// Switch palette page while open (upstream mode switch): new input with
     /// the page's placeholder, rows reset.
-    pub(super) fn set_palette_mode(&mut self, mode: &'static str, window: &mut Window, cx: &mut Context<Self>) {
+    pub(super) fn set_palette_mode(
+        &mut self,
+        mode: &'static str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         self.palette_mode = Some(mode);
         self.palette_rows = Vec::new();
         self.palette_sel = 0;

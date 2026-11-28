@@ -245,12 +245,20 @@ fn is_readable_markdown(parent: &Path, entry: &fs::DirEntry) -> bool {
         .unwrap_or(false)
 }
 
-fn collect_skill_paths(dir: &Path, depth: usize, include_md: bool, follow_symlinks: bool) -> Vec<PathBuf> {
+fn collect_skill_paths(
+    dir: &Path,
+    depth: usize,
+    include_md: bool,
+    follow_symlinks: bool,
+) -> Vec<PathBuf> {
     let skill_path = dir.join("SKILL.md");
     let is_file = if follow_symlinks {
         skill_path.is_file()
     } else {
-        skill_path.symlink_metadata().map(|m| m.is_file()).unwrap_or(false)
+        skill_path
+            .symlink_metadata()
+            .map(|m| m.is_file())
+            .unwrap_or(false)
     };
     if is_file {
         return vec![skill_path];
@@ -280,7 +288,12 @@ fn collect_skill_paths(dir: &Path, depth: usize, include_md: bool, follow_symlin
     subdir_names.sort();
     let mut out = direct_md;
     for name in subdir_names {
-        out.extend(collect_skill_paths(&dir.join(&name), depth + 1, false, follow_symlinks));
+        out.extend(collect_skill_paths(
+            &dir.join(&name),
+            depth + 1,
+            false,
+            follow_symlinks,
+        ));
     }
     out
 }
@@ -309,9 +322,15 @@ fn read_skill_descriptor(path: &Path, scope: &str, namespace: Option<&str>) -> O
     }
     let description = read_str(&fields, &["description"]);
     let display_name = read_str(&fields, &["display-name", "displayName", "title"]);
-    let short_description = read_str(&fields, &["short-description", "shortDescription", "summary"]);
-    let disabled = read_bool(&fields, &["disable-model-invocation", "disableModelInvocation"])
-        .unwrap_or(false);
+    let short_description = read_str(
+        &fields,
+        &["short-description", "shortDescription", "summary"],
+    );
+    let disabled = read_bool(
+        &fields,
+        &["disable-model-invocation", "disableModelInvocation"],
+    )
+    .unwrap_or(false);
 
     let mut descriptor = json!({
         "name": name,
@@ -368,10 +387,12 @@ fn home_roots_for_origin(
         "grok" => vec![home.join(".grok/skills")],
         "factory" => vec![home.join(".factory/skills")],
         "opencode" => vec![home.join(".config/opencode/skills")],
-        "pi" => vec![agent_dir
-            .map(PathBuf::from)
-            .unwrap_or_else(|| home.join(".pi/agent"))
-            .join("skills")],
+        "pi" => vec![
+            agent_dir
+                .map(PathBuf::from)
+                .unwrap_or_else(|| home.join(".pi/agent"))
+                .join("skills"),
+        ],
         "devin" => vec![
             home.join(".config/devin/skills"),
             home.join(".config/cognition/skills"),
@@ -380,10 +401,12 @@ fn home_roots_for_origin(
             home.join(".codeium/windsurf-insiders/skills"),
             home.join(".devin/skills"),
         ],
-        "omp" => vec![agent_dir
-            .map(PathBuf::from)
-            .unwrap_or_else(|| home.join(".omp/agent"))
-            .join("skills")],
+        "omp" => vec![
+            agent_dir
+                .map(PathBuf::from)
+                .unwrap_or_else(|| home.join(".omp/agent"))
+                .join("skills"),
+        ],
         "agents" => vec![home.join(".agents/skills")],
         _ => Vec::new(),
     }
@@ -422,11 +445,12 @@ fn preferred_origins(provider: &str) -> &'static [&'static str] {
     }
 }
 
-fn ordered_origins(provider: Option<&str>, include_synara: bool, include_remaining: bool) -> Vec<&'static str> {
-    let mut ordered: Vec<&'static str> = provider
-        .map(preferred_origins)
-        .unwrap_or(&[])
-        .to_vec();
+fn ordered_origins(
+    provider: Option<&str>,
+    include_synara: bool,
+    include_remaining: bool,
+) -> Vec<&'static str> {
+    let mut ordered: Vec<&'static str> = provider.map(preferred_origins).unwrap_or(&[]).to_vec();
     if include_synara && !ordered.contains(&"synara") {
         ordered.push("synara");
     }
@@ -763,13 +787,19 @@ fn provider_enabled(payload: &Value) -> Result<bool, WsErr> {
         let Some(inst) = inst else {
             return Err(err(format!("Unknown provider instance '{instance_id}'.")));
         };
-        let driver = inst.get("driver").and_then(|v| v.as_str()).unwrap_or(provider);
+        let driver = inst
+            .get("driver")
+            .and_then(|v| v.as_str())
+            .unwrap_or(provider);
         if driver != provider {
             return Err(err(format!(
                 "Requested provider '{provider}' does not match provider instance '{instance_id}' driver '{driver}'."
             )));
         }
-        let enabled = inst.get("enabled").and_then(|v| v.as_bool()).unwrap_or(true)
+        let enabled = inst
+            .get("enabled")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(true)
             && inst
                 .get("config")
                 .and_then(|c| c.get("enabled"))
@@ -777,9 +807,7 @@ fn provider_enabled(payload: &Value) -> Result<bool, WsErr> {
                 .unwrap_or(true);
         return Ok(enabled);
     }
-    let provider_cfg = settings
-        .get("providers")
-        .and_then(|p| p.get(provider));
+    let provider_cfg = settings.get("providers").and_then(|p| p.get(provider));
     let enabled = provider_cfg
         .and_then(|c| c.get("enabled"))
         .and_then(|v| v.as_bool())
@@ -790,9 +818,15 @@ fn provider_enabled(payload: &Value) -> Result<bool, WsErr> {
         .get("providerInstances")
         .and_then(|m| m.get(provider))
     {
-        let driver = inst.get("driver").and_then(|v| v.as_str()).unwrap_or(provider);
+        let driver = inst
+            .get("driver")
+            .and_then(|v| v.as_str())
+            .unwrap_or(provider);
         if driver == provider {
-            let e = inst.get("enabled").and_then(|v| v.as_bool()).unwrap_or(true)
+            let e = inst
+                .get("enabled")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(true)
                 && inst
                     .get("config")
                     .and_then(|c| c.get("enabled"))
@@ -859,7 +893,10 @@ fn str_field(v: Option<&Value>) -> Option<String> {
         .map(str::to_string)
 }
 
-fn factory_enabled_plugins(factory_dir: &Path, cwd: Option<&str>) -> std::collections::HashMap<String, bool> {
+fn factory_enabled_plugins(
+    factory_dir: &Path,
+    cwd: Option<&str>,
+) -> std::collections::HashMap<String, bool> {
     let mut enabled = std::collections::HashMap::new();
     let mut sources: Vec<Option<Value>> = Vec::new();
     if let Some(flags) = read_json_record(&factory_dir.join("cache/feature-flags.json")) {
@@ -871,18 +908,22 @@ fn factory_enabled_plugins(factory_dir: &Path, cwd: Option<&str>) -> std::collec
         sources.push(cli_defaults);
     }
     sources.push(
-        read_json_record(&factory_dir.join("settings.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+        read_json_record(&factory_dir.join("settings.json"))
+            .and_then(|r| r.get("enabledPlugins").cloned()),
     );
     sources.push(
-        read_json_record(&factory_dir.join("settings.local.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+        read_json_record(&factory_dir.join("settings.local.json"))
+            .and_then(|r| r.get("enabledPlugins").cloned()),
     );
     if let Some(cwd) = cwd {
         let base = Path::new(cwd).join(".factory");
         sources.push(
-            read_json_record(&base.join("settings.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+            read_json_record(&base.join("settings.json"))
+                .and_then(|r| r.get("enabledPlugins").cloned()),
         );
         sources.push(
-            read_json_record(&base.join("settings.local.json")).and_then(|r| r.get("enabledPlugins").cloned()),
+            read_json_record(&base.join("settings.local.json"))
+                .and_then(|r| r.get("enabledPlugins").cloned()),
         );
     }
     for source in sources.into_iter().flatten() {
@@ -1013,9 +1054,14 @@ fn list_factory_plugins(cwd: Option<&str>) -> Value {
     })
 }
 
-fn read_factory_plugin(marketplace_path: &str, plugin_name: &str, cwd: Option<&str>) -> Option<Value> {
+fn read_factory_plugin(
+    marketplace_path: &str,
+    plugin_name: &str,
+    cwd: Option<&str>,
+) -> Option<Value> {
     let factory = factory_dir();
-    let resolved = canon(Path::new(marketplace_path)).unwrap_or_else(|| PathBuf::from(marketplace_path));
+    let resolved =
+        canon(Path::new(marketplace_path)).unwrap_or_else(|| PathBuf::from(marketplace_path));
     let (mp_name, mp_path) = marketplace_registrations(&factory)
         .into_iter()
         .find(|(_, p)| canon(p).unwrap_or_else(|| p.clone()) == resolved)?;

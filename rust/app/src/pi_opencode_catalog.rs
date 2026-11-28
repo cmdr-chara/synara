@@ -13,7 +13,7 @@
 
 use crate::acp_runner::err;
 use crate::todo::WsErr;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::{LazyLock, Mutex};
 
 const CATALOG_URL: &str = "https://pi.dev/api/models/providers/opencode";
@@ -51,7 +51,9 @@ fn base_urls(api: &str) -> Option<&'static [&'static str]> {
 /// complete Pi protocol metadata is known and whose baseUrl sits inside the
 /// pinned allowlist for their API flavor.
 fn is_catalog_model(value: &Value) -> bool {
-    let Some(obj) = value.as_object() else { return false };
+    let Some(obj) = value.as_object() else {
+        return false;
+    };
     let id_ok = obj
         .get("id")
         .and_then(Value::as_str)
@@ -67,7 +69,9 @@ fn is_catalog_model(value: &Value) -> bool {
     }
     let api = obj.get("api").and_then(Value::as_str).unwrap_or("");
     let base_url = obj.get("baseUrl").and_then(Value::as_str).unwrap_or("");
-    let Some(allowed) = base_urls(api) else { return false };
+    let Some(allowed) = base_urls(api) else {
+        return false;
+    };
     if !allowed.contains(&base_url) {
         return false;
     }
@@ -79,21 +83,35 @@ fn is_catalog_model(value: &Value) -> bool {
         .and_then(Value::as_array)
         .map(|items| {
             items.iter().any(|i| i.as_str() == Some("text"))
-                && items.iter().all(|i| matches!(i.as_str(), Some("text") | Some("image")))
+                && items
+                    .iter()
+                    .all(|i| matches!(i.as_str(), Some("text") | Some("image")))
         })
         .unwrap_or(false);
     if !input_ok {
         return false;
     }
     for key in ["contextWindow", "maxTokens"] {
-        if obj.get(key).and_then(Value::as_f64).map(|n| n.is_finite() && n > 0.0) != Some(true) {
+        if obj
+            .get(key)
+            .and_then(Value::as_f64)
+            .map(|n| n.is_finite() && n > 0.0)
+            != Some(true)
+        {
             return false;
         }
     }
-    let Some(cost) = obj.get("cost").and_then(Value::as_object) else { return false };
-    ["input", "output", "cacheRead", "cacheWrite"].iter().all(|key| {
-        cost.get(*key).and_then(Value::as_f64).map(|n| n.is_finite() && n >= 0.0) == Some(true)
-    })
+    let Some(cost) = obj.get("cost").and_then(Value::as_object) else {
+        return false;
+    };
+    ["input", "output", "cacheRead", "cacheWrite"]
+        .iter()
+        .all(|key| {
+            cost.get(*key)
+                .and_then(Value::as_f64)
+                .map(|n| n.is_finite() && n >= 0.0)
+                == Some(true)
+        })
 }
 
 /// Port of `parsePiOpenCodeCatalog`: intersect the catalog with the live
@@ -105,7 +123,10 @@ pub fn parse_pi_opencode_catalog(catalog: &Value, inventory: &Value) -> Result<V
         .map(|items| {
             !items.is_empty()
                 && items.iter().all(|item| {
-                    item.get("id").and_then(Value::as_str).map(|id| !id.trim().is_empty()) == Some(true)
+                    item.get("id")
+                        .and_then(Value::as_str)
+                        .map(|id| !id.trim().is_empty())
+                        == Some(true)
                 })
         })
         .unwrap_or(false);
@@ -113,13 +134,28 @@ pub fn parse_pi_opencode_catalog(catalog: &Value, inventory: &Value) -> Result<V
         return Err(err("Invalid OpenCode model inventory"));
     }
     let active: std::collections::HashSet<&str> = data
-        .map(|items| items.iter().filter_map(|item| item.get("id").and_then(Value::as_str)).collect())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|item| item.get("id").and_then(Value::as_str))
+                .collect()
+        })
         .unwrap_or_default();
     let mut models: Vec<Value> = catalog
         .as_object()
-        .map(|obj| obj.values().filter(|v| is_catalog_model(v)).cloned().collect())
+        .map(|obj| {
+            obj.values()
+                .filter(|v| is_catalog_model(v))
+                .cloned()
+                .collect()
+        })
         .unwrap_or_default();
-    models.retain(|m| m.get("id").and_then(Value::as_str).map(|id| active.contains(id)) == Some(true));
+    models.retain(|m| {
+        m.get("id")
+            .and_then(Value::as_str)
+            .map(|id| active.contains(id))
+            == Some(true)
+    });
     if models.is_empty() {
         return Err(err("No supported OpenCode models in catalog"));
     }
@@ -207,48 +243,72 @@ pub fn refresh_pi_opencode_catalog(agent_dir: &std::path::Path) {
         .ok()
         .and_then(|text| serde_json::from_str(&text).ok())
         .unwrap_or(json!({}));
-    if let Some(models) = existing.pointer("/providers/opencode/models").and_then(Value::as_array) {
+    if let Some(models) = existing
+        .pointer("/providers/opencode/models")
+        .and_then(Value::as_array)
+    {
         let foreign = models.iter().any(|m| {
             let api = m.get("api").and_then(Value::as_str).unwrap_or("");
             let base = m.get("baseUrl").and_then(Value::as_str).unwrap_or("");
-            base_urls(api).map(|allowed| !allowed.contains(&base)).unwrap_or(false)
+            base_urls(api)
+                .map(|allowed| !allowed.contains(&base))
+                .unwrap_or(false)
         });
         if foreign {
             return;
         }
     }
 
-    let cached = PUBLIC_CATALOG
-        .lock()
-        .ok()
-        .and_then(|c| c.as_ref().map(|c| (c.models.clone(), now_ms() - c.fetched_at_ms)));
+    let cached = PUBLIC_CATALOG.lock().ok().and_then(|c| {
+        c.as_ref()
+            .map(|c| (c.models.clone(), now_ms() - c.fetched_at_ms))
+    });
     let models = match cached {
         Some((models, age)) if age < CATALOG_TTL_MS => models,
         _ => {
-            let (Ok(catalog), Ok(inventory)) = (fetch_json(CATALOG_URL), fetch_json(INVENTORY_URL)) else {
+            let (Ok(catalog), Ok(inventory)) = (fetch_json(CATALOG_URL), fetch_json(INVENTORY_URL))
+            else {
                 return;
             };
             let Ok(models) = parse_pi_opencode_catalog(&catalog, &inventory) else {
                 return;
             };
             if let Ok(mut c) = PUBLIC_CATALOG.lock() {
-                *c = Some(Cache { models: models.clone(), fetched_at_ms: now_ms() });
+                *c = Some(Cache {
+                    models: models.clone(),
+                    fetched_at_ms: now_ms(),
+                });
             }
             models
         }
     };
 
     // Merge: user-defined per-id entries win; catalog fills the rest.
-    let mut root = if existing.is_object() { existing.clone() } else { json!({}) };
-    let providers = root.as_object_mut().unwrap().entry("providers".to_string())
+    let mut root = if existing.is_object() {
+        existing.clone()
+    } else {
+        json!({})
+    };
+    let providers = root
+        .as_object_mut()
+        .unwrap()
+        .entry("providers".to_string())
         .or_insert_with(|| json!({}));
-    let opencode = providers.as_object_mut().unwrap().entry("opencode".to_string())
+    let opencode = providers
+        .as_object_mut()
+        .unwrap()
+        .entry("opencode".to_string())
         .or_insert_with(|| json!({}));
     let oc_obj = opencode.as_object_mut().unwrap();
     let user_ids: std::collections::HashSet<String> = oc_obj
         .get("models")
         .and_then(Value::as_array)
-        .map(|items| items.iter().filter_map(|m| m.get("id").and_then(Value::as_str).map(str::to_string)).collect())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|m| m.get("id").and_then(Value::as_str).map(str::to_string))
+                .collect()
+        })
         .unwrap_or_default();
     let mut merged: Vec<Value> = oc_obj
         .get("models")
@@ -256,7 +316,11 @@ pub fn refresh_pi_opencode_catalog(agent_dir: &std::path::Path) {
         .cloned()
         .unwrap_or_default();
     for model in models {
-        let dominated = model.get("id").and_then(Value::as_str).map(|id| user_ids.contains(id)).unwrap_or(false);
+        let dominated = model
+            .get("id")
+            .and_then(Value::as_str)
+            .map(|id| user_ids.contains(id))
+            .unwrap_or(false);
         if !dominated {
             merged.push(model);
         }
@@ -322,11 +386,15 @@ mod tests {
             "bad": {"id": "evil", "provider": "opencode"},
         });
         let inventory = json!({"data": [{"id": "m-alpha"}, {"id": "m-beta"}, {"id": "inactive"}]});
-        let models = parse_pi_opencode_catalog(&catalog, &inventory).ok().unwrap();
+        let models = parse_pi_opencode_catalog(&catalog, &inventory)
+            .ok()
+            .unwrap();
         assert_eq!(models.len(), 2);
         // Inventory filter: drop models the inventory does not list.
         let inventory2 = json!({"data": [{"id": "m-alpha"}]});
-        let models2 = parse_pi_opencode_catalog(&catalog, &inventory2).ok().unwrap();
+        let models2 = parse_pi_opencode_catalog(&catalog, &inventory2)
+            .ok()
+            .unwrap();
         assert_eq!(models2.len(), 1);
         assert_eq!(models2[0]["id"], "m-alpha");
     }
@@ -337,7 +405,9 @@ mod tests {
         with_headers["headers"] = json!({"Authorization": "Bearer evil"});
         let catalog = json!({"x": with_headers});
         let inventory = json!({"data": [{"id": "m-x"}]});
-        let models = parse_pi_opencode_catalog(&catalog, &inventory).ok().unwrap();
+        let models = parse_pi_opencode_catalog(&catalog, &inventory)
+            .ok()
+            .unwrap();
         assert!(models[0].get("headers").is_none());
 
         let mut foreign = valid_model("m-y");
@@ -366,10 +436,15 @@ mod tests {
         .unwrap();
         // Seed the cache so no network is needed.
         if let Ok(mut c) = PUBLIC_CATALOG.lock() {
-            *c = Some(Cache { models: vec![valid_model("user-model"), valid_model("catalog-model")], fetched_at_ms: now_ms() });
+            *c = Some(Cache {
+                models: vec![valid_model("user-model"), valid_model("catalog-model")],
+                fetched_at_ms: now_ms(),
+            });
         }
         refresh_pi_opencode_catalog(&dir);
-        let written: Value = serde_json::from_str(&std::fs::read_to_string(dir.join("models.json")).unwrap()).unwrap();
+        let written: Value =
+            serde_json::from_str(&std::fs::read_to_string(dir.join("models.json")).unwrap())
+                .unwrap();
         let ids: Vec<&str> = written
             .pointer("/providers/opencode/models")
             .and_then(Value::as_array)
@@ -386,13 +461,17 @@ mod tests {
 
     #[test]
     fn foreign_user_baseurl_skips_refresh() {
-        let dir = std::env::temp_dir().join(format!("pi-catalog-test-foreign-{}", std::process::id()));
+        let dir =
+            std::env::temp_dir().join(format!("pi-catalog-test-foreign-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("auth.json"), r#"{"opencode": "redacted"}"#).unwrap();
         let original = r#"{"providers": {"opencode": {"models": [{"id": "custom", "api": "openai-responses", "baseUrl": "https://my-proxy.example.com/v1"}]}}}"#;
         std::fs::write(dir.join("models.json"), original).unwrap();
         if let Ok(mut c) = PUBLIC_CATALOG.lock() {
-            *c = Some(Cache { models: vec![valid_model("catalog-model")], fetched_at_ms: now_ms() });
+            *c = Some(Cache {
+                models: vec![valid_model("catalog-model")],
+                fetched_at_ms: now_ms(),
+            });
         }
         refresh_pi_opencode_catalog(&dir);
         let after = std::fs::read_to_string(dir.join("models.json")).unwrap();

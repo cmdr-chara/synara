@@ -195,15 +195,23 @@ fn mcp_content(value: &Value) -> Vec<Value> {
     let mut content = Vec::new();
     if let (Some(mime), Some(data)) = (
         value.get("mimeType").and_then(Value::as_str),
-        value.get("bytesBase64").and_then(Value::as_str).filter(|text| !text.is_empty()),
+        value
+            .get("bytesBase64")
+            .and_then(Value::as_str)
+            .filter(|text| !text.is_empty()),
     ) {
         if mime.starts_with("image/") {
             content.push(json!({"type":"image","data":data,"mimeType":mime}));
         }
     }
     if let (Some(mime), Some(data)) = (
-        value.pointer("/screenshot/mimeType").and_then(Value::as_str),
-        value.pointer("/screenshot/bytesBase64").and_then(Value::as_str).filter(|text| !text.is_empty()),
+        value
+            .pointer("/screenshot/mimeType")
+            .and_then(Value::as_str),
+        value
+            .pointer("/screenshot/bytesBase64")
+            .and_then(Value::as_str)
+            .filter(|text| !text.is_empty()),
     ) {
         if mime.starts_with("image/") {
             content.push(json!({"type":"image","data":data,"mimeType":mime}));
@@ -602,7 +610,10 @@ pub async fn handle_ws_call(payload: &Value) -> Result<Value, crate::todo::WsErr
         .map(str::trim)
         .filter(|s| !s.is_empty())
         .ok_or_else(|| crate::git_domain::err("invalid `tool`"))?;
-    let args = payload.get("arguments").cloned().unwrap_or_else(|| json!({}));
+    let args = payload
+        .get("arguments")
+        .cloned()
+        .unwrap_or_else(|| json!({}));
     let thread = payload
         .pointer("/caller/threadId")
         .and_then(Value::as_str)
@@ -623,7 +634,11 @@ async fn call_tool(name: &str, args: &Value, thread: Option<&str>) -> Result<Val
     if name.starts_with("browser_") {
         return crate::browser_automation::call_browser_tool(name, args, thread).await;
     }
-    let approval_name = if name == "computer_batch" { "computer_run" } else { name };
+    let approval_name = if name == "computer_batch" {
+        "computer_run"
+    } else {
+        name
+    };
     if computer_tool_requires_approval(approval_name) {
         let Some(thread_id) = thread else {
             return Err("Computer action requires a thread-scoped caller.".into());
@@ -887,7 +902,13 @@ async fn computer_activate_window(args: &Value, thread: Option<&str>) -> Result<
     let Some(thread) = thread else {
         return Err("computer_activate_window requires a thread-scoped caller.".into());
     };
-    if !authorize_foreground_activation(thread, "computer_activate_window", "Show a window on screen").await {
+    if !authorize_foreground_activation(
+        thread,
+        "computer_activate_window",
+        "Show a window on screen",
+    )
+    .await
+    {
         return Err(
             "Showing windows on screen was declined or cancelled for this task, so no window was raised and no input was sent. Do not ask again in this turn: continue with background input, or report what cannot be done without the foreground."
                 .into(),
@@ -916,12 +937,17 @@ fn collect_elements<'a>(node: &'a Value, out: &mut Vec<&'a Value>) {
 }
 
 fn truthy_match(actual: Option<&Value>, expected: bool) -> Option<bool> {
-    actual.and_then(Value::as_bool).map(|value| value == expected)
+    actual
+        .and_then(Value::as_bool)
+        .map(|value| value == expected)
 }
 
 async fn computer_verify_state(args: &Value, thread: Option<&str>) -> Result<Value, String> {
     let window_id = string_arg(args, "window_id").ok_or("window_id is required")?;
-    let expect = args.get("expect").and_then(Value::as_array).filter(|items| !items.is_empty() && items.len() <= 8)
+    let expect = args
+        .get("expect")
+        .and_then(Value::as_array)
+        .filter(|items| !items.is_empty() && items.len() <= 8)
         .ok_or("expect must be an array of one to eight predicates")?;
     let state = native_call_scoped(
         "computer.getState",
@@ -935,18 +961,32 @@ async fn computer_verify_state(args: &Value, thread: Option<&str>) -> Result<Val
     let window = state
         .get("windows")
         .and_then(Value::as_array)
-        .and_then(|windows| windows.iter().find(|item| item.get("id").and_then(Value::as_str) == Some(window_id)));
+        .and_then(|windows| {
+            windows
+                .iter()
+                .find(|item| item.get("id").and_then(Value::as_str) == Some(window_id))
+        });
     let mut unknown = false;
     let mut satisfied = true;
     let mut results = Vec::new();
     for predicate in expect {
         let (status, evidence) = if let Some(element) = predicate.get("element") {
-            let selector = element.get("selector").cloned().unwrap_or_else(|| json!({}));
+            let selector = element
+                .get("selector")
+                .cloned()
+                .unwrap_or_else(|| json!({}));
             let role = selector.get("role").and_then(Value::as_str);
-            let label_contains = selector.get("label_contains").or_else(|| selector.get("labelContains")).and_then(Value::as_str).map(str::to_lowercase);
-            let matches: Vec<&&Value> = elements.iter().filter(|node| {
-                role.is_none_or(|wanted| node.get("role").and_then(Value::as_str) == Some(wanted))
-                    && label_contains.as_ref().is_none_or(|wanted| {
+            let label_contains = selector
+                .get("label_contains")
+                .or_else(|| selector.get("labelContains"))
+                .and_then(Value::as_str)
+                .map(str::to_lowercase);
+            let matches: Vec<&&Value> = elements
+                .iter()
+                .filter(|node| {
+                    role.is_none_or(|wanted| {
+                        node.get("role").and_then(Value::as_str) == Some(wanted)
+                    }) && label_contains.as_ref().is_none_or(|wanted| {
                         [
                             node.get("label").and_then(Value::as_str),
                             node.get("value").and_then(Value::as_str),
@@ -956,9 +996,19 @@ async fn computer_verify_state(args: &Value, thread: Option<&str>) -> Result<Val
                         .flatten()
                         .any(|text| text.to_lowercase().contains(wanted))
                     })
-            }).collect();
+                })
+                .collect();
             let exists = !matches.is_empty();
-            let mut status = if element.get("exists").and_then(Value::as_bool).unwrap_or(true) == exists { "satisfied" } else { "unsatisfied" };
+            let mut status = if element
+                .get("exists")
+                .and_then(Value::as_bool)
+                .unwrap_or(true)
+                == exists
+            {
+                "satisfied"
+            } else {
+                "unsatisfied"
+            };
             for key in ["enabled", "selected"] {
                 if let Some(expected) = element.get(key).and_then(Value::as_bool) {
                     let mut saw = false;
@@ -978,36 +1028,63 @@ async fn computer_verify_state(args: &Value, thread: Option<&str>) -> Result<Val
             }
             if element.get("value_equals").is_some() {
                 let wanted = element.get("value_equals").cloned().unwrap_or(Value::Null);
-                let matched = matches.iter().any(|node| node.get("value") == Some(&wanted));
-                if !matched { status = if matches.is_empty() { "unknown" } else { "unsatisfied" }; }
+                let matched = matches
+                    .iter()
+                    .any(|node| node.get("value") == Some(&wanted));
+                if !matched {
+                    status = if matches.is_empty() {
+                        "unknown"
+                    } else {
+                        "unsatisfied"
+                    };
+                }
             }
             (status, json!({"kind":"element","matches":matches.len()}))
         } else if let Some(window_predicate) = predicate.get("window") {
             let Some(bounds) = window_predicate.get("bounds") else {
                 return Err("window predicates require bounds".into());
             };
-            let tolerance = bounds.get("tolerance_px").or_else(|| bounds.get("tolerancePx")).and_then(Value::as_f64).unwrap_or(0.0);
+            let tolerance = bounds
+                .get("tolerance_px")
+                .or_else(|| bounds.get("tolerancePx"))
+                .and_then(Value::as_f64)
+                .unwrap_or(0.0);
             let Some(actual) = window.and_then(|window| window.get("bounds")) else {
                 unknown = true;
                 results.push(json!({"status":"unknown","evidence":{"kind":"window","reason":"window-unobserved"}}));
                 continue;
             };
             let mut close = true;
-            for key in ["x","y","width","height"] {
+            for key in ["x", "y", "width", "height"] {
                 if let Some(wanted) = bounds.get(key).and_then(Value::as_f64) {
                     let actual_value = actual.get(key).and_then(Value::as_f64).unwrap_or(f64::NAN);
-                    if (actual_value - wanted).abs() > tolerance { close = false; }
+                    if (actual_value - wanted).abs() > tolerance {
+                        close = false;
+                    }
                 }
             }
-            ((if close { "satisfied" } else { "unsatisfied" }), json!({"kind":"window","bounds":actual.clone()}))
+            (
+                (if close { "satisfied" } else { "unsatisfied" }),
+                json!({"kind":"window","bounds":actual.clone()}),
+            )
         } else {
             return Err("Each expect predicate must contain element or window.".into());
         };
-        if status == "unknown" { unknown = true; }
-        if status != "satisfied" { satisfied = false; }
+        if status == "unknown" {
+            unknown = true;
+        }
+        if status != "satisfied" {
+            satisfied = false;
+        }
         results.push(json!({"status":status,"evidence":evidence}));
     }
-    let status = if unknown { "unknown" } else if satisfied { "satisfied" } else { "unsatisfied" };
+    let status = if unknown {
+        "unknown"
+    } else if satisfied {
+        "satisfied"
+    } else {
+        "unsatisfied"
+    };
     Ok(json!({
         "status": status,
         "stable": status == "satisfied",
@@ -1041,7 +1118,9 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             &json!({"pid": number(args,"pid")? as i64, "hidden": args.get("hidden").and_then(Value::as_bool).ok_or("hidden must be a boolean")?}),
             thread,
         ),
-        "computer_get_screen_size" => native_call_scoped("computer.getScreenSize", &json!({}), thread),
+        "computer_get_screen_size" => {
+            native_call_scoped("computer.getScreenSize", &json!({}), thread)
+        }
         "computer_zoom" => native_call_scoped(
             "computer.zoomWindow",
             &json!({"windowId":string_arg(args,"window_id"),"x":number_opt(args,"x"),"y":number_opt(args,"y"),"width":number_opt(args,"width"),"height":number_opt(args,"height")}),
@@ -1052,9 +1131,13 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             &json!({"windowId":string_arg(args,"window_id")}),
             thread,
         ),
-        "computer_get_cursor_position" => native_call_scoped("computer.getCursorPosition", &json!({}), thread),
+        "computer_get_cursor_position" => {
+            native_call_scoped("computer.getCursorPosition", &json!({}), thread)
+        }
         "computer_screenshot" => native_call_scoped("computer.screenshot", &json!({}), thread),
-        "computer_read_clipboard" => native_call_scoped("computer.readClipboard", &json!({}), thread),
+        "computer_read_clipboard" => {
+            native_call_scoped("computer.readClipboard", &json!({}), thread)
+        }
         "computer_write_clipboard" => native_call_scoped(
             "computer.writeClipboard",
             &json!({"text": string_arg(args,"text").ok_or("text is required")?}),
@@ -1073,7 +1156,13 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
             let Some(thread_id) = thread else {
                 return Err("computer_invoke_menu requires a thread-scoped caller.".into());
             };
-            if !authorize_foreground_activation(thread_id, "computer_invoke_menu", "Invoke a menu item on screen").await {
+            if !authorize_foreground_activation(
+                thread_id,
+                "computer_invoke_menu",
+                "Invoke a menu item on screen",
+            )
+            .await
+            {
                 return Err(
                     "Showing windows on screen was declined or cancelled for this task, so the menu was not invoked. Do not ask again in this turn."
                         .into(),
@@ -1199,9 +1288,12 @@ async fn call_simple_tool(name: &str, args: &Value, thread: Option<&str>) -> Res
         }
         "computer_set_value" => {
             let Some(mut target) = semantic_target(args) else {
-                return Err("computer_set_value requires an exact ref, node_path, role or label target.".into());
+                return Err(
+                    "computer_set_value requires an exact ref, node_path, role or label target."
+                        .into(),
+                );
             };
-            target["value"] = json!(string_value_arg(args,"value").ok_or("value is required")?);
+            target["value"] = json!(string_value_arg(args, "value").ok_or("value is required")?);
             native_call_scoped("computer.setValue", &target, thread)
         }
         "computer_perform_action" => {

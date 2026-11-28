@@ -15,11 +15,13 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
-use crate::acp_runner::{append_assistant_text, err, session_set_event, set_session, set_turn_state};
+use crate::acp_runner::{
+    append_assistant_text, err, session_set_event, set_session, set_turn_state,
+};
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 struct RunningTurn {
     stdin: Arc<Mutex<ChildStdin>>,
@@ -73,7 +75,10 @@ pub fn drop_thread_resources(thread_id: &str) {
 /// sessions and local servers alive after Synara can no longer control them.
 pub fn drop_all_resources() {
     let parked = if let Ok(mut parked_map) = PARKED.lock() {
-        parked_map.drain().map(|(_, parked)| parked).collect::<Vec<_>>()
+        parked_map
+            .drain()
+            .map(|(_, parked)| parked)
+            .collect::<Vec<_>>()
     } else {
         Vec::new()
     };
@@ -156,7 +161,13 @@ fn read_json_line(reader: &mut BufReader<ChildStdout>) -> Result<Option<Value>, 
     }
 }
 
-fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str, instance_id: Option<&str>) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
+fn spawn_pi(
+    cwd: &str,
+    runtime_mode: &str,
+    model: Option<&str>,
+    thread_id: &str,
+    instance_id: Option<&str>,
+) -> Result<(Child, ChildStdin, ChildStdout), WsErr> {
     // OpenCode-hosted models resolve through the SDK-native models.json
     // composition point; refresh is cached, offline-aware, and silent on failure.
     crate::pi_opencode_catalog::refresh_for_instance(instance_id);
@@ -200,8 +211,6 @@ fn spawn_pi(cwd: &str, runtime_mode: &str, model: Option<&str>, thread_id: &str,
     Ok((child, stdin, stdout))
 }
 
-
-
 /// Run one discovery command against a temporary Pi RPC process. The process
 /// uses `--no-session`, so discovery cannot mutate the user's session store.
 fn rpc_query(cwd: &str, command: &str) -> Result<Value, WsErr> {
@@ -230,7 +239,7 @@ fn rpc_query(cwd: &str, command: &str) -> Result<Value, WsErr> {
         let mut reader = BufReader::new(stdout);
         let mut line = String::new();
         while reader.read_line(&mut line).map(|n| n > 0).unwrap_or(false) {
-            if let Ok(value) = serde_json::from_str::<Value>(line.trim_end_matches(['\n','\r'])) {
+            if let Ok(value) = serde_json::from_str::<Value>(line.trim_end_matches(['\n', '\r'])) {
                 let _ = tx.send(value);
             }
             line.clear();
@@ -259,7 +268,10 @@ fn rpc_query(cwd: &str, command: &str) -> Result<Value, WsErr> {
     if response.get("success").and_then(Value::as_bool) != Some(true) {
         return Err(err(format!(
             "pi {command} failed: {}",
-            response.get("error").and_then(Value::as_str).unwrap_or("unknown error")
+            response
+                .get("error")
+                .and_then(Value::as_str)
+                .unwrap_or("unknown error")
         )));
     }
     Ok(response.get("data").cloned().unwrap_or(json!({})))
@@ -363,7 +375,6 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
     result
 }
 
-
 /// Start Pi ahead of the first user prompt. Pi owns the session file from
 /// process startup, so parking this process gives the next turn a warm RPC
 /// runtime without sending any model traffic.
@@ -416,9 +427,18 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         cwd,
         runtime_mode,
         selected_model.as_deref().unwrap_or(""),
-        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+        model_selection
+            .get("instanceId")
+            .and_then(Value::as_str)
+            .unwrap_or("")
     );
-    let (child, stdin, stdout) = spawn_pi(&cwd, &runtime_mode, selected_model.as_deref(), thread_id, model_selection.get("instanceId").and_then(Value::as_str))?;
+    let (child, stdin, stdout) = spawn_pi(
+        &cwd,
+        &runtime_mode,
+        selected_model.as_deref(),
+        thread_id,
+        model_selection.get("instanceId").and_then(Value::as_str),
+    )?;
     if let Ok(mut parked_map) = PARKED.lock() {
         parked_map.insert(
             thread_id.to_string(),
@@ -534,19 +554,40 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         cwd,
         turn_runtime_mode,
         selected_model.as_deref().unwrap_or(""),
-        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+        model_selection
+            .get("instanceId")
+            .and_then(Value::as_str)
+            .unwrap_or("")
     );
     let cancelled = Arc::new(AtomicBool::new(false));
 
-    let (mut child, stdin, mut reader, reused) = if let Some(parked) = take_parked(thread_id, &launch_key) {
-        (parked.child, parked.stdin, parked.reader, true)
-    } else {
-        let (child, stdin, stdout) = spawn_pi(&cwd, &turn_runtime_mode, selected_model.as_deref(), thread_id, model_selection.get("instanceId").and_then(Value::as_str))?;
-        (child, Arc::new(Mutex::new(stdin)), BufReader::new(stdout), false)
-    };
+    let (mut child, stdin, mut reader, reused) =
+        if let Some(parked) = take_parked(thread_id, &launch_key) {
+            (parked.child, parked.stdin, parked.reader, true)
+        } else {
+            let (child, stdin, stdout) = spawn_pi(
+                &cwd,
+                &turn_runtime_mode,
+                selected_model.as_deref(),
+                thread_id,
+                model_selection.get("instanceId").and_then(Value::as_str),
+            )?;
+            (
+                child,
+                Arc::new(Mutex::new(stdin)),
+                BufReader::new(stdout),
+                false,
+            )
+        };
     {
         let mut map = RUNNING.lock().map_err(|_| err("running map"))?;
-        map.insert(thread_id.to_string(), RunningTurn { stdin: stdin.clone(), cancelled: cancelled.clone() });
+        map.insert(
+            thread_id.to_string(),
+            RunningTurn {
+                stdin: stdin.clone(),
+                cancelled: cancelled.clone(),
+            },
+        );
     }
 
     let prompt_text = if reused || stored_session.is_some() {
@@ -562,7 +603,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     );
     let prompt_images = crate::provider_attachments::image_blocks(&attachments)?;
     let result = (|| -> Result<String, WsErr> {
-        let mut prompt_command = json!({"id": format!("prompt-{turn_id}"), "type":"prompt", "message": prompt_text});
+        let mut prompt_command =
+            json!({"id": format!("prompt-{turn_id}"), "type":"prompt", "message": prompt_text});
         if !prompt_images.is_empty() {
             prompt_command["images"] = json!(prompt_images);
         }
@@ -577,18 +619,31 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     if value.get("command").and_then(Value::as_str) == Some("prompt")
                         && value.get("success").and_then(Value::as_bool) != Some(true)
                     {
-                        let message = value.get("error").and_then(Value::as_str).unwrap_or("pi prompt rejected");
+                        let message = value
+                            .get("error")
+                            .and_then(Value::as_str)
+                            .unwrap_or("pi prompt rejected");
                         return Err(err(message));
                     }
                 }
                 "message_update" => {
-                    let event = value.get("assistantMessageEvent").cloned().unwrap_or(Value::Null);
+                    let event = value
+                        .get("assistantMessageEvent")
+                        .cloned()
+                        .unwrap_or(Value::Null);
                     if event.get("type").and_then(Value::as_str) == Some("text_delta") {
                         if let Some(delta) = event.get("delta").and_then(Value::as_str) {
                             if !delta.is_empty() {
                                 saw_delta = true;
                                 if let Ok(c) = open_state_rw() {
-                                    let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, delta, true);
+                                    let _ = append_assistant_text(
+                                        &c,
+                                        thread_id,
+                                        &assistant_msg_id,
+                                        &turn_id,
+                                        delta,
+                                        true,
+                                    );
                                 }
                             }
                         }
@@ -596,11 +651,20 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 }
                 "message_end" => {
                     let message = value.get("message").cloned().unwrap_or(Value::Null);
-                    if !saw_delta && message.get("role").and_then(Value::as_str) == Some("assistant") {
+                    if !saw_delta
+                        && message.get("role").and_then(Value::as_str) == Some("assistant")
+                    {
                         let text_out = assistant_text(&message);
                         if !text_out.is_empty() {
                             if let Ok(c) = open_state_rw() {
-                                let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, &text_out, true);
+                                let _ = append_assistant_text(
+                                    &c,
+                                    thread_id,
+                                    &assistant_msg_id,
+                                    &turn_id,
+                                    &text_out,
+                                    true,
+                                );
                             }
                         }
                     }
@@ -627,7 +691,15 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let clean = matches!(result, Ok(ref reason) if reason == "completed") && !cancelled_flag;
     if clean && child.try_wait().ok().flatten().is_none() {
         if let Ok(mut parked_map) = PARKED.lock() {
-            parked_map.insert(thread_id.to_string(), ParkedPi { child, stdin, reader, launch_key });
+            parked_map.insert(
+                thread_id.to_string(),
+                ParkedPi {
+                    child,
+                    stdin,
+                    reader,
+                    launch_key,
+                },
+            );
         }
     } else {
         let _ = child.kill();
@@ -640,21 +712,48 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     match result {
         Ok(reason) => {
             let interrupted = cancelled_flag || reason == "cancelled";
-            let state = if interrupted { "interrupted" } else { "completed" };
+            let state = if interrupted {
+                "interrupted"
+            } else {
+                "completed"
+            };
             let status = if interrupted { "interrupted" } else { "ready" };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "pi", None, None);
+            crate::claude_runner::write_turn_completed_activity(
+                &conn, thread_id, &turn_id, state, "pi", None, None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, Some(thread_id))?;
-            session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "pi", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}))?;
+            session_set_event(
+                &conn,
+                thread_id,
+                &json!({"threadId": thread_id, "status": status, "providerName": "pi", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}),
+            )?;
             crate::orchestration_engine::continue_queued_turn(thread_id);
             Ok(())
         }
         Err(e) => {
-            let (state, status) = if cancelled_flag { ("interrupted", "interrupted") } else { ("error", "error") };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "pi", None, None);
+            let (state, status) = if cancelled_flag {
+                ("interrupted", "interrupted")
+            } else {
+                ("error", "error")
+            };
+            crate::claude_runner::write_turn_completed_activity(
+                &conn, thread_id, &turn_id, state, "pi", None, None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
-            set_session(&conn, thread_id, status, Some(""), Some(&e.0), Some(thread_id))?;
-            session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "pi", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}))?;
+            set_session(
+                &conn,
+                thread_id,
+                status,
+                Some(""),
+                Some(&e.0),
+                Some(thread_id),
+            )?;
+            session_set_event(
+                &conn,
+                thread_id,
+                &json!({"threadId": thread_id, "status": status, "providerName": "pi", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}),
+            )?;
             if cancelled_flag {
                 crate::orchestration_engine::continue_queued_turn(thread_id);
             }

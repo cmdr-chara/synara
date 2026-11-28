@@ -63,7 +63,10 @@ fn now_ms() -> i64 {
 }
 
 fn unique_path(parent: &Path, prefix: &str) -> PathBuf {
-    parent.join(format!("{prefix}{}", crate::orchestration_engine::uuid_v4()))
+    parent.join(format!(
+        "{prefix}{}",
+        crate::orchestration_engine::uuid_v4()
+    ))
 }
 
 fn write_json_atomic(path: &Path, value: &impl Serialize, private: bool) -> Result<(), String> {
@@ -71,10 +74,15 @@ fn write_json_atomic(path: &Path, value: &impl Serialize, private: bool) -> Resu
     fs::create_dir_all(parent).map_err(|error| error.to_string())?;
     let tmp = parent.join(format!(
         ".{}.{}.tmp",
-        path.file_name().and_then(|name| name.to_str()).unwrap_or("json"),
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or("json"),
         crate::orchestration_engine::uuid_v4()
     ));
-    let body = format!("{}\n", serde_json::to_string(value).map_err(|error| error.to_string())?);
+    let body = format!(
+        "{}\n",
+        serde_json::to_string(value).map_err(|error| error.to_string())?
+    );
     fs::write(&tmp, body).map_err(|error| error.to_string())?;
     if private {
         #[cfg(unix)]
@@ -102,25 +110,38 @@ fn read_import_request(path: &Path) -> Option<ImportRequest> {
 }
 
 fn is_state_db_entry(name: &str) -> bool {
-    if name == "state.sqlite" { return true; }
-    name.strip_prefix("state.sqlite").is_some_and(|rest| {
-        rest.starts_with('.') || rest.starts_with('-')
-    })
+    if name == "state.sqlite" {
+        return true;
+    }
+    name.strip_prefix("state.sqlite")
+        .is_some_and(|rest| rest.starts_with('.') || rest.starts_with('-'))
 }
 
 fn is_symlink(path: &Path) -> bool {
-    fs::symlink_metadata(path).map(|meta| meta.file_type().is_symlink()).unwrap_or(false)
+    fs::symlink_metadata(path)
+        .map(|meta| meta.file_type().is_symlink())
+        .unwrap_or(false)
 }
 
 fn secret_identity_excluded(relative: &Path) -> bool {
-    let Some(first) = relative.components().next() else { return false };
+    let Some(first) = relative.components().next() else {
+        return false;
+    };
     let first = first.as_os_str().to_string_lossy();
-    ["host-identity", "device-identity", "host-secrets-sync-key", "remote-tls", "remote-trust"]
-        .iter()
-        .any(|prefix| {
-            first == *prefix
-                || first.strip_prefix(prefix).is_some_and(|rest| rest.starts_with('.') || rest.starts_with('-'))
-        })
+    [
+        "host-identity",
+        "device-identity",
+        "host-secrets-sync-key",
+        "remote-tls",
+        "remote-trust",
+    ]
+    .iter()
+    .any(|prefix| {
+        first == *prefix
+            || first
+                .strip_prefix(prefix)
+                .is_some_and(|rest| rest.starts_with('.') || rest.starts_with('-'))
+    })
 }
 
 fn copy_filtered_entry(
@@ -129,9 +150,13 @@ fn copy_filtered_entry(
     root: &Path,
     exclude_secret_identity: bool,
 ) -> Result<(), String> {
-    let metadata = fs::symlink_metadata(source).map_err(|error| format!("{}: {error}", source.display()))?;
+    let metadata =
+        fs::symlink_metadata(source).map_err(|error| format!("{}: {error}", source.display()))?;
     if metadata.file_type().is_symlink() {
-        return Err(format!("Cannot import a linked state entry: {}", source.display()));
+        return Err(format!(
+            "Cannot import a linked state entry: {}",
+            source.display()
+        ));
     }
     if exclude_secret_identity {
         if let Ok(relative) = source.strip_prefix(root) {
@@ -142,7 +167,9 @@ fn copy_filtered_entry(
     }
     if metadata.is_dir() {
         fs::create_dir_all(target).map_err(|error| format!("{}: {error}", target.display()))?;
-        for entry in fs::read_dir(source).map_err(|error| format!("{}: {error}", source.display()))? {
+        for entry in
+            fs::read_dir(source).map_err(|error| format!("{}: {error}", source.display()))?
+        {
             let entry = entry.map_err(|error| error.to_string())?;
             copy_filtered_entry(
                 &entry.path(),
@@ -155,31 +182,48 @@ fn copy_filtered_entry(
         if let Some(parent) = target.parent() {
             fs::create_dir_all(parent).map_err(|error| format!("{}: {error}", parent.display()))?;
         }
-        fs::copy(source, target).map_err(|error| format!("{} → {}: {error}", source.display(), target.display()))?;
+        fs::copy(source, target)
+            .map_err(|error| format!("{} → {}: {error}", source.display(), target.display()))?;
     }
     Ok(())
 }
 
-fn copy_state_entries(source_state: &Path, staged_state: &Path, existing_state: &Path) -> Result<Vec<String>, String> {
+fn copy_state_entries(
+    source_state: &Path,
+    staged_state: &Path,
+    existing_state: &Path,
+) -> Result<Vec<String>, String> {
     fs::create_dir_all(staged_state).map_err(|error| error.to_string())?;
     let mut copied = Vec::new();
-    for entry in fs::read_dir(source_state).map_err(|error| format!("{}: {error}", source_state.display()))? {
+    for entry in fs::read_dir(source_state)
+        .map_err(|error| format!("{}: {error}", source_state.display()))?
+    {
         let entry = entry.map_err(|error| error.to_string())?;
         let name = entry.file_name().to_string_lossy().to_string();
-        if EXCLUDED_ENTRIES.contains(&name.as_str()) || is_state_db_entry(&name) || name.ends_with(".lifecycle-lock") {
+        if EXCLUDED_ENTRIES.contains(&name.as_str())
+            || is_state_db_entry(&name)
+            || name.ends_with(".lifecycle-lock")
+        {
             continue;
         }
         let source = entry.path();
         let staged = staged_state.join(&name);
-        let metadata = fs::symlink_metadata(&source).map_err(|error| format!("{}: {error}", source.display()))?;
+        let metadata = fs::symlink_metadata(&source)
+            .map_err(|error| format!("{}: {error}", source.display()))?;
         if metadata.file_type().is_symlink() {
-            return Err(format!("Cannot import a linked state entry: {}", source.display()));
+            return Err(format!(
+                "Cannot import a linked state entry: {}",
+                source.display()
+            ));
         }
         if metadata.is_dir() {
             let existing = existing_state.join(&name);
             if existing.exists() {
                 if is_symlink(&existing) {
-                    return Err(format!("Cannot replace a linked Beta state entry: {}", existing.display()));
+                    return Err(format!(
+                        "Cannot replace a linked Beta state entry: {}",
+                        existing.display()
+                    ));
                 }
                 if existing.is_dir() {
                     // Overlay semantics preserve Beta-only files in shared
@@ -189,7 +233,8 @@ fn copy_state_entries(source_state: &Path, staged_state: &Path, existing_state: 
             }
             copy_filtered_entry(&source, &staged, &source, name == "secrets")?;
         } else if metadata.is_file() {
-            fs::copy(&source, &staged).map_err(|error| format!("{} → {}: {error}", source.display(), staged.display()))?;
+            fs::copy(&source, &staged)
+                .map_err(|error| format!("{} → {}: {error}", source.display(), staged.display()))?;
         } else {
             continue;
         }
@@ -201,7 +246,9 @@ fn copy_state_entries(source_state: &Path, staged_state: &Path, existing_state: 
 fn live_database_signature(db: &Path) -> Result<String, String> {
     use std::io::Read as _;
     let metadata = fs::metadata(db).map_err(|error| format!("{}: {error}", db.display()))?;
-    let modified = metadata.modified().ok()
+    let modified = metadata
+        .modified()
+        .ok()
         .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
         .map(|duration| duration.as_millis())
         .unwrap_or(0);
@@ -210,7 +257,10 @@ fn live_database_signature(db: &Path) -> Result<String, String> {
     if let Ok(mut file) = fs::File::open(wal) {
         let mut header = [0u8; 32];
         if let Ok(count) = file.read(&mut header) {
-            wal_header = header[..count].iter().map(|byte| format!("{byte:02x}")).collect();
+            wal_header = header[..count]
+                .iter()
+                .map(|byte| format!("{byte:02x}"))
+                .collect();
         }
     }
     Ok(format!("{}:{modified}:{wal_header}", metadata.len()))
@@ -244,37 +294,56 @@ fn sql_string_literal(value: &str) -> String {
 }
 
 fn vacuum_into(source_db: &Path, target: &Path) -> Result<(), String> {
-    let conn = Connection::open(source_db).map_err(|error| format!("open database snapshot: {error}"))?;
-    conn.execute_batch(&format!("VACUUM INTO {}", sql_string_literal(&target.to_string_lossy())))
-        .map_err(|error| format!("vacuum database snapshot: {error}"))
+    let conn =
+        Connection::open(source_db).map_err(|error| format!("open database snapshot: {error}"))?;
+    conn.execute_batch(&format!(
+        "VACUUM INTO {}",
+        sql_string_literal(&target.to_string_lossy())
+    ))
+    .map_err(|error| format!("vacuum database snapshot: {error}"))
 }
 
 fn inspect_snapshot_migration(db: &Path, latest_migration_id: u32) -> Result<(), String> {
     let conn = Connection::open(db).map_err(|error| format!("open imported database: {error}"))?;
-    let migration_id: u32 = conn.query_row(
-        "SELECT COALESCE(MAX(migration_id), 0) FROM effect_sql_migrations",
-        [],
-        |row| row.get(0),
-    ).map_err(|_| "Unrecognized migration lineage in Stable data.".to_string())?;
+    let migration_id: u32 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(migration_id), 0) FROM effect_sql_migrations",
+            [],
+            |row| row.get(0),
+        )
+        .map_err(|_| "Unrecognized migration lineage in Stable data.".to_string())?;
     crate::migrations::pending_migrations(&conn)
         .map_err(|_| "Unrecognized migration lineage in Stable data.".to_string())?;
     if migration_id > latest_migration_id {
-        return Err("Synara is newer than this Synara Beta. Update Synara Beta, then copy your data again.".into());
+        return Err(
+            "Synara is newer than this Synara Beta. Update Synara Beta, then copy your data again."
+                .into(),
+        );
     }
     if crate::migrations::table_exists(&conn, "account_usage_sync") {
-        let identity = crate::migrations::column_exists(&conn, "account_usage_sync", "account_identity");
+        let identity =
+            crate::migrations::column_exists(&conn, "account_usage_sync", "account_identity");
         let sql = if identity {
             "UPDATE account_usage_sync SET watermark_minute = NULL, last_failure_at = NULL, account_identity = NULL"
         } else {
             "UPDATE account_usage_sync SET watermark_minute = NULL, last_failure_at = NULL"
         };
-        conn.execute_batch(sql).map_err(|error| format!("reset account sync state: {error}"))?;
+        conn.execute_batch(sql)
+            .map_err(|error| format!("reset account sync state: {error}"))?;
     }
     Ok(())
 }
 
-fn snapshot_stable_database(source_db: &Path, target_db: &Path, latest_migration_id: u32) -> Result<(), String> {
-    let staging = PathBuf::from(format!("{}.import-{}", target_db.display(), std::process::id()));
+fn snapshot_stable_database(
+    source_db: &Path,
+    target_db: &Path,
+    latest_migration_id: u32,
+) -> Result<(), String> {
+    let staging = PathBuf::from(format!(
+        "{}.import-{}",
+        target_db.display(),
+        std::process::id()
+    ));
     let live_dir = PathBuf::from(format!("{}.src", staging.display()));
     let _ = fs::remove_file(&staging);
     let _ = fs::remove_dir_all(&live_dir);
@@ -291,7 +360,8 @@ fn snapshot_stable_database(source_db: &Path, target_db: &Path, latest_migration
         for suffix in ["-wal", "-shm", "-journal"] {
             let _ = fs::remove_file(format!("{}{suffix}", target_db.display()));
         }
-        fs::rename(&staging, target_db).map_err(|error| format!("commit database snapshot: {error}"))?;
+        fs::rename(&staging, target_db)
+            .map_err(|error| format!("commit database snapshot: {error}"))?;
         Ok(())
     })();
     let _ = fs::remove_file(&staging);
@@ -299,7 +369,11 @@ fn snapshot_stable_database(source_db: &Path, target_db: &Path, latest_migration
     result
 }
 
-fn commit_staged_import(staged_state: &Path, target_state: &Path, copied_entries: &[String]) -> Result<(), String> {
+fn commit_staged_import(
+    staged_state: &Path,
+    target_state: &Path,
+    copied_entries: &[String],
+) -> Result<(), String> {
     fs::create_dir_all(target_state).map_err(|error| error.to_string())?;
     let beta_home = target_state.parent().unwrap_or_else(|| Path::new("."));
     let backup = unique_path(beta_home, ".beta-import-backup-");
@@ -318,7 +392,8 @@ fn commit_staged_import(staged_state: &Path, target_state: &Path, copied_entries
             let staged = staged_state.join(name);
             let had_previous = fs::symlink_metadata(&target).is_ok();
             if had_previous {
-                fs::rename(&target, &previous).map_err(|error| format!("backup {name}: {error}"))?;
+                fs::rename(&target, &previous)
+                    .map_err(|error| format!("backup {name}: {error}"))?;
             }
             committed.push((name.clone(), had_previous));
             if fs::symlink_metadata(&staged).is_ok() {
@@ -331,7 +406,11 @@ fn commit_staged_import(staged_state: &Path, target_state: &Path, copied_entries
         let mut rollback_errors = Vec::new();
         for (name, had_previous) in committed.iter().rev() {
             let target = target_state.join(name);
-            if target.is_dir() { let _ = fs::remove_dir_all(&target); } else { let _ = fs::remove_file(&target); }
+            if target.is_dir() {
+                let _ = fs::remove_dir_all(&target);
+            } else {
+                let _ = fs::remove_file(&target);
+            }
             if *had_previous {
                 if let Err(rollback) = fs::rename(backup.join(name), &target) {
                     rollback_errors.push(format!("{name}: {rollback}"));
@@ -361,12 +440,18 @@ fn absolute_path(path: &Path) -> PathBuf {
     if path.is_absolute() {
         path.to_path_buf()
     } else {
-        std::env::current_dir().unwrap_or_else(|_| PathBuf::from(".")).join(path)
+        std::env::current_dir()
+            .unwrap_or_else(|_| PathBuf::from("."))
+            .join(path)
     }
 }
 
 fn latest_known_migration() -> u32 {
-    crate::migrations::canonical_migrations().iter().map(|(id, _, _)| *id).max().unwrap_or(0)
+    crate::migrations::canonical_migrations()
+        .iter()
+        .map(|(id, _, _)| *id)
+        .max()
+        .unwrap_or(0)
 }
 
 pub(crate) fn run_beta_import(
@@ -377,12 +462,24 @@ pub(crate) fn run_beta_import(
 ) -> ImportOutcome {
     let marker = beta_home.join(REQUEST_FILE);
     if !marker.exists() {
-        return ImportOutcome { consumed: false, ok: true, error: None };
+        return ImportOutcome {
+            consumed: false,
+            ok: true,
+            error: None,
+        };
     }
     let finish = |ok: bool, error: Option<String>| {
         write_import_result(beta_home, ok, error.clone());
-        if marker.is_dir() { let _ = fs::remove_dir_all(&marker); } else { let _ = fs::remove_file(&marker); }
-        ImportOutcome { consumed: true, ok, error }
+        if marker.is_dir() {
+            let _ = fs::remove_dir_all(&marker);
+        } else {
+            let _ = fs::remove_file(&marker);
+        }
+        ImportOutcome {
+            consumed: true,
+            ok,
+            error,
+        }
     };
     let Some(request) = read_import_request(&marker) else {
         return finish(false, Some("import marker was malformed".into()));
@@ -391,27 +488,54 @@ pub(crate) fn run_beta_import(
         .map(|time| time.timestamp_millis())
         .unwrap_or(0);
     if now_ms() - requested_at > REQUEST_MAX_AGE_MS {
-        if marker.is_dir() { let _ = fs::remove_dir_all(&marker); } else { let _ = fs::remove_file(&marker); }
-        return ImportOutcome { consumed: true, ok: true, error: None };
+        if marker.is_dir() {
+            let _ = fs::remove_dir_all(&marker);
+        } else {
+            let _ = fs::remove_file(&marker);
+        }
+        return ImportOutcome {
+            consumed: true,
+            ok: true,
+            error: None,
+        };
     }
     let source_home = absolute_path(Path::new(&request.source_home_dir));
     if real_path(&source_home) == real_path(beta_home) {
-        return finish(false, Some("import source points at the beta home itself".into()));
+        return finish(
+            false,
+            Some("import source points at the beta home itself".into()),
+        );
     }
-    if !allowed_source_homes.iter().map(|path| absolute_path(path)).any(|path| path == source_home) {
-        return finish(false, Some("import source is not the Synara data folder".into()));
+    if !allowed_source_homes
+        .iter()
+        .map(|path| absolute_path(path))
+        .any(|path| path == source_home)
+    {
+        return finish(
+            false,
+            Some("import source is not the Synara data folder".into()),
+        );
     }
     let source_state = source_home.join("userdata");
     let source_db = source_state.join("state.sqlite");
     if !source_db.exists() {
-        return finish(false, Some(format!("stable database not found at {}", source_db.display())));
+        return finish(
+            false,
+            Some(format!(
+                "stable database not found at {}",
+                source_db.display()
+            )),
+        );
     }
     if is_symlink(&source_state) || is_symlink(&source_db) || is_symlink(state_dir) {
         return finish(false, Some("Cannot import a linked state entry".into()));
     }
     for suffix in ["-wal", "-shm", "-journal"] {
         if is_symlink(&PathBuf::from(format!("{}{suffix}", source_db.display()))) {
-            return finish(false, Some("Cannot import a linked database sidecar".into()));
+            return finish(
+                false,
+                Some("Cannot import a linked database sidecar".into()),
+            );
         }
     }
 
@@ -420,7 +544,11 @@ pub(crate) fn run_beta_import(
         fs::create_dir_all(&staged_root).map_err(|error| error.to_string())?;
         let result = (|| {
             let staged_state = staged_root.join("userdata");
-            snapshot_stable_database(&source_db, &staged_state.join("state.sqlite"), latest_migration_id)?;
+            snapshot_stable_database(
+                &source_db,
+                &staged_state.join("state.sqlite"),
+                latest_migration_id,
+            )?;
             let mut copied = copy_state_entries(&source_state, &staged_state, state_dir)?;
             write_json_atomic(
                 &staged_state.join(REMOTE_SUSPENSION_FILE),
@@ -440,7 +568,10 @@ pub(crate) fn run_beta_import(
 }
 
 fn beta_home_from_state_dir(state_dir: &Path) -> PathBuf {
-    state_dir.parent().map(Path::to_path_buf).unwrap_or_else(|| state_dir.to_path_buf())
+    state_dir
+        .parent()
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| state_dir.to_path_buf())
 }
 
 /// Consume the beta import marker before the backend opens or migrates its
@@ -448,7 +579,11 @@ fn beta_home_from_state_dir(state_dir: &Path) -> PathBuf {
 /// other home must stay inert exactly like upstream.
 pub fn run_beta_import_if_requested() -> ImportOutcome {
     if std::env::var("SYNARA_DESKTOP_FLAVOR").ok().as_deref() != Some("beta") {
-        return ImportOutcome { consumed: false, ok: true, error: None };
+        return ImportOutcome {
+            consumed: false,
+            ok: true,
+            error: None,
+        };
     }
     let state_dir = PathBuf::from(crate::todo::state_dir());
     let beta_home = beta_home_from_state_dir(&state_dir);
@@ -456,7 +591,12 @@ pub fn run_beta_import_if_requested() -> ImportOutcome {
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|home| Path::new(&home).join(".synara")))
         .unwrap_or_else(|| PathBuf::from(".synara"));
-    run_beta_import(&beta_home, &state_dir, latest_known_migration(), &[stable_home])
+    run_beta_import(
+        &beta_home,
+        &state_dir,
+        latest_known_migration(),
+        &[stable_home],
+    )
 }
 
 #[cfg(test)]
@@ -464,7 +604,10 @@ mod tests {
     use super::*;
 
     fn fixture() -> (PathBuf, PathBuf, PathBuf) {
-        let root = std::env::temp_dir().join(format!("synara-beta-import-test-{}", crate::orchestration_engine::uuid_v4()));
+        let root = std::env::temp_dir().join(format!(
+            "synara-beta-import-test-{}",
+            crate::orchestration_engine::uuid_v4()
+        ));
         let stable = root.join(".synara");
         let beta = root.join(".synara-beta");
         fs::create_dir_all(stable.join("userdata")).unwrap();
@@ -490,7 +633,6 @@ mod tests {
         assert!(!secret_identity_excluded(Path::new("other-host-identity")));
     }
 
-
     #[test]
     fn successful_import_snapshots_database_and_preserves_beta_only_directory_entries() {
         let (root, stable, beta) = fixture();
@@ -514,27 +656,50 @@ mod tests {
             conn.execute(
                 "INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)",
                 rusqlite::params![id, name],
-            ).unwrap();
+            )
+            .unwrap();
         }
         drop(conn);
         write_json_atomic(
             &beta.join(REQUEST_FILE),
             &json!({"version":1,"requestedAt":now_iso(),"sourceHomeDir":stable.to_string_lossy()}),
             true,
-        ).unwrap();
+        )
+        .unwrap();
 
-        let outcome = run_beta_import(&beta, &beta_state, latest_known_migration(), &[stable.clone()]);
+        let outcome = run_beta_import(
+            &beta,
+            &beta_state,
+            latest_known_migration(),
+            &[stable.clone()],
+        );
         assert!(outcome.consumed);
         assert!(outcome.ok, "{:?}", outcome.error);
         assert!(!beta.join(REQUEST_FILE).exists());
-        assert_eq!(fs::read_to_string(beta_state.join("settings.json")).unwrap(), "{\"theme\":\"dark\"}");
-        assert_eq!(fs::read_to_string(beta_state.join("secrets/provider/key")).unwrap(), "stable-provider");
-        assert_eq!(fs::read_to_string(beta_state.join("secrets/beta-only/key")).unwrap(), "beta-secret");
+        assert_eq!(
+            fs::read_to_string(beta_state.join("settings.json")).unwrap(),
+            "{\"theme\":\"dark\"}"
+        );
+        assert_eq!(
+            fs::read_to_string(beta_state.join("secrets/provider/key")).unwrap(),
+            "stable-provider"
+        );
+        assert_eq!(
+            fs::read_to_string(beta_state.join("secrets/beta-only/key")).unwrap(),
+            "beta-secret"
+        );
         assert!(!beta_state.join("secrets/host-identity").exists());
         assert!(beta_state.join(REMOTE_SUSPENSION_FILE).exists());
         let imported = Connection::open(beta_state.join("state.sqlite")).unwrap();
-        let migration_count: u32 = imported.query_row("SELECT COUNT(*) FROM effect_sql_migrations", [], |row| row.get(0)).unwrap();
-        assert_eq!(migration_count as usize, crate::migrations::canonical_migrations().len());
+        let migration_count: u32 = imported
+            .query_row("SELECT COUNT(*) FROM effect_sql_migrations", [], |row| {
+                row.get(0)
+            })
+            .unwrap();
+        assert_eq!(
+            migration_count as usize,
+            crate::migrations::canonical_migrations().len()
+        );
         let _ = fs::remove_dir_all(root);
     }
 
@@ -549,17 +714,26 @@ mod tests {
             &beta.join(REQUEST_FILE),
             &json!({"version":1,"requestedAt":now_iso(),"sourceHomeDir":stable.to_string_lossy()}),
             true,
-        ).unwrap();
+        )
+        .unwrap();
 
         // The malformed fixture database must fail before commit, consume the
         // marker, report the failure, and preserve existing beta state.
         fs::write(beta_state.join("settings.json"), "{\"beta\":true}").unwrap();
-        let outcome = run_beta_import(&beta, &beta_state, latest_known_migration(), &[stable.clone()]);
+        let outcome = run_beta_import(
+            &beta,
+            &beta_state,
+            latest_known_migration(),
+            &[stable.clone()],
+        );
         assert!(outcome.consumed);
         assert!(!outcome.ok);
         assert!(!beta.join(REQUEST_FILE).exists());
         assert!(beta.join(RESULT_FILE).exists());
-        assert_eq!(fs::read_to_string(beta_state.join("settings.json")).unwrap(), "{\"beta\":true}");
+        assert_eq!(
+            fs::read_to_string(beta_state.join("settings.json")).unwrap(),
+            "{\"beta\":true}"
+        );
         let _ = fs::remove_dir_all(root);
     }
 }

@@ -7,7 +7,7 @@
 
 use axum::{
     extract::RawQuery,
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{IntoResponse, Response},
 };
 use std::collections::HashMap;
@@ -224,7 +224,10 @@ pub async fn project_favicon(RawQuery(query): RawQuery) -> Response {
         Ok(bytes) if mime_for_favicon(&found) == "image/svg+xml" => (
             [
                 (header::CONTENT_TYPE, "image/svg+xml".to_string()),
-                (header::CACHE_CONTROL, PROJECT_FAVICON_CACHE_CONTROL.to_string()),
+                (
+                    header::CACHE_CONTROL,
+                    PROJECT_FAVICON_CACHE_CONTROL.to_string(),
+                ),
                 (
                     header::HeaderName::from_static("content-security-policy"),
                     "default-src 'none'; style-src 'unsafe-inline'".to_string(),
@@ -236,7 +239,10 @@ pub async fn project_favicon(RawQuery(query): RawQuery) -> Response {
         Ok(bytes) => (
             [
                 (header::CONTENT_TYPE, mime_for_favicon(&found).to_string()),
-                (header::CACHE_CONTROL, PROJECT_FAVICON_CACHE_CONTROL.to_string()),
+                (
+                    header::CACHE_CONTROL,
+                    PROJECT_FAVICON_CACHE_CONTROL.to_string(),
+                ),
             ],
             bytes,
         )
@@ -323,13 +329,12 @@ fn is_public_http_host(host: &str) -> bool {
     true
 }
 
-async fn fetch_image(client: &reqwest::Client, url: &str, timeout: Duration) -> Option<(Vec<u8>, String)> {
-    let response = client
-        .get(url)
-        .timeout(timeout)
-        .send()
-        .await
-        .ok()?;
+async fn fetch_image(
+    client: &reqwest::Client,
+    url: &str,
+    timeout: Duration,
+) -> Option<(Vec<u8>, String)> {
+    let response = client.get(url).timeout(timeout).send().await.ok()?;
     if !response.status().is_success() {
         return None;
     }
@@ -374,7 +379,13 @@ async fn fetch_favicon_for_host(host: &str) -> Option<(Vec<u8>, String)> {
         return Some(hit);
     }
     if is_public_http_host(host) {
-        if let Some(hit) = fetch_image(&client, &format!("https://{host}/favicon.ico"), Duration::from_secs(3)).await {
+        if let Some(hit) = fetch_image(
+            &client,
+            &format!("https://{host}/favicon.ico"),
+            Duration::from_secs(3),
+        )
+        .await
+        {
             return Some(hit);
         }
     }
@@ -443,7 +454,10 @@ pub async fn site_favicon(RawQuery(query): RawQuery) -> Response {
                     header::CONTENT_TYPE,
                     content_type.unwrap_or_else(|| "image/x-icon".to_string()),
                 ),
-                (header::CACHE_CONTROL, SITE_FAVICON_CACHE_CONTROL_SUCCESS.to_string()),
+                (
+                    header::CACHE_CONTROL,
+                    SITE_FAVICON_CACHE_CONTROL_SUCCESS.to_string(),
+                ),
             ],
             bytes,
         )
@@ -458,7 +472,10 @@ mod tests {
 
     #[test]
     fn host_parsing_normalizes() {
-        assert_eq!(try_parse_host("https://www.Example.com/path"), Some("example.com".into()));
+        assert_eq!(
+            try_parse_host("https://www.Example.com/path"),
+            Some("example.com".into())
+        );
         assert_eq!(try_parse_host("docs.rs"), Some("docs.rs".into()));
         assert!(try_parse_host("").is_none());
     }

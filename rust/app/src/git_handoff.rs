@@ -10,10 +10,10 @@
 //! `completed` carry a result.
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::orchestration_engine::open_state_rw;
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
@@ -101,7 +101,11 @@ pub fn record_result(command_id: &str, result: &Value) -> Result<(), WsErr> {
     conn.execute(
         "UPDATE git_handoff_operations SET phase = 'git_applied', result_json = ?2, updated_at = ?3
          WHERE command_id = ?1 AND phase = 'pending'",
-        params![command_id, serde_json::to_string(result).unwrap_or_default(), now],
+        params![
+            command_id,
+            serde_json::to_string(result).unwrap_or_default(),
+            now
+        ],
     )
     .map_err(|e| err(format!("Failed to persist applied Git handoff result: {e}")))?;
     Ok(())
@@ -159,7 +163,9 @@ pub fn metadata_command(command_id: &str, thread_id: &str, result: &Value) -> Va
 /// pending rows as uncertain, then replay the metadata command for every
 /// git_applied row and complete it. Returns (fenced, recovered) counts.
 pub fn recover() -> (usize, usize) {
-    let Ok(conn) = open_state_rw() else { return (0, 0) };
+    let Ok(conn) = open_state_rw() else {
+        return (0, 0);
+    };
     ensure_table(&conn);
     let now = iso_now_ms();
     let fenced = conn
@@ -175,14 +181,20 @@ pub fn recover() -> (usize, usize) {
         )
         .and_then(|mut stmt| {
             let mapped = stmt.query_map([], |r| {
-                Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+                Ok((
+                    r.get::<_, String>(0)?,
+                    r.get::<_, String>(1)?,
+                    r.get::<_, String>(2)?,
+                ))
             })?;
             Ok(mapped.filter_map(|r| r.ok()).collect())
         })
         .unwrap_or_default();
     let mut recovered = 0;
     for (command_id, thread_id, result_json) in rows {
-        let Ok(result) = serde_json::from_str::<Value>(&result_json) else { continue };
+        let Ok(result) = serde_json::from_str::<Value>(&result_json) else {
+            continue;
+        };
         let command = metadata_command(&command_id, &thread_id, &result);
         if let Some(obj) = command.as_object() {
             if crate::orchestration_engine::thread_meta_update(obj).is_ok()
@@ -194,7 +206,6 @@ pub fn recover() -> (usize, usize) {
     }
     (fenced, recovered)
 }
-
 
 pub fn handles(tag: &str) -> bool {
     tag == "git.handoffThread"

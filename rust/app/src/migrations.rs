@@ -12,15 +12,15 @@
 //!   divergent tracker rows are recognized and repaired before the canonical
 //!   run resumes after the lineage prefix.
 
-use rusqlite::{params, Connection};
+use rusqlite::{Connection, params};
 
 use crate::acp_runner::err;
 use crate::todo::WsErr;
 
 mod automation_identity;
-mod model_selection_compat;
 mod batch1;
 mod helpers;
+mod model_selection_compat;
 
 pub use helpers::{column_exists, primary_key_columns, table_exists};
 
@@ -70,15 +70,24 @@ struct LineageInspection {
 }
 
 fn canonical_migration_name(id: u32) -> Option<&'static str> {
-    canonical_migrations().iter().find(|(cid, _, _)| *cid == id).map(|(_, name, _)| *name)
+    canonical_migrations()
+        .iter()
+        .find(|(cid, _, _)| *cid == id)
+        .map(|(_, name, _)| *name)
 }
 
 fn migration_lineage_fingerprint(rows: &[(u32, String)]) -> String {
     use sha2::{Digest as _, Sha256};
     let mut text = String::from("[");
     for (index, (id, name)) in rows.iter().enumerate() {
-        if index > 0 { text.push(','); }
-        text.push_str(&format!("[{},{}]", id, serde_json::to_string(name).unwrap_or_else(|_| "\"\"".into())));
+        if index > 0 {
+            text.push(',');
+        }
+        text.push_str(&format!(
+            "[{},{}]",
+            id,
+            serde_json::to_string(name).unwrap_or_else(|_| "\"\"".into())
+        ));
     }
     text.push(']');
     let digest = Sha256::digest(text.as_bytes());
@@ -111,7 +120,10 @@ fn divergence_consent_token(
         high_water_mark,
         json_string(lineage_fingerprint),
     );
-    Sha256::digest(binding.as_bytes()).iter().map(|byte| format!("{byte:02x}")).collect()
+    Sha256::digest(binding.as_bytes())
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect()
 }
 
 fn divergence_challenge_json(
@@ -141,7 +153,10 @@ fn divergence_challenge_json(
     )
 }
 
-fn validate_account_migration_schema(conn: &Connection, requires_identity: bool) -> Result<(), WsErr> {
+fn validate_account_migration_schema(
+    conn: &Connection,
+    requires_identity: bool,
+) -> Result<(), WsErr> {
     let mut stmt = conn
         .prepare("PRAGMA table_info(account_usage_sync)")
         .map_err(|e| err(format!("inspect private account schema: {e}")))?;
@@ -149,7 +164,9 @@ fn validate_account_migration_schema(conn: &Connection, requires_identity: bool)
         .query_map([], |row| {
             Ok((
                 row.get::<_, String>(1)?,
-                row.get::<_, String>(2).unwrap_or_default().to_ascii_uppercase(),
+                row.get::<_, String>(2)
+                    .unwrap_or_default()
+                    .to_ascii_uppercase(),
                 row.get::<_, i64>(3)?,
                 row.get::<_, i64>(5)?,
             ))
@@ -158,71 +175,129 @@ fn validate_account_migration_schema(conn: &Connection, requires_identity: bool)
         .filter_map(|row| row.ok())
         .collect::<Vec<_>>();
     let mut names = vec!["id", "watermark_minute", "last_failure_at"];
-    if requires_identity || columns.iter().any(|(name, _, _, _)| name == "account_identity") {
+    if requires_identity
+        || columns
+            .iter()
+            .any(|(name, _, _, _)| name == "account_identity")
+    {
         names.push("account_identity");
     }
-    let valid_columns = columns.len() == names.len() && names.iter().all(|expected| {
-        columns.iter().any(|(name, ty, notnull, pk)| {
-            name == expected
-                && *ty == if *expected == "id" { "INTEGER" } else { "TEXT" }
-                && if *expected == "id" { *pk == 1 } else { *notnull == 0 }
-        })
-    });
+    let valid_columns = columns.len() == names.len()
+        && names.iter().all(|expected| {
+            columns.iter().any(|(name, ty, notnull, pk)| {
+                name == expected
+                    && *ty == if *expected == "id" { "INTEGER" } else { "TEXT" }
+                    && if *expected == "id" {
+                        *pk == 1
+                    } else {
+                        *notnull == 0
+                    }
+            })
+        });
     if !valid_columns {
-        return Err(err("private account migration schema is incompatible; restore a verified backup"));
+        return Err(err(
+            "private account migration schema is incompatible; restore a verified backup",
+        ));
     }
     let count: i64 = conn
-        .query_row("SELECT COUNT(*) FROM account_usage_sync", [], |row| row.get(0))
+        .query_row("SELECT COUNT(*) FROM account_usage_sync", [], |row| {
+            row.get(0)
+        })
         .map_err(|e| err(format!("inspect private account singleton: {e}")))?;
     if count != 1 {
-        return Err(err("private account migration singleton is incompatible; restore a verified backup"));
+        return Err(err(
+            "private account migration singleton is incompatible; restore a verified backup",
+        ));
     }
     Ok(())
 }
 
-fn normalized_lineage_name(rows: &[(u32, String)], index: usize, canonical: &[(u32, &'static str, MigrationFn)]) -> String {
+fn normalized_lineage_name(
+    rows: &[(u32, String)],
+    index: usize,
+    canonical: &[(u32, &'static str, MigrationFn)],
+) -> String {
     let (id, name) = &rows[index];
     if *id == 32 {
-        let prefix_valid = rows.iter().take(31).enumerate().all(|(prefix_index, (row_id, row_name))| {
-            *row_id == prefix_index as u32 + 1
-                && canonical.iter().find(|(cid, _, _)| *cid == *row_id).map(|(_, canonical, _)| *canonical) == Some(row_name.as_str())
-        });
+        let prefix_valid =
+            rows.iter()
+                .take(31)
+                .enumerate()
+                .all(|(prefix_index, (row_id, row_name))| {
+                    *row_id == prefix_index as u32 + 1
+                        && canonical
+                            .iter()
+                            .find(|(cid, _, _)| *cid == *row_id)
+                            .map(|(_, canonical, _)| *canonical)
+                            == Some(row_name.as_str())
+                });
         if prefix_valid {
-            if let Some(canonical32) = canonical.iter().find(|(cid, _, _)| *cid == 32).map(|(_, name, _)| *name) {
+            if let Some(canonical32) = canonical
+                .iter()
+                .find(|(cid, _, _)| *cid == 32)
+                .map(|(_, name, _)| *name)
+            {
                 return canonical32.into();
             }
         }
     }
     if *id == 54 && name == "ProjectPullRequestPins" {
-        if let Some(canonical54) = canonical.iter().find(|(cid, _, _)| *cid == 54).map(|(_, name, _)| *name) {
+        if let Some(canonical54) = canonical
+            .iter()
+            .find(|(cid, _, _)| *cid == 54)
+            .map(|(_, name, _)| *name)
+        {
             return canonical54.into();
         }
     }
     name.clone()
 }
 
-fn first_lineage_divergence(rows: &[(u32, String)], high_water_mark: u32) -> Option<(u32, &'static str)> {
-    let recorded: std::collections::HashMap<u32, &str> = rows.iter().map(|(id, name)| (*id, name.as_str())).collect();
-    canonical_migrations().into_iter().find(|(id, name, _)| {
-        *id <= high_water_mark && recorded.get(id).copied() != Some(*name)
-    }).map(|(id, name, _)| (id, name))
+fn first_lineage_divergence(
+    rows: &[(u32, String)],
+    high_water_mark: u32,
+) -> Option<(u32, &'static str)> {
+    let recorded: std::collections::HashMap<u32, &str> =
+        rows.iter().map(|(id, name)| (*id, name.as_str())).collect();
+    canonical_migrations()
+        .into_iter()
+        .find(|(id, name, _)| *id <= high_water_mark && recorded.get(id).copied() != Some(*name))
+        .map(|(id, name, _)| (id, name))
 }
 
 fn is_released_main_migration_gap(rows: &[(u32, String)]) -> bool {
-    let expected_count = canonical_migrations().iter().filter(|(id, _, _)| *id <= 135 || *id == 141).count();
-    rows.len() == expected_count && canonical_migrations().iter()
+    let expected_count = canonical_migrations()
+        .iter()
         .filter(|(id, _, _)| *id <= 135 || *id == 141)
-        .all(|(id, name, _)| rows.iter().any(|(row_id, row_name)| row_id == id && row_name == name))
+        .count();
+    rows.len() == expected_count
+        && canonical_migrations()
+            .iter()
+            .filter(|(id, _, _)| *id <= 135 || *id == 141)
+            .all(|(id, name, _)| {
+                rows.iter()
+                    .any(|(row_id, row_name)| row_id == id && row_name == name)
+            })
 }
 
 fn configured_divergence_consent() -> Option<String> {
-    std::env::var("SYNARA_MIGRATION_DIVERGENCE_CONSENT").ok().filter(|value| !value.is_empty())
+    std::env::var("SYNARA_MIGRATION_DIVERGENCE_CONSENT")
+        .ok()
+        .filter(|value| !value.is_empty())
 }
 
-fn inspect_backup_migration_lineage(backup: &std::path::Path) -> Result<(u32, &'static str), String> {
+fn inspect_backup_migration_lineage(
+    backup: &std::path::Path,
+) -> Result<(u32, &'static str), String> {
     let parent = backup.parent().ok_or("migration backup has no parent")?;
-    let basename = backup.file_name().and_then(|name| name.to_str()).unwrap_or("backup.sqlite");
-    let temporary = parent.join(format!(".{basename}.{}.partial", crate::orchestration_engine::uuid_v4()));
+    let basename = backup
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("backup.sqlite");
+    let temporary = parent.join(format!(
+        ".{basename}.{}.partial",
+        crate::orchestration_engine::uuid_v4()
+    ));
     copy_restore_backup(backup, &temporary)?;
     let result = (|| {
         let conn = Connection::open(&temporary).map_err(|e| format!("backup sqlite open: {e}"))?;
@@ -236,18 +311,29 @@ fn inspect_backup_migration_lineage(backup: &std::path::Path) -> Result<(u32, &'
         let prefix31_valid = rows.iter().take(31).enumerate().all(|(index, (id, name))| {
             *id == index as u32 + 1 && canonical_migration_name(*id) == Some(name.as_str())
         });
-        if prefix31_valid && rows.iter().any(|(id, name)| *id == 32 && canonical_migration_name(32) != Some(name.as_str())) {
+        if prefix31_valid
+            && rows
+                .iter()
+                .any(|(id, name)| *id == 32 && canonical_migration_name(32) != Some(name.as_str()))
+        {
             if let Some(canonical32) = canonical_migration_name(32) {
                 for (id, name) in &mut rows {
-                    if *id == 32 { *name = canonical32.into(); }
+                    if *id == 32 {
+                        *name = canonical32.into();
+                    }
                 }
             }
         }
-        if rows.iter().any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins") {
+        if rows
+            .iter()
+            .any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins")
+        {
             let mut aliased = rows.clone();
             if let Some(canonical54) = canonical_migration_name(54) {
                 for (id, name) in &mut aliased {
-                    if *id == 54 { *name = canonical54.into(); }
+                    if *id == 54 {
+                        *name = canonical54.into();
+                    }
                 }
             }
             let high_water = aliased.iter().map(|(id, _)| *id).max().unwrap_or(0);
@@ -269,12 +355,19 @@ fn inspect_backup_migration_lineage(backup: &std::path::Path) -> Result<(u32, &'
     result
 }
 
-fn schema_too_new_recovery(db: &std::path::Path, database_migration_id: u32, latest_supported: u32) -> serde_json::Value {
-    let unavailable = |reason: &str| serde_json::json!({"kind":"restore-unavailable","reason":reason});
+fn schema_too_new_recovery(
+    db: &std::path::Path,
+    database_migration_id: u32,
+    latest_supported: u32,
+) -> serde_json::Value {
+    let unavailable =
+        |reason: &str| serde_json::json!({"kind":"restore-unavailable","reason":reason});
     let provenance_path = migration_backup_provenance_path(db);
     let text = match std::fs::read_to_string(&provenance_path) {
         Ok(text) => text,
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return unavailable("missing-provenance"),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            return unavailable("missing-provenance");
+        }
         Err(_) => return unavailable("invalid-provenance"),
     };
     let provenance: serde_json::Value = match serde_json::from_str(&text) {
@@ -282,7 +375,10 @@ fn schema_too_new_recovery(db: &std::path::Path, database_migration_id: u32, lat
         Err(_) => return unavailable("invalid-provenance"),
     };
     if provenance.get("phase").and_then(serde_json::Value::as_str) != Some("migration-completed")
-        || provenance.get("targetVersion").and_then(serde_json::Value::as_u64) != Some(database_migration_id as u64)
+        || provenance
+            .get("targetVersion")
+            .and_then(serde_json::Value::as_u64)
+            != Some(database_migration_id as u64)
     {
         return unavailable("invalid-provenance");
     }
@@ -293,7 +389,9 @@ fn schema_too_new_recovery(db: &std::path::Path, database_migration_id: u32, lat
     let Ok((backup_migration_id, lineage)) = inspect_backup_migration_lineage(&backup) else {
         return unavailable("invalid-backup");
     };
-    if lineage == "incompatible" || (lineage == "canonical" && backup_migration_id > latest_supported) {
+    if lineage == "incompatible"
+        || (lineage == "canonical" && backup_migration_id > latest_supported)
+    {
         return unavailable("incompatible-backup");
     }
     serde_json::json!({
@@ -304,11 +402,19 @@ fn schema_too_new_recovery(db: &std::path::Path, database_migration_id: u32, lat
     })
 }
 
-fn schema_too_new_error(db_path: Option<&std::path::Path>, database_migration_id: u32, latest_supported: u32) -> WsErr {
-    let database_path = db_path.map(|path| path.to_string_lossy().into_owned()).unwrap_or_default();
+fn schema_too_new_error(
+    db_path: Option<&std::path::Path>,
+    database_migration_id: u32,
+    latest_supported: u32,
+) -> WsErr {
+    let database_path = db_path
+        .map(|path| path.to_string_lossy().into_owned())
+        .unwrap_or_default();
     let recovery = db_path
         .map(|db| schema_too_new_recovery(db, database_migration_id, latest_supported))
-        .unwrap_or_else(|| serde_json::json!({"kind":"restore-unavailable","reason":"missing-provenance"}));
+        .unwrap_or_else(
+            || serde_json::json!({"kind":"restore-unavailable","reason":"missing-provenance"}),
+        );
     let block = serde_json::json!({
         "version": 1,
         "databasePath": database_path,
@@ -332,7 +438,12 @@ fn inspect_lineage_with_consent(
     divergence_consent: Option<&str>,
 ) -> Result<LineageInspection, WsErr> {
     let canonical = canonical_migrations();
-    let canonical_name = |id: u32| canonical.iter().find(|(cid, _, _)| *cid == id).map(|(_, name, _)| *name);
+    let canonical_name = |id: u32| {
+        canonical
+            .iter()
+            .find(|(cid, _, _)| *cid == id)
+            .map(|(_, name, _)| *name)
+    };
     let mut repair = LineageRepair::default();
     let mut effective = rows.to_vec();
 
@@ -353,7 +464,9 @@ fn inspect_lineage_with_consent(
             }
             let matches = rows.iter().enumerate().all(|(index, (id, _name))| {
                 let pos = index as u32 + 1;
-                if *id != pos { return false; }
+                if *id != pos {
+                    return false;
+                }
                 let name = normalized_lineage_name(rows, index, &canonical);
                 if pos <= prefix {
                     canonical_name(pos) == Some(name.as_str())
@@ -362,12 +475,19 @@ fn inspect_lineage_with_consent(
                 }
             });
             if matches {
-                matched = Some((prefix, rows.iter().skip(prefix as usize).any(|(_, name)| name == "AccountUsageSyncIdentity")));
+                matched = Some((
+                    prefix,
+                    rows.iter()
+                        .skip(prefix as usize)
+                        .any(|(_, name)| name == "AccountUsageSyncIdentity"),
+                ));
                 break;
             }
         }
         let Some((prefix, requires_identity)) = matched else {
-            return Err(err("unrecognized private account migration lineage; no tracker changes were made"));
+            return Err(err(
+                "unrecognized private account migration lineage; no tracker changes were made",
+            ));
         };
         validate_account_migration_schema(conn, requires_identity)?;
         repair.delete_after = Some(prefix);
@@ -377,16 +497,24 @@ fn inspect_lineage_with_consent(
     // Older imported databases recorded a foreign name at migration 32. When
     // the shared prefix is exactly ours this is metadata-only and is repaired
     // in place rather than replaying the early shared lineage.
-    let prefix31_valid = effective.iter().take(31).enumerate().all(|(index, (id, name))| {
-        *id == index as u32 + 1 && canonical_name(*id) == Some(name.as_str())
-    });
+    let prefix31_valid = effective
+        .iter()
+        .take(31)
+        .enumerate()
+        .all(|(index, (id, name))| {
+            *id == index as u32 + 1 && canonical_name(*id) == Some(name.as_str())
+        });
     if prefix31_valid
-        && effective.iter().any(|(id, name)| *id == 32 && canonical_name(32) != Some(name.as_str()))
+        && effective
+            .iter()
+            .any(|(id, name)| *id == 32 && canonical_name(32) != Some(name.as_str()))
     {
         repair.rename_migration32 = true;
         if let Some(canonical32) = canonical_name(32) {
             for (id, name) in &mut effective {
-                if *id == 32 { *name = canonical32.into(); }
+                if *id == 32 {
+                    *name = canonical32.into();
+                }
             }
         }
     }
@@ -394,11 +522,16 @@ fn inspect_lineage_with_consent(
     // v0.5.5 recorded ProjectPullRequestPins at 54; that migration now lives at
     // 69 while 54 is a reserved no-op. Rename only when doing so produces an
     // exact canonical prefix, exactly like upstream's alias guard.
-    if effective.iter().any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins") {
+    if effective
+        .iter()
+        .any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins")
+    {
         let mut aliased = effective.clone();
         if let Some(canonical54) = canonical_name(54) {
             for (id, name) in &mut aliased {
-                if *id == 54 { *name = canonical54.into(); }
+                if *id == 54 {
+                    *name = canonical54.into();
+                }
             }
         }
         let high_water = aliased.iter().map(|(id, _)| *id).max().unwrap_or(0);
@@ -414,16 +547,23 @@ fn inspect_lineage_with_consent(
         // normal upgrade path and does not require imported-lineage consent.
         repair.truncate_from = Some(136);
         effective.retain(|(id, _)| *id < 136);
-        return Ok(LineageInspection { rows: effective, repair });
+        return Ok(LineageInspection {
+            rows: effective,
+            repair,
+        });
     }
 
-    if let Some((first_diverged, expected_name)) = first_lineage_divergence(&effective, high_water_mark) {
+    if let Some((first_diverged, expected_name)) =
+        first_lineage_divergence(&effective, high_water_mark)
+    {
         if first_diverged <= 16 {
             return Err(err(format!(
                 "migration lineage mismatch in shared prefix at {first_diverged}: expected {expected_name}"
             )));
         }
-        let recorded_name = effective.iter().find(|(id, _)| *id == first_diverged)
+        let recorded_name = effective
+            .iter()
+            .find(|(id, _)| *id == first_diverged)
             .map(|(_, name)| name.as_str())
             .unwrap_or("<missing>");
         let source_version = if repair.rename_migration32 {
@@ -433,7 +573,9 @@ fn inspect_lineage_with_consent(
         };
         let target_version = canonical.iter().map(|(id, _, _)| *id).max().unwrap_or(0);
         let fingerprint = migration_lineage_fingerprint(rows);
-        let database_path = db_path.map(|path| path.to_string_lossy().into_owned()).unwrap_or_default();
+        let database_path = db_path
+            .map(|path| path.to_string_lossy().into_owned())
+            .unwrap_or_default();
         let token = divergence_consent_token(
             &database_path,
             &source_version,
@@ -445,7 +587,13 @@ fn inspect_lineage_with_consent(
             &fingerprint,
         );
         if divergence_consent != Some(token.as_str()) {
-            let backup_directory = db_path.map(|db| migration_backup_directory(db).to_string_lossy().into_owned()).unwrap_or_default();
+            let backup_directory = db_path
+                .map(|db| {
+                    migration_backup_directory(db)
+                        .to_string_lossy()
+                        .into_owned()
+                })
+                .unwrap_or_default();
             let challenge = divergence_challenge_json(
                 &database_path,
                 &backup_directory,
@@ -464,32 +612,90 @@ fn inspect_lineage_with_consent(
         }
         repair.truncate_from = Some(first_diverged);
         effective.retain(|(id, _)| *id < first_diverged);
-        return Ok(LineageInspection { rows: effective, repair });
+        return Ok(LineageInspection {
+            rows: effective,
+            repair,
+        });
     }
 
     let latest = canonical.iter().map(|(id, _, _)| *id).max().unwrap_or(0);
     if high_water_mark > latest {
         return Err(schema_too_new_error(db_path, high_water_mark, latest));
     }
-    Ok(LineageInspection { rows: effective, repair })
+    Ok(LineageInspection {
+        rows: effective,
+        repair,
+    })
 }
 /// Private account lineages from upstream AccountMigrationLineage.ts: prefix
 /// id after which the canonical run resumes, then the private tail names.
 const ACCOUNT_LINEAGES: &[(u32, &[&str])] = &[
-    (134, &["AccountUsageSync", "AccountUsageSyncIdentity", "RemoteDeviceTrust", "RemoteConnectionPreferences", "RemoteAccessControls"]),
-    (131, &["AccountUsageSync", "AccountUsageSyncIdentity", "RemoteDeviceTrust", "RemoteConnectionPreferences", "RemoteAccessControls"]),
-    (130, &["AccountUsageSync", "AccountUsageSyncIdentity", "RemoteDeviceTrust", "RemoteConnectionPreferences", "RemoteAccessControls"]),
+    (
+        134,
+        &[
+            "AccountUsageSync",
+            "AccountUsageSyncIdentity",
+            "RemoteDeviceTrust",
+            "RemoteConnectionPreferences",
+            "RemoteAccessControls",
+        ],
+    ),
+    (
+        131,
+        &[
+            "AccountUsageSync",
+            "AccountUsageSyncIdentity",
+            "RemoteDeviceTrust",
+            "RemoteConnectionPreferences",
+            "RemoteAccessControls",
+        ],
+    ),
+    (
+        130,
+        &[
+            "AccountUsageSync",
+            "AccountUsageSyncIdentity",
+            "RemoteDeviceTrust",
+            "RemoteConnectionPreferences",
+            "RemoteAccessControls",
+        ],
+    ),
     (89, &["AccountUsageSync"]),
     (90, &["AccountUsageSync"]),
     (90, &["AccountUsageSync", "AccountUsageSyncIdentity"]),
     (98, &["AccountUsageSync", "AccountUsageSyncIdentity"]),
     (99, &["AccountUsageSync", "AccountUsageSyncIdentity"]),
-    (108, &["AccountUsageSync", "AccountUsageSyncIdentity", "RemoteDeviceTrust", "RemoteConnectionPreferences"]),
-    (126, &["AccountUsageSync", "AccountUsageSyncIdentity", "RemoteDeviceTrust", "RemoteConnectionPreferences"]),
+    (
+        108,
+        &[
+            "AccountUsageSync",
+            "AccountUsageSyncIdentity",
+            "RemoteDeviceTrust",
+            "RemoteConnectionPreferences",
+        ],
+    ),
+    (
+        126,
+        &[
+            "AccountUsageSync",
+            "AccountUsageSyncIdentity",
+            "RemoteDeviceTrust",
+            "RemoteConnectionPreferences",
+        ],
+    ),
 ];
 
-fn inspect_lineage(conn: &Connection, rows: &[(u32, String)], db_path: Option<&std::path::Path>) -> Result<LineageInspection, WsErr> {
-    inspect_lineage_with_consent(conn, rows, db_path, configured_divergence_consent().as_deref())
+fn inspect_lineage(
+    conn: &Connection,
+    rows: &[(u32, String)],
+    db_path: Option<&std::path::Path>,
+) -> Result<LineageInspection, WsErr> {
+    inspect_lineage_with_consent(
+        conn,
+        rows,
+        db_path,
+        configured_divergence_consent().as_deref(),
+    )
 }
 
 /// Run every pending migration inside one transaction, mirroring the effect
@@ -509,7 +715,10 @@ pub fn pending_migrations(conn: &Connection) -> Result<Vec<u32>, WsErr> {
         .collect())
 }
 
-fn run_pending_with_db(conn: &Connection, db_path: Option<&std::path::Path>) -> Result<Vec<u32>, WsErr> {
+fn run_pending_with_db(
+    conn: &Connection,
+    db_path: Option<&std::path::Path>,
+) -> Result<Vec<u32>, WsErr> {
     ensure_tracker(conn)?;
     let rows = tracker_rows(conn)?;
     let inspection = inspect_lineage(conn, rows.as_slice(), db_path)?;
@@ -517,8 +726,11 @@ fn run_pending_with_db(conn: &Connection, db_path: Option<&std::path::Path>) -> 
     let all = canonical_migrations();
     let pending: Vec<&(u32, &'static str, MigrationFn)> =
         all.iter().filter(|(id, _, _)| *id > latest).collect();
-    if pending.is_empty() && inspection.repair.truncate_from.is_none() && inspection.repair.delete_after.is_none()
-        && !inspection.repair.rename_migration32 && !inspection.repair.rename_migration54
+    if pending.is_empty()
+        && inspection.repair.truncate_from.is_none()
+        && inspection.repair.delete_after.is_none()
+        && !inspection.repair.rename_migration32
+        && !inspection.repair.rename_migration54
     {
         return Ok(Vec::new());
     }
@@ -530,24 +742,36 @@ fn run_pending_with_db(conn: &Connection, db_path: Option<&std::path::Path>) -> 
         return Err(err("migration tracker changed during repair"));
     }
     if let Some(prefix) = inspection.repair.delete_after {
-        tx.execute("DELETE FROM effect_sql_migrations WHERE migration_id > ?1", params![prefix])
-            .map_err(|e| err(format!("account lineage repair delete: {e}")))?;
+        tx.execute(
+            "DELETE FROM effect_sql_migrations WHERE migration_id > ?1",
+            params![prefix],
+        )
+        .map_err(|e| err(format!("account lineage repair delete: {e}")))?;
     }
     if inspection.repair.rename_migration32 {
         if let Some(name) = canonical_migration_name(32) {
-            tx.execute("UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 32", params![name])
-                .map_err(|e| err(format!("legacy migration 32 rename: {e}")))?;
+            tx.execute(
+                "UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 32",
+                params![name],
+            )
+            .map_err(|e| err(format!("legacy migration 32 rename: {e}")))?;
         }
     }
     if inspection.repair.rename_migration54 {
         if let Some(name) = canonical_migration_name(54) {
-            tx.execute("UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 54", params![name])
-                .map_err(|e| err(format!("migration lineage alias repair: {e}")))?;
+            tx.execute(
+                "UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 54",
+                params![name],
+            )
+            .map_err(|e| err(format!("migration lineage alias repair: {e}")))?;
         }
     }
     if let Some(first) = inspection.repair.truncate_from {
-        tx.execute("DELETE FROM effect_sql_migrations WHERE migration_id >= ?1", params![first])
-            .map_err(|e| err(format!("lineage divergence repair delete: {e}")))?;
+        tx.execute(
+            "DELETE FROM effect_sql_migrations WHERE migration_id >= ?1",
+            params![first],
+        )
+        .map_err(|e| err(format!("lineage divergence repair delete: {e}")))?;
     }
     for (id, name, _) in &pending {
         tx.execute(
@@ -561,7 +785,8 @@ fn run_pending_with_db(conn: &Connection, db_path: Option<&std::path::Path>) -> 
         f(&tx).map_err(|e| err(format!("migration {id}_{name} failed: {}", e.0)))?;
         ran.push(*id);
     }
-    tx.commit().map_err(|e| err(format!("migration commit: {e}")))?;
+    tx.commit()
+        .map_err(|e| err(format!("migration commit: {e}")))?;
     Ok(ran)
 }
 
@@ -606,15 +831,30 @@ fn now_iso() -> String {
 }
 
 fn compact_timestamp(iso: &str) -> String {
-    iso.chars().filter(|ch| !matches!(ch, '-' | ':' | '.')).collect()
+    iso.chars()
+        .filter(|ch| !matches!(ch, '-' | ':' | '.'))
+        .collect()
 }
 
 fn safe_version_label(value: &str) -> String {
-    value.chars().map(|ch| if ch.is_ascii_alphanumeric() || ch == '_' || ch == '-' { ch } else { '-' }).collect()
+    value
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || ch == '_' || ch == '-' {
+                ch
+            } else {
+                '-'
+            }
+        })
+        .collect()
 }
 
 fn latest_migration_id() -> u32 {
-    canonical_migrations().iter().map(|(id, _, _)| *id).max().unwrap_or(0)
+    canonical_migrations()
+        .iter()
+        .map(|(id, _, _)| *id)
+        .max()
+        .unwrap_or(0)
 }
 
 /// Read-only upstream backup-plan inspection. It runs before the runner creates
@@ -633,23 +873,44 @@ fn inspect_migration_backup_plan(conn: &Connection) -> Result<Option<MigrationBa
     }
     let target_version = latest_migration_id();
     if !tables.iter().any(|name| name == "effect_sql_migrations") {
-        return Ok(Some(MigrationBackupPlan { source_version: "untracked".into(), target_version }));
+        return Ok(Some(MigrationBackupPlan {
+            source_version: "untracked".into(),
+            target_version,
+        }));
     }
     let recorded = (|| -> Result<Vec<(u32, String)>, rusqlite::Error> {
-        let mut stmt = conn.prepare("SELECT migration_id, name FROM effect_sql_migrations ORDER BY migration_id ASC")?;
-        let rows = stmt.query_map([], |row| Ok((row.get::<_, u32>(0)?, row.get::<_, String>(1)?)))?;
+        let mut stmt = conn.prepare(
+            "SELECT migration_id, name FROM effect_sql_migrations ORDER BY migration_id ASC",
+        )?;
+        let rows = stmt.query_map([], |row| {
+            Ok((row.get::<_, u32>(0)?, row.get::<_, String>(1)?))
+        })?;
         rows.collect()
     })();
     let recorded = match recorded {
         Ok(rows) => rows,
-        Err(_) => return Ok(Some(MigrationBackupPlan { source_version: "malformed-tracker".into(), target_version })),
+        Err(_) => {
+            return Ok(Some(MigrationBackupPlan {
+                source_version: "malformed-tracker".into(),
+                target_version,
+            }));
+        }
     };
     if recorded.is_empty() {
-        let user_tables = tables.iter().filter(|name| name.as_str() != "effect_sql_migrations").count();
-        return Ok((user_tables > 0).then_some(MigrationBackupPlan { source_version: "untracked".into(), target_version }));
+        let user_tables = tables
+            .iter()
+            .filter(|name| name.as_str() != "effect_sql_migrations")
+            .count();
+        return Ok((user_tables > 0).then_some(MigrationBackupPlan {
+            source_version: "untracked".into(),
+            target_version,
+        }));
     }
     let high_water_mark = recorded.iter().map(|(id, _)| *id).max().unwrap_or(0);
-    let mut rows: Vec<(u32, String)> = recorded.iter().map(|(id, name)| (*id, name.clone())).collect();
+    let mut rows: Vec<(u32, String)> = recorded
+        .iter()
+        .map(|(id, name)| (*id, name.clone()))
+        .collect();
     if is_released_main_migration_gap(&rows) {
         return Ok(Some(MigrationBackupPlan {
             source_version: "v141-released-main".into(),
@@ -660,18 +921,29 @@ fn inspect_migration_backup_plan(conn: &Connection) -> Result<Option<MigrationBa
     let prefix31_valid = rows.iter().take(31).enumerate().all(|(index, (id, name))| {
         *id == index as u32 + 1 && canonical_migration_name(*id) == Some(name.as_str())
     });
-    if prefix31_valid && rows.iter().any(|(id, name)| *id == 32 && canonical_migration_name(32) != Some(name.as_str())) {
+    if prefix31_valid
+        && rows
+            .iter()
+            .any(|(id, name)| *id == 32 && canonical_migration_name(32) != Some(name.as_str()))
+    {
         if let Some(canonical32) = canonical_migration_name(32) {
             for (id, name) in &mut rows {
-                if *id == 32 { *name = canonical32.into(); }
+                if *id == 32 {
+                    *name = canonical32.into();
+                }
             }
         }
     }
-    if rows.iter().any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins") {
+    if rows
+        .iter()
+        .any(|(id, name)| *id == 54 && name == "ProjectPullRequestPins")
+    {
         let mut aliased = rows.clone();
         if let Some(canonical54) = canonical_migration_name(54) {
             for (id, name) in &mut aliased {
-                if *id == 54 { *name = canonical54.into(); }
+                if *id == 54 {
+                    *name = canonical54.into();
+                }
             }
         }
         let high_water = aliased.iter().map(|(id, _)| *id).max().unwrap_or(0);
@@ -679,7 +951,8 @@ fn inspect_migration_backup_plan(conn: &Connection) -> Result<Option<MigrationBa
             rows = aliased;
         }
     }
-    if let Some((first_diverged, _expected_name)) = first_lineage_divergence(&rows, high_water_mark) {
+    if let Some((first_diverged, _expected_name)) = first_lineage_divergence(&rows, high_water_mark)
+    {
         // Shared-prefix corruption is fatal before mutation and gets no backup
         // plan here. Post-shared divergence is an import replay candidate and
         // must always be snapshotted even when its high-water mark is current.
@@ -691,10 +964,12 @@ fn inspect_migration_backup_plan(conn: &Connection) -> Result<Option<MigrationBa
         }
         return Ok(None);
     }
-    Ok((high_water_mark < target_version).then_some(MigrationBackupPlan {
-        source_version: format!("v{high_water_mark}"),
-        target_version,
-    }))
+    Ok(
+        (high_water_mark < target_version).then_some(MigrationBackupPlan {
+            source_version: format!("v{high_water_mark}"),
+            target_version,
+        }),
+    )
 }
 
 fn estimate_backup_required_bytes(conn: &Connection, db: &std::path::Path) -> Option<u64> {
@@ -711,7 +986,9 @@ fn estimate_backup_required_bytes(conn: &Connection, db: &std::path::Path) -> Op
     let snapshot = if let Some(logical) = logical {
         main.max(logical)
     } else {
-        let wal = std::fs::metadata(format!("{}-wal", db.display())).map(|meta| meta.len()).unwrap_or(0);
+        let wal = std::fs::metadata(format!("{}-wal", db.display()))
+            .map(|meta| meta.len())
+            .unwrap_or(0);
         main.saturating_add(wal)
     };
     Some(
@@ -734,11 +1011,17 @@ fn available_bytes(path: &std::path::Path) -> Option<u64> {
 }
 
 #[cfg(not(unix))]
-fn available_bytes(_path: &std::path::Path) -> Option<u64> { None }
+fn available_bytes(_path: &std::path::Path) -> Option<u64> {
+    None
+}
 
 fn assert_backup_space(required: Option<u64>, directory: &std::path::Path) -> Result<(), String> {
-    let Some(required) = required else { return Ok(()) };
-    let Some(available) = available_bytes(directory) else { return Ok(()) };
+    let Some(required) = required else {
+        return Ok(());
+    };
+    let Some(available) = available_bytes(directory) else {
+        return Ok(());
+    };
     if available < required {
         return Err(format!(
             "not enough free disk space to back up the database before upgrading it: need about {} bytes in {}, only {} bytes free",
@@ -768,9 +1051,13 @@ fn ensure_private_file(path: &std::path::Path) -> Result<(), String> {
         std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600))
             .map_err(|e| format!("private file permissions: {e}"))?;
     }
-    let meta = std::fs::symlink_metadata(path).map_err(|e| format!("private file inspection: {e}"))?;
+    let meta =
+        std::fs::symlink_metadata(path).map_err(|e| format!("private file inspection: {e}"))?;
     if !meta.file_type().is_file() || meta.file_type().is_symlink() {
-        return Err(format!("migration backup is not a regular file: {}", path.display()));
+        return Err(format!(
+            "migration backup is not a regular file: {}",
+            path.display()
+        ));
     }
     Ok(())
 }
@@ -788,17 +1075,30 @@ fn write_private_json(path: &std::path::Path, value: &serde_json::Value) -> Resu
     std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     let temporary = parent.join(format!(
         ".{}.{}.partial",
-        path.file_name().and_then(|name| name.to_str()).unwrap_or("json"),
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or("json"),
         crate::orchestration_engine::uuid_v4()
     ));
     let result = (|| {
-        let mut file = std::fs::OpenOptions::new().create_new(true).write(true).open(&temporary).map_err(|e| e.to_string())?;
+        let mut file = std::fs::OpenOptions::new()
+            .create_new(true)
+            .write(true)
+            .open(&temporary)
+            .map_err(|e| e.to_string())?;
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt as _;
             let _ = std::fs::set_permissions(&temporary, std::fs::Permissions::from_mode(0o600));
         }
-        file.write_all(format!("{}\n", serde_json::to_string_pretty(value).map_err(|e| e.to_string())?).as_bytes()).map_err(|e| e.to_string())?;
+        file.write_all(
+            format!(
+                "{}\n",
+                serde_json::to_string_pretty(value).map_err(|e| e.to_string())?
+            )
+            .as_bytes(),
+        )
+        .map_err(|e| e.to_string())?;
         file.sync_all().map_err(|e| e.to_string())?;
         drop(file);
         std::fs::rename(&temporary, path).map_err(|e| e.to_string())?;
@@ -813,9 +1113,14 @@ fn write_private_json(path: &std::path::Path, value: &serde_json::Value) -> Resu
 
 fn prune_migration_backups(db: &std::path::Path) {
     let directory = migration_backup_directory(db);
-    let basename = db.file_name().and_then(|name| name.to_str()).unwrap_or("state.sqlite");
+    let basename = db
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("state.sqlite");
     let prefix = format!("{basename}.pre-migration-");
-    let Ok(entries) = std::fs::read_dir(&directory) else { return };
+    let Ok(entries) = std::fs::read_dir(&directory) else {
+        return;
+    };
     let mut backups: Vec<_> = entries
         .filter_map(|entry| entry.ok())
         .filter(|entry| {
@@ -835,12 +1140,19 @@ fn prune_migration_backups(db: &std::path::Path) {
 
 fn remove_backup_partials(db: &std::path::Path) {
     let directory = migration_backup_directory(db);
-    let basename = db.file_name().and_then(|name| name.to_str()).unwrap_or("state.sqlite");
+    let basename = db
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("state.sqlite");
     let prefix = format!(".{basename}.pre-migration-");
-    let Ok(entries) = std::fs::read_dir(&directory) else { return };
+    let Ok(entries) = std::fs::read_dir(&directory) else {
+        return;
+    };
     for entry in entries.flatten() {
         let name = entry.file_name().to_string_lossy().into_owned();
-        if !name.starts_with(&prefix) || !name.ends_with(".partial") { continue; }
+        if !name.starts_with(&prefix) || !name.ends_with(".partial") {
+            continue;
+        }
         let path = entry.path();
         if path.is_dir() {
             let _ = std::fs::remove_dir_all(path);
@@ -854,15 +1166,26 @@ fn remove_backup_partials(db: &std::path::Path) {
 /// is copied through `VACUUM INTO` into an exclusive private scratch directory,
 /// gzip-compressed into `<db>.backups`, fsynced, atomically renamed and rotated
 /// at the upstream retention of five.
-pub fn create_migration_backup(conn: &Connection, db: &std::path::Path, plan: &MigrationBackupPlan) -> Result<MigrationBackupResult, String> {
+pub fn create_migration_backup(
+    conn: &Connection,
+    db: &std::path::Path,
+    plan: &MigrationBackupPlan,
+) -> Result<MigrationBackupResult, String> {
     use std::io::{Read as _, Write as _};
     let directory = migration_backup_directory(db);
     ensure_private_dir(&directory)?;
     remove_backup_partials(db);
     assert_backup_space(estimate_backup_required_bytes(conn, db), &directory)?;
     let created_at = now_iso();
-    let basename = db.file_name().and_then(|name| name.to_str()).unwrap_or("state.sqlite");
-    let unique_suffix = format!("{}-{}", compact_timestamp(&created_at), crate::orchestration_engine::uuid_v4());
+    let basename = db
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("state.sqlite");
+    let unique_suffix = format!(
+        "{}-{}",
+        compact_timestamp(&created_at),
+        crate::orchestration_engine::uuid_v4()
+    );
     let final_name = format!(
         "{basename}.pre-migration-{}-to-v{}-{unique_suffix}.sqlite",
         safe_version_label(&plan.source_version),
@@ -873,29 +1196,49 @@ pub fn create_migration_backup(conn: &Connection, db: &std::path::Path, plan: &M
     let snapshot_path = snapshot_directory.join("snapshot.sqlite");
     let compressed_temporary = directory.join(format!(".{final_name}.gz.partial"));
     let result = (|| -> Result<(), String> {
-        std::fs::create_dir(&snapshot_directory).map_err(|e| format!("backup scratch directory: {e}"))?;
+        std::fs::create_dir(&snapshot_directory)
+            .map_err(|e| format!("backup scratch directory: {e}"))?;
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt as _;
-            let _ = std::fs::set_permissions(&snapshot_directory, std::fs::Permissions::from_mode(0o700));
+            let _ = std::fs::set_permissions(
+                &snapshot_directory,
+                std::fs::Permissions::from_mode(0o700),
+            );
         }
-        conn.execute("VACUUM INTO ?1", params![snapshot_path.to_string_lossy().as_ref()])
-            .map_err(|e| format!("backup snapshot: {e}"))?;
+        conn.execute(
+            "VACUUM INTO ?1",
+            params![snapshot_path.to_string_lossy().as_ref()],
+        )
+        .map_err(|e| format!("backup snapshot: {e}"))?;
         ensure_private_file(&snapshot_path)?;
-        let mut input = std::fs::File::open(&snapshot_path).map_err(|e| format!("backup snapshot open: {e}"))?;
-        let output = std::fs::OpenOptions::new().create_new(true).write(true).open(&compressed_temporary)
+        let mut input = std::fs::File::open(&snapshot_path)
+            .map_err(|e| format!("backup snapshot open: {e}"))?;
+        let output = std::fs::OpenOptions::new()
+            .create_new(true)
+            .write(true)
+            .open(&compressed_temporary)
             .map_err(|e| format!("backup compressed open: {e}"))?;
         let mut encoder = flate2::write::GzEncoder::new(output, flate2::Compression::default());
         let mut buffer = [0_u8; 64 * 1024];
         loop {
-            let size = input.read(&mut buffer).map_err(|e| format!("backup snapshot read: {e}"))?;
-            if size == 0 { break; }
-            encoder.write_all(&buffer[..size]).map_err(|e| format!("backup compression: {e}"))?;
+            let size = input
+                .read(&mut buffer)
+                .map_err(|e| format!("backup snapshot read: {e}"))?;
+            if size == 0 {
+                break;
+            }
+            encoder
+                .write_all(&buffer[..size])
+                .map_err(|e| format!("backup compression: {e}"))?;
         }
-        let output = encoder.finish().map_err(|e| format!("backup compression finish: {e}"))?;
+        let output = encoder
+            .finish()
+            .map_err(|e| format!("backup compression finish: {e}"))?;
         output.sync_all().map_err(|e| format!("backup sync: {e}"))?;
         ensure_private_file(&compressed_temporary)?;
-        std::fs::rename(&compressed_temporary, &backup_path).map_err(|e| format!("backup rename: {e}"))?;
+        std::fs::rename(&compressed_temporary, &backup_path)
+            .map_err(|e| format!("backup rename: {e}"))?;
         sync_directory(&directory);
         Ok(())
     })();
@@ -903,7 +1246,11 @@ pub fn create_migration_backup(conn: &Connection, db: &std::path::Path, plan: &M
     let _ = std::fs::remove_file(&compressed_temporary);
     result?;
     prune_migration_backups(db);
-    Ok(MigrationBackupResult { plan: plan.clone(), backup_path, created_at })
+    Ok(MigrationBackupResult {
+        plan: plan.clone(),
+        backup_path,
+        created_at,
+    })
 }
 
 fn recovery_payload(db: &std::path::Path, backup: &MigrationBackupResult) -> serde_json::Value {
@@ -926,77 +1273,138 @@ fn write_recovery_marker(db: &std::path::Path, payload: &serde_json::Value) -> R
     write_private_json(&migration_recovery_marker_path(db), payload)
 }
 
-fn write_completed_provenance(db: &std::path::Path, payload: &serde_json::Value) -> Result<(), String> {
+fn write_completed_provenance(
+    db: &std::path::Path,
+    payload: &serde_json::Value,
+) -> Result<(), String> {
     let mut completed = payload.clone();
     completed["phase"] = serde_json::json!("migration-completed");
     completed["completedAt"] = serde_json::json!(now_iso());
     write_private_json(&migration_backup_provenance_path(db), &completed)
 }
 
-
-fn read_restore_record(db: &std::path::Path, path: &std::path::Path, label: &str) -> Result<Option<serde_json::Value>, String> {
+fn read_restore_record(
+    db: &std::path::Path,
+    path: &std::path::Path,
+    label: &str,
+) -> Result<Option<serde_json::Value>, String> {
     let text = match std::fs::read_to_string(path) {
         Ok(text) => text,
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(format!("{label} could not be read: {error}")),
     };
-    let value: serde_json::Value = serde_json::from_str(&text)
-        .map_err(|e| format!("invalid {label}: {e}"))?;
-    if value.get("databasePath").and_then(serde_json::Value::as_str) != Some(db.to_string_lossy().as_ref()) {
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|e| format!("invalid {label}: {e}"))?;
+    if value
+        .get("databasePath")
+        .and_then(serde_json::Value::as_str)
+        != Some(db.to_string_lossy().as_ref())
+    {
         return Err(format!("invalid {label}: database path mismatch"));
     }
-    if value.get("resumeAttempts").and_then(serde_json::Value::as_u64).is_none() {
+    if value
+        .get("resumeAttempts")
+        .and_then(serde_json::Value::as_u64)
+        .is_none()
+    {
         return Err(format!("invalid {label}: unreadable resume counter"));
     }
     Ok(Some(value))
 }
 
-fn validate_restore_backup_path(db: &std::path::Path, value: &serde_json::Value) -> Result<std::path::PathBuf, String> {
-    let raw = value.get("backupPath").and_then(serde_json::Value::as_str).ok_or("migration record does not reference a backup")?;
+fn validate_restore_backup_path(
+    db: &std::path::Path,
+    value: &serde_json::Value,
+) -> Result<std::path::PathBuf, String> {
+    let raw = value
+        .get("backupPath")
+        .and_then(serde_json::Value::as_str)
+        .ok_or("migration record does not reference a backup")?;
     let backup = std::path::PathBuf::from(raw);
     let directory = migration_backup_directory(db);
     if backup.parent() != Some(directory.as_path()) {
-        return Err(format!("migration backup escapes its backup directory: {}", backup.display()));
+        return Err(format!(
+            "migration backup escapes its backup directory: {}",
+            backup.display()
+        ));
     }
-    let basename = db.file_name().and_then(|name| name.to_str()).unwrap_or("state.sqlite");
-    let name = backup.file_name().and_then(|name| name.to_str()).unwrap_or("");
-    if !name.starts_with(&format!("{basename}.pre-migration-")) || !(name.ends_with(".sqlite.gz") || name.ends_with(".sqlite")) {
-        return Err(format!("migration backup has an invalid generated name: {name}"));
+    let basename = db
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("state.sqlite");
+    let name = backup
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("");
+    if !name.starts_with(&format!("{basename}.pre-migration-"))
+        || !(name.ends_with(".sqlite.gz") || name.ends_with(".sqlite"))
+    {
+        return Err(format!(
+            "migration backup has an invalid generated name: {name}"
+        ));
     }
-    let meta = std::fs::symlink_metadata(&backup).map_err(|e| format!("migration backup is unavailable: {e}"))?;
+    let meta = std::fs::symlink_metadata(&backup)
+        .map_err(|e| format!("migration backup is unavailable: {e}"))?;
     if !meta.file_type().is_file() || meta.file_type().is_symlink() {
-        return Err(format!("migration backup is not a regular file: {}", backup.display()));
+        return Err(format!(
+            "migration backup is not a regular file: {}",
+            backup.display()
+        ));
     }
-    let canonical_directory = directory.canonicalize().map_err(|e| format!("backup directory canonicalization: {e}"))?;
-    let canonical_backup = backup.canonicalize().map_err(|e| format!("backup canonicalization: {e}"))?;
+    let canonical_directory = directory
+        .canonicalize()
+        .map_err(|e| format!("backup directory canonicalization: {e}"))?;
+    let canonical_backup = backup
+        .canonicalize()
+        .map_err(|e| format!("backup canonicalization: {e}"))?;
     if canonical_backup.parent() != Some(canonical_directory.as_path()) {
-        return Err(format!("migration backup escapes its canonical directory: {}", backup.display()));
+        return Err(format!(
+            "migration backup escapes its canonical directory: {}",
+            backup.display()
+        ));
     }
     Ok(backup)
 }
 
 fn restore_file_fingerprint(path: &std::path::Path) -> Option<String> {
     let meta = std::fs::symlink_metadata(path).ok()?;
-    if !meta.file_type().is_file() { return None; }
+    if !meta.file_type().is_file() {
+        return None;
+    }
     #[cfg(unix)]
     {
         use std::os::unix::fs::MetadataExt as _;
-        return Some(format!("{}:{}:{}:{}", meta.dev(), meta.ino(), meta.size(), meta.mtime_nsec()));
+        return Some(format!(
+            "{}:{}:{}:{}",
+            meta.dev(),
+            meta.ino(),
+            meta.size(),
+            meta.mtime_nsec()
+        ));
     }
     #[cfg(not(unix))]
     Some(format!("{}", meta.len()))
 }
 
-fn copy_restore_backup(backup: &std::path::Path, temporary: &std::path::Path) -> Result<(), String> {
+fn copy_restore_backup(
+    backup: &std::path::Path,
+    temporary: &std::path::Path,
+) -> Result<(), String> {
     use std::io::{Read as _, Write as _};
     let input = std::fs::File::open(backup).map_err(|e| format!("backup open: {e}"))?;
     if let Ok(meta) = std::fs::symlink_metadata(temporary) {
         if !meta.file_type().is_file() || meta.file_type().is_symlink() {
-            return Err(format!("restore temporary path is not a regular file: {}", temporary.display()));
+            return Err(format!(
+                "restore temporary path is not a regular file: {}",
+                temporary.display()
+            ));
         }
         std::fs::remove_file(temporary).map_err(|e| format!("restore temporary cleanup: {e}"))?;
     }
-    let mut output = std::fs::OpenOptions::new().create_new(true).write(true).open(temporary)
+    let mut output = std::fs::OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .open(temporary)
         .map_err(|e| format!("restore temporary open: {e}"))?;
     #[cfg(unix)]
     {
@@ -1007,34 +1415,61 @@ fn copy_restore_backup(backup: &std::path::Path, temporary: &std::path::Path) ->
         let mut decoder = flate2::read::GzDecoder::new(input);
         let mut buffer = [0_u8; 64 * 1024];
         loop {
-            let size = decoder.read(&mut buffer).map_err(|e| format!("backup decompression: {e}"))?;
-            if size == 0 { break; }
-            output.write_all(&buffer[..size]).map_err(|e| format!("restore write: {e}"))?;
+            let size = decoder
+                .read(&mut buffer)
+                .map_err(|e| format!("backup decompression: {e}"))?;
+            if size == 0 {
+                break;
+            }
+            output
+                .write_all(&buffer[..size])
+                .map_err(|e| format!("restore write: {e}"))?;
         }
     } else {
         let mut input = input;
         let mut buffer = [0_u8; 64 * 1024];
         loop {
-            let size = input.read(&mut buffer).map_err(|e| format!("backup read: {e}"))?;
-            if size == 0 { break; }
-            output.write_all(&buffer[..size]).map_err(|e| format!("restore write: {e}"))?;
+            let size = input
+                .read(&mut buffer)
+                .map_err(|e| format!("backup read: {e}"))?;
+            if size == 0 {
+                break;
+            }
+            output
+                .write_all(&buffer[..size])
+                .map_err(|e| format!("restore write: {e}"))?;
         }
     }
-    output.sync_all().map_err(|e| format!("restore sync: {e}"))?;
+    output
+        .sync_all()
+        .map_err(|e| format!("restore sync: {e}"))?;
     drop(output);
-    let head = std::fs::read(temporary).map_err(|e| format!("restored database validation: {e}"))?;
+    let head =
+        std::fs::read(temporary).map_err(|e| format!("restored database validation: {e}"))?;
     if !head.starts_with(b"SQLite format 3") {
         return Err("restored migration backup is not a SQLite database".into());
     }
     Ok(())
 }
 
-fn move_existing_database_bundle_aside(db: &std::path::Path, restore_id: &str) -> Result<(), String> {
+fn move_existing_database_bundle_aside(
+    db: &std::path::Path,
+    restore_id: &str,
+) -> Result<(), String> {
     for suffix in ["", "-wal", "-shm"] {
         let source = std::path::PathBuf::from(format!("{}{}", db.display(), suffix));
-        if !source.exists() { continue; }
-        let target = std::path::PathBuf::from(format!("{}.pre-restore-{}{}", db.display(), restore_id, suffix));
-        if target.exists() && !source.exists() { continue; }
+        if !source.exists() {
+            continue;
+        }
+        let target = std::path::PathBuf::from(format!(
+            "{}.pre-restore-{}{}",
+            db.display(),
+            restore_id,
+            suffix
+        ));
+        if target.exists() && !source.exists() {
+            continue;
+        }
         std::fs::rename(&source, &target).map_err(|e| format!("move live database aside: {e}"))?;
     }
     Ok(())
@@ -1049,20 +1484,36 @@ pub fn restore_marked_migration_backup(db: &std::path::Path) -> Result<(), Strin
     let mut marker = read_restore_record(db, &marker_path, "migration recovery marker")?;
     if marker.is_none() {
         marker = read_restore_record(db, &provenance_path, "migration backup provenance")?;
-        if marker.as_ref().and_then(|value| value.get("phase")).and_then(serde_json::Value::as_str) != Some("migration-completed") {
-            return Err(format!("no migration recovery marker or completed backup provenance exists for {}", db.display()));
+        if marker
+            .as_ref()
+            .and_then(|value| value.get("phase"))
+            .and_then(serde_json::Value::as_str)
+            != Some("migration-completed")
+        {
+            return Err(format!(
+                "no migration recovery marker or completed backup provenance exists for {}",
+                db.display()
+            ));
         }
     }
     let mut marker = marker.ok_or("missing migration recovery record")?;
     let backup = validate_restore_backup_path(db, &marker)?;
-    let restore_id = marker.get("restoreId").and_then(serde_json::Value::as_str).map(str::to_string)
+    let restore_id = marker
+        .get("restoreId")
+        .and_then(serde_json::Value::as_str)
+        .map(str::to_string)
         .unwrap_or_else(crate::orchestration_engine::uuid_v4);
-    let temporary = db.parent().unwrap_or(std::path::Path::new(".")).join(format!(".restore-{restore_id}.partial"));
+    let temporary = db
+        .parent()
+        .unwrap_or(std::path::Path::new("."))
+        .join(format!(".restore-{restore_id}.partial"));
 
     // If a previous restore died after the atomic install rename, the stored
     // fingerprint proves the live file is already the restored snapshot. Do not
     // move it aside again; only finish the durable bookkeeping.
-    let expected_fingerprint = marker.get("restoredDatabaseFingerprint").and_then(serde_json::Value::as_str);
+    let expected_fingerprint = marker
+        .get("restoredDatabaseFingerprint")
+        .and_then(serde_json::Value::as_str);
     let already_installed = expected_fingerprint.is_some_and(|expected| {
         restore_file_fingerprint(db).as_deref() == Some(expected)
             && !std::path::PathBuf::from(format!("{}-wal", db.display())).exists()
@@ -1070,7 +1521,8 @@ pub fn restore_marked_migration_backup(db: &std::path::Path) -> Result<(), Strin
     });
     if !already_installed {
         copy_restore_backup(&backup, &temporary)?;
-        let fingerprint = restore_file_fingerprint(&temporary).ok_or("restored database fingerprint unavailable")?;
+        let fingerprint = restore_file_fingerprint(&temporary)
+            .ok_or("restored database fingerprint unavailable")?;
         marker["phase"] = serde_json::json!("migration-restore-in-progress");
         marker["restoreId"] = serde_json::json!(restore_id);
         marker["restoredDatabaseFingerprint"] = serde_json::json!(fingerprint);
@@ -1083,7 +1535,8 @@ pub fn restore_marked_migration_backup(db: &std::path::Path) -> Result<(), Strin
     completed["restoredAt"] = serde_json::json!(now_iso());
     write_private_json(&provenance_path, &completed)?;
     let _ = std::fs::remove_file(&temporary);
-    std::fs::remove_file(&marker_path).map_err(|e| format!("remove migration recovery marker: {e}"))?;
+    std::fs::remove_file(&marker_path)
+        .map_err(|e| format!("remove migration recovery marker: {e}"))?;
     sync_directory(db.parent().unwrap_or(std::path::Path::new(".")));
     Ok(())
 }
@@ -1093,7 +1546,11 @@ fn repair_private_database_files(db: &std::path::Path) {
     {
         use std::os::unix::fs::PermissionsExt as _;
         for suffix in ["", "-wal", "-shm"] {
-            let path = if suffix.is_empty() { db.to_path_buf() } else { std::path::PathBuf::from(format!("{}{suffix}", db.display())) };
+            let path = if suffix.is_empty() {
+                db.to_path_buf()
+            } else {
+                std::path::PathBuf::from(format!("{}{suffix}", db.display()))
+            };
             if std::fs::symlink_metadata(&path).is_ok_and(|meta| meta.file_type().is_file()) {
                 let _ = std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600));
             }
@@ -1120,15 +1577,29 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
             crate::acp_runner::err(format!("migration recovery marker could not be read: {e}"))
         })?;
         let mut payload: serde_json::Value = serde_json::from_str(&text).map_err(|e| {
-            crate::acp_runner::err(format!("migration recovery marker could not be validated: {e}"))
+            crate::acp_runner::err(format!(
+                "migration recovery marker could not be validated: {e}"
+            ))
         })?;
-        if payload.get("databasePath").and_then(serde_json::Value::as_str) != Some(db.to_string_lossy().as_ref())
-            || payload.get("backupPath").and_then(serde_json::Value::as_str).is_none()
+        if payload
+            .get("databasePath")
+            .and_then(serde_json::Value::as_str)
+            != Some(db.to_string_lossy().as_ref())
+            || payload
+                .get("backupPath")
+                .and_then(serde_json::Value::as_str)
+                .is_none()
         {
-            return Err(crate::acp_runner::err("migration recovery marker is invalid"));
+            return Err(crate::acp_runner::err(
+                "migration recovery marker is invalid",
+            ));
         }
-        let attempts = payload.get("resumeAttempts").and_then(serde_json::Value::as_u64).unwrap_or(0);
-        let restoring = payload.get("phase").and_then(serde_json::Value::as_str) == Some("migration-restore-in-progress");
+        let attempts = payload
+            .get("resumeAttempts")
+            .and_then(serde_json::Value::as_u64)
+            .unwrap_or(0);
+        let restoring = payload.get("phase").and_then(serde_json::Value::as_str)
+            == Some("migration-restore-in-progress");
         if restoring || attempts >= 2 {
             return Err(crate::acp_runner::err(format!(
                 "migration recovery is required for {}. Stop every Synara process, restore the backup referenced by {}, then start Synara again",
@@ -1139,20 +1610,35 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
         payload["targetVersion"] = serde_json::json!(latest_migration_id());
         payload["resumeAttempts"] = serde_json::json!(attempts + 1);
         payload["lastResumeAt"] = serde_json::json!(now_iso());
-        write_recovery_marker(&db, &payload)
-            .map_err(|e| crate::acp_runner::err(format!("migration recovery marker update failed: {e}")))?;
-        eprintln!("migrations: resuming interrupted migration (attempt {})", attempts + 1);
+        write_recovery_marker(&db, &payload).map_err(|e| {
+            crate::acp_runner::err(format!("migration recovery marker update failed: {e}"))
+        })?;
+        eprintln!(
+            "migrations: resuming interrupted migration (attempt {})",
+            attempts + 1
+        );
         let result = run_pending_with_db(&conn, Some(&db));
         if result.is_ok() {
             let completed: u32 = conn
-                .query_row("SELECT COALESCE(MAX(migration_id), 0) FROM effect_sql_migrations", [], |row| row.get(0))
-                .map_err(|e| crate::acp_runner::err(format!("resumed migration validation failed: {e}")))?;
+                .query_row(
+                    "SELECT COALESCE(MAX(migration_id), 0) FROM effect_sql_migrations",
+                    [],
+                    |row| row.get(0),
+                )
+                .map_err(|e| {
+                    crate::acp_runner::err(format!("resumed migration validation failed: {e}"))
+                })?;
             if completed != latest_migration_id() {
-                return Err(crate::acp_runner::err("resumed migration did not reach the expected schema"));
+                return Err(crate::acp_runner::err(
+                    "resumed migration did not reach the expected schema",
+                ));
             }
-            write_completed_provenance(&db, &payload)
-                .map_err(|e| crate::acp_runner::err(format!("migration backup provenance failed: {e}")))?;
-            std::fs::remove_file(&marker).map_err(|e| crate::acp_runner::err(format!("migration recovery marker removal failed: {e}")))?;
+            write_completed_provenance(&db, &payload).map_err(|e| {
+                crate::acp_runner::err(format!("migration backup provenance failed: {e}"))
+            })?;
+            std::fs::remove_file(&marker).map_err(|e| {
+                crate::acp_runner::err(format!("migration recovery marker removal failed: {e}"))
+            })?;
             sync_directory(db.parent().unwrap_or(std::path::Path::new(".")));
         }
         return result;
@@ -1177,9 +1663,12 @@ pub fn run_state_migrations() -> Result<Vec<u32>, crate::todo::WsErr> {
         .map_err(|e| crate::acp_runner::err(format!("migration recovery marker failed: {e}")))?;
     let result = run_pending_with_db(&conn, Some(&db));
     if result.is_ok() {
-        write_completed_provenance(&db, &payload)
-            .map_err(|e| crate::acp_runner::err(format!("migration backup provenance failed: {e}")))?;
-        std::fs::remove_file(&marker).map_err(|e| crate::acp_runner::err(format!("migration recovery marker removal failed: {e}")))?;
+        write_completed_provenance(&db, &payload).map_err(|e| {
+            crate::acp_runner::err(format!("migration backup provenance failed: {e}"))
+        })?;
+        std::fs::remove_file(&marker).map_err(|e| {
+            crate::acp_runner::err(format!("migration recovery marker removal failed: {e}"))
+        })?;
         sync_directory(db.parent().unwrap_or(std::path::Path::new(".")));
     }
     result
@@ -1192,7 +1681,9 @@ mod tests {
     #[test]
     fn tracker_table_matches_effect_sqlite_dialect() {
         let conn = Connection::open_in_memory().unwrap();
-        if let Err(e) = ensure_tracker(&conn) { panic!("{}", e.0); }
+        if let Err(e) = ensure_tracker(&conn) {
+            panic!("{}", e.0);
+        }
         let sql: String = conn
             .query_row(
                 "SELECT sql FROM sqlite_master WHERE name = 'effect_sql_migrations'",
@@ -1212,19 +1703,33 @@ mod tests {
         let canonical = canonical_migrations();
         assert_eq!(ran.len(), canonical.len());
         // A second run is a no-op.
-        assert!(run_pending(&conn).map_err(|e| e.0).expect("rerun").is_empty());
+        assert!(
+            run_pending(&conn)
+                .map_err(|e| e.0)
+                .expect("rerun")
+                .is_empty()
+        );
     }
 
     #[test]
     fn compressed_backup_uses_upstream_directory_and_shape() {
-        let root = std::env::temp_dir().join(format!("synara-migration-backup-test-{}", crate::orchestration_engine::uuid_v4()));
+        let root = std::env::temp_dir().join(format!(
+            "synara-migration-backup-test-{}",
+            crate::orchestration_engine::uuid_v4()
+        ));
         std::fs::create_dir_all(&root).unwrap();
         let db = root.join("state.sqlite");
         let conn = Connection::open(&db).unwrap();
         conn.execute_batch("CREATE TABLE effect_sql_migrations (migration_id integer PRIMARY KEY NOT NULL, created_at datetime NOT NULL DEFAULT current_timestamp, name VARCHAR(255) NOT NULL); INSERT INTO effect_sql_migrations (migration_id, name) VALUES (1, 'OrchestrationEvents'); CREATE TABLE user_data (id INTEGER PRIMARY KEY);").unwrap();
-        let plan = MigrationBackupPlan { source_version: "v1".into(), target_version: latest_migration_id() };
+        let plan = MigrationBackupPlan {
+            source_version: "v1".into(),
+            target_version: latest_migration_id(),
+        };
         let backup = create_migration_backup(&conn, &db, &plan).unwrap();
-        assert_eq!(backup.backup_path.parent(), Some(migration_backup_directory(&db).as_path()));
+        assert_eq!(
+            backup.backup_path.parent(),
+            Some(migration_backup_directory(&db).as_path())
+        );
         let name = backup.backup_path.file_name().unwrap().to_string_lossy();
         assert!(name.starts_with("state.sqlite.pre-migration-v1-to-v"));
         assert!(name.ends_with(".sqlite.gz"));
@@ -1241,27 +1746,39 @@ mod tests {
 
     #[test]
     fn explicit_restore_recovers_compressed_backup_and_records_provenance() {
-        let root = std::env::temp_dir().join(format!("synara-migration-restore-test-{}", crate::orchestration_engine::uuid_v4()));
+        let root = std::env::temp_dir().join(format!(
+            "synara-migration-restore-test-{}",
+            crate::orchestration_engine::uuid_v4()
+        ));
         std::fs::create_dir_all(&root).unwrap();
         let db = root.join("state.sqlite");
         {
             let conn = Connection::open(&db).unwrap();
             conn.execute_batch("CREATE TABLE effect_sql_migrations (migration_id integer PRIMARY KEY NOT NULL, created_at datetime NOT NULL DEFAULT current_timestamp, name VARCHAR(255) NOT NULL); INSERT INTO effect_sql_migrations (migration_id, name) VALUES (1, 'OrchestrationEvents'); CREATE TABLE user_data (value TEXT); INSERT INTO user_data VALUES ('before');").unwrap();
-            let plan = MigrationBackupPlan { source_version: "v1".into(), target_version: latest_migration_id() };
+            let plan = MigrationBackupPlan {
+                source_version: "v1".into(),
+                target_version: latest_migration_id(),
+            };
             let backup = create_migration_backup(&conn, &db, &plan).unwrap();
             let payload = recovery_payload(&db, &backup);
             write_recovery_marker(&db, &payload).unwrap();
         }
         {
             let conn = Connection::open(&db).unwrap();
-            conn.execute("UPDATE user_data SET value = 'after'", []).unwrap();
+            conn.execute("UPDATE user_data SET value = 'after'", [])
+                .unwrap();
         }
         restore_marked_migration_backup(&db).unwrap();
         let conn = Connection::open(&db).unwrap();
-        let value: String = conn.query_row("SELECT value FROM user_data", [], |row| row.get(0)).unwrap();
+        let value: String = conn
+            .query_row("SELECT value FROM user_data", [], |row| row.get(0))
+            .unwrap();
         assert_eq!(value, "before");
         assert!(!migration_recovery_marker_path(&db).exists());
-        let provenance: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(migration_backup_provenance_path(&db)).unwrap()).unwrap();
+        let provenance: serde_json::Value = serde_json::from_str(
+            &std::fs::read_to_string(migration_backup_provenance_path(&db)).unwrap(),
+        )
+        .unwrap();
         assert_eq!(provenance["phase"], "migration-restored");
         drop(conn);
         let _ = std::fs::remove_dir_all(root);
@@ -1270,43 +1787,70 @@ mod tests {
     #[test]
     fn backup_plan_recognizes_untracked_user_database_without_mutating_tracker() {
         let conn = Connection::open_in_memory().unwrap();
-        conn.execute_batch("CREATE TABLE user_data (id INTEGER PRIMARY KEY)").unwrap();
-        let plan = inspect_migration_backup_plan(&conn).map_err(|e| e.0).unwrap().unwrap();
+        conn.execute_batch("CREATE TABLE user_data (id INTEGER PRIMARY KEY)")
+            .unwrap();
+        let plan = inspect_migration_backup_plan(&conn)
+            .map_err(|e| e.0)
+            .unwrap()
+            .unwrap();
         assert_eq!(plan.source_version, "untracked");
         assert!(!table_exists(&conn, "effect_sql_migrations"));
     }
 
     #[test]
     fn schema_too_new_block_points_to_completed_compatible_backup() {
-        let root = std::env::temp_dir().join(format!("synara-schema-newer-test-{}", crate::orchestration_engine::uuid_v4()));
+        let root = std::env::temp_dir().join(format!(
+            "synara-schema-newer-test-{}",
+            crate::orchestration_engine::uuid_v4()
+        ));
         std::fs::create_dir_all(&root).unwrap();
         let db = root.join("state.sqlite");
         let conn = Connection::open(&db).unwrap();
         conn.execute_batch("CREATE TABLE effect_sql_migrations (migration_id integer PRIMARY KEY NOT NULL, created_at datetime NOT NULL DEFAULT current_timestamp, name VARCHAR(255) NOT NULL); INSERT INTO effect_sql_migrations (migration_id, name) VALUES (1, 'OrchestrationEvents'); CREATE TABLE user_data (id INTEGER PRIMARY KEY);").unwrap();
-        let plan = MigrationBackupPlan { source_version: "v1".into(), target_version: latest_migration_id() };
+        let plan = MigrationBackupPlan {
+            source_version: "v1".into(),
+            target_version: latest_migration_id(),
+        };
         let backup = create_migration_backup(&conn, &db, &plan).unwrap();
         let payload = recovery_payload(&db, &backup);
         write_completed_provenance(&db, &payload).unwrap();
         // The newer build's completed provenance records its target, and the
         // tracker carries one future row past this build's ledger.
-        conn.execute("UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 1", params![canonical_migration_name(1).unwrap()]).unwrap();
+        conn.execute(
+            "UPDATE effect_sql_migrations SET name = ?1 WHERE migration_id = 1",
+            params![canonical_migration_name(1).unwrap()],
+        )
+        .unwrap();
         for (id, name, _) in canonical_migrations().into_iter().skip(1) {
-            conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)", params![id, name]).unwrap();
+            conn.execute(
+                "INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)",
+                params![id, name],
+            )
+            .unwrap();
         }
         let future = latest_migration_id() + 1;
-        conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, 'FutureMigration')", params![future]).unwrap();
-        std::fs::write(migration_backup_provenance_path(&db), serde_json::to_string(&serde_json::json!({
-            "version":1,
-            "databasePath":db.to_string_lossy(),
-            "backupPath":backup.backup_path.to_string_lossy(),
-            "sourceVersion":plan.source_version,
-            "targetVersion":future,
-            "lineageDivergence":serde_json::Value::Null,
-            "phase":"migration-completed",
-            "createdAt":backup.created_at,
-            "resumeAttempts":0,
-            "completedAt":now_iso(),
-        })).unwrap()).unwrap();
+        conn.execute(
+            "INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, 'FutureMigration')",
+            params![future],
+        )
+        .unwrap();
+        std::fs::write(
+            migration_backup_provenance_path(&db),
+            serde_json::to_string(&serde_json::json!({
+                "version":1,
+                "databasePath":db.to_string_lossy(),
+                "backupPath":backup.backup_path.to_string_lossy(),
+                "sourceVersion":plan.source_version,
+                "targetVersion":future,
+                "lineageDivergence":serde_json::Value::Null,
+                "phase":"migration-completed",
+                "createdAt":backup.created_at,
+                "resumeAttempts":0,
+                "completedAt":now_iso(),
+            }))
+            .unwrap(),
+        )
+        .unwrap();
         let rows = tracker_rows(&conn).map_err(|e| e.0).unwrap();
         let error = inspect_lineage(&conn, &rows, Some(&db)).unwrap_err().0;
         assert!(error.contains("SYNARA_MIGRATION_SCHEMA_TOO_NEW="));
@@ -1321,10 +1865,18 @@ mod tests {
         let conn = Connection::open_in_memory().unwrap();
         ensure_tracker(&conn).map_err(|e| e.0).unwrap();
         for (id, name, _) in canonical_migrations() {
-            conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)", params![id, name]).unwrap();
+            conn.execute(
+                "INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)",
+                params![id, name],
+            )
+            .unwrap();
         }
         let next = canonical_migrations().len() as u32 + 1;
-        conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, 'FutureMigration')", params![next]).unwrap();
+        conn.execute(
+            "INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, 'FutureMigration')",
+            params![next],
+        )
+        .unwrap();
         let error = pending_migrations(&conn).unwrap_err().0;
         assert!(error.contains("newer than this build supports"));
         assert!(error.contains("Update Synara"));
@@ -1333,7 +1885,11 @@ mod tests {
     }
 
     fn canonical_rows_through(count: u32) -> Vec<(u32, String)> {
-        canonical_migrations().into_iter().take(count as usize).map(|(id, name, _)| (id, name.into())).collect()
+        canonical_migrations()
+            .into_iter()
+            .take(count as usize)
+            .map(|(id, name, _)| (id, name.into()))
+            .collect()
     }
 
     #[test]
@@ -1341,9 +1897,14 @@ mod tests {
         let conn = Connection::open_in_memory().unwrap();
         let mut rows = canonical_rows_through(31);
         rows.push((32, "ForeignImportReconciliation".into()));
-        let inspection = inspect_lineage_with_consent(&conn, &rows, None, None).map_err(|e| e.0).unwrap();
+        let inspection = inspect_lineage_with_consent(&conn, &rows, None, None)
+            .map_err(|e| e.0)
+            .unwrap();
         assert!(inspection.repair.rename_migration32);
-        assert_eq!(inspection.rows.last().map(|(_, name)| name.as_str()), canonical_migration_name(32));
+        assert_eq!(
+            inspection.rows.last().map(|(_, name)| name.as_str()),
+            canonical_migration_name(32)
+        );
     }
 
     #[test]
@@ -1351,7 +1912,9 @@ mod tests {
         let conn = Connection::open_in_memory().unwrap();
         let mut rows = canonical_rows_through(53);
         rows.push((54, "ProjectPullRequestPins".into()));
-        let inspection = inspect_lineage_with_consent(&conn, &rows, None, None).map_err(|e| e.0).unwrap();
+        let inspection = inspect_lineage_with_consent(&conn, &rows, None, None)
+            .map_err(|e| e.0)
+            .unwrap();
         assert!(inspection.repair.rename_migration54);
         assert!(inspection.repair.truncate_from.is_none());
     }
@@ -1361,7 +1924,14 @@ mod tests {
         let conn = Connection::open_in_memory().unwrap();
         let mut rows = canonical_rows_through(16);
         rows.push((17, "ForeignThreadRuntime".into()));
-        let blocked = inspect_lineage_with_consent(&conn, &rows, Some(std::path::Path::new("/tmp/state.sqlite")), None).unwrap_err().0;
+        let blocked = inspect_lineage_with_consent(
+            &conn,
+            &rows,
+            Some(std::path::Path::new("/tmp/state.sqlite")),
+            None,
+        )
+        .unwrap_err()
+        .0;
         assert!(blocked.contains("SYNARA_MIGRATION_DIVERGENCE_CONSENT_REQUIRED="));
         assert!(blocked.contains("restart once with SYNARA_MIGRATION_DIVERGENCE_CONSENT="));
         let token = divergence_consent_token(
@@ -1374,7 +1944,14 @@ mod tests {
             17,
             &migration_lineage_fingerprint(&rows),
         );
-        let inspection = inspect_lineage_with_consent(&conn, &rows, Some(std::path::Path::new("/tmp/state.sqlite")), Some(&token)).map_err(|e| e.0).unwrap();
+        let inspection = inspect_lineage_with_consent(
+            &conn,
+            &rows,
+            Some(std::path::Path::new("/tmp/state.sqlite")),
+            Some(&token),
+        )
+        .map_err(|e| e.0)
+        .unwrap();
         assert_eq!(inspection.repair.truncate_from, Some(17));
         assert_eq!(inspection.rows.len(), 16);
     }
@@ -1386,17 +1963,33 @@ mod tests {
         let mut rows = canonical_rows_through(latest_migration_id());
         rows[16].1 = "ForeignThreadRuntime".into();
         for (id, name) in &rows {
-            conn.execute("INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)", params![id, name]).unwrap();
+            conn.execute(
+                "INSERT INTO effect_sql_migrations (migration_id, name) VALUES (?1, ?2)",
+                params![id, name],
+            )
+            .unwrap();
         }
-        let plan = inspect_migration_backup_plan(&conn).map_err(|e| e.0).unwrap().unwrap();
+        let plan = inspect_migration_backup_plan(&conn)
+            .map_err(|e| e.0)
+            .unwrap()
+            .unwrap();
         assert!(plan.source_version.starts_with("imported-v"));
     }
 
     #[test]
     fn canonical_historical_lineage_names_match_released_upstream() {
-        assert_eq!(canonical_migration_name(32), Some("ReconcileImportedSchemaLineage"));
-        assert_eq!(canonical_migration_name(54), Some("DurableProviderCommandDelivery"));
-        assert_eq!(canonical_migration_name(64), Some("DurableProviderCommandDeliveryCutover"));
+        assert_eq!(
+            canonical_migration_name(32),
+            Some("ReconcileImportedSchemaLineage")
+        );
+        assert_eq!(
+            canonical_migration_name(54),
+            Some("DurableProviderCommandDelivery")
+        );
+        assert_eq!(
+            canonical_migration_name(64),
+            Some("DurableProviderCommandDeliveryCutover")
+        );
         assert_eq!(canonical_migration_name(69), Some("ProjectPullRequestPins"));
     }
 

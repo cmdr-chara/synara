@@ -17,11 +17,13 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
-use crate::acp_runner::{append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state};
+use crate::acp_runner::{
+    append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state,
+};
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 struct RunningTurn {
     child: Arc<Mutex<Child>>,
@@ -97,7 +99,10 @@ pub fn drop_thread_resources(thread_id: &str) {
 /// sessions and local servers alive after Synara can no longer control them.
 pub fn drop_all_resources() {
     let parked = if let Ok(mut parked_map) = PARKED.lock() {
-        parked_map.drain().map(|(_, parked)| parked).collect::<Vec<_>>()
+        parked_map
+            .drain()
+            .map(|(_, parked)| parked)
+            .collect::<Vec<_>>()
     } else {
         Vec::new()
     };
@@ -105,7 +110,6 @@ pub fn drop_all_resources() {
         drop_parked(parked);
     }
 }
-
 
 pub fn steer_turn(thread_id: &str, text: &str) -> bool {
     let (port, password, session_id) = match RUNNING.lock() {
@@ -150,10 +154,7 @@ pub fn cancel_turn(thread_id: &str) {
         Err(_) => return,
     };
     flag.store(true, Ordering::SeqCst);
-    let session_id = provider_session_id
-        .lock()
-        .ok()
-        .and_then(|id| id.clone());
+    let session_id = provider_session_id.lock().ok().and_then(|id| id.clone());
     let interrupted = session_id
         .map(|session_id| {
             let auth = basic_auth_header(&password);
@@ -211,8 +212,16 @@ fn base64_encode(data: &[u8]) -> String {
         let n = (b0 << 16) | (b1 << 8) | b2;
         out.push(ALPHABET[(n >> 18) as usize & 63] as char);
         out.push(ALPHABET[(n >> 12) as usize & 63] as char);
-        out.push(if chunk.len() > 1 { ALPHABET[(n >> 6) as usize & 63] as char } else { '=' });
-        out.push(if chunk.len() > 2 { ALPHABET[n as usize & 63] as char } else { '=' });
+        out.push(if chunk.len() > 1 {
+            ALPHABET[(n >> 6) as usize & 63] as char
+        } else {
+            '='
+        });
+        out.push(if chunk.len() > 2 {
+            ALPHABET[n as usize & 63] as char
+        } else {
+            '='
+        });
     }
     out
 }
@@ -254,7 +263,6 @@ fn http_request(
     Ok((status, body_text))
 }
 
-
 fn urlencode_component(value: &str) -> String {
     value
         .bytes()
@@ -272,10 +280,7 @@ fn urlencode_component(value: &str) -> String {
 /// thread-owned server process. Older V1 servers do not expose the endpoint;
 /// injection is optional there and the turn continues without it.
 fn install_gateway_mcp(port: u16, auth: &str, directory: &str) -> bool {
-    let location = format!(
-        "location%5Bdirectory%5D={}",
-        urlencode_component(directory)
-    );
+    let location = format!("location%5Bdirectory%5D={}", urlencode_component(directory));
     let config = json!({
         "config": {
             "type": "remote",
@@ -311,9 +316,10 @@ fn install_gateway_mcp(port: u16, auth: &str, directory: &str) -> bool {
                         .and_then(Value::as_array)
                         .cloned()
                         .unwrap_or_default();
-                    if let Some(entry) = entries.iter().find(|entry| {
-                        entry.get("name").and_then(Value::as_str) == Some("synara")
-                    }) {
+                    if let Some(entry) = entries
+                        .iter()
+                        .find(|entry| entry.get("name").and_then(Value::as_str) == Some("synara"))
+                    {
                         match entry.pointer("/status/status").and_then(Value::as_str) {
                             Some("connected") => return true,
                             Some("failed") => {
@@ -330,7 +336,6 @@ fn install_gateway_mcp(port: u16, auth: &str, directory: &str) -> bool {
     }
     false
 }
-
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum OpenCodeProtocol {
@@ -368,7 +373,6 @@ fn open_sse_stream(port: u16, auth: &str, path: &str) -> Result<TcpStream, WsErr
     Ok(stream)
 }
 
-
 fn permission_request_kind(action: &str) -> &'static str {
     match action {
         "shell" | "bash" => "command",
@@ -398,10 +402,7 @@ fn handle_permission_request(
         .filter(|id| !id.is_empty())
         .ok_or_else(|| err("opencode permission request missing id"))?
         .to_string();
-    let action = data
-        .get("action")
-        .and_then(Value::as_str)
-        .unwrap_or("tool");
+    let action = data.get("action").and_then(Value::as_str).unwrap_or("tool");
     let resources = data
         .get("resources")
         .and_then(Value::as_array)
@@ -419,7 +420,11 @@ fn handle_permission_request(
     };
     let reply_for = |decision: &str| match decision {
         "accept" | "acceptForSession" => {
-            if decision == "acceptForSession" { "always" } else { "once" }
+            if decision == "acceptForSession" {
+                "always"
+            } else {
+                "once"
+            }
         }
         _ => "reject",
     };
@@ -434,7 +439,9 @@ fn handle_permission_request(
             Some(&json!({"decision": "once"})),
         )?;
         if status >= 400 {
-            return Err(err(format!("opencode permission reply HTTP {status}: {body}")));
+            return Err(err(format!(
+                "opencode permission reply HTTP {status}: {body}"
+            )));
         }
         return Ok(());
     }
@@ -517,19 +524,28 @@ fn handle_permission_request(
         Some(&json!({"decision": reply_for(&decision)})),
     )?;
     if status >= 400 {
-        return Err(err(format!("opencode permission reply HTTP {status}: {body}")));
+        return Err(err(format!(
+            "opencode permission reply HTTP {status}: {body}"
+        )));
     }
     Ok(())
 }
-
-
 
 fn opencode_permission_rules(runtime_mode: &str, interaction_mode: &str) -> Value {
     if interaction_mode == "plan" {
         let mut rules = vec![json!({"action":"*","resource":"*","effect":"deny"})];
         for action in [
-            "read", "glob", "grep", "list", "lsp", "webfetch", "websearch", "codesearch",
-            "todoread", "todowrite", "question",
+            "read",
+            "glob",
+            "grep",
+            "list",
+            "lsp",
+            "webfetch",
+            "websearch",
+            "codesearch",
+            "todoread",
+            "todowrite",
+            "question",
         ] {
             rules.push(json!({"action":action,"resource":"*","effect":"allow"}));
         }
@@ -540,7 +556,13 @@ fn opencode_permission_rules(runtime_mode: &str, interaction_mode: &str) -> Valu
     }
     let mut rules = vec![json!({"action":"*","resource":"*","effect":"ask"})];
     for action in [
-        "shell", "edit", "webfetch", "websearch", "codesearch", "external_directory", "doom_loop",
+        "shell",
+        "edit",
+        "webfetch",
+        "websearch",
+        "codesearch",
+        "external_directory",
+        "doom_loop",
     ] {
         rules.push(json!({"action":action,"resource":"*","effect":"ask"}));
     }
@@ -574,7 +596,10 @@ fn form_unsupported(form: &Value) -> bool {
         .map(|fields| {
             fields.iter().any(|field| {
                 field.get("type").and_then(Value::as_str) == Some("external")
-                    || field.get("hidden").and_then(Value::as_bool).unwrap_or(false)
+                    || field
+                        .get("hidden")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false)
                     || field
                         .get("when")
                         .and_then(Value::as_array)
@@ -586,7 +611,10 @@ fn form_unsupported(form: &Value) -> bool {
 }
 
 fn normalized_questions(form: &Value) -> Vec<Value> {
-    let title = form.get("title").and_then(Value::as_str).unwrap_or("OpenCode form");
+    let title = form
+        .get("title")
+        .and_then(Value::as_str)
+        .unwrap_or("OpenCode form");
     if form_unsupported(form) {
         return vec![json!({
             "id": question_id(0, title),
@@ -666,7 +694,10 @@ fn opencode_form_answer(form: &Value, answers: &Value) -> Result<Value, WsErr> {
         .and_then(Value::as_array)
         .cloned()
         .unwrap_or_default();
-    let title = form.get("title").and_then(Value::as_str).unwrap_or("OpenCode form");
+    let title = form
+        .get("title")
+        .and_then(Value::as_str)
+        .unwrap_or("OpenCode form");
     let mut out = serde_json::Map::new();
     for (index, field) in fields.iter().enumerate() {
         let header = field.get("title").and_then(Value::as_str).unwrap_or(title);
@@ -678,12 +709,19 @@ fn opencode_form_answer(form: &Value, answers: &Value) -> Result<Value, WsErr> {
             .map(scalar_answer_values)
             .unwrap_or_default();
         if values.is_empty() {
-            if field.get("required").and_then(Value::as_bool).unwrap_or(false) {
+            if field
+                .get("required")
+                .and_then(Value::as_bool)
+                .unwrap_or(false)
+            {
                 return Err(err(format!("OpenCode requires an answer for {key}")));
             }
             continue;
         }
-        let kind = field.get("type").and_then(Value::as_str).unwrap_or("string");
+        let kind = field
+            .get("type")
+            .and_then(Value::as_str)
+            .unwrap_or("string");
         let mapped: Vec<String> = values
             .iter()
             .map(|value| {
@@ -692,12 +730,21 @@ fn opencode_form_answer(form: &Value, answers: &Value) -> Result<Value, WsErr> {
                     .and_then(Value::as_array)
                     .and_then(|options| {
                         options.iter().find(|option| {
-                            let internal = option.get("value").and_then(Value::as_str).unwrap_or("");
-                            let label = option.get("label").and_then(Value::as_str).unwrap_or(internal);
+                            let internal =
+                                option.get("value").and_then(Value::as_str).unwrap_or("");
+                            let label = option
+                                .get("label")
+                                .and_then(Value::as_str)
+                                .unwrap_or(internal);
                             label == value
                         })
                     })
-                    .and_then(|option| option.get("value").and_then(Value::as_str).map(str::to_string))
+                    .and_then(|option| {
+                        option
+                            .get("value")
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                    })
                     .unwrap_or_else(|| value.clone())
             })
             .collect();
@@ -806,11 +853,16 @@ fn handle_form_request(
     }
     let encoded = encoded.unwrap_or_else(|| "{}".to_string());
     let answers = serde_json::from_str::<Value>(&encoded).unwrap_or(json!({}));
-    let empty = answers.as_object().map(|o| {
-        o.values().all(|v| v.is_null())
-            || o.is_empty()
-            || (o.len() == 1 && o.values().any(|v| scalar_answer_values(v).iter().any(|x| x == "Cancel")))
-    }).unwrap_or(true);
+    let empty = answers
+        .as_object()
+        .map(|o| {
+            o.values().all(|v| v.is_null())
+                || o.is_empty()
+                || (o.len() == 1
+                    && o.values()
+                        .any(|v| scalar_answer_values(v).iter().any(|x| x == "Cancel")))
+        })
+        .unwrap_or(true);
     if let Ok(c) = open_state_rw() {
         let _ = c.execute(
             "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
@@ -843,11 +895,12 @@ fn handle_form_request(
     };
     let (status, response_body) = http_request(port, method, &path, auth, body.as_ref())?;
     if status >= 400 {
-        return Err(err(format!("opencode form reply HTTP {status}: {response_body}")));
+        return Err(err(format!(
+            "opencode form reply HTTP {status}: {response_body}"
+        )));
     }
     Ok(())
 }
-
 
 /// Compact the warm OpenCode session through the native V2 endpoint. The
 /// request is intentionally limited to idle warm sessions: compacting a busy
@@ -862,7 +915,11 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
         let Some(parked) = parked_map.get(thread_id) else {
             return Ok(false);
         };
-        (parked.port, parked.password.clone(), parked.session_id.clone())
+        (
+            parked.port,
+            parked.password.clone(),
+            parked.session_id.clone(),
+        )
     };
     let auth = basic_auth_header(&password);
     let path = format!("/api/session/{session_id}/compact");
@@ -881,9 +938,6 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
     }
     Ok(true)
 }
-
-
-
 
 fn opencode_display_name(name: &str) -> String {
     name.split(['-', '_', ' '])
@@ -922,8 +976,8 @@ pub fn discover_agents(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>>,
     if status >= 400 {
         return Err(err(format!("opencode agent list HTTP {status}: {body}")));
     }
-    let parsed: Value = serde_json::from_str(&body)
-        .map_err(|e| err(format!("opencode agent parse: {e}")))?;
+    let parsed: Value =
+        serde_json::from_str(&body).map_err(|e| err(format!("opencode agent parse: {e}")))?;
     let entries = parsed
         .get("data")
         .cloned()
@@ -940,7 +994,11 @@ pub fn discover_agents(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>>,
                 )
         })
         .filter_map(|agent| {
-            let name = agent.get("name").and_then(Value::as_str)?.trim().to_string();
+            let name = agent
+                .get("name")
+                .and_then(Value::as_str)?
+                .trim()
+                .to_string();
             if name.is_empty() {
                 return None;
             }
@@ -1004,8 +1062,8 @@ pub fn discover_commands(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>
     if status >= 400 {
         return Err(err(format!("opencode command list HTTP {status}: {body}")));
     }
-    let parsed: Value = serde_json::from_str(&body)
-        .map_err(|e| err(format!("opencode command parse: {e}")))?;
+    let parsed: Value =
+        serde_json::from_str(&body).map_err(|e| err(format!("opencode command parse: {e}")))?;
     let entries = parsed
         .get("data")
         .cloned()
@@ -1015,7 +1073,11 @@ pub fn discover_commands(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>
     let mut commands: Vec<Value> = entries
         .iter()
         .filter_map(|entry| {
-            let name = entry.get("name").and_then(Value::as_str)?.trim().to_string();
+            let name = entry
+                .get("name")
+                .and_then(Value::as_str)?
+                .trim()
+                .to_string();
             if name.is_empty() {
                 return None;
             }
@@ -1040,7 +1102,6 @@ pub fn discover_commands(thread_id: &str, cwd: &str) -> Result<Option<Vec<Value>
     });
     Ok(Some(commands))
 }
-
 
 fn opencode_variant_descriptors(model: &Value) -> Vec<Value> {
     if let Some(variants) = model.get("variants").and_then(Value::as_object) {
@@ -1078,7 +1139,9 @@ fn opencode_variant_descriptors(model: &Value) -> Vec<Value> {
                     .or_else(|| variant.get("value").and_then(Value::as_str))?
                     .trim()
                     .to_string();
-                if value.is_empty() { return None; }
+                if value.is_empty() {
+                    return None;
+                }
                 let mut out = json!({"value": value});
                 if let Some(label) = variant.get("label").and_then(Value::as_str) {
                     out["label"] = json!(label);
@@ -1127,8 +1190,7 @@ fn preferred_opencode_providers<'a>(
     let connected_providers: Vec<&Value> = providers
         .iter()
         .filter(|p| {
-            !has_connected
-                || connected.contains(p.get("id").and_then(Value::as_str).unwrap_or(""))
+            !has_connected || connected.contains(p.get("id").and_then(Value::as_str).unwrap_or(""))
         })
         .copied()
         .collect();
@@ -1204,15 +1266,17 @@ fn flatten_opencode_inventory_models(provider_list: &Value) -> Vec<Value> {
     let provider_refs: Vec<&Value> = providers_raw.iter().collect();
     let providers = preferred_opencode_providers(provider_refs, &connected_ids, &credentials);
     let mut models = Vec::new();
-    for provider in providers
-    {
+    for provider in providers {
         let provider = provider.clone();
 
         let provider_id = provider.get("id").and_then(Value::as_str).unwrap_or("");
         if provider_id.is_empty() {
             continue;
         }
-        let provider_name = provider.get("name").and_then(Value::as_str).unwrap_or(provider_id);
+        let provider_name = provider
+            .get("name")
+            .and_then(Value::as_str)
+            .unwrap_or(provider_id);
         let mut entries = Vec::new();
         if let Some(object) = provider.get("models").and_then(Value::as_object) {
             for (model_id, model) in object {
@@ -1264,18 +1328,25 @@ fn flatten_opencode_inventory_models(provider_list: &Value) -> Vec<Value> {
                     } else {
                         context.to_string()
                     };
-                    out["contextWindowOptions"] = json!([{"value": value, "label": value.to_uppercase(), "isDefault": true}]);
+                    out["contextWindowOptions"] =
+                        json!([{"value": value, "label": value.to_uppercase(), "isDefault": true}]);
                     out["defaultContextWindow"] = json!(value);
                 }
             }
             models.push(out);
         }
     }
-    models.sort_by(|a,b| {
-        a.get("name").and_then(Value::as_str).unwrap_or("")
+    models.sort_by(|a, b| {
+        a.get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("")
             .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
-            .then(a.get("slug").and_then(Value::as_str).unwrap_or("")
-                .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")))
+            .then(
+                a.get("slug")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")),
+            )
     });
     models
 }
@@ -1297,7 +1368,9 @@ fn opencode_location_query(cwd: &str) -> String {
     format!("location%5Bdirectory%5D={}", urlencode_component(cwd))
 }
 
-fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Option<String>), WsErr> {
+fn opencode_message_page(
+    body: &str,
+) -> Result<(Vec<OpenCodeImportedMessage>, Option<String>), WsErr> {
     let parsed: Value = serde_json::from_str(body)
         .map_err(|e| err(format!("opencode session messages parse: {e}")))?;
     let entries = if let Some(entries) = parsed.as_array() {
@@ -1321,7 +1394,11 @@ fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Op
         // exactly like upstream readOpenCodeSessionMessageText).
         let (id, role, text) = if entry.get("info").is_some() {
             let info = entry.get("info").cloned().unwrap_or_else(|| json!({}));
-            let role = info.get("role").and_then(Value::as_str).unwrap_or("").to_string();
+            let role = info
+                .get("role")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
             let text = entry
                 .get("parts")
                 .and_then(Value::as_array)
@@ -1336,7 +1413,11 @@ fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Op
                         .to_string()
                 })
                 .unwrap_or_default();
-            let id = info.get("id").and_then(Value::as_str).unwrap_or("").to_string();
+            let id = info
+                .get("id")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
             (id, role, text)
         } else {
             let kind = entry.get("type").and_then(Value::as_str).unwrap_or("");
@@ -1346,7 +1427,12 @@ fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Op
                 _ => continue,
             };
             let text = if kind == "user" {
-                entry.get("text").and_then(Value::as_str).unwrap_or("").trim().to_string()
+                entry
+                    .get("text")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .trim()
+                    .to_string()
             } else {
                 entry
                     .get("content")
@@ -1363,7 +1449,11 @@ fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Op
                     })
                     .unwrap_or_default()
             };
-            let id = entry.get("id").and_then(Value::as_str).unwrap_or("").to_string();
+            let id = entry
+                .get("id")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
             (id, role, text)
         };
         if role != "user" && role != "assistant" {
@@ -1372,7 +1462,11 @@ fn opencode_message_page(body: &str) -> Result<(Vec<OpenCodeImportedMessage>, Op
         if text.is_empty() {
             continue;
         }
-        let id = if id.trim().is_empty() { index.to_string() } else { id.trim().to_string() };
+        let id = if id.trim().is_empty() {
+            index.to_string()
+        } else {
+            id.trim().to_string()
+        };
         out.push(OpenCodeImportedMessage { id, role, text });
     }
     Ok((out, next_cursor))
@@ -1384,8 +1478,8 @@ fn opencode_messages_from_body(body: &str) -> Result<Vec<OpenCodeImportedMessage
 
 fn configured_opencode_server_url(instance_id: Option<&str>) -> Option<String> {
     let settings = crate::server_settings::current();
-    crate::provider_instances::resolve_instance(&settings, instance_id, Some("opencode"))
-        .and_then(|instance| {
+    crate::provider_instances::resolve_instance(&settings, instance_id, Some("opencode")).and_then(
+        |instance| {
             instance
                 .config
                 .get("serverUrl")
@@ -1393,7 +1487,8 @@ fn configured_opencode_server_url(instance_id: Option<&str>) -> Option<String> {
                 .map(str::trim)
                 .filter(|url| !url.is_empty())
                 .map(str::to_string)
-        })
+        },
+    )
 }
 
 fn external_http_request(
@@ -1426,11 +1521,13 @@ fn external_detect_protocol(
 ) -> OpenCodeProtocol {
     if let Ok((status, body)) = external_http_request(client, base_url, "GET", "/api/info", None) {
         if (200..300).contains(&status)
-            && serde_json::from_str::<Value>(&body).ok().is_some_and(|info| {
-                info.get("version").and_then(Value::as_str).is_some()
-                    && info.get("pid").and_then(Value::as_i64).is_some()
-                    && info.get("urls").and_then(Value::as_array).is_some()
-            })
+            && serde_json::from_str::<Value>(&body)
+                .ok()
+                .is_some_and(|info| {
+                    info.get("version").and_then(Value::as_str).is_some()
+                        && info.get("pid").and_then(Value::as_i64).is_some()
+                        && info.get("urls").and_then(Value::as_array).is_some()
+                })
         {
             return OpenCodeProtocol::V2;
         }
@@ -1455,7 +1552,9 @@ fn read_external_history_from_server(
     };
     let (status, body) = external_http_request(&client, base_url, "GET", &session_path, None)?;
     if status >= 400 {
-        return Err(err(format!("opencode session lookup HTTP {status}: {body}")));
+        return Err(err(format!(
+            "opencode session lookup HTTP {status}: {body}"
+        )));
     }
     let session: Value = serde_json::from_str(&body)
         .map_err(|e| err(format!("opencode session lookup parse: {e}")))?;
@@ -1479,7 +1578,9 @@ fn read_external_history_from_server(
         };
         let (status, body) = external_http_request(&client, base_url, "GET", &messages_path, None)?;
         if status >= 400 {
-            return Err(err(format!("opencode session messages HTTP {status}: {body}")));
+            return Err(err(format!(
+                "opencode session messages HTTP {status}: {body}"
+            )));
         }
         let (page, next_cursor) = opencode_message_page(&body)?;
         messages.extend(page);
@@ -1521,9 +1622,19 @@ pub fn read_external_history(
     let password = random_token();
     let mut command = Command::new(opencode_binary());
     crate::provider_env::sanitize_provider_child(&mut command);
-    crate::provider_instances::apply_instance_environment_for(&mut command, "opencode", instance_id);
+    crate::provider_instances::apply_instance_environment_for(
+        &mut command,
+        "opencode",
+        instance_id,
+    );
     command
-        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+        .args([
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            &port.to_string(),
+        ])
         .current_dir(&cwd)
         .env("OPENCODE_SERVER_USERNAME", "opencode")
         .env("OPENCODE_SERVER_PASSWORD", &password)
@@ -1565,7 +1676,9 @@ pub fn read_external_history(
         };
         let (status, body) = http_request(port, "GET", &session_path, &auth, None)?;
         if status >= 400 {
-            return Err(err(format!("opencode session lookup HTTP {status}: {body}")));
+            return Err(err(format!(
+                "opencode session lookup HTTP {status}: {body}"
+            )));
         }
         let session: Value = serde_json::from_str(&body)
             .map_err(|e| err(format!("opencode session lookup parse: {e}")))?;
@@ -1593,7 +1706,9 @@ pub fn read_external_history(
             };
             let (status, body) = http_request(port, "GET", &messages_path, &auth, None)?;
             if status >= 400 {
-                return Err(err(format!("opencode session messages HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode session messages HTTP {status}: {body}"
+                )));
             }
             let (page, next_cursor) = opencode_message_page(&body)?;
             messages.extend(page);
@@ -1634,7 +1749,13 @@ pub fn discover_server_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
     crate::provider_env::sanitize_provider_child(&mut command);
     crate::provider_instances::apply_instance_environment(&mut command, "opencode");
     command
-        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+        .args([
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            &port.to_string(),
+        ])
         .current_dir(&cwd)
         .env("OPENCODE_SERVER_USERNAME", "opencode")
         .env("OPENCODE_SERVER_PASSWORD", &password)
@@ -1658,9 +1779,17 @@ pub fn discover_server_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
             std::thread::sleep(std::time::Duration::from_millis(150));
         }
         let location = format!("location%5Bdirectory%5D={}", urlencode_component(&cwd));
-        let (status, body) = http_request(port, "GET", &format!("/api/provider?{location}"), &auth, None)?;
+        let (status, body) = http_request(
+            port,
+            "GET",
+            &format!("/api/provider?{location}"),
+            &auth,
+            None,
+        )?;
         if status >= 400 {
-            return Err(err(format!("opencode provider inventory HTTP {status}: {body}")));
+            return Err(err(format!(
+                "opencode provider inventory HTTP {status}: {body}"
+            )));
         }
         let parsed: Value = serde_json::from_str(&body)
             .map_err(|e| err(format!("opencode provider inventory parse: {e}")))?;
@@ -1742,7 +1871,13 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     crate::provider_env::sanitize_provider_child(&mut command);
     crate::provider_instances::apply_instance_environment(&mut command, "opencode");
     command
-        .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
+        .args([
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            &port.to_string(),
+        ])
         .current_dir(&cwd)
         .env("OPENCODE_SERVER_USERNAME", "opencode")
         .env("OPENCODE_SERVER_PASSWORD", &password)
@@ -1793,7 +1928,9 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
                 })),
             )?;
             if status >= 400 {
-                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode session create HTTP {status}: {body}"
+                )));
             }
             let parsed: Value = serde_json::from_str(&body)
                 .map_err(|e| err(format!("opencode session parse: {e}")))?;
@@ -1812,7 +1949,9 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
                 Some(&json!({"title": format!("synara-{thread_id}")})),
             )?;
             if status >= 400 {
-                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode session create HTTP {status}: {body}"
+                )));
             }
             let parsed: Value = serde_json::from_str(&body)
                 .map_err(|e| err(format!("opencode session parse: {e}")))?;
@@ -1835,12 +1974,13 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
                 })),
             )?;
             if status >= 400 && status != 404 && status != 405 {
-                return Err(err(format!("opencode permission rules HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode permission rules HTTP {status}: {body}"
+                )));
             }
             if stored_session.is_none() {
-                let path = format!(
-                    "/api/experimental/session/{session_id}/instructions/entries/synara"
-                );
+                let path =
+                    format!("/api/experimental/session/{session_id}/instructions/entries/synara");
                 let (status, _) = http_request(
                     port,
                     "PUT",
@@ -1854,13 +1994,8 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
             }
             if let Some(agent) = selected_agent.as_deref() {
                 let path = format!("/api/session/{session_id}/agent");
-                let (status, body) = http_request(
-                    port,
-                    "POST",
-                    &path,
-                    &auth,
-                    Some(&json!({"agent": agent})),
-                )?;
+                let (status, body) =
+                    http_request(port, "POST", &path, &auth, Some(&json!({"agent": agent})))?;
                 if status >= 400 && status != 404 && status != 405 {
                     return Err(err(format!("opencode agent switch HTTP {status}: {body}")));
                 }
@@ -2015,52 +2150,60 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let launch_key = format!(
         "{}|{}",
         cwd,
-        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+        model_selection
+            .get("instanceId")
+            .and_then(Value::as_str)
+            .unwrap_or("")
     );
     let cancelled = Arc::new(AtomicBool::new(false));
-    let (child_shared, port, password, reused_session_id) = if let Some(parked) =
-        take_parked(thread_id, &launch_key)
-    {
-        (
-            parked.child,
-            parked.port,
-            parked.password,
-            Some(parked.session_id),
-        )
-    } else {
-        // Reserve a free loopback port, then spawn the server onto it.
-        let port = std::net::TcpListener::bind("127.0.0.1:0")
-            .and_then(|l| l.local_addr())
-            .map(|a| a.port())
-            .unwrap_or(4096);
-        let password = random_token();
-        let mut command = Command::new(opencode_binary());
-        crate::provider_env::sanitize_provider_child(&mut command);
-        crate::provider_instances::apply_instance_environment_for(
-            &mut command,
-            "opencode",
-            model_selection.get("instanceId").and_then(Value::as_str),
-        );
-        command
-            .args(["serve", "--hostname", "127.0.0.1", "--port", &port.to_string()])
-            .current_dir(&cwd)
-            .env("OPENCODE_SERVER_USERNAME", "opencode")
-            .env("OPENCODE_SERVER_PASSWORD", &password)
-            .env("OPENCODE_PASSWORD", &password)
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null());
-        let child: Child = match command.spawn() {
-            Ok(c) => c,
-            Err(e) => {
-                let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-                let msg = format!("could not launch `opencode serve`: {e}");
-                let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
-                return Err(err(msg));
-            }
+    let (child_shared, port, password, reused_session_id) =
+        if let Some(parked) = take_parked(thread_id, &launch_key) {
+            (
+                parked.child,
+                parked.port,
+                parked.password,
+                Some(parked.session_id),
+            )
+        } else {
+            // Reserve a free loopback port, then spawn the server onto it.
+            let port = std::net::TcpListener::bind("127.0.0.1:0")
+                .and_then(|l| l.local_addr())
+                .map(|a| a.port())
+                .unwrap_or(4096);
+            let password = random_token();
+            let mut command = Command::new(opencode_binary());
+            crate::provider_env::sanitize_provider_child(&mut command);
+            crate::provider_instances::apply_instance_environment_for(
+                &mut command,
+                "opencode",
+                model_selection.get("instanceId").and_then(Value::as_str),
+            );
+            command
+                .args([
+                    "serve",
+                    "--hostname",
+                    "127.0.0.1",
+                    "--port",
+                    &port.to_string(),
+                ])
+                .current_dir(&cwd)
+                .env("OPENCODE_SERVER_USERNAME", "opencode")
+                .env("OPENCODE_SERVER_PASSWORD", &password)
+                .env("OPENCODE_PASSWORD", &password)
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null());
+            let child: Child = match command.spawn() {
+                Ok(c) => c,
+                Err(e) => {
+                    let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                    let msg = format!("could not launch `opencode serve`: {e}");
+                    let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
+                    return Err(err(msg));
+                }
+            };
+            (Arc::new(Mutex::new(child)), port, password, None)
         };
-        (Arc::new(Mutex::new(child)), port, password, None)
-    };
     let auth = basic_auth_header(&password);
     let running_provider_session_id = Arc::new(Mutex::new(reused_session_id.clone()));
     {
@@ -2125,7 +2268,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 })),
             )?;
             if status >= 400 {
-                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode session create HTTP {status}: {body}"
+                )));
             }
             let parsed: Value = serde_json::from_str(&body)
                 .map_err(|e| err(format!("opencode session parse: {e}")))?;
@@ -2144,7 +2289,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 Some(&json!({"title": format!("synara-{thread_id}")})),
             )?;
             if status >= 400 {
-                return Err(err(format!("opencode session create HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode session create HTTP {status}: {body}"
+                )));
             }
             let parsed: Value = serde_json::from_str(&body)
                 .map_err(|e| err(format!("opencode session parse: {e}")))?;
@@ -2170,13 +2317,26 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 })),
             )?;
             if status >= 400 && status != 404 && status != 405 {
-                return Err(err(format!("opencode permission rules HTTP {status}: {body}")));
+                return Err(err(format!(
+                    "opencode permission rules HTTP {status}: {body}"
+                )));
             }
         }
-        set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(&session_id))?;
+        set_session(
+            &conn,
+            thread_id,
+            "running",
+            Some(&turn_id),
+            None,
+            Some(&session_id),
+        )?;
 
         // Subscribe to events before prompting so no delta is missed.
-        let event_path = if protocol == OpenCodeProtocol::V2 { "/api/event" } else { "/event" };
+        let event_path = if protocol == OpenCodeProtocol::V2 {
+            "/api/event"
+        } else {
+            "/event"
+        };
         let sse = open_sse_stream(port, &auth, event_path)?;
 
         // V2 keeps durable system instructions out of the user message and
@@ -2186,9 +2346,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         let mut use_instruction_fallback = false;
         if protocol == OpenCodeProtocol::V2 {
             if stored_session.is_none() {
-                let path = format!(
-                    "/api/experimental/session/{session_id}/instructions/entries/synara"
-                );
+                let path =
+                    format!("/api/experimental/session/{session_id}/instructions/entries/synara");
                 let (status, _) = http_request(
                     port,
                     "PUT",
@@ -2203,13 +2362,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             }
             if let Some(agent) = selected_agent.as_deref() {
                 let path = format!("/api/session/{session_id}/agent");
-                let (status, body) = http_request(
-                    port,
-                    "POST",
-                    &path,
-                    &auth,
-                    Some(&json!({"agent": agent})),
-                )?;
+                let (status, body) =
+                    http_request(port, "POST", &path, &auth, Some(&json!({"agent": agent})))?;
                 if status >= 400 && status != 404 && status != 405 {
                     return Err(err(format!("opencode agent switch HTTP {status}: {body}")));
                 }
@@ -2265,10 +2419,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 let name = parts.next().unwrap_or("").to_string();
                 let argument = parts.next().unwrap_or("").trim().to_string();
                 if !name.is_empty() {
-                    let list_path = format!(
-                        "/api/command?location={}",
-                        urlencode_component(&cwd)
-                    );
+                    let list_path = format!("/api/command?location={}", urlencode_component(&cwd));
                     if let Ok((status, body)) = http_request(port, "GET", &list_path, &auth, None) {
                         if status < 400 {
                             let commands = serde_json::from_str::<Value>(&body)
@@ -2464,9 +2615,7 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         && !cancelled_flag
         && server_alive;
     if parkable {
-        if let (Some(session_id), Ok(mut parked_map)) =
-            (active_session_id.clone(), PARKED.lock())
-        {
+        if let (Some(session_id), Ok(mut parked_map)) = (active_session_id.clone(), PARKED.lock()) {
             parked_map.insert(
                 thread_id.to_string(),
                 ParkedOpenCode {
@@ -2489,9 +2638,15 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     match result {
         Ok(reason) => {
             let interrupted = cancelled_flag || reason == "cancelled";
-            let state = if interrupted { "interrupted" } else { "completed" };
+            let state = if interrupted {
+                "interrupted"
+            } else {
+                "completed"
+            };
             let status = if interrupted { "interrupted" } else { "ready" };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "opencode", None, None);
+            crate::claude_runner::write_turn_completed_activity(
+                &conn, thread_id, &turn_id, state, "opencode", None, None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
@@ -2516,7 +2671,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             } else {
                 ("error", "error")
             };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "opencode", None, None);
+            crate::claude_runner::write_turn_completed_activity(
+                &conn, thread_id, &turn_id, state, "opencode", None, None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;
             session_set_event(
@@ -2551,7 +2708,6 @@ mod tests {
         assert_eq!(super::base64_encode(b"opencode:abc"), "b3BlbmNvZGU6YWJj");
     }
 
-
     #[test]
     fn import_message_parser_accepts_v1_arrays_and_v2_data_wrappers() {
         let v1 = serde_json::json!([
@@ -2564,9 +2720,13 @@ mod tests {
         assert_eq!(parsed[0].id, "u1");
         assert_eq!(parsed[1].role, "assistant");
         let v2 = serde_json::json!({"data": v1, "cursor": {}});
-        assert_eq!(super::opencode_messages_from_body(&v2.to_string()).unwrap().len(), 2);
+        assert_eq!(
+            super::opencode_messages_from_body(&v2.to_string())
+                .unwrap()
+                .len(),
+            2
+        );
     }
-
 
     #[test]
     fn import_message_parser_accepts_native_v2_message_infos() {
@@ -2585,7 +2745,6 @@ mod tests {
         assert_eq!(parsed[0].text, "hello");
         assert_eq!(parsed[1].text, "answer");
     }
-
 
     #[test]
     fn external_server_import_reads_v1_history_without_launching_managed_server() {
@@ -2608,7 +2767,11 @@ mod tests {
                         {"info":{"id":"a","role":"assistant"},"parts":[{"type":"text","text":"answer"}]}
                     ]).to_string()
                 };
-                let status = if request.starts_with("GET /api/info") { "404 Not Found" } else { "200 OK" };
+                let status = if request.starts_with("GET /api/info") {
+                    "404 Not Found"
+                } else {
+                    "200 OK"
+                };
                 write!(
                     stream,
                     "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
@@ -2616,10 +2779,9 @@ mod tests {
                 ).unwrap();
             }
         });
-        let history = super::read_external_history_from_server(
-            &format!("http://127.0.0.1:{port}"),
-            "ext-1",
-        ).unwrap();
+        let history =
+            super::read_external_history_from_server(&format!("http://127.0.0.1:{port}"), "ext-1")
+                .unwrap();
         server.join().unwrap();
         assert_eq!(history.cwd.as_deref(), Some("/work/repo"));
         assert_eq!(history.messages.len(), 2);

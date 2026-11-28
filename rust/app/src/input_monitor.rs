@@ -303,7 +303,6 @@ impl Drop for EscapeKillSwitchMonitor {
     }
 }
 
-
 fn pause_uncertain_input_after_listener_loss() {
     if !crate::computer_manager::any_input_in_flight() {
         return;
@@ -650,20 +649,24 @@ mod tests {
     }
 }
 
-    #[test]
-    fn release_acknowledgement_requires_released_true() {
-        let dir = std::env::temp_dir().join(format!("release-held-test-{}", std::process::id()));
-        std::fs::create_dir_all(&dir).unwrap();
-        let helper = dir.join("helper.sh");
-        std::fs::write(&helper, "#!/bin/sh\nprintf '%s\n' '{\"type\":\"release-held-input\",\"released\":true}'\n").unwrap();
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt as _;
-            std::fs::set_permissions(&helper, std::fs::Permissions::from_mode(0o755)).unwrap();
-        }
-        assert!(release_held_input_from_helper(&helper));
-        let _ = std::fs::remove_dir_all(dir);
+#[test]
+fn release_acknowledgement_requires_released_true() {
+    let dir = std::env::temp_dir().join(format!("release-held-test-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let helper = dir.join("helper.sh");
+    std::fs::write(
+        &helper,
+        "#!/bin/sh\nprintf '%s\n' '{\"type\":\"release-held-input\",\"released\":true}'\n",
+    )
+    .unwrap();
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        std::fs::set_permissions(&helper, std::fs::Permissions::from_mode(0o755)).unwrap();
     }
+    assert!(release_held_input_from_helper(&helper));
+    let _ = std::fs::remove_dir_all(dir);
+}
 
 fn resolve_helper() -> Option<PathBuf> {
     if let Some(path) = std::env::var_os("SYNARA_APPSNAP_HELPER") {
@@ -692,7 +695,6 @@ fn resolve_helper() -> Option<PathBuf> {
     None
 }
 
-
 /// Ask the AppSnap helper to synthesize releases for any modifier/button the
 /// helper still believes is held. Only the explicit `released: true` protocol
 /// acknowledgement counts; a silent helper exit leaves the leak unproven.
@@ -711,7 +713,9 @@ fn release_held_input_from_helper(helper: &std::path::Path) -> bool {
     loop {
         match child.try_wait() {
             Ok(Some(_)) => break,
-            Ok(None) if std::time::Instant::now() < deadline => std::thread::sleep(std::time::Duration::from_millis(10)),
+            Ok(None) if std::time::Instant::now() < deadline => {
+                std::thread::sleep(std::time::Duration::from_millis(10))
+            }
             _ => {
                 let _ = child.kill();
                 let _ = child.wait();
@@ -725,10 +729,12 @@ fn release_held_input_from_helper(helper: &std::path::Path) -> bool {
         let _ = stdout.read_to_string(&mut output);
     }
     output.lines().any(|line| {
-        serde_json::from_str::<serde_json::Value>(line).ok().is_some_and(|value| {
-            value.get("type").and_then(serde_json::Value::as_str) == Some("release-held-input")
-                && value.get("released").and_then(serde_json::Value::as_bool) == Some(true)
-        })
+        serde_json::from_str::<serde_json::Value>(line)
+            .ok()
+            .is_some_and(|value| {
+                value.get("type").and_then(serde_json::Value::as_str) == Some("release-held-input")
+                    && value.get("released").and_then(serde_json::Value::as_bool) == Some(true)
+            })
     })
 }
 
@@ -842,5 +848,4 @@ pub fn control_disarmed(thread_id: &str) {
             monitor.set_armed(false);
         }
     }
-
 }

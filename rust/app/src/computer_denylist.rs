@@ -83,7 +83,10 @@ fn matches_denylist_string(raw: &str) -> Option<String> {
 
 /// How an app identity matches the denylist, or nothing. Name wins over
 /// bundle id exactly like upstream.
-pub fn computer_denylist_match(name: Option<&str>, bundle_id: Option<&str>) -> Option<DenylistMatch> {
+pub fn computer_denylist_match(
+    name: Option<&str>,
+    bundle_id: Option<&str>,
+) -> Option<DenylistMatch> {
     if let Some(name) = name {
         if let Some(matched) = matches_denylist_string(name) {
             return Some(DenylistMatch {
@@ -95,7 +98,10 @@ pub fn computer_denylist_match(name: Option<&str>, bundle_id: Option<&str>) -> O
     if let Some(bundle_id) = bundle_id {
         if let Some(matched) = matches_denylist_string(bundle_id) {
             return Some(DenylistMatch {
-                app: name.or(Some(bundle_id)).unwrap_or("the target app").to_string(),
+                app: name
+                    .or(Some(bundle_id))
+                    .unwrap_or("the target app")
+                    .to_string(),
                 matched,
             });
         }

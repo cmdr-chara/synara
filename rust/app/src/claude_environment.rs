@@ -6,8 +6,14 @@
 
 /// Hex-encoded instance scope, upstream `claudeInstanceHomeScope`.
 fn instance_scope(provider_instance_id: Option<&str>) -> String {
-    match provider_instance_id.map(str::trim).filter(|s| !s.is_empty()) {
-        Some(id) => format!("instance-{}", id.bytes().map(|b| format!("{b:02x}")).collect::<String>()),
+    match provider_instance_id
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+    {
+        Some(id) => format!(
+            "instance-{}",
+            id.bytes().map(|b| format!("{b:02x}")).collect::<String>()
+        ),
         None => "environment-only".to_string(),
     }
 }
@@ -43,7 +49,11 @@ pub(crate) fn needs_isolated_home(
     provider_instance_id: Option<&str>,
     default_instance_id: &str,
 ) -> bool {
-    if explicit_home.map(str::trim).filter(|s| !s.is_empty()).is_some() {
+    if explicit_home
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .is_some()
+    {
         return false;
     }
     has_instance_environment
@@ -76,9 +86,19 @@ mod tests {
 
     #[test]
     fn default_instance_needs_no_isolation() {
-        assert!(!needs_isolated_home(None, false, Some("default"), "default"));
+        assert!(!needs_isolated_home(
+            None,
+            false,
+            Some("default"),
+            "default"
+        ));
         assert!(needs_isolated_home(None, false, Some("work"), "default"));
         assert!(needs_isolated_home(None, true, Some("default"), "default"));
-        assert!(!needs_isolated_home(Some("/tmp/x"), true, Some("work"), "default"));
+        assert!(!needs_isolated_home(
+            Some("/tmp/x"),
+            true,
+            Some("work"),
+            "default"
+        ));
     }
 }

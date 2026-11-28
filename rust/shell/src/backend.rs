@@ -15,12 +15,10 @@ use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 
-
 const LOG_FILE_MAX_BYTES: u64 = 10 * 1024 * 1024;
 const LOG_FILE_MAX_FILES: usize = 10;
 const BACKEND_FAILURE_OUTPUT_TAIL_BYTES: usize = 8 * 1024;
 const BACKEND_RESTART_MAX_DELAY: Duration = Duration::from_secs(10);
-
 
 /// Rolling byte tail of one backend session's output. Chunks are appended as
 /// they are forwarded to the durable log; only the bounded tail is kept in memory.
@@ -31,15 +29,25 @@ struct OutputTail {
 
 impl OutputTail {
     fn new() -> Self {
-        Self { bytes: Arc::new(Mutex::new(std::collections::VecDeque::new())) }
+        Self {
+            bytes: Arc::new(Mutex::new(std::collections::VecDeque::new())),
+        }
     }
 
     fn push(&self, chunk: &[u8]) {
-        if chunk.is_empty() { return; }
-        let Ok(mut bytes) = self.bytes.lock() else { return; };
+        if chunk.is_empty() {
+            return;
+        }
+        let Ok(mut bytes) = self.bytes.lock() else {
+            return;
+        };
         if chunk.len() >= BACKEND_FAILURE_OUTPUT_TAIL_BYTES {
             bytes.clear();
-            bytes.extend(chunk[chunk.len() - BACKEND_FAILURE_OUTPUT_TAIL_BYTES..].iter().copied());
+            bytes.extend(
+                chunk[chunk.len() - BACKEND_FAILURE_OUTPUT_TAIL_BYTES..]
+                    .iter()
+                    .copied(),
+            );
             return;
         }
         while bytes.len() + chunk.len() > BACKEND_FAILURE_OUTPUT_TAIL_BYTES {
@@ -49,7 +57,9 @@ impl OutputTail {
     }
 
     fn read(&self) -> String {
-        let Ok(bytes) = self.bytes.lock() else { return String::new() };
+        let Ok(bytes) = self.bytes.lock() else {
+            return String::new();
+        };
         String::from_utf8_lossy(&bytes.iter().copied().collect::<Vec<_>>())
             .replace('\r', "")
             .trim()
@@ -81,16 +91,29 @@ impl RotatingFile {
         prune_overflow_backups(&path, max_files);
         let file = OpenOptions::new().create(true).append(true).open(&path)?;
         let current_size = file.metadata().map(|metadata| metadata.len()).unwrap_or(0);
-        Ok(Self { path, max_bytes, max_files, current_size, file: Some(file) })
+        Ok(Self {
+            path,
+            max_bytes,
+            max_files,
+            current_size,
+            file: Some(file),
+        })
     }
 
     fn write_chunk(&mut self, chunk: &[u8]) -> io::Result<()> {
-        if chunk.is_empty() { return Ok(()); }
+        if chunk.is_empty() {
+            return Ok(());
+        }
         if self.current_size > 0 && self.current_size + chunk.len() as u64 > self.max_bytes {
             self.rotate()?;
         }
         if self.file.is_none() {
-            self.file = Some(OpenOptions::new().create(true).append(true).open(&self.path)?);
+            self.file = Some(
+                OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open(&self.path)?,
+            );
         }
         let file = self.file.as_mut().expect("rotating log file");
         file.write_all(chunk)?;
@@ -128,13 +151,21 @@ impl RotatingFile {
 
 fn prune_overflow_backups(path: &Path, max_files: usize) {
     let Some(parent) = path.parent() else { return };
-    let Some(base) = path.file_name().and_then(|name| name.to_str()) else { return };
-    let Ok(entries) = fs::read_dir(parent) else { return };
+    let Some(base) = path.file_name().and_then(|name| name.to_str()) else {
+        return;
+    };
+    let Ok(entries) = fs::read_dir(parent) else {
+        return;
+    };
     for entry in entries.flatten() {
         let name = entry.file_name();
         let Some(name) = name.to_str() else { continue };
-        let Some(suffix) = name.strip_prefix(&format!("{base}.")) else { continue };
-        let Ok(index) = suffix.parse::<usize>() else { continue };
+        let Some(suffix) = name.strip_prefix(&format!("{base}.")) else {
+            continue;
+        };
+        let Ok(index) = suffix.parse::<usize>() else {
+            continue;
+        };
         if index > max_files {
             let _ = fs::remove_file(entry.path());
         }
@@ -150,14 +181,20 @@ impl BackendIssueDetector {
     const MAX_LINE: usize = 2048;
 
     fn new() -> Self {
-        Self { line: String::new(), oversized: false }
+        Self {
+            line: String::new(),
+            oversized: false,
+        }
     }
 
     fn push(&mut self, chunk: &[u8]) {
         let text = String::from_utf8_lossy(chunk);
         let mut start = 0usize;
         while start < text.len() {
-            let end = text[start..].find('\n').map(|index| start + index).unwrap_or(text.len());
+            let end = text[start..]
+                .find('\n')
+                .map(|index| start + index)
+                .unwrap_or(text.len());
             if !self.oversized {
                 if self.line.len() + end - start > Self::MAX_LINE {
                     self.line.clear();
@@ -166,9 +203,13 @@ impl BackendIssueDetector {
                     self.line.push_str(&text[start..end]);
                 }
             }
-            if end == text.len() { return; }
+            if end == text.len() {
+                return;
+            }
             if !self.oversized && self.line.starts_with("SYNARA_DIAGNOSTIC_ISSUE ") {
-                if let Ok(issue) = serde_json::from_str::<serde_json::Value>(&self.line["SYNARA_DIAGNOSTIC_ISSUE ".len()..]) {
+                if let Ok(issue) = serde_json::from_str::<serde_json::Value>(
+                    &self.line["SYNARA_DIAGNOSTIC_ISSUE ".len()..],
+                ) {
                     let _ = crate::beta_diagnostics::track_issue("main", &issue);
                 }
             }
@@ -179,7 +220,11 @@ impl BackendIssueDetector {
     }
 }
 
-fn forward_backend_output(mut reader: impl Read + Send + 'static, sink: Arc<Mutex<RotatingFile>>, tail: OutputTail) {
+fn forward_backend_output(
+    mut reader: impl Read + Send + 'static,
+    sink: Arc<Mutex<RotatingFile>>,
+    tail: OutputTail,
+) {
     thread::spawn(move || {
         let mut issue_detector = BackendIssueDetector::new();
         let mut buffer = [0u8; 8192];
@@ -226,7 +271,8 @@ struct SupervisorInner {
     watchdog: Mutex<Option<JoinHandle<()>>>,
 }
 
-static MANAGED_SUPERVISOR: std::sync::OnceLock<Mutex<Option<BackendSupervisor>>> = std::sync::OnceLock::new();
+static MANAGED_SUPERVISOR: std::sync::OnceLock<Mutex<Option<BackendSupervisor>>> =
+    std::sync::OnceLock::new();
 
 fn managed_supervisor_slot() -> &'static Mutex<Option<BackendSupervisor>> {
     MANAGED_SUPERVISOR.get_or_init(|| Mutex::new(None))
@@ -273,11 +319,10 @@ impl BackendLaunch {
 
 impl BackendSupervisor {
     fn start(config: BackendConfig) -> Result<Self, String> {
-        let (mut child, output_tail) = spawn_backend(&config)
-            .map_err(|e| {
-                crate::reliability::track("backend.spawn_failed");
-                format!("avvio backend {} fallito: {e}", config.binary.display())
-            })?;
+        let (mut child, output_tail) = spawn_backend(&config).map_err(|e| {
+            crate::reliability::track("backend.spawn_failed");
+            format!("avvio backend {} fallito: {e}", config.binary.display())
+        })?;
         wait_until_ready(&mut child, config.port).map_err(|e| {
             crate::reliability::track("backend.exit_before_ready");
             let _ = terminate_child(&mut child);
@@ -498,7 +543,10 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<(Child, OutputTail)> {
         .env("PORT", config.port.to_string())
         .env("SYNARA_NO_UPSTREAM", "1")
         .env("SYNARA_MODE", "desktop")
-        .env("SYNARA_DESKTOP_FLAVOR", crate::desktop_identity::runtime_flavor())
+        .env(
+            "SYNARA_DESKTOP_FLAVOR",
+            crate::desktop_identity::runtime_flavor(),
+        )
         .env("SYNARA_DESKTOP_BUNDLE_ID", backend_bundle_id())
         .stdin(Stdio::null());
     match rotating_log {
@@ -531,7 +579,9 @@ fn spawn_backend(config: &BackendConfig) -> io::Result<(Child, OutputTail)> {
                 .append(true)
                 .open(&config.log_path)?;
             let stderr = stdout.try_clone()?;
-            command.stdout(Stdio::from(stdout)).stderr(Stdio::from(stderr));
+            command
+                .stdout(Stdio::from(stdout))
+                .stderr(Stdio::from(stderr));
         }
     }
 
@@ -578,8 +628,12 @@ fn backend_health_payload(port: u16) -> Option<serde_json::Value> {
 }
 
 fn backend_ready(port: u16) -> bool {
-    backend_health_payload(port)
-        .is_some_and(|payload| payload.get("startupReady").and_then(serde_json::Value::as_bool) == Some(true))
+    backend_health_payload(port).is_some_and(|payload| {
+        payload
+            .get("startupReady")
+            .and_then(serde_json::Value::as_bool)
+            == Some(true)
+    })
 }
 
 fn terminate_child(child: &mut Child) -> io::Result<()> {
@@ -756,20 +810,27 @@ pub fn launch_summary(launch: &BackendLaunch) -> serde_json::Value {
     }
 }
 
-
 fn summarize_backend_failure_output(output: &str) -> String {
     let lines: Vec<&str> = output
         .lines()
         .filter(|line| !line.trim().is_empty())
         .collect();
-    if lines.is_empty() { return String::new(); }
-    lines.iter().rev().take(8).rev().copied().collect::<Vec<_>>().join("\n")
+    if lines.is_empty() {
+        return String::new();
+    }
+    lines
+        .iter()
+        .rev()
+        .take(8)
+        .rev()
+        .copied()
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
 
     #[test]
     fn rotating_log_rotates_and_prunes_bounded_files() {
@@ -804,7 +865,6 @@ mod tests {
         assert!(!root.join("server-child.log.3").exists());
         let _ = fs::remove_dir_all(root);
     }
-
 
     #[test]
     fn restart_delay_doubles_and_caps() {

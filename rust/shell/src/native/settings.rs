@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -83,8 +81,7 @@ impl Native {
         };
         let (mut edit_id, mut kind, mut day, mut enabled, mut time_v, mut extra_v) =
             (None, 2usize, 1usize, true, String::new(), String::new());
-        let (mut name_v, mut prompt_v, mut proj_id) =
-            (String::new(), String::new(), String::new());
+        let (mut name_v, mut prompt_v, mut proj_id) = (String::new(), String::new(), String::new());
         if let Some(def) = &edit {
             edit_id = Some(str_at(def, "id").to_string());
             name_v = str_at(def, "name").to_string();
@@ -318,7 +315,8 @@ impl Native {
             / 100.;
         let mix_hex = |hex: &str, toward: u32, t: f64| -> String {
             let c = u32::from_str_radix(hex.trim_start_matches('#'), 16).unwrap_or(0);
-            let m = |a: u32, b: u32| -> u32 { (a as f64 + (b as f64 - a as f64) * t).round() as u32 };
+            let m =
+                |a: u32, b: u32| -> u32 { (a as f64 + (b as f64 - a as f64) * t).round() as u32 };
             format!(
                 "#{:02X}{:02X}{:02X}",
                 m((c >> 16) & 0xff, (toward >> 16) & 0xff),
@@ -328,8 +326,16 @@ impl Native {
         };
         let mut colors = serde_json::Map::new();
         for (k, fallback, extreme) in [
-            ("background", if dark { "#111111" } else { "#FFFFFF" }, if dark { 0x000000u32 } else { 0xffffffu32 }),
-            ("foreground", if dark { "#FCFCFC" } else { "#0D0D0D" }, if dark { 0xffffffu32 } else { 0x000000u32 }),
+            (
+                "background",
+                if dark { "#111111" } else { "#FFFFFF" },
+                if dark { 0x000000u32 } else { 0xffffffu32 },
+            ),
+            (
+                "foreground",
+                if dark { "#FCFCFC" } else { "#0D0D0D" },
+                if dark { 0xffffffu32 } else { 0x000000u32 },
+            ),
         ] {
             let v = pack
                 .get(k)
@@ -390,11 +396,31 @@ impl Native {
         // states, borders and secondary text.
         let ink_tokens: [(&str, &str, &str); 5] = [
             // token, light value, dark value
-            ("muted_foreground", "rgba(13, 13, 13, 0.598)", "rgba(252, 252, 252, 0.58)"),
-            ("muted", "rgba(13, 13, 13, 0.04)", "rgba(252, 252, 252, 0.006)"),
-            ("secondary", "rgba(13, 13, 13, 0.03)", "rgba(252, 252, 252, 0.026)"),
-            ("border", "rgba(13, 13, 13, 0.069)", "rgba(252, 252, 252, 0.072)"),
-            ("input", "rgba(13, 13, 13, 0.069)", "rgba(252, 252, 252, 0.072)"),
+            (
+                "muted_foreground",
+                "rgba(13, 13, 13, 0.598)",
+                "rgba(252, 252, 252, 0.58)",
+            ),
+            (
+                "muted",
+                "rgba(13, 13, 13, 0.04)",
+                "rgba(252, 252, 252, 0.006)",
+            ),
+            (
+                "secondary",
+                "rgba(13, 13, 13, 0.03)",
+                "rgba(252, 252, 252, 0.026)",
+            ),
+            (
+                "border",
+                "rgba(13, 13, 13, 0.069)",
+                "rgba(252, 252, 252, 0.072)",
+            ),
+            (
+                "input",
+                "rgba(13, 13, 13, 0.069)",
+                "rgba(252, 252, 252, 0.072)",
+            ),
         ];
         for (k, light_v, dark_v) in ink_tokens {
             colors.insert(k.to_string(), json!(if dark { dark_v } else { light_v }));
@@ -429,8 +455,7 @@ impl Native {
                 }
             })
             .to_string();
-            let _ = gpui_kit::component::Theme::global_mut(cx)
-                .apply_semantic_config_str(&cfg);
+            let _ = gpui_kit::component::Theme::global_mut(cx).apply_semantic_config_str(&cfg);
         }
         gpui_kit::component::Theme::sync_base(cx);
         cx.refresh_windows();
@@ -491,7 +516,13 @@ impl Native {
 
     /// Writes one theme pack field for a variant (upstream
     /// updateThemePack/setWindowTranslucency/setCodeThemeId) and persists.
-    pub(super) fn tp_set_pack(&mut self, dark: bool, key: &str, value: Value, cx: &mut Context<Self>) {
+    pub(super) fn tp_set_pack(
+        &mut self,
+        dark: bool,
+        key: &str,
+        value: Value,
+        cx: &mut Context<Self>,
+    ) {
         let variant = if dark { "dark" } else { "light" };
         if !self.theme_packs.is_object() {
             self.theme_packs = json!({});
@@ -599,10 +630,12 @@ impl Native {
                 .unwrap_or_default()
                 .trim()
                 .to_string();
-            let norm = if v.starts_with('#') { v.clone() } else { format!("#{v}") };
-            if norm.len() == 7
-                && norm[1..].chars().all(|c| c.is_ascii_hexdigit())
-            {
+            let norm = if v.starts_with('#') {
+                v.clone()
+            } else {
+                format!("#{v}")
+            };
+            if norm.len() == 7 && norm[1..].chars().all(|c| c.is_ascii_hexdigit()) {
                 if let Some(o) = pack.as_object_mut() {
                     o.insert(key.clone(), json!(norm));
                 }
@@ -716,8 +749,8 @@ impl Native {
             "atmosphereFullWindow": self.backdrop_full,
             "themePacks": self.theme_packs.clone(),
         });
-        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
-            .and_then(|s| s.as_object_mut())
+        if let Some(obj) =
+            get_mut(&mut self.settings_data, "settings").and_then(|s| s.as_object_mut())
         {
             obj.insert("appearance".to_string(), appearance.clone());
         }
@@ -727,8 +760,8 @@ impl Native {
         cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
             cx.background_executor()
                 .spawn(async move {
-                    let _ = ensure_client(&cell)
-                        .and_then(|c| c.call("server.updateSettings", payload));
+                    let _ =
+                        ensure_client(&cell).and_then(|c| c.call("server.updateSettings", payload));
                 })
                 .await;
         })
@@ -751,9 +784,14 @@ impl Native {
 
     /// One-key appSettings write-through (same path as set_keep_awake):
     /// mirror locally, then server.updateSettings {key: value}.
-    pub(super) fn set_setting_key(&mut self, key: &'static str, value: Value, cx: &mut Context<Self>) {
-        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
-            .and_then(|s| s.as_object_mut())
+    pub(super) fn set_setting_key(
+        &mut self,
+        key: &'static str,
+        value: Value,
+        cx: &mut Context<Self>,
+    ) {
+        if let Some(obj) =
+            get_mut(&mut self.settings_data, "settings").and_then(|s| s.as_object_mut())
         {
             obj.insert(key.to_string(), value.clone());
         }
@@ -763,8 +801,8 @@ impl Native {
         cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
             cx.background_executor()
                 .spawn(async move {
-                    let _ = ensure_client(&cell)
-                        .and_then(|c| c.call("server.updateSettings", payload));
+                    let _ =
+                        ensure_client(&cell).and_then(|c| c.call("server.updateSettings", payload));
                 })
                 .await;
         })
@@ -783,9 +821,9 @@ impl Native {
             .id(ElementId::Name(format!("setting-switch-{key}").into()))
             .cursor_pointer()
             .on_click(cx.listener(move |this, _ev, _w, cx| {
-            this.set_setting_key(key, json!(!on), cx);
-        }))
-        .into_any_element()
+                this.set_setting_key(key, json!(!on), cx);
+            }))
+            .into_any_element()
     }
 
     /// Segmented control bound to a string key (same visual as `seg_pick`).
@@ -810,12 +848,22 @@ impl Native {
             if is_active {
                 c = c.bg(theme.secondary);
             }
-            let tc = if is_active { theme.foreground } else { theme.muted_foreground };
+            let tc = if is_active {
+                theme.foreground
+            } else {
+                theme.muted_foreground
+            };
             s = s.child(
-                c.child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(tc).child(label))
-                    .on_click(cx.listener(move |this, _ev, _w, cx| {
-                        this.set_setting_key(key, json!(value), cx);
-                    })),
+                c.child(
+                    div()
+                        .text_size(px(13.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .text_color(tc)
+                        .child(label),
+                )
+                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                    this.set_setting_key(key, json!(value), cx);
+                })),
             );
         }
         s.into_any_element()
@@ -837,8 +885,8 @@ impl Native {
     pub(super) fn set_keep_awake(&mut self, i: usize, cx: &mut Context<Self>) {
         self.keep_awake_mode = i;
         let mode = ["always", "agent", "off"][i.min(2)];
-        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
-            .and_then(|s| s.as_object_mut())
+        if let Some(obj) =
+            get_mut(&mut self.settings_data, "settings").and_then(|s| s.as_object_mut())
         {
             obj.insert("keepAwakeMode".to_string(), json!(mode));
         }
@@ -848,8 +896,8 @@ impl Native {
         cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
             cx.background_executor()
                 .spawn(async move {
-                    let _ = ensure_client(&cell)
-                        .and_then(|c| c.call("server.updateSettings", payload));
+                    let _ =
+                        ensure_client(&cell).and_then(|c| c.call("server.updateSettings", payload));
                 })
                 .await;
         })
@@ -903,8 +951,8 @@ impl Native {
             },
             "whatsNewLastSeenVersion": self.wn_seen.clone(),
         });
-        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
-            .and_then(|s| s.as_object_mut())
+        if let Some(obj) =
+            get_mut(&mut self.settings_data, "settings").and_then(|s| s.as_object_mut())
         {
             obj.insert("sidebarUi".to_string(), sidebar_ui.clone());
         }
@@ -914,8 +962,8 @@ impl Native {
         cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
             cx.background_executor()
                 .spawn(async move {
-                    let _ = ensure_client(&cell)
-                        .and_then(|c| c.call("server.updateSettings", payload));
+                    let _ =
+                        ensure_client(&cell).and_then(|c| c.call("server.updateSettings", payload));
                 })
                 .await;
         })
@@ -982,10 +1030,20 @@ impl Native {
             if is_active {
                 c = c.bg(theme.secondary);
             }
-            let tc = if is_active { theme.foreground } else { theme.muted_foreground };
+            let tc = if is_active {
+                theme.foreground
+            } else {
+                theme.muted_foreground
+            };
             s = s.child(
-                c.child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(tc).child(*o))
-                    .on_click(cx.listener(move |this, _ev, _w, cx| act(this, i, cx))),
+                c.child(
+                    div()
+                        .text_size(px(13.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .text_color(tc)
+                        .child(*o),
+                )
+                .on_click(cx.listener(move |this, _ev, _w, cx| act(this, i, cx))),
             );
         }
         s.into_any_element()

@@ -7,16 +7,13 @@
 
 use axum::{
     extract::RawQuery,
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{IntoResponse, Response},
 };
 use base64::Engine;
 use serde_json::Value;
 
-pub async fn browser_frame(
-    headers: axum::http::HeaderMap,
-    RawQuery(query): RawQuery,
-) -> Response {
+pub async fn browser_frame(headers: axum::http::HeaderMap, RawQuery(query): RawQuery) -> Response {
     // Screenshots of the embedded browser contents: the server binds beyond
     // loopback, so an unauthenticated frame endpoint would hand live screen
     // captures of possibly signed-in pages to anyone on the network.
@@ -45,7 +42,11 @@ pub async fn browser_frame(
     let result = browserhost_rs::cdp::call_cdp_tool(
         "browser_screenshot",
         &Value::Object(serde_json::Map::new()),
-        if thread.is_empty() { None } else { Some(thread.as_str()) },
+        if thread.is_empty() {
+            None
+        } else {
+            Some(thread.as_str())
+        },
     )
     .await;
     let value = match result {
@@ -65,7 +66,10 @@ pub async fn browser_frame(
         Err(_) => return StatusCode::NO_CONTENT.into_response(),
     };
     (
-        [(header::CONTENT_TYPE, "image/png"), (header::CACHE_CONTROL, "no-store")],
+        [
+            (header::CONTENT_TYPE, "image/png"),
+            (header::CACHE_CONTROL, "no-store"),
+        ],
         bytes,
     )
         .into_response()

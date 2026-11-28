@@ -57,7 +57,9 @@ impl VoiceCapture {
                 None,
             )
             .map_err(|e| StartError::Stream(e.to_string()))?;
-        stream.play().map_err(|e| StartError::Stream(e.to_string()))?;
+        stream
+            .play()
+            .map_err(|e| StartError::Stream(e.to_string()))?;
         Ok(Self {
             stream,
             buf,
@@ -160,7 +162,10 @@ mod tests {
         assert_eq!(&wav[0..4], b"RIFF");
         assert_eq!(&wav[8..12], b"WAVE");
         assert_eq!(u16::from_le_bytes([wav[22], wav[23]]), 1); // mono
-        assert_eq!(u32::from_le_bytes([wav[24], wav[25], wav[26], wav[27]]), 24_000);
+        assert_eq!(
+            u32::from_le_bytes([wav[24], wav[25], wav[26], wav[27]]),
+            24_000
+        );
         assert_eq!(u16::from_le_bytes([wav[34], wav[35]]), 16); // pcm16
     }
 

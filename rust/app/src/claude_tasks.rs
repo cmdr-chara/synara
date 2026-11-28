@@ -4,7 +4,7 @@
 //! into a per-session task map and renders the shared `turn.tasks.updated`
 //! payload ({tasks:[{task,status}]}, status pending/inProgress/completed).
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::HashMap;
 
 #[derive(Clone)]
@@ -48,7 +48,12 @@ fn read_string_array(value: Option<&Value>) -> Vec<String> {
         .and_then(Value::as_array)
         .map(|a| {
             a.iter()
-                .filter_map(|e| e.as_str().map(str::trim).filter(|s| !s.is_empty()).map(str::to_string))
+                .filter_map(|e| {
+                    e.as_str()
+                        .map(str::trim)
+                        .filter(|s| !s.is_empty())
+                        .map(str::to_string)
+                })
                 .collect()
         })
         .unwrap_or_default()
@@ -72,7 +77,9 @@ pub fn parse_tool_result_value(value: &Value) -> Option<Value> {
     if value.is_object() {
         if value.get("type").and_then(Value::as_str) == Some("text") {
             if let Some(text) = value.get("text").and_then(Value::as_str) {
-                return serde_json::from_str(text).ok().or_else(|| Some(json!(text)));
+                return serde_json::from_str(text)
+                    .ok()
+                    .or_else(|| Some(json!(text)));
             }
         }
         return Some(value.clone());
@@ -80,9 +87,13 @@ pub fn parse_tool_result_value(value: &Value) -> Option<Value> {
     None
 }
 
-fn tracked_task_from_record(record: &Value, previous: Option<&TrackedTask>) -> Option<(String, TrackedTask)> {
+fn tracked_task_from_record(
+    record: &Value,
+    previous: Option<&TrackedTask>,
+) -> Option<(String, TrackedTask)> {
     let id = read_task_id(record)?;
-    let subject = read_task_string(record, &["subject"]).or_else(|| previous.map(|p| p.subject.clone()))?;
+    let subject =
+        read_task_string(record, &["subject"]).or_else(|| previous.map(|p| p.subject.clone()))?;
     let status = read_tracked_status(record.get("status"));
     if status.as_deref() == Some("deleted") {
         return None;
@@ -91,10 +102,15 @@ fn tracked_task_from_record(record: &Value, previous: Option<&TrackedTask>) -> O
         id,
         TrackedTask {
             subject,
-            description: read_task_string(record, &["description"]).or_else(|| previous.and_then(|p| p.description.clone())),
-            active_form: read_task_string(record, &["activeForm", "active_form"]).or_else(|| previous.and_then(|p| p.active_form.clone())),
-            status: status.or_else(|| previous.map(|p| p.status.clone())).unwrap_or_else(|| "pending".to_string()),
-            owner: read_task_string(record, &["owner"]).or_else(|| previous.and_then(|p| p.owner.clone())),
+            description: read_task_string(record, &["description"])
+                .or_else(|| previous.and_then(|p| p.description.clone())),
+            active_form: read_task_string(record, &["activeForm", "active_form"])
+                .or_else(|| previous.and_then(|p| p.active_form.clone())),
+            status: status
+                .or_else(|| previous.map(|p| p.status.clone()))
+                .unwrap_or_else(|| "pending".to_string()),
+            owner: read_task_string(record, &["owner"])
+                .or_else(|| previous.and_then(|p| p.owner.clone())),
             blocked_by: if record.get("blockedBy").is_some() || record.get("blocked_by").is_some() {
                 read_string_array(record.get("blockedBy").or_else(|| record.get("blocked_by")))
             } else {
@@ -106,7 +122,11 @@ fn tracked_task_from_record(record: &Value, previous: Option<&TrackedTask>) -> O
 
 fn merge_task_update(existing: &TrackedTask, input: &Value) -> TrackedTask {
     let status = read_tracked_status(input.get("status"));
-    let added = read_string_array(input.get("addBlockedBy").or_else(|| input.get("add_blocked_by")));
+    let added = read_string_array(
+        input
+            .get("addBlockedBy")
+            .or_else(|| input.get("add_blocked_by")),
+    );
     let mut blocked_by = existing.blocked_by.clone();
     for b in added {
         if !blocked_by.contains(&b) {
@@ -115,9 +135,13 @@ fn merge_task_update(existing: &TrackedTask, input: &Value) -> TrackedTask {
     }
     TrackedTask {
         subject: read_task_string(input, &["subject"]).unwrap_or_else(|| existing.subject.clone()),
-        description: read_task_string(input, &["description"]).or_else(|| existing.description.clone()),
-        active_form: read_task_string(input, &["activeForm", "active_form"]).or_else(|| existing.active_form.clone()),
-        status: status.filter(|s| s != "deleted").unwrap_or_else(|| existing.status.clone()),
+        description: read_task_string(input, &["description"])
+            .or_else(|| existing.description.clone()),
+        active_form: read_task_string(input, &["activeForm", "active_form"])
+            .or_else(|| existing.active_form.clone()),
+        status: status
+            .filter(|s| s != "deleted")
+            .unwrap_or_else(|| existing.status.clone()),
         owner: read_task_string(input, &["owner"]).or_else(|| existing.owner.clone()),
         blocked_by,
     }
@@ -143,8 +167,12 @@ pub fn apply_tool_result(
                 .as_ref()
                 .and_then(|r| r.get("task"))
                 .filter(|t| t.is_object());
-            let Some(result_task) = result_task else { return false };
-            let Some(id) = read_task_id(result_task) else { return false };
+            let Some(result_task) = result_task else {
+                return false;
+            };
+            let Some(id) = read_task_id(result_task) else {
+                return false;
+            };
             let subject = read_task_string(result_task, &["subject"])
                 .or_else(|| read_task_string(input, &["subject"]));
             let Some(subject) = subject else { return false };
@@ -162,10 +190,17 @@ pub fn apply_tool_result(
             true
         }
         "TaskUpdate" => {
-            if result.as_ref().and_then(|r| r.get("success")).and_then(Value::as_bool) == Some(false) {
+            if result
+                .as_ref()
+                .and_then(|r| r.get("success"))
+                .and_then(Value::as_bool)
+                == Some(false)
+            {
                 return false;
             }
-            let Some(task_id) = read_task_id(input) else { return false };
+            let Some(task_id) = read_task_id(input) else {
+                return false;
+            };
             let status = read_tracked_status(input.get("status"));
             if status.as_deref() == Some("deleted") {
                 return tasks.remove(&task_id).is_some();
@@ -177,7 +212,9 @@ pub fn apply_tool_result(
                     true
                 }
                 None => {
-                    let Some(subject) = read_task_string(input, &["subject"]) else { return false };
+                    let Some(subject) = read_task_string(input, &["subject"]) else {
+                        return false;
+                    };
                     tasks.insert(
                         task_id,
                         TrackedTask {
@@ -186,7 +223,11 @@ pub fn apply_tool_result(
                             active_form: read_task_string(input, &["activeForm", "active_form"]),
                             status: status.unwrap_or_else(|| "pending".to_string()),
                             owner: read_task_string(input, &["owner"]),
-                            blocked_by: read_string_array(input.get("addBlockedBy").or_else(|| input.get("add_blocked_by"))),
+                            blocked_by: read_string_array(
+                                input
+                                    .get("addBlockedBy")
+                                    .or_else(|| input.get("add_blocked_by")),
+                            ),
                         },
                     );
                     true
@@ -194,7 +235,9 @@ pub fn apply_tool_result(
             }
         }
         "TaskGet" => {
-            let Some(r) = result.as_ref() else { return false };
+            let Some(r) = result.as_ref() else {
+                return false;
+            };
             if !r.get("task").map(|t| !t.is_null()).unwrap_or(false) {
                 if r.get("task").is_some() {
                     // explicit null task: the task is gone
@@ -272,7 +315,11 @@ pub fn todo_payload(input: &Value) -> Option<Value> {
     let items: Vec<Value> = todos
         .iter()
         .filter_map(|todo| {
-            let status = normalize_status(todo.get("status").and_then(Value::as_str).unwrap_or("pending"));
+            let status = normalize_status(
+                todo.get("status")
+                    .and_then(Value::as_str)
+                    .unwrap_or("pending"),
+            );
             let content = read_task_string(todo, &["content"]);
             let active_form = read_task_string(todo, &["activeForm"]);
             let task = if status == "inProgress" {
@@ -313,32 +360,64 @@ mod tests {
         let mut tasks = HashMap::new();
         let input = json!({ "subject": "implement parser", "description": "recursive descent" });
         let result = json!(r#"{"task":{"taskId":"1","subject":"implement parser"}}"#);
-        assert!(apply_tool_result(&mut tasks, "TaskCreate", &input, &result, false));
+        assert!(apply_tool_result(
+            &mut tasks,
+            "TaskCreate",
+            &input,
+            &result,
+            false
+        ));
         assert_eq!(tasks.get("1").unwrap().status, "pending");
     }
 
     #[test]
     fn task_update_delete_removes() {
         let mut tasks = HashMap::new();
-        tasks.insert("1".to_string(), TrackedTask {
-            subject: "x".into(), description: None, active_form: None,
-            status: "pending".into(), owner: None, blocked_by: vec![],
-        });
+        tasks.insert(
+            "1".to_string(),
+            TrackedTask {
+                subject: "x".into(),
+                description: None,
+                active_form: None,
+                status: "pending".into(),
+                owner: None,
+                blocked_by: vec![],
+            },
+        );
         let input = json!({ "taskId": "1", "status": "deleted" });
         let result = json!({"success": true});
-        assert!(apply_tool_result(&mut tasks, "TaskUpdate", &input, &result, false));
+        assert!(apply_tool_result(
+            &mut tasks,
+            "TaskUpdate",
+            &input,
+            &result,
+            false
+        ));
         assert!(tasks.is_empty());
     }
 
     #[test]
     fn task_list_result_replaces_snapshot() {
         let mut tasks = HashMap::new();
-        tasks.insert("stale".to_string(), TrackedTask {
-            subject: "old".into(), description: None, active_form: None,
-            status: "pending".into(), owner: None, blocked_by: vec![],
-        });
+        tasks.insert(
+            "stale".to_string(),
+            TrackedTask {
+                subject: "old".into(),
+                description: None,
+                active_form: None,
+                status: "pending".into(),
+                owner: None,
+                blocked_by: vec![],
+            },
+        );
         let result = json!({ "tasks": [{ "taskId": "2", "subject": "fresh", "status": "in_progress", "activeForm": "working" }] });
-        assert!(apply_tool_result(&mut tasks, "TaskList", &json!({}), &result, false));
+        assert!(apply_tool_result(
+            &mut tasks,
+            "TaskList",
+            &json!({}),
+            &result,
+            false
+        ));
         assert!(!tasks.contains_key("stale"));
         assert_eq!(tasks.get("2").unwrap().status, "in_progress");
     }

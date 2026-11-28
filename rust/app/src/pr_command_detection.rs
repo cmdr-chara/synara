@@ -5,7 +5,7 @@
 //! somebody else's PR to the thread.
 
 use regex::Regex;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::sync::LazyLock;
 
 static SHELL_WRAPPER_PREFIX: LazyLock<Regex> = LazyLock::new(|| {
@@ -20,31 +20,54 @@ static LISTS_PULL_REQUESTS: LazyLock<Regex> = LazyLock::new(|| {
 static URL_LINE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"(?m)^[ \t]*(https://github\.com/[^/\s]+/[^/\s]+/pull/\d+)[ \t]*$").unwrap()
 });
-static HEREDOC_START: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r#"<<-?\s*['"]?(\w+)['"]?"#).unwrap()
-});
+static HEREDOC_START: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r#"<<-?\s*['"]?(\w+)['"]?"#).unwrap());
 static SINGLE_QUOTED: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"'[^']*'").unwrap());
-static DOUBLE_QUOTED: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#""(?:[^"\\]|\\.)*""#).unwrap());
+static DOUBLE_QUOTED: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r#""(?:[^"\\]|\\.)*""#).unwrap());
 
 const COMMAND_KEYS: &[&str] = &["command", "cmd"];
-const COMMAND_CONTAINER_KEYS: &[&str] = &["item", "input", "arguments", "args", "params", "rawInput", "call"];
+const COMMAND_CONTAINER_KEYS: &[&str] = &[
+    "item",
+    "input",
+    "arguments",
+    "args",
+    "params",
+    "rawInput",
+    "call",
+];
 const OUTPUT_KEYS: &[&str] = &[
-    "aggregatedOutput", "aggregated_output", "formattedOutput", "formatted_output",
-    "output", "rawOutput", "raw_output", "result", "stdout",
+    "aggregatedOutput",
+    "aggregated_output",
+    "formattedOutput",
+    "formatted_output",
+    "output",
+    "rawOutput",
+    "raw_output",
+    "result",
+    "stdout",
 ];
 const MAX_OUTPUT_CHARS: usize = 200_000;
 
 fn command_text(value: &Value) -> Option<String> {
     if let Some(s) = value.as_str() {
         let t = s.trim();
-        return if t.is_empty() { None } else { Some(t.to_string()) };
+        return if t.is_empty() {
+            None
+        } else {
+            Some(t.to_string())
+        };
     }
     if let Some(arr) = value.as_array() {
         if arr.iter().all(|e| e.is_string()) {
             let joined: Vec<&str> = arr.iter().filter_map(Value::as_str).collect();
             let t = joined.join(" ");
             let t = t.trim();
-            return if t.is_empty() { None } else { Some(t.to_string()) };
+            return if t.is_empty() {
+                None
+            } else {
+                Some(t.to_string())
+            };
         }
     }
     None
@@ -102,7 +125,9 @@ fn collect_strings(value: &Value, out: &mut String, depth: usize) {
 }
 
 fn collect_output(value: &Value, out: &mut String, depth: usize) {
-    let Some(record) = value.as_object() else { return };
+    let Some(record) = value.as_object() else {
+        return;
+    };
     if depth > 3 {
         return;
     }
@@ -234,7 +259,10 @@ mod tests {
             "command": "gh pr create --title x && gh pr list",
             "output": "https://github.com/o/r/pull/42\n"
         });
-        assert!(detect_created_pull_request_urls("command_execution", Some("completed"), &data).is_empty());
+        assert!(
+            detect_created_pull_request_urls("command_execution", Some("completed"), &data)
+                .is_empty()
+        );
     }
 
     #[test]
@@ -243,7 +271,9 @@ mod tests {
             "command": "gh pr create --title x",
             "output": "https://github.com/o/r/pull/42\n"
         });
-        assert!(detect_created_pull_request_urls("command_execution", Some("failed"), &data).is_empty());
+        assert!(
+            detect_created_pull_request_urls("command_execution", Some("failed"), &data).is_empty()
+        );
     }
 
     #[test]
@@ -252,7 +282,10 @@ mod tests {
             "command": "echo \"gh pr create\"",
             "output": "https://github.com/o/r/pull/42\n"
         });
-        assert!(detect_created_pull_request_urls("command_execution", Some("completed"), &data).is_empty());
+        assert!(
+            detect_created_pull_request_urls("command_execution", Some("completed"), &data)
+                .is_empty()
+        );
     }
 
     #[test]
@@ -261,7 +294,10 @@ mod tests {
             "command": "gh pr create --title x",
             "output": "https://github.com/o/r/pull/42\nhttps://github.com/o/r/pull/43\n"
         });
-        assert!(detect_created_pull_request_urls("command_execution", Some("completed"), &data).is_empty());
+        assert!(
+            detect_created_pull_request_urls("command_execution", Some("completed"), &data)
+                .is_empty()
+        );
     }
 
     #[test]
@@ -280,7 +316,9 @@ mod tests {
 /// `linkCommandCreatedPullRequests`. Runs off the runner hot path; failures
 /// only lose the safety-net link.
 pub(crate) fn link_command_created_pull_requests(thread_id: &str, urls: Vec<String>) {
-    let Ok(conn) = crate::orchestration_engine::open_state_rw() else { return };
+    let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+        return;
+    };
     let archived: bool = conn
         .query_row(
             "SELECT archived_at IS NOT NULL FROM projection_threads WHERE thread_id = ?1",
@@ -328,7 +366,9 @@ pub(crate) fn link_command_created_pull_requests(thread_id: &str, urls: Vec<Stri
         if !out.status.success() {
             continue;
         }
-        let Ok(info) = serde_json::from_slice::<Value>(&out.stdout) else { continue };
+        let Ok(info) = serde_json::from_slice::<Value>(&out.stdout) else {
+            continue;
+        };
         let state = match info.get("state").and_then(Value::as_str).unwrap_or("") {
             "OPEN" => "open",
             "MERGED" => "merged",
@@ -348,7 +388,10 @@ pub(crate) fn link_command_created_pull_requests(thread_id: &str, urls: Vec<Stri
         cmd.insert("type".into(), json!("thread.pull-request.link"));
         cmd.insert(
             "commandId".into(),
-            json!(format!("server:command-pr:{}", crate::orchestration_engine::uuid_v4())),
+            json!(format!(
+                "server:command-pr:{}",
+                crate::orchestration_engine::uuid_v4()
+            )),
         );
         cmd.insert("threadId".into(), json!(thread_id));
         cmd.insert("createdAt".into(), json!(crate::todo::iso_now_ms()));
@@ -360,4 +403,3 @@ pub(crate) fn link_command_created_pull_requests(thread_id: &str, urls: Vec<Stri
         );
     }
 }
-

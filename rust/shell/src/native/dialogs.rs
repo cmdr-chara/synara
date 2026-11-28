@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -100,8 +98,7 @@ impl Native {
             .unwrap_or_else(|| chrono::Local::now() + chrono::Duration::hours(1))
             .format("%Y-%m-%d %H:%M")
             .to_string();
-        let input =
-            cx.new(|cx| InputState::new(window, cx).placeholder("YYYY-MM-DD HH:MM"));
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder("YYYY-MM-DD HH:MM"));
         input.update(cx, |s, cx| s.set_value(initial, window, cx));
         cx.subscribe_in(&input, window, |_this, _s, event, _w, cx| {
             if let InputEvent::Change = event {
@@ -133,9 +130,7 @@ impl Native {
             .as_ref()
             .map(|i| i.read(cx).value().trim().replace('T', " "))
             .unwrap_or_default();
-        let Some(naive) =
-            chrono::NaiveDateTime::parse_from_str(&raw, "%Y-%m-%d %H:%M").ok()
-        else {
+        let Some(naive) = chrono::NaiveDateTime::parse_from_str(&raw, "%Y-%m-%d %H:%M").ok() else {
             return;
         };
         let Some(local) = naive.and_local_timezone(chrono::Local).earliest() else {
@@ -158,9 +153,8 @@ impl Native {
     }
 
     pub(super) fn open_feedback(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let input = cx.new(|cx| {
-            InputState::new(window, cx).placeholder("Share details (required)")
-        });
+        let input =
+            cx.new(|cx| InputState::new(window, cx).placeholder("Share details (required)"));
         self.feedback_input = Some(input.clone());
         self.feedback_category = None;
         self.feedback_open = true;
@@ -182,9 +176,7 @@ impl Native {
             return;
         }
         self.feedback_sending = true;
-        let cat = self
-            .feedback_category
-            .map(|i| Self::FEEDBACK_CATEGORIES[i]);
+        let cat = self.feedback_category.map(|i| Self::FEEDBACK_CATEGORIES[i]);
         let detail = self.detail.clone().unwrap_or(Value::Null);
         let thread_v = get(&detail, "thread");
         let provider = str_at(thread_v, "providerName").to_string();
@@ -235,12 +227,10 @@ impl Native {
                 match res {
                     Ok(_) => {
                         this.feedback_open = false;
-                        this.feedback_toast =
-                            Some(("Feedback sent".to_string(), false));
+                        this.feedback_toast = Some(("Feedback sent".to_string(), false));
                     }
                     Err(_) => {
-                        this.feedback_toast =
-                            Some(("Could not send feedback".to_string(), true));
+                        this.feedback_toast = Some(("Could not send feedback".to_string(), true));
                     }
                 }
                 cx.spawn(async move |this2: WeakEntity<Self>, cx2: &mut AsyncApp| {

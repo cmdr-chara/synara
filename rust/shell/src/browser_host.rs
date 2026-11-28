@@ -68,10 +68,9 @@ pub fn start_browser_host() {
                 pipe_path: pipe_path.to_string_lossy().to_string(),
                 capability: capability.clone(),
             };
-            if let Err(error) = browserhost_rs::discovery::publish(
-                &server.pipe_path,
-                &server.capability,
-            ) {
+            if let Err(error) =
+                browserhost_rs::discovery::publish(&server.pipe_path, &server.capability)
+            {
                 eprintln!("browser host: publish discovery: {error}");
                 return;
             }

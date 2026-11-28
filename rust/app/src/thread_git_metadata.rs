@@ -4,7 +4,7 @@
 //! metadata patch and apply it through the command path. Keeps the sidebar
 //! branch/PR labels in sync with what the agent actually did.
 
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 use std::path::Path;
 use std::process::Command;
 
@@ -127,11 +127,7 @@ fn git_stdout(cwd: &Path, args: &[&str]) -> Option<String> {
         return None;
     }
     let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
-    if s.is_empty() {
-        None
-    } else {
-        Some(s)
-    }
+    if s.is_empty() { None } else { Some(s) }
 }
 
 /// Look up the open PR for a branch, mirroring upstream
@@ -190,7 +186,8 @@ pub(crate) fn spawn_capture(thread_id: String) {
 
 fn capture_inner(thread_id: &str) -> Result<(), ()> {
     let conn = crate::orchestration_engine::open_state_rw().map_err(|_| ())?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|_| ())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|_| ())?;
 
     let row: Option<(Option<String>, Option<String>, Option<String>, Option<String>, Option<String>, Option<String>, String, String)> = conn
         .query_row(
@@ -213,7 +210,17 @@ fn capture_inner(thread_id: &str) -> Result<(), ()> {
             },
         )
         .ok();
-    let Some((branch, worktree_path, assoc_path, assoc_branch, working_dir, archived, links_json, project_root)) = row else {
+    let Some((
+        branch,
+        worktree_path,
+        assoc_path,
+        assoc_branch,
+        working_dir,
+        archived,
+        links_json,
+        project_root,
+    )) = row
+    else {
         return Err(());
     };
     if archived.is_some() {
@@ -224,7 +231,11 @@ fn capture_inner(thread_id: &str) -> Result<(), ()> {
         .filter(|s| !s.is_empty())
         .or_else(|| worktree_path.clone().filter(|s| !s.is_empty()))
         .or_else(|| assoc_path.clone().filter(|s| !s.is_empty()))
-        .or(if project_root.is_empty() { None } else { Some(project_root) });
+        .or(if project_root.is_empty() {
+            None
+        } else {
+            Some(project_root)
+        });
     let Some(cwd_s) = cwd_s else { return Ok(()) };
     let cwd = Path::new(&cwd_s);
     if git_stdout(cwd, &["rev-parse", "--is-inside-work-tree"]).as_deref() != Some("true") {
@@ -282,10 +293,13 @@ fn capture_inner(thread_id: &str) -> Result<(), ()> {
     let mut meta: Map<String, Value> = Map::new();
     let mut has_meta = false;
     if let Some(b) = &patch.branch {
-        meta.insert("branch".into(), match b {
-            Some(s) => json!(s),
-            None => Value::Null,
-        });
+        meta.insert(
+            "branch".into(),
+            match b {
+                Some(s) => json!(s),
+                None => Value::Null,
+            },
+        );
         has_meta = true;
     }
     if let Some(p) = &patch.associated_worktree_path {
@@ -302,7 +316,10 @@ fn capture_inner(thread_id: &str) -> Result<(), ()> {
         cmd.insert("type".into(), json!("thread.meta.update"));
         cmd.insert(
             "commandId".into(),
-            json!(format!("server:git-meta:{}", crate::orchestration_engine::uuid_v4())),
+            json!(format!(
+                "server:git-meta:{}",
+                crate::orchestration_engine::uuid_v4()
+            )),
         );
         cmd.insert("threadId".into(), json!(thread_id));
         cmd.insert("createdAt".into(), json!(now_iso()));
@@ -321,7 +338,10 @@ fn capture_inner(thread_id: &str) -> Result<(), ()> {
         cmd.insert("type".into(), json!("thread.pull-request.sync"));
         cmd.insert(
             "commandId".into(),
-            json!(format!("server:git-meta:{}", crate::orchestration_engine::uuid_v4())),
+            json!(format!(
+                "server:git-meta:{}",
+                crate::orchestration_engine::uuid_v4()
+            )),
         );
         cmd.insert("threadId".into(), json!(thread_id));
         cmd.insert("createdAt".into(), json!(now_iso()));
@@ -410,7 +430,10 @@ mod tests {
             &Value::Null,
             None,
         );
-        assert!(patch.is_none(), "temporary worktree branch must not regress label");
+        assert!(
+            patch.is_none(),
+            "temporary worktree branch must not regress label"
+        );
     }
 
     #[test]

@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use base64::Engine;
 use ed25519_dalek::pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey};
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::orchestration_engine::uuid_v4;
 
@@ -64,7 +64,8 @@ pub fn identity_from_keys_for_test(signing: SigningKey) -> HostIdentity {
 }
 
 fn decode_host_identity(raw: &str) -> Result<HostIdentity, String> {
-    let parsed: Value = serde_json::from_str(raw).map_err(|e| format!("document is not json: {e}"))?;
+    let parsed: Value =
+        serde_json::from_str(raw).map_err(|e| format!("document is not json: {e}"))?;
     if parsed.get("version").and_then(Value::as_u64) != Some(1) {
         return Err("document shape is invalid".to_string());
     }
@@ -111,7 +112,10 @@ pub fn generate_and_persist_host_identity(path: &Path) -> Result<HostIdentity, S
         "publicKeyPem": identity.public_key_pem,
     });
     let tmp = path.with_extension("json.tmp");
-    let body = format!("{}\n", serde_json::to_string_pretty(&persisted).map_err(|e| e.to_string())?);
+    let body = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&persisted).map_err(|e| e.to_string())?
+    );
     std::fs::write(&tmp, body).map_err(|e| format!("host identity write failed: {e}"))?;
     #[cfg(unix)]
     {
@@ -233,7 +237,9 @@ mod tests {
         assert_eq!(identity.public_key_jwk["kty"], json!("OKP"));
         assert_eq!(identity.public_key_jwk["crv"], json!("Ed25519"));
 
-        let loaded = read_host_identity(&path).unwrap().expect("identity persisted");
+        let loaded = read_host_identity(&path)
+            .unwrap()
+            .expect("identity persisted");
         assert_eq!(loaded.private_key_pem, identity.private_key_pem);
         assert_eq!(loaded.public_key_jwk, identity.public_key_jwk);
         std::fs::remove_dir_all(&dir).ok();
@@ -283,10 +289,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = host_identity_path(dir.to_str().unwrap());
         let identity = generate_and_persist_host_identity(&path).unwrap();
-        let other = identity_from_keys(SigningKey::generate(
-            &mut rand_core::OsRng,
-        ))
-        .unwrap();
+        let other = identity_from_keys(SigningKey::generate(&mut rand_core::OsRng)).unwrap();
         let tampered = json!({
             "version": 1,
             "privateKeyPem": identity.private_key_pem,

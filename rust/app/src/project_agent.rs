@@ -3,9 +3,9 @@
 //! persistence/Layers/ProjectAgentRepository.ts (Synara impl; contracts only
 //! set the wire shapes). Write/runtime methods stay relayed.
 use crate::orchestration_snapshot::open_state_copy;
-use crate::todo::{state_dir, WsErr};
-use rusqlite::{params_from_iter, Connection, OptionalExtension};
-use serde_json::{json, Value};
+use crate::todo::{WsErr, state_dir};
+use rusqlite::{Connection, OptionalExtension, params_from_iter};
+use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::io::Read;
 use std::path::PathBuf;
@@ -149,7 +149,9 @@ fn encode_cursor(created_at: &str, id: &str, sequence: Option<i64>) -> String {
 fn task_row(conn: &Connection, row: &rusqlite::Row) -> Result<Value, WsErr> {
     let id: String = row.get(0).map_err(|e| err(e.to_string()))?;
     let mut deps = conn
-        .prepare("SELECT depends_on_task_id FROM project_agent_task_dependencies WHERE task_id = ?1")
+        .prepare(
+            "SELECT depends_on_task_id FROM project_agent_task_dependencies WHERE task_id = ?1",
+        )
         .map_err(|e| err(e.to_string()))?;
     let depends: Vec<Value> = deps
         .query_map([&id], |r| r.get::<_, String>(0))
@@ -268,7 +270,10 @@ fn query_activity(
 // ---- methods ----
 
 fn list_tasks(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let goal_id = payload["goalId"].as_str().map(str::to_string);
     let include_archived = payload["includeArchived"].as_bool().unwrap_or(false);
     let limit = payload["limit"].as_i64().unwrap_or(50);
@@ -297,7 +302,10 @@ fn list_tasks(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn list_activity(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let limit = payload["limit"].as_i64().unwrap_or(50);
     let cursor = decode_cursor(payload["cursor"].as_str());
     with_state_copy("Failed to list project activity.", move |conn| {
@@ -317,7 +325,10 @@ fn list_activity(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn list_documents(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let prefix = payload["prefix"].as_str().map(str::to_string);
     with_state_copy("Failed to list project documents.", move |conn| {
         let mut stmt = conn
@@ -357,7 +368,9 @@ fn normalize_doc_path(raw: &str) -> Result<String, WsErr> {
     }
     if trimmed.starts_with('/')
         || trimmed.starts_with("//")
-        || (trimmed.len() > 1 && trimmed.as_bytes()[1] == b':' && trimmed.as_bytes()[0].is_ascii_alphabetic())
+        || (trimmed.len() > 1
+            && trimmed.as_bytes()[1] == b':'
+            && trimmed.as_bytes()[0].is_ascii_alphabetic())
     {
         return Err(err("Document path must be relative."));
     }
@@ -384,7 +397,10 @@ fn doc_context_path(project_id: &str, logical_path: &str) -> PathBuf {
 }
 
 fn read_document(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let logical_path = normalize_doc_path(payload["logicalPath"].as_str().unwrap_or(""))?;
     let revision = payload["revision"].as_i64();
     let pid = project_id.clone();
@@ -456,7 +472,9 @@ fn read_document(payload: &Value) -> Result<Value, WsErr> {
                 f.read_to_end(&mut buf).ok()?;
                 Some(format!("{:x}", Sha256::digest(&buf)))
             });
-        let synced_marker = h_disk.clone().unwrap_or_else(|| h_hash.clone().unwrap_or_default());
+        let synced_marker = h_disk
+            .clone()
+            .unwrap_or_else(|| h_hash.clone().unwrap_or_default());
         let content_hash = h_hash.clone().unwrap_or_default();
         let conflict_pending = match &disk_hash {
             Some(dh) => *dh != synced_marker && *dh != content_hash,
@@ -497,7 +515,10 @@ fn read_document(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn list_thread_index(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     with_state_copy("Failed to list project threads.", move |conn| {
         let mut stmt = conn
             .prepare(
@@ -524,7 +545,10 @@ fn list_thread_index(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn list_evidence(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let task_id = payload["taskId"].as_str().unwrap_or_default().to_string();
     with_state_copy("Failed to list task evidence.", move |conn| {
         let task_project: Option<String> = conn
@@ -731,7 +755,10 @@ fn thread_state(conn: &Connection, thread_id: &str) -> Option<ThreadState> {
     } else {
         false
     };
-    let session_starting = matches!(session_status.as_deref(), Some("connecting") | Some("starting"));
+    let session_starting = matches!(
+        session_status.as_deref(),
+        Some("connecting") | Some("starting")
+    );
     Some(ThreadState {
         archived,
         pending_ok,
@@ -764,9 +791,9 @@ fn coordinator_status(goal_status: Option<&str>, thread: Option<ThreadState>) ->
 
 fn linked_ids(conn: &Connection, project_id: &str) -> Vec<Value> {
     let mut out = Vec::new();
-    if let Ok(mut stmt) =
-        conn.prepare("SELECT linked_project_id FROM project_agent_linked_projects WHERE project_id = ?1")
-    {
+    if let Ok(mut stmt) = conn.prepare(
+        "SELECT linked_project_id FROM project_agent_linked_projects WHERE project_id = ?1",
+    ) {
         if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) {
             out = rows.filter_map(|r| r.ok().map(Value::String)).collect();
         }
@@ -821,7 +848,12 @@ fn list_summaries(payload: &Value) -> Result<Value, WsErr> {
                 .query_row(
                     "SELECT kind, workspace_root FROM projection_projects WHERE project_id = ?1",
                     [&project_id],
-                    |r| Ok((r.get::<_, Option<String>>(0)?, r.get::<_, Option<String>>(1)?)),
+                    |r| {
+                        Ok((
+                            r.get::<_, Option<String>>(0)?,
+                            r.get::<_, Option<String>>(1)?,
+                        ))
+                    },
                 )
                 .optional()
                 .map_err(|e| err(e.to_string()))?;
@@ -1000,10 +1032,16 @@ fn config_wire(conn: &Connection, project_id: &str) -> Result<Option<Value>, WsE
         o.insert("icon".into(), Value::String(v.trim().to_string()));
     }
     if let Some(v) = coord_icon.filter(|s| !s.trim().is_empty()) {
-        o.insert("coordinatorIcon".into(), Value::String(v.trim().to_string()));
+        o.insert(
+            "coordinatorIcon".into(),
+            Value::String(v.trim().to_string()),
+        );
     }
     if let Some(v) = coord_color.filter(|s| !s.trim().is_empty()) {
-        o.insert("coordinatorColor".into(), Value::String(v.trim().to_string()));
+        o.insert(
+            "coordinatorColor".into(),
+            Value::String(v.trim().to_string()),
+        );
     }
     if let Some(v) = library_path.filter(|s| !s.is_empty()) {
         o.insert("libraryPath".into(), Value::String(v));
@@ -1118,7 +1156,10 @@ fn sanitize_digest_summary(summary: Option<String>) -> Option<String> {
 }
 
 fn get_overview(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     with_state_copy("Failed to load project overview.", move |conn| {
         let cfg = config_wire(conn, &project_id)
             .map_err(|_| err("Failed to load project coordinator."))?;
@@ -1272,7 +1313,9 @@ fn get_overview(payload: &Value) -> Result<Value, WsErr> {
             }
         }
         let coord_thread = config["coordinatorThreadId"].as_str().map(str::to_string);
-        let goal_status = goal.as_ref().and_then(|g| g["status"].as_str().map(str::to_string));
+        let goal_status = goal
+            .as_ref()
+            .and_then(|g| g["status"].as_str().map(str::to_string));
         let ts = coord_thread.as_deref().and_then(|t| thread_state(conn, t));
         Ok(json!({
             "projectId": project_id,
@@ -1319,11 +1362,7 @@ fn get_active_goal(conn: &Connection, project_id: &str) -> Result<Option<Value>,
     .map_err(|e| err(e.to_string()))
 }
 
-fn save_goal(
-    conn: &Connection,
-    g: &Value,
-    expected_revision: Option<i64>,
-) -> Result<(), WsErr> {
+fn save_goal(conn: &Connection, g: &Value, expected_revision: Option<i64>) -> Result<(), WsErr> {
     let cols = "goal_id, project_id, objective, authorization_source, scope_version, \
                 acceptance_criteria, limits_json, status, continuation_count, \
                 worker_creation_count, authorized_at, revision, created_at, updated_at";
@@ -1385,12 +1424,14 @@ fn get_task(conn: &Connection, task_id: &str) -> Result<Option<Value>, WsErr> {
          status, assigned_thread_id, repair_count, archived_at, revision, created_at, updated_at \
          FROM project_agent_tasks WHERE task_id = ?1",
         [task_id],
-        |row| task_row(conn, row).map_err(|e| {
-            rusqlite::Error::ToSqlConversionFailure(Box::new(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                e.0,
-            )))
-        }),
+        |row| {
+            task_row(conn, row).map_err(|e| {
+                rusqlite::Error::ToSqlConversionFailure(Box::new(std::io::Error::new(
+                    std::io::ErrorKind::Other,
+                    e.0,
+                )))
+            })
+        },
     )
     .optional()
     .map_err(|e| err(e.to_string()))
@@ -1473,7 +1514,9 @@ fn task_edges(conn: &Connection, project_id: &str) -> Result<Vec<(String, String
         .prepare("SELECT task_id, depends_on_task_id FROM project_agent_task_dependencies WHERE project_id = ?1")
         .map_err(|e| err(e.to_string()))?;
     let rows = stmt
-        .query_map([project_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .query_map([project_id], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        })
         .map_err(|e| err(e.to_string()))?;
     Ok(rows.filter_map(|r| r.ok()).collect())
 }
@@ -1617,12 +1660,22 @@ fn require_config_exists(conn: &Connection, project_id: &str) -> Result<(), WsEr
 }
 
 fn create_task(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let goal_id = payload["goalId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let deps: Vec<String> = payload["dependsOnTaskIds"]
         .as_array()
-        .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+        .map(|a| {
+            a.iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect()
+        })
         .unwrap_or_default();
     let title = payload["title"].as_str().unwrap_or_default().to_string();
     let description = payload["description"].as_str().map(str::to_string);
@@ -1632,8 +1685,7 @@ fn create_task(payload: &Value) -> Result<Value, WsErr> {
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
         return Ok(r);
     }
-    let goal = get_goal(&conn, &goal_id)?
-        .ok_or_else(|| err("Goal was not found."))?;
+    let goal = get_goal(&conn, &goal_id)?.ok_or_else(|| err("Goal was not found."))?;
     if goal["projectId"].as_str() != Some(project_id.as_str()) {
         return Err(err("Goal does not belong to this project."));
     }
@@ -1641,8 +1693,8 @@ fn create_task(payload: &Value) -> Result<Value, WsErr> {
         return Err(err("Tasks can only be created for an active goal."));
     }
     let task_id = crate::orchestration_engine::uuid_v4();
-    let edges = task_edges(&conn, &project_id)
-        .map_err(|_| err("Failed to load task dependencies."))?;
+    let edges =
+        task_edges(&conn, &project_id).map_err(|_| err("Failed to load task dependencies."))?;
     if deps_cycle(&task_id, &deps, &edges) {
         return Err(err("Task dependencies cannot form a cycle."));
     }
@@ -1683,7 +1735,10 @@ fn create_task(payload: &Value) -> Result<Value, WsErr> {
         None,
         Some(&goal_id),
         Some(task["id"].as_str().unwrap_or_default()),
-        &format!("Created task: {}", task["title"].as_str().unwrap_or_default()),
+        &format!(
+            "Created task: {}",
+            task["title"].as_str().unwrap_or_default()
+        ),
         &now,
     )?;
     store_receipt(&conn, &request_id, &project_id, "createTask", &task);
@@ -1691,9 +1746,15 @@ fn create_task(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn update_task(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let task_id = payload["taskId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to update project task."))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
@@ -1710,7 +1771,9 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
     if wants_accept {
         let st = current["status"].as_str().unwrap_or_default();
         if st != "review" && st != "ready" && st != "running" {
-            return Err(err("Only reviewed work can be accepted against recorded evidence."));
+            return Err(err(
+                "Only reviewed work can be accepted against recorded evidence.",
+            ));
         }
         let n: i64 = conn
             .query_row(
@@ -1726,10 +1789,14 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
     let deps: Vec<String> = if payload.get("dependsOnTaskIds").is_some() {
         let d: Vec<String> = payload["dependsOnTaskIds"]
             .as_array()
-            .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|v| v.as_str().map(str::to_string))
+                    .collect()
+            })
             .unwrap_or_default();
-        let edges = task_edges(&conn, &project_id)
-            .map_err(|_| err("Failed to load task dependencies."))?;
+        let edges =
+            task_edges(&conn, &project_id).map_err(|_| err("Failed to load task dependencies."))?;
         if deps_cycle(&task_id, &d, &edges) {
             return Err(err("Task dependencies cannot form a cycle."));
         }
@@ -1743,7 +1810,11 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
     } else {
         current["dependsOnTaskIds"]
             .as_array()
-            .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|v| v.as_str().map(str::to_string))
+                    .collect()
+            })
             .unwrap_or_default()
     };
     let now = crate::todo::iso_now_ms();
@@ -1764,9 +1835,9 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
             if wants_accept {
                 "done"
             } else {
-                payload["status"].as_str().unwrap_or_else(|| {
-                    current["status"].as_str().unwrap_or_default()
-                })
+                payload["status"]
+                    .as_str()
+                    .unwrap_or_else(|| current["status"].as_str().unwrap_or_default())
             }
             .to_string(),
         ),
@@ -1792,8 +1863,7 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
     );
     o.insert("updatedAt".into(), Value::String(now.clone()));
     let expected = payload["expectedRevision"].as_i64();
-    save_task(&conn, &updated, expected)
-        .map_err(|_| err("Failed to update project task."))?;
+    save_task(&conn, &updated, expected).map_err(|_| err("Failed to update project task."))?;
     if wants_accept {
         // unblockDependents: planned/blocked tasks whose deps are all done
         let tasks = query_tasks(&conn, &project_id, None, false, 100, None)
@@ -1805,7 +1875,11 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
             }
             let deps: Vec<String> = task["dependsOnTaskIds"]
                 .as_array()
-                .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|v| v.as_str().map(str::to_string))
+                        .collect()
+                })
                 .unwrap_or_default();
             if !deps.iter().any(|d| d == &task_id) {
                 continue;
@@ -1835,11 +1909,21 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
             );
         }
     }
-    let kind = if wants_accept { "task-accepted" } else { "task-updated" };
-    let summary = if wants_accept {
-        format!("Accepted task: {}", updated["title"].as_str().unwrap_or_default())
+    let kind = if wants_accept {
+        "task-accepted"
     } else {
-        format!("Updated task: {}", updated["title"].as_str().unwrap_or_default())
+        "task-updated"
+    };
+    let summary = if wants_accept {
+        format!(
+            "Accepted task: {}",
+            updated["title"].as_str().unwrap_or_default()
+        )
+    } else {
+        format!(
+            "Updated task: {}",
+            updated["title"].as_str().unwrap_or_default()
+        )
     };
     append_activity(
         &conn,
@@ -1857,9 +1941,18 @@ fn update_task(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn start_goal(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
-    let objective = payload["objective"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let objective = payload["objective"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to start project goal."))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
@@ -1926,7 +2019,10 @@ fn start_goal(payload: &Value) -> Result<Value, WsErr> {
         None,
         goal["id"].as_str(),
         None,
-        &format!("Started goal: {}", goal["objective"].as_str().unwrap_or_default()),
+        &format!(
+            "Started goal: {}",
+            goal["objective"].as_str().unwrap_or_default()
+        ),
         &now,
     )?;
     store_receipt(&conn, &request_id, &project_id, "startGoal", &goal);
@@ -1934,9 +2030,15 @@ fn start_goal(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn update_goal(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let goal_id = payload["goalId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to update project goal."))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
@@ -1967,8 +2069,7 @@ fn update_goal(payload: &Value) -> Result<Value, WsErr> {
     );
     o.insert("updatedAt".into(), Value::String(now));
     let expected = payload["expectedRevision"].as_i64();
-    save_goal(&conn, &updated, expected)
-        .map_err(|_| err("Failed to update project goal."))?;
+    save_goal(&conn, &updated, expected).map_err(|_| err("Failed to update project goal."))?;
     append_activity(
         &conn,
         &project_id,
@@ -1978,14 +2079,25 @@ fn update_goal(payload: &Value) -> Result<Value, WsErr> {
         Some(&goal_id),
         None,
         "Updated authorized goal scope.",
-        &updated["updatedAt"].as_str().unwrap_or_default().to_string(),
+        &updated["updatedAt"]
+            .as_str()
+            .unwrap_or_default()
+            .to_string(),
     )?;
     store_receipt(&conn, &request_id, &project_id, "updateGoal", &updated);
     Ok(updated)
 }
 
-fn update_goal_status(payload: &Value, status: &str, kind: &str, summary: &str) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+fn update_goal_status(
+    payload: &Value,
+    status: &str,
+    kind: &str,
+    summary: &str,
+) -> Result<Value, WsErr> {
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let goal_id = payload["goalId"].as_str().unwrap_or_default().to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to update project goal."))?;
@@ -2009,8 +2121,7 @@ fn update_goal_status(payload: &Value, status: &str, kind: &str, summary: &str) 
     );
     o.insert("updatedAt".into(), Value::String(now.clone()));
     let expected = payload["expectedRevision"].as_i64();
-    save_goal(&conn, &updated, expected)
-        .map_err(|_| err("Failed to update project goal."))?;
+    save_goal(&conn, &updated, expected).map_err(|_| err("Failed to update project goal."))?;
     if status == "stopped" && current["status"].as_str() != Some("stopped") {
         // interrupt coordinator + running worker turns (best effort)
         if let Some(ct) = conn
@@ -2028,8 +2139,8 @@ fn update_goal_status(payload: &Value, status: &str, kind: &str, summary: &str) 
                 &json!({"type":"thread.turn.interrupt","commandId":crate::orchestration_engine::uuid_v4(),"threadId":ct,"createdAt":now}),
             );
         }
-        let tasks = query_tasks(&conn, &project_id, Some(&goal_id), false, 100, None)
-            .unwrap_or_default();
+        let tasks =
+            query_tasks(&conn, &project_id, Some(&goal_id), false, 100, None).unwrap_or_default();
         for task in &tasks {
             let st = task["status"].as_str().unwrap_or_default();
             if st == "done" || st == "cancelled" {
@@ -2052,13 +2163,19 @@ fn update_goal_status(payload: &Value, status: &str, kind: &str, summary: &str) 
         Some(&goal_id),
         None,
         summary,
-        &updated["updatedAt"].as_str().unwrap_or_default().to_string(),
+        &updated["updatedAt"]
+            .as_str()
+            .unwrap_or_default()
+            .to_string(),
     )?;
     Ok(updated)
 }
 
 fn exclude_thread(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let thread_id = payload["threadId"].as_str().unwrap_or_default().to_string();
     let excluded = payload["excluded"].as_bool().unwrap_or(false);
     let conn = crate::orchestration_engine::open_state_rw()
@@ -2189,11 +2306,30 @@ fn save_config(
              WHERE project_id=?1 AND revision=?26",
             rusqlite::params![
                 project_id,
-                cfg_get(c, 0), cfg_get(c, 1), cfg_get(c, 2), cfg_get(c, 3), cfg_get(c, 4),
-                cfg_get(c, 5), cfg_get(c, 6), cfg_get(c, 7), cfg_get(c, 8), cfg_get(c, 9),
-                cfg_get(c, 10), cfg_get(c, 11), cfg_get(c, 12), cfg_get(c, 13), cfg_get(c, 14),
-                cfg_get(c, 15), cfg_get(c, 16), cfg_get(c, 17), cfg_get(c, 18), cfg_get(c, 19),
-                cfg_get(c, 20), cfg_get(c, 21), cfg_get(c, 22), cfg_get(c, 23),
+                cfg_get(c, 0),
+                cfg_get(c, 1),
+                cfg_get(c, 2),
+                cfg_get(c, 3),
+                cfg_get(c, 4),
+                cfg_get(c, 5),
+                cfg_get(c, 6),
+                cfg_get(c, 7),
+                cfg_get(c, 8),
+                cfg_get(c, 9),
+                cfg_get(c, 10),
+                cfg_get(c, 11),
+                cfg_get(c, 12),
+                cfg_get(c, 13),
+                cfg_get(c, 14),
+                cfg_get(c, 15),
+                cfg_get(c, 16),
+                cfg_get(c, 17),
+                cfg_get(c, 18),
+                cfg_get(c, 19),
+                cfg_get(c, 20),
+                cfg_get(c, 21),
+                cfg_get(c, 22),
+                cfg_get(c, 23),
                 expected_revision.unwrap_or(0),
             ],
         )
@@ -2273,8 +2409,14 @@ fn lifecycle_group(
     activity_summary: &'static str,
     fail_msg: &'static str,
 ) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err(fail_msg))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
         return Ok(r);
@@ -2301,9 +2443,21 @@ fn lifecycle_group(
                 let idx = if action == "pause" { 21 } else { 22 };
                 c[idx] = Some(now.clone());
                 c[23] = Some(Value::Array(paused).to_string());
-                c[9] = Some((cfg_get(&cfg, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) + 1).to_string());
+                c[9] = Some(
+                    (cfg_get(&cfg, 9)
+                        .and_then(|r| r.parse::<i64>().ok())
+                        .unwrap_or(0)
+                        + 1)
+                    .to_string(),
+                );
                 c[11] = Some(now.clone());
-                save_config(&conn, &project_id, &c, cfg_get(&cfg, 9).and_then(|r| r.parse().ok()), fail_msg)?;
+                save_config(
+                    &conn,
+                    &project_id,
+                    &c,
+                    cfg_get(&cfg, 9).and_then(|r| r.parse().ok()),
+                    fail_msg,
+                )?;
                 let coord = cfg_get(&cfg, 0).unwrap_or_default();
                 if action == "pause" {
                     // interrupt live turns on member threads
@@ -2332,8 +2486,17 @@ fn lifecycle_group(
                         }
                     }
                 }
-                append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
-                    activity_summary, &crate::todo::iso_now_ms())?;
+                append_activity(
+                    &conn,
+                    &project_id,
+                    "config-updated",
+                    "user",
+                    None,
+                    None,
+                    None,
+                    activity_summary,
+                    &crate::todo::iso_now_ms(),
+                )?;
             }
         }
         "resume" | "unarchive" => {
@@ -2353,9 +2516,21 @@ fn lifecycle_group(
                 if !(action == "unarchive" && paused_at_set) {
                     c[23] = Some("[]".to_string());
                 }
-                c[9] = Some((cfg_get(&cfg, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) + 1).to_string());
+                c[9] = Some(
+                    (cfg_get(&cfg, 9)
+                        .and_then(|r| r.parse::<i64>().ok())
+                        .unwrap_or(0)
+                        + 1)
+                    .to_string(),
+                );
                 c[11] = Some(now.clone());
-                save_config(&conn, &project_id, &c, cfg_get(&cfg, 9).and_then(|r| r.parse().ok()), fail_msg)?;
+                save_config(
+                    &conn,
+                    &project_id,
+                    &c,
+                    cfg_get(&cfg, 9).and_then(|r| r.parse().ok()),
+                    fail_msg,
+                )?;
                 if action == "unarchive" {
                     let coord = cfg_get(&cfg, 0).unwrap_or_default();
                     if !coord.is_empty() {
@@ -2367,8 +2542,17 @@ fn lifecycle_group(
                         }
                     }
                 }
-                append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
-                    activity_summary, &crate::todo::iso_now_ms())?;
+                append_activity(
+                    &conn,
+                    &project_id,
+                    "config-updated",
+                    "user",
+                    None,
+                    None,
+                    None,
+                    activity_summary,
+                    &crate::todo::iso_now_ms(),
+                )?;
             }
         }
         _ => {}
@@ -2379,11 +2563,25 @@ fn lifecycle_group(
 }
 
 fn link_project(payload: &Value, unlink: bool) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let linked_id = payload["linkedProjectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
-    let conn = crate::orchestration_engine::open_state_rw()
-        .map_err(|_| err(if unlink { "Failed to unlink repository." } else { "Failed to link repository." }))?;
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let linked_id = payload["linkedProjectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| {
+        err(if unlink {
+            "Failed to unlink repository."
+        } else {
+            "Failed to link repository."
+        })
+    })?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
         return Ok(r);
     }
@@ -2396,7 +2594,13 @@ fn link_project(payload: &Value, unlink: bool) -> Result<Value, WsErr> {
             .query_row(
                 "SELECT kind, title, workspace_root FROM projection_projects WHERE project_id = ?1",
                 [&linked_id],
-                |r| Ok((r.get::<_, Option<String>>(0)?, r.get::<_, String>(1)?, r.get::<_, Option<String>>(2)?)),
+                |r| {
+                    Ok((
+                        r.get::<_, Option<String>>(0)?,
+                        r.get::<_, String>(1)?,
+                        r.get::<_, Option<String>>(2)?,
+                    ))
+                },
             )
             .optional()
             .map_err(|e| err(e.to_string()))?;
@@ -2432,8 +2636,17 @@ fn link_project(payload: &Value, unlink: bool) -> Result<Value, WsErr> {
                 |r| r.get(0),
             )
             .unwrap_or_else(|_| linked_id.clone());
-        append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
-            &format!("Linked repository {title}"), &crate::todo::iso_now_ms())?;
+        append_activity(
+            &conn,
+            &project_id,
+            "config-updated",
+            "user",
+            None,
+            None,
+            None,
+            &format!("Linked repository {title}"),
+            &crate::todo::iso_now_ms(),
+        )?;
     }
     if unlink && has {
         conn.execute(
@@ -2448,21 +2661,40 @@ fn link_project(payload: &Value, unlink: bool) -> Result<Value, WsErr> {
                 |r| r.get(0),
             )
             .unwrap_or_else(|_| linked_id.clone());
-        append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
-            &format!("Unlinked repository {title}"), &crate::todo::iso_now_ms())?;
+        append_activity(
+            &conn,
+            &project_id,
+            "config-updated",
+            "user",
+            None,
+            None,
+            None,
+            &format!("Unlinked repository {title}"),
+            &crate::todo::iso_now_ms(),
+        )?;
     }
     if unlink && config_row(&conn, &project_id)?.is_none() {
         return Err(err("Project Coordinator is not configured."));
     }
     let overview = overview_for(&conn, &project_id)?;
-    let op = if unlink { "unlinkProject" } else { "linkProject" };
+    let op = if unlink {
+        "unlinkProject"
+    } else {
+        "linkProject"
+    };
     store_receipt(&conn, &request_id, &project_id, op, &overview);
     Ok(overview)
 }
 
 fn write_document(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to write project document."))?;
     require_hub_project(&conn, &project_id)?;
@@ -2480,12 +2712,12 @@ fn write_document(payload: &Value) -> Result<Value, WsErr> {
         )
         .optional()
         .map_err(|e| err(e.to_string()))?;
-    let (current_revision, head_disk) = head
-        .map(|(r, d)| (r, d))
-        .unwrap_or((0, None));
+    let (current_revision, head_disk) = head.map(|(r, d)| (r, d)).unwrap_or((0, None));
     if let Some(exp) = payload["expectedRevision"].as_i64() {
         if exp != current_revision {
-            return Err(err("Document changed. Reload and retry with the latest revision."));
+            return Err(err(
+                "Document changed. Reload and retry with the latest revision.",
+            ));
         }
     }
     let disk = std::fs::read_to_string(doc_context_path(&project_id, &logical_path)).ok();
@@ -2513,8 +2745,16 @@ fn write_document(payload: &Value) -> Result<Value, WsErr> {
           author_kind, author_thread_id, sources_json, created_at) \
          VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)",
         rusqlite::params![
-            rev["id"].as_str(), project_id, logical_path, revision_no, content, content_hash,
-            "user", Option::<String>::None, rev["sources"].to_string(), now,
+            rev["id"].as_str(),
+            project_id,
+            logical_path,
+            revision_no,
+            content,
+            content_hash,
+            "user",
+            Option::<String>::None,
+            rev["sources"].to_string(),
+            now,
         ],
     )
     .map_err(|e| err(e.to_string()))?;
@@ -2546,15 +2786,30 @@ fn write_document(payload: &Value) -> Result<Value, WsErr> {
     )
     .map_err(|e| err(e.to_string()))?;
     let _ = disk_hash;
-    append_activity(&conn, &project_id, "document-written", "user", None, None, None,
-        &format!("Wrote {logical_path}"), &now)?;
+    append_activity(
+        &conn,
+        &project_id,
+        "document-written",
+        "user",
+        None,
+        None,
+        None,
+        &format!("Wrote {logical_path}"),
+        &now,
+    )?;
     store_receipt(&conn, &request_id, &project_id, "writeDocument", &rev);
     Ok(rev)
 }
 
 fn configure(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to save coordinator configuration."))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
@@ -2568,31 +2823,38 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
             |r| r.get(0),
         )
         .unwrap_or_default();
-    let existing = config_row(&conn, &project_id)
-        .map_err(|_| err("Failed to load project coordinator."))?;
+    let existing =
+        config_row(&conn, &project_id).map_err(|_| err("Failed to load project coordinator."))?;
     // provider enabled + installed
     let provider = payload["coordinatorModelSelection"]["provider"]
         .as_str()
         .unwrap_or_default();
     let display = match provider {
-        "codex" => "Codex", "claudeAgent" => "Claude", "cursor" => "Cursor",
-        "devin" => "Devin", "antigravity" => "Antigravity", "grok" => "Grok",
-        "droid" => "Droid", "opencode" => "OpenCode", "pi" => "Pi",
-        "omp" => "Oh My Pi", other => other,
+        "codex" => "Codex",
+        "claudeAgent" => "Claude",
+        "cursor" => "Cursor",
+        "devin" => "Devin",
+        "antigravity" => "Antigravity",
+        "grok" => "Grok",
+        "droid" => "Droid",
+        "opencode" => "OpenCode",
+        "pi" => "Pi",
+        "omp" => "Oh My Pi",
+        other => other,
     };
     let settings = crate::server_settings::current();
     let pcfg = &settings["providers"][provider];
     if pcfg.is_object() && pcfg["enabled"].as_bool() == Some(false) {
-        return Err(err(format!("{display} is disabled in Settings > Providers.")));
+        return Err(err(format!(
+            "{display} is disabled in Settings > Providers."
+        )));
     }
     let binary = pcfg["binaryPath"].as_str().unwrap_or(provider).to_string();
     let on_path = if binary.contains('/') {
         std::path::Path::new(&binary).exists()
     } else {
         std::env::var_os("PATH")
-            .map(|paths| {
-                std::env::split_paths(&paths).any(|p| p.join(&binary).exists())
-            })
+            .map(|paths| std::env::split_paths(&paths).any(|p| p.join(&binary).exists()))
             .unwrap_or(false)
     };
     if !on_path {
@@ -2609,13 +2871,20 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
     let mut created_at = now.clone();
     if let Some(e) = &existing {
         if let Some(exp) = payload["expectedRevision"].as_i64() {
-            if exp != cfg_get(e, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) {
+            if exp
+                != cfg_get(e, 9)
+                    .and_then(|r| r.parse::<i64>().ok())
+                    .unwrap_or(0)
+            {
                 return Err(err("Coordinator settings changed. Reload and retry."));
             }
         }
         coord_thread = cfg_get(e, 0);
         automation_id = cfg_get(e, 8);
-        revision = cfg_get(e, 9).and_then(|r| r.parse::<i64>().ok()).unwrap_or(0) + 1;
+        revision = cfg_get(e, 9)
+            .and_then(|r| r.parse::<i64>().ok())
+            .unwrap_or(0)
+            + 1;
         created_at = cfg_get(e, 10).unwrap_or_else(|| now.clone());
     } else {
         // adopt a pre-existing coordinator thread (title match)
@@ -2665,7 +2934,9 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
             let v = lp.as_str().unwrap_or_default();
             let bad = !v.starts_with('/') && !(v.len() > 1 && v.as_bytes()[1] == b':');
             if bad || v.split(['/', '\\']).any(|s| s == "..") {
-                return Err(err("libraryPath must be an absolute path without '..' segments."));
+                return Err(err(
+                    "libraryPath must be an absolute path without '..' segments.",
+                ));
             }
         }
     }
@@ -2689,20 +2960,31 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
         Some(v) => v.to_string(),
         None => old_limits.unwrap_or_else(|| {
             json!({"maxConcurrentWorkers":3,"maxNewWorkersPerTurn":8,"maxWorkerCreationsPerGoal":40,
-                   "maxAutomaticContinuationsPerGoal":20,"maxRepairRoundsPerTask":2}).to_string()
+                   "maxAutomaticContinuationsPerGoal":20,"maxRepairRoundsPerTask":2})
+            .to_string()
         }),
     };
     let mut c: Vec<Option<String>> = vec![None; 24];
     c[0] = coord_thread.clone();
     c[1] = Some(coordinator_name.clone());
     c[2] = Some(payload["coordinatorModelSelection"].to_string());
-    c[3] = pick("coordinatorProviderOptions", existing.as_ref().and_then(|e| cfg_get(e, 3)));
-    c[4] = pick("workerRouting", existing.as_ref().and_then(|e| cfg_get(e, 4)));
+    c[3] = pick(
+        "coordinatorProviderOptions",
+        existing.as_ref().and_then(|e| cfg_get(e, 3)),
+    );
+    c[4] = pick(
+        "workerRouting",
+        existing.as_ref().and_then(|e| cfg_get(e, 4)),
+    );
     c[5] = Some(limits);
     c[6] = Some(
         payload["captureEnabled"]
             .as_bool()
-            .or_else(|| existing.as_ref().and_then(|e| cfg_get(e, 6).map(|v| v == "1")))
+            .or_else(|| {
+                existing
+                    .as_ref()
+                    .and_then(|e| cfg_get(e, 6).map(|v| v == "1"))
+            })
             .map(|b| if b { "1" } else { "0" }.to_string())
             .unwrap_or_else(|| "1".into()),
     );
@@ -2714,30 +2996,59 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
     c[12] = None;
     c[13] = pick_str("goal", existing.as_ref().and_then(|e| cfg_get(e, 13)));
     c[14] = pick_str("icon", existing.as_ref().and_then(|e| cfg_get(e, 14)));
-    c[15] = pick_str("coordinatorIcon", existing.as_ref().and_then(|e| cfg_get(e, 15)));
-    c[16] = pick_str("coordinatorColor", existing.as_ref().and_then(|e| cfg_get(e, 16)));
+    c[15] = pick_str(
+        "coordinatorIcon",
+        existing.as_ref().and_then(|e| cfg_get(e, 15)),
+    );
+    c[16] = pick_str(
+        "coordinatorColor",
+        existing.as_ref().and_then(|e| cfg_get(e, 16)),
+    );
     c[17] = Some(
         payload["autoMemoryEnabled"]
             .as_bool()
-            .or_else(|| existing.as_ref().and_then(|e| cfg_get(e, 17).map(|v| v == "1")))
+            .or_else(|| {
+                existing
+                    .as_ref()
+                    .and_then(|e| cfg_get(e, 17).map(|v| v == "1"))
+            })
             .map(|b| if b { "1" } else { "0" }.to_string())
             .unwrap_or_else(|| "0".into()),
     );
-    c[18] = pick_str("libraryPath", existing.as_ref().and_then(|e| cfg_get(e, 18)));
-    c[19] = pick_str("libraryRemoteUrl", existing.as_ref().and_then(|e| cfg_get(e, 19)));
+    c[18] = pick_str(
+        "libraryPath",
+        existing.as_ref().and_then(|e| cfg_get(e, 18)),
+    );
+    c[19] = pick_str(
+        "libraryRemoteUrl",
+        existing.as_ref().and_then(|e| cfg_get(e, 19)),
+    );
     c[20] = Some(
         payload["libraryPushOnChange"]
             .as_bool()
-            .or_else(|| existing.as_ref().and_then(|e| cfg_get(e, 20).map(|v| v == "1")))
+            .or_else(|| {
+                existing
+                    .as_ref()
+                    .and_then(|e| cfg_get(e, 20).map(|v| v == "1"))
+            })
             .map(|b| if b { "1" } else { "0" }.to_string())
             .unwrap_or_else(|| "0".into()),
     );
     c[21] = existing.as_ref().and_then(|e| cfg_get(e, 21));
     c[22] = existing.as_ref().and_then(|e| cfg_get(e, 22));
-    c[23] = existing.as_ref().and_then(|e| cfg_get(e, 23)).or(Some("[]".into()));
-    save_config(&conn, &project_id, &c,
-        existing.as_ref().and_then(|e| cfg_get(e, 9).and_then(|r| r.parse().ok())),
-        "Failed to save coordinator configuration.")?;
+    c[23] = existing
+        .as_ref()
+        .and_then(|e| cfg_get(e, 23))
+        .or(Some("[]".into()));
+    save_config(
+        &conn,
+        &project_id,
+        &c,
+        existing
+            .as_ref()
+            .and_then(|e| cfg_get(e, 9).and_then(|r| r.parse().ok())),
+        "Failed to save coordinator configuration.",
+    )?;
     // seed docs + digest when there are no document heads
     let head_count: i64 = conn
         .query_row(
@@ -2748,7 +3059,10 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
         .unwrap_or(0);
     if head_count == 0 {
         for (path, content) in [
-            ("overview.md", "# Overview\n\nCoordinator is not configured.\n"),
+            (
+                "overview.md",
+                "# Overview\n\nCoordinator is not configured.\n",
+            ),
             ("instructions.md", "# Instructions\n\n"),
             ("notes.md", "# Notes\n\n"),
             ("decisions.md", "# Decisions\n\n"),
@@ -2770,7 +3084,12 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
                   author_kind, author_thread_id, sources_json, created_at) \
                  VALUES (?1,?2,?3,1,?4,?5,'system',NULL,'[]',?6)",
                 rusqlite::params![
-                    crate::orchestration_engine::uuid_v4(), project_id, path, content, hash, now,
+                    crate::orchestration_engine::uuid_v4(),
+                    project_id,
+                    path,
+                    content,
+                    hash,
+                    now,
                 ],
             )
             .map_err(|e| err(e.to_string()))?;
@@ -2787,9 +3106,22 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
             }
             let _ = std::fs::write(&mirror, content);
         }
-        if payload["importedInstructions"].as_str().map(|s| !s.trim().is_empty()) == Some(true) {
-            append_activity(&conn, &project_id, "document-written", "user", None, None, None,
-                "Imported existing project instructions without overwriting newer server content.", &now)?;
+        if payload["importedInstructions"]
+            .as_str()
+            .map(|s| !s.trim().is_empty())
+            == Some(true)
+        {
+            append_activity(
+                &conn,
+                &project_id,
+                "document-written",
+                "user",
+                None,
+                None,
+                None,
+                "Imported existing project instructions without overwriting newer server content.",
+                &now,
+            )?;
         }
         // index project threads into thread_index
         let threads = group_thread_ids(&conn, &project_id);
@@ -2814,7 +3146,13 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
             } else if !ex {
                 pending += 1;
             }
-            let status = if ex { "skipped" } else if covered { "covered" } else { "pending" };
+            let status = if ex {
+                "skipped"
+            } else if covered {
+                "covered"
+            } else {
+                "pending"
+            };
             let _ = conn.execute(
                 "INSERT OR REPLACE INTO project_agent_thread_index \
                  (project_id, thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at) \
@@ -2907,13 +3245,20 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
             c2[8] = Some(aid.clone());
             c2[9] = Some((revision + 1).to_string());
             c2[11] = Some(crate::todo::iso_now_ms());
-            let _ = save_config(&conn, &project_id, &c2, Some(revision),
-                "Failed to link project automation.");
+            let _ = save_config(
+                &conn,
+                &project_id,
+                &c2,
+                Some(revision),
+                "Failed to link project automation.",
+            );
         }
     }
     // model changed → rebind live thread
     let old_model = existing.as_ref().and_then(|e| cfg_get(e, 2));
-    if old_model.is_some() && old_model.as_deref() != Some(payload["coordinatorModelSelection"].to_string().as_str()) {
+    if old_model.is_some()
+        && old_model.as_deref() != Some(payload["coordinatorModelSelection"].to_string().as_str())
+    {
         if let Some(ct) = &coord_thread {
             let _ = crate::orchestration_engine::handle(
                 "orchestration.dispatchCommand",
@@ -2927,23 +3272,38 @@ fn configure(payload: &Value) -> Result<Value, WsErr> {
             );
         }
     }
-    append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
+    append_activity(
+        &conn,
+        &project_id,
+        "config-updated",
+        "user",
+        None,
+        None,
+        None,
         if existing.is_some() {
             "Updated Project Coordinator settings."
         } else {
             "Configured Project Coordinator."
-        }, &now)?;
+        },
+        &now,
+    )?;
     let overview = overview_for(&conn, &project_id)?;
     store_receipt(&conn, &request_id, &project_id, "configure", &overview);
     Ok(overview)
 }
 
 fn export_documents(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let copy = open_state_copy().ok_or_else(|| err("Failed to load hub."))?;
     let conn = &copy.conn;
     require_hub_project(conn, &project_id)?;
-    let paths = payload["logicalPaths"].as_array().cloned().unwrap_or_default();
+    let paths = payload["logicalPaths"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
     if paths.len() > 50 {
         return Err(err("Export at most 50 documents at a time."));
     }
@@ -2972,16 +3332,21 @@ fn export_documents(payload: &Value) -> Result<Value, WsErr> {
         if let Some(p) = dest.parent() {
             let _ = std::fs::create_dir_all(p);
         }
-        std::fs::write(&dest, &content)
-            .map_err(|_| err("Failed to export project document."))?;
+        std::fs::write(&dest, &content).map_err(|_| err("Failed to export project document."))?;
         exported.push(Value::String(dest.to_string_lossy().to_string()));
     }
     Ok(json!({"exportedPaths": exported}))
 }
 
 fn restart_coordinator(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to restart the coordinator."))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
@@ -2991,21 +3356,44 @@ fn restart_coordinator(payload: &Value) -> Result<Value, WsErr> {
     let cfg = config_row(&conn, &project_id)?
         .ok_or_else(|| err("Project Coordinator is not configured."))?;
     if cfg_get(&cfg, 21).is_some() || cfg_get(&cfg, 22).is_some() {
-        return Err(err("Resume or unarchive the hub before restarting its coordinator."));
+        return Err(err(
+            "Resume or unarchive the hub before restarting its coordinator.",
+        ));
     }
     if let Some(ct) = cfg_get(&cfg, 0) {
         dispatch_thread("thread.session.stop", &ct);
     }
-    append_activity(&conn, &project_id, "config-updated", "user", None, None, None,
-        "Restarted coordinator.", &crate::todo::iso_now_ms())?;
+    append_activity(
+        &conn,
+        &project_id,
+        "config-updated",
+        "user",
+        None,
+        None,
+        None,
+        "Restarted coordinator.",
+        &crate::todo::iso_now_ms(),
+    )?;
     let overview = overview_for(&conn, &project_id)?;
-    store_receipt(&conn, &request_id, &project_id, "restartCoordinator", &overview);
+    store_receipt(
+        &conn,
+        &request_id,
+        &project_id,
+        "restartCoordinator",
+        &overview,
+    );
     Ok(overview)
 }
 
 fn delete_group(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
-    let request_id = payload["requestId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let request_id = payload["requestId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let conn = crate::orchestration_engine::open_state_rw()
         .map_err(|_| err("Failed to delete the hub."))?;
     if let Some(r) = replay_receipt(&conn, &request_id, &project_id) {
@@ -3039,7 +3427,9 @@ fn delete_group(payload: &Value) -> Result<Value, WsErr> {
             )
             .unwrap_or(0);
         if members > 0 || tasks > 0 {
-            return Err(err("The hub still has work in it. Delete its threads and tasks first, or confirm deletion without the empty check."));
+            return Err(err(
+                "The hub still has work in it. Delete its threads and tasks first, or confirm deletion without the empty check.",
+            ));
         }
         let non_seed: i64 = conn
             .query_row(
@@ -3050,7 +3440,9 @@ fn delete_group(payload: &Value) -> Result<Value, WsErr> {
             )
             .unwrap_or(0);
         if non_seed > 0 {
-            return Err(err("The hub still has work in it. Delete its threads and tasks first, or confirm deletion without the empty check."));
+            return Err(err(
+                "The hub still has work in it. Delete its threads and tasks first, or confirm deletion without the empty check.",
+            ));
         }
     }
     // delete group threads (members only), then wipe project-agent tables
@@ -3067,12 +3459,20 @@ fn delete_group(payload: &Value) -> Result<Value, WsErr> {
         }
     }
     for t in [
-        "project_agent_configs", "project_agent_tasks", "project_agent_task_dependencies",
-        "project_agent_goals", "project_agent_activity", "project_agent_receipts",
-        "project_agent_linked_projects", "project_agent_digests",
-        "project_agent_thread_index", "project_agent_documents",
-        "project_agent_document_heads", "project_agent_evidence",
-        "project_agent_memory_index", "managed_workers",
+        "project_agent_configs",
+        "project_agent_tasks",
+        "project_agent_task_dependencies",
+        "project_agent_goals",
+        "project_agent_activity",
+        "project_agent_receipts",
+        "project_agent_linked_projects",
+        "project_agent_digests",
+        "project_agent_thread_index",
+        "project_agent_documents",
+        "project_agent_document_heads",
+        "project_agent_evidence",
+        "project_agent_memory_index",
+        "managed_workers",
     ] {
         let _ = conn.execute(
             &format!("DELETE FROM {t} WHERE project_id = ?1"),
@@ -3084,7 +3484,9 @@ fn delete_group(payload: &Value) -> Result<Value, WsErr> {
         [&project_id],
     );
     // move the default library to trash (never a custom libraryPath)
-    let mirror_root = PathBuf::from(state_dir()).join("project-context").join(&project_id);
+    let mirror_root = PathBuf::from(state_dir())
+        .join("project-context")
+        .join(&project_id);
     let home = home_dir();
     let trash = PathBuf::from(&home).join(".Trash");
     if mirror_root.exists() && trash.exists() {
@@ -3115,7 +3517,9 @@ fn library_root(conn: &Connection, project_id: &str) -> Result<PathBuf, WsErr> {
     if let Some(lp) = cfg.as_ref().and_then(|c| cfg_get(c, 18)) {
         let bad = !lp.starts_with('/') && !(lp.len() > 1 && lp.as_bytes()[1] == b':');
         if bad || lp.split(['/', '\\']).any(|s| s == "..") {
-            return Err(err("libraryPath must be an absolute path without '..' segments."));
+            return Err(err(
+                "libraryPath must be an absolute path without '..' segments.",
+            ));
         }
         return Ok(PathBuf::from(lp));
     }
@@ -3221,8 +3625,11 @@ fn commit_library_change(root: &PathBuf, message: &str) -> Result<Value, WsErr> 
 }
 
 fn normalize_library_path(raw: &str) -> Result<String, WsErr> {
-    let normalized = normalize_doc_path(raw)
-        .map_err(|_| err(format!("Library path \"{raw}\" is not a valid relative path.")))?;
+    let normalized = normalize_doc_path(raw).map_err(|_| {
+        err(format!(
+            "Library path \"{raw}\" is not a valid relative path."
+        ))
+    })?;
     const RESERVED: [&str; 6] = [
         ".ds_store",
         "thumbs.db",
@@ -3291,7 +3698,10 @@ fn resolve_in_root(root: &PathBuf, normalized: &str, display: &str) -> Result<Pa
 }
 
 fn library_list(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let copy = open_state_copy().ok_or_else(|| err("Failed to list the hub library."))?;
     let conn = &copy.conn;
     require_hub_project(conn, &project_id)?;
@@ -3302,8 +3712,11 @@ fn library_list(payload: &Value) -> Result<Value, WsErr> {
     let normalized = if rel.is_empty() {
         String::new()
     } else {
-        normalize_doc_path(rel)
-            .map_err(|_| err(format!("Library path \"{rel}\" is not a valid relative path.")))?
+        normalize_doc_path(rel).map_err(|_| {
+            err(format!(
+                "Library path \"{rel}\" is not a valid relative path."
+            ))
+        })?
     };
     let dir = if normalized.is_empty() {
         root.clone()
@@ -3317,8 +3730,7 @@ fn library_list(payload: &Value) -> Result<Value, WsErr> {
     if let Ok(rd) = std::fs::read_dir(&dir) {
         for e in rd.flatten() {
             let name = e.file_name().to_string_lossy().to_string();
-            if name.starts_with('.')
-                || matches!(name.as_str(), ".DS_Store" | "Thumbs.db" | ".git")
+            if name.starts_with('.') || matches!(name.as_str(), ".DS_Store" | "Thumbs.db" | ".git")
             {
                 continue;
             }
@@ -3355,14 +3767,22 @@ fn library_list(payload: &Value) -> Result<Value, WsErr> {
     entries.sort_by(|a, b| {
         let ka = a["kind"].as_str().unwrap_or("");
         let kb = b["kind"].as_str().unwrap_or("");
-        ka.cmp(kb).then(a["name"].as_str().unwrap_or("").cmp(b["name"].as_str().unwrap_or("")))
+        ka.cmp(kb).then(
+            a["name"]
+                .as_str()
+                .unwrap_or("")
+                .cmp(b["name"].as_str().unwrap_or("")),
+        )
     });
     Ok(json!({"root": root.to_string_lossy(), "entries": entries}))
 }
 
 // Shared front-half for the mutating library ops: hub guard + root + ensure.
 fn library_write_root(payload: &Value) -> Result<(PathBuf, String, bool), WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let copy = open_state_copy().ok_or_else(|| err("Failed to prepare the hub library."))?;
     let conn = &copy.conn;
     require_hub_project(conn, &project_id)?;
@@ -3380,8 +3800,11 @@ fn library_mkdir(payload: &Value) -> Result<Value, WsErr> {
     let rel = payload["relativePath"].as_str().unwrap_or_default();
     let normalized = normalize_library_path(rel)?;
     let target = resolve_in_root(&root, &normalized, &normalized)?;
-    std::fs::create_dir_all(&target)
-        .map_err(|_| err(format!("Could not create library directory \"{normalized}\".")))?;
+    std::fs::create_dir_all(&target).map_err(|_| {
+        err(format!(
+            "Could not create library directory \"{normalized}\"."
+        ))
+    })?;
     if std::fs::read_dir(&target)
         .map(|mut r| r.next().is_none())
         .unwrap_or(true)
@@ -3426,7 +3849,10 @@ fn library_delete(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn library_history(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let copy = open_state_copy().ok_or_else(|| err("Failed to load library history."))?;
     let conn = &copy.conn;
     require_hub_project(conn, &project_id)?;
@@ -3452,9 +3878,7 @@ fn library_history(payload: &Value) -> Result<Value, WsErr> {
             continue;
         }
         let mut parts = line.splitn(4, '\x1f');
-        let (Some(sha), Some(author), Some(at)) =
-            (parts.next(), parts.next(), parts.next())
-        else {
+        let (Some(sha), Some(author), Some(at)) = (parts.next(), parts.next(), parts.next()) else {
             continue;
         };
         let message = parts.next().unwrap_or("(no message)");
@@ -3473,13 +3897,26 @@ fn library_restore(payload: &Value) -> Result<Value, WsErr> {
     let rel = payload["relativePath"].as_str().unwrap_or_default();
     let normalized = normalize_library_path(rel)?;
     let sha = payload["sha"].as_str().unwrap_or_default();
-    let valid = sha.len() == 40 && sha.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase());
+    let valid = sha.len() == 40
+        && sha
+            .bytes()
+            .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase());
     if !valid {
         return Err(err(format!(
             "Commit \"{sha}\" is not a valid 40-character library commit sha."
         )));
     }
-    if run_git(&root, &["rev-parse", "--verify", "--quiet", &format!("{sha}^{{commit}}")]).is_err() {
+    if run_git(
+        &root,
+        &[
+            "rev-parse",
+            "--verify",
+            "--quiet",
+            &format!("{sha}^{{commit}}"),
+        ],
+    )
+    .is_err()
+    {
         return Err(err(format!(
             "Commit \"{sha}\" does not exist in this library's history."
         )));
@@ -3497,7 +3934,14 @@ fn library_restore(payload: &Value) -> Result<Value, WsErr> {
         let log = run_git(
             &root,
             &[
-                "log", "--format=%H", "--follow", "-M", "--name-status", "-z", "--", &normalized,
+                "log",
+                "--format=%H",
+                "--follow",
+                "-M",
+                "--name-status",
+                "-z",
+                "--",
+                &normalized,
             ],
         )
         .unwrap_or_default();
@@ -3516,7 +3960,11 @@ fn library_restore(payload: &Value) -> Result<Value, WsErr> {
                 break;
             }
             let stripped = token.strip_prefix('\n').unwrap_or(token);
-            if stripped.starts_with('R') && stripped[1..].bytes().all(|b| b.is_ascii_digit() || stripped.len() == 1) {
+            if stripped.starts_with('R')
+                && stripped[1..]
+                    .bytes()
+                    .all(|b| b.is_ascii_digit() || stripped.len() == 1)
+            {
                 let (f, t) = (tokens.get(i + 1), tokens.get(i + 2));
                 if let (Some(f), Some(t)) = (f, t) {
                     if *t == current {
@@ -3542,7 +3990,10 @@ fn library_restore(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn library_status(payload: &Value) -> Result<Value, WsErr> {
-    let project_id = payload["projectId"].as_str().unwrap_or_default().to_string();
+    let project_id = payload["projectId"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
     let copy = open_state_copy().ok_or_else(|| err("Failed to load library status."))?;
     let conn = &copy.conn;
     require_hub_project(conn, &project_id)?;
@@ -3578,19 +4029,54 @@ fn welcome_message_id(thread_id: &str) -> String {
     let hex: String = bytes[..16].iter().map(|b| format!("{b:02x}")).collect();
     format!(
         "{}-{}-{}-{}-{}",
-        &hex[0..8], &hex[8..12], &hex[12..16], &hex[16..20], &hex[20..32]
+        &hex[0..8],
+        &hex[8..12],
+        &hex[12..16],
+        &hex[16..20],
+        &hex[20..32]
     )
 }
 
-
-fn load_digest_row(conn: &Connection, project_id: &str) -> Option<(String, String, i64, i64, String, i64, i64, String, Option<String>, Option<String>, Option<String>)> {
+fn load_digest_row(
+    conn: &Connection,
+    project_id: &str,
+) -> Option<(
+    String,
+    String,
+    i64,
+    i64,
+    String,
+    i64,
+    i64,
+    String,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+)> {
     conn.query_row(
         "SELECT summary, focus_items_json, coverage_from_sequence, coverage_to_sequence, \
          historical_coverage, summarized_thread_count, pending_thread_count, generation_state, \
          generated_at, last_good_at, last_error FROM project_agent_digests WHERE project_id = ?1",
         [project_id],
-        |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?, r.get(5)?, r.get(6)?, r.get(7)?, r.get(8)?, r.get(9)?, r.get(10)?)),
-    ).optional().ok().flatten()
+        |r| {
+            Ok((
+                r.get(0)?,
+                r.get(1)?,
+                r.get(2)?,
+                r.get(3)?,
+                r.get(4)?,
+                r.get(5)?,
+                r.get(6)?,
+                r.get(7)?,
+                r.get(8)?,
+                r.get(9)?,
+                r.get(10)?,
+            ))
+        },
+    )
+    .optional()
+    .ok()
+    .flatten()
 }
 
 fn save_digest_row(
@@ -3614,14 +4100,29 @@ fn save_digest_row(
           historical_coverage, summarized_thread_count, pending_thread_count, generation_state, \
           generated_at, last_good_at, last_error) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)",
         rusqlite::params![
-            project_id, summary, focus_items.to_string(), coverage_from, coverage_to,
-            historical, summarized, pending, state, generated_at, last_good_at, last_error,
+            project_id,
+            summary,
+            focus_items.to_string(),
+            coverage_from,
+            coverage_to,
+            historical,
+            summarized,
+            pending,
+            state,
+            generated_at,
+            last_good_at,
+            last_error,
         ],
-    ).map_err(|e| err(e.to_string()))?;
+    )
+    .map_err(|e| err(e.to_string()))?;
     Ok(())
 }
 
-fn refresh_project_thread_index(conn: &Connection, project_id: &str, now: &str) -> Result<(i64, i64), WsErr> {
+fn refresh_project_thread_index(
+    conn: &Connection,
+    project_id: &str,
+    now: &str,
+) -> Result<(i64, i64), WsErr> {
     #[derive(Clone)]
     struct Existing {
         excluded: bool,
@@ -3635,19 +4136,27 @@ fn refresh_project_thread_index(conn: &Connection, project_id: &str, now: &str) 
         "SELECT thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at \
          FROM project_agent_thread_index WHERE project_id = ?1",
     ) {
-        if let Ok(rows) = stmt.query_map([project_id], |r| Ok((
-            r.get::<_, String>(0)?,
-            r.get::<_, i64>(1)? != 0,
-            r.get::<_, i64>(2)? != 0,
-            r.get::<_, String>(3)?,
-            r.get::<_, Option<String>>(4)?,
-            r.get::<_, Option<String>>(5)?,
-        ))) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, i64>(1)? != 0,
+                r.get::<_, i64>(2)? != 0,
+                r.get::<_, String>(3)?,
+                r.get::<_, Option<String>>(4)?,
+                r.get::<_, Option<String>>(5)?,
+            ))
+        }) {
             for row in rows.flatten() {
-                existing.insert(row.0.clone(), Existing {
-                    excluded: row.1, archived: row.2, status: row.3,
-                    updated_at: row.4, summarized_at: row.5,
-                });
+                existing.insert(
+                    row.0.clone(),
+                    Existing {
+                        excluded: row.1,
+                        archived: row.2,
+                        status: row.3,
+                        updated_at: row.4,
+                        summarized_at: row.5,
+                    },
+                );
             }
         }
     }
@@ -3656,15 +4165,18 @@ fn refresh_project_thread_index(conn: &Connection, project_id: &str, now: &str) 
         "SELECT thread_id, archived_at, updated_at FROM projection_threads \
          WHERE project_id = ?1 AND deleted_at IS NULL ORDER BY updated_at DESC",
     ) {
-        if let Ok(rows) = stmt.query_map([project_id], |r| Ok((
-            r.get::<_, String>(0)?,
-            r.get::<_, Option<String>>(1)?.is_some(),
-            r.get::<_, String>(2)?,
-        ))) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, Option<String>>(1)?.is_some(),
+                r.get::<_, String>(2)?,
+            ))
+        }) {
             threads = rows.flatten().collect();
         }
     }
-    let mut assigned_coverage = existing.values()
+    let mut assigned_coverage = existing
+        .values()
         .filter(|entry| entry.status == "covered" && !entry.excluded)
         .count() as i64;
     for (thread_id, archived, thread_updated_at) in threads {
@@ -3674,10 +4186,20 @@ fn refresh_project_thread_index(conn: &Connection, project_id: &str, now: &str) 
             .map(|entry| entry.status == "covered" && !entry.excluded)
             .unwrap_or(false);
         let covered = already_covered || (!excluded && assigned_coverage < 20);
-        if covered && !already_covered && !excluded { assigned_coverage += 1; }
-        let status = if excluded { "skipped" } else if covered { "covered" } else { "pending" };
+        if covered && !already_covered && !excluded {
+            assigned_coverage += 1;
+        }
+        let status = if excluded {
+            "skipped"
+        } else if covered {
+            "covered"
+        } else {
+            "pending"
+        };
         let summarized_at = if covered {
-            prior.and_then(|entry| entry.summarized_at.clone()).or_else(|| Some(now.to_string()))
+            prior
+                .and_then(|entry| entry.summarized_at.clone())
+                .or_else(|| Some(now.to_string()))
         } else {
             prior.and_then(|entry| entry.summarized_at.clone())
         };
@@ -3688,7 +4210,9 @@ fn refresh_project_thread_index(conn: &Connection, project_id: &str, now: &str) 
                 && entry.updated_at.as_deref() == Some(thread_updated_at.as_str())
                 && entry.summarized_at == summarized_at
         });
-        if unchanged { continue; }
+        if unchanged {
+            continue;
+        }
         conn.execute(
             "INSERT OR REPLACE INTO project_agent_thread_index \
              (project_id, thread_id, excluded, archived, summary_status, last_updated_at, last_summarized_at) \
@@ -3723,27 +4247,64 @@ fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr>
         "SELECT activity_id, sequence, summary FROM project_agent_activity \
          WHERE project_id = ?1 AND kind != 'wake-skipped' ORDER BY sequence DESC LIMIT 40",
     ) {
-        if let Ok(rows) = stmt.query_map([project_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, String>(2)?))) {
+        if let Ok(rows) = stmt.query_map([project_id], |r| {
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, i64>(1)?,
+                r.get::<_, String>(2)?,
+            ))
+        }) {
             activity = rows.flatten().collect();
         }
     }
-    let coverage_to = activity.first().map(|(_, sequence, _)| *sequence)
-        .or(previous.as_ref().map(|row| row.3)).unwrap_or(0);
+    let coverage_to = activity
+        .first()
+        .map(|(_, sequence, _)| *sequence)
+        .or(previous.as_ref().map(|row| row.3))
+        .unwrap_or(0);
     let coverage_from = previous.as_ref().map(|row| row.2).unwrap_or(0);
-    let previous_summary = previous.as_ref().and_then(|row| sanitize_digest_summary(Some(row.0.clone())));
-    let previous_focus = previous.as_ref()
+    let previous_summary = previous
+        .as_ref()
+        .and_then(|row| sanitize_digest_summary(Some(row.0.clone())));
+    let previous_focus = previous
+        .as_ref()
         .and_then(|row| serde_json::from_str::<Value>(&row.1).ok())
         .unwrap_or_else(|| json!([]));
-    let running_summary = previous_summary.clone().unwrap_or_else(|| "Generating project summary…".into());
-    save_digest_row(conn, project_id, &running_summary, &previous_focus, coverage_from, coverage_to,
-        if pending > 0 { "partial" } else { "complete" }, summarized, pending,
-        "running", previous.as_ref().and_then(|row| row.8.as_deref()), previous.as_ref().and_then(|row| row.9.as_deref()), None)?;
+    let running_summary = previous_summary
+        .clone()
+        .unwrap_or_else(|| "Generating project summary…".into());
+    save_digest_row(
+        conn,
+        project_id,
+        &running_summary,
+        &previous_focus,
+        coverage_from,
+        coverage_to,
+        if pending > 0 { "partial" } else { "complete" },
+        summarized,
+        pending,
+        "running",
+        previous.as_ref().and_then(|row| row.8.as_deref()),
+        previous.as_ref().and_then(|row| row.9.as_deref()),
+        None,
+    )?;
 
-    let activity_text = activity.iter().map(|(id, _, summary)| format!("{id}: {summary}")).collect::<Vec<_>>().join("\n");
-    let pinned_titles = previous_focus.as_array().map(|items| {
-        items.iter().filter(|item| item.get("pinned").and_then(Value::as_bool) == Some(true))
-            .filter_map(|item| item.get("title").and_then(Value::as_str)).collect::<Vec<_>>().join("\n")
-    }).unwrap_or_default();
+    let activity_text = activity
+        .iter()
+        .map(|(id, _, summary)| format!("{id}: {summary}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let pinned_titles = previous_focus
+        .as_array()
+        .map(|items| {
+            items
+                .iter()
+                .filter(|item| item.get("pinned").and_then(Value::as_bool) == Some(true))
+                .filter_map(|item| item.get("title").and_then(Value::as_str))
+                .collect::<Vec<_>>()
+                .join("\n")
+        })
+        .unwrap_or_default();
     let prompt = [
         "You are writing a project digest for Synara's Project panel.",
         "Return a JSON object with keys: summary, focusItems.",
@@ -3764,11 +4325,20 @@ fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr>
         &format!("summarized={summarized} pending={pending}"),
         "",
         "Pinned focus:",
-        if pinned_titles.is_empty() { "(none)" } else { &pinned_titles },
+        if pinned_titles.is_empty() {
+            "(none)"
+        } else {
+            &pinned_titles
+        },
         "",
         "Activity:",
-        if activity_text.is_empty() { "(none)" } else { &activity_text },
-    ].join("\n");
+        if activity_text.is_empty() {
+            "(none)"
+        } else {
+            &activity_text
+        },
+    ]
+    .join("\n");
     let schema = json!({
         "type": "object",
         "properties": {
@@ -3787,25 +4357,52 @@ fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr>
     let now2 = crate::todo::iso_now_ms();
     match generated {
         Ok(value) => {
-            let summary = sanitize_digest_summary(value.get("summary").and_then(Value::as_str).map(str::to_string))
-                .unwrap_or_else(|| "Coordinator is ready.".into());
-            let mut allowed: std::collections::HashSet<String> = activity.iter().map(|(id, _, _)| id.clone()).collect();
-            if let Ok(mut stmt) = conn.prepare("SELECT task_id FROM project_agent_tasks WHERE project_id = ?1 LIMIT 100") {
-                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) { allowed.extend(rows.flatten()); }
+            let summary = sanitize_digest_summary(
+                value
+                    .get("summary")
+                    .and_then(Value::as_str)
+                    .map(str::to_string),
+            )
+            .unwrap_or_else(|| "Coordinator is ready.".into());
+            let mut allowed: std::collections::HashSet<String> =
+                activity.iter().map(|(id, _, _)| id.clone()).collect();
+            if let Ok(mut stmt) = conn
+                .prepare("SELECT task_id FROM project_agent_tasks WHERE project_id = ?1 LIMIT 100")
+            {
+                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) {
+                    allowed.extend(rows.flatten());
+                }
             }
-            if let Ok(mut stmt) = conn.prepare("SELECT thread_id FROM project_agent_thread_index WHERE project_id = ?1") {
-                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) { allowed.extend(rows.flatten()); }
+            if let Ok(mut stmt) = conn
+                .prepare("SELECT thread_id FROM project_agent_thread_index WHERE project_id = ?1")
+            {
+                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) {
+                    allowed.extend(rows.flatten());
+                }
             }
-            if let Ok(mut stmt) = conn.prepare("SELECT logical_path FROM project_agent_document_heads WHERE project_id = ?1") {
-                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) { allowed.extend(rows.flatten()); }
+            if let Ok(mut stmt) = conn.prepare(
+                "SELECT logical_path FROM project_agent_document_heads WHERE project_id = ?1",
+            ) {
+                if let Ok(rows) = stmt.query_map([project_id], |r| r.get::<_, String>(0)) {
+                    allowed.extend(rows.flatten());
+                }
             }
             let mut generated_focus = Vec::new();
             if let Some(items) = value.get("focusItems").and_then(Value::as_array) {
                 for (index, item) in items.iter().enumerate() {
                     let kind = item.get("kind").and_then(Value::as_str).unwrap_or("");
                     let source = item.get("source").and_then(Value::as_str).unwrap_or("");
-                    let title = item.get("title").and_then(Value::as_str).unwrap_or("").trim();
-                    if title.is_empty() || !matches!(kind, "task" | "message" | "artifact" | "blocker") || !allowed.contains(source) { continue; }
+                    let title = item
+                        .get("title")
+                        .and_then(Value::as_str)
+                        .unwrap_or("")
+                        .trim();
+                    if title.is_empty()
+                        || !matches!(kind, "task" | "message" | "artifact" | "blocker")
+                        || !allowed.contains(source)
+                    {
+                        continue;
+                    }
                     let mut focus = json!({"id": format!("focus-{index}-{source}"), "title": title, "kind": kind, "pinned": false});
                     match kind {
                         "task" => focus["taskId"] = json!(source),
@@ -3819,26 +4416,63 @@ fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr>
             let mut merged = Vec::new();
             let mut seen = std::collections::HashSet::new();
             if let Some(items) = previous_focus.as_array() {
-                for item in items.iter().filter(|item| item.get("pinned").and_then(Value::as_bool) == Some(true)) {
-                    if let Some(id) = item.get("id").and_then(Value::as_str) { seen.insert(id.to_string()); }
+                for item in items
+                    .iter()
+                    .filter(|item| item.get("pinned").and_then(Value::as_bool) == Some(true))
+                {
+                    if let Some(id) = item.get("id").and_then(Value::as_str) {
+                        seen.insert(id.to_string());
+                    }
                     let mut pinned = item.clone();
                     pinned["pinned"] = json!(true);
                     merged.push(pinned);
                 }
             }
             for item in generated_focus {
-                if seen.insert(item["id"].as_str().unwrap_or_default().to_string()) { merged.push(item); }
+                if seen.insert(item["id"].as_str().unwrap_or_default().to_string()) {
+                    merged.push(item);
+                }
             }
-            save_digest_row(conn, project_id, &summary, &json!(merged), coverage_from, coverage_to,
-                if pending > 0 { "partial" } else { "complete" }, summarized, pending,
-                "idle", Some(&now2), Some(&now2), None)?;
+            save_digest_row(
+                conn,
+                project_id,
+                &summary,
+                &json!(merged),
+                coverage_from,
+                coverage_to,
+                if pending > 0 { "partial" } else { "complete" },
+                summarized,
+                pending,
+                "idle",
+                Some(&now2),
+                Some(&now2),
+                None,
+            )?;
         }
         Err(error) => {
-            let message = strip_ansi(&error.0).trim().chars().take(2000).collect::<String>();
-            let summary = previous_summary.unwrap_or_else(|| "Project summary is unavailable until the next successful refresh.".into());
-            save_digest_row(conn, project_id, &summary, &previous_focus, coverage_from, coverage_to,
-                if pending > 0 { "partial" } else { "complete" }, summarized, pending,
-                "failed", previous.as_ref().and_then(|row| row.8.as_deref()), previous.as_ref().and_then(|row| row.9.as_deref()), Some(&message))?;
+            let message = strip_ansi(&error.0)
+                .trim()
+                .chars()
+                .take(2000)
+                .collect::<String>();
+            let summary = previous_summary.unwrap_or_else(|| {
+                "Project summary is unavailable until the next successful refresh.".into()
+            });
+            save_digest_row(
+                conn,
+                project_id,
+                &summary,
+                &previous_focus,
+                coverage_from,
+                coverage_to,
+                if pending > 0 { "partial" } else { "complete" },
+                summarized,
+                pending,
+                "failed",
+                previous.as_ref().and_then(|row| row.8.as_deref()),
+                previous.as_ref().and_then(|row| row.9.as_deref()),
+                Some(&message),
+            )?;
         }
     }
     Ok(())
@@ -3846,17 +4480,25 @@ fn generate_digest_now(conn: &Connection, project_id: &str) -> Result<(), WsErr>
 
 fn refresh_digest(payload: &Value) -> Result<Value, WsErr> {
     let project_id = payload["projectId"].as_str().unwrap_or_default();
-    if project_id.is_empty() { return Err(err("projectId is required")); }
-    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to refresh the project digest."))?;
+    if project_id.is_empty() {
+        return Err(err("projectId is required"));
+    }
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to refresh the project digest."))?;
     generate_digest_now(&conn, project_id)?;
     get_overview(&json!({"projectId": project_id}))
 }
 
 fn backfill_summaries(payload: &Value) -> Result<Value, WsErr> {
     let project_id = payload["projectId"].as_str().unwrap_or_default();
-    if project_id.is_empty() { return Err(err("projectId is required")); }
-    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to backfill thread summaries."))?;
-    if config_row(&conn, project_id)?.is_none() { return Err(err("Project coordinator not found.")); }
+    if project_id.is_empty() {
+        return Err(err("projectId is required"));
+    }
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to backfill thread summaries."))?;
+    if config_row(&conn, project_id)?.is_none() {
+        return Err(err("Project coordinator not found."));
+    }
     let now = crate::todo::iso_now_ms();
     if let Ok(mut stmt) = conn.prepare(
         "SELECT thread_id FROM project_agent_thread_index WHERE project_id = ?1 AND excluded = 0 AND summary_status = 'pending' ORDER BY last_updated_at ASC LIMIT 20"
@@ -3873,7 +4515,6 @@ fn backfill_summaries(payload: &Value) -> Result<Value, WsErr> {
     get_overview(&json!({"projectId": project_id}))
 }
 
-
 fn resolve_worker(payload: &Value) -> Result<Value, WsErr> {
     let project_id = payload["projectId"].as_str().unwrap_or_default();
     let thread_id = payload["threadId"].as_str().unwrap_or_default();
@@ -3882,8 +4523,11 @@ fn resolve_worker(payload: &Value) -> Result<Value, WsErr> {
     if project_id.is_empty() || thread_id.is_empty() || !matches!(action, "stop" | "retry") {
         return Err(err("Invalid worker resolution request."));
     }
-    let conn = crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to resolve the worker alert."))?;
-    if config_row(&conn, project_id)?.is_none() { return Err(err("Project coordinator not found.")); }
+    let conn = crate::orchestration_engine::open_state_rw()
+        .map_err(|_| err("Failed to resolve the worker alert."))?;
+    if config_row(&conn, project_id)?.is_none() {
+        return Err(err("Project coordinator not found."));
+    }
     let worker: Option<(String, Option<String>, String)> = conn.query_row(
         "SELECT project_id, task_prompt, updated_at FROM project_agent_managed_workers WHERE thread_id = ?1",
         [thread_id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
@@ -3891,16 +4535,27 @@ fn resolve_worker(payload: &Value) -> Result<Value, WsErr> {
     let Some((worker_project, task_prompt, expected_updated)) = worker else {
         return Err(err("Managed worker not found."));
     };
-    if worker_project != project_id { return Err(err("Managed worker not found.")); }
+    if worker_project != project_id {
+        return Err(err("Managed worker not found."));
+    }
     let now = crate::todo::iso_now_ms();
-    let persist = |conn: &Connection, extra_sql: &str, extra_params: Vec<String>| -> Result<(), WsErr> {
+    let persist = |conn: &Connection,
+                   extra_sql: &str,
+                   extra_params: Vec<String>|
+     -> Result<(), WsErr> {
         let sql = format!(
             "UPDATE project_agent_managed_workers SET needs_you = 0, needs_you_at = NULL, updated_at = ?2{extra_sql} \
              WHERE thread_id = ?1 AND updated_at = ?3"
         );
-        let mut params: Vec<rusqlite::types::Value> = vec![thread_id.to_string().into(), now.clone().into(), expected_updated.clone().into()];
+        let mut params: Vec<rusqlite::types::Value> = vec![
+            thread_id.to_string().into(),
+            now.clone().into(),
+            expected_updated.clone().into(),
+        ];
         params.extend(extra_params.clone().into_iter().map(Into::into));
-        let changed = conn.execute(&sql, params_from_iter(params)).map_err(|e| err(e.to_string()))?;
+        let changed = conn
+            .execute(&sql, params_from_iter(params))
+            .map_err(|e| err(e.to_string()))?;
         if changed == 0 {
             conn.execute(
                 &format!("UPDATE project_agent_managed_workers SET needs_you = 0, needs_you_at = NULL{extra_sql} WHERE thread_id = ?1"),
@@ -3919,11 +4574,15 @@ fn resolve_worker(payload: &Value) -> Result<Value, WsErr> {
             "orchestration.dispatchCommand",
             &json!({"type":"thread.turn.interrupt","commandId":command_id,"threadId":thread_id,"createdAt":now}),
         );
-        if result.is_err() { return Err(err("Failed to interrupt the worker thread.")); }
+        if result.is_err() {
+            return Err(err("Failed to interrupt the worker thread."));
+        }
         persist(&conn, "", Vec::new())?;
         return Ok(json!({"resolved": true}));
     }
-    let prompt = task_prompt.map(|p| p.trim().to_string()).filter(|p| !p.is_empty())
+    let prompt = task_prompt
+        .map(|p| p.trim().to_string())
+        .filter(|p| !p.is_empty())
         .ok_or_else(|| err("This worker has no recorded task prompt to retry."))?;
     let shell: Option<(String, String)> = conn.query_row(
         "SELECT runtime_mode, interaction_mode FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
@@ -3943,8 +4602,14 @@ fn resolve_worker(payload: &Value) -> Result<Value, WsErr> {
             "interactionMode":interaction_mode,"createdAt":now,
         }),
     );
-    if result.is_err() { return Err(err("Failed to re-dispatch the worker turn.")); }
-    persist(&conn, ", active_turn_origin = 'user', active_turn_command_id = ?4, settled_at = NULL, settle_outcome = NULL", vec![command_id])?;
+    if result.is_err() {
+        return Err(err("Failed to re-dispatch the worker turn."));
+    }
+    persist(
+        &conn,
+        ", active_turn_origin = 'user', active_turn_command_id = ?4, settled_at = NULL, settle_outcome = NULL",
+        vec![command_id],
+    )?;
     Ok(json!({"resolved": true}))
 }
 
@@ -4016,9 +4681,12 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             "goal-paused",
             "Paused the project goal. Current tasks may settle.",
         ),
-        "projectAgent.resumeGoal" => {
-            update_goal_status(payload, "active", "goal-resumed", "Resumed the project goal.")
-        }
+        "projectAgent.resumeGoal" => update_goal_status(
+            payload,
+            "active",
+            "goal-resumed",
+            "Resumed the project goal.",
+        ),
         "projectAgent.stopGoal" => update_goal_status(
             payload,
             "stopped",
@@ -4033,12 +4701,18 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         "projectAgent.pause" | "projectAgent.pauseGroup" => {
             lifecycle_group(payload, "pause", "Paused hub.", "Failed to pause the hub.")
         }
-        "projectAgent.resume" | "projectAgent.resumeGroup" => {
-            lifecycle_group(payload, "resume", "Resumed hub.", "Failed to resume the hub.")
-        }
-        "projectAgent.archive" | "projectAgent.archiveGroup" => {
-            lifecycle_group(payload, "archive", "Archived hub.", "Failed to archive the hub.")
-        }
+        "projectAgent.resume" | "projectAgent.resumeGroup" => lifecycle_group(
+            payload,
+            "resume",
+            "Resumed hub.",
+            "Failed to resume the hub.",
+        ),
+        "projectAgent.archive" | "projectAgent.archiveGroup" => lifecycle_group(
+            payload,
+            "archive",
+            "Archived hub.",
+            "Failed to archive the hub.",
+        ),
         "projectAgent.unarchive" | "projectAgent.unarchiveGroup" => lifecycle_group(
             payload,
             "unarchive",

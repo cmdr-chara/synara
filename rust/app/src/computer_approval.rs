@@ -80,8 +80,7 @@ impl ComputerApprovalGate {
         let ids: Vec<String> = pending
             .iter()
             .filter(|(_, p)| {
-                p.thread_id == thread_id
-                    && (turn_id.is_none() || p.turn_id.as_deref() == turn_id)
+                p.thread_id == thread_id && (turn_id.is_none() || p.turn_id.as_deref() == turn_id)
             })
             .map(|(id, _)| id.clone())
             .collect();
@@ -138,7 +137,9 @@ impl ComputerApprovalGate {
                 if let Some(rx) = &task.pending {
                     let _ = rx.clone();
                 }
-                if task.turn_id == entry.turn_id.clone().unwrap_or_default() || entry.turn_id.is_none() {
+                if task.turn_id == entry.turn_id.clone().unwrap_or_default()
+                    || entry.turn_id.is_none()
+                {
                     task.granted = Some(outcome == Outcome::Accept);
                     task.pending = None;
                 }
@@ -173,7 +174,11 @@ impl ComputerApprovalGate {
             match guard.get(thread_id) {
                 Some(task) if task.turn_id == turn_id => {
                     if let Some(granted) = task.granted {
-                        Action::Decided(if granted { Outcome::Accept } else { Outcome::Decline })
+                        Action::Decided(if granted {
+                            Outcome::Accept
+                        } else {
+                            Outcome::Decline
+                        })
                     } else if let Some(rx) = &task.pending {
                         Action::Wait(rx.clone())
                     } else {
@@ -210,7 +215,10 @@ impl ComputerApprovalGate {
                     }
                 }
             }
-            Action::Publish => self.publish_prompt(tasks_map, thread_id, turn_id, publish).await,
+            Action::Publish => {
+                self.publish_prompt(tasks_map, thread_id, turn_id, publish)
+                    .await
+            }
         }
     }
 
@@ -310,9 +318,8 @@ mod tests {
     #[tokio::test]
     async fn accept_sticks_for_the_turn() {
         let gate = fresh_gate();
-        let publish = |_id: String| {
-            Box::pin(async move {}) as futures_util::future::BoxFuture<'static, ()>
-        };
+        let publish =
+            |_id: String| Box::pin(async move {}) as futures_util::future::BoxFuture<'static, ()>;
         let request = gate.request_task("t1", "turn1", false, publish);
         tokio::pin!(request);
         // Let the prompt publish, then answer it.
@@ -336,9 +343,8 @@ mod tests {
     #[tokio::test]
     async fn session_wide_acceptance_degrades_to_decline() {
         let gate = fresh_gate();
-        let publish = |_id: String| {
-            Box::pin(async move {}) as futures_util::future::BoxFuture<'static, ()>
-        };
+        let publish =
+            |_id: String| Box::pin(async move {}) as futures_util::future::BoxFuture<'static, ()>;
         let request = gate.request_task("t2", "turn1", false, publish);
         tokio::pin!(request);
         tokio::select! {
@@ -371,6 +377,9 @@ mod tests {
         );
         gate.revoke_task_grants();
         assert_eq!(gate.tasks.lock().unwrap().get("t3").unwrap().granted, None);
-        assert_eq!(gate.tasks.lock().unwrap().get("t4").unwrap().granted, Some(false));
+        assert_eq!(
+            gate.tasks.lock().unwrap().get("t4").unwrap().granted,
+            Some(false)
+        );
     }
 }

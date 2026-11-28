@@ -5,13 +5,13 @@
 //! still a keyframe because each is independently decodable. A resync text
 //! message forces the next frame out regardless of the digest.
 
-use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
 use axum::extract::Query;
+use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
 use axum::response::{IntoResponse, Response};
 use std::sync::Arc;
 
 use crate::frame_transport::{
-    encode_frame, FrameCodecConfig, FrameEnvelope, FrameHeader, FrameSink, FrameTransport,
+    FrameCodecConfig, FrameEnvelope, FrameHeader, FrameSink, FrameTransport, encode_frame,
 };
 
 pub const COMPUTER_FRAME_WS_PATH: &str = "/ws/computer-frames";
@@ -36,7 +36,11 @@ struct WsSink {
 
 impl FrameSink for WsSink {
     fn send(&mut self, bytes: &[u8]) {
-        if self.tx.send(Message::Binary(bytes.to_vec().into())).is_err() {
+        if self
+            .tx
+            .send(Message::Binary(bytes.to_vec().into()))
+            .is_err()
+        {
             self.open.store(false, std::sync::atomic::Ordering::SeqCst);
         }
     }
@@ -78,7 +82,10 @@ fn capture_still() -> Option<Vec<u8>> {
             .output()
             .ok()?;
         if !out.status.success() {
-            eprintln!("computer_frames: screencapture failed: {}", String::from_utf8_lossy(&out.stderr).trim());
+            eprintln!(
+                "computer_frames: screencapture failed: {}",
+                String::from_utf8_lossy(&out.stderr).trim()
+            );
             return None;
         }
         let bytes = match std::fs::read(&path) {
@@ -160,7 +167,10 @@ async fn drive(socket: WebSocket, computer_id: String) {
                 break;
             }
             let forced = force.swap(false, std::sync::atomic::Ordering::SeqCst);
-            let captured = tokio::task::spawn_blocking(capture_still).await.ok().flatten();
+            let captured = tokio::task::spawn_blocking(capture_still)
+                .await
+                .ok()
+                .flatten();
             let Some(bytes) = captured else {
                 continue;
             };

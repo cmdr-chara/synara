@@ -9,10 +9,10 @@
 //! interval enforcement beyond the schedule itself.
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
@@ -75,7 +75,11 @@ fn manual_pass() -> Result<(), WsErr> {
             )
             .map_err(|e| err(format!("automation manual scan: {e}")))?;
         stmt.query_map(params![], |r| {
-            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+            Ok((
+                r.get::<_, String>(0)?,
+                r.get::<_, String>(1)?,
+                r.get::<_, String>(2)?,
+            ))
         })
         .map_err(|e| err(format!("automation manual scan: {e}")))?
         .filter_map(|r| r.ok())
@@ -157,10 +161,12 @@ fn deferred_pass() -> Result<(), WsErr> {
                  WHERE status = 'deferred' AND deferred_until IS NOT NULL AND deferred_until <= ?1 LIMIT 50",
             )
             .map_err(|e| err(format!("automation deferred scan: {e}")))?;
-        stmt.query_map(params![now], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
-            .map_err(|e| err(format!("automation deferred scan: {e}")))?
-            .filter_map(|r| r.ok())
-            .collect()
+        stmt.query_map(params![now], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        })
+        .map_err(|e| err(format!("automation deferred scan: {e}")))?
+        .filter_map(|r| r.ok())
+        .collect()
     };
     for (run_id, automation_id) in due {
         let conn = open_state_rw()?;
@@ -183,7 +189,10 @@ fn deferred_pass() -> Result<(), WsErr> {
                 );
             }
             if let Err(e) = dispatch_run(&run_id, &automation, &scheduled_for, &now) {
-                eprintln!("automation deferred dispatch failed for {}: {}", run_id, e.0);
+                eprintln!(
+                    "automation deferred dispatch failed for {}: {}",
+                    run_id, e.0
+                );
             }
         }
     }
@@ -284,7 +293,20 @@ fn due_pass() -> Result<(), WsErr> {
             .map_err(|e| err(format!("automation due scan: {e}")))?;
         rows.filter_map(|r| r.ok())
             .map(
-                |(id, project_id, name, prompt, schedule_json, next_run_at, ms, rm, im, mode, tt, wm)| {
+                |(
+                    id,
+                    project_id,
+                    name,
+                    prompt,
+                    schedule_json,
+                    next_run_at,
+                    ms,
+                    rm,
+                    im,
+                    mode,
+                    tt,
+                    wm,
+                )| {
                     DueAutomation {
                         id,
                         project_id,
@@ -299,7 +321,7 @@ fn due_pass() -> Result<(), WsErr> {
                         interaction_mode: im,
                         mode,
                         target_thread_id: tt,
-            worktree_mode: wm,
+                        worktree_mode: wm,
                     }
                 },
             )
@@ -365,7 +387,9 @@ fn fire_occurrence(automation: &DueAutomation, now: &str, now_ms: i64) -> Result
         "allowedCapabilities": [],
         "createdAt": now,
     });
-    let tx = conn.unchecked_transaction().map_err(|e| err(format!("automation tx: {e}")))?;
+    let tx = conn
+        .unchecked_transaction()
+        .map_err(|e| err(format!("automation tx: {e}")))?;
     let inserted = tx
         .execute(
             "INSERT OR IGNORE INTO automation_runs
@@ -398,7 +422,8 @@ fn fire_occurrence(automation: &DueAutomation, now: &str, now_ms: i64) -> Result
         params![automation.id, next, now],
     )
     .map_err(|e| err(format!("automation schedule advance: {e}")))?;
-    tx.commit().map_err(|e| err(format!("automation tx commit: {e}")))?;
+    tx.commit()
+        .map_err(|e| err(format!("automation tx commit: {e}")))?;
     drop(conn);
 
     // Dispatch outside the transaction: thread/turn creation is engine work.
@@ -415,7 +440,10 @@ fn dispatch_run(
 ) -> Result<(), WsErr> {
     // Dedicated and heartbeat automations continue their target thread;
     // standalone (and the first run of a dedicated one) create a fresh thread.
-    let continuation = automation.target_thread_id.clone().filter(|_| automation.mode != "standalone");
+    let continuation = automation
+        .target_thread_id
+        .clone()
+        .filter(|_| automation.mode != "standalone");
     let thread_id = continuation
         .clone()
         .unwrap_or_else(|| format!("{run_id}-thread"));
@@ -460,8 +488,11 @@ fn dispatch_run(
             "interactionMode": automation.interaction_mode,
         });
         let obj = create.as_object().expect("object");
-        crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(obj.clone()))
-            .map_err(|e| err(format!("automation thread create: {}", e.0)))?;
+        crate::orchestration_engine::handle(
+            "orchestration.dispatchCommand",
+            &Value::Object(obj.clone()),
+        )
+        .map_err(|e| err(format!("automation thread create: {}", e.0)))?;
         // A dedicated automation adopts its first thread as the continuation target.
         if automation.mode != "standalone" {
             if let Ok(conn) = open_state_rw() {
@@ -490,8 +521,11 @@ fn dispatch_run(
         },
     });
     let obj = turn.as_object().expect("object");
-    crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(obj.clone()))
-        .map_err(|e| err(format!("automation turn start: {}", e.0)))?;
+    crate::orchestration_engine::handle(
+        "orchestration.dispatchCommand",
+        &Value::Object(obj.clone()),
+    )
+    .map_err(|e| err(format!("automation turn start: {}", e.0)))?;
 
     // The turn id is the active turn of the thread just started; the engine
     // derives it, so read it back rather than inventing it.
@@ -534,10 +568,12 @@ fn reconcile_pass() -> Result<(), WsErr> {
                 "SELECT run_id, turn_id FROM automation_runs WHERE status IN ('pending', 'running') LIMIT 200",
             )
             .map_err(|e| err(format!("automation reconcile scan: {e}")))?;
-        stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?)))
-            .map_err(|e| err(format!("automation reconcile scan: {e}")))?
-            .filter_map(|r| r.ok())
-            .collect()
+        stmt.query_map([], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
+        })
+        .map_err(|e| err(format!("automation reconcile scan: {e}")))?
+        .filter_map(|r| r.ok())
+        .collect()
     };
     for (run_id, turn_id) in active {
         let Some(turn_id) = turn_id else {
@@ -592,7 +628,17 @@ fn reconcile_pass() -> Result<(), WsErr> {
 /// completion check via the official Claude CLI. Runs exactly once per run
 /// because the row leaves the active set on transition.
 fn settle_run(conn: &rusqlite::Connection, run_id: &str, status: &str, now: &str) {
-    let def: Option<(String, i64, Option<i64>, Option<i64>, i64, String, String, String, String)> = conn
+    let def: Option<(
+        String,
+        i64,
+        Option<i64>,
+        Option<i64>,
+        i64,
+        String,
+        String,
+        String,
+        String,
+    )> = conn
         .query_row(
             "SELECT a.automation_id, COALESCE(a.consecutive_failure_count,0),
                     a.stop_after_consecutive_failures, a.max_iterations,
@@ -617,12 +663,27 @@ fn settle_run(conn: &rusqlite::Connection, run_id: &str, status: &str, now: &str
             },
         )
         .ok();
-    let Some((automation_id, failures, stop_after, max_iterations, iterations, policy_json, name, prompt, thread_id)) = def else {
+    let Some((
+        automation_id,
+        failures,
+        stop_after,
+        max_iterations,
+        iterations,
+        policy_json,
+        name,
+        prompt,
+        thread_id,
+    )) = def
+    else {
         return;
     };
 
     let new_iterations = iterations + 1;
-    let new_failures = if status == "completed" { 0 } else { failures + 1 };
+    let new_failures = if status == "completed" {
+        0
+    } else {
+        failures + 1
+    };
     let mut disable_reason: Option<&str> = None;
     if let Some(stop) = stop_after {
         if stop > 0 && new_failures >= stop {
@@ -662,7 +723,17 @@ fn settle_run(conn: &rusqlite::Connection, run_id: &str, status: &str, now: &str
         .get("confidenceThreshold")
         .and_then(Value::as_f64)
         .unwrap_or(1.0);
-    evaluate_completion(conn, run_id, &automation_id, &name, &prompt, stop_when, threshold, &thread_id, now);
+    evaluate_completion(
+        conn,
+        run_id,
+        &automation_id,
+        &name,
+        &prompt,
+        stop_when,
+        threshold,
+        &thread_id,
+        now,
+    );
 }
 
 fn limit_section(text: &str, max: usize) -> String {
@@ -757,9 +828,16 @@ fn evaluate_completion(
     let evaluation = crate::textgen::claude_json_generate(&eval_prompt, &schema, None);
     let (stop_matched, confidence, reason) = match evaluation {
         Ok(v) => (
-            v.get("stopMatched").and_then(Value::as_bool).unwrap_or(false),
+            v.get("stopMatched")
+                .and_then(Value::as_bool)
+                .unwrap_or(false),
             v.get("confidence").and_then(Value::as_f64).unwrap_or(0.0),
-            v.get("reason").and_then(Value::as_str).unwrap_or("No reason given.").chars().take(1_000).collect::<String>(),
+            v.get("reason")
+                .and_then(Value::as_str)
+                .unwrap_or("No reason given.")
+                .chars()
+                .take(1_000)
+                .collect::<String>(),
         ),
         Err(e) => {
             let _ = conn.execute(
@@ -789,7 +867,10 @@ fn evaluate_completion(
             "UPDATE automation_definitions SET enabled = 0, disabled_reason = 'completion', disabled_at = ?2, updated_at = ?2 WHERE automation_id = ?1",
             params![automation_id, now],
         );
-        eprintln!("automation {} completed its stop condition: {}", automation_id, reason);
+        eprintln!(
+            "automation {} completed its stop condition: {}",
+            automation_id, reason
+        );
     }
 }
 

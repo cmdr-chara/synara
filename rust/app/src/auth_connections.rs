@@ -13,7 +13,8 @@ static ACTIVE_CONNECTIONS: OnceLock<
     Mutex<HashMap<String, HashMap<String, tokio::sync::watch::Sender<()>>>>,
 > = OnceLock::new();
 
-fn active_connections() -> &'static Mutex<HashMap<String, HashMap<String, tokio::sync::watch::Sender<()>>>> {
+fn active_connections()
+-> &'static Mutex<HashMap<String, HashMap<String, tokio::sync::watch::Sender<()>>>> {
     ACTIVE_CONNECTIONS.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
@@ -64,7 +65,10 @@ pub(crate) fn register_authenticated_connection(
         if let Ok(conn) = crate::orchestration_engine::open_state_rw() {
             let _ = conn.execute(
                 "UPDATE auth_sessions SET last_connected_at = ?2 WHERE session_id = ?1",
-                rusqlite::params![session_id, chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)],
+                rusqlite::params![
+                    session_id,
+                    chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+                ],
             );
         }
     }
@@ -87,7 +91,9 @@ pub(crate) fn is_session_connected(session_id: &str) -> bool {
 }
 
 pub(crate) fn interrupt_sessions(session_ids: &[String]) {
-    let Ok(active) = active_connections().lock() else { return };
+    let Ok(active) = active_connections().lock() else {
+        return;
+    };
     for session_id in session_ids {
         if let Some(connections) = active.get(session_id) {
             for close in connections.values() {
@@ -127,12 +133,14 @@ mod tests {
         let leases: Vec<_> = (0..MAX_AUTHENTICATED_CONNECTIONS_PER_SESSION)
             .map(|_| register_authenticated_connection(&saturated).unwrap())
             .collect();
-        assert_eq!(register_authenticated_connection(&saturated).unwrap_err(), MAX_AUTHENTICATED_CONNECTIONS_PER_SESSION);
+        assert_eq!(
+            register_authenticated_connection(&saturated).unwrap_err(),
+            MAX_AUTHENTICATED_CONNECTIONS_PER_SESSION
+        );
         assert!(register_authenticated_connection(&independent).is_ok());
         drop(leases);
         assert!(register_authenticated_connection(&saturated).is_ok());
     }
-
 
     #[test]
     fn interrupt_sessions_signals_live_leases() {

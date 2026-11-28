@@ -89,7 +89,10 @@ impl Client {
                     .join("userdata")
                     .join("secrets")
                     .join("bootstrap-credential.bin");
-                std::fs::read_to_string(path).ok().map(|value| value.trim().to_string()).filter(|value| !value.is_empty())
+                std::fs::read_to_string(path)
+                    .ok()
+                    .map(|value| value.trim().to_string())
+                    .filter(|value| !value.is_empty())
             })
             .unwrap_or_else(|| "rectoken".to_string());
         let bootstrap_body = json!({"credential": credential}).to_string();
@@ -465,8 +468,7 @@ mod tests {
 
     #[test]
     fn derives_wss_url_from_https_base() {
-        assert!(
-            default_ws_url("https://synara.example/", "t", 3, "inst-1").starts_with("wss://synara.example/ws?")
-        );
+        assert!(default_ws_url("https://synara.example/", "t", 3, "inst-1")
+            .starts_with("wss://synara.example/ws?"));
     }
 }

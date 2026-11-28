@@ -1,116 +1,105 @@
 mod account;
 mod account_usage;
-mod input_monitor;
-mod beta_operational_issue;
-mod database_lifecycle_lock;
-mod migrations;
+mod acp_runner;
 mod agent_gateway_mcp;
 mod agent_gateway_synara;
-mod acp_runner;
-mod claude_runner;
-mod claude_monitor;
-mod claude_workflow_script;
-mod claude_workflow_runtime;
-mod claude_tasks;
-mod provider_env;
-mod provider_instances;
-mod provider_resume;
+mod attachments_http;
+mod auth_connections;
+mod auth_http;
+mod auth_sessions;
+mod automation;
+mod automation_executor;
+mod automation_schedule;
+mod beta_import;
+mod beta_operational_issue;
+mod browser_automation;
+mod browser_frame;
+mod checkpointing;
 mod claude_environment;
+mod claude_monitor;
+mod claude_runner;
+mod claude_tasks;
+mod claude_workflow_runtime;
+mod claude_workflow_script;
 mod codex_runner;
+mod codex_usage;
+mod computer_approval;
+mod computer_audit;
+mod computer_control;
+mod computer_denylist;
+mod computer_frames;
+mod computer_manager;
+mod computer_native;
+mod computer_shield;
+mod database_lifecycle_lock;
 mod device;
-mod editor_intelligence;
+mod device_helper;
+mod device_identity;
+mod device_sim;
+mod device_stream;
 mod editor;
+mod editor_debug;
+mod editor_icon;
+mod editor_intelligence;
+mod factory_import;
+mod favicons;
+mod frame_transport;
+mod fs_browse;
+mod git_action_registry;
+mod git_domain;
+mod git_handoff;
+mod git_pr;
+mod github_inbox;
+mod harness_policy;
 mod host_auth_verify;
 mod host_grant_verify;
 mod host_identity;
 mod host_secrets;
-mod pairing_gateway;
-mod remote_client;
-mod remote_connections;
-mod remote_resource_client;
-mod remote_host_trust;
-mod remote_pairing;
-mod remote_resource;
-mod remote_sessions;
-mod remote_tls;
-mod remote_tunnel;
+mod host_usage_snapshot;
 mod hosts;
-mod automation_executor;
-mod automation_schedule;
-mod automation;
-mod beta_import;
-mod device_identity;
-mod browser_automation;
-mod browser_frame;
-mod fs_browse;
-mod git_domain;
-mod harness_policy;
-mod git_handoff;
-mod git_action_registry;
-mod git_pr;
-mod github_inbox;
-mod attachments_http;
-mod favicons;
-mod auth_connections;
-mod auth_http;
-mod editor_icon;
-mod auth_sessions;
-mod server_secrets;
-mod thread_export;
-mod turn_format;
-mod checkpointing;
-mod pr_command_detection;
-mod thread_git_metadata;
-mod sidechat_expiry;
-mod hub_work;
 mod hub_outputs;
-mod local_image;
+mod hub_work;
+mod input_monitor;
 mod list_worktrees;
-mod native_ws;
-mod orchestration_reads;
-mod orchestration_snapshot;
-mod state;
+mod local_image;
 mod mcp_connectors;
 mod mcp_oauth;
-mod editor_debug;
-mod provider_usage;
-mod textgen;
-mod provider_attachments;
-mod provider_cache;
-mod skills_catalog;
-mod computer_audit;
-mod computer_frames;
-mod frame_transport;
-mod computer_approval;
-mod computer_control;
-mod computer_denylist;
-mod computer_manager;
-mod device_helper;
-mod web_static;
-mod device_sim;
-mod device_stream;
-mod computer_native;
-mod computer_shield;
-mod factory_import;
+mod migrations;
+mod native_ws;
 mod omp_import;
 mod opencode_runner;
-mod pi_runner;
-mod pi_opencode_catalog;
-mod codex_usage;
-mod voice_transcription;
 mod orchestration_engine;
-mod usage_limit;
+mod orchestration_reads;
+mod orchestration_snapshot;
+mod pairing_gateway;
+mod pi_opencode_catalog;
+mod pi_runner;
+mod pr_command_detection;
 mod project_agent;
 mod project_imports;
-mod projects_provision;
 mod projects_devserver;
 mod projects_fileops;
 mod projects_fs;
+mod projects_provision;
 mod projects_refs;
 mod projects_search;
+mod provider_attachments;
+mod provider_cache;
+mod provider_env;
+mod provider_instances;
+mod provider_resume;
+mod provider_usage;
 mod pull_requests;
+mod remote_client;
+mod remote_connections;
+mod remote_host_trust;
+mod remote_pairing;
+mod remote_resource;
+mod remote_resource_client;
+mod remote_sessions;
+mod remote_tls;
+mod remote_tunnel;
 mod runtime_status;
-mod host_usage_snapshot;
 mod server_beta_usage;
 mod server_desktop_update;
 mod server_diagnostics;
@@ -118,13 +107,24 @@ mod server_env;
 mod server_keybindings;
 mod server_lifecycle;
 mod server_local_servers;
+mod server_secrets;
 mod server_settings;
 mod shell_editor;
+mod sidechat_expiry;
+mod skills_catalog;
+mod state;
 mod stats;
 mod studio;
 mod terminal;
+mod textgen;
+mod thread_export;
+mod thread_git_metadata;
 mod todo;
+mod turn_format;
 mod units;
+mod usage_limit;
+mod voice_transcription;
+mod web_static;
 mod ws_relay;
 
 use std::net::SocketAddr;
@@ -139,11 +139,16 @@ static DATABASE_LIFECYCLE_LOCK: std::sync::OnceLock<
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
-    let restore_executable = args.first()
+    let restore_executable = args
+        .first()
         .and_then(|arg| std::path::Path::new(arg).file_name())
         .and_then(|name| name.to_str())
         .is_some_and(|name| name.trim_end_matches(".exe") == "synara-restore-migration-backup");
-    if restore_executable || args.get(1).is_some_and(|arg| arg == "--restore-migration-backup") {
+    if restore_executable
+        || args
+            .get(1)
+            .is_some_and(|arg| arg == "--restore-migration-backup")
+    {
         let index = if restore_executable { 1 } else { 2 };
         let Some(db) = args.get(index) else {
             eprintln!("Usage: synara-restore-migration-backup <absolute-database-path>");
@@ -158,7 +163,10 @@ async fn main() {
         let lifecycle_lock = match database_lifecycle_lock::acquire_database_lifecycle_lock(&path) {
             Ok(lock) => lock,
             Err(error) => {
-                eprintln!("Failed to restore migration backup for {}: {error}", path.display());
+                eprintln!(
+                    "Failed to restore migration backup for {}: {error}",
+                    path.display()
+                );
                 std::process::exit(1);
             }
         };
@@ -173,14 +181,20 @@ async fn main() {
                 std::process::exit(0);
             }
             Err(error) => {
-                eprintln!("Failed to restore migration backup for {}: {error}", path.display());
+                eprintln!(
+                    "Failed to restore migration backup for {}: {error}",
+                    path.display()
+                );
                 std::process::exit(1);
             }
         }
     }
     {
         let state_dir = std::path::PathBuf::from(todo::state_dir());
-        let home_dir = state_dir.parent().map(std::path::Path::to_path_buf).unwrap_or(state_dir);
+        let home_dir = state_dir
+            .parent()
+            .map(std::path::Path::to_path_buf)
+            .unwrap_or(state_dir);
         synara_shellenv::fix_path(&home_dir);
     }
     runtime_status::start_sampler();
@@ -193,7 +207,9 @@ async fn main() {
         // Stable→Beta handoff consumption must happen before migrations open
         // state.sqlite: the imported snapshot can carry a different schema.
         let lifecycle_lock = match database_lifecycle_lock::acquire_database_lifecycle_lock(
-            std::path::Path::new(&todo::state_dir()).join("state.sqlite").as_path(),
+            std::path::Path::new(&todo::state_dir())
+                .join("state.sqlite")
+                .as_path(),
         ) {
             Ok(lock) => lock,
             Err(error) => {
@@ -212,7 +228,10 @@ async fn main() {
             if beta_import.ok {
                 eprintln!("beta import: stable data copied");
             } else {
-                eprintln!("beta import failed: {}", beta_import.error.as_deref().unwrap_or("unknown error"));
+                eprintln!(
+                    "beta import failed: {}",
+                    beta_import.error.as_deref().unwrap_or("unknown error")
+                );
             }
         }
         // Schema ownership: the native backend runs the full migration ledger
@@ -222,7 +241,11 @@ async fn main() {
         match migrations::run_state_migrations() {
             Ok(applied) => {
                 if !applied.is_empty() {
-                    eprintln!("migrations: applied {} migration(s) through {}", applied.len(), applied.last().copied().unwrap_or(0));
+                    eprintln!(
+                        "migrations: applied {} migration(s) through {}",
+                        applied.len(),
+                        applied.last().copied().unwrap_or(0)
+                    );
                 }
                 server_beta_usage::start_beta_usage_snapshot_job();
                 host_usage_snapshot::start_host_usage_snapshot_job();
@@ -230,7 +253,10 @@ async fn main() {
             }
             Err(e) => {
                 beta_operational_issue::report_startup_migration_error(&e.0);
-                eprintln!("migrations failed: {} — refusing to serve orchestration against an unvalidated schema", e.0);
+                eprintln!(
+                    "migrations failed: {} — refusing to serve orchestration against an unvalidated schema",
+                    e.0
+                );
                 std::process::exit(1);
             }
         }
@@ -273,12 +299,14 @@ async fn main() {
         }
         let (fenced, recovered) = git_handoff::recover();
         if fenced + recovered > 0 {
-            eprintln!("startup recovery: fenced {fenced} interrupted git handoff(s), replayed {recovered}");
+            eprintln!(
+                "startup recovery: fenced {fenced} interrupted git handoff(s), replayed {recovered}"
+            );
         }
         auth_http::seed_bootstrap_credential();
         hosts::restore_desired_connections();
-    attachments_http::start_cleanup_worker();
-    automation_executor::start();
+        attachments_http::start_cleanup_worker();
+        automation_executor::start();
         let resumed = orchestration_engine::consume_quit_resume_record();
         if resumed > 0 {
             eprintln!("startup recovery: resumed {resumed} thread(s) from the quit-resume record");
@@ -288,29 +316,90 @@ async fn main() {
         .merge(native_ws::router())
         .merge(ws_relay::router())
         .merge(agent_gateway_mcp::router())
-        .route("/api/local-image", axum::routing::get(local_image::local_image))
-        .route("/api/attachments/upload", axum::routing::post(attachments_http::upload))
-        .route("/api/attachments/cancel", axum::routing::post(attachments_http::cancel))
-        .route("/attachments/{id}", axum::routing::get(attachments_http::serve))
-        .route("/api/thread-export", axum::routing::get(thread_export::thread_export))
-        .route("/oauth/mcp/callback", axum::routing::get(oauth_mcp_callback))
-        .route("/api/project-favicon", axum::routing::get(favicons::project_favicon))
-        .route("/api/browser/frame", axum::routing::get(browser_frame::browser_frame))
-        .route("/api/remote/resource/{host_id}", axum::routing::get(remote_resource_client::handle_remote_resource).post(remote_resource_client::handle_remote_resource))
-        .route("/api/site-favicon", axum::routing::get(favicons::site_favicon))
-        .route("/api/editor-icon", axum::routing::get(editor_icon::editor_icon))
+        .route(
+            "/api/local-image",
+            axum::routing::get(local_image::local_image),
+        )
+        .route(
+            "/api/attachments/upload",
+            axum::routing::post(attachments_http::upload),
+        )
+        .route(
+            "/api/attachments/cancel",
+            axum::routing::post(attachments_http::cancel),
+        )
+        .route(
+            "/attachments/{id}",
+            axum::routing::get(attachments_http::serve),
+        )
+        .route(
+            "/api/thread-export",
+            axum::routing::get(thread_export::thread_export),
+        )
+        .route(
+            "/oauth/mcp/callback",
+            axum::routing::get(oauth_mcp_callback),
+        )
+        .route(
+            "/api/project-favicon",
+            axum::routing::get(favicons::project_favicon),
+        )
+        .route(
+            "/api/browser/frame",
+            axum::routing::get(browser_frame::browser_frame),
+        )
+        .route(
+            "/api/remote/resource/{host_id}",
+            axum::routing::get(remote_resource_client::handle_remote_resource)
+                .post(remote_resource_client::handle_remote_resource),
+        )
+        .route(
+            "/api/site-favicon",
+            axum::routing::get(favicons::site_favicon),
+        )
+        .route(
+            "/api/editor-icon",
+            axum::routing::get(editor_icon::editor_icon),
+        )
         .route("/health", axum::routing::get(health))
-        .route("/api/auth/bootstrap", axum::routing::post(auth_http::bootstrap))
-        .route("/api/auth/session", axum::routing::get(auth_http::session_state))
-        .route("/api/auth/ws-token", axum::routing::post(auth_http::ws_token))
-        .route("/api/auth/pairing-token", axum::routing::post(auth_http::pairing_token))
+        .route(
+            "/api/auth/bootstrap",
+            axum::routing::post(auth_http::bootstrap),
+        )
+        .route(
+            "/api/auth/session",
+            axum::routing::get(auth_http::session_state),
+        )
+        .route(
+            "/api/auth/ws-token",
+            axum::routing::post(auth_http::ws_token),
+        )
+        .route(
+            "/api/auth/pairing-token",
+            axum::routing::post(auth_http::pairing_token),
+        )
         .route("/api/auth/logout", axum::routing::post(auth_http::logout))
         .route("/api/auth/clients", axum::routing::get(auth_http::clients))
-        .route("/api/auth/clients/revoke", axum::routing::post(auth_http::clients_revoke))
-        .route("/api/auth/bootstrap/bearer", axum::routing::post(auth_http::bootstrap_bearer))
-        .route("/api/auth/pairing-links", axum::routing::get(auth_http::pairing_links))
-        .route("/api/auth/pairing-links/revoke", axum::routing::post(auth_http::pairing_links_revoke))
-        .route("/api/auth/clients/revoke-others", axum::routing::post(auth_http::clients_revoke_others))
+        .route(
+            "/api/auth/clients/revoke",
+            axum::routing::post(auth_http::clients_revoke),
+        )
+        .route(
+            "/api/auth/bootstrap/bearer",
+            axum::routing::post(auth_http::bootstrap_bearer),
+        )
+        .route(
+            "/api/auth/pairing-links",
+            axum::routing::get(auth_http::pairing_links),
+        )
+        .route(
+            "/api/auth/pairing-links/revoke",
+            axum::routing::post(auth_http::pairing_links_revoke),
+        )
+        .route(
+            "/api/auth/clients/revoke-others",
+            axum::routing::post(auth_http::clients_revoke_others),
+        )
         .fallback(axum::routing::get(web_static::serve))
         .with_state(app_state.clone());
     let port = std::env::var("PORT")
@@ -318,15 +407,17 @@ async fn main() {
         .and_then(|p| p.parse().ok())
         .unwrap_or(8080);
     if true {
-        std::thread::spawn(|| loop {
-            std::thread::sleep(std::time::Duration::from_secs(60));
-            let fired = orchestration_engine::fire_due_usage_limit_recoveries();
-            if fired > 0 {
-                eprintln!("usage-limit recovery: resumed {fired} thread(s) after reset");
-            }
-            let woken = orchestration_engine::fire_due_thread_snoozes();
-            if woken > 0 {
-                eprintln!("thread snooze: woke {woken} thread(s) past deadline");
+        std::thread::spawn(|| {
+            loop {
+                std::thread::sleep(std::time::Duration::from_secs(60));
+                let fired = orchestration_engine::fire_due_usage_limit_recoveries();
+                if fired > 0 {
+                    eprintln!("usage-limit recovery: resumed {fired} thread(s) after reset");
+                }
+                let woken = orchestration_engine::fire_due_thread_snoozes();
+                if woken > 0 {
+                    eprintln!("thread snooze: woke {woken} thread(s) past deadline");
+                }
             }
         });
         // Retention sweep: upstream archives inactive threads daily after a
@@ -348,11 +439,13 @@ async fn main() {
         });
         claude_runner::spawn_credential_keepalive();
         crate::pull_requests::spawn_auto_fix_watcher();
-    crate::sidechat_expiry::spawn_expiry_watcher();
-    crate::hub_work::spawn_admission_loop();
-        std::thread::spawn(|| loop {
-            crate::remote_connections::retry_reconnecting_once();
-            std::thread::sleep(std::time::Duration::from_secs(5));
+        crate::sidechat_expiry::spawn_expiry_watcher();
+        crate::hub_work::spawn_admission_loop();
+        std::thread::spawn(|| {
+            loop {
+                crate::remote_connections::retry_reconnecting_once();
+                std::thread::sleep(std::time::Duration::from_secs(5));
+            }
         });
     }
     // Loopback by default, matching upstream: remote exposure requires an
@@ -393,12 +486,11 @@ async fn main() {
 /// GET /oauth/mcp/callback — completes an MCP connector OAuth sign-in: the
 /// token exchange runs here, tokens persist with the connector row in the
 /// connectors document, and the user gets a closable HTML result page.
-async fn oauth_mcp_callback(axum::extract::RawQuery(query): axum::extract::RawQuery) -> axum::response::Response {
+async fn oauth_mcp_callback(
+    axum::extract::RawQuery(query): axum::extract::RawQuery,
+) -> axum::response::Response {
     let query = query.unwrap_or_default();
-    let result = tokio::task::spawn_blocking(move || {
-        mcp_oauth::complete_sign_in(&query)
-    })
-    .await;
+    let result = tokio::task::spawn_blocking(move || mcp_oauth::complete_sign_in(&query)).await;
     let html = match result {
         Ok(Ok((connector_input, tokens))) => {
             match persist_oauth_connector(&connector_input, &tokens) {
@@ -406,15 +498,20 @@ async fn oauth_mcp_callback(axum::extract::RawQuery(query): axum::extract::RawQu
                 Err(e) => format!("<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>", html_escape(&e)),
             }
         }
-        Ok(Err(e)) => format!("<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>", html_escape(&e.0)),
-        Err(e) => format!("<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>", html_escape(&e.to_string())),
+        Ok(Err(e)) => format!(
+            "<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>",
+            html_escape(&e.0)
+        ),
+        Err(e) => format!(
+            "<html><body><h2>Sign-in failed</h2><p>{}</p></body></html>",
+            html_escape(&e.to_string())
+        ),
     };
     axum::response::Response::builder()
         .header("content-type", "text/html; charset=utf-8")
         .body(axum::body::Body::from(html))
         .unwrap()
 }
-
 
 async fn health() -> axum::Json<serde_json::Value> {
     axum::Json(serde_json::json!({
@@ -443,16 +540,28 @@ async fn health() -> axum::Json<serde_json::Value> {
 }
 
 fn html_escape(v: &str) -> String {
-    v.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;")
+    v.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
 }
 
 /// Persist the OAuth-completed HTTP connector: unique server name, tokens in
 /// the same secrets-backed document the stdio rows use (0600 by construction),
 /// deduped on url. Mirrors the stdio insertion in mcp_connectors.
-fn persist_oauth_connector(input: &serde_json::Value, tokens: &serde_json::Value) -> Result<(), String> {
+fn persist_oauth_connector(
+    input: &serde_json::Value,
+    tokens: &serde_json::Value,
+) -> Result<(), String> {
     use serde_json::json;
-    let url = input.get("url").and_then(serde_json::Value::as_str).ok_or("missing url")?;
-    let name = input.get("name").and_then(serde_json::Value::as_str).unwrap_or("Connector");
-    mcp_connectors::insert_http_connector(url, name, input, tokens).map_err(|e| e.0)
+    let url = input
+        .get("url")
+        .and_then(serde_json::Value::as_str)
+        .ok_or("missing url")?;
+    let name = input
+        .get("name")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or("Connector");
+    mcp_connectors::insert_http_connector(url, name, input, tokens)
+        .map_err(|e| e.0)
         .map(|_| ())
 }

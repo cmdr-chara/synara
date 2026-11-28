@@ -15,7 +15,8 @@ use crate::todo::WsErr;
 const PR_SUMMARY_FIELDS: &str = "number,title,url,baseRefName,headRefName,state,mergedAt,isDraft,mergeable,additions,deletions,changedFiles,isCrossRepository,headRepository,headRepositoryOwner,updatedAt";
 const PR_SNAPSHOT_FIELDS: &str = "number,title,url,baseRefName,headRefName,state,mergedAt,isDraft,mergeable,additions,deletions,changedFiles,isCrossRepository,headRepository,headRepositoryOwner,updatedAt,headRefOid,statusCheckRollup";
 
-const REVIEW_THREADS_QUERY: &str = "query($owner: String!, $repo: String!, $number: Int!, $first: Int!, $after: String) {
+const REVIEW_THREADS_QUERY: &str =
+    "query($owner: String!, $repo: String!, $number: Int!, $first: Int!, $after: String) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $number) {
       reviewThreads(first: $first, after: $after) {
@@ -98,7 +99,10 @@ fn canonicalize(path: &str) -> String {
 }
 
 fn opt_str(v: &Value) -> Option<String> {
-    v.as_str().map(str::trim).filter(|s| !s.is_empty()).map(String::from)
+    v.as_str()
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from)
 }
 
 fn diff_count(v: &Value) -> Value {
@@ -124,7 +128,9 @@ fn normalize_pr_summary(raw: &Value) -> (Value, HeadRemoteInfo) {
         Some("CONFLICTING") => "conflicting",
         _ => "unknown",
     };
-    let head_nwo = raw["headRepository"]["nameWithOwner"].as_str().map(String::from);
+    let head_nwo = raw["headRepository"]["nameWithOwner"]
+        .as_str()
+        .map(String::from);
     let head_owner = opt_str(&raw["headRepositoryOwner"]["login"]).or_else(|| {
         head_nwo
             .as_deref()
@@ -160,7 +166,10 @@ struct HeadRemoteInfo {
 
 /// `parsePullRequestRepositoryFromUrl`: host + owner + repo from a PR web URL.
 fn parse_pr_repo_from_url(url: &str) -> Option<(String, String, String)> {
-    let rest = url.trim().strip_prefix("https://").or_else(|| url.trim().strip_prefix("http://"))?;
+    let rest = url
+        .trim()
+        .strip_prefix("https://")
+        .or_else(|| url.trim().strip_prefix("http://"))?;
     let mut parts = rest.split('/');
     let host = parts.next()?.to_string();
     let owner = parts.next()?.to_string();
@@ -199,7 +208,11 @@ fn local_pr_branch(pr: &Value, info: &HeadRemoteInfo) -> String {
         return head;
     }
     let sanitized = sanitize_branch_fragment(&head);
-    let suffix = if sanitized.is_empty() { "head" } else { sanitized.as_str() };
+    let suffix = if sanitized.is_empty() {
+        "head"
+    } else {
+        sanitized.as_str()
+    };
     format!("synara/pr-{}/{suffix}", pr["number"].as_i64().unwrap_or(0))
 }
 
@@ -231,17 +244,33 @@ fn sanitize_branch_fragment(raw: &str) -> String {
         .join("/");
     let trimmed = collapsed.trim_matches(|c: char| "./_-".contains(c));
     let sliced: String = trimmed.chars().take(64).collect();
-    let sliced = sliced.trim_end_matches(|c: char| "./_-".contains(c)).to_string();
-    if sliced.is_empty() { "update".to_string() } else { sliced }
+    let sliced = sliced
+        .trim_end_matches(|c: char| "./_-".contains(c))
+        .to_string();
+    if sliced.is_empty() {
+        "update".to_string()
+    } else {
+        sliced
+    }
 }
 
 fn sanitize_remote_name(raw: &str) -> String {
     let s: String = raw
         .chars()
-        .map(|c| if c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.') { c } else { '-' })
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '.') {
+                c
+            } else {
+                '-'
+            }
+        })
         .collect();
     let s = s.trim_matches('-');
-    if s.is_empty() { "fork".to_string() } else { s.to_string() }
+    if s.is_empty() {
+        "fork".to_string()
+    } else {
+        s.to_string()
+    }
 }
 
 fn gh_pr_view(cwd: &str, reference: &str, fields: &str) -> Result<Value, WsErr> {
@@ -280,7 +309,9 @@ fn normalize_check(item: &Value) -> Option<Value> {
             Some(s) if s != "COMPLETED" => "pending",
             _ => match item["conclusion"].as_str() {
                 Some("SUCCESS") => "success",
-                Some("FAILURE") | Some("TIMED_OUT") | Some("ACTION_REQUIRED")
+                Some("FAILURE")
+                | Some("TIMED_OUT")
+                | Some("ACTION_REQUIRED")
                 | Some("STARTUP_FAILURE") => "failure",
                 Some("SKIPPED") => "skipped",
                 Some("CANCELLED") => "cancelled",
@@ -328,7 +359,10 @@ fn review_comments(
                 .filter(|m| !m.is_empty())
                 .collect();
             if !messages.is_empty() {
-                return Err(format!("GitHub GraphQL returned errors: {}", messages.join("; ")));
+                return Err(format!(
+                    "GitHub GraphQL returned errors: {}",
+                    messages.join("; ")
+                ));
             }
         }
         let threads = decoded["data"]["repository"]["pullRequest"]["reviewThreads"]["nodes"]
@@ -340,9 +374,10 @@ fn review_comments(
             if thread["isResolved"].as_bool() == Some(true) {
                 continue;
             }
-            let Some(root) = thread["comments"]["nodes"].as_array().and_then(|n| {
-                n.iter().find(|c| !c.is_null())
-            }) else {
+            let Some(root) = thread["comments"]["nodes"]
+                .as_array()
+                .and_then(|n| n.iter().find(|c| !c.is_null()))
+            else {
                 continue;
             };
             page_comments.push(json!({
@@ -471,17 +506,20 @@ fn ensure_remote(cwd: &str, preferred: &str, url: &str) -> Result<String, WsErr>
         candidate = format!("{preferred}-{suffix}");
         suffix += 1;
     }
-    run(cwd, &["remote", "add", &candidate, url])
-        .and_then(|o| {
-            if o.status.success() {
-                Ok(())
-            } else {
-                Err(err(format!(
-                    "git remote add failed: {}",
-                    String::from_utf8_lossy(&o.stderr).trim().lines().next().unwrap_or("")
-                )))
-            }
-        })?;
+    run(cwd, &["remote", "add", &candidate, url]).and_then(|o| {
+        if o.status.success() {
+            Ok(())
+        } else {
+            Err(err(format!(
+                "git remote add failed: {}",
+                String::from_utf8_lossy(&o.stderr)
+                    .trim()
+                    .lines()
+                    .next()
+                    .unwrap_or("")
+            )))
+        }
+    })?;
     Ok(candidate)
 }
 
@@ -508,7 +546,12 @@ fn prefers_ssh(url: &str) -> bool {
     t.starts_with("git@") || t.starts_with("ssh://")
 }
 
-fn set_branch_upstream(cwd: &str, local: &str, remote: &str, remote_branch: &str) -> Result<(), WsErr> {
+fn set_branch_upstream(
+    cwd: &str,
+    local: &str,
+    remote: &str,
+    remote_branch: &str,
+) -> Result<(), WsErr> {
     stdout(
         cwd,
         &[
@@ -529,23 +572,39 @@ fn fetch_pr_branch(cwd: &str, pr_number: i64, branch: &str) -> Result<(), WsErr>
     if !out.status.success() {
         return Err(err(format!(
             "git fetch pull request branch failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("")
         )));
     }
     Ok(())
 }
 
-fn fetch_remote_branch(cwd: &str, remote: &str, remote_branch: &str, local: &str) -> Result<(), WsErr> {
+fn fetch_remote_branch(
+    cwd: &str,
+    remote: &str,
+    remote_branch: &str,
+    local: &str,
+) -> Result<(), WsErr> {
     let refspec = format!("+refs/heads/{remote_branch}:refs/remotes/{remote}/{remote_branch}");
     let out = run(cwd, &["fetch", "--quiet", "--no-tags", remote, &refspec])?;
     if !out.status.success() {
         return Err(err(format!(
             "git fetch remote branch failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("")
         )));
     }
     let target = format!("{remote}/{remote_branch}");
-    let exists = ok(cwd, &["show-ref", "--verify", "-q", &format!("refs/heads/{local}")]);
+    let exists = ok(
+        cwd,
+        &["show-ref", "--verify", "-q", &format!("refs/heads/{local}")],
+    );
     let args: Vec<&str> = if exists {
         vec!["branch", "--force", local, &target]
     } else {
@@ -555,7 +614,11 @@ fn fetch_remote_branch(cwd: &str, remote: &str, remote_branch: &str, local: &str
     if !out.status.success() {
         return Err(err(format!(
             "git branch failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("")
         )));
     }
     Ok(())
@@ -574,7 +637,10 @@ fn parse_nwo_from_remote_url(url: &str) -> Option<String> {
     } else {
         return None;
     };
-    let body = body.trim_end_matches('/').strip_suffix(".git").unwrap_or(body.trim_end_matches('/'));
+    let body = body
+        .trim_end_matches('/')
+        .strip_suffix(".git")
+        .unwrap_or(body.trim_end_matches('/'));
     let mut parts = body.split('/');
     let owner = parts.next()?;
     let repo = parts.next()?;
@@ -594,7 +660,9 @@ fn remote_repo_nwo(cwd: &str, remote: Option<&str>) -> Option<String> {
 /// (and silently swallowed — a failed upstream setup never fails the call).
 fn configure_pr_head_upstream(cwd: &str, pr: &Value, info: &HeadRemoteInfo, local_branch: &str) {
     let head_branch = pr["headBranch"].as_str().unwrap_or("");
-    let Some(nwo) = head_repo_nwo(pr, info) else { return };
+    let Some(nwo) = head_repo_nwo(pr, info) else {
+        return;
+    };
     let inner = (|| -> Result<(), WsErr> {
         let (https, ssh) = repo_clone_urls(cwd, &nwo)?;
         let origin_url = config_value(cwd, "remote.origin.url").unwrap_or_default();
@@ -613,7 +681,12 @@ fn configure_pr_head_upstream(cwd: &str, pr: &Value, info: &HeadRemoteInfo, loca
     let _ = inner;
 }
 
-fn materialize_pr_head_branch(cwd: &str, pr: &Value, info: &HeadRemoteInfo, local: &str) -> Result<(), WsErr> {
+fn materialize_pr_head_branch(
+    cwd: &str,
+    pr: &Value,
+    info: &HeadRemoteInfo,
+    local: &str,
+) -> Result<(), WsErr> {
     let head_branch = pr["headBranch"].as_str().unwrap_or("");
     let number = pr["number"].as_i64().unwrap_or(0);
     let Some(nwo) = head_repo_nwo(pr, info) else {
@@ -705,11 +778,11 @@ fn find_local_head_branch(
         return Ok(None);
     }
     let candidate = branches.iter().find(|(n, wt)| {
-        n == head
-            && wt.is_some()
-            && canonicalize(wt.as_deref().unwrap()) != root_worktree
+        n == head && wt.is_some() && canonicalize(wt.as_deref().unwrap()) != root_worktree
     });
-    let Some(candidate) = candidate else { return Ok(None) };
+    let Some(candidate) = candidate else {
+        return Ok(None);
+    };
     // Guard: a shared branch name does not identify a fork — if both repos are
     // known and differ, local mode errors and worktree mode ignores it.
     let remote_name = config_value(cwd, &format!("branch.{}.remote", candidate.0));
@@ -757,7 +830,12 @@ fn prepare_pull_request_thread(cwd: &str, payload: &Value) -> Result<Value, WsEr
 
     if mode == "local" {
         let out = gh_run(
-            &["pr".into(), "checkout".into(), reference.clone(), "--force".into()],
+            &[
+                "pr".into(),
+                "checkout".into(),
+                reference.clone(),
+                "--force".into(),
+            ],
             cwd,
         )
         .map_err(gh_err)?;
@@ -818,7 +896,11 @@ fn prepare_pull_request_thread(cwd: &str, payload: &Value) -> Result<Value, WsEr
     if !out.status.success() {
         return Err(err(format!(
             "git worktree add failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("")
         )));
     }
     configure_pr_head_upstream(&wt, &pr, &info, &local_pr_branch);
@@ -878,7 +960,9 @@ fn worktree_transfer_paths(source: &str) -> Result<Vec<String>, WsErr> {
         source,
         &["ls-files", "--others", "--exclude-standard", "-z"],
     )?;
-    paths.extend(parse(String::from_utf8_lossy(&untracked.stdout).to_string()));
+    paths.extend(parse(
+        String::from_utf8_lossy(&untracked.stdout).to_string(),
+    ));
     let include_file = Path::new(source).join(".worktreeinclude");
     if include_file.is_file() {
         let included = run(
@@ -917,7 +1001,11 @@ fn copy_checkout_changes(source: &str, worktree: &str) -> Result<(), WsErr> {
     if !patch.status.success() {
         return Err(err(format!(
             "git diff failed: {}",
-            String::from_utf8_lossy(&patch.stderr).trim().lines().next().unwrap_or("")
+            String::from_utf8_lossy(&patch.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("")
         )));
     }
     let patch_bytes = &patch.stdout;
@@ -942,7 +1030,11 @@ fn copy_checkout_changes(source: &str, worktree: &str) -> Result<(), WsErr> {
         if !out.status.success() {
             return Err(err(format!(
                 "git apply failed: {}",
-                String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+                String::from_utf8_lossy(&out.stderr)
+                    .trim()
+                    .lines()
+                    .next()
+                    .unwrap_or("")
             )));
         }
     }
@@ -955,7 +1047,10 @@ fn copy_checkout_changes(source: &str, worktree: &str) -> Result<(), WsErr> {
         let src = Path::new(source).join(rel);
         // skip anything that lives inside the target worktree
         let rel_to_target = pathdiff(src.canonicalize().unwrap_or(src.clone()), wt_root);
-        if !(rel_to_target == Path::new("..") || rel_to_target.starts_with("..") || rel_to_target.is_absolute()) {
+        if !(rel_to_target == Path::new("..")
+            || rel_to_target.starts_with("..")
+            || rel_to_target.is_absolute())
+        {
             continue;
         }
         let dst = wt_root.join(rel);
@@ -965,11 +1060,17 @@ fn copy_checkout_changes(source: &str, worktree: &str) -> Result<(), WsErr> {
             )));
         }
         if let Some(parent) = dst.parent() {
-            std::fs::create_dir_all(parent)
-                .map_err(|e| err(format!("could not copy {rel} into the detached worktree: {e}")))?;
+            std::fs::create_dir_all(parent).map_err(|e| {
+                err(format!(
+                    "could not copy {rel} into the detached worktree: {e}"
+                ))
+            })?;
         }
-        copy_preserve(&src, &dst)
-            .map_err(|e| err(format!("could not copy {rel} into the detached worktree: {e}")))?;
+        copy_preserve(&src, &dst).map_err(|e| {
+            err(format!(
+                "could not copy {rel} into the detached worktree: {e}"
+            ))
+        })?;
     }
     Ok(())
 }
@@ -1057,7 +1158,13 @@ pub(crate) fn create_detached_worktree_streaming(
         .map(str::to_string);
     let mut emit = |kind: &str, phase: Option<&str>, result: Option<Value>| {
         let mut m = serde_json::Map::new();
-        m.insert("progressId".into(), match progress_id.clone() { Some(v) => json!(v), None => Value::Null });
+        m.insert(
+            "progressId".into(),
+            match progress_id.clone() {
+                Some(v) => json!(v),
+                None => Value::Null,
+            },
+        );
         m.insert("kind".into(), json!(kind));
         if let Some(p) = phase {
             m.insert("phase".into(), json!(p));
@@ -1123,7 +1230,11 @@ pub(crate) fn create_detached_worktree_streaming(
         if !out.status.success() {
             return Err(err(format!(
                 "git branch failed: {}",
-                String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+                String::from_utf8_lossy(&out.stderr)
+                    .trim()
+                    .lines()
+                    .next()
+                    .unwrap_or("")
             )));
         }
     }
@@ -1156,7 +1267,11 @@ pub(crate) fn create_detached_worktree_streaming(
         }
         return Err(err(format!(
             "git worktree add failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("")
         )));
     }
 
@@ -1201,8 +1316,16 @@ pub(crate) fn run_stacked_action_streaming(
     payload: &Value,
     progress: &mut dyn FnMut(Value),
 ) -> Result<Value, WsErr> {
-    let action_id = payload.get("actionId").and_then(Value::as_str).unwrap_or("").to_string();
-    let action_kind = payload.get("action").and_then(Value::as_str).unwrap_or("").to_string();
+    let action_id = payload
+        .get("actionId")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
+    let action_kind = payload
+        .get("action")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
     let base = |extra: serde_json::Map<String, Value>| {
         let mut m = serde_json::Map::new();
         m.insert("actionId".into(), json!(action_id));
@@ -1217,7 +1340,11 @@ pub(crate) fn run_stacked_action_streaming(
     };
     {
         let mut phases: Vec<&str> = Vec::new();
-        if payload.get("featureBranch").and_then(Value::as_bool).unwrap_or(false) {
+        if payload
+            .get("featureBranch")
+            .and_then(Value::as_bool)
+            .unwrap_or(false)
+        {
             phases.push("branch");
         }
         let a = payload.get("action").and_then(Value::as_str).unwrap_or("");
@@ -1235,12 +1362,13 @@ pub(crate) fn run_stacked_action_streaming(
         emit("action_started", m);
     }
     #[allow(dead_code)]
-    let phase_started = |emit: &mut dyn FnMut(&str, serde_json::Map<String, Value>), phase: &str, label: &str| {
-        let mut m = serde_json::Map::new();
-        m.insert("phase".into(), json!(phase));
-        m.insert("label".into(), json!(label));
-        emit("phase_started", m);
-    };
+    let phase_started =
+        |emit: &mut dyn FnMut(&str, serde_json::Map<String, Value>), phase: &str, label: &str| {
+            let mut m = serde_json::Map::new();
+            m.insert("phase".into(), json!(phase));
+            m.insert("label".into(), json!(label));
+            emit("phase_started", m);
+        };
     let action = str_arg(payload, "action")?.to_string();
     let wants_commit = matches!(action.as_str(), "commit" | "commit_push" | "commit_push_pr");
     let wants_push = matches!(action.as_str(), "push" | "commit_push" | "commit_push_pr");
@@ -1265,7 +1393,11 @@ pub(crate) fn run_stacked_action_streaming(
     }
 
     // -- branch step -------------------------------------------------------------
-    if payload.get("featureBranch").and_then(|v| v.as_bool()).unwrap_or(false) {
+    if payload
+        .get("featureBranch")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
         let mut m = serde_json::Map::new();
         m.insert("phase".into(), json!("branch"));
         m.insert("label".into(), json!("Creating feature branch"));
@@ -1285,7 +1417,13 @@ pub(crate) fn run_stacked_action_streaming(
             .unwrap_or("work");
         let slug: String = base
             .chars()
-            .map(|c| if c.is_ascii_alphanumeric() { c.to_ascii_lowercase() } else { '-' })
+            .map(|c| {
+                if c.is_ascii_alphanumeric() {
+                    c.to_ascii_lowercase()
+                } else {
+                    '-'
+                }
+            })
             .collect::<String>()
             .split('-')
             .filter(|s| !s.is_empty())
@@ -1293,14 +1431,13 @@ pub(crate) fn run_stacked_action_streaming(
             .collect::<Vec<_>>()
             .join("-");
         let name = format!("synara/{slug}");
-        run(cwd, &["checkout", "-b", &name])
-            .and_then(|o| {
-                if o.status.success() {
-                    Ok(())
-                } else {
-                    Err(err(String::from_utf8_lossy(&o.stderr).trim().to_string()))
-                }
-            })?;
+        run(cwd, &["checkout", "-b", &name]).and_then(|o| {
+            if o.status.success() {
+                Ok(())
+            } else {
+                Err(err(String::from_utf8_lossy(&o.stderr).trim().to_string()))
+            }
+        })?;
         branch_status = "created";
         branch_name = json!(name);
     }
@@ -1323,11 +1460,14 @@ pub(crate) fn run_stacked_action_streaming(
         let file_paths: Vec<String> = payload
             .get("filePaths")
             .and_then(|v| v.as_array())
-            .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|x| x.as_str().map(String::from))
+                    .collect()
+            })
             .unwrap_or_default();
         if file_paths.is_empty() {
-            run(cwd, &["add", "-A"])
-                .map_err(|e| err(format!("git add failed: {}", e.0)))?;
+            run(cwd, &["add", "-A"]).map_err(|e| err(format!("git add failed: {}", e.0)))?;
         } else {
             let mut args = vec!["add", "--"];
             for f in &file_paths {
@@ -1354,12 +1494,16 @@ pub(crate) fn run_stacked_action_streaming(
                 }
             })?;
             commit_status = "created";
-            commit_sha = json!(stdout(cwd, &["rev-parse", "HEAD"], "rev-parse")?
-                .trim()
-                .to_string());
-            commit_subject = json!(stdout(cwd, &["log", "-1", "--pretty=%s"], "log")?
-                .trim()
-                .to_string());
+            commit_sha = json!(
+                stdout(cwd, &["rev-parse", "HEAD"], "rev-parse")?
+                    .trim()
+                    .to_string()
+            );
+            commit_subject = json!(
+                stdout(cwd, &["log", "-1", "--pretty=%s"], "log")?
+                    .trim()
+                    .to_string()
+            );
         }
     }
 
@@ -1379,15 +1523,19 @@ pub(crate) fn run_stacked_action_streaming(
     let mut push_upstream = Value::Null;
     let mut set_upstream = false;
     if wants_push {
-        let branch = crate::git_domain::current_branch(cwd)
-            .ok_or_else(|| err("not on a branch"))?;
+        let branch =
+            crate::git_domain::current_branch(cwd).ok_or_else(|| err("not on a branch"))?;
         push_branch = json!(branch);
         let upstream = crate::git_domain::upstream_branch(cwd);
         let unpushed = upstream.as_ref().map(|u| {
-            stdout(cwd, &["rev-list", &format!("{u}..HEAD"), "--count"], "rev-list")
-                .ok()
-                .and_then(|s| s.trim().parse::<i64>().ok())
-                .unwrap_or(0)
+            stdout(
+                cwd,
+                &["rev-list", &format!("{u}..HEAD"), "--count"],
+                "rev-list",
+            )
+            .ok()
+            .and_then(|s| s.trim().parse::<i64>().ok())
+            .unwrap_or(0)
         });
         if matches!(unpushed, Some(0)) {
             push_status = "skipped_up_to_date";
@@ -1429,8 +1577,7 @@ pub(crate) fn run_stacked_action_streaming(
     let mut pr_head = Value::Null;
     let mut pr_title = Value::Null;
     if wants_pr {
-        let head = crate::git_domain::current_branch(cwd)
-            .ok_or_else(|| err("not on a branch"))?;
+        let head = crate::git_domain::current_branch(cwd).ok_or_else(|| err("not on a branch"))?;
         pr_head = json!(head.clone());
         let base = stdout(
             cwd,
@@ -1469,10 +1616,11 @@ pub(crate) fn run_stacked_action_streaming(
                 .and_then(|v| v.as_str())
                 .map(str::to_string)
                 .or_else(|| {
-                    commit_subject
-                        .as_str()
-                        .map(str::to_string)
-                        .or_else(|| stdout(cwd, &["log", "-1", "--pretty=%s"], "log").ok().map(|s| s.trim().to_string()))
+                    commit_subject.as_str().map(str::to_string).or_else(|| {
+                        stdout(cwd, &["log", "-1", "--pretty=%s"], "log")
+                            .ok()
+                            .map(|s| s.trim().to_string())
+                    })
                 })
                 .ok_or_else(|| err("could not determine a PR title"))?;
             let body = payload
@@ -1591,21 +1739,33 @@ struct StashEntry {
 
 fn stash_working_tree(cwd: &str, label: &str) -> Result<StashEntry, WsErr> {
     if !has_worktree_changes(cwd) {
-        return Ok(StashEntry { had_changes: false, stash_ref: None });
+        return Ok(StashEntry {
+            had_changes: false,
+            stash_ref: None,
+        });
     }
     let before = read_stash_ref(cwd);
     let out = run(cwd, &["stash", "push", "--include-untracked", "-m", label])?;
     if !out.status.success() {
         return Err(err(format!(
             "git stash push failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("git failed")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("git failed")
         )));
     }
     let after = read_stash_ref(cwd);
     if after == before {
-        return Err(err("Git did not create a stash entry while preparing the thread handoff."));
+        return Err(err(
+            "Git did not create a stash entry while preparing the thread handoff.",
+        ));
     }
-    Ok(StashEntry { had_changes: true, stash_ref: after })
+    Ok(StashEntry {
+        had_changes: true,
+        stash_ref: after,
+    })
 }
 
 struct PopResult {
@@ -1614,7 +1774,9 @@ struct PopResult {
 }
 
 fn drop_stash_by_sha(cwd: &str, sha: &str) {
-    let Ok(out) = run(cwd, &["stash", "list", "--format=%H"]) else { return };
+    let Ok(out) = run(cwd, &["stash", "list", "--format=%H"]) else {
+        return;
+    };
     if !out.status.success() {
         return;
     }
@@ -1631,7 +1793,10 @@ fn drop_stash_by_sha(cwd: &str, sha: &str) {
 
 fn pop_stash(cwd: &str, stash_ref: Option<&str>) -> PopResult {
     let Some(sha) = stash_ref else {
-        return PopResult { conflicts: false, message: None };
+        return PopResult {
+            conflicts: false,
+            message: None,
+        };
     };
     // Apply by SHA (accepted for any stash-shaped commit) then drop the matching
     // list entry on success, upstream pop-style semantics.
@@ -1639,7 +1804,10 @@ fn pop_stash(cwd: &str, stash_ref: Option<&str>) -> PopResult {
     match result {
         Ok(out) if out.status.success() => {
             drop_stash_by_sha(cwd, sha);
-            PopResult { conflicts: false, message: None }
+            PopResult {
+                conflicts: false,
+                message: None,
+            }
         }
         Ok(out) => {
             let combined = format!(
@@ -1674,7 +1842,11 @@ fn checkout_detached(cwd: &str, refspec: &str) -> Result<(), WsErr> {
     if !out.status.success() {
         return Err(err(format!(
             "git checkout failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("git failed")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("git failed")
         )));
     }
     Ok(())
@@ -1685,7 +1857,11 @@ fn checkout_branch(cwd: &str, branch: &str) -> Result<(), WsErr> {
     if !out.status.success() {
         return Err(err(format!(
             "git checkout failed: {}",
-            String::from_utf8_lossy(&out.stderr).trim().lines().next().unwrap_or("git failed")
+            String::from_utf8_lossy(&out.stderr)
+                .trim()
+                .lines()
+                .next()
+                .unwrap_or("git failed")
         )));
     }
     Ok(())
@@ -1745,7 +1921,8 @@ fn restore_local_source(
         rec.checkout_restored = checkout_detached(cwd, head).is_ok();
     }
     if !rec.checkout_restored {
-        rec.notes.push("Restore the checkout manually before retrying.".to_string());
+        rec.notes
+            .push("Restore the checkout manually before retrying.".to_string());
     }
     if stash_ref.is_some() {
         rec.stash_restored = !pop_stash(cwd, stash_ref).conflicts;
@@ -1766,7 +1943,9 @@ fn recreate_worktree(
     let Some(path) = worktree_path else {
         return (false, false);
     };
-    let target = branch.map(String::from).or_else(|| refspec.map(String::from));
+    let target = branch
+        .map(String::from)
+        .or_else(|| refspec.map(String::from));
     let Some(target) = target else {
         return (false, false);
     };
@@ -1825,12 +2004,21 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
         }
         let associated_path = assoc_path.clone().or_else(|| Some(wt_path.clone()));
         let associated_branch = assoc_branch.clone().or_else(|| current_branch.clone());
-        let associated_ref = assoc_ref.clone().or_else(|| wt_head.clone()).or_else(|| associated_branch.clone());
+        let associated_ref = assoc_ref
+            .clone()
+            .or_else(|| wt_head.clone())
+            .or_else(|| associated_branch.clone());
         let original_local_branch = local_branch_now.clone();
         let original_local_head = read_head_ref(cwd);
 
-        let preserved_local = stash_working_tree(cwd, &format!("synara preserve local handoff {}", uuid_short()))?;
-        let source_stash = stash_working_tree(&wt_path, &format!("synara handoff to local {}", uuid_short()))?;
+        let preserved_local = stash_working_tree(
+            cwd,
+            &format!("synara preserve local handoff {}", uuid_short()),
+        )?;
+        let source_stash = stash_working_tree(
+            &wt_path,
+            &format!("synara handoff to local {}", uuid_short()),
+        )?;
 
         // Remove the worktree; on failure restore both stashes before failing.
         let removed = run(cwd, &["worktree", "remove", "--force", &wt_path])
@@ -1839,7 +2027,9 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
         if !removed {
             let _ = pop_stash(&wt_path, source_stash.stash_ref.as_deref());
             let _ = pop_stash(cwd, preserved_local.stash_ref.as_deref());
-            return Err(err("git worktree remove failed during the handoff; stashes were restored."));
+            return Err(err(
+                "git worktree remove failed during the handoff; stashes were restored.",
+            ));
         }
 
         // Move the local checkout onto the target branch (or detach at the worktree HEAD).
@@ -1868,9 +2058,21 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
             let detail = format!(
                 "{} {} {} {}",
                 e.0,
-                if recreated { "The original worktree was recreated." } else { "The original worktree could not be recreated automatically." },
-                if wt_changes { "Recovered worktree changes were reapplied." } else { "Recovered worktree changes remain in the Git stash." },
-                if local_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash." },
+                if recreated {
+                    "The original worktree was recreated."
+                } else {
+                    "The original worktree could not be recreated automatically."
+                },
+                if wt_changes {
+                    "Recovered worktree changes were reapplied."
+                } else {
+                    "Recovered worktree changes remain in the Git stash."
+                },
+                if local_restored {
+                    "Previous local changes were restored."
+                } else {
+                    "Previous local changes remain in the Git stash."
+                },
             );
             return Err(err(detail));
         }
@@ -1894,11 +2096,30 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
             );
             let detail = format!(
                 "{} The handoff was rolled back so the thread stays in its worktree. {} {} {} {}",
-                transfer.message.as_deref().unwrap_or("Git reported conflicts while applying the handed off changes."),
-                if recreated { "The original worktree was recreated." } else { "The original worktree could not be recreated automatically." },
-                if wt_changes { "The thread changes were restored to that worktree." } else { "The thread changes remain in the Git stash." },
-                if rec.checkout_restored { "Local checkout was restored." } else { "Local checkout could not be fully restored automatically." },
-                if rec.local_changes_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash." },
+                transfer
+                    .message
+                    .as_deref()
+                    .unwrap_or("Git reported conflicts while applying the handed off changes."),
+                if recreated {
+                    "The original worktree was recreated."
+                } else {
+                    "The original worktree could not be recreated automatically."
+                },
+                if wt_changes {
+                    "The thread changes were restored to that worktree."
+                } else {
+                    "The thread changes remain in the Git stash."
+                },
+                if rec.checkout_restored {
+                    "Local checkout was restored."
+                } else {
+                    "Local checkout could not be fully restored automatically."
+                },
+                if rec.local_changes_restored {
+                    "Previous local changes were restored."
+                } else {
+                    "Previous local changes remain in the Git stash."
+                },
             );
             return Err(err(detail));
         }
@@ -1911,15 +2132,23 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
             .map(|b| format!("main local checkout on '{b}'"))
             .unwrap_or_else(|| "local checkout in detached HEAD".to_string());
         let base = match (moved, restored) {
-            (true, true) => format!("Moved the thread back to the {label}, carried its uncommitted work over, and restored your previous local changes."),
-            (true, false) => format!("Moved the thread back to the {label} and carried its uncommitted work over."),
-            (false, true) => format!("Moved the thread back to the {label} and restored your previous local changes."),
+            (true, true) => format!(
+                "Moved the thread back to the {label}, carried its uncommitted work over, and restored your previous local changes."
+            ),
+            (true, false) => format!(
+                "Moved the thread back to the {label} and carried its uncommitted work over."
+            ),
+            (false, true) => format!(
+                "Moved the thread back to the {label} and restored your previous local changes."
+            ),
             (false, false) => format!("Moved the thread back to the {label}."),
         };
         let message = if local_transfer.conflicts {
             format!(
                 "{}\nYour previous local stash entry was kept for recovery.",
-                local_transfer.message.as_deref().unwrap_or("Git reported conflicts while restoring your previous local changes.")
+                local_transfer.message.as_deref().unwrap_or(
+                    "Git reported conflicts while restoring your previous local changes."
+                )
             )
         } else {
             base
@@ -1941,14 +2170,22 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
     let intent_name = preferred_new_name.clone();
     let reuse = assoc_path.is_some() || assoc_branch.is_some() || assoc_ref.is_some();
     if intent_name.is_none() && !reuse {
-        return Err(err("Cannot hand off to a worktree because no worktree target is available."));
+        return Err(err(
+            "Cannot hand off to a worktree because no worktree target is available.",
+        ));
     }
-    let base_branch = preferred_base.clone().or_else(|| current_branch.clone()).or_else(|| local_branch_now.clone());
+    let base_branch = preferred_base
+        .clone()
+        .or_else(|| current_branch.clone())
+        .or_else(|| local_branch_now.clone());
     if base_branch.is_none() && assoc_branch.is_none() && assoc_ref.is_none() {
-        return Err(err("Select a base branch before handing off this thread to a worktree."));
+        return Err(err(
+            "Select a base branch before handing off this thread to a worktree.",
+        ));
     }
 
-    let source_stash = stash_working_tree(cwd, &format!("synara handoff to worktree {}", uuid_short()))?;
+    let source_stash =
+        stash_working_tree(cwd, &format!("synara handoff to worktree {}", uuid_short()))?;
     let source_branch = local_branch_now.clone().or_else(|| current_branch.clone());
     let source_head = read_head_ref(cwd);
     let mut foreground_after = local_branch_now.clone();
@@ -1956,7 +2193,9 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
     // If Local is on the branch the worktree will take, move Local aside first.
     if source_branch.is_some() && source_branch == assoc_branch {
         let excluded = assoc_branch.clone().unwrap_or_default();
-        let fallback = list_local_branches(cwd).into_iter().find(|b| *b != excluded);
+        let fallback = list_local_branches(cwd)
+            .into_iter()
+            .find(|b| *b != excluded);
         match fallback {
             None => {
                 let Some(head) = source_head.clone() else {
@@ -1984,11 +2223,12 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
     // Materialize the worktree.
     let created: Result<(String, Option<String>), WsErr> = (|| {
         if let (Some(aref), None) = (assoc_ref.clone(), assoc_branch.clone()) {
-            let v = create_detached_worktree(
-                cwd,
-                &json!({"ref": aref, "path": assoc_path}),
-            )?;
-            let path = v.pointer("/worktree/path").and_then(Value::as_str).unwrap_or_default().to_string();
+            let v = create_detached_worktree(cwd, &json!({"ref": aref, "path": assoc_path}))?;
+            let path = v
+                .pointer("/worktree/path")
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string();
             return Ok((path, None));
         }
         if let Some(name) = &intent_name {
@@ -2026,7 +2266,11 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
             }
             if base_branch.is_none() {
                 let v = create_detached_worktree(cwd, &json!({"ref": ab, "path": assoc_path}))?;
-                let path = v.pointer("/worktree/path").and_then(Value::as_str).unwrap_or_default().to_string();
+                let path = v
+                    .pointer("/worktree/path")
+                    .and_then(Value::as_str)
+                    .unwrap_or_default()
+                    .to_string();
                 return Ok((path, None));
             }
             let v = crate::git_domain::handle(
@@ -2041,9 +2285,16 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
                 .to_string();
             return Ok((path, Some(ab.clone())));
         }
-        let target = base_branch.clone().or_else(|| assoc_ref.clone()).ok_or_else(|| err("no worktree target"))?;
+        let target = base_branch
+            .clone()
+            .or_else(|| assoc_ref.clone())
+            .ok_or_else(|| err("no worktree target"))?;
         let v = create_detached_worktree(cwd, &json!({"ref": target, "path": assoc_path}))?;
-        let path = v.pointer("/worktree/path").and_then(Value::as_str).unwrap_or_default().to_string();
+        let path = v
+            .pointer("/worktree/path")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_string();
         Ok((path, None))
     })();
 
@@ -2059,8 +2310,16 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
             let detail = format!(
                 "{} {} {}",
                 e.0,
-                if rec.checkout_restored { "Local checkout was restored." } else { "Local checkout could not be fully restored automatically." },
-                if rec.stash_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash." },
+                if rec.checkout_restored {
+                    "Local checkout was restored."
+                } else {
+                    "Local checkout could not be fully restored automatically."
+                },
+                if rec.stash_restored {
+                    "Previous local changes were restored."
+                } else {
+                    "Previous local changes remain in the Git stash."
+                },
             );
             return Err(err(detail));
         }
@@ -2082,10 +2341,25 @@ pub(crate) fn handoff_thread(cwd: &str, payload: &Value) -> Result<Value, WsErr>
         );
         let detail = format!(
             "{} The stash entry was kept for recovery. {} {} {}",
-            transfer.message.as_deref().unwrap_or("Git reported conflicts while applying the handed off changes."),
-            if removed { "The new worktree was removed." } else { "The new worktree could not be removed automatically." },
-            if rec.checkout_restored { "Local checkout was restored." } else { "Local checkout could not be fully restored automatically." },
-            if rec.stash_restored { "Previous local changes were restored." } else { "Previous local changes remain in the Git stash. Run `git stash list` in Local to recover them." },
+            transfer
+                .message
+                .as_deref()
+                .unwrap_or("Git reported conflicts while applying the handed off changes."),
+            if removed {
+                "The new worktree was removed."
+            } else {
+                "The new worktree could not be removed automatically."
+            },
+            if rec.checkout_restored {
+                "Local checkout was restored."
+            } else {
+                "Local checkout could not be fully restored automatically."
+            },
+            if rec.stash_restored {
+                "Previous local changes were restored."
+            } else {
+                "Previous local changes remain in the Git stash. Run `git stash list` in Local to recover them."
+            },
         );
         return Err(err(detail));
     }

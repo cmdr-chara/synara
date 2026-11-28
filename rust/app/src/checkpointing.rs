@@ -12,8 +12,8 @@
 //! Nothing touches the user's index, worktree, or visible refs.
 
 use base64::Engine;
-use rusqlite::{params, Connection};
-use serde_json::{json, Value};
+use rusqlite::{Connection, params};
+use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -32,7 +32,10 @@ fn thread_token(thread_id: &str) -> String {
 }
 
 fn ref_for_turn(thread_id: &str, turn_count: i64) -> String {
-    format!("{REFS_PREFIX}/{}/turn/{turn_count}", thread_token(thread_id))
+    format!(
+        "{REFS_PREFIX}/{}/turn/{turn_count}",
+        thread_token(thread_id)
+    )
 }
 
 fn git(cwd: &Path, args: &[&str], env_index: Option<&Path>) -> Result<std::process::Output, WsErr> {
@@ -49,7 +52,12 @@ fn git(cwd: &Path, args: &[&str], env_index: Option<&Path>) -> Result<std::proce
 }
 
 fn git_stdout(cwd: &Path, args: &[&str]) -> Option<String> {
-    let out = Command::new("git").arg("-C").arg(cwd).args(args).output().ok()?;
+    let out = Command::new("git")
+        .arg("-C")
+        .arg(cwd)
+        .args(args)
+        .output()
+        .ok()?;
     if !out.status.success() {
         return None;
     }
@@ -68,8 +76,16 @@ fn head_commit(cwd: &Path) -> Option<String> {
 }
 
 fn ref_commit(cwd: &Path, reference: &str) -> Option<String> {
-    git_stdout(cwd, &["rev-parse", "--verify", "--quiet", &format!("{reference}^{{commit}}")])
-        .filter(|v| !v.is_empty())
+    git_stdout(
+        cwd,
+        &[
+            "rev-parse",
+            "--verify",
+            "--quiet",
+            &format!("{reference}^{{commit}}"),
+        ],
+    )
+    .filter(|v| !v.is_empty())
 }
 
 /// Capture the full worktree state (tracked + untracked, honoring ignore rules)
@@ -99,7 +115,11 @@ fn capture(cwd: &Path, reference: &str) -> Result<Option<String>, WsErr> {
             if index_path.exists() && std::fs::copy(index_path, &temp_index).is_ok() {
                 seeded = true;
                 // Verify racily-clean entries without discarding the cache.
-                let _ = git(cwd, &["update-index", "--really-refresh"], Some(&temp_index));
+                let _ = git(
+                    cwd,
+                    &["update-index", "--really-refresh"],
+                    Some(&temp_index),
+                );
             }
         }
         if !seeded && head_commit(cwd).is_some() {
@@ -124,7 +144,10 @@ fn capture(cwd: &Path, reference: &str) -> Result<Option<String>, WsErr> {
             commit_args.push("-p".into());
             commit_args.push(head);
         }
-        let message = format!("synara checkpoint\n\nSynara-Head: {}", head_commit(cwd).unwrap_or_default());
+        let message = format!(
+            "synara checkpoint\n\nSynara-Head: {}",
+            head_commit(cwd).unwrap_or_default()
+        );
         let commit = Command::new("git")
             .arg("-C")
             .arg(cwd)
@@ -422,7 +445,6 @@ pub(crate) fn spawn_capture(thread_id: String, turn_id: String, root: PathBuf) {
     });
 }
 
-
 /// Restore the worktree to the checkpoint recorded for `turn_count`, then
 /// report completion through the internal command channel so the projection
 /// lifecycle matches upstream (`checkpoint.revert.succeeded` /
@@ -433,7 +455,10 @@ pub(crate) fn spawn_revert(thread_id: String, turn_count: i64, root: PathBuf) {
         let now = crate::todo::iso_now_ms();
         let mut command = serde_json::Map::new();
         command.insert("type".into(), json!("thread.revert.complete"));
-        command.insert("commandId".into(), json!(format!("revert-complete:{thread_id}:{turn_count}")));
+        command.insert(
+            "commandId".into(),
+            json!(format!("revert-complete:{thread_id}:{turn_count}")),
+        );
         command.insert("threadId".into(), json!(thread_id));
         command.insert("createdAt".into(), json!(now));
         command.insert("turnCount".into(), json!(turn_count));
@@ -533,12 +558,23 @@ mod tests {
             .duration_since(std::time::UNIX_EPOCH)
             .map(|d| d.as_nanos())
             .unwrap_or(0);
-        let dir = std::env::temp_dir().join(format!("synara-ckpt-test-{}-{unique}", std::process::id()));
+        let dir =
+            std::env::temp_dir().join(format!("synara-ckpt-test-{}-{unique}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
         let run = |args: &[&str]| {
-            let out = Command::new("git").arg("-C").arg(&dir).args(args).output().unwrap();
-            assert!(out.status.success(), "git {:?}: {}", args, String::from_utf8_lossy(&out.stderr));
+            let out = Command::new("git")
+                .arg("-C")
+                .arg(&dir)
+                .args(args)
+                .output()
+                .unwrap();
+            assert!(
+                out.status.success(),
+                "git {:?}: {}",
+                args,
+                String::from_utf8_lossy(&out.stderr)
+            );
         };
         run(&["init", "-q"]);
         run(&["config", "user.email", "test@test"]);
@@ -556,7 +592,10 @@ mod tests {
         std::fs::write(dir.join("new.txt"), "untracked").unwrap();
         let reference = "refs/synara/checkpoints/test/turn/1";
         let commit = capture(&dir, reference).unwrap().expect("captured");
-        assert_eq!(ref_commit(&dir, reference).as_deref(), Some(commit.as_str()));
+        assert_eq!(
+            ref_commit(&dir, reference).as_deref(),
+            Some(commit.as_str())
+        );
         // The checkpoint tree carries the edit and the untracked file.
         let tree_listing = git_stdout(&dir, &["ls-tree", "-r", "--name-only", reference]).unwrap();
         assert!(tree_listing.contains("a.txt"));
@@ -579,10 +618,19 @@ mod tests {
         capture(&dir, "refs/synara/checkpoints/t/turn/0").unwrap();
         std::fs::write(dir.join("a.txt"), "two").unwrap();
         capture(&dir, "refs/synara/checkpoints/t/turn/1").unwrap();
-        let diff = diff_refs(&dir, "refs/synara/checkpoints/t/turn/0", "refs/synara/checkpoints/t/turn/1").unwrap();
+        let diff = diff_refs(
+            &dir,
+            "refs/synara/checkpoints/t/turn/0",
+            "refs/synara/checkpoints/t/turn/1",
+        )
+        .unwrap();
         assert!(diff.contains("a.txt"), "diff missing a.txt: {diff}");
         assert!(diff.contains("+two"));
-        let files = changed_files(&dir, "refs/synara/checkpoints/t/turn/0", "refs/synara/checkpoints/t/turn/1");
+        let files = changed_files(
+            &dir,
+            "refs/synara/checkpoints/t/turn/0",
+            "refs/synara/checkpoints/t/turn/1",
+        );
         assert_eq!(files[0].get("path").and_then(Value::as_str), Some("a.txt"));
         let _ = std::fs::remove_dir_all(&dir);
     }
@@ -594,7 +642,10 @@ mod tests {
         let reference = "refs/synara/checkpoints/t/turn/0";
         capture_tree_at_head(&dir, reference).unwrap();
         let content = git_stdout(&dir, &["show", &format!("{reference}:a.txt")]).unwrap();
-        assert_eq!(content, "one", "base ref must mirror HEAD, not the dirty worktree");
+        assert_eq!(
+            content, "one",
+            "base ref must mirror HEAD, not the dirty worktree"
+        );
         let _ = std::fs::remove_dir_all(&dir);
     }
 }

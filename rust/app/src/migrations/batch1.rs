@@ -3,84 +3,188 @@
 //! each carries a `manual:` comment inventory. Do not edit by hand —
 //! complete the manual parts in place and drop the marker.
 
-use rusqlite::Connection;
-use crate::migrations::{MigrationFn} ;
-use crate::migrations::helpers::{column_exists, table_exists, primary_key_columns, execute, execute_lenient};
 use crate::acp_runner::err;
+use crate::migrations::MigrationFn;
+use crate::migrations::helpers::{
+    column_exists, execute, execute_lenient, primary_key_columns, table_exists,
+};
 use crate::todo::WsErr;
+use rusqlite::Connection;
 
 // 001 OrchestrationEvents
 fn m001(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS orchestration_events (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      event_id TEXT NOT NULL UNIQUE,\n      aggregate_kind TEXT NOT NULL,\n      stream_id TEXT NOT NULL,\n      stream_version INTEGER NOT NULL,\n      event_type TEXT NOT NULL,\n      occurred_at TEXT NOT NULL,\n      command_id TEXT,\n      causation_event_id TEXT,\n      correlation_id TEXT,\n      actor_kind TEXT NOT NULL,\n      payload_json TEXT NOT NULL,\n      metadata_json TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_orch_events_stream_version\n    ON orchestration_events(aggregate_kind, stream_id, stream_version)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orch_events_stream_sequence\n    ON orchestration_events(aggregate_kind, stream_id, sequence)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orch_events_command_id\n    ON orchestration_events(command_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orch_events_correlation_id\n    ON orchestration_events(correlation_id)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS orchestration_events (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      event_id TEXT NOT NULL UNIQUE,\n      aggregate_kind TEXT NOT NULL,\n      stream_id TEXT NOT NULL,\n      stream_version INTEGER NOT NULL,\n      event_type TEXT NOT NULL,\n      occurred_at TEXT NOT NULL,\n      command_id TEXT,\n      causation_event_id TEXT,\n      correlation_id TEXT,\n      actor_kind TEXT NOT NULL,\n      payload_json TEXT NOT NULL,\n      metadata_json TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_orch_events_stream_version\n    ON orchestration_events(aggregate_kind, stream_id, stream_version)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orch_events_stream_sequence\n    ON orchestration_events(aggregate_kind, stream_id, sequence)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orch_events_command_id\n    ON orchestration_events(command_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orch_events_correlation_id\n    ON orchestration_events(correlation_id)",
+    )?;
     Ok(())
 }
 
 // 002 OrchestrationCommandReceipts
 fn m002(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS orchestration_command_receipts (\n      command_id TEXT PRIMARY KEY,\n      aggregate_kind TEXT NOT NULL,\n      aggregate_id TEXT NOT NULL,\n      accepted_at TEXT NOT NULL,\n      result_sequence INTEGER NOT NULL,\n      status TEXT NOT NULL,\n      error TEXT\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orch_command_receipts_aggregate\n    ON orchestration_command_receipts(aggregate_kind, aggregate_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orch_command_receipts_sequence\n    ON orchestration_command_receipts(result_sequence)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS orchestration_command_receipts (\n      command_id TEXT PRIMARY KEY,\n      aggregate_kind TEXT NOT NULL,\n      aggregate_id TEXT NOT NULL,\n      accepted_at TEXT NOT NULL,\n      result_sequence INTEGER NOT NULL,\n      status TEXT NOT NULL,\n      error TEXT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orch_command_receipts_aggregate\n    ON orchestration_command_receipts(aggregate_kind, aggregate_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orch_command_receipts_sequence\n    ON orchestration_command_receipts(result_sequence)",
+    )?;
     Ok(())
 }
 
 // 003 CheckpointDiffBlobs
 fn m003(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS checkpoint_diff_blobs (\n      thread_id TEXT NOT NULL,\n      from_turn_count INTEGER NOT NULL,\n      to_turn_count INTEGER NOT NULL,\n      diff TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      UNIQUE (thread_id, from_turn_count, to_turn_count)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_checkpoint_diff_blobs_thread_to_turn\n    ON checkpoint_diff_blobs(thread_id, to_turn_count)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS checkpoint_diff_blobs (\n      thread_id TEXT NOT NULL,\n      from_turn_count INTEGER NOT NULL,\n      to_turn_count INTEGER NOT NULL,\n      diff TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      UNIQUE (thread_id, from_turn_count, to_turn_count)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_checkpoint_diff_blobs_thread_to_turn\n    ON checkpoint_diff_blobs(thread_id, to_turn_count)",
+    )?;
     Ok(())
 }
 
 // 004 ProviderSessionRuntime
 fn m004(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS provider_session_runtime (\n      thread_id TEXT PRIMARY KEY,\n      provider_name TEXT NOT NULL,\n      adapter_key TEXT NOT NULL,\n      runtime_mode TEXT NOT NULL DEFAULT 'full-access',\n      status TEXT NOT NULL,\n      last_seen_at TEXT NOT NULL,\n      resume_cursor_json TEXT,\n      runtime_payload_json TEXT\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_session_runtime_status\n    ON provider_session_runtime(status)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_session_runtime_provider\n    ON provider_session_runtime(provider_name)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS provider_session_runtime (\n      thread_id TEXT PRIMARY KEY,\n      provider_name TEXT NOT NULL,\n      adapter_key TEXT NOT NULL,\n      runtime_mode TEXT NOT NULL DEFAULT 'full-access',\n      status TEXT NOT NULL,\n      last_seen_at TEXT NOT NULL,\n      resume_cursor_json TEXT,\n      runtime_payload_json TEXT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_provider_session_runtime_status\n    ON provider_session_runtime(status)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_provider_session_runtime_provider\n    ON provider_session_runtime(provider_name)",
+    )?;
     Ok(())
 }
 
 // 005 Projections
 fn m005(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_projects (\n      project_id TEXT PRIMARY KEY,\n      kind TEXT NOT NULL DEFAULT 'project',\n      title TEXT NOT NULL,\n      workspace_root TEXT NOT NULL,\n      default_model TEXT,\n      scripts_json TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      deleted_at TEXT\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_threads (\n      thread_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      title TEXT NOT NULL,\n      model TEXT NOT NULL,\n      branch TEXT,\n      worktree_path TEXT,\n      latest_turn_id TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      deleted_at TEXT\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_messages (\n      message_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      role TEXT NOT NULL,\n      text TEXT NOT NULL,\n      is_streaming INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_activities (\n      activity_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      tone TEXT NOT NULL,\n      kind TEXT NOT NULL,\n      summary TEXT NOT NULL,\n      payload_json TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_sessions (\n      thread_id TEXT PRIMARY KEY,\n      status TEXT NOT NULL,\n      provider_name TEXT,\n      provider_session_id TEXT,\n      provider_thread_id TEXT,\n      active_turn_id TEXT,\n      last_error TEXT,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_turns (\n      row_id INTEGER PRIMARY KEY AUTOINCREMENT,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      pending_message_id TEXT,\n      assistant_message_id TEXT,\n      state TEXT NOT NULL,\n      requested_at TEXT NOT NULL,\n      started_at TEXT,\n      completed_at TEXT,\n      checkpoint_turn_count INTEGER,\n      checkpoint_ref TEXT,\n      checkpoint_status TEXT,\n      checkpoint_files_json TEXT NOT NULL,\n      UNIQUE (thread_id, turn_id),\n      UNIQUE (thread_id, checkpoint_turn_count)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_pending_approvals (\n      request_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_state (\n      projector TEXT PRIMARY KEY,\n      last_applied_sequence INTEGER NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_projects_updated_at\n    ON projection_projects(updated_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_threads_project_id\n    ON projection_threads(project_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created\n    ON projection_thread_messages(thread_id, created_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_thread_created\n    ON projection_thread_activities(thread_id, created_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_sessions_provider_session\n    ON projection_thread_sessions(provider_session_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_turns_thread_requested\n    ON projection_turns(thread_id, requested_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_turns_thread_checkpoint_completed\n    ON projection_turns(thread_id, checkpoint_turn_count, completed_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_pending_approvals_thread_status\n    ON projection_pending_approvals(thread_id, status)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_projects (\n      project_id TEXT PRIMARY KEY,\n      kind TEXT NOT NULL DEFAULT 'project',\n      title TEXT NOT NULL,\n      workspace_root TEXT NOT NULL,\n      default_model TEXT,\n      scripts_json TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      deleted_at TEXT\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_threads (\n      thread_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      title TEXT NOT NULL,\n      model TEXT NOT NULL,\n      branch TEXT,\n      worktree_path TEXT,\n      latest_turn_id TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      deleted_at TEXT\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_thread_messages (\n      message_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      role TEXT NOT NULL,\n      text TEXT NOT NULL,\n      is_streaming INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_thread_activities (\n      activity_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      tone TEXT NOT NULL,\n      kind TEXT NOT NULL,\n      summary TEXT NOT NULL,\n      payload_json TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_thread_sessions (\n      thread_id TEXT PRIMARY KEY,\n      status TEXT NOT NULL,\n      provider_name TEXT,\n      provider_session_id TEXT,\n      provider_thread_id TEXT,\n      active_turn_id TEXT,\n      last_error TEXT,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_turns (\n      row_id INTEGER PRIMARY KEY AUTOINCREMENT,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      pending_message_id TEXT,\n      assistant_message_id TEXT,\n      state TEXT NOT NULL,\n      requested_at TEXT NOT NULL,\n      started_at TEXT,\n      completed_at TEXT,\n      checkpoint_turn_count INTEGER,\n      checkpoint_ref TEXT,\n      checkpoint_status TEXT,\n      checkpoint_files_json TEXT NOT NULL,\n      UNIQUE (thread_id, turn_id),\n      UNIQUE (thread_id, checkpoint_turn_count)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_pending_approvals (\n      request_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_state (\n      projector TEXT PRIMARY KEY,\n      last_applied_sequence INTEGER NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_projects_updated_at\n    ON projection_projects(updated_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_threads_project_id\n    ON projection_threads(project_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created\n    ON projection_thread_messages(thread_id, created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_thread_created\n    ON projection_thread_activities(thread_id, created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_sessions_provider_session\n    ON projection_thread_sessions(provider_session_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_turns_thread_requested\n    ON projection_turns(thread_id, requested_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_turns_thread_checkpoint_completed\n    ON projection_turns(thread_id, checkpoint_turn_count, completed_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_pending_approvals_thread_status\n    ON projection_pending_approvals(thread_id, status)",
+    )?;
     Ok(())
 }
 
 // 006 ProjectionThreadSessionRuntimeModeColumns — hand-ported: the only
 // interpolation was the DEFAULT_RUNTIME_MODE constant inlined as its literal.
 fn m006(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_sessions ADD COLUMN runtime_mode TEXT NOT NULL DEFAULT 'full-access'")?;
-    execute(conn, "UPDATE projection_thread_sessions SET runtime_mode = 'full-access' WHERE runtime_mode IS NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_sessions ADD COLUMN runtime_mode TEXT NOT NULL DEFAULT 'full-access'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_thread_sessions SET runtime_mode = 'full-access' WHERE runtime_mode IS NULL",
+    )?;
     Ok(())
 }
 
 // 007 ProjectionThreadMessageAttachments
 fn m007(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n    ADD COLUMN attachments_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n    ADD COLUMN attachments_json TEXT",
+    )?;
     Ok(())
 }
 
 // 008 ProjectionThreadActivitySequence
 fn m008(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_activities\n    ADD COLUMN sequence INTEGER")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_thread_sequence\n    ON projection_thread_activities(thread_id, sequence)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_activities\n    ADD COLUMN sequence INTEGER",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_thread_sequence\n    ON projection_thread_activities(thread_id, sequence)",
+    )?;
     Ok(())
 }
 
@@ -91,96 +195,186 @@ fn m009(conn: &Connection) -> Result<(), WsErr> {
 
 // 010 ProjectionThreadsRuntimeMode
 fn m010(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN runtime_mode TEXT NOT NULL DEFAULT 'full-access'")?;
-    execute(conn, "UPDATE projection_threads\n    SET runtime_mode = 'full-access'\n    WHERE runtime_mode IS NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN runtime_mode TEXT NOT NULL DEFAULT 'full-access'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET runtime_mode = 'full-access'\n    WHERE runtime_mode IS NULL",
+    )?;
     Ok(())
 }
 
 // 011 OrchestrationThreadCreatedRuntimeMode
 fn m011(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.runtimeMode', 'full-access')\n    WHERE event_type = 'thread.created'\n      AND json_type(payload_json, '$.runtimeMode') IS NULL")?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.runtimeMode', 'full-access')\n    WHERE event_type = 'thread.created'\n      AND json_type(payload_json, '$.runtimeMode') IS NULL",
+    )?;
     Ok(())
 }
 
 // 012 ProjectionThreadsInteractionMode
 fn m012(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN interaction_mode TEXT NOT NULL DEFAULT 'default'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN interaction_mode TEXT NOT NULL DEFAULT 'default'",
+    )?;
     Ok(())
 }
 
 // 013 ProjectionThreadProposedPlans
 fn m013(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_proposed_plans (\n      plan_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      plan_markdown TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_proposed_plans_thread_created\n    ON projection_thread_proposed_plans(thread_id, created_at)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_thread_proposed_plans (\n      plan_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      plan_markdown TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_proposed_plans_thread_created\n    ON projection_thread_proposed_plans(thread_id, created_at)",
+    )?;
     Ok(())
 }
 
 // 014 ProjectionThreadProposedPlanImplementation
 fn m014(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_proposed_plans\n    ADD COLUMN implemented_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_thread_proposed_plans\n    ADD COLUMN implementation_thread_id TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_proposed_plans\n    ADD COLUMN implemented_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_proposed_plans\n    ADD COLUMN implementation_thread_id TEXT",
+    )?;
     Ok(())
 }
 
 // 015 ProjectionTurnsSourceProposedPlan
 fn m015(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_turns\n    ADD COLUMN source_proposed_plan_thread_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_turns\n    ADD COLUMN source_proposed_plan_id TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_turns\n    ADD COLUMN source_proposed_plan_thread_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_turns\n    ADD COLUMN source_proposed_plan_id TEXT",
+    )?;
     Ok(())
 }
 
 // 016 CanonicalizeModelSelections
 fn m016(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_projects\n    ADD COLUMN default_model_selection_json TEXT")?;
-    execute(conn, "UPDATE projection_projects\n    SET default_model_selection_json = CASE\n      WHEN default_model IS NULL THEN NULL\n      ELSE json_object(\n        'provider',\n        CASE\n          WHEN lower(default_model) LIKE '%claude%' THEN 'claudeAgent'\n          ELSE 'codex'\n        END,\n        'model',\n        default_model\n      )\n    END\n    WHERE default_model_selection_json IS NULL")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN model_selection_json TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET model_selection_json = json_object(\n      'provider',\n      COALESCE(\n        (\n          SELECT provider_name\n          FROM projection_thread_sessions\n          WHERE projection_thread_sessions.thread_id = projection_threads.thread_id\n        ),\n        CASE\n          WHEN lower(model) LIKE '%claude%' THEN 'claudeAgent'\n          ELSE 'codex'\n        END,\n        'codex'\n      ),\n      'model',\n      model\n    )\n    WHERE model_selection_json IS NULL")?;
-    execute_lenient(conn, "ALTER TABLE projection_projects\n    DROP COLUMN default_model")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    DROP COLUMN model")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = CASE\n      WHEN json_type(payload_json, '$.defaultModel') = 'null' THEN json_remove(\n        json_set(payload_json, '$.defaultModelSelection', json('null')),\n        '$.defaultProvider',\n        '$.defaultModel',\n        '$.defaultModelOptions'\n      )\n      ELSE json_remove(\n        json_set(\n          payload_json,\n          '$.defaultModelSelection',\n          json_patch(\n            json_object(\n              'provider',\n              CASE\n                WHEN json_extract(payload_json, '$.defaultProvider') IS NOT NULL\n                THEN json_extract(payload_json, '$.defaultProvider')\n                WHEN lower(json_extract(payload_json, '$.defaultModel')) LIKE '%claude%'\n                THEN 'claudeAgent'\n                ELSE 'codex'\n              END,\n              'model',\n              json_extract(payload_json, '$.defaultModel')\n            ),\n              CASE\n                WHEN json_type(payload_json, '$.defaultModelOptions') IS NULL THEN '{}'\n                WHEN json_type(payload_json, '$.defaultModelOptions.codex') IS NOT NULL\n                  OR json_type(payload_json, '$.defaultModelOptions.claudeAgent') IS NOT NULL\n                THEN CASE\n                  WHEN (\n                  CASE\n                    WHEN json_extract(payload_json, '$.defaultProvider') IS NOT NULL\n                    THEN json_extract(payload_json, '$.defaultProvider')\n                    WHEN lower(json_extract(payload_json, '$.defaultModel')) LIKE '%claude%'\n                    THEN 'claudeAgent'\n                    ELSE 'codex'\n                    END\n                  ) = 'claudeAgent'\n                  THEN CASE\n                    WHEN json_type(payload_json, '$.defaultModelOptions.claudeAgent') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.claudeAgent'))\n                    )\n                    WHEN json_type(payload_json, '$.defaultModelOptions.codex') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.codex'))\n                    )\n                    ELSE '{}'\n                  END\n                  ELSE CASE\n                    WHEN json_type(payload_json, '$.defaultModelOptions.codex') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.codex'))\n                    )\n                    WHEN json_type(payload_json, '$.defaultModelOptions.claudeAgent') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.claudeAgent'))\n                    )\n                    ELSE '{}'\n                  END\n                END\n              ELSE json_object(\n                'options',\n                json(json_extract(payload_json, '$.defaultModelOptions'))\n              )\n            END\n          )\n        ),\n        '$.defaultProvider',\n        '$.defaultModel',\n        '$.defaultModelOptions'\n      )\n    END\n    WHERE event_type IN ('project.created', 'project.meta-updated')\n      AND json_type(payload_json, '$.defaultModelSelection') IS NULL\n      AND json_type(payload_json, '$.defaultModel') IS NOT NULL")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_remove(\n      json_set(\n        payload_json,\n        '$.modelSelection',\n        json_patch(\n          json_object(\n            'provider',\n            CASE\n              WHEN json_extract(payload_json, '$.provider') IS NOT NULL\n              THEN json_extract(payload_json, '$.provider')\n              WHEN lower(json_extract(payload_json, '$.model')) LIKE '%claude%'\n              THEN 'claudeAgent'\n              ELSE 'codex'\n            END,\n            'model',\n            json_extract(payload_json, '$.model')\n          ),\n          CASE\n            WHEN json_type(payload_json, '$.modelOptions') IS NULL THEN '{}'\n            WHEN json_type(payload_json, '$.modelOptions.codex') IS NOT NULL\n              OR json_type(payload_json, '$.modelOptions.claudeAgent') IS NOT NULL\n            THEN CASE\n              WHEN (\n                CASE\n                  WHEN json_extract(payload_json, '$.provider') IS NOT NULL\n                  THEN json_extract(payload_json, '$.provider')\n                  WHEN lower(json_extract(payload_json, '$.model')) LIKE '%claude%'\n                  THEN 'claudeAgent'\n                  ELSE 'codex'\n                  END\n              ) = 'claudeAgent'\n              THEN CASE\n                WHEN json_type(payload_json, '$.modelOptions.claudeAgent') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.claudeAgent'))\n                )\n                WHEN json_type(payload_json, '$.modelOptions.codex') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.codex'))\n                )\n                ELSE '{}'\n              END\n              ELSE CASE\n                WHEN json_type(payload_json, '$.modelOptions.codex') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.codex'))\n                )\n                WHEN json_type(payload_json, '$.modelOptions.claudeAgent') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.claudeAgent'))\n                )\n                ELSE '{}'\n              END\n            END\n            ELSE json_object('options', json(json_extract(payload_json, '$.modelOptions')))\n          END\n        )\n      ),\n      '$.provider',\n      '$.model',\n      '$.modelOptions'\n    )\n    WHERE event_type IN ('thread.created', 'thread.meta-updated', 'thread.turn-start-requested')\n      AND json_type(payload_json, '$.modelSelection') IS NULL\n      AND json_type(payload_json, '$.model') IS NOT NULL")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(\n      payload_json,\n      '$.modelSelection',\n      json(json_object('provider', 'codex', 'model', 'gpt-5.5'))\n    )\n    WHERE event_type = 'thread.created'\n      AND json_type(payload_json, '$.modelSelection') IS NULL\n      AND json_type(payload_json, '$.model') IS NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_projects\n    ADD COLUMN default_model_selection_json TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_projects\n    SET default_model_selection_json = CASE\n      WHEN default_model IS NULL THEN NULL\n      ELSE json_object(\n        'provider',\n        CASE\n          WHEN lower(default_model) LIKE '%claude%' THEN 'claudeAgent'\n          ELSE 'codex'\n        END,\n        'model',\n        default_model\n      )\n    END\n    WHERE default_model_selection_json IS NULL",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN model_selection_json TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET model_selection_json = json_object(\n      'provider',\n      COALESCE(\n        (\n          SELECT provider_name\n          FROM projection_thread_sessions\n          WHERE projection_thread_sessions.thread_id = projection_threads.thread_id\n        ),\n        CASE\n          WHEN lower(model) LIKE '%claude%' THEN 'claudeAgent'\n          ELSE 'codex'\n        END,\n        'codex'\n      ),\n      'model',\n      model\n    )\n    WHERE model_selection_json IS NULL",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_projects\n    DROP COLUMN default_model",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    DROP COLUMN model",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = CASE\n      WHEN json_type(payload_json, '$.defaultModel') = 'null' THEN json_remove(\n        json_set(payload_json, '$.defaultModelSelection', json('null')),\n        '$.defaultProvider',\n        '$.defaultModel',\n        '$.defaultModelOptions'\n      )\n      ELSE json_remove(\n        json_set(\n          payload_json,\n          '$.defaultModelSelection',\n          json_patch(\n            json_object(\n              'provider',\n              CASE\n                WHEN json_extract(payload_json, '$.defaultProvider') IS NOT NULL\n                THEN json_extract(payload_json, '$.defaultProvider')\n                WHEN lower(json_extract(payload_json, '$.defaultModel')) LIKE '%claude%'\n                THEN 'claudeAgent'\n                ELSE 'codex'\n              END,\n              'model',\n              json_extract(payload_json, '$.defaultModel')\n            ),\n              CASE\n                WHEN json_type(payload_json, '$.defaultModelOptions') IS NULL THEN '{}'\n                WHEN json_type(payload_json, '$.defaultModelOptions.codex') IS NOT NULL\n                  OR json_type(payload_json, '$.defaultModelOptions.claudeAgent') IS NOT NULL\n                THEN CASE\n                  WHEN (\n                  CASE\n                    WHEN json_extract(payload_json, '$.defaultProvider') IS NOT NULL\n                    THEN json_extract(payload_json, '$.defaultProvider')\n                    WHEN lower(json_extract(payload_json, '$.defaultModel')) LIKE '%claude%'\n                    THEN 'claudeAgent'\n                    ELSE 'codex'\n                    END\n                  ) = 'claudeAgent'\n                  THEN CASE\n                    WHEN json_type(payload_json, '$.defaultModelOptions.claudeAgent') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.claudeAgent'))\n                    )\n                    WHEN json_type(payload_json, '$.defaultModelOptions.codex') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.codex'))\n                    )\n                    ELSE '{}'\n                  END\n                  ELSE CASE\n                    WHEN json_type(payload_json, '$.defaultModelOptions.codex') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.codex'))\n                    )\n                    WHEN json_type(payload_json, '$.defaultModelOptions.claudeAgent') IS NOT NULL\n                    THEN json_object(\n                      'options',\n                      json(json_extract(payload_json, '$.defaultModelOptions.claudeAgent'))\n                    )\n                    ELSE '{}'\n                  END\n                END\n              ELSE json_object(\n                'options',\n                json(json_extract(payload_json, '$.defaultModelOptions'))\n              )\n            END\n          )\n        ),\n        '$.defaultProvider',\n        '$.defaultModel',\n        '$.defaultModelOptions'\n      )\n    END\n    WHERE event_type IN ('project.created', 'project.meta-updated')\n      AND json_type(payload_json, '$.defaultModelSelection') IS NULL\n      AND json_type(payload_json, '$.defaultModel') IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_remove(\n      json_set(\n        payload_json,\n        '$.modelSelection',\n        json_patch(\n          json_object(\n            'provider',\n            CASE\n              WHEN json_extract(payload_json, '$.provider') IS NOT NULL\n              THEN json_extract(payload_json, '$.provider')\n              WHEN lower(json_extract(payload_json, '$.model')) LIKE '%claude%'\n              THEN 'claudeAgent'\n              ELSE 'codex'\n            END,\n            'model',\n            json_extract(payload_json, '$.model')\n          ),\n          CASE\n            WHEN json_type(payload_json, '$.modelOptions') IS NULL THEN '{}'\n            WHEN json_type(payload_json, '$.modelOptions.codex') IS NOT NULL\n              OR json_type(payload_json, '$.modelOptions.claudeAgent') IS NOT NULL\n            THEN CASE\n              WHEN (\n                CASE\n                  WHEN json_extract(payload_json, '$.provider') IS NOT NULL\n                  THEN json_extract(payload_json, '$.provider')\n                  WHEN lower(json_extract(payload_json, '$.model')) LIKE '%claude%'\n                  THEN 'claudeAgent'\n                  ELSE 'codex'\n                  END\n              ) = 'claudeAgent'\n              THEN CASE\n                WHEN json_type(payload_json, '$.modelOptions.claudeAgent') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.claudeAgent'))\n                )\n                WHEN json_type(payload_json, '$.modelOptions.codex') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.codex'))\n                )\n                ELSE '{}'\n              END\n              ELSE CASE\n                WHEN json_type(payload_json, '$.modelOptions.codex') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.codex'))\n                )\n                WHEN json_type(payload_json, '$.modelOptions.claudeAgent') IS NOT NULL\n                THEN json_object(\n                  'options',\n                  json(json_extract(payload_json, '$.modelOptions.claudeAgent'))\n                )\n                ELSE '{}'\n              END\n            END\n            ELSE json_object('options', json(json_extract(payload_json, '$.modelOptions')))\n          END\n        )\n      ),\n      '$.provider',\n      '$.model',\n      '$.modelOptions'\n    )\n    WHERE event_type IN ('thread.created', 'thread.meta-updated', 'thread.turn-start-requested')\n      AND json_type(payload_json, '$.modelSelection') IS NULL\n      AND json_type(payload_json, '$.model') IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(\n      payload_json,\n      '$.modelSelection',\n      json(json_object('provider', 'codex', 'model', 'gpt-5.5'))\n    )\n    WHERE event_type = 'thread.created'\n      AND json_type(payload_json, '$.modelSelection') IS NULL\n      AND json_type(payload_json, '$.model') IS NULL",
+    )?;
     Ok(())
 }
 
 // 017 ThreadHandoffMetadata
 fn m017(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN handoff_json TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n    ADD COLUMN source TEXT NOT NULL DEFAULT 'native'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN handoff_json TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n    ADD COLUMN source TEXT NOT NULL DEFAULT 'native'",
+    )?;
     Ok(())
 }
 
 // 018 ProjectionThreadMessageMentions
 fn m018(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n    ADD COLUMN skills_json TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n    ADD COLUMN mentions_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n    ADD COLUMN skills_json TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n    ADD COLUMN mentions_json TEXT",
+    )?;
     Ok(())
 }
 
 // 019 ProjectionThreadsEnvMode
 fn m019(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN env_mode TEXT NOT NULL DEFAULT 'local'")?;
-    execute(conn, "UPDATE projection_threads\n    SET env_mode = CASE\n      WHEN worktree_path IS NOT NULL THEN 'worktree'\n      ELSE 'local'\n    END")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN env_mode TEXT NOT NULL DEFAULT 'local'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET env_mode = CASE\n      WHEN worktree_path IS NOT NULL THEN 'worktree'\n      ELSE 'local'\n    END",
+    )?;
     Ok(())
 }
 
 // 020 ProjectionThreadsForkSource
 fn m020(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN fork_source_thread_id TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN fork_source_thread_id TEXT",
+    )?;
     Ok(())
 }
 
 // 021 ProjectionThreadsAssociatedWorktree
 fn m021(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN associated_worktree_path TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET associated_worktree_path = worktree_path\n    WHERE associated_worktree_path IS NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN associated_worktree_path TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET associated_worktree_path = worktree_path\n    WHERE associated_worktree_path IS NULL",
+    )?;
     Ok(())
 }
 
 // 022 ProjectionThreadsAssociatedWorktreeBranch
 fn m022(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN associated_worktree_branch TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET associated_worktree_branch = branch\n    WHERE associated_worktree_branch IS NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN associated_worktree_branch TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET associated_worktree_branch = branch\n    WHERE associated_worktree_branch IS NULL",
+    )?;
     Ok(())
 }
 
@@ -192,14 +386,20 @@ fn m023(conn: &Connection) -> Result<(), WsErr> {
         if column_exists(conn, "projection_threads", col) {
             return Ok(false);
         }
-        execute(conn, &format!("ALTER TABLE projection_threads ADD COLUMN {def}"))?;
+        execute(
+            conn,
+            &format!("ALTER TABLE projection_threads ADD COLUMN {def}"),
+        )?;
         Ok(true)
     };
     let ensure_ptm = |conn: &Connection, col: &str, def: &str| -> Result<bool, WsErr> {
         if column_exists(conn, "projection_thread_messages", col) {
             return Ok(false);
         }
-        execute(conn, &format!("ALTER TABLE projection_thread_messages ADD COLUMN {def}"))?;
+        execute(
+            conn,
+            &format!("ALTER TABLE projection_thread_messages ADD COLUMN {def}"),
+        )?;
         Ok(true)
     };
 
@@ -209,81 +409,162 @@ fn m023(conn: &Connection) -> Result<(), WsErr> {
     ensure_ptm(conn, "mentions_json", "mentions_json TEXT")?;
 
     if ensure_pt(conn, "env_mode", "env_mode TEXT NOT NULL DEFAULT 'local'")? {
-        execute(conn, "UPDATE projection_threads SET env_mode = CASE WHEN worktree_path IS NOT NULL THEN 'worktree' ELSE 'local' END")?;
+        execute(
+            conn,
+            "UPDATE projection_threads SET env_mode = CASE WHEN worktree_path IS NOT NULL THEN 'worktree' ELSE 'local' END",
+        )?;
     }
 
     ensure_pt(conn, "fork_source_thread_id", "fork_source_thread_id TEXT")?;
 
-    if ensure_pt(conn, "associated_worktree_path", "associated_worktree_path TEXT")? {
-        execute(conn, "UPDATE projection_threads SET associated_worktree_path = worktree_path WHERE associated_worktree_path IS NULL")?;
+    if ensure_pt(
+        conn,
+        "associated_worktree_path",
+        "associated_worktree_path TEXT",
+    )? {
+        execute(
+            conn,
+            "UPDATE projection_threads SET associated_worktree_path = worktree_path WHERE associated_worktree_path IS NULL",
+        )?;
     }
 
-    if ensure_pt(conn, "associated_worktree_branch", "associated_worktree_branch TEXT")? {
-        execute(conn, "UPDATE projection_threads SET associated_worktree_branch = branch WHERE associated_worktree_branch IS NULL")?;
+    if ensure_pt(
+        conn,
+        "associated_worktree_branch",
+        "associated_worktree_branch TEXT",
+    )? {
+        execute(
+            conn,
+            "UPDATE projection_threads SET associated_worktree_branch = branch WHERE associated_worktree_branch IS NULL",
+        )?;
     }
 
-    if ensure_pt(conn, "associated_worktree_ref", "associated_worktree_ref TEXT")? {
-        execute(conn, "UPDATE projection_threads SET associated_worktree_ref = COALESCE(associated_worktree_branch, branch) WHERE associated_worktree_ref IS NULL AND COALESCE(associated_worktree_branch, branch) IS NOT NULL")?;
+    if ensure_pt(
+        conn,
+        "associated_worktree_ref",
+        "associated_worktree_ref TEXT",
+    )? {
+        execute(
+            conn,
+            "UPDATE projection_threads SET associated_worktree_ref = COALESCE(associated_worktree_branch, branch) WHERE associated_worktree_ref IS NULL AND COALESCE(associated_worktree_branch, branch) IS NOT NULL",
+        )?;
     }
     Ok(())
 }
 
 // 024 ProjectionThreadsArchivedAt
 fn m024(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN archived_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN archived_at TEXT",
+    )?;
     Ok(())
 }
 
 // 025 ProjectionThreadsSubagents
 fn m025(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN parent_thread_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN subagent_agent_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN subagent_nickname TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN subagent_role TEXT")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_threads_parent_thread_id\n    ON projection_threads(parent_thread_id)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN parent_thread_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN subagent_agent_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN subagent_nickname TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN subagent_role TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_threads_parent_thread_id\n    ON projection_threads(parent_thread_id)",
+    )?;
     Ok(())
 }
 
 // 026 ProjectionThreadShellSummary
 fn m026(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN latest_user_message_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN pending_approval_count INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN pending_user_input_count INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN has_actionable_proposed_plan INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN latest_user_message_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN pending_approval_count INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN pending_user_input_count INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN has_actionable_proposed_plan INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 027 BackfillProjectionThreadShellSummary
 fn m027(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "INSERT OR IGNORE INTO projection_pending_approvals (\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      requested.request_id,\n      requested.thread_id,\n      requested.turn_id,\n      'pending',\n      NULL,\n      requested.created_at,\n      NULL\n    FROM (\n      SELECT\n        json_extract(payload_json, '$.requestId') AS request_id,\n        thread_id,\n        turn_id,\n        created_at,\n        ROW_NUMBER() OVER (\n          PARTITION BY json_extract(payload_json, '$.requestId')\n          ORDER BY created_at ASC, activity_id ASC\n        ) AS row_number\n      FROM projection_thread_activities\n      WHERE kind = 'approval.requested'\n        AND json_extract(payload_json, '$.requestId') IS NOT NULL\n    ) AS requested\n    WHERE requested.row_number = 1")?;
-    execute(conn, "WITH latest_resolutions AS (\n      SELECT\n        resolved.request_id,\n        resolved.resolved_at,\n        resolved.decision\n      FROM (\n        SELECT\n          json_extract(payload_json, '$.requestId') AS request_id,\n          created_at AS resolved_at,\n          CASE\n            WHEN json_extract(payload_json, '$.decision') IN (\n              'accept',\n              'acceptForSession',\n              'decline',\n              'cancel'\n            )\n            THEN json_extract(payload_json, '$.decision')\n            ELSE NULL\n          END AS decision,\n          ROW_NUMBER() OVER (\n            PARTITION BY json_extract(payload_json, '$.requestId')\n            ORDER BY created_at DESC, activity_id DESC\n          ) AS row_number\n        FROM projection_thread_activities\n        WHERE kind = 'approval.resolved'\n          AND json_extract(payload_json, '$.requestId') IS NOT NULL\n      ) AS resolved\n      WHERE resolved.row_number = 1\n    )\n    UPDATE projection_pending_approvals\n    SET\n      status = 'resolved',\n      decision = (\n        SELECT latest_resolutions.decision\n        FROM latest_resolutions\n        WHERE latest_resolutions.request_id = projection_pending_approvals.request_id\n      ),\n      resolved_at = (\n        SELECT latest_resolutions.resolved_at\n        FROM latest_resolutions\n        WHERE latest_resolutions.request_id = projection_pending_approvals.request_id\n      )\n    WHERE EXISTS (\n      SELECT 1\n      FROM latest_resolutions\n      WHERE latest_resolutions.request_id = projection_pending_approvals.request_id\n    )")?;
-    execute(conn, "WITH latest_response_events AS (\n      SELECT\n        response.request_id,\n        response.resolved_at,\n        response.decision\n      FROM (\n        SELECT\n          json_extract(payload_json, '$.requestId') AS request_id,\n          occurred_at AS resolved_at,\n          CASE\n            WHEN json_extract(payload_json, '$.decision') IN (\n              'accept',\n              'acceptForSession',\n              'decline',\n              'cancel'\n            )\n            THEN json_extract(payload_json, '$.decision')\n            ELSE NULL\n          END AS decision,\n          ROW_NUMBER() OVER (\n            PARTITION BY json_extract(payload_json, '$.requestId')\n            ORDER BY occurred_at DESC, sequence DESC\n          ) AS row_number\n        FROM orchestration_events\n        WHERE event_type = 'thread.approval-response-requested'\n          AND json_extract(payload_json, '$.requestId') IS NOT NULL\n      ) AS response\n      WHERE response.row_number = 1\n    )\n    UPDATE projection_pending_approvals\n    SET\n      status = 'resolved',\n      decision = (\n        SELECT latest_response_events.decision\n        FROM latest_response_events\n        WHERE latest_response_events.request_id = projection_pending_approvals.request_id\n      ),\n      resolved_at = (\n        SELECT latest_response_events.resolved_at\n        FROM latest_response_events\n        WHERE latest_response_events.request_id = projection_pending_approvals.request_id\n      )\n    WHERE EXISTS (\n      SELECT 1\n      FROM latest_response_events\n      WHERE latest_response_events.request_id = projection_pending_approvals.request_id\n    )")?;
-    execute(conn, "WITH latest_stale_failures AS (\n      SELECT\n        failure.request_id,\n        failure.resolved_at\n      FROM (\n        SELECT\n          json_extract(payload_json, '$.requestId') AS request_id,\n          created_at AS resolved_at,\n          ROW_NUMBER() OVER (\n            PARTITION BY json_extract(payload_json, '$.requestId')\n            ORDER BY created_at DESC, activity_id DESC\n          ) AS row_number\n        FROM projection_thread_activities\n        WHERE kind = 'provider.approval.respond.failed'\n          AND json_extract(payload_json, '$.requestId') IS NOT NULL\n          AND (\n            lower(COALESCE(json_extract(payload_json, '$.detail'), ''))\n              LIKE '%stale pending approval request%'\n            OR lower(COALESCE(json_extract(payload_json, '$.detail'), ''))\n              LIKE '%unknown pending approval request%'\n            OR lower(COALESCE(json_extract(payload_json, '$.detail'), ''))\n              LIKE '%unknown pending permission request%'\n          )\n      ) AS failure\n      WHERE failure.row_number = 1\n    )\n    UPDATE projection_pending_approvals\n    SET\n      status = 'resolved',\n      decision = NULL,\n      resolved_at = (\n        SELECT latest_stale_failures.resolved_at\n        FROM latest_stale_failures\n        WHERE latest_stale_failures.request_id = projection_pending_approvals.request_id\n      )\n    WHERE status = 'pending'\n      AND EXISTS (\n        SELECT 1\n        FROM latest_stale_failures\n        WHERE latest_stale_failures.request_id = projection_pending_approvals.request_id\n      )")?;
-    execute(conn, "UPDATE projection_threads\n    SET\n      latest_user_message_at = (\n        SELECT MAX(message.created_at)\n        FROM projection_thread_messages AS message\n        WHERE message.thread_id = projection_threads.thread_id\n          AND message.role = 'user'\n      ),\n      pending_approval_count = COALESCE((\n        SELECT COUNT(*)\n        FROM projection_pending_approvals\n        WHERE projection_pending_approvals.thread_id = projection_threads.thread_id\n          AND projection_pending_approvals.status = 'pending'\n      ), 0),\n      pending_user_input_count = COALESCE((\n        WITH latest_user_input_states AS (\n          SELECT\n            latest.request_id,\n            latest.kind,\n            latest.detail\n          FROM (\n            SELECT\n              json_extract(activity.payload_json, '$.requestId') AS request_id,\n              activity.kind,\n              lower(COALESCE(json_extract(activity.payload_json, '$.detail'), '')) AS detail,\n              ROW_NUMBER() OVER (\n                PARTITION BY json_extract(activity.payload_json, '$.requestId')\n                ORDER BY activity.created_at DESC, activity.activity_id DESC\n              ) AS row_number\n            FROM projection_thread_activities AS activity\n            WHERE activity.thread_id = projection_threads.thread_id\n              AND json_extract(activity.payload_json, '$.requestId') IS NOT NULL\n              AND activity.kind IN (\n                'user-input.requested',\n                'user-input.resolved',\n                'provider.user-input.respond.failed'\n              )\n          ) AS latest\n          WHERE latest.row_number = 1\n        )\n        SELECT COUNT(*)\n        FROM latest_user_input_states\n        WHERE latest_user_input_states.kind = 'user-input.requested'\n          OR (\n            latest_user_input_states.kind = 'provider.user-input.respond.failed'\n            AND latest_user_input_states.detail NOT LIKE '%stale pending user-input request%'\n            AND latest_user_input_states.detail NOT LIKE '%unknown pending user-input request%'\n          )\n      ), 0),\n      has_actionable_proposed_plan = COALESCE((\n        SELECT CASE\n          WHEN projection_threads.latest_turn_id IS NOT NULL\n            AND EXISTS (\n              SELECT 1\n              FROM projection_thread_proposed_plans AS latest_turn_plan_exists\n              WHERE latest_turn_plan_exists.thread_id = projection_threads.thread_id\n                AND latest_turn_plan_exists.turn_id = projection_threads.latest_turn_id\n            )\n            THEN CASE\n              WHEN (\n                SELECT latest_turn_plan.implemented_at\n                FROM projection_thread_proposed_plans AS latest_turn_plan\n                WHERE latest_turn_plan.thread_id = projection_threads.thread_id\n                  AND latest_turn_plan.turn_id = projection_threads.latest_turn_id\n                ORDER BY latest_turn_plan.updated_at DESC, latest_turn_plan.plan_id DESC\n                LIMIT 1\n              ) IS NULL\n                THEN 1\n                ELSE 0\n              END\n          WHEN EXISTS (\n            SELECT 1\n            FROM projection_thread_proposed_plans AS any_plan\n            WHERE any_plan.thread_id = projection_threads.thread_id\n          )\n            THEN CASE\n              WHEN (\n                SELECT latest_plan.implemented_at\n                FROM projection_thread_proposed_plans AS latest_plan\n                WHERE latest_plan.thread_id = projection_threads.thread_id\n                ORDER BY latest_plan.updated_at DESC, latest_plan.plan_id DESC\n                LIMIT 1\n              ) IS NULL\n                THEN 1\n                ELSE 0\n              END\n          ELSE 0\n        END\n      ), 0)")?;
+    execute(
+        conn,
+        "INSERT OR IGNORE INTO projection_pending_approvals (\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      requested.request_id,\n      requested.thread_id,\n      requested.turn_id,\n      'pending',\n      NULL,\n      requested.created_at,\n      NULL\n    FROM (\n      SELECT\n        json_extract(payload_json, '$.requestId') AS request_id,\n        thread_id,\n        turn_id,\n        created_at,\n        ROW_NUMBER() OVER (\n          PARTITION BY json_extract(payload_json, '$.requestId')\n          ORDER BY created_at ASC, activity_id ASC\n        ) AS row_number\n      FROM projection_thread_activities\n      WHERE kind = 'approval.requested'\n        AND json_extract(payload_json, '$.requestId') IS NOT NULL\n    ) AS requested\n    WHERE requested.row_number = 1",
+    )?;
+    execute(
+        conn,
+        "WITH latest_resolutions AS (\n      SELECT\n        resolved.request_id,\n        resolved.resolved_at,\n        resolved.decision\n      FROM (\n        SELECT\n          json_extract(payload_json, '$.requestId') AS request_id,\n          created_at AS resolved_at,\n          CASE\n            WHEN json_extract(payload_json, '$.decision') IN (\n              'accept',\n              'acceptForSession',\n              'decline',\n              'cancel'\n            )\n            THEN json_extract(payload_json, '$.decision')\n            ELSE NULL\n          END AS decision,\n          ROW_NUMBER() OVER (\n            PARTITION BY json_extract(payload_json, '$.requestId')\n            ORDER BY created_at DESC, activity_id DESC\n          ) AS row_number\n        FROM projection_thread_activities\n        WHERE kind = 'approval.resolved'\n          AND json_extract(payload_json, '$.requestId') IS NOT NULL\n      ) AS resolved\n      WHERE resolved.row_number = 1\n    )\n    UPDATE projection_pending_approvals\n    SET\n      status = 'resolved',\n      decision = (\n        SELECT latest_resolutions.decision\n        FROM latest_resolutions\n        WHERE latest_resolutions.request_id = projection_pending_approvals.request_id\n      ),\n      resolved_at = (\n        SELECT latest_resolutions.resolved_at\n        FROM latest_resolutions\n        WHERE latest_resolutions.request_id = projection_pending_approvals.request_id\n      )\n    WHERE EXISTS (\n      SELECT 1\n      FROM latest_resolutions\n      WHERE latest_resolutions.request_id = projection_pending_approvals.request_id\n    )",
+    )?;
+    execute(
+        conn,
+        "WITH latest_response_events AS (\n      SELECT\n        response.request_id,\n        response.resolved_at,\n        response.decision\n      FROM (\n        SELECT\n          json_extract(payload_json, '$.requestId') AS request_id,\n          occurred_at AS resolved_at,\n          CASE\n            WHEN json_extract(payload_json, '$.decision') IN (\n              'accept',\n              'acceptForSession',\n              'decline',\n              'cancel'\n            )\n            THEN json_extract(payload_json, '$.decision')\n            ELSE NULL\n          END AS decision,\n          ROW_NUMBER() OVER (\n            PARTITION BY json_extract(payload_json, '$.requestId')\n            ORDER BY occurred_at DESC, sequence DESC\n          ) AS row_number\n        FROM orchestration_events\n        WHERE event_type = 'thread.approval-response-requested'\n          AND json_extract(payload_json, '$.requestId') IS NOT NULL\n      ) AS response\n      WHERE response.row_number = 1\n    )\n    UPDATE projection_pending_approvals\n    SET\n      status = 'resolved',\n      decision = (\n        SELECT latest_response_events.decision\n        FROM latest_response_events\n        WHERE latest_response_events.request_id = projection_pending_approvals.request_id\n      ),\n      resolved_at = (\n        SELECT latest_response_events.resolved_at\n        FROM latest_response_events\n        WHERE latest_response_events.request_id = projection_pending_approvals.request_id\n      )\n    WHERE EXISTS (\n      SELECT 1\n      FROM latest_response_events\n      WHERE latest_response_events.request_id = projection_pending_approvals.request_id\n    )",
+    )?;
+    execute(
+        conn,
+        "WITH latest_stale_failures AS (\n      SELECT\n        failure.request_id,\n        failure.resolved_at\n      FROM (\n        SELECT\n          json_extract(payload_json, '$.requestId') AS request_id,\n          created_at AS resolved_at,\n          ROW_NUMBER() OVER (\n            PARTITION BY json_extract(payload_json, '$.requestId')\n            ORDER BY created_at DESC, activity_id DESC\n          ) AS row_number\n        FROM projection_thread_activities\n        WHERE kind = 'provider.approval.respond.failed'\n          AND json_extract(payload_json, '$.requestId') IS NOT NULL\n          AND (\n            lower(COALESCE(json_extract(payload_json, '$.detail'), ''))\n              LIKE '%stale pending approval request%'\n            OR lower(COALESCE(json_extract(payload_json, '$.detail'), ''))\n              LIKE '%unknown pending approval request%'\n            OR lower(COALESCE(json_extract(payload_json, '$.detail'), ''))\n              LIKE '%unknown pending permission request%'\n          )\n      ) AS failure\n      WHERE failure.row_number = 1\n    )\n    UPDATE projection_pending_approvals\n    SET\n      status = 'resolved',\n      decision = NULL,\n      resolved_at = (\n        SELECT latest_stale_failures.resolved_at\n        FROM latest_stale_failures\n        WHERE latest_stale_failures.request_id = projection_pending_approvals.request_id\n      )\n    WHERE status = 'pending'\n      AND EXISTS (\n        SELECT 1\n        FROM latest_stale_failures\n        WHERE latest_stale_failures.request_id = projection_pending_approvals.request_id\n      )",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET\n      latest_user_message_at = (\n        SELECT MAX(message.created_at)\n        FROM projection_thread_messages AS message\n        WHERE message.thread_id = projection_threads.thread_id\n          AND message.role = 'user'\n      ),\n      pending_approval_count = COALESCE((\n        SELECT COUNT(*)\n        FROM projection_pending_approvals\n        WHERE projection_pending_approvals.thread_id = projection_threads.thread_id\n          AND projection_pending_approvals.status = 'pending'\n      ), 0),\n      pending_user_input_count = COALESCE((\n        WITH latest_user_input_states AS (\n          SELECT\n            latest.request_id,\n            latest.kind,\n            latest.detail\n          FROM (\n            SELECT\n              json_extract(activity.payload_json, '$.requestId') AS request_id,\n              activity.kind,\n              lower(COALESCE(json_extract(activity.payload_json, '$.detail'), '')) AS detail,\n              ROW_NUMBER() OVER (\n                PARTITION BY json_extract(activity.payload_json, '$.requestId')\n                ORDER BY activity.created_at DESC, activity.activity_id DESC\n              ) AS row_number\n            FROM projection_thread_activities AS activity\n            WHERE activity.thread_id = projection_threads.thread_id\n              AND json_extract(activity.payload_json, '$.requestId') IS NOT NULL\n              AND activity.kind IN (\n                'user-input.requested',\n                'user-input.resolved',\n                'provider.user-input.respond.failed'\n              )\n          ) AS latest\n          WHERE latest.row_number = 1\n        )\n        SELECT COUNT(*)\n        FROM latest_user_input_states\n        WHERE latest_user_input_states.kind = 'user-input.requested'\n          OR (\n            latest_user_input_states.kind = 'provider.user-input.respond.failed'\n            AND latest_user_input_states.detail NOT LIKE '%stale pending user-input request%'\n            AND latest_user_input_states.detail NOT LIKE '%unknown pending user-input request%'\n          )\n      ), 0),\n      has_actionable_proposed_plan = COALESCE((\n        SELECT CASE\n          WHEN projection_threads.latest_turn_id IS NOT NULL\n            AND EXISTS (\n              SELECT 1\n              FROM projection_thread_proposed_plans AS latest_turn_plan_exists\n              WHERE latest_turn_plan_exists.thread_id = projection_threads.thread_id\n                AND latest_turn_plan_exists.turn_id = projection_threads.latest_turn_id\n            )\n            THEN CASE\n              WHEN (\n                SELECT latest_turn_plan.implemented_at\n                FROM projection_thread_proposed_plans AS latest_turn_plan\n                WHERE latest_turn_plan.thread_id = projection_threads.thread_id\n                  AND latest_turn_plan.turn_id = projection_threads.latest_turn_id\n                ORDER BY latest_turn_plan.updated_at DESC, latest_turn_plan.plan_id DESC\n                LIMIT 1\n              ) IS NULL\n                THEN 1\n                ELSE 0\n              END\n          WHEN EXISTS (\n            SELECT 1\n            FROM projection_thread_proposed_plans AS any_plan\n            WHERE any_plan.thread_id = projection_threads.thread_id\n          )\n            THEN CASE\n              WHEN (\n                SELECT latest_plan.implemented_at\n                FROM projection_thread_proposed_plans AS latest_plan\n                WHERE latest_plan.thread_id = projection_threads.thread_id\n                ORDER BY latest_plan.updated_at DESC, latest_plan.plan_id DESC\n                LIMIT 1\n              ) IS NULL\n                THEN 1\n                ELSE 0\n              END\n          ELSE 0\n        END\n      ), 0)",
+    )?;
     Ok(())
 }
 
 // 028 ProjectionProjectsKind
 fn m028(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_projects\n    ADD COLUMN kind TEXT NOT NULL DEFAULT 'project'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_projects\n    ADD COLUMN kind TEXT NOT NULL DEFAULT 'project'",
+    )?;
     Ok(())
 }
 
 // 029 ProjectionThreadsLastKnownPr
 fn m029(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN last_known_pr_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN last_known_pr_json TEXT",
+    )?;
     Ok(())
 }
 
 // 030 ProjectionThreadMessagesDispatchMode
 fn m030(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n    ADD COLUMN dispatch_mode TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n    ADD COLUMN dispatch_mode TEXT",
+    )?;
     Ok(())
 }
 
 // 031 ProjectionThreadsCreateBranchFlowCompleted
 fn m031(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN create_branch_flow_completed INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN create_branch_flow_completed INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
@@ -295,21 +576,30 @@ fn m032(conn: &Connection) -> Result<(), WsErr> {
         if column_exists(conn, "projection_threads", col) {
             return Ok(false);
         }
-        execute(conn, &format!("ALTER TABLE projection_threads ADD COLUMN {def}"))?;
+        execute(
+            conn,
+            &format!("ALTER TABLE projection_threads ADD COLUMN {def}"),
+        )?;
         Ok(true)
     };
     let ensure_ptm = |conn: &Connection, col: &str, def: &str| -> Result<bool, WsErr> {
         if column_exists(conn, "projection_thread_messages", col) {
             return Ok(false);
         }
-        execute(conn, &format!("ALTER TABLE projection_thread_messages ADD COLUMN {def}"))?;
+        execute(
+            conn,
+            &format!("ALTER TABLE projection_thread_messages ADD COLUMN {def}"),
+        )?;
         Ok(true)
     };
     let ensure_pp = |conn: &Connection, col: &str, def: &str| -> Result<bool, WsErr> {
         if column_exists(conn, "projection_projects", col) {
             return Ok(false);
         }
-        execute(conn, &format!("ALTER TABLE projection_projects ADD COLUMN {def}"))?;
+        execute(
+            conn,
+            &format!("ALTER TABLE projection_projects ADD COLUMN {def}"),
+        )?;
         Ok(true)
     };
 
@@ -319,21 +609,45 @@ fn m032(conn: &Connection) -> Result<(), WsErr> {
     ensure_ptm(conn, "mentions_json", "mentions_json TEXT")?;
 
     if ensure_pt(conn, "env_mode", "env_mode TEXT NOT NULL DEFAULT 'local'")? {
-        execute(conn, "UPDATE projection_threads SET env_mode = CASE WHEN worktree_path IS NOT NULL THEN 'worktree' ELSE 'local' END")?;
+        execute(
+            conn,
+            "UPDATE projection_threads SET env_mode = CASE WHEN worktree_path IS NOT NULL THEN 'worktree' ELSE 'local' END",
+        )?;
     }
 
     ensure_pt(conn, "fork_source_thread_id", "fork_source_thread_id TEXT")?;
 
-    if ensure_pt(conn, "associated_worktree_path", "associated_worktree_path TEXT")? {
-        execute(conn, "UPDATE projection_threads SET associated_worktree_path = worktree_path WHERE associated_worktree_path IS NULL")?;
+    if ensure_pt(
+        conn,
+        "associated_worktree_path",
+        "associated_worktree_path TEXT",
+    )? {
+        execute(
+            conn,
+            "UPDATE projection_threads SET associated_worktree_path = worktree_path WHERE associated_worktree_path IS NULL",
+        )?;
     }
 
-    if ensure_pt(conn, "associated_worktree_branch", "associated_worktree_branch TEXT")? {
-        execute(conn, "UPDATE projection_threads SET associated_worktree_branch = branch WHERE associated_worktree_branch IS NULL")?;
+    if ensure_pt(
+        conn,
+        "associated_worktree_branch",
+        "associated_worktree_branch TEXT",
+    )? {
+        execute(
+            conn,
+            "UPDATE projection_threads SET associated_worktree_branch = branch WHERE associated_worktree_branch IS NULL",
+        )?;
     }
 
-    if ensure_pt(conn, "associated_worktree_ref", "associated_worktree_ref TEXT")? {
-        execute(conn, "UPDATE projection_threads SET associated_worktree_ref = COALESCE(associated_worktree_branch, branch) WHERE associated_worktree_ref IS NULL AND COALESCE(associated_worktree_branch, branch) IS NOT NULL")?;
+    if ensure_pt(
+        conn,
+        "associated_worktree_ref",
+        "associated_worktree_ref TEXT",
+    )? {
+        execute(
+            conn,
+            "UPDATE projection_threads SET associated_worktree_ref = COALESCE(associated_worktree_branch, branch) WHERE associated_worktree_ref IS NULL AND COALESCE(associated_worktree_branch, branch) IS NOT NULL",
+        )?;
     }
 
     ensure_pt(conn, "archived_at", "archived_at TEXT")?;
@@ -341,12 +655,31 @@ fn m032(conn: &Connection) -> Result<(), WsErr> {
     ensure_pt(conn, "subagent_agent_id", "subagent_agent_id TEXT")?;
     ensure_pt(conn, "subagent_nickname", "subagent_nickname TEXT")?;
     ensure_pt(conn, "subagent_role", "subagent_role TEXT")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_threads_parent_thread_id ON projection_threads(parent_thread_id)")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_threads_parent_thread_id ON projection_threads(parent_thread_id)",
+    )?;
 
-    let added_latest_user_message_at = ensure_pt(conn, "latest_user_message_at", "latest_user_message_at TEXT")?;
-    let added_pending_approval_count = ensure_pt(conn, "pending_approval_count", "pending_approval_count INTEGER NOT NULL DEFAULT 0")?;
-    let added_pending_user_input_count = ensure_pt(conn, "pending_user_input_count", "pending_user_input_count INTEGER NOT NULL DEFAULT 0")?;
-    let added_has_actionable_proposed_plan = ensure_pt(conn, "has_actionable_proposed_plan", "has_actionable_proposed_plan INTEGER NOT NULL DEFAULT 0")?;
+    let added_latest_user_message_at = ensure_pt(
+        conn,
+        "latest_user_message_at",
+        "latest_user_message_at TEXT",
+    )?;
+    let added_pending_approval_count = ensure_pt(
+        conn,
+        "pending_approval_count",
+        "pending_approval_count INTEGER NOT NULL DEFAULT 0",
+    )?;
+    let added_pending_user_input_count = ensure_pt(
+        conn,
+        "pending_user_input_count",
+        "pending_user_input_count INTEGER NOT NULL DEFAULT 0",
+    )?;
+    let added_has_actionable_proposed_plan = ensure_pt(
+        conn,
+        "has_actionable_proposed_plan",
+        "has_actionable_proposed_plan INTEGER NOT NULL DEFAULT 0",
+    )?;
     if added_latest_user_message_at
         || added_pending_approval_count
         || added_pending_user_input_count
@@ -358,22 +691,41 @@ fn m032(conn: &Connection) -> Result<(), WsErr> {
     ensure_pp(conn, "kind", "kind TEXT NOT NULL DEFAULT 'project'")?;
     ensure_pt(conn, "last_known_pr_json", "last_known_pr_json TEXT")?;
     ensure_ptm(conn, "dispatch_mode", "dispatch_mode TEXT")?;
-    ensure_pt(conn, "create_branch_flow_completed", "create_branch_flow_completed INTEGER NOT NULL DEFAULT 0")?;
+    ensure_pt(
+        conn,
+        "create_branch_flow_completed",
+        "create_branch_flow_completed INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 033 ProjectionThreadsSidechatSource
 fn m033(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN sidechat_source_thread_id TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN sidechat_source_thread_id TEXT",
+    )?;
     Ok(())
 }
 
 // 034 AuthAccessManagement
 fn m034(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS auth_pairing_links (\n      id TEXT PRIMARY KEY,\n      credential TEXT NOT NULL UNIQUE,\n      method TEXT NOT NULL,\n      role TEXT NOT NULL,\n      subject TEXT NOT NULL,\n      label TEXT,\n      created_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      consumed_at TEXT,\n      revoked_at TEXT\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_auth_pairing_links_active\n    ON auth_pairing_links(revoked_at, consumed_at, expires_at)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS auth_sessions (\n      session_id TEXT PRIMARY KEY,\n      subject TEXT NOT NULL,\n      role TEXT NOT NULL,\n      method TEXT NOT NULL,\n      client_label TEXT,\n      client_ip_address TEXT,\n      client_user_agent TEXT,\n      client_device_type TEXT NOT NULL DEFAULT 'unknown',\n      client_os TEXT,\n      client_browser TEXT,\n      issued_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      last_connected_at TEXT,\n      revoked_at TEXT\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_auth_sessions_active\n    ON auth_sessions(revoked_at, expires_at, issued_at)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS auth_pairing_links (\n      id TEXT PRIMARY KEY,\n      credential TEXT NOT NULL UNIQUE,\n      method TEXT NOT NULL,\n      role TEXT NOT NULL,\n      subject TEXT NOT NULL,\n      label TEXT,\n      created_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      consumed_at TEXT,\n      revoked_at TEXT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_auth_pairing_links_active\n    ON auth_pairing_links(revoked_at, consumed_at, expires_at)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS auth_sessions (\n      session_id TEXT PRIMARY KEY,\n      subject TEXT NOT NULL,\n      role TEXT NOT NULL,\n      method TEXT NOT NULL,\n      client_label TEXT,\n      client_ip_address TEXT,\n      client_user_agent TEXT,\n      client_device_type TEXT NOT NULL DEFAULT 'unknown',\n      client_os TEXT,\n      client_browser TEXT,\n      issued_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      last_connected_at TEXT,\n      revoked_at TEXT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_auth_sessions_active\n    ON auth_sessions(revoked_at, expires_at, issued_at)",
+    )?;
     Ok(())
 }
 
@@ -392,7 +744,9 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
             .prepare("SELECT project_id, default_model_selection_json FROM projection_projects WHERE default_model_selection_json IS NOT NULL AND (?1 IS NULL OR project_id > ?1) ORDER BY project_id ASC LIMIT ?2")
             .map_err(|e| err(format!("sql failed: {e}")))?;
         let rows: Vec<(String, String)> = stmt
-            .query_map(rusqlite::params![project_cursor, PAGE], |r| Ok((r.get(0)?, r.get(1)?)))
+            .query_map(rusqlite::params![project_cursor, PAGE], |r| {
+                Ok((r.get(0)?, r.get(1)?))
+            })
             .map_err(|e| err(format!("sql failed: {e}")))?
             .filter_map(|r| r.ok())
             .collect();
@@ -417,7 +771,9 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
             .prepare("SELECT thread_id, model_selection_json FROM projection_threads WHERE (?1 IS NULL OR thread_id > ?1) ORDER BY thread_id ASC LIMIT ?2")
             .map_err(|e| err(format!("sql failed: {e}")))?;
         let rows: Vec<(String, String)> = stmt
-            .query_map(rusqlite::params![thread_cursor, PAGE], |r| Ok((r.get(0)?, r.get(1)?)))
+            .query_map(rusqlite::params![thread_cursor, PAGE], |r| {
+                Ok((r.get(0)?, r.get(1)?))
+            })
             .map_err(|e| err(format!("sql failed: {e}")))?
             .filter_map(|r| r.ok())
             .collect();
@@ -430,7 +786,8 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
                 conn.execute(
                     "UPDATE projection_threads SET model_selection_json = ?1 WHERE thread_id = ?2",
                     rusqlite::params![normalized, thread_id],
-                ).map_err(|e| err(format!("sql failed: {e}")))?;
+                )
+                .map_err(|e| err(format!("sql failed: {e}")))?;
             }
         }
         thread_cursor = rows.last().map(|(id, _)| id.clone());
@@ -442,7 +799,9 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
             .prepare("SELECT sequence, payload_json FROM orchestration_events WHERE sequence > ?1 ORDER BY sequence ASC LIMIT ?2")
             .map_err(|e| err(format!("sql failed: {e}")))?;
         let rows: Vec<(i64, String)> = stmt
-            .query_map(rusqlite::params![event_cursor, PAGE], |r| Ok((r.get(0)?, r.get(1)?)))
+            .query_map(rusqlite::params![event_cursor, PAGE], |r| {
+                Ok((r.get(0)?, r.get(1)?))
+            })
             .map_err(|e| err(format!("sql failed: {e}")))?
             .filter_map(|r| r.ok())
             .collect();
@@ -463,7 +822,8 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
             for key in ["defaultModelSelection", "modelSelection"] {
                 if let Some(value) = obj.get(key) {
                     let normalized = normalize_persisted_model_selection(value);
-                    if serde_json::to_string(&normalized).ok() != serde_json::to_string(value).ok() {
+                    if serde_json::to_string(&normalized).ok() != serde_json::to_string(value).ok()
+                    {
                         let payload = next.get_or_insert_with(|| obj.clone());
                         payload.insert(key.to_string(), normalized);
                     }
@@ -474,7 +834,8 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
                     conn.execute(
                         "UPDATE orchestration_events SET payload_json = ?1 WHERE sequence = ?2",
                         rusqlite::params![serialized, sequence],
-                    ).map_err(|e| err(format!("sql failed: {e}")))?;
+                    )
+                    .map_err(|e| err(format!("sql failed: {e}")))?;
                 }
             }
         }
@@ -485,14 +846,23 @@ fn m035(conn: &Connection) -> Result<(), WsErr> {
 
 // 036 ProjectionThreadsPinned
 fn m036(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 037 ProjectionSnapshotCapIndexes
 fn m037(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created_desc\n    ON projection_thread_messages(thread_id, created_at DESC, message_id DESC)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_thread_rank_desc\n    ON projection_thread_activities(\n      thread_id,\n      (CASE WHEN sequence IS NULL THEN 0 ELSE 1 END) DESC,\n      sequence DESC,\n      created_at DESC,\n      activity_id DESC\n    )")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created_desc\n    ON projection_thread_messages(thread_id, created_at DESC, message_id DESC)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_thread_rank_desc\n    ON projection_thread_activities(\n      thread_id,\n      (CASE WHEN sequence IS NULL THEN 0 ELSE 1 END) DESC,\n      sequence DESC,\n      created_at DESC,\n      activity_id DESC\n    )",
+    )?;
     Ok(())
 }
 
@@ -507,120 +877,249 @@ fn m038(conn: &Connection) -> Result<(), WsErr> {
 
 // 039 ReconcileLegacyPinnedThreads
 fn m039(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n    ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n    ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 040 ProjectionThreadsPinnedMessagesNotes
 fn m040(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN pinned_messages_json TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN notes TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN pinned_messages_json TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN notes TEXT",
+    )?;
     Ok(())
 }
 
 // 041 ProjectionProjectsPinned
 fn m041(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_projects\n    ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_projects\n    ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 042 ProjectionThreadsMarkers
 fn m042(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN thread_markers_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN thread_markers_json TEXT",
+    )?;
     Ok(())
 }
 
 // 043 ProfileStatsIndexes
 fn m043(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_profile_prompt_activity\n    ON projection_thread_messages(role, source, created_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orchestration_events_profile_turn_events\n    ON orchestration_events(event_type, stream_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_profile_token_activity\n    ON projection_thread_activities(kind, thread_id, sequence, created_at, activity_id)")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_profile_prompt_activity\n    ON projection_thread_messages(role, source, created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orchestration_events_profile_turn_events\n    ON orchestration_events(event_type, stream_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_activities_profile_token_activity\n    ON projection_thread_activities(kind, thread_id, sequence, created_at, activity_id)",
+    )?;
     Ok(())
 }
 
 // 044 Automations
 fn m044(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS automation_definitions (\n      automation_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      source_thread_id TEXT,\n      name TEXT NOT NULL,\n      prompt TEXT NOT NULL,\n      schedule_json TEXT NOT NULL,\n      enabled INTEGER NOT NULL,\n      next_run_at TEXT,\n      model_selection_json TEXT NOT NULL,\n      provider_options_json TEXT,\n      runtime_mode TEXT NOT NULL,\n      interaction_mode TEXT NOT NULL,\n      worktree_mode TEXT NOT NULL,\n      mode TEXT NOT NULL,\n      target_thread_id TEXT,\n      max_iterations INTEGER,\n      stop_on_error INTEGER NOT NULL,\n      completion_policy_json TEXT NOT NULL DEFAULT '{\"type\":\"none\"}',\n      completion_policy_version INTEGER NOT NULL DEFAULT 0,\n      completion_policy_updated_at TEXT,\n      minimum_interval_seconds INTEGER NOT NULL,\n      max_runtime_seconds INTEGER,\n      retry_policy_json TEXT NOT NULL,\n      misfire_policy TEXT NOT NULL,\n      acknowledged_risks_json TEXT NOT NULL,\n      iteration_count INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      archived_at TEXT\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS automation_runs (\n      run_id TEXT PRIMARY KEY,\n      automation_id TEXT NOT NULL,\n      project_id TEXT NOT NULL,\n      thread_id TEXT,\n      turn_id TEXT,\n      trigger_type TEXT NOT NULL,\n      status TEXT NOT NULL,\n      scheduled_for TEXT NOT NULL,\n      claimed_by TEXT,\n      claimed_at TEXT,\n      lease_expires_at TEXT,\n      started_at TEXT,\n      finished_at TEXT,\n      thread_create_command_id TEXT,\n      turn_start_command_id TEXT,\n      message_id TEXT,\n      error TEXT,\n      result_json TEXT,\n      permission_snapshot_json TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (automation_id) REFERENCES automation_definitions(automation_id)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS automation_scheduler_leases (\n      lease_key TEXT PRIMARY KEY,\n      owner_id TEXT NOT NULL,\n      acquired_at TEXT NOT NULL,\n      heartbeat_at TEXT NOT NULL,\n      lease_expires_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_automation_definitions_due\n    ON automation_definitions (enabled, archived_at, next_run_at, automation_id)")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_automation_runs_unique_occurrence\n    ON automation_runs (automation_id, scheduled_for)\n    WHERE trigger_type = 'scheduled'")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_automation_runs_recovery\n    ON automation_runs (status, lease_expires_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_automation_runs_history\n    ON automation_runs (automation_id, scheduled_for DESC, run_id DESC)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_automation_runs_project\n    ON automation_runs (project_id, scheduled_for DESC, run_id DESC)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_automation_runs_thread\n    ON automation_runs (thread_id, created_at DESC)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS automation_definitions (\n      automation_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      source_thread_id TEXT,\n      name TEXT NOT NULL,\n      prompt TEXT NOT NULL,\n      schedule_json TEXT NOT NULL,\n      enabled INTEGER NOT NULL,\n      next_run_at TEXT,\n      model_selection_json TEXT NOT NULL,\n      provider_options_json TEXT,\n      runtime_mode TEXT NOT NULL,\n      interaction_mode TEXT NOT NULL,\n      worktree_mode TEXT NOT NULL,\n      mode TEXT NOT NULL,\n      target_thread_id TEXT,\n      max_iterations INTEGER,\n      stop_on_error INTEGER NOT NULL,\n      completion_policy_json TEXT NOT NULL DEFAULT '{\"type\":\"none\"}',\n      completion_policy_version INTEGER NOT NULL DEFAULT 0,\n      completion_policy_updated_at TEXT,\n      minimum_interval_seconds INTEGER NOT NULL,\n      max_runtime_seconds INTEGER,\n      retry_policy_json TEXT NOT NULL,\n      misfire_policy TEXT NOT NULL,\n      acknowledged_risks_json TEXT NOT NULL,\n      iteration_count INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      archived_at TEXT\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS automation_runs (\n      run_id TEXT PRIMARY KEY,\n      automation_id TEXT NOT NULL,\n      project_id TEXT NOT NULL,\n      thread_id TEXT,\n      turn_id TEXT,\n      trigger_type TEXT NOT NULL,\n      status TEXT NOT NULL,\n      scheduled_for TEXT NOT NULL,\n      claimed_by TEXT,\n      claimed_at TEXT,\n      lease_expires_at TEXT,\n      started_at TEXT,\n      finished_at TEXT,\n      thread_create_command_id TEXT,\n      turn_start_command_id TEXT,\n      message_id TEXT,\n      error TEXT,\n      result_json TEXT,\n      permission_snapshot_json TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (automation_id) REFERENCES automation_definitions(automation_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS automation_scheduler_leases (\n      lease_key TEXT PRIMARY KEY,\n      owner_id TEXT NOT NULL,\n      acquired_at TEXT NOT NULL,\n      heartbeat_at TEXT NOT NULL,\n      lease_expires_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_automation_definitions_due\n    ON automation_definitions (enabled, archived_at, next_run_at, automation_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_automation_runs_unique_occurrence\n    ON automation_runs (automation_id, scheduled_for)\n    WHERE trigger_type = 'scheduled'",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_automation_runs_recovery\n    ON automation_runs (status, lease_expires_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_automation_runs_history\n    ON automation_runs (automation_id, scheduled_for DESC, run_id DESC)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_automation_runs_project\n    ON automation_runs (project_id, scheduled_for DESC, run_id DESC)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_automation_runs_thread\n    ON automation_runs (thread_id, created_at DESC)",
+    )?;
     Ok(())
 }
 
 // 045 AutomationPolicies
 fn m045(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN minimum_interval_seconds INTEGER NOT NULL DEFAULT 60")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN max_runtime_seconds INTEGER DEFAULT 3600")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN retry_policy_json TEXT NOT NULL DEFAULT '{\"type\":\"none\"}'")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN misfire_policy TEXT NOT NULL DEFAULT 'coalesce'")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN acknowledged_risks_json TEXT NOT NULL DEFAULT '[]'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN minimum_interval_seconds INTEGER NOT NULL DEFAULT 60",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN max_runtime_seconds INTEGER DEFAULT 3600",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN retry_policy_json TEXT NOT NULL DEFAULT '{\"type\":\"none\"}'",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN misfire_policy TEXT NOT NULL DEFAULT 'coalesce'",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN acknowledged_risks_json TEXT NOT NULL DEFAULT '[]'",
+    )?;
     Ok(())
 }
 
 // 046 AutomationCompletionPolicy
 fn m046(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN completion_policy_json TEXT NOT NULL DEFAULT '{\"type\":\"none\"}'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN completion_policy_json TEXT NOT NULL DEFAULT '{\"type\":\"none\"}'",
+    )?;
     Ok(())
 }
 
 // 047 AutomationCompletionPolicyVersion
 fn m047(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN completion_policy_version INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN completion_policy_updated_at TEXT")?;
-    execute(conn, "UPDATE automation_definitions\n    SET completion_policy_updated_at = COALESCE(\n      completion_policy_updated_at,\n      updated_at,\n      created_at,\n      '1970-01-01T00:00:00.000Z'\n    )")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN completion_policy_version INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN completion_policy_updated_at TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE automation_definitions\n    SET completion_policy_updated_at = COALESCE(\n      completion_policy_updated_at,\n      updated_at,\n      created_at,\n      '1970-01-01T00:00:00.000Z'\n    )",
+    )?;
     Ok(())
 }
 
 // 048 AutomationCompletionEvaluationBacklog
 fn m048(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_automation_runs_completion_eval\n    ON automation_runs (finished_at, run_id)\n    WHERE status = 'succeeded' AND finished_at IS NOT NULL")?;
-    execute(conn, "CREATE VIEW IF NOT EXISTS automation_pending_completion_evaluations AS\n    SELECT\n      runs.run_id,\n      runs.automation_id,\n      runs.thread_id,\n      runs.finished_at\n    FROM automation_runs runs\n    INNER JOIN automation_definitions definitions\n      ON definitions.automation_id = runs.automation_id\n    WHERE runs.status = 'succeeded'\n      AND definitions.enabled = 1\n      AND definitions.archived_at IS NULL\n      AND definitions.mode = 'heartbeat'\n      AND json_extract(definitions.completion_policy_json, '$.type') = 'ai-evaluated'\n      AND runs.finished_at IS NOT NULL\n      AND (\n        json_extract(runs.permission_snapshot_json, '$.completionPolicyVersion') =\n          definitions.completion_policy_version\n        OR (\n          json_type(runs.permission_snapshot_json, '$.completionPolicyVersion') IS NULL\n          AND COALESCE(runs.started_at, runs.created_at) >\n            COALESCE(\n              definitions.completion_policy_updated_at,\n              definitions.updated_at,\n              definitions.created_at,\n              '1970-01-01T00:00:00.000Z'\n            )\n        )\n      )\n      AND (\n        runs.result_json IS NULL\n        OR json_type(runs.result_json, '$.completionEvaluation') IS NULL\n      )")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_automation_runs_completion_eval\n    ON automation_runs (finished_at, run_id)\n    WHERE status = 'succeeded' AND finished_at IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "CREATE VIEW IF NOT EXISTS automation_pending_completion_evaluations AS\n    SELECT\n      runs.run_id,\n      runs.automation_id,\n      runs.thread_id,\n      runs.finished_at\n    FROM automation_runs runs\n    INNER JOIN automation_definitions definitions\n      ON definitions.automation_id = runs.automation_id\n    WHERE runs.status = 'succeeded'\n      AND definitions.enabled = 1\n      AND definitions.archived_at IS NULL\n      AND definitions.mode = 'heartbeat'\n      AND json_extract(definitions.completion_policy_json, '$.type') = 'ai-evaluated'\n      AND runs.finished_at IS NOT NULL\n      AND (\n        json_extract(runs.permission_snapshot_json, '$.completionPolicyVersion') =\n          definitions.completion_policy_version\n        OR (\n          json_type(runs.permission_snapshot_json, '$.completionPolicyVersion') IS NULL\n          AND COALESCE(runs.started_at, runs.created_at) >\n            COALESCE(\n              definitions.completion_policy_updated_at,\n              definitions.updated_at,\n              definitions.created_at,\n              '1970-01-01T00:00:00.000Z'\n            )\n        )\n      )\n      AND (\n        runs.result_json IS NULL\n        OR json_type(runs.result_json, '$.completionEvaluation') IS NULL\n      )",
+    )?;
     Ok(())
 }
 
 // 049 ProjectionThreadMessagesDispatchOrigin
 fn m049(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n      ADD COLUMN dispatch_origin TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n      ADD COLUMN dispatch_origin TEXT",
+    )?;
     Ok(())
 }
 
 // 050 ProfileStatsArchive
 fn m050(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS profile_stats_deleted_threads (\n      thread_id TEXT PRIMARY KEY,\n      project_id TEXT,\n      deleted_at TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS profile_stats_deleted_prompts (\n      thread_id TEXT NOT NULL,\n      project_id TEXT,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_prompts_thread\n    ON profile_stats_deleted_prompts(thread_id)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS profile_stats_deleted_turns (\n      thread_id TEXT NOT NULL,\n      provider TEXT,\n      model TEXT,\n      reasoning TEXT,\n      turn_count INTEGER NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_turns_thread\n    ON profile_stats_deleted_turns(thread_id)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS profile_stats_deleted_skills (\n      thread_id TEXT NOT NULL,\n      name TEXT NOT NULL,\n      kind TEXT NOT NULL,\n      run_count INTEGER NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_skills_thread\n    ON profile_stats_deleted_skills(thread_id)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS profile_stats_deleted_tokens (\n      thread_id TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      provider TEXT,\n      tokens INTEGER NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_tokens_thread\n    ON profile_stats_deleted_tokens(thread_id)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS profile_stats_deleted_threads (\n      thread_id TEXT PRIMARY KEY,\n      project_id TEXT,\n      deleted_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS profile_stats_deleted_prompts (\n      thread_id TEXT NOT NULL,\n      project_id TEXT,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_prompts_thread\n    ON profile_stats_deleted_prompts(thread_id)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS profile_stats_deleted_turns (\n      thread_id TEXT NOT NULL,\n      provider TEXT,\n      model TEXT,\n      reasoning TEXT,\n      turn_count INTEGER NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_turns_thread\n    ON profile_stats_deleted_turns(thread_id)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS profile_stats_deleted_skills (\n      thread_id TEXT NOT NULL,\n      name TEXT NOT NULL,\n      kind TEXT NOT NULL,\n      run_count INTEGER NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_skills_thread\n    ON profile_stats_deleted_skills(thread_id)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS profile_stats_deleted_tokens (\n      thread_id TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      provider TEXT,\n      tokens INTEGER NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_profile_stats_deleted_tokens_thread\n    ON profile_stats_deleted_tokens(thread_id)",
+    )?;
     Ok(())
 }
 
 // 051 ProfileStatsDeletedTokensModel
 fn m051(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE profile_stats_deleted_tokens\n      ADD COLUMN model TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE profile_stats_deleted_tokens\n      ADD COLUMN model TEXT",
+    )?;
     Ok(())
 }
 
 // 052 ProjectionThreadUserMessageSummaryIndex
 fn m052(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_role_created_desc\n    ON projection_thread_messages(thread_id, role, created_at DESC, message_id DESC)")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_role_created_desc\n    ON projection_thread_messages(thread_id, role, created_at DESC, message_id DESC)",
+    )?;
     Ok(())
 }
 
 // 053 BackfillThreadActivitySequence
 fn m053(conn: &Connection) -> Result<(), WsErr> {
     execute(conn, "DROP TABLE IF EXISTS temp_synara_activity_sequences")?;
-    execute(conn, "CREATE TEMP TABLE temp_synara_activity_sequences (\n      activity_id TEXT PRIMARY KEY,\n      sequence INTEGER NOT NULL\n    ) WITHOUT ROWID")?;
-    execute(conn, "INSERT INTO temp_synara_activity_sequences (activity_id, sequence)\n    SELECT\n      json_extract(payload_json, '$.activity.id') AS activity_id,\n      MAX(sequence) AS sequence\n    FROM orchestration_events\n    WHERE event_type = 'thread.activity-appended'\n      AND json_type(payload_json, '$.activity.id') = 'text'\n    GROUP BY activity_id")?;
-    execute(conn, "UPDATE projection_thread_activities\n    SET sequence = (\n      SELECT temp_synara_activity_sequences.sequence\n      FROM temp_synara_activity_sequences\n      WHERE temp_synara_activity_sequences.activity_id = projection_thread_activities.activity_id\n    )\n    WHERE sequence IS NULL\n      AND EXISTS (\n        SELECT 1\n        FROM temp_synara_activity_sequences\n        WHERE temp_synara_activity_sequences.activity_id = projection_thread_activities.activity_id\n      )")?;
+    execute(
+        conn,
+        "CREATE TEMP TABLE temp_synara_activity_sequences (\n      activity_id TEXT PRIMARY KEY,\n      sequence INTEGER NOT NULL\n    ) WITHOUT ROWID",
+    )?;
+    execute(
+        conn,
+        "INSERT INTO temp_synara_activity_sequences (activity_id, sequence)\n    SELECT\n      json_extract(payload_json, '$.activity.id') AS activity_id,\n      MAX(sequence) AS sequence\n    FROM orchestration_events\n    WHERE event_type = 'thread.activity-appended'\n      AND json_type(payload_json, '$.activity.id') = 'text'\n    GROUP BY activity_id",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_thread_activities\n    SET sequence = (\n      SELECT temp_synara_activity_sequences.sequence\n      FROM temp_synara_activity_sequences\n      WHERE temp_synara_activity_sequences.activity_id = projection_thread_activities.activity_id\n    )\n    WHERE sequence IS NULL\n      AND EXISTS (\n        SELECT 1\n        FROM temp_synara_activity_sequences\n        WHERE temp_synara_activity_sequences.activity_id = projection_thread_activities.activity_id\n      )",
+    )?;
     execute(conn, "DROP TABLE temp_synara_activity_sequences")?;
     Ok(())
 }
@@ -632,26 +1131,71 @@ fn m054(conn: &Connection) -> Result<(), WsErr> {
 
 // 055 ManagedAttachments
 fn m055(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS managed_attachment_blobs (\n      attachment_id TEXT PRIMARY KEY,\n      owner_thread_id TEXT NOT NULL CHECK (length(owner_thread_id) > 0),\n      owner_kind TEXT NOT NULL CHECK (length(owner_kind) > 0),\n      owner_id TEXT NOT NULL CHECK (length(owner_id) > 0),\n      kind TEXT NOT NULL CHECK (kind IN ('image', 'file')),\n      original_name TEXT NOT NULL CHECK (length(original_name) BETWEEN 1 AND 255),\n      mime_type TEXT NOT NULL CHECK (length(mime_type) BETWEEN 1 AND 100),\n      reserved_bytes INTEGER NOT NULL CHECK (reserved_bytes >= 0),\n      size_bytes INTEGER CHECK (\n        size_bytes IS NULL OR (size_bytes >= 0 AND size_bytes <= reserved_bytes)\n      ),\n      sha256 TEXT CHECK (\n        sha256 IS NULL OR (\n          length(sha256) = 64 AND\n          sha256 NOT GLOB '*[^0-9a-f]*'\n        )\n      ),\n      relative_path TEXT NOT NULL UNIQUE CHECK (\n        length(relative_path) > 0 AND\n        relative_path NOT LIKE '/%' AND\n        relative_path NOT LIKE '../%' AND\n        relative_path NOT LIKE '%/../%' AND\n        instr(relative_path, char(0)) = 0\n      ),\n      state TEXT NOT NULL CHECK (\n        state IN ('uploading', 'staged', 'claimed', 'deleting', 'deleted')\n      ),\n      staging_expires_at TEXT,\n      claim_command_id TEXT,\n      claim_message_id TEXT,\n      claimed_at TEXT,\n      delete_reason TEXT,\n      delete_requested_at TEXT,\n      deleted_at TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      CHECK (\n        (state = 'uploading' AND size_bytes IS NULL AND sha256 IS NULL AND\n          claim_command_id IS NULL AND claim_message_id IS NULL AND claimed_at IS NULL AND\n          delete_reason IS NULL AND delete_requested_at IS NULL AND deleted_at IS NULL) OR\n        (state = 'staged' AND size_bytes IS NOT NULL AND sha256 IS NOT NULL AND\n          staging_expires_at IS NOT NULL AND claim_command_id IS NULL AND\n          claim_message_id IS NULL AND claimed_at IS NULL AND\n          delete_reason IS NULL AND delete_requested_at IS NULL AND deleted_at IS NULL) OR\n        (state = 'claimed' AND size_bytes IS NOT NULL AND sha256 IS NOT NULL AND\n          claim_command_id IS NOT NULL AND claim_message_id IS NOT NULL AND\n          claimed_at IS NOT NULL AND delete_reason IS NULL AND\n          delete_requested_at IS NULL AND deleted_at IS NULL) OR\n        (state = 'deleting' AND delete_reason IS NOT NULL AND\n          delete_requested_at IS NOT NULL AND deleted_at IS NULL) OR\n        (state = 'deleted' AND delete_reason IS NOT NULL AND\n          delete_requested_at IS NOT NULL AND deleted_at IS NOT NULL)\n      )\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS managed_attachment_cleanup_jobs (\n      attachment_id TEXT PRIMARY KEY,\n      reason TEXT NOT NULL CHECK (length(reason) > 0),\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      next_attempt_at TEXT NOT NULL,\n      lease_owner TEXT,\n      lease_expires_at TEXT,\n      last_error TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (attachment_id)\n        REFERENCES managed_attachment_blobs(attachment_id)\n        ON DELETE CASCADE,\n      CHECK (\n        (lease_owner IS NULL AND lease_expires_at IS NULL) OR\n        (lease_owner IS NOT NULL AND length(lease_owner) > 0 AND lease_expires_at IS NOT NULL)\n      )\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_state_expiry\n    ON managed_attachment_blobs(state, staging_expires_at, attachment_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_state_reserved\n    ON managed_attachment_blobs(state, reserved_bytes)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_owner_thread\n    ON managed_attachment_blobs(owner_thread_id, state, attachment_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_owner_principal\n    ON managed_attachment_blobs(owner_kind, owner_id, state, attachment_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_claim\n    ON managed_attachment_blobs(claim_command_id, claim_message_id, attachment_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_managed_attachment_cleanup_jobs_due\n    ON managed_attachment_cleanup_jobs(next_attempt_at, lease_expires_at, attachment_id)")?;
-    execute(conn, "CREATE TRIGGER IF NOT EXISTS trg_managed_attachment_blobs_immutable_metadata\n    BEFORE UPDATE OF\n      owner_thread_id,\n      owner_kind,\n      owner_id,\n      kind,\n      original_name,\n      mime_type,\n      reserved_bytes,\n      relative_path\n    ON managed_attachment_blobs\n    BEGIN\n      SELECT RAISE(ABORT, 'managed attachment metadata is immutable');\n    END")?;
-    execute(conn, "CREATE TRIGGER IF NOT EXISTS trg_managed_attachment_blobs_immutable_content\n    BEFORE UPDATE OF size_bytes, sha256\n    ON managed_attachment_blobs\n    WHEN\n      (OLD.size_bytes IS NOT NULL AND NEW.size_bytes IS NOT OLD.size_bytes) OR\n      (OLD.sha256 IS NOT NULL AND NEW.sha256 IS NOT OLD.sha256) OR\n      ((OLD.size_bytes IS NULL OR OLD.sha256 IS NULL) AND NEW.state <> 'staged')\n    BEGIN\n      SELECT RAISE(ABORT, 'managed attachment content identity is immutable');\n    END")?;
-    execute(conn, "CREATE TRIGGER IF NOT EXISTS trg_managed_attachment_blobs_state_transition\n    BEFORE UPDATE OF state\n    ON managed_attachment_blobs\n    WHEN NOT (\n      NEW.state = OLD.state OR\n      (OLD.state = 'uploading' AND NEW.state IN ('staged', 'deleting')) OR\n      (OLD.state = 'staged' AND NEW.state IN ('claimed', 'deleting')) OR\n      (OLD.state = 'claimed' AND NEW.state = 'deleting') OR\n      (OLD.state = 'deleting' AND NEW.state = 'deleted')\n    )\n    BEGIN\n      SELECT RAISE(ABORT, 'invalid managed attachment state transition');\n    END")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS managed_attachment_blobs (\n      attachment_id TEXT PRIMARY KEY,\n      owner_thread_id TEXT NOT NULL CHECK (length(owner_thread_id) > 0),\n      owner_kind TEXT NOT NULL CHECK (length(owner_kind) > 0),\n      owner_id TEXT NOT NULL CHECK (length(owner_id) > 0),\n      kind TEXT NOT NULL CHECK (kind IN ('image', 'file')),\n      original_name TEXT NOT NULL CHECK (length(original_name) BETWEEN 1 AND 255),\n      mime_type TEXT NOT NULL CHECK (length(mime_type) BETWEEN 1 AND 100),\n      reserved_bytes INTEGER NOT NULL CHECK (reserved_bytes >= 0),\n      size_bytes INTEGER CHECK (\n        size_bytes IS NULL OR (size_bytes >= 0 AND size_bytes <= reserved_bytes)\n      ),\n      sha256 TEXT CHECK (\n        sha256 IS NULL OR (\n          length(sha256) = 64 AND\n          sha256 NOT GLOB '*[^0-9a-f]*'\n        )\n      ),\n      relative_path TEXT NOT NULL UNIQUE CHECK (\n        length(relative_path) > 0 AND\n        relative_path NOT LIKE '/%' AND\n        relative_path NOT LIKE '../%' AND\n        relative_path NOT LIKE '%/../%' AND\n        instr(relative_path, char(0)) = 0\n      ),\n      state TEXT NOT NULL CHECK (\n        state IN ('uploading', 'staged', 'claimed', 'deleting', 'deleted')\n      ),\n      staging_expires_at TEXT,\n      claim_command_id TEXT,\n      claim_message_id TEXT,\n      claimed_at TEXT,\n      delete_reason TEXT,\n      delete_requested_at TEXT,\n      deleted_at TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      CHECK (\n        (state = 'uploading' AND size_bytes IS NULL AND sha256 IS NULL AND\n          claim_command_id IS NULL AND claim_message_id IS NULL AND claimed_at IS NULL AND\n          delete_reason IS NULL AND delete_requested_at IS NULL AND deleted_at IS NULL) OR\n        (state = 'staged' AND size_bytes IS NOT NULL AND sha256 IS NOT NULL AND\n          staging_expires_at IS NOT NULL AND claim_command_id IS NULL AND\n          claim_message_id IS NULL AND claimed_at IS NULL AND\n          delete_reason IS NULL AND delete_requested_at IS NULL AND deleted_at IS NULL) OR\n        (state = 'claimed' AND size_bytes IS NOT NULL AND sha256 IS NOT NULL AND\n          claim_command_id IS NOT NULL AND claim_message_id IS NOT NULL AND\n          claimed_at IS NOT NULL AND delete_reason IS NULL AND\n          delete_requested_at IS NULL AND deleted_at IS NULL) OR\n        (state = 'deleting' AND delete_reason IS NOT NULL AND\n          delete_requested_at IS NOT NULL AND deleted_at IS NULL) OR\n        (state = 'deleted' AND delete_reason IS NOT NULL AND\n          delete_requested_at IS NOT NULL AND deleted_at IS NOT NULL)\n      )\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS managed_attachment_cleanup_jobs (\n      attachment_id TEXT PRIMARY KEY,\n      reason TEXT NOT NULL CHECK (length(reason) > 0),\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      next_attempt_at TEXT NOT NULL,\n      lease_owner TEXT,\n      lease_expires_at TEXT,\n      last_error TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (attachment_id)\n        REFERENCES managed_attachment_blobs(attachment_id)\n        ON DELETE CASCADE,\n      CHECK (\n        (lease_owner IS NULL AND lease_expires_at IS NULL) OR\n        (lease_owner IS NOT NULL AND length(lease_owner) > 0 AND lease_expires_at IS NOT NULL)\n      )\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_state_expiry\n    ON managed_attachment_blobs(state, staging_expires_at, attachment_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_state_reserved\n    ON managed_attachment_blobs(state, reserved_bytes)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_owner_thread\n    ON managed_attachment_blobs(owner_thread_id, state, attachment_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_owner_principal\n    ON managed_attachment_blobs(owner_kind, owner_id, state, attachment_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_managed_attachment_blobs_claim\n    ON managed_attachment_blobs(claim_command_id, claim_message_id, attachment_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_managed_attachment_cleanup_jobs_due\n    ON managed_attachment_cleanup_jobs(next_attempt_at, lease_expires_at, attachment_id)",
+    )?;
+    execute(
+        conn,
+        "CREATE TRIGGER IF NOT EXISTS trg_managed_attachment_blobs_immutable_metadata\n    BEFORE UPDATE OF\n      owner_thread_id,\n      owner_kind,\n      owner_id,\n      kind,\n      original_name,\n      mime_type,\n      reserved_bytes,\n      relative_path\n    ON managed_attachment_blobs\n    BEGIN\n      SELECT RAISE(ABORT, 'managed attachment metadata is immutable');\n    END",
+    )?;
+    execute(
+        conn,
+        "CREATE TRIGGER IF NOT EXISTS trg_managed_attachment_blobs_immutable_content\n    BEFORE UPDATE OF size_bytes, sha256\n    ON managed_attachment_blobs\n    WHEN\n      (OLD.size_bytes IS NOT NULL AND NEW.size_bytes IS NOT OLD.size_bytes) OR\n      (OLD.sha256 IS NOT NULL AND NEW.sha256 IS NOT OLD.sha256) OR\n      ((OLD.size_bytes IS NULL OR OLD.sha256 IS NULL) AND NEW.state <> 'staged')\n    BEGIN\n      SELECT RAISE(ABORT, 'managed attachment content identity is immutable');\n    END",
+    )?;
+    execute(
+        conn,
+        "CREATE TRIGGER IF NOT EXISTS trg_managed_attachment_blobs_state_transition\n    BEFORE UPDATE OF state\n    ON managed_attachment_blobs\n    WHEN NOT (\n      NEW.state = OLD.state OR\n      (OLD.state = 'uploading' AND NEW.state IN ('staged', 'deleting')) OR\n      (OLD.state = 'staged' AND NEW.state IN ('claimed', 'deleting')) OR\n      (OLD.state = 'claimed' AND NEW.state = 'deleting') OR\n      (OLD.state = 'deleting' AND NEW.state = 'deleted')\n    )\n    BEGIN\n      SELECT RAISE(ABORT, 'invalid managed attachment state transition');\n    END",
+    )?;
     Ok(())
 }
 
 // 056 CommandReceiptFingerprints
 fn m056(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE orchestration_command_receipts\n      ADD COLUMN fingerprint_version INTEGER\n      CHECK (fingerprint_version IS NULL OR fingerprint_version > 0)")?;
-    execute_lenient(conn, "ALTER TABLE orchestration_command_receipts\n      ADD COLUMN command_fingerprint TEXT\n      CHECK (\n        command_fingerprint IS NULL OR (\n          length(command_fingerprint) = 64 AND\n          command_fingerprint NOT GLOB '*[^0-9a-f]*'\n        )\n      )")?;
-    execute(conn, "CREATE TRIGGER IF NOT EXISTS orchestration_command_receipts_fingerprint_insert_guard\n    BEFORE INSERT ON orchestration_command_receipts\n    WHEN (NEW.fingerprint_version IS NULL) <> (NEW.command_fingerprint IS NULL)\n    BEGIN\n      SELECT RAISE(ABORT, 'command receipt fingerprint fields must both be null or both be set');\n    END")?;
-    execute(conn, "CREATE TRIGGER IF NOT EXISTS orchestration_command_receipts_fingerprint_update_guard\n    BEFORE UPDATE OF fingerprint_version, command_fingerprint\n    ON orchestration_command_receipts\n    WHEN (NEW.fingerprint_version IS NULL) <> (NEW.command_fingerprint IS NULL)\n    BEGIN\n      SELECT RAISE(ABORT, 'command receipt fingerprint fields must both be null or both be set');\n    END")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE orchestration_command_receipts\n      ADD COLUMN fingerprint_version INTEGER\n      CHECK (fingerprint_version IS NULL OR fingerprint_version > 0)",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE orchestration_command_receipts\n      ADD COLUMN command_fingerprint TEXT\n      CHECK (\n        command_fingerprint IS NULL OR (\n          length(command_fingerprint) = 64 AND\n          command_fingerprint NOT GLOB '*[^0-9a-f]*'\n        )\n      )",
+    )?;
+    execute(
+        conn,
+        "CREATE TRIGGER IF NOT EXISTS orchestration_command_receipts_fingerprint_insert_guard\n    BEFORE INSERT ON orchestration_command_receipts\n    WHEN (NEW.fingerprint_version IS NULL) <> (NEW.command_fingerprint IS NULL)\n    BEGIN\n      SELECT RAISE(ABORT, 'command receipt fingerprint fields must both be null or both be set');\n    END",
+    )?;
+    execute(
+        conn,
+        "CREATE TRIGGER IF NOT EXISTS orchestration_command_receipts_fingerprint_update_guard\n    BEFORE UPDATE OF fingerprint_version, command_fingerprint\n    ON orchestration_command_receipts\n    WHEN (NEW.fingerprint_version IS NULL) <> (NEW.command_fingerprint IS NULL)\n    BEGIN\n      SELECT RAISE(ABORT, 'command receipt fingerprint fields must both be null or both be set');\n    END",
+    )?;
     Ok(())
 }
 
@@ -660,19 +1204,46 @@ fn m057(conn: &Connection) -> Result<(), WsErr> {
     // Replaying the rebuild over an already-rebuilt table would drop every
     // column later migrations added, so the thread-scoped key is the durable
     // post-state marker and the rebuild is skipped.
-    if primary_key_columns(conn, "projection_thread_messages").iter().any(|c| c == "thread_id") {
+    if primary_key_columns(conn, "projection_thread_messages")
+        .iter()
+        .any(|c| c == "thread_id")
+    {
         return Ok(());
     }
     execute(conn, "DROP TABLE IF EXISTS projection_thread_messages_v57")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_messages_v57 (\n      message_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      role TEXT NOT NULL,\n      text TEXT NOT NULL,\n      is_streaming INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      attachments_json TEXT,\n      source TEXT NOT NULL DEFAULT 'native',\n      skills_json TEXT,\n      mentions_json TEXT,\n      dispatch_mode TEXT,\n      dispatch_origin TEXT,\n      PRIMARY KEY (thread_id, message_id)\n    )")?;
-    execute(conn, "INSERT INTO projection_thread_messages_v57 (\n      message_id,\n      thread_id,\n      turn_id,\n      role,\n      text,\n      is_streaming,\n      created_at,\n      updated_at,\n      attachments_json,\n      source,\n      skills_json,\n      mentions_json,\n      dispatch_mode,\n      dispatch_origin\n    )\n    SELECT\n      message_id,\n      thread_id,\n      turn_id,\n      role,\n      text,\n      is_streaming,\n      created_at,\n      updated_at,\n      attachments_json,\n      source,\n      skills_json,\n      mentions_json,\n      dispatch_mode,\n      dispatch_origin\n    FROM projection_thread_messages")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_thread_messages_v57 (\n      message_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      role TEXT NOT NULL,\n      text TEXT NOT NULL,\n      is_streaming INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      attachments_json TEXT,\n      source TEXT NOT NULL DEFAULT 'native',\n      skills_json TEXT,\n      mentions_json TEXT,\n      dispatch_mode TEXT,\n      dispatch_origin TEXT,\n      PRIMARY KEY (thread_id, message_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "INSERT INTO projection_thread_messages_v57 (\n      message_id,\n      thread_id,\n      turn_id,\n      role,\n      text,\n      is_streaming,\n      created_at,\n      updated_at,\n      attachments_json,\n      source,\n      skills_json,\n      mentions_json,\n      dispatch_mode,\n      dispatch_origin\n    )\n    SELECT\n      message_id,\n      thread_id,\n      turn_id,\n      role,\n      text,\n      is_streaming,\n      created_at,\n      updated_at,\n      attachments_json,\n      source,\n      skills_json,\n      mentions_json,\n      dispatch_mode,\n      dispatch_origin\n    FROM projection_thread_messages",
+    )?;
     execute(conn, "DROP TABLE projection_thread_messages")?;
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages_v57\n    RENAME TO projection_thread_messages")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_message_id\n    ON projection_thread_messages(message_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created\n    ON projection_thread_messages(thread_id, created_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created_desc\n    ON projection_thread_messages(thread_id, created_at DESC, message_id DESC)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_profile_prompt_activity\n    ON projection_thread_messages(role, source, created_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_role_created_desc\n    ON projection_thread_messages(thread_id, role, created_at DESC, message_id DESC)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages_v57\n    RENAME TO projection_thread_messages",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_message_id\n    ON projection_thread_messages(message_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created\n    ON projection_thread_messages(thread_id, created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_created_desc\n    ON projection_thread_messages(thread_id, created_at DESC, message_id DESC)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_profile_prompt_activity\n    ON projection_thread_messages(role, source, created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_role_created_desc\n    ON projection_thread_messages(thread_id, role, created_at DESC, message_id DESC)",
+    )?;
     Ok(())
 }
 
@@ -681,22 +1252,46 @@ fn m058(conn: &Connection) -> Result<(), WsErr> {
     if !table_exists(conn, "projection_pending_approvals") {
         return Ok(());
     }
-    if primary_key_columns(conn, "projection_pending_approvals").iter().any(|c| c == "thread_id") {
+    if primary_key_columns(conn, "projection_pending_approvals")
+        .iter()
+        .any(|c| c == "thread_id")
+    {
         return Ok(());
     }
-    execute(conn, "DROP TABLE IF EXISTS projection_pending_approvals_v58")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_pending_approvals_v58 (\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT,\n      PRIMARY KEY (thread_id, request_id)\n    )")?;
-    execute(conn, "INSERT INTO projection_pending_approvals_v58 (\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    FROM projection_pending_approvals")?;
+    execute(
+        conn,
+        "DROP TABLE IF EXISTS projection_pending_approvals_v58",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_pending_approvals_v58 (\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT,\n      PRIMARY KEY (thread_id, request_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "INSERT INTO projection_pending_approvals_v58 (\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      request_id,\n      thread_id,\n      turn_id,\n      status,\n      decision,\n      created_at,\n      resolved_at\n    FROM projection_pending_approvals",
+    )?;
     execute(conn, "DROP TABLE projection_pending_approvals")?;
-    execute_lenient(conn, "ALTER TABLE projection_pending_approvals_v58\n    RENAME TO projection_pending_approvals")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_pending_approvals_thread_status\n    ON projection_pending_approvals(thread_id, status)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_pending_approvals_request_id\n    ON projection_pending_approvals(request_id)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_pending_approvals_v58\n    RENAME TO projection_pending_approvals",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_pending_approvals_thread_status\n    ON projection_pending_approvals(thread_id, status)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_pending_approvals_request_id\n    ON projection_pending_approvals(request_id)",
+    )?;
     Ok(())
 }
 
 // 059 ProviderSessionLifecycleGeneration
 fn m059(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE provider_session_runtime\n      ADD COLUMN lifecycle_generation TEXT NOT NULL DEFAULT 'legacy'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE provider_session_runtime\n      ADD COLUMN lifecycle_generation TEXT NOT NULL DEFAULT 'legacy'",
+    )?;
     Ok(())
 }
 
@@ -705,7 +1300,10 @@ fn m060(conn: &Connection) -> Result<(), WsErr> {
     if !table_exists(conn, "projection_pending_approvals") {
         return Ok(());
     }
-    execute_lenient(conn, "ALTER TABLE projection_pending_approvals\n      ADD COLUMN lifecycle_generation TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_pending_approvals\n      ADD COLUMN lifecycle_generation TEXT",
+    )?;
     Ok(())
 }
 
@@ -714,9 +1312,18 @@ fn m061(conn: &Connection) -> Result<(), WsErr> {
     if !table_exists(conn, "projection_pending_approvals") {
         return Ok(());
     }
-    execute_lenient(conn, "ALTER TABLE projection_pending_approvals\n      ADD COLUMN response_command_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_pending_approvals\n      ADD COLUMN response_requested_at TEXT")?;
-    execute(conn, "UPDATE projection_pending_approvals\n    SET status = 'confirmed'\n    WHERE status = 'resolved'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_pending_approvals\n      ADD COLUMN response_command_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_pending_approvals\n      ADD COLUMN response_requested_at TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_pending_approvals\n    SET status = 'confirmed'\n    WHERE status = 'resolved'",
+    )?;
     Ok(())
 }
 
@@ -725,31 +1332,73 @@ fn m062(conn: &Connection) -> Result<(), WsErr> {
     if !table_exists(conn, "projection_pending_approvals") {
         return Ok(());
     }
-    execute(conn, "DROP TABLE IF EXISTS projection_pending_interactions_v62")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_pending_interactions_v62 (\n      interaction_kind TEXT NOT NULL,\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      lifecycle_generation TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      response_command_id TEXT,\n      response_requested_at TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT,\n      PRIMARY KEY (thread_id, interaction_kind, request_id)\n    )")?;
-    execute(conn, "INSERT INTO projection_pending_interactions_v62 (\n      interaction_kind,\n      request_id,\n      thread_id,\n      turn_id,\n      lifecycle_generation,\n      status,\n      decision,\n      response_command_id,\n      response_requested_at,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      'approval',\n      request_id,\n      thread_id,\n      turn_id,\n      lifecycle_generation,\n      status,\n      decision,\n      response_command_id,\n      response_requested_at,\n      created_at,\n      resolved_at\n    FROM projection_pending_approvals")?;
+    execute(
+        conn,
+        "DROP TABLE IF EXISTS projection_pending_interactions_v62",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_pending_interactions_v62 (\n      interaction_kind TEXT NOT NULL,\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      lifecycle_generation TEXT,\n      status TEXT NOT NULL,\n      decision TEXT,\n      response_command_id TEXT,\n      response_requested_at TEXT,\n      created_at TEXT NOT NULL,\n      resolved_at TEXT,\n      PRIMARY KEY (thread_id, interaction_kind, request_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "INSERT INTO projection_pending_interactions_v62 (\n      interaction_kind,\n      request_id,\n      thread_id,\n      turn_id,\n      lifecycle_generation,\n      status,\n      decision,\n      response_command_id,\n      response_requested_at,\n      created_at,\n      resolved_at\n    )\n    SELECT\n      'approval',\n      request_id,\n      thread_id,\n      turn_id,\n      lifecycle_generation,\n      status,\n      decision,\n      response_command_id,\n      response_requested_at,\n      created_at,\n      resolved_at\n    FROM projection_pending_approvals",
+    )?;
     execute(conn, "DROP TABLE projection_pending_approvals")?;
-    execute_lenient(conn, "ALTER TABLE projection_pending_interactions_v62\n    RENAME TO projection_pending_interactions")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_pending_interactions_thread_kind_status\n    ON projection_pending_interactions(thread_id, interaction_kind, status)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_pending_interactions_request_id\n    ON projection_pending_interactions(request_id)")?;
-    execute(conn, "DELETE FROM projection_state\n    WHERE projector = 'projection.pending-approvals'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_pending_interactions_v62\n    RENAME TO projection_pending_interactions",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_pending_interactions_thread_kind_status\n    ON projection_pending_interactions(thread_id, interaction_kind, status)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_pending_interactions_request_id\n    ON projection_pending_interactions(request_id)",
+    )?;
+    execute(
+        conn,
+        "DELETE FROM projection_state\n    WHERE projector = 'projection.pending-approvals'",
+    )?;
     Ok(())
 }
 
 // 063 ProjectionMessageCausalSequence
 fn m063(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n      ADD COLUMN sequence INTEGER")?;
-    execute(conn, "UPDATE projection_thread_messages\n    SET sequence = (\n      SELECT MIN(events.sequence)\n      FROM orchestration_events AS events\n      WHERE events.aggregate_kind = 'thread'\n        AND events.stream_id = projection_thread_messages.thread_id\n        AND events.event_type = 'thread.message-sent'\n        AND json_extract(events.payload_json, '$.messageId') = projection_thread_messages.message_id\n    )\n    WHERE sequence IS NULL")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_sequence\n    ON projection_thread_messages(thread_id, sequence, message_id)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n      ADD COLUMN sequence INTEGER",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_thread_messages\n    SET sequence = (\n      SELECT MIN(events.sequence)\n      FROM orchestration_events AS events\n      WHERE events.aggregate_kind = 'thread'\n        AND events.stream_id = projection_thread_messages.thread_id\n        AND events.event_type = 'thread.message-sent'\n        AND json_extract(events.payload_json, '$.messageId') = projection_thread_messages.message_id\n    )\n    WHERE sequence IS NULL",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_thread_sequence\n    ON projection_thread_messages(thread_id, sequence, message_id)",
+    )?;
     Ok(())
 }
 
 // 064 DurableProviderCommandDelivery — hand-ported: consumer cursor insert with run timestamp
 fn m064(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS orchestration_consumer_state (\n      consumer_name TEXT PRIMARY KEY,\n      last_acked_sequence INTEGER NOT NULL CHECK (last_acked_sequence >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS orchestration_event_deliveries (\n      consumer_name TEXT NOT NULL,\n      event_sequence INTEGER NOT NULL,\n      thread_id TEXT NOT NULL,\n      state TEXT NOT NULL CHECK (\n        state IN ('inflight', 'retry', 'succeeded', 'dead', 'uncertain')\n      ),\n      claim_owner TEXT,\n      claimed_at TEXT,\n      claim_expires_at TEXT,\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      last_error TEXT,\n      completed_at TEXT,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (consumer_name, event_sequence),\n      FOREIGN KEY (consumer_name)\n        REFERENCES orchestration_consumer_state(consumer_name)\n        ON DELETE CASCADE\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orchestration_event_deliveries_state_sequence\n    ON orchestration_event_deliveries(consumer_name, state, event_sequence)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orchestration_event_deliveries_thread_state\n    ON orchestration_event_deliveries(consumer_name, thread_id, state, event_sequence)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS orchestration_consumer_state (\n      consumer_name TEXT PRIMARY KEY,\n      last_acked_sequence INTEGER NOT NULL CHECK (last_acked_sequence >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS orchestration_event_deliveries (\n      consumer_name TEXT NOT NULL,\n      event_sequence INTEGER NOT NULL,\n      thread_id TEXT NOT NULL,\n      state TEXT NOT NULL CHECK (\n        state IN ('inflight', 'retry', 'succeeded', 'dead', 'uncertain')\n      ),\n      claim_owner TEXT,\n      claimed_at TEXT,\n      claim_expires_at TEXT,\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      last_error TEXT,\n      completed_at TEXT,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (consumer_name, event_sequence),\n      FOREIGN KEY (consumer_name)\n        REFERENCES orchestration_consumer_state(consumer_name)\n        ON DELETE CASCADE\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orchestration_event_deliveries_state_sequence\n    ON orchestration_event_deliveries(consumer_name, state, event_sequence)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orchestration_event_deliveries_thread_state\n    ON orchestration_event_deliveries(consumer_name, thread_id, state, event_sequence)",
+    )?;
     let migrated_at = chrono::Utc::now().to_rfc3339();
     conn.execute(
         "INSERT INTO orchestration_consumer_state (consumer_name, last_acked_sequence, created_at, updated_at) SELECT 'provider-command-reactor.v1', COALESCE(MAX(sequence), 0), ?1, ?1 FROM orchestration_events WHERE 1 = 1 ON CONFLICT (consumer_name) DO NOTHING",
@@ -760,20 +1409,47 @@ fn m064(conn: &Connection) -> Result<(), WsErr> {
 
 // 065 DurableQueuedTurnPromotions
 fn m065(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS queued_turn_promotions (\n      queued_event_sequence INTEGER PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      message_id TEXT NOT NULL,\n      dispatch_mode TEXT NOT NULL CHECK (dispatch_mode IN ('queue', 'steer')),\n      state TEXT NOT NULL CHECK (state IN ('queued', 'promoting', 'promoted', 'cancelled')),\n      claim_owner TEXT,\n      claimed_at TEXT,\n      claim_expires_at TEXT,\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      promoted_at TEXT,\n      FOREIGN KEY (queued_event_sequence) REFERENCES orchestration_events(sequence) ON DELETE RESTRICT\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_queued_turn_promotions_thread_state_order\n    ON queued_turn_promotions(thread_id, state, dispatch_mode, queued_event_sequence)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_queued_turn_promotions_state_expiry\n    ON queued_turn_promotions(state, claim_expires_at)")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_queued_turn_promotions_active_message\n    ON queued_turn_promotions(thread_id, message_id)\n    WHERE state IN ('queued', 'promoting')")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS queued_turn_promotions (\n      queued_event_sequence INTEGER PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      message_id TEXT NOT NULL,\n      dispatch_mode TEXT NOT NULL CHECK (dispatch_mode IN ('queue', 'steer')),\n      state TEXT NOT NULL CHECK (state IN ('queued', 'promoting', 'promoted', 'cancelled')),\n      claim_owner TEXT,\n      claimed_at TEXT,\n      claim_expires_at TEXT,\n      attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      promoted_at TEXT,\n      FOREIGN KEY (queued_event_sequence) REFERENCES orchestration_events(sequence) ON DELETE RESTRICT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_queued_turn_promotions_thread_state_order\n    ON queued_turn_promotions(thread_id, state, dispatch_mode, queued_event_sequence)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_queued_turn_promotions_state_expiry\n    ON queued_turn_promotions(state, claim_expires_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_queued_turn_promotions_active_message\n    ON queued_turn_promotions(thread_id, message_id)\n    WHERE state IN ('queued', 'promoting')",
+    )?;
     Ok(())
 }
 
 // 066 DurableProviderRuntimeEvents — hand-ported: consumer cursor insert with run timestamp
 fn m066(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS provider_runtime_events (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      event_id TEXT NOT NULL UNIQUE,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      lifecycle_generation TEXT,\n      event_type TEXT NOT NULL,\n      event_json TEXT NOT NULL\n        CHECK (length(CAST(event_json AS BLOB)) <= 2097152),\n      persisted_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_runtime_events_thread_sequence\n    ON provider_runtime_events(thread_id, sequence)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_runtime_events_turn_sequence\n    ON provider_runtime_events(thread_id, turn_id, sequence)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS provider_runtime_open_turns (\n      thread_id TEXT NOT NULL,\n      turn_id TEXT NOT NULL,\n      first_sequence INTEGER NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (thread_id, turn_id)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS provider_runtime_event_consumers (\n      consumer_name TEXT PRIMARY KEY,\n      last_acked_sequence INTEGER NOT NULL DEFAULT 0\n        CHECK (last_acked_sequence >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS provider_runtime_events (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      event_id TEXT NOT NULL UNIQUE,\n      thread_id TEXT NOT NULL,\n      turn_id TEXT,\n      lifecycle_generation TEXT,\n      event_type TEXT NOT NULL,\n      event_json TEXT NOT NULL\n        CHECK (length(CAST(event_json AS BLOB)) <= 2097152),\n      persisted_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_provider_runtime_events_thread_sequence\n    ON provider_runtime_events(thread_id, sequence)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_provider_runtime_events_turn_sequence\n    ON provider_runtime_events(thread_id, turn_id, sequence)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS provider_runtime_open_turns (\n      thread_id TEXT NOT NULL,\n      turn_id TEXT NOT NULL,\n      first_sequence INTEGER NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (thread_id, turn_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS provider_runtime_event_consumers (\n      consumer_name TEXT PRIMARY KEY,\n      last_acked_sequence INTEGER NOT NULL DEFAULT 0\n        CHECK (last_acked_sequence >= 0),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
     let migrated_at = chrono::Utc::now().to_rfc3339();
     conn.execute(
         "INSERT INTO provider_runtime_event_consumers (consumer_name, last_acked_sequence, created_at, updated_at) VALUES ('provider-runtime-ingestion.v1', 0, ?1, ?1) ON CONFLICT (consumer_name) DO NOTHING",
@@ -784,156 +1460,309 @@ fn m066(conn: &Connection) -> Result<(), WsErr> {
 
 // 067 ProviderDeliveryReconciliation
 fn m067(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS provider_delivery_reconciliations (\n      reconciliation_id TEXT PRIMARY KEY,\n      consumer_name TEXT NOT NULL,\n      event_sequence INTEGER NOT NULL,\n      thread_id TEXT NOT NULL,\n      previous_state TEXT NOT NULL CHECK (previous_state IN ('dead', 'uncertain')),\n      outcome TEXT NOT NULL CHECK (outcome IN ('accepted', 'safe_retry', 'abandon')),\n      reconciled_by TEXT NOT NULL,\n      note TEXT,\n      reconciled_at TEXT NOT NULL,\n      FOREIGN KEY (consumer_name, event_sequence)\n        REFERENCES orchestration_event_deliveries(consumer_name, event_sequence)\n        ON DELETE CASCADE\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_delivery_reconciliations_delivery\n    ON provider_delivery_reconciliations(consumer_name, event_sequence, reconciled_at DESC)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS provider_delivery_reconciliations (\n      reconciliation_id TEXT PRIMARY KEY,\n      consumer_name TEXT NOT NULL,\n      event_sequence INTEGER NOT NULL,\n      thread_id TEXT NOT NULL,\n      previous_state TEXT NOT NULL CHECK (previous_state IN ('dead', 'uncertain')),\n      outcome TEXT NOT NULL CHECK (outcome IN ('accepted', 'safe_retry', 'abandon')),\n      reconciled_by TEXT NOT NULL,\n      note TEXT,\n      reconciled_at TEXT NOT NULL,\n      FOREIGN KEY (consumer_name, event_sequence)\n        REFERENCES orchestration_event_deliveries(consumer_name, event_sequence)\n        ON DELETE CASCADE\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_provider_delivery_reconciliations_delivery\n    ON provider_delivery_reconciliations(consumer_name, event_sequence, reconciled_at DESC)",
+    )?;
     Ok(())
 }
 
 // 068 GitHandoffOperations
 fn m068(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS git_handoff_operations (\n      command_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      input_json TEXT NOT NULL,\n      phase TEXT NOT NULL CHECK (phase IN ('pending', 'git_applied', 'completed', 'uncertain')),\n      result_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_git_handoff_operations_recovery\n    ON git_handoff_operations(phase, updated_at, command_id)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS git_handoff_operations (\n      command_id TEXT PRIMARY KEY,\n      thread_id TEXT NOT NULL,\n      input_json TEXT NOT NULL,\n      phase TEXT NOT NULL CHECK (phase IN ('pending', 'git_applied', 'completed', 'uncertain')),\n      result_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_git_handoff_operations_recovery\n    ON git_handoff_operations(phase, updated_at, command_id)",
+    )?;
     Ok(())
 }
 
 // 069 ProjectPullRequestPins
 fn m069(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_pull_request_pins (\n      project_id TEXT NOT NULL,\n      repository_key TEXT NOT NULL,\n      pull_request_number INTEGER NOT NULL CHECK (pull_request_number > 0),\n      PRIMARY KEY (project_id, repository_key, pull_request_number)\n    )")?;
-    execute(conn, "CREATE TRIGGER IF NOT EXISTS trg_project_pull_request_pins_limit\n    BEFORE INSERT ON project_pull_request_pins\n    WHEN\n      NOT EXISTS (\n        SELECT 1\n        FROM project_pull_request_pins\n        WHERE project_id = NEW.project_id\n          AND repository_key = NEW.repository_key\n          AND pull_request_number = NEW.pull_request_number\n      )\n      AND (\n        SELECT COUNT(*)\n        FROM project_pull_request_pins\n        WHERE project_id = NEW.project_id\n      ) >= 20\n    BEGIN\n      SELECT RAISE(ABORT, 'project pull request pin limit exceeded');\n    END")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_pull_request_pins (\n      project_id TEXT NOT NULL,\n      repository_key TEXT NOT NULL,\n      pull_request_number INTEGER NOT NULL CHECK (pull_request_number > 0),\n      PRIMARY KEY (project_id, repository_key, pull_request_number)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TRIGGER IF NOT EXISTS trg_project_pull_request_pins_limit\n    BEFORE INSERT ON project_pull_request_pins\n    WHEN\n      NOT EXISTS (\n        SELECT 1\n        FROM project_pull_request_pins\n        WHERE project_id = NEW.project_id\n          AND repository_key = NEW.repository_key\n          AND pull_request_number = NEW.pull_request_number\n      )\n      AND (\n        SELECT COUNT(*)\n        FROM project_pull_request_pins\n        WHERE project_id = NEW.project_id\n      ) >= 20\n    BEGIN\n      SELECT RAISE(ABORT, 'project pull request pin limit exceeded');\n    END",
+    )?;
     Ok(())
 }
 
 // 070 AgentGatewayOperations
 fn m070(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS agent_gateway_operations (\n      operation_id TEXT PRIMARY KEY,\n      caller_thread_id TEXT NOT NULL,\n      caller_turn_id TEXT NOT NULL,\n      operation_kind TEXT NOT NULL CHECK (operation_kind IN ('create_threads')),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count BETWEEN 1 AND 20),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      caller_purged_at TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (caller_thread_id, caller_turn_id, operation_kind)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_agent_gateway_operations_status\n    ON agent_gateway_operations (status, updated_at)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS agent_gateway_operations (\n      operation_id TEXT PRIMARY KEY,\n      caller_thread_id TEXT NOT NULL,\n      caller_turn_id TEXT NOT NULL,\n      operation_kind TEXT NOT NULL CHECK (operation_kind IN ('create_threads')),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count BETWEEN 1 AND 20),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      caller_purged_at TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (caller_thread_id, caller_turn_id, operation_kind)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_agent_gateway_operations_status\n    ON agent_gateway_operations (status, updated_at)",
+    )?;
     Ok(())
 }
 
 // 071 ProjectionThreadsGatewayProvenance
 fn m071(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN creation_source TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN source_thread_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN source_turn_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN gateway_operation_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN gateway_operation_index INTEGER")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_threads_gateway_operation\n    ON projection_threads (gateway_operation_id, gateway_operation_index)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN creation_source TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN source_thread_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN source_turn_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN gateway_operation_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN gateway_operation_index INTEGER",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_threads_gateway_operation\n    ON projection_threads (gateway_operation_id, gateway_operation_index)",
+    )?;
     Ok(())
 }
 
 // 072 AgentGatewayOperationRetention
 fn m072(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE agent_gateway_operations ADD COLUMN caller_purged_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE agent_gateway_operations ADD COLUMN caller_purged_at TEXT",
+    )?;
     Ok(())
 }
 
 // 073 OperationalDiagnostics
 fn m073(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS operational_diagnostics (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      thread_id TEXT,\n      source TEXT NOT NULL CHECK (source IN ('server', 'browser')),\n      diagnostic_kind TEXT NOT NULL,\n      severity TEXT NOT NULL CHECK (severity IN ('info', 'warning', 'error')),\n      code TEXT,\n      detail_json TEXT NOT NULL,\n      occurred_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_operational_diagnostics_thread_sequence\n    ON operational_diagnostics(thread_id, sequence DESC)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_operational_diagnostics_occurred_at\n    ON operational_diagnostics(occurred_at)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS operational_diagnostics (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      thread_id TEXT,\n      source TEXT NOT NULL CHECK (source IN ('server', 'browser')),\n      diagnostic_kind TEXT NOT NULL,\n      severity TEXT NOT NULL CHECK (severity IN ('info', 'warning', 'error')),\n      code TEXT,\n      detail_json TEXT NOT NULL,\n      occurred_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_operational_diagnostics_thread_sequence\n    ON operational_diagnostics(thread_id, sequence DESC)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_operational_diagnostics_occurred_at\n    ON operational_diagnostics(occurred_at)",
+    )?;
     Ok(())
 }
 
 // 074 ExternalMcpIntegrations
 fn m074(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_integrations (\n      integration_id TEXT PRIMARY KEY,\n      name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 120),\n      audience TEXT NOT NULL CHECK (audience = 'synara.external-mcp'),\n      client_kind TEXT NOT NULL CHECK (\n        client_kind IN ('codex', 'claudeCode', 'claudeDesktop', 'other')\n      ),\n      credential_hash TEXT UNIQUE,\n      capabilities_json TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      last_used_at TEXT,\n      paired_at TEXT,\n      revoked_at TEXT,\n      rate_limit_per_minute INTEGER NOT NULL CHECK (rate_limit_per_minute BETWEEN 1 AND 10000),\n      concurrency_limit INTEGER NOT NULL CHECK (concurrency_limit BETWEEN 1 AND 100)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_integration_projects (\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      project_id TEXT NOT NULL,\n      PRIMARY KEY (integration_id, project_id)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_pairing_codes (\n      pairing_hash TEXT PRIMARY KEY,\n      integration_id TEXT NOT NULL UNIQUE REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      created_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      consumed_at TEXT\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_operations (\n      operation_id TEXT PRIMARY KEY,\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count = 1),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (integration_id, request_id)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_external_mcp_operations_status\n    ON external_mcp_operations (status, updated_at)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_tasks (\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id),\n      operation_id TEXT NOT NULL UNIQUE REFERENCES external_mcp_operations(operation_id),\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL UNIQUE,\n      project_id TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (status IN ('planned', 'created', 'failed')),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (integration_id, thread_id)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_external_mcp_tasks_project\n    ON external_mcp_tasks (integration_id, project_id, status, updated_at)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_audit_log (\n      audit_id TEXT PRIMARY KEY,\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id),\n      tool TEXT NOT NULL,\n      request_id TEXT,\n      project_id TEXT,\n      runtime_mode TEXT,\n      environment TEXT,\n      outcome TEXT NOT NULL,\n      created_task_ids_json TEXT NOT NULL DEFAULT '[]',\n      detail TEXT,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_external_mcp_audit_rate\n    ON external_mcp_audit_log (integration_id, created_at)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_rate_windows (\n      integration_id TEXT PRIMARY KEY REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      window_id INTEGER NOT NULL,\n      admitted_count INTEGER NOT NULL DEFAULT 0,\n      rejected_count INTEGER NOT NULL DEFAULT 0,\n      rejection_audit_id TEXT,\n      updated_at TEXT NOT NULL\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_integrations (\n      integration_id TEXT PRIMARY KEY,\n      name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 120),\n      audience TEXT NOT NULL CHECK (audience = 'synara.external-mcp'),\n      client_kind TEXT NOT NULL CHECK (\n        client_kind IN ('codex', 'claudeCode', 'claudeDesktop', 'other')\n      ),\n      credential_hash TEXT UNIQUE,\n      capabilities_json TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      last_used_at TEXT,\n      paired_at TEXT,\n      revoked_at TEXT,\n      rate_limit_per_minute INTEGER NOT NULL CHECK (rate_limit_per_minute BETWEEN 1 AND 10000),\n      concurrency_limit INTEGER NOT NULL CHECK (concurrency_limit BETWEEN 1 AND 100)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_integration_projects (\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      project_id TEXT NOT NULL,\n      PRIMARY KEY (integration_id, project_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_pairing_codes (\n      pairing_hash TEXT PRIMARY KEY,\n      integration_id TEXT NOT NULL UNIQUE REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      created_at TEXT NOT NULL,\n      expires_at TEXT NOT NULL,\n      consumed_at TEXT\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_operations (\n      operation_id TEXT PRIMARY KEY,\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count = 1),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (integration_id, request_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_external_mcp_operations_status\n    ON external_mcp_operations (status, updated_at)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_tasks (\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id),\n      operation_id TEXT NOT NULL UNIQUE REFERENCES external_mcp_operations(operation_id),\n      request_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL UNIQUE,\n      project_id TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (status IN ('planned', 'created', 'failed')),\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (integration_id, thread_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_external_mcp_tasks_project\n    ON external_mcp_tasks (integration_id, project_id, status, updated_at)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_audit_log (\n      audit_id TEXT PRIMARY KEY,\n      integration_id TEXT NOT NULL REFERENCES external_mcp_integrations(integration_id),\n      tool TEXT NOT NULL,\n      request_id TEXT,\n      project_id TEXT,\n      runtime_mode TEXT,\n      environment TEXT,\n      outcome TEXT NOT NULL,\n      created_task_ids_json TEXT NOT NULL DEFAULT '[]',\n      detail TEXT,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_external_mcp_audit_rate\n    ON external_mcp_audit_log (integration_id, created_at)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_rate_windows (\n      integration_id TEXT PRIMARY KEY REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      window_id INTEGER NOT NULL,\n      admitted_count INTEGER NOT NULL DEFAULT 0,\n      rejected_count INTEGER NOT NULL DEFAULT 0,\n      rejection_audit_id TEXT,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
     Ok(())
 }
 
 // 075 ExternalMcpActiveCapacity
 fn m075(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "DROP VIEW IF EXISTS external_mcp_active_capacity_claims")?;
-    execute(conn, "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')")?;
+    execute(
+        conn,
+        "DROP VIEW IF EXISTS external_mcp_active_capacity_claims",
+    )?;
+    execute(
+        conn,
+        "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')",
+    )?;
     Ok(())
 }
 
 // 076 ExternalMcpHardening
 fn m076(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "external_mcp_integrations", "client_kind") {
-        execute(conn, "ALTER TABLE external_mcp_integrations ADD COLUMN client_kind TEXT NOT NULL DEFAULT 'other' CHECK (client_kind IN ('codex', 'claudeCode', 'claudeDesktop', 'other'))")?;
+        execute(
+            conn,
+            "ALTER TABLE external_mcp_integrations ADD COLUMN client_kind TEXT NOT NULL DEFAULT 'other' CHECK (client_kind IN ('codex', 'claudeCode', 'claudeDesktop', 'other'))",
+        )?;
     }
-    execute(conn, "CREATE TABLE IF NOT EXISTS external_mcp_rate_windows (\n      integration_id TEXT PRIMARY KEY REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      window_id INTEGER NOT NULL,\n      admitted_count INTEGER NOT NULL DEFAULT 0,\n      rejected_count INTEGER NOT NULL DEFAULT 0,\n      rejection_audit_id TEXT,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute(conn, "DROP VIEW IF EXISTS external_mcp_active_capacity_claims")?;
-    execute(conn, "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS external_mcp_rate_windows (\n      integration_id TEXT PRIMARY KEY REFERENCES external_mcp_integrations(integration_id)\n        ON DELETE CASCADE,\n      window_id INTEGER NOT NULL,\n      admitted_count INTEGER NOT NULL DEFAULT 0,\n      rejected_count INTEGER NOT NULL DEFAULT 0,\n      rejection_audit_id TEXT,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "DROP VIEW IF EXISTS external_mcp_active_capacity_claims",
+    )?;
+    execute(
+        conn,
+        "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')",
+    )?;
     Ok(())
 }
 
 // 077 ExternalMcpCompensatingCapacity
 fn m077(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "DROP VIEW IF EXISTS external_mcp_active_capacity_claims")?;
-    execute(conn, "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')")?;
+    execute(
+        conn,
+        "DROP VIEW IF EXISTS external_mcp_active_capacity_claims",
+    )?;
+    execute(
+        conn,
+        "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')",
+    )?;
     Ok(())
 }
 
 // 078 ExternalMcpLiveTurnCapacity
 fn m078(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "DROP VIEW IF EXISTS external_mcp_active_capacity_claims")?;
-    execute(conn, "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN turns.state IN ('pending', 'running') THEN turns.state\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')")?;
+    execute(
+        conn,
+        "DROP VIEW IF EXISTS external_mcp_active_capacity_claims",
+    )?;
+    execute(
+        conn,
+        "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN turns.state IN ('pending', 'running') THEN turns.state\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = threads.latest_turn_id\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')",
+    )?;
     Ok(())
 }
 
 // 079 Spaces
 fn m079(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_spaces (\n      space_id TEXT PRIMARY KEY,\n      name TEXT NOT NULL,\n      icon TEXT NOT NULL,\n      sort_order INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      deleted_at TEXT\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_spaces_active_order\n    ON projection_spaces(deleted_at, sort_order, space_id)")?;
-    execute_lenient(conn, "ALTER TABLE projection_projects ADD COLUMN space_id TEXT")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_projects_space_id\n    ON projection_projects(space_id)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_spaces (\n      space_id TEXT PRIMARY KEY,\n      name TEXT NOT NULL,\n      icon TEXT NOT NULL,\n      sort_order INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      deleted_at TEXT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_spaces_active_order\n    ON projection_spaces(deleted_at, sort_order, space_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_projects ADD COLUMN space_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_projects_space_id\n    ON projection_projects(space_id)",
+    )?;
     Ok(())
 }
 
 // 080 ExternalMcpProjectScope
 fn m080(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "external_mcp_integrations", "project_scope") {
-        execute(conn, "ALTER TABLE external_mcp_integrations ADD COLUMN project_scope TEXT NOT NULL DEFAULT 'selected' CHECK (project_scope IN ('all', 'selected'))")?;
+        execute(
+            conn,
+            "ALTER TABLE external_mcp_integrations ADD COLUMN project_scope TEXT NOT NULL DEFAULT 'selected' CHECK (project_scope IN ('all', 'selected'))",
+        )?;
     }
     Ok(())
 }
 
 // 081 AutomationProposals
 fn m081(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN proposal_state TEXT\n      CHECK (proposal_state IS NULL OR proposal_state IN ('pending', 'accepted', 'dismissed'))")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN proposal_state TEXT\n      CHECK (proposal_state IS NULL OR proposal_state IN ('pending', 'accepted', 'dismissed'))",
+    )?;
     Ok(())
 }
 
 // 082 AutomationMemory
 fn m082(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS automation_memory (\n      automation_id TEXT PRIMARY KEY,\n      content TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (automation_id) REFERENCES automation_definitions(automation_id)\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS automation_memory (\n      automation_id TEXT PRIMARY KEY,\n      content TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (automation_id) REFERENCES automation_definitions(automation_id)\n    )",
+    )?;
     Ok(())
 }
 
 // 083 AutomationHeartbeatEligibility
 fn m083(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN heartbeat_cooldown_seconds INTEGER NOT NULL DEFAULT 60")?;
-    execute_lenient(conn, "ALTER TABLE automation_runs\n      ADD COLUMN deferred_until TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN heartbeat_cooldown_seconds INTEGER NOT NULL DEFAULT 60",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_runs\n      ADD COLUMN deferred_until TEXT",
+    )?;
     Ok(())
 }
 
 // 084 AutomationNotificationPolicy
 fn m084(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN notification_policy TEXT\n      CHECK (\n        notification_policy IS NULL\n        OR notification_policy IN ('all', 'failed-runs-only')\n      )")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN notification_policy TEXT\n      CHECK (\n        notification_policy IS NULL\n        OR notification_policy IN ('all', 'failed-runs-only')\n      )",
+    )?;
     Ok(())
 }
 
 // 085 AutomationSettings
 fn m085(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS automation_settings (\n      setting_key TEXT PRIMARY KEY,\n      setting_value TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS automation_settings (\n      setting_key TEXT PRIMARY KEY,\n      setting_value TEXT NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
     Ok(())
 }
 
 // 086 NormalizeStudioThreadWorkspaces
 fn m086(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN working_directory TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET working_directory = COALESCE(working_directory, worktree_path),\n        env_mode = 'local',\n        branch = NULL,\n        worktree_path = NULL,\n        associated_worktree_path = NULL,\n        associated_worktree_branch = NULL,\n        associated_worktree_ref = NULL,\n        create_branch_flow_completed = 0\n    WHERE project_id IN (\n      SELECT project_id\n      FROM projection_projects\n      WHERE kind = 'studio'\n        AND deleted_at IS NULL\n    )\n      AND (\n        env_mode <> 'local'\n        OR branch IS NOT NULL\n        OR worktree_path IS NOT NULL\n        OR associated_worktree_path IS NOT NULL\n        OR associated_worktree_branch IS NOT NULL\n        OR associated_worktree_ref IS NOT NULL\n        OR create_branch_flow_completed <> 0\n      )")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN working_directory TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET working_directory = COALESCE(working_directory, worktree_path),\n        env_mode = 'local',\n        branch = NULL,\n        worktree_path = NULL,\n        associated_worktree_path = NULL,\n        associated_worktree_branch = NULL,\n        associated_worktree_ref = NULL,\n        create_branch_flow_completed = 0\n    WHERE project_id IN (\n      SELECT project_id\n      FROM projection_projects\n      WHERE kind = 'studio'\n        AND deleted_at IS NULL\n    )\n      AND (\n        env_mode <> 'local'\n        OR branch IS NOT NULL\n        OR worktree_path IS NOT NULL\n        OR associated_worktree_path IS NOT NULL\n        OR associated_worktree_branch IS NOT NULL\n        OR associated_worktree_ref IS NOT NULL\n        OR create_branch_flow_completed <> 0\n      )",
+    )?;
     Ok(())
 }
 
@@ -946,7 +1775,10 @@ fn m087(conn: &Connection) -> Result<(), WsErr> {
 
 // 088 ProjectionThreadsSettledAt
 fn m088(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN settled_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN settled_at TEXT",
+    )?;
     Ok(())
 }
 
@@ -954,24 +1786,48 @@ fn m088(conn: &Connection) -> Result<(), WsErr> {
 // become reversibly archived; the event conversion keeps replay consistent.
 // The only interpolation was the constant 'thread-retention:%' LIKE pattern.
 fn m089(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE orchestration_events SET event_type = 'thread.archived', payload_json = json_set(json_remove(payload_json, '$.deletedAt'), '$.archivedAt', json_extract(payload_json, '$.deletedAt'), '$.updatedAt', json_extract(payload_json, '$.deletedAt')) WHERE event_type = 'thread.deleted' AND command_id LIKE 'thread-retention:%'")?;
-    execute(conn, "UPDATE projection_threads SET archived_at = COALESCE(archived_at, deleted_at), deleted_at = NULL WHERE deleted_at IS NOT NULL AND thread_id IN (SELECT stream_id FROM orchestration_events WHERE aggregate_kind = 'thread' AND event_type = 'thread.archived' AND command_id LIKE 'thread-retention:%')")?;
+    execute(
+        conn,
+        "UPDATE orchestration_events SET event_type = 'thread.archived', payload_json = json_set(json_remove(payload_json, '$.deletedAt'), '$.archivedAt', json_extract(payload_json, '$.deletedAt'), '$.updatedAt', json_extract(payload_json, '$.deletedAt')) WHERE event_type = 'thread.deleted' AND command_id LIKE 'thread-retention:%'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads SET archived_at = COALESCE(archived_at, deleted_at), deleted_at = NULL WHERE deleted_at IS NOT NULL AND thread_id IN (SELECT stream_id FROM orchestration_events WHERE aggregate_kind = 'thread' AND event_type = 'thread.archived' AND command_id LIKE 'thread-retention:%')",
+    )?;
     Ok(())
 }
 
 // 090 ProjectionThreadMessageTextSegments
 fn m090(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS message_text_segments (\n      thread_id TEXT NOT NULL,\n      message_id TEXT NOT NULL,\n      sequence INTEGER NOT NULL,\n      started_at TEXT NOT NULL,\n      ended_at TEXT NOT NULL,\n      text TEXT NOT NULL,\n      PRIMARY KEY (thread_id, message_id, sequence)\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS message_text_segments (\n      thread_id TEXT NOT NULL,\n      message_id TEXT NOT NULL,\n      sequence INTEGER NOT NULL,\n      started_at TEXT NOT NULL,\n      ended_at TEXT NOT NULL,\n      text TEXT NOT NULL,\n      PRIMARY KEY (thread_id, message_id, sequence)\n    )",
+    )?;
     Ok(())
 }
 
 // 091 AutomationFailureTolerance
 fn m091(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN stop_after_consecutive_failures INTEGER\n      CHECK (\n        stop_after_consecutive_failures IS NULL\n        OR stop_after_consecutive_failures >= 1\n      )")?;
-    execute(conn, "UPDATE automation_definitions\n      SET stop_after_consecutive_failures = CASE stop_on_error\n        WHEN 1 THEN 3\n        ELSE NULL\n      END")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN consecutive_failure_count INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN disabled_reason TEXT\n      CHECK (\n        disabled_reason IS NULL\n        OR disabled_reason IN ('failures', 'max-iterations', 'completion', 'schedule', 'user')\n      )")?;
-    execute_lenient(conn, "ALTER TABLE automation_definitions\n      ADD COLUMN disabled_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN stop_after_consecutive_failures INTEGER\n      CHECK (\n        stop_after_consecutive_failures IS NULL\n        OR stop_after_consecutive_failures >= 1\n      )",
+    )?;
+    execute(
+        conn,
+        "UPDATE automation_definitions\n      SET stop_after_consecutive_failures = CASE stop_on_error\n        WHEN 1 THEN 3\n        ELSE NULL\n      END",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN consecutive_failure_count INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN disabled_reason TEXT\n      CHECK (\n        disabled_reason IS NULL\n        OR disabled_reason IN ('failures', 'max-iterations', 'completion', 'schedule', 'user')\n      )",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE automation_definitions\n      ADD COLUMN disabled_at TEXT",
+    )?;
     Ok(())
 }
 
@@ -979,75 +1835,177 @@ fn m091(conn: &Connection) -> Result<(), WsErr> {
 // automation threads in both the authoritative event and the projection row.
 // The only interpolation was the constant 'automation:automation-run:%:thread'.
 fn m092(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE orchestration_events SET payload_json = json_set(payload_json, '$.creationSource', 'automation_run') WHERE aggregate_kind = 'thread' AND event_type = 'thread.created' AND stream_id LIKE 'automation:automation-run:%:thread' AND json_extract(payload_json, '$.creationSource') IS NULL AND stream_id NOT IN (SELECT target_thread_id FROM automation_definitions WHERE target_thread_id IS NOT NULL)")?;
-    execute(conn, "UPDATE projection_threads SET creation_source = 'automation_run' WHERE creation_source IS NULL AND thread_id LIKE 'automation:automation-run:%:thread' AND thread_id NOT IN (SELECT target_thread_id FROM automation_definitions WHERE target_thread_id IS NOT NULL)")?;
+    execute(
+        conn,
+        "UPDATE orchestration_events SET payload_json = json_set(payload_json, '$.creationSource', 'automation_run') WHERE aggregate_kind = 'thread' AND event_type = 'thread.created' AND stream_id LIKE 'automation:automation-run:%:thread' AND json_extract(payload_json, '$.creationSource') IS NULL AND stream_id NOT IN (SELECT target_thread_id FROM automation_definitions WHERE target_thread_id IS NOT NULL)",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads SET creation_source = 'automation_run' WHERE creation_source IS NULL AND thread_id LIKE 'automation:automation-run:%:thread' AND thread_id NOT IN (SELECT target_thread_id FROM automation_definitions WHERE target_thread_id IS NOT NULL)",
+    )?;
     Ok(())
 }
 
 // 093 BackfillMaxIterationsDisabledReason
 fn m093(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE automation_definitions\n    SET disabled_reason = 'max-iterations'\n    WHERE enabled = 0\n      AND archived_at IS NULL\n      AND disabled_reason IS NULL\n      AND max_iterations IS NOT NULL\n      AND iteration_count >= max_iterations")?;
+    execute(
+        conn,
+        "UPDATE automation_definitions\n    SET disabled_reason = 'max-iterations'\n    WHERE enabled = 0\n      AND archived_at IS NULL\n      AND disabled_reason IS NULL\n      AND max_iterations IS NOT NULL\n      AND iteration_count >= max_iterations",
+    )?;
     Ok(())
 }
 
 // 094 ProjectionThreadsGoal
 fn m094(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN goal TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN goal TEXT",
+    )?;
     Ok(())
 }
 
 // 095 ProjectionThreadsGoalTiming
 fn m095(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN goal_started_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN goal_paused_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN goal_started_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN goal_paused_at TEXT",
+    )?;
     Ok(())
 }
 
 // 096 ProjectionThreadsGoalAchievements
 fn m096(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN goal_achievements_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN goal_achievements_json TEXT",
+    )?;
     Ok(())
 }
 
 // 097 ProjectionThreadsSidechatLifecycle
 fn m097(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN sidechat_last_activity_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN sidechat_expired_at TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET sidechat_last_activity_at = COALESCE(sidechat_last_activity_at, updated_at, created_at)\n    WHERE sidechat_source_thread_id IS NOT NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN sidechat_last_activity_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN sidechat_expired_at TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET sidechat_last_activity_at = COALESCE(sidechat_last_activity_at, updated_at, created_at)\n    WHERE sidechat_source_thread_id IS NOT NULL",
+    )?;
     Ok(())
 }
 
 // 098 MigrateKiloToOpenCode
 fn m098(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE projection_threads\n    SET model_selection_json = CASE\n      WHEN json_type(model_selection_json, '$.options.kilo') IS NOT NULL THEN\n        json_set(\n          model_selection_json,\n          '$.provider', 'opencode',\n          '$.options', json_extract(model_selection_json, '$.options.kilo')\n        )\n      ELSE json_set(model_selection_json, '$.provider', 'opencode')\n    END\n    WHERE json_extract(model_selection_json, '$.provider') = 'kilo'")?;
-    execute(conn, "UPDATE projection_threads\n    SET handoff_json = json_set(handoff_json, '$.sourceProvider', 'opencode')\n    WHERE json_extract(handoff_json, '$.sourceProvider') = 'kilo'")?;
-    execute(conn, "UPDATE projection_projects\n    SET default_model_selection_json = CASE\n      WHEN json_type(default_model_selection_json, '$.options.kilo') IS NOT NULL THEN\n        json_set(\n          default_model_selection_json,\n          '$.provider', 'opencode',\n          '$.options', json_extract(default_model_selection_json, '$.options.kilo')\n        )\n      ELSE json_set(default_model_selection_json, '$.provider', 'opencode')\n    END\n    WHERE json_extract(default_model_selection_json, '$.provider') = 'kilo'")?;
-    execute(conn, "UPDATE projection_thread_sessions\n    SET provider_name = 'opencode'\n    WHERE provider_name = 'kilo'")?;
-    execute(conn, "UPDATE provider_session_runtime\n    SET provider_name = 'opencode'\n    WHERE provider_name = 'kilo'")?;
-    execute(conn, "UPDATE provider_session_runtime\n    SET adapter_key = 'opencode'\n    WHERE adapter_key = 'kilo'")?;
-    execute(conn, "UPDATE provider_session_runtime\n    SET runtime_payload_json = json_remove(runtime_payload_json, '$.providerOptions.kilo')\n    WHERE json_type(runtime_payload_json, '$.providerOptions.kilo') IS NOT NULL")?;
-    execute(conn, "UPDATE provider_session_runtime\n    SET runtime_payload_json = CASE\n      WHEN json_type(runtime_payload_json, '$.modelSelection.options.kilo') IS NOT NULL THEN\n        json_set(\n          runtime_payload_json,\n          '$.modelSelection.provider', 'opencode',\n          '$.modelSelection.options',\n          json_extract(runtime_payload_json, '$.modelSelection.options.kilo')\n        )\n      ELSE json_set(runtime_payload_json, '$.modelSelection.provider', 'opencode')\n    END\n    WHERE json_extract(runtime_payload_json, '$.modelSelection.provider') = 'kilo'")?;
-    execute(conn, "UPDATE automation_definitions\n    SET provider_options_json = json_remove(provider_options_json, '$.kilo')\n    WHERE json_type(provider_options_json, '$.kilo') IS NOT NULL")?;
-    execute(conn, "UPDATE automation_definitions\n    SET model_selection_json = CASE\n      WHEN json_type(model_selection_json, '$.options.kilo') IS NOT NULL THEN\n        json_set(\n          model_selection_json,\n          '$.provider', 'opencode',\n          '$.options', json_extract(model_selection_json, '$.options.kilo')\n        )\n      ELSE json_set(model_selection_json, '$.provider', 'opencode')\n    END\n    WHERE json_extract(model_selection_json, '$.provider') = 'kilo'")?;
-    execute(conn, "UPDATE provider_runtime_events\n    SET event_json = json_set(event_json, '$.provider', 'opencode')\n    WHERE json_extract(event_json, '$.provider') = 'kilo'")?;
-    execute(conn, "UPDATE provider_runtime_events\n    SET event_json = json_set(event_json, '$.raw.source', 'opencode.sdk.event')\n    WHERE json_extract(event_json, '$.raw.source') = 'kilo.sdk.event'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.provider', 'opencode')\n    WHERE json_extract(payload_json, '$.provider') = 'kilo'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.providerName', 'opencode')\n    WHERE json_extract(payload_json, '$.providerName') = 'kilo'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.session.providerName', 'opencode')\n    WHERE json_extract(payload_json, '$.session.providerName') = 'kilo'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.activity.payload.provider', 'opencode')\n    WHERE json_extract(payload_json, '$.activity.payload.provider') = 'kilo'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_remove(payload_json, '$.providerOptions.kilo')\n    WHERE json_type(payload_json, '$.providerOptions.kilo') IS NOT NULL")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = CASE\n      WHEN json_type(payload_json, '$.modelSelection.options.kilo') IS NOT NULL THEN\n        json_set(\n          payload_json,\n          '$.modelSelection.provider', 'opencode',\n          '$.modelSelection.options', json_extract(payload_json, '$.modelSelection.options.kilo')\n        )\n      ELSE json_set(payload_json, '$.modelSelection.provider', 'opencode')\n    END\n    WHERE json_extract(payload_json, '$.modelSelection.provider') = 'kilo'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = CASE\n      WHEN json_type(payload_json, '$.defaultModelSelection.options.kilo') IS NOT NULL THEN\n        json_set(\n          payload_json,\n          '$.defaultModelSelection.provider', 'opencode',\n          '$.defaultModelSelection.options',\n          json_extract(payload_json, '$.defaultModelSelection.options.kilo')\n        )\n      ELSE json_set(payload_json, '$.defaultModelSelection.provider', 'opencode')\n    END\n    WHERE json_extract(payload_json, '$.defaultModelSelection.provider') = 'kilo'")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.handoff.sourceProvider', 'opencode')\n    WHERE json_extract(payload_json, '$.handoff.sourceProvider') = 'kilo'")?;
-    execute(conn, "UPDATE projection_thread_activities\n    SET payload_json = json_set(payload_json, '$.provider', 'opencode')\n    WHERE json_extract(payload_json, '$.provider') = 'kilo'")?;
-    execute(conn, "UPDATE profile_stats_deleted_turns\n    SET provider = 'opencode'\n    WHERE provider = 'kilo'")?;
-    execute(conn, "UPDATE profile_stats_deleted_tokens\n    SET provider = 'opencode'\n    WHERE provider = 'kilo'")?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET model_selection_json = CASE\n      WHEN json_type(model_selection_json, '$.options.kilo') IS NOT NULL THEN\n        json_set(\n          model_selection_json,\n          '$.provider', 'opencode',\n          '$.options', json_extract(model_selection_json, '$.options.kilo')\n        )\n      ELSE json_set(model_selection_json, '$.provider', 'opencode')\n    END\n    WHERE json_extract(model_selection_json, '$.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET handoff_json = json_set(handoff_json, '$.sourceProvider', 'opencode')\n    WHERE json_extract(handoff_json, '$.sourceProvider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_projects\n    SET default_model_selection_json = CASE\n      WHEN json_type(default_model_selection_json, '$.options.kilo') IS NOT NULL THEN\n        json_set(\n          default_model_selection_json,\n          '$.provider', 'opencode',\n          '$.options', json_extract(default_model_selection_json, '$.options.kilo')\n        )\n      ELSE json_set(default_model_selection_json, '$.provider', 'opencode')\n    END\n    WHERE json_extract(default_model_selection_json, '$.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_thread_sessions\n    SET provider_name = 'opencode'\n    WHERE provider_name = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_session_runtime\n    SET provider_name = 'opencode'\n    WHERE provider_name = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_session_runtime\n    SET adapter_key = 'opencode'\n    WHERE adapter_key = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_session_runtime\n    SET runtime_payload_json = json_remove(runtime_payload_json, '$.providerOptions.kilo')\n    WHERE json_type(runtime_payload_json, '$.providerOptions.kilo') IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_session_runtime\n    SET runtime_payload_json = CASE\n      WHEN json_type(runtime_payload_json, '$.modelSelection.options.kilo') IS NOT NULL THEN\n        json_set(\n          runtime_payload_json,\n          '$.modelSelection.provider', 'opencode',\n          '$.modelSelection.options',\n          json_extract(runtime_payload_json, '$.modelSelection.options.kilo')\n        )\n      ELSE json_set(runtime_payload_json, '$.modelSelection.provider', 'opencode')\n    END\n    WHERE json_extract(runtime_payload_json, '$.modelSelection.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE automation_definitions\n    SET provider_options_json = json_remove(provider_options_json, '$.kilo')\n    WHERE json_type(provider_options_json, '$.kilo') IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "UPDATE automation_definitions\n    SET model_selection_json = CASE\n      WHEN json_type(model_selection_json, '$.options.kilo') IS NOT NULL THEN\n        json_set(\n          model_selection_json,\n          '$.provider', 'opencode',\n          '$.options', json_extract(model_selection_json, '$.options.kilo')\n        )\n      ELSE json_set(model_selection_json, '$.provider', 'opencode')\n    END\n    WHERE json_extract(model_selection_json, '$.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_runtime_events\n    SET event_json = json_set(event_json, '$.provider', 'opencode')\n    WHERE json_extract(event_json, '$.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_runtime_events\n    SET event_json = json_set(event_json, '$.raw.source', 'opencode.sdk.event')\n    WHERE json_extract(event_json, '$.raw.source') = 'kilo.sdk.event'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.provider', 'opencode')\n    WHERE json_extract(payload_json, '$.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.providerName', 'opencode')\n    WHERE json_extract(payload_json, '$.providerName') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.session.providerName', 'opencode')\n    WHERE json_extract(payload_json, '$.session.providerName') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.activity.payload.provider', 'opencode')\n    WHERE json_extract(payload_json, '$.activity.payload.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_remove(payload_json, '$.providerOptions.kilo')\n    WHERE json_type(payload_json, '$.providerOptions.kilo') IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = CASE\n      WHEN json_type(payload_json, '$.modelSelection.options.kilo') IS NOT NULL THEN\n        json_set(\n          payload_json,\n          '$.modelSelection.provider', 'opencode',\n          '$.modelSelection.options', json_extract(payload_json, '$.modelSelection.options.kilo')\n        )\n      ELSE json_set(payload_json, '$.modelSelection.provider', 'opencode')\n    END\n    WHERE json_extract(payload_json, '$.modelSelection.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = CASE\n      WHEN json_type(payload_json, '$.defaultModelSelection.options.kilo') IS NOT NULL THEN\n        json_set(\n          payload_json,\n          '$.defaultModelSelection.provider', 'opencode',\n          '$.defaultModelSelection.options',\n          json_extract(payload_json, '$.defaultModelSelection.options.kilo')\n        )\n      ELSE json_set(payload_json, '$.defaultModelSelection.provider', 'opencode')\n    END\n    WHERE json_extract(payload_json, '$.defaultModelSelection.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_set(payload_json, '$.handoff.sourceProvider', 'opencode')\n    WHERE json_extract(payload_json, '$.handoff.sourceProvider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_thread_activities\n    SET payload_json = json_set(payload_json, '$.provider', 'opencode')\n    WHERE json_extract(payload_json, '$.provider') = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE profile_stats_deleted_turns\n    SET provider = 'opencode'\n    WHERE provider = 'kilo'",
+    )?;
+    execute(
+        conn,
+        "UPDATE profile_stats_deleted_tokens\n    SET provider = 'opencode'\n    WHERE provider = 'kilo'",
+    )?;
     Ok(())
 }
 
 // 099 InvalidateProjectionThreadsCursor
 fn m099(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "DELETE FROM projection_state\n    WHERE projector = 'projection.threads'")?;
+    execute(
+        conn,
+        "DELETE FROM projection_state\n    WHERE projector = 'projection.threads'",
+    )?;
     Ok(())
 }
 
@@ -1055,135 +2013,303 @@ fn m099(conn: &Connection) -> Result<(), WsErr> {
 // chunks table. The only interpolation was the constant table-name loop.
 fn m100(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "projection_thread_messages", "text_event_sequence") {
-        execute(conn, "ALTER TABLE projection_thread_messages ADD COLUMN text_event_sequence INTEGER NOT NULL DEFAULT 0")?;
+        execute(
+            conn,
+            "ALTER TABLE projection_thread_messages ADD COLUMN text_event_sequence INTEGER NOT NULL DEFAULT 0",
+        )?;
     }
     for table in ["projection_thread_messages", "message_text_segments"] {
         if !column_exists(conn, table, "text_json") {
-            execute(conn, &format!("ALTER TABLE {table} ADD COLUMN text_json TEXT"))?;
+            execute(
+                conn,
+                &format!("ALTER TABLE {table} ADD COLUMN text_json TEXT"),
+            )?;
         }
     }
-    execute(conn, "CREATE TABLE IF NOT EXISTS message_text_chunks (thread_id TEXT NOT NULL, message_id TEXT NOT NULL, event_sequence INTEGER NOT NULL, segment_sequence INTEGER, text_json TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (thread_id, message_id, event_sequence), FOREIGN KEY (thread_id, message_id) REFERENCES projection_thread_messages(thread_id, message_id) ON DELETE CASCADE) WITHOUT ROWID")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_message_text_chunks_segment ON message_text_chunks(thread_id, message_id, segment_sequence, event_sequence)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS message_text_chunks (thread_id TEXT NOT NULL, message_id TEXT NOT NULL, event_sequence INTEGER NOT NULL, segment_sequence INTEGER, text_json TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (thread_id, message_id, event_sequence), FOREIGN KEY (thread_id, message_id) REFERENCES projection_thread_messages(thread_id, message_id) ON DELETE CASCADE) WITHOUT ROWID",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_message_text_chunks_segment ON message_text_chunks(thread_id, message_id, segment_sequence, event_sequence)",
+    )?;
     Ok(())
 }
 
 // 101 RemoveTranscriptMarkers
 fn m101(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE orchestration_events\n    SET event_type = 'thread.meta-updated',\n        payload_json = json_object(\n          'threadId', stream_id,\n          'updatedAt', COALESCE(json_extract(payload_json, '$.updatedAt'), occurred_at)\n        )\n    WHERE event_type IN (\n      'thread.marker-added', 'thread.marker-removed',\n      'thread.marker-done-set', 'thread.marker-label-set'\n    )")?;
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_remove(payload_json, '$.threadMarkers')\n    WHERE event_type = 'thread.meta-updated'\n      AND json_type(payload_json, '$.threadMarkers') IS NOT NULL")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads DROP COLUMN thread_markers_json")?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET event_type = 'thread.meta-updated',\n        payload_json = json_object(\n          'threadId', stream_id,\n          'updatedAt', COALESCE(json_extract(payload_json, '$.updatedAt'), occurred_at)\n        )\n    WHERE event_type IN (\n      'thread.marker-added', 'thread.marker-removed',\n      'thread.marker-done-set', 'thread.marker-label-set'\n    )",
+    )?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_remove(payload_json, '$.threadMarkers')\n    WHERE event_type = 'thread.meta-updated'\n      AND json_type(payload_json, '$.threadMarkers') IS NOT NULL",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads DROP COLUMN thread_markers_json",
+    )?;
     Ok(())
 }
 
 // 102 ProjectionThreadMessagesTurnBoundary
 fn m102(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages\n      ADD COLUMN starts_new_turn INTEGER")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages\n      ADD COLUMN starts_new_turn INTEGER",
+    )?;
     Ok(())
 }
 
 // 103 ClaudeTokenAccounting
 fn m103(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE profile_stats_deleted_tokens ADD COLUMN token_accounting_version INTEGER")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS profile_stats_claude_legacy_usage (\n      thread_id TEXT NOT NULL,\n      turn_id TEXT NOT NULL,\n      tokens INTEGER NOT NULL CHECK(tokens >= 0),\n      PRIMARY KEY (thread_id, turn_id)\n    ) WITHOUT ROWID")?;
-    execute(conn, "INSERT OR IGNORE INTO profile_stats_claude_legacy_usage (thread_id, turn_id, tokens)\n    WITH claude_result_source AS (\n      SELECT sequence, thread_id, turn_id,\n        CASE WHEN json_valid(event_json) THEN event_json ELSE '{}' END AS event_json\n      FROM provider_runtime_events\n      WHERE event_type = 'turn.completed' AND turn_id IS NOT NULL\n    ),\n    claude_result_ranked AS (\n      SELECT thread_id, turn_id, event_json,\n        ROW_NUMBER() OVER (PARTITION BY thread_id, turn_id ORDER BY sequence DESC) AS rank\n      FROM claude_result_source\n      WHERE json_extract(event_json, '$.provider') = 'claudeAgent'\n        AND json_extract(event_json, '$.payload.tokenAccountingVersion') IS NULL\n        AND json_type(event_json, '$.payload.usage') = 'object'\n        AND (\n          (json_type(event_json, '$.payload.usage.total_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.total_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.input_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.input_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.cache_creation_input_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.cache_read_input_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.cache_read_input_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.output_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.output_tokens') >= 0)\n        )\n    ),\n    claude_result_tokens AS (\n      SELECT thread_id, turn_id,\n        CASE\n          WHEN json_type(event_json, '$.payload.usage.total_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.total_tokens') >= 0\n            THEN json_extract(event_json, '$.payload.usage.total_tokens')\n          WHEN (\n            (json_type(event_json, '$.payload.usage.input_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.input_tokens') >= 0)\n            OR (json_type(event_json, '$.payload.usage.cache_creation_input_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') >= 0)\n            OR (json_type(event_json, '$.payload.usage.cache_read_input_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.cache_read_input_tokens') >= 0)\n            OR (json_type(event_json, '$.payload.usage.output_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.output_tokens') >= 0)\n          ) THEN\n            CASE WHEN json_type(event_json, '$.payload.usage.input_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.input_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.input_tokens') ELSE 0 END\n            + CASE WHEN json_type(event_json, '$.payload.usage.cache_creation_input_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') ELSE 0 END\n            + CASE WHEN json_type(event_json, '$.payload.usage.cache_read_input_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.cache_read_input_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.cache_read_input_tokens') ELSE 0 END\n            + CASE WHEN json_type(event_json, '$.payload.usage.output_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.output_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.output_tokens') ELSE 0 END\n          ELSE NULL\n        END AS tokens\n      FROM claude_result_ranked\n      WHERE rank = 1\n    )\n    SELECT thread_id, turn_id, CAST(tokens AS INTEGER)\n    FROM claude_result_tokens\n    WHERE tokens IS NOT NULL AND tokens >= 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE profile_stats_deleted_tokens ADD COLUMN token_accounting_version INTEGER",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS profile_stats_claude_legacy_usage (\n      thread_id TEXT NOT NULL,\n      turn_id TEXT NOT NULL,\n      tokens INTEGER NOT NULL CHECK(tokens >= 0),\n      PRIMARY KEY (thread_id, turn_id)\n    ) WITHOUT ROWID",
+    )?;
+    execute(
+        conn,
+        "INSERT OR IGNORE INTO profile_stats_claude_legacy_usage (thread_id, turn_id, tokens)\n    WITH claude_result_source AS (\n      SELECT sequence, thread_id, turn_id,\n        CASE WHEN json_valid(event_json) THEN event_json ELSE '{}' END AS event_json\n      FROM provider_runtime_events\n      WHERE event_type = 'turn.completed' AND turn_id IS NOT NULL\n    ),\n    claude_result_ranked AS (\n      SELECT thread_id, turn_id, event_json,\n        ROW_NUMBER() OVER (PARTITION BY thread_id, turn_id ORDER BY sequence DESC) AS rank\n      FROM claude_result_source\n      WHERE json_extract(event_json, '$.provider') = 'claudeAgent'\n        AND json_extract(event_json, '$.payload.tokenAccountingVersion') IS NULL\n        AND json_type(event_json, '$.payload.usage') = 'object'\n        AND (\n          (json_type(event_json, '$.payload.usage.total_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.total_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.input_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.input_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.cache_creation_input_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.cache_read_input_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.cache_read_input_tokens') >= 0)\n          OR (json_type(event_json, '$.payload.usage.output_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.output_tokens') >= 0)\n        )\n    ),\n    claude_result_tokens AS (\n      SELECT thread_id, turn_id,\n        CASE\n          WHEN json_type(event_json, '$.payload.usage.total_tokens') IN ('integer', 'real')\n            AND json_extract(event_json, '$.payload.usage.total_tokens') >= 0\n            THEN json_extract(event_json, '$.payload.usage.total_tokens')\n          WHEN (\n            (json_type(event_json, '$.payload.usage.input_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.input_tokens') >= 0)\n            OR (json_type(event_json, '$.payload.usage.cache_creation_input_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') >= 0)\n            OR (json_type(event_json, '$.payload.usage.cache_read_input_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.cache_read_input_tokens') >= 0)\n            OR (json_type(event_json, '$.payload.usage.output_tokens') IN ('integer', 'real')\n              AND json_extract(event_json, '$.payload.usage.output_tokens') >= 0)\n          ) THEN\n            CASE WHEN json_type(event_json, '$.payload.usage.input_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.input_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.input_tokens') ELSE 0 END\n            + CASE WHEN json_type(event_json, '$.payload.usage.cache_creation_input_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.cache_creation_input_tokens') ELSE 0 END\n            + CASE WHEN json_type(event_json, '$.payload.usage.cache_read_input_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.cache_read_input_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.cache_read_input_tokens') ELSE 0 END\n            + CASE WHEN json_type(event_json, '$.payload.usage.output_tokens') IN ('integer', 'real')\n                AND json_extract(event_json, '$.payload.usage.output_tokens') >= 0\n              THEN json_extract(event_json, '$.payload.usage.output_tokens') ELSE 0 END\n          ELSE NULL\n        END AS tokens\n      FROM claude_result_ranked\n      WHERE rank = 1\n    )\n    SELECT thread_id, turn_id, CAST(tokens AS INTEGER)\n    FROM claude_result_tokens\n    WHERE tokens IS NOT NULL AND tokens >= 0",
+    )?;
     Ok(())
 }
 
 // 104 ProjectionThreadsClaudeCacheReview
 fn m104(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN claude_cache_review_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN claude_cache_review_json TEXT",
+    )?;
     Ok(())
 }
 
 // 105 AsyncUserInput
 fn m105(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_messages ADD COLUMN async_user_input_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_messages ADD COLUMN async_user_input_json TEXT",
+    )?;
     Ok(())
 }
 
 // 106 ProjectImportOrigins
 fn m106(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_import_origins (\n      source_key TEXT PRIMARY KEY NOT NULL,\n      provider TEXT NOT NULL,\n      source_home TEXT NOT NULL,\n      external_id TEXT NOT NULL,\n      project_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL UNIQUE,\n      status TEXT NOT NULL CHECK (status IN ('pending', 'completed')),\n      created_at TEXT NOT NULL,\n      UNIQUE(provider, source_home, external_id)\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_import_origins (\n      source_key TEXT PRIMARY KEY NOT NULL,\n      provider TEXT NOT NULL,\n      source_home TEXT NOT NULL,\n      external_id TEXT NOT NULL,\n      project_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL UNIQUE,\n      status TEXT NOT NULL CHECK (status IN ('pending', 'completed')),\n      created_at TEXT NOT NULL,\n      UNIQUE(provider, source_home, external_id)\n    )",
+    )?;
     Ok(())
 }
 
 // 107 ProjectionThreadsHumanMessage
 fn m107(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN latest_human_message_at TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET latest_human_message_at = (\n      SELECT MAX(MAX(message.created_at, message.updated_at))\n      FROM projection_thread_messages AS message\n      WHERE message.thread_id = projection_threads.thread_id\n        AND message.role = 'user'\n        AND (message.dispatch_origin IS NULL OR message.dispatch_origin = 'user')\n    )")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN latest_human_message_at TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET latest_human_message_at = (\n      SELECT MAX(MAX(message.created_at, message.updated_at))\n      FROM projection_thread_messages AS message\n      WHERE message.thread_id = projection_threads.thread_id\n        AND message.role = 'user'\n        AND (message.dispatch_origin IS NULL OR message.dispatch_origin = 'user')\n    )",
+    )?;
     Ok(())
 }
 
 // 108 GatewayCompletions
 fn m108(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS agent_gateway_completions (\n    child_thread_id TEXT PRIMARY KEY,\n    creator_thread_id TEXT NOT NULL,\n    initial_message_id TEXT NOT NULL,\n    result_json TEXT,\n    delivery_state TEXT NOT NULL DEFAULT 'pending'\n      CHECK (delivery_state IN ('pending', 'delivered', 'unavailable')),\n    context_event_sequence INTEGER,\n    context_consumed INTEGER NOT NULL DEFAULT 0,\n    created_at TEXT NOT NULL\n  )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_gateway_completions_delivery\n    ON agent_gateway_completions(delivery_state, created_at)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_gateway_completions_context\n    ON agent_gateway_completions(creator_thread_id, context_consumed, context_event_sequence)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS agent_gateway_completions (\n    child_thread_id TEXT PRIMARY KEY,\n    creator_thread_id TEXT NOT NULL,\n    initial_message_id TEXT NOT NULL,\n    result_json TEXT,\n    delivery_state TEXT NOT NULL DEFAULT 'pending'\n      CHECK (delivery_state IN ('pending', 'delivered', 'unavailable')),\n    context_event_sequence INTEGER,\n    context_consumed INTEGER NOT NULL DEFAULT 0,\n    created_at TEXT NOT NULL\n  )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_gateway_completions_delivery\n    ON agent_gateway_completions(delivery_state, created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_gateway_completions_context\n    ON agent_gateway_completions(creator_thread_id, context_consumed, context_event_sequence)",
+    )?;
     Ok(())
 }
 
 // 109 ProjectAgent
 fn m109(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "automation_definitions", "managed_by_project") {
-        execute(conn, "ALTER TABLE automation_definitions ADD COLUMN managed_by_project INTEGER NOT NULL DEFAULT 0")?;
+        execute(
+            conn,
+            "ALTER TABLE automation_definitions ADD COLUMN managed_by_project INTEGER NOT NULL DEFAULT 0",
+        )?;
     }
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_configs (\n      project_id TEXT PRIMARY KEY,\n      coordinator_thread_id TEXT NOT NULL,\n      coordinator_name TEXT NOT NULL,\n      coordinator_model_selection_json TEXT NOT NULL,\n      coordinator_provider_options_json TEXT,\n      worker_routing_json TEXT,\n      limits_json TEXT NOT NULL,\n      capture_enabled INTEGER NOT NULL,\n      enabled INTEGER NOT NULL,\n      automation_id TEXT,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      disabled_at TEXT\n    )")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_configs_coordinator\n    ON project_agent_configs (coordinator_thread_id)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_goals (\n      goal_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      objective TEXT NOT NULL,\n      authorization_source TEXT NOT NULL,\n      scope_version INTEGER NOT NULL,\n      acceptance_criteria TEXT,\n      limits_json TEXT NOT NULL,\n      status TEXT NOT NULL,\n      continuation_count INTEGER NOT NULL,\n      worker_creation_count INTEGER NOT NULL,\n      authorized_at TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (project_id) REFERENCES project_agent_configs(project_id)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_goals_project\n    ON project_agent_goals (project_id, updated_at DESC, goal_id DESC)")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_goals_one_open\n    ON project_agent_goals (project_id)\n    WHERE status IN ('active', 'paused')")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_tasks (\n      task_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      goal_id TEXT NOT NULL,\n      title TEXT NOT NULL,\n      description TEXT,\n      acceptance_criteria TEXT,\n      status TEXT NOT NULL,\n      assigned_thread_id TEXT,\n      repair_count INTEGER NOT NULL,\n      archived_at TEXT,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (goal_id) REFERENCES project_agent_goals(goal_id)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_tasks_goal\n    ON project_agent_tasks (project_id, goal_id, created_at DESC, task_id DESC)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_task_dependencies (\n      task_id TEXT NOT NULL,\n      depends_on_task_id TEXT NOT NULL,\n      project_id TEXT NOT NULL,\n      PRIMARY KEY (task_id, depends_on_task_id)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_task_attempts (\n      attempt_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      task_id TEXT NOT NULL,\n      worker_thread_id TEXT NOT NULL,\n      gateway_operation_id TEXT,\n      request_id TEXT NOT NULL,\n      attempt_number INTEGER NOT NULL,\n      outcome TEXT NOT NULL,\n      error TEXT,\n      created_at TEXT NOT NULL,\n      finished_at TEXT,\n      FOREIGN KEY (task_id) REFERENCES project_agent_tasks(task_id)\n    )")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_attempts_request\n    ON project_agent_task_attempts (request_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_attempts_task\n    ON project_agent_task_attempts (task_id, attempt_number DESC)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_evidence (\n      evidence_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      task_id TEXT,\n      attempt_id TEXT,\n      kind TEXT NOT NULL,\n      classification TEXT NOT NULL,\n      author_kind TEXT NOT NULL,\n      author_thread_id TEXT,\n      source_thread_id TEXT,\n      source_message_id TEXT,\n      source_turn_id TEXT,\n      summary TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_evidence_task\n    ON project_agent_evidence (project_id, task_id, created_at DESC)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_documents (\n      revision_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      logical_path TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      content TEXT NOT NULL,\n      content_hash TEXT NOT NULL,\n      author_kind TEXT NOT NULL,\n      author_thread_id TEXT,\n      sources_json TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_documents_revision\n    ON project_agent_documents (project_id, logical_path, revision)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_document_heads (\n      project_id TEXT NOT NULL,\n      logical_path TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      content_hash TEXT NOT NULL,\n      disk_hash TEXT,\n      conflict_pending INTEGER NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (project_id, logical_path)\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_activity (\n      activity_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      sequence INTEGER NOT NULL,\n      kind TEXT NOT NULL,\n      actor_kind TEXT NOT NULL,\n      actor_thread_id TEXT,\n      goal_id TEXT,\n      task_id TEXT,\n      source_json TEXT,\n      summary TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_activity_sequence\n    ON project_agent_activity (project_id, sequence)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_activity_project\n    ON project_agent_activity (project_id, sequence DESC)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_digests (\n      project_id TEXT PRIMARY KEY,\n      summary TEXT NOT NULL,\n      focus_items_json TEXT NOT NULL,\n      coverage_from_sequence INTEGER NOT NULL,\n      coverage_to_sequence INTEGER NOT NULL,\n      historical_coverage TEXT NOT NULL,\n      summarized_thread_count INTEGER NOT NULL,\n      pending_thread_count INTEGER NOT NULL,\n      generation_state TEXT NOT NULL,\n      generated_at TEXT,\n      last_good_at TEXT,\n      last_error TEXT,\n      pinned_focus_json TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_event_inbox (\n      inbox_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      source_thread_id TEXT NOT NULL,\n      source_event_id TEXT NOT NULL,\n      event_type TEXT NOT NULL,\n      task_id TEXT,\n      eligible_wake INTEGER NOT NULL,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_inbox_source\n    ON project_agent_event_inbox (source_event_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_inbox_project\n    ON project_agent_event_inbox (project_id, created_at ASC, inbox_id ASC)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_cursors (\n      project_id TEXT PRIMARY KEY,\n      processed_through_inbox_id TEXT,\n      frozen_from_inbox_id TEXT,\n      frozen_to_inbox_id TEXT,\n      coordinator_busy INTEGER NOT NULL,\n      updated_at TEXT NOT NULL\n    )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_thread_index (\n      project_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      excluded INTEGER NOT NULL,\n      archived INTEGER NOT NULL,\n      summary_status TEXT NOT NULL,\n      last_updated_at TEXT,\n      last_summarized_at TEXT,\n      PRIMARY KEY (project_id, thread_id)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_thread_index_updated\n    ON project_agent_thread_index (project_id, last_updated_at DESC)")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_receipts (\n      request_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      operation TEXT NOT NULL,\n      result_json TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_receipts_project\n    ON project_agent_receipts (project_id, created_at DESC)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_configs (\n      project_id TEXT PRIMARY KEY,\n      coordinator_thread_id TEXT NOT NULL,\n      coordinator_name TEXT NOT NULL,\n      coordinator_model_selection_json TEXT NOT NULL,\n      coordinator_provider_options_json TEXT,\n      worker_routing_json TEXT,\n      limits_json TEXT NOT NULL,\n      capture_enabled INTEGER NOT NULL,\n      enabled INTEGER NOT NULL,\n      automation_id TEXT,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      disabled_at TEXT\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_configs_coordinator\n    ON project_agent_configs (coordinator_thread_id)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_goals (\n      goal_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      objective TEXT NOT NULL,\n      authorization_source TEXT NOT NULL,\n      scope_version INTEGER NOT NULL,\n      acceptance_criteria TEXT,\n      limits_json TEXT NOT NULL,\n      status TEXT NOT NULL,\n      continuation_count INTEGER NOT NULL,\n      worker_creation_count INTEGER NOT NULL,\n      authorized_at TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (project_id) REFERENCES project_agent_configs(project_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_goals_project\n    ON project_agent_goals (project_id, updated_at DESC, goal_id DESC)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_goals_one_open\n    ON project_agent_goals (project_id)\n    WHERE status IN ('active', 'paused')",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_tasks (\n      task_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      goal_id TEXT NOT NULL,\n      title TEXT NOT NULL,\n      description TEXT,\n      acceptance_criteria TEXT,\n      status TEXT NOT NULL,\n      assigned_thread_id TEXT,\n      repair_count INTEGER NOT NULL,\n      archived_at TEXT,\n      revision INTEGER NOT NULL,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      FOREIGN KEY (goal_id) REFERENCES project_agent_goals(goal_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_tasks_goal\n    ON project_agent_tasks (project_id, goal_id, created_at DESC, task_id DESC)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_task_dependencies (\n      task_id TEXT NOT NULL,\n      depends_on_task_id TEXT NOT NULL,\n      project_id TEXT NOT NULL,\n      PRIMARY KEY (task_id, depends_on_task_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_task_attempts (\n      attempt_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      task_id TEXT NOT NULL,\n      worker_thread_id TEXT NOT NULL,\n      gateway_operation_id TEXT,\n      request_id TEXT NOT NULL,\n      attempt_number INTEGER NOT NULL,\n      outcome TEXT NOT NULL,\n      error TEXT,\n      created_at TEXT NOT NULL,\n      finished_at TEXT,\n      FOREIGN KEY (task_id) REFERENCES project_agent_tasks(task_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_attempts_request\n    ON project_agent_task_attempts (request_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_attempts_task\n    ON project_agent_task_attempts (task_id, attempt_number DESC)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_evidence (\n      evidence_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      task_id TEXT,\n      attempt_id TEXT,\n      kind TEXT NOT NULL,\n      classification TEXT NOT NULL,\n      author_kind TEXT NOT NULL,\n      author_thread_id TEXT,\n      source_thread_id TEXT,\n      source_message_id TEXT,\n      source_turn_id TEXT,\n      summary TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_evidence_task\n    ON project_agent_evidence (project_id, task_id, created_at DESC)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_documents (\n      revision_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      logical_path TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      content TEXT NOT NULL,\n      content_hash TEXT NOT NULL,\n      author_kind TEXT NOT NULL,\n      author_thread_id TEXT,\n      sources_json TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_documents_revision\n    ON project_agent_documents (project_id, logical_path, revision)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_document_heads (\n      project_id TEXT NOT NULL,\n      logical_path TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      content_hash TEXT NOT NULL,\n      disk_hash TEXT,\n      conflict_pending INTEGER NOT NULL,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (project_id, logical_path)\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_activity (\n      activity_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      sequence INTEGER NOT NULL,\n      kind TEXT NOT NULL,\n      actor_kind TEXT NOT NULL,\n      actor_thread_id TEXT,\n      goal_id TEXT,\n      task_id TEXT,\n      source_json TEXT,\n      summary TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_activity_sequence\n    ON project_agent_activity (project_id, sequence)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_activity_project\n    ON project_agent_activity (project_id, sequence DESC)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_digests (\n      project_id TEXT PRIMARY KEY,\n      summary TEXT NOT NULL,\n      focus_items_json TEXT NOT NULL,\n      coverage_from_sequence INTEGER NOT NULL,\n      coverage_to_sequence INTEGER NOT NULL,\n      historical_coverage TEXT NOT NULL,\n      summarized_thread_count INTEGER NOT NULL,\n      pending_thread_count INTEGER NOT NULL,\n      generation_state TEXT NOT NULL,\n      generated_at TEXT,\n      last_good_at TEXT,\n      last_error TEXT,\n      pinned_focus_json TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_event_inbox (\n      inbox_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      source_thread_id TEXT NOT NULL,\n      source_event_id TEXT NOT NULL,\n      event_type TEXT NOT NULL,\n      task_id TEXT,\n      eligible_wake INTEGER NOT NULL,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_inbox_source\n    ON project_agent_event_inbox (source_event_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_inbox_project\n    ON project_agent_event_inbox (project_id, created_at ASC, inbox_id ASC)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_cursors (\n      project_id TEXT PRIMARY KEY,\n      processed_through_inbox_id TEXT,\n      frozen_from_inbox_id TEXT,\n      frozen_to_inbox_id TEXT,\n      coordinator_busy INTEGER NOT NULL,\n      updated_at TEXT NOT NULL\n    )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_thread_index (\n      project_id TEXT NOT NULL,\n      thread_id TEXT NOT NULL,\n      excluded INTEGER NOT NULL,\n      archived INTEGER NOT NULL,\n      summary_status TEXT NOT NULL,\n      last_updated_at TEXT,\n      last_summarized_at TEXT,\n      PRIMARY KEY (project_id, thread_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_thread_index_updated\n    ON project_agent_thread_index (project_id, last_updated_at DESC)",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_receipts (\n      request_id TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL,\n      operation TEXT NOT NULL,\n      result_json TEXT NOT NULL,\n      created_at TEXT NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_receipts_project\n    ON project_agent_receipts (project_id, created_at DESC)",
+    )?;
     Ok(())
 }
 
 // 110 Groups
 fn m110(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "project_agent_configs", "goal") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN goal TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN goal TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "icon") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN icon TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN icon TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "auto_memory_enabled") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN auto_memory_enabled INTEGER NOT NULL DEFAULT 0")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN auto_memory_enabled INTEGER NOT NULL DEFAULT 0",
+        )?;
     }
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_linked_projects (\n      project_id TEXT NOT NULL,\n      linked_project_id TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      PRIMARY KEY (project_id, linked_project_id)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_linked_projects_linked\n    ON project_agent_linked_projects (linked_project_id)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_linked_projects (\n      project_id TEXT NOT NULL,\n      linked_project_id TEXT NOT NULL,\n      created_at TEXT NOT NULL,\n      PRIMARY KEY (project_id, linked_project_id)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_linked_projects_linked\n    ON project_agent_linked_projects (linked_project_id)",
+    )?;
     Ok(())
 }
 
 // 111 GroupLibraryHosting
 fn m111(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "project_agent_configs", "library_path") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN library_path TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN library_path TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "library_remote_url") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN library_remote_url TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN library_remote_url TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "library_push_on_change") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN library_push_on_change INTEGER NOT NULL DEFAULT 0")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN library_push_on_change INTEGER NOT NULL DEFAULT 0",
+        )?;
     }
     Ok(())
 }
@@ -1191,21 +2317,37 @@ fn m111(conn: &Connection) -> Result<(), WsErr> {
 // 112 CoordinatorAppearance
 fn m112(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "project_agent_configs", "coordinator_icon") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN coordinator_icon TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN coordinator_icon TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "coordinator_color") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN coordinator_color TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN coordinator_color TEXT",
+        )?;
     }
     Ok(())
 }
 
 // 113 ProjectAgentWakeCursor
 fn m113(conn: &Connection) -> Result<(), WsErr> {
-    if !column_exists(conn, "project_agent_cursors", "processed_through_created_at") {
-        execute(conn, "ALTER TABLE project_agent_cursors ADD COLUMN processed_through_created_at TEXT")?;
+    if !column_exists(
+        conn,
+        "project_agent_cursors",
+        "processed_through_created_at",
+    ) {
+        execute(
+            conn,
+            "ALTER TABLE project_agent_cursors ADD COLUMN processed_through_created_at TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_cursors", "coordinator_busy_since") {
-        execute(conn, "ALTER TABLE project_agent_cursors ADD COLUMN coordinator_busy_since TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_cursors ADD COLUMN coordinator_busy_since TEXT",
+        )?;
     }
     Ok(())
 }
@@ -1213,13 +2355,22 @@ fn m113(conn: &Connection) -> Result<(), WsErr> {
 // 114 ProjectAgentLifecycle
 fn m114(conn: &Connection) -> Result<(), WsErr> {
     if !column_exists(conn, "project_agent_configs", "paused_at") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN paused_at TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN paused_at TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "archived_at") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN archived_at TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN archived_at TEXT",
+        )?;
     }
     if !column_exists(conn, "project_agent_configs", "paused_automation_ids") {
-        execute(conn, "ALTER TABLE project_agent_configs ADD COLUMN paused_automation_ids TEXT")?;
+        execute(
+            conn,
+            "ALTER TABLE project_agent_configs ADD COLUMN paused_automation_ids TEXT",
+        )?;
     }
     Ok(())
 }
@@ -1227,59 +2378,143 @@ fn m114(conn: &Connection) -> Result<(), WsErr> {
 // 115 — project_agent_managed_workers table (upstream used sql.unsafe for
 // plain DDL; content identical to the sql` form).
 fn m115(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_managed_workers (project_id TEXT NOT NULL, thread_id TEXT NOT NULL, batch_id TEXT NOT NULL, request_id TEXT NOT NULL, title TEXT NOT NULL, task_id TEXT, settled_at TEXT, settle_outcome TEXT, waiting_since TEXT, stuck_kind TEXT, stuck_since TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (project_id, thread_id))")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_workers_thread ON project_agent_managed_workers (thread_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_workers_batch ON project_agent_managed_workers (project_id, batch_id)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_managed_workers (project_id TEXT NOT NULL, thread_id TEXT NOT NULL, batch_id TEXT NOT NULL, request_id TEXT NOT NULL, title TEXT NOT NULL, task_id TEXT, settled_at TEXT, settle_outcome TEXT, waiting_since TEXT, stuck_kind TEXT, stuck_since TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (project_id, thread_id))",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_workers_thread ON project_agent_managed_workers (thread_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_workers_batch ON project_agent_managed_workers (project_id, batch_id)",
+    )?;
     Ok(())
 }
 
 // 116 ProjectAgentWorkerRecovery
 fn m116(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN task_prompt TEXT")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN recovery_episode TEXT")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN recovery_step INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN nudge_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN recoveries_used INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN needs_you INTEGER NOT NULL DEFAULT 0")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN needs_you_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN task_prompt TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN recovery_episode TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN recovery_step INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN nudge_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN recoveries_used INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN needs_you INTEGER NOT NULL DEFAULT 0",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n      ADD COLUMN needs_you_at TEXT",
+    )?;
     Ok(())
 }
 
 // 117 WorkerMonitoringLiveness
 fn m117(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_sessions\n      ADD COLUMN last_activity_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_thread_sessions\n      ADD COLUMN last_progress_at TEXT")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS projection_thread_active_tools (\n        thread_id TEXT NOT NULL,\n        item_id TEXT NOT NULL,\n        turn_id TEXT,\n        started_at TEXT NOT NULL,\n        started_event_id TEXT NOT NULL,\n        PRIMARY KEY (thread_id, item_id)\n      )")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN active_turn_origin TEXT")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN active_turn_command_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN result_summary TEXT")?;
-    execute_lenient(conn, "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN result_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_sessions\n      ADD COLUMN last_activity_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_sessions\n      ADD COLUMN last_progress_at TEXT",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS projection_thread_active_tools (\n        thread_id TEXT NOT NULL,\n        item_id TEXT NOT NULL,\n        turn_id TEXT,\n        started_at TEXT NOT NULL,\n        started_event_id TEXT NOT NULL,\n        PRIMARY KEY (thread_id, item_id)\n      )",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN active_turn_origin TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN active_turn_command_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN result_summary TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE project_agent_managed_workers\n        ADD COLUMN result_at TEXT",
+    )?;
     Ok(())
 }
 
 // 118 ProjectionThreadSessionProviderInstance
 fn m118(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_sessions\n      ADD COLUMN provider_instance_id TEXT")?;
-    execute(conn, "UPDATE projection_thread_sessions\n    SET provider_instance_id = COALESCE(\n      (\n        SELECT CASE\n          WHEN typeof(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId')) = 'text'\n            AND length(trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId'))) BETWEEN 1 AND 64\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId')) GLOB '[A-Za-z]*'\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n          THEN trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId'))\n        END\n        FROM provider_session_runtime\n        WHERE provider_session_runtime.thread_id = projection_thread_sessions.thread_id\n          AND json_valid(provider_session_runtime.runtime_payload_json)\n      ),\n      (\n        SELECT CASE\n          WHEN typeof(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId')) = 'text'\n            AND length(trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId'))) BETWEEN 1 AND 64\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId')) GLOB '[A-Za-z]*'\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n          THEN trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId'))\n        END\n        FROM provider_session_runtime\n        WHERE provider_session_runtime.thread_id = projection_thread_sessions.thread_id\n          AND json_valid(provider_session_runtime.runtime_payload_json)\n      ),\n      (\n        SELECT CASE\n          WHEN typeof(json_extract(projection_threads.model_selection_json, '$.instanceId')) = 'text'\n            AND length(trim(json_extract(projection_threads.model_selection_json, '$.instanceId'))) BETWEEN 1 AND 64\n            AND trim(json_extract(projection_threads.model_selection_json, '$.instanceId')) GLOB '[A-Za-z]*'\n            AND trim(json_extract(projection_threads.model_selection_json, '$.instanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n          THEN trim(json_extract(projection_threads.model_selection_json, '$.instanceId'))\n        END\n        FROM projection_threads\n        WHERE projection_threads.thread_id = projection_thread_sessions.thread_id\n          AND json_valid(projection_threads.model_selection_json)\n      ),\n      CASE\n        WHEN length(trim(provider_name)) BETWEEN 1 AND 64\n          AND trim(provider_name) GLOB '[A-Za-z]*'\n          AND trim(provider_name) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(provider_name)\n        ELSE 'codex'\n      END\n    )\n    WHERE provider_instance_id IS NULL")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_sessions_provider_instance\n    ON projection_thread_sessions(provider_instance_id)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_sessions\n      ADD COLUMN provider_instance_id TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_thread_sessions\n    SET provider_instance_id = COALESCE(\n      (\n        SELECT CASE\n          WHEN typeof(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId')) = 'text'\n            AND length(trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId'))) BETWEEN 1 AND 64\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId')) GLOB '[A-Za-z]*'\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n          THEN trim(json_extract(provider_session_runtime.runtime_payload_json, '$.providerInstanceId'))\n        END\n        FROM provider_session_runtime\n        WHERE provider_session_runtime.thread_id = projection_thread_sessions.thread_id\n          AND json_valid(provider_session_runtime.runtime_payload_json)\n      ),\n      (\n        SELECT CASE\n          WHEN typeof(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId')) = 'text'\n            AND length(trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId'))) BETWEEN 1 AND 64\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId')) GLOB '[A-Za-z]*'\n            AND trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n          THEN trim(json_extract(provider_session_runtime.runtime_payload_json, '$.modelSelection.instanceId'))\n        END\n        FROM provider_session_runtime\n        WHERE provider_session_runtime.thread_id = projection_thread_sessions.thread_id\n          AND json_valid(provider_session_runtime.runtime_payload_json)\n      ),\n      (\n        SELECT CASE\n          WHEN typeof(json_extract(projection_threads.model_selection_json, '$.instanceId')) = 'text'\n            AND length(trim(json_extract(projection_threads.model_selection_json, '$.instanceId'))) BETWEEN 1 AND 64\n            AND trim(json_extract(projection_threads.model_selection_json, '$.instanceId')) GLOB '[A-Za-z]*'\n            AND trim(json_extract(projection_threads.model_selection_json, '$.instanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n          THEN trim(json_extract(projection_threads.model_selection_json, '$.instanceId'))\n        END\n        FROM projection_threads\n        WHERE projection_threads.thread_id = projection_thread_sessions.thread_id\n          AND json_valid(projection_threads.model_selection_json)\n      ),\n      CASE\n        WHEN length(trim(provider_name)) BETWEEN 1 AND 64\n          AND trim(provider_name) GLOB '[A-Za-z]*'\n          AND trim(provider_name) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(provider_name)\n        ELSE 'codex'\n      END\n    )\n    WHERE provider_instance_id IS NULL",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_sessions_provider_instance\n    ON projection_thread_sessions(provider_instance_id)",
+    )?;
     Ok(())
 }
 
 // 119 ProviderSessionRuntimeInstanceId
 fn m119(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE provider_session_runtime\n      ADD COLUMN provider_instance_id TEXT")?;
-    execute(conn, "UPDATE provider_session_runtime\n    SET runtime_payload_json = json_remove(\n      json_set(\n        runtime_payload_json,\n        '$.modelSelection.instanceId',\n        json_extract(runtime_payload_json, '$.modelSelection.provider')\n      ),\n      '$.modelSelection.provider'\n    )\n    WHERE json_valid(runtime_payload_json)\n      AND json_extract(runtime_payload_json, '$.modelSelection.provider') IS NOT NULL\n      AND json_extract(runtime_payload_json, '$.modelSelection.instanceId') IS NULL\n      AND typeof(json_extract(runtime_payload_json, '$.modelSelection.provider')) = 'text'\n      AND length(trim(json_extract(runtime_payload_json, '$.modelSelection.provider'))) BETWEEN 1 AND 64\n      AND trim(json_extract(runtime_payload_json, '$.modelSelection.provider')) GLOB '[A-Za-z]*'\n      AND trim(json_extract(runtime_payload_json, '$.modelSelection.provider')) NOT GLOB '*[^A-Za-z0-9_-]*'")?;
-    execute(conn, "UPDATE provider_session_runtime\n    SET provider_instance_id = COALESCE(\n      CASE\n        WHEN json_valid(runtime_payload_json)\n          AND typeof(json_extract(runtime_payload_json, '$.providerInstanceId')) = 'text'\n          AND length(trim(json_extract(runtime_payload_json, '$.providerInstanceId'))) BETWEEN 1 AND 64\n          AND trim(json_extract(runtime_payload_json, '$.providerInstanceId')) GLOB '[A-Za-z]*'\n          AND trim(json_extract(runtime_payload_json, '$.providerInstanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(json_extract(runtime_payload_json, '$.providerInstanceId'))\n      END,\n      CASE\n        WHEN json_valid(runtime_payload_json)\n          AND typeof(json_extract(runtime_payload_json, '$.modelSelection.instanceId')) = 'text'\n          AND length(trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId'))) BETWEEN 1 AND 64\n          AND trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId')) GLOB '[A-Za-z]*'\n          AND trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId'))\n      END,\n      CASE\n        WHEN length(trim(provider_name)) BETWEEN 1 AND 64\n          AND trim(provider_name) GLOB '[A-Za-z]*'\n          AND trim(provider_name) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(provider_name)\n        ELSE 'codex'\n      END\n    )\n    WHERE provider_instance_id IS NULL")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_provider_session_runtime_provider_instance\n    ON provider_session_runtime(provider_instance_id)")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE provider_session_runtime\n      ADD COLUMN provider_instance_id TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_session_runtime\n    SET runtime_payload_json = json_remove(\n      json_set(\n        runtime_payload_json,\n        '$.modelSelection.instanceId',\n        json_extract(runtime_payload_json, '$.modelSelection.provider')\n      ),\n      '$.modelSelection.provider'\n    )\n    WHERE json_valid(runtime_payload_json)\n      AND json_extract(runtime_payload_json, '$.modelSelection.provider') IS NOT NULL\n      AND json_extract(runtime_payload_json, '$.modelSelection.instanceId') IS NULL\n      AND typeof(json_extract(runtime_payload_json, '$.modelSelection.provider')) = 'text'\n      AND length(trim(json_extract(runtime_payload_json, '$.modelSelection.provider'))) BETWEEN 1 AND 64\n      AND trim(json_extract(runtime_payload_json, '$.modelSelection.provider')) GLOB '[A-Za-z]*'\n      AND trim(json_extract(runtime_payload_json, '$.modelSelection.provider')) NOT GLOB '*[^A-Za-z0-9_-]*'",
+    )?;
+    execute(
+        conn,
+        "UPDATE provider_session_runtime\n    SET provider_instance_id = COALESCE(\n      CASE\n        WHEN json_valid(runtime_payload_json)\n          AND typeof(json_extract(runtime_payload_json, '$.providerInstanceId')) = 'text'\n          AND length(trim(json_extract(runtime_payload_json, '$.providerInstanceId'))) BETWEEN 1 AND 64\n          AND trim(json_extract(runtime_payload_json, '$.providerInstanceId')) GLOB '[A-Za-z]*'\n          AND trim(json_extract(runtime_payload_json, '$.providerInstanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(json_extract(runtime_payload_json, '$.providerInstanceId'))\n      END,\n      CASE\n        WHEN json_valid(runtime_payload_json)\n          AND typeof(json_extract(runtime_payload_json, '$.modelSelection.instanceId')) = 'text'\n          AND length(trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId'))) BETWEEN 1 AND 64\n          AND trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId')) GLOB '[A-Za-z]*'\n          AND trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId')) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(json_extract(runtime_payload_json, '$.modelSelection.instanceId'))\n      END,\n      CASE\n        WHEN length(trim(provider_name)) BETWEEN 1 AND 64\n          AND trim(provider_name) GLOB '[A-Za-z]*'\n          AND trim(provider_name) NOT GLOB '*[^A-Za-z0-9_-]*'\n        THEN trim(provider_name)\n        ELSE 'codex'\n      END\n    )\n    WHERE provider_instance_id IS NULL",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_provider_session_runtime_provider_instance\n    ON provider_session_runtime(provider_instance_id)",
+    )?;
     Ok(())
 }
 
 // 120 ProfileStatsDeletedProviderInstances
 fn m120(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE profile_stats_deleted_turns\n      ADD COLUMN provider_instance_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE profile_stats_deleted_tokens\n      ADD COLUMN provider_instance_id TEXT")?;
-    execute(conn, "UPDATE profile_stats_deleted_turns\n    SET provider_instance_id = provider\n    WHERE provider_instance_id IS NULL")?;
-    execute(conn, "UPDATE profile_stats_deleted_tokens\n    SET provider_instance_id = provider\n    WHERE provider_instance_id IS NULL")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE profile_stats_deleted_turns\n      ADD COLUMN provider_instance_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE profile_stats_deleted_tokens\n      ADD COLUMN provider_instance_id TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE profile_stats_deleted_turns\n    SET provider_instance_id = provider\n    WHERE provider_instance_id IS NULL",
+    )?;
+    execute(
+        conn,
+        "UPDATE profile_stats_deleted_tokens\n    SET provider_instance_id = provider\n    WHERE provider_instance_id IS NULL",
+    )?;
     Ok(())
 }
 
@@ -1288,7 +2523,7 @@ fn m120(conn: &Connection) -> Result<(), WsErr> {
 // rows fail closed: automation disabled, running rows interrupted.
 fn m121(conn: &Connection) -> Result<(), WsErr> {
     use crate::migrations::automation_identity::{
-        make_unresolved_model_selection, resolve_automation_provider_identity, IdentityResolution,
+        IdentityResolution, make_unresolved_model_selection, resolve_automation_provider_identity,
     };
     let mut stmt = conn
         .prepare("SELECT automation_id, model_selection_json, provider_options_json FROM automation_definitions WHERE provider_options_json IS NOT NULL")
@@ -1334,8 +2569,8 @@ fn m121(conn: &Connection) -> Result<(), WsErr> {
 // redacted tombstones so neither secrets nor decode failures survive.
 fn m122(conn: &Connection) -> Result<(), WsErr> {
     use crate::migrations::automation_identity::{
-        is_valid_permission_snapshot, make_unresolved_permission_snapshot,
-        resolve_automation_provider_identity, IdentityResolution,
+        IdentityResolution, is_valid_permission_snapshot, make_unresolved_permission_snapshot,
+        resolve_automation_provider_identity,
     };
     let mut stmt = conn
         .prepare("SELECT run_id, status, permission_snapshot_json, created_at FROM automation_runs WHERE NOT json_valid(permission_snapshot_json) OR json_type(permission_snapshot_json, '$.providerOptions') IS NOT NULL")
@@ -1351,38 +2586,50 @@ fn m122(conn: &Connection) -> Result<(), WsErr> {
         let snapshot: serde_json::Value =
             serde_json::from_str(&snapshot_json).unwrap_or(serde_json::Value::Null);
         let mut unsafe_snapshot = false;
-        let migrated: serde_json::Map<String, serde_json::Value> = if let Some(record) = snapshot.as_object() {
-            let resolution = resolve_automation_provider_identity(
-                record.get("modelSelection").unwrap_or(&serde_json::Value::Null),
-                record.get("providerOptions"),
-                record.get("provider"),
-            );
-            match resolution {
-                IdentityResolution::Safe(selection) => {
-                    let mut sanitized = record.clone();
-                    sanitized.insert("modelSelection".to_string(), serde_json::Value::Object(selection));
-                    sanitized.remove("providerOptions");
-                    if is_valid_permission_snapshot(&sanitized) {
-                        sanitized
-                    } else {
+        let migrated: serde_json::Map<String, serde_json::Value> =
+            if let Some(record) = snapshot.as_object() {
+                let resolution = resolve_automation_provider_identity(
+                    record
+                        .get("modelSelection")
+                        .unwrap_or(&serde_json::Value::Null),
+                    record.get("providerOptions"),
+                    record.get("provider"),
+                );
+                match resolution {
+                    IdentityResolution::Safe(selection) => {
+                        let mut sanitized = record.clone();
+                        sanitized.insert(
+                            "modelSelection".to_string(),
+                            serde_json::Value::Object(selection),
+                        );
+                        sanitized.remove("providerOptions");
+                        if is_valid_permission_snapshot(&sanitized) {
+                            sanitized
+                        } else {
+                            unsafe_snapshot = true;
+                            make_unresolved_permission_snapshot(&snapshot, &created_at)
+                        }
+                    }
+                    IdentityResolution::Unsafe => {
                         unsafe_snapshot = true;
                         make_unresolved_permission_snapshot(&snapshot, &created_at)
                     }
                 }
-                IdentityResolution::Unsafe => {
-                    unsafe_snapshot = true;
-                    make_unresolved_permission_snapshot(&snapshot, &created_at)
-                }
-            }
-        } else {
-            unsafe_snapshot = true;
-            make_unresolved_permission_snapshot(&snapshot, &created_at)
-        };
+            } else {
+                unsafe_snapshot = true;
+                make_unresolved_permission_snapshot(&snapshot, &created_at)
+            };
         conn.execute(
             "UPDATE automation_runs SET permission_snapshot_json = ?1 WHERE run_id = ?2",
             rusqlite::params![serde_json::to_string(&migrated).unwrap_or_default(), run_id],
-        ).map_err(|e| err(format!("sql failed: {e}")))?;
-        if unsafe_snapshot && matches!(status.as_str(), "pending" | "claimed" | "running" | "waiting-for-approval") {
+        )
+        .map_err(|e| err(format!("sql failed: {e}")))?;
+        if unsafe_snapshot
+            && matches!(
+                status.as_str(),
+                "pending" | "claimed" | "running" | "waiting-for-approval"
+            )
+        {
             conn.execute(
                 "UPDATE automation_runs SET status = 'interrupted', error = COALESCE(error, 'Automation stopped during provider account migration because its saved account could not be mapped safely.'), finished_at = ?1, updated_at = ?1, lease_expires_at = NULL, claimed_by = NULL WHERE run_id = ?2",
                 rusqlite::params![migrated_at, run_id],
@@ -1394,168 +2641,324 @@ fn m122(conn: &Connection) -> Result<(), WsErr> {
 
 // 123 ScrubOrchestrationEventProviderOptions
 fn m123(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "UPDATE orchestration_events\n    SET payload_json = json_remove(\n      json_replace(\n        payload_json,\n        '$.providerOptions.codex.environment', json('{}'),\n        '$.providerOptions.claudeAgent.environment', json('{}'),\n        '$.providerOptions.cursor.environment', json('{}'),\n        '$.providerOptions.devin.environment', json('{}'),\n        '$.providerOptions.antigravity.environment', json('{}'),\n        '$.providerOptions.grok.environment', json('{}'),\n        '$.providerOptions.droid.environment', json('{}'),\n        '$.providerOptions.opencode.environment', json('{}'),\n        '$.providerOptions.pi.environment', json('{}')\n      ),\n      '$.providerOptions.opencode.serverPassword'\n    )\n    WHERE event_type IN (\n      'thread.turn-queued',\n      'thread.turn-start-requested',\n      'thread.message-edit-resend-requested'\n    )\n      AND json_valid(payload_json)\n      AND json_type(payload_json, '$.providerOptions') = 'object'")?;
+    execute(
+        conn,
+        "UPDATE orchestration_events\n    SET payload_json = json_remove(\n      json_replace(\n        payload_json,\n        '$.providerOptions.codex.environment', json('{}'),\n        '$.providerOptions.claudeAgent.environment', json('{}'),\n        '$.providerOptions.cursor.environment', json('{}'),\n        '$.providerOptions.devin.environment', json('{}'),\n        '$.providerOptions.antigravity.environment', json('{}'),\n        '$.providerOptions.grok.environment', json('{}'),\n        '$.providerOptions.droid.environment', json('{}'),\n        '$.providerOptions.opencode.environment', json('{}'),\n        '$.providerOptions.pi.environment', json('{}')\n      ),\n      '$.providerOptions.opencode.serverPassword'\n    )\n    WHERE event_type IN (\n      'thread.turn-queued',\n      'thread.turn-start-requested',\n      'thread.message-edit-resend-requested'\n    )\n      AND json_valid(payload_json)\n      AND json_type(payload_json, '$.providerOptions') = 'object'",
+    )?;
     Ok(())
 }
 
 // 124 ProjectionTurnsPendingMessageIndex
 fn m124(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_turns_pending_message\n    ON projection_turns(thread_id, pending_message_id)")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_turns_pending_message\n    ON projection_turns(thread_id, pending_message_id)",
+    )?;
     Ok(())
 }
 
 // 125 Todos
 fn m125(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS todos (\n    todo_id TEXT PRIMARY KEY,\n    title TEXT NOT NULL,\n    notes TEXT NOT NULL DEFAULT '',\n    priority TEXT NOT NULL DEFAULT 'none'\n      CHECK (priority IN ('none', 'low', 'medium', 'high', 'urgent')),\n    project_id TEXT,\n    due_date TEXT,\n    thread_id TEXT,\n    delegation_base_turn_id TEXT,\n    linked_at TEXT,\n    completed_at TEXT,\n    created_at TEXT NOT NULL,\n    updated_at TEXT NOT NULL\n  )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_todos_created_at ON todos(created_at)")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_todos_open_thread\n    ON todos(thread_id) WHERE thread_id IS NOT NULL AND completed_at IS NULL")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS todos (\n    todo_id TEXT PRIMARY KEY,\n    title TEXT NOT NULL,\n    notes TEXT NOT NULL DEFAULT '',\n    priority TEXT NOT NULL DEFAULT 'none'\n      CHECK (priority IN ('none', 'low', 'medium', 'high', 'urgent')),\n    project_id TEXT,\n    due_date TEXT,\n    thread_id TEXT,\n    delegation_base_turn_id TEXT,\n    linked_at TEXT,\n    completed_at TEXT,\n    created_at TEXT NOT NULL,\n    updated_at TEXT NOT NULL\n  )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_todos_created_at ON todos(created_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_todos_open_thread\n    ON todos(thread_id) WHERE thread_id IS NOT NULL AND completed_at IS NULL",
+    )?;
     Ok(())
 }
 
 // 126 ProjectionThreadsSidechatContext
 fn m126(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads\n      ADD COLUMN sidechat_context_json TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads\n      ADD COLUMN sidechat_context_json TEXT",
+    )?;
     Ok(())
 }
 
 // 127 ProjectImportHistory
 fn m127(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_import_history (\n      thread_id TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      state_json TEXT NOT NULL,\n      PRIMARY KEY (thread_id, revision)\n    )")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_import_history (\n      thread_id TEXT NOT NULL,\n      revision INTEGER NOT NULL,\n      state_json TEXT NOT NULL,\n      PRIMARY KEY (thread_id, revision)\n    )",
+    )?;
     Ok(())
 }
 
 // 128 HubWork
 fn m128(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_work_items (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      work_item_id TEXT NOT NULL UNIQUE,\n      project_id TEXT NOT NULL,\n      scope_key TEXT NOT NULL,\n      task_index INTEGER NOT NULL,\n      state TEXT NOT NULL,\n      worker_thread_id TEXT,\n      slot_held INTEGER NOT NULL DEFAULT 0,\n      revision INTEGER NOT NULL,\n      record_json TEXT NOT NULL,\n      UNIQUE (project_id, scope_key, task_index)\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_project_agent_work_queue\n    ON project_agent_work_items (project_id, state, sequence)")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_work_worker\n    ON project_agent_work_items (worker_thread_id)\n    WHERE worker_thread_id IS NOT NULL")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS project_agent_work_requests (\n      project_id TEXT NOT NULL,\n      request_id TEXT NOT NULL,\n      scope_key TEXT NOT NULL,\n      fingerprint TEXT NOT NULL,\n      PRIMARY KEY (project_id, request_id)\n    )")?;
-    execute(conn, "INSERT OR IGNORE INTO project_agent_work_requests (project_id, request_id, scope_key, fingerprint)\n    SELECT project_id, json_extract(record_json, '$.requestId'), scope_key,\n      json_extract(record_json, '$.fingerprint')\n    FROM project_agent_work_items\n    ORDER BY sequence")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_work_items (\n      sequence INTEGER PRIMARY KEY AUTOINCREMENT,\n      work_item_id TEXT NOT NULL UNIQUE,\n      project_id TEXT NOT NULL,\n      scope_key TEXT NOT NULL,\n      task_index INTEGER NOT NULL,\n      state TEXT NOT NULL,\n      worker_thread_id TEXT,\n      slot_held INTEGER NOT NULL DEFAULT 0,\n      revision INTEGER NOT NULL,\n      record_json TEXT NOT NULL,\n      UNIQUE (project_id, scope_key, task_index)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_project_agent_work_queue\n    ON project_agent_work_items (project_id, state, sequence)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_project_agent_work_worker\n    ON project_agent_work_items (worker_thread_id)\n    WHERE worker_thread_id IS NOT NULL",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS project_agent_work_requests (\n      project_id TEXT NOT NULL,\n      request_id TEXT NOT NULL,\n      scope_key TEXT NOT NULL,\n      fingerprint TEXT NOT NULL,\n      PRIMARY KEY (project_id, request_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "INSERT OR IGNORE INTO project_agent_work_requests (project_id, request_id, scope_key, fingerprint)\n    SELECT project_id, json_extract(record_json, '$.requestId'), scope_key,\n      json_extract(record_json, '$.fingerprint')\n    FROM project_agent_work_items\n    ORDER BY sequence",
+    )?;
     Ok(())
 }
 
 // 129 ProjectionThreadsSnooze
 fn m129(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN snoozed_until TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN snooze_reminder_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN snoozed_until TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN snooze_reminder_at TEXT",
+    )?;
     Ok(())
 }
 
 // 130 PullRequestAutoFix
 fn m130(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS pull_request_auto_fix (\n      thread_id TEXT NOT NULL,\n      pull_request_url TEXT NOT NULL,\n      requested_pull_request_url TEXT,\n      status TEXT NOT NULL,\n      pause_reason TEXT,\n      attempts INTEGER NOT NULL DEFAULT 0,\n      last_handled_head_sha TEXT,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (thread_id, pull_request_url)\n    )")?;
-    execute_lenient(conn, "ALTER TABLE pull_request_auto_fix ADD COLUMN requested_pull_request_url TEXT")?;
-    execute_lenient(conn, "CREATE UNIQUE INDEX IF NOT EXISTS pull_request_auto_fix_active_owner\n    ON pull_request_auto_fix (pull_request_url) WHERE status <> 'paused'")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS pull_request_auto_fix (\n      thread_id TEXT NOT NULL,\n      pull_request_url TEXT NOT NULL,\n      requested_pull_request_url TEXT,\n      status TEXT NOT NULL,\n      pause_reason TEXT,\n      attempts INTEGER NOT NULL DEFAULT 0,\n      last_handled_head_sha TEXT,\n      updated_at TEXT NOT NULL,\n      PRIMARY KEY (thread_id, pull_request_url)\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE pull_request_auto_fix ADD COLUMN requested_pull_request_url TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE UNIQUE INDEX IF NOT EXISTS pull_request_auto_fix_active_owner\n    ON pull_request_auto_fix (pull_request_url) WHERE status <> 'paused'",
+    )?;
     Ok(())
 }
 
 // 131 ProjectSourceFolders
 fn m131(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_projects\n      ADD COLUMN additional_folders_json TEXT NOT NULL DEFAULT '[]'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_projects\n      ADD COLUMN additional_folders_json TEXT NOT NULL DEFAULT '[]'",
+    )?;
     Ok(())
 }
 
 // 132 ExternalMcpTurnCapacityRecovery
 fn m132(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "DROP VIEW IF EXISTS external_mcp_active_capacity_claims")?;
-    execute(conn, "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN turns.state IN ('pending', 'running') THEN turns.state\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          WHEN EXISTS (\n            SELECT 1\n            FROM projection_turns AS pending_turns\n            WHERE pending_turns.thread_id = threads.thread_id\n              AND pending_turns.turn_id IS NULL\n              AND pending_turns.state = 'pending'\n              AND pending_turns.pending_message_id IS NOT NULL\n              AND pending_turns.checkpoint_turn_count IS NULL\n              AND (turns.requested_at IS NULL OR pending_turns.requested_at >= turns.requested_at)\n          ) THEN 'pending'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = COALESCE(\n           threads.latest_turn_id,\n           (\n             SELECT latest.turn_id\n             FROM projection_turns AS latest\n             WHERE latest.thread_id = threads.thread_id\n               AND latest.turn_id IS NOT NULL\n             ORDER BY latest.requested_at DESC, latest.turn_id DESC\n             LIMIT 1\n           )\n         )\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')")?;
+    execute(
+        conn,
+        "DROP VIEW IF EXISTS external_mcp_active_capacity_claims",
+    )?;
+    execute(
+        conn,
+        "CREATE VIEW external_mcp_active_capacity_claims AS\n    SELECT operations.integration_id, operations.operation_id\n    FROM external_mcp_operations AS operations\n    WHERE operations.status IN ('reserved', 'dispatching', 'compensating')\n\n    UNION\n\n    SELECT tasks.integration_id, tasks.operation_id\n    FROM external_mcp_tasks AS tasks\n    INNER JOIN external_mcp_operations AS operations\n      ON operations.operation_id = tasks.operation_id\n    WHERE tasks.status IN ('planned', 'created', 'failed')\n      AND COALESCE((\n        SELECT CASE\n          WHEN turns.state IN ('pending', 'running') THEN turns.state\n          WHEN sessions.status = 'error' THEN 'error'\n          WHEN sessions.status IN ('interrupted', 'stopped') THEN 'interrupted'\n          WHEN EXISTS (\n            SELECT 1\n            FROM projection_turns AS pending_turns\n            WHERE pending_turns.thread_id = threads.thread_id\n              AND pending_turns.turn_id IS NULL\n              AND pending_turns.state = 'pending'\n              AND pending_turns.pending_message_id IS NOT NULL\n              AND pending_turns.checkpoint_turn_count IS NULL\n              AND (turns.requested_at IS NULL OR pending_turns.requested_at >= turns.requested_at)\n          ) THEN 'pending'\n          ELSE COALESCE(\n            turns.state,\n            CASE\n              WHEN tasks.status = 'failed' AND operations.status <> 'compensating'\n                THEN 'completed'\n              ELSE 'pending'\n            END\n          )\n        END\n        FROM projection_threads AS threads\n        LEFT JOIN projection_thread_sessions AS sessions\n          ON sessions.thread_id = threads.thread_id\n        LEFT JOIN projection_turns AS turns\n          ON turns.thread_id = threads.thread_id\n         AND turns.turn_id = COALESCE(\n           threads.latest_turn_id,\n           (\n             SELECT latest.turn_id\n             FROM projection_turns AS latest\n             WHERE latest.thread_id = threads.thread_id\n               AND latest.turn_id IS NOT NULL\n             ORDER BY latest.requested_at DESC, latest.turn_id DESC\n             LIMIT 1\n           )\n         )\n        WHERE threads.thread_id = tasks.thread_id\n        LIMIT 1\n      ), CASE\n        WHEN tasks.status = 'failed' AND operations.status <> 'compensating' THEN 'completed'\n        ELSE 'pending'\n      END) IN ('pending', 'running')",
+    )?;
     Ok(())
 }
 
 // 133 ProjectionTurnsWorkspaceInitialization
 fn m133(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_turns\n      ADD COLUMN started_without_git_workspace INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_turns\n      ADD COLUMN started_without_git_workspace INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 134 ProjectionThreadsForkSourceMessage
 fn m134(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN fork_source_message_id TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN fork_source_message_id TEXT",
+    )?;
     Ok(())
 }
 
 // 135 ProjectionMessageTurnActivityIndex
 fn m135(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_turn_activity\n    ON projection_thread_messages(thread_id, turn_id, updated_at)")?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_projection_thread_messages_turn_activity\n    ON projection_thread_messages(thread_id, turn_id, updated_at)",
+    )?;
     Ok(())
 }
 
 // 136 AccountUsageSync
 fn m136(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS account_usage_sync (\n      id INTEGER PRIMARY KEY CHECK (id = 1),\n      watermark_minute TEXT,\n      last_failure_at TEXT\n    )")?;
-    execute(conn, "INSERT OR IGNORE INTO account_usage_sync (id, watermark_minute, last_failure_at)\n    VALUES (1, NULL, NULL)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS account_usage_sync (\n      id INTEGER PRIMARY KEY CHECK (id = 1),\n      watermark_minute TEXT,\n      last_failure_at TEXT\n    )",
+    )?;
+    execute(
+        conn,
+        "INSERT OR IGNORE INTO account_usage_sync (id, watermark_minute, last_failure_at)\n    VALUES (1, NULL, NULL)",
+    )?;
     Ok(())
 }
 
 // 137 AccountUsageSyncIdentity
 fn m137(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE account_usage_sync\n      ADD COLUMN account_identity TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE account_usage_sync\n      ADD COLUMN account_identity TEXT",
+    )?;
     Ok(())
 }
 
 // 138 RemoteDeviceTrust
 fn m138(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE auth_pairing_links ADD COLUMN purpose TEXT NOT NULL DEFAULT 'local-session'")?;
-    execute_lenient(conn, "ALTER TABLE auth_pairing_links ADD COLUMN remote_metadata TEXT")?;
-    execute_lenient(conn, "ALTER TABLE auth_pairing_links ADD COLUMN pending_device_jkt TEXT")?;
-    execute_lenient(conn, "ALTER TABLE auth_pairing_links ADD COLUMN pending_device_key TEXT")?;
-    execute_lenient(conn, "ALTER TABLE auth_pairing_links ADD COLUMN pending_device_label TEXT")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS remote_device_trust (\n    environment_id TEXT NOT NULL,\n    root_fingerprint TEXT NOT NULL,\n    device_jkt TEXT NOT NULL,\n    device_public_key TEXT NOT NULL,\n    account_authority TEXT NOT NULL,\n    owner_user_id TEXT NOT NULL,\n    organization_id TEXT NOT NULL,\n    label TEXT NOT NULL,\n    generation INTEGER NOT NULL,\n    approved_at TEXT NOT NULL,\n    approved_invite_id TEXT NOT NULL,\n    revoked_at TEXT,\n    PRIMARY KEY (environment_id, root_fingerprint, device_jkt)\n  )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS remote_access_state (\n    environment_id TEXT NOT NULL,\n    root_fingerprint TEXT NOT NULL,\n    enabled INTEGER NOT NULL DEFAULT 0,\n    PRIMARY KEY (environment_id, root_fingerprint)\n  )")?;
-    execute(conn, "CREATE TABLE IF NOT EXISTS remote_host_trust (\n    controller_environment_id TEXT NOT NULL,\n    account_authority TEXT NOT NULL,\n    user_id TEXT NOT NULL,\n    organization_id TEXT NOT NULL,\n    environment_id TEXT NOT NULL,\n    channel TEXT NOT NULL,\n    root_certificate TEXT NOT NULL,\n    root_fingerprint TEXT NOT NULL,\n    host_id TEXT NOT NULL,\n    label TEXT NOT NULL,\n    paired_at TEXT,\n    revoked_at TEXT,\n    PRIMARY KEY (controller_environment_id, account_authority, user_id, organization_id, environment_id)\n  )")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_pairing_links ADD COLUMN purpose TEXT NOT NULL DEFAULT 'local-session'",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_pairing_links ADD COLUMN remote_metadata TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_pairing_links ADD COLUMN pending_device_jkt TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_pairing_links ADD COLUMN pending_device_key TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_pairing_links ADD COLUMN pending_device_label TEXT",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS remote_device_trust (\n    environment_id TEXT NOT NULL,\n    root_fingerprint TEXT NOT NULL,\n    device_jkt TEXT NOT NULL,\n    device_public_key TEXT NOT NULL,\n    account_authority TEXT NOT NULL,\n    owner_user_id TEXT NOT NULL,\n    organization_id TEXT NOT NULL,\n    label TEXT NOT NULL,\n    generation INTEGER NOT NULL,\n    approved_at TEXT NOT NULL,\n    approved_invite_id TEXT NOT NULL,\n    revoked_at TEXT,\n    PRIMARY KEY (environment_id, root_fingerprint, device_jkt)\n  )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS remote_access_state (\n    environment_id TEXT NOT NULL,\n    root_fingerprint TEXT NOT NULL,\n    enabled INTEGER NOT NULL DEFAULT 0,\n    PRIMARY KEY (environment_id, root_fingerprint)\n  )",
+    )?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS remote_host_trust (\n    controller_environment_id TEXT NOT NULL,\n    account_authority TEXT NOT NULL,\n    user_id TEXT NOT NULL,\n    organization_id TEXT NOT NULL,\n    environment_id TEXT NOT NULL,\n    channel TEXT NOT NULL,\n    root_certificate TEXT NOT NULL,\n    root_fingerprint TEXT NOT NULL,\n    host_id TEXT NOT NULL,\n    label TEXT NOT NULL,\n    paired_at TEXT,\n    revoked_at TEXT,\n    PRIMARY KEY (controller_environment_id, account_authority, user_id, organization_id, environment_id)\n  )",
+    )?;
     Ok(())
 }
 
 // 139 RemoteConnectionPreferences
 fn m139(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE remote_host_trust ADD COLUMN desired INTEGER NOT NULL DEFAULT 0")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE remote_host_trust ADD COLUMN desired INTEGER NOT NULL DEFAULT 0",
+    )?;
     Ok(())
 }
 
 // 140 RemoteAccessControls
 fn m140(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE remote_access_state ADD COLUMN allow_connections INTEGER NOT NULL DEFAULT 1")?;
-    execute_lenient(conn, "ALTER TABLE remote_device_trust ADD COLUMN enrolled_via TEXT NOT NULL DEFAULT 'approval'")?;
-    execute_lenient(conn, "ALTER TABLE remote_device_trust ADD COLUMN last_connected_at TEXT")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE remote_access_state ADD COLUMN allow_connections INTEGER NOT NULL DEFAULT 1",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE remote_device_trust ADD COLUMN enrolled_via TEXT NOT NULL DEFAULT 'approval'",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE remote_device_trust ADD COLUMN last_connected_at TEXT",
+    )?;
     Ok(())
 }
 
 // 141 ProjectionThreadsUsageLimitRecovery
 fn m141(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_source_json TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_json TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_cancelled_at TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_cancelled_turn_id TEXT")?;
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_last_reset_at TEXT")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_orch_usage_limit_recovery_source\n    ON orchestration_events(stream_id,json_extract(payload_json,'$.usageLimitRecovery.turnId'),sequence)\n    WHERE aggregate_kind='thread' AND event_type='thread.meta-updated'\n      AND json_type(payload_json,'$.usageLimitRecovery')='object'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_source_json TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_json TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_cancelled_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_cancelled_turn_id TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN usage_limit_recovery_last_reset_at TEXT",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_orch_usage_limit_recovery_source\n    ON orchestration_events(stream_id,json_extract(payload_json,'$.usageLimitRecovery.turnId'),sequence)\n    WHERE aggregate_kind='thread' AND event_type='thread.meta-updated'\n      AND json_type(payload_json,'$.usageLimitRecovery')='object'",
+    )?;
     Ok(())
 }
 
 // 142 AuthAccessOrigin
 fn m142(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE auth_pairing_links ADD COLUMN access_origin TEXT\n      CHECK (access_origin IS NULL OR access_origin IN ('local', 'remote'))")?;
-    execute_lenient(conn, "ALTER TABLE auth_sessions ADD COLUMN access_origin TEXT\n      CHECK (access_origin IS NULL OR access_origin IN ('local', 'remote'))")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_pairing_links ADD COLUMN access_origin TEXT\n      CHECK (access_origin IS NULL OR access_origin IN ('local', 'remote'))",
+    )?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE auth_sessions ADD COLUMN access_origin TEXT\n      CHECK (access_origin IS NULL OR access_origin IN ('local', 'remote'))",
+    )?;
     Ok(())
 }
 
 // 143 UsageAnalyticsDeletedTokens
 fn m143(conn: &Connection) -> Result<(), WsErr> {
-    execute(conn, "CREATE TABLE IF NOT EXISTS usage_analytics_deleted_tokens (\n      thread_id TEXT NOT NULL,\n      project_id TEXT,\n      created_at TEXT NOT NULL,\n      dispatch_origin TEXT NOT NULL CHECK (dispatch_origin IN ('automation', 'agent')),\n      provider TEXT NOT NULL,\n      model TEXT NOT NULL,\n      tokens INTEGER NOT NULL\n    )")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_usage_analytics_deleted_tokens_thread\n    ON usage_analytics_deleted_tokens(thread_id)")?;
-    execute_lenient(conn, "CREATE INDEX IF NOT EXISTS idx_usage_analytics_deleted_tokens_time\n    ON usage_analytics_deleted_tokens(created_at)")?;
+    execute(
+        conn,
+        "CREATE TABLE IF NOT EXISTS usage_analytics_deleted_tokens (\n      thread_id TEXT NOT NULL,\n      project_id TEXT,\n      created_at TEXT NOT NULL,\n      dispatch_origin TEXT NOT NULL CHECK (dispatch_origin IN ('automation', 'agent')),\n      provider TEXT NOT NULL,\n      model TEXT NOT NULL,\n      tokens INTEGER NOT NULL\n    )",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_usage_analytics_deleted_tokens_thread\n    ON usage_analytics_deleted_tokens(thread_id)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX IF NOT EXISTS idx_usage_analytics_deleted_tokens_time\n    ON usage_analytics_deleted_tokens(created_at)",
+    )?;
     Ok(())
 }
 
 // 144 ProjectionThreadsPullRequestLinks
 fn m144(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_threads ADD COLUMN pull_requests_json TEXT")?;
-    execute(conn, "UPDATE projection_threads\n    SET pull_requests_json = json_array(\n      json_object(\n        'pullRequest', json(last_known_pr_json),\n        'source', 'legacy',\n        'linkedAt', updated_at\n      )\n    )\n    WHERE pull_requests_json IS NULL\n      AND last_known_pr_json IS NOT NULL\n      -- json_type() throws on malformed JSON and SQLite does not promise to evaluate AND\n      -- operands left to right, so the validity check guards it inside one expression.\n      AND CASE\n        WHEN json_valid(last_known_pr_json) THEN json_type(last_known_pr_json)\n      END = 'object'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_threads ADD COLUMN pull_requests_json TEXT",
+    )?;
+    execute(
+        conn,
+        "UPDATE projection_threads\n    SET pull_requests_json = json_array(\n      json_object(\n        'pullRequest', json(last_known_pr_json),\n        'source', 'legacy',\n        'linkedAt', updated_at\n      )\n    )\n    WHERE pull_requests_json IS NULL\n      AND last_known_pr_json IS NOT NULL\n      -- json_type() throws on malformed JSON and SQLite does not promise to evaluate AND\n      -- operands left to right, so the validity check guards it inside one expression.\n      AND CASE\n        WHEN json_valid(last_known_pr_json) THEN json_type(last_known_pr_json)\n      END = 'object'",
+    )?;
     Ok(())
 }
 
 // 145 ProjectionThreadSessionSteering
 fn m145(conn: &Connection) -> Result<(), WsErr> {
-    execute_lenient(conn, "ALTER TABLE projection_thread_sessions\n      ADD COLUMN supports_native_turn_steering INTEGER\n      CHECK (supports_native_turn_steering IN (0, 1))")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE projection_thread_sessions\n      ADD COLUMN supports_native_turn_steering INTEGER\n      CHECK (supports_native_turn_steering IN (0, 1))",
+    )?;
     Ok(())
 }
 
@@ -1566,12 +2969,27 @@ fn m146(conn: &Connection) -> Result<(), WsErr> {
     if column_exists(conn, "agent_gateway_operations", "resume_context_json") {
         return Ok(());
     }
-    execute(conn, "CREATE TABLE agent_gateway_operations_v146 (\n      operation_id TEXT PRIMARY KEY,\n      caller_thread_id TEXT NOT NULL,\n      caller_turn_id TEXT NOT NULL,\n      operation_kind TEXT NOT NULL CHECK (operation_kind IN ('create_threads')),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count BETWEEN 1 AND 20),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      caller_purged_at TEXT,\n      resume_context_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (caller_thread_id, caller_turn_id, operation_kind, request_id)\n    )")?;
-    execute(conn, "INSERT INTO agent_gateway_operations_v146 (\n      operation_id, caller_thread_id, caller_turn_id, operation_kind, request_id,\n      fingerprint, requested_count, plan_json, status, result_json, error_json,\n      caller_purged_at, created_at, updated_at\n    )\n    SELECT\n      operation_id, caller_thread_id, caller_turn_id, operation_kind, request_id,\n      fingerprint, requested_count, plan_json, status, result_json, error_json,\n      caller_purged_at, created_at, updated_at\n    FROM agent_gateway_operations")?;
+    execute(
+        conn,
+        "CREATE TABLE agent_gateway_operations_v146 (\n      operation_id TEXT PRIMARY KEY,\n      caller_thread_id TEXT NOT NULL,\n      caller_turn_id TEXT NOT NULL,\n      operation_kind TEXT NOT NULL CHECK (operation_kind IN ('create_threads')),\n      request_id TEXT NOT NULL CHECK (length(request_id) BETWEEN 1 AND 256),\n      fingerprint TEXT NOT NULL,\n      requested_count INTEGER NOT NULL CHECK (requested_count BETWEEN 1 AND 20),\n      plan_json TEXT NOT NULL,\n      status TEXT NOT NULL CHECK (\n        status IN ('reserved', 'dispatching', 'completed', 'failed', 'compensating')\n      ),\n      result_json TEXT,\n      error_json TEXT,\n      caller_purged_at TEXT,\n      resume_context_json TEXT,\n      created_at TEXT NOT NULL,\n      updated_at TEXT NOT NULL,\n      UNIQUE (caller_thread_id, caller_turn_id, operation_kind, request_id)\n    )",
+    )?;
+    execute(
+        conn,
+        "INSERT INTO agent_gateway_operations_v146 (\n      operation_id, caller_thread_id, caller_turn_id, operation_kind, request_id,\n      fingerprint, requested_count, plan_json, status, result_json, error_json,\n      caller_purged_at, created_at, updated_at\n    )\n    SELECT\n      operation_id, caller_thread_id, caller_turn_id, operation_kind, request_id,\n      fingerprint, requested_count, plan_json, status, result_json, error_json,\n      caller_purged_at, created_at, updated_at\n    FROM agent_gateway_operations",
+    )?;
     execute(conn, "DROP TABLE agent_gateway_operations")?;
-    execute_lenient(conn, "ALTER TABLE agent_gateway_operations_v146 RENAME TO agent_gateway_operations")?;
-    execute_lenient(conn, "CREATE INDEX idx_agent_gateway_operations_status\n    ON agent_gateway_operations (status, updated_at)")?;
-    execute_lenient(conn, "CREATE INDEX idx_agent_gateway_operations_resume\n    ON agent_gateway_operations (status, operation_id, created_at)\n    WHERE resume_context_json IS NOT NULL AND status = 'completed'")?;
+    execute_lenient(
+        conn,
+        "ALTER TABLE agent_gateway_operations_v146 RENAME TO agent_gateway_operations",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX idx_agent_gateway_operations_status\n    ON agent_gateway_operations (status, updated_at)",
+    )?;
+    execute_lenient(
+        conn,
+        "CREATE INDEX idx_agent_gateway_operations_resume\n    ON agent_gateway_operations (status, operation_id, created_at)\n    WHERE resume_context_json IS NOT NULL AND status = 'completed'",
+    )?;
     Ok(())
 }
 

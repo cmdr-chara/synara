@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -44,7 +42,12 @@ impl Native {
         self.uploading = true;
         cx.notify();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
-            let paths = rx.await.ok().and_then(|r| r.ok()).flatten().unwrap_or_default();
+            let paths = rx
+                .await
+                .ok()
+                .and_then(|r| r.ok())
+                .flatten()
+                .unwrap_or_default();
             let cell = client.clone();
             let thread_id = thread_id.unwrap_or_default();
             let uploaded: Vec<Value> = cx
@@ -128,7 +131,13 @@ impl Native {
 
     /// Composer paste-image: upstream inserts clipboard images as image
     /// attachments of the draft thread (same upload path as window captures).
-    pub(super) fn attach_clipboard_image(&mut self, bytes: Vec<u8>, mime: String, ext: String, cx: &mut Context<Self>) {
+    pub(super) fn attach_clipboard_image(
+        &mut self,
+        bytes: Vec<u8>,
+        mime: String,
+        ext: String,
+        cx: &mut Context<Self>,
+    ) {
         let client = self.client.clone();
         if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
             self.composer_thread_id = Some(uuid());
@@ -171,7 +180,12 @@ impl Native {
 
     /// Attach-window rows: capture the CG window and upload it as an image
     /// attachment, mirroring upstream appSnap.captureWindow.
-    pub(super) fn capture_window(&mut self, window_id: String, title: String, cx: &mut Context<Self>) {
+    pub(super) fn capture_window(
+        &mut self,
+        window_id: String,
+        title: String,
+        cx: &mut Context<Self>,
+    ) {
         let num = window_id.rsplit(':').next().unwrap_or("0").to_string();
         let client = self.client.clone();
         if self.composer_thread_id.is_none() && self.selected_thread.is_none() {
@@ -261,8 +275,7 @@ impl Native {
             let r = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                    ensure_client(&cell).and_then(|c| c.call("orchestration.dispatchCommand", cmd))
                 })
                 .await;
             if r.is_none() {
@@ -300,7 +313,12 @@ impl Native {
     }
 
     /// Dispatch thread.approval.respond for a pending interaction.
-    pub(super) fn respond_approval(&mut self, request_id: String, decision: &str, cx: &mut Context<Self>) {
+    pub(super) fn respond_approval(
+        &mut self,
+        request_id: String,
+        decision: &str,
+        cx: &mut Context<Self>,
+    ) {
         let Some(tid) = self.selected_thread.clone() else {
             return;
         };
@@ -319,8 +337,7 @@ impl Native {
             let r = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                    ensure_client(&cell).and_then(|c| c.call("orchestration.dispatchCommand", cmd))
                 })
                 .await;
             if r.is_none() {
@@ -392,8 +409,7 @@ impl Native {
             let r = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                    ensure_client(&cell).and_then(|c| c.call("orchestration.dispatchCommand", cmd))
                 })
                 .await;
             if r.is_none() {
@@ -421,7 +437,14 @@ impl Native {
     /// Toggle one option of a blocking userInput question (upstream
     /// togglePendingUserInputOptionSelection): single-select replaces, a
     /// multi-select question keeps a set.
-    pub(super) fn pi_toggle(&mut self, rid: &str, qid: &str, label: &str, multi: bool, cx: &mut Context<Self>) {
+    pub(super) fn pi_toggle(
+        &mut self,
+        rid: &str,
+        qid: &str,
+        label: &str,
+        multi: bool,
+        cx: &mut Context<Self>,
+    ) {
         if self.pi_responding {
             return;
         }
@@ -447,7 +470,13 @@ impl Native {
     /// Advance the blocking userInput form (upstream
     /// onAdvanceActivePendingUserInput): next question, or submit when the
     /// last one resolves the whole answers record.
-    pub(super) fn pi_advance(&mut self, rid: &str, questions: &[Value], gen: Option<String>, cx: &mut Context<Self>) {
+    pub(super) fn pi_advance(
+        &mut self,
+        rid: &str,
+        questions: &[Value],
+        gen: Option<String>,
+        cx: &mut Context<Self>,
+    ) {
         if self.pi_responding {
             return;
         }
@@ -461,10 +490,7 @@ impl Native {
         } else {
             // Upstream enables "next" only once the active question resolves.
             let q = &questions[idx];
-            let draft = self
-                .pi_drafts
-                .get(rid)
-                .and_then(|m| m.get(str_at(q, "id")));
+            let draft = self.pi_drafts.get(rid).and_then(|m| m.get(str_at(q, "id")));
             if pi_resolved(q, draft).is_none() {
                 return;
             }
@@ -508,8 +534,7 @@ impl Native {
             let r = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("orchestration.dispatchCommand", cmd))
+                    ensure_client(&cell).and_then(|c| c.call("orchestration.dispatchCommand", cmd))
                 })
                 .await;
             if r.is_none() {
@@ -599,7 +624,11 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
+        let subtle = if dark_ui {
+            rgba(0xffffff14)
+        } else {
+            rgba(0x0000000d)
+        };
         // Upstream fills are neutral, not the navy of gpui's default
         // list_active: selected rows = white 4%, user bubble = #181818.
         let sel_fill: gpui::Hsla = if dark_ui {
@@ -717,9 +746,10 @@ impl Native {
                 card = card.child(h_flex().child(head).child(div().flex_1()));
                 if !open {
                     col = col.child(
-                        h_flex().w_full().justify_center().child(
-                            div().w_full().max_w(chat_mw).child(card),
-                        ),
+                        h_flex()
+                            .w_full()
+                            .justify_center()
+                            .child(div().w_full().max_w(chat_mw).child(card)),
                     );
                     continue;
                 }
@@ -809,16 +839,12 @@ impl Native {
                                         .text_color(theme.muted_foreground)
                                         .hover(|d| d.bg(rgba(0x00000005)));
                                 }
-                                ob = ob.on_click(cx.listener(
-                                    move |this, _ev, _w, cx| {
-                                        this.user_input_draft.retain(|(id, i, _)| {
-                                            !(id == &mid2 && *i == qi)
-                                        });
-                                        this.user_input_draft
-                                            .push((mid2.clone(), qi, opt2.clone()));
-                                        cx.notify();
-                                    },
-                                ));
+                                ob = ob.on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.user_input_draft
+                                        .retain(|(id, i, _)| !(id == &mid2 && *i == qi));
+                                    this.user_input_draft.push((mid2.clone(), qi, opt2.clone()));
+                                    cx.notify();
+                                }));
                                 orow = orow.child(ob);
                             }
                             qv = qv.child(orow);
@@ -858,19 +884,17 @@ impl Native {
                             })
                             .collect();
                         foot = foot.child(
-                            Button::new(ElementId::Name(
-                                format!("uinput-send-{mid3}").into(),
-                            ))
-                            .primary()
-                            .label("Send answer")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                this.respond_user_input(
-                                    mid3.clone(),
-                                    qs.clone(),
-                                    answers.clone(),
-                                    cx,
-                                );
-                            })),
+                            Button::new(ElementId::Name(format!("uinput-send-{mid3}").into()))
+                                .primary()
+                                .label("Send answer")
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.respond_user_input(
+                                        mid3.clone(),
+                                        qs.clone(),
+                                        answers.clone(),
+                                        cx,
+                                    );
+                                })),
                         );
                     } else {
                         foot = foot.child(
@@ -887,9 +911,10 @@ impl Native {
                 }
                 card = card.child(panel);
                 col = col.child(
-                    h_flex().w_full().justify_center().child(
-                        div().w_full().max_w(chat_mw).child(card),
-                    ),
+                    h_flex()
+                        .w_full()
+                        .justify_center()
+                        .child(div().w_full().max_w(chat_mw).child(card)),
                 );
                 continue;
             }
@@ -913,11 +938,7 @@ impl Native {
                 }
                 // Upstream user-message footer: right-aligned timestamp
                 // (hover-reveal) + copy / edit (pencil) / revert (undo).
-                let mut ufooter = h_flex()
-                    .mt(px(4.))
-                    .gap(px(2.))
-                    .items_center()
-                    .justify_end();
+                let mut ufooter = h_flex().mt(px(4.)).gap(px(2.)).items_center().justify_end();
                 let uts = clock_time(str_at(m, "createdAt"));
                 if !uts.is_empty() {
                     ufooter = ufooter.child(
@@ -941,9 +962,7 @@ impl Native {
                     arr(thread_v, "checkpoints")
                         .iter()
                         .find(|c| str_at(c, "turnId") == turn_id)
-                        .and_then(|c| {
-                            c.get("checkpointTurnCount").and_then(Value::as_i64)
-                        })
+                        .and_then(|c| c.get("checkpointTurnCount").and_then(Value::as_i64))
                         .map(|tc| (tc - 1).max(0))
                 })();
                 // Upstream shows the pencil only when
@@ -954,8 +973,7 @@ impl Native {
                     let src = str_at(m, "source");
                     let native_src = src.is_empty() || src == "native";
                     let answered = messages.iter().any(|nm| {
-                        str_at(get(get(nm, "asyncUserInput"), "response"), "messageId")
-                            == msg_id
+                        str_at(get(get(nm, "asyncUserInput"), "response"), "messageId") == msg_id
                     });
                     let latest = messages.iter().rposition(|nm| {
                         str_at(nm, "role") == "user" && {
@@ -978,7 +996,8 @@ impl Native {
                         && latest == Some(i)
                         && (tail.len() == 1 || (tail.is_empty() && active_turn))
                 };
-                let mut uicons: Vec<(&'static str, &'static [u8])> = vec![("umsg-copy", icons::COPY)];
+                let mut uicons: Vec<(&'static str, &'static [u8])> =
+                    vec![("umsg-copy", icons::COPY)];
                 if msg_editable {
                     uicons.push(("umsg-edit", icons::NEW_THREAD));
                 }
@@ -991,9 +1010,7 @@ impl Native {
                     let tc = revert_tc;
                     ufooter = ufooter.child(
                         div()
-                            .id(ElementId::Name(
-                                format!("{iid}-{msg_id}").into(),
-                            ))
+                            .id(ElementId::Name(format!("{iid}-{msg_id}").into()))
                             .size(px(22.))
                             .flex()
                             .items_center()
@@ -1001,35 +1018,26 @@ impl Native {
                             .rounded(px(6.))
                             .cursor_pointer()
                             .hover(|d| d.bg(subtle))
-                            .on_click(cx.listener(
-                                move |this, _ev, w, cx| match iid {
-                                    "umsg-edit" => {
-                                        this.editing_message_id =
-                                            Some(msg_id2.clone());
-                                        this.composer.update(cx, |s, cx| {
-                                            s.set_value(text2.clone(), w, cx);
-                                        });
-                                        let f =
-                                            this.composer.read(cx).focus_handle(cx);
-                                        w.focus(&f, cx);
+                            .on_click(cx.listener(move |this, _ev, w, cx| match iid {
+                                "umsg-edit" => {
+                                    this.editing_message_id = Some(msg_id2.clone());
+                                    this.composer.update(cx, |s, cx| {
+                                        s.set_value(text2.clone(), w, cx);
+                                    });
+                                    let f = this.composer.read(cx).focus_handle(cx);
+                                    w.focus(&f, cx);
+                                    cx.notify();
+                                }
+                                "umsg-revert" => {
+                                    if let Some(tc) = tc {
+                                        this.pending_revert = Some((msg_id2.clone(), tc));
                                         cx.notify();
                                     }
-                                    "umsg-revert" => {
-                                        if let Some(tc) = tc {
-                                            this.pending_revert =
-                                                Some((msg_id2.clone(), tc));
-                                            cx.notify();
-                                        }
-                                    }
-                                    _ => {
-                                        cx.write_to_clipboard(
-                                            ClipboardItem::new_string(
-                                                text2.clone(),
-                                            ),
-                                        );
-                                    }
-                                },
-                            ))
+                                }
+                                _ => {
+                                    cx.write_to_clipboard(ClipboardItem::new_string(text2.clone()));
+                                }
+                            }))
                             .child(
                                 svg_icon(data)
                                     .size(px(13.))
@@ -1086,144 +1094,162 @@ impl Native {
                                 .w_full()
                                 .on_hover(cx.listener(move |this, hovered: &bool, _w, cx| {
                                     if *hovered {
-                                        if this.hover_user_msg.as_deref() != Some(msg_hover_id.as_str()) {
+                                        if this.hover_user_msg.as_deref()
+                                            != Some(msg_hover_id.as_str())
+                                        {
                                             this.hover_user_msg = Some(msg_hover_id.clone());
                                             cx.notify();
                                         }
-                                    } else if this.hover_user_msg.as_deref() == Some(msg_hover_id2.as_str()) {
+                                    } else if this.hover_user_msg.as_deref()
+                                        == Some(msg_hover_id2.as_str())
+                                    {
                                         this.hover_user_msg = None;
                                         cx.notify();
                                     }
                                 }))
                                 .child(
-                            stack
-                                .child(pill.child({
-                                    // User attachments (upstream UserMessageImageAttachments
-                                    // + file cards): image thumbnails row, then file and
-                                    // assistant-selection chips, then the text.
-                                    let mut content = v_flex().gap(px(8.));
-                                    let msg_atts = arr(m, "attachments");
-                                    let img_atts: Vec<&Value> = msg_atts
-                                        .iter()
-                                        .filter(|a| str_at(a, "type") == "image")
-                                        .collect();
-                                    // Upstream transcript attachments render as
-                                    // compact pills: tiny icon, name, size ("25 B").
-                                    // Upstream stacks attachment pills vertically,
-                                    // one right-aligned row per attachment.
-                                    let mut pill_row = v_flex().gap(px(6.)).items_end();
-                                    let n_sel = msg_atts
-                                        .iter()
-                                        .filter(|a| str_at(a, "type") == "assistant-selection")
-                                        .count();
-                                    let mut has_pills = false;
-                                    if n_sel > 0 {
-                                        has_pills = true;
-                                        pill_row = pill_row.child(
-                                            h_flex()
-                                                .gap(px(5.))
-                                                .items_center()
-                                                .rounded_full()
-                                                .border_1()
-                                                .border_color(theme.border)
-                                                .px(px(8.))
-                                                .py(px(3.))
-                                                .child(
-                                                    svg_icon(icons::COPY)
-                                                        .size(px(11.))
-                                                        .text_color(theme.muted_foreground),
-                                                )
-                                                .child(
-                                                    div()
-                                                        .text_size(px(12.))
-                                                        .text_color(theme.muted_foreground)
-                                                        .child(format!(
-                                                            "{} selection{}",
-                                                            n_sel,
-                                                            if n_sel == 1 { "" } else { "s" }
-                                                        )),
-                                                ),
-                                        );
-                                    }
-                                    for a in msg_atts.iter().filter(|a| str_at(a, "type") == "file") {
-                                        let name = str_at(a, "name").to_string();
-                                        let bytes = a.get("sizeBytes").and_then(Value::as_u64).unwrap_or(0);
-                                        let size_label = if bytes < 1024 {
-                                            format!("{bytes} B")
-                                        } else if bytes < 1024 * 1024 {
-                                            format!("{} KB", bytes / 1024)
-                                        } else {
-                                            format!("{:.1} MB", bytes as f64 / 1048576.0)
-                                        };
-                                        has_pills = true;
-                                        pill_row = pill_row.child(
-                                            h_flex()
-                                                .gap(px(5.))
-                                                .items_center()
-                                                .rounded_full()
-                                                .border_1()
-                                                .border_color(theme.border)
-                                                .px(px(8.))
-                                                .py(px(3.))
-                                                .child(
-                                                    svg_icon(icons::PAPERCLIP)
-                                                        .size(px(11.))
-                                                        .text_color(theme.muted_foreground),
-                                                )
-                                                .child(
-                                                    div()
-                                                        .text_size(px(12.))
-                                                        .whitespace_nowrap()
-                                                        .overflow_hidden()
-                                                        .child(name),
-                                                )
-                                                .child(
-                                                    div()
-                                                        .text_size(px(12.))
-                                                        .text_color(theme.muted_foreground)
-                                                        .child(size_label),
-                                                ),
-                                        );
-                                    }
-                                    if has_pills {
-                                        content = content.child(pill_row);
-                                    }
-                                    if !img_atts.is_empty() {
-                                        let mut row = h_flex().gap(px(8.)).flex_wrap();
-                                        for a in &img_atts {
-                                            let aid = str_at(a, "id").to_string();
-                                            let cached = crate::ws_client::BACKEND_BASE
-                                                .get()
-                                                .and_then(|base| {
-                                                    self.md_images
-                                                        .lock()
-                                                        .unwrap()
-                                                        .get(&format!("{base}/attachments/{aid}"))
-                                                        .cloned()
-                                                });
-                                            row = row.child(match cached {
-                                                Some(render) => div()
-                                                    .rounded(px(8.))
-                                                    .overflow_hidden()
-                                                    .child(
-                                                        img(ImageSource::Render(render))
-                                                            .h(px(96.))
-                                                            .rounded(px(8.)),
-                                                    )
-                                                    .into_any_element(),
-                                                None => div()
-                                                    .size(px(96.))
-                                                    .rounded(px(8.))
-                                                    .bg(subtle)
-                                                    .into_any_element(),
-                                            });
-                                        }
-                                        content = content.child(row);
-                                    }
-                                    content.child(div().text_size(px(13.)).child(text))
-                                }))
-                                .child(ufooter.opacity(reveal))
-                            ),
+                                    stack
+                                        .child(pill.child({
+                                            // User attachments (upstream UserMessageImageAttachments
+                                            // + file cards): image thumbnails row, then file and
+                                            // assistant-selection chips, then the text.
+                                            let mut content = v_flex().gap(px(8.));
+                                            let msg_atts = arr(m, "attachments");
+                                            let img_atts: Vec<&Value> = msg_atts
+                                                .iter()
+                                                .filter(|a| str_at(a, "type") == "image")
+                                                .collect();
+                                            // Upstream transcript attachments render as
+                                            // compact pills: tiny icon, name, size ("25 B").
+                                            // Upstream stacks attachment pills vertically,
+                                            // one right-aligned row per attachment.
+                                            let mut pill_row = v_flex().gap(px(6.)).items_end();
+                                            let n_sel = msg_atts
+                                                .iter()
+                                                .filter(|a| {
+                                                    str_at(a, "type") == "assistant-selection"
+                                                })
+                                                .count();
+                                            let mut has_pills = false;
+                                            if n_sel > 0 {
+                                                has_pills = true;
+                                                pill_row = pill_row.child(
+                                                    h_flex()
+                                                        .gap(px(5.))
+                                                        .items_center()
+                                                        .rounded_full()
+                                                        .border_1()
+                                                        .border_color(theme.border)
+                                                        .px(px(8.))
+                                                        .py(px(3.))
+                                                        .child(
+                                                            svg_icon(icons::COPY)
+                                                                .size(px(11.))
+                                                                .text_color(theme.muted_foreground),
+                                                        )
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(12.))
+                                                                .text_color(theme.muted_foreground)
+                                                                .child(format!(
+                                                                    "{} selection{}",
+                                                                    n_sel,
+                                                                    if n_sel == 1 {
+                                                                        ""
+                                                                    } else {
+                                                                        "s"
+                                                                    }
+                                                                )),
+                                                        ),
+                                                );
+                                            }
+                                            for a in msg_atts
+                                                .iter()
+                                                .filter(|a| str_at(a, "type") == "file")
+                                            {
+                                                let name = str_at(a, "name").to_string();
+                                                let bytes = a
+                                                    .get("sizeBytes")
+                                                    .and_then(Value::as_u64)
+                                                    .unwrap_or(0);
+                                                let size_label = if bytes < 1024 {
+                                                    format!("{bytes} B")
+                                                } else if bytes < 1024 * 1024 {
+                                                    format!("{} KB", bytes / 1024)
+                                                } else {
+                                                    format!("{:.1} MB", bytes as f64 / 1048576.0)
+                                                };
+                                                has_pills = true;
+                                                pill_row = pill_row.child(
+                                                    h_flex()
+                                                        .gap(px(5.))
+                                                        .items_center()
+                                                        .rounded_full()
+                                                        .border_1()
+                                                        .border_color(theme.border)
+                                                        .px(px(8.))
+                                                        .py(px(3.))
+                                                        .child(
+                                                            svg_icon(icons::PAPERCLIP)
+                                                                .size(px(11.))
+                                                                .text_color(theme.muted_foreground),
+                                                        )
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(12.))
+                                                                .whitespace_nowrap()
+                                                                .overflow_hidden()
+                                                                .child(name),
+                                                        )
+                                                        .child(
+                                                            div()
+                                                                .text_size(px(12.))
+                                                                .text_color(theme.muted_foreground)
+                                                                .child(size_label),
+                                                        ),
+                                                );
+                                            }
+                                            if has_pills {
+                                                content = content.child(pill_row);
+                                            }
+                                            if !img_atts.is_empty() {
+                                                let mut row = h_flex().gap(px(8.)).flex_wrap();
+                                                for a in &img_atts {
+                                                    let aid = str_at(a, "id").to_string();
+                                                    let cached = crate::ws_client::BACKEND_BASE
+                                                        .get()
+                                                        .and_then(|base| {
+                                                            self.md_images
+                                                                .lock()
+                                                                .unwrap()
+                                                                .get(&format!(
+                                                                    "{base}/attachments/{aid}"
+                                                                ))
+                                                                .cloned()
+                                                        });
+                                                    row = row.child(match cached {
+                                                        Some(render) => div()
+                                                            .rounded(px(8.))
+                                                            .overflow_hidden()
+                                                            .child(
+                                                                img(ImageSource::Render(render))
+                                                                    .h(px(96.))
+                                                                    .rounded(px(8.)),
+                                                            )
+                                                            .into_any_element(),
+                                                        None => div()
+                                                            .size(px(96.))
+                                                            .rounded(px(8.))
+                                                            .bg(subtle)
+                                                            .into_any_element(),
+                                                    });
+                                                }
+                                                content = content.child(row);
+                                            }
+                                            content.child(div().text_size(px(13.)).child(text))
+                                        }))
+                                        .child(ufooter.opacity(reveal)),
+                                ),
                         ),
                     ),
                 );
@@ -1236,10 +1262,7 @@ impl Native {
                 }
                 // Footer row under a settled assistant message (upstream):
                 // copy / fork / pin icon buttons followed by the wall-clock time.
-                let mut footer = h_flex()
-                    .mt(px(4.))
-                    .gap(px(2.))
-                    .items_center();
+                let mut footer = h_flex().mt(px(4.)).gap(px(2.)).items_center();
                 let msg_id = str_at(m, "id").to_string();
                 let pinned_ids: Vec<String> = arr(thread_v, "pinnedMessages")
                     .iter()
@@ -1255,9 +1278,7 @@ impl Native {
                     let is_pinned = pinned_ids.contains(&msg_id2);
                     footer = footer.child(
                         div()
-                            .id(ElementId::Name(
-                                format!("{iid}-{msg_id}").into(),
-                            ))
+                            .id(ElementId::Name(format!("{iid}-{msg_id}").into()))
                             .size(px(22.))
                             .flex()
                             .items_center()
@@ -1265,65 +1286,51 @@ impl Native {
                             .rounded(px(6.))
                             .cursor_pointer()
                             .hover(|d| d.bg(subtle))
-                            .on_click(cx.listener(
-                                move |this, _ev, _w, cx| match iid {
-                                    "msg-fork" => {
-                                        if let Some(tid) =
-                                            this.selected_thread.clone()
-                                        {
-                                            this.lineage(tid, false, None, cx);
-                                        }
+                            .on_click(cx.listener(move |this, _ev, _w, cx| match iid {
+                                "msg-fork" => {
+                                    if let Some(tid) = this.selected_thread.clone() {
+                                        this.lineage(tid, false, None, cx);
                                     }
-                                    "msg-pin" => {
-                                        if let Some(tid) =
-                                            this.selected_thread.clone()
-                                        {
-                                            let op = if is_pinned {
-                                                "thread.pinned-message.remove"
-                                            } else {
-                                                "thread.pinned-message.add"
-                                            };
-                                            let cell = this.client.clone();
-                                            let mid = msg_id2.clone();
-                                            cx.background_executor()
-                                                .spawn(async move {
-                                                    let Some(client) =
-                                                        ensure_client(&cell)
-                                                    else {
-                                                        return;
-                                                    };
-                                                    client.call(
-                                                        "orchestration.dispatchCommand",
-                                                        json!({
-                                                            "type": op,
-                                                            "commandId": uuid(),
-                                                            "threadId": tid,
-                                                            "messageId": mid,
-                                                            "createdAt": now_iso(),
-                                                        }),
-                                                    );
-                                                })
-                                                .detach();
-                                        }
+                                }
+                                "msg-pin" => {
+                                    if let Some(tid) = this.selected_thread.clone() {
+                                        let op = if is_pinned {
+                                            "thread.pinned-message.remove"
+                                        } else {
+                                            "thread.pinned-message.add"
+                                        };
+                                        let cell = this.client.clone();
+                                        let mid = msg_id2.clone();
+                                        cx.background_executor()
+                                            .spawn(async move {
+                                                let Some(client) = ensure_client(&cell) else {
+                                                    return;
+                                                };
+                                                client.call(
+                                                    "orchestration.dispatchCommand",
+                                                    json!({
+                                                        "type": op,
+                                                        "commandId": uuid(),
+                                                        "threadId": tid,
+                                                        "messageId": mid,
+                                                        "createdAt": now_iso(),
+                                                    }),
+                                                );
+                                            })
+                                            .detach();
                                     }
-                                    _ => {
-                                        cx.write_to_clipboard(
-                                            ClipboardItem::new_string(
-                                                text2.clone(),
-                                            ),
-                                        );
-                                    }
+                                }
+                                _ => {
+                                    cx.write_to_clipboard(ClipboardItem::new_string(text2.clone()));
+                                }
+                            }))
+                            .child(svg_icon(data).size(px(13.)).text_color(
+                                if is_pinned && iid == "msg-pin" {
+                                    theme.foreground
+                                } else {
+                                    theme.muted_foreground
                                 },
-                            ))
-                            .child(
-                                svg_icon(data)
-                                    .size(px(13.))
-                                    .text_color(if is_pinned && iid == "msg-pin" {
-                                        theme.foreground
-                                    } else {
-                                        theme.muted_foreground
-                                    }),
-                            ),
+                            )),
                     );
                 }
                 let ts = clock_time(str_at(m, "createdAt"));
@@ -1340,58 +1347,71 @@ impl Native {
                     h_flex().w_full().justify_center().child(
                         div().w_full().max_w(chat_mw).child(
                             v_flex()
-                                .child(wrap.child(
-                                    TextView::markdown(
-                                        ElementId::Name(format!("md-{i}-{}", str_at(m, "id")).into()),
-                                        text,
-                                    )
-                                    .image_source({
-                                        let cache = self.md_images.clone();
-                                        move |uri: &SharedUri| -> ImageSource {
-                                            let key = uri.as_str();
-                                            if let Some(img) = cache.lock().unwrap().get(key).cloned() {
-                                                ImageSource::Render(img)
-                                            } else if key.starts_with("http://") || key.starts_with("https://") {
-                                                // Remote image still in flight: perpetual-loading
-                                                // custom source; the cache fill re-renders.
-                                                ImageSource::Custom(std::sync::Arc::new(|_w, _cx| None))
-                                            } else {
-                                                uri.clone().into()
+                                .child(
+                                    wrap.child(
+                                        TextView::markdown(
+                                            ElementId::Name(
+                                                format!("md-{i}-{}", str_at(m, "id")).into(),
+                                            ),
+                                            text,
+                                        )
+                                        .image_source({
+                                            let cache = self.md_images.clone();
+                                            move |uri: &SharedUri| -> ImageSource {
+                                                let key = uri.as_str();
+                                                if let Some(img) =
+                                                    cache.lock().unwrap().get(key).cloned()
+                                                {
+                                                    ImageSource::Render(img)
+                                                } else if key.starts_with("http://")
+                                                    || key.starts_with("https://")
+                                                {
+                                                    // Remote image still in flight: perpetual-loading
+                                                    // custom source; the cache fill re-renders.
+                                                    ImageSource::Custom(std::sync::Arc::new(
+                                                        |_w, _cx| None,
+                                                    ))
+                                                } else {
+                                                    uri.clone().into()
+                                                }
                                             }
-                                        }
-                                    })
-                                    .style(markdown_style(theme.is_dark()))
-                                    .code_block_actions({
-                                        let muted_fg = theme.muted_foreground;
-                                        move |cb, _w, _cx| {
-                                        let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
-                                        h_flex()
-                                            .items_center()
-                                            .justify_between()
-                                            .child(
-                                                div()
-                                                    .text_size(px(11.))
-                                                    .text_color(muted_fg)
-                                                    .child(lang),
-                                            )
-                                            .child(
+                                        })
+                                        .style(markdown_style(theme.is_dark()))
+                                        .code_block_actions({
+                                            let muted_fg = theme.muted_foreground;
+                                            move |cb, _w, _cx| {
+                                                let lang = cb
+                                                    .lang()
+                                                    .map(|l| l.to_string())
+                                                    .unwrap_or_default();
                                                 h_flex()
-                                                    .gap(px(2.))
+                                                    .items_center()
+                                                    .justify_between()
                                                     .child(
-                                                        svg_icon(icons::COPY)
-                                                            .size(px(14.))
-                                                            .text_color(muted_fg),
+                                                        div()
+                                                            .text_size(px(11.))
+                                                            .text_color(muted_fg)
+                                                            .child(lang),
                                                     )
                                                     .child(
-                                                        svg_icon(icons::TEXT_WRAP)
-                                                            .size(px(14.))
-                                                            .text_color(muted_fg),
-                                                    ),
-                                            )
-                                        }
-                                    })
-                                    .selectable(true),
-                                ))
+                                                        h_flex()
+                                                            .gap(px(2.))
+                                                            .child(
+                                                                svg_icon(icons::COPY)
+                                                                    .size(px(14.))
+                                                                    .text_color(muted_fg),
+                                                            )
+                                                            .child(
+                                                                svg_icon(icons::TEXT_WRAP)
+                                                                    .size(px(14.))
+                                                                    .text_color(muted_fg),
+                                                            ),
+                                                    )
+                                            }
+                                        })
+                                        .selectable(true),
+                                    ),
+                                )
                                 .child(footer),
                         ),
                     ),
@@ -1399,73 +1419,125 @@ impl Native {
             }
         }
 
-
-
-/// Verb-summary aggregation for a run of tool activities, in the grammar the
-/// web client's ToolCallGroupSummaryRow uses: verb phrases in the order the
-/// work happened ("searched 1 issue, read 2 files") with failed and running
-/// fragments appended. Kinds map to verbs loosely — the server owns the exact
-/// taxonomy, the shell only needs stable buckets.
-fn activity_verb(kind: &str) -> &'static str {
-    let k = kind.to_lowercase();
-    if k.contains("read") || k.contains("open") {
-        "read"
-    } else if k.contains("search") || k.contains("find") || k.contains("grep") {
-        "searched"
-    } else if k.contains("edit") || k.contains("write") || k.contains("patch") {
-        "edited"
-    } else if k.contains("command") || k.contains("shell") || k.contains("exec") || k.contains("terminal") || k.contains("run") {
-        "ran"
-    } else if k.contains("agent") || k.contains("task") {
-        "delegated"
-    } else if k.contains("fetch") || k.contains("web") || k.contains("http") {
-        "fetched"
-    } else if k.contains("think") || k.contains("reason") || k.contains("plan") {
-        "planned"
-    } else {
-        "used"
-    }
-}
-
-fn activity_noun(verb: &str, count: usize) -> String {
-    let noun = match verb {
-        "read" => if count == 1 { "file" } else { "files" },
-        "searched" => if count == 1 { "search" } else { "searches" },
-        "edited" => if count == 1 { "file" } else { "files" },
-        "ran" => if count == 1 { "command" } else { "commands" },
-        "delegated" => if count == 1 { "agent" } else { "agents" },
-        "fetched" => if count == 1 { "page" } else { "pages" },
-        "planned" => if count == 1 { "plan" } else { "plans" },
-        _ => if count == 1 { "tool" } else { "tools" },
-    };
-    format!("{count} {noun}")
-}
-
-/// "Searched 1 issue, read 2 files" — verb phrases in first-seen order.
-fn tool_group_verb_summary(activities: &[Value]) -> String {
-    let mut order: Vec<&'static str> = Vec::new();
-    let mut counts: std::collections::HashMap<&'static str, usize> = std::collections::HashMap::new();
-    for a in activities {
-        let verb = activity_verb(str_at(a, "kind"));
-        if !order.contains(&verb) {
-            order.push(verb);
+        /// Verb-summary aggregation for a run of tool activities, in the grammar the
+        /// web client's ToolCallGroupSummaryRow uses: verb phrases in the order the
+        /// work happened ("searched 1 issue, read 2 files") with failed and running
+        /// fragments appended. Kinds map to verbs loosely — the server owns the exact
+        /// taxonomy, the shell only needs stable buckets.
+        fn activity_verb(kind: &str) -> &'static str {
+            let k = kind.to_lowercase();
+            if k.contains("read") || k.contains("open") {
+                "read"
+            } else if k.contains("search") || k.contains("find") || k.contains("grep") {
+                "searched"
+            } else if k.contains("edit") || k.contains("write") || k.contains("patch") {
+                "edited"
+            } else if k.contains("command")
+                || k.contains("shell")
+                || k.contains("exec")
+                || k.contains("terminal")
+                || k.contains("run")
+            {
+                "ran"
+            } else if k.contains("agent") || k.contains("task") {
+                "delegated"
+            } else if k.contains("fetch") || k.contains("web") || k.contains("http") {
+                "fetched"
+            } else if k.contains("think") || k.contains("reason") || k.contains("plan") {
+                "planned"
+            } else {
+                "used"
+            }
         }
-        *counts.entry(verb).or_insert(0) += 1;
-    }
-    let parts: Vec<String> = order
-        .iter()
-        .map(|verb| format!("{} {}", verb, activity_noun(verb, counts[verb])))
-        .collect();
-    if parts.is_empty() {
-        return format!("{} actions", activities.len());
-    }
-    let mut out = parts.join(", ");
-    if let Some(pos) = out.find(char::is_alphabetic) {
-        let upper: String = out[pos..].chars().next().unwrap().to_uppercase().collect();
-        out.replace_range(pos..pos + 1, &upper);
-    }
-    out
-}
+
+        fn activity_noun(verb: &str, count: usize) -> String {
+            let noun = match verb {
+                "read" => {
+                    if count == 1 {
+                        "file"
+                    } else {
+                        "files"
+                    }
+                }
+                "searched" => {
+                    if count == 1 {
+                        "search"
+                    } else {
+                        "searches"
+                    }
+                }
+                "edited" => {
+                    if count == 1 {
+                        "file"
+                    } else {
+                        "files"
+                    }
+                }
+                "ran" => {
+                    if count == 1 {
+                        "command"
+                    } else {
+                        "commands"
+                    }
+                }
+                "delegated" => {
+                    if count == 1 {
+                        "agent"
+                    } else {
+                        "agents"
+                    }
+                }
+                "fetched" => {
+                    if count == 1 {
+                        "page"
+                    } else {
+                        "pages"
+                    }
+                }
+                "planned" => {
+                    if count == 1 {
+                        "plan"
+                    } else {
+                        "plans"
+                    }
+                }
+                _ => {
+                    if count == 1 {
+                        "tool"
+                    } else {
+                        "tools"
+                    }
+                }
+            };
+            format!("{count} {noun}")
+        }
+
+        /// "Searched 1 issue, read 2 files" — verb phrases in first-seen order.
+        fn tool_group_verb_summary(activities: &[Value]) -> String {
+            let mut order: Vec<&'static str> = Vec::new();
+            let mut counts: std::collections::HashMap<&'static str, usize> =
+                std::collections::HashMap::new();
+            for a in activities {
+                let verb = activity_verb(str_at(a, "kind"));
+                if !order.contains(&verb) {
+                    order.push(verb);
+                }
+                *counts.entry(verb).or_insert(0) += 1;
+            }
+            let parts: Vec<String> = order
+                .iter()
+                .map(|verb| format!("{} {}", verb, activity_noun(verb, counts[verb])))
+                .collect();
+            if parts.is_empty() {
+                return format!("{} actions", activities.len());
+            }
+            let mut out = parts.join(", ");
+            if let Some(pos) = out.find(char::is_alphabetic) {
+                let upper: String = out[pos..].chars().next().unwrap().to_uppercase().collect();
+                out.replace_range(pos..pos + 1, &upper);
+            }
+            out
+        }
 
         // Activities grouped in a collapsible tool-call card (web parity):
         // a single activity stays a plain row; several collapse into a card.
@@ -1490,10 +1562,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 "stopped" => "stopped".to_string(),
                 _ => t.status.clone(),
             };
-            let elapsed = clock_elapsed(
-                &t.started_at,
-                t.completed_at.as_deref().unwrap_or(""),
-            );
+            let elapsed = clock_elapsed(&t.started_at, t.completed_at.as_deref().unwrap_or(""));
             let running = t.status == "running";
             let stop_tid = t.task_id.clone();
             let stop_thread = this_tid.clone();
@@ -1608,11 +1677,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 return v_flex().w_full().child(row).into_any_element();
             }
             let payload = get(a, "payload");
-            let mut det = v_flex()
-                .w_full()
-                .gap(px(2.))
-                .pl(px(16.))
-                .py(px(2.));
+            let mut det = v_flex().w_full().gap(px(2.)).pl(px(16.)).py(px(2.));
             let status = str_at(payload, "status");
             let stext = str_at(a, "status");
             let status_line = if !status.is_empty() { status } else { stext };
@@ -1680,8 +1745,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
         let n_plain_cards = segments.iter().filter(|s| s.len() > 1).count();
         let mut seen_cards = 0usize;
         for seg in &segments {
-            let is_exchange = seg.len() == 1
-                && ui_exchanges.contains_key(str_at(&seg[0], "id"));
+            let is_exchange = seg.len() == 1 && ui_exchanges.contains_key(str_at(&seg[0], "id"));
             if is_exchange {
                 let aid = str_at(&seg[0], "id");
                 let (qs, answers) = ui_exchanges.get(aid).unwrap();
@@ -1711,11 +1775,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                             .text_color(theme.muted_foreground)
                                             .child(str_at(q, "header").to_string()),
                                     )
-                                    .child(
-                                        div().text_sm().child(
-                                            str_at(q, "question").to_string(),
-                                        ),
-                                    )
+                                    .child(div().text_sm().child(str_at(q, "question").to_string()))
                                     .when(!opts.is_empty(), |d| {
                                         d.child(
                                             div()
@@ -1747,33 +1807,28 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                             ),
                         );
                 }
-                col = col.child(
-                    h_flex().w_full().justify_center().child(exch),
-                );
+                col = col.child(h_flex().w_full().justify_center().child(exch));
             } else if seg.len() == 1 {
-                col = col.child(
-                    h_flex().w_full().justify_center().child(
+                col = col.child(h_flex().w_full().justify_center().child(
+                    div().w_full().max_w(chat_mw).child({
+                        let aid = str_at(&seg[0], "id").to_string();
+                        let aidc = aid.clone();
                         div()
-                            .w_full()
-                            .max_w(chat_mw)
-                            .child({
-                                let aid = str_at(&seg[0], "id").to_string();
-                                let aidc = aid.clone();
-                                div()
-                                    .id(SharedString::from(format!("actrow-{}", aid)))
-                                    .cursor_pointer()
-                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                        if let Some(pos) = this.activity_open.iter().position(|x| x == &aidc) {
-                                            this.activity_open.remove(pos);
-                                        } else {
-                                            this.activity_open.push(aidc.clone());
-                                        }
-                                        cx.notify();
-                                    }))
-                                    .child(activity_row(&seg[0]))
-                            }),
-                    ),
-                );
+                            .id(SharedString::from(format!("actrow-{}", aid)))
+                            .cursor_pointer()
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if let Some(pos) =
+                                    this.activity_open.iter().position(|x| x == &aidc)
+                                {
+                                    this.activity_open.remove(pos);
+                                } else {
+                                    this.activity_open.push(aidc.clone());
+                                }
+                                cx.notify();
+                            }))
+                            .child(activity_row(&seg[0]))
+                    }),
+                ));
             } else {
                 // Modernized tool-call group (flat, no card chrome): a single
                 // verb-summary line ("Searched 1 issue, read 1 project, 1 failed,
@@ -1787,10 +1842,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 // to the toggle once the run settles.
                 let is_live_card = working && seen_cards + 1 == n_plain_cards;
                 let expanded = self.tools_expanded || is_live_card;
-                let n_failed = seg
-                    .iter()
-                    .filter(|a| str_at(a, "tone") == "error")
-                    .count();
+                let n_failed = seg.iter().filter(|a| str_at(a, "tone") == "error").count();
                 let mut summary = tool_group_verb_summary(seg);
                 if n_failed > 0 {
                     summary.push_str(&format!(", {} failed", n_failed));
@@ -1841,7 +1893,9 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                 .id(SharedString::from(format!("actrow-{}", aid)))
                                 .cursor_pointer()
                                 .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                    if let Some(pos) = this.activity_open.iter().position(|x| x == &aidc) {
+                                    if let Some(pos) =
+                                        this.activity_open.iter().position(|x| x == &aidc)
+                                    {
                                         this.activity_open.remove(pos);
                                     } else {
                                         this.activity_open.push(aidc.clone());
@@ -1858,8 +1912,8 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                 str_at(a, "id"),
                                 if expanded { "open" } else { "closed" }
                             )),
-                            Animation::new(std::time::Duration::from_millis(650))
-                                .with_easing(move |t| {
+                            Animation::new(std::time::Duration::from_millis(650)).with_easing(
+                                move |t| {
                                     let span = 1.0 - stagger;
                                     if span <= 0.0 {
                                         return 1.0;
@@ -1867,7 +1921,8 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                     let nt = ((t - stagger) / span).clamp(0.0, 1.0);
                                     // ease-out cubic
                                     1.0 - (1.0 - nt).powi(3)
-                                }),
+                                },
+                            ),
                             |this, delta| this.opacity(delta),
                         );
                         card = card.child(animated);
@@ -1879,9 +1934,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     }
                 }
                 col = col.child(
-                    h_flex().w_full().justify_center().child(
-                        div().w_full().max_w(chat_mw).child(card),
-                    ),
+                    h_flex()
+                        .w_full()
+                        .justify_center()
+                        .child(div().w_full().max_w(chat_mw).child(card)),
                 );
             }
         }
@@ -1900,7 +1956,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 continue;
             }
             let turn_id = str_at(cp, "turnId").to_string();
-            let tc = cp.get("checkpointTurnCount").and_then(Value::as_i64).unwrap_or(0);
+            let tc = cp
+                .get("checkpointTurnCount")
+                .and_then(Value::as_i64)
+                .unwrap_or(0);
             if tc <= 0 {
                 continue;
             }
@@ -1914,50 +1973,53 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 .map(|f| f.get("deletions").and_then(Value::as_i64).unwrap_or(0))
                 .sum();
             let turn_id_h = turn_id.clone();
-            let mut fcard = v_flex()
-                .w_full()
-                .max_w(chat_mw)
-                .border_1()
-                .border_color(theme.border)
-                .rounded_lg()
-                .p_2()
-                .gap_1()
-                .child(
-                    h_flex()
-                        .id(ElementId::Name(format!("turnfiles-{turn_id}").into()))
-                        .cursor_pointer()
-                        .gap_2()
-                        .items_center()
-                        .on_click(cx.listener(move |this, _ev, _w, cx| {
-                            if this.turn_files_collapsed.iter().any(|t| t == &turn_id_h) {
-                                this.turn_files_collapsed.retain(|t| t != &turn_id_h);
-                            } else {
-                                this.turn_files_collapsed.push(turn_id_h.clone());
-                            }
-                            cx.notify();
-                        }))
-                        .child(
-                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
-                                "Edited {} {}{}",
-                                cp_files.len(),
-                                if cp_files.len() == 1 { "file" } else { "files" },
-                                if collapsed { " \u{25b8}" } else { " \u{25be}" },
-                            )),
-                        )
-                        .child(
-                            div()
-                                .text_xs()
-                                .text_color(theme.muted_foreground)
-                                .child(format!("+{total_adds} -{total_dels}")),
-                        ),
-                );
+            let mut fcard =
+                v_flex()
+                    .w_full()
+                    .max_w(chat_mw)
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg()
+                    .p_2()
+                    .gap_1()
+                    .child(
+                        h_flex()
+                            .id(ElementId::Name(format!("turnfiles-{turn_id}").into()))
+                            .cursor_pointer()
+                            .gap_2()
+                            .items_center()
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                if this.turn_files_collapsed.iter().any(|t| t == &turn_id_h) {
+                                    this.turn_files_collapsed.retain(|t| t != &turn_id_h);
+                                } else {
+                                    this.turn_files_collapsed.push(turn_id_h.clone());
+                                }
+                                cx.notify();
+                            }))
+                            .child(div().text_xs().font_weight(FontWeight::SEMIBOLD).child(
+                                format!(
+                                    "Edited {} {}{}",
+                                    cp_files.len(),
+                                    if cp_files.len() == 1 { "file" } else { "files" },
+                                    if collapsed { " \u{25b8}" } else { " \u{25be}" },
+                                ),
+                            ))
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child(format!("+{total_adds} -{total_dels}")),
+                            ),
+                    );
             if !collapsed {
                 let review_tid = this_tid.clone();
                 let thread_id_r = str_at(thread_v, "id").to_string();
                 let _ = review_tid;
                 fcard = fcard.child(
                     h_flex()
-                        .id(ElementId::Name(format!("turnfiles-review-{turn_id}").into()))
+                        .id(ElementId::Name(
+                            format!("turnfiles-review-{turn_id}").into(),
+                        ))
                         .cursor_pointer()
                         .gap_1()
                         .py(px(2.))
@@ -1978,7 +2040,9 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     let fkind = str_at(f, "kind");
                     let fname = fpath.rsplit('/').next().unwrap_or(&fpath).to_string();
                     let fdir = if fpath.len() > fname.len() {
-                        fpath[..fpath.len() - fname.len()].trim_end_matches('/').to_string()
+                        fpath[..fpath.len() - fname.len()]
+                            .trim_end_matches('/')
+                            .to_string()
                     } else {
                         String::new()
                     };
@@ -1999,17 +2063,13 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                     .text_color(theme.muted_foreground)
                                     .child(kind_label),
                             )
-                            .child(
-                                div()
-                                    .text_xs()
-                                    .overflow_hidden()
-                                    .whitespace_nowrap()
-                                    .child(if fdir.is_empty() {
-                                        fname
-                                    } else {
-                                        format!("{fdir}/{fname}")
-                                    }),
-                            )
+                            .child(div().text_xs().overflow_hidden().whitespace_nowrap().child(
+                                if fdir.is_empty() {
+                                    fname
+                                } else {
+                                    format!("{fdir}/{fname}")
+                                },
+                            ))
                             .child(
                                 div()
                                     .text_xs()
@@ -2027,65 +2087,69 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     );
                 }
             }
-            col = col.child(
-                h_flex().w_full().justify_center().child(fcard),
-            );
+            col = col.child(h_flex().w_full().justify_center().child(fcard));
         }
 
         // SubagentRunCard: the thread's child threads fold into one
         // collapsible card — "N agents" header, per-agent rows when expanded.
-        let subagents: Vec<Value> = arr(
-            self.snapshot.as_ref().unwrap_or(&Value::Null),
-            "threads",
-        )
-        .iter()
-        .filter(|t| {
-            !this_tid.is_empty()
-                && str_at(t, "parentThreadId") == this_tid
-                && get(t, "deletedAt").is_null()
-        })
-        .cloned()
-        .collect();
+        let subagents: Vec<Value> = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+            .iter()
+            .filter(|t| {
+                !this_tid.is_empty()
+                    && str_at(t, "parentThreadId") == this_tid
+                    && get(t, "deletedAt").is_null()
+            })
+            .cloned()
+            .collect();
         if !subagents.is_empty() {
             let running_n = subagents
                 .iter()
                 .filter(|t| thread_running_for_activity(t))
                 .count();
-            let mut card = v_flex()
-                .border_1()
-                .border_color(theme.border)
-                .rounded_lg()
-                .p_2()
-                .gap_1()
-                .child(
-                    h_flex()
-                        .id("subagents-card")
-                        .cursor_pointer()
-                        .gap_2()
-                        .items_center()
-                        .on_click(cx.listener(|this, _ev, _w, cx| {
-                            this.subagents_expanded = !this.subagents_expanded;
-                            cx.notify();
-                        }))
-                        .child(
-                            Icon::new(AssetIcon::Bot)
-                                .size(px(12.))
-                                .text_color(theme.muted_foreground),
-                        )
-                        .child(
-                            div().text_xs().font_weight(FontWeight::SEMIBOLD).child(format!(
-                                "{} {} {}{}",
-                                subagents.len(),
-                                if subagents.len() == 1 { "agent" } else { "agents" },
-                                if self.subagents_expanded { "\u{25be}" } else { "\u{25b8}" },
-                                if running_n > 0 {
-                                    format!(" · {running_n} running")
-                                } else {
-                                    String::new()
-                                },
+            let mut card =
+                v_flex()
+                    .border_1()
+                    .border_color(theme.border)
+                    .rounded_lg()
+                    .p_2()
+                    .gap_1()
+                    .child(
+                        h_flex()
+                            .id("subagents-card")
+                            .cursor_pointer()
+                            .gap_2()
+                            .items_center()
+                            .on_click(cx.listener(|this, _ev, _w, cx| {
+                                this.subagents_expanded = !this.subagents_expanded;
+                                cx.notify();
+                            }))
+                            .child(
+                                Icon::new(AssetIcon::Bot)
+                                    .size(px(12.))
+                                    .text_color(theme.muted_foreground),
+                            )
+                            .child(div().text_xs().font_weight(FontWeight::SEMIBOLD).child(
+                                format!(
+                                    "{} {} {}{}",
+                                    subagents.len(),
+                                    if subagents.len() == 1 {
+                                        "agent"
+                                    } else {
+                                        "agents"
+                                    },
+                                    if self.subagents_expanded {
+                                        "\u{25be}"
+                                    } else {
+                                        "\u{25b8}"
+                                    },
+                                    if running_n > 0 {
+                                        format!(" · {running_n} running")
+                                    } else {
+                                        String::new()
+                                    },
+                                ),
                             )),
-                        ),
-                );
+                    );
             if self.subagents_expanded {
                 for (si, t) in subagents.iter().enumerate() {
                     let tid = str_at(t, "id").to_string();
@@ -2093,7 +2157,11 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                         let n = str_at(t, "subagentNickname");
                         if n.is_empty() {
                             let ti = str_at(t, "title");
-                            if ti.is_empty() { "Subagent".to_string() } else { ti.to_string() }
+                            if ti.is_empty() {
+                                "Subagent".to_string()
+                            } else {
+                                ti.to_string()
+                            }
                         } else {
                             n.to_string()
                         }
@@ -2128,9 +2196,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                             .on_click(cx.listener(move |this, _ev, _w, cx| {
                                 this.open_thread(tid.clone(), cx)
                             }))
-                            .child(
-                                div().text_xs().text_color(gcol).child(glyph),
-                            )
+                            .child(div().text_xs().text_color(gcol).child(glyph))
                             .child(
                                 div()
                                     .text_size(px(12.))
@@ -2152,9 +2218,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 }
             }
             col = col.child(
-                h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(chat_mw).child(card),
-                ),
+                h_flex()
+                    .w_full()
+                    .justify_center()
+                    .child(div().w_full().max_w(chat_mw).child(card)),
             );
         }
 
@@ -2209,20 +2276,27 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
             {
                 body_lines.remove(0);
             }
-            while body_lines.first().map(|l| l.trim().is_empty()).unwrap_or(false) {
+            while body_lines
+                .first()
+                .map(|l| l.trim().is_empty())
+                .unwrap_or(false)
+            {
                 body_lines.remove(0);
             }
             if body_lines
                 .first()
                 .map(|l| {
                     let h = l.trim_start().trim_start_matches('#');
-                    h.len() < l.trim_start().len()
-                        && h.trim().eq_ignore_ascii_case("summary")
+                    h.len() < l.trim_start().len() && h.trim().eq_ignore_ascii_case("summary")
                 })
                 .unwrap_or(false)
             {
                 body_lines.remove(0);
-                while body_lines.first().map(|l| l.trim().is_empty()).unwrap_or(false) {
+                while body_lines
+                    .first()
+                    .map(|l| l.trim().is_empty())
+                    .unwrap_or(false)
+                {
                     body_lines.remove(0);
                 }
             }
@@ -2267,17 +2341,15 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 let slug = {
                     let s = title
                         .to_lowercase()
-                        .replace(
-                            |c: char| "`'\".,!?()[]{}".contains(c),
-                            "",
-                        )
-                        .replace(
-                            |c: char| !(c.is_ascii_alphanumeric()),
-                            "-",
-                        )
+                        .replace(|c: char| "`'\".,!?()[]{}".contains(c), "")
+                        .replace(|c: char| !(c.is_ascii_alphanumeric()), "-")
                         .trim_matches('-')
                         .to_string();
-                    if s.is_empty() { "plan".to_string() } else { s }
+                    if s.is_empty() {
+                        "plan".to_string()
+                    } else {
+                        s
+                    }
                 };
                 actions = actions.child(
                     div()
@@ -2307,8 +2379,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                 };
                                 let dir = std::path::Path::new(&root).join(".plan");
                                 let ok = std::fs::create_dir_all(&dir).is_ok()
-                                    && std::fs::write(dir.join(format!("{slug}.md")), &md2)
-                                        .is_ok();
+                                    && std::fs::write(dir.join(format!("{slug}.md")), &md2).is_ok();
                                 this.feedback_toast = Some((
                                     if ok {
                                         format!("Saved to .plan/{slug}.md")
@@ -2328,17 +2399,15 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 let slug2 = {
                     let s = title
                         .to_lowercase()
-                        .replace(
-                            |c: char| "`'\".,!?()[]{}".contains(c),
-                            "",
-                        )
-                        .replace(
-                            |c: char| !(c.is_ascii_alphanumeric()),
-                            "-",
-                        )
+                        .replace(|c: char| "`'\".,!?()[]{}".contains(c), "")
+                        .replace(|c: char| !(c.is_ascii_alphanumeric()), "-")
                         .trim_matches('-')
                         .to_string();
-                    if s.is_empty() { "plan".to_string() } else { s }
+                    if s.is_empty() {
+                        "plan".to_string()
+                    } else {
+                        s
+                    }
                 };
                 actions = actions.child(
                     div()
@@ -2362,10 +2431,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                     .thread_workspace_cwd(&tid)
                                     .map(std::path::PathBuf::from)
                                     .unwrap_or_else(|| std::env::temp_dir());
-                                let rx = cx.prompt_for_new_path(
-                                    &dir,
-                                    Some(&format!("{slug2}.md")),
-                                );
+                                let rx = cx.prompt_for_new_path(&dir, Some(&format!("{slug2}.md")));
                                 let md3 = md2.clone();
                                 cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
                                     let path = rx.await.ok().and_then(|r| r.ok()).flatten();
@@ -2485,7 +2551,11 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                             .py(px(3.))
                             .cursor_pointer()
                             .hover(|s| s.text_color(theme.foreground))
-                            .child(if expanded { "Collapse plan" } else { "Expand plan" })
+                            .child(if expanded {
+                                "Collapse plan"
+                            } else {
+                                "Expand plan"
+                            })
                             .on_mouse_down(MouseButton::Left, {
                                 cx.listener(move |this, _e, _w, cx| {
                                     if was {
@@ -2500,9 +2570,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 );
             }
             col = col.child(
-                h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(chat_mw).child(card),
-                ),
+                h_flex()
+                    .w_full()
+                    .justify_center()
+                    .child(div().w_full().max_w(chat_mw).child(card)),
             );
         }
 
@@ -2527,18 +2598,25 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 str_at(a, "kind") == "approval.requested"
                     && str_at(get(a, "payload"), "requestId") == rid
             });
-            let payload = req_act.map(|a| get(a, "payload").clone()).unwrap_or(Value::Null);
+            let payload = req_act
+                .map(|a| get(a, "payload").clone())
+                .unwrap_or(Value::Null);
             let detail = {
                 let d = str_at(&payload, "detail");
                 if d.is_empty() {
                     let t = str_at(&payload, "toolName");
-                    if t.is_empty() { "approval" } else { t }
+                    if t.is_empty() {
+                        "approval"
+                    } else {
+                        t
+                    }
                 } else {
                     d
                 }
             };
-            let session_ok =
-                get(&payload, "sessionApprovalAvailable").as_bool().unwrap_or(false);
+            let session_ok = get(&payload, "sessionApprovalAvailable")
+                .as_bool()
+                .unwrap_or(false);
             let mut row_el = h_flex().gap_2().child(
                 div()
                     .text_xs()
@@ -2555,21 +2633,20 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 for (label, decision) in buttons {
                     let r = rid.clone();
                     row_el = row_el.child(
-                        Button::new(ElementId::Name(
-                            format!("approve-{decision}-{rid}").into(),
-                        ))
-                        .ghost()
-                        .label(label)
-                        .on_click(cx.listener(move |this, _ev, _w, cx| {
-                            this.respond_approval(r.clone(), decision, cx)
-                        })),
+                        Button::new(ElementId::Name(format!("approve-{decision}-{rid}").into()))
+                            .ghost()
+                            .label(label)
+                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                this.respond_approval(r.clone(), decision, cx)
+                            })),
                     );
                 }
             }
             col = col.child(
-                h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(chat_mw).child(row_el),
-                ),
+                h_flex()
+                    .w_full()
+                    .justify_center()
+                    .child(div().w_full().max_w(chat_mw).child(row_el)),
             );
         }
 
@@ -2628,10 +2705,8 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                 .when(can_back, |d| {
                                     d.cursor_pointer().hover(|h| h.bg(subtle)).on_click(
                                         cx.listener(move |this, _ev, _w, cx| {
-                                            let i =
-                                                *this.pi_qidx.get(&rid_b).unwrap_or(&0);
-                                            this.pi_qidx
-                                                .insert(rid_b.clone(), i.saturating_sub(1));
+                                            let i = *this.pi_qidx.get(&rid_b).unwrap_or(&0);
+                                            this.pi_qidx.insert(rid_b.clone(), i.saturating_sub(1));
                                             cx.notify();
                                         }),
                                     )
@@ -2654,9 +2729,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                                 .id(ElementId::Name(format!("pi-next-{rid}").into()))
                                 .px_1()
                                 .rounded(px(4.))
-                                .when(can_fwd, |d| {
-                                    d.cursor_pointer().hover(|h| h.bg(subtle))
-                                })
+                                .when(can_fwd, |d| d.cursor_pointer().hover(|h| h.bg(subtle)))
                                 .when(!can_fwd, |d| d.opacity(0.3))
                                 .child(
                                     svg_icon(icons::CHEVRON_RIGHT)
@@ -2695,7 +2768,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     let (label, recommended) = {
                         let suffix = " (recommended)";
                         if raw_label.to_lowercase().ends_with(suffix) {
-                            (raw_label[..raw_label.len() - suffix.len()].to_string(), true)
+                            (
+                                raw_label[..raw_label.len() - suffix.len()].to_string(),
+                                true,
+                            )
                         } else {
                             (raw_label.clone(), false)
                         }
@@ -2708,9 +2784,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     let qs_c = questions.clone();
                     let gen_c = gen.clone();
                     let mut row = h_flex()
-                        .id(ElementId::Name(
-                            format!("pi-opt-{rid}-{qid}-{oi}").into(),
-                        ))
+                        .id(ElementId::Name(format!("pi-opt-{rid}-{qid}-{oi}").into()))
                         .w_full()
                         .items_start()
                         .gap_2()
@@ -2747,9 +2821,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                         );
                     }
                     let mut label_col = v_flex().flex_1().min_w_0().child(
-                        h_flex().gap_2().items_center().child(
-                            div().text_size(px(13.)).child(label),
-                        ),
+                        h_flex()
+                            .gap_2()
+                            .items_center()
+                            .child(div().text_size(px(13.)).child(label)),
                     );
                     if recommended {
                         label_col = label_col.child(
@@ -2768,18 +2843,13 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                         );
                     }
                     row = row.child(label_col);
-                    row = row.child(
-                        div()
-                            .w(px(16.))
-                            .flex_none()
-                            .when(selected, |d| {
-                                d.child(
-                                    svg_icon(icons::CHECK)
-                                        .size(px(13.))
-                                        .text_color(theme.foreground),
-                                )
-                            }),
-                    );
+                    row = row.child(div().w(px(16.)).flex_none().when(selected, |d| {
+                        d.child(
+                            svg_icon(icons::CHECK)
+                                .size(px(13.))
+                                .text_color(theme.foreground),
+                        )
+                    }));
                     optcol = optcol.child(row);
                 }
                 card = card.child(optcol);
@@ -2792,30 +2862,35 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 .gap_3()
                 .mt(px(4.))
                 .child(
-                    h_flex().items_center().gap_1().child(
-                        sc_chip(
+                    h_flex()
+                        .items_center()
+                        .gap_1()
+                        .child(sc_chip(
                             if shortcut_count == 1 {
                                 "1".to_string()
                             } else {
                                 format!("1–{shortcut_count}")
                             },
                             &theme,
+                        ))
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child("to pick"),
                         ),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(11.))
-                            .text_color(theme.muted_foreground)
-                            .child("to pick"),
-                    ),
                 )
                 .child(
-                    h_flex().items_center().gap_1().child(sc_chip("↵", &theme)).child(
-                        div()
-                            .text_size(px(11.))
-                            .text_color(theme.muted_foreground)
-                            .child(if is_last { "to submit" } else { "for next" }),
-                    ),
+                    h_flex()
+                        .items_center()
+                        .gap_1()
+                        .child(sc_chip("↵", &theme))
+                        .child(
+                            div()
+                                .text_size(px(11.))
+                                .text_color(theme.muted_foreground)
+                                .child(if is_last { "to submit" } else { "for next" }),
+                        ),
                 );
             if answered_count > 0 {
                 foot = foot.child(
@@ -2848,9 +2923,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
             card = card.child(foot);
 
             col = col.child(
-                h_flex().w_full().justify_center().child(
-                    div().w_full().max_w(chat_mw).child(card),
-                ),
+                h_flex()
+                    .w_full()
+                    .justify_center()
+                    .child(div().w_full().max_w(chat_mw).child(card)),
             );
         }
 
@@ -2884,10 +2960,7 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                             .gap_1p5()
                             .items_center()
                             .py(px(2.))
-                            .child(
-                                icon.size(px(12.))
-                                    .text_color(theme.muted_foreground),
-                            )
+                            .child(icon.size(px(12.)).text_color(theme.muted_foreground))
                             .child(
                                 div()
                                     .text_size(px(13.))
@@ -3008,17 +3081,13 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                     let c = client.clone();
                     let _ = cx
                         .background_executor()
-                        .spawn(async move {
-                            c.call("orchestration.dispatchCommand", cmd)
-                        })
+                        .spawn(async move { c.call("orchestration.dispatchCommand", cmd) })
                         .await;
                     let p = json!({"threadId": tid});
                     let c = client.clone();
                     let d = cx
                         .background_executor()
-                        .spawn(async move {
-                            c.call("orchestration.getThreadDetailSnapshot", p)
-                        })
+                        .spawn(async move { c.call("orchestration.getThreadDetailSnapshot", p) })
                         .await;
                     let _ = this.update(cx, |this: &mut Self, cx| {
                         this.sending = false;
@@ -3035,7 +3104,10 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
         // While a turn is live, upstream enqueues the follow-up instead of
         // sending it (the queued pills render above the composer).
         if self.selected_thread.is_some()
-            && matches!(session_phase(self.detail.as_ref()), "running" | "connecting")
+            && matches!(
+                session_phase(self.detail.as_ref()),
+                "running" | "connecting"
+            )
         {
             self.queued_turns.push(text);
             self.composer.update(cx, |s, cx| s.clean(window, cx));
@@ -3069,16 +3141,13 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
         self.sending = true;
         self.composer.update(cx, |s, cx| s.clean(window, cx));
         let selected = self.selected_thread.clone();
-        let project_id = self
-            .landing_project_id
-            .clone()
-            .or_else(|| {
-                arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
-                    .first()
-                    .and_then(|p| p.get("id"))
-                    .and_then(Value::as_str)
-                    .map(str::to_owned)
-            });
+        let project_id = self.landing_project_id.clone().or_else(|| {
+            arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                .first()
+                .and_then(|p| p.get("id"))
+                .and_then(Value::as_str)
+                .map(str::to_owned)
+        });
         let client = self.client.clone();
         let mode = self.runtime_mode;
         let imode = self.interaction_mode;
@@ -3120,9 +3189,9 @@ fn tool_group_verb_summary(activities: &[Value]) -> String {
                 "model": composer_model.1,
                 "options": {"effort": effort},
             });
-            let tid = selected.clone().unwrap_or_else(|| {
-                att_thread.clone().unwrap_or_else(uuid)
-            });
+            let tid = selected
+                .clone()
+                .unwrap_or_else(|| att_thread.clone().unwrap_or_else(uuid));
             let mut cmds = Vec::new();
             if selected.is_none() {
                 if let Some(pid) = project_id {

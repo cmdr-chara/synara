@@ -21,7 +21,9 @@ pub fn handles(tag: &str) -> bool {
     ) || (true
         && matches!(
             tag,
-            "server.disconnectMcpConnector" | "server.resolveMcpConnectorProposal" | "server.connectMcpConnector"
+            "server.disconnectMcpConnector"
+                | "server.resolveMcpConnectorProposal"
+                | "server.connectMcpConnector"
         ))
 }
 
@@ -190,7 +192,10 @@ pub(crate) fn propose_add(input: &Value, source_thread: Option<&str>) -> Result<
     Ok(json!({"proposal": proposal}))
 }
 
-pub(crate) fn propose_remove(connector_id: &str, source_thread: Option<&str>) -> Result<Value, WsErr> {
+pub(crate) fn propose_remove(
+    connector_id: &str,
+    source_thread: Option<&str>,
+) -> Result<Value, WsErr> {
     let mut doc = document().ok_or_else(|| err("no connectors document"))?;
     let connector = doc
         .get("stdio")
@@ -248,7 +253,9 @@ fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
         .ok_or_else(|| err("malformed connectors document"))?;
     let idx = proposals
         .iter()
-        .position(|p| p.pointer("/proposal/proposalId").and_then(|v| v.as_str()) == Some(id.as_str()))
+        .position(|p| {
+            p.pointer("/proposal/proposalId").and_then(|v| v.as_str()) == Some(id.as_str())
+        })
         .ok_or_else(|| err("Proposal not found."))?;
     let entry = proposals[idx].clone();
     let mut proposal = entry
@@ -286,7 +293,10 @@ fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
                     let command = i.get("command").cloned().unwrap_or(Value::Null);
                     let cwd = i.get("cwd").cloned().unwrap_or(Value::Null);
                     let args = i.get("args").cloned().unwrap_or(json!([]));
-                    let name = i.get("name").and_then(|v| v.as_str()).unwrap_or("Connector");
+                    let name = i
+                        .get("name")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("Connector");
                     let env = i.get("env").cloned().unwrap_or(json!({}));
                     let mut env_keys: Vec<String> = env
                         .as_object()
@@ -303,16 +313,13 @@ fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
                             .and_then(|v| v.as_array())
                             .map(|a| a.len())
                             .unwrap_or(0);
-                    let existing_idx = doc
-                        .get("stdio")
-                        .and_then(|v| v.as_array())
-                        .and_then(|a| {
-                            a.iter().position(|e| {
-                                e.get("command") == Some(&command)
-                                    && e.get("cwd").cloned().unwrap_or(Value::Null) == cwd
-                                    && e.get("args").cloned().unwrap_or(json!([])) == args
-                            })
-                        });
+                    let existing_idx = doc.get("stdio").and_then(|v| v.as_array()).and_then(|a| {
+                        a.iter().position(|e| {
+                            e.get("command") == Some(&command)
+                                && e.get("cwd").cloned().unwrap_or(Value::Null) == cwd
+                                && e.get("args").cloned().unwrap_or(json!([])) == args
+                        })
+                    });
                     if existing_idx.is_none() && list_len >= 30 {
                         return Err(err("Too many connectors."));
                     }
@@ -320,15 +327,20 @@ fn resolve_proposal(payload: &Value) -> Result<Value, WsErr> {
                         .and_then(|ix| doc.pointer(&format!("/stdio/{ix}")).cloned())
                         .map(|e| {
                             (
-                                e.get("connectorId").and_then(|v| v.as_str()).map(String::from),
-                                e.get("serverName").and_then(|v| v.as_str()).map(String::from),
-                                e.get("createdAt").and_then(|v| v.as_str()).map(String::from),
+                                e.get("connectorId")
+                                    .and_then(|v| v.as_str())
+                                    .map(String::from),
+                                e.get("serverName")
+                                    .and_then(|v| v.as_str())
+                                    .map(String::from),
+                                e.get("createdAt")
+                                    .and_then(|v| v.as_str())
+                                    .map(String::from),
                             )
                         })
                         .unwrap_or((None, None, None));
-                    let server_name = existing_name.unwrap_or_else(|| {
-                        unique_server_name(&doc, &mcp_connector_slug(name))
-                    });
+                    let server_name = existing_name
+                        .unwrap_or_else(|| unique_server_name(&doc, &mcp_connector_slug(name)));
                     let now = chrono_iso_now();
                     let saved = json!({
                         "name": name,
@@ -389,7 +401,12 @@ fn mcp_connector_slug(name: &str) -> String {
         }
     }
     let slug = slug.trim_matches('_').to_string();
-    let slug = if !slug.chars().next().map(|c| c.is_ascii_lowercase()).unwrap_or(false) {
+    let slug = if !slug
+        .chars()
+        .next()
+        .map(|c| c.is_ascii_lowercase())
+        .unwrap_or(false)
+    {
         format!("mcp_{}", slug.trim_end_matches('_'))
     } else {
         slug
@@ -399,15 +416,28 @@ fn mcp_connector_slug(name: &str) -> String {
     } else {
         slug
     };
-    slug.chars().take(24).collect::<String>().trim_end_matches('_').to_string()
+    slug.chars()
+        .take(24)
+        .collect::<String>()
+        .trim_end_matches('_')
+        .to_string()
 }
 
 /// `uniqueServerName`: `<slug>_connector`, suffixed `_2`, `_3`, ... until free.
 fn unique_server_name(doc: &Value, slug: &str) -> String {
     let taken: Vec<String> = ["connectors", "stdio"]
         .iter()
-        .flat_map(|k| doc.get(*k).and_then(|v| v.as_array()).cloned().unwrap_or_default())
-        .filter_map(|e| e.get("serverName").and_then(|v| v.as_str()).map(String::from))
+        .flat_map(|k| {
+            doc.get(*k)
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default()
+        })
+        .filter_map(|e| {
+            e.get("serverName")
+                .and_then(|v| v.as_str())
+                .map(String::from)
+        })
         .collect();
     let mut candidate = format!("{slug}_connector");
     let mut suffix = 2;
@@ -426,7 +456,15 @@ fn chrono_iso_now() -> String {
     let days = secs / 86400;
     let t = secs % 86400;
     let (y, m, d) = civil(days as i64);
-    format!("{:04}-{:02}-{:02}T{:02}:{:02}:{:02}Z", y, m, d, t / 3600, (t % 3600) / 60, t % 60)
+    format!(
+        "{:04}-{:02}-{:02}T{:02}:{:02}:{:02}Z",
+        y,
+        m,
+        d,
+        t / 3600,
+        (t % 3600) / 60,
+        t % 60
+    )
 }
 
 fn civil(z: i64) -> (i64, u32, u32) {
@@ -441,7 +479,6 @@ fn civil(z: i64) -> (i64, u32, u32) {
     let m = if mp < 10 { mp + 3 } else { mp - 9 } as u32;
     (if m <= 2 { y + 1 } else { y }, m, d)
 }
-
 
 /// Probe a stdio MCP server like upstream's StdioConnectorSessions probe:
 /// spawn it, send the MCP initialize handshake, connected when any response
@@ -509,10 +546,7 @@ fn connect(payload: &Value) -> Result<Value, WsErr> {
         // OAuth sign-in dance (upstream runtime.connect). The connector row
         // is only written when the callback completes with tokens.
         if payload.get("url").and_then(Value::as_str).is_some() {
-            let redirect = format!(
-                "http://127.0.0.1:{}/oauth/mcp/callback",
-                server_port()
-            );
+            let redirect = format!("http://127.0.0.1:{}/oauth/mcp/callback", server_port());
             let authorize_url = crate::mcp_oauth::begin_sign_in(payload, &redirect)?;
             return Ok(json!({ "authorizationUrl": authorize_url, "connector": Value::Null }));
         }
@@ -566,16 +600,13 @@ fn connect(payload: &Value) -> Result<Value, WsErr> {
             .and_then(|v| v.as_array())
             .map(|a| a.len())
             .unwrap_or(0);
-    let existing_idx = doc
-        .get("stdio")
-        .and_then(|v| v.as_array())
-        .and_then(|a| {
-            a.iter().position(|e| {
-                e.get("command") == Some(&command)
-                    && e.get("cwd").cloned().unwrap_or(Value::Null) == cwd
-                    && e.get("args").cloned().unwrap_or(json!([])) == args
-            })
-        });
+    let existing_idx = doc.get("stdio").and_then(|v| v.as_array()).and_then(|a| {
+        a.iter().position(|e| {
+            e.get("command") == Some(&command)
+                && e.get("cwd").cloned().unwrap_or(Value::Null) == cwd
+                && e.get("args").cloned().unwrap_or(json!([])) == args
+        })
+    });
     if existing_idx.is_none() && list_len >= 30 {
         return Err(err("Too many connectors."));
     }
@@ -583,13 +614,20 @@ fn connect(payload: &Value) -> Result<Value, WsErr> {
         .and_then(|ix| doc.pointer(&format!("/stdio/{ix}")).cloned())
         .map(|e| {
             (
-                e.get("connectorId").and_then(|v| v.as_str()).map(String::from),
-                e.get("serverName").and_then(|v| v.as_str()).map(String::from),
-                e.get("createdAt").and_then(|v| v.as_str()).map(String::from),
+                e.get("connectorId")
+                    .and_then(|v| v.as_str())
+                    .map(String::from),
+                e.get("serverName")
+                    .and_then(|v| v.as_str())
+                    .map(String::from),
+                e.get("createdAt")
+                    .and_then(|v| v.as_str())
+                    .map(String::from),
             )
         })
         .unwrap_or((None, None, None));
-    let server_name = existing_name.unwrap_or_else(|| unique_server_name(&doc, &mcp_connector_slug(name)));
+    let server_name =
+        existing_name.unwrap_or_else(|| unique_server_name(&doc, &mcp_connector_slug(name)));
     let now = chrono_iso_now();
     let saved = json!({
         "name": name,
@@ -633,13 +671,17 @@ pub fn insert_http_connector(
     input: &Value,
     tokens: &Value,
 ) -> Result<Value, WsErr> {
-    let mut doc = document().unwrap_or_else(|| json!({"version": 1, "connectors": [], "stdio": []}));
+    let mut doc =
+        document().unwrap_or_else(|| json!({"version": 1, "connectors": [], "stdio": []}));
     let entries = doc
         .get("connectors")
         .and_then(|c| c.as_array())
         .cloned()
         .unwrap_or_default();
-    if let Some(existing) = entries.iter().find(|e| e.get("url").and_then(Value::as_str) == Some(url)) {
+    if let Some(existing) = entries
+        .iter()
+        .find(|e| e.get("url").and_then(Value::as_str) == Some(url))
+    {
         // Re-sign-in of a known connector refreshes its tokens in place.
         let id = existing
             .get("connectorId")
@@ -669,7 +711,10 @@ pub fn insert_http_connector(
     if entries.len() + stdio_len >= 30 {
         return Err(err("Too many connectors."));
     }
-    let id = format!("mcpc_{}", crate::orchestration_engine::uuid_v4().replace('-', ""));
+    let id = format!(
+        "mcpc_{}",
+        crate::orchestration_engine::uuid_v4().replace('-', "")
+    );
     let now = crate::projects_fileops::iso8601(
         std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)

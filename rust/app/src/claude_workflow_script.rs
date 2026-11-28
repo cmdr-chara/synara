@@ -30,7 +30,9 @@ impl<'a> Scanner<'a> {
     }
     /// Byte/char-index slice as a String for regex-free scanning helpers.
     fn slice(&self, from: usize, to: usize) -> String {
-        self.chars[from.min(self.len())..to.min(self.len())].iter().collect()
+        self.chars[from.min(self.len())..to.min(self.len())]
+            .iter()
+            .collect()
     }
 }
 
@@ -201,7 +203,9 @@ fn parse_literal(scan: &Scanner, index: usize) -> Option<(Value, usize)> {
         i += 1;
     }
     if i > digit_start {
-        if i < chars.len() && chars[i] == '.' && chars.get(i + 1).is_some_and(|d| d.is_ascii_digit())
+        if i < chars.len()
+            && chars[i] == '.'
+            && chars.get(i + 1).is_some_and(|d| d.is_ascii_digit())
         {
             i += 1;
             while i < chars.len() && chars[i].is_ascii_digit() {
@@ -265,25 +269,28 @@ pub fn parse_workflow_script_meta(script: &str) -> Option<Value> {
     let name = record.get("name").and_then(read_string);
     let description = record.get("description").and_then(read_string);
     // phases: array of {title, detail?}
-    let phases = record.get("phases").and_then(Value::as_array).and_then(|arr| {
-        let phases: Vec<Value> = arr
-            .iter()
-            .filter_map(|entry| {
-                let obj = entry.as_object()?;
-                let title = obj.get("title").and_then(read_string)?;
-                let mut phase = serde_json::json!({ "title": title });
-                if let Some(detail) = obj.get("detail").and_then(read_string) {
-                    phase["detail"] = Value::String(detail);
-                }
-                Some(phase)
-            })
-            .collect();
-        if phases.is_empty() {
-            None
-        } else {
-            Some(phases)
-        }
-    });
+    let phases = record
+        .get("phases")
+        .and_then(Value::as_array)
+        .and_then(|arr| {
+            let phases: Vec<Value> = arr
+                .iter()
+                .filter_map(|entry| {
+                    let obj = entry.as_object()?;
+                    let title = obj.get("title").and_then(read_string)?;
+                    let mut phase = serde_json::json!({ "title": title });
+                    if let Some(detail) = obj.get("detail").and_then(read_string) {
+                        phase["detail"] = Value::String(detail);
+                    }
+                    Some(phase)
+                })
+                .collect();
+            if phases.is_empty() {
+                None
+            } else {
+                Some(phases)
+            }
+        });
     if name.is_none() && description.is_none() && phases.is_none() {
         return None;
     }
@@ -372,7 +379,9 @@ fn read_option_string_literal(call_text: &str, key: &str) -> Option<String> {
     while i + key_chars.len() < chars.len() {
         // word boundary before key
         let boundary = i == 0
-            || !(chars[i - 1].is_ascii_alphanumeric() || chars[i - 1] == '_' || chars[i - 1] == '$');
+            || !(chars[i - 1].is_ascii_alphanumeric()
+                || chars[i - 1] == '_'
+                || chars[i - 1] == '$');
         if boundary && chars[i..i + key_chars.len()] == key_chars[..] {
             let mut j = i + key_chars.len();
             // key must not continue as an identifier char
@@ -505,7 +514,8 @@ fn find_run_id(text: &str) -> Option<String> {
                 j += 1;
             }
             let len = j - (i + 3);
-            let end_boundary = j >= chars.len() || !(chars[j].is_ascii_alphanumeric() || chars[j] == '_');
+            let end_boundary =
+                j >= chars.len() || !(chars[j].is_ascii_alphanumeric() || chars[j] == '_');
             if len >= 6 && end_boundary {
                 return Some(chars[i..j].iter().collect());
             }
@@ -752,8 +762,15 @@ agent("third", { label: "plain" });
 "#;
         let plans = extract_workflow_agent_plans(script).expect("plans");
         let obj = plans.as_object().unwrap();
-        assert_eq!(obj.len(), 3, "commented-out options elided, opt-less agents excluded");
-        assert_eq!(obj["real"]["phase"], "Scan2", "commented-out fake option must not win");
+        assert_eq!(
+            obj.len(),
+            3,
+            "commented-out options elided, opt-less agents excluded"
+        );
+        assert_eq!(
+            obj["real"]["phase"], "Scan2",
+            "commented-out fake option must not win"
+        );
         assert!(obj["real"].get("label").is_none());
         assert_eq!(obj["scanner"]["phase"], "Scan");
         assert_eq!(obj["scanner"]["model"], "opus");

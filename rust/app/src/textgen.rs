@@ -4,7 +4,7 @@
 //! prompt on stdin, isolated cwd. The CLI owns all credentials; Synara only
 //! ever sees the generated text.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::todo::WsErr;
 
@@ -15,12 +15,18 @@ fn err(message: &str) -> WsErr {
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
-        "server.generateThreadRecap" | "server.generateAutomationIntent" | "server.generateComposerPrediction"
+        "server.generateThreadRecap"
+            | "server.generateAutomationIntent"
+            | "server.generateComposerPrediction"
     )
 }
 
 /// Run one JSON-mode generation and return the structured output object.
-pub(crate) fn claude_json_generate(prompt: &str, schema: &Value, model: Option<&str>) -> Result<Value, WsErr> {
+pub(crate) fn claude_json_generate(
+    prompt: &str,
+    schema: &Value,
+    model: Option<&str>,
+) -> Result<Value, WsErr> {
     use std::io::Write;
     use std::process::{Command, Stdio};
 
@@ -50,7 +56,11 @@ pub(crate) fn claude_json_generate(prompt: &str, schema: &Value, model: Option<&
     let binary = std::env::var("SYNARA_CLAUDE_CLI")
         .ok()
         .filter(|v| !v.trim().is_empty())
-        .or_else(|| std::env::var("CLAUDE_BINARY_PATH").ok().filter(|v| !v.trim().is_empty()))
+        .or_else(|| {
+            std::env::var("CLAUDE_BINARY_PATH")
+                .ok()
+                .filter(|v| !v.trim().is_empty())
+        })
         .unwrap_or_else(|| "claude".to_string());
 
     let mut __cmd = Command::new(&binary);
@@ -135,7 +145,11 @@ fn sanitize_thread_recap(raw: &str, previous: Option<&str>) -> String {
         .unwrap_or(trimmed);
     let stripped = collapse_ws(stripped);
     let fallback = previous.map(collapse_ws).unwrap_or_default();
-    let candidate = if stripped.is_empty() { fallback } else { stripped };
+    let candidate = if stripped.is_empty() {
+        fallback
+    } else {
+        stripped
+    };
     if candidate.is_empty() {
         return "No meaningful recap yet.".to_string();
     }
@@ -193,7 +207,6 @@ fn build_thread_recap_prompt(payload: &Value) -> String {
     ]
     .join("\n")
 }
-
 
 fn build_automation_intent_prompt(payload: &Value) -> String {
     let default_mode = payload
@@ -284,7 +297,6 @@ fn automation_intent_schema() -> Value {
     })
 }
 
-
 // ---- Composer prediction ----
 
 const PREDICTION_MAX_CHARS: usize = 320;
@@ -318,7 +330,11 @@ fn read_prediction_context(thread_id: &str) -> Option<(String, String)> {
         {
             last_turn = Some(t.clone());
         }
-        let prefix = if role == "user" { "User: " } else { "Assistant: " };
+        let prefix = if role == "user" {
+            "User: "
+        } else {
+            "Assistant: "
+        };
         let line = format!("{prefix}{}", text.trim());
         if line.len() > budget {
             break;
@@ -338,7 +354,10 @@ fn read_prediction_context(thread_id: &str) -> Option<(String, String)> {
 
 fn strip_code_fences(text: &str) -> String {
     let t = text.trim();
-    let t = t.strip_prefix("```json").or_else(|| t.strip_prefix("```")).unwrap_or(t);
+    let t = t
+        .strip_prefix("```json")
+        .or_else(|| t.strip_prefix("```"))
+        .unwrap_or(t);
     let t = t.strip_suffix("```").unwrap_or(t);
     t.trim().to_string()
 }
@@ -355,7 +374,10 @@ fn sanitize_composer_prediction(raw: &str) -> Option<String> {
     }
     text = text.split_whitespace().collect::<Vec<_>>().join(" ");
     if text.is_empty()
-        || matches!(text.to_lowercase().as_str(), "null" | "none" | "n/a" | "undefined")
+        || matches!(
+            text.to_lowercase().as_str(),
+            "null" | "none" | "n/a" | "undefined"
+        )
     {
         return None;
     }
@@ -382,7 +404,8 @@ fn build_composer_prediction_prompt(conversation: &str) -> String {
         .into_iter()
         .rev()
         .collect();
-    convo = convo.replace("<<<BEGIN TRANSCRIPT>>>", "[marker removed]")
+    convo = convo
+        .replace("<<<BEGIN TRANSCRIPT>>>", "[marker removed]")
         .replace("<<<END TRANSCRIPT>>>", "[marker removed]");
     [
         "You predict the next message the user of a coding-agent chat would actually write.",
@@ -432,16 +455,18 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             let model = payload
                 .get("textGenerationModel")
                 .and_then(Value::as_str)
-                .or_else(|| payload.pointer("/textGenerationModelSelection/model").and_then(Value::as_str));
+                .or_else(|| {
+                    payload
+                        .pointer("/textGenerationModelSelection/model")
+                        .and_then(Value::as_str)
+                });
             let structured = claude_json_generate(&prompt, &schema, model)?;
             let raw = structured
                 .get("recap")
                 .and_then(Value::as_str)
                 .ok_or_else(|| err("Claude generation did not return a recap string"))?;
-            let recap = sanitize_thread_recap(
-                raw,
-                payload.get("previousRecap").and_then(Value::as_str),
-            );
+            let recap =
+                sanitize_thread_recap(raw, payload.get("previousRecap").and_then(Value::as_str));
             Ok(json!({"recap": recap}))
         }
         "server.generateAutomationIntent" => {
@@ -457,7 +482,11 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             let model = payload
                 .get("textGenerationModel")
                 .and_then(Value::as_str)
-                .or_else(|| payload.pointer("/textGenerationModelSelection/model").and_then(Value::as_str));
+                .or_else(|| {
+                    payload
+                        .pointer("/textGenerationModelSelection/model")
+                        .and_then(Value::as_str)
+                });
             let structured = claude_json_generate(&prompt, &schema, model)?;
             let is_automation = structured
                 .get("isAutomation")
@@ -465,10 +494,16 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
                 .ok_or_else(|| err("Claude generation did not return isAutomation"))?;
             let mut result = structured;
             // Contract defaults: maxIterations/completionPolicy fill in when absent.
-            if !result.as_object().is_some_and(|m| m.contains_key("maxIterations")) {
+            if !result
+                .as_object()
+                .is_some_and(|m| m.contains_key("maxIterations"))
+            {
                 result["maxIterations"] = Value::Null;
             }
-            if !result.as_object().is_some_and(|m| m.contains_key("completionPolicy")) {
+            if !result
+                .as_object()
+                .is_some_and(|m| m.contains_key("completionPolicy"))
+            {
                 result["completionPolicy"] = json!({"type": "none"});
             }
             result["isAutomation"] = json!(is_automation);
@@ -502,11 +537,17 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             let model = payload
                 .get("textGenerationModel")
                 .and_then(Value::as_str)
-                .or_else(|| payload.pointer("/textGenerationModelSelection/model").and_then(Value::as_str));
+                .or_else(|| {
+                    payload
+                        .pointer("/textGenerationModelSelection/model")
+                        .and_then(Value::as_str)
+                });
             let structured = match claude_json_generate(&prompt, &schema, model) {
                 Ok(v) => v,
                 Err(_) => {
-                    return Ok(json!({"suggestion": Value::Null, "outcome": "generation-unavailable"}));
+                    return Ok(
+                        json!({"suggestion": Value::Null, "outcome": "generation-unavailable"}),
+                    );
                 }
             };
             let suggestion = structured

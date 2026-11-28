@@ -82,9 +82,12 @@ fn hostname() -> Option<String> {
     if name.is_empty() { None } else { Some(name) }
 }
 
-
 fn desktop_flavor() -> &'static str {
-    match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+    match std::env::var("SYNARA_DESKTOP_BUNDLE_ID")
+        .ok()
+        .as_deref()
+        .map(str::trim)
+    {
         Some("com.emanueledipietro.synara") => "production",
         Some("com.emanueledipietro.synara.dev") => "development",
         Some("com.emanueledipietro.synara.canary") => "canary",
@@ -111,12 +114,20 @@ fn server_version() -> String {
 
 fn desktop_update_bridge_available(state_dir: &str) -> bool {
     let path = std::path::Path::new(state_dir).join("desktop-update-bridge.json");
-    let Ok(descriptor) = serde_json::from_str::<Value>(&std::fs::read_to_string(path).unwrap_or_default()) else {
+    let Ok(descriptor) =
+        serde_json::from_str::<Value>(&std::fs::read_to_string(path).unwrap_or_default())
+    else {
         return false;
     };
-    let Some(port) = descriptor.get("port").and_then(Value::as_u64) else { return false };
-    if port == 0 || port > u16::MAX as u64 { return false; }
-    let Ok(addr) = format!("127.0.0.1:{port}").parse::<std::net::SocketAddr>() else { return false };
+    let Some(port) = descriptor.get("port").and_then(Value::as_u64) else {
+        return false;
+    };
+    if port == 0 || port > u16::MAX as u64 {
+        return false;
+    }
+    let Ok(addr) = format!("127.0.0.1:{port}").parse::<std::net::SocketAddr>() else {
+        return false;
+    };
     std::net::TcpStream::connect_timeout(&addr, std::time::Duration::from_millis(80)).is_ok()
 }
 
@@ -135,14 +146,19 @@ pub fn get_environment(state_dir: &str) -> Result<Value, String> {
     let channel = environment_channel();
     let label = hostname().unwrap_or_else(|| "Synara".to_string());
     let flavor = desktop_flavor();
-    let account_profile_enabled = std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").ok().as_deref() == Some("1")
-        || ((flavor == "production" || flavor == "remote") && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err());
+    let account_profile_enabled = std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").ok().as_deref()
+        == Some("1")
+        || ((flavor == "production" || flavor == "remote")
+            && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err());
     let remote_opted_in = std::env::var("SYNARA_REMOTE_CONNECTIONS").ok().as_deref() == Some("1");
     let remote_reason = if flavor == "production" && !remote_opted_in {
         Some("Remote connections are unavailable in Stable.")
     } else if flavor == "unknown" && !remote_opted_in {
         Some("Set SYNARA_REMOTE_CONNECTIONS=1 to opt in to remote connections.")
-    } else if std::path::Path::new(state_dir).join("remote-suspended-after-import.json").exists() {
+    } else if std::path::Path::new(state_dir)
+        .join("remote-suspended-after-import.json")
+        .exists()
+    {
         Some("Reconnect this installation after the data import.")
     } else {
         // The Rust runtime terminates the remote v2 tunnel natively; outbound

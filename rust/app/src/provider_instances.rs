@@ -5,7 +5,7 @@
 //! non-default instance forces an isolated provider home so credentials and
 //! CLI state never mix across accounts.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub const BUILT_IN_PROVIDER_KINDS: &[&str] = &[
     "codex",
@@ -77,11 +77,16 @@ pub(crate) fn derive_instances(settings: &Value) -> Vec<ResolvedInstance> {
         let enabled = config.get("enabled").and_then(Value::as_bool) != Some(false);
         merged.insert(
             provider.to_string(),
-            (provider.to_string(), enabled, config.clone(), json!({
-                "driver": provider,
-                "enabled": enabled,
-                "config": config,
-            })),
+            (
+                provider.to_string(),
+                enabled,
+                config.clone(),
+                json!({
+                    "driver": provider,
+                    "enabled": enabled,
+                    "config": config,
+                }),
+            ),
         );
     }
     if let Some(map) = settings.get("providerInstances").and_then(Value::as_object) {
@@ -176,7 +181,11 @@ pub(crate) fn resolve_instance(
     instances
         .iter()
         .find(|i| i.instance_id == requested)
-        .or_else(|| instances.iter().find(|i| i.driver == requested && i.is_default))
+        .or_else(|| {
+            instances
+                .iter()
+                .find(|i| i.driver == requested && i.is_default)
+        })
         .or_else(|| instances.iter().find(|i| i.instance_id == "codex"))
         .or_else(|| instances.first())
         .cloned()
@@ -184,7 +193,10 @@ pub(crate) fn resolve_instance(
 
 /// Environment keys a profile directory implies per provider, upstream
 /// `providerProfileDirectoryEnvironment`.
-pub(crate) fn profile_directory_environment(driver: &str, profile_dir: &str) -> Vec<(String, String)> {
+pub(crate) fn profile_directory_environment(
+    driver: &str,
+    profile_dir: &str,
+) -> Vec<(String, String)> {
     if profile_dir.trim().is_empty() {
         return Vec::new();
     }
@@ -213,7 +225,10 @@ fn trim_config(config: &Value, key: &str) -> Option<String> {
 pub(crate) fn instance_start_environment(instance: &ResolvedInstance) -> Vec<(String, String)> {
     let mut env = instance.environment.clone();
     if let Some(profile_dir) = trim_config(&instance.config, "profileDir") {
-        env.extend(profile_directory_environment(&instance.driver, &profile_dir));
+        env.extend(profile_directory_environment(
+            &instance.driver,
+            &profile_dir,
+        ));
     }
     if instance.driver == "claudeAgent" {
         let config_dir = trim_config(&instance.config, "configDir")
@@ -234,7 +249,8 @@ pub(crate) fn instance_start_environment(instance: &ResolvedInstance) -> Vec<(St
 /// accounts never share CLI state.
 pub(crate) fn instance_home_path(instance: &ResolvedInstance) -> Option<String> {
     match instance.driver.as_str() {
-        "codex" => trim_config(&instance.config, "homePath").or_else(|| trim_config(&instance.config, "profileDir")),
+        "codex" => trim_config(&instance.config, "homePath")
+            .or_else(|| trim_config(&instance.config, "profileDir")),
         _ => trim_config(&instance.config, "homePath"),
     }
 }
@@ -280,12 +296,21 @@ mod tests {
         }));
         let instances = derive_instances(&settings);
         assert_eq!(instances.len(), BUILT_IN_PROVIDER_KINDS.len());
-        let codex = instances.iter().find(|instance| instance.instance_id == "codex").unwrap();
-        assert!(codex.is_default);
-        assert!(!instances.iter().any(|instance| instance.instance_id == "mystery"));
-        assert!(!instances
+        let codex = instances
             .iter()
-            .any(|instance| instance.instance_id == "synara_unresolved_automation_codex"));
+            .find(|instance| instance.instance_id == "codex")
+            .unwrap();
+        assert!(codex.is_default);
+        assert!(
+            !instances
+                .iter()
+                .any(|instance| instance.instance_id == "mystery")
+        );
+        assert!(
+            !instances
+                .iter()
+                .any(|instance| instance.instance_id == "synara_unresolved_automation_codex")
+        );
     }
 
     #[test]
@@ -298,8 +323,14 @@ mod tests {
             ]},
         }));
         let instances = derive_instances(&settings);
-        let codex = instances.iter().find(|instance| instance.instance_id == "codex").unwrap();
-        assert_eq!(codex.environment, vec![("VISIBLE".to_string(), "yes".to_string())]);
+        let codex = instances
+            .iter()
+            .find(|instance| instance.instance_id == "codex")
+            .unwrap();
+        assert_eq!(
+            codex.environment,
+            vec![("VISIBLE".to_string(), "yes".to_string())]
+        );
     }
 
     #[test]
@@ -322,14 +353,26 @@ mod tests {
         }));
         let instance = resolve_instance(&settings, Some("claude_work"), None).unwrap();
         let env = instance_start_environment(&instance);
-        assert!(env.contains(&("CLAUDE_CONFIG_DIR".to_string(), "/tmp/work-claude".to_string())));
+        assert!(env.contains(&(
+            "CLAUDE_CONFIG_DIR".to_string(),
+            "/tmp/work-claude".to_string()
+        )));
     }
 
     #[test]
     fn profile_dir_maps_per_driver() {
-        assert_eq!(profile_directory_environment("cursor", "/p"), vec![("CURSOR_CONFIG_DIR".to_string(), "/p".to_string())]);
-        assert_eq!(profile_directory_environment("grok", "/p"), vec![("GROK_HOME".to_string(), "/p".to_string())]);
-        assert_eq!(profile_directory_environment("codex", "/p"), vec![("HOME".to_string(), "/p".to_string())]);
+        assert_eq!(
+            profile_directory_environment("cursor", "/p"),
+            vec![("CURSOR_CONFIG_DIR".to_string(), "/p".to_string())]
+        );
+        assert_eq!(
+            profile_directory_environment("grok", "/p"),
+            vec![("GROK_HOME".to_string(), "/p".to_string())]
+        );
+        assert_eq!(
+            profile_directory_environment("codex", "/p"),
+            vec![("HOME".to_string(), "/p".to_string())]
+        );
         assert!(profile_directory_environment("codex", "").is_empty());
     }
 }

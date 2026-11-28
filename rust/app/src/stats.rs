@@ -1548,7 +1548,6 @@ fn get_usage_analytics(payload: &Value) -> Result<Value, WsErr> {
     .map_err(err)
 }
 
-
 fn thread_project_info(conn: &rusqlite::Connection, thread: &str) -> (Value, Value) {
     let pid: Option<String> = conn
         .query_row(
@@ -1580,12 +1579,14 @@ fn thread_project_info(conn: &rusqlite::Connection, thread: &str) -> (Value, Val
 /// tasks in Synara (kanban cards are threads), so this is the per-task view
 /// the aggregate analytics cannot answer.
 fn get_thread_costs(payload: &Value) -> Result<Value, WsErr> {
-    let conn = crate::orchestration_engine::open_state_rw()
-        .map_err(|_| err("Failed to open state."))?;
+    let conn =
+        crate::orchestration_engine::open_state_rw().map_err(|_| err("Failed to open state."))?;
     let project_filter = payload["projectId"].as_str().map(str::to_string);
     let limit = payload["limit"].as_i64().unwrap_or(200).clamp(1, 1000);
-    let mut sql = "SELECT a.thread_id, a.turn_id, a.payload_json FROM projection_thread_activities a \
-         WHERE a.kind = 'turn.completed' ORDER BY a.sequence".to_string();
+    let mut sql =
+        "SELECT a.thread_id, a.turn_id, a.payload_json FROM projection_thread_activities a \
+         WHERE a.kind = 'turn.completed' ORDER BY a.sequence"
+            .to_string();
     let rows = query_rows(&conn, &sql);
     sql.clear();
     struct Agg {
@@ -1610,7 +1611,8 @@ fn get_thread_costs(payload: &Value) -> Result<Value, WsErr> {
                 continue;
             }
         }
-        let Some(p) = s(member(&row, "payload_json")).and_then(|t| serde_json::from_str::<Value>(t).ok())
+        let Some(p) =
+            s(member(&row, "payload_json")).and_then(|t| serde_json::from_str::<Value>(t).ok())
         else {
             continue;
         };

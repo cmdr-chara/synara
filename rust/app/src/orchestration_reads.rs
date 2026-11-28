@@ -194,7 +194,9 @@ fn turn_diff(payload: &Value, full: bool) -> Result<Value, WsErr> {
         i64_arg(payload, "fromTurnCount")?
     };
     if from_turn > to_turn {
-        return Err(err("fromTurnCount must be less than or equal to toTurnCount"));
+        return Err(err(
+            "fromTurnCount must be less than or equal to toTurnCount",
+        ));
     }
     let ignore_ws = payload
         .get("ignoreWhitespace")
@@ -305,10 +307,16 @@ fn thread_diagnostics(payload: &Value) -> Result<Value, WsErr> {
     let event_types: Vec<String> = payload
         .get("eventTypes")
         .and_then(|v| v.as_array())
-        .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+        .map(|a| {
+            a.iter()
+                .filter_map(|x| x.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
     let turn_id = str_opt(payload, "turnId");
-    let payload_mode = str_opt(payload, "payloadMode").unwrap_or("summary").to_string();
+    let payload_mode = str_opt(payload, "payloadMode")
+        .unwrap_or("summary")
+        .to_string();
     let include_details = payload
         .get("includeDetails")
         .and_then(|v| v.as_bool())
@@ -527,14 +535,14 @@ fn thread_diagnostics(payload: &Value) -> Result<Value, WsErr> {
 // ---------------------------------------------------------------------------
 
 fn inline_visual(payload: &Value) -> Result<Value, WsErr> {
-    let thread_id = str_opt(payload, "threadId")
-        .ok_or_else(|| err("threadId is required"))?;
-    let visual_id = str_opt(payload, "visualId")
-        .ok_or_else(|| err("visualId is required"))?;
+    let thread_id = str_opt(payload, "threadId").ok_or_else(|| err("threadId is required"))?;
+    let visual_id = str_opt(payload, "visualId").ok_or_else(|| err("visualId is required"))?;
     // InlineVisualId: ^vis_[0-9a-f]{32}$
     let valid_id = visual_id.len() == 36
         && visual_id.starts_with("vis_")
-        && visual_id[4..].chars().all(|c| c.is_ascii_hexdigit() && !c.is_ascii_uppercase());
+        && visual_id[4..]
+            .chars()
+            .all(|c| c.is_ascii_hexdigit() && !c.is_ascii_uppercase());
     if !valid_id {
         return Err(err("This visual is no longer available."));
     }
@@ -553,7 +561,7 @@ fn inline_visual(payload: &Value) -> Result<Value, WsErr> {
     if meta.len() > 256 * 1024 {
         return Err(err("This visual is no longer available."));
     }
-    let html = std::fs::read_to_string(&path)
-        .map_err(|_| err("This visual is no longer available."))?;
+    let html =
+        std::fs::read_to_string(&path).map_err(|_| err("This visual is no longer available."))?;
     Ok(json!({"visualId": visual_id, "html": html}))
 }

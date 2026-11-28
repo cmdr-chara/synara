@@ -2,32 +2,35 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
 impl Native {
     /// Context-menu "Open Path in Terminal": when the drawer is open send a
     /// `cd`, otherwise seed the next terminal.open with the path and open it.
-    pub(super) fn open_terminal_at(&mut self, path: String, window: &mut Window, cx: &mut Context<Self>) {
+    pub(super) fn open_terminal_at(
+        &mut self,
+        path: String,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         if self.view_terminal {
             self.term_write(format!("cd '{}'\r", path.replace('\'', "'\\''")), cx);
         } else {
@@ -48,9 +51,7 @@ impl Native {
             }
             self.term_sel = self.term_tabs.len() - 1;
             if self.term_input.is_none() {
-                let input = cx.new(|cx| {
-                    InputState::new(window, cx).placeholder("type a command")
-                });
+                let input = cx.new(|cx| InputState::new(window, cx).placeholder("type a command"));
                 cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, w, cx| {
                     if let InputEvent::PressEnter { .. } = ev {
                         this.term_send(w, cx);
@@ -142,9 +143,7 @@ impl Native {
             self.term_search_input = None;
             self.term_search_query.clear();
         } else {
-            let input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("find in buffer")
-            });
+            let input = cx.new(|cx| InputState::new(window, cx).placeholder("find in buffer"));
             cx.subscribe_in(&input, window, |this: &mut Self, _s, ev, _w, cx| {
                 if let InputEvent::Change = ev {
                     this.term_search_query = _s.read(cx).value().to_string();

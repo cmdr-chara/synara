@@ -4,7 +4,7 @@
 //! turn, rescan when it settles, and persist the diff as a
 //! `studio.outputs.captured` activity that the Hub outputs listing reads.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex};
@@ -89,7 +89,10 @@ pub(crate) fn scan_workspace_files(root: &Path) -> Scan {
                     if files.len() < MAX_SCAN_FILES {
                         files.insert(
                             child_segments.join("/"),
-                            FileStat { mtime_ms, size: target_meta.len() },
+                            FileStat {
+                                mtime_ms,
+                                size: target_meta.len(),
+                            },
                         );
                     }
                 }
@@ -105,7 +108,13 @@ pub(crate) fn scan_workspace_files(root: &Path) -> Scan {
                     .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
                     .map(|d| d.as_millis() as i64)
                     .unwrap_or(0);
-                files.insert(child_segments.join("/"), FileStat { mtime_ms, size: meta.len() });
+                files.insert(
+                    child_segments.join("/"),
+                    FileStat {
+                        mtime_ms,
+                        size: meta.len(),
+                    },
+                );
             } else if meta.is_dir() && child_segments.len() < MAX_SCAN_DEPTH {
                 pending.push(child_segments);
             }
@@ -164,8 +173,12 @@ fn resolve_hub_scan_root(conn: &rusqlite::Connection, thread_id: &str) -> Option
 
 /// Snapshot the baseline before a turn starts. No-op for non-Hub threads.
 pub(crate) fn capture_baseline(thread_id: &str) {
-    let Ok(conn) = crate::orchestration_engine::open_state_rw() else { return };
-    let Some(root) = resolve_hub_scan_root(&conn, thread_id) else { return };
+    let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
+        return;
+    };
+    let Some(root) = resolve_hub_scan_root(&conn, thread_id) else {
+        return;
+    };
     let files = scan_workspace_files(&root);
     if let Ok(mut map) = BASELINES.lock() {
         if map.len() >= MAX_TRACKED_TURN_BASELINES {
@@ -210,15 +223,16 @@ pub(crate) fn capture_outputs(thread_id: &str, turn_id: &str) {
     cmd.insert("type".into(), json!("thread.activity.append"));
     cmd.insert(
         "commandId".into(),
-        json!(format!("server:hub-outputs:{}", crate::orchestration_engine::uuid_v4())),
+        json!(format!(
+            "server:hub-outputs:{}",
+            crate::orchestration_engine::uuid_v4()
+        )),
     );
     cmd.insert("threadId".into(), json!(thread_id));
     cmd.insert("createdAt".into(), json!(crate::todo::iso_now_ms()));
     cmd.insert("activity".into(), activity);
-    let _ = crate::orchestration_engine::handle(
-        "orchestration.dispatchCommand",
-        &Value::Object(cmd),
-    );
+    let _ =
+        crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(cmd));
 }
 
 #[cfg(test)]
@@ -264,12 +278,42 @@ mod tests {
     #[test]
     fn diff_reports_new_and_changed_only() {
         let mut before = Scan::new();
-        before.insert("a.txt".into(), FileStat { mtime_ms: 1, size: 10 });
-        before.insert("gone.txt".into(), FileStat { mtime_ms: 1, size: 5 });
+        before.insert(
+            "a.txt".into(),
+            FileStat {
+                mtime_ms: 1,
+                size: 10,
+            },
+        );
+        before.insert(
+            "gone.txt".into(),
+            FileStat {
+                mtime_ms: 1,
+                size: 5,
+            },
+        );
         let mut after = Scan::new();
-        after.insert("a.txt".into(), FileStat { mtime_ms: 1, size: 10 });
-        after.insert("b.txt".into(), FileStat { mtime_ms: 2, size: 20 });
-        after.insert("c.txt".into(), FileStat { mtime_ms: 2, size: 5 });
+        after.insert(
+            "a.txt".into(),
+            FileStat {
+                mtime_ms: 1,
+                size: 10,
+            },
+        );
+        after.insert(
+            "b.txt".into(),
+            FileStat {
+                mtime_ms: 2,
+                size: 20,
+            },
+        );
+        after.insert(
+            "c.txt".into(),
+            FileStat {
+                mtime_ms: 2,
+                size: 5,
+            },
+        );
         let diff = diff_scans(&before, &after);
         assert_eq!(diff, vec!["b.txt", "c.txt"]);
     }

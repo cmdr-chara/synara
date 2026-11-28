@@ -49,7 +49,8 @@ fn presentation_url(environment_id: &str, encoded_reference: &str) -> String {
 fn url_encode_param(value: &str) -> String {
     let mut out = String::new();
     for byte in value.bytes() {
-        let keep = matches!(byte, b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~');
+        let keep =
+            matches!(byte, b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~');
         if keep {
             out.push(byte as char);
         } else {
@@ -142,7 +143,10 @@ pub fn resource_route(resource: &Value) -> Result<ResourceRoute, String> {
             );
             let instance = str_of("providerInstanceId");
             if !instance.is_empty() {
-                query.push_str(&format!("&providerInstanceId={}", url_encode_param(instance)));
+                query.push_str(&format!(
+                    "&providerInstanceId={}",
+                    url_encode_param(instance)
+                ));
             }
             let thread = str_of("threadId");
             if !thread.is_empty() {
@@ -333,14 +337,10 @@ where
 /// Serves one inner `/v2/resource` request: validate, verify the credential,
 /// check trust, then stream the exchange with the loopback surface. Returns
 /// after the response is fully relayed. Any refusal answers 403 like upstream.
-pub async fn serve_resource<S>(
-    stream: &mut S,
-    head: InnerRequestHead,
-    listening_port: u16,
-) where
+pub async fn serve_resource<S>(stream: &mut S, head: InnerRequestHead, listening_port: u16)
+where
     S: AsyncRead + AsyncWrite + Unpin,
 {
-
     let _ = serve_resource_inner(stream, head, listening_port).await;
 }
 
@@ -352,7 +352,6 @@ async fn serve_resource_inner<S>(
 where
     S: AsyncRead + AsyncWrite + Unpin,
 {
-
     let validated = (|| -> Result<(ResourceRoute, String), String> {
         let (encoded, reference) = extract_reference(&head.path)?;
         let state_dir = crate::todo::state_dir();
@@ -433,7 +432,10 @@ where
         }
     };
 
-    let mut forwarded = format!("{} {} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n", head.method, route.path);
+    let mut forwarded = format!(
+        "{} {} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n",
+        head.method, route.path
+    );
     for (name, value) in &headers {
         forwarded.push_str(&format!("{name}: {value}\r\n"));
     }
@@ -528,7 +530,10 @@ mod tests {
             "kind": "attachment-upload", "threadId": "t", "type": "file",
             "name": "n", "mimeType": "text/plain"
         });
-        assert_eq!(resource_route(&file_upload).expect("upload").max_body_bytes, MAX_FILE_BYTES);
+        assert_eq!(
+            resource_route(&file_upload).expect("upload").max_body_bytes,
+            MAX_FILE_BYTES
+        );
 
         let voice = serde_json::json!({
             "kind": "voice-upload", "provider": "p", "cwd": "/x", "mimeType": "audio/wav",
@@ -555,7 +560,11 @@ mod tests {
         let rebuilt = rebuild_headers(&head, 0).expect("headers");
         assert_eq!(rebuilt.len(), 1);
         assert_eq!(rebuilt[0].0, "range");
-        assert!(rebuilt.iter().all(|(n, _)| n != "cookie" && n != "authorization"));
+        assert!(
+            rebuilt
+                .iter()
+                .all(|(n, _)| n != "cookie" && n != "authorization")
+        );
     }
 
     #[test]

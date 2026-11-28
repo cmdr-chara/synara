@@ -16,11 +16,11 @@ use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
-use rusqlite::{params, Connection};
-use serde_json::{json, Value};
+use rusqlite::{Connection, params};
+use serde_json::{Value, json};
 
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 pub(crate) fn err(msg: impl Into<String>) -> WsErr {
     WsErr(msg.into(), None)
@@ -91,7 +91,10 @@ pub fn drop_thread_resources(thread_id: &str) {
 /// sessions and local servers alive after Synara can no longer control them.
 pub fn drop_all_resources() {
     let parked = if let Ok(mut parked_map) = PARKED.lock() {
-        parked_map.drain().map(|(_, parked)| parked).collect::<Vec<_>>()
+        parked_map
+            .drain()
+            .map(|(_, parked)| parked)
+            .collect::<Vec<_>>()
     } else {
         Vec::new()
     };
@@ -143,7 +146,11 @@ pub(crate) fn append_event(
     Ok(())
 }
 
-pub(crate) fn session_set_event(conn: &Connection, thread_id: &str, session: &Value) -> Result<(), WsErr> {
+pub(crate) fn session_set_event(
+    conn: &Connection,
+    thread_id: &str,
+    session: &Value,
+) -> Result<(), WsErr> {
     append_event(
         conn,
         thread_id,
@@ -259,11 +266,7 @@ pub(crate) fn set_turn_state(
         // Capture the post-turn workspace checkpoint (upstream CheckpointStore
         // capture trigger) so turn diffs and revert have a real anchor.
         if state == "completed" {
-            crate::checkpointing::spawn_capture(
-                thread_id.to_string(),
-                turn_id.to_string(),
-                root,
-            );
+            crate::checkpointing::spawn_capture(thread_id.to_string(), turn_id.to_string(), root);
             crate::thread_git_metadata::spawn_capture(thread_id.to_string());
             crate::hub_outputs::capture_outputs(thread_id, turn_id);
         }
@@ -388,7 +391,11 @@ pub(crate) fn append_activity(
 pub fn cancel_turn(thread_id: &str) {
     let (stdin, session_id, flag) = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {
-            Some(rt) => (rt.stdin.clone(), rt.session_id.clone(), rt.cancelled.clone()),
+            Some(rt) => (
+                rt.stdin.clone(),
+                rt.session_id.clone(),
+                rt.cancelled.clone(),
+            ),
             None => return,
         },
         Err(_) => return,
@@ -446,11 +453,7 @@ fn select_auth_method(provider: &str, methods: &[Value]) -> Option<String> {
         "antigravity" => &["gemini-api-key", "oauth-personal"],
         _ => &[],
     };
-    let id_of = |m: &Value| {
-        m.get("id")
-            .and_then(Value::as_str)
-            .map(str::to_string)
-    };
+    let id_of = |m: &Value| m.get("id").and_then(Value::as_str).map(str::to_string);
     for want in preferred {
         if let Some(found) = methods.iter().find_map(|m| {
             let id = id_of(m)?;
@@ -502,9 +505,7 @@ fn executable_on_path(binary: &str) -> bool {
         return is_executable_file(std::path::Path::new(binary));
     }
     std::env::var_os("PATH")
-        .map(|paths| {
-            std::env::split_paths(&paths).any(|dir| is_executable_file(&dir.join(binary)))
-        })
+        .map(|paths| std::env::split_paths(&paths).any(|dir| is_executable_file(&dir.join(binary))))
         .unwrap_or(false)
 }
 
@@ -593,10 +594,22 @@ fn resolve_provider_binary(
 }
 
 fn devin_traits_requested(model_selection: &Value) -> bool {
-    model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str).is_some()
-        || model_selection.pointer("/options/fastMode").and_then(Value::as_bool).is_some()
-        || model_selection.pointer("/options/thinking").and_then(Value::as_bool).is_some()
-        || model_selection.pointer("/options/contextWindow").and_then(Value::as_str).is_some()
+    model_selection
+        .pointer("/options/reasoningEffort")
+        .and_then(Value::as_str)
+        .is_some()
+        || model_selection
+            .pointer("/options/fastMode")
+            .and_then(Value::as_bool)
+            .is_some()
+        || model_selection
+            .pointer("/options/thinking")
+            .and_then(Value::as_bool)
+            .is_some()
+        || model_selection
+            .pointer("/options/contextWindow")
+            .and_then(Value::as_str)
+            .is_some()
 }
 
 fn resolve_devin_runtime_variant(model: &str, model_selection: &Value) -> Option<String> {
@@ -605,43 +618,68 @@ fn resolve_devin_runtime_variant(model: &str, model_selection: &Value) -> Option
     }
     let discovery = crate::provider_cache::devin_discovery_result();
     let normalized_model = model.to_ascii_lowercase();
-    let family = discovery.get("models").and_then(Value::as_array)?.iter().find(|candidate| {
-        let slug = candidate.get("slug").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
-        slug == normalized_model
-            || candidate
-                .get("modelVariants")
-                .and_then(Value::as_array)
-                .is_some_and(|variants| variants.iter().any(|variant| {
-                    variant.get("model").and_then(Value::as_str) == Some(model)
-                }))
-    })?;
-    let effort = model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str);
-    let fast = model_selection.pointer("/options/fastMode").and_then(Value::as_bool);
-    let thinking = model_selection.pointer("/options/thinking").and_then(Value::as_bool);
-    let context = model_selection.pointer("/options/contextWindow").and_then(Value::as_str);
-    family.get("modelVariants").and_then(Value::as_array)?.iter().find_map(|variant| {
-        if let Some(effort) = effort {
-            if variant.get("reasoningEffort").and_then(Value::as_str) != Some(effort) {
-                return None;
+    let family = discovery
+        .get("models")
+        .and_then(Value::as_array)?
+        .iter()
+        .find(|candidate| {
+            let slug = candidate
+                .get("slug")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_ascii_lowercase();
+            slug == normalized_model
+                || candidate
+                    .get("modelVariants")
+                    .and_then(Value::as_array)
+                    .is_some_and(|variants| {
+                        variants.iter().any(|variant| {
+                            variant.get("model").and_then(Value::as_str) == Some(model)
+                        })
+                    })
+        })?;
+    let effort = model_selection
+        .pointer("/options/reasoningEffort")
+        .and_then(Value::as_str);
+    let fast = model_selection
+        .pointer("/options/fastMode")
+        .and_then(Value::as_bool);
+    let thinking = model_selection
+        .pointer("/options/thinking")
+        .and_then(Value::as_bool);
+    let context = model_selection
+        .pointer("/options/contextWindow")
+        .and_then(Value::as_str);
+    family
+        .get("modelVariants")
+        .and_then(Value::as_array)?
+        .iter()
+        .find_map(|variant| {
+            if let Some(effort) = effort {
+                if variant.get("reasoningEffort").and_then(Value::as_str) != Some(effort) {
+                    return None;
+                }
             }
-        }
-        if let Some(fast) = fast {
-            if variant.get("fastMode").and_then(Value::as_bool) != Some(fast) {
-                return None;
+            if let Some(fast) = fast {
+                if variant.get("fastMode").and_then(Value::as_bool) != Some(fast) {
+                    return None;
+                }
             }
-        }
-        if let Some(thinking) = thinking {
-            if variant.get("thinking").and_then(Value::as_bool) != Some(thinking) {
-                return None;
+            if let Some(thinking) = thinking {
+                if variant.get("thinking").and_then(Value::as_bool) != Some(thinking) {
+                    return None;
+                }
             }
-        }
-        if let Some(context) = context {
-            if variant.get("contextWindow").and_then(Value::as_str) != Some(context) {
-                return None;
+            if let Some(context) = context {
+                if variant.get("contextWindow").and_then(Value::as_str) != Some(context) {
+                    return None;
+                }
             }
-        }
-        variant.get("model").and_then(Value::as_str).map(str::to_string)
-    })
+            variant
+                .get("model")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        })
 }
 
 fn resolve_devin_selected_model(model_selection: &Value) -> Option<String> {
@@ -652,7 +690,9 @@ fn resolve_devin_selected_model(model_selection: &Value) -> Option<String> {
     if let Some(resolved) = resolve_devin_runtime_variant(model, model_selection) {
         return Some(resolved);
     }
-    let fast_mode = model_selection.pointer("/options/fastMode").and_then(Value::as_bool);
+    let fast_mode = model_selection
+        .pointer("/options/fastMode")
+        .and_then(Value::as_bool);
     let resolved = match (model, fast_mode) {
         ("swe-1-6", Some(true)) => "swe-1-6-fast",
         ("swe-1-7", Some(true)) => "swe-1-7-lightning",
@@ -701,62 +741,74 @@ fn acp_launch_profile_ex(
     reasoning_effort: Option<&str>,
     additional_dirs: &[String],
 ) -> Option<AcpLaunchProfile> {
-    let (display_name, default_binary, override_keys, home_candidates, mut args, env) = match provider {
-        "devin" => (
-            "Devin",
-            "devin",
-            &["SYNARA_DEVIN_CLI", "DEVIN_BINARY_PATH"][..],
-            &[".local/bin/devin", ".devin/bin/devin"][..],
-            vec!["acp".to_string()],
-            Vec::new(),
-        ),
-        "omp" => (
-            "Oh My Pi",
-            "omp",
-            &["SYNARA_OMP_CLI", "OMP_BINARY_PATH"][..],
-            &[".local/bin/omp"][..],
-            vec!["acp".to_string()],
-            Vec::new(),
-        ),
-        "cursor" => (
-            "Cursor",
-            "cursor-agent",
-            &["SYNARA_CURSOR_CLI", "CURSOR_AGENT_BINARY_PATH", "CURSOR_BINARY_PATH"][..],
-            &[".local/bin/cursor-agent"][..],
-            vec!["acp".to_string()],
-            vec![("NO_BROWSER", "true"), ("BROWSER", "www-browser")],
-        ),
-        "grok" => (
-            "Grok",
-            "grok",
-            &["SYNARA_GROK_CLI", "GROK_BINARY_PATH"][..],
-            &[".local/bin/grok"][..],
-            vec![
-                "--permission-mode".into(),
-                "default".into(),
-                "agent".into(),
-                "--no-leader".into(),
-            ],
-            Vec::new(),
-        ),
-        "droid" => (
-            "Factory Droid",
-            "droid",
-            &["SYNARA_DROID_CLI", "DROID_BINARY_PATH"][..],
-            &[".local/bin/droid"][..],
-            vec!["exec".into(), "--output-format".into(), "acp".into()],
-            Vec::new(),
-        ),
-        "antigravity" => (
-            "Antigravity",
-            "agy",
-            &["SYNARA_ANTIGRAVITY_CLI", "ANTIGRAVITY_BINARY_PATH", "AGY_BINARY_PATH"][..],
-            &[".local/bin/agy"][..],
-            vec!["acp".to_string()],
-            vec![("AGY_CLI_DISABLE_AUTO_UPDATE", "true"), ("NO_BROWSER", "true")],
-        ),
-        _ => return None,
-    };
+    let (display_name, default_binary, override_keys, home_candidates, mut args, env) =
+        match provider {
+            "devin" => (
+                "Devin",
+                "devin",
+                &["SYNARA_DEVIN_CLI", "DEVIN_BINARY_PATH"][..],
+                &[".local/bin/devin", ".devin/bin/devin"][..],
+                vec!["acp".to_string()],
+                Vec::new(),
+            ),
+            "omp" => (
+                "Oh My Pi",
+                "omp",
+                &["SYNARA_OMP_CLI", "OMP_BINARY_PATH"][..],
+                &[".local/bin/omp"][..],
+                vec!["acp".to_string()],
+                Vec::new(),
+            ),
+            "cursor" => (
+                "Cursor",
+                "cursor-agent",
+                &[
+                    "SYNARA_CURSOR_CLI",
+                    "CURSOR_AGENT_BINARY_PATH",
+                    "CURSOR_BINARY_PATH",
+                ][..],
+                &[".local/bin/cursor-agent"][..],
+                vec!["acp".to_string()],
+                vec![("NO_BROWSER", "true"), ("BROWSER", "www-browser")],
+            ),
+            "grok" => (
+                "Grok",
+                "grok",
+                &["SYNARA_GROK_CLI", "GROK_BINARY_PATH"][..],
+                &[".local/bin/grok"][..],
+                vec![
+                    "--permission-mode".into(),
+                    "default".into(),
+                    "agent".into(),
+                    "--no-leader".into(),
+                ],
+                Vec::new(),
+            ),
+            "droid" => (
+                "Factory Droid",
+                "droid",
+                &["SYNARA_DROID_CLI", "DROID_BINARY_PATH"][..],
+                &[".local/bin/droid"][..],
+                vec!["exec".into(), "--output-format".into(), "acp".into()],
+                Vec::new(),
+            ),
+            "antigravity" => (
+                "Antigravity",
+                "agy",
+                &[
+                    "SYNARA_ANTIGRAVITY_CLI",
+                    "ANTIGRAVITY_BINARY_PATH",
+                    "AGY_BINARY_PATH",
+                ][..],
+                &[".local/bin/agy"][..],
+                vec!["acp".to_string()],
+                vec![
+                    ("AGY_CLI_DISABLE_AUTO_UPDATE", "true"),
+                    ("NO_BROWSER", "true"),
+                ],
+            ),
+            _ => return None,
+        };
     if provider == "grok" && runtime_mode == "full-access" {
         args.push("--always-approve".into());
     }
@@ -819,7 +871,11 @@ fn flatten_acp_config_options(options: &Value) -> Vec<Value> {
 
 fn find_acp_select_config<'a>(options: &'a [Value], id: &str, category: &str) -> Option<&'a Value> {
     options.iter().find(|option| {
-        option.get("type").and_then(Value::as_str).unwrap_or("select") == "select"
+        option
+            .get("type")
+            .and_then(Value::as_str)
+            .unwrap_or("select")
+            == "select"
             && (option.get("id").and_then(Value::as_str) == Some(id)
                 || option.get("category").and_then(Value::as_str) == Some(category))
     })
@@ -845,9 +901,11 @@ fn build_acp_model_descriptor(model: &Value, level_option: Option<&Value>) -> Va
         descriptor["description"] = description;
     }
     if let Some(level_option) = level_option {
-        let efforts = flatten_acp_config_options(level_option.get("options").unwrap_or(&Value::Null));
+        let efforts =
+            flatten_acp_config_options(level_option.get("options").unwrap_or(&Value::Null));
         if !efforts.is_empty() {
-            descriptor["supportedReasoningEfforts"] = json!(efforts
+            descriptor["supportedReasoningEfforts"] =
+                json!(efforts
                 .iter()
                 .map(|effort| {
                     let value = effort.get("value").and_then(Value::as_str).unwrap_or("");
@@ -893,9 +951,12 @@ fn discover_acp_config_models(
     for (key, value) in &launch.env {
         command.env(key, value);
     }
-    let mut child = command
-        .spawn()
-        .map_err(|e| err(format!("could not launch `{}` for {provider} ACP discovery: {e}", launch.binary)))?;
+    let mut child = command.spawn().map_err(|e| {
+        err(format!(
+            "could not launch `{}` for {provider} ACP discovery: {e}",
+            launch.binary
+        ))
+    })?;
     let result = (|| -> Result<Value, WsErr> {
         let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
         let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
@@ -919,14 +980,18 @@ fn discover_acp_config_models(
             .and_then(Value::as_array)
             .cloned()
             .unwrap_or_default();
-        let setup = |rpc: &mut Rpc| rpc.call(
-            "session/new",
-            json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
-        );
+        let setup = |rpc: &mut Rpc| {
+            rpc.call(
+                "session/new",
+                json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
+            )
+        };
         let setup_result = match setup(&mut rpc) {
             Ok(result) => result,
             Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
-                let Some(method) = select_auth_method(provider, &auth_methods) else { return Err(e) };
+                let Some(method) = select_auth_method(provider, &auth_methods) else {
+                    return Err(e);
+                };
                 rpc.call("authenticate", json!({"methodId": method}))?;
                 setup(&mut rpc)?
             }
@@ -935,17 +1000,30 @@ fn discover_acp_config_models(
         let session_id = setup_result
             .get("sessionId")
             .and_then(Value::as_str)
-            .ok_or_else(|| err(format!("{provider} ACP discovery session returned no sessionId")))?
+            .ok_or_else(|| {
+                err(format!(
+                    "{provider} ACP discovery session returned no sessionId"
+                ))
+            })?
             .to_string();
         let initial_options = acp_config_options(&setup_result);
         let model_config = find_acp_select_config(&initial_options, "model", "model")
             .cloned()
-            .ok_or_else(|| err(format!("{provider} ACP did not advertise a model configuration option")))?;
-        let original_model = model_config.get("currentValue").and_then(Value::as_str).map(str::to_string);
-        let original_reasoning = find_acp_select_config(&initial_options, reasoning_config_id, "thought_level")
-            .and_then(|option| option.get("currentValue").and_then(Value::as_str))
+            .ok_or_else(|| {
+                err(format!(
+                    "{provider} ACP did not advertise a model configuration option"
+                ))
+            })?;
+        let original_model = model_config
+            .get("currentValue")
+            .and_then(Value::as_str)
             .map(str::to_string);
-        let model_options = flatten_acp_config_options(model_config.get("options").unwrap_or(&Value::Null));
+        let original_reasoning =
+            find_acp_select_config(&initial_options, reasoning_config_id, "thought_level")
+                .and_then(|option| option.get("currentValue").and_then(Value::as_str))
+                .map(str::to_string);
+        let model_options =
+            flatten_acp_config_options(model_config.get("options").unwrap_or(&Value::Null));
         if model_options.is_empty() {
             return Err(err("Droid ACP model discovery returned no models"));
         }
@@ -958,11 +1036,16 @@ fn discover_acp_config_models(
             ) {
                 Ok(response) => {
                     let options = acp_config_options(&response);
-                    if options.is_empty() { initial_options.clone() } else { options }
+                    if options.is_empty() {
+                        initial_options.clone()
+                    } else {
+                        options
+                    }
                 }
                 Err(_) => initial_options.clone(),
             };
-            let reasoning = find_acp_select_config(&updated_options, reasoning_config_id, "thought_level");
+            let reasoning =
+                find_acp_select_config(&updated_options, reasoning_config_id, "thought_level");
             models.push(build_acp_model_descriptor(model, reasoning));
         }
         if let Some(original_model) = original_model {
@@ -993,8 +1076,6 @@ pub fn supports_provider(provider: &str) -> bool {
         "devin" | "omp" | "cursor" | "grok" | "droid" | "antigravity"
     )
 }
-
-
 
 /// Start an ACP provider before the first user prompt, authenticate/session-
 /// configure it, and park the live process. This is the generic prewarm path
@@ -1069,10 +1150,12 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         .unwrap_or_default()
         .iter()
         .filter_map(|entry| {
-            entry
-                .as_str()
-                .map(str::to_string)
-                .or_else(|| entry.get("path").and_then(Value::as_str).map(str::to_string))
+            entry.as_str().map(str::to_string).or_else(|| {
+                entry
+                    .get("path")
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
+            })
         })
         .collect();
     let launch = acp_launch_profile_ex(
@@ -1082,11 +1165,18 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         reasoning_effort.as_deref(),
         &additional_dirs,
     )
-    .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
+    .ok_or_else(|| {
+        err(format!(
+            "Provider \"{provider}\" does not support ACP stdio"
+        ))
+    })?;
     let launch_key = format!(
         "{provider}|{}|{turn_runtime_mode}|{cwd}|{}",
         selected_model.as_deref().unwrap_or(""),
-        model_value.get("instanceId").and_then(Value::as_str).unwrap_or("")
+        model_value
+            .get("instanceId")
+            .and_then(Value::as_str)
+            .unwrap_or("")
     );
     let mut command = Command::new(&launch.binary);
     command
@@ -1104,9 +1194,12 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
     for (key, value) in &launch.env {
         command.env(key, value);
     }
-    let mut child = command
-        .spawn()
-        .map_err(|e| err(format!("could not launch `{}` for {} ACP: {e}", launch.binary, launch.display_name)))?;
+    let mut child = command.spawn().map_err(|e| {
+        err(format!(
+            "could not launch `{}` for {} ACP: {e}",
+            launch.binary, launch.display_name
+        ))
+    })?;
     let child_stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
     let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
     let stdin = Arc::new(Mutex::new(child_stdin));
@@ -1142,28 +1235,46 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
         };
         let try_setup = |rpc: &mut Rpc| -> Result<(String, Value), WsErr> {
             if let Some(sid) = stored_session.as_deref() {
-                match rpc.call("session/load", json!({"sessionId":sid,"cwd":cwd,"mcpServers":mcp_servers})) {
-                    Ok(res) => return Ok((sid.to_string(), res.get("modes").cloned().unwrap_or(Value::Null))),
+                match rpc.call(
+                    "session/load",
+                    json!({"sessionId":sid,"cwd":cwd,"mcpServers":mcp_servers}),
+                ) {
+                    Ok(res) => {
+                        return Ok((
+                            sid.to_string(),
+                            res.get("modes").cloned().unwrap_or(Value::Null),
+                        ));
+                    }
                     Err(e) if is_auth_required_error(&e) => return Err(e),
                     Err(_) => {}
                 }
             }
             let res = rpc.call("session/new", json!({"cwd":cwd,"mcpServers":mcp_servers}))?;
-            let id = res.get("sessionId").and_then(Value::as_str)
-                .ok_or_else(|| err("session/new returned no sessionId"))?.to_string();
+            let id = res
+                .get("sessionId")
+                .and_then(Value::as_str)
+                .ok_or_else(|| err("session/new returned no sessionId"))?
+                .to_string();
             Ok((id, res.get("modes").cloned().unwrap_or(Value::Null)))
         };
         let (session_id, mode_state) = match try_setup(&mut rpc) {
             Ok(ok) => ok,
             Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
-                let Some(method) = select_auth_method(provider, &auth_methods) else { return Err(e) };
+                let Some(method) = select_auth_method(provider, &auth_methods) else {
+                    return Err(e);
+                };
                 rpc.call("authenticate", json!({"methodId":method}))?;
                 try_setup(&mut rpc)?
             }
             Err(e) => return Err(e),
         };
-        if let Ok(Some(mode_id)) = resolve_acp_mode(provider, &mode_state, &turn_runtime_mode, &interaction_mode) {
-            let _ = rpc.call("session/set_mode", json!({"sessionId":session_id,"modeId":mode_id}));
+        if let Ok(Some(mode_id)) =
+            resolve_acp_mode(provider, &mode_state, &turn_runtime_mode, &interaction_mode)
+        {
+            let _ = rpc.call(
+                "session/set_mode",
+                json!({"sessionId":session_id,"modeId":mode_id}),
+            );
         }
         if provider == "omp" {
             apply_omp_session_configuration(
@@ -1181,7 +1292,12 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
                 selected_model.as_deref(),
                 reasoning_effort.as_deref(),
             )?;
-            apply_droid_interaction_mode(&mut rpc, &session_id, &interaction_mode, &turn_runtime_mode);
+            apply_droid_interaction_mode(
+                &mut rpc,
+                &session_id,
+                &interaction_mode,
+                &turn_runtime_mode,
+            );
         }
         if provider == "cursor" {
             apply_cursor_session_configuration(&mut rpc, &session_id, &model_value);
@@ -1199,7 +1315,15 @@ pub fn prewarm_thread(provider: &str, thread_id: &str) -> Result<bool, WsErr> {
     match prepared {
         Ok(session_id) => {
             if let Ok(mut parked_map) = PARKED.lock() {
-                parked_map.insert(thread_id.to_string(), ParkedSession { child, rpc, session_id, launch_key });
+                parked_map.insert(
+                    thread_id.to_string(),
+                    ParkedSession {
+                        child,
+                        rpc,
+                        session_id,
+                        launch_key,
+                    },
+                );
             }
             Ok(true)
         }
@@ -1223,7 +1347,10 @@ fn apply_omp_session_configuration(
             json!({"sessionId": session_id, "configId": "model", "value": model}),
         )?;
     }
-    if let Some(thinking) = thinking_level.map(str::trim).filter(|value| !value.is_empty()) {
+    if let Some(thinking) = thinking_level
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
         rpc.call(
             "session/set_config_option",
             json!({"sessionId": session_id, "configId": "thinking", "value": thinking.to_ascii_lowercase()}),
@@ -1244,7 +1371,10 @@ fn apply_droid_session_configuration(
             json!({"sessionId": session_id, "configId": "model", "value": model}),
         )?;
     }
-    if let Some(effort) = reasoning_effort.map(str::trim).filter(|value| !value.is_empty()) {
+    if let Some(effort) = reasoning_effort
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
         rpc.call(
             "session/set_config_option",
             json!({"sessionId": session_id, "configId": "reasoning_effort", "value": effort}),
@@ -1281,11 +1411,20 @@ fn apply_droid_interaction_mode(
 }
 
 fn apply_cursor_session_configuration(rpc: &mut Rpc, session_id: &str, model_selection: &Value) {
-    let Some(raw_model) = model_selection.get("model").and_then(Value::as_str).map(str::trim).filter(|value| !value.is_empty()) else {
+    let Some(raw_model) = model_selection
+        .get("model")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    else {
         return;
     };
     let base_model = raw_model.split('[').next().unwrap_or(raw_model).trim();
-    let acp_model = if base_model.is_empty() || base_model == "auto" { "default" } else { base_model };
+    let acp_model = if base_model.is_empty() || base_model == "auto" {
+        "default"
+    } else {
+        base_model
+    };
     let _ = rpc.call(
         "session/set_config_option",
         json!({"sessionId": session_id, "configId": "model", "value": acp_model}),
@@ -1296,15 +1435,26 @@ fn apply_cursor_session_configuration(rpc: &mut Rpc, session_id: &str, model_sel
         .map(str::trim)
         .filter(|value| !value.is_empty())
     {
-        let key = if base_model.contains("claude") || base_model.contains("grok") { "effort" } else { "reasoning" };
-        let value = if effort == "xhigh" { "extra-high" } else { effort };
+        let key = if base_model.contains("claude") || base_model.contains("grok") {
+            "effort"
+        } else {
+            "reasoning"
+        };
+        let value = if effort == "xhigh" {
+            "extra-high"
+        } else {
+            effort
+        };
         let _ = rpc.call(
             "session/set_config_option",
             json!({"sessionId": session_id, "configId": key, "value": value}),
         );
     }
     for (option_key, config_id) in [("thinking", "thinking"), ("fastMode", "fast")] {
-        if let Some(value) = model_selection.pointer(&format!("/options/{option_key}")).and_then(Value::as_bool) {
+        if let Some(value) = model_selection
+            .pointer(&format!("/options/{option_key}"))
+            .and_then(Value::as_bool)
+        {
             let _ = rpc.call(
                 "session/set_config_option",
                 json!({"sessionId": session_id, "configId": config_id, "type": "boolean", "value": value}),
@@ -1336,7 +1486,10 @@ fn apply_antigravity_session_configuration(
             json!({"sessionId": session_id, "configId": "model", "value": model}),
         )?;
     }
-    if let Some(effort) = reasoning_effort.map(str::trim).filter(|value| !value.is_empty()) {
+    if let Some(effort) = reasoning_effort
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+    {
         rpc.call(
             "session/set_config_option",
             json!({"sessionId": session_id, "configId": "thought_level", "value": effort}),
@@ -1346,7 +1499,11 @@ fn apply_antigravity_session_configuration(
 }
 
 fn apply_omp_interaction_mode(rpc: &mut Rpc, session_id: &str, interaction_mode: &str) {
-    let mode = if interaction_mode == "plan" { "plan" } else { "default" };
+    let mode = if interaction_mode == "plan" {
+        "plan"
+    } else {
+        "default"
+    };
     let _ = rpc.call(
         "session/set_config_option",
         json!({"sessionId": session_id, "configId": "mode", "value": mode}),
@@ -1424,7 +1581,12 @@ fn infer_cursor_upstream_provider(slug: &str, name: &str) -> (&'static str, &'st
         ("mistral", "Mistral")
     } else if token.contains("nemotron") {
         ("nvidia", "NVIDIA")
-    } else if token.contains("gpt") || token.contains("codex") || token.contains("o1") || token.contains("o3") || token.contains("o4") {
+    } else if token.contains("gpt")
+        || token.contains("codex")
+        || token.contains("o1")
+        || token.contains("o3")
+        || token.contains("o4")
+    {
         ("openai", "OpenAI")
     } else {
         ("cursor", "Cursor")
@@ -1432,8 +1594,16 @@ fn infer_cursor_upstream_provider(slug: &str, name: &str) -> (&'static str, &'st
 }
 
 fn cursor_is_effort_config(option: &Value) -> bool {
-    let id = option.get("id").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
-    let name = option.get("name").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+    let id = option
+        .get("id")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    let name = option
+        .get("name")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_ascii_lowercase();
     id == "effort"
         || id == "reasoning"
         || name == "effort"
@@ -1444,8 +1614,16 @@ fn cursor_is_effort_config(option: &Value) -> bool {
 }
 
 fn cursor_is_context_config(option: &Value) -> bool {
-    let id = option.get("id").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
-    let name = option.get("name").and_then(Value::as_str).unwrap_or("").to_ascii_lowercase();
+    let id = option
+        .get("id")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    let name = option
+        .get("name")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_ascii_lowercase();
     option.get("category").and_then(Value::as_str) == Some("model_config")
         && (id == "context" || id == "context_size" || name.contains("context"))
 }
@@ -1455,7 +1633,11 @@ fn build_cursor_acp_model_descriptor(model: &Value) -> Option<Value> {
     if raw_slug.is_empty() {
         return None;
     }
-    let slug = if raw_slug == "default" { "auto" } else { raw_slug };
+    let slug = if raw_slug == "default" {
+        "auto"
+    } else {
+        raw_slug
+    };
     let config_options = model
         .get("configOptions")
         .and_then(Value::as_array)
@@ -1475,15 +1657,19 @@ fn build_cursor_acp_model_descriptor(model: &Value) -> Option<Value> {
         "upstreamProviderId": provider_id,
         "upstreamProviderName": provider_name,
     });
-    if let Some(effort_option) = config_options.iter().find(|option| cursor_is_effort_config(option)) {
-        let efforts = flatten_acp_config_options(effort_option.get("options").unwrap_or(&Value::Null))
-            .iter()
-            .filter_map(|entry| {
-                let raw = entry.get("value").and_then(Value::as_str)?;
-                let value = normalize_cursor_reasoning(raw)?;
-                Some(json!({"value": value, "label": cursor_reasoning_label(value)}))
-            })
-            .collect::<Vec<_>>();
+    if let Some(effort_option) = config_options
+        .iter()
+        .find(|option| cursor_is_effort_config(option))
+    {
+        let efforts =
+            flatten_acp_config_options(effort_option.get("options").unwrap_or(&Value::Null))
+                .iter()
+                .filter_map(|entry| {
+                    let raw = entry.get("value").and_then(Value::as_str)?;
+                    let value = normalize_cursor_reasoning(raw)?;
+                    Some(json!({"value": value, "label": cursor_reasoning_label(value)}))
+                })
+                .collect::<Vec<_>>();
         if !efforts.is_empty() {
             descriptor["supportedReasoningEfforts"] = json!(efforts);
             if let Some(current) = effort_option
@@ -1495,16 +1681,25 @@ fn build_cursor_acp_model_descriptor(model: &Value) -> Option<Value> {
             }
         }
     }
-    if let Some(context_option) = config_options.iter().find(|option| cursor_is_context_config(option)) {
+    if let Some(context_option) = config_options
+        .iter()
+        .find(|option| cursor_is_context_config(option))
+    {
         let current = context_option.get("currentValue").and_then(Value::as_str);
-        let contexts = flatten_acp_config_options(context_option.get("options").unwrap_or(&Value::Null))
-            .iter()
-            .filter_map(|entry| {
-                let value = entry.get("value").and_then(Value::as_str)?;
-                let label = if value.eq_ignore_ascii_case("1m") { "1M".to_string() } else { value.to_ascii_uppercase() };
-                Some(json!({"value": value, "label": label, "isDefault": Some(value) == current}))
-            })
-            .collect::<Vec<_>>();
+        let contexts = flatten_acp_config_options(
+            context_option.get("options").unwrap_or(&Value::Null),
+        )
+        .iter()
+        .filter_map(|entry| {
+            let value = entry.get("value").and_then(Value::as_str)?;
+            let label = if value.eq_ignore_ascii_case("1m") {
+                "1M".to_string()
+            } else {
+                value.to_ascii_uppercase()
+            };
+            Some(json!({"value": value, "label": label, "isDefault": Some(value) == current}))
+        })
+        .collect::<Vec<_>>();
         if !contexts.is_empty() {
             if let Some(current) = current {
                 descriptor["defaultContextWindow"] = json!(current);
@@ -1512,10 +1707,20 @@ fn build_cursor_acp_model_descriptor(model: &Value) -> Option<Value> {
             descriptor["contextWindowOptions"] = json!(contexts);
         }
     }
-    if config_options.iter().any(|option| option.get("id").and_then(Value::as_str).is_some_and(|id| id.eq_ignore_ascii_case("thinking"))) {
+    if config_options.iter().any(|option| {
+        option
+            .get("id")
+            .and_then(Value::as_str)
+            .is_some_and(|id| id.eq_ignore_ascii_case("thinking"))
+    }) {
         descriptor["supportsThinkingToggle"] = json!(true);
     }
-    if config_options.iter().any(|option| option.get("id").and_then(Value::as_str).is_some_and(|id| id.eq_ignore_ascii_case("fast"))) {
+    if config_options.iter().any(|option| {
+        option
+            .get("id")
+            .and_then(Value::as_str)
+            .is_some_and(|id| id.eq_ignore_ascii_case("fast"))
+    }) {
         descriptor["supportsFastMode"] = json!(true);
     }
     Some(descriptor)
@@ -1537,9 +1742,12 @@ pub(crate) fn discover_cursor_models(cwd: &str) -> Result<Value, WsErr> {
     for (key, value) in &launch.env {
         command.env(key, value);
     }
-    let mut child = command
-        .spawn()
-        .map_err(|e| err(format!("could not launch `{}` for Cursor ACP discovery: {e}", launch.binary)))?;
+    let mut child = command.spawn().map_err(|e| {
+        err(format!(
+            "could not launch `{}` for Cursor ACP discovery: {e}",
+            launch.binary
+        ))
+    })?;
     let result = (|| -> Result<Value, WsErr> {
         let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
         let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
@@ -1563,15 +1771,22 @@ pub(crate) fn discover_cursor_models(cwd: &str) -> Result<Value, WsErr> {
             .and_then(Value::as_array)
             .cloned()
             .unwrap_or_default();
-        let setup = |rpc: &mut Rpc| rpc.call(
-            "session/new",
-            json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
-        );
+        let setup = |rpc: &mut Rpc| {
+            rpc.call(
+                "session/new",
+                json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
+            )
+        };
         let setup_result = match setup(&mut rpc) {
             Ok(result) => result,
             Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
-                let Some(method) = select_auth_method("cursor", &auth_methods) else { return Err(e) };
-                rpc.call("authenticate", json!({"methodId": method, "_meta": {"headless": true}}))?;
+                let Some(method) = select_auth_method("cursor", &auth_methods) else {
+                    return Err(e);
+                };
+                rpc.call(
+                    "authenticate",
+                    json!({"methodId": method, "_meta": {"headless": true}}),
+                )?;
                 setup(&mut rpc)?
             }
             Err(e) => return Err(e),
@@ -1623,9 +1838,12 @@ pub(crate) fn discover_acp_commands(provider: &str, cwd: &str) -> Result<Vec<Val
     for (key, value) in &launch.env {
         command.env(key, value);
     }
-    let mut child = command
-        .spawn()
-        .map_err(|e| err(format!("could not launch `{}` for {provider} command discovery: {e}", launch.binary)))?;
+    let mut child = command.spawn().map_err(|e| {
+        err(format!(
+            "could not launch `{}` for {provider} command discovery: {e}",
+            launch.binary
+        ))
+    })?;
     let result = (|| -> Result<Vec<Value>, WsErr> {
         let stdin = child.stdin.take().ok_or_else(|| err("acp stdin"))?;
         let stdout = child.stdout.take().ok_or_else(|| err("acp stdout"))?;
@@ -1649,14 +1867,18 @@ pub(crate) fn discover_acp_commands(provider: &str, cwd: &str) -> Result<Vec<Val
             .and_then(Value::as_array)
             .cloned()
             .unwrap_or_default();
-        let setup = |rpc: &mut Rpc| rpc.call(
-            "session/new",
-            json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
-        );
+        let setup = |rpc: &mut Rpc| {
+            rpc.call(
+                "session/new",
+                json!({"cwd": if cwd.is_empty() { "." } else { cwd }, "mcpServers": []}),
+            )
+        };
         let setup_result = match setup(&mut rpc) {
             Ok(result) => result,
             Err(e) if is_auth_required_error(&e) && !auth_methods.is_empty() => {
-                let Some(method) = select_auth_method(provider, &auth_methods) else { return Err(e) };
+                let Some(method) = select_auth_method(provider, &auth_methods) else {
+                    return Err(e);
+                };
                 rpc.call("authenticate", json!({"methodId": method}))?;
                 setup(&mut rpc)?
             }
@@ -1736,8 +1958,14 @@ pub fn compact_thread(thread_id: &str) -> Result<bool, WsErr> {
 }
 
 fn acp_usage_snapshot(update: &Value) -> Option<Value> {
-    let used = update.get("used").and_then(Value::as_i64).filter(|value| *value >= 0)?;
-    let max = update.get("size").and_then(Value::as_i64).filter(|value| *value > 0);
+    let used = update
+        .get("used")
+        .and_then(Value::as_i64)
+        .filter(|value| *value >= 0)?;
+    let max = update
+        .get("size")
+        .and_then(Value::as_i64)
+        .filter(|value| *value > 0);
     let percent = max.map(|max| ((used as f64 / max as f64) * 100.0).clamp(0.0, 100.0));
     let mut usage = json!({"usedTokens": used, "compactsAutomatically": true});
     if let Some(percent) = percent {
@@ -1751,7 +1979,13 @@ fn acp_usage_snapshot(update: &Value) -> Option<Value> {
 
 /// Called after a `thread.turn-start-requested` event is committed for an
 /// ACP-capable provider thread. Spawns the runner thread that drives the session.
-pub fn start_turn(provider: String, thread_id: String, message_id: String, text: String, cwd: String) {
+pub fn start_turn(
+    provider: String,
+    thread_id: String,
+    message_id: String,
+    text: String,
+    cwd: String,
+) {
     crate::hub_outputs::capture_baseline(&thread_id);
     std::thread::spawn(move || {
         if let Err(e) = run_turn(&provider, &thread_id, &message_id, &text, &cwd) {
@@ -1807,16 +2041,13 @@ fn approval_request_kind(acp_kind: &str) -> &'static str {
 }
 
 fn merge_tracked_tool_call(request: &mut Value, tracked: &Value) {
-    let (Some(request_obj), Some(tracked_obj)) =
-        (request.as_object_mut(), tracked.as_object())
+    let (Some(request_obj), Some(tracked_obj)) = (request.as_object_mut(), tracked.as_object())
     else {
         return;
     };
     let tracked_kind = tracked_obj.get("kind").and_then(Value::as_str);
     let request_kind = request_obj.get("kind").and_then(Value::as_str);
-    if tracked_kind == Some("execute")
-        || request_kind.is_none()
-        || request_kind == Some("unknown")
+    if tracked_kind == Some("execute") || request_kind.is_none() || request_kind == Some("unknown")
     {
         if let Some(kind) = tracked_kind {
             request_obj.insert("kind".to_string(), json!(kind));
@@ -2022,11 +2253,17 @@ impl Rpc {
                                                 .map(str::trim)
                                                 .filter(|x| !x.is_empty())
                                         })?;
-                                    let status = match t.get("status").and_then(Value::as_str).unwrap_or("") {
-                                        s if s.contains("completed") || s.contains("done") => "completed",
-                                        s if s.contains("progress") || s.contains("doing") => "inProgress",
-                                        _ => "pending",
-                                    };
+                                    let status =
+                                        match t.get("status").and_then(Value::as_str).unwrap_or("")
+                                        {
+                                            s if s.contains("completed") || s.contains("done") => {
+                                                "completed"
+                                            }
+                                            s if s.contains("progress") || s.contains("doing") => {
+                                                "inProgress"
+                                            }
+                                            _ => "pending",
+                                        };
                                     Some(json!({"step": step, "status": status}))
                                 })
                                 .collect()
@@ -2059,8 +2296,12 @@ impl Rpc {
                     }));
                 }
             }
-            "fs/read_text_file" | "fs/write_text_file" | "terminal/create"
-            | "terminal/output" | "terminal/wait_for_exit" | "terminal/kill"
+            "fs/read_text_file"
+            | "fs/write_text_file"
+            | "terminal/create"
+            | "terminal/output"
+            | "terminal/wait_for_exit"
+            | "terminal/kill"
             | "terminal/release" => {
                 if let Some(rid) = v.get("id").cloned() {
                     let _ = self.write_raw(&json!({
@@ -2095,7 +2336,9 @@ impl Rpc {
     /// then answer the agent with the collected answers keyed by question id.
     fn handle_cursor_ask_question(&mut self, v: &Value, ctx: &ApprovalCtx) {
         let params = v.get("params").cloned().unwrap_or(Value::Null);
-        let Some(rid) = v.get("id").cloned() else { return };
+        let Some(rid) = v.get("id").cloned() else {
+            return;
+        };
         let questions: Vec<Value> = params
             .get("questions")
             .and_then(Value::as_array)
@@ -2281,13 +2524,10 @@ impl Rpc {
                 eprintln!("acp_runner: approval activity: {}", e.0);
             }
         }
-        let deadline =
-            std::time::Instant::now() + std::time::Duration::from_secs(600);
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(600);
         let mut decision: Option<String> = None;
         while decision.is_none() {
-            if ctx.cancelled.load(Ordering::SeqCst)
-                || std::time::Instant::now() >= deadline
-            {
+            if ctx.cancelled.load(Ordering::SeqCst) || std::time::Instant::now() >= deadline {
                 break;
             }
             if let Ok(c) = open_state_rw() {
@@ -2441,7 +2681,11 @@ fn acp_mode_norm(s: &str) -> String {
         .join(" ")
 }
 
-fn acp_mode_matches<'a>(modes: &'a [Value], aliases: &[&str], whole_token: bool) -> Option<&'a Value> {
+fn acp_mode_matches<'a>(
+    modes: &'a [Value],
+    aliases: &[&str],
+    whole_token: bool,
+) -> Option<&'a Value> {
     modes.iter().find(|m| {
         let id = acp_mode_norm(m.get("id").and_then(Value::as_str).unwrap_or(""));
         let name = acp_mode_norm(m.get("name").and_then(Value::as_str).unwrap_or(""));
@@ -2451,8 +2695,7 @@ fn acp_mode_matches<'a>(modes: &'a [Value], aliases: &[&str], whole_token: bool)
                 return true;
             }
             whole_token
-                && a
-                    .split(' ')
+                && a.split(' ')
                     .all(|tok| id.split(' ').any(|t| t == tok) || name.split(' ').any(|t| t == tok))
         })
     })
@@ -2465,11 +2708,9 @@ fn resolve_acp_mode(
     interaction_mode: &str,
 ) -> Result<Option<String>, String> {
     if runtime_mode == "auto" {
-        return Err(
-            format!(
-                "Provider \"{provider}\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
-            ),
-        );
+        return Err(format!(
+            "Provider \"{provider}\" does not support Auto runtime mode. Auto is available only for Codex and Claude Code."
+        ));
     }
     let modes = mode_state
         .get("availableModes")
@@ -2499,15 +2740,18 @@ fn resolve_acp_mode(
     let target = if interaction_mode == "plan" {
         acp_mode_matches(&modes, &["plan", "architect"], false)
     } else if runtime_mode == "approval-required" {
-        acp_mode_matches(&modes, &["accept-edits", "code"], true).or_else(|| {
-            acp_mode_matches(&modes, &["ask everytime", "ask every time"], true)
-        })
+        acp_mode_matches(&modes, &["accept-edits", "code"], true)
+            .or_else(|| acp_mode_matches(&modes, &["ask everytime", "ask every time"], true))
     } else {
         acp_mode_matches(&modes, &["bypass", "full access"], true)
     };
     match target {
         Some(m) => {
-            let id = m.get("id").and_then(Value::as_str).unwrap_or("").to_string();
+            let id = m
+                .get("id")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
             if id == current {
                 Ok(None)
             } else {
@@ -2532,7 +2776,13 @@ fn resolve_acp_mode(
     }
 }
 
-fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<(), WsErr> {
+fn run_turn(
+    provider: &str,
+    thread_id: &str,
+    message_id: &str,
+    text: &str,
+    cwd: &str,
+) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
@@ -2651,7 +2901,11 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
         reasoning_effort.as_deref(),
         &additional_dirs,
     )
-    .ok_or_else(|| err(format!("Provider \"{provider}\" does not support ACP stdio")))?;
+    .ok_or_else(|| {
+        err(format!(
+            "Provider \"{provider}\" does not support ACP stdio"
+        ))
+    })?;
     let launch_key = format!(
         "{provider}|{}|{turn_runtime_mode}|{cwd}",
         selected_model.as_deref().unwrap_or("")
@@ -2711,8 +2965,8 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                 .stdout(Stdio::piped())
                 .stderr(Stdio::null());
             crate::provider_env::sanitize_provider_child(&mut command);
-    crate::provider_instances::apply_instance_environment(&mut command, provider);
-    for (key, value) in &launch.env {
+            crate::provider_instances::apply_instance_environment(&mut command, provider);
+            for (key, value) in &launch.env {
                 command.env(key, value);
             }
             let spawn_result = command.spawn();
@@ -2826,7 +3080,10 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                         }
                     }
                 }
-                let res = rpc.call("session/new", json!({"cwd": cwd, "mcpServers": mcp_servers}))?;
+                let res = rpc.call(
+                    "session/new",
+                    json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                )?;
                 let mode_state = res.get("modes").cloned().unwrap_or(Value::Null);
                 let id = res
                     .get("sessionId")
@@ -2931,10 +3188,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
         let tid = thread_id.to_string();
         let amsg = assistant_msg_id.clone();
         let t_id = turn_id.clone();
-        let approval_tool_calls = rpc
-            .approval_ctx
-            .as_ref()
-            .map(|ctx| ctx.tool_calls.clone());
+        let approval_tool_calls = rpc.approval_ctx.as_ref().map(|ctx| ctx.tool_calls.clone());
         let attachments = crate::provider_attachments::message_attachments(thread_id, message_id)?;
         let prompt_text = crate::provider_attachments::append_file_attachments_prompt_block(
             text,
@@ -2960,19 +3214,14 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                 if v.get("method").and_then(Value::as_str) != Some("session/update") {
                     return;
                 }
-                let update = v
-                    .pointer("/params/update")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let update = v.pointer("/params/update").cloned().unwrap_or(Value::Null);
                 let kind = update
                     .get("sessionUpdate")
                     .and_then(Value::as_str)
                     .unwrap_or("");
                 match kind {
                     "agent_message_chunk" => {
-                        if let Some(t) =
-                            update.pointer("/content/text").and_then(Value::as_str)
-                        {
+                        if let Some(t) = update.pointer("/content/text").and_then(Value::as_str) {
                             text_buf.push_str(t);
                         }
                     }
@@ -2989,12 +3238,14 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                             .get("title")
                             .and_then(Value::as_str)
                             .unwrap_or("Tool call");
-                        let kind_name = update
-                            .get("kind")
-                            .and_then(Value::as_str)
-                            .unwrap_or("tool");
+                        let kind_name =
+                            update.get("kind").and_then(Value::as_str).unwrap_or("tool");
                         if let Ok(c) = open_state_rw() {
-                            if let Err(e) = append_activity(&c, &tid, &t_id, "tool", kind_name, title, &update) { eprintln!("acp_runner: activity failed: {}", e.0); }
+                            if let Err(e) =
+                                append_activity(&c, &tid, &t_id, "tool", kind_name, title, &update)
+                            {
+                                eprintln!("acp_runner: activity failed: {}", e.0);
+                            }
                         }
                     }
                     "plan" => {
@@ -3002,9 +3253,7 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                         // activity ({tasks:[{task,status}]}); statuses map
                         // pending/in_progress/completed → pending/inProgress/
                         // completed. Snapshots are cumulative, one row per turn.
-                        if let Some(entries) =
-                            update.get("entries").and_then(Value::as_array)
-                        {
+                        if let Some(entries) = update.get("entries").and_then(Value::as_array) {
                             let tasks: Vec<Value> = entries
                                 .iter()
                                 .filter_map(|e| {
@@ -3030,7 +3279,17 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                                 .collect();
                             let payload = json!({ "tasks": tasks });
                             if let Ok(c) = open_state_rw() {
-                                if let Err(e) = append_activity(&c, &tid, &t_id, "info", "turn.tasks.updated", "Task list updated", &payload) { eprintln!("acp_runner: plan activity failed: {}", e.0); }
+                                if let Err(e) = append_activity(
+                                    &c,
+                                    &tid,
+                                    &t_id,
+                                    "info",
+                                    "turn.tasks.updated",
+                                    "Task list updated",
+                                    &payload,
+                                ) {
+                                    eprintln!("acp_runner: plan activity failed: {}", e.0);
+                                }
                             }
                         }
                     }
@@ -3050,17 +3309,20 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                                         "payload": v.get("params").cloned().unwrap_or(Value::Null),
                                     },
                                 });
-                                if let Err(e) = append_event(&c, &tid, "thread.token-usage.updated", &iso_now_ms(), payload) {
+                                if let Err(e) = append_event(
+                                    &c,
+                                    &tid,
+                                    "thread.token-usage.updated",
+                                    &iso_now_ms(),
+                                    payload,
+                                ) {
                                     eprintln!("acp_runner: usage event failed: {}", e.0);
                                 }
                             }
                         }
                     }
                     "tool_call_update" => {
-                        let status = update
-                            .get("status")
-                            .and_then(Value::as_str)
-                            .unwrap_or("");
+                        let status = update.get("status").and_then(Value::as_str).unwrap_or("");
                         // Upstream pullRequestCommandDetection: when a finished
                         // command created a PR with `gh pr create`, link it even
                         // if the agent forgot the link tool.
@@ -3082,15 +3344,18 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                                     }
                                 }
                             }
-                            let urls = crate::pr_command_detection::detect_created_pull_request_urls(
-                                "command_execution",
-                                Some("completed"),
-                                &json!({ "item": merged }),
-                            );
+                            let urls =
+                                crate::pr_command_detection::detect_created_pull_request_urls(
+                                    "command_execution",
+                                    Some("completed"),
+                                    &json!({ "item": merged }),
+                                );
                             if !urls.is_empty() {
                                 let tid2 = tid.clone();
                                 std::thread::spawn(move || {
-                                    crate::pr_command_detection::link_command_created_pull_requests(&tid2, urls);
+                                    crate::pr_command_detection::link_command_created_pull_requests(
+                                        &tid2, urls,
+                                    );
                                 });
                             }
                         }
@@ -3100,7 +3365,11 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                                 .and_then(Value::as_str)
                                 .unwrap_or("Tool call failed");
                             if let Ok(c) = open_state_rw() {
-                                if let Err(e) = append_activity(&c, &tid, &t_id, "error", "tool", title, &update) { eprintln!("acp_runner: error activity failed: {}", e.0); }
+                                if let Err(e) = append_activity(
+                                    &c, &tid, &t_id, "error", "tool", title, &update,
+                                ) {
+                                    eprintln!("acp_runner: error activity failed: {}", e.0);
+                                }
                             }
                         }
                     }
@@ -3108,7 +3377,11 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
                 }
                 if !text_buf.is_empty() && last_flush.elapsed().as_millis() >= 200 {
                     if let Ok(c) = open_state_rw() {
-                        if let Err(e) = append_assistant_text(&c, &tid, &amsg, &t_id, &text_buf, true) { eprintln!("acp_runner: assistant flush failed: {}", e.0); }
+                        if let Err(e) =
+                            append_assistant_text(&c, &tid, &amsg, &t_id, &text_buf, true)
+                        {
+                            eprintln!("acp_runner: assistant flush failed: {}", e.0);
+                        }
                     }
                     text_buf.clear();
                     last_flush = std::time::Instant::now();
@@ -3117,9 +3390,13 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
         )?;
         if let Ok(c) = open_state_rw() {
             if !text_buf.is_empty() {
-                if let Err(e) = append_assistant_text(&c, &tid, &amsg, &t_id, &text_buf, true) { eprintln!("acp_runner: assistant flush failed: {}", e.0); }
+                if let Err(e) = append_assistant_text(&c, &tid, &amsg, &t_id, &text_buf, true) {
+                    eprintln!("acp_runner: assistant flush failed: {}", e.0);
+                }
             }
-            if let Err(e) = append_assistant_text(&c, &tid, &amsg, &t_id, "", false) { eprintln!("acp_runner: final settle failed: {}", e.0); }
+            if let Err(e) = append_assistant_text(&c, &tid, &amsg, &t_id, "", false) {
+                eprintln!("acp_runner: final settle failed: {}", e.0);
+            }
         }
         Ok(result
             .get("stopReason")
@@ -3173,13 +3450,30 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
     match result {
         Ok(reason) => {
             let interrupted = cancelled_flag || reason == "cancelled";
-            let state = if interrupted { "interrupted" } else { "completed" };
+            let state = if interrupted {
+                "interrupted"
+            } else {
+                "completed"
+            };
             let status = if interrupted { "interrupted" } else { "ready" };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, provider, captured_usage.as_ref().map(|u| json!({
-                "usage": u,
-                "modelUsage": Value::Null,
-                "totalCostUsd": Value::Null,
-            })).as_ref(), None);
+            crate::claude_runner::write_turn_completed_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                state,
+                provider,
+                captured_usage
+                    .as_ref()
+                    .map(|u| {
+                        json!({
+                            "usage": u,
+                            "modelUsage": Value::Null,
+                            "totalCostUsd": Value::Null,
+                        })
+                    })
+                    .as_ref(),
+                None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
@@ -3204,11 +3498,24 @@ fn run_turn(provider: &str, thread_id: &str, message_id: &str, text: &str, cwd: 
             } else {
                 ("error", "error")
             };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, provider, captured_usage.as_ref().map(|u| json!({
-                "usage": u,
-                "modelUsage": Value::Null,
-                "totalCostUsd": Value::Null,
-            })).as_ref(), None);
+            crate::claude_runner::write_turn_completed_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                state,
+                provider,
+                captured_usage
+                    .as_ref()
+                    .map(|u| {
+                        json!({
+                            "usage": u,
+                            "modelUsage": Value::Null,
+                            "totalCostUsd": Value::Null,
+                        })
+                    })
+                    .as_ref(),
+                None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;
             session_set_event(
@@ -3252,8 +3559,6 @@ mod tests {
         );
     }
 
-
-
     #[test]
     fn acp_permission_kinds_map_to_projection_request_kinds() {
         assert_eq!(approval_request_kind("execute"), "command");
@@ -3273,17 +3578,16 @@ mod tests {
             "rawInput": {"command": "cargo test"},
         });
         merge_tracked_tool_call(&mut request, &tracked);
+        assert_eq!(request.get("kind").and_then(Value::as_str), Some("execute"));
         assert_eq!(
-            request.get("kind").and_then(Value::as_str),
-            Some("execute")
+            request.get("title").and_then(Value::as_str),
+            Some("Run tests")
         );
-        assert_eq!(request.get("title").and_then(Value::as_str), Some("Run tests"));
         assert_eq!(
             request.pointer("/rawInput/command").and_then(Value::as_str),
             Some("cargo test")
         );
     }
-
 
     #[test]
     fn acp_provider_profiles_cover_shared_stdio_providers() {
@@ -3357,15 +3661,22 @@ mod tests {
             "acp session/new error: authentication required"
         )));
         assert!(is_auth_required_error(&err("unauthorized")));
-        assert!(!is_auth_required_error(&err("timeout waiting for response")));
+        assert!(!is_auth_required_error(&err(
+            "timeout waiting for response"
+        )));
     }
 
     #[test]
     fn provider_specializations_add_reasoning_and_dirs() {
         let grok = acp_launch_profile_ex("grok", "full-access", None, Some("high"), &[]).unwrap();
-        assert!(grok.args.windows(2).any(|w| w == ["--reasoning-effort", "high"]));
+        assert!(
+            grok.args
+                .windows(2)
+                .any(|w| w == ["--reasoning-effort", "high"])
+        );
 
-        let droid = acp_launch_profile_ex("droid", "full-access", None, Some("medium"), &[]).unwrap();
+        let droid =
+            acp_launch_profile_ex("droid", "full-access", None, Some("medium"), &[]).unwrap();
         assert!(droid.args.windows(2).any(|w| w == ["-r", "medium"]));
 
         let agy = acp_launch_profile_ex(
@@ -3376,15 +3687,17 @@ mod tests {
             &["/extra/dir".to_string()],
         )
         .unwrap();
-        assert!(agy.args.windows(2).any(|w| w == ["--add-dir", "/extra/dir"]));
+        assert!(
+            agy.args
+                .windows(2)
+                .any(|w| w == ["--add-dir", "/extra/dir"])
+        );
     }
 
     #[test]
     fn devin_model_selection_resolves_discovered_runtime_variants() {
-        let script = std::env::temp_dir().join(format!(
-            "synara-devin-models-test-{}",
-            std::process::id()
-        ));
+        let script =
+            std::env::temp_dir().join(format!("synara-devin-models-test-{}", std::process::id()));
         std::fs::write(
             &script,
             "#!/bin/sh\nprintf '%s' '{\"models\":[{\"family_uid\":\"swe-2\",\"variants\":[{\"model_uid\":\"swe-2-medium\",\"label\":\"Medium\"},{\"model_uid\":\"swe-2-high\",\"label\":\"High\"},{\"model_uid\":\"swe-2-lightning\",\"label\":\"Lightning\"}]}]}'\n",
@@ -3427,10 +3740,7 @@ mod tests {
     }
     #[test]
     fn executable_file_requires_unix_execute_bit() {
-        let path = std::env::temp_dir().join(format!(
-            "synara-acp-bin-test-{}",
-            std::process::id()
-        ));
+        let path = std::env::temp_dir().join(format!("synara-acp-bin-test-{}", std::process::id()));
         std::fs::write(&path, "#!/bin/sh\nexit 0\n").unwrap();
         #[cfg(unix)]
         {
@@ -3442,7 +3752,6 @@ mod tests {
         }
         let _ = std::fs::remove_file(path);
     }
-
 
     #[test]
     fn adopt_or_insert_turn_adopts_pending_start() {
@@ -3491,7 +3800,15 @@ mod tests {
                 "SELECT turn_id, pending_message_id, state, requested_at, started_at \
                  FROM projection_turns WHERE thread_id = 'thread'",
                 [],
-                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?, row.get(4)?)),
+                |row| {
+                    Ok((
+                        row.get(0)?,
+                        row.get(1)?,
+                        row.get(2)?,
+                        row.get(3)?,
+                        row.get(4)?,
+                    ))
+                },
             )
             .unwrap();
         assert_eq!(row.0, "turn");
@@ -3500,5 +3817,4 @@ mod tests {
         assert_eq!(row.3, "2026-01-01T00:00:00.000Z");
         assert_eq!(row.4.as_deref(), Some("2026-01-01T00:00:01.000Z"));
     }
-
 }

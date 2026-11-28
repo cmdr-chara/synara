@@ -88,7 +88,10 @@ pub fn parse_monitor_notification(text: &str) -> Option<(String, String, String,
     if message.chars().count() > MAX_MONITOR_EVENT_CHARS {
         message = format!(
             "{}…",
-            message.chars().take(MAX_MONITOR_EVENT_CHARS - 1).collect::<String>()
+            message
+                .chars()
+                .take(MAX_MONITOR_EVENT_CHARS - 1)
+                .collect::<String>()
         );
     }
     Some((task_id, display_name, output, outcome, message))
@@ -104,7 +107,10 @@ fn notification_text(content: &Value) -> Option<String> {
         .iter()
         .filter_map(|block| {
             if block.get("type").and_then(Value::as_str) == Some("text") {
-                block.get("text").and_then(Value::as_str).map(str::to_string)
+                block
+                    .get("text")
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
             } else {
                 None
             }
@@ -308,7 +314,12 @@ mod tests {
     #[test]
     fn ignores_non_monitor_notifications() {
         assert!(parse_monitor_notification("plain text").is_none());
-        assert!(parse_monitor_notification("<task-notification><task-id>t</task-id></task-notification>").is_none());
+        assert!(
+            parse_monitor_notification(
+                "<task-notification><task-id>t</task-id></task-notification>"
+            )
+            .is_none()
+        );
     }
 
     #[test]
@@ -330,11 +341,21 @@ mod tests {
         });
         std::fs::write(&file, format!("{line}\n")).unwrap();
         let mut cursor = MonitorCursor::default();
-        let events = read_monitor_events(&mut cursor, "sess-1", dir.to_str().unwrap(), "2025-06-01T09:00:00.000Z");
+        let events = read_monitor_events(
+            &mut cursor,
+            "sess-1",
+            dir.to_str().unwrap(),
+            "2025-06-01T09:00:00.000Z",
+        );
         assert_eq!(events.len(), 1);
         assert_eq!(events[0].task_id, "task-9");
         // A second read yields nothing new.
-        let events = read_monitor_events(&mut cursor, "sess-1", dir.to_str().unwrap(), "2025-06-01T09:00:00.000Z");
+        let events = read_monitor_events(
+            &mut cursor,
+            "sess-1",
+            dir.to_str().unwrap(),
+            "2025-06-01T09:00:00.000Z",
+        );
         assert!(events.is_empty());
         let _ = std::fs::remove_dir_all(&dir);
     }

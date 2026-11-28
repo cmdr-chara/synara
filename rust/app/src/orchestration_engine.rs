@@ -6,11 +6,11 @@
 // orchestration_events, receipted and projected in one transaction.
 // Without the flag every command keeps relaying to the original server.
 
-use rusqlite::{params, Connection, OptionalExtension};
-use serde_json::{json, Map, Value};
+use rusqlite::{Connection, OptionalExtension, params};
+use serde_json::{Map, Value, json};
 use std::path::PathBuf;
 
-use crate::todo::{iso_from_ms, iso_now_ms, state_dir, WsErr};
+use crate::todo::{WsErr, iso_from_ms, iso_now_ms, state_dir};
 
 fn err(message: impl Into<String>) -> WsErr {
     WsErr(message.into(), None)
@@ -65,7 +65,6 @@ fn is_group_container_kind(kind: &str) -> bool {
     kind == "group" || kind == "studio"
 }
 
-
 /// Lean port of upstream ProviderCommandReactor.regenerateThreadTitle: build
 /// the conversation context from persisted messages, generate a title through
 /// the text-generation CLI, reject generic/empty titles, and update the
@@ -95,7 +94,9 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
         )
         .map_err(|e| err(format!("title context query: {e}")))?;
     let messages: Vec<(String, String)> = stmt
-        .query_map(params![thread_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .query_map(params![thread_id], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        })
         .map_err(|e| err(format!("title context rows: {e}")))?
         .filter_map(|r| r.ok())
         .filter(|(role, text)| (role == "user" || role == "assistant") && !text.trim().is_empty())
@@ -105,7 +106,11 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
     };
     // Lean slice of upstream buildThreadTitleConversationContext: guarantee
     // the latest user message, include the newest few around it, cap length.
-    let tail: Vec<&(String, String)> = messages.iter().skip(latest_user.saturating_sub(3)).take(6).collect();
+    let tail: Vec<&(String, String)> = messages
+        .iter()
+        .skip(latest_user.saturating_sub(3))
+        .take(6)
+        .collect();
     let mut lines = Vec::new();
     for (role, text) in &tail {
         let heading = if role == "user" { "User" } else { "Assistant" };
@@ -146,8 +151,14 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
         .map(|t| t.trim().to_string())
         .unwrap_or_default();
     const GENERIC: &[&str] = &[
-        "chat", "conversation", "new chat", "new conversation", "new session",
-        "session", "thread", "untitled",
+        "chat",
+        "conversation",
+        "new chat",
+        "new conversation",
+        "new session",
+        "session",
+        "thread",
+        "untitled",
     ];
     if title.is_empty() || GENERIC.contains(&title.to_lowercase().as_str()) {
         return Err(err("The generated thread title was empty or generic."));
@@ -157,17 +168,20 @@ fn regenerate_thread_title(payload: &Value) -> Result<Value, WsErr> {
     }
     conn.execute(
         "UPDATE projection_threads SET title = ?2, updated_at = ?3 WHERE thread_id = ?1",
-        params![thread_id, title, crate::projects_fileops::iso8601(
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .map(|d| d.as_secs())
-                .unwrap_or(0)
-        )],
+        params![
+            thread_id,
+            title,
+            crate::projects_fileops::iso8601(
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_secs())
+                    .unwrap_or(0)
+            )
+        ],
     )
     .map_err(|e| err(format!("title update: {e}")))?;
     Ok(json!({ "status": "renamed", "title": title }))
 }
-
 
 fn import_paths_equal(left: &str, right: &str) -> bool {
     let canonical = |value: &str| {
@@ -227,10 +241,12 @@ fn import_iso_from_ms(ms: i64) -> String {
 fn finalize_imported_timestamps(
     imported: Vec<(String, String, Option<String>, String)>,
 ) -> Vec<(String, String, Option<String>, String)> {
-    let first_dated = imported
-        .iter()
-        .enumerate()
-        .find_map(|(index, row)| row.2.as_deref().and_then(import_iso_to_ms).map(|ms| (index, ms)));
+    let first_dated = imported.iter().enumerate().find_map(|(index, row)| {
+        row.2
+            .as_deref()
+            .and_then(import_iso_to_ms)
+            .map(|ms| (index, ms))
+    });
     let mut previous_ms = first_dated
         .map(|(index, first_ms)| first_ms - index as i64 - 1)
         .unwrap_or_else(|| chrono::Utc::now().timestamp_millis() - 1);
@@ -256,7 +272,9 @@ fn finalize_imported_timestamps(
 /// sessions are imported through the same local history readers as the
 /// upstream adapters. OpenCode sessions are read through configured external
 /// server URLs or a short-lived managed server.
-fn import_provider_binary_available(instance: &crate::provider_instances::ResolvedInstance) -> bool {
+fn import_provider_binary_available(
+    instance: &crate::provider_instances::ResolvedInstance,
+) -> bool {
     let configured = instance
         .config
         .get("binaryPath")
@@ -274,7 +292,9 @@ fn import_provider_binary_available(instance: &crate::provider_instances::Resolv
     #[cfg(windows)]
     let probe = std::process::Command::new("where").arg(binary).output();
     #[cfg(not(windows))]
-    let probe = std::process::Command::new("sh").args(["-lc", "command -v \"$1\"", "synara-probe", binary]).output();
+    let probe = std::process::Command::new("sh")
+        .args(["-lc", "command -v \"$1\"", "synara-probe", binary])
+        .output();
     probe.map(|output| output.status.success()).unwrap_or(false)
 }
 
@@ -314,7 +334,8 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             "Thread '{thread_id}' already has an active provider session."
         )));
     }
-    let model_selection_value = serde_json::from_str::<Value>(&model_selection).unwrap_or(json!({}));
+    let model_selection_value =
+        serde_json::from_str::<Value>(&model_selection).unwrap_or(json!({}));
     let provider = model_selection_value
         .get("provider")
         .and_then(Value::as_str)
@@ -335,11 +356,15 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     );
     let Some(selected_instance) = selected_instance else {
         let id = instance_id.as_deref().unwrap_or(provider.as_str());
-        return Err(err(format!("Unknown provider instance '{id}' for thread import.")));
+        return Err(err(format!(
+            "Unknown provider instance '{id}' for thread import."
+        )));
     };
     if selected_instance.driver != provider {
         let id = instance_id.as_deref().unwrap_or(provider.as_str());
-        return Err(err(format!("Unknown provider instance '{id}' for thread import.")));
+        return Err(err(format!(
+            "Unknown provider instance '{id}' for thread import."
+        )));
     }
     if !selected_instance.enabled {
         return Err(err(format!(
@@ -376,16 +401,28 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let omp_history = if provider == "omp" {
         let agent_dir = crate::omp_import::resolve_omp_agent_dir(instance_id.as_deref());
         Some(
-            crate::omp_import::read_omp_session_history(&agent_dir, external_id)
-                .ok_or_else(|| err(format!("Oh My Pi session '{external_id}' was not found locally.")))?,
+            crate::omp_import::read_omp_session_history(&agent_dir, external_id).ok_or_else(
+                || {
+                    err(format!(
+                        "Oh My Pi session '{external_id}' was not found locally."
+                    ))
+                },
+            )?,
         )
     } else {
         None
     };
     let factory_history = if provider == "droid" {
         Some(
-            crate::factory_import::read_factory_session_history(std::path::Path::new(&home), external_id)
-                .ok_or_else(|| err(format!("Droid session '{external_id}' was not found locally.")))?,
+            crate::factory_import::read_factory_session_history(
+                std::path::Path::new(&home),
+                external_id,
+            )
+            .ok_or_else(|| {
+                err(format!(
+                    "Droid session '{external_id}' was not found locally."
+                ))
+            })?,
         )
     } else {
         None
@@ -399,14 +436,19 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     } else {
         None
     };
-    let transcript_path: Option<std::path::PathBuf> = if provider == "omp" || provider == "droid" || provider == "opencode" {
+    let transcript_path: Option<std::path::PathBuf> = if provider == "omp"
+        || provider == "droid"
+        || provider == "opencode"
+    {
         None
     } else {
         match provider.as_str() {
             "claudeAgent" | "claude" => {
                 let target = format!("{external_id}.jsonl");
                 let mut found = None;
-                for config_dir in crate::project_imports::claude_config_dirs_for_import(instance_id.as_deref()) {
+                for config_dir in
+                    crate::project_imports::claude_config_dirs_for_import(instance_id.as_deref())
+                {
                     let projects = std::path::PathBuf::from(config_dir).join("projects");
                     if let Ok(dirs) = std::fs::read_dir(&projects) {
                         for dir in dirs.flatten() {
@@ -438,11 +480,17 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                     homes.push(std::path::PathBuf::from(value).join("codex-home-overlay"));
                 }
                 let settings = crate::server_settings::current();
-                if let Some(instance) = crate::provider_instances::resolve_instance(&settings, instance_id.as_deref(), Some("codex")) {
+                if let Some(instance) = crate::provider_instances::resolve_instance(
+                    &settings,
+                    instance_id.as_deref(),
+                    Some("codex"),
+                ) {
                     if let Some(value) = crate::provider_instances::instance_home_path(&instance) {
                         homes.push(std::path::PathBuf::from(value));
                     }
-                    for (key, value) in crate::provider_instances::instance_start_environment(&instance) {
+                    for (key, value) in
+                        crate::provider_instances::instance_start_environment(&instance)
+                    {
                         if key == "CODEX_HOME" && !value.trim().is_empty() {
                             homes.push(std::path::PathBuf::from(value));
                         }
@@ -450,7 +498,11 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 }
                 homes.dedup();
                 let mut found = None;
-                fn scan(dir: &std::path::Path, needle: &str, depth: u32) -> Option<std::path::PathBuf> {
+                fn scan(
+                    dir: &std::path::Path,
+                    needle: &str,
+                    depth: u32,
+                ) -> Option<std::path::PathBuf> {
                     if depth == 0 {
                         return None;
                     }
@@ -480,7 +532,7 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             other => {
                 return Err(err(format!(
                     "Session import is not available for provider '{other}' in the native server."
-                )))
+                )));
             }
         }
     };
@@ -490,8 +542,16 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
     let mut external_cwd: Option<String> = omp_history
         .as_ref()
         .and_then(|history| history.cwd.clone())
-        .or_else(|| factory_history.as_ref().and_then(|history| history.cwd.clone()))
-        .or_else(|| opencode_history.as_ref().and_then(|history| history.cwd.clone()));
+        .or_else(|| {
+            factory_history
+                .as_ref()
+                .and_then(|history| history.cwd.clone())
+        })
+        .or_else(|| {
+            opencode_history
+                .as_ref()
+                .and_then(|history| history.cwd.clone())
+        });
     // Map transcript lines to (role, text, timestamp, source id) tuples.
     let mut claude_session_cwd: Option<String> = None;
     let mut imported: Vec<(String, String, Option<String>, String)> = Vec::new();
@@ -530,12 +590,15 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 "Session '{external_id}' was not found on this machine."
             )));
         };
-        let content = std::fs::read(&path).map_err(|e| err(format!("Failed to read session history: {e}")))?;
+        let content = std::fs::read(&path)
+            .map_err(|e| err(format!("Failed to read session history: {e}")))?;
         for (index, line) in content.split(|b| *b == b'\n').enumerate() {
             if line.len() < 4 || line.len() > 8 * 1024 * 1024 {
                 continue;
             }
-            let Ok(entry) = serde_json::from_slice::<Value>(line) else { continue };
+            let Ok(entry) = serde_json::from_slice::<Value>(line) else {
+                continue;
+            };
             let timestamp = entry
                 .get("timestamp")
                 .and_then(Value::as_str)
@@ -543,7 +606,9 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             if provider == "codex" {
                 // Rollout lines wrap payload items; user/assistant messages carry
                 // content parts with text.
-                if entry.get("type").and_then(Value::as_str) == Some("session_meta") && external_cwd.is_none() {
+                if entry.get("type").and_then(Value::as_str) == Some("session_meta")
+                    && external_cwd.is_none()
+                {
                     external_cwd = entry
                         .get("payload")
                         .and_then(|payload| payload.get("cwd"))
@@ -552,13 +617,20 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 }
                 let item = entry.get("payload").cloned().unwrap_or(entry.clone());
                 let item_type = item.get("type").and_then(Value::as_str).unwrap_or("");
-                if item_type != "user_message" && item_type != "assistant_message" && item_type != "message" {
+                if item_type != "user_message"
+                    && item_type != "assistant_message"
+                    && item_type != "message"
+                {
                     continue;
                 }
                 let role = item
                     .get("role")
                     .and_then(Value::as_str)
-                    .unwrap_or(if item_type == "user_message" { "user" } else { "assistant" })
+                    .unwrap_or(if item_type == "user_message" {
+                        "user"
+                    } else {
+                        "assistant"
+                    })
                     .to_string();
                 if role != "user" && role != "assistant" {
                     continue;
@@ -586,7 +658,10 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                 imported.push((role, text_out, timestamp, source_id));
             } else {
                 if claude_session_cwd.is_none()
-                    && let Some(cwd) = entry.get("cwd").and_then(Value::as_str).filter(|cwd| !cwd.trim().is_empty())
+                    && let Some(cwd) = entry
+                        .get("cwd")
+                        .and_then(Value::as_str)
+                        .filter(|cwd| !cwd.trim().is_empty())
                 {
                     claude_session_cwd = Some(cwd.to_string());
                 }
@@ -609,7 +684,12 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
                             .collect::<Vec<_>>()
                             .join("\n")
                     })
-                    .or_else(|| message.get("content").and_then(Value::as_str).map(str::to_string))
+                    .or_else(|| {
+                        message
+                            .get("content")
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                    })
                     .unwrap_or_default();
                 if text_out.trim().is_empty() {
                     continue;
@@ -624,7 +704,8 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
         }
     }
     if matches!(provider.as_str(), "claudeAgent" | "claude")
-        && let (Some(expected), Some(actual)) = (thread_cwd.as_deref(), claude_session_cwd.as_deref())
+        && let (Some(expected), Some(actual)) =
+            (thread_cwd.as_deref(), claude_session_cwd.as_deref())
         && !import_paths_equal(expected, actual)
     {
         return Err(err(format!(
@@ -702,8 +783,13 @@ fn import_thread(payload: &Value) -> Result<Value, WsErr> {
             let mut effective = effective_model_selection.clone();
             effective["provider"] = json!("omp");
             effective["model"] = json!(model);
-            const OMP_THINKING_LEVELS: &[&str] = &["off", "auto", "minimal", "low", "medium", "high", "xhigh", "max"];
-            if let Some(level) = omp_thinking_level.as_deref().filter(|level| OMP_THINKING_LEVELS.contains(level)) {
+            const OMP_THINKING_LEVELS: &[&str] = &[
+                "off", "auto", "minimal", "low", "medium", "high", "xhigh", "max",
+            ];
+            if let Some(level) = omp_thinking_level
+                .as_deref()
+                .filter(|level| OMP_THINKING_LEVELS.contains(level))
+            {
                 if !effective.get("options").is_some_and(Value::is_object) {
                     effective["options"] = json!({});
                 }
@@ -768,9 +854,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
         let command = payload
             .get("command")
             .and_then(Value::as_object)
-            .ok_or_else(|| {
-                err("orchestration.settleTurnDispatch expects a command object")
-            })?;
+            .ok_or_else(|| err("orchestration.settleTurnDispatch expects a command object"))?;
         return settle_turn_dispatch(command);
     }
     let command = payload
@@ -923,7 +1007,6 @@ struct OutEvent {
     metadata: Option<Value>,
 }
 
-
 /// Upstream providerOptionsSecurity: provider launch credentials must never
 /// enter durable orchestration events. `environment` maps carry account
 /// tokens and opencode `serverPassword` is a credential; both are stripped
@@ -934,8 +1017,16 @@ fn sanitize_provider_options(value: &Value) -> Value {
         return value.clone();
     };
     const PROVIDER_KEYS: &[&str] = &[
-        "codex", "claudeAgent", "cursor", "devin", "antigravity", "grok", "droid",
-        "opencode", "pi", "omp",
+        "codex",
+        "claudeAgent",
+        "cursor",
+        "devin",
+        "antigravity",
+        "grok",
+        "droid",
+        "opencode",
+        "pi",
+        "omp",
     ];
     let mut out = obj.clone();
     let mut changed = false;
@@ -1130,10 +1221,14 @@ fn json_to_sql(v: &Value) -> rusqlite::types::Value {
 
 fn collect_subagent_descendants(conn: &Connection, root: &str) -> Vec<String> {
     let rows: Vec<(String, Option<String>)> = conn
-        .prepare("SELECT thread_id, parent_thread_id FROM projection_threads WHERE deleted_at IS NULL")
+        .prepare(
+            "SELECT thread_id, parent_thread_id FROM projection_threads WHERE deleted_at IS NULL",
+        )
         .and_then(|mut st| {
-            st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?)))
-                .map(|it| it.filter_map(|x| x.ok()).collect())
+            st.query_map([], |r| {
+                Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
+            })
+            .map(|it| it.filter_map(|x| x.ok()).collect())
         })
         .unwrap_or_default();
     let mut out = Vec::new();
@@ -1181,9 +1276,27 @@ fn thread_archive(command: &Map<String, Value>, archive: bool) -> Result<Value, 
     let mut events: Vec<OutEvent> = Vec::new();
     for (id, row) in &ids {
         if row.claude_cache_review.is_some() {
-            events.push(out_event("thread.claude-cache-set", id, &occurred_at, json!({"threadId": id, "review": null, "updatedAt": occurred_at})));
+            events.push(out_event(
+                "thread.claude-cache-set",
+                id,
+                &occurred_at,
+                json!({"threadId": id, "review": null, "updatedAt": occurred_at}),
+            ));
         }
-        events.push(out_event(if archive { "thread.archived" } else { "thread.unarchived" }, id, &occurred_at, if archive { json!({"threadId": id, "archivedAt": occurred_at, "updatedAt": occurred_at}) } else { json!({"threadId": id, "updatedAt": occurred_at}) }));
+        events.push(out_event(
+            if archive {
+                "thread.archived"
+            } else {
+                "thread.unarchived"
+            },
+            id,
+            &occurred_at,
+            if archive {
+                json!({"threadId": id, "archivedAt": occurred_at, "updatedAt": occurred_at})
+            } else {
+                json!({"threadId": id, "updatedAt": occurred_at})
+            },
+        ));
     }
     let seq = commit_events(&conn, &events, &command_id)?;
     for (id, row) in &ids {
@@ -1191,7 +1304,14 @@ fn thread_archive(command: &Map<String, Value>, archive: bool) -> Result<Value, 
         if row.claude_cache_review.is_some() {
             sets.push(("claude_cache_review_json", Value::Null));
         }
-        sets.push(("archived_at", if archive { json!(occurred_at) } else { Value::Null }));
+        sets.push((
+            "archived_at",
+            if archive {
+                json!(occurred_at)
+            } else {
+                Value::Null
+            },
+        ));
         sets.push(("updated_at", json!(occurred_at)));
         update_projection(&conn, id, &sets)?;
     }
@@ -1208,9 +1328,19 @@ fn thread_delete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let occurred_at = iso_now_ms();
     let mut events: Vec<OutEvent> = Vec::new();
     if row.claude_cache_review.is_some() {
-        events.push(out_event("thread.claude-cache-set", &thread_id, &occurred_at, json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at})));
+        events.push(out_event(
+            "thread.claude-cache-set",
+            &thread_id,
+            &occurred_at,
+            json!({"threadId": thread_id, "review": null, "updatedAt": occurred_at}),
+        ));
     }
-    events.push(out_event("thread.deleted", &thread_id, &occurred_at, json!({"threadId": thread_id, "deletedAt": occurred_at})));
+    events.push(out_event(
+        "thread.deleted",
+        &thread_id,
+        &occurred_at,
+        json!({"threadId": thread_id, "deletedAt": occurred_at}),
+    ));
     cancel_any_provider_turn(&thread_id);
     crate::acp_runner::drop_thread_resources(&thread_id);
     crate::codex_runner::drop_thread_resources(&thread_id);
@@ -1300,11 +1430,19 @@ fn thread_mode_set(
     let mut payload = Map::new();
     payload.insert("threadId".into(), json!(thread_id));
     if column == "interaction_mode" {
-        payload.insert("previousInteractionMode".into(), json!(row.interaction_mode));
+        payload.insert(
+            "previousInteractionMode".into(),
+            json!(row.interaction_mode),
+        );
     }
     payload.insert(field.to_string(), json!(value));
     payload.insert("updatedAt".into(), json!(occurred_at));
-    let events = vec![out_event(event_type, &thread_id, &occurred_at, Value::Object(payload))];
+    let events = vec![out_event(
+        event_type,
+        &thread_id,
+        &occurred_at,
+        Value::Object(payload),
+    )];
     let seq = commit_events(&conn, &events, &command_id)?;
     update_projection(
         &conn,
@@ -1340,7 +1478,11 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
 
     let mut provider_handoff: Option<(Value, Value, bool, String)> = None;
     if command.get("providerHandoff") == Some(&json!(true)) {
-        let Some(target) = command.get("modelSelection").filter(|value| value.is_object()).cloned() else {
+        let Some(target) = command
+            .get("modelSelection")
+            .filter(|value| value.is_object())
+            .cloned()
+        else {
             return Err(err("A provider handoff needs a target model selection."));
         };
         let source: Value = conn
@@ -1441,7 +1583,8 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
                 |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)),
             )
             .ok();
-        let (goal, started, paused, achievements_raw) = current_goal.unwrap_or((None, None, None, None));
+        let (goal, started, paused, achievements_raw) =
+            current_goal.unwrap_or((None, None, None, None));
         let active_goal = goal.unwrap_or_default().trim().to_string();
         let mut patch: Vec<(&'static str, &'static str, Value)> = Vec::new();
         if command.get("goalAchieved") == Some(&json!(true)) && !active_goal.is_empty() {
@@ -1471,14 +1614,22 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
             patch.push(("goal", "goal", json!("")));
             patch.push(("goalStartedAt", "goal_started_at", Value::Null));
             patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
-            patch.push(("goalAchievements", "goal_achievements_json", json!(achievements)));
+            patch.push((
+                "goalAchievements",
+                "goal_achievements_json",
+                json!(achievements),
+            ));
         } else if let Some(next_goal) = command.get("goal").and_then(Value::as_str) {
             // Oversized objectives live on disk; the stored goal is the
             // resolvable reference, identical to the upstream normalization.
             let stored_goal: String = if next_goal.chars().count() > THREAD_GOAL_INLINE_MAX_CHARS {
                 materialize_thread_goal(
                     thread_id.as_str(),
-                    &command.get("commandId").and_then(Value::as_str).unwrap_or("unknown").to_string(),
+                    &command
+                        .get("commandId")
+                        .and_then(Value::as_str)
+                        .unwrap_or("unknown")
+                        .to_string(),
                     next_goal,
                 )
                 .map(|path| goal_file_reference(&path))
@@ -1494,7 +1645,9 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
                 patch.push(("goal", "goal", json!(stored_goal)));
                 patch.push(("goalStartedAt", "goal_started_at", json!(occurred_at)));
                 patch.push(("goalPausedAt", "goal_paused_at", Value::Null));
-                if command.get("goalStartBehavior").and_then(Value::as_str) == Some("start-with-message") {
+                if command.get("goalStartBehavior").and_then(Value::as_str)
+                    == Some("start-with-message")
+                {
                     let session_inflight: bool = conn
                         .query_row(
                             "SELECT COUNT(1) FROM projection_thread_sessions WHERE thread_id = ?1 AND (active_turn_id IS NOT NULL OR status IN ('starting', 'running'))",
@@ -1533,11 +1686,18 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
                 patch.push(("goal", "goal", json!(next_goal)));
             }
         } else if command.contains_key("goalPaused") && !active_goal.is_empty() {
-            let pause_requested = command.get("goalPaused").and_then(Value::as_bool).unwrap_or(false);
+            let pause_requested = command
+                .get("goalPaused")
+                .and_then(Value::as_bool)
+                .unwrap_or(false);
             if pause_requested && paused.is_none() {
                 patch.push(("goalPausedAt", "goal_paused_at", json!(occurred_at)));
             } else if !pause_requested && let Some(paused_at) = paused.as_deref() {
-                let rebased = match (started.as_deref().and_then(iso_ms), iso_ms(paused_at), iso_ms(&occurred_at)) {
+                let rebased = match (
+                    started.as_deref().and_then(iso_ms),
+                    iso_ms(paused_at),
+                    iso_ms(&occurred_at),
+                ) {
                     (Some(started_ms), Some(paused_ms), Some(occurred_ms)) => {
                         iso_from_ms(occurred_ms - (paused_ms - started_ms).max(0))
                     }
@@ -1555,7 +1715,11 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
     if let Some(v) = command.get("goalStartBehavior") {
         ep.insert(
             "goalStartBehavior".into(),
-            if starts_with_message { json!("defer") } else { v.clone() },
+            if starts_with_message {
+                json!("defer")
+            } else {
+                v.clone()
+            },
         );
     }
     let mut copy_field = |ep: &mut Map<String, Value>,
@@ -1637,7 +1801,11 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
         "associatedWorktreeRef",
     ];
     if workspace_keys.iter().any(|k| command.contains_key(*k)) {
-        let branch = if is_group { Value::Null } else { opt(command, "branch") };
+        let branch = if is_group {
+            Value::Null
+        } else {
+            opt(command, "branch")
+        };
         let worktree = if is_group {
             Value::Null
         } else {
@@ -1678,13 +1846,24 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
     ep.insert("updatedAt".into(), json!(occurred_at));
     sets.push(("updated_at", json!(occurred_at)));
 
-    let mut events = vec![out_event("thread.meta-updated", &thread_id, &occurred_at, Value::Object(ep))];
+    let mut events = vec![out_event(
+        "thread.meta-updated",
+        &thread_id,
+        &occurred_at,
+        Value::Object(ep),
+    )];
     let handoff_activity = provider_handoff.as_ref().map(|(source, target, _, _)| {
         let text = |selection: &Value| {
             format!(
                 "{} ({})",
-                selection.get("provider").and_then(Value::as_str).unwrap_or("provider"),
-                selection.get("model").and_then(Value::as_str).unwrap_or("default")
+                selection
+                    .get("provider")
+                    .and_then(Value::as_str)
+                    .unwrap_or("provider"),
+                selection
+                    .get("model")
+                    .and_then(Value::as_str)
+                    .unwrap_or("default")
             )
         };
         json!({
@@ -1742,11 +1921,7 @@ pub(crate) fn thread_meta_update(command: &Map<String, Value>) -> Result<Value, 
         let lower = goal.to_lowercase();
         let needs_escape = goal.starts_with("--")
             || matches!(lower.as_str(), "clear" | "pause" | "resume" | "edit");
-        let text = format!(
-            "/goal {}{}",
-            if needs_escape { "-- " } else { "" },
-            goal
-        );
+        let text = format!("/goal {}{}", if needs_escape { "-- " } else { "" }, goal);
         let turn_command = json!({
             "type": "thread.turn.start",
             "commandId": uuid_v4(),
@@ -1794,7 +1969,6 @@ fn derive_associated(
     (path, branch_v, ref_v)
 }
 
-
 #[allow(clippy::type_complexity)]
 fn resolve_workspace_fields(
     command: &Map<String, Value>,
@@ -1805,7 +1979,11 @@ fn resolve_workspace_fields(
     } else {
         s(command, "envMode").unwrap_or_else(|| "local".into())
     };
-    let branch = if is_group { Value::Null } else { opt(command, "branch") };
+    let branch = if is_group {
+        Value::Null
+    } else {
+        opt(command, "branch")
+    };
     let worktree_path = if is_group {
         Value::Null
     } else {
@@ -1855,13 +2033,24 @@ fn resolve_workspace_fields(
             .and_then(Value::as_bool)
             .unwrap_or(false)
     };
-    (env_mode, branch, worktree_path, working_directory, associated_path, associated_branch, associated_ref, create_branch_flow_completed)
+    (
+        env_mode,
+        branch,
+        worktree_path,
+        working_directory,
+        associated_path,
+        associated_branch,
+        associated_ref,
+        create_branch_flow_completed,
+    )
 }
 
 fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
-    let command_id = s(command, "commandId").ok_or_else(|| err("thread.create missing commandId"))?;
+    let command_id =
+        s(command, "commandId").ok_or_else(|| err("thread.create missing commandId"))?;
     let thread_id = s(command, "threadId").ok_or_else(|| err("thread.create missing threadId"))?;
-    let project_id = s(command, "projectId").ok_or_else(|| err("thread.create missing projectId"))?;
+    let project_id =
+        s(command, "projectId").ok_or_else(|| err("thread.create missing projectId"))?;
     let title = s(command, "title").ok_or_else(|| err("thread.create missing title"))?;
     let created_at =
         s(command, "createdAt").ok_or_else(|| err("thread.create missing createdAt"))?;
@@ -1893,8 +2082,16 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
 
     let is_group = is_group_container_kind(&project_kind);
     let interaction_mode = s(command, "interactionMode").unwrap_or_else(|| "default".into());
-    let (env_mode, branch, worktree_path, working_directory, associated_path, associated_branch, associated_ref, create_branch_flow_completed) =
-        resolve_workspace_fields(command, is_group);
+    let (
+        env_mode,
+        branch,
+        worktree_path,
+        working_directory,
+        associated_path,
+        associated_branch,
+        associated_ref,
+        create_branch_flow_completed,
+    ) = resolve_workspace_fields(command, is_group);
     let is_pinned = command
         .get("isPinned")
         .and_then(Value::as_bool)
@@ -1938,20 +2135,40 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
     put(&mut ep, "worktreePath", worktree_path.clone());
     put(&mut ep, "workingDirectory", working_directory.clone());
     put(&mut ep, "associatedWorktreePath", associated_path.clone());
-    put(&mut ep, "associatedWorktreeBranch", associated_branch.clone());
+    put(
+        &mut ep,
+        "associatedWorktreeBranch",
+        associated_branch.clone(),
+    );
     put(&mut ep, "associatedWorktreeRef", associated_ref.clone());
-    put(&mut ep, "createBranchFlowCompleted", json!(create_branch_flow_completed));
+    put(
+        &mut ep,
+        "createBranchFlowCompleted",
+        json!(create_branch_flow_completed),
+    );
     put(&mut ep, "isPinned", json!(is_pinned));
     put(&mut ep, "parentThreadId", opt(command, "parentThreadId"));
     if let Some(cs) = s(command, "creationSource") {
         put(&mut ep, "creationSource", json!(cs));
         put(&mut ep, "sourceThreadId", opt(command, "sourceThreadId"));
         put(&mut ep, "sourceTurnId", opt(command, "sourceTurnId"));
-        put(&mut ep, "gatewayOperationId", opt(command, "gatewayOperationId"));
-        put(&mut ep, "gatewayOperationIndex", opt(command, "gatewayOperationIndex"));
+        put(
+            &mut ep,
+            "gatewayOperationId",
+            opt(command, "gatewayOperationId"),
+        );
+        put(
+            &mut ep,
+            "gatewayOperationIndex",
+            opt(command, "gatewayOperationIndex"),
+        );
     }
     put(&mut ep, "subagentAgentId", opt(command, "subagentAgentId"));
-    put(&mut ep, "subagentNickname", opt(command, "subagentNickname"));
+    put(
+        &mut ep,
+        "subagentNickname",
+        opt(command, "subagentNickname"),
+    );
     put(&mut ep, "subagentRole", opt(command, "subagentRole"));
     put(&mut ep, "forkSourceThreadId", Value::Null);
     let sidechat = opt(command, "sidechatContext");
@@ -2012,7 +2229,6 @@ fn thread_create(command: &Map<String, Value>) -> Result<Value, WsErr> {
 }
 
 const PROVIDER_SEND_TURN_MAX_INPUT_CHARS: usize = 120_000;
-
 
 fn project_thread_created(conn: &Connection, p: &Map<String, Value>) -> Result<(), WsErr> {
     let g = |k: &str| p.get(k).cloned().unwrap_or(Value::Null);
@@ -2262,10 +2478,12 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     // of spawning a parallel provider turn.
     let native_steer = dispatch_mode == "steer"
         && provider_turn_live
-        && matches!(active_provider.as_deref(), Some("codex" | "claudeAgent" | "pi" | "opencode"));
+        && matches!(
+            active_provider.as_deref(),
+            Some("codex" | "claudeAgent" | "pi" | "opencode")
+        );
     let should_queue = row.parent_thread_id.is_none()
-        && (row.claude_cache_review.is_some()
-            || (provider_turn_live && !native_steer));
+        && (row.claude_cache_review.is_some() || (provider_turn_live && !native_steer));
     let starts_new_turn = !native_steer;
 
     let mut events: Vec<OutEvent> = Vec::new();
@@ -2456,7 +2674,10 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
     }
 
     let seq = commit_events(&conn, &events, &command_id)?;
-    if let (Some(resp), Some(index)) = (async_response.as_ref().and_then(Value::as_object), async_answer_index) {
+    if let (Some(resp), Some(index)) = (
+        async_response.as_ref().and_then(Value::as_object),
+        async_answer_index,
+    ) {
         if let Some(question_message_id) = s(resp, "messageId") {
             let answers = resp.get("answers").cloned().unwrap_or(json!([]));
             let response = json!({ "messageId": message_id, "answers": answers });
@@ -2546,7 +2767,9 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
             _ => false,
         };
         if !delivered {
-            return Err(err("failed to deliver steering message to the active provider turn"));
+            return Err(err(
+                "failed to deliver steering message to the active provider turn",
+            ));
         }
     }
 
@@ -2595,11 +2818,21 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
         )
         .map_err(|e| err(e.to_string()))?;
         let provider = start_provider;
-        if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
-            || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
-            || provider.as_deref().is_some_and(crate::opencode_runner::supports_provider)
-            || provider.as_deref().is_some_and(crate::pi_runner::supports_provider)
-            || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
+        if provider
+            .as_deref()
+            .is_some_and(crate::codex_runner::supports_provider)
+            || provider
+                .as_deref()
+                .is_some_and(crate::claude_runner::supports_provider)
+            || provider
+                .as_deref()
+                .is_some_and(crate::opencode_runner::supports_provider)
+            || provider
+                .as_deref()
+                .is_some_and(crate::pi_runner::supports_provider)
+            || provider
+                .as_deref()
+                .is_some_and(crate::acp_runner::supports_provider)
         {
             let cwd: Option<String> = conn
                 .query_row(
@@ -2613,13 +2846,33 @@ fn thread_turn_start(command: &Map<String, Value>) -> Result<Value, WsErr> {
             if let Some(cwd) = cwd {
                 let pname = provider.clone().expect("supported provider");
                 if crate::codex_runner::supports_provider(&pname) {
-                    crate::codex_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                    crate::codex_runner::start_turn(
+                        thread_id.clone(),
+                        message_id.clone(),
+                        text.clone(),
+                        cwd,
+                    );
                 } else if crate::claude_runner::supports_provider(&pname) {
-                    crate::claude_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                    crate::claude_runner::start_turn(
+                        thread_id.clone(),
+                        message_id.clone(),
+                        text.clone(),
+                        cwd,
+                    );
                 } else if crate::opencode_runner::supports_provider(&pname) {
-                    crate::opencode_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                    crate::opencode_runner::start_turn(
+                        thread_id.clone(),
+                        message_id.clone(),
+                        text.clone(),
+                        cwd,
+                    );
                 } else if crate::pi_runner::supports_provider(&pname) {
-                    crate::pi_runner::start_turn(thread_id.clone(), message_id.clone(), text.clone(), cwd);
+                    crate::pi_runner::start_turn(
+                        thread_id.clone(),
+                        message_id.clone(),
+                        text.clone(),
+                        cwd,
+                    );
                 } else {
                     crate::acp_runner::start_turn(
                         pname,
@@ -2646,7 +2899,10 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
     let continuation = s(command, "continuationPrompt")
         .filter(|t| !t.trim().is_empty())
-        .unwrap_or_else(|| "Synara was closed while this chat was still running. Continue where you left off.".into());
+        .unwrap_or_else(|| {
+            "Synara was closed while this chat was still running. Continue where you left off."
+                .into()
+        });
     let created_at = s(command, "createdAt").unwrap_or_else(iso_now_ms);
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
@@ -2656,7 +2912,9 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
         return Err(err(format!("Thread '{thread_id}' is archived.")));
     }
     if thread_has_in_flight(&conn, &thread_id)? {
-        return Err(err(format!("Thread '{thread_id}' already has a turn in flight.")));
+        return Err(err(format!(
+            "Thread '{thread_id}' already has a turn in flight."
+        )));
     }
     let provider_turn_live = crate::acp_runner::has_running_turn(&thread_id)
         || crate::codex_runner::has_running_turn(&thread_id)
@@ -2664,7 +2922,9 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
         || crate::opencode_runner::has_running_turn(&thread_id)
         || crate::pi_runner::has_running_turn(&thread_id);
     if provider_turn_live {
-        return Err(err(format!("Thread '{thread_id}' already has a turn in flight.")));
+        return Err(err(format!(
+            "Thread '{thread_id}' already has a turn in flight."
+        )));
     }
     // Precondition: the thread must not have moved on since the record.
     if let Some(precondition) = command.get("resumePrecondition") {
@@ -2701,7 +2961,9 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
             .flatten()
         });
     let Some(provider) = provider else {
-        return Err(err(format!("Thread '{thread_id}' has no provider to resume with.")));
+        return Err(err(format!(
+            "Thread '{thread_id}' has no provider to resume with."
+        )));
     };
     let supported = crate::codex_runner::supports_provider(&provider)
         || crate::claude_runner::supports_provider(&provider)
@@ -2719,7 +2981,9 @@ fn thread_turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
         )
         .ok();
     let Some(cwd) = cwd else {
-        return Err(err(format!("Thread '{thread_id}' has no workspace to resume in.")));
+        return Err(err(format!(
+            "Thread '{thread_id}' has no workspace to resume in."
+        )));
     };
     let message_id = format!("resume-{command_id}");
     let starting_ev = out_event(
@@ -2805,16 +3069,24 @@ pub fn fire_due_usage_limit_recoveries() -> usize {
         .unwrap_or(0);
     let mut fired = 0usize;
     for (thread_id, raw) in rows {
-        let Ok(recovery) = serde_json::from_str::<Value>(&raw) else { continue };
+        let Ok(recovery) = serde_json::from_str::<Value>(&raw) else {
+            continue;
+        };
         if recovery.get("state").and_then(Value::as_str) != Some("waiting") {
             continue;
         }
-        let Some(reset_at) = recovery.get("resetAt").and_then(Value::as_str) else { continue };
-        let Some(reset_ms) = iso_ms(reset_at) else { continue };
+        let Some(reset_at) = recovery.get("resetAt").and_then(Value::as_str) else {
+            continue;
+        };
+        let Some(reset_ms) = iso_ms(reset_at) else {
+            continue;
+        };
         if reset_ms > now_ms {
             continue;
         }
-        let Some(recovery_id) = recovery.get("id").and_then(Value::as_str) else { continue };
+        let Some(recovery_id) = recovery.get("id").and_then(Value::as_str) else {
+            continue;
+        };
         let epoch = recovery
             .get("policyEpoch")
             .and_then(Value::as_str)
@@ -2823,7 +3095,10 @@ pub fn fire_due_usage_limit_recoveries() -> usize {
         let now = iso_now_ms();
         let mut resume_cmd = Map::new();
         resume_cmd.insert("type".into(), json!("thread.usage-limit.resume"));
-        resume_cmd.insert("commandId".into(), json!(format!("ul-resume:{recovery_id}")));
+        resume_cmd.insert(
+            "commandId".into(),
+            json!(format!("ul-resume:{recovery_id}")),
+        );
         resume_cmd.insert("threadId".into(), json!(thread_id));
         resume_cmd.insert("recoveryId".into(), json!(recovery_id));
         resume_cmd.insert("policyEpoch".into(), json!(epoch));
@@ -2846,9 +3121,6 @@ pub fn fire_due_usage_limit_recoveries() -> usize {
     }
     fired
 }
-
-
-
 
 /// Oversized goals would blow up every provider turn (the persisted goal is
 /// injected into each prompt), so past the inline threshold the full text is
@@ -2910,7 +3182,14 @@ pub fn archive_inactive_threads() -> usize {
             }
         }
     }
-    let rows: Vec<(String, Option<String>, Option<String>, Option<String>, i64, i64)> = conn
+    let rows: Vec<(
+        String,
+        Option<String>,
+        Option<String>,
+        Option<String>,
+        i64,
+        i64,
+    )> = conn
         .prepare(
             "SELECT thread_id, latest_user_message_at, updated_at, created_at, \
                     pending_approval_count, pending_user_input_count \
@@ -2994,7 +3273,6 @@ pub fn archive_inactive_threads() -> usize {
     archived
 }
 
-
 /// Durable provider-runtime event feed, lean port of upstream ingestion's
 /// persistence half: every significant raw provider event lands in
 /// `provider_runtime_events` so diagnose/read tools have real forensics.
@@ -3002,7 +3280,12 @@ pub fn archive_inactive_threads() -> usize {
 /// same write, so a runaway turn cannot grow the table without bound.
 const RUNTIME_EVENTS_RETENTION_PER_THREAD: i64 = 5_000;
 
-pub fn persist_runtime_event(thread_id: &str, turn_id: Option<&str>, event_type: &str, event: &Value) {
+pub fn persist_runtime_event(
+    thread_id: &str,
+    turn_id: Option<&str>,
+    event_type: &str,
+    event: &Value,
+) {
     let Ok(conn) = open_state_rw() else { return };
     let serialized = event.to_string();
     if serialized.len() > 2 * 1024 * 1024 {
@@ -3024,7 +3307,6 @@ pub fn persist_runtime_event(thread_id: &str, turn_id: Option<&str>, event_type:
     );
 }
 
-
 /// Hard-delete counterpart of upstream's deletion purge: soft-deleted threads
 /// past a one-hour grace are physically removed with their dependent rows,
 /// after their token rows are snapshotted into the deleted-stats table so
@@ -3043,14 +3325,17 @@ pub fn purge_deleted_threads() -> usize {
              WHERE deleted_at IS NOT NULL",
         )
         .and_then(|mut st| {
-            Ok(st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
+            Ok(st
+                .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
                 .filter_map(|row| row.ok())
                 .collect::<Vec<_>>())
         })
         .unwrap_or_default();
     let mut purged = 0usize;
     for (thread_id, deleted_at) in rows {
-        let Some(ms) = iso_ms(&deleted_at) else { continue };
+        let Some(ms) = iso_ms(&deleted_at) else {
+            continue;
+        };
         if now_ms - ms < grace_ms {
             continue;
         }
@@ -3138,7 +3423,8 @@ pub fn fire_due_thread_snoozes() -> usize {
              WHERE snoozed_until IS NOT NULL AND deleted_at IS NULL AND archived_at IS NULL",
         )
         .and_then(|mut st| {
-            Ok(st.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
+            Ok(st
+                .query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?
                 .filter_map(|row| row.ok())
                 .collect::<Vec<_>>())
         })
@@ -3150,7 +3436,9 @@ pub fn fire_due_thread_snoozes() -> usize {
         .unwrap_or(0);
     let mut fired = 0usize;
     for (thread_id, deadline) in rows {
-        let Some(deadline_ms) = iso_ms(&deadline) else { continue };
+        let Some(deadline_ms) = iso_ms(&deadline) else {
+            continue;
+        };
         if deadline_ms > now_ms {
             continue;
         }
@@ -3189,7 +3477,9 @@ pub fn resume_orphaned_turns(thread_ids: &[String]) -> usize {
         cmd.insert("threadId".into(), json!(thread_id));
         cmd.insert(
             "continuationPrompt".into(),
-            json!("Synara restarted while this chat was still running. Continue where you left off."),
+            json!(
+                "Synara restarted while this chat was still running. Continue where you left off."
+            ),
         );
         cmd.insert("createdAt".into(), json!(now));
         if thread_turn_resume(&cmd).is_ok() {
@@ -3201,7 +3491,9 @@ pub fn resume_orphaned_turns(thread_ids: &[String]) -> usize {
 
 pub fn consume_quit_resume_record() -> usize {
     let path = PathBuf::from(state_dir()).join("quit-resume.json");
-    let Ok(raw) = std::fs::read_to_string(&path) else { return 0 };
+    let Ok(raw) = std::fs::read_to_string(&path) else {
+        return 0;
+    };
     let Ok(record) = serde_json::from_str::<Value>(raw.trim()) else {
         let _ = std::fs::remove_file(&path);
         return 0;
@@ -3213,7 +3505,9 @@ pub fn consume_quit_resume_record() -> usize {
     let continuation = record
         .get("continuationPrompt")
         .and_then(Value::as_str)
-        .unwrap_or("Synara was closed while this chat was still running. Continue where you left off.")
+        .unwrap_or(
+            "Synara was closed while this chat was still running. Continue where you left off.",
+        )
         .to_string();
     let threads = record
         .get("threads")
@@ -3223,7 +3517,9 @@ pub fn consume_quit_resume_record() -> usize {
     let now = iso_now_ms();
     let mut resumed = 0usize;
     for entry in threads {
-        let Some(thread_id) = entry.get("threadId").and_then(Value::as_str) else { continue };
+        let Some(thread_id) = entry.get("threadId").and_then(Value::as_str) else {
+            continue;
+        };
         let turn_id = entry.get("turnId").and_then(Value::as_str);
         let mut cmd = Map::new();
         cmd.insert("type".into(), json!("thread.turn.resume"));
@@ -3329,21 +3625,13 @@ fn thread_simple(command: &Map<String, Value>, event_type: &'static str) -> Resu
     let mut payload = Map::new();
     payload.insert("threadId".into(), json!(thread_id));
     for (k, v) in command {
-        if matches!(
-            k.as_str(),
-            "type" | "commandId" | "threadId" | "createdAt"
-        ) {
+        if matches!(k.as_str(), "type" | "commandId" | "threadId" | "createdAt") {
             continue;
         }
         payload.insert(k.clone(), v.clone());
     }
     payload.insert("createdAt".into(), json!(created_at));
-    let mut ev = out_event(
-        event_type,
-        &thread_id,
-        &created_at,
-        Value::Object(payload),
-    );
+    let mut ev = out_event(event_type, &thread_id, &created_at, Value::Object(payload));
     if event_type == "thread.approval-response-requested"
         || event_type == "thread.user-input-response-requested"
     {
@@ -3549,7 +3837,10 @@ fn pinned_message(command: &Map<String, Value>, op: &str) -> Result<Value, WsErr
         &conn,
         &thread_id,
         &[
-            ("pinned_messages_json", json!(Value::Array(pins).to_string())),
+            (
+                "pinned_messages_json",
+                json!(Value::Array(pins).to_string()),
+            ),
             ("updated_at", json!(occurred_at)),
         ],
     )?;
@@ -3571,7 +3862,10 @@ fn normalize_root(value: &str) -> String {
     let fwd = trimmed.replace('\\', "/");
     let is_windows_drive_root = {
         let b = fwd.as_bytes();
-        b.len() >= 3 && b[0].is_ascii_alphabetic() && b[1] == b':' && fwd[2..].chars().all(|c| c == '/')
+        b.len() >= 3
+            && b[0].is_ascii_alphabetic()
+            && b[1] == b':'
+            && fwd[2..].chars().all(|c| c == '/')
     };
     let has_unc = fwd.starts_with("//");
     let prefix: &str = if has_unc {
@@ -3609,7 +3903,9 @@ fn normalize_root(value: &str) -> String {
     // literally looks like a Windows path (drive letter or UNC).
     let looks_windows = {
         let t = trimmed;
-        (t.len() >= 3 && t.as_bytes()[1] == b':' && (t.as_bytes()[2] == b'\\' || t.as_bytes()[2] == b'/')
+        (t.len() >= 3
+            && t.as_bytes()[1] == b':'
+            && (t.as_bytes()[2] == b'\\' || t.as_bytes()[2] == b'/')
             && t.as_bytes()[0].is_ascii_alphabetic())
             || t.starts_with("\\\\")
             || t.starts_with("//")
@@ -3667,7 +3963,10 @@ fn find_project_folder_problem(paths: &[String]) -> Option<String> {
             let left = &paths[outer];
             let right = &paths[inner];
             if normalize_root(left) == normalize_root(right) {
-                return Some(format!("{} is already in this project.", folder_name(right)));
+                return Some(format!(
+                    "{} is already in this project.",
+                    folder_name(right)
+                ));
             }
             if root_within(right, left) {
                 return Some(format!(
@@ -3720,7 +4019,9 @@ fn workspace_paths() -> (String, String) {
         .to_string_lossy()
         .to_string();
     let chat_root = realpath_nearest_existing(
-        &std::path::Path::new(&home_dir).join("Documents").join("Synara"),
+        &std::path::Path::new(&home_dir)
+            .join("Documents")
+            .join("Synara"),
     )
     .to_string_lossy()
     .to_string();
@@ -3735,7 +4036,8 @@ fn is_legacy_home_row(title: &str, root: &str) -> bool {
     if home_dir.trim().is_empty() || chat_root.trim().is_empty() {
         return false;
     }
-    normalize_root(root) == normalize_root(&chat_root) || normalize_root(root) == normalize_root(&home_dir)
+    normalize_root(root) == normalize_root(&chat_root)
+        || normalize_root(root) == normalize_root(&home_dir)
 }
 
 struct ProjectRow {
@@ -3785,7 +4087,12 @@ fn active_projects_by_root(
     Ok(out)
 }
 
-fn project_event(agg_id: &str, event_type: &'static str, occurred_at: &str, payload: Value) -> OutEvent {
+fn project_event(
+    agg_id: &str,
+    event_type: &'static str,
+    occurred_at: &str,
+    payload: Value,
+) -> OutEvent {
     let mut ev = out_event(event_type, agg_id, occurred_at, payload);
     ev.agg_kind = "project";
     ev
@@ -3795,16 +4102,22 @@ pub(crate) fn project_create(command: &Map<String, Value>) -> Result<Value, WsEr
     let command_id = s(command, "commandId").ok_or_else(|| err("missing commandId"))?;
     let project_id = s(command, "projectId").ok_or_else(|| err("missing projectId"))?;
     let title = s(command, "title").ok_or_else(|| err("missing title"))?;
-    let workspace_root =
-        s(command, "workspaceRoot").ok_or_else(|| err("missing workspaceRoot"))?;
+    let workspace_root = s(command, "workspaceRoot").ok_or_else(|| err("missing workspaceRoot"))?;
     let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
     let next_kind = s(command, "kind").unwrap_or_else(|| "project".to_string());
     let additional_folders: Vec<String> = command
         .get("additionalFolders")
         .and_then(Value::as_array)
-        .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .map(|a| {
+            a.iter()
+                .filter_map(|v| v.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
-    let is_pinned = command.get("isPinned").and_then(Value::as_bool).unwrap_or(false);
+    let is_pinned = command
+        .get("isPinned")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let preserve = command
         .get("preserveExistingProject")
         .and_then(Value::as_bool)
@@ -3849,7 +4162,9 @@ pub(crate) fn project_create(command: &Map<String, Value>) -> Result<Value, WsEr
     if next_kind == "project" {
         // Group containers own their root exclusively; never retired here.
         if let Some(existing) =
-            active_projects_by_root(&conn, &workspace_root, &["studio", "group"])?.into_iter().next()
+            active_projects_by_root(&conn, &workspace_root, &["studio", "group"])?
+                .into_iter()
+                .next()
         {
             return Err(err(format!(
                 "Project '{}' already uses workspace root '{}'.",
@@ -4001,7 +4316,11 @@ pub(crate) fn project_create(command: &Map<String, Value>) -> Result<Value, WsEr
             title,
             workspace_root,
             created_at,
-            if default_model.is_null() { None } else { Some(default_model.to_string()) },
+            if default_model.is_null() {
+                None
+            } else {
+                Some(default_model.to_string())
+            },
             is_pinned as i64,
             creation_space_id,
             serde_json::to_string(&additional_folders).unwrap_or_else(|_| "[]".to_string()),
@@ -4121,7 +4440,10 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
             |r| r.get(0),
         )
         .map_err(|e| err(e.to_string()))?;
-    let existing_kind = existing.kind.clone().unwrap_or_else(|| "project".to_string());
+    let existing_kind = existing
+        .kind
+        .clone()
+        .unwrap_or_else(|| "project".to_string());
     let next_kind = s(command, "kind").unwrap_or_else(|| existing_kind.clone());
     let has = |k: &str| command.contains_key(k);
     let cmd_space_present = has("spaceId");
@@ -4169,7 +4491,11 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
         let folders: Vec<String> = command
             .get("additionalFolders")
             .and_then(Value::as_array)
-            .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+            .map(|a| {
+                a.iter()
+                    .filter_map(|v| v.as_str().map(String::from))
+                    .collect()
+            })
             .unwrap_or_else(|| {
                 conn.query_row(
                     "SELECT additional_folders_json FROM projection_projects WHERE project_id = ?1",
@@ -4224,14 +4550,12 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if requested_space.is_some() && changed_space.is_none() && !has_other_metadata {
         return Err(err("Project is already assigned to this space."));
     }
-    let ownership_may_change = has("workspaceRoot")
-        || (has("kind") && next_kind != existing_kind);
+    let ownership_may_change = has("workspaceRoot") || (has("kind") && next_kind != existing_kind);
     if ownership_may_change && next_kind != "chat" {
         let root = s(command, "workspaceRoot").unwrap_or_else(|| existing.workspace_root.clone());
-        if let Some(other) =
-            active_projects_by_root(&conn, &root, &["project", "studio", "group"])?
-                .into_iter()
-                .find(|p| p.id != project_id)
+        if let Some(other) = active_projects_by_root(&conn, &root, &["project", "studio", "group"])?
+            .into_iter()
+            .find(|p| p.id != project_id)
         {
             return Err(err(format!(
                 "Project '{}' already uses workspace root '{}'.",
@@ -4303,8 +4627,11 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if let Some(new_root) = payload.get("workspaceRoot").and_then(Value::as_str) {
         let roots_differ = normalize_root(new_root) != normalize_root(&existing.workspace_root);
         let prev_is_project = existing_kind == "project";
-        let next_is_project =
-            payload.get("kind").and_then(Value::as_str).unwrap_or(&existing_kind) == "project";
+        let next_is_project = payload
+            .get("kind")
+            .and_then(Value::as_str)
+            .unwrap_or(&existing_kind)
+            == "project";
         if roots_differ && prev_is_project && next_is_project {
             let mut st = conn
                 .prepare(
@@ -4337,8 +4664,7 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
                     }
                 }
                 if let Some(wd) = wd.as_deref() {
-                    let relocated =
-                        relocate_project_path(wd, &existing.workspace_root, new_root);
+                    let relocated = relocate_project_path(wd, &existing.workspace_root, new_root);
                     if relocated != wd {
                         relocations.push((tid.clone(), relocated.clone()));
                         let mut ev = out_event(
@@ -4371,7 +4697,11 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if let Some(v) = payload.get("defaultModelSelection") {
         sets.push((
             "default_model_selection_json",
-            if v.is_null() { Value::Null } else { json!(v.to_string()) },
+            if v.is_null() {
+                Value::Null
+            } else {
+                json!(v.to_string())
+            },
         ));
     }
     if let Some(v) = payload.get("scripts") {
@@ -4393,7 +4723,8 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
         .enumerate()
         .map(|(i, c)| format!("{c} = ?{}", i + 2))
         .collect();
-    let mut params_vec: Vec<rusqlite::types::Value> = vec![rusqlite::types::Value::Text(project_id.clone())];
+    let mut params_vec: Vec<rusqlite::types::Value> =
+        vec![rusqlite::types::Value::Text(project_id.clone())];
     for (_, v) in &sets {
         params_vec.push(json_to_sql(v));
     }
@@ -4409,7 +4740,10 @@ fn project_meta_update(command: &Map<String, Value>) -> Result<Value, WsErr> {
         update_projection(
             &conn,
             &tid,
-            &[("working_directory", json!(wd)), ("updated_at", json!(occurred_at))],
+            &[
+                ("working_directory", json!(wd)),
+                ("updated_at", json!(occurred_at)),
+            ],
         )?;
     }
     Ok(json!({ "sequence": seq }))
@@ -4549,7 +4883,11 @@ fn checkpoint_revert(command: &Map<String, Value>) -> Result<Value, WsErr> {
         )
         .ok();
     if let Some(root) = workspace {
-        crate::checkpointing::spawn_revert(thread_id.clone(), turn_count, std::path::PathBuf::from(root));
+        crate::checkpointing::spawn_revert(
+            thread_id.clone(),
+            turn_count,
+            std::path::PathBuf::from(root),
+        );
     }
     Ok(json!({ "sequence": seq }))
 }
@@ -4559,10 +4897,7 @@ fn conversation_rollback(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let thread_id = s(command, "threadId").ok_or_else(|| err("missing threadId"))?;
     let created_at = s(command, "createdAt").ok_or_else(|| err("missing createdAt"))?;
     let message_id = s(command, "messageId").ok_or_else(|| err("missing messageId"))?;
-    let num_turns = command
-        .get("numTurns")
-        .and_then(Value::as_i64)
-        .unwrap_or(0);
+    let num_turns = command.get("numTurns").and_then(Value::as_i64).unwrap_or(0);
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
@@ -4580,7 +4915,9 @@ fn conversation_rollback(command: &Map<String, Value>) -> Result<Value, WsErr> {
         )
         .map_err(|e| err(e.to_string()))?;
     let messages: Vec<(String, String, Option<String>)> = st
-        .query_map(params![thread_id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))
+        .query_map(params![thread_id], |r| {
+            Ok((r.get(0)?, r.get(1)?, r.get(2)?))
+        })
         .map_err(|e| err(e.to_string()))?
         .collect::<Result<_, _>>()
         .map_err(|e| err(e.to_string()))?;
@@ -4590,7 +4927,7 @@ fn conversation_rollback(command: &Map<String, Value>) -> Result<Value, WsErr> {
         _ => {
             return Err(err(
                 "Conversation rollback must target an existing user message.",
-            ))
+            ));
         }
     };
     let mut removed_turns: Vec<String> = Vec::new();
@@ -4622,7 +4959,12 @@ fn conversation_rollback(command: &Map<String, Value>) -> Result<Value, WsErr> {
 const SPACES_MAX_COUNT: i64 = 50;
 const RESERVED_VOID_SPACE_ID: &str = "void";
 
-fn space_event(agg_id: &str, event_type: &'static str, occurred_at: &str, payload: Value) -> OutEvent {
+fn space_event(
+    agg_id: &str,
+    event_type: &'static str,
+    occurred_at: &str,
+    payload: Value,
+) -> OutEvent {
     let mut ev = out_event(event_type, agg_id, occurred_at, payload);
     ev.agg_kind = "space";
     ev
@@ -4658,9 +5000,7 @@ fn require_space_name_available(
         return Err(err("'Void' is reserved for unassigned projects."));
     }
     let mut st = conn
-        .prepare(
-            "SELECT space_id, name FROM projection_spaces WHERE deleted_at IS NULL",
-        )
+        .prepare("SELECT space_id, name FROM projection_spaces WHERE deleted_at IS NULL")
         .map_err(|e| err(e.to_string()))?;
     let rows: Vec<(String, String)> = st
         .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))
@@ -4806,7 +5146,11 @@ fn space_reorder(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let ordered: Vec<String> = command
         .get("orderedSpaceIds")
         .and_then(Value::as_array)
-        .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .map(|a| {
+            a.iter()
+                .filter_map(|v| v.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
@@ -4884,7 +5228,11 @@ fn space_projects_assign(command: &Map<String, Value>) -> Result<Value, WsErr> {
     let project_ids: Vec<String> = command
         .get("projectIds")
         .and_then(Value::as_array)
-        .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .map(|a| {
+            a.iter()
+                .filter_map(|v| v.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
@@ -4897,7 +5245,13 @@ fn space_projects_assign(command: &Map<String, Value>) -> Result<Value, WsErr> {
         if !seen.insert(pid.clone()) {
             continue;
         }
-        let row: Option<(Option<String>, String, String, Option<String>, Option<String>)> = conn
+        let row: Option<(
+            Option<String>,
+            String,
+            String,
+            Option<String>,
+            Option<String>,
+        )> = conn
             .query_row(
                 "SELECT kind, title, workspace_root, space_id, deleted_at \
                  FROM projection_projects WHERE project_id = ?1",
@@ -5010,9 +5364,7 @@ fn auto_runtime_issue(runtime_mode: &str, model_sel: &Value) -> Option<String> {
             if model_sel.get("supportsAutoMode").and_then(Value::as_bool) == Some(false) {
                 format!("Claude model \"{model}\" does not support Auto mode.")
             } else {
-                format!(
-                    "Claude model \"{model}\" has not been verified to support Auto mode."
-                )
+                format!("Claude model \"{model}\" has not been verified to support Auto mode.")
             },
         );
     }
@@ -5031,7 +5383,10 @@ fn thread_model_selection(conn: &Connection, thread_id: &str) -> Value {
     .unwrap_or(Value::Null)
 }
 
-fn session_row(conn: &Connection, thread_id: &str) -> Option<(String, Option<String>, Option<String>)> {
+fn session_row(
+    conn: &Connection,
+    thread_id: &str,
+) -> Option<(String, Option<String>, Option<String>)> {
     conn.query_row(
         "SELECT status, active_turn_id, provider_name FROM projection_thread_sessions \
          WHERE thread_id = ?1",
@@ -5119,9 +5474,9 @@ fn message_edit_resend(command: &Map<String, Value>) -> Result<Value, WsErr> {
     if answered {
         return Err(reject("structured-answer"));
     }
-    let latest_native = messages.iter().rposition(|(_, role, _, src, _)| {
-        role == "user" && (src == "native" || src.is_empty())
-    });
+    let latest_native = messages
+        .iter()
+        .rposition(|(_, role, _, src, _)| role == "user" && (src == "native" || src.is_empty()));
     if latest_native != Some(i) {
         return Err(reject("not-latest-native-user-message"));
     }
@@ -5163,17 +5518,18 @@ fn message_edit_resend(command: &Map<String, Value>) -> Result<Value, WsErr> {
         }
     }
     // computerActivationMetadata passthrough fields
-    for k in ["enableComputerControl", "computerControlMode", "computerControlGeneration"] {
+    for k in [
+        "enableComputerControl",
+        "computerControlMode",
+        "computerControlGeneration",
+    ] {
         if let Some(v) = command.get(k) {
             payload.insert(k.to_string(), v.clone());
         }
     }
     payload.insert(
         "runtimeMode".into(),
-        command
-            .get("runtimeMode")
-            .cloned()
-            .unwrap_or(Value::Null),
+        command.get("runtimeMode").cloned().unwrap_or(Value::Null),
     );
     payload.insert(
         "interactionMode".into(),
@@ -5290,7 +5646,10 @@ fn session_stop(command: &Map<String, Value>) -> Result<Value, WsErr> {
         update_projection(
             &conn,
             &thread_id,
-            &[("claude_cache_review_json", Value::Null), ("updated_at", json!(created_at))],
+            &[
+                ("claude_cache_review_json", Value::Null),
+                ("updated_at", json!(created_at)),
+            ],
         )?;
     }
     Ok(json!({ "sequence": seq }))
@@ -5318,7 +5677,9 @@ fn session_set(command: &Map<String, Value>) -> Result<Value, WsErr> {
             && command.get("expectedSessionStatus").and_then(Value::as_str)
                 != cur_status.as_deref())
             || (command.get("expectedSessionUpdatedAt").is_some()
-                && command.get("expectedSessionUpdatedAt").and_then(Value::as_str)
+                && command
+                    .get("expectedSessionUpdatedAt")
+                    .and_then(Value::as_str)
                     != cur_updated.as_deref());
         if changed {
             return Err(err(format!(
@@ -5326,10 +5687,7 @@ fn session_set(command: &Map<String, Value>) -> Result<Value, WsErr> {
             )));
         }
     }
-    let session = command
-        .get("session")
-        .cloned()
-        .unwrap_or(Value::Null);
+    let session = command.get("session").cloned().unwrap_or(Value::Null);
     let mut payload = Map::new();
     payload.insert("threadId".into(), json!(thread_id));
     payload.insert("session".into(), session.clone());
@@ -5444,8 +5802,7 @@ fn turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
             } else if state != "completed"
                 && Some(tid.as_str()) != recorded_turn
                 && (req.as_str() >= recorded_at
-                    || (recorded_turn.is_some()
-                        && started.as_deref().unwrap_or("") >= recorded_at))
+                    || (recorded_turn.is_some() && started.as_deref().unwrap_or("") >= recorded_at))
             {
                 Some("turn-replaced")
             } else {
@@ -5461,14 +5818,21 @@ fn turn_resume(command: &Map<String, Value>) -> Result<Value, WsErr> {
         }
     }
     let refusal = if thread_has_in_flight(&conn, &thread_id)? {
-        Some(format!("Thread '{thread_id}' already has a turn in flight."))
+        Some(format!(
+            "Thread '{thread_id}' already has a turn in flight."
+        ))
     } else if thread_has_revert_in_progress(&conn, &thread_id)? {
         Some(format!(
             "Thread '{thread_id}' already has a checkpoint revert in progress."
         ))
     } else {
-        let (approvals, inputs, recovery, creation_source): (i64, i64, Option<String>, Option<String>) =
-            conn.query_row(
+        let (approvals, inputs, recovery, creation_source): (
+            i64,
+            i64,
+            Option<String>,
+            Option<String>,
+        ) = conn
+            .query_row(
                 "SELECT pending_approval_count, pending_user_input_count, \
                         usage_limit_recovery_json, creation_source \
                  FROM projection_threads WHERE thread_id = ?1",
@@ -5532,10 +5896,7 @@ fn pr_link_key(url: &str) -> String {
         if let (Some(owner), Some(repo), Some(pull_tag), Some(num)) =
             (parts.next(), parts.next(), parts.next(), parts.next())
         {
-            let num: String = num
-                .chars()
-                .take_while(|c| c.is_ascii_digit())
-                .collect();
+            let num: String = num.chars().take_while(|c| c.is_ascii_digit()).collect();
             if pull_tag == "pull"
                 && !num.is_empty()
                 && num.len() == num.chars().take_while(|c| c.is_ascii_digit()).count()
@@ -5545,7 +5906,10 @@ fn pr_link_key(url: &str) -> String {
                 && !repo.contains(char::is_whitespace)
             {
                 // valid only when nothing but optional ?/#/path suffix follows the number
-                let tail = &rest[rest.find(num.as_str()).map(|i| i + num.len()).unwrap_or(rest.len())..];
+                let tail = &rest[rest
+                    .find(num.as_str())
+                    .map(|i| i + num.len())
+                    .unwrap_or(rest.len())..];
                 if tail.is_empty()
                     || tail.starts_with('/')
                     || tail.starts_with('?')
@@ -5669,9 +6033,7 @@ fn pr_find<'a>(links: &'a [Value], url: &str) -> Option<&'a Value> {
 fn link_pull_request(links: Vec<Value>, pr: Value, source: &str, linked_at: &str) -> Vec<Value> {
     let fresh = json!({"pullRequest": pr, "source": source, "linkedAt": linked_at});
     match pr_index_of(&links, pr.get("url").and_then(Value::as_str).unwrap_or("")) {
-        None => cap_pr_links(
-            links.iter().cloned().chain([fresh]).collect::<Vec<_>>(),
-        ),
+        None => cap_pr_links(links.iter().cloned().chain([fresh]).collect::<Vec<_>>()),
         Some(i) => {
             let mut next = links;
             let existing = &next[i];
@@ -5710,7 +6072,9 @@ fn sync_discovered_pr(links: &[Value], pr: &Value, observed_at: &str) -> Vec<Val
     let key = if pr.is_null() {
         None
     } else {
-        Some(pr_link_key(pr.get("url").and_then(Value::as_str).unwrap_or("")))
+        Some(pr_link_key(
+            pr.get("url").and_then(Value::as_str).unwrap_or(""),
+        ))
     };
     let mut kept: Vec<Value> = links
         .iter()
@@ -5883,10 +6247,9 @@ fn pull_request_command(command: &Map<String, Value>) -> Result<Value, WsErr> {
             let pr = command.get("pullRequest").cloned().unwrap_or(Value::Null);
             let source = s(command, "source").unwrap_or_else(|| "user".into());
             if source == "created" {
-                if let Some(existing) = pr_find(
-                    &links,
-                    pr.get("url").and_then(Value::as_str).unwrap_or(""),
-                ) {
+                if let Some(existing) =
+                    pr_find(&links, pr.get("url").and_then(Value::as_str).unwrap_or(""))
+                {
                     if !pr_is_visible(existing) {
                         return Err(err("Command produced no events."));
                     }
@@ -5911,7 +6274,11 @@ fn pull_request_command(command: &Map<String, Value>) -> Result<Value, WsErr> {
             }
             next
         }
-        _ => return Err(err(format!("unsupported pull-request command {command_type}"))),
+        _ => {
+            return Err(err(format!(
+                "unsupported pull-request command {command_type}"
+            )));
+        }
     };
     let events = pr_links_dispatch(&conn, command, next_links, &occurred_at)?;
     if events.is_empty() {
@@ -5958,7 +6325,13 @@ fn append_activity_projection(
     Ok(())
 }
 
-fn revert_succeeded_activity(command_id: &str, thread_id: &str, turn_count: i64, created_at: &str, causation: &str) -> OutEvent {
+fn revert_succeeded_activity(
+    command_id: &str,
+    thread_id: &str,
+    turn_count: i64,
+    created_at: &str,
+    causation: &str,
+) -> OutEvent {
     let mut ev = out_event(
         "thread.activity-appended",
         thread_id,
@@ -5997,7 +6370,10 @@ fn claude_cache_set(command: &Map<String, Value>) -> Result<Value, WsErr> {
             true
         } else {
             let status_ok = review.get("status").and_then(Value::as_str) == Some("pending");
-            let msg_id = review.get("messageId").and_then(Value::as_str).unwrap_or("");
+            let msg_id = review
+                .get("messageId")
+                .and_then(Value::as_str)
+                .unwrap_or("");
             let msg_exists: bool = conn
                 .query_row(
                     "SELECT COUNT(*) FROM projection_thread_messages \
@@ -6006,7 +6382,7 @@ fn claude_cache_set(command: &Map<String, Value>) -> Result<Value, WsErr> {
                     |r| r.get::<_, i64>(0),
                 )
                 .unwrap_or(0)
-                    > 0;
+                > 0;
             status_ok && msg_exists
         };
         let rejected = thread.deleted_at.is_some()
@@ -6244,7 +6620,10 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
     );
     payload.insert(
         "dispatchMode".into(),
-        command.get("dispatchMode").cloned().unwrap_or(json!("queue")),
+        command
+            .get("dispatchMode")
+            .cloned()
+            .unwrap_or(json!("queue")),
     );
     payload.insert(
         "dispatchOrigin".into(),
@@ -6364,11 +6743,21 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
 
     // A queued provider turn starts the same runner once dispatched.
     let provider = provider_for_start;
-    if provider.as_deref().is_some_and(crate::codex_runner::supports_provider)
-        || provider.as_deref().is_some_and(crate::claude_runner::supports_provider)
-        || provider.as_deref().is_some_and(crate::opencode_runner::supports_provider)
-        || provider.as_deref().is_some_and(crate::pi_runner::supports_provider)
-        || provider.as_deref().is_some_and(crate::acp_runner::supports_provider)
+    if provider
+        .as_deref()
+        .is_some_and(crate::codex_runner::supports_provider)
+        || provider
+            .as_deref()
+            .is_some_and(crate::claude_runner::supports_provider)
+        || provider
+            .as_deref()
+            .is_some_and(crate::opencode_runner::supports_provider)
+        || provider
+            .as_deref()
+            .is_some_and(crate::pi_runner::supports_provider)
+        || provider
+            .as_deref()
+            .is_some_and(crate::acp_runner::supports_provider)
     {
         let message = conn
             .query_row(
@@ -6407,13 +6796,15 @@ fn dispatch_queued(command: &Map<String, Value>) -> Result<Value, WsErr> {
     Ok(json!({ "sequence": seq }))
 }
 
-
 pub fn upsert_proposed_plan_projection(thread_id: &str, plan: &Value) -> Result<(), WsErr> {
     let conn = open_state_rw()?;
     conn.execute_batch("PRAGMA busy_timeout = 5000;")
         .map_err(|e| err(e.to_string()))?;
     let plan_id = plan.get("id").and_then(Value::as_str).unwrap_or("");
-    let markdown = plan.get("planMarkdown").and_then(Value::as_str).unwrap_or("");
+    let markdown = plan
+        .get("planMarkdown")
+        .and_then(Value::as_str)
+        .unwrap_or("");
     if plan_id.is_empty() || markdown.is_empty() {
         return Ok(());
     }
@@ -6489,7 +6880,10 @@ fn turn_diff_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
         "files",
         "completedAt",
     ] {
-        payload.insert(k.to_string(), command.get(k).cloned().unwrap_or(Value::Null));
+        payload.insert(
+            k.to_string(),
+            command.get(k).cloned().unwrap_or(Value::Null),
+        );
     }
     payload.insert(
         "assistantMessageId".into(),
@@ -6508,7 +6902,10 @@ fn turn_diff_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
         Value::Object(payload),
     );
     let mut events = vec![diff_ev];
-    if let Some(turn_count) = command.get("checkpointRevertTurnCount").and_then(Value::as_i64) {
+    if let Some(turn_count) = command
+        .get("checkpointRevertTurnCount")
+        .and_then(Value::as_i64)
+    {
         let succ = revert_succeeded_activity(
             &command_id,
             &thread_id,
@@ -6565,7 +6962,6 @@ fn revert_complete(command: &Map<String, Value>) -> Result<Value, WsErr> {
     append_activity_projection(&conn, &thread_id, &activity, seq)?;
     Ok(json!({ "sequence": seq }))
 }
-
 
 fn apply_conversation_rollback_projection(
     conn: &Connection,
@@ -6703,7 +7099,13 @@ fn conversation_rollback_complete(command: &Map<String, Value>) -> Result<Value,
     let removed_turn_ids: Vec<String> = rollback_payload
         .get("removedTurnIds")
         .and_then(Value::as_array)
-        .map(|items| items.iter().filter_map(Value::as_str).map(str::to_string).collect())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(Value::as_str)
+                .map(str::to_string)
+                .collect()
+        })
         .unwrap_or_default();
     if let Some(message_id) = rollback_payload.get("messageId").and_then(Value::as_str) {
         apply_conversation_rollback_projection(
@@ -6854,22 +7256,43 @@ fn latest_turn(conn: &Connection, thread_id: &str) -> Option<(String, String, St
     .ok()
 }
 
-fn usage_limit_meta_event(thread_id: &str, occurred_at: &str, patch: &Map<String, Value>) -> OutEvent {
+fn usage_limit_meta_event(
+    thread_id: &str,
+    occurred_at: &str,
+    patch: &Map<String, Value>,
+) -> OutEvent {
     let mut payload = Map::new();
     payload.insert("threadId".into(), json!(thread_id));
     payload.insert("updatedAt".into(), json!(occurred_at));
     for (k, v) in patch {
         payload.insert(k.clone(), v.clone());
     }
-    out_event("thread.meta-updated", thread_id, occurred_at, Value::Object(payload))
+    out_event(
+        "thread.meta-updated",
+        thread_id,
+        occurred_at,
+        Value::Object(payload),
+    )
 }
 
 const USAGE_PATCH_COLS: &[(&str, &str)] = &[
     ("usageLimitRecovery", "usage_limit_recovery_json"),
-    ("usageLimitRecoverySource", "usage_limit_recovery_source_json"),
-    ("usageLimitRecoveryCancelledAt", "usage_limit_recovery_cancelled_at"),
-    ("usageLimitRecoveryCancelledTurnId", "usage_limit_recovery_cancelled_turn_id"),
-    ("usageLimitRecoveryLastResetAt", "usage_limit_recovery_last_reset_at"),
+    (
+        "usageLimitRecoverySource",
+        "usage_limit_recovery_source_json",
+    ),
+    (
+        "usageLimitRecoveryCancelledAt",
+        "usage_limit_recovery_cancelled_at",
+    ),
+    (
+        "usageLimitRecoveryCancelledTurnId",
+        "usage_limit_recovery_cancelled_turn_id",
+    ),
+    (
+        "usageLimitRecoveryLastResetAt",
+        "usage_limit_recovery_last_reset_at",
+    ),
     ("goalPausedAt", "goal_paused_at"),
     ("goalStartedAt", "goal_started_at"),
     ("goal", "goal"),
@@ -6923,8 +7346,7 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
             let binding_ok = command
                 .get("expectedBindingKey")
                 .map_or(true, |e| gv(&ctx.recovery_source, "bindingKey") == *e);
-            if ctx.session_active_turn_id.as_deref()
-                == source.get("turnId").and_then(Value::as_str)
+            if ctx.session_active_turn_id.as_deref() == source.get("turnId").and_then(Value::as_str)
                 && binding_ok
             {
                 patch.insert("usageLimitRecoverySource".into(), source);
@@ -6944,8 +7366,10 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 let mut next = ctx.recovery.clone();
                 next["state"] = json!("waiting");
                 if let Some(pa) = &paused_at {
-                    next["goalStartedAt"] =
-                        ctx.goal_started_at.clone().map_or(Value::Null, |v| json!(v));
+                    next["goalStartedAt"] = ctx
+                        .goal_started_at
+                        .clone()
+                        .map_or(Value::Null, |v| json!(v));
                     next["goalPausedAt"] = json!(pa);
                 }
                 patch.insert("usageLimitRecovery".into(), next);
@@ -6980,15 +7404,11 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 || ctx.session_active_turn_id.as_deref() == Some(turn_id.as_str());
             if matches_turn {
                 patch.insert("usageLimitRecoveryCancelledAt".into(), json!(iso_now_ms()));
-                patch.insert(
-                    "usageLimitRecoveryCancelledTurnId".into(),
-                    json!(turn_id),
-                );
+                patch.insert("usageLimitRecoveryCancelledTurnId".into(), json!(turn_id));
                 let rec_match = !ctx.recovery.is_null()
                     && (gs(&ctx.recovery, "id") == s(command, "recoveryId")
                         || gs(&ctx.recovery, "turnId").as_deref() == Some(turn_id.as_str())
-                        || gs(&ctx.recovery, "resumedTurnId").as_deref()
-                            == Some(turn_id.as_str()));
+                        || gs(&ctx.recovery, "resumedTurnId").as_deref() == Some(turn_id.as_str()));
                 if rec_match {
                     patch.insert("usageLimitRecovery".into(), Value::Null);
                     let goal_active = ctx
@@ -7078,7 +7498,8 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                     && reset_ms.unwrap()
                         <= iso_ms(ctx.last_reset_at.as_deref().unwrap_or("")).unwrap_or(0))
                 || gs(model, "provider") != gs(&recovery, "provider")
-                || gs(model, "instanceId").unwrap_or_else(|| gs(model, "provider").unwrap_or_default())
+                || gs(model, "instanceId")
+                    .unwrap_or_else(|| gs(model, "provider").unwrap_or_default())
                     != gs(&recovery, "providerInstanceId").unwrap_or_default()
                 || gs(model, "model") != gs(&recovery, "model")
                 || (goal_active && ctx.goal_paused_at.is_some());
@@ -7087,8 +7508,10 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 let mut next = recovery.clone();
                 next["state"] = json!("waiting");
                 if let Some(pa) = &paused_at {
-                    next["goalStartedAt"] =
-                        ctx.goal_started_at.clone().map_or(Value::Null, |v| json!(v));
+                    next["goalStartedAt"] = ctx
+                        .goal_started_at
+                        .clone()
+                        .map_or(Value::Null, |v| json!(v));
                     next["goalPausedAt"] = json!(pa);
                 }
                 patch.insert("usageLimitRecovery".into(), next);
@@ -7157,11 +7580,8 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                             .map(|g| !g.trim().is_empty())
                             .unwrap_or(false);
                         if goal_active && ctx.goal_paused_at.is_some() {
-                            let started_ms = ctx
-                                .goal_started_at
-                                .as_deref()
-                                .and_then(iso_ms)
-                                .unwrap_or(0);
+                            let started_ms =
+                                ctx.goal_started_at.as_deref().and_then(iso_ms).unwrap_or(0);
                             let paused_ms =
                                 ctx.goal_paused_at.as_deref().and_then(iso_ms).unwrap_or(0);
                             let occurred_ms = iso_ms(&occurred_at).unwrap_or(0);
@@ -7170,10 +7590,7 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                             } else {
                                 occurred_ms
                             };
-                            goal_patch.insert(
-                                "goalStartedAt".into(),
-                                json!(iso_from_ms(rebased)),
-                            );
+                            goal_patch.insert("goalStartedAt".into(), json!(iso_from_ms(rebased)));
                             goal_patch.insert("goalPausedAt".into(), Value::Null);
                         }
                     }
@@ -7187,11 +7604,11 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                     for (k, v) in &goal_patch {
                         patch.insert(k.clone(), v.clone());
                     }
-                    let goal_started = goal_patch
-                        .get("goalStartedAt")
-                        .cloned()
-                        .unwrap_or_else(|| {
-                            ctx.goal_started_at.clone().map_or(Value::Null, |v| json!(v))
+                    let goal_started =
+                        goal_patch.get("goalStartedAt").cloned().unwrap_or_else(|| {
+                            ctx.goal_started_at
+                                .clone()
+                                .map_or(Value::Null, |v| json!(v))
                         });
                     let mut cont = out_event(
                         "thread.goal-continuation-requested",
@@ -7211,7 +7628,11 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
                 }
             }
         }
-        _ => return Err(err(format!("unsupported usage-limit command {command_type}"))),
+        _ => {
+            return Err(err(format!(
+                "unsupported usage-limit command {command_type}"
+            )));
+        }
     }
 
     let meta = usage_limit_meta_event(&thread_id, &occurred_at, &patch);
@@ -7227,13 +7648,18 @@ fn usage_limit_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
     // Projection: apply patched columns.
     for (key, col) in USAGE_PATCH_COLS {
         if let Some(v) = patch.get(*key) {
-            let sql_val = if matches!(*key, "usageLimitRecovery" | "usageLimitRecoverySource" | "goalAchievements") {
+            let sql_val = if matches!(
+                *key,
+                "usageLimitRecovery" | "usageLimitRecoverySource" | "goalAchievements"
+            ) {
                 json_to_sql(&json!(v.to_string()))
             } else {
                 json_to_sql(v)
             };
             conn.execute(
-                &format!("UPDATE projection_threads SET {col} = ?1, updated_at = ?2 WHERE thread_id = ?3"),
+                &format!(
+                    "UPDATE projection_threads SET {col} = ?1, updated_at = ?2 WHERE thread_id = ?3"
+                ),
                 params![sql_val, occurred_at, thread_id],
             )
             .map_err(|e| err(format!("usage-limit projection: {e}")))?;
@@ -7395,11 +7821,7 @@ fn sidechat_expire(command: &Map<String, Value>) -> Result<Value, WsErr> {
 
 // ---- thread.messages.import / message.* ----
 
-fn project_message_sent(
-    conn: &Connection,
-    thread_id: &str,
-    p: &Value,
-) -> Result<(), WsErr> {
+fn project_message_sent(conn: &Connection, thread_id: &str, p: &Value) -> Result<(), WsErr> {
     let g = |k: &str| p.get(k).cloned().unwrap_or(Value::Null);
     let message_id = g("messageId");
     let role = g("role");
@@ -7519,7 +7941,10 @@ fn messages_import(command: &Map<String, Value>) -> Result<Value, WsErr> {
     for m in &messages {
         let mut payload = Map::new();
         payload.insert("threadId".into(), json!(thread_id));
-        payload.insert("messageId".into(), m.get("messageId").cloned().unwrap_or(Value::Null));
+        payload.insert(
+            "messageId".into(),
+            m.get("messageId").cloned().unwrap_or(Value::Null),
+        );
         payload.insert("role".into(), m.get("role").cloned().unwrap_or(Value::Null));
         payload.insert("text".into(), m.get("text").cloned().unwrap_or(Value::Null));
         if let Some(v) = m.get("attachments") {
@@ -7534,8 +7959,14 @@ fn messages_import(command: &Map<String, Value>) -> Result<Value, WsErr> {
             "source".into(),
             m.get("source").cloned().unwrap_or(json!("native")),
         );
-        payload.insert("createdAt".into(), m.get("createdAt").cloned().unwrap_or(Value::Null));
-        payload.insert("updatedAt".into(), m.get("updatedAt").cloned().unwrap_or(Value::Null));
+        payload.insert(
+            "createdAt".into(),
+            m.get("createdAt").cloned().unwrap_or(Value::Null),
+        );
+        payload.insert(
+            "updatedAt".into(),
+            m.get("updatedAt").cloned().unwrap_or(Value::Null),
+        );
         events.push(out_event(
             "thread.message-sent",
             &thread_id,
@@ -7587,7 +8018,10 @@ fn assistant_message_event(command: &Map<String, Value>, delta: bool) -> Result<
     payload.insert("messageId".into(), json!(message_id));
     payload.insert("role".into(), json!("assistant"));
     if delta {
-        payload.insert("text".into(), command.get("delta").cloned().unwrap_or(json!("")));
+        payload.insert(
+            "text".into(),
+            command.get("delta").cloned().unwrap_or(json!("")),
+        );
     } else {
         let existing_text: Option<String> = conn
             .query_row(
@@ -7621,7 +8055,12 @@ fn assistant_message_event(command: &Map<String, Value>, delta: bool) -> Result<
     payload.insert("streaming".into(), json!(delta));
     payload.insert("createdAt".into(), json!(created_at));
     payload.insert("updatedAt".into(), json!(created_at));
-    let first = out_event("thread.message-sent", &thread_id, &created_at, Value::Object(payload));
+    let first = out_event(
+        "thread.message-sent",
+        &thread_id,
+        &created_at,
+        Value::Object(payload),
+    );
     let mut events = vec![first.clone_shallow()];
     let finalized_before = existing
         .as_ref()
@@ -7665,7 +8104,7 @@ fn user_bind_or_boundary(command: &Map<String, Value>, bind: bool) -> Result<Val
             None => {
                 return Err(err(format!(
                     "User message '{message_id}' does not exist on thread '{thread_id}'."
-                )))
+                )));
             }
         };
     if role != "user" {
@@ -7684,7 +8123,9 @@ fn user_bind_or_boundary(command: &Map<String, Value>, bind: bool) -> Result<Val
         }
     }
     let turn_id = if bind {
-        s(command, "turnId").map_or(cur_turn.clone().map_or(Value::Null, |v| json!(v)), |v| json!(v))
+        s(command, "turnId").map_or(cur_turn.clone().map_or(Value::Null, |v| json!(v)), |v| {
+            json!(v)
+        })
     } else {
         cur_turn.clone().map_or(Value::Null, |v| json!(v))
     };
@@ -7727,8 +8168,14 @@ fn user_bind_or_boundary(command: &Map<String, Value>, bind: bool) -> Result<Val
             |r| Ok((r.get(0)?, r.get(1)?)),
         )
         .unwrap_or((None, None));
-    payload.insert("createdAt".into(), created.map_or(Value::Null, |v| json!(v)));
-    payload.insert("updatedAt".into(), updated.map_or(Value::Null, |v| json!(v)));
+    payload.insert(
+        "createdAt".into(),
+        created.map_or(Value::Null, |v| json!(v)),
+    );
+    payload.insert(
+        "updatedAt".into(),
+        updated.map_or(Value::Null, |v| json!(v)),
+    );
     let events = vec![out_event(
         "thread.message-sent",
         &thread_id,
@@ -7986,7 +8433,11 @@ fn lineage_create(command: &Map<String, Value>, is_handoff: bool) -> Result<Valu
     let source_provider: Option<String> = src_model_sel
         .as_deref()
         .and_then(|j| serde_json::from_str::<Value>(j).ok())
-        .and_then(|v| v.get("provider").and_then(Value::as_str).map(str::to_string));
+        .and_then(|v| {
+            v.get("provider")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        });
 
     let mut ep = Map::new();
     let put = |ep: &mut Map<String, Value>, k: &str, v: Value| {
@@ -8079,8 +8530,14 @@ fn lineage_create(command: &Map<String, Value>, is_handoff: bool) -> Result<Valu
         for m in msgs {
             let mut mp = Map::new();
             mp.insert("threadId".into(), json!(thread_id));
-            mp.insert("messageId".into(), m.get("messageId").cloned().unwrap_or(Value::Null));
-            mp.insert("role".into(), m.get("role").cloned().unwrap_or(json!("user")));
+            mp.insert(
+                "messageId".into(),
+                m.get("messageId").cloned().unwrap_or(Value::Null),
+            );
+            mp.insert(
+                "role".into(),
+                m.get("role").cloned().unwrap_or(json!("user")),
+            );
             mp.insert("text".into(), m.get("text").cloned().unwrap_or(json!("")));
             if let Some(a) = m.get("attachments") {
                 mp.insert("attachments".into(), a.clone());
@@ -8159,7 +8616,14 @@ fn settle_turn_dispatch(command: &Map<String, Value>) -> Result<Value, WsErr> {
          (command_id, aggregate_kind, aggregate_id, accepted_at, result_sequence, status, error, \
           fingerprint_version, command_fingerprint) \
          VALUES (?1, ?2, ?3, ?4, ?5, 'rejected', ?6, NULL, NULL)",
-        params![command_id, agg_kind, agg_id, iso_now_ms(), snapshot_sequence, detail],
+        params![
+            command_id,
+            agg_kind,
+            agg_id,
+            iso_now_ms(),
+            snapshot_sequence,
+            detail
+        ],
     )
     .map_err(|_| err("Failed to settle the original message."))?;
     Err(err(detail))
@@ -8216,19 +8680,18 @@ fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
         let latest = latest_turn(&conn, &thread_id);
         let in_flight = session
             .as_ref()
-            .map(|(st, at)| {
-                (st != "error" && at.is_some()) || st == "starting" || st == "running"
-            })
+            .map(|(st, at)| (st != "error" && at.is_some()) || st == "starting" || st == "running")
             .unwrap_or(false)
-            || latest.as_ref().map(|(_, st, _)| st == "running").unwrap_or(false);
+            || latest
+                .as_ref()
+                .map(|(_, st, _)| st == "running")
+                .unwrap_or(false);
         if !in_flight {
             continue;
         }
         let turn_id = session
             .and_then(|(_, at)| at)
-            .or_else(|| {
-                latest.and_then(|(tid, st, _)| (st == "running").then_some(tid))
-            });
+            .or_else(|| latest.and_then(|(tid, st, _)| (st == "running").then_some(tid)));
         recorded.push((thread_id, turn_id));
     }
 
@@ -8270,7 +8733,11 @@ fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
             if let Ok(raw) = std::fs::read_to_string(&path) {
                 if serde_json::from_str::<Value>(raw.trim())
                     .ok()
-                    .and_then(|v| v.get("recordId").and_then(Value::as_str).map(str::to_string))
+                    .and_then(|v| {
+                        v.get("recordId")
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                    })
                     .as_deref()
                     == Some(rid.as_str())
                 {
@@ -8296,7 +8763,9 @@ fn prepare_quit_resume(payload: &Value) -> Result<Value, WsErr> {
 // the upstream `thread.turn.resume` continuation flow and is intentionally
 // not part of this sweep.
 pub fn recover_orphaned_turns() -> Vec<String> {
-    let Ok(conn) = open_state_rw() else { return Vec::new() };
+    let Ok(conn) = open_state_rw() else {
+        return Vec::new();
+    };
     if conn.execute_batch("PRAGMA busy_timeout = 5000;").is_err() {
         return Vec::new();
     }
@@ -8460,9 +8929,18 @@ const META_PATCH_COLS: &[(&str, &str)] = &[
     ("goal", "goal"),
     ("goalStartedAt", "goal_started_at"),
     ("goalPausedAt", "goal_paused_at"),
-    ("usageLimitRecoveryCancelledAt", "usage_limit_recovery_cancelled_at"),
-    ("usageLimitRecoveryCancelledTurnId", "usage_limit_recovery_cancelled_turn_id"),
-    ("usageLimitRecoveryLastResetAt", "usage_limit_recovery_last_reset_at"),
+    (
+        "usageLimitRecoveryCancelledAt",
+        "usage_limit_recovery_cancelled_at",
+    ),
+    (
+        "usageLimitRecoveryCancelledTurnId",
+        "usage_limit_recovery_cancelled_turn_id",
+    ),
+    (
+        "usageLimitRecoveryLastResetAt",
+        "usage_limit_recovery_last_reset_at",
+    ),
     ("updatedAt", "updated_at"),
 ];
 
@@ -8475,7 +8953,10 @@ const META_JSON_COLS: &[(&str, &str)] = &[
     ("lastKnownPr", "last_known_pr_json"),
     ("goalAchievements", "goal_achievements_json"),
     ("usageLimitRecovery", "usage_limit_recovery_json"),
-    ("usageLimitRecoverySource", "usage_limit_recovery_source_json"),
+    (
+        "usageLimitRecoverySource",
+        "usage_limit_recovery_source_json",
+    ),
 ];
 
 fn replay_session_projection(
@@ -8566,7 +9047,10 @@ fn replay_pinned_projection(
         conn,
         thread_id,
         &[
-            ("pinned_messages_json", json!(Value::Array(pins).to_string())),
+            (
+                "pinned_messages_json",
+                json!(Value::Array(pins).to_string()),
+            ),
             ("updated_at", json!(updated_at)),
         ],
     )
@@ -8594,7 +9078,10 @@ fn replay_projection_event(
                     ps("spaceId"),
                     ps("name"),
                     ps("icon"),
-                    payload.get("sortOrder").and_then(Value::as_i64).unwrap_or(0),
+                    payload
+                        .get("sortOrder")
+                        .and_then(Value::as_i64)
+                        .unwrap_or(0),
                     json_to_sql(&pg("createdAt")),
                     json_to_sql(&pg("updatedAt")),
                 ],
@@ -8603,7 +9090,11 @@ fn replay_projection_event(
         }
         "space.meta-updated" => {
             let mut sets: Vec<(&str, Value)> = Vec::new();
-            for (k, col) in [("name", "name"), ("icon", "icon"), ("updatedAt", "updated_at")] {
+            for (k, col) in [
+                ("name", "name"),
+                ("icon", "icon"),
+                ("updatedAt", "updated_at"),
+            ] {
                 if let Some(v) = payload.get(k) {
                     sets.push((col, v.clone()));
                 }
@@ -8703,7 +9194,11 @@ fn replay_projection_event(
                 if let Some(v) = payload.get(k) {
                     sets.push((
                         col,
-                        if v.is_null() { Value::Null } else { json!(v.to_string()) },
+                        if v.is_null() {
+                            Value::Null
+                        } else {
+                            json!(v.to_string())
+                        },
                     ));
                 }
             }
@@ -8749,31 +9244,31 @@ fn replay_projection_event(
                     |r| r.get(0),
                 )
                 .unwrap_or(false);
-            if !exists
-                && let Some(obj) = payload.as_object()
-            {
+            if !exists && let Some(obj) = payload.as_object() {
                 project_thread_created(conn, obj)?;
             }
         }
         "thread.deleted" => {
-            update_projection(
-                conn,
-                stream_id,
-                &[("deleted_at", pg("deletedAt"))],
-            )?;
+            update_projection(conn, stream_id, &[("deleted_at", pg("deletedAt"))])?;
         }
         "thread.archived" => {
             update_projection(
                 conn,
                 stream_id,
-                &[("archived_at", pg("archivedAt")), ("updated_at", pg("updatedAt"))],
+                &[
+                    ("archived_at", pg("archivedAt")),
+                    ("updated_at", pg("updatedAt")),
+                ],
             )?;
         }
         "thread.unarchived" => {
             update_projection(
                 conn,
                 stream_id,
-                &[("archived_at", Value::Null), ("updated_at", pg("updatedAt"))],
+                &[
+                    ("archived_at", Value::Null),
+                    ("updated_at", pg("updatedAt")),
+                ],
             )?;
         }
         "thread.meta-updated" => {
@@ -8787,7 +9282,11 @@ fn replay_projection_event(
                 if let Some(v) = payload.get(*k) {
                     sets.push((
                         col,
-                        if v.is_null() { Value::Null } else { json!(v.to_string()) },
+                        if v.is_null() {
+                            Value::Null
+                        } else {
+                            json!(v.to_string())
+                        },
                     ));
                 }
             }
@@ -8797,14 +9296,20 @@ fn replay_projection_event(
             update_projection(
                 conn,
                 stream_id,
-                &[("runtime_mode", pg("runtimeMode")), ("updated_at", pg("updatedAt"))],
+                &[
+                    ("runtime_mode", pg("runtimeMode")),
+                    ("updated_at", pg("updatedAt")),
+                ],
             )?;
         }
         "thread.interaction-mode-set" => {
             update_projection(
                 conn,
                 stream_id,
-                &[("interaction_mode", pg("interactionMode")), ("updated_at", pg("updatedAt"))],
+                &[
+                    ("interaction_mode", pg("interactionMode")),
+                    ("updated_at", pg("updatedAt")),
+                ],
             )?;
         }
         "thread.claude-cache-set" => {
@@ -8859,7 +9364,13 @@ fn replay_projection_event(
             let removed_turn_ids: Vec<String> = payload
                 .get("removedTurnIds")
                 .and_then(Value::as_array)
-                .map(|items| items.iter().filter_map(Value::as_str).map(str::to_string).collect())
+                .map(|items| {
+                    items
+                        .iter()
+                        .filter_map(Value::as_str)
+                        .map(str::to_string)
+                        .collect()
+                })
                 .unwrap_or_default();
             if !ps("messageId").is_empty() {
                 apply_conversation_rollback_projection(
@@ -8945,9 +9456,7 @@ fn repair_state() -> Result<Value, WsErr> {
                  FROM orchestration_events ORDER BY sequence",
             )
             .map_err(|e| err(e.to_string()))?;
-        let mut rows = st
-            .query([])
-            .map_err(|e| err(e.to_string()))?;
+        let mut rows = st.query([]).map_err(|e| err(e.to_string()))?;
         while let Some(row) = rows.next().map_err(|e| err(e.to_string()))? {
             let event_type: String = row.get(0).map_err(|e| err(e.to_string()))?;
             let stream_id: String = row.get(1).map_err(|e| err(e.to_string()))?;
@@ -8956,7 +9465,12 @@ fn repair_state() -> Result<Value, WsErr> {
             let occurred_at: String = row.get(4).map_err(|e| err(e.to_string()))?;
             let payload: Value = serde_json::from_str(&payload_json).unwrap_or(Value::Null);
             replay_projection_event(
-                &conn, &event_type, &stream_id, &payload, sequence, &occurred_at,
+                &conn,
+                &event_type,
+                &stream_id,
+                &payload,
+                sequence,
+                &occurred_at,
             )?;
         }
         Ok(())
@@ -9054,11 +9568,13 @@ fn reconcile_provider_delivery(payload: &Value) -> Result<Value, WsErr> {
             params![event_sequence],
             |r| Ok((r.get(0)?, r.get(1)?)),
         )
-        .map_err(|_| WsErr(
-            "Provider delivery no longer matches the requested thread and blocking state."
-                .to_string(),
-            Some("PROVIDER_DELIVERY_RECONCILIATION_CONFLICT"),
-        ))?;
+        .map_err(|_| {
+            WsErr(
+                "Provider delivery no longer matches the requested thread and blocking state."
+                    .to_string(),
+                Some("PROVIDER_DELIVERY_RECONCILIATION_CONFLICT"),
+            )
+        })?;
     if delivery_thread != thread_id || delivery_state != expected_state {
         return Err(WsErr(
             "Provider delivery no longer matches the requested thread and blocking state."
@@ -9068,7 +9584,11 @@ fn reconcile_provider_delivery(payload: &Value) -> Result<Value, WsErr> {
     }
 
     let reconciled_at = iso_now_ms();
-    let new_state = if outcome == "safe_retry" { "retry" } else { "succeeded" };
+    let new_state = if outcome == "safe_retry" {
+        "retry"
+    } else {
+        "succeeded"
+    };
     conn.execute(
         "INSERT INTO provider_delivery_reconciliations \
          (reconciliation_id, consumer_name, event_sequence, thread_id, previous_state, \
@@ -9151,7 +9671,6 @@ fn reconcile_provider_delivery(payload: &Value) -> Result<Value, WsErr> {
     }))
 }
 
-
 #[cfg(test)]
 mod import_finalization_tests {
     use super::*;
@@ -9163,10 +9682,25 @@ mod import_finalization_tests {
     #[test]
     fn imported_timestamps_are_distinct_and_ordered() {
         let rows = finalize_imported_timestamps(vec![
-            ("user".into(), "a".into(), Some("2026-01-01T00:00:00Z".into()), "1".into()),
-            ("assistant".into(), "b".into(), Some("2026-01-01T00:00:00Z".into()), "2".into()),
+            (
+                "user".into(),
+                "a".into(),
+                Some("2026-01-01T00:00:00Z".into()),
+                "1".into(),
+            ),
+            (
+                "assistant".into(),
+                "b".into(),
+                Some("2026-01-01T00:00:00Z".into()),
+                "2".into(),
+            ),
             ("user".into(), "c".into(), None, "3".into()),
-            ("assistant".into(), "d".into(), Some("not-a-date".into()), "4".into()),
+            (
+                "assistant".into(),
+                "d".into(),
+                Some("not-a-date".into()),
+                "4".into(),
+            ),
         ]);
         let times: Vec<i64> = rows
             .iter()
@@ -9181,8 +9715,18 @@ mod import_finalization_tests {
     #[test]
     fn increasing_source_times_are_kept() {
         let rows = finalize_imported_timestamps(vec![
-            ("user".into(), "a".into(), Some("2026-01-01T00:00:00Z".into()), "1".into()),
-            ("assistant".into(), "b".into(), Some("2026-01-01T00:00:01Z".into()), "2".into()),
+            (
+                "user".into(),
+                "a".into(),
+                Some("2026-01-01T00:00:00Z".into()),
+                "1".into(),
+            ),
+            (
+                "assistant".into(),
+                "b".into(),
+                Some("2026-01-01T00:00:01Z".into()),
+                "2".into(),
+            ),
         ]);
         assert_eq!(rows[0].2.as_deref(), Some("2026-01-01T00:00:00.000Z"));
         assert_eq!(rows[1].2.as_deref(), Some("2026-01-01T00:00:01.000Z"));

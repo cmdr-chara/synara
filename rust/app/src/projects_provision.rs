@@ -43,9 +43,7 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
     let checkout = if dest.join(".git").exists() {
         "reused"
     } else if dest.exists() {
-        return Err(err(format!(
-            "{dest:?} exists and is not a git checkout"
-        )));
+        return Err(err(format!("{dest:?} exists and is not a git checkout")));
     } else {
         std::fs::create_dir_all(&destination_parent)
             .map_err(|e| err(format!("cannot create {destination_parent}: {e}")))?;

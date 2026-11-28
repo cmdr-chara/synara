@@ -7,7 +7,7 @@
 
 use axum::{
     extract::RawQuery,
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{IntoResponse, Response},
 };
 use std::path::PathBuf;
@@ -106,10 +106,14 @@ fn convert_with_sips(icon_path: &PathBuf, editor_id: &str) -> Option<PathBuf> {
     }
     let status = std::process::Command::new("sips")
         .args([
-            "-s", "format", "png",
-            "-Z", &ICON_MAX_DIMENSION_PX.to_string(),
+            "-s",
+            "format",
+            "png",
+            "-Z",
+            &ICON_MAX_DIMENSION_PX.to_string(),
             icon_path.to_str()?,
-            "--out", out.to_str()?,
+            "--out",
+            out.to_str()?,
         ])
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
@@ -146,7 +150,10 @@ pub async fn editor_icon(RawQuery(query): RawQuery) -> Response {
         })
     });
     let Some(png_path) = resolved else {
-        negative_cache().lock().unwrap().insert(editor_id.clone(), Instant::now());
+        negative_cache()
+            .lock()
+            .unwrap()
+            .insert(editor_id.clone(), Instant::now());
         return (StatusCode::NOT_FOUND, "Not Found").into_response();
     };
     match std::fs::read(&png_path) {

@@ -43,8 +43,8 @@ impl CuaHandle {
         let generation_counter = self.generation.clone();
         let shared = self.shared.clone();
         std::thread::spawn(move || {
-            let base = std::env::var("SYNARA_HTTP")
-                .unwrap_or_else(|_| "http://127.0.0.1:8080".into());
+            let base =
+                std::env::var("SYNARA_HTTP").unwrap_or_else(|_| "http://127.0.0.1:8080".into());
             let authority = base
                 .trim_start_matches("http://")
                 .trim_start_matches("https://")
@@ -139,11 +139,7 @@ pub fn click(
     )
 }
 
-pub fn key(
-    client: &crate::ws_client::Client,
-    thread_id: &str,
-    key: &str,
-) -> Option<Value> {
+pub fn key(client: &crate::ws_client::Client, thread_id: &str, key: &str) -> Option<Value> {
     client.call(
         "computer.input.key",
         json!({"threadId": thread_id, "key": key}),

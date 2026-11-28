@@ -4,7 +4,7 @@
 //! backend self-contained for the full-stack port.
 
 use axum::body::Body;
-use axum::http::{header, StatusCode};
+use axum::http::{StatusCode, header};
 use axum::response::{IntoResponse, Response};
 
 fn dist_dir() -> Option<std::path::PathBuf> {
@@ -111,10 +111,12 @@ pub async fn serve(uri: axum::http::Uri, headers: axum::http::HeaderMap) -> Resp
             let mut response = Body::from(bytes).into_response();
             response.headers_mut().insert(
                 header::CONTENT_TYPE,
-                header::HeaderValue::from_static(mime(match file.extension().and_then(|e| e.to_str()) {
-                    Some(ext) => ext,
-                    None => "",
-                })),
+                header::HeaderValue::from_static(mime(
+                    match file.extension().and_then(|e| e.to_str()) {
+                        Some(ext) => ext,
+                        None => "",
+                    },
+                )),
             );
             if let Some(encoding) = content_encoding {
                 response.headers_mut().insert(
@@ -152,7 +154,9 @@ fn cache_control_for(rel: &std::path::Path, is_shell_fallback: bool) -> &'static
     if normalized.starts_with("assets/") {
         return "public, max-age=31536000, immutable";
     }
-    if normalized.starts_with("central-icons-reversed/") || normalized.starts_with("central-icons-fill/") {
+    if normalized.starts_with("central-icons-reversed/")
+        || normalized.starts_with("central-icons-fill/")
+    {
         return "public, max-age=86400";
     }
     "no-cache"

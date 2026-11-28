@@ -8,7 +8,7 @@
 //! the raw payloads per provider; this module shapes them into the shared
 //! `ServerProviderUsageSnapshot` contract.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::path::PathBuf;
 
 use crate::todo::WsErr;
@@ -23,7 +23,9 @@ fn err(message: &str) -> WsErr {
 pub fn handles(tag: &str) -> bool {
     matches!(
         tag,
-        "server.listProviderUsage" | "server.getProviderUsageSnapshot" | "server.consumeCodexResetCredit"
+        "server.listProviderUsage"
+            | "server.getProviderUsageSnapshot"
+            | "server.consumeCodexResetCredit"
     )
 }
 
@@ -125,9 +127,15 @@ fn snapshot_from(provider: &str, record: &Value) -> Value {
                 .get("balance")
                 .and_then(Value::as_str)
                 .map(str::to_string)
-                .or_else(|| credits.get("balance").and_then(Value::as_f64).map(|n| n.to_string()))
+                .or_else(|| {
+                    credits
+                        .get("balance")
+                        .and_then(Value::as_f64)
+                        .map(|n| n.to_string())
+                })
             {
-                usage_lines.push(json!({"label": "Credits", "value": format!("{balance} remaining")}));
+                usage_lines
+                    .push(json!({"label": "Credits", "value": format!("{balance} remaining")}));
             }
         }
     } else {
@@ -185,7 +193,13 @@ fn with_live_codex(mut snapshot: Value) -> Value {
             snapshot
         }
         Err(e) => {
-            if e.0.contains("auth required") && snapshot.get("limits").and_then(Value::as_array).map(|l| l.is_empty()).unwrap_or(true) {
+            if e.0.contains("auth required")
+                && snapshot
+                    .get("limits")
+                    .and_then(Value::as_array)
+                    .map(|l| l.is_empty())
+                    .unwrap_or(true)
+            {
                 snapshot["status"] = json!("needs-auth");
                 snapshot["detail"] = json!("Sign in with ChatGPT to see Codex usage.");
             } else {
@@ -218,7 +232,10 @@ fn all_snapshots() -> Vec<Value> {
             }
         }
     }
-    if !out.iter().any(|snap| snap.get("provider").and_then(Value::as_str) == Some("codex")) {
+    if !out
+        .iter()
+        .any(|snap| snap.get("provider").and_then(Value::as_str) == Some("codex"))
+    {
         out.push(with_live_codex(json!({
             "provider": "codex",
             "limits": [],
@@ -266,11 +283,13 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             if provider == "codex" {
                 // Live-first like upstream: passive evidence is the fallback,
                 // not a precondition.
-                let base = base.unwrap_or_else(|| json!({
-                    "provider": "codex",
-                    "limits": [],
-                    "usageLines": [],
-                }));
+                let base = base.unwrap_or_else(|| {
+                    json!({
+                        "provider": "codex",
+                        "limits": [],
+                        "usageLines": [],
+                    })
+                });
                 return Ok(with_live_codex(base));
             }
             let Some(snapshot) = base else {
@@ -280,7 +299,9 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
             };
             Ok(snapshot)
         }
-        "server.consumeCodexResetCredit" => consume_codex_reset_credit(payload).map(|outcome| json!({"outcome": outcome})),
+        "server.consumeCodexResetCredit" => {
+            consume_codex_reset_credit(payload).map(|outcome| json!({"outcome": outcome}))
+        }
         _ => Err(err("unhandled provider usage tag")),
     }
 }
@@ -355,7 +376,14 @@ impl ShortLivedRpc {
                 }
             }
         });
-        Ok((Self { stdin, lines: rx, next_id: 1 }, child))
+        Ok((
+            Self {
+                stdin,
+                lines: rx,
+                next_id: 1,
+            },
+            child,
+        ))
     }
 
     fn write(&mut self, msg: &Value) -> Result<(), WsErr> {
@@ -430,7 +458,9 @@ fn consume_codex_reset_credit(payload: &Value) -> Result<&'static str, WsErr> {
         let usage = rpc.call("account/rateLimits/read", json!({}))?;
         let usage_account = usage.get("accountId").and_then(Value::as_str).unwrap_or("");
         if usage_account != account_id {
-            return Err(err("The Codex account changed. Refresh usage before using a reset."));
+            return Err(err(
+                "The Codex account changed. Refresh usage before using a reset.",
+            ));
         }
         let Some(can_use) = can_use_reset_credit(&usage) else {
             return Err(err(
@@ -450,7 +480,9 @@ fn consume_codex_reset_credit(payload: &Value) -> Result<&'static str, WsErr> {
             Some("nothingToReset") => Ok("nothingToReset"),
             Some("noCredit") => Ok("noCredit"),
             Some("alreadyRedeemed") => Ok("alreadyRedeemed"),
-            _ => Err(err("Codex returned an unknown reset result. Retry the same attempt.")),
+            _ => Err(err(
+                "Codex returned an unknown reset result. Retry the same attempt.",
+            )),
         }
     })();
     let _ = child.kill();

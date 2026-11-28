@@ -6,7 +6,7 @@
 //! returns the user with a code. Tokens live in the state database; the
 //! callback route lives in main.rs.
 use crate::todo::WsErr;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use std::sync::{Mutex, OnceLock};
 
@@ -56,7 +56,12 @@ fn pkce_challenge(verifier: &str) -> String {
     crate::auth_sessions::base64url_encode(&digest)
 }
 
-fn http_json(method: &str, url: &str, body: Option<Value>, form: Option<&str>) -> Result<(u16, Value), WsErr> {
+fn http_json(
+    method: &str,
+    url: &str,
+    body: Option<Value>,
+    form: Option<&str>,
+) -> Result<(u16, Value), WsErr> {
     // SSRF guard mirrors upstream: the dance is locked to the connector's own
     // origin by construction. The blocking client owns an internal tokio
     // runtime, which panics when dropped inside an async context — WS handlers
@@ -85,7 +90,9 @@ fn http_json(method: &str, url: &str, body: Option<Value>, form: Option<&str>) -
                         .header("Content-Type", "application/x-www-form-urlencoded")
                         .body(f);
                 }
-                let resp = req.send().map_err(|e| err(format!("OAuth request failed: {e}")))?;
+                let resp = req
+                    .send()
+                    .map_err(|e| err(format!("OAuth request failed: {e}")))?;
                 let status = resp.status().as_u16();
                 let text = resp.text().unwrap_or_default();
                 let parsed = serde_json::from_str::<Value>(&text).unwrap_or_else(|_| json!({}));
@@ -98,8 +105,14 @@ fn http_json(method: &str, url: &str, body: Option<Value>, form: Option<&str>) -
 
 fn endpoint_origin(url: &str) -> Result<String, WsErr> {
     let parts: Vec<&str> = url.splitn(4, '/').collect();
-    if parts.len() < 3 || !url.starts_with("https://") && !url.starts_with("http://127.0.0.1") && !url.starts_with("http://localhost") {
-        return Err(err("Connector URL must be an https URL (loopback http allowed)."));
+    if parts.len() < 3
+        || !url.starts_with("https://")
+            && !url.starts_with("http://127.0.0.1")
+            && !url.starts_with("http://localhost")
+    {
+        return Err(err(
+            "Connector URL must be an https URL (loopback http allowed).",
+        ));
     }
     Ok(format!("{}//{}", parts[0], parts[2]))
 }
@@ -145,11 +158,15 @@ pub fn begin_sign_in(connector_input: &Value, redirect_url: &str) -> Result<Stri
         "response_types": ["code"],
         "token_endpoint_auth_method": "none",
     });
-    let registration_endpoint = metadata.get("registration_endpoint").and_then(Value::as_str);
+    let registration_endpoint = metadata
+        .get("registration_endpoint")
+        .and_then(Value::as_str);
     let client_id = if let Some(reg) = registration_endpoint {
         let (reg_status, reg_body) = http_json("POST", reg, Some(client_metadata), None)?;
         if !(200..300).contains(&reg_status) {
-            return Err(err(format!("OAuth client registration failed (status {reg_status}).")));
+            return Err(err(format!(
+                "OAuth client registration failed (status {reg_status})."
+            )));
         }
         reg_body
             .get("client_id")
@@ -175,7 +192,9 @@ pub fn begin_sign_in(connector_input: &Value, redirect_url: &str) -> Result<Stri
         // Cap outstanding sign-ins; entries expire after 10 minutes.
         map.retain(|_, p| now_ms() - p.created_at_ms < 10 * 60 * 1000);
         if map.len() >= 64 {
-            return Err(err("Too many pending sign-ins; complete or wait for existing ones."));
+            return Err(err(
+                "Too many pending sign-ins; complete or wait for existing ones.",
+            ));
         }
         map.insert(state.clone(), pending_entry);
     }
@@ -265,7 +284,11 @@ fn urldecode(v: &str) -> String {
                 continue;
             }
         }
-        out.push(if bytes[i] == b'+' { ' ' } else { bytes[i] as char });
+        out.push(if bytes[i] == b'+' {
+            ' '
+        } else {
+            bytes[i] as char
+        });
         i += 1;
     }
     out

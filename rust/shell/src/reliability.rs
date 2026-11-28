@@ -10,7 +10,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
-const ENDPOINT: &str = "https://synara-beta-diagnostics.synara-orgs.workers.dev/v1/reliability-events";
+const ENDPOINT: &str =
+    "https://synara-beta-diagnostics.synara-orgs.workers.dev/v1/reliability-events";
 const MAX_RECORDS: usize = 500;
 const MAX_EVENTS_PER_POST: usize = 50;
 const MAX_BODY_BYTES: usize = 64 * 1024;
@@ -72,7 +73,9 @@ fn code_allowed_for_channel(code: &str, channel: &str) -> bool {
 
 fn valid_version(value: &str) -> bool {
     fn numeric(part: &str) -> bool {
-        !part.is_empty() && part.bytes().all(|b| b.is_ascii_digit()) && (part == "0" || !part.starts_with('0'))
+        !part.is_empty()
+            && part.bytes().all(|b| b.is_ascii_digit())
+            && (part == "0" || !part.starts_with('0'))
     }
     let (core, suffix) = value.split_once('-').unwrap_or((value, ""));
     let mut parts = core.split('.');
@@ -86,7 +89,9 @@ fn valid_version(value: &str) -> bool {
     if suffix.is_empty() {
         return !value.contains('-');
     }
-    let Some((lane, number)) = suffix.split_once('.') else { return false };
+    let Some((lane, number)) = suffix.split_once('.') else {
+        return false;
+    };
     matches!(lane, "beta" | "remote" | "alpha" | "canary" | "rc") && numeric(number)
 }
 
@@ -130,12 +135,17 @@ impl ReliabilityRecord {
             && matches!(self.channel.as_str(), "stable" | "beta" | "remote")
             && code_allowed_for_channel(&self.code, &self.channel)
             && valid_version(&self.app_version)
-            && matches!(self.platform.as_str(), "darwin" | "win32" | "linux" | "other")
+            && matches!(
+                self.platform.as_str(),
+                "darwin" | "win32" | "linux" | "other"
+            )
     }
 }
 
 fn current_record(day: &str) -> bool {
-    let Ok(record_day) = chrono::NaiveDate::parse_from_str(day, "%Y-%m-%d") else { return false };
+    let Ok(record_day) = chrono::NaiveDate::parse_from_str(day, "%Y-%m-%d") else {
+        return false;
+    };
     let today = chrono::Utc::now().date_naive();
     let age = (today - record_day).num_days();
     (0..=MAX_RECORD_AGE_DAYS).contains(&age)
@@ -161,21 +171,25 @@ pub struct ReliabilityReporter {
 
 impl ReliabilityReporter {
     pub fn new(home_dir: &Path, channel: &str, app_version: &str) -> Arc<Self> {
-        Self::with_endpoint(
-            home_dir,
-            channel,
-            app_version,
-            ENDPOINT,
-        )
+        Self::with_endpoint(home_dir, channel, app_version, ENDPOINT)
     }
 
-    fn with_endpoint(home_dir: &Path, channel: &str, app_version: &str, endpoint: &str) -> Arc<Self> {
+    fn with_endpoint(
+        home_dir: &Path,
+        channel: &str,
+        app_version: &str,
+        endpoint: &str,
+    ) -> Arc<Self> {
         let channel = match channel {
             "beta" => "beta",
             "remote" => "remote",
             _ => "stable",
         };
-        let app_version = if valid_version(app_version) { app_version } else { "0.0.0" };
+        let app_version = if valid_version(app_version) {
+            app_version
+        } else {
+            "0.0.0"
+        };
         Arc::new(Self {
             path: home_dir.join("product-analytics").join("reliability.json"),
             endpoint: endpoint.to_string(),
@@ -197,7 +211,9 @@ impl ReliabilityReporter {
 
     pub fn set_enabled(self: &Arc<Self>, enabled: bool, restore_pending: bool) {
         {
-            let Ok(mut state) = self.state.lock() else { return };
+            let Ok(mut state) = self.state.lock() else {
+                return;
+            };
             state.enabled = false;
             state.queue.clear();
             state.failures = 0;
@@ -280,9 +296,13 @@ impl ReliabilityReporter {
     }
 
     fn persist(&self, queue: &[ReliabilityRecord]) -> Result<(), String> {
-        let Some(parent) = self.path.parent() else { return Err("spool path has no parent".into()) };
+        let Some(parent) = self.path.parent() else {
+            return Err("spool path has no parent".into());
+        };
         std::fs::create_dir_all(parent).map_err(|error| error.to_string())?;
-        let temporary = self.path.with_extension(format!("json.tmp-{}", uuid::Uuid::new_v4()));
+        let temporary = self
+            .path
+            .with_extension(format!("json.tmp-{}", uuid::Uuid::new_v4()));
         let result = (|| -> Result<(), String> {
             let mut options = std::fs::OpenOptions::new();
             options.write(true).create_new(true);
@@ -291,10 +311,16 @@ impl ReliabilityReporter {
                 use std::os::unix::fs::OpenOptionsExt;
                 options.mode(0o600);
             }
-            let mut file = options.open(&temporary).map_err(|error| error.to_string())?;
-            use std::io::Write;
-            file.write_all(serde_json::to_string(queue).map_err(|error| error.to_string())?.as_bytes())
+            let mut file = options
+                .open(&temporary)
                 .map_err(|error| error.to_string())?;
+            use std::io::Write;
+            file.write_all(
+                serde_json::to_string(queue)
+                    .map_err(|error| error.to_string())?
+                    .as_bytes(),
+            )
+            .map_err(|error| error.to_string())?;
             file.sync_all().map_err(|error| error.to_string())?;
             std::fs::rename(&temporary, &self.path).map_err(|error| error.to_string())?;
             Ok(())
@@ -304,8 +330,12 @@ impl ReliabilityReporter {
     }
 
     fn clear_temporary_files(&self) {
-        let Some(parent) = self.path.parent() else { return };
-        let Ok(entries) = std::fs::read_dir(parent) else { return };
+        let Some(parent) = self.path.parent() else {
+            return;
+        };
+        let Ok(entries) = std::fs::read_dir(parent) else {
+            return;
+        };
         for entry in entries.flatten() {
             let name = entry.file_name();
             let Some(name) = name.to_str() else { continue };
@@ -317,7 +347,9 @@ impl ReliabilityReporter {
 
     fn batch(&self) -> Vec<ReliabilityRecord> {
         let pending_snapshot = {
-            let Ok(mut state) = self.state.lock() else { return Vec::new() };
+            let Ok(mut state) = self.state.lock() else {
+                return Vec::new();
+            };
             if !state.enabled {
                 return Vec::new();
             }
@@ -331,7 +363,9 @@ impl ReliabilityReporter {
                 }
             }
         }
-        let Ok(mut state) = self.state.lock() else { return Vec::new() };
+        let Ok(mut state) = self.state.lock() else {
+            return Vec::new();
+        };
         if !state.enabled {
             return Vec::new();
         }
@@ -342,7 +376,11 @@ impl ReliabilityReporter {
             }
             let mut candidate = batch.clone();
             candidate.push(record.clone());
-            if serde_json::to_string(&json!({"events": candidate})).map(|text| text.len()).unwrap_or(usize::MAX) > MAX_BODY_BYTES {
+            if serde_json::to_string(&json!({"events": candidate}))
+                .map(|text| text.len())
+                .unwrap_or(usize::MAX)
+                > MAX_BODY_BYTES
+            {
                 break;
             }
             batch.push(record.clone());
@@ -367,7 +405,8 @@ impl ReliabilityReporter {
         if body.get("stored").and_then(Value::as_bool) != Some(true) {
             return Err("reliability receipt missing".into());
         }
-        let sent: std::collections::HashSet<_> = batch.iter().map(|record| record.id.as_str()).collect();
+        let sent: std::collections::HashSet<_> =
+            batch.iter().map(|record| record.id.as_str()).collect();
         let acknowledged: std::collections::HashSet<String> = body
             .get("acknowledged")
             .and_then(Value::as_array)
@@ -387,7 +426,9 @@ impl ReliabilityReporter {
             if !state.enabled {
                 return Ok(());
             }
-            state.queue.retain(|record| !acknowledged.contains(&record.id));
+            state
+                .queue
+                .retain(|record| !acknowledged.contains(&record.id));
             state.failures = 0;
             state.next_retry_ms = if acknowledged.len() < batch.len() {
                 Some(now_ms() + 1_000)
@@ -478,7 +519,10 @@ pub fn initialize() {
     };
     let version = std::env::var("SYNARA_DESKTOP_VERSION").unwrap_or_else(|_| "0.1.0".into());
     let reporter = REPORTER.get_or_init(|| ReliabilityReporter::new(&home, channel, &version));
-    reporter.set_enabled(ReliabilityReporter::consent_is_explicitly_enabled(&home), true);
+    reporter.set_enabled(
+        ReliabilityReporter::consent_is_explicitly_enabled(&home),
+        true,
+    );
     reporter.start();
 }
 
@@ -499,15 +543,20 @@ mod tests {
         assert!(valid_version("1.2.3-beta.4"));
         assert!(!valid_version("01.2.3"));
         assert!(code_allowed_for_channel("remote.connector_exited", "beta"));
-        assert!(!code_allowed_for_channel("remote.connector_exited", "stable"));
+        assert!(!code_allowed_for_channel(
+            "remote.connector_exited",
+            "stable"
+        ));
         assert!(valid_code("provider.turn_start_failed"));
     }
 
     #[test]
     fn spool_round_trips_only_valid_current_records() {
-        let home = std::env::temp_dir().join(format!("synara-reliability-test-{}", uuid::Uuid::new_v4()));
+        let home =
+            std::env::temp_dir().join(format!("synara-reliability-test-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&home).unwrap();
-        let reporter = ReliabilityReporter::with_endpoint(&home, "beta", "1.2.3", "http://127.0.0.1:1");
+        let reporter =
+            ReliabilityReporter::with_endpoint(&home, "beta", "1.2.3", "http://127.0.0.1:1");
         reporter.set_enabled(true, false);
         reporter.track("backend.spawn_failed");
         reporter.set_enabled(true, true);
@@ -556,7 +605,8 @@ mod tests {
             let payload = serde_json::to_string(&json!({
                 "stored": true,
                 "acknowledged": [id],
-            })).unwrap();
+            }))
+            .unwrap();
             let response = format!(
                 "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{}",
                 payload.len(),
@@ -564,7 +614,8 @@ mod tests {
             );
             stream.write_all(response.as_bytes()).unwrap();
         });
-        let home = std::env::temp_dir().join(format!("synara-reliability-test-{}", uuid::Uuid::new_v4()));
+        let home =
+            std::env::temp_dir().join(format!("synara-reliability-test-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&home).unwrap();
         let reporter = ReliabilityReporter::with_endpoint(
             &home,
@@ -579,5 +630,4 @@ mod tests {
         server.join().unwrap();
         let _ = std::fs::remove_dir_all(home);
     }
-
 }

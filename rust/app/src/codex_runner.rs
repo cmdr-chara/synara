@@ -17,13 +17,13 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::acp_runner::{
     append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state,
 };
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 struct RunningTurn {
     stdin: Arc<Mutex<std::process::ChildStdin>>,
@@ -94,7 +94,10 @@ pub fn drop_thread_resources(thread_id: &str) {
 /// sessions and local servers alive after Synara can no longer control them.
 pub fn drop_all_resources() {
     let parked = if let Ok(mut parked_map) = PARKED.lock() {
-        parked_map.drain().map(|(_, parked)| parked).collect::<Vec<_>>()
+        parked_map
+            .drain()
+            .map(|(_, parked)| parked)
+            .collect::<Vec<_>>()
     } else {
         Vec::new()
     };
@@ -106,11 +109,9 @@ pub fn drop_all_resources() {
 pub fn steer_turn(thread_id: &str, text: &str) -> bool {
     let (stdin, thread_ref, turn_ref) = match RUNNING.lock() {
         Ok(m) => match m.get(thread_id) {
-            Some(rt) if !rt.turn_ref.is_empty() => (
-                rt.stdin.clone(),
-                rt.thread_ref.clone(),
-                rt.turn_ref.clone(),
-            ),
+            Some(rt) if !rt.turn_ref.is_empty() => {
+                (rt.stdin.clone(), rt.thread_ref.clone(), rt.turn_ref.clone())
+            }
             _ => return false,
         },
         Err(_) => return false,
@@ -194,7 +195,6 @@ fn runtime_overrides(runtime_mode: &str) -> Value {
         }),
     }
 }
-
 
 fn parse_codex_user_input_questions(params: &Value) -> Vec<Value> {
     params
@@ -393,13 +393,25 @@ impl Rpc {
         let Some(request_kind) = request_kind else {
             if let Some(rid) = v.get("id").cloned() {
                 let (result, error) = if method == "mcpServer/elicitation/request" {
-                    (Some(json!({"action":"cancel","content":null,"_meta":null})), None)
+                    (
+                        Some(json!({"action":"cancel","content":null,"_meta":null})),
+                        None,
+                    )
                 } else {
-                    (None, Some(json!({"code":-32601,"message":format!("unsupported server request: {method}")})))
+                    (
+                        None,
+                        Some(
+                            json!({"code":-32601,"message":format!("unsupported server request: {method}")}),
+                        ),
+                    )
                 };
                 let mut response = json!({"jsonrpc":"2.0","id":rid});
-                if let Some(result) = result { response["result"] = result; }
-                if let Some(error) = error { response["error"] = error; }
+                if let Some(result) = result {
+                    response["result"] = result;
+                }
+                if let Some(error) = error {
+                    response["error"] = error;
+                }
                 let _ = self.write_raw(&response);
             }
             return;
@@ -431,7 +443,9 @@ impl Rpc {
 
     fn handle_user_input_request(&mut self, v: &Value, params: &Value, ctx: &CodexApprovalCtx) {
         let questions = parse_codex_user_input_questions(params);
-        let Some(rid) = v.get("id").cloned() else { return };
+        let Some(rid) = v.get("id").cloned() else {
+            return;
+        };
         if questions.is_empty() {
             let _ = self.write_raw(&json!({
                 "jsonrpc":"2.0",
@@ -631,7 +645,9 @@ impl Rpc {
                 };
                 let persist_session = decision == "acceptForSession"
                     && match params.pointer("/_meta/persist") {
-                        Some(Value::Array(items)) => items.iter().any(|x| x.as_str() == Some("session")),
+                        Some(Value::Array(items)) => {
+                            items.iter().any(|x| x.as_str() == Some("session"))
+                        }
                         Some(Value::String(s)) => s == "session",
                         _ => false,
                     };
@@ -660,7 +676,6 @@ impl Rpc {
         }
     }
 }
-
 
 fn write_json_line(stdin: &mut ChildStdin, value: &Value) -> Result<(), WsErr> {
     stdin
@@ -804,9 +819,13 @@ pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
         let mut reader = BufReader::new(stdout);
         loop {
             let mut line = String::new();
-            let Ok(n) = reader.read_line(&mut line) else { break };
-            if n == 0 { break }
-            if let Ok(value) = serde_json::from_str::<Value>(line.trim_end_matches(['\n','\r'])) {
+            let Ok(n) = reader.read_line(&mut line) else {
+                break;
+            };
+            if n == 0 {
+                break;
+            }
+            if let Ok(value) = serde_json::from_str::<Value>(line.trim_end_matches(['\n', '\r'])) {
                 let _ = tx.send(value);
             }
         }
@@ -854,8 +873,6 @@ pub fn discover_models(cwd: &str) -> Result<Vec<Value>, WsErr> {
     ))
 }
 
-
-
 /// Start Codex ahead of the first user prompt. The parked app-server already
 /// owns a provider thread, so the first real turn only sends `turn/start`.
 pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
@@ -892,11 +909,14 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let model_selection_parsed = model_selection_json
-        .and_then(|raw| serde_json::from_str::<Value>(&raw).ok());
-    let selected_model = model_selection_parsed
-        .as_ref()
-        .and_then(|value| value.get("model").and_then(Value::as_str).map(str::to_string));
+    let model_selection_parsed =
+        model_selection_json.and_then(|raw| serde_json::from_str::<Value>(&raw).ok());
+    let selected_model = model_selection_parsed.as_ref().and_then(|value| {
+        value
+            .get("model")
+            .and_then(Value::as_str)
+            .map(str::to_string)
+    });
     let launch_key = format!(
         "{}|{}|{}|{}",
         turn_runtime_mode,
@@ -1148,12 +1168,23 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     let selected_effort: Option<String> = model_selection
         .pointer("/options/reasoningEffort")
         .and_then(Value::as_str)
-        .or_else(|| model_selection.pointer("/options/effort").and_then(Value::as_str))
+        .or_else(|| {
+            model_selection
+                .pointer("/options/effort")
+                .and_then(Value::as_str)
+        })
         .map(str::to_string);
-    let selected_service_tier: Option<String> = if model_selection.pointer("/options/serviceTier").and_then(Value::as_str) == Some("ultrafast") {
+    let selected_service_tier: Option<String> = if model_selection
+        .pointer("/options/serviceTier")
+        .and_then(Value::as_str)
+        == Some("ultrafast")
+    {
         Some("ultrafast".to_string())
     } else {
-        match model_selection.pointer("/options/fastMode").and_then(Value::as_bool) {
+        match model_selection
+            .pointer("/options/fastMode")
+            .and_then(Value::as_bool)
+        {
             Some(true) => Some("fast".to_string()),
             Some(false) => Some("default".to_string()),
             None => None,
@@ -1173,60 +1204,59 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
         runtime_mode: turn_runtime_mode.clone(),
         cancelled: cancelled.clone(),
     };
-    let (mut child, mut rpc, reused_thread) = if let Some(mut parked) =
-        take_parked(thread_id, &launch_key)
-    {
-        parked.rpc.approval_ctx = Some(approval_ctx.clone());
-        let provider_thread_id = parked.provider_thread_id.clone();
-        (parked.child, parked.rpc, Some(provider_thread_id))
-    } else {
-        let mut command = Command::new(codex_binary());
-        crate::provider_env::sanitize_provider_child(&mut command);
-        crate::provider_instances::apply_instance_environment_for(
-            &mut command,
-            "codex",
-            model_selection.get("instanceId").and_then(Value::as_str),
-        );
-        command
-            .arg("app-server")
-            .current_dir(&cwd)
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::null());
-        let child: Child = match command.spawn() {
-            Ok(c) => c,
-            Err(e) => {
-                let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
-                let msg = format!("could not launch `codex app-server`: {e}");
-                let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
-                let _ = session_set_event(
-                    &conn,
-                    thread_id,
-                    &json!({
-                        "threadId": thread_id,
-                        "status": "error",
-                        "providerName": "codex",
-                        "activeTurnId": null,
-                        "runtimeMode": turn_runtime_mode,
-                        "lastError": msg,
-                        "updatedAt": iso_now_ms(),
-                    }),
-                );
-                return Err(err(msg));
-            }
+    let (mut child, mut rpc, reused_thread) =
+        if let Some(mut parked) = take_parked(thread_id, &launch_key) {
+            parked.rpc.approval_ctx = Some(approval_ctx.clone());
+            let provider_thread_id = parked.provider_thread_id.clone();
+            (parked.child, parked.rpc, Some(provider_thread_id))
+        } else {
+            let mut command = Command::new(codex_binary());
+            crate::provider_env::sanitize_provider_child(&mut command);
+            crate::provider_instances::apply_instance_environment_for(
+                &mut command,
+                "codex",
+                model_selection.get("instanceId").and_then(Value::as_str),
+            );
+            command
+                .arg("app-server")
+                .current_dir(&cwd)
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped())
+                .stderr(Stdio::null());
+            let child: Child = match command.spawn() {
+                Ok(c) => c,
+                Err(e) => {
+                    let _ = set_turn_state(&conn, thread_id, &turn_id, "error", true);
+                    let msg = format!("could not launch `codex app-server`: {e}");
+                    let _ = set_session(&conn, thread_id, "error", Some(""), Some(&msg), None);
+                    let _ = session_set_event(
+                        &conn,
+                        thread_id,
+                        &json!({
+                            "threadId": thread_id,
+                            "status": "error",
+                            "providerName": "codex",
+                            "activeTurnId": null,
+                            "runtimeMode": turn_runtime_mode,
+                            "lastError": msg,
+                            "updatedAt": iso_now_ms(),
+                        }),
+                    );
+                    return Err(err(msg));
+                }
+            };
+            let mut child = child;
+            let child_stdin = child.stdin.take().ok_or_else(|| err("codex stdin"))?;
+            let stdout = child.stdout.take().ok_or_else(|| err("codex stdout"))?;
+            let stdin = Arc::new(Mutex::new(child_stdin));
+            let rpc = Rpc {
+                stdin,
+                reader: BufReader::new(stdout),
+                next_id: 1,
+                approval_ctx: Some(approval_ctx.clone()),
+            };
+            (child, rpc, None)
         };
-        let mut child = child;
-        let child_stdin = child.stdin.take().ok_or_else(|| err("codex stdin"))?;
-        let stdout = child.stdout.take().ok_or_else(|| err("codex stdout"))?;
-        let stdin = Arc::new(Mutex::new(child_stdin));
-        let rpc = Rpc {
-            stdin,
-            reader: BufReader::new(stdout),
-            next_id: 1,
-            approval_ctx: Some(approval_ctx.clone()),
-        };
-        (child, rpc, None)
-    };
     let stdin = rpc.stdin.clone();
 
     let mut active_provider_thread_id: Option<String> = None;
@@ -1318,7 +1348,8 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             if attachment.get("type").and_then(Value::as_str) != Some("image") {
                 continue;
             }
-            let Some(path) = crate::provider_attachments::resolve_attachment_path(attachment) else {
+            let Some(path) = crate::provider_attachments::resolve_attachment_path(attachment)
+            else {
                 return Err(err("invalid attachment id"));
             };
             input_items.push(json!({
@@ -1406,11 +1437,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     .unwrap_or(0);
                 let params = v.get("params").unwrap_or(&Value::Null);
                 crate::provider_usage::persist("codex", params);
-                if let Some(next) = crate::usage_limit::codex_usage_limit_windows(
-                    &usage_windows,
-                    params,
-                    now_ms,
-                ) {
+                if let Some(next) =
+                    crate::usage_limit::codex_usage_limit_windows(&usage_windows, params, now_ms)
+                {
                     usage_windows = next;
                 }
             }
@@ -1440,11 +1469,18 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                                     Some(s.to_string())
                                 } else {
                                     info.as_object().and_then(|o| {
-                                        if o.len() == 1 { o.keys().next().cloned() } else { None }
+                                        if o.len() == 1 {
+                                            o.keys().next().cloned()
+                                        } else {
+                                            None
+                                        }
                                     })
                                 }
                             });
-                        if crate::usage_limit::is_codex_usage_limit_error(code.as_deref(), &error_obj) {
+                        if crate::usage_limit::is_codex_usage_limit_error(
+                            code.as_deref(),
+                            &error_obj,
+                        ) {
                             usage_limit_error = true;
                         }
                         let msg = error_obj
@@ -1528,12 +1564,28 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     match result {
         Ok(reason) => {
             let interrupted = cancelled_flag || reason == "cancelled";
-            let state = if interrupted { "interrupted" } else { "completed" };
+            let state = if interrupted {
+                "interrupted"
+            } else {
+                "completed"
+            };
             let status = if interrupted { "interrupted" } else { "ready" };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "codex", final_usage.as_ref(), None);
+            crate::claude_runner::write_turn_completed_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                state,
+                "codex",
+                final_usage.as_ref(),
+                None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             if state == "completed" {
-                crate::checkpointing::capture_turn_checkpoint(thread_id, &turn_id, std::path::PathBuf::from(&cwd));
+                crate::checkpointing::capture_turn_checkpoint(
+                    thread_id,
+                    &turn_id,
+                    std::path::PathBuf::from(&cwd),
+                );
             }
             set_session(&conn, thread_id, status, Some(""), None, None)?;
             session_set_event(
@@ -1558,14 +1610,24 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
             } else {
                 ("error", "error")
             };
-            crate::claude_runner::write_turn_completed_activity(&conn, thread_id, &turn_id, state, "codex", final_usage.as_ref(), Some(&format!("{:?}", e)));
+            crate::claude_runner::write_turn_completed_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                state,
+                "codex",
+                final_usage.as_ref(),
+                Some(&format!("{:?}", e)),
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             if !cancelled_flag && usage_limit_error {
                 let now_ms = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .map(|d| d.as_millis() as i64)
                     .unwrap_or(0);
-                if let Some(reset_at) = crate::usage_limit::usage_limit_reset_at(&usage_windows, now_ms) {
+                if let Some(reset_at) =
+                    crate::usage_limit::usage_limit_reset_at(&usage_windows, now_ms)
+                {
                     let epoch = format!("codex-{turn_id}");
                     let model_sel: Value = conn
                         .query_row(
@@ -1583,11 +1645,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     src.insert("commandId".into(), json!(format!("ul-source:{turn_id}")));
                     src.insert("threadId".into(), json!(thread_id));
                     src.insert("createdAt".into(), json!(now));
-                    src.insert("source".into(), json!({
-                        "turnId": turn_id,
-                        "bindingKey": "detection",
-                        "policyEpoch": epoch,
-                    }));
+                    src.insert(
+                        "source".into(),
+                        json!({
+                            "turnId": turn_id,
+                            "bindingKey": "detection",
+                            "policyEpoch": epoch,
+                        }),
+                    );
                     let mut sched = serde_json::Map::new();
                     sched.insert("type".into(), json!("thread.usage-limit.schedule"));
                     sched.insert("commandId".into(), json!(format!("ul-schedule:{turn_id}")));
@@ -1603,8 +1668,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         "providerInstanceId": model_sel.get("instanceId").or_else(|| model_sel.get("provider")).cloned().unwrap_or(json!("codex")),
                         "model": model_sel.get("model").cloned().unwrap_or(Value::Null),
                     }));
-                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(src));
-                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(sched));
+                    let _ = crate::orchestration_engine::handle(
+                        "orchestration.dispatchCommand",
+                        &Value::Object(src),
+                    );
+                    let _ = crate::orchestration_engine::handle(
+                        "orchestration.dispatchCommand",
+                        &Value::Object(sched),
+                    );
                 }
             }
             set_session(&conn, thread_id, status, Some(""), Some(&e.0), None)?;

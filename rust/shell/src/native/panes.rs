@@ -3,25 +3,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -56,10 +54,26 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui { rgb(0x1d1d1d) } else { rgb(0xf7f7f7) };
-        let hairline = if dark_ui { rgb(0x2e2e2e) } else { rgb(0xe5e5e5) };
-        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
-        let chip_bg = if dark_ui { rgba(0xffffff12) } else { rgba(0x00000008) };
+        let well_bg = if dark_ui {
+            rgb(0x1d1d1d)
+        } else {
+            rgb(0xf7f7f7)
+        };
+        let hairline = if dark_ui {
+            rgb(0x2e2e2e)
+        } else {
+            rgb(0xe5e5e5)
+        };
+        let subtle = if dark_ui {
+            rgba(0xffffff14)
+        } else {
+            rgba(0x0000000d)
+        };
+        let chip_bg = if dark_ui {
+            rgba(0xffffff12)
+        } else {
+            rgba(0x00000008)
+        };
         let soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
@@ -90,42 +104,65 @@ impl Native {
         // ---- settings pane (upstream /settings layout) ----
         // Nav: (group label, [(section id, label, icon, badge)])
         let settings_nav: &[(&str, &[(&str, &str, &[u8], Option<&str>)])] = &[
-            ("", &[
-                ("profile", "Profile", icons::USER, None),
-                ("accounts", "Accounts", icons::S_PEOPLE_ID_CARD, None),
-            ]),
-            ("Synara", &[
-                ("general", "General", icons::S_GEAR, None),
-                ("appearance", "Appearance", icons::S_COLOR_PALETTE, None),
-                ("layout", "Layout", icons::S_LAYOUT_SIDEBAR, None),
-                ("chats", "Chats", icons::S_CHAT_BUBBLES, None),
-                ("notifications", "Notifications", icons::S_BELL, None),
-                ("shortcuts", "Keyboard shortcuts", icons::S_SHORTCUT, None),
-            ]),
-            ("Agents", &[
-                ("providers", "Providers", icons::S_PUZZLE, None),
-                ("models", "Models", icons::S_BRAIN, None),
-                ("skills", "Skills", icons::S_BUILDING_BLOCKS, None),
-                ("usage", "Usage", icons::S_GAUGE, None),
-            ]),
-            ("Connections", &[
-                ("connectors", "Connectors", icons::S_CONNECTORS, None),
-                ("integrations", "External agents", icons::S_PLUGIN, None),
-                ("devices", "Devices", icons::S_GLOBE, None),
-                ("computer", "Computer use", icons::S_COMPUTER_USE, Some("Beta")),
-                ("appsnap", "AppSnap", icons::S_SCREEN_CAPTURE, None),
-            ]),
-            ("Workspace", &[
-                ("worktrees", "Worktrees", icons::S_BRANCH_SIMPLE, None),
-                ("archive", "Archive", icons::S_ARCHIVE, None),
-            ]),
-            ("System", &[
-                ("saved-logins", "Saved logins", icons::SHIELD_ACCESS, None),
-                ("beta", "Beta channel", icons::S_GAUGE, Some("Beta")),
-                ("privacy", "Privacy", icons::S_SHIELD, None),
-                ("advanced", "Advanced", icons::S_TOOLBOX, None),
-                ("about", "About", icons::S_CIRCLE_INFO, None),
-            ]),
+            (
+                "",
+                &[
+                    ("profile", "Profile", icons::USER, None),
+                    ("accounts", "Accounts", icons::S_PEOPLE_ID_CARD, None),
+                ],
+            ),
+            (
+                "Synara",
+                &[
+                    ("general", "General", icons::S_GEAR, None),
+                    ("appearance", "Appearance", icons::S_COLOR_PALETTE, None),
+                    ("layout", "Layout", icons::S_LAYOUT_SIDEBAR, None),
+                    ("chats", "Chats", icons::S_CHAT_BUBBLES, None),
+                    ("notifications", "Notifications", icons::S_BELL, None),
+                    ("shortcuts", "Keyboard shortcuts", icons::S_SHORTCUT, None),
+                ],
+            ),
+            (
+                "Agents",
+                &[
+                    ("providers", "Providers", icons::S_PUZZLE, None),
+                    ("models", "Models", icons::S_BRAIN, None),
+                    ("skills", "Skills", icons::S_BUILDING_BLOCKS, None),
+                    ("usage", "Usage", icons::S_GAUGE, None),
+                ],
+            ),
+            (
+                "Connections",
+                &[
+                    ("connectors", "Connectors", icons::S_CONNECTORS, None),
+                    ("integrations", "External agents", icons::S_PLUGIN, None),
+                    ("devices", "Devices", icons::S_GLOBE, None),
+                    (
+                        "computer",
+                        "Computer use",
+                        icons::S_COMPUTER_USE,
+                        Some("Beta"),
+                    ),
+                    ("appsnap", "AppSnap", icons::S_SCREEN_CAPTURE, None),
+                ],
+            ),
+            (
+                "Workspace",
+                &[
+                    ("worktrees", "Worktrees", icons::S_BRANCH_SIMPLE, None),
+                    ("archive", "Archive", icons::S_ARCHIVE, None),
+                ],
+            ),
+            (
+                "System",
+                &[
+                    ("saved-logins", "Saved logins", icons::SHIELD_ACCESS, None),
+                    ("beta", "Beta channel", icons::S_GAUGE, Some("Beta")),
+                    ("privacy", "Privacy", icons::S_SHIELD, None),
+                    ("advanced", "Advanced", icons::S_TOOLBOX, None),
+                    ("about", "About", icons::S_CIRCLE_INFO, None),
+                ],
+            ),
         ];
         let section_title: &str = settings_nav
             .iter()
@@ -161,13 +198,29 @@ impl Native {
                         .gap(px(2.))
                         // Upstream SettingsRow: 13px / 19.5px title (medium) and
                         // description, 2px apart.
-                        .child(div().text_size(px(13.)).line_height(px(19.5)).font_weight(FontWeight::MEDIUM).child(title))
-                        .child(div().w_full().text_size(px(13.)).line_height(px(19.5)).text_color(theme.muted_foreground).child(desc)),
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .line_height(px(19.5))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(title),
+                        )
+                        .child(
+                            div()
+                                .w_full()
+                                .text_size(px(13.))
+                                .line_height(px(19.5))
+                                .text_color(theme.muted_foreground)
+                                .child(desc),
+                        ),
                 )
                 .child(ctrl)
         };
         // SettingsRow with upstream `status` line (pt-1 text-ui-sm muted) below the description.
-        let srow_st = |title: &'static str, desc: &'static str, status: &'static str, ctrl: gpui::AnyElement| {
+        let srow_st = |title: &'static str,
+                       desc: &'static str,
+                       status: &'static str,
+                       ctrl: gpui::AnyElement| {
             h_flex()
                 .w_full()
                 .items_center()
@@ -180,9 +233,28 @@ impl Native {
                         .flex_1()
                         .min_w_0()
                         .gap(px(2.))
-                        .child(div().text_size(px(13.)).line_height(px(19.5)).font_weight(FontWeight::MEDIUM).child(title))
-                        .child(div().w_full().text_size(px(13.)).line_height(px(19.5)).text_color(theme.muted_foreground).child(desc))
-                        .child(div().pt(px(4.)).text_size(px(12.)).text_color(theme.muted_foreground).child(status)),
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .line_height(px(19.5))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(title),
+                        )
+                        .child(
+                            div()
+                                .w_full()
+                                .text_size(px(13.))
+                                .line_height(px(19.5))
+                                .text_color(theme.muted_foreground)
+                                .child(desc),
+                        )
+                        .child(
+                            div()
+                                .pt(px(4.))
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(status),
+                        ),
                 )
                 .child(ctrl)
         };
@@ -198,10 +270,18 @@ impl Native {
                 .border_1()
                 .border_color(theme.border);
             if let Some(ic) = icon {
-                b = b.child(svg_icon(ic).size(px(14.)).text_color(theme.muted_foreground));
+                b = b.child(
+                    svg_icon(ic)
+                        .size(px(14.))
+                        .text_color(theme.muted_foreground),
+                );
             }
             b.child(div().text_size(px(13.)).whitespace_nowrap().child(label))
-                .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(theme.muted_foreground))
+                .child(
+                    svg_icon(icons::CHEVRON_DOWN)
+                        .size(px(12.))
+                        .text_color(theme.muted_foreground),
+                )
                 .into_any_element()
         };
         // Upstream Button size="xs" variant="outline": h-6, px 7px, text-ui-xs,
@@ -216,7 +296,13 @@ impl Native {
                 .rounded(px(4.))
                 .border_1()
                 .border_color(theme.border)
-                .child(div().text_size(px(11.)).font_weight(FontWeight::MEDIUM).whitespace_nowrap().child(label))
+                .child(
+                    div()
+                        .text_size(px(11.))
+                        .font_weight(FontWeight::MEDIUM)
+                        .whitespace_nowrap()
+                        .child(label),
+                )
                 .into_any_element()
         };
         let section_label = |t: &'static str| {
@@ -257,9 +343,19 @@ impl Native {
                 if i == active {
                     c = c.bg(theme.secondary);
                 }
-                let tc = if i == active { theme.foreground } else { theme.muted_foreground };
+                let tc = if i == active {
+                    theme.foreground
+                } else {
+                    theme.muted_foreground
+                };
                 s = s.child(
-                    c.child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(tc).child(*o)),
+                    c.child(
+                        div()
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(tc)
+                            .child(*o),
+                    ),
                 );
             }
             s.into_any_element()
@@ -271,7 +367,11 @@ impl Native {
             let g = ((color >> 8) & 0xff) as f32;
             let b = (color & 0xff) as f32;
             let lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-            let ink = if lum > 140. { rgba(0x000000aa) } else { rgba(0xffffffcc) };
+            let ink = if lum > 140. {
+                rgba(0x000000aa)
+            } else {
+                rgba(0xffffffcc)
+            };
             div()
                 .w(px(160.))
                 .h(px(26.))
@@ -282,7 +382,12 @@ impl Native {
                 .border_1()
                 .border_color(theme.border)
                 .bg(rgb(color))
-                .child(div().text_size(px(13.)).text_color(ink).child(hex_label.to_string()))
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .text_color(ink)
+                        .child(hex_label.to_string()),
+                )
                 .into_any_element()
         };
         // Bordered number field + "px" suffix.
@@ -302,39 +407,114 @@ impl Native {
                         .border_color(theme.border)
                         .child(div().text_size(px(13.)).child(v)),
                 )
-                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("px"))
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .text_color(theme.muted_foreground)
+                        .child("px"),
+                )
                 .into_any_element()
         };
         // Miniature app-window mockup for the Appearance theme picker, matching
         // upstream ThemeModePicker (MOCKUP_COLORS + MOCKUP_LAYOUT) pixel for pixel.
         // Thumb area is 190x133 (aspect 10/7 inside border-2 + p-3px of a 200px card).
-        struct MockColors { backdrop: u32, panel: u32, hbar: u32, hbar_soft: u32, card: u32, rowbar: u32, hairline: u32 }
-        const MOCK_LIGHT: MockColors = MockColors { backdrop: 0xe9e9e9, panel: 0xf6f6f6, hbar: 0xcfcfcf, hbar_soft: 0xe0e0e0, card: 0xffffff, rowbar: 0xe3e3e3, hairline: 0xefefef };
-        const MOCK_DARK: MockColors = MockColors { backdrop: 0x5f5f5f, panel: 0x2c2c2c, hbar: 0xa6a6a6, hbar_soft: 0x7d7d7d, card: 0x3a3a3a, rowbar: 0x707070, hairline: 0x4d4d4d };
+        struct MockColors {
+            backdrop: u32,
+            panel: u32,
+            hbar: u32,
+            hbar_soft: u32,
+            card: u32,
+            rowbar: u32,
+            hairline: u32,
+        }
+        const MOCK_LIGHT: MockColors = MockColors {
+            backdrop: 0xe9e9e9,
+            panel: 0xf6f6f6,
+            hbar: 0xcfcfcf,
+            hbar_soft: 0xe0e0e0,
+            card: 0xffffff,
+            rowbar: 0xe3e3e3,
+            hairline: 0xefefef,
+        };
+        const MOCK_DARK: MockColors = MockColors {
+            backdrop: 0x5f5f5f,
+            panel: 0x2c2c2c,
+            hbar: 0xa6a6a6,
+            hbar_soft: 0x7d7d7d,
+            card: 0x3a3a3a,
+            rowbar: 0x707070,
+            hairline: 0x4d4d4d,
+        };
         // Upstream MOCKUP_LAYOUT resolves percentages against the containing
         // block's width; at a 190x133 thumb the panel is 160 wide and the card
         // 132, giving the absolute values used below.
         let mock_surface = |c: &MockColors| {
-            div()
-                .size_full()
-                .bg(rgb(c.backdrop))
-                .child(
-                    div().absolute().left(px(15.)).right(px(15.)).top(px(22.)).bottom_0()
-                        .bg(rgb(c.panel)).rounded_t(px(8.))
-                        .child(div().absolute().left(px(50.)).top(px(14.)).w(px(61.)).h(px(4.)).rounded_full().bg(rgb(c.hbar)))
-                        .child(div().absolute().left(px(36.)).top(px(22.)).w(px(88.)).h(px(3.)).rounded_full().bg(rgb(c.hbar_soft)))
-                        .child(div().absolute().left(px(14.)).right(px(14.)).top(px(37.)).bottom_0()
-                            .bg(rgb(c.card)).rounded_t(px(6.))
-                            .child(rows_card(c))),
-                )
+            div().size_full().bg(rgb(c.backdrop)).child(
+                div()
+                    .absolute()
+                    .left(px(15.))
+                    .right(px(15.))
+                    .top(px(22.))
+                    .bottom_0()
+                    .bg(rgb(c.panel))
+                    .rounded_t(px(8.))
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(50.))
+                            .top(px(14.))
+                            .w(px(61.))
+                            .h(px(4.))
+                            .rounded_full()
+                            .bg(rgb(c.hbar)),
+                    )
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(36.))
+                            .top(px(22.))
+                            .w(px(88.))
+                            .h(px(3.))
+                            .rounded_full()
+                            .bg(rgb(c.hbar_soft)),
+                    )
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(14.))
+                            .right(px(14.))
+                            .top(px(37.))
+                            .bottom_0()
+                            .bg(rgb(c.card))
+                            .rounded_t(px(6.))
+                            .child(rows_card(c)),
+                    ),
+            )
         };
         fn rows_card(c: &MockColors) -> gpui::Div {
             let mut card = div().size_full();
             for i in 0..3 {
                 let y = 9. + (i as f32) * 21.5;
                 card = card
-                    .child(div().absolute().left(px(13.)).top(px(y)).w(px(47.)).h(px(4.)).rounded_full().bg(rgb(c.rowbar)))
-                    .child(div().absolute().left(px(13.)).right(px(13.)).top(px(y + 12.3)).h(px(1.)).bg(rgb(c.hairline)));
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(13.))
+                            .top(px(y))
+                            .w(px(47.))
+                            .h(px(4.))
+                            .rounded_full()
+                            .bg(rgb(c.rowbar)),
+                    )
+                    .child(
+                        div()
+                            .absolute()
+                            .left(px(13.))
+                            .right(px(13.))
+                            .top(px(y + 12.3))
+                            .h(px(1.))
+                            .bg(rgb(c.hairline)),
+                    );
             }
             card
         }
@@ -345,22 +525,50 @@ impl Native {
                     .size_full()
                     .child(mock_surface(&MOCK_LIGHT))
                     .child(
-                        div().absolute().right_0().top_0().bottom_0().w(px(95.)).overflow_hidden()
-                            .child(div().absolute().right_0().top_0().bottom_0().w(px(190.))
-                                .child(mock_surface(&MOCK_DARK))),
+                        div()
+                            .absolute()
+                            .right_0()
+                            .top_0()
+                            .bottom_0()
+                            .w(px(95.))
+                            .overflow_hidden()
+                            .child(
+                                div()
+                                    .absolute()
+                                    .right_0()
+                                    .top_0()
+                                    .bottom_0()
+                                    .w(px(190.))
+                                    .child(mock_surface(&MOCK_DARK)),
+                            ),
                     )
                     .into_any_element(),
-                1 => div().size_full().child(mock_surface(&MOCK_LIGHT)).into_any_element(),
-                _ => div().size_full().child(mock_surface(&MOCK_DARK)).into_any_element(),
+                1 => div()
+                    .size_full()
+                    .child(mock_surface(&MOCK_LIGHT))
+                    .into_any_element(),
+                _ => div()
+                    .size_full()
+                    .child(mock_surface(&MOCK_DARK))
+                    .into_any_element(),
             };
             let frame = div()
                 .w_full()
                 .p(px(3.))
                 .rounded(px(14.))
                 .border_2()
-                .border_color(if selected { theme_fg } else { gpui::transparent_black() })
+                .border_color(if selected {
+                    theme_fg
+                } else {
+                    gpui::transparent_black()
+                })
                 .child(
-                    div().w(px(190.)).h(px(133.)).rounded(px(8.)).overflow_hidden().relative()
+                    div()
+                        .w(px(190.))
+                        .h(px(133.))
+                        .rounded(px(8.))
+                        .overflow_hidden()
+                        .relative()
                         .child(thumb),
                 );
             v_flex()
@@ -369,7 +577,12 @@ impl Native {
                 .gap(px(6.))
                 .items_center()
                 .child(frame)
-                .child(div().text_size(px(13.)).when(selected, |d| d.font_weight(FontWeight::MEDIUM)).child(label))
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .when(selected, |d| d.font_weight(FontWeight::MEDIUM))
+                        .child(label),
+                )
                 .into_any_element()
         };
 
@@ -395,11 +608,16 @@ impl Native {
         {
             // Upstream header row carries mb-8 (32px); the pane's uniform gap_5
             // covers 20 of it, so the head itself contributes the remaining 12.
-            let mut head = h_flex().w_full().items_start().justify_between().gap_4().pb(px(7.));
+            let mut head = h_flex()
+                .w_full()
+                .items_start()
+                .justify_between()
+                .gap_4()
+                .pb(px(7.));
             if self.settings_section == "profile" {
                 head = h_flex().items_start().w_full().justify_end().gap_4();
             } else {
-            head = head.child(
+                head = head.child(
                 v_flex()
                     .flex_1()
                     .min_w_0()
@@ -468,7 +686,12 @@ impl Native {
             );
             }
             if self.settings_section == "profile" {
-                head = head.child(h_flex().gap_2().child(outline_btn("Share")).child(outline_btn("Edit")));
+                head = head.child(
+                    h_flex()
+                        .gap_2()
+                        .child(outline_btn("Share"))
+                        .child(outline_btn("Edit")),
+                );
             } else if self.settings_section == "shortcuts" {
                 head = head.child(
                     h_flex()
@@ -588,7 +811,8 @@ impl Native {
             }
 
             if self.settings_section == "notifications" {
-                let accent = text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
+                let accent =
+                    text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
                 let test_notification = Button::new("test-system-notification")
                     .ghost()
                     .compact()
@@ -639,7 +863,8 @@ impl Native {
             // Upstream ChatsSettingsView (web section id "behavior"): Conversation,
             // Review and Safety confirmations, same copy, controls and defaults.
             if self.settings_section == "chats" {
-                let accent = text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
+                let accent =
+                    text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark));
                 let sw = |cx: &mut Context<Self>, key: &'static str, default: bool| {
                     let on = self.setting_bool(key, default);
                     Self::setting_switch(cx, key, on, accent)
@@ -836,7 +1061,12 @@ impl Native {
                                  right: Vec<gpui::AnyElement>| {
                     v_flex()
                         .gap(px(8.))
-                        .child(div().text_size(px(12.)).text_color(theme.muted_foreground).child(label))
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(label),
+                        )
                         .child(
                             h_flex()
                                 .w_full()
@@ -982,7 +1212,6 @@ impl Native {
                 );
             }
 
-
             if self.settings_section == "shortcuts" {
                 let shortcut_rows = SHORTCUT_ROWS;
                 let search_field = h_flex()
@@ -993,9 +1222,24 @@ impl Native {
                     .gap_2()
                     .rounded(px(10.))
                     .bg(gpui::rgba(0x0000000a))
-                    .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(theme.muted_foreground))
-                    .child(div().flex_1().text_size(px(13.)).text_color(theme.muted_foreground).child("Search shortcuts"))
-                    .child(div().text_xs().text_color(theme.muted_foreground).child("\u{2318}K"))
+                    .child(
+                        svg_icon(icons::SEARCH)
+                            .size(px(16.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("Search shortcuts"),
+                    )
+                    .child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child("\u{2318}K"),
+                    )
                     .into_any_element();
                 let mut list = v_flex();
                 let mut first = true;
@@ -1049,9 +1293,7 @@ impl Native {
                             let sc = rules[0].get("shortcut").cloned().unwrap_or(Value::Null);
                             format!("{}1\u{2013}9", sc_mod_label(&sc))
                         } else {
-                            sc_fmt_label(
-                                &rules[0].get("shortcut").cloned().unwrap_or(Value::Null),
-                            )
+                            sc_fmt_label(&rules[0].get("shortcut").cloned().unwrap_or(Value::Null))
                         };
                         right = right.child(sc_chip(label, &theme));
                         let repl = rules.clone();
@@ -1152,8 +1394,21 @@ impl Native {
                                 v_flex()
                                     .flex_1()
                                     .min_w_0()
-                                    .child(div().text_size(px(13.)).line_height(px(18.)).font_weight(FontWeight::MEDIUM).child(title))
-                                    .child(div().w_full().text_size(px(13.)).line_height(px(16.)).text_color(theme.muted_foreground).child(desc)),
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .line_height(px(18.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .child(title),
+                                    )
+                                    .child(
+                                        div()
+                                            .w_full()
+                                            .text_size(px(13.))
+                                            .line_height(px(16.))
+                                            .text_color(theme.muted_foreground)
+                                            .child(desc),
+                                    ),
                             )
                             .child(right),
                     );
@@ -1162,7 +1417,6 @@ impl Native {
                     .child(search_field)
                     .child(card(list.into_any_element()));
             }
-
 
             // ==================== remaining sections ====================
             let sdata = &self.settings_data;
@@ -1178,12 +1432,25 @@ impl Native {
                     Vec::new()
                 })
                 .collect();
-            let dash = |v: &Value| div().text_size(px(13.)).text_color(theme.muted_foreground).child("\u{2014}").into_any_element();
+            let dash = |v: &Value| {
+                div()
+                    .text_size(px(13.))
+                    .text_color(theme.muted_foreground)
+                    .child("\u{2014}")
+                    .into_any_element()
+            };
             fn provider_display(id: &str) -> &str {
                 match id {
-                    "codex" => "Codex", "claudeAgent" | "claude" => "Claude", "cursor" => "Cursor",
-                    "antigravity" => "Antigravity", "grok" => "Grok", "droid" => "Droid",
-                    "devin" => "Devin", "opencode" => "OpenCode", "pi" => "Pi", "omp" => "Oh My Pi",
+                    "codex" => "Codex",
+                    "claudeAgent" | "claude" => "Claude",
+                    "cursor" => "Cursor",
+                    "antigravity" => "Antigravity",
+                    "grok" => "Grok",
+                    "droid" => "Droid",
+                    "devin" => "Devin",
+                    "opencode" => "OpenCode",
+                    "pi" => "Pi",
+                    "omp" => "Oh My Pi",
                     other => other,
                 }
             }
@@ -1192,15 +1459,26 @@ impl Native {
             if self.settings_section == "profile" {
                 let prof = get(sdata, "profile");
                 let num = |k: &str| get(prof, k).as_i64().map(|n| n.to_string());
-                let threads_total = arr(get(sdata, "snapshot"), "threads").len()
+                let threads_total = arr(get(sdata, "snapshot"), "threads")
+                    .len()
                     .max(arr(get(sdata, "snapshot"), "items").len());
                 let stat = |val: String, label: &'static str| {
                     v_flex()
                         .flex_1()
                         .items_center()
                         .gap(px(2.))
-                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(val))
-                        .child(div().text_xs().text_color(theme.muted_foreground).child(label))
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(val),
+                        )
+                        .child(
+                            div()
+                                .text_xs()
+                                .text_color(theme.muted_foreground)
+                                .child(label),
+                        )
                         .into_any_element()
                 };
                 let ins = |label: &'static str, val: String| {
@@ -1209,7 +1487,12 @@ impl Native {
                         .items_center()
                         .justify_between()
                         .py(px(4.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(label))
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child(label),
+                        )
                         .child(div().text_size(px(13.)).child(val))
                         .into_any_element()
                 };
@@ -1217,112 +1500,204 @@ impl Native {
                     v_flex()
                         .gap(px(3.))
                         .children((0..7).map(|_| {
-                            div().w(px(9.)).h(px(9.)).rounded(px(2.)).bg(chip_bg).into_any_element()
+                            div()
+                                .w(px(9.))
+                                .h(px(9.))
+                                .rounded(px(2.))
+                                .bg(chip_bg)
+                                .into_any_element()
                         }))
                         .into_any_element()
                 };
-                let months = ["Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov"];
-                settings_pane = settings_pane
-                    .child(
-                        v_flex()
-                            .w_full()
-                            .items_center()
-                            .gap(px(6.))
-                            .py_4()
-                            .child(
-                                div()
-                                    .w(px(44.))
-                                    .h(px(44.))
-                                    .rounded_full()
-                                    .bg(rgb(0x34a853))
-                                    .flex()
-                                    .items_center()
-                                    .justify_center()
-                                    .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).text_color(gpui::white()).child("DE")),
-                            )
-                            .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).child("Devin"))
-                            .child(div().text_xs().text_color(theme.muted_foreground).child("@devin \u{b7} Synara")),
-                    )
-                    .child(
-                        h_flex()
-                            .w_full()
-                            .py_2()
-                            .child(stat(num("lifetimeTokens").unwrap_or_else(|| "\u{2014}".into()), "Lifetime tokens"))
-                            .child(stat(num("peakDay").unwrap_or_else(|| "\u{2014}".into()), "Peak day"))
-                            .child(stat(num("totalPrompts").unwrap_or_else(|| "0".into()), "Total prompts"))
-                            .child(stat(num("currentStreak").map(|s| format!("{s} days")).unwrap_or_else(|| "0 days".into()), "Current streak"))
-                            .child(stat(num("longestStreak").map(|s| format!("{s} days")).unwrap_or_else(|| "0 days".into()), "Longest streak")),
-                    )
-                    .child(section_label("Activity"))
-                    .child(
-                        v_flex()
-                            .w_full()
-                            .gap_2()
-                            .child(h_flex().gap(px(3.)).children((0..44).map(|_| heat_col())))
-                            .child(
-                                h_flex()
-                                    .w_full()
-                                    .justify_between()
-                                    .children(months.map(|m| {
-                                        div().text_xs().text_color(theme.muted_foreground).child(m).into_any_element()
-                                    })),
-                            ),
-                    )
-                    .child(
-                        h_flex()
-                            .w_full()
-                            .items_start()
-                            .gap_6()
-                            .child(
-                                v_flex()
-                                    .flex_1()
-                                    .gap_1()
-                                    .child(section_label("Activity insights"))
-                                    .child(ins("Most used provider", "\u{2014}".into()))
-                                    .child(ins("Most used reasoning", "\u{2014}".into()))
-                                    .child(ins("Most active hour", "\u{2014}".into()))
-                                    .child(ins("Most worked project", "\u{2014}".into()))
-                                    .child(ins("Skills explored", "0".into()))
-                                    .child(ins("Total skills used", "0".into()))
-                                    .child(ins("Total threads", format!("{threads_total}"))),
-                            )
-                            .child(
-                                v_flex()
-                                    .flex_1()
-                                    .gap_1()
-                                    .child(section_label("Most used plugins"))
-                                    .child(div().py(px(4.)).text_size(px(13.)).text_color(theme.muted_foreground).child("No skills or agents used yet.")),
-                            ),
-                    )
-                    .child(section_label("Model usage"))
-                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Share of turns."))
-                    .child(div().pt_1().text_size(px(13.)).text_color(theme.muted_foreground).child("No model activity yet."));
+                let months = [
+                    "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
+                ];
+                settings_pane =
+                    settings_pane
+                        .child(
+                            v_flex()
+                                .w_full()
+                                .items_center()
+                                .gap(px(6.))
+                                .py_4()
+                                .child(
+                                    div()
+                                        .w(px(44.))
+                                        .h(px(44.))
+                                        .rounded_full()
+                                        .bg(rgb(0x34a853))
+                                        .flex()
+                                        .items_center()
+                                        .justify_center()
+                                        .child(
+                                            div()
+                                                .text_size(px(13.))
+                                                .font_weight(FontWeight::SEMIBOLD)
+                                                .text_color(gpui::white())
+                                                .child("DE"),
+                                        ),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .font_weight(FontWeight::SEMIBOLD)
+                                        .child("Devin"),
+                                )
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .child("@devin \u{b7} Synara"),
+                                ),
+                        )
+                        .child(
+                            h_flex()
+                                .w_full()
+                                .py_2()
+                                .child(stat(
+                                    num("lifetimeTokens").unwrap_or_else(|| "\u{2014}".into()),
+                                    "Lifetime tokens",
+                                ))
+                                .child(stat(
+                                    num("peakDay").unwrap_or_else(|| "\u{2014}".into()),
+                                    "Peak day",
+                                ))
+                                .child(stat(
+                                    num("totalPrompts").unwrap_or_else(|| "0".into()),
+                                    "Total prompts",
+                                ))
+                                .child(stat(
+                                    num("currentStreak")
+                                        .map(|s| format!("{s} days"))
+                                        .unwrap_or_else(|| "0 days".into()),
+                                    "Current streak",
+                                ))
+                                .child(stat(
+                                    num("longestStreak")
+                                        .map(|s| format!("{s} days"))
+                                        .unwrap_or_else(|| "0 days".into()),
+                                    "Longest streak",
+                                )),
+                        )
+                        .child(section_label("Activity"))
+                        .child(
+                            v_flex()
+                                .w_full()
+                                .gap_2()
+                                .child(h_flex().gap(px(3.)).children((0..44).map(|_| heat_col())))
+                                .child(h_flex().w_full().justify_between().children(months.map(
+                                    |m| {
+                                        div()
+                                            .text_xs()
+                                            .text_color(theme.muted_foreground)
+                                            .child(m)
+                                            .into_any_element()
+                                    },
+                                ))),
+                        )
+                        .child(
+                            h_flex()
+                                .w_full()
+                                .items_start()
+                                .gap_6()
+                                .child(
+                                    v_flex()
+                                        .flex_1()
+                                        .gap_1()
+                                        .child(section_label("Activity insights"))
+                                        .child(ins("Most used provider", "\u{2014}".into()))
+                                        .child(ins("Most used reasoning", "\u{2014}".into()))
+                                        .child(ins("Most active hour", "\u{2014}".into()))
+                                        .child(ins("Most worked project", "\u{2014}".into()))
+                                        .child(ins("Skills explored", "0".into()))
+                                        .child(ins("Total skills used", "0".into()))
+                                        .child(ins("Total threads", format!("{threads_total}"))),
+                                )
+                                .child(
+                                    v_flex()
+                                        .flex_1()
+                                        .gap_1()
+                                        .child(section_label("Most used plugins"))
+                                        .child(
+                                            div()
+                                                .py(px(4.))
+                                                .text_size(px(13.))
+                                                .text_color(theme.muted_foreground)
+                                                .child("No skills or agents used yet."),
+                                        ),
+                                ),
+                        )
+                        .child(section_label("Model usage"))
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Share of turns."),
+                        )
+                        .child(
+                            div()
+                                .pt_1()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("No model activity yet."),
+                        );
             }
 
             // ---------- Accounts ----------
             if self.settings_section == "accounts" {
                 let acct_icon = |pid: &str| match pid {
-                    "devin" => icons::P_DEVIN, "pi" => icons::P_PI, "codex" => icons::CODEX,
-                    "claudeAgent" | "claude" => icons::P_CLAUDE, "cursor" => icons::P_CURSOR,
-                    "grok" => icons::P_GROK, "droid" => icons::P_DROID, "opencode" => icons::P_OPENCODE,
-                    "antigravity" => icons::P_ANTIGRAVITY, "omp" => icons::P_OMP,
+                    "devin" => icons::P_DEVIN,
+                    "pi" => icons::P_PI,
+                    "codex" => icons::CODEX,
+                    "claudeAgent" | "claude" => icons::P_CLAUDE,
+                    "cursor" => icons::P_CURSOR,
+                    "grok" => icons::P_GROK,
+                    "droid" => icons::P_DROID,
+                    "opencode" => icons::P_OPENCODE,
+                    "antigravity" => icons::P_ANTIGRAVITY,
+                    "omp" => icons::P_OMP,
                     _ => icons::S_PUZZLE,
                 };
-                let shown: Vec<(&'static str, &'static str, &'static str, &'static str, &'static str)> = if cfg_providers.is_empty() {
+                let shown: Vec<(
+                    &'static str,
+                    &'static str,
+                    &'static str,
+                    &'static str,
+                    &'static str,
+                )> = if cfg_providers.is_empty() {
                     vec![
-                        ("devin", "Devin", "Authenticated \u{b7} Devin API Key", "Pro", "Daily 100% left \u{b7} Weekly 93% left"),
+                        (
+                            "devin",
+                            "Devin",
+                            "Authenticated \u{b7} Devin API Key",
+                            "Pro",
+                            "Daily 100% left \u{b7} Weekly 93% left",
+                        ),
                         ("pi", "Pi", "Available", "", ""),
                     ]
                 } else {
-                    cfg_providers.iter().filter_map(|p| {
-                        let pid = str_at(p, "provider");
-                        let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
-                        match &*pid {
-                            "devin" => Some(("devin","Devin","Authenticated \u{b7} Devin API Key","Pro","Daily 100% left \u{b7} Weekly 93% left")),
-                            "pi" => Some(("pi","Pi","Available","","")),
-                            _ => None,
-                        }
-                    }).collect()
+                    cfg_providers
+                        .iter()
+                        .filter_map(|p| {
+                            let pid = str_at(p, "provider");
+                            let pid = if pid.is_empty() {
+                                str_at(p, "driver")
+                            } else {
+                                pid
+                            };
+                            match &*pid {
+                                "devin" => Some((
+                                    "devin",
+                                    "Devin",
+                                    "Authenticated \u{b7} Devin API Key",
+                                    "Pro",
+                                    "Daily 100% left \u{b7} Weekly 93% left",
+                                )),
+                                "pi" => Some(("pi", "Pi", "Available", "", "")),
+                                _ => None,
+                            }
+                        })
+                        .collect()
                 };
                 for (pid, name, status, plan, quota) in shown {
                     let _ = pid;
@@ -1336,8 +1711,22 @@ impl Native {
                                 .child(
                                     h_flex()
                                         .gap_1()
-                                        .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("\u{2b06} Import directory"))
-                                        .child(div().px_2().py_1().text_xs().text_color(theme.muted_foreground).child("+ Add account")),
+                                        .child(
+                                            div()
+                                                .px_2()
+                                                .py_1()
+                                                .text_xs()
+                                                .text_color(theme.muted_foreground)
+                                                .child("\u{2b06} Import directory"),
+                                        )
+                                        .child(
+                                            div()
+                                                .px_2()
+                                                .py_1()
+                                                .text_xs()
+                                                .text_color(theme.muted_foreground)
+                                                .child("+ Add account"),
+                                        ),
                                 ),
                         )
                         .child(card(
@@ -1347,29 +1736,63 @@ impl Native {
                                 .gap_3()
                                 .px_3()
                                 .py(px(10.))
-                                .child(svg_icon(acct_icon(pid)).size(px(18.)).text_color(theme.foreground))
+                                .child(
+                                    svg_icon(acct_icon(pid))
+                                        .size(px(18.))
+                                        .text_color(theme.foreground),
+                                )
                                 .child(
                                     v_flex()
                                         .flex_1()
                                         .min_w_0()
                                         .gap(px(1.))
-                                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name))
+                                        .child(
+                                            div()
+                                                .text_size(px(13.))
+                                                .font_weight(FontWeight::MEDIUM)
+                                                .child(name),
+                                        )
                                         .child(
                                             h_flex()
                                                 .items_center()
                                                 .gap_1p5()
-                                                .child(div().w(px(6.)).h(px(6.)).rounded_full().bg(rgb(0x22a865)))
-                                                .child(div().text_xs().text_color(theme.muted_foreground).child(status)),
+                                                .child(
+                                                    div()
+                                                        .w(px(6.))
+                                                        .h(px(6.))
+                                                        .rounded_full()
+                                                        .bg(rgb(0x22a865)),
+                                                )
+                                                .child(
+                                                    div()
+                                                        .text_xs()
+                                                        .text_color(theme.muted_foreground)
+                                                        .child(status),
+                                                ),
                                         )
-                                        .children(if plan.is_empty() { vec![] } else {
-                                            vec![div().text_xs().text_color(theme.muted_foreground).child(plan)]
+                                        .children(if plan.is_empty() {
+                                            vec![]
+                                        } else {
+                                            vec![div()
+                                                .text_xs()
+                                                .text_color(theme.muted_foreground)
+                                                .child(plan)]
                                         })
-                                        .children(if quota.is_empty() { vec![] } else {
-                                            vec![div().text_xs().text_color(theme.muted_foreground).child(quota)]
+                                        .children(if quota.is_empty() {
+                                            vec![]
+                                        } else {
+                                            vec![div()
+                                                .text_xs()
+                                                .text_color(theme.muted_foreground)
+                                                .child(quota)]
                                         }),
                                 )
                                 .child(toggle(true))
-                                .child(svg_icon(icons::CHEVRON_RIGHT).size(px(14.)).text_color(theme.muted_foreground))
+                                .child(
+                                    svg_icon(icons::CHEVRON_RIGHT)
+                                        .size(px(14.))
+                                        .text_color(theme.muted_foreground),
+                                )
                                 .into_any_element(),
                         ));
                 }
@@ -1388,25 +1811,41 @@ impl Native {
             // ---------- Providers ----------
             if self.settings_section == "providers" {
                 let p_icon = |pid: &str| match pid {
-                    "codex" => icons::CODEX, "claudeAgent" | "claude" => icons::P_CLAUDE,
-                    "cursor" => icons::P_CURSOR, "antigravity" => icons::P_ANTIGRAVITY,
-                    "grok" => icons::P_GROK, "droid" => icons::P_DROID, "devin" => icons::P_DEVIN,
-                    "opencode" => icons::P_OPENCODE, "pi" => icons::P_PI, "omp" => icons::P_OMP,
+                    "codex" => icons::CODEX,
+                    "claudeAgent" | "claude" => icons::P_CLAUDE,
+                    "cursor" => icons::P_CURSOR,
+                    "antigravity" => icons::P_ANTIGRAVITY,
+                    "grok" => icons::P_GROK,
+                    "droid" => icons::P_DROID,
+                    "devin" => icons::P_DEVIN,
+                    "opencode" => icons::P_OPENCODE,
+                    "pi" => icons::P_PI,
+                    "omp" => icons::P_OMP,
                     _ => icons::S_PUZZLE,
                 };
                 let mut rows: Vec<(String, String, String, bool)> = Vec::new();
                 if cfg_providers.is_empty() {
                     for (pid, name, status, upd) in [
-                        ("codex","Codex","Unavailable",false),
-                        ("claudeAgent","Claude","Unavailable",false),
-                        ("cursor","Cursor","Unavailable",false),
-                        ("antigravity","Antigravity","Unavailable",false),
-                        ("grok","Grok","Unavailable",false),
-                        ("droid","Droid","Unavailable",false),
-                        ("opencode","OpenCode","Unavailable",false),
-                        ("pi","Pi","Installed \u{b7} sign-in not verified \u{b7} v1.4.0 -> v1.6.0",true),
-                        ("devin","Devin","Connected \u{b7} Current v3000.14.30821",false),
-                        ("omp","Oh My Pi","Unavailable",false),
+                        ("codex", "Codex", "Unavailable", false),
+                        ("claudeAgent", "Claude", "Unavailable", false),
+                        ("cursor", "Cursor", "Unavailable", false),
+                        ("antigravity", "Antigravity", "Unavailable", false),
+                        ("grok", "Grok", "Unavailable", false),
+                        ("droid", "Droid", "Unavailable", false),
+                        ("opencode", "OpenCode", "Unavailable", false),
+                        (
+                            "pi",
+                            "Pi",
+                            "Installed \u{b7} sign-in not verified \u{b7} v1.4.0 -> v1.6.0",
+                            true,
+                        ),
+                        (
+                            "devin",
+                            "Devin",
+                            "Connected \u{b7} Current v3000.14.30821",
+                            false,
+                        ),
+                        ("omp", "Oh My Pi", "Unavailable", false),
                     ] {
                         rows.push((pid.to_string(), name.to_string(), status.to_string(), upd));
                     }
@@ -1429,14 +1868,27 @@ impl Native {
                     let mut ordered: Vec<&Value> = cfg_providers.iter().collect();
                     let rank = |p: &Value| {
                         let pid = str_at(p, "provider");
-                        let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
-                        PROVIDER_ORDER.iter().position(|k| *k == pid).unwrap_or(usize::MAX)
+                        let pid = if pid.is_empty() {
+                            str_at(p, "driver")
+                        } else {
+                            pid
+                        };
+                        PROVIDER_ORDER
+                            .iter()
+                            .position(|k| *k == pid)
+                            .unwrap_or(usize::MAX)
                     };
                     ordered.sort_by_key(|p| rank(p));
                     for p in ordered {
                         let pid = str_at(p, "provider");
-                        let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
-                        if pid.is_empty() { continue; }
+                        let pid = if pid.is_empty() {
+                            str_at(p, "driver")
+                        } else {
+                            pid
+                        };
+                        if pid.is_empty() {
+                            continue;
+                        }
                         let avail = get(p, "available").as_bool().unwrap_or(false);
                         let auth = str_at(p, "authStatus");
                         let setup = if !avail {
@@ -1467,10 +1919,18 @@ impl Native {
                                 "unchanged" => Some("Still outdated".to_string()),
                                 _ => {
                                     let latest = fmt_ver(str_at(advisory, "latestVersion"));
-                                    if str_at(advisory, "status") == "behind_latest" && latest.is_some() {
+                                    if str_at(advisory, "status") == "behind_latest"
+                                        && latest.is_some()
+                                    {
                                         match fmt_ver(str_at(advisory, "currentVersion")) {
-                                            Some(cv) => Some(format!("{cv} -> {}", latest.unwrap_or_default())),
-                                            None => Some(format!("Latest {}", latest.unwrap_or_default())),
+                                            Some(cv) => Some(format!(
+                                                "{cv} -> {}",
+                                                latest.unwrap_or_default()
+                                            )),
+                                            None => Some(format!(
+                                                "Latest {}",
+                                                latest.unwrap_or_default()
+                                            )),
                                         }
                                     } else {
                                         current.map(|v| format!("Current {v}"))
@@ -1483,7 +1943,12 @@ impl Native {
                             None => setup,
                         };
                         let upd = str_at(advisory, "status") == "behind_latest";
-                        rows.push((pid.to_string(), provider_display(pid).to_string(), status, upd));
+                        rows.push((
+                            pid.to_string(),
+                            provider_display(pid).to_string(),
+                            status,
+                            upd,
+                        ));
                     }
                 }
                 settings_pane = settings_pane
@@ -1649,7 +2114,11 @@ impl Native {
             // ---------- Skills ----------
             if self.settings_section == "skills" {
                 let skills = arr(get(sdata, "skills"), "skills").to_vec();
-                let skills = if skills.is_empty() { arr(get(sdata, "skills"), "items").to_vec() } else { skills };
+                let skills = if skills.is_empty() {
+                    arr(get(sdata, "skills"), "items").to_vec()
+                } else {
+                    skills
+                };
                 settings_pane = settings_pane
                     .child(lgroup("Portable skills", card(
                         v_flex()
@@ -1686,14 +2155,28 @@ impl Native {
                     let nm = str_at(s, "name").to_string();
                     let desc = str_at(s, "description").to_string();
                     let pv = str_at(s, "provider").to_string();
-                    let desc = if desc.is_empty() { provider_display(&pv).to_string() } else { desc };
+                    let desc = if desc.is_empty() {
+                        provider_display(&pv).to_string()
+                    } else {
+                        desc
+                    };
                     settings_pane = settings_pane.child(card(
                         v_flex()
                             .px_3()
                             .py(px(8.))
                             .gap(px(1.))
-                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(nm))
-                            .child(div().text_xs().text_color(theme.muted_foreground).child(desc))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(nm),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child(desc),
+                            )
                             .into_any_element(),
                     ));
                 }
@@ -1702,16 +2185,28 @@ impl Native {
             // ---------- Usage ----------
             if self.settings_section == "usage" {
                 let p_icon2 = |pid: &str| match pid {
-                    "codex" => icons::CODEX, "claudeAgent" | "claude" => icons::P_CLAUDE,
-                    "cursor" => icons::P_CURSOR, "antigravity" => icons::P_ANTIGRAVITY,
-                    "grok" => icons::P_GROK, "droid" => icons::P_DROID, "devin" => icons::P_DEVIN,
-                    "opencode" => icons::P_OPENCODE, "pi" => icons::P_PI, "omp" => icons::P_OMP,
+                    "codex" => icons::CODEX,
+                    "claudeAgent" | "claude" => icons::P_CLAUDE,
+                    "cursor" => icons::P_CURSOR,
+                    "antigravity" => icons::P_ANTIGRAVITY,
+                    "grok" => icons::P_GROK,
+                    "droid" => icons::P_DROID,
+                    "devin" => icons::P_DEVIN,
+                    "opencode" => icons::P_OPENCODE,
+                    "pi" => icons::P_PI,
+                    "omp" => icons::P_OMP,
                     _ => icons::S_PUZZLE,
                 };
                 let sidebar_rows: [(&'static str, &'static str, bool); 9] = [
-                    ("codex","Codex",true), ("claudeAgent","Claude",true), ("cursor","Cursor",false),
-                    ("antigravity","Antigravity",false), ("grok","Grok",false), ("droid","Droid",false),
-                    ("opencode","OpenCode",false), ("pi","Pi",false), ("devin","Devin",false),
+                    ("codex", "Codex", true),
+                    ("claudeAgent", "Claude", true),
+                    ("cursor", "Cursor", false),
+                    ("antigravity", "Antigravity", false),
+                    ("grok", "Grok", false),
+                    ("droid", "Droid", false),
+                    ("opencode", "OpenCode", false),
+                    ("pi", "Pi", false),
+                    ("devin", "Devin", false),
                 ];
                 settings_pane = settings_pane
                     .child(
@@ -1784,8 +2279,17 @@ impl Native {
                     .border_color(theme.border)
                     .bg(soft_bg)
                     .items_center()
-                    .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
-                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Search connectors"))
+                    .child(
+                        svg_icon(icons::SEARCH)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child("Search connectors"),
+                    )
                     .into_any_element();
                 // Upstream primary pill: foreground fill, background-colored text.
                 let dark_btn = |label: &'static str| {
@@ -1796,8 +2300,17 @@ impl Native {
                         .items_center()
                         .rounded_full()
                         .bg(theme.foreground)
-                        .child(svg_icon(icons::PLUS).size(px(16.)).text_color(theme.background))
-                        .child(div().text_size(px(13.)).text_color(theme.background).child(label))
+                        .child(
+                            svg_icon(icons::PLUS)
+                                .size(px(16.))
+                                .text_color(theme.background),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.background)
+                                .child(label),
+                        )
                         .into_any_element()
                 };
                 let catalog: [(&'static str, &'static str); 3] = [
@@ -1806,43 +2319,127 @@ impl Native {
                     ("productivity", "Productivity"),
                 ];
                 let items: [(&'static str, &'static str, &'static str, &'static str); 18] = [
-                    ("popular","Supabase","Query Postgres, manage projects, and deploy Edge Functions.","supabase"),
-                    ("popular","Vercel","Manage projects and deployments, and read deployment logs.","vercel"),
-                    ("popular","Slack","Search, read, and post in your workspace. Needs your own Slack app.","slack"),
-                    ("popular","Linear","Find, create, and update issues, projects, and comments.","linear"),
-                    ("popular","Notion","Search, read, and edit pages and databases.","notion"),
-                    ("popular","Stripe","Work with customers, payments, and Stripe docs.","stripe"),
-                    ("developer","WorkOS","Manage users, organizations, SSO, and AuthKit in your dashboard.","workos"),
-                    ("developer","Convex","Start Convex apps and get setup and scaling guidance.","convex"),
-                    ("developer","Cloudflare","Build with Workers, KV, R2, and D1 on your account.","cloudflare"),
-                    ("developer","Sentry","Investigate errors, issues, and releases.","sentry"),
-                    ("developer","Neon","Manage serverless Postgres projects and branches.","neon"),
-                    ("developer","PostHog","Query product analytics, feature flags, and errors.","posthog"),
-                    ("developer","Netlify","Create, deploy, and manage Netlify sites.","netlify"),
-                    ("developer","Railway","Deploy and manage Railway projects and services.","railway"),
-                    ("developer","Prisma","Manage Prisma Postgres databases and backups.","prisma"),
-                    ("developer","Hugging Face","Search models, datasets, Spaces, and papers.","huggingface"),
-                    ("productivity","Atlassian","Work with Jira issues and Confluence pages.","atlassian"),
-                    ("productivity","Todoist","Find, add, and complete tasks and projects.","todoist"),
+                    (
+                        "popular",
+                        "Supabase",
+                        "Query Postgres, manage projects, and deploy Edge Functions.",
+                        "supabase",
+                    ),
+                    (
+                        "popular",
+                        "Vercel",
+                        "Manage projects and deployments, and read deployment logs.",
+                        "vercel",
+                    ),
+                    (
+                        "popular",
+                        "Slack",
+                        "Search, read, and post in your workspace. Needs your own Slack app.",
+                        "slack",
+                    ),
+                    (
+                        "popular",
+                        "Linear",
+                        "Find, create, and update issues, projects, and comments.",
+                        "linear",
+                    ),
+                    (
+                        "popular",
+                        "Notion",
+                        "Search, read, and edit pages and databases.",
+                        "notion",
+                    ),
+                    (
+                        "popular",
+                        "Stripe",
+                        "Work with customers, payments, and Stripe docs.",
+                        "stripe",
+                    ),
+                    (
+                        "developer",
+                        "WorkOS",
+                        "Manage users, organizations, SSO, and AuthKit in your dashboard.",
+                        "workos",
+                    ),
+                    (
+                        "developer",
+                        "Convex",
+                        "Start Convex apps and get setup and scaling guidance.",
+                        "convex",
+                    ),
+                    (
+                        "developer",
+                        "Cloudflare",
+                        "Build with Workers, KV, R2, and D1 on your account.",
+                        "cloudflare",
+                    ),
+                    (
+                        "developer",
+                        "Sentry",
+                        "Investigate errors, issues, and releases.",
+                        "sentry",
+                    ),
+                    (
+                        "developer",
+                        "Neon",
+                        "Manage serverless Postgres projects and branches.",
+                        "neon",
+                    ),
+                    (
+                        "developer",
+                        "PostHog",
+                        "Query product analytics, feature flags, and errors.",
+                        "posthog",
+                    ),
+                    (
+                        "developer",
+                        "Netlify",
+                        "Create, deploy, and manage Netlify sites.",
+                        "netlify",
+                    ),
+                    (
+                        "developer",
+                        "Railway",
+                        "Deploy and manage Railway projects and services.",
+                        "railway",
+                    ),
+                    (
+                        "developer",
+                        "Prisma",
+                        "Manage Prisma Postgres databases and backups.",
+                        "prisma",
+                    ),
+                    (
+                        "developer",
+                        "Hugging Face",
+                        "Search models, datasets, Spaces, and papers.",
+                        "huggingface",
+                    ),
+                    (
+                        "productivity",
+                        "Atlassian",
+                        "Work with Jira issues and Confluence pages.",
+                        "atlassian",
+                    ),
+                    (
+                        "productivity",
+                        "Todoist",
+                        "Find, add, and complete tasks and projects.",
+                        "todoist",
+                    ),
                 ];
-                settings_pane = settings_pane
-                    .child(search)
-                    .child(
+                settings_pane = settings_pane.child(search).child(
+                    h_flex().gap_2().child(dark_btn("Add custom")).child(
                         h_flex()
-                            .gap_2()
-                            .child(dark_btn("Add custom"))
-                            .child(
-                                h_flex()
-                                    .h(px(32.))
-                                    .px(px(11.))
-                                    .items_center()
-                                    .rounded_full()
-                                    .border_1()
-                                    .border_color(theme.border)
-                                    .child(div().text_size(px(13.)).child("Add local server")),
-                            ),
-                    )
-                    ;
+                            .h(px(32.))
+                            .px(px(11.))
+                            .items_center()
+                            .rounded_full()
+                            .border_1()
+                            .border_color(theme.border)
+                            .child(div().text_size(px(13.)).child("Add local server")),
+                    ),
+                );
                 let mut catalog_grid = v_flex().w_full().gap(px(2.));
                 let mut first_cat = true;
                 for (cat, cat_name) in &catalog {
@@ -1877,23 +2474,40 @@ impl Native {
                                             .items_center()
                                             .justify_center()
                                             .child(
-                                            gpui::img(
-                                                std::path::PathBuf::from(
-                                                    format!("{}/assets/icons/brands/{}.svg", env!("CARGO_MANIFEST_DIR"), *icon),
-                                                ),
-                                            )
-                                            .size(px(20.)),
-                                        ),
+                                                gpui::img(std::path::PathBuf::from(format!(
+                                                    "{}/assets/icons/brands/{}.svg",
+                                                    env!("CARGO_MANIFEST_DIR"),
+                                                    *icon
+                                                )))
+                                                .size(px(20.)),
+                                            ),
                                     )
                                     .child(
                                         v_flex()
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(1.))
-                                            .child(div().text_size(px(14.)).font_weight(FontWeight::MEDIUM).child(*name))
-                                            .child(div().w_full().text_size(px(13.)).text_color(theme.muted_foreground).child(*desc)),
+                                            .child(
+                                                div()
+                                                    .text_size(px(14.))
+                                                    .font_weight(FontWeight::MEDIUM)
+                                                    .child(*name),
+                                            )
+                                            .child(
+                                                div()
+                                                    .w_full()
+                                                    .text_size(px(13.))
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(*desc),
+                                            ),
                                     )
-                                    .child(div().px_2().text_size(px(13.)).text_color(theme.muted_foreground).child("+")),
+                                    .child(
+                                        div()
+                                            .px_2()
+                                            .text_size(px(13.))
+                                            .text_color(theme.muted_foreground)
+                                            .child("+"),
+                                    ),
                             );
                         }
                         if chunk.len() == 1 {
@@ -1920,7 +2534,11 @@ impl Native {
                         .into_any_element()
                 };
                 let exts = arr(get(sdata, "external"), "integrations").to_vec();
-                let exts = if exts.is_empty() { arr(get(sdata, "external"), "items").to_vec() } else { exts };
+                let exts = if exts.is_empty() {
+                    arr(get(sdata, "external"), "items").to_vec()
+                } else {
+                    exts
+                };
                 settings_pane = settings_pane
                     .child(lgroup("Connect a coding agent", card(
                         v_flex()
@@ -2028,7 +2646,12 @@ impl Native {
                             .px_3()
                             .py(px(8.))
                             .gap(px(1.))
-                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(nm))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(nm),
+                            )
                             .child(div().text_xs().text_color(theme.muted_foreground).child(st))
                             .into_any_element(),
                     ));
@@ -2037,17 +2660,30 @@ impl Native {
 
             // ---------- Devices (connections) ----------
             if self.settings_section == "devices" {
-                settings_pane = settings_pane
-                    .child(lgroup("Connections", card(
+                settings_pane = settings_pane.child(lgroup(
+                    "Connections",
+                    card(
                         v_flex()
                             .px_3()
                             .py(px(10.))
                             .gap(px(1.))
-                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child("Unavailable in this build"))
-                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(
-                                "Remote connections require the Node 24 server runtime."))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child("Unavailable in this build"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(
+                                        "Remote connections require the Node 24 server runtime.",
+                                    ),
+                            )
                             .into_any_element(),
-                    )));
+                    ),
+                ));
             }
 
             // ---------- Computer use ----------
@@ -2293,7 +2929,11 @@ impl Native {
             // ---------- Worktrees ----------
             if self.settings_section == "worktrees" {
                 let wts = arr(get(sdata, "worktrees"), "worktrees").to_vec();
-                let wts = if wts.is_empty() { arr(get(sdata, "worktrees"), "items").to_vec() } else { wts };
+                let wts = if wts.is_empty() {
+                    arr(get(sdata, "worktrees"), "items").to_vec()
+                } else {
+                    wts
+                };
                 settings_pane = settings_pane
                     .child(lgroup("Defaults", card(
                         srow("Delete worktree on archive",
@@ -2312,7 +2952,12 @@ impl Native {
                             .flex()
                             .items_center()
                             .justify_center()
-                            .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("No app-managed worktrees found yet.")),
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("No app-managed worktrees found yet."),
+                            ),
                     );
                 }
                 for w in &wts {
@@ -2323,8 +2968,18 @@ impl Native {
                             .px_3()
                             .py(px(8.))
                             .gap(px(1.))
-                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(nm))
-                            .child(div().text_xs().text_color(theme.muted_foreground).child(path))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(nm),
+                            )
+                            .child(
+                                div()
+                                    .text_xs()
+                                    .text_color(theme.muted_foreground)
+                                    .child(path),
+                            )
                             .into_any_element(),
                     ));
                 }
@@ -2398,9 +3053,18 @@ impl Native {
                         .and_then(Value::as_bool)
                         .unwrap_or(false);
                     let settings = snapshot.get("settings").cloned().unwrap_or(Value::Null);
-                    let agent_use = settings.get("agentUse").and_then(Value::as_bool).unwrap_or(true);
-                    let offer_save = settings.get("offerSave").and_then(Value::as_bool).unwrap_or(false);
-                    let autosave = settings.get("autosave").and_then(Value::as_bool).unwrap_or(false);
+                    let agent_use = settings
+                        .get("agentUse")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(true);
+                    let offer_save = settings
+                        .get("offerSave")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
+                    let autosave = settings
+                        .get("autosave")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
 
                     settings_pane = settings_pane
                         .child(lgroup("Protection", card(
@@ -2508,7 +3172,11 @@ impl Native {
                             let id = str_at(prompt, "id").to_string();
                             let save_id = id.clone();
                             let skip_id = id.clone();
-                            let title = if str_at(prompt, "mode") == "update" { "Update password" } else { "Save password" };
+                            let title = if str_at(prompt, "mode") == "update" {
+                                "Update password"
+                            } else {
+                                "Save password"
+                            };
                             prompts = prompts.child(
                                 h_flex()
                                     .w_full()
@@ -2522,29 +3190,55 @@ impl Native {
                                             .flex_1()
                                             .min_w_0()
                                             .gap(px(2.))
-                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(title))
-                                            .child(div().text_size(px(13.)).child(str_at(prompt, "origin").to_string()))
-                                            .child(div().text_xs().text_color(theme.muted_foreground).child(str_at(prompt, "username").to_string())),
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .font_weight(FontWeight::MEDIUM)
+                                                    .child(title),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .child(str_at(prompt, "origin").to_string()),
+                                            )
+                                            .child(
+                                                div()
+                                                    .text_xs()
+                                                    .text_color(theme.muted_foreground)
+                                                    .child(str_at(prompt, "username").to_string()),
+                                            ),
                                     )
                                     .child(
                                         h_flex()
                                             .gap_2()
                                             .child(
                                                 div()
-                                                    .id(ElementId::Name(format!("vault-prompt-skip-{index}").into()))
+                                                    .id(ElementId::Name(
+                                                        format!("vault-prompt-skip-{index}").into(),
+                                                    ))
                                                     .cursor_pointer()
-                                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                                        this.respond_vault_prompt(&skip_id, false, cx);
-                                                    }))
+                                                    .on_click(cx.listener(
+                                                        move |this, _ev, _w, cx| {
+                                                            this.respond_vault_prompt(
+                                                                &skip_id, false, cx,
+                                                            );
+                                                        },
+                                                    ))
                                                     .child(outline_btn("Not now")),
                                             )
                                             .child(
                                                 div()
-                                                    .id(ElementId::Name(format!("vault-prompt-save-{index}").into()))
+                                                    .id(ElementId::Name(
+                                                        format!("vault-prompt-save-{index}").into(),
+                                                    ))
                                                     .cursor_pointer()
-                                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                                        this.respond_vault_prompt(&save_id, true, cx);
-                                                    }))
+                                                    .on_click(cx.listener(
+                                                        move |this, _ev, _w, cx| {
+                                                            this.respond_vault_prompt(
+                                                                &save_id, true, cx,
+                                                            );
+                                                        },
+                                                    ))
                                                     .child(outline_btn("Save")),
                                             ),
                                     )
@@ -2578,8 +3272,17 @@ impl Native {
                                 .px_3()
                                 .py(px(24.))
                                 .gap_2()
-                                .child(svg_icon(icons::SHIELD_ACCESS).size(px(22.)).text_color(theme.muted_foreground))
-                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("No saved logins yet."))
+                                .child(
+                                    svg_icon(icons::SHIELD_ACCESS)
+                                        .size(px(22.))
+                                        .text_color(theme.muted_foreground),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(13.))
+                                        .text_color(theme.muted_foreground)
+                                        .child("No saved logins yet."),
+                                )
                                 .into_any_element(),
                         ));
                     } else {
@@ -2667,13 +3370,17 @@ impl Native {
                                         .items_center()
                                         .gap_2()
                                         .child(
-                                            div()
-                                                .w(px(210.))
-                                                .child(Input::new(&self.vault_reveal_input).appearance(false).mask_toggle()),
+                                            div().w(px(210.)).child(
+                                                Input::new(&self.vault_reveal_input)
+                                                    .appearance(false)
+                                                    .mask_toggle(),
+                                            ),
                                         )
                                         .child(
                                             div()
-                                                .id(ElementId::Name(format!("vault-reveal-submit-{index}").into()))
+                                                .id(ElementId::Name(
+                                                    format!("vault-reveal-submit-{index}").into(),
+                                                ))
                                                 .cursor_pointer()
                                                 .on_click(cx.listener(|this, _ev, w, cx| {
                                                     this.submit_vault_reveal(w, cx);
@@ -2702,29 +3409,50 @@ impl Native {
                                         .items_center()
                                         .justify_between()
                                         .gap_3()
-                                        .child(div().text_size(px(13.)).child("Delete this saved login?"))
+                                        .child(
+                                            div()
+                                                .text_size(px(13.))
+                                                .child("Delete this saved login?"),
+                                        )
                                         .child(
                                             h_flex()
                                                 .gap_2()
                                                 .child(
                                                     div()
-                                                        .id(ElementId::Name(format!("vault-cancel-delete-{index}").into()))
+                                                        .id(ElementId::Name(
+                                                            format!("vault-cancel-delete-{index}")
+                                                                .into(),
+                                                        ))
                                                         .cursor_pointer()
-                                                        .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                                            if this.vault_delete_id.as_deref() == Some(cancel_delete_id.as_str()) {
-                                                                this.vault_delete_id = None;
-                                                            }
-                                                            cx.notify();
-                                                        }))
+                                                        .on_click(cx.listener(
+                                                            move |this, _ev, _w, cx| {
+                                                                if this.vault_delete_id.as_deref()
+                                                                    == Some(
+                                                                        cancel_delete_id.as_str(),
+                                                                    )
+                                                                {
+                                                                    this.vault_delete_id = None;
+                                                                }
+                                                                cx.notify();
+                                                            },
+                                                        ))
                                                         .child(outline_btn("Cancel")),
                                                 )
                                                 .child(
                                                     div()
-                                                        .id(ElementId::Name(format!("vault-confirm-delete-{index}").into()))
+                                                        .id(ElementId::Name(
+                                                            format!("vault-confirm-delete-{index}")
+                                                                .into(),
+                                                        ))
                                                         .cursor_pointer()
-                                                        .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                                            this.remove_vault_login(&confirm_delete_id, cx);
-                                                        }))
+                                                        .on_click(cx.listener(
+                                                            move |this, _ev, _w, cx| {
+                                                                this.remove_vault_login(
+                                                                    &confirm_delete_id,
+                                                                    cx,
+                                                                );
+                                                            },
+                                                        ))
                                                         .child(outline_btn("Delete")),
                                                 ),
                                         ),
@@ -2848,13 +3576,24 @@ impl Native {
                     );
                 }
                 if self.cookie_sources.is_empty() {
-                    import_card = import_card.child(div().text_xs().text_color(theme.muted_foreground).child("No supported Chrome, Safari, or Edge profiles were found."));
+                    import_card = import_card.child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child("No supported Chrome, Safari, or Edge profiles were found."),
+                    );
                 }
                 if let Some(result) = self.cookie_result.clone() {
-                    import_card = import_card.child(div().text_xs().text_color(theme.muted_foreground).child(result));
+                    import_card = import_card.child(
+                        div()
+                            .text_xs()
+                            .text_color(theme.muted_foreground)
+                            .child(result),
+                    );
                 }
                 if let Some(error) = self.cookie_error.clone() {
-                    import_card = import_card.child(div().text_xs().text_color(theme.danger).child(error));
+                    import_card =
+                        import_card.child(div().text_xs().text_color(theme.danger).child(error));
                 }
                 settings_pane = settings_pane.child(card(import_card.into_any_element()));
             }
@@ -2912,12 +3651,21 @@ impl Native {
             if self.settings_section == "beta" {
                 let state = crate::beta_channel::DesktopBetaChannel::current().state();
                 let busy = self.beta_action_running;
-                let beta_button = |id: &'static str, action: &'static str, label: &'static str, cx: &mut Context<Self>| {
+                let beta_button = |id: &'static str,
+                                   action: &'static str,
+                                   label: &'static str,
+                                   cx: &mut Context<Self>| {
                     div()
                         .id(ElementId::Name(format!("beta-{id}").into()))
                         .cursor_pointer()
-                        .on_click(cx.listener(move |this, _ev, _w, cx| this.perform_beta_action(action, cx)))
-                        .child(outline_btn(if busy == Some(action) { "Working" } else { label }))
+                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            this.perform_beta_action(action, cx)
+                        }))
+                        .child(outline_btn(if busy == Some(action) {
+                            "Working"
+                        } else {
+                            label
+                        }))
                         .into_any_element()
                 };
                 let mut rows = v_flex();
@@ -2943,19 +3691,35 @@ impl Native {
                 }
                 if let Some(error) = state.last_import_error {
                     rows = rows.child(divider()).child(
-                        div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.danger).child(error)
+                        div()
+                            .px_3()
+                            .py(px(10.))
+                            .text_size(px(13.))
+                            .text_color(theme.danger)
+                            .child(error),
                     );
                 } else if let Some(done) = state.last_import_at {
                     rows = rows.child(divider()).child(
-                        div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Last import completed at {done}"))
+                        div()
+                            .px_3()
+                            .py(px(10.))
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(format!("Last import completed at {done}")),
                     );
                 }
                 if let Some(message) = self.beta_action_message.clone() {
                     rows = rows.child(divider()).child(
-                        div().px_3().py(px(10.)).text_size(px(13.)).text_color(theme.muted_foreground).child(message)
+                        div()
+                            .px_3()
+                            .py(px(10.))
+                            .text_size(px(13.))
+                            .text_color(theme.muted_foreground)
+                            .child(message),
                     );
                 }
-                settings_pane = settings_pane.child(lgroup("Beta channel", card(rows.into_any_element())));
+                settings_pane =
+                    settings_pane.child(lgroup("Beta channel", card(rows.into_any_element())));
             }
 
             // ---------- About ----------
@@ -2982,33 +3746,47 @@ impl Native {
                         .justify_between()
                         .px_3()
                         .py(px(10. * dscale))
-                        .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(label))
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .font_weight(FontWeight::MEDIUM)
+                                .child(label),
+                        )
                         .child(ctrl)
                         .into_any_element()
                 };
                 settings_pane = settings_pane.child(
-                    v_flex()
-                        .gap_1p5()
-                        .child(section_label("Theme"))
-                        .child(
-                            h_flex()
-                                .gap_3()
-                                .child(
-                                    div().id("theme-card-system").cursor_pointer()
-                                        .child(theme_card(0, "System", self.appearance_mode == 0))
-                                        .on_click(cx.listener(|this, _ev, w, cx| this.set_appearance_mode(0, w, cx))),
-                                )
-                                .child(
-                                    div().id("theme-card-light").cursor_pointer()
-                                        .child(theme_card(1, "Light", self.appearance_mode == 1))
-                                        .on_click(cx.listener(|this, _ev, w, cx| this.set_appearance_mode(1, w, cx))),
-                                )
-                                .child(
-                                    div().id("theme-card-dark").cursor_pointer()
-                                        .child(theme_card(2, "Dark", self.appearance_mode == 2))
-                                        .on_click(cx.listener(|this, _ev, w, cx| this.set_appearance_mode(2, w, cx))),
-                                ),
-                        ),
+                    v_flex().gap_1p5().child(section_label("Theme")).child(
+                        h_flex()
+                            .gap_3()
+                            .child(
+                                div()
+                                    .id("theme-card-system")
+                                    .cursor_pointer()
+                                    .child(theme_card(0, "System", self.appearance_mode == 0))
+                                    .on_click(cx.listener(|this, _ev, w, cx| {
+                                        this.set_appearance_mode(0, w, cx)
+                                    })),
+                            )
+                            .child(
+                                div()
+                                    .id("theme-card-light")
+                                    .cursor_pointer()
+                                    .child(theme_card(1, "Light", self.appearance_mode == 1))
+                                    .on_click(cx.listener(|this, _ev, w, cx| {
+                                        this.set_appearance_mode(1, w, cx)
+                                    })),
+                            )
+                            .child(
+                                div()
+                                    .id("theme-card-dark")
+                                    .cursor_pointer()
+                                    .child(theme_card(2, "Dark", self.appearance_mode == 2))
+                                    .on_click(cx.listener(|this, _ev, w, cx| {
+                                        this.set_appearance_mode(2, w, cx)
+                                    })),
+                            ),
+                    ),
                 );
                 // Upstream CODE_THEME_OPTIONS (theme.logic.ts): id, label,
                 // supported variants.
@@ -3054,9 +3832,27 @@ impl Native {
                 };
                 for dark in [resolved_dark, !resolved_dark] {
                     let (name, desc, mut acc, mut bgc, mut fgc, mut al, mut bl, mut fl) = if dark {
-                        ("Dark theme", "Used when your system switches to dark.", 0xf2612d, 0x111111, 0xfcfcfc, "#F2612D".to_string(), "#111111".to_string(), "#FCFCFC".to_string())
+                        (
+                            "Dark theme",
+                            "Used when your system switches to dark.",
+                            0xf2612d,
+                            0x111111,
+                            0xfcfcfc,
+                            "#F2612D".to_string(),
+                            "#111111".to_string(),
+                            "#FCFCFC".to_string(),
+                        )
                     } else {
-                        ("Light theme", "System is currently using this light slot.", 0xc74614, 0xffffff, 0x0d0d0d, "#C74614".to_string(), "#FFFFFF".to_string(), "#0D0D0D".to_string())
+                        (
+                            "Light theme",
+                            "System is currently using this light slot.",
+                            0xc74614,
+                            0xffffff,
+                            0x0d0d0d,
+                            "#C74614".to_string(),
+                            "#FFFFFF".to_string(),
+                            "#0D0D0D".to_string(),
+                        )
                     };
                     // Stored pack overrides win over the built-in swatches.
                     let pk = self
@@ -3066,10 +3862,7 @@ impl Native {
                         .unwrap_or_else(|| json!({}));
                     let var_key = if dark { "dark" } else { "light" };
                     // Upstream ThemePackEditor state for this variant.
-                    let pristine = pk
-                        .as_object()
-                        .map(|o| o.is_empty())
-                        .unwrap_or(true);
+                    let pristine = pk.as_object().map(|o| o.is_empty()).unwrap_or(true);
                     let opaque = pk
                         .get("opaqueWindows")
                         .and_then(Value::as_bool)
@@ -3083,9 +3876,7 @@ impl Native {
                         .and_then(Value::as_f64)
                         .unwrap_or(90.)
                         .clamp(15., 100.) as f32;
-                    let blur_null = pk
-                        .pointer("/translucency/blur")
-                        .and_then(Value::as_f64);
+                    let blur_null = pk.pointer("/translucency/blur").and_then(Value::as_f64);
                     // Null blur = "Auto": upstream drives macOS vibrancy
                     // (radius 30 equivalent).
                     let blur_v = blur_null.unwrap_or(30.).clamp(1., 64.) as f32;
@@ -3148,33 +3939,30 @@ impl Native {
                     // `swatch_click` closure below starts borrowing `cx`.
                     let this_weak = cx.weak_entity();
                     let cur_theme = code_theme.clone();
-                    let mk_slider_row = |key: &str,
-                                         want: f32,
-                                         label: String,
-                                         window: &mut Window,
-                                         cx: &mut App| {
-                        let st = match self.tp_sliders.get(key) {
-                            Some(st) => st.clone(),
-                            None => return div().into_any_element(),
+                    let mk_slider_row =
+                        |key: &str, want: f32, label: String, window: &mut Window, cx: &mut App| {
+                            let st = match self.tp_sliders.get(key) {
+                                Some(st) => st.clone(),
+                                None => return div().into_any_element(),
+                            };
+                            let cur = st.read(cx).value().start();
+                            if (cur - want).abs() > 0.5 {
+                                st.update(cx, |s, cx| s.set_value(want, window, cx));
+                            }
+                            h_flex()
+                                .items_center()
+                                .gap_2()
+                                .child(Slider::new(&st).w(px(120.)))
+                                .child(
+                                    div()
+                                        .text_xs()
+                                        .text_color(theme.muted_foreground)
+                                        .w(px(40.))
+                                        .text_right()
+                                        .child(label),
+                                )
+                                .into_any_element()
                         };
-                        let cur = st.read(cx).value().start();
-                        if (cur - want).abs() > 0.5 {
-                            st.update(cx, |s, cx| s.set_value(want, window, cx));
-                        }
-                        h_flex()
-                            .items_center()
-                            .gap_2()
-                            .child(Slider::new(&st).w(px(120.)))
-                            .child(
-                                div()
-                                    .text_xs()
-                                    .text_color(theme.muted_foreground)
-                                    .w(px(40.))
-                                    .text_right()
-                                    .child(label),
-                            )
-                            .into_any_element()
-                    };
                     let opacity_row = mk_slider_row(
                         &format!("{var_key}-opacity"),
                         opacity_v,
@@ -3214,12 +4002,22 @@ impl Native {
                     };
                     // CodeThemeBadge: 20px bordered box, accent text on the slot surface.
                     let aa_chip = div()
-                        .w(px(20.)).h(px(20.))
-                        .flex().items_center().justify_center()
+                        .w(px(20.))
+                        .h(px(20.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
                         .rounded(px(6.))
-                        .border_1().border_color(theme.border)
+                        .border_1()
+                        .border_color(theme.border)
                         .bg(rgb(bgc))
-                        .child(div().text_xs().font_weight(FontWeight::SEMIBOLD).text_color(rgb(acc)).child("Aa"));
+                        .child(
+                            div()
+                                .text_xs()
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .text_color(rgb(acc))
+                                .child("Aa"),
+                        );
                     let mut sel = h_flex()
                         .w_full()
                         .mt_1()
@@ -3232,7 +4030,11 @@ impl Native {
                         .border_1()
                         .border_color(theme.border);
                     sel = sel.bg(rgb(bgc)).child(
-                        div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).text_color(rgb(fgc)).child("Synara"),
+                        div()
+                            .text_size(px(13.))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(rgb(fgc))
+                            .child("Synara"),
                     );
                     // Upstream Window segmented control: Solid =
                     // opaqueWindows, Translucent = vibrancy/translucency.
@@ -3309,7 +4111,12 @@ impl Native {
                                         h_flex()
                                             .items_center()
                                             .gap_2()
-                                            .child(div().text_size(px(13.)).font_weight(FontWeight::MEDIUM).child(name))
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .font_weight(FontWeight::MEDIUM)
+                                                    .child(name),
+                                            )
                                             // Upstream Reset shows only on a
                                             // pack with overrides.
                                             .when(!pristine, |d| {
@@ -3345,16 +4152,18 @@ impl Native {
                                                     .text_size(px(13.))
                                                     .text_color(theme.muted_foreground)
                                                     .hover(|h| h.text_color(theme.foreground))
-                                                    .on_click(cx.listener(move |this, _ev, w, cx| {
-                                                        let input = cx.new(|cx| {
-                                                            InputState::new(w, cx).placeholder(
-                                                                "{\"tokens\":{\"colors\":{…}}}",
-                                                            )
-                                                        });
-                                                        this.tp_input = Some(input);
-                                                        this.tp_import = Some(dark);
-                                                        cx.notify();
-                                                    }))
+                                                    .on_click(cx.listener(
+                                                        move |this, _ev, w, cx| {
+                                                            let input = cx.new(|cx| {
+                                                                InputState::new(w, cx).placeholder(
+                                                                    "{\"tokens\":{\"colors\":{…}}}",
+                                                                )
+                                                            });
+                                                            this.tp_input = Some(input);
+                                                            this.tp_import = Some(dark);
+                                                            cx.notify();
+                                                        },
+                                                    ))
                                                     .child("Import"),
                                             )
                                             .child(
@@ -3367,9 +4176,11 @@ impl Native {
                                                     .text_size(px(13.))
                                                     .text_color(theme.muted_foreground)
                                                     .hover(|h| h.text_color(theme.foreground))
-                                                    .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                                        this.copy_theme_pack(dark, cx);
-                                                    }))
+                                                    .on_click(cx.listener(
+                                                        move |this, _ev, _w, cx| {
+                                                            this.copy_theme_pack(dark, cx);
+                                                        },
+                                                    ))
                                                     .child("Copy"),
                                             )
                                             .child(
@@ -3392,18 +4203,21 @@ impl Native {
                                                         .label(code_theme_label.clone())
                                                         .dropdown_caret(true)
                                                         .dropdown_menu(move |menu, _w, _cx| {
-                                                    let mut m = menu.min_w(px(200.));
-                                                    for (id, label, _) in CODE_THEMES
-                                                        .iter()
-                                                        .filter(|(_, _, vs)| vs.contains(&var_key))
-                                                    {
-                                                        let id = *id;
-                                                        let weak = this_weak.clone();
-                                                        m = m.item(
-                                                            PopupMenuItem::new(*label)
-                                                                .checked(cur_theme == id)
-                                                                .on_click(move |_, _w, cx| {
-                                                                    let _ = weak.update(
+                                                            let mut m = menu.min_w(px(200.));
+                                                            for (id, label, _) in CODE_THEMES
+                                                                .iter()
+                                                                .filter(|(_, _, vs)| {
+                                                                    vs.contains(&var_key)
+                                                                })
+                                                            {
+                                                                let id = *id;
+                                                                let weak = this_weak.clone();
+                                                                m = m.item(
+                                                                    PopupMenuItem::new(*label)
+                                                                        .checked(cur_theme == id)
+                                                                        .on_click(
+                                                                            move |_, _w, cx| {
+                                                                                let _ = weak.update(
                                                                         cx,
                                                                         |this, cx| {
                                                                             this.tp_set_pack(
@@ -3414,12 +4228,13 @@ impl Native {
                                                                             );
                                                                         },
                                                                     );
-                                                                }),
-                                                        );
-                                                    }
-                                                    m
-                                                }),
-                                                ),
+                                                                            },
+                                                                        ),
+                                                                );
+                                                            }
+                                                            m
+                                                        }),
+                                                    ),
                                             ),
                                     ),
                             )
@@ -3430,29 +4245,56 @@ impl Native {
                                     .justify_between()
                                     .px_3()
                                     .pb_2()
-                                    .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(desc))
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .text_color(theme.muted_foreground)
+                                            .child(desc),
+                                    )
                                     // Outline "Use {light|dark} theme" button on the inactive slot card.
                                     // Active slot = resolved theme (system resolves dark in this shell).
-                                    .when((if self.appearance_mode == 0 { 2 } else { self.appearance_mode }) != (if dark { 2 } else { 1 }), |d| {
-                                        d.child(
-                                            h_flex()
-                                                .id(SharedString::from(format!(
-                                                    "use-{}-theme",
-                                                    if dark { "dark" } else { "light" }
-                                                )))
-                                                .h(px(24.))
-                                                .px_2p5()
-                                                .items_center()
-                                                .rounded(px(6.))
-                                                .border_1()
-                                                .border_color(theme.border)
-                                                .cursor_pointer()
-                                                .child(div().text_size(px(12.)).whitespace_nowrap().child(if dark { "Use dark theme" } else { "Use light theme" }))
-                                                .on_click(cx.listener(move |this, _ev, w, cx| {
-                                                    this.set_appearance_mode(if dark { 2 } else { 1 }, w, cx);
-                                                })),
-                                        )
-                                    }),
+                                    .when(
+                                        (if self.appearance_mode == 0 {
+                                            2
+                                        } else {
+                                            self.appearance_mode
+                                        }) != (if dark { 2 } else { 1 }),
+                                        |d| {
+                                            d.child(
+                                                h_flex()
+                                                    .id(SharedString::from(format!(
+                                                        "use-{}-theme",
+                                                        if dark { "dark" } else { "light" }
+                                                    )))
+                                                    .h(px(24.))
+                                                    .px_2p5()
+                                                    .items_center()
+                                                    .rounded(px(6.))
+                                                    .border_1()
+                                                    .border_color(theme.border)
+                                                    .cursor_pointer()
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(12.))
+                                                            .whitespace_nowrap()
+                                                            .child(if dark {
+                                                                "Use dark theme"
+                                                            } else {
+                                                                "Use light theme"
+                                                            }),
+                                                    )
+                                                    .on_click(cx.listener(
+                                                        move |this, _ev, w, cx| {
+                                                            this.set_appearance_mode(
+                                                                if dark { 2 } else { 1 },
+                                                                w,
+                                                                cx,
+                                                            );
+                                                        },
+                                                    )),
+                                            )
+                                        },
+                                    ),
                             )
                             .child(
                                 div().w_full().px_3().child(
@@ -3462,24 +4304,41 @@ impl Native {
                                             .px(px(12.))
                                             .py(px(4.))
                                             .bg(gpui::rgba((acc << 8) | 0x1f))
-                                            .child(div().text_size(px(13.)).text_color(rgb(acc)).child("Accent preview")),
+                                            .child(
+                                                div()
+                                                    .text_size(px(13.))
+                                                    .text_color(rgb(acc))
+                                                    .child("Accent preview"),
+                                            ),
                                     ),
                                 ),
                             )
                             .child(divider())
                             .child(prow(
                                 "Accent",
-                                swatch_click(dark, "accent", swatch_pill(SharedString::from(al.clone()), acc)),
+                                swatch_click(
+                                    dark,
+                                    "accent",
+                                    swatch_pill(SharedString::from(al.clone()), acc),
+                                ),
                             ))
                             .child(divider())
                             .child(prow(
                                 "Background",
-                                swatch_click(dark, "background", swatch_pill(SharedString::from(bl.clone()), bgc)),
+                                swatch_click(
+                                    dark,
+                                    "background",
+                                    swatch_pill(SharedString::from(bl.clone()), bgc),
+                                ),
                             ))
                             .child(divider())
                             .child(prow(
                                 "Foreground",
-                                swatch_click(dark, "foreground", swatch_pill(SharedString::from(fl.clone()), fgc)),
+                                swatch_click(
+                                    dark,
+                                    "foreground",
+                                    swatch_pill(SharedString::from(fl.clone()), fgc),
+                                ),
                             ))
                             .child(divider())
                             .child(prow(
@@ -3620,7 +4479,13 @@ impl Native {
         }
 
         // ---- settings sidebar nav (replaces project sidebar) ----
-        let mut settings_nav_el = v_flex().flex_1().h_full().px(px(6.)).pt(px(12.)).pb(px(6.)).gap(px(2.));
+        let mut settings_nav_el = v_flex()
+            .flex_1()
+            .h_full()
+            .px(px(6.))
+            .pt(px(12.))
+            .pb(px(6.))
+            .gap(px(2.));
         settings_nav_el = settings_nav_el.child(
             div()
                 .px_2()
@@ -3642,7 +4507,11 @@ impl Native {
                 .border_1()
                 .border_color(theme.border)
                 .bg(soft_bg)
-                .child(svg_icon(icons::SEARCH).size(px(14.)).text_color(theme.muted_foreground))
+                .child(
+                    svg_icon(icons::SEARCH)
+                        .size(px(14.))
+                        .text_color(theme.muted_foreground),
+                )
                 .child(
                     div()
                         .flex_1()
@@ -3655,7 +4524,11 @@ impl Native {
             .track_scroll(&self.settings_nav_scroll)
             .overflow_y_scroll()
             .gap(px(2.));
-        let nav_row = |id: &'static str, label: &'static str, icon: &'static [u8], badge: Option<&'static str>, cx: &mut gpui::Context<Self>| {
+        let nav_row = |id: &'static str,
+                       label: &'static str,
+                       icon: &'static [u8],
+                       badge: Option<&'static str>,
+                       cx: &mut gpui::Context<Self>| {
             let active = id == self.settings_section;
             let mut row = h_flex()
                 .id(ElementId::Name(format!("setnav-{id}").into()))
@@ -3666,7 +4539,11 @@ impl Native {
                 .items_center()
                 .rounded(px(6.))
                 .cursor_pointer()
-                .child(svg_icon(icon).size(px(16.)).text_color(if active { theme.foreground } else { theme.muted_foreground }))
+                .child(svg_icon(icon).size(px(16.)).text_color(if active {
+                    theme.foreground
+                } else {
+                    theme.muted_foreground
+                }))
                 .child(div().text_size(px(13.)).whitespace_nowrap().child(label));
             if let Some(b) = badge {
                 row = row.child(
@@ -3686,7 +4563,8 @@ impl Native {
             }
             row.on_click(cx.listener(move |this, _ev, w, cx| {
                 this.settings_section = id;
-                this.settings_search.update(cx, |s, cx| s.set_value("", w, cx));
+                this.settings_search
+                    .update(cx, |s, cx| s.set_value("", w, cx));
                 if this.settings_data.is_null() {
                     this.fetch_settings(cx);
                 }
@@ -3763,7 +4641,11 @@ impl Native {
                         })
                         .child(label),
                 );
-            if active { d.bg(theme.foreground.opacity(0.027)) } else { d }
+            if active {
+                d.bg(theme.foreground.opacity(0.027))
+            } else {
+                d
+            }
         };
         // Upstream top-bar controls sit 8px from the window top; the native
         // 47px strip is above the pane, so pin them at 8 - 47 = -39px.
@@ -3782,9 +4664,8 @@ impl Native {
             .child(div().flex_1())
             .child(seg_chip("seg-tasks-list", "List", true))
             .child(
-                seg_chip("seg-tasks-kanban", "Kanban", false).on_click(cx.listener(
-                    |this, _e, _w, cx| this.open_route(2, cx),
-                )),
+                seg_chip("seg-tasks-kanban", "Kanban", false)
+                    .on_click(cx.listener(|this, _e, _w, cx| this.open_route(2, cx))),
             );
         let tasks_pane = v_flex()
             .flex_1()
@@ -3794,138 +4675,135 @@ impl Native {
             .child(
                 // Upstream: a centered fixed-width column, contents
                 // left-aligned; add-task row is a faint borderless row.
-                v_flex()
-                    .flex_1()
-                    .items_center()
-                    .child(
-                        // Upstream: max-w-[36rem] column with px-6 + header px-3
-                        // = 504px of text, title 40px below the top bar.
-                        v_flex()
-                            .w(px(504.))
-                            .pt(px(35.))
-                            .child(
-                                div()
-                                    .text_size(px(24.))
-                                    .font_weight(FontWeight::SEMIBOLD)
-                                    .child("Tasks"),
-                            )
-                            .child(
-                                div()
-                                    .mt(px(1.))
-                                    .text_size(px(13.))
-                                    .text_color(theme.muted_foreground)
-                                    .child("Add anything you need to do"),
-                            )
-                            .child(
-                                h_flex()
-                                    .mt(px(28.))
-                                    .h(px(42.))
-                                    .gap(px(12.))
+                v_flex().flex_1().items_center().child(
+                    // Upstream: max-w-[36rem] column with px-6 + header px-3
+                    // = 504px of text, title 40px below the top bar.
+                    v_flex()
+                        .w(px(504.))
+                        .pt(px(35.))
+                        .child(
+                            div()
+                                .text_size(px(24.))
+                                .font_weight(FontWeight::SEMIBOLD)
+                                .child("Tasks"),
+                        )
+                        .child(
+                            div()
+                                .mt(px(1.))
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Add anything you need to do"),
+                        )
+                        .child(
+                            h_flex()
+                                .mt(px(28.))
+                                .h(px(42.))
+                                .gap(px(12.))
+                                .items_center()
+                                .child(
+                                    div()
+                                        .size(px(18.))
+                                        .rounded_full()
+                                        .border_1()
+                                        .border_color(theme.muted_foreground),
+                                )
+                                .child(
+                                    div()
+                                        .text_size(px(14.))
+                                        .text_color(theme.muted_foreground)
+                                        .child("Add a task, or press Tab to hand it to an agent"),
+                                ),
+                        )
+                        .child({
+                            let today = chrono::Local::now().format("%Y-%m-%d").to_string();
+                            let mut rows = v_flex().mt(px(8.)).gap(px(2.));
+                            for task in self.inbox_tasks.clone() {
+                                let title = str_at(&task, "title").to_string();
+                                if title.is_empty() {
+                                    continue;
+                                }
+                                let id = str_at(&task, "id").to_string().replace("null", "");
+                                let done = !str_at(&task, "completedAt").is_empty()
+                                    && str_at(&task, "completedAt") != "null";
+                                let due = str_at(&task, "dueDate").to_string();
+                                let due_label = if due.is_empty() || due == "null" {
+                                    String::new()
+                                } else if due < today {
+                                    "Overdue".to_string()
+                                } else if due == today {
+                                    "Today".to_string()
+                                } else {
+                                    due[..due.len().min(10)].to_string()
+                                };
+                                let tid = str_at(&task, "threadId").to_string();
+                                let mut row = h_flex()
+                                    .id(ElementId::Name(format!("tasks-task-{id}").into()))
+                                    .w_full()
                                     .items_center()
+                                    .gap_2()
+                                    .px_2()
+                                    .py(px(6.))
+                                    .rounded_md()
                                     .child(
                                         div()
-                                            .size(px(18.))
-                                            .rounded_full()
-                                            .border_1()
-                                            .border_color(theme.muted_foreground),
+                                            .id(ElementId::Name(
+                                                format!("tasks-task-check-{id}").into(),
+                                            ))
+                                            .cursor_pointer()
+                                            .child(
+                                                Icon::new(if done {
+                                                    AssetIcon::CircleCheck
+                                                } else {
+                                                    AssetIcon::CircleDot
+                                                })
+                                                .size(px(14.))
+                                                .text_color(if done {
+                                                    theme.success
+                                                } else {
+                                                    theme.muted_foreground
+                                                }),
+                                            )
+                                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                                this.toggle_todo(id.clone(), !done, cx);
+                                            })),
                                     )
                                     .child(
                                         div()
-                                            .text_size(px(14.))
-                                            .text_color(theme.muted_foreground)
-                                            .child("Add a task, or press Tab to hand it to an agent"),
-                                    ),
-                            )
-                            .child({
-                                let today = chrono::Local::now().format("%Y-%m-%d").to_string();
-                                let mut rows = v_flex().mt(px(8.)).gap(px(2.));
-                                for task in self.inbox_tasks.clone() {
-                                    let title = str_at(&task, "title").to_string();
-                                    if title.is_empty() {
-                                        continue;
-                                    }
-                                    let id = str_at(&task, "id").to_string().replace("null", "");
-                                    let done = !str_at(&task, "completedAt").is_empty()
-                                        && str_at(&task, "completedAt") != "null";
-                                    let due = str_at(&task, "dueDate").to_string();
-                                    let due_label = if due.is_empty() || due == "null" {
-                                        String::new()
-                                    } else if due < today {
-                                        "Overdue".to_string()
-                                    } else if due == today {
-                                        "Today".to_string()
-                                    } else {
-                                        due[..due.len().min(10)].to_string()
-                                    };
-                                    let tid = str_at(&task, "threadId").to_string();
-                                    let mut row = h_flex()
-                                        .id(ElementId::Name(format!("tasks-task-{id}").into()))
-                                        .w_full()
-                                        .items_center()
-                                        .gap_2()
-                                        .px_2()
-                                        .py(px(6.))
-                                        .rounded_md()
-                                        .child(
-                                            div()
-                                                .id(ElementId::Name(
-                                                    format!("tasks-task-check-{id}").into(),
-                                                ))
-                                                .cursor_pointer()
-                                                .child(
-                                                    Icon::new(if done {
-                                                        AssetIcon::CircleCheck
-                                                    } else {
-                                                        AssetIcon::CircleDot
-                                                    })
-                                                    .size(px(14.))
-                                                    .text_color(if done {
-                                                        theme.success
-                                                    } else {
-                                                        theme.muted_foreground
-                                                    }),
-                                                )
-                                                .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                                    this.toggle_todo(id.clone(), !done, cx);
-                                                })),
-                                        )
-                                        .child(
-                                            div()
-                                                .flex_1()
-                                                .text_size(px(13.))
-                                                .text_color(if done {
-                                                    theme.muted_foreground
-                                                } else {
-                                                    theme.foreground
-                                                })
-                                                .child(title),
-                                        );
-                                    if !due_label.is_empty() {
-                                        row = row.child(
-                                            div()
-                                                .rounded_full()
-                                                .px(px(6.))
-                                                .py(px(1.))
-                                                .bg(theme.muted)
-                                                .text_size(px(11.))
-                                                .text_color(if due_label == "Overdue" {
-                                                    theme.danger
-                                                } else {
-                                                    theme.muted_foreground
-                                                })
-                                                .child(due_label),
-                                        );
-                                    }
-                                    if !tid.is_empty() && tid != "null" {
-                                        row = row.cursor_pointer().on_click(cx.listener(
-                                            move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
-                                        ));
-                                    }
-                                    rows = rows.child(row);
+                                            .flex_1()
+                                            .text_size(px(13.))
+                                            .text_color(if done {
+                                                theme.muted_foreground
+                                            } else {
+                                                theme.foreground
+                                            })
+                                            .child(title),
+                                    );
+                                if !due_label.is_empty() {
+                                    row = row.child(
+                                        div()
+                                            .rounded_full()
+                                            .px(px(6.))
+                                            .py(px(1.))
+                                            .bg(theme.muted)
+                                            .text_size(px(11.))
+                                            .text_color(if due_label == "Overdue" {
+                                                theme.danger
+                                            } else {
+                                                theme.muted_foreground
+                                            })
+                                            .child(due_label),
+                                    );
                                 }
-                                rows
-                            }),
-                    ),
+                                if !tid.is_empty() && tid != "null" {
+                                    row = row.cursor_pointer().on_click(cx.listener(
+                                        move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
+                                    ));
+                                }
+                                rows = rows.child(row);
+                            }
+                            rows
+                        }),
+                ),
             );
 
         // /kanban — header strip + one column per project of task cards
@@ -4082,10 +4960,7 @@ impl Native {
                             .border_color(rgb(0xf2c94c))
                             .into_any_element()
                     };
-                    let mut tail = h_flex()
-                        .ml_auto()
-                        .gap(px(8.))
-                        .items_center();
+                    let mut tail = h_flex().ml_auto().gap(px(8.)).items_center();
                     if lt_error {
                         tail = tail.child(
                             div()
@@ -4102,16 +4977,12 @@ impl Native {
                                 .child(when),
                         )
                         .child(
-                            h_flex()
-                                .gap(px(4.))
-                                .items_center()
-                                .child(icon_el)
-                                .child(
-                                    div()
-                                        .text_size(px(12.))
-                                        .text_color(theme.muted_foreground.opacity(0.8))
-                                        .child(klabel),
-                                ),
+                            h_flex().gap(px(4.)).items_center().child(icon_el).child(
+                                div()
+                                    .text_size(px(12.))
+                                    .text_color(theme.muted_foreground.opacity(0.8))
+                                    .child(klabel),
+                            ),
                         ),
                     );
                     col = col.child(
@@ -4169,12 +5040,14 @@ impl Native {
                 h_flex()
                     .ml(px(8.))
                     .gap(px(4.))
-                    .child(seg_chip("seg-kb-list", "List", false).on_click(cx.listener(
-                        |this, _e, _w, cx| this.open_route(1, cx),
-                    )))
-                    .child(seg_chip("seg-kb-kanban", "Kanban", true).on_click(
-                        cx.listener(|this, _e, _w, cx| this.open_route(2, cx)),
-                    )),
+                    .child(
+                        seg_chip("seg-kb-list", "List", false)
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(1, cx))),
+                    )
+                    .child(
+                        seg_chip("seg-kb-kanban", "Kanban", true)
+                            .on_click(cx.listener(|this, _e, _w, cx| this.open_route(2, cx))),
+                    ),
             )
             .child(
                 h_flex()
@@ -4374,11 +5247,7 @@ impl Native {
                     );
                 }
                 let page_key = format!("gh-{label}");
-                let extra_pages = self
-                    .preview_pages
-                    .get(&page_key)
-                    .copied()
-                    .unwrap_or(0) as usize;
+                let extra_pages = self.preview_pages.get(&page_key).copied().unwrap_or(0) as usize;
                 let limit = 10usize + extra_pages * 10;
                 let total = entries.len();
                 for item in entries.iter().take(limit) {
@@ -4526,9 +5395,7 @@ impl Native {
                             )
                             .child(
                                 div()
-                                    .id(SharedString::from(format!(
-                                        "gh-pin-{kind}-{repo}-{num}"
-                                    )))
+                                    .id(SharedString::from(format!("gh-pin-{kind}-{repo}-{num}")))
                                     .size(px(28.))
                                     .mt(px(5.))
                                     .mr(px(3.))
@@ -4659,7 +5526,9 @@ impl Native {
                     .items_center()
                     .rounded(px(6.))
                     .cursor_pointer()
-                    .when(active, |d| d.bg(soft_bg).border_1().border_color(theme.border))
+                    .when(active, |d| {
+                        d.bg(soft_bg).border_1().border_color(theme.border)
+                    })
                     .when(!active, |d| d.hover(|h| h.bg(theme.secondary)))
                     .on_click(cx.listener(move |this, _e, _w, cx| {
                         this.gh_kind = kind;
@@ -4712,10 +5581,16 @@ impl Native {
                             .ghost()
                             .compact()
                             .size(px(24.))
-                            .icon(svg_icon(icons::ARROW_TOP_BOTTOM).size(px(14.)).text_color(gh_icon_ink))
+                            .icon(
+                                svg_icon(icons::ARROW_TOP_BOTTOM)
+                                    .size(px(14.))
+                                    .text_color(gh_icon_ink),
+                            )
                             .dropdown_menu(move |menu, _, _| {
                                 let mut m = menu.min_w(px(170.));
-                                for (value, label) in [("created", "Newest"), ("updated", "Recently updated")] {
+                                for (value, label) in
+                                    [("created", "Newest"), ("updated", "Recently updated")]
+                                {
                                     let weak = gh_sort_weak.clone();
                                     m = m.item(
                                         PopupMenuItem::new(label)
@@ -4737,10 +5612,16 @@ impl Native {
                             .ghost()
                             .compact()
                             .size(px(24.))
-                            .icon(svg_icon(icons::FILTER_2).size(px(14.)).text_color(gh_icon_ink))
+                            .icon(
+                                svg_icon(icons::FILTER_2)
+                                    .size(px(14.))
+                                    .text_color(gh_icon_ink),
+                            )
                             .dropdown_menu(move |menu, _, _| {
                                 let mut m = menu.min_w(px(150.));
-                                for (value, label) in [("open", "Open"), ("closed", "Closed"), ("merged", "Merged")] {
+                                for (value, label) in
+                                    [("open", "Open"), ("closed", "Closed"), ("merged", "Merged")]
+                                {
                                     let weak = gh_filter_weak.clone();
                                     m = m.item(
                                         PopupMenuItem::new(label)
@@ -4765,13 +5646,14 @@ impl Native {
                             .icon(svg_icon(icons::MORE).size(px(14.)).text_color(gh_icon_ink))
                             .dropdown_menu(move |menu, _, _| {
                                 let weak = gh_actions_weak.clone();
-                                menu.min_w(px(150.)).item(
-                                    PopupMenuItem::new("Refresh").on_click(move |_, _w, cx| {
-                                        let _ = weak.update(cx, |this, cx| {
-                                            this.fetch_github_inbox(cx);
-                                        });
-                                    }),
-                                )
+                                menu.min_w(px(150.))
+                                    .item(PopupMenuItem::new("Refresh").on_click(
+                                        move |_, _w, cx| {
+                                            let _ = weak.update(cx, |this, cx| {
+                                                this.fetch_github_inbox(cx);
+                                            });
+                                        },
+                                    ))
                             }),
                     ),
             )
@@ -4887,18 +5769,13 @@ impl Native {
                         this.autom_sel = Some(id.clone());
                         cx.notify();
                     }))
-                    .child(
-                        div()
-                            .w(px(6.))
-                            .h(px(6.))
-                            .rounded_full()
-                            .flex_shrink_0()
-                            .bg(if enabled {
-                                Hsla::from(rgb(0x34c759))
-                            } else {
-                                theme.muted_foreground
-                            }),
-                    )
+                    .child(div().w(px(6.)).h(px(6.)).rounded_full().flex_shrink_0().bg(
+                        if enabled {
+                            Hsla::from(rgb(0x34c759))
+                        } else {
+                            theme.muted_foreground
+                        },
+                    ))
                     .child(
                         v_flex()
                             .flex_1()
@@ -4929,43 +5806,36 @@ impl Native {
                     .child("No automations yet"),
             );
         }
-        let autom_sel_def = self
-            .autom_sel
-            .as_ref()
-            .and_then(|sel| {
-                self.autom_defs
-                    .iter()
-                    .find(|d| str_at(d, "id") == sel.as_str())
-                    .cloned()
-            });
+        let autom_sel_def = self.autom_sel.as_ref().and_then(|sel| {
+            self.autom_defs
+                .iter()
+                .find(|d| str_at(d, "id") == sel.as_str())
+                .cloned()
+        });
         // Upstream Refresh: 28px top-bar icon button (radius 10, 16px icon at
         // 58%), overlaid so it doesn't push the pane down.
-        let mut autom_pane = v_flex()
-            .flex_1()
-            .h_full()
-            .relative()
-            .child(
-                div()
-                    .id("autom-refresh")
-                    .absolute()
-                    .top(topbar_y)
-                    .right(px(24.))
-                    .size(px(28.))
-                    .flex()
-                    .items_center()
-                    .justify_center()
-                    .rounded(px(10.))
-                    .cursor_pointer()
-                    .hover(|d| d.bg(theme.secondary))
-                    .on_click(cx.listener(|this, _e, _w, cx| {
-                        this.fetch_automations(cx);
-                    }))
-                    .child(
-                        svg_icon(icons::REFRESH)
-                            .size(px(16.))
-                            .text_color(theme.foreground.opacity(0.58)),
-                    ),
-            );
+        let mut autom_pane = v_flex().flex_1().h_full().relative().child(
+            div()
+                .id("autom-refresh")
+                .absolute()
+                .top(topbar_y)
+                .right(px(24.))
+                .size(px(28.))
+                .flex()
+                .items_center()
+                .justify_center()
+                .rounded(px(10.))
+                .cursor_pointer()
+                .hover(|d| d.bg(theme.secondary))
+                .on_click(cx.listener(|this, _e, _w, cx| {
+                    this.fetch_automations(cx);
+                }))
+                .child(
+                    svg_icon(icons::REFRESH)
+                        .size(px(16.))
+                        .text_color(theme.foreground.opacity(0.58)),
+                ),
+        );
         if let Some(def) = autom_sel_def.clone() {
             let def_id = str_at(&def, "id").to_string();
             let enabled = get(&def, "enabled").as_bool().unwrap_or(false);
@@ -5018,16 +5888,20 @@ impl Native {
                     ),
             );
             let meta_rows: Vec<(String, String)> = vec![
-                ("Schedule".into(), Self::autom_summary(get(&def, "schedule"))),
+                (
+                    "Schedule".into(),
+                    Self::autom_summary(get(&def, "schedule")),
+                ),
                 ("Project".into(), proj_name),
                 (
                     "Next run".into(),
-                    str_at(&def, "nextRunAt").to_string().replace('T', " ").trim_end_matches('Z').to_string(),
+                    str_at(&def, "nextRunAt")
+                        .to_string()
+                        .replace('T', " ")
+                        .trim_end_matches('Z')
+                        .to_string(),
                 ),
-                (
-                    "Mode".into(),
-                    str_at(&def, "mode").to_string(),
-                ),
+                ("Mode".into(), str_at(&def, "mode").to_string()),
             ];
             for (k, v) in meta_rows {
                 if v.is_empty() {
@@ -5036,12 +5910,7 @@ impl Native {
                 detail = detail.child(
                     h_flex()
                         .text_size(px(12.))
-                        .child(
-                            div()
-                                .w(px(90.))
-                                .text_color(theme.muted_foreground)
-                                .child(k),
-                        )
+                        .child(div().w(px(90.)).text_color(theme.muted_foreground).child(k))
                         .child(div().flex_1().min_w_0().child(v)),
                 );
             }
@@ -5092,28 +5961,22 @@ impl Native {
                                 .child(str_at(run, "status").to_string()),
                         )
                         .child(
-                            div()
-                                .flex_1()
-                                .min_w_0()
-                                .overflow_hidden()
-                                .child(
-                                    str_at(run, "scheduledFor")
-                                        .to_string()
-                                        .replace('T', " ")
-                                        .trim_end_matches('Z')
-                                        .to_string(),
-                                ),
+                            div().flex_1().min_w_0().overflow_hidden().child(
+                                str_at(run, "scheduledFor")
+                                    .to_string()
+                                    .replace('T', " ")
+                                    .trim_end_matches('Z')
+                                    .to_string(),
+                            ),
                         )
                         .child(
-                            div()
-                                .text_color(theme.muted_foreground)
-                                .child(
-                                    get(run, "trigger")
-                                        .get("type")
-                                        .and_then(|v| v.as_str())
-                                        .map(str::to_string)
-                                        .unwrap_or_else(|| str_at(run, "trigger").to_string()),
-                                ),
+                            div().text_color(theme.muted_foreground).child(
+                                get(run, "trigger")
+                                    .get("type")
+                                    .and_then(|v| v.as_str())
+                                    .map(str::to_string)
+                                    .unwrap_or_else(|| str_at(run, "trigger").to_string()),
+                            ),
                         ),
                 );
             }
@@ -5333,8 +6196,6 @@ impl Native {
                     .child("Create one from the sidebar to coordinate work across repos."),
             );
 
-
-
         // ---- terminal surface (upstream workspace mode: the Terminal surface
         // replaces transcript + composer; TerminalWorkspaceTabs switches surfaces) ----
         let mut term_sub_strip = h_flex()
@@ -5365,13 +6226,10 @@ impl Native {
                         .bg(theme.background)
                 })
                 .when(!is_sel, |d| {
-                    d.text_color(theme.muted_foreground)
-                        .hover(|d| d.bg(subtle))
+                    d.text_color(theme.muted_foreground).hover(|d| d.bg(subtle))
                 })
                 .child(format!("Terminal {}", ti + 1))
-                .on_click(cx.listener(move |this, _ev, _w, cx| {
-                    this.term_select_tab(ti, cx)
-                }));
+                .on_click(cx.listener(move |this, _ev, _w, cx| this.term_select_tab(ti, cx)));
             if self.term_tabs.len() > 1 {
                 chip = chip.child(
                     div()
@@ -5498,7 +6356,10 @@ impl Native {
                                 .child(if q.is_empty() {
                                     String::new()
                                 } else {
-                                    format!("{matches} match{}", if matches == 1 { "" } else { "es" })
+                                    format!(
+                                        "{matches} match{}",
+                                        if matches == 1 { "" } else { "es" }
+                                    )
                                 }),
                         ),
                 )
@@ -5547,11 +6408,7 @@ impl Native {
                     .when_some(self.term_input.clone(), |d, inp| {
                         // The command line renders as the next terminal line —
                         // upstream has no separate input row.
-                        d.child(
-                            div()
-                                .pt(px(4.))
-                                .child(Input::new(&inp).appearance(false)),
-                        )
+                        d.child(div().pt(px(4.)).child(Input::new(&inp).appearance(false)))
                     }),
             );
 
@@ -5568,7 +6425,7 @@ impl Native {
             autom_panel: autom_panel.into_any(),
             studio_panel: studio_panel.into_any(),
             kanban_header: kanban_header.into_any(),
-            kanban_count
+            kanban_count,
         }
     }
 }

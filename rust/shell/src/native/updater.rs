@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -70,8 +68,13 @@ impl Native {
         let Some(state) = self
             .desktop_update_state
             .clone()
-            .or_else(|| crate::updater::desktop_update_service().snapshot_state()) else { return };
-        if crate::updater::desktop_update_button_disabled(Some(&state)) || self.desktop_update_installing {
+            .or_else(|| crate::updater::desktop_update_service().snapshot_state())
+        else {
+            return;
+        };
+        if crate::updater::desktop_update_button_disabled(Some(&state))
+            || self.desktop_update_installing
+        {
             return;
         }
         let action = match crate::updater::resolve_desktop_update_button_action(&state) {
@@ -80,7 +83,10 @@ impl Native {
             crate::updater::DesktopUpdateButtonAction::Install => "install",
             crate::updater::DesktopUpdateButtonAction::None => return,
         };
-        let expected_version = state.downloaded_version.clone().or_else(|| state.available_version.clone());
+        let expected_version = state
+            .downloaded_version
+            .clone()
+            .or_else(|| state.available_version.clone());
         if action == "install" {
             self.desktop_update_installing = true;
             cx.notify();
@@ -88,7 +94,10 @@ impl Native {
         let client = self.client.clone();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
-            let client = cx.background_executor().spawn(async move { ensure_client(&cell) }).await;
+            let client = cx
+                .background_executor()
+                .spawn(async move { ensure_client(&cell) })
+                .await;
             let Some(client) = client else {
                 let _ = this.update(cx, |this: &mut Self, cx| {
                     this.desktop_update_installing = false;
@@ -97,31 +106,53 @@ impl Native {
                 return;
             };
             let expected = expected_version.clone();
-            let result = cx.background_executor().spawn(async move {
-                if action == "install" {
-                    let Some(version) = expected else { return Value::Null };
-                    let payload = json!({
-                        "action": "install",
-                        "confirmRestart": true,
-                        "expectedVersion": version,
-                    });
-                    let first = client.call("server.desktopUpdate", payload).unwrap_or(Value::Null);
-                    let Some(token) = first.get("restartToken").and_then(Value::as_str).map(str::to_string) else {
-                        return first;
-                    };
-                    if !first.get("accepted").and_then(Value::as_bool).unwrap_or(false) {
-                        return first;
+            let result = cx
+                .background_executor()
+                .spawn(async move {
+                    if action == "install" {
+                        let Some(version) = expected else {
+                            return Value::Null;
+                        };
+                        let payload = json!({
+                            "action": "install",
+                            "confirmRestart": true,
+                            "expectedVersion": version,
+                        });
+                        let first = client
+                            .call("server.desktopUpdate", payload)
+                            .unwrap_or(Value::Null);
+                        let Some(token) = first
+                            .get("restartToken")
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                        else {
+                            return first;
+                        };
+                        if !first
+                            .get("accepted")
+                            .and_then(Value::as_bool)
+                            .unwrap_or(false)
+                        {
+                            return first;
+                        }
+                        client
+                            .call(
+                                "server.desktopUpdate",
+                                json!({
+                                    "action": "install",
+                                    "confirmRestart": true,
+                                    "expectedVersion": version,
+                                    "restartToken": token,
+                                }),
+                            )
+                            .unwrap_or(Value::Null)
+                    } else {
+                        client
+                            .call("server.desktopUpdate", json!({"action": action}))
+                            .unwrap_or(Value::Null)
                     }
-                    client.call("server.desktopUpdate", json!({
-                        "action": "install",
-                        "confirmRestart": true,
-                        "expectedVersion": version,
-                        "restartToken": token,
-                    })).unwrap_or(Value::Null)
-                } else {
-                    client.call("server.desktopUpdate", json!({"action": action})).unwrap_or(Value::Null)
-                }
-            }).await;
+                })
+                .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
                 if let Some(next) = desktop_update_state_from_result(&result) {
                     this.desktop_update_state = Some(next);
@@ -136,21 +167,30 @@ impl Native {
     /// Run one Stable↔Beta verb off the UI thread. Install can download a
     /// large payload, while import/launch are local process handoffs.
     pub(super) fn perform_beta_action(&mut self, action: &'static str, cx: &mut Context<Self>) {
-        if self.beta_action_running.is_some() { return; }
+        if self.beta_action_running.is_some() {
+            return;
+        }
         self.beta_action_running = Some(action);
         self.beta_action_message = None;
         cx.notify();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
-            let result = cx.background_executor().spawn(async move {
-                let channel = crate::beta_channel::DesktopBetaChannel::current();
-                match action {
-                    "install" => channel.install(),
-                    "launch" => channel.launch(),
-                    "import" => channel.import_and_launch(),
-                    "leave" => channel.leave(),
-                    _ => crate::beta_channel::BetaActionResult { ok: false, error: Some("internal"), message: Some("Unknown beta action.".into()) },
-                }
-            }).await;
+            let result = cx
+                .background_executor()
+                .spawn(async move {
+                    let channel = crate::beta_channel::DesktopBetaChannel::current();
+                    match action {
+                        "install" => channel.install(),
+                        "launch" => channel.launch(),
+                        "import" => channel.import_and_launch(),
+                        "leave" => channel.leave(),
+                        _ => crate::beta_channel::BetaActionResult {
+                            ok: false,
+                            error: Some("internal"),
+                            message: Some("Unknown beta action.".into()),
+                        },
+                    }
+                })
+                .await;
             let ok = result.ok;
             let message = result.message.or(if ok {
                 Some(match action {
@@ -160,7 +200,9 @@ impl Native {
                     "leave" => "Synara is opening.".into(),
                     _ => "Done.".into(),
                 })
-            } else { None });
+            } else {
+                None
+            });
             let _ = this.update(cx, |this: &mut Self, cx| {
                 this.beta_action_running = None;
                 this.beta_action_message = message;
@@ -172,7 +214,8 @@ impl Native {
             if action == "leave" && ok {
                 cx.update(|app| app.quit());
             }
-        }).detach();
+        })
+        .detach();
     }
 
     pub(super) fn eval_whats_new(&mut self, cx: &mut Context<Self>) {

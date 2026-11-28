@@ -10,12 +10,12 @@ use std::pin::Pin;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 
+use axum::extract::ws::{Message as WsMessage, WebSocket};
 use futures_util::{SinkExt, StreamExt};
 use tokio::io::{AsyncRead, AsyncWrite, ReadBuf};
-use tokio_rustls::rustls::pki_types::{CertificateDer, PrivateKeyDer, PrivatePkcs8KeyDer};
-use tokio_rustls::rustls::ServerConfig;
 use tokio_rustls::TlsAcceptor;
-use axum::extract::ws::{Message as WsMessage, WebSocket};
+use tokio_rustls::rustls::ServerConfig;
+use tokio_rustls::rustls::pki_types::{CertificateDer, PrivateKeyDer, PrivatePkcs8KeyDer};
 
 use crate::remote_tls::RemoteTlsIdentity;
 
@@ -70,7 +70,7 @@ impl AsyncRead for WsDuplex {
                     continue;
                 }
                 Poll::Ready(Some(Err(e))) => {
-                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::ConnectionReset, e)))
+                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::ConnectionReset, e)));
                 }
                 Poll::Ready(None) => return Poll::Ready(Ok(())),
                 Poll::Pending => return Poll::Pending,
@@ -113,16 +113,13 @@ impl AsyncWrite for WsDuplex {
             match self.ws.poll_ready_unpin(cx) {
                 Poll::Ready(Ok(())) => {
                     let frame: Vec<u8> = self.write_queue.drain(..).collect();
-                    if let Err(e) = self
-                        .ws
-                        .start_send_unpin(WsMessage::Binary(frame.into()))
-                    {
+                    if let Err(e) = self.ws.start_send_unpin(WsMessage::Binary(frame.into())) {
                         return Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, e)));
                     }
                     self.flushing = false;
                 }
                 Poll::Ready(Err(e)) => {
-                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, e)))
+                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, e)));
                 }
                 Poll::Pending => return Poll::Pending,
             }
@@ -138,7 +135,9 @@ impl AsyncWrite for WsDuplex {
         match self.as_mut().poll_flush(cx) {
             Poll::Ready(Ok(())) => match self.ws.poll_close_unpin(cx) {
                 Poll::Ready(Ok(())) => Poll::Ready(Ok(())),
-                Poll::Ready(Err(e)) => Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, e))),
+                Poll::Ready(Err(e)) => {
+                    Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, e)))
+                }
                 Poll::Pending => Poll::Pending,
             },
             Poll::Ready(Err(e)) => Poll::Ready(Err(e)),
@@ -161,14 +160,14 @@ fn server_config(identity: &RemoteTlsIdentity) -> Result<Arc<ServerConfig>, Stri
         .ok_or_else(|| "leaf private key missing".to_string())?
         .map_err(|e| format!("leaf key parse failed: {e}"))?;
     let config = ServerConfig::builder_with_provider(
-            tokio_rustls::rustls::crypto::ring::default_provider().into(),
-        )
-        // TLS 1.3 only, matching upstream's minVersion/maxVersion pinning.
-        .with_protocol_versions(&[&tokio_rustls::rustls::version::TLS13])
-        .map_err(|e| format!("tls protocol config failed: {e}"))?
-        .with_no_client_auth()
-        .with_single_cert(certs, PrivateKeyDer::Pkcs8(PrivatePkcs8KeyDer::from(key)))
-        .map_err(|e| format!("tls config failed: {e}"))?;
+        tokio_rustls::rustls::crypto::ring::default_provider().into(),
+    )
+    // TLS 1.3 only, matching upstream's minVersion/maxVersion pinning.
+    .with_protocol_versions(&[&tokio_rustls::rustls::version::TLS13])
+    .map_err(|e| format!("tls protocol config failed: {e}"))?
+    .with_no_client_auth()
+    .with_single_cert(certs, PrivateKeyDer::Pkcs8(PrivatePkcs8KeyDer::from(key)))
+    .map_err(|e| format!("tls config failed: {e}"))?;
     Ok(Arc::new(config))
 }
 
@@ -315,7 +314,8 @@ pub async fn serve_inner(
         }
         return;
     }
-    let mut session_registration: Option<(String, tokio::sync::mpsc::UnboundedReceiver<u16>)> = None;
+    let mut session_registration: Option<(String, tokio::sync::mpsc::UnboundedReceiver<u16>)> =
+        None;
     // In-band session handshake, port of upstream remoteSessions/gateway.ts:
     // the upgrade stays open and the first frames authenticate — a mint
     // request (proof of possession of a trusted device key) earns a fresh
@@ -334,7 +334,9 @@ pub async fn serve_inner(
         let mut authed = false;
         while !authed {
             let frame = match tokio::time::timeout_at(deadline, client_rx.next()).await {
-                Ok(Some(Ok(tokio_tungstenite::tungstenite::Message::Text(text)))) => text.to_string(),
+                Ok(Some(Ok(tokio_tungstenite::tungstenite::Message::Text(text)))) => {
+                    text.to_string()
+                }
                 _ => return,
             };
             frames_seen += 1;
@@ -357,42 +359,57 @@ pub async fn serve_inner(
             if state == "mint" && frame_type == "mint_request" {
                 let request = parsed.get("request").and_then(|v| v.as_str()).unwrap_or("");
                 let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
-                let minted = (|| -> Result<crate::host_auth_verify::MintedSessionCredential, String> {
-                    let identity = crate::host_identity::read_host_identity(&identity_path)?
-                        .ok_or_else(|| "host identity missing".to_string())?;
-                    let conn = crate::remote_pairing::open()?;
-                    let scope = crate::remote_pairing::local_scope(&secrets_dir, &environment_id)
-                        .ok_or_else(|| "scope unavailable".to_string())?;
-                    let account = crate::account::read_session_file()
-                        .ok_or_else(|| "Remote authorization unavailable".to_string())?;
-                    let account_url = account.get("accountUrl").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
-                    let host_id = account.get("hostId").and_then(serde_json::Value::as_str).unwrap_or_default().to_string();
-                    let key_generation = account.get("hostKeyGeneration").and_then(serde_json::Value::as_u64).unwrap_or(0);
-                    if account_url.is_empty() || host_id.is_empty() || key_generation == 0 {
-                        return Err("Remote authorization unavailable".to_string());
-                    }
-                    crate::host_auth_verify::mint_session_credential(
-                        request,
-                        &identity,
-                        &environment_id,
-                        key_generation,
-                        |device_jkt, grant, subject| {
-                            let verified = crate::host_grant_verify::verify_host_grant(
-                                grant,
-                                &account_url,
-                                &scope.account_authority,
-                                &environment_id,
-                                &host_id,
-                                &scope.user_id,
-                                device_jkt,
-                                Some(subject),
-                            )?;
-                            let generation = crate::remote_pairing::device_trust_generation(&conn, &scope, device_jkt)?;
-                            crate::host_grant_verify::consume_host_grant(&verified)?;
-                            Ok(generation)
-                        },
-                    )
-                })();
+                let minted =
+                    (|| -> Result<crate::host_auth_verify::MintedSessionCredential, String> {
+                        let identity = crate::host_identity::read_host_identity(&identity_path)?
+                            .ok_or_else(|| "host identity missing".to_string())?;
+                        let conn = crate::remote_pairing::open()?;
+                        let scope =
+                            crate::remote_pairing::local_scope(&secrets_dir, &environment_id)
+                                .ok_or_else(|| "scope unavailable".to_string())?;
+                        let account = crate::account::read_session_file()
+                            .ok_or_else(|| "Remote authorization unavailable".to_string())?;
+                        let account_url = account
+                            .get("accountUrl")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
+                        let host_id = account
+                            .get("hostId")
+                            .and_then(serde_json::Value::as_str)
+                            .unwrap_or_default()
+                            .to_string();
+                        let key_generation = account
+                            .get("hostKeyGeneration")
+                            .and_then(serde_json::Value::as_u64)
+                            .unwrap_or(0);
+                        if account_url.is_empty() || host_id.is_empty() || key_generation == 0 {
+                            return Err("Remote authorization unavailable".to_string());
+                        }
+                        crate::host_auth_verify::mint_session_credential(
+                            request,
+                            &identity,
+                            &environment_id,
+                            key_generation,
+                            |device_jkt, grant, subject| {
+                                let verified = crate::host_grant_verify::verify_host_grant(
+                                    grant,
+                                    &account_url,
+                                    &scope.account_authority,
+                                    &environment_id,
+                                    &host_id,
+                                    &scope.user_id,
+                                    device_jkt,
+                                    Some(subject),
+                                )?;
+                                let generation = crate::remote_pairing::device_trust_generation(
+                                    &conn, &scope, device_jkt,
+                                )?;
+                                crate::host_grant_verify::consume_host_grant(&verified)?;
+                                Ok(generation)
+                            },
+                        )
+                    })();
                 let Ok(minted) = minted else { return };
                 let reply = serde_json::json!({
                     "v": 1,
@@ -401,7 +418,9 @@ pub async fn serve_inner(
                     "expiresAtSeconds": minted.expires_at_seconds,
                 });
                 if client_tx
-                    .send(tokio_tungstenite::tungstenite::Message::Text(reply.to_string().into()))
+                    .send(tokio_tungstenite::tungstenite::Message::Text(
+                        reply.to_string().into(),
+                    ))
                     .await
                     .is_err()
                 {
@@ -413,26 +432,34 @@ pub async fn serve_inner(
             if frame_type != "session_authorize" {
                 return;
             }
-            let credential = parsed.get("credential").and_then(|v| v.as_str()).unwrap_or("");
+            let credential = parsed
+                .get("credential")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
             let dpop = parsed.get("dpop").and_then(|v| v.as_str()).unwrap_or("");
-            let verified = (|| -> Result<crate::host_auth_verify::VerifiedSessionCredential, String> {
-                let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
-                let identity = crate::host_identity::read_host_identity(&identity_path)?
-                    .ok_or_else(|| "host identity missing".to_string())?;
-                let key_generation = crate::account::read_session_file()
-                    .and_then(|account| account.get("hostKeyGeneration").and_then(serde_json::Value::as_u64))
-                    .unwrap_or(0);
-                crate::host_auth_verify::verify_session_credential(
-                    credential,
-                    dpop,
-                    &identity,
-                    &environment_id,
-                    key_generation,
-                    "synara://remote/session",
-                    "CONNECT",
-                    None,
-                )
-            })();
+            let verified =
+                (|| -> Result<crate::host_auth_verify::VerifiedSessionCredential, String> {
+                    let identity_path = crate::host_identity::host_identity_path(&secrets_dir);
+                    let identity = crate::host_identity::read_host_identity(&identity_path)?
+                        .ok_or_else(|| "host identity missing".to_string())?;
+                    let key_generation = crate::account::read_session_file()
+                        .and_then(|account| {
+                            account
+                                .get("hostKeyGeneration")
+                                .and_then(serde_json::Value::as_u64)
+                        })
+                        .unwrap_or(0);
+                    crate::host_auth_verify::verify_session_credential(
+                        credential,
+                        dpop,
+                        &identity,
+                        &environment_id,
+                        key_generation,
+                        "synara://remote/session",
+                        "CONNECT",
+                        None,
+                    )
+                })();
             let Ok(verified) = verified else { return };
             let trusted = (|| -> Result<bool, String> {
                 let conn = crate::remote_pairing::open()?;
@@ -443,25 +470,48 @@ pub async fn serve_inner(
             if trusted != Ok(true) {
                 return;
             }
-            let (session_id, close_rx) = crate::remote_sessions::add(&verified.device_jkt, &verified.user_id, "direct");
+            let (session_id, close_rx) =
+                crate::remote_sessions::add(&verified.device_jkt, &verified.user_id, "direct");
             session_registration = Some((session_id, close_rx));
-            let client = parsed.get("client").cloned().unwrap_or_else(|| serde_json::json!({}));
+            let client = parsed
+                .get("client")
+                .cloned()
+                .unwrap_or_else(|| serde_json::json!({}));
             let required: Vec<String> = client
                 .get("requiredCapabilities")
                 .and_then(serde_json::Value::as_array)
-                .map(|items| items.iter().filter_map(|item| item.as_str().map(str::to_string)).collect())
+                .map(|items| {
+                    items
+                        .iter()
+                        .filter_map(|item| item.as_str().map(str::to_string))
+                        .collect()
+                })
                 .unwrap_or_default();
             let compatibility = crate::native_ws::negotiate(
-                client.get("protocolEpoch").and_then(serde_json::Value::as_i64).unwrap_or(-1),
-                client.get("minRevision").and_then(serde_json::Value::as_i64).unwrap_or(-1),
-                client.get("maxRevision").and_then(serde_json::Value::as_i64).unwrap_or(-1),
+                client
+                    .get("protocolEpoch")
+                    .and_then(serde_json::Value::as_i64)
+                    .unwrap_or(-1),
+                client
+                    .get("minRevision")
+                    .and_then(serde_json::Value::as_i64)
+                    .unwrap_or(-1),
+                client
+                    .get("maxRevision")
+                    .and_then(serde_json::Value::as_i64)
+                    .unwrap_or(-1),
                 &required,
             );
             let Ok(compatibility) = compatibility else {
-                let refusal = compatibility.err().unwrap_or_else(|| serde_json::json!({"message":"incompatible"}));
-                let frame = serde_json::json!({"v":2,"type":"session_incompatible","error":refusal});
+                let refusal = compatibility
+                    .err()
+                    .unwrap_or_else(|| serde_json::json!({"message":"incompatible"}));
+                let frame =
+                    serde_json::json!({"v":2,"type":"session_incompatible","error":refusal});
                 let _ = client_tx
-                    .send(tokio_tungstenite::tungstenite::Message::Text(frame.to_string().into()))
+                    .send(tokio_tungstenite::tungstenite::Message::Text(
+                        frame.to_string().into(),
+                    ))
                     .await;
                 return;
             };
@@ -472,7 +522,9 @@ pub async fn serve_inner(
                 "compatibility": compatibility,
             });
             if client_tx
-                .send(tokio_tungstenite::tungstenite::Message::Text(ready.to_string().into()))
+                .send(tokio_tungstenite::tungstenite::Message::Text(
+                    ready.to_string().into(),
+                ))
                 .await
                 .is_err()
             {
@@ -484,7 +536,8 @@ pub async fn serve_inner(
     let desktop_update_authority = session_registration
         .as_ref()
         .map(|(session_id, _)| crate::server_desktop_update::authorize_remote_session(session_id));
-    let (native_tx, mut native_rx) = tokio::sync::mpsc::unbounded_channel::<axum::extract::ws::Message>();
+    let (native_tx, mut native_rx) =
+        tokio::sync::mpsc::unbounded_channel::<axum::extract::ws::Message>();
     let streams: std::sync::Arc<
         std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
     > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
@@ -524,8 +577,15 @@ pub async fn serve_inner(
         };
         match msg {
             Ok(tokio_tungstenite::tungstenite::Message::Text(t)) => {
-                if let Some(reply) =
-                    crate::ws_relay::intercept_todo_pub(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), "client").await
+                if let Some(reply) = crate::ws_relay::intercept_todo_pub(
+                    &t,
+                    &todos,
+                    &native_tx,
+                    &streams_in,
+                    desktop_update_authority.as_deref(),
+                    "client",
+                )
+                .await
                 {
                     if let Some(reply) = reply {
                         let _ = native_tx.send(reply);
@@ -547,9 +607,8 @@ pub async fn serve_inner(
                                 "message": format!("{tag_s} is not served over the remote tunnel yet"),
                                 "code": null, "retryable": false}}]}
                         });
-                        let _ = native_tx.send(axum::extract::ws::Message::Text(
-                            reply.to_string().into(),
-                        ));
+                        let _ = native_tx
+                            .send(axum::extract::ws::Message::Text(reply.to_string().into()));
                     }
                 }
             }

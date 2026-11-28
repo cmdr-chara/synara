@@ -46,7 +46,9 @@ fn find_session_path(sessions_dir: &Path, session_id: &str) -> Option<PathBuf> {
 }
 
 fn visible_message_text(content: Option<&Value>) -> String {
-    let Some(content) = content else { return String::new() };
+    let Some(content) = content else {
+        return String::new();
+    };
     if let Some(text) = content.as_str() {
         return text.trim().to_string();
     }
@@ -70,7 +72,10 @@ fn user_visible(message: &Value) -> bool {
         && message.get("visibility").and_then(Value::as_str) != Some("llm_only")
 }
 
-pub(crate) fn read_factory_session_history(home_dir: &Path, session_id: &str) -> Option<FactorySessionHistory> {
+pub(crate) fn read_factory_session_history(
+    home_dir: &Path,
+    session_id: &str,
+) -> Option<FactorySessionHistory> {
     let session_id = session_id.trim();
     let path = find_session_path(&home_dir.join(".factory").join("sessions"), session_id)?;
     let raw = std::fs::read_to_string(path).ok()?;
@@ -80,15 +85,24 @@ pub(crate) fn read_factory_session_history(home_dir: &Path, session_id: &str) ->
         if line.trim().is_empty() {
             continue;
         }
-        let Ok(entry) = serde_json::from_str::<Value>(line) else { continue };
+        let Ok(entry) = serde_json::from_str::<Value>(line) else {
+            continue;
+        };
         match entry.get("type").and_then(Value::as_str) {
             Some("session_start") => {
-                if let Some(value) = entry.get("cwd").and_then(Value::as_str).map(str::trim).filter(|v| !v.is_empty()) {
+                if let Some(value) = entry
+                    .get("cwd")
+                    .and_then(Value::as_str)
+                    .map(str::trim)
+                    .filter(|v| !v.is_empty())
+                {
                     cwd = Some(value.to_string());
                 }
             }
             Some("message") => {
-                let Some(message) = entry.get("message") else { continue };
+                let Some(message) = entry.get("message") else {
+                    continue;
+                };
                 if !user_visible(message) {
                     continue;
                 }

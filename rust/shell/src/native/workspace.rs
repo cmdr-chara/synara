@@ -3,25 +3,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -59,10 +57,26 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui { rgb(0x1d1d1d) } else { rgb(0xf7f7f7) };
-        let hairline = if dark_ui { rgb(0x2e2e2e) } else { rgb(0xe5e5e5) };
-        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
-        let chip_bg = if dark_ui { rgba(0xffffff12) } else { rgba(0x00000008) };
+        let well_bg = if dark_ui {
+            rgb(0x1d1d1d)
+        } else {
+            rgb(0xf7f7f7)
+        };
+        let hairline = if dark_ui {
+            rgb(0x2e2e2e)
+        } else {
+            rgb(0xe5e5e5)
+        };
+        let subtle = if dark_ui {
+            rgba(0xffffff14)
+        } else {
+            rgba(0x0000000d)
+        };
+        let chip_bg = if dark_ui {
+            rgba(0xffffff12)
+        } else {
+            rgba(0x00000008)
+        };
         let soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
@@ -103,92 +117,107 @@ impl Native {
         let query = self.search.read(cx).value().to_string().to_lowercase();
         // Header: bold wordmark + chevron (workspace switcher), search +
         // new-thread icon buttons on the right — mirrors the web sidebar.
-        sidebar = sidebar.child(
-            h_flex()
-                .items_center()
-                .gap_1()
-                // Measured against the web reference: upstream leaves ~8px
-                // below the workspace row before the first action row.
-                .mb_2()
-                .child(
-                    // Upstream wordmark: font-display (Cal Sans) 17px, normal
-                    // weight (the face is already semibold-looking).
-                    div()
-                        .px_1()
-                        .text_size(px(17.))
-                        .font_family("Cal Sans")
-                        .child("Synara"),
-                )
-                .child(
-                    // Upstream surface picker: active surface ("Synara") plus
-                    // "Hubs", each with its subtitle. Selecting Hubs opens the
-                    // hubs rail section.
-                    Button::new("app-menu")
-                        .ghost()
-                        .compact()
-                        // Upstream keeps the chevron 6px from the wordmark.
-                        .ml(px(-12.))
-                        .icon(
-                            Icon::new(AssetIcon::ChevronDown)
-                                .size(px(14.))
-                                .text_color(theme.foreground.opacity(0.41)),
+        sidebar =
+            sidebar.child(
+                h_flex()
+                    .items_center()
+                    .gap_1()
+                    // Measured against the web reference: upstream leaves ~8px
+                    // below the workspace row before the first action row.
+                    .mb_2()
+                    .child(
+                        // Upstream wordmark: font-display (Cal Sans) 17px, normal
+                        // weight (the face is already semibold-looking).
+                        div()
+                            .px_1()
+                            .text_size(px(17.))
+                            .font_family("Cal Sans")
+                            .child("Synara"),
+                    )
+                    .child(
+                        // Upstream surface picker: active surface ("Synara") plus
+                        // "Hubs", each with its subtitle. Selecting Hubs opens the
+                        // hubs rail section.
+                        Button::new("app-menu")
+                            .ghost()
+                            .compact()
+                            // Upstream keeps the chevron 6px from the wordmark.
+                            .ml(px(-12.))
+                            .icon(
+                                Icon::new(AssetIcon::ChevronDown)
+                                    .size(px(14.))
+                                    .text_color(theme.foreground.opacity(0.41)),
+                            )
+                            .dropdown_menu({
+                                let weak = cx.weak_entity();
+                                move |menu, _, _cx| {
+                                    let w2 = weak.clone();
+                                    menu.min_w(px(200.))
+                                        .item(
+                                            PopupMenuItem::element(|_, _| {
+                                                v_flex()
+                                                    .gap_0p5()
+                                                    .child(div().text_size(px(13.)).child("Synara"))
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(11.))
+                                                            .text_color(rgba(0x777777aa))
+                                                            .child("Build, debug, and ship"),
+                                                    )
+                                            })
+                                            .checked(true)
+                                            .on_click(|_, _, _| {}),
+                                        )
+                                        .item(
+                                            PopupMenuItem::element(|_, _| {
+                                                v_flex()
+                                                    .gap_0p5()
+                                                    .child(div().text_size(px(13.)).child("Hubs"))
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(11.))
+                                                            .text_color(rgba(0x777777aa))
+                                                            .child("Coordinated work across repos"),
+                                                    )
+                                            })
+                                            .on_click(move |_, _w, cx| {
+                                                let _ = w2.update(cx, |this, cx| {
+                                                    this.clear_views();
+                                                    this.view_studio = true;
+                                                    cx.notify();
+                                                });
+                                            }),
+                                        )
+                                }
+                            }),
+                    )
+                    .child(div().flex_1())
+                    .child(
+                        icon_btn_pad(
+                            "sidebar-search",
+                            icons::SEARCH,
+                            15.,
+                            9.,
+                            theme.secondary,
+                            theme.foreground.opacity(0.35),
                         )
-                        .dropdown_menu({
-                            let weak = cx.weak_entity();
-                            move |menu, _, _cx| {
-                                let w2 = weak.clone();
-                                menu.min_w(px(200.))
-                                    .item(
-                                        PopupMenuItem::element(|_, _| {
-                                            v_flex()
-                                                .gap_0p5()
-                                                .child(div().text_size(px(13.)).child("Synara"))
-                                                .child(
-                                                    div()
-                                                        .text_size(px(11.))
-                                                        .text_color(rgba(0x777777aa))
-                                                        .child("Build, debug, and ship"),
-                                                )
-                                        })
-                                        .checked(true)
-                                        .on_click(|_, _, _| {}),
-                                    )
-                                    .item(
-                                        PopupMenuItem::element(|_, _| {
-                                            v_flex()
-                                                .gap_0p5()
-                                                .child(div().text_size(px(13.)).child("Hubs"))
-                                                .child(
-                                                    div()
-                                                        .text_size(px(11.))
-                                                        .text_color(rgba(0x777777aa))
-                                                        .child("Coordinated work across repos"),
-                                                )
-                                        })
-                                        .on_click(move |_, _w, cx| {
-                                            let _ = w2.update(cx, |this, cx| {
-                                                this.clear_views();
-                                                this.view_studio = true;
-                                                cx.notify();
-                                            });
-                                        }),
-                                    )
-                            }
-                        }),
-                )
-                .child(div().flex_1())
-                .child(
-                    icon_btn_pad("sidebar-search", icons::SEARCH, 15., 9., theme.secondary, theme.foreground.opacity(0.35))
                         .on_click(cx.listener(|this, _ev, _w, cx| {
                             this.search_open = !this.search_open;
                             cx.notify();
                         })),
-                )
-                .child(
-                    icon_btn_pad("sidebar-new", icons::NEW_THREAD, 15., 9., theme.secondary, theme.foreground.opacity(0.44))
+                    )
+                    .child(
+                        icon_btn_pad(
+                            "sidebar-new",
+                            icons::NEW_THREAD,
+                            15.,
+                            9.,
+                            theme.secondary,
+                            theme.foreground.opacity(0.44),
+                        )
                         .on_click(cx.listener(|this, _ev, _w, cx| this.new_thread(cx))),
-                ),
-        );
+                    ),
+            );
         if self.search_open {
             sidebar = sidebar.child(
                 h_flex()
@@ -294,9 +323,21 @@ impl Native {
             if hovered {
                 let mut qa = h_flex().items_center().gap_1();
                 for (aid, icon, act) in [
-                    ("qa-pin", if is_pinned { icons::PIN_FILL } else { icons::PIN }, "pin"),
+                    (
+                        "qa-pin",
+                        if is_pinned {
+                            icons::PIN_FILL
+                        } else {
+                            icons::PIN
+                        },
+                        "pin",
+                    ),
                     ("qa-archive", icons::S_ARCHIVE, "archive"),
-                    ("qa-done", if settled { icons::UNDO } else { icons::CHECK }, "done"),
+                    (
+                        "qa-done",
+                        if settled { icons::UNDO } else { icons::CHECK },
+                        "done",
+                    ),
                 ] {
                     let tid_q = tid.clone();
                     qa = qa.child(
@@ -350,11 +391,9 @@ impl Native {
                 // Upstream trailing slot: status glyph (SidebarStatusTrailingGlyph)
                 // then the pin affordance. Completed -> accent dot, Reminder ->
                 // clock, approval/input/plan -> colored status dot.
-                if let Some(k) = inbox_needs_you_kind(
-                    thread,
-                    &self.dismissed_status,
-                    &self.visited_threads,
-                ) {
+                if let Some(k) =
+                    inbox_needs_you_kind(thread, &self.dismissed_status, &self.visited_threads)
+                {
                     let label = needs_you_label(thread, k);
                     el = el.child(if label == "Reminder" {
                         svg_icon(icons::CLOCK)
@@ -464,10 +503,9 @@ impl Native {
             }));
             // Upstream beginThreadDrag: the row drags onto the composer
             // as an @mention (and onto chat panes as a split).
-            el.on_drag(
-                ThreadDrag(tid_drag.clone()),
-                move |_d, _pos, _w, cx| cx.new(|_| DragGhost(title_drag.clone())),
-            )
+            el.on_drag(ThreadDrag(tid_drag.clone()), move |_d, _pos, _w, cx| {
+                cx.new(|_| DragGhost(title_drag.clone()))
+            })
         };
         // Upstream "Pinned" section: pinned threads listed under their own
         // header above the project groups (they still appear in Chats too).
@@ -535,14 +573,12 @@ impl Native {
         // Projects: only real (non-chat) projects appear here — chat-kind
         // projects (Home) surface only via the "Chats" section. Pinned first,
         // then creation order, matching the web sidebar.
-        let mut projects_list: Vec<Value> = arr(
-            self.snapshot.as_ref().unwrap_or(&Value::Null),
-            "projects",
-        )
-        .iter()
-        .filter(|p| str_at(p, "kind") != "chat")
-        .cloned()
-        .collect();
+        let mut projects_list: Vec<Value> =
+            arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
+                .iter()
+                .filter(|p| str_at(p, "kind") != "chat")
+                .cloned()
+                .collect();
         projects_list.sort_by_key(|p| {
             (
                 if get(p, "isPinned").as_bool().unwrap_or(false) {
@@ -746,7 +782,7 @@ impl Native {
                 let mut page_row = h_flex()
                     .id(ElementId::Name(format!("pg-{pid_key}").into()))
                     .h(px(28.))
-                .mb(px(4.))
+                    .mb(px(4.))
                     .items_center()
                     .pl(px(34.))
                     .gap_2();
@@ -816,7 +852,9 @@ impl Native {
             all_threads
                 .iter()
                 .filter(|t| {
-                    chat_project_ids.iter().any(|id| id == str_at(t, "projectId"))
+                    chat_project_ids
+                        .iter()
+                        .any(|id| id == str_at(t, "projectId"))
                         && get(t, "parentThreadId").is_null()
                         && live_thread(t)
                         && matches_query(t)
@@ -825,7 +863,11 @@ impl Native {
                 .collect()
         };
         chat_threads.sort_by_key(|t| {
-            if pinned_ids.contains(&str_at(t, "id").to_string()) { 0 } else { 1 }
+            if pinned_ids.contains(&str_at(t, "id").to_string()) {
+                0
+            } else {
+                1
+            }
         });
         {
             let pages = *self.preview_pages.get("chats").unwrap_or(&0) as usize;
@@ -854,7 +896,7 @@ impl Native {
                 let mut page_row = h_flex()
                     .id("pg-chats")
                     .h(px(28.))
-                .mb(px(4.))
+                    .mb(px(4.))
                     .items_center()
                     .pl(px(8.))
                     .gap_2();
@@ -993,7 +1035,11 @@ impl Native {
                 );
                 for (i, (label, desc)) in FLAG_ROWS.iter().enumerate() {
                     let on = self.feature_flags[i];
-                    let track = switch_track(on, text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark)), &theme);
+                    let track = switch_track(
+                        on,
+                        text_accent(matches!(theme.mode, gpui_kit::component::ThemeMode::Dark)),
+                        &theme,
+                    );
                     menu = menu.child(
                         div()
                             .id(ElementId::Name(format!("ff-row-{i}").into()))
@@ -1047,45 +1093,49 @@ impl Native {
                 footer = footer.child(menu);
             }
             if std::env::var("SYNARA_DEV_FLAGS").is_ok() {
-            footer = footer.child(
-                h_flex()
-                    .id("ff-footer")
-                    .mx(px(4.))
-                    .px(px(8.))
-                    .h(px(32.))
-                    .gap(px(10.))
-                    .items_center()
-                    .rounded(px(8.))
-                    .cursor_pointer()
-                    .hover(|d| d.bg(theme.secondary))
-                    .child(
-                        svg_icon(icons::FLAG)
-                            .size(px(15.))
-                            .text_color(theme.muted_foreground),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("Feature flags"),
-                    )
-                    .on_click(cx.listener(|this, _ev, _w, cx| {
-                        this.flags_menu_open = !this.flags_menu_open;
-                        cx.notify();
-                    })),
-            );
+                footer = footer.child(
+                    h_flex()
+                        .id("ff-footer")
+                        .mx(px(4.))
+                        .px(px(8.))
+                        .h(px(32.))
+                        .gap(px(10.))
+                        .items_center()
+                        .rounded(px(8.))
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .child(
+                            svg_icon(icons::FLAG)
+                                .size(px(15.))
+                                .text_color(theme.muted_foreground),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Feature flags"),
+                        )
+                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                            this.flags_menu_open = !this.flags_menu_open;
+                            cx.notify();
+                        })),
+                );
             }
             sidebar = sidebar.child(footer);
         }
         // ---- transcript ----
-        let mut pane = v_flex().flex_1().h_full().gap_2().on_drag_move::<ThreadDrag>(
-            cx.listener(|this, _ev: &gpui::DragMoveEvent<ThreadDrag>, _w, cx| {
-                if this.composer_thread_over {
-                    this.composer_thread_over = false;
-                    cx.notify();
-                }
-            }),
-        );
+        let mut pane = v_flex()
+            .flex_1()
+            .h_full()
+            .gap_2()
+            .on_drag_move::<ThreadDrag>(cx.listener(
+                |this, _ev: &gpui::DragMoveEvent<ThreadDrag>, _w, cx| {
+                    if this.composer_thread_over {
+                        this.composer_thread_over = false;
+                        cx.notify();
+                    }
+                },
+            ));
         // Upstream shows the new-chat landing inside the thread pane when the
         // thread has no messages yet (same logo + heading + watermark + banner).
         let thread_msgs_empty = self.selected_thread.is_some()
@@ -1131,10 +1181,8 @@ impl Native {
             // center fade, and accent ripples on click. Ink alpha is bucketed
             // into five layers (upstream draws a continuous 0..0.18 alpha).
             let pane_ox = 51. + if self.sidebar_collapsed { 0. } else { 257. };
-            let avail_w =
-                (window.viewport_size().width.as_f32() - pane_ox).max(60.);
-            let avail_h =
-                (window.viewport_size().height.as_f32() - 47.).max(60.);
+            let avail_w = (window.viewport_size().width.as_f32() - pane_ox).max(60.);
+            let avail_h = (window.viewport_size().height.as_f32() - 47.).max(60.);
             if self.ascii_cell_w <= 0. {
                 let measured = window
                     .text_system()
@@ -1159,8 +1207,7 @@ impl Native {
             // offsets: the canvas clips the overflow, so glyphs always reach
             // the field's real edges like upstream's cols*cellW tiling.
             let cols = (window.viewport_size().width.as_f32() / cw).ceil() as usize + 1;
-            let rows =
-                (window.viewport_size().height.as_f32() / ASCII_CELL_H).ceil() as usize + 1;
+            let rows = (window.viewport_size().height.as_f32() / ASCII_CELL_H).ceil() as usize + 1;
             let _ = (avail_w, avail_h);
             let n_cells = cols * rows;
             if self.ascii_fresh || self.ascii_cells.len() != n_cells {
@@ -1185,8 +1232,7 @@ impl Native {
                 self.ascii_fresh = false;
             }
             let now = std::time::Instant::now();
-            let elapsed_ms =
-                now.saturating_duration_since(self.ascii_t0).as_millis() as u64;
+            let elapsed_ms = now.saturating_duration_since(self.ascii_t0).as_millis() as u64;
             let t = elapsed_ms as f32 / 1000.0 + self.ascii_seed;
             let reveal = smoothstep(0., ASCII_REVEAL_MS as f32, elapsed_ms as f32);
             let cycle = (elapsed_ms / ASCII_PATTERN_MS) as usize;
@@ -1205,8 +1251,7 @@ impl Native {
             let fh = rows as f32 * ASCII_CELL_H;
             let (fcx, fcy) = (fw / 2., fh / 2.);
             self.ascii_ripples.retain(|r| {
-                now.saturating_duration_since(r.4).as_millis()
-                    < ASCII_RIPPLE_LIFE_MS as u128
+                now.saturating_duration_since(r.4).as_millis() < ASCII_RIPPLE_LIFE_MS as u128
             });
             let ripples = self.ascii_ripples.clone();
             // (col, row, glyph, alpha-key): ink alpha quantized to 2/255
@@ -1226,11 +1271,9 @@ impl Native {
                 let y = ((ly * FIELD_STEP) as f32 + 0.5) * ASCII_CELL_H;
                 for lx in 0..lat_cols {
                     let x = ((lx * FIELD_STEP) as f32 + 0.5) * cw;
-                    let (mut patch, mut wave) =
-                        ascii_sample(pat, x, y, fcx, fcy, t);
+                    let (mut patch, mut wave) = ascii_sample(pat, x, y, fcx, fcy, t);
                     if let Some(np) = next_pat {
-                        let (np_patch, np_wave) =
-                            ascii_sample(np, x, y, fcx, fcy, t);
+                        let (np_patch, np_wave) = ascii_sample(np, x, y, fcx, fcy, t);
                         patch += (np_patch - patch) * mix;
                         wave += (np_wave - wave) * mix;
                     }
@@ -1268,11 +1311,9 @@ impl Native {
                         0.18 * patch * patch * (0.4 + 0.6 * wave) * center_fade * reveal;
                     let mut strength = 0.0f32;
                     if !ripples.is_empty() {
-                        let warp =
-                            (value_noise3(x / 60., y / 60., t * 0.6) - 0.5) * 34.;
+                        let warp = (value_noise3(x / 60., y / 60., t * 0.6) - 0.5) * 34.;
                         for (rx, ry, pa, pb, start) in &ripples {
-                            let age =
-                                now.saturating_duration_since(*start).as_millis() as f32;
+                            let age = now.saturating_duration_since(*start).as_millis() as f32;
                             let ddx = x - rx;
                             let ddy = y - ry;
                             let dist = (ddx * ddx + ddy * ddy).sqrt();
@@ -1298,11 +1339,8 @@ impl Native {
                     rng ^= rng >> 17;
                     rng ^= rng << 5;
                     let roll = rng as f32 / 4294967296.0;
-                    if (ink_alpha >= 0.01 || use_accent)
-                        && roll < 0.025 + 0.35 * strength
-                    {
-                        self.ascii_cells[idx] =
-                            (rng as usize % ASCII_GLYPHS.len()) as u8;
+                    if (ink_alpha >= 0.01 || use_accent) && roll < 0.025 + 0.35 * strength {
+                        self.ascii_cells[idx] = (rng as usize % ASCII_GLYPHS.len()) as u8;
                     }
                     let glyph = self.ascii_cells[idx];
                     if use_accent {
@@ -1346,15 +1384,18 @@ impl Native {
                         (cx0, bh - 210.0, col_w, 180.0),
                     ];
                     let spec = crate::backdrop::BackdropSpec {
-                            width: bw,
-                            height: bh,
-                            dark,
-                            accent_rgb: if dark { [0xf2, 0x61, 0x2d] } else { [0xc7, 0x46, 0x14] },
-                            quiet,
-                            scale: window.scale_factor(),
-                            alpha_scale: 1.0,
-                            chrome_clip: None,
-
+                        width: bw,
+                        height: bh,
+                        dark,
+                        accent_rgb: if dark {
+                            [0xf2, 0x61, 0x2d]
+                        } else {
+                            [0xc7, 0x46, 0x14]
+                        },
+                        quiet,
+                        scale: window.scale_factor(),
+                        alpha_scale: 1.0,
+                        chrome_clip: None,
                     };
                     self.backdrop_field = crate::backdrop::compute_backdrop_field(&spec);
                     self.backdrop_img = self
@@ -1374,10 +1415,7 @@ impl Native {
                 // behind rail+sidebar+strip, so the pane stays fully clear here
                 // (the sidebar floats over the same continuous scene, matching
                 // upstream's floating-sidebar layout).
-                let field = div()
-                    .size_full()
-                    .overflow_hidden()
-                    .relative();
+                let field = div().size_full().overflow_hidden().relative();
                 field
             } else {
                 div().size_full()
@@ -1399,8 +1437,8 @@ impl Native {
                     if fx < 0. || fy < 0. {
                         return;
                     }
-                    let mut rng = ev.position().x.as_f32() as u32
-                        ^ (ev.position().y.as_f32() as u32) << 16;
+                    let mut rng =
+                        ev.position().x.as_f32() as u32 ^ (ev.position().y.as_f32() as u32) << 16;
                     rng ^= rng << 13;
                     rng ^= rng >> 17;
                     rng ^= rng << 5;
@@ -1409,13 +1447,8 @@ impl Native {
                     rng ^= rng >> 17;
                     rng ^= rng << 5;
                     let phase_b = (rng as f32 / 4294967296.0) * 6.2831855;
-                    this.ascii_ripples.push((
-                        fx,
-                        fy,
-                        phase_a,
-                        phase_b,
-                        std::time::Instant::now(),
-                    ));
+                    this.ascii_ripples
+                        .push((fx, fy, phase_a, phase_b, std::time::Instant::now()));
                     if this.ascii_ripples.len() > ASCII_RIPPLE_MAX {
                         this.ascii_ripples.remove(0);
                     }
@@ -1510,21 +1543,20 @@ impl Native {
                 );
             }
             pane = pane.child(
-                home.child(svg_icon(icons::LOGO).size(px(40.)))
-                    .child(
-                        div()
-                            // Upstream empty-landing h2: text-[30px] (sm:) /
-                            // font-normal / leading 1.15 / foreground 95%.
-                            .text_size(px(30.))
-                            .line_height(px(34.5))
-                            .font_weight(FontWeight::NORMAL)
-                            .text_color({
-                                let mut c = theme.foreground;
-                                c.a *= 0.95;
-                                c
-                            })
-                            .child(landing_title.clone().unwrap_or_default()),
-                    ),
+                home.child(svg_icon(icons::LOGO).size(px(40.))).child(
+                    div()
+                        // Upstream empty-landing h2: text-[30px] (sm:) /
+                        // font-normal / leading 1.15 / foreground 95%.
+                        .text_size(px(30.))
+                        .line_height(px(34.5))
+                        .font_weight(FontWeight::NORMAL)
+                        .text_color({
+                            let mut c = theme.foreground;
+                            c.a *= 0.95;
+                            c
+                        })
+                        .child(landing_title.clone().unwrap_or_default()),
+                ),
             );
         }
         let thread_detail = self.detail.clone().unwrap_or(Value::Null);
@@ -1537,16 +1569,12 @@ impl Native {
             if let Some((path, text)) = self.open_file.clone() {
                 if self.file_editor.is_none() {
                     let ed = cx.new(|cx| EditorState::new(window, cx));
-                    cx.subscribe_in(
-                        &ed,
-                        window,
-                        |this: &mut Self, _state, event, _w, cx| {
-                            if let InputEvent::Change = event {
-                                this.file_dirty = true;
-                                cx.notify();
-                            }
-                        },
-                    )
+                    cx.subscribe_in(&ed, window, |this: &mut Self, _state, event, _w, cx| {
+                        if let InputEvent::Change = event {
+                            this.file_dirty = true;
+                            cx.notify();
+                        }
+                    })
                     .detach();
                     self.file_editor = Some(ed);
                 }
@@ -1601,16 +1629,13 @@ impl Native {
                                 .label("Save")
                                 .on_click(cx.listener(|this, _ev, _w, cx| this.save_file(cx))),
                         )
-                        .child(
-                            Button::new("cancel-edit")
-                                .ghost()
-                                .label("Cancel")
-                                .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    this.editing_file = false;
-                                    this.editor_synced = None;
-                                    cx.notify();
-                                })),
-                        );
+                        .child(Button::new("cancel-edit").ghost().label("Cancel").on_click(
+                            cx.listener(|this, _ev, _w, cx| {
+                                this.editing_file = false;
+                                this.editor_synced = None;
+                                cx.notify();
+                            }),
+                        ));
                 } else {
                     header = header.child(
                         Button::new("open-in-editor")
@@ -1621,24 +1646,19 @@ impl Native {
                                 cx.notify();
                             })),
                     );
-                    header = header.child(
-                        Button::new("edit-file")
-                            .ghost()
-                            .label("Edit")
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.editing_file = true;
-                                cx.notify();
-                            })),
-                    );
+                    header = header.child(Button::new("edit-file").ghost().label("Edit").on_click(
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.editing_file = true;
+                            cx.notify();
+                        }),
+                    ));
                 }
-                files_pane = files_pane
-                    .child(header)
-                    .child(
-                        div()
-                            .flex_1()
-                            .h_full()
-                            .child(Editor::new(&editor).readonly(!editing)),
-                    );
+                files_pane = files_pane.child(header).child(
+                    div()
+                        .flex_1()
+                        .h_full()
+                        .child(Editor::new(&editor).readonly(!editing)),
+                );
                 if self.open_in_menu {
                     // Upstream "Open in editor" (EditorActionPicker): launches
                     // the file in an installed external editor app.
@@ -1654,11 +1674,7 @@ impl Native {
                     let mut menu = v_flex().gap_0p5().py_1();
                     let mut any_app = false;
                     for (label, app) in EDITOR_APPS {
-                        if !std::path::Path::new(&format!(
-                            "/Applications/{app}.app"
-                        ))
-                        .exists()
-                        {
+                        if !std::path::Path::new(&format!("/Applications/{app}.app")).exists() {
                             continue;
                         }
                         any_app = true;
@@ -1666,9 +1682,7 @@ impl Native {
                         let p = file_path.clone();
                         menu = menu.child(
                             div()
-                                .id(ElementId::Name(
-                                    format!("open-in-{label}").into(),
-                                ))
+                                .id(ElementId::Name(format!("open-in-{label}").into()))
                                 .cursor_pointer()
                                 .px_3()
                                 .py(px(6.))
@@ -1676,21 +1690,17 @@ impl Native {
                                 .text_size(px(13.))
                                 .text_color(theme.foreground)
                                 .child((*label).to_string())
-                                .on_click(cx.listener(
-                                    move |this, _ev, _w, cx| {
-                                        this.open_in_menu = false;
-                                        let app = app_name.clone();
-                                        let path = p.clone();
-                                        std::thread::spawn(move || {
-                                            let _ = std::process::Command::new(
-                                                "open",
-                                            )
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.open_in_menu = false;
+                                    let app = app_name.clone();
+                                    let path = p.clone();
+                                    std::thread::spawn(move || {
+                                        let _ = std::process::Command::new("open")
                                             .args(["-a", &app, &path])
                                             .spawn();
-                                        });
-                                        cx.notify();
-                                    },
-                                )),
+                                    });
+                                    cx.notify();
+                                })),
                         );
                     }
                     if !any_app {
@@ -1758,9 +1768,9 @@ impl Native {
                                 .text_color(theme.muted_foreground),
                         )
                         .child(
-                            div().flex_1().child(
-                                Input::new(&self.file_search).appearance(false),
-                            ),
+                            div()
+                                .flex_1()
+                                .child(Input::new(&self.file_search).appearance(false)),
                         ),
                 );
                 let fs_query = self.file_search.read(cx).value().trim().to_string();
@@ -1776,11 +1786,7 @@ impl Native {
                     let mut srows = v_flex().gap_0p5();
                     for entry in self.file_search_results.clone() {
                         let rel = str_at(&entry, "path").to_string();
-                        let name = rel
-                            .rsplit('/')
-                            .next()
-                            .unwrap_or(rel.as_str())
-                            .to_string();
+                        let name = rel.rsplit('/').next().unwrap_or(rel.as_str()).to_string();
                         let dir_part = rel
                             .rsplit_once('/')
                             .map(|(d, _)| d.to_string())
@@ -1797,9 +1803,7 @@ impl Native {
                         }
                         srows = srows.child(
                             h_flex()
-                                .id(ElementId::Name(
-                                    format!("fs-{rel}").into(),
-                                ))
+                                .id(ElementId::Name(format!("fs-{rel}").into()))
                                 .w_full()
                                 .h(px(32.))
                                 .items_center()
@@ -1830,8 +1834,7 @@ impl Native {
                                         .child(dir_part),
                                 )
                                 .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                    this.file_search
-                                        .update(cx, |s, cx| s.set_value("", _w, cx));
+                                    this.file_search.update(cx, |s, cx| s.set_value("", _w, cx));
                                     this.file_search_results.clear();
                                     this.open_entry(e2.clone(), cx);
                                 }))
@@ -1887,9 +1890,7 @@ impl Native {
                         Button::new("dev-refresh")
                             .ghost()
                             .label("Refresh")
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.fetch_dev_servers(cx)
-                            })),
+                            .on_click(cx.listener(|this, _ev, _w, cx| this.fetch_dev_servers(cx))),
                     ),
             );
             dev_pane = dev_pane.child(
@@ -1936,14 +1937,12 @@ impl Native {
                                 .child(format!("{status} (pid {})", get(&s, "pid"))),
                         )
                         .child(
-                            Button::new(ElementId::Name(
-                                format!("dev-stop-{pid_key}").into(),
-                            ))
-                            .ghost()
-                            .label("Stop")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                this.dev_stop(pid_key.clone(), cx)
-                            })),
+                            Button::new(ElementId::Name(format!("dev-stop-{pid_key}").into()))
+                                .ghost()
+                                .label("Stop")
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    this.dev_stop(pid_key.clone(), cx)
+                                })),
                         ),
                 );
             }
@@ -1973,19 +1972,30 @@ impl Native {
             // computed here so the greeting sub and the list share the result.
             let activity_threads: Vec<Value> =
                 arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads").to_vec();
-            let (needs_you, working, finished, failed) =
-                inbox_groups(&activity_threads, &self.dismissed_status, &self.visited_threads);
+            let (needs_you, working, finished, failed) = inbox_groups(
+                &activity_threads,
+                &self.dismissed_status,
+                &self.visited_threads,
+            );
             let needs_count = needs_you.len();
             let sub = if needs_count == 0 {
                 "You're all caught up.".to_string()
             } else {
                 let n = needs_count;
-                format!("{n} thing{} need{} you.", if n == 1 { "" } else { "s" }, if n == 1 { "s" } else { "" })
+                format!(
+                    "{n} thing{} need{} you.",
+                    if n == 1 { "" } else { "s" },
+                    if n == 1 { "s" } else { "" }
+                )
             };
             // Upstream inbox sections: rounded-2xl (18px), bg-muted, which is
             // foreground at ~0.8% in dark mode (nearly flush with the page).
             let tile = |children: gpui::AnyElement| {
-                let fill = if dark_ui { theme.foreground.opacity(0.008) } else { soft_bg };
+                let fill = if dark_ui {
+                    theme.foreground.opacity(0.008)
+                } else {
+                    soft_bg
+                };
                 div().rounded(px(18.)).bg(fill).child(children)
             };
 
@@ -2003,11 +2013,8 @@ impl Native {
                         .on_click(cx.listener(move |this, _ev, _w, cx| {
                             let now = now_iso();
                             for id in &unread_ids {
-                                let prev = this
-                                    .visited_threads
-                                    .get(id)
-                                    .cloned()
-                                    .unwrap_or_default();
+                                let prev =
+                                    this.visited_threads.get(id).cloned().unwrap_or_default();
                                 if now > prev {
                                     this.visited_threads.insert(id.clone(), now.clone());
                                 }
@@ -2050,8 +2057,17 @@ impl Native {
                     h_flex()
                         .justify_between()
                         .items_center()
-                        .child(div().text_size(px(13.)).child(format!("Today's tasks {}", self.inbox_tasks.len())))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("All tasks")),
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .child(format!("Today's tasks {}", self.inbox_tasks.len())),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("All tasks"),
+                        ),
                 )
                 .child(
                     h_flex()
@@ -2079,9 +2095,7 @@ impl Native {
                 if title.is_empty() {
                     continue;
                 }
-                let id = str_at(&task, "id")
-                    .to_string()
-                    .replace("null", "");
+                let id = str_at(&task, "id").to_string().replace("null", "");
                 let done = !str_at(&task, "completedAt").is_empty()
                     && str_at(&task, "completedAt") != "null";
                 let due = str_at(&task, "dueDate").to_string();
@@ -2105,9 +2119,7 @@ impl Native {
                     .rounded_md()
                     .child(
                         div()
-                            .id(ElementId::Name(
-                                format!("inbox-task-check-{id}").into(),
-                            ))
+                            .id(ElementId::Name(format!("inbox-task-check-{id}").into()))
                             .cursor_pointer()
                             .child(
                                 Icon::new(if done {
@@ -2154,9 +2166,9 @@ impl Native {
                     );
                 }
                 if !tid.is_empty() && tid != "null" {
-                    row = row.cursor_pointer().on_click(cx.listener(
-                        move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx),
-                    ));
+                    row = row.cursor_pointer().on_click(
+                        cx.listener(move |this, _ev, _w, cx| this.open_thread(tid.clone(), cx)),
+                    );
                 }
                 rows = rows.child(row);
             }
@@ -2219,12 +2231,15 @@ impl Native {
             // summarizeInboxSlots: started slots only; idle past slots hidden.
             let slot_ranges = [
                 ("Morning", day_from, day_from + 8.0 * hour_ms),
-                ("Afternoon", day_from + 8.0 * hour_ms, day_from + 14.0 * hour_ms),
+                (
+                    "Afternoon",
+                    day_from + 8.0 * hour_ms,
+                    day_from + 14.0 * hour_ms,
+                ),
                 ("Evening", day_from + 14.0 * hour_ms, day_to),
             ];
             // (label, is_now, prompts, agentWorkMs, hours[(tokens, future)])
-            let mut slot_sums: Vec<(&'static str, bool, f64, f64, Vec<(f64, bool)>)> =
-                Vec::new();
+            let mut slot_sums: Vec<(&'static str, bool, f64, f64, Vec<(f64, bool)>)> = Vec::new();
             for (label, from, to) in slot_ranges {
                 if from > now_ms {
                     continue;
@@ -2351,7 +2366,11 @@ impl Native {
                         parts.push(txt(" of the tokens".into()));
                         if let Some(nm) = next_model {
                             let only_two = models.len() == 2;
-                            parts.push(txt(if only_two { " and ".into() } else { ", ahead of ".into() }));
+                            parts.push(txt(if only_two {
+                                " and ".into()
+                            } else {
+                                ", ahead of ".into()
+                            }));
                             parts.push(stg(str_at(nm, "model").to_string()));
                             if only_two {
                                 parts.push(txt(" the rest".into()));
@@ -2375,10 +2394,7 @@ impl Native {
                 sentences.push(parts);
             }
             if work_ms >= 1_000.0 {
-                let mut parts = vec![
-                    txt("Your agents ran for ".into()),
-                    stg(fmt_dur_ms(work_ms)),
-                ];
+                let mut parts = vec![txt("Your agents ran for ".into()), stg(fmt_dur_ms(work_ms))];
                 if let Some(b) = busiest {
                     parts.push(txt(format!(", mostly in the {}", b.to_lowercase())));
                 }
@@ -2399,7 +2415,9 @@ impl Native {
                     parts.push(stg(plural(prev_prompts, "prompt", "prompts")));
                     parts.push(txt(" and used ".into()));
                 } else {
-                    parts.push(txt("Nothing ran yet today. Yesterday your agents used ".into()));
+                    parts.push(txt(
+                        "Nothing ran yet today. Yesterday your agents used ".into()
+                    ));
                 }
                 parts.push(stg(format!("{} tokens", fmt_compact(prev_tokens))));
                 if let Some(bm) = prev_models.first() {
@@ -2616,12 +2634,16 @@ impl Native {
                     None
                 };
                 let detail = if let Some(s) = share {
-                    format!("{s}% of tokens, {}", plural(num(bm.get("turns")), "turn", "turns"))
+                    format!(
+                        "{s}% of tokens, {}",
+                        plural(num(bm.get("turns")), "turn", "turns")
+                    )
                 } else {
                     format!(
                         "{}{}",
                         plural(num(bm.get("turns")), "turn", "turns"),
-                        if str_at(bm, "provider") == "unknown" || str_at(bm, "provider").is_empty() {
+                        if str_at(bm, "provider") == "unknown" || str_at(bm, "provider").is_empty()
+                        {
                             String::new()
                         } else {
                             format!(" through {}", str_at(bm, "provider"))
@@ -2629,20 +2651,43 @@ impl Native {
                     )
                 };
                 stat_tiles.push(
-                    tile(v_flex()
-                        .min_h(px(104.))
-                        .justify_between()
-                        .gap_2()
-                        .px(px(14.))
-                        .py(px(12.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Your best model was"))
-                        .child(
-                            h_flex().items_center().gap_2()
-                                .child(svg_icon(provider_icon(str_at(bm, "provider"))).size(px(18.)).text_color(theme.foreground))
-                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(str_at(bm, "model").to_string())),
-                        )
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(detail))
-                        .into_any_element())
+                    tile(
+                        v_flex()
+                            .min_h(px(104.))
+                            .justify_between()
+                            .gap_2()
+                            .px(px(14.))
+                            .py(px(12.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Your best model was"),
+                            )
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        svg_icon(provider_icon(str_at(bm, "provider")))
+                                            .size(px(18.))
+                                            .text_color(theme.foreground),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(19.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .child(str_at(bm, "model").to_string()),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(detail),
+                            )
+                            .into_any_element(),
+                    )
                     .flex_1(),
                 );
             }
@@ -2658,20 +2703,43 @@ impl Native {
                     }
                 );
                 stat_tiles.push(
-                    tile(v_flex()
-                        .min_h(px(104.))
-                        .justify_between()
-                        .gap_2()
-                        .px(px(14.))
-                        .py(px(12.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("You worked most on"))
-                        .child(
-                            h_flex().items_center().gap_2()
-                                .child(svg_icon(icons::FOLDER).size(px(18.)).text_color(theme.foreground))
-                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(str_at(pj, "title").to_string())),
-                        )
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(detail))
-                        .into_any_element())
+                    tile(
+                        v_flex()
+                            .min_h(px(104.))
+                            .justify_between()
+                            .gap_2()
+                            .px(px(14.))
+                            .py(px(12.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("You worked most on"),
+                            )
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        svg_icon(icons::FOLDER)
+                                            .size(px(18.))
+                                            .text_color(theme.foreground),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(19.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .child(str_at(pj, "title").to_string()),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(detail),
+                            )
+                            .into_any_element(),
+                    )
                     .flex_1(),
                 );
             }
@@ -2691,46 +2759,89 @@ impl Native {
                     ("Cache reads included".to_string(), "")
                 };
                 stat_tiles.push(
-                    tile(v_flex()
-                        .min_h(px(104.))
-                        .justify_between()
-                        .gap_2()
-                        .px(px(14.))
-                        .py(px(12.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("You used"))
-                        .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(tokens))))
-                        .child(div().text_size(px(13.)).text_color(if tone == "good" { theme.success } else { theme.muted_foreground }).child(detail))
-                        .into_any_element())
+                    tile(
+                        v_flex()
+                            .min_h(px(104.))
+                            .justify_between()
+                            .gap_2()
+                            .px(px(14.))
+                            .py(px(12.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("You used"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(19.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(format!("{} tokens", fmt_compact(tokens))),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(if tone == "good" {
+                                        theme.success
+                                    } else {
+                                        theme.muted_foreground
+                                    })
+                                    .child(detail),
+                            )
+                            .into_any_element(),
+                    )
                     .flex_1(),
                 );
             }
             if work_ms >= 1_000.0 {
                 let (detail, tone) = if failed_turns > 0.0 {
-                    (
-                        format!("{} failed", failed_turns as i64),
-                        "bad",
-                    )
+                    (format!("{} failed", failed_turns as i64), "bad")
                 } else if let Some(b) = busiest {
                     (format!("Mostly {}", b.to_lowercase()), "")
                 } else {
                     ("Nothing failed".to_string(), "")
                 };
                 let detail = if failed_turns > 0.0 && busiest.is_some() {
-                    format!("{}, {}", busiest.unwrap().to_lowercase().replacen("m", "M", 1), detail)
+                    format!(
+                        "{}, {}",
+                        busiest.unwrap().to_lowercase().replacen("m", "M", 1),
+                        detail
+                    )
                 } else {
                     detail
                 };
                 stat_tiles.push(
-                    tile(v_flex()
-                        .min_h(px(104.))
-                        .justify_between()
-                        .gap_2()
-                        .px(px(14.))
-                        .py(px(12.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Your agents worked for"))
-                        .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(fmt_dur_ms(work_ms)))
-                        .child(div().text_size(px(13.)).text_color(if tone == "bad" { theme.danger } else { theme.muted_foreground }).child(detail))
-                        .into_any_element())
+                    tile(
+                        v_flex()
+                            .min_h(px(104.))
+                            .justify_between()
+                            .gap_2()
+                            .px(px(14.))
+                            .py(px(12.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Your agents worked for"),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(19.))
+                                    .font_weight(FontWeight::MEDIUM)
+                                    .child(fmt_dur_ms(work_ms)),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(if tone == "bad" {
+                                        theme.danger
+                                    } else {
+                                        theme.muted_foreground
+                                    })
+                                    .child(detail),
+                            )
+                            .into_any_element(),
+                    )
                     .flex_1(),
                 );
             }
@@ -2750,22 +2861,49 @@ impl Native {
                     (true, None) => "Cache reads included".to_string(),
                 };
                 stat_tiles.push(
-                    tile(v_flex()
-                        .min_h(px(104.))
-                        .justify_between()
-                        .gap_2()
-                        .px(px(14.))
-                        .py(px(12.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child("Yesterday you used"))
-                        .child(
-                            h_flex().items_center().gap_2()
-                                .when_some(pm.map(|m| str_at(m, "provider").to_string()).filter(|s| !s.is_empty()), |e, p| {
-                                    e.child(svg_icon(provider_icon(&p)).size(px(18.)).text_color(theme.foreground))
-                                })
-                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(format!("{} tokens", fmt_compact(prev_tokens)))),
-                        )
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(detail))
-                        .into_any_element())
+                    tile(
+                        v_flex()
+                            .min_h(px(104.))
+                            .justify_between()
+                            .gap_2()
+                            .px(px(14.))
+                            .py(px(12.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child("Yesterday you used"),
+                            )
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .when_some(
+                                        pm.map(|m| str_at(m, "provider").to_string())
+                                            .filter(|s| !s.is_empty()),
+                                        |e, p| {
+                                            e.child(
+                                                svg_icon(provider_icon(&p))
+                                                    .size(px(18.))
+                                                    .text_color(theme.foreground),
+                                            )
+                                        },
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(19.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .child(format!("{} tokens", fmt_compact(prev_tokens))),
+                                    ),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(detail),
+                            )
+                            .into_any_element(),
+                    )
                     .flex_1(),
                 );
             }
@@ -2783,7 +2921,11 @@ impl Native {
             if let Some(u) = tightest {
                 let provider = str_at(&u, "provider").to_string();
                 let window = str_at(&u, "window").to_string();
-                let window = if window.is_empty() { "weekly".to_string() } else { window.to_lowercase() };
+                let window = if window.is_empty() {
+                    "weekly".to_string()
+                } else {
+                    window.to_lowercase()
+                };
                 let pct = get(&u, "remainingPct")
                     .as_f64()
                     .or_else(|| get(&u, "usedPct").as_f64().map(|p| 100.0 - p))
@@ -2791,27 +2933,66 @@ impl Native {
                     .round();
                 let resets = str_at(&u, "resetsIn").to_string();
                 stat_tiles.push(
-                    tile(v_flex()
-                        .min_h(px(104.))
-                        .justify_between()
-                        .gap_2()
-                        .px(px(14.))
-                        .py(px(12.))
-                        .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(format!("Left on {provider}, {window}")))
-                        .child(
-                            h_flex().items_center().gap_2()
-                                .child(svg_icon(provider_icon(&provider)).size(px(18.)).text_color(theme.foreground))
-                                .child(div().text_size(px(19.)).font_weight(FontWeight::MEDIUM).child(format!("{pct:.0}%"))),
-                        )
-                        .child(
-                            h_flex().items_center().gap_2()
-                                .child(
-                                    div().w(px(56.)).h(px(4.)).rounded(px(2.)).bg(theme.muted)
-                                        .child(div().w(gpui::relative((pct / 100.0) as f32)).h_full().rounded(px(2.)).bg(theme.success)),
-                                )
-                                .child(div().text_size(px(13.)).text_color(theme.muted_foreground).child(if resets.is_empty() { "Your tightest limit".to_string() } else { format!("Resets in {resets}") })),
-                        )
-                        .into_any_element())
+                    tile(
+                        v_flex()
+                            .min_h(px(104.))
+                            .justify_between()
+                            .gap_2()
+                            .px(px(14.))
+                            .py(px(12.))
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(format!("Left on {provider}, {window}")),
+                            )
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        svg_icon(provider_icon(&provider))
+                                            .size(px(18.))
+                                            .text_color(theme.foreground),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(19.))
+                                            .font_weight(FontWeight::MEDIUM)
+                                            .child(format!("{pct:.0}%")),
+                                    ),
+                            )
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_2()
+                                    .child(
+                                        div()
+                                            .w(px(56.))
+                                            .h(px(4.))
+                                            .rounded(px(2.))
+                                            .bg(theme.muted)
+                                            .child(
+                                                div()
+                                                    .w(gpui::relative((pct / 100.0) as f32))
+                                                    .h_full()
+                                                    .rounded(px(2.))
+                                                    .bg(theme.success),
+                                            ),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(13.))
+                                            .text_color(theme.muted_foreground)
+                                            .child(if resets.is_empty() {
+                                                "Your tightest limit".to_string()
+                                            } else {
+                                                format!("Resets in {resets}")
+                                            }),
+                                    ),
+                            )
+                            .into_any_element(),
+                    )
                     .flex_1(),
                 );
             }
@@ -2874,7 +3055,10 @@ impl Native {
                         "In progress",
                         AssetIcon::CircleDot,
                         theme.accent,
-                        working.iter().map(|t| (t.clone(), "working".to_string())).collect(),
+                        working
+                            .iter()
+                            .map(|t| (t.clone(), "working".to_string()))
+                            .collect(),
                     ));
                 }
                 if !finished.is_empty() {
@@ -2882,7 +3066,10 @@ impl Native {
                         "Ready for review",
                         AssetIcon::CircleCheck,
                         theme.success,
-                        finished.iter().map(|t| (t.clone(), "finished".to_string())).collect(),
+                        finished
+                            .iter()
+                            .map(|t| (t.clone(), "finished".to_string()))
+                            .collect(),
                     ));
                 }
                 if !failed.is_empty() {
@@ -2890,7 +3077,10 @@ impl Native {
                         "Failed",
                         AssetIcon::X,
                         theme.danger,
-                        failed.iter().map(|t| (t.clone(), "failed".to_string())).collect(),
+                        failed
+                            .iter()
+                            .map(|t| (t.clone(), "failed".to_string()))
+                            .collect(),
                     ));
                 }
                 let mut tcard = v_flex().w_full().p_4().gap_3();
@@ -2943,9 +3133,7 @@ impl Native {
                 div().into_any_element()
             };
 
-            let mut left_col = v_flex()
-                .w(gpui::relative(4.0 / 12.0))
-                .gap(px(16.));
+            let mut left_col = v_flex().w(gpui::relative(4.0 / 12.0)).gap(px(16.));
             if has_inbox_groups {
                 left_col = left_col.child(groups_tile);
             }
@@ -2976,7 +3164,9 @@ impl Native {
                             div()
                                 .text_size(px(13.))
                                 .text_color(theme.muted_foreground)
-                                .child("Sign in to automatically save private recaps across your devices."),
+                                .child(
+                                "Sign in to automatically save private recaps across your devices.",
+                            ),
                         )
                         .child(Button::new("inbox-signin").outline().label("Sign in")),
                 );
@@ -2986,7 +3176,12 @@ impl Native {
 
         // Provider-update toast (upstream toastManager warning card): global
         // overlay over the main column, centered, does not shift content.
-        let mut update_toast = div().absolute().top(px(-12.)).w_full().flex().justify_center();
+        let mut update_toast = div()
+            .absolute()
+            .top(px(-12.))
+            .w_full()
+            .flex()
+            .justify_center();
         let mut toast_shown = false;
         if !self.inbox_updates.is_empty() {
             toast_shown = true;
@@ -2994,11 +3189,17 @@ impl Native {
             let pname = {
                 let id = str_at(&self.inbox_updates[0], "provider");
                 match id {
-                    "codex" => "Codex", "claudeAgent" | "claude" => "Claude",
-                    "cursor" => "Cursor", "antigravity" => "Antigravity",
-                    "grok" => "Grok", "droid" => "Droid", "devin" => "Devin",
-                    "opencode" => "OpenCode", "pi" => "Pi",
-                    "omp" => "Oh My Pi", other => other,
+                    "codex" => "Codex",
+                    "claudeAgent" | "claude" => "Claude",
+                    "cursor" => "Cursor",
+                    "antigravity" => "Antigravity",
+                    "grok" => "Grok",
+                    "droid" => "Droid",
+                    "devin" => "Devin",
+                    "opencode" => "OpenCode",
+                    "pi" => "Pi",
+                    "omp" => "Oh My Pi",
+                    other => other,
                 }
             };
             let (title, desc) = if n == 1 {
@@ -3070,7 +3271,11 @@ impl Native {
         // Upstream approval-mode chip tint: light = theme accent orange,
         // dark = the brightened warning orange measured in the web client
         // (rgb(254,133,73) on the "Full access" menu item).
-        let mode_accent = if dark_ui { rgb(0xfe8549) } else { rgb(0xc74614) };
+        let mode_accent = if dark_ui {
+            rgb(0xfe8549)
+        } else {
+            rgb(0xc74614)
+        };
         let draft_text = self.composer.read(cx).value().to_string();
         let draft_empty = draft_text.trim().is_empty();
         // Upstream ComposerPromptEditor: font-system-ui text-chat (13px)
@@ -3291,16 +3496,13 @@ impl Native {
                     .take(12)
                     .collect();
                 let weak = extras_weak.clone();
-                let mut m = menu
-                    .min_w(px(280.))
-                    .item(PopupMenuItem::label("Add"))
-                    .item(
-                        PopupMenuItem::new("Files and folders")
-                            .icon(svg_icon(icons::PAPERCLIP).size(px(14.)))
-                            .on_click(move |_, _w, cx| {
-                                let _ = weak.update(cx, |this, cx| this.attach(cx));
-                            }),
-                    );
+                let mut m = menu.min_w(px(280.)).item(PopupMenuItem::label("Add")).item(
+                    PopupMenuItem::new("Files and folders")
+                        .icon(svg_icon(icons::PAPERCLIP).size(px(14.)))
+                        .on_click(move |_, _w, cx| {
+                            let _ = weak.update(cx, |this, cx| this.attach(cx));
+                        }),
+                );
                 let weak = extras_weak.clone();
                 m = m.submenu_with_icon(
                     Some(svg_icon(icons::WINDOW).size(px(14.))),
@@ -3458,8 +3660,7 @@ impl Native {
                 })
         };
         // The thread composer labels the chip with the thread's own model.
-        let thread_model = str_at(get(thread_v, "modelSelection"), "label")
-            .to_string();
+        let thread_model = str_at(get(thread_v, "modelSelection"), "label").to_string();
         let thread_model = if thread_model.is_empty() {
             str_at(get(thread_v, "modelSelection"), "model").to_string()
         } else {
@@ -3533,53 +3734,55 @@ impl Native {
             Some(self.composer_effort_idx.min(4))
         };
         let theme_chip = theme.clone();
-        let build_model_chip = move |cx: &mut Context<Self>| {
-            let cur = model_cur.clone();
-            let weak = model_weak.clone();
-            {
-                let eff_muted = theme_chip.muted_foreground;
-                let fg = theme_chip.foreground;
-                div()
-                    .id("composer-model")
-                    .h(px(28.))
-                    .px(px(8.))
-                    .gap(px(6.))
-                    .flex()
-                    .items_center()
-                    .rounded(px(6.))
-                    .cursor_pointer()
-                    .hover(|s| s.bg(theme_chip.muted.opacity(0.6)))
-                    .child(svg_icon(model_icon).size(px(14.)))
-                    .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(fg)
-                            .child(model_label.clone()),
-                    )
-                    .children(chip_effort.map(|idx| {
-                        div()
-                            .text_size(px(13.))
-                            .text_color(eff_muted)
-                            .child({
-                                const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
+        let build_model_chip =
+            move |cx: &mut Context<Self>| {
+                let cur = model_cur.clone();
+                let weak = model_weak.clone();
+                {
+                    let eff_muted = theme_chip.muted_foreground;
+                    let fg = theme_chip.foreground;
+                    div()
+                        .id("composer-model")
+                        .h(px(28.))
+                        .px(px(8.))
+                        .gap(px(6.))
+                        .flex()
+                        .items_center()
+                        .rounded(px(6.))
+                        .cursor_pointer()
+                        .hover(|s| s.bg(theme_chip.muted.opacity(0.6)))
+                        .child(svg_icon(model_icon).size(px(14.)))
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(fg)
+                                .child(model_label.clone()),
+                        )
+                        .children(chip_effort.map(|idx| {
+                            div().text_size(px(13.)).text_color(eff_muted).child({
+                                const EFFORTS: [&str; 5] =
+                                    ["Minimal", "Low", "Medium", "High", "Max"];
                                 EFFORTS[idx].to_string()
                             })
-                    }))
-                    .child(svg_icon(icons::CHEVRON_DOWN).size(px(12.)).text_color(eff_muted))
-                    .on_click(cx.listener(move |this, _ev, window, cx| {
-
-                this.model_picker_open = !this.model_picker_open;
-                if this.model_picker_open {
-                    // Open on the tab of the current model's provider.
-                    this.model_picker_provider = this.composer_model.0.clone();
-                }
-                if this.model_picker_open && this.model_catalog.is_empty() {
-                    // Lazy-fill the catalog from the backend once per
-                    // provider; rows render when they land.
-                    if let Some(client) = ensure_client(&this.client) {
-                        let mut out: Vec<(String, String, String)> = Vec::new();
-                        for prov in ["codex", "devin", "claudeAgent"] {
-                            if let Some(v) = client.call(
+                        }))
+                        .child(
+                            svg_icon(icons::CHEVRON_DOWN)
+                                .size(px(12.))
+                                .text_color(eff_muted),
+                        )
+                        .on_click(cx.listener(move |this, _ev, window, cx| {
+                            this.model_picker_open = !this.model_picker_open;
+                            if this.model_picker_open {
+                                // Open on the tab of the current model's provider.
+                                this.model_picker_provider = this.composer_model.0.clone();
+                            }
+                            if this.model_picker_open && this.model_catalog.is_empty() {
+                                // Lazy-fill the catalog from the backend once per
+                                // provider; rows render when they land.
+                                if let Some(client) = ensure_client(&this.client) {
+                                    let mut out: Vec<(String, String, String)> = Vec::new();
+                                    for prov in ["codex", "devin", "claudeAgent"] {
+                                        if let Some(v) = client.call(
                                 "provider.listModels",
                                 json!({"provider": prov, "instanceId": prov, "cwd": null}),
                             ) {
@@ -3600,21 +3803,24 @@ impl Native {
                                     }
                                 }
                             }
-                        }
-                        if !out.is_empty() {
-                            this.model_catalog = out;
-                        }
-                    }
+                                    }
+                                    if !out.is_empty() {
+                                        this.model_catalog = out;
+                                    }
+                                }
+                            }
+                            cx.notify();
+                            let _ = window;
+                        }))
                 }
-                cx.notify();
-                let _ = window;
-                    }))
-            }
-        };
+            };
         // While the selected thread's turn is live, upstream swaps the send
         // button for a prominent dark stop square (thread.turn.interrupt).
         let turn_live = in_thread
-            && matches!(session_phase(self.detail.as_ref()), "running" | "connecting");
+            && matches!(
+                session_phase(self.detail.as_ref()),
+                "running" | "connecting"
+            );
         // Expired side chats disable the send control (upstream
         // submission.expired → muted circle like an empty draft).
         let composer_expired = in_thread && !get(thread_v, "sidechatExpiredAt").is_null();
@@ -3636,7 +3842,11 @@ impl Native {
             .iter()
             .find(|p| {
                 let pid = str_at(p, "provider");
-                let pid = if pid.is_empty() { str_at(p, "driver") } else { pid };
+                let pid = if pid.is_empty() {
+                    str_at(p, "driver")
+                } else {
+                    pid
+                };
                 pid == active_provider
             })
             .map(|p| {
@@ -3675,16 +3885,14 @@ impl Native {
                 }));
             let icon = svg_icon(icons::MIC).size(px(15.)).text_color(icon_color);
             if recording {
-                base.child(
-                    icon.with_animation(
-                        "voice-rec-pulse",
-                        Animation::new(std::time::Duration::from_millis(1200)).repeat_synced(),
-                        |this, delta| {
-                            let tri = 1.0 - (delta * 2.0 - 1.0).abs();
-                            this.opacity(0.45 + 0.55 * tri)
-                        },
-                    ),
-                )
+                base.child(icon.with_animation(
+                    "voice-rec-pulse",
+                    Animation::new(std::time::Duration::from_millis(1200)).repeat_synced(),
+                    |this, delta| {
+                        let tri = 1.0 - (delta * 2.0 - 1.0).abs();
+                        this.opacity(0.45 + 0.55 * tri)
+                    },
+                ))
                 .into_any_element()
             } else {
                 base.child(icon).into_any_element()
@@ -3804,11 +4012,14 @@ impl Native {
                         .child(plus_btn)
                         .child(build_mode_chip(cx))
                         .child(div().flex_1())
-                        .children(
-                            if in_thread {
-                                context_window_usage(thread_v).map(|(pct, used, max_t)| {
+                        .children(if in_thread {
+                            context_window_usage(thread_v)
+                                .map(|(pct, used, max_t)| {
                                     let label = if let Some(m) = max_t {
-                                        format!("{:.0}% — {} of {} tokens used", pct, used as u64, m as u64)
+                                        format!(
+                                            "{:.0}% — {} of {} tokens used",
+                                            pct, used as u64, m as u64
+                                        )
                                     } else {
                                         format!("{:.0}% of context used", pct)
                                     };
@@ -3826,11 +4037,11 @@ impl Native {
                                                 .text_color(theme.muted_foreground),
                                         )
                                         .into_any_element()
-                                }).into_iter()
-                            } else {
-                                None.into_iter()
-                            },
-                        )
+                                })
+                                .into_iter()
+                        } else {
+                            None.into_iter()
+                        })
                         .child(build_model_chip(cx))
                         .children(if voice_visible {
                             Some(make_mic_btn(cx)).into_iter()
@@ -3843,7 +4054,8 @@ impl Native {
         let chat_mw = self.chat_max_w();
         let mut landing_controls: Option<Div> = None;
         let mut composer_col = v_flex()
-            .w_full().max_w(chat_mw)
+            .w_full()
+            .max_w(chat_mw)
             .gap_0()
             // Thread rows drop here as an @mention (upstream
             // useComposerThreadMentionDrop); the current thread can't
@@ -3874,34 +4086,41 @@ impl Native {
                     .unwrap_or(drag.0.as_str())
                     .to_string();
                 let draft = this.composer.read(cx).value().to_string();
-                let sep = if draft.is_empty() || draft.ends_with(' ') { "" } else { " " };
+                let sep = if draft.is_empty() || draft.ends_with(' ') {
+                    ""
+                } else {
+                    " "
+                };
                 this.set_draft(&format!("{draft}{sep}@{name} "), w, cx);
                 cx.notify();
             }))
-            .on_drop::<ThreadDrag>(cx.listener(
-                |this, drag: &ThreadDrag, w, cx| {
-                    this.composer_thread_over = false;
-                    if this.selected_thread.as_deref() == Some(drag.0.as_str()) {
-                        cx.notify();
-                        return;
-                    }
-                    let title = arr(this.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
-                        .iter()
-                        .find(|t| str_at(t, "id") == drag.0)
-                        .map(|t| str_at(t, "title").to_string())
-                        .filter(|t| !t.is_empty())
-                        .unwrap_or_else(|| drag.0.chars().take(8).collect());
-                    let draft = this.composer.read(cx).value().to_string();
-                    let sep = if draft.is_empty() || draft.ends_with(' ') { "" } else { " " };
-                    this.set_draft(&format!("{draft}{sep}@{title} "), w, cx);
+            .on_drop::<ThreadDrag>(cx.listener(|this, drag: &ThreadDrag, w, cx| {
+                this.composer_thread_over = false;
+                if this.selected_thread.as_deref() == Some(drag.0.as_str()) {
                     cx.notify();
-                },
-            ));
+                    return;
+                }
+                let title = arr(this.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                    .iter()
+                    .find(|t| str_at(t, "id") == drag.0)
+                    .map(|t| str_at(t, "title").to_string())
+                    .filter(|t| !t.is_empty())
+                    .unwrap_or_else(|| drag.0.chars().take(8).collect());
+                let draft = this.composer.read(cx).value().to_string();
+                let sep = if draft.is_empty() || draft.ends_with(' ') {
+                    ""
+                } else {
+                    " "
+                };
+                this.set_draft(&format!("{draft}{sep}@{title} "), w, cx);
+                cx.notify();
+            }));
         // Upstream floats context chips above the card only for threads bound
         // to a worktree (envMode != "local"): project chip left, env chip right.
         let wt_path = str_at(thread_v, "worktreePath").to_string();
         let env_mode = str_at(thread_v, "envMode").to_string();
-        let has_env_chips = in_thread && (!wt_path.is_empty() || (env_mode != "local" && !env_mode.is_empty()));
+        let has_env_chips =
+            in_thread && (!wt_path.is_empty() || (env_mode != "local" && !env_mode.is_empty()));
         if has_env_chips {
             let thread_pid = str_at(thread_v, "projectId").to_string();
             let proj_name = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
@@ -3929,31 +4148,102 @@ impl Native {
                     .pb(px(4.))
                     .child(chip(format!("\u{29c9} {proj_name}")))
                     .child(div().flex_1())
-                    .child(chip(format!("\u{25cc} {}", if wt_path.is_empty() { "Temporary" } else { "Worktree" }))),
+                    .child(chip(format!(
+                        "\u{25cc} {}",
+                        if wt_path.is_empty() {
+                            "Temporary"
+                        } else {
+                            "Worktree"
+                        }
+                    ))),
             );
         }
         if draft_text.starts_with('/') && !draft_text.contains(' ') {
             // Upstream ComposerCommandMenu: popup card above the composer
             // listing built-in slash commands filtered by the "/query".
             const SLASH_COMMANDS: [(&str, &str, &str); 18] = [
-                ("clear", "Clear", "Start a fresh thread and clear the current conversation context"),
-                ("compact", "Compact Context", "Compact the current thread context to free space"),
+                (
+                    "clear",
+                    "Clear",
+                    "Start a fresh thread and clear the current conversation context",
+                ),
+                (
+                    "compact",
+                    "Compact Context",
+                    "Compact the current thread context to free space",
+                ),
                 ("model", "Model", "Switch response model for this thread"),
                 ("plan", "Plan Mode", "Switch this thread into plan mode"),
-                ("debug", "Debug Mode", "Switch this thread into evidence-first debug mode"),
-                ("default", "Default Mode", "Switch this thread back to normal chat mode"),
-                ("review", "Code Review", "Start a code review for current changes"),
-                ("fork", "Fork", "Fork this thread into local or a new worktree"),
-                ("side", "Sidechat", "Open a guarded Side from this thread, optionally on another provider"),
-                ("status", "Status", "Show context usage and rate-limit status"),
-                ("subagents", "Subagents", "Insert a prompt that asks the assistant to delegate work"),
-                ("computer-use", "Computer Use", "Use Synara Computer for this request only"),
-                ("fast", "Fast Mode", "Turn fast mode on or off for this thread"),
-                ("export", "Export", "Download this thread as a ZIP archive (thread.json + transcript.md)"),
-                ("goal", "Goal", "Set, edit, pause, resume, or clear this thread's persistent goal"),
-                ("rename", "Rename", "Regenerate this thread title, or set an exact title"),
-                ("feedback", "Feedback on Synara", "Send feedback to the Synara team"),
-                ("automation", "Automation", "Create an automation from this thread"),
+                (
+                    "debug",
+                    "Debug Mode",
+                    "Switch this thread into evidence-first debug mode",
+                ),
+                (
+                    "default",
+                    "Default Mode",
+                    "Switch this thread back to normal chat mode",
+                ),
+                (
+                    "review",
+                    "Code Review",
+                    "Start a code review for current changes",
+                ),
+                (
+                    "fork",
+                    "Fork",
+                    "Fork this thread into local or a new worktree",
+                ),
+                (
+                    "side",
+                    "Sidechat",
+                    "Open a guarded Side from this thread, optionally on another provider",
+                ),
+                (
+                    "status",
+                    "Status",
+                    "Show context usage and rate-limit status",
+                ),
+                (
+                    "subagents",
+                    "Subagents",
+                    "Insert a prompt that asks the assistant to delegate work",
+                ),
+                (
+                    "computer-use",
+                    "Computer Use",
+                    "Use Synara Computer for this request only",
+                ),
+                (
+                    "fast",
+                    "Fast Mode",
+                    "Turn fast mode on or off for this thread",
+                ),
+                (
+                    "export",
+                    "Export",
+                    "Download this thread as a ZIP archive (thread.json + transcript.md)",
+                ),
+                (
+                    "goal",
+                    "Goal",
+                    "Set, edit, pause, resume, or clear this thread's persistent goal",
+                ),
+                (
+                    "rename",
+                    "Rename",
+                    "Regenerate this thread title, or set an exact title",
+                ),
+                (
+                    "feedback",
+                    "Feedback on Synara",
+                    "Send feedback to the Synara team",
+                ),
+                (
+                    "automation",
+                    "Automation",
+                    "Create an automation from this thread",
+                ),
             ];
             let query = draft_text[1..].to_lowercase();
             let mut menu_card = v_flex()
@@ -4063,11 +4353,7 @@ impl Native {
             // inserts a @path token. Path-like queries list their dirname
             // and filter on the basename; plain queries list $HOME and
             // filter by substring. Directories descend (append "/").
-            let q_lower = query
-                .rsplit('/')
-                .next()
-                .unwrap_or("")
-                .to_lowercase();
+            let q_lower = query.rsplit('/').next().unwrap_or("").to_lowercase();
             let mut menu_card = v_flex()
                 .w_full()
                 .max_h(px(300.))
@@ -4117,9 +4403,13 @@ impl Native {
                             cx.notify();
                         }))
                         .child(
-                            svg_icon(if is_dir { icons::FOLDER } else { icons::FILE_TEXT })
-                                .size(px(14.))
-                                .text_color(theme.muted_foreground),
+                            svg_icon(if is_dir {
+                                icons::FOLDER
+                            } else {
+                                icons::FILE_TEXT
+                            })
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
                         )
                         .child(
                             div()
@@ -4247,9 +4537,8 @@ impl Native {
         if !in_thread {
             if self.project_picker_open {
                 if self.project_picker_input.is_none() {
-                    let input = cx.new(|cx| {
-                        InputState::new(window, cx).placeholder("Search projects")
-                    });
+                    let input =
+                        cx.new(|cx| InputState::new(window, cx).placeholder("Search projects"));
                     self.project_picker_input = Some(input);
                 }
                 let query = self
@@ -4270,7 +4559,10 @@ impl Native {
                     .mb(px(4.));
                 if let Some(input) = self.project_picker_input.clone() {
                     card = card.child(
-                        div().px_2().py_1().child(Input::new(&input).appearance(false)),
+                        div()
+                            .px_2()
+                            .py_1()
+                            .child(Input::new(&input).appearance(false)),
                     );
                 }
                 if self.landing_project_id.is_some() {
@@ -4315,11 +4607,19 @@ impl Native {
                         .map(str::to_owned)
                         .or_else(|| {
                             let t = str_at(p, "folderName").to_string();
-                            if t.is_empty() { None } else { Some(t) }
+                            if t.is_empty() {
+                                None
+                            } else {
+                                Some(t)
+                            }
                         })
                         .unwrap_or_else(|| str_at(p, "title").to_string());
                     let local = str_at(p, "localName").to_string();
-                    let primary = if local.is_empty() { folder.clone() } else { local };
+                    let primary = if local.is_empty() {
+                        folder.clone()
+                    } else {
+                        local
+                    };
                     if !query.is_empty()
                         && !primary.to_lowercase().contains(query.as_str())
                         && !folder.to_lowercase().contains(query.as_str())
@@ -4451,48 +4751,44 @@ impl Native {
             );
             if effective_project_id.is_some() {
                 let temp_active = self.landing_temporary;
-                controls = controls
-                    .child(div().flex_1())
-                    .child(
-                        div()
-                            .id("landing-temporary")
-                            .px_2()
-                            .py(px(4.))
-                            .rounded(px(999.))
-                            .cursor_pointer()
-                            .hover(|s| s.bg(theme.muted))
-                            .on_mouse_down(
-                                MouseButton::Left,
-                                cx.listener(|this, _e, _w, cx| {
-                                    this.landing_temporary = !this.landing_temporary;
-                                    cx.notify();
-                                }),
-                            )
-                            .child(
-                                h_flex()
-                                    .gap(px(6.))
-                                    .items_center()
-                                    .child(
-                                        svg_icon(icons::TEMPORARY)
-                                            .size(px(12.))
-                                            .text_color(if temp_active {
-                                                theme.accent
-                                            } else {
-                                                theme.muted_foreground
-                                            }),
-                                    )
-                                    .child(
-                                        div()
-                                            .text_size(px(12.))
-                                            .text_color(if temp_active {
-                                                theme.accent
-                                            } else {
-                                                theme.muted_foreground
-                                            })
-                                            .child("Temporary"),
-                                    ),
-                            ),
-                    );
+                controls = controls.child(div().flex_1()).child(
+                    div()
+                        .id("landing-temporary")
+                        .px_2()
+                        .py(px(4.))
+                        .rounded(px(999.))
+                        .cursor_pointer()
+                        .hover(|s| s.bg(theme.muted))
+                        .on_mouse_down(
+                            MouseButton::Left,
+                            cx.listener(|this, _e, _w, cx| {
+                                this.landing_temporary = !this.landing_temporary;
+                                cx.notify();
+                            }),
+                        )
+                        .child(
+                            h_flex()
+                                .gap(px(6.))
+                                .items_center()
+                                .child(svg_icon(icons::TEMPORARY).size(px(12.)).text_color(
+                                    if temp_active {
+                                        theme.accent
+                                    } else {
+                                        theme.muted_foreground
+                                    },
+                                ))
+                                .child(
+                                    div()
+                                        .text_size(px(12.))
+                                        .text_color(if temp_active {
+                                            theme.accent
+                                        } else {
+                                            theme.muted_foreground
+                                        })
+                                        .child("Temporary"),
+                                ),
+                        ),
+                );
             }
             landing_controls = Some(controls);
         }
@@ -4515,8 +4811,8 @@ impl Native {
                     self.error_details_open = false;
                 }
                 let expanded = self.error_details_open;
-                let can_unblock = session_err
-                    .starts_with("Thread is blocked by an earlier provider failure");
+                let can_unblock =
+                    session_err.starts_with("Thread is blocked by an earlier provider failure");
                 let clamped = session_err.len() > 160 || session_err.contains('\n');
                 let shown: String = if expanded || !clamped {
                     session_err.clone()
@@ -4801,7 +5097,11 @@ impl Native {
                             }
                         },
                         s_state.clone(),
-                        if st.get("available").and_then(Value::as_bool).unwrap_or(false) {
+                        if st
+                            .get("available")
+                            .and_then(Value::as_bool)
+                            .unwrap_or(false)
+                        {
                             "available".to_string()
                         } else {
                             "unavailable".to_string()
@@ -4850,7 +5150,11 @@ impl Native {
                                                     div()
                                                         .text_size(px(13.))
                                                         .text_color(accent)
-                                                        .child(if is_err { "\u{2298}" } else { "\u{26a0}" }),
+                                                        .child(if is_err {
+                                                            "\u{2298}"
+                                                        } else {
+                                                            "\u{26a0}"
+                                                        }),
                                                 )
                                                 .child(
                                                     v_flex()
@@ -4860,7 +5164,9 @@ impl Native {
                                                             div()
                                                                 .text_size(px(12.))
                                                                 .text_color(accent)
-                                                                .child(format!("{label} provider status")),
+                                                                .child(format!(
+                                                                    "{label} provider status"
+                                                                )),
                                                         )
                                                         .child(
                                                             div()
@@ -5087,12 +5393,7 @@ impl Native {
                             .py(px(3.))
                             .gap_2()
                             .items_center()
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(color)
-                                    .child(glyph),
-                            )
+                            .child(div().text_size(px(11.)).text_color(color).child(glyph))
                             .child(
                                 div()
                                     .text_size(px(12.))
@@ -5164,23 +5465,19 @@ impl Native {
             } else {
                 gpui::hsla(0.0, 0.0, 0.975, 1.0)
             };
-            div()
-                .flex()
-                .justify_center()
-                .w_full()
-                .child(
-                    v_flex()
-                        .w_full()
-                        .max_w(px(755.))
-                        .rounded(px(24.2))
-                        .border_1()
-                        .border_color(theme.border.opacity(0.5))
-                        .bg(tray_bg)
-                        .p(px(4.))
-                        .gap(px(4.))
-                        .child(div().px(px(6.)).child(controls))
-                        .child(composer_card),
-                )
+            div().flex().justify_center().w_full().child(
+                v_flex()
+                    .w_full()
+                    .max_w(px(755.))
+                    .rounded(px(24.2))
+                    .border_1()
+                    .border_color(theme.border.opacity(0.5))
+                    .bg(tray_bg)
+                    .p(px(4.))
+                    .gap(px(4.))
+                    .child(div().px(px(6.)).child(controls))
+                    .child(composer_card),
+            )
         } else {
             // In-thread tray (upstream chat-composer-shell): opaque grey
             // squircle spanning the chat column; the white pill sits inside,
@@ -5226,23 +5523,16 @@ impl Native {
                     .p(px(4.))
                     .child(composer_card)
             };
-            div()
-                .flex()
-                .justify_center()
-                .w_full()
-                .child(tray_inner)
+            div().flex().justify_center().w_full().child(tray_inner)
         };
         composer_col = composer_col.child(composer_shelled);
-        let composer_bar = div()
-            .w_full()
-            .pb(px(10.))
-            .child(
-                h_flex()
-                    .w_full()
-                    .justify_center()
-                    .pr(px(4.))
-                    .child(composer_col),
-            );
+        let composer_bar = div().w_full().pb(px(10.)).child(
+            h_flex()
+                .w_full()
+                .justify_center()
+                .pr(px(4.))
+                .child(composer_col),
+        );
 
         // ---- split pane (chat.split, cmd-\): right column with its own
         // header, transcript surface, thread picker and composer ----
@@ -5278,7 +5568,11 @@ impl Native {
                             .flex_1()
                             .text_xs()
                             .font_weight(FontWeight::SEMIBOLD)
-                            .text_color(if focused { theme.foreground } else { theme.muted_foreground })
+                            .text_color(if focused {
+                                theme.foreground
+                            } else {
+                                theme.muted_foreground
+                            })
                             .child(title),
                     )
                     .child(
@@ -5357,17 +5651,16 @@ impl Native {
                     list = list.child(row);
                 }
                 split_pane = split_pane.child(
-                    div().flex_1().overflow_y_scrollbar().child(
-                        h_flex().w_full().justify_center().child(list),
-                    ),
+                    div()
+                        .flex_1()
+                        .overflow_y_scrollbar()
+                        .child(h_flex().w_full().justify_center().child(list)),
                 );
             }
             // Dropping a dragged sidebar thread assigns it to this pane
             // (upstream createFromDrop).
             split_pane = split_pane
-                .can_drop(|v, _w, _cx| {
-                    v.is::<ThreadDrag>() || v.is::<TabDrag>()
-                })
+                .can_drop(|v, _w, _cx| v.is::<ThreadDrag>() || v.is::<TabDrag>())
                 .on_drop::<ThreadDrag>(cx.listener(|this, drag: &ThreadDrag, _w, cx| {
                     this.open_split_thread(drag.0.clone(), cx);
                 }))
@@ -5404,9 +5697,11 @@ impl Native {
                 let chat_mw = self.chat_max_w();
                 split_bar = split_bar.child(
                     div().w_full().pb(px(18.)).child(
-                        h_flex().w_full().justify_center().pr(px(4.)).child(
-                            v_flex().w_full().max_w(chat_mw).gap_0().child(card),
-                        ),
+                        h_flex()
+                            .w_full()
+                            .justify_center()
+                            .pr(px(4.))
+                            .child(v_flex().w_full().max_w(chat_mw).gap_0().child(card)),
                     ),
                 );
             }
@@ -5414,7 +5709,12 @@ impl Native {
 
         NativeWorkspace {
             sidebar: sidebar.w_full().into_any_element(),
-            pane: pane.id("transcript-scroll").track_scroll(&self.transcript_scroll).overflow_y_scroll().vertical_scrollbar(&self.transcript_scroll).into_any_element(),
+            pane: pane
+                .id("transcript-scroll")
+                .track_scroll(&self.transcript_scroll)
+                .overflow_y_scroll()
+                .vertical_scrollbar(&self.transcript_scroll)
+                .into_any_element(),
             inbox_pane: inbox_pane.overflow_y_scrollbar().into_any_element(),
             dev_pane: dev_pane.overflow_y_scrollbar().into_any_element(),
             files_pane: files_pane.overflow_y_scrollbar().into_any_element(),
@@ -5428,7 +5728,7 @@ impl Native {
             toast_shown,
             has_thread,
             show_landing,
-            thread_v: thread_v.clone()
+            thread_v: thread_v.clone(),
         }
     }
 }

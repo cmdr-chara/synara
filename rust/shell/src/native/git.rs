@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -35,7 +33,13 @@ impl Native {
 
     /// End-of-turn files card: open the precomputed checkpoint diff for one
     /// turn in the diff panel (upstream Review on the Edited-files card).
-    pub(super) fn open_turn_diff(&mut self, thread_id: String, from_turn: i64, to_turn: i64, cx: &mut Context<Self>) {
+    pub(super) fn open_turn_diff(
+        &mut self,
+        thread_id: String,
+        from_turn: i64,
+        to_turn: i64,
+        cx: &mut Context<Self>,
+    ) {
         let client = self.client.clone();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
             let cell = client.clone();
@@ -76,7 +80,12 @@ impl Native {
         .detach();
     }
 
-    pub(super) fn stage_paths(&mut self, paths: Vec<String>, unstage: bool, cx: &mut Context<Self>) {
+    pub(super) fn stage_paths(
+        &mut self,
+        paths: Vec<String>,
+        unstage: bool,
+        cx: &mut Context<Self>,
+    ) {
         let Some(cwd) = self.files_root() else {
             return;
         };
@@ -88,7 +97,11 @@ impl Native {
                 .spawn(async move { ensure_client(&cell) })
                 .await;
             let Some(client) = client else { return };
-            let method = if unstage { "git.unstageFiles" } else { "git.stageFiles" };
+            let method = if unstage {
+                "git.unstageFiles"
+            } else {
+                "git.stageFiles"
+            };
             let res = cx
                 .background_executor()
                 .spawn(async move { client.call(method, json!({"cwd": cwd, "paths": paths})) })
@@ -412,17 +425,15 @@ impl Native {
                 this.pr_diff_loading = false;
                 match res {
                     Some(v) => {
-                        this.pr_diff_truncated =
-                            get(&v, "truncated").as_bool().unwrap_or(false);
+                        this.pr_diff_truncated = get(&v, "truncated").as_bool().unwrap_or(false);
                         let patch = str_at(&v, "patch").to_string();
                         if patch.is_empty() {
                             this.pr_diff_error =
                                 Some("The pull request diff is unavailable.".to_string());
                             this.pr_diff_state = None;
                         } else {
-                            let files =
-                                gpui_kit::component::diff::DiffFile::parse(&patch)
-                                    .unwrap_or_default();
+                            let files = gpui_kit::component::diff::DiffFile::parse(&patch)
+                                .unwrap_or_default();
                             this.pr_diff_files = parse_patch_files(&patch);
                             this.pr_diff_state = Some(cx.new(|cx| {
                                 gpui_kit::component::diff::DiffState::new(files, cx)
@@ -431,8 +442,7 @@ impl Native {
                         }
                     }
                     None => {
-                        this.pr_diff_error =
-                            Some("Could not load diff.".to_string());
+                        this.pr_diff_error = Some("Could not load diff.".to_string());
                         this.pr_diff_state = None;
                     }
                 }
@@ -657,14 +667,18 @@ impl Native {
     /// `githubInbox.issueDetail`, with external open, pin and the issue
     /// comment composer (upstream GitHubIssueDetailPanel, plain-text body
     /// rendering in the first native pass).
-    pub(super) fn issue_detail_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
+    pub(super) fn issue_detail_pane(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> AnyElement {
         let theme = cx.theme().clone();
         let detail = self.issue_detail.clone().unwrap_or(Value::Null);
         let muted = theme.muted_foreground;
         let state = str_at(&detail, "state").to_string();
-        let number = get(&detail, "number").as_u64().unwrap_or_else(|| {
-            self.issue_sel.as_ref().map(|(_, _, n)| *n).unwrap_or(0)
-        });
+        let number = get(&detail, "number")
+            .as_u64()
+            .unwrap_or_else(|| self.issue_sel.as_ref().map(|(_, _, n)| *n).unwrap_or(0));
         let repo = str_at(&detail, "repository").to_string();
 
         let mut tabs = h_flex().gap_1().items_center().min_w_0();
@@ -680,9 +694,12 @@ impl Native {
                     .rounded(px(6.))
                     .cursor_pointer()
                     .text_size(px(13.))
-                    .when(active, |d| d.bg(theme.secondary).font_weight(FontWeight::MEDIUM))
+                    .when(active, |d| {
+                        d.bg(theme.secondary).font_weight(FontWeight::MEDIUM)
+                    })
                     .when(!active, |d| {
-                        d.text_color(muted).hover(|d| d.bg(theme.secondary.opacity(0.6)))
+                        d.text_color(muted)
+                            .hover(|d| d.bg(theme.secondary.opacity(0.6)))
                     })
                     .on_click(cx.listener(move |this, _e, _w, cx| {
                         this.issue_detail_tab = i;
@@ -739,7 +756,11 @@ impl Native {
                     .on_click(cx.listener(move |_, _e, _w, cx| {
                         cx.open_url(&url);
                     }))
-                    .child(svg_icon(icons::EXTERNAL_LINK).size(px(14.)).text_color(muted)),
+                    .child(
+                        svg_icon(icons::EXTERNAL_LINK)
+                            .size(px(14.))
+                            .text_color(muted),
+                    ),
             );
         }
 
@@ -767,7 +788,11 @@ impl Native {
         } else {
             let author = str_at(get(&detail, "author"), "login");
             let created = gh_relative_time(str_at(&detail, "createdAt"));
-            let status_color = if state == "open" { theme.success } else { theme.accent };
+            let status_color = if state == "open" {
+                theme.success
+            } else {
+                theme.accent
+            };
             content = content.child(
                 v_flex()
                     .gap_2()
@@ -776,9 +801,13 @@ impl Native {
                             .items_center()
                             .gap_2()
                             .child(
-                                Icon::new(if state == "open" { AssetIcon::CircleDot } else { AssetIcon::CircleCheck })
-                                    .size(px(17.))
-                                    .text_color(status_color),
+                                Icon::new(if state == "open" {
+                                    AssetIcon::CircleDot
+                                } else {
+                                    AssetIcon::CircleCheck
+                                })
+                                .size(px(17.))
+                                .text_color(status_color),
                             )
                             .child(
                                 div()
@@ -902,7 +931,8 @@ impl Native {
                         .submit_on_enter(true)
                 });
                 cx.subscribe_in(&st, window, |this, _s, event, _w, cx| {
-                    if let gpui_kit::component::input::InputEvent::PressEnter { shift, .. } = event {
+                    if let gpui_kit::component::input::InputEvent::PressEnter { shift, .. } = event
+                    {
                         if !shift {
                             this.post_issue_comment(cx);
                         }
@@ -934,7 +964,11 @@ impl Native {
                             .rounded_full()
                             .bg(theme.secondary)
                             .mb(px(4.))
-                            .child(Icon::new(AssetIcon::CircleDot).size(px(12.)).text_color(muted)),
+                            .child(
+                                Icon::new(AssetIcon::CircleDot)
+                                    .size(px(12.))
+                                    .text_color(muted),
+                            ),
                     )
                     .child(
                         div()
@@ -957,7 +991,11 @@ impl Native {
                             .on_click(cx.listener(|this, _e, _w, cx| {
                                 this.post_issue_comment(cx);
                             }))
-                            .child(svg_icon(icons::SEND).size(px(14.)).text_color(theme.accent_foreground)),
+                            .child(
+                                svg_icon(icons::SEND)
+                                    .size(px(14.))
+                                    .text_color(theme.accent_foreground),
+                            ),
                     ),
             );
         }
@@ -991,7 +1029,11 @@ impl Native {
             .into_any_element()
     }
 
-    pub(super) fn pr_detail_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
+    pub(super) fn pr_detail_pane(
+        &mut self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> AnyElement {
         let theme = cx.theme().clone();
         let detail_opt = self.pr_detail.clone();
         let detail = detail_opt.clone().unwrap_or(Value::Null);
@@ -1061,31 +1103,18 @@ impl Native {
                         this.pr_stack_menu = if this.pr_stack_menu.is_some() {
                             None
                         } else {
-                            Some((
-                                e.position().x.as_f32(),
-                                e.position().y.as_f32() + 6.0,
-                            ))
+                            Some((e.position().x.as_f32(), e.position().y.as_f32() + 6.0))
                         };
                         cx.notify();
                     }))
-                    .child(
-                        div()
-                            .size(px(7.))
-                            .rounded_full()
-                            .bg(tone_color),
-                    )
+                    .child(div().size(px(7.)).rounded_full().bg(tone_color))
                     .child(
                         div()
                             .text_size(px(12.))
                             .font_weight(FontWeight::MEDIUM)
                             .child(format!("Stack {pos} of {size}")),
                     )
-                    .child(
-                        div()
-                            .text_size(px(11.))
-                            .text_color(muted)
-                            .child(label),
-                    )
+                    .child(div().text_size(px(11.)).text_color(muted).child(label))
                     .child(
                         svg_icon(icons::CHEVRON_DOWN)
                             .size(px(11.))
@@ -1130,18 +1159,11 @@ impl Native {
                     this.pr_actions_menu = if this.pr_actions_menu.is_some() {
                         None
                     } else {
-                        Some((
-                            e.position().x.as_f32(),
-                            e.position().y.as_f32() + 6.0,
-                        ))
+                        Some((e.position().x.as_f32(), e.position().y.as_f32() + 6.0))
                     };
                     cx.notify();
                 }))
-                .child(
-                    svg_icon(icons::MORE)
-                        .size(px(14.))
-                        .text_color(muted),
-                ),
+                .child(svg_icon(icons::MORE).size(px(14.)).text_color(muted)),
         );
         // primary action pill
         if detail_opt.is_some() {
@@ -1310,9 +1332,7 @@ impl Native {
                                 .text_ellipsis()
                                 .whitespace_nowrap()
                                 .text_size(px(13.))
-                                .when(epos == pos, |d| {
-                                    d.font_weight(FontWeight::MEDIUM)
-                                })
+                                .when(epos == pos, |d| d.font_weight(FontWeight::MEDIUM))
                                 .child(title),
                         ),
                 );
@@ -1356,16 +1376,15 @@ impl Native {
         // actions menu
         if let Some((mx, my)) = self.pr_actions_menu {
             let mut menu = v_flex().gap_px().p_1();
-            let mrow =
-                |id: &'static str, label: &'static str| -> Button {
-                    Button::new(id)
-                        .ghost()
-                        .w_full()
-                        .h(px(30.))
-                        .justify_start()
-                        .px_2()
-                        .label(label)
-                };
+            let mrow = |id: &'static str, label: &'static str| -> Button {
+                Button::new(id)
+                    .ghost()
+                    .w_full()
+                    .h(px(30.))
+                    .justify_start()
+                    .px_2()
+                    .label(label)
+            };
             if state == "open" {
                 // draft radio group
                 for (val, lab) in [(true, "Draft"), (false, "Ready for review")] {
@@ -1436,9 +1455,7 @@ impl Native {
                         let sel = self.pr_merge_method == val;
                         menu = menu.child(
                             h_flex()
-                                .id(ElementId::Name(
-                                    format!("pr-method-{val}").into(),
-                                ))
+                                .id(ElementId::Name(format!("pr-method-{val}").into()))
                                 .h(px(30.))
                                 .px_2()
                                 .gap_2()
@@ -1474,8 +1491,7 @@ impl Native {
                                 .child(div().text_size(px(13.)).child(lab)),
                         );
                     }
-                    menu =
-                        menu.child(div().h(px(1.)).w_full().my_1().bg(theme.border));
+                    menu = menu.child(div().h(px(1.)).w_full().my_1().bg(theme.border));
                 }
             }
             // copy link
@@ -1492,8 +1508,7 @@ impl Native {
                 );
             }
             if state == "open" {
-                menu =
-                    menu.child(div().h(px(1.)).w_full().my_1().bg(theme.border));
+                menu = menu.child(div().h(px(1.)).w_full().my_1().bg(theme.border));
                 menu = menu.child(
                     Button::new("pr-close-pr")
                         .ghost()
@@ -1509,14 +1524,12 @@ impl Native {
                         })),
                 );
             } else if state == "closed" {
-                menu = menu.child(
-                    mrow("pr-reopen-pr", "Reopen pull request").on_click(
-                        cx.listener(|this, _e, _w, cx| {
-                            this.pr_actions_menu = None;
-                            this.pr_action("reopen", cx);
-                        }),
-                    ),
-                );
+                menu = menu.child(mrow("pr-reopen-pr", "Reopen pull request").on_click(
+                    cx.listener(|this, _e, _w, cx| {
+                        this.pr_actions_menu = None;
+                        this.pr_action("reopen", cx);
+                    }),
+                ));
             }
             let _ = (mx, my);
             pane = pane.child(deferred(
@@ -1587,12 +1600,7 @@ impl Native {
                                     .font_weight(FontWeight::SEMIBOLD)
                                     .child(title),
                             )
-                            .child(
-                                div()
-                                    .text_size(px(13.))
-                                    .text_color(muted)
-                                    .child(desc),
-                            )
+                            .child(div().text_size(px(13.)).text_color(muted).child(desc))
                             .child(
                                 h_flex()
                                     .w_full()
@@ -1602,24 +1610,20 @@ impl Native {
                                         Button::new("pr-confirm-cancel")
                                             .ghost()
                                             .label("Cancel")
-                                            .on_click(cx.listener(
-                                                |this, _e, _w, cx| {
-                                                    this.pr_confirm = None;
-                                                    cx.notify();
-                                                },
-                                            )),
+                                            .on_click(cx.listener(|this, _e, _w, cx| {
+                                                this.pr_confirm = None;
+                                                cx.notify();
+                                            })),
                                     )
                                     .child(
                                         Button::new("pr-confirm-ok")
                                             .label(confirm_label)
                                             .when(kind == "close", |b| b.danger())
                                             .when(kind == "merge", |b| b.primary())
-                                            .on_click(cx.listener(
-                                                move |this, _e, _w, cx| {
-                                                    this.pr_confirm = None;
-                                                    this.pr_action(kind, cx);
-                                                },
-                                            )),
+                                            .on_click(cx.listener(move |this, _e, _w, cx| {
+                                                this.pr_confirm = None;
+                                                this.pr_action(kind, cx);
+                                            })),
                                     ),
                             ),
                     )
@@ -1669,18 +1673,13 @@ impl Native {
                             .child(gh_actor_name(get(detail, "author"))),
                     )
                     .child("·")
-                    .child(format!(
-                        "updated {}",
-                        rel_time(str_at(detail, "updatedAt"))
-                    ))
+                    .child(format!("updated {}", rel_time(str_at(detail, "updatedAt"))))
                     .child("·")
                     .child(pr_state_label(&state, is_draft)),
             );
 
         // ---- meta rows ----
-        let meta_row = |icon: &'static [u8],
-                        label: &'static str,
-                        content: AnyElement| {
+        let meta_row = |icon: &'static [u8], label: &'static str, content: AnyElement| {
             h_flex()
                 .items_start()
                 .gap_3()
@@ -1774,15 +1773,9 @@ impl Native {
         // Reviewers
         let reviewers = arr(detail, "reviewers");
         let rev_content = if reviewers.is_empty() {
-            div()
-                .text_size(px(13.))
-                .text_color(muted)
-                .child("None")
+            div().text_size(px(13.)).text_color(muted).child("None")
         } else {
-            let names: Vec<String> = reviewers
-                .iter()
-                .map(|r| gh_actor_name(r))
-                .collect();
+            let names: Vec<String> = reviewers.iter().map(|r| gh_actor_name(r)).collect();
             div().text_size(px(13.)).child(names.join(", "))
         };
         section = section.child(meta_row(
@@ -1792,12 +1785,8 @@ impl Native {
         ));
 
         // Comments count
-        let truncated = get(detail, "commentsTruncated")
-            .as_bool()
-            .unwrap_or(false)
-            || get(detail, "commentsIncomplete")
-                .as_bool()
-                .unwrap_or(false);
+        let truncated = get(detail, "commentsTruncated").as_bool().unwrap_or(false)
+            || get(detail, "commentsIncomplete").as_bool().unwrap_or(false);
         section = section.child(meta_row(
             icons::BUBBLE_TEXT,
             "Comments",
@@ -1900,12 +1889,7 @@ impl Native {
                                 .text_size(px(13.))
                                 .child(cname),
                         )
-                        .child(
-                            div()
-                                .text_size(px(12.))
-                                .text_color(muted)
-                                .child(clabel),
-                        ),
+                        .child(div().text_size(px(12.)).text_color(muted).child(clabel)),
                 );
             }
         }
@@ -1920,9 +1904,7 @@ impl Native {
 
         // Comments: cards (expandable) + composer
         let mut comments_list = v_flex().px_5().gap_px();
-        let incomplete = get(detail, "commentsIncomplete")
-            .as_bool()
-            .unwrap_or(false);
+        let incomplete = get(detail, "commentsIncomplete").as_bool().unwrap_or(false);
         if incomplete || truncated {
             comments_list = comments_list.child(
                 div()
@@ -1965,9 +1947,7 @@ impl Native {
                     .border_color(theme.border.opacity(0.5));
                 card = card.child(
                     h_flex()
-                        .id(ElementId::Name(
-                            format!("pr-comment-{ci}").into(),
-                        ))
+                        .id(ElementId::Name(format!("pr-comment-{ci}").into()))
                         .w_full()
                         .items_center()
                         .gap_2()
@@ -1987,12 +1967,7 @@ impl Native {
                                 .font_weight(FontWeight::MEDIUM)
                                 .child(author),
                         )
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(muted)
-                                .child(when),
-                        )
+                        .child(div().text_size(px(11.)).text_color(muted).child(when))
                         .child(div().flex_1())
                         .child(
                             svg_icon(if open {
@@ -2025,30 +2000,26 @@ impl Native {
                             .child("No review body.")
                             .into_any_element()
                     } else {
-                        TextView::markdown(
-                            ElementId::Name(format!("pr-cmd-md-{ci}").into()),
-                            body,
-                        )
-                        .style({
-                            let mut s =
-                                gpui_kit::component::text::TextViewStyle::default();
-                            s.highlight_theme = gpui_kit::component::highlighter::HighlightTheme::default_dark();
-                            s
-                        })
-                        .into_any_element()
+                        TextView::markdown(ElementId::Name(format!("pr-cmd-md-{ci}").into()), body)
+                            .style({
+                                let mut s = gpui_kit::component::text::TextViewStyle::default();
+                                s.highlight_theme =
+                                    gpui_kit::component::highlighter::HighlightTheme::default_dark(
+                                    );
+                                s
+                            })
+                            .into_any_element()
                     });
                     if !curl.is_empty() {
                         panel = panel.child(
                             h_flex().w_full().justify_end().child(
-                                Button::new(ElementId::Name(
-                                    format!("pr-creply-{ci}").into(),
-                                ))
-                                .ghost()
-                                .compact()
-                                .label("Reply")
-                                .on_click(cx.listener(move |_, _e, _w, cx| {
-                                    cx.open_url(&curl);
-                                })),
+                                Button::new(ElementId::Name(format!("pr-creply-{ci}").into()))
+                                    .ghost()
+                                    .compact()
+                                    .label("Reply")
+                                    .on_click(cx.listener(move |_, _e, _w, cx| {
+                                        cx.open_url(&curl);
+                                    })),
                             ),
                         );
                     }
@@ -2067,10 +2038,7 @@ impl Native {
                     .submit_on_enter(true)
             });
             cx.subscribe_in(&st, window, |this, _s, event, _w, cx| {
-                if let gpui_kit::component::input::InputEvent::PressEnter {
-                    shift, ..
-                } = event
-                {
+                if let gpui_kit::component::input::InputEvent::PressEnter { shift, .. } = event {
                     if !shift {
                         this.post_pr_comment(cx);
                     }
@@ -2332,16 +2300,8 @@ impl Native {
                     .text_size(px(12.))
                     .text_color(muted)
                     .child(plural(n as f64, "file", "files"))
-                    .child(
-                        div()
-                            .text_color(theme.success)
-                            .child(format!("+{ins}")),
-                    )
-                    .child(
-                        div()
-                            .text_color(theme.danger)
-                            .child(format!("-{del}")),
-                    ),
+                    .child(div().text_color(theme.success).child(format!("+{ins}")))
+                    .child(div().text_color(theme.danger).child(format!("-{del}"))),
             );
         }
         let content: AnyElement = if self.pr_diff_loading {
@@ -2420,9 +2380,8 @@ impl Native {
             }
             GitDialog::Pr => {
                 self.git_pr_title_input = Some(input.clone());
-                let body = cx.new(|cx| {
-                    InputState::new(window, cx).placeholder("Pull request body")
-                });
+                let body =
+                    cx.new(|cx| InputState::new(window, cx).placeholder("Pull request body"));
                 cx.subscribe_in(&body, window, |_this, _s, event, _w, cx| {
                     if let InputEvent::Change = event {
                         cx.notify();
@@ -2451,8 +2410,7 @@ impl Native {
             return;
         }
         let Some(cwd) = self.git_cwd() else {
-            self.feedback_toast =
-                Some(("No repository for this thread.".to_string(), true));
+            self.feedback_toast = Some(("No repository for this thread.".to_string(), true));
             cx.notify();
             return;
         };
@@ -2498,59 +2456,55 @@ impl Native {
         self.git_dialog = None;
         self.git_action_running = true;
         let cell = self.client.clone();
-        cx.spawn(
-            async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
-                let v = cx
-                    .background_executor()
-                    .spawn(async move {
-                        ensure_client(&cell)
-                            .and_then(|c| c.call("git.runStackedAction", payload))
-                    })
-                    .await;
-                let _ = this.update(cx, |this: &mut Self, cx| {
-                    this.git_action_running = false;
-                    match &v {
-                        Some(r) => {
-                            let c = get(r, "commit");
-                            let p = get(r, "push");
-                            let pr = get(r, "pr");
-                            let msg = if str_at(&pr, "status") == "created"
-                                || str_at(&pr, "status") == "opened_existing"
-                            {
-                                let n = pr
-                                    .get("number")
-                                    .and_then(Value::as_u64)
-                                    .map(|n| format!(" #{n}"))
-                                    .unwrap_or_default();
-                                format!("Created PR{n}")
-                            } else if str_at(&c, "status") == "created" {
-                                let sha =
-                                    str_at(&c, "commitSha").chars().take(7).collect::<String>();
-                                if str_at(&p, "status") == "pushed" {
-                                    format!("Committed {sha} and pushed")
-                                } else {
-                                    format!("Committed {sha}")
-                                }
-                            } else if str_at(&p, "status") == "pushed" {
-                                "Pushed".to_string()
-                            } else if str_at(&c, "status") == "skipped_no_changes" {
-                                "No changes to commit.".to_string()
+        cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
+            let v = cx
+                .background_executor()
+                .spawn(async move {
+                    ensure_client(&cell).and_then(|c| c.call("git.runStackedAction", payload))
+                })
+                .await;
+            let _ = this.update(cx, |this: &mut Self, cx| {
+                this.git_action_running = false;
+                match &v {
+                    Some(r) => {
+                        let c = get(r, "commit");
+                        let p = get(r, "push");
+                        let pr = get(r, "pr");
+                        let msg = if str_at(&pr, "status") == "created"
+                            || str_at(&pr, "status") == "opened_existing"
+                        {
+                            let n = pr
+                                .get("number")
+                                .and_then(Value::as_u64)
+                                .map(|n| format!(" #{n}"))
+                                .unwrap_or_default();
+                            format!("Created PR{n}")
+                        } else if str_at(&c, "status") == "created" {
+                            let sha = str_at(&c, "commitSha").chars().take(7).collect::<String>();
+                            if str_at(&p, "status") == "pushed" {
+                                format!("Committed {sha} and pushed")
                             } else {
-                                "Done".to_string()
-                            };
-                            this.feedback_toast = Some((msg, false));
-                            this.fetch_git_status(cx);
-                            this.fetch_changes(cx);
-                        }
-                        None => {
-                            this.feedback_toast = Some(("Git action failed.".to_string(), true));
-                        }
+                                format!("Committed {sha}")
+                            }
+                        } else if str_at(&p, "status") == "pushed" {
+                            "Pushed".to_string()
+                        } else if str_at(&c, "status") == "skipped_no_changes" {
+                            "No changes to commit.".to_string()
+                        } else {
+                            "Done".to_string()
+                        };
+                        this.feedback_toast = Some((msg, false));
+                        this.fetch_git_status(cx);
+                        this.fetch_changes(cx);
                     }
-                    cx.notify();
-                });
-                let _ = effective;
-            },
-        )
+                    None => {
+                        this.feedback_toast = Some(("Git action failed.".to_string(), true));
+                    }
+                }
+                cx.notify();
+            });
+            let _ = effective;
+        })
         .detach();
     }
 
@@ -2558,16 +2512,17 @@ impl Native {
     /// Code review panel's "Search or paste a PR link" field.
     pub(super) fn open_pr_dialog(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let input = cx.new(|cx| {
-            InputState::new(window, cx)
-                .placeholder("Paste a GitHub pull request URL or enter #123")
+            InputState::new(window, cx).placeholder("Paste a GitHub pull request URL or enter #123")
         });
-        cx.subscribe_in(&input, window, |this: &mut Self, _s, event, _w, cx| {
-            match event {
+        cx.subscribe_in(
+            &input,
+            window,
+            |this: &mut Self, _s, event, _w, cx| match event {
                 InputEvent::Change => this.pr_input_changed(cx),
                 InputEvent::PressEnter { .. } => this.confirm_pr_checkout("local", cx),
                 _ => {}
-            }
-        })
+            },
+        )
         .detach();
         let focus = input.read(cx).focus_handle(cx);
         window.focus(&focus, cx);
@@ -2605,9 +2560,12 @@ impl Native {
         }
         if raw.contains("github.com") && raw.contains("/pull/") {
             let tail = raw.rsplit("/pull/").next().unwrap_or("");
-            let digits: String =
-                tail.chars().take_while(|c| c.is_ascii_digit()).collect();
-            return if digits.is_empty() { None } else { Some(digits) };
+            let digits: String = tail.chars().take_while(|c| c.is_ascii_digit()).collect();
+            return if digits.is_empty() {
+                None
+            } else {
+                Some(digits)
+            };
         }
         None
     }
@@ -2632,7 +2590,9 @@ impl Native {
             cx.background_executor()
                 .timer(std::time::Duration::from_millis(450))
                 .await;
-            let Some(client) = ensure_client(&cell) else { return };
+            let Some(client) = ensure_client(&cell) else {
+                return;
+            };
             let Some(cwd) = cwd else { return };
             let res = client.call(
                 "git.resolvePullRequest",
@@ -2675,8 +2635,7 @@ impl Native {
             return;
         };
         let Some(cwd) = self.git_cwd() else {
-            self.pr_dialog_error =
-                Some("No repository for this thread.".to_string());
+            self.pr_dialog_error = Some("No repository for this thread.".to_string());
             cx.notify();
             return;
         };
@@ -2689,10 +2648,7 @@ impl Native {
                 let root = str_at(p, "repoPath");
                 !root.is_empty() && cwd.starts_with(root)
             })
-            .or_else(|| {
-                arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
-                    .first()
-            })
+            .or_else(|| arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects").first())
             .map(|p| str_at(p, "id").to_string())
             .unwrap_or_default();
         let title = format!(
@@ -2704,8 +2660,7 @@ impl Native {
             let Some(client) = ensure_client(&cell) else {
                 let _ = this.update(cx, |this: &mut Self, cx| {
                     this.pr_busy = false;
-                    this.pr_dialog_error =
-                        Some("Not connected.".to_string());
+                    this.pr_dialog_error = Some("Not connected.".to_string());
                     cx.notify();
                 });
                 return;
@@ -2746,9 +2701,7 @@ impl Native {
             });
             let c = client.clone();
             cx.background_executor()
-                .spawn(async move {
-                    c.call("orchestration.dispatchCommand", cmd)
-                })
+                .spawn(async move { c.call("orchestration.dispatchCommand", cmd) })
                 .await;
             let s = client.call("orchestration.getShellSnapshot", json!({}));
             let _ = this.update(cx, |this: &mut Self, cx| {

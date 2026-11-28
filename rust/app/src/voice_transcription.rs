@@ -7,7 +7,7 @@
 use crate::provider_usage::err_usage as err;
 use crate::todo::WsErr;
 use base64::Engine;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const TRANSCRIPTION_URL: &str = "https://chatgpt.com/backend-api/transcribe";
 const MAX_DURATION_MS: i64 = 120_000;
@@ -29,18 +29,30 @@ fn user_agent() -> String {
 
 fn normalize_base64(value: &str) -> Option<String> {
     let normalized: String = value.chars().filter(|c| !c.is_whitespace()).collect();
-    if normalized.is_empty() { None } else { Some(normalized) }
+    if normalized.is_empty() {
+        None
+    } else {
+        Some(normalized)
+    }
 }
 
 fn is_likely_base64(value: &str) -> bool {
     value.len() % 4 == 0
-        && value.chars().all(|c| c.is_ascii_alphanumeric() || c == '+' || c == '/' || c == '=')
+        && value
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '+' || c == '/' || c == '=')
         && value.matches('=').count() <= 2
         && value.trim_end_matches('=').chars().all(|c| c != '=')
 }
 
 fn expected_decoded_length(value: &str) -> usize {
-    let padding = if value.ends_with("==") { 2 } else if value.ends_with('=') { 1 } else { 0 };
+    let padding = if value.ends_with("==") {
+        2
+    } else if value.ends_with('=') {
+        1
+    } else {
+        0
+    };
     (value.len() / 4) * 3 - padding
 }
 
@@ -53,15 +65,22 @@ fn decode_voice_audio(payload: &Value) -> Result<Vec<u8>, WsErr> {
     if payload.get("sampleRateHz").and_then(Value::as_i64) != Some(24_000) {
         return Err(err("Voice transcription requires 24 kHz mono WAV audio."));
     }
-    let duration = payload.get("durationMs").and_then(Value::as_i64).unwrap_or(0);
+    let duration = payload
+        .get("durationMs")
+        .and_then(Value::as_i64)
+        .unwrap_or(0);
     if duration <= 0 {
         return Err(err("Voice messages must include a positive duration."));
     }
     if duration > MAX_DURATION_MS {
         return Err(err("Voice messages are limited to 120 seconds."));
     }
-    let raw = payload.get("audioBase64").and_then(Value::as_str).unwrap_or("");
-    let normalized = normalize_base64(raw).ok_or_else(|| err("The recorded audio could not be decoded."))?;
+    let raw = payload
+        .get("audioBase64")
+        .and_then(Value::as_str)
+        .unwrap_or("");
+    let normalized =
+        normalize_base64(raw).ok_or_else(|| err("The recorded audio could not be decoded."))?;
     if !is_likely_base64(&normalized) {
         return Err(err("The recorded audio could not be decoded."));
     }
@@ -130,9 +149,14 @@ fn post_transcription(audio: &[u8], token: &str) -> Result<(u16, Value), WsErr> 
 }
 
 fn transcribe(payload: &Value) -> Result<Value, WsErr> {
-    let provider = payload.get("provider").and_then(Value::as_str).unwrap_or("codex");
+    let provider = payload
+        .get("provider")
+        .and_then(Value::as_str)
+        .unwrap_or("codex");
     if provider != "codex" {
-        return Err(err(&format!("Voice transcription is unavailable for provider '{provider}'.")));
+        return Err(err(&format!(
+            "Voice transcription is unavailable for provider '{provider}'."
+        )));
     }
     let audio = decode_voice_audio(payload)?;
     let auth = crate::codex_usage::resolve_codex_auth()
@@ -176,7 +200,10 @@ fn prewarm() -> Result<Value, WsErr> {
             .redirect(reqwest::redirect::Policy::none())
             .build()
         {
-            let _ = client.head("https://chatgpt.com/").header("User-Agent", ua).send();
+            let _ = client
+                .head("https://chatgpt.com/")
+                .header("User-Agent", ua)
+                .send();
         }
     });
     Ok(json!({}))
@@ -261,6 +288,11 @@ mod tests {
         let payload = json!({"provider": "claude", "mimeType": "audio/wav", "sampleRateHz": 24000, "durationMs": 100, "audioBase64": "AAAA"});
         let result = transcribe(&payload);
         assert!(result.is_err());
-        assert!(result.err().map(|e| e.0.contains("unavailable for provider")).unwrap_or(false));
+        assert!(
+            result
+                .err()
+                .map(|e| e.0.contains("unavailable for provider"))
+                .unwrap_or(false)
+        );
     }
 }

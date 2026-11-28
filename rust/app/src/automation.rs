@@ -2,8 +2,8 @@
 //! subscribe). Reads run against a byte copy of state.sqlite; writes require
 //! `SYNARA_NO_UPSTREAM` (upstream holds the db lock otherwise).
 
-use rusqlite::{params, Connection, OptionalExtension};
-use serde_json::{json, Map, Value};
+use rusqlite::{Connection, OptionalExtension, params};
+use serde_json::{Map, Value, json};
 
 use crate::orchestration_engine::open_state_rw;
 use crate::orchestration_snapshot::open_state_copy;
@@ -72,7 +72,10 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     d.insert("name".into(), sval(row, 3));
     d.insert("prompt".into(), sval(row, 4));
     d.insert("schedule".into(), json_col(row, 5));
-    d.insert("enabled".into(), json!(row.get::<_, i64>(6).unwrap_or(0) == 1));
+    d.insert(
+        "enabled".into(),
+        json!(row.get::<_, i64>(6).unwrap_or(0) == 1),
+    );
     d.insert("nextRunAt".into(), opt_str(row, 7));
     // Schema requires a concrete ModelSelection; legacy rows may carry null
     // when the automation never pinned one — fall back to the engine default.
@@ -97,12 +100,12 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
             d.insert("notificationPolicy".into(), v);
         }
     }
-    d.insert("heartbeatCooldownSeconds".into(), json!(row.get::<_, i64>(17).unwrap_or(60)));
-    d.insert("maxIterations".into(), opt_int(row, 18));
     d.insert(
-        "stopAfterConsecutiveFailures".into(),
-        opt_int(row, 19),
+        "heartbeatCooldownSeconds".into(),
+        json!(row.get::<_, i64>(17).unwrap_or(60)),
     );
+    d.insert("maxIterations".into(), opt_int(row, 18));
+    d.insert("stopAfterConsecutiveFailures".into(), opt_int(row, 19));
     d.insert(
         "consecutiveFailureCount".into(),
         json!(row.get::<_, i64>(20).unwrap_or(0)),
@@ -113,7 +116,11 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
         let v = json_col(row, 23);
         d.insert(
             "completionPolicy".into(),
-            if v.is_null() { json!({"type": "none"}) } else { v },
+            if v.is_null() {
+                json!({"type": "none"})
+            } else {
+                v
+            },
         );
     }
     d.insert(
@@ -126,13 +133,20 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
             d.insert("completionPolicyUpdatedAt".into(), v);
         }
     }
-    d.insert("minimumIntervalSeconds".into(), json!(row.get::<_, i64>(26).unwrap_or(60)));
+    d.insert(
+        "minimumIntervalSeconds".into(),
+        json!(row.get::<_, i64>(26).unwrap_or(60)),
+    );
     d.insert("maxRuntimeSeconds".into(), opt_int(row, 27));
     {
         let v = json_col(row, 28);
         d.insert(
             "retryPolicy".into(),
-            if v.is_null() { json!({"type": "none"}) } else { v },
+            if v.is_null() {
+                json!({"type": "none"})
+            } else {
+                v
+            },
         );
     }
     {
@@ -149,7 +163,10 @@ fn definition_from_row(row: &rusqlite::Row) -> Map<String, Value> {
             _ => json!([]),
         },
     );
-    d.insert("iterationCount".into(), json!(row.get::<_, i64>(31).unwrap_or(0)));
+    d.insert(
+        "iterationCount".into(),
+        json!(row.get::<_, i64>(31).unwrap_or(0)),
+    );
     d.insert(
         "managedByProject".into(),
         json!(row.get::<_, i64>(32).unwrap_or(0) == 1),
@@ -186,10 +203,7 @@ fn run_from_row(row: &rusqlite::Row) -> Map<String, Value> {
     } else {
         trigger_type
     };
-    r.insert(
-        "trigger".into(),
-        json!({ "type": trigger_type }),
-    );
+    r.insert("trigger".into(), json!({ "type": trigger_type }));
     r.insert("status".into(), sval(row, 6));
     r.insert("scheduledFor".into(), sval(row, 7));
     r.insert("deferredUntil".into(), opt_str(row, 8));
@@ -321,7 +335,12 @@ fn load_run(conn: &Connection, run_id: &str) -> Result<Value, WsErr> {
     .map_err(|_| err("Failed to update automation run."))
 }
 
-fn write_run_result(conn: &Connection, run_id: &str, result: Value, now: &str) -> Result<(), WsErr> {
+fn write_run_result(
+    conn: &Connection,
+    run_id: &str,
+    result: Value,
+    now: &str,
+) -> Result<(), WsErr> {
     conn.execute(
         "UPDATE automation_runs SET result_json = ?2, updated_at = ?3 WHERE run_id = ?1",
         params![run_id, result.to_string(), now],
@@ -394,7 +413,9 @@ fn create(payload: &Value) -> Result<Value, WsErr> {
     project_exists(&conn, project_id)?;
     let now = crate::todo::iso_now_ms();
     let id = crate::orchestration_engine::uuid_v4();
-    let stop_after = payload["stopAfterConsecutiveFailures"].as_i64().unwrap_or(3);
+    let stop_after = payload["stopAfterConsecutiveFailures"]
+        .as_i64()
+        .unwrap_or(3);
     // A created automation must become fireable: compute the first occurrence
     // from its schedule. Manual/project-event schedules yield no next run.
     let initial_next_run: Option<String> =
@@ -444,7 +465,9 @@ fn create(payload: &Value) -> Result<Value, WsErr> {
 }
 
 fn update(payload: &Value) -> Result<Value, WsErr> {
-    let id = payload["id"].as_str().or_else(|| payload["automationId"].as_str())
+    let id = payload["id"]
+        .as_str()
+        .or_else(|| payload["automationId"].as_str())
         .unwrap_or_default();
     let conn = open_state_rw().map_err(|_| err("Failed to update automation."))?;
     let _existing = load_definition(&conn, id)?;
@@ -454,7 +477,10 @@ fn update(payload: &Value) -> Result<Value, WsErr> {
         ("name", payload.get("name").cloned()),
         ("prompt", payload.get("prompt").cloned()),
         ("schedule_json", payload.get("schedule").cloned()),
-        ("model_selection_json", payload.get("modelSelection").cloned()),
+        (
+            "model_selection_json",
+            payload.get("modelSelection").cloned(),
+        ),
         ("runtime_mode", payload.get("runtimeMode").cloned()),
         ("interaction_mode", payload.get("interactionMode").cloned()),
         ("worktree_mode", payload.get("worktreeMode").cloned()),
@@ -488,19 +514,26 @@ fn update(payload: &Value) -> Result<Value, WsErr> {
     }
     for (col, key) in [
         ("max_iterations", "maxIterations"),
-        ("stop_after_consecutive_failures", "stopAfterConsecutiveFailures"),
+        (
+            "stop_after_consecutive_failures",
+            "stopAfterConsecutiveFailures",
+        ),
         ("minimum_interval_seconds", "minimumIntervalSeconds"),
         ("max_runtime_seconds", "maxRuntimeSeconds"),
     ] {
         if let Some(v) = payload.get(key) {
             if v.is_null() {
                 let _ = conn.execute(
-                    &format!("UPDATE automation_definitions SET {col} = NULL WHERE automation_id = ?1"),
+                    &format!(
+                        "UPDATE automation_definitions SET {col} = NULL WHERE automation_id = ?1"
+                    ),
                     [id],
                 );
             } else if let Some(n) = v.as_i64() {
                 conn.execute(
-                    &format!("UPDATE automation_definitions SET {col} = ?2 WHERE automation_id = ?1"),
+                    &format!(
+                        "UPDATE automation_definitions SET {col} = ?2 WHERE automation_id = ?1"
+                    ),
                     rusqlite::params![id, n],
                 )
                 .map_err(|e| err(e.to_string()))?;
@@ -553,17 +586,20 @@ fn run_now(payload: &Value) -> Result<Value, WsErr> {
         return Err(err("Automation was not found."));
     }
     if def["proposalState"].as_str() == Some("pending") {
-        return Err(err("Pending automation proposals must be accepted before they can run."));
+        return Err(err(
+            "Pending automation proposals must be accepted before they can run.",
+        ));
     }
-    if def["enabled"].as_bool() == Some(false)
-        && def["disabledReason"].as_str() == Some("failures")
+    if def["enabled"].as_bool() == Some(false) && def["disabledReason"].as_str() == Some("failures")
     {
         return Err(err("Re-enable the automation before running it again."));
     }
     if (def["mode"].as_str() == Some("heartbeat") || def["mode"].as_str() == Some("dedicated"))
         && def["targetThreadId"].is_null()
     {
-        return Err(err("Heartbeat automation has no target thread to continue."));
+        return Err(err(
+            "Heartbeat automation has no target thread to continue.",
+        ));
     }
     let now = crate::todo::iso_now_ms();
     let run_id = crate::orchestration_engine::uuid_v4();

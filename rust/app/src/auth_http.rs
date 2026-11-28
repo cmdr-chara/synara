@@ -9,11 +9,11 @@
 use axum::{
     body::Bytes,
     extract::RawQuery,
-    http::{header, HeaderMap, StatusCode},
+    http::{HeaderMap, StatusCode, header},
     response::{IntoResponse, Response},
 };
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::auth_sessions;
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
@@ -44,18 +44,27 @@ fn generate_pairing_token() -> String {
     if let Ok(mut f) = std::fs::File::open("/dev/urandom") {
         let _ = f.read_exact(&mut bytes);
     }
-    bytes.iter().map(|b| PAIRING_TOKEN_ALPHABET[(b % 32) as usize] as char).collect()
+    bytes
+        .iter()
+        .map(|b| PAIRING_TOKEN_ALPHABET[(b % 32) as usize] as char)
+        .collect()
 }
 
 pub fn session_cookie_name() -> String {
-    match std::env::var("PORT").ok().and_then(|p| p.parse::<u16>().ok()) {
+    match std::env::var("PORT")
+        .ok()
+        .and_then(|p| p.parse::<u16>().ok())
+    {
         Some(port) => format!("synara_session_{port}"),
         None => "synara_session".to_string(),
     }
 }
 
 fn extract_session_token(headers: &HeaderMap) -> Option<String> {
-    if let Some(auth) = headers.get(header::AUTHORIZATION).and_then(|v| v.to_str().ok()) {
+    if let Some(auth) = headers
+        .get(header::AUTHORIZATION)
+        .and_then(|v| v.to_str().ok())
+    {
         if let Some(token) = auth.strip_prefix("Bearer ") {
             return Some(token.trim().to_string());
         }
@@ -103,7 +112,6 @@ pub(crate) fn authenticate(headers: &HeaderMap) -> Option<AuthenticatedSession> 
     )
     .ok()
 }
-
 
 /// Validates a short-lived websocket ticket and the still-active session row
 /// it points at. Unlike `authenticate`, which accepts long-lived session
@@ -179,12 +187,23 @@ pub fn seed_bootstrap_credential() {
 
 pub async fn bootstrap(headers: HeaderMap, body: Bytes) -> Response {
     let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
-    let credential = payload.get("credential").and_then(Value::as_str).unwrap_or("").trim().to_uppercase();
+    let credential = payload
+        .get("credential")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .trim()
+        .to_uppercase();
     if credential.is_empty() {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "Invalid bootstrap credential."}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "Invalid bootstrap credential."}),
+        );
     }
     let Ok(conn) = open_state_rw() else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "auth store unavailable"}),
+        );
     };
     let now = now_iso();
     let link: Option<(String, String, String, String)> = conn
@@ -195,11 +214,22 @@ pub async fn bootstrap(headers: HeaderMap, body: Bytes) -> Response {
         )
         .ok();
     let Some((link_id, role, subject, method)) = link else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "Invalid bootstrap credential."}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "Invalid bootstrap credential."}),
+        );
     };
-    let ua = headers.get(header::USER_AGENT).and_then(|v| v.to_str().ok()).map(str::to_string);
-    let Some((_session_id, token)) = create_session_row(&subject, &role, &method, None, ua.as_deref()) else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "failed to create session"}));
+    let ua = headers
+        .get(header::USER_AGENT)
+        .and_then(|v| v.to_str().ok())
+        .map(str::to_string);
+    let Some((_session_id, token)) =
+        create_session_row(&subject, &role, &method, None, ua.as_deref())
+    else {
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "failed to create session"}),
+        );
     };
     // One-time semantics: the credential is consumed exactly once.
     let _ = conn.execute(
@@ -255,7 +285,10 @@ fn iso_from_millis(ms: u64) -> String {
 
 pub async fn ws_token(headers: HeaderMap) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     let session_expires_at_ms = open_state_rw()
         .ok()
@@ -275,24 +308,28 @@ pub async fn ws_token(headers: HeaderMap) -> Response {
                 .unwrap_or(0);
             now_ms + auth_sessions::WEBSOCKET_TOKEN_TTL_MS
         });
-    let (token, expires_at_ms) = match auth_sessions::issue_websocket_ticket(&session.session_id, session_expires_at_ms) {
-        Ok(issued) => issued,
-        Err(auth_sessions::WebSocketTicketIssueError::Capacity { active }) => {
-            return json_response(
-                StatusCode::TOO_MANY_REQUESTS,
-                json!({
-                    "error": "Outstanding websocket ticket capacity exceeded.",
-                    "scope": "websocket-tickets",
-                    "active": active,
-                    "limit": auth_sessions::MAX_OUTSTANDING_WEBSOCKET_TICKETS_PER_SESSION,
-                    "retryAfterSeconds": 1,
-                }),
-            );
-        }
-        Err(auth_sessions::WebSocketTicketIssueError::SigningUnavailable) => {
-            return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "ticket issuance failed"}));
-        }
-    };
+    let (token, expires_at_ms) =
+        match auth_sessions::issue_websocket_ticket(&session.session_id, session_expires_at_ms) {
+            Ok(issued) => issued,
+            Err(auth_sessions::WebSocketTicketIssueError::Capacity { active }) => {
+                return json_response(
+                    StatusCode::TOO_MANY_REQUESTS,
+                    json!({
+                        "error": "Outstanding websocket ticket capacity exceeded.",
+                        "scope": "websocket-tickets",
+                        "active": active,
+                        "limit": auth_sessions::MAX_OUTSTANDING_WEBSOCKET_TICKETS_PER_SESSION,
+                        "retryAfterSeconds": 1,
+                    }),
+                );
+            }
+            Err(auth_sessions::WebSocketTicketIssueError::SigningUnavailable) => {
+                return json_response(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    json!({"error": "ticket issuance failed"}),
+                );
+            }
+        };
     json_response(
         StatusCode::OK,
         json!({
@@ -304,7 +341,10 @@ pub async fn ws_token(headers: HeaderMap) -> Response {
 
 pub async fn pairing_token(headers: HeaderMap, body: Bytes) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     if session.role != "owner" {
         return json_response(
@@ -313,21 +353,33 @@ pub async fn pairing_token(headers: HeaderMap, body: Bytes) -> Response {
         );
     }
     let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
-    let label = payload.get("label").and_then(Value::as_str).map(str::to_string);
-    let role = payload.get("role").and_then(Value::as_str).unwrap_or("client");
+    let label = payload
+        .get("label")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let role = payload
+        .get("role")
+        .and_then(Value::as_str)
+        .unwrap_or("client");
     let credential = generate_pairing_token();
     let id = uuid_v4();
     let now = now_iso();
     let expires = iso_plus_ms(5 * 60 * 1000);
     let Ok(conn) = open_state_rw() else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "auth store unavailable"}),
+        );
     };
     let inserted = conn.execute(
         "INSERT INTO auth_pairing_links (id, credential, method, role, subject, label, created_at, expires_at) VALUES (?1,?2,'browser-session-cookie',?3,?4,?5,?6,?7)",
         params![id, credential, role, session.subject, label, now, expires],
     );
     if inserted.is_err() {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "failed to create pairing credential"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "failed to create pairing credential"}),
+        );
     }
     json_response(
         StatusCode::OK,
@@ -357,10 +409,16 @@ pub async fn logout(headers: HeaderMap) -> Response {
 
 pub async fn clients(headers: HeaderMap) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     let Ok(conn) = open_state_rw() else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "auth store unavailable"}),
+        );
     };
     let now = now_iso();
     let mut stmt = match conn.prepare(
@@ -393,7 +451,8 @@ pub async fn clients(headers: HeaderMap) -> Response {
         .into_iter()
         .map(|mut row| {
             if let Value::Object(ref mut m) = row {
-                let current = m.get("sessionId").and_then(Value::as_str) == Some(&session.session_id);
+                let current =
+                    m.get("sessionId").and_then(Value::as_str) == Some(&session.session_id);
                 m.insert("current".into(), json!(current));
             }
             row
@@ -404,15 +463,27 @@ pub async fn clients(headers: HeaderMap) -> Response {
 
 pub async fn clients_revoke(headers: HeaderMap, body: Bytes) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     if session.role != "owner" {
-        return json_response(StatusCode::FORBIDDEN, json!({"error": "Only owner sessions can revoke clients."}));
+        return json_response(
+            StatusCode::FORBIDDEN,
+            json!({"error": "Only owner sessions can revoke clients."}),
+        );
     }
     let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
-    let target = payload.get("sessionId").and_then(Value::as_str).unwrap_or("");
+    let target = payload
+        .get("sessionId")
+        .and_then(Value::as_str)
+        .unwrap_or("");
     if target.is_empty() {
-        return json_response(StatusCode::BAD_REQUEST, json!({"error": "sessionId is required"}));
+        return json_response(
+            StatusCode::BAD_REQUEST,
+            json!({"error": "sessionId is required"}),
+        );
     }
     if let Ok(conn) = open_state_rw() {
         let _ = conn.execute(
@@ -429,12 +500,23 @@ pub async fn clients_revoke(headers: HeaderMap, body: Bytes) -> Response {
 /// the JSON body instead of a cookie — for non-browser clients.
 pub async fn bootstrap_bearer(headers: HeaderMap, body: Bytes) -> Response {
     let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
-    let credential = payload.get("credential").and_then(Value::as_str).unwrap_or("").trim().to_uppercase();
+    let credential = payload
+        .get("credential")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .trim()
+        .to_uppercase();
     if credential.is_empty() {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "Invalid bootstrap credential."}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "Invalid bootstrap credential."}),
+        );
     }
     let Ok(conn) = open_state_rw() else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "auth store unavailable"}),
+        );
     };
     let now = now_iso();
     let link: Option<(String, String, String, String)> = conn
@@ -445,13 +527,22 @@ pub async fn bootstrap_bearer(headers: HeaderMap, body: Bytes) -> Response {
         )
         .ok();
     let Some((link_id, role, subject, _method)) = link else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "Invalid bootstrap credential."}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "Invalid bootstrap credential."}),
+        );
     };
-    let ua = headers.get(header::USER_AGENT).and_then(|v| v.to_str().ok()).map(str::to_string);
+    let ua = headers
+        .get(header::USER_AGENT)
+        .and_then(|v| v.to_str().ok())
+        .map(str::to_string);
     let Some((_session_id, token)) =
         create_session_row(&subject, &role, "bearer-session-token", None, ua.as_deref())
     else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "failed to create session"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "failed to create session"}),
+        );
     };
     let _ = conn.execute(
         "UPDATE auth_pairing_links SET consumed_at = ?2 WHERE id = ?1",
@@ -471,13 +562,22 @@ pub async fn bootstrap_bearer(headers: HeaderMap, body: Bytes) -> Response {
 
 pub async fn pairing_links(headers: HeaderMap) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     if session.role != "owner" {
-        return json_response(StatusCode::FORBIDDEN, json!({"error": "Only owner sessions can list pairing links."}));
+        return json_response(
+            StatusCode::FORBIDDEN,
+            json!({"error": "Only owner sessions can list pairing links."}),
+        );
     }
     let Ok(conn) = open_state_rw() else {
-        return json_response(StatusCode::INTERNAL_SERVER_ERROR, json!({"error": "auth store unavailable"}));
+        return json_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            json!({"error": "auth store unavailable"}),
+        );
     };
     let now = now_iso();
     let mut stmt = match conn.prepare(
@@ -503,10 +603,16 @@ pub async fn pairing_links(headers: HeaderMap) -> Response {
 
 pub async fn pairing_links_revoke(headers: HeaderMap, body: Bytes) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     if session.role != "owner" {
-        return json_response(StatusCode::FORBIDDEN, json!({"error": "Only owner sessions can revoke pairing links."}));
+        return json_response(
+            StatusCode::FORBIDDEN,
+            json!({"error": "Only owner sessions can revoke pairing links."}),
+        );
     }
     let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
     let target = payload.get("id").and_then(Value::as_str).unwrap_or("");
@@ -524,7 +630,10 @@ pub async fn pairing_links_revoke(headers: HeaderMap, body: Bytes) -> Response {
 
 pub async fn clients_revoke_others(headers: HeaderMap) -> Response {
     let Some(session) = authenticate(&headers) else {
-        return json_response(StatusCode::UNAUTHORIZED, json!({"error": "authentication required"}));
+        return json_response(
+            StatusCode::UNAUTHORIZED,
+            json!({"error": "authentication required"}),
+        );
     };
     if let Ok(conn) = open_state_rw() {
         let mut stmt = conn.prepare(

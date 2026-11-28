@@ -13,8 +13,11 @@ use serde_json::{Value, json};
 
 use crate::todo::WsErr;
 
-fn approved_remote_sessions() -> &'static std::sync::Mutex<std::collections::HashMap<String, String>> {
-    static SESSIONS: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<String, String>>> = std::sync::OnceLock::new();
+fn approved_remote_sessions() -> &'static std::sync::Mutex<std::collections::HashMap<String, String>>
+{
+    static SESSIONS: std::sync::OnceLock<
+        std::sync::Mutex<std::collections::HashMap<String, String>>,
+    > = std::sync::OnceLock::new();
     SESSIONS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
 }
 
@@ -64,7 +67,9 @@ fn busy_from_connection(conn: &Connection) -> Result<bool, rusqlite::Error> {
         [],
         |r| r.get(0),
     )?;
-    if thread_work > 0 { return Ok(true); }
+    if thread_work > 0 {
+        return Ok(true);
+    }
 
     // Provider background work can outlive a foreground turn. The durable
     // runtime projection is the Rust backend's available evidence for it.
@@ -73,7 +78,9 @@ fn busy_from_connection(conn: &Connection) -> Result<bool, rusqlite::Error> {
         [],
         |r| r.get(0),
     )?;
-    if provider_work > 0 { return Ok(true); }
+    if provider_work > 0 {
+        return Ok(true);
+    }
 
     // Upstream also blocks while recoverable automation work exists. Deferred
     // pending rows are future schedules, not work the restart would interrupt.
@@ -82,7 +89,9 @@ fn busy_from_connection(conn: &Connection) -> Result<bool, rusqlite::Error> {
         [],
         |r| r.get(0),
     )?;
-    if automation_work > 0 { return Ok(true); }
+    if automation_work > 0 {
+        return Ok(true);
+    }
 
     // Durable queued-turn promotions are accepted user work waiting for the
     // active turn boundary; restarting before dispatch loses their in-flight ordering.
@@ -136,10 +145,14 @@ fn bridge_file() -> std::path::PathBuf {
 
 fn bridge_request(action: &str, payload: &Value, authority: &str) -> Option<Value> {
     use std::io::{BufRead as _, BufReader, Write as _};
-    let descriptor: Value = serde_json::from_str(&std::fs::read_to_string(bridge_file()).ok()?).ok()?;
+    let descriptor: Value =
+        serde_json::from_str(&std::fs::read_to_string(bridge_file()).ok()?).ok()?;
     let port = descriptor.get("port").and_then(Value::as_u64)?;
     let token = descriptor.get("token").and_then(Value::as_str)?.to_string();
-    if descriptor.get("version").and_then(Value::as_u64) != Some(1) || port == 0 || port > u16::MAX as u64 {
+    if descriptor.get("version").and_then(Value::as_u64) != Some(1)
+        || port == 0
+        || port > u16::MAX as u64
+    {
         return None;
     }
     let mut stream = std::net::TcpStream::connect(("127.0.0.1", port as u16)).ok()?;
@@ -217,8 +230,15 @@ pub fn desktop_update(payload: &Value, authority: Option<&str>) -> Result<Value,
         ));
     }
     let current = status(&authority);
-    if !current.get("supported").and_then(Value::as_bool).unwrap_or(false)
-        || (action == "install" && current.get("busy").and_then(Value::as_bool).unwrap_or(false))
+    if !current
+        .get("supported")
+        .and_then(Value::as_bool)
+        .unwrap_or(false)
+        || (action == "install"
+            && current
+                .get("busy")
+                .and_then(Value::as_bool)
+                .unwrap_or(false))
     {
         return Ok(json!({ "accepted": false, "status": current }));
     }
@@ -265,7 +285,10 @@ mod tests {
 
         let session_id = format!("remote-test-{}", crate::orchestration_engine::uuid_v4());
         let authority = authorize_remote_session(&session_id);
-        assert_eq!(valid_authority(Some(&authority)).ok(), Some(authority.clone()));
+        assert_eq!(
+            valid_authority(Some(&authority)).ok(),
+            Some(authority.clone())
+        );
         revoke_remote_session(&session_id);
         assert!(valid_authority(Some(&authority)).is_err());
     }
@@ -288,46 +311,76 @@ mod tests {
 
         conn.execute("INSERT INTO projection_thread_sessions (thread_id, status) VALUES ('thread-a', 'starting')", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE projection_thread_sessions SET status = 'stopped'", []).unwrap();
+        conn.execute(
+            "UPDATE projection_thread_sessions SET status = 'stopped'",
+            [],
+        )
+        .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
 
         conn.execute("INSERT INTO projection_turns (thread_id, turn_id, state) VALUES ('thread-a', 'turn-a', 'running')", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE projection_turns SET state = 'completed'", []).unwrap();
+        conn.execute("UPDATE projection_turns SET state = 'completed'", [])
+            .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
 
         conn.execute("INSERT INTO projection_pending_interactions (thread_id, status) VALUES ('thread-a', 'pending')", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE projection_pending_interactions SET status = 'confirmed'", []).unwrap();
+        conn.execute(
+            "UPDATE projection_pending_interactions SET status = 'confirmed'",
+            [],
+        )
+        .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
 
-        conn.execute("UPDATE projection_threads SET pending_user_input_count = 1", []).unwrap();
+        conn.execute(
+            "UPDATE projection_threads SET pending_user_input_count = 1",
+            [],
+        )
+        .unwrap();
         assert!(busy_from_connection(&conn).unwrap());
         conn.execute("UPDATE projection_threads SET pending_user_input_count = 0, claude_cache_review_json = '{\"status\":\"pending\"}'", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE projection_threads SET claude_cache_review_json = '{\"status\":\"failed\"}'", []).unwrap();
+        conn.execute(
+            "UPDATE projection_threads SET claude_cache_review_json = '{\"status\":\"failed\"}'",
+            [],
+        )
+        .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
 
         conn.execute("INSERT INTO provider_session_runtime (thread_id, status) VALUES ('thread-a', 'running')", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
 
-        conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", []).unwrap();
-        conn.execute("INSERT INTO automation_runs (run_id, status) VALUES ('run-a', 'running')", []).unwrap();
+        conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", [])
+            .unwrap();
+        conn.execute(
+            "INSERT INTO automation_runs (run_id, status) VALUES ('run-a', 'running')",
+            [],
+        )
+        .unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE automation_runs SET status = 'pending', deferred_until = 'later'", []).unwrap();
+        conn.execute(
+            "UPDATE automation_runs SET status = 'pending', deferred_until = 'later'",
+            [],
+        )
+        .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE automation_runs SET deferred_until = NULL", []).unwrap();
+        conn.execute("UPDATE automation_runs SET deferred_until = NULL", [])
+            .unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE automation_runs SET status = 'succeeded'", []).unwrap();
+        conn.execute("UPDATE automation_runs SET status = 'succeeded'", [])
+            .unwrap();
 
         conn.execute("INSERT INTO queued_turn_promotions (queued_event_sequence, state) VALUES (1, 'queued')", []).unwrap();
         assert!(busy_from_connection(&conn).unwrap());
-        conn.execute("UPDATE queued_turn_promotions SET state = 'promoted'", []).unwrap();
+        conn.execute("UPDATE queued_turn_promotions SET state = 'promoted'", [])
+            .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
 
-        conn.execute("UPDATE projection_threads SET deleted_at = 'now'", []).unwrap();
-        conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", []).unwrap();
+        conn.execute("UPDATE projection_threads SET deleted_at = 'now'", [])
+            .unwrap();
+        conn.execute("UPDATE provider_session_runtime SET status = 'stopped'", [])
+            .unwrap();
         assert!(!busy_from_connection(&conn).unwrap());
     }
-
 }

@@ -4,13 +4,17 @@
 //! running turns both hold off expiry. Viewers register through
 //! `thread.sidechat.activity.record` heartbeats, same as upstream.
 
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
 const POLL_INTERVAL_SECS: u64 = 60;
 
 fn expiry_window_ms() -> Option<i64> {
     let settings = crate::server_settings::get_settings(&Value::Null).ok()?;
-    match settings.get("sidechatExpiry").and_then(Value::as_str).unwrap_or("1h") {
+    match settings
+        .get("sidechatExpiry")
+        .and_then(Value::as_str)
+        .unwrap_or("1h")
+    {
         "1h" => Some(3_600_000),
         "24h" => Some(86_400_000),
         _ => None, // "never"
@@ -30,13 +34,15 @@ fn now_ms() -> i64 {
 }
 
 pub(crate) fn spawn_expiry_watcher() {
-    std::thread::spawn(|| loop {
-        std::thread::sleep(std::time::Duration::from_secs(POLL_INTERVAL_SECS));
-        let _ = std::panic::catch_unwind(|| {
-            if let Err(e) = poll_once() {
-                eprintln!("sidechat_expiry: poll failed: {e}");
-            }
-        });
+    std::thread::spawn(|| {
+        loop {
+            std::thread::sleep(std::time::Duration::from_secs(POLL_INTERVAL_SECS));
+            let _ = std::panic::catch_unwind(|| {
+                if let Err(e) = poll_once() {
+                    eprintln!("sidechat_expiry: poll failed: {e}");
+                }
+            });
+        }
     });
 }
 
@@ -93,7 +99,10 @@ fn poll_once() -> Result<(), String> {
         cmd.insert("type".into(), json!("thread.sidechat.expire"));
         cmd.insert(
             "commandId".into(),
-            json!(format!("server:sidechat-expiry:{}", crate::orchestration_engine::uuid_v4())),
+            json!(format!(
+                "server:sidechat-expiry:{}",
+                crate::orchestration_engine::uuid_v4()
+            )),
         );
         cmd.insert("threadId".into(), json!(thread_id.clone()));
         cmd.insert("createdAt".into(), json!(crate::todo::iso_now_ms()));

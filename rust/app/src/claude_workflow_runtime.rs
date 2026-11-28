@@ -62,28 +62,37 @@ fn parse_json_line(line: &str) -> Option<Value> {
     if trimmed.is_empty() {
         return None;
     }
-    match serde_json::from_str::<Value>(trimmed) { Ok(v) if v.is_object() => Some(v), _ => None }
+    match serde_json::from_str::<Value>(trimmed) {
+        Ok(v) if v.is_object() => Some(v),
+        _ => None,
+    }
 }
 
 /// Journal lines: {"type":"started"|"result","key":"v2:<hash>","agentId":"..."}.
 pub fn apply_journal_lines(state: &mut WorkflowRuntimeState, lines: &[String]) -> bool {
     let mut changed = false;
     for line in lines {
-        let Some(record) = parse_json_line(line) else { continue };
+        let Some(record) = parse_json_line(line) else {
+            continue;
+        };
         let Some(agent_id) = record.get("agentId").and_then(Value::as_str) else {
             continue;
         };
         match record.get("type").and_then(Value::as_str) {
             Some("started") => {
                 if !state.agents.contains_key(agent_id) {
-                    state.agents.insert(agent_id.to_string(), AgentAccum::new(agent_id));
+                    state
+                        .agents
+                        .insert(agent_id.to_string(), AgentAccum::new(agent_id));
                     state.insertion_order.push(agent_id.to_string());
                     changed = true;
                 }
             }
             Some("result") => {
                 if !state.agents.contains_key(agent_id) {
-                    state.agents.insert(agent_id.to_string(), AgentAccum::new(agent_id));
+                    state
+                        .agents
+                        .insert(agent_id.to_string(), AgentAccum::new(agent_id));
                     state.insertion_order.push(agent_id.to_string());
                 }
                 let agent = state.agents.get_mut(agent_id).expect("inserted");
@@ -103,7 +112,9 @@ pub fn apply_journal_lines(state: &mut WorkflowRuntimeState, lines: &[String]) -
 pub fn apply_agent_transcript_lines(agent: &mut AgentAccum, lines: &[String]) -> bool {
     let mut changed = false;
     for line in lines {
-        let Some(record) = parse_json_line(line) else { continue };
+        let Some(record) = parse_json_line(line) else {
+            continue;
+        };
         if let Some(timestamp) = record.get("timestamp").and_then(Value::as_str) {
             if agent.started_at.is_none() {
                 agent.started_at = Some(timestamp.to_string());
@@ -123,7 +134,10 @@ pub fn apply_agent_transcript_lines(agent: &mut AgentAccum, lines: &[String]) ->
                 let trimmed = content.trim();
                 if !trimmed.is_empty() {
                     agent.prompt_preview = Some(
-                        trimmed.chars().take(WORKFLOW_PROMPT_PREVIEW_CHARS).collect(),
+                        trimmed
+                            .chars()
+                            .take(WORKFLOW_PROMPT_PREVIEW_CHARS)
+                            .collect(),
                     );
                     changed = true;
                 }
@@ -192,7 +206,9 @@ pub fn apply_agent_transcript_lines(agent: &mut AgentAccum, lines: &[String]) ->
 pub fn runtime_snapshots(state: &WorkflowRuntimeState, labels: &[String]) -> Vec<Value> {
     let mut out = Vec::new();
     for (index, agent_id) in state.insertion_order.iter().enumerate() {
-        let Some(agent) = state.agents.get(agent_id) else { continue };
+        let Some(agent) = state.agents.get(agent_id) else {
+            continue;
+        };
         let mut snap = serde_json::json!({
             "agentId": agent.agent_id,
             "state": agent.state,
@@ -305,7 +321,9 @@ pub fn collect_runtime(transcript_dir: &str, state: &mut WorkflowRuntimeState) -
     }
     let ids: Vec<String> = state.insertion_order.clone();
     for agent_id in ids {
-        let Some(agent) = state.agents.get_mut(&agent_id) else { continue };
+        let Some(agent) = state.agents.get_mut(&agent_id) else {
+            continue;
+        };
         if agent.transcript_skipped {
             continue;
         }
@@ -403,7 +421,10 @@ mod tests {
         assert!(changed);
         assert_eq!(state.agents.len(), 2);
         assert_eq!(state.agents["agent-1"].state, "running");
-        apply_journal_lines(&mut state, &[r#"{"type":"result","agentId":"agent-1"}"#.to_string()]);
+        apply_journal_lines(
+            &mut state,
+            &[r#"{"type":"result","agentId":"agent-1"}"#.to_string()],
+        );
         assert_eq!(state.agents["agent-1"].state, "completed");
         assert_eq!(state.agents["agent-2"].state, "running");
     }
@@ -434,14 +455,14 @@ mod tests {
     fn incremental_read_consumes_whole_lines_only() {
         let path = std::env::temp_dir().join(format!("wf-lines-{}", std::process::id()));
         std::fs::write(&path, "one\ntwo\npart").unwrap();
-        let read = read_appended_lines(path.to_str().unwrap(), 0, MAX_CLAUDE_WORKFLOW_FILE_BYTES)
-            .unwrap();
+        let read =
+            read_appended_lines(path.to_str().unwrap(), 0, MAX_CLAUDE_WORKFLOW_FILE_BYTES).unwrap();
         assert_eq!(read.lines, vec!["one", "two"]);
         // Offset sits after the second newline; the partial line waits.
         assert_eq!(read.next_offset, 8);
         std::fs::write(&path, "one\ntwo\npartial\n").unwrap();
-        let read = read_appended_lines(path.to_str().unwrap(), 8, MAX_CLAUDE_WORKFLOW_FILE_BYTES)
-            .unwrap();
+        let read =
+            read_appended_lines(path.to_str().unwrap(), 8, MAX_CLAUDE_WORKFLOW_FILE_BYTES).unwrap();
         assert_eq!(read.lines, vec!["partial"]);
         let _ = std::fs::remove_file(&path);
     }

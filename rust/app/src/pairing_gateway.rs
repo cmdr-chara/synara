@@ -7,7 +7,7 @@
 use base64::Engine;
 use ed25519_dalek::Verifier;
 use futures_util::{SinkExt, StreamExt};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use tokio_tungstenite::tungstenite::Message;
 
@@ -144,9 +144,17 @@ async fn accept_owner_grant(grant: &str, scope: &rp::TrustScope, device_jkt: &st
     let scope = scope.clone();
     let device_jkt = device_jkt.to_string();
     tokio::task::spawn_blocking(move || {
-        let Some(account) = crate::account::read_session_file() else { return false };
-        let account_url = account.get("accountUrl").and_then(Value::as_str).unwrap_or_default();
-        let host_id = account.get("hostId").and_then(Value::as_str).unwrap_or_default();
+        let Some(account) = crate::account::read_session_file() else {
+            return false;
+        };
+        let account_url = account
+            .get("accountUrl")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        let host_id = account
+            .get("hostId")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
         if account_url.is_empty() || host_id.is_empty() {
             return false;
         }
@@ -276,7 +284,9 @@ where
             state = "proof";
             if tx
                 .send(Message::Text(
-                    json!({"v": 2, "type": "pairing_challenge", "nonce": nonce}).to_string().into(),
+                    json!({"v": 2, "type": "pairing_challenge", "nonce": nonce})
+                        .to_string()
+                        .into(),
                 ))
                 .await
                 .is_err()
@@ -303,7 +313,10 @@ where
             {
                 close_fail!();
             }
-            let owner_grant = parsed.get("grant").and_then(Value::as_str).unwrap_or_default();
+            let owner_grant = parsed
+                .get("grant")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
             let owner_grant_accepted = !owner_grant.is_empty()
                 && rp::allows_connections(&conn, &scope).unwrap_or(false)
                 && accept_owner_grant(owner_grant, &scope, &ctx.device.device_jkt).await;
@@ -323,14 +336,19 @@ where
                 close_fail!();
             };
             let invitations = rp::list_invites(&conn, &scope).unwrap_or_default();
-            let Some(invitation) = invitations
-                .iter()
-                .find(|entry| entry.get("inviteId").and_then(Value::as_str) == Some(ctx.invite_id.as_str()))
-            else {
+            let Some(invitation) = invitations.iter().find(|entry| {
+                entry.get("inviteId").and_then(Value::as_str) == Some(ctx.invite_id.as_str())
+            }) else {
                 close_fail!();
             };
-            let revoked = invitation.get("revoked").and_then(Value::as_bool).unwrap_or(true);
-            let approved_flag = invitation.get("approved").and_then(Value::as_bool).unwrap_or(false);
+            let revoked = invitation
+                .get("revoked")
+                .and_then(Value::as_bool)
+                .unwrap_or(true);
+            let approved_flag = invitation
+                .get("approved")
+                .and_then(Value::as_bool)
+                .unwrap_or(false);
             if revoked {
                 close_fail!();
             }

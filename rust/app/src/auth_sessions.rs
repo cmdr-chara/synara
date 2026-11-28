@@ -5,7 +5,7 @@
 //! `{base64url(json)}.{base64url(hmac-sha256)}` with the server signing key
 //! from the secret store. TTLs are exact: 30 days sessions, 5 minutes tickets.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 
 use crate::server_secrets;
@@ -22,15 +22,21 @@ static OUTSTANDING_WEBSOCKET_TICKETS: std::sync::OnceLock<
     std::sync::Mutex<std::collections::HashMap<String, (String, u64)>>,
 > = std::sync::OnceLock::new();
 
-fn outstanding_tickets() -> &'static std::sync::Mutex<std::collections::HashMap<String, (String, u64)>> {
-    OUTSTANDING_WEBSOCKET_TICKETS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+fn outstanding_tickets()
+-> &'static std::sync::Mutex<std::collections::HashMap<String, (String, u64)>> {
+    OUTSTANDING_WEBSOCKET_TICKETS
+        .get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
 }
 
 pub fn base64url_encode(data: &[u8]) -> String {
     const ALPHABET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
     let mut out = String::new();
     for chunk in data.chunks(3) {
-        let b = [chunk[0], *chunk.get(1).unwrap_or(&0), *chunk.get(2).unwrap_or(&0)];
+        let b = [
+            chunk[0],
+            *chunk.get(1).unwrap_or(&0),
+            *chunk.get(2).unwrap_or(&0),
+        ];
         let n = ((b[0] as u32) << 16) | ((b[1] as u32) << 8) | b[2] as u32;
         out.push(ALPHABET[(n >> 18) as usize & 63] as char);
         out.push(ALPHABET[(n >> 12) as usize & 63] as char);
@@ -128,7 +134,12 @@ fn sign_payload(payload: &str, secret: &[u8]) -> String {
 }
 
 /// Issues a session token with the exact upstream claims shape.
-pub fn issue_session_token(session_id: &str, subject: &str, role: &str, method: &str) -> Option<String> {
+pub fn issue_session_token(
+    session_id: &str,
+    subject: &str,
+    role: &str,
+    method: &str,
+) -> Option<String> {
     let secret = signing_key()?;
     let now = now_millis();
     let claims = json!({
@@ -213,7 +224,13 @@ pub fn verify_token(token: &str) -> Option<VerifiedClaims> {
     let json_bytes = base64url_decode(payload)?;
     let claims: Value = serde_json::from_slice(&json_bytes).ok()?;
     let kind = claims.get("kind")?.as_str()?.to_string();
-    let expected_version = if kind == "session" { 1 } else if kind == "websocket" { 2 } else { return None };
+    let expected_version = if kind == "session" {
+        1
+    } else if kind == "websocket" {
+        2
+    } else {
+        return None;
+    };
     if claims.get("v")?.as_u64()? != expected_version {
         return None;
     }
@@ -223,11 +240,23 @@ pub fn verify_token(token: &str) -> Option<VerifiedClaims> {
     }
     Some(VerifiedClaims {
         session_id: claims.get("sid")?.as_str()?.to_string(),
-        subject: claims.get("sub").and_then(Value::as_str).map(str::to_string),
-        role: claims.get("role").and_then(Value::as_str).map(str::to_string),
-        method: claims.get("method").and_then(Value::as_str).map(str::to_string),
+        subject: claims
+            .get("sub")
+            .and_then(Value::as_str)
+            .map(str::to_string),
+        role: claims
+            .get("role")
+            .and_then(Value::as_str)
+            .map(str::to_string),
+        method: claims
+            .get("method")
+            .and_then(Value::as_str)
+            .map(str::to_string),
         kind,
-        ticket_id: claims.get("jti").and_then(Value::as_str).map(str::to_string),
+        ticket_id: claims
+            .get("jti")
+            .and_then(Value::as_str)
+            .map(str::to_string),
         expires_at_ms: exp,
     })
 }
@@ -237,7 +266,9 @@ pub fn verify_token(token: &str) -> Option<VerifiedClaims> {
 /// upgrade attempt is single-use even when the underlying session has since
 /// been revoked.
 pub fn clear_websocket_tickets(session_ids: &[String]) {
-    let Ok(mut tickets) = outstanding_tickets().lock() else { return };
+    let Ok(mut tickets) = outstanding_tickets().lock() else {
+        return;
+    };
     tickets.retain(|_, (session_id, _)| !session_ids.contains(session_id));
 }
 
@@ -245,11 +276,17 @@ pub fn consume_websocket_ticket(claims: &VerifiedClaims) -> bool {
     if claims.kind != "websocket" {
         return false;
     }
-    let Some(ticket_id) = claims.ticket_id.as_deref() else { return false };
+    let Some(ticket_id) = claims.ticket_id.as_deref() else {
+        return false;
+    };
     let now = now_millis();
-    let Ok(mut tickets) = outstanding_tickets().lock() else { return false };
+    let Ok(mut tickets) = outstanding_tickets().lock() else {
+        return false;
+    };
     tickets.retain(|_, (_, expires)| *expires > now);
-    let Some((session_id, expires_at)) = tickets.remove(ticket_id) else { return false };
+    let Some((session_id, expires_at)) = tickets.remove(ticket_id) else {
+        return false;
+    };
     session_id == claims.session_id
         && expires_at == claims.expires_at_ms
         && claims.expires_at_ms > now
@@ -271,9 +308,11 @@ mod tests {
         // RFC 4231 test case 2: key "Jefe", data "what do ya want for nothing?"
         let sig = hmac_sha256(b"Jefe", b"what do ya want for nothing?");
         let hex: String = sig.iter().map(|b| format!("{b:02x}")).collect();
-        assert_eq!(hex, "5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843");
+        assert_eq!(
+            hex,
+            "5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843"
+        );
     }
-
 
     #[test]
     fn ticket_consumption_requires_exact_live_lease() {

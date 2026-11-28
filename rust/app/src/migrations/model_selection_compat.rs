@@ -49,14 +49,14 @@ fn legacy_gemini_label(model: &str) -> Option<&'static str> {
 /// ProviderSlug shape: trimmed non-empty, <= 64 chars, ^[A-Za-z][A-Za-z0-9_-]*$.
 fn is_provider_instance_id(value: &str) -> bool {
     let trimmed = value.trim();
-    !trimmed.is_empty()
-        && trimmed.len() <= 64
-        && trimmed.len() == value.len()
-        && {
-            let mut chars = trimmed.chars();
-            chars.next().map(|c| c.is_ascii_alphabetic()).unwrap_or(false)
-                && chars.all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
-        }
+    !trimmed.is_empty() && trimmed.len() <= 64 && trimmed.len() == value.len() && {
+        let mut chars = trimmed.chars();
+        chars
+            .next()
+            .map(|c| c.is_ascii_alphabetic())
+            .unwrap_or(false)
+            && chars.all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
+    }
 }
 
 fn word_token(haystack: &str, token: &str) -> bool {
@@ -225,8 +225,7 @@ fn split_legacy_antigravity_model_label(model: &str) -> (String, Option<String>)
         if trimmed.ends_with(')') && open > 0 {
             let inner = trimmed[open + 1..trimmed.len() - 1].trim().to_lowercase();
             let head = trimmed[..open].trim();
-            if !head.is_empty()
-                && matches!(inner.as_str(), "low" | "medium" | "high" | "thinking")
+            if !head.is_empty() && matches!(inner.as_str(), "low" | "medium" | "high" | "thinking")
             {
                 return (head.to_string(), Some(inner));
             }

@@ -5,7 +5,7 @@
 //! predicates do bridge). Only engaged under SYNARA_NO_UPSTREAM on macOS;
 //! every handled method returns upstream wire shapes.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
@@ -24,11 +24,17 @@ fn jxa(script: &str) -> Result<String, String> {
 }
 
 fn ax_trusted() -> bool {
-    jxa("ObjC.import('ApplicationServices'); $.AXIsProcessTrusted();").ok().as_deref() == Some("true")
+    jxa("ObjC.import('ApplicationServices'); $.AXIsProcessTrusted();")
+        .ok()
+        .as_deref()
+        == Some("true")
 }
 
 fn screen_capture_granted() -> bool {
-    jxa("ObjC.import('Quartz'); $.CGPreflightScreenCaptureAccess();").ok().as_deref() == Some("true")
+    jxa("ObjC.import('Quartz'); $.CGPreflightScreenCaptureAccess();")
+        .ok()
+        .as_deref()
+        == Some("true")
 }
 
 fn helper_bin() -> Result<PathBuf, String> {
@@ -66,9 +72,14 @@ fn helper(cmd: &str, arg: &Value) -> Result<Value, String> {
         .map_err(|e| format!("Failed to run computer-helper {cmd}: {e}"))?;
     if !out.status.success() {
         let e = String::from_utf8_lossy(&out.stderr).trim().to_string();
-        return Err(if e.is_empty() { format!("computer-helper {cmd} failed") } else { e });
+        return Err(if e.is_empty() {
+            format!("computer-helper {cmd} failed")
+        } else {
+            e
+        });
     }
-    serde_json::from_slice(&out.stdout).map_err(|e| format!("computer-helper {cmd} invalid output: {e}"))
+    serde_json::from_slice(&out.stdout)
+        .map_err(|e| format!("computer-helper {cmd} invalid output: {e}"))
 }
 
 fn missing_permissions() -> Vec<&'static str> {
@@ -151,7 +162,9 @@ fn base64(bytes: &[u8]) -> String {
     const T: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut s = String::new();
     for c in bytes.chunks(3) {
-        let n = ((c[0] as u32) << 16) | ((*c.get(1).unwrap_or(&0) as u32) << 8) | (*c.get(2).unwrap_or(&0) as u32);
+        let n = ((c[0] as u32) << 16)
+            | ((*c.get(1).unwrap_or(&0) as u32) << 8)
+            | (*c.get(2).unwrap_or(&0) as u32);
         for i in 0..4 {
             s.push(T[(n >> (18 - 6 * i) & 63) as usize] as char);
         }
@@ -200,7 +213,9 @@ fn capture_screenshot() -> Result<Value, String> {
 }
 
 fn iso_now() -> String {
-    let out = Command::new("date").args(["-u", "+%Y-%m-%dT%H:%M:%S.000Z"]).output();
+    let out = Command::new("date")
+        .args(["-u", "+%Y-%m-%dT%H:%M:%S.000Z"])
+        .output();
     out.ok()
         .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
         .filter(|s| !s.is_empty())
@@ -227,21 +242,79 @@ fn flag_mask(mods: &[String]) -> u64 {
 
 fn key_code(name: &str) -> Option<i64> {
     Some(match name.to_ascii_lowercase().as_str() {
-        "enter" | "return" => 36, "escape" | "esc" => 53, "space" => 49, "tab" => 48,
-        "backspace" | "delete" => 51, "forwarddelete" => 117,
-        "arrowleft" | "left" => 123, "arrowright" | "right" => 124,
-        "arrowup" | "up" => 126, "arrowdown" | "down" => 125,
-        "home" => 115, "end" => 119, "pageup" => 116, "pagedown" => 121,
-        "f1" => 122, "f2" => 120, "f3" => 99, "f4" => 118, "f5" => 96, "f6" => 97,
-        "f7" => 98, "f8" => 100, "f9" => 101, "f10" => 109, "f11" => 103, "f12" => 111,
-        "a" => 0, "s" => 1, "d" => 2, "f" => 3, "h" => 4, "g" => 5, "z" => 6, "x" => 7,
-        "c" => 8, "v" => 9, "b" => 11, "q" => 12, "w" => 13, "e" => 14, "r" => 15,
-        "y" => 16, "t" => 17, "o" => 31, "u" => 32, "i" => 34, "p" => 35, "l" => 37,
-        "j" => 38, "k" => 40, "n" => 45, "m" => 46,
-        "1" => 18, "2" => 19, "3" => 20, "4" => 21, "5" => 23, "6" => 22, "7" => 26,
-        "8" => 28, "9" => 25, "0" => 29,
-        "-" => 27, "=" => 24, "[" => 33, "]" => 30, "\\" => 42, ";" => 41, "'" => 39,
-        "," => 43, "." => 47, "/" => 44, "`" => 50,
+        "enter" | "return" => 36,
+        "escape" | "esc" => 53,
+        "space" => 49,
+        "tab" => 48,
+        "backspace" | "delete" => 51,
+        "forwarddelete" => 117,
+        "arrowleft" | "left" => 123,
+        "arrowright" | "right" => 124,
+        "arrowup" | "up" => 126,
+        "arrowdown" | "down" => 125,
+        "home" => 115,
+        "end" => 119,
+        "pageup" => 116,
+        "pagedown" => 121,
+        "f1" => 122,
+        "f2" => 120,
+        "f3" => 99,
+        "f4" => 118,
+        "f5" => 96,
+        "f6" => 97,
+        "f7" => 98,
+        "f8" => 100,
+        "f9" => 101,
+        "f10" => 109,
+        "f11" => 103,
+        "f12" => 111,
+        "a" => 0,
+        "s" => 1,
+        "d" => 2,
+        "f" => 3,
+        "h" => 4,
+        "g" => 5,
+        "z" => 6,
+        "x" => 7,
+        "c" => 8,
+        "v" => 9,
+        "b" => 11,
+        "q" => 12,
+        "w" => 13,
+        "e" => 14,
+        "r" => 15,
+        "y" => 16,
+        "t" => 17,
+        "o" => 31,
+        "u" => 32,
+        "i" => 34,
+        "p" => 35,
+        "l" => 37,
+        "j" => 38,
+        "k" => 40,
+        "n" => 45,
+        "m" => 46,
+        "1" => 18,
+        "2" => 19,
+        "3" => 20,
+        "4" => 21,
+        "5" => 23,
+        "6" => 22,
+        "7" => 26,
+        "8" => 28,
+        "9" => 25,
+        "0" => 29,
+        "-" => 27,
+        "=" => 24,
+        "[" => 33,
+        "]" => 30,
+        "\\" => 42,
+        ";" => 41,
+        "'" => 39,
+        "," => 43,
+        "." => 47,
+        "/" => 44,
+        "`" => 50,
         _ => return None,
     })
 }
@@ -289,7 +362,12 @@ fn numeric_window_id(id: &str) -> Option<(u32, u32)> {
 fn masked_activation_opted_in(bundle_id: Option<&str>) -> bool {
     let enabled = std::env::var("SYNARA_CUA_MASKED_ACTIVATION")
         .ok()
-        .is_some_and(|value| matches!(value.trim().to_ascii_lowercase().as_str(), "1" | "true" | "yes" | "on"));
+        .is_some_and(|value| {
+            matches!(
+                value.trim().to_ascii_lowercase().as_str(),
+                "1" | "true" | "yes" | "on"
+            )
+        });
     if !enabled {
         return false;
     }
@@ -325,18 +403,28 @@ fn activate_window_with_restore(payload: &Value) -> Result<Value, String> {
         .and_then(Value::as_str)
         .filter(|value| numeric_window_id(value).is_some())
         .ok_or("windowId is required")?;
-    let thread_id = payload.get("threadId").and_then(Value::as_str).filter(|value| !value.is_empty());
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .filter(|value| !value.is_empty());
     if let Some(thread) = thread_id {
         crate::computer_manager::assert_control_authority(Some(thread))?;
         crate::computer_manager::assert_input_not_paused(Some(thread))?;
         crate::computer_manager::assert_foreground_allowed(
             Some(thread),
-            payload.get("foregroundApproved").and_then(Value::as_bool).unwrap_or(false),
+            payload
+                .get("foregroundApproved")
+                .and_then(Value::as_bool)
+                .unwrap_or(false),
         )?;
     }
 
     let windows = list_windows()?;
-    let Some(target) = windows.iter().find(|window| window.get("id").and_then(Value::as_str) == Some(window_id)).cloned() else {
+    let Some(target) = windows
+        .iter()
+        .find(|window| window.get("id").and_then(Value::as_str) == Some(window_id))
+        .cloned()
+    else {
         return Err(format!("Window {window_id} was not found."));
     };
     let app_name = target.get("appName").and_then(Value::as_str);
@@ -345,8 +433,14 @@ fn activate_window_with_restore(payload: &Value) -> Result<Value, String> {
     let previous_id = windows
         .iter()
         .find(|window| {
-            window.get("visible").and_then(Value::as_bool).unwrap_or(true)
-                && !window.get("minimized").and_then(Value::as_bool).unwrap_or(false)
+            window
+                .get("visible")
+                .and_then(Value::as_bool)
+                .unwrap_or(true)
+                && !window
+                    .get("minimized")
+                    .and_then(Value::as_bool)
+                    .unwrap_or(false)
         })
         .and_then(|window| window.get("id").and_then(Value::as_str))
         .map(str::to_string);
@@ -355,12 +449,16 @@ fn activate_window_with_restore(payload: &Value) -> Result<Value, String> {
     if masked_activation_opted_in(bundle_id) {
         let (pid, wid) = numeric_window_id(window_id).ok_or("Invalid window id.")?;
         let bounds = target.get("bounds").cloned().unwrap_or_else(|| json!({}));
-        let host = crate::computer_shield::shared_host()
-            .ok_or("Masked activation is opted in for this app, but the activation shield is unavailable.")?;
+        let host = crate::computer_shield::shared_host().ok_or(
+            "Masked activation is opted in for this app, but the activation shield is unavailable.",
+        )?;
         let id = format!("shield-{}", crate::orchestration_engine::uuid_v4());
         let task = thread_id.map(|thread| crate::computer_shield::ShieldTask {
             thread_id: thread.to_string(),
-            turn_id: payload.get("turnId").and_then(Value::as_str).map(str::to_string),
+            turn_id: payload
+                .get("turnId")
+                .and_then(Value::as_str)
+                .map(str::to_string),
         });
         host.engage(
             crate::computer_shield::ShieldEngagement {
@@ -481,7 +579,10 @@ fn finite_frame(payload: &Value) -> Result<Value, String> {
     let (Some(x), Some(y), Some(width), Some(height)) = (x, y, width, height) else {
         return Err("x/y/width/height must be finite, with positive size.".into());
     };
-    if !(x.is_finite() && y.is_finite() && width.is_finite() && height.is_finite()) || width <= 0.0 || height <= 0.0 {
+    if !(x.is_finite() && y.is_finite() && width.is_finite() && height.is_finite())
+        || width <= 0.0
+        || height <= 0.0
+    {
         return Err("x/y/width/height must be finite, with positive size.".into());
     }
     Ok(json!({"x":x,"y":y,"width":width,"height":height}))
@@ -489,9 +590,18 @@ fn finite_frame(payload: &Value) -> Result<Value, String> {
 
 fn set_window_minimized(payload: &Value) -> Result<Value, String> {
     let target = window_target(payload)?;
-    let window_id = target.get("id").and_then(Value::as_str).ok_or("Invalid window id.")?;
-    let minimized = payload.get("minimized").and_then(Value::as_bool).ok_or("minimized must be a boolean")?;
-    let result = checked_window_helper("windowattr", json!({"windowId":window_id,"minimized":minimized}))?;
+    let window_id = target
+        .get("id")
+        .and_then(Value::as_str)
+        .ok_or("Invalid window id.")?;
+    let minimized = payload
+        .get("minimized")
+        .and_then(Value::as_bool)
+        .ok_or("minimized must be a boolean")?;
+    let result = checked_window_helper(
+        "windowattr",
+        json!({"windowId":window_id,"minimized":minimized}),
+    )?;
     Ok(json!({
         "computerId": COMPUTER_ID,
         "action": "computer_set_window_minimized",
@@ -502,7 +612,10 @@ fn set_window_minimized(payload: &Value) -> Result<Value, String> {
 
 fn set_window_frame(payload: &Value) -> Result<Value, String> {
     let target = window_target(payload)?;
-    let window_id = target.get("id").and_then(Value::as_str).ok_or("Invalid window id.")?;
+    let window_id = target
+        .get("id")
+        .and_then(Value::as_str)
+        .ok_or("Invalid window id.")?;
     let frame = finite_frame(payload)?;
     let result = checked_window_helper("windowattr", json!({"windowId":window_id,"frame":frame}))?;
     Ok(json!({
@@ -515,8 +628,14 @@ fn set_window_frame(payload: &Value) -> Result<Value, String> {
 
 fn kill_window_app(payload: &Value) -> Result<Value, String> {
     let target = window_target(payload)?;
-    let window_id = target.get("id").and_then(Value::as_str).ok_or("Invalid window id.")?;
-    let pid = target.get("pid").and_then(Value::as_i64).ok_or("The target window has no owning process.")?;
+    let window_id = target
+        .get("id")
+        .and_then(Value::as_str)
+        .ok_or("Invalid window id.")?;
+    let pid = target
+        .get("pid")
+        .and_then(Value::as_i64)
+        .ok_or("The target window has no owning process.")?;
     let result = checked_window_helper("killapp", json!({"pid":pid}))?;
     Ok(json!({
         "computerId": COMPUTER_ID,
@@ -536,12 +655,25 @@ fn list_apps() -> Result<Value, String> {
 }
 
 fn set_app_visibility(payload: &Value) -> Result<Value, String> {
-    let pid = payload.get("pid").and_then(Value::as_i64).filter(|pid| *pid > 0).ok_or("pid is required")?;
-    let hidden = payload.get("hidden").and_then(Value::as_bool).ok_or("hidden must be a boolean")?;
+    let pid = payload
+        .get("pid")
+        .and_then(Value::as_i64)
+        .filter(|pid| *pid > 0)
+        .ok_or("pid is required")?;
+    let hidden = payload
+        .get("hidden")
+        .and_then(Value::as_bool)
+        .ok_or("hidden must be a boolean")?;
     let apps = helper("apps", &json!({}))?;
-    let target = apps.get("apps").and_then(Value::as_array).and_then(|apps| {
-        apps.iter().find(|app| app.get("pid").and_then(Value::as_i64) == Some(pid)).cloned()
-    }).ok_or("The target application is not running.")?;
+    let target = apps
+        .get("apps")
+        .and_then(Value::as_array)
+        .and_then(|apps| {
+            apps.iter()
+                .find(|app| app.get("pid").and_then(Value::as_i64) == Some(pid))
+                .cloned()
+        })
+        .ok_or("The target application is not running.")?;
     crate::computer_manager::assert_not_denied(
         target.get("appName").and_then(Value::as_str),
         target.get("bundleId").and_then(Value::as_str),
@@ -564,26 +696,43 @@ fn read_clipboard() -> Result<Value, String> {
 }
 
 fn write_clipboard(payload: &Value) -> Result<Value, String> {
-    let text = payload.get("text").and_then(Value::as_str).ok_or("text is required")?;
+    let text = payload
+        .get("text")
+        .and_then(Value::as_str)
+        .ok_or("text is required")?;
     let result = helper("clipboard", &json!({"op":"write","text":text}))?;
     if result.get("ok").and_then(Value::as_bool) != Some(true) {
         return Err("The clipboard write was refused.".into());
     }
-    Ok(json!({"computerId": COMPUTER_ID, "action": "computer_write_clipboard", "bytes": text.len()}))
+    Ok(
+        json!({"computerId": COMPUTER_ID, "action": "computer_write_clipboard", "bytes": text.len()}),
+    )
 }
 
 fn paste_clipboard_text(payload: &Value) -> Result<Value, String> {
     require_ax()?;
-    let text = payload.get("text").and_then(Value::as_str).ok_or("text is required")?;
+    let text = payload
+        .get("text")
+        .and_then(Value::as_str)
+        .ok_or("text is required")?;
     let previous = helper("clipboard", &json!({"op":"read"}))
         .ok()
-        .and_then(|value| value.get("text").and_then(Value::as_str).map(str::to_string));
+        .and_then(|value| {
+            value
+                .get("text")
+                .and_then(Value::as_str)
+                .map(str::to_string)
+        });
     let write = helper("clipboard", &json!({"op":"write","text":text}))?;
     if write.get("ok").and_then(Value::as_bool) != Some(true) {
         return Err("The clipboard write was refused.".into());
     }
     let paste_result = match key_code("v") {
-        Some(code) => helper("press", &json!({"code": code, "flags": flag_mask(&["cmd".to_string()])})).map(|_| ()),
+        Some(code) => helper(
+            "press",
+            &json!({"code": code, "flags": flag_mask(&["cmd".to_string()])}),
+        )
+        .map(|_| ()),
         None => Err("Paste key is unavailable".to_string()),
     };
     // Give the paste key event a short dispatch window before restoring the
@@ -613,7 +762,8 @@ fn menu_path(payload: &Value) -> Result<Vec<String>, String> {
         .get("path")
         .and_then(Value::as_array)
         .map(|items| {
-            items.iter()
+            items
+                .iter()
                 .filter_map(Value::as_str)
                 .map(str::trim)
                 .filter(|item| !item.is_empty())
@@ -629,33 +779,69 @@ fn menu_path(payload: &Value) -> Result<Vec<String>, String> {
 
 fn invoke_menu(payload: &Value) -> Result<Value, String> {
     require_ax()?;
-    let thread_id = payload.get("threadId").and_then(Value::as_str).filter(|value| !value.is_empty());
+    let thread_id = payload
+        .get("threadId")
+        .and_then(Value::as_str)
+        .filter(|value| !value.is_empty());
     if let Some(thread) = thread_id {
         crate::computer_manager::assert_control_authority(Some(thread))?;
         crate::computer_manager::assert_input_not_paused(Some(thread))?;
         crate::computer_manager::assert_foreground_allowed(
             Some(thread),
-            payload.get("foregroundApproved").and_then(Value::as_bool).unwrap_or(false),
+            payload
+                .get("foregroundApproved")
+                .and_then(Value::as_bool)
+                .unwrap_or(false),
         )?;
     }
     let path = menu_path(payload)?;
     let mut request = json!({"path": path});
     let mut app_name = None;
     let mut bundle_id = None;
-    if let Some(window_id) = payload.get("windowId").and_then(Value::as_str).filter(|value| numeric_window_id(value).is_some()) {
+    if let Some(window_id) = payload
+        .get("windowId")
+        .and_then(Value::as_str)
+        .filter(|value| numeric_window_id(value).is_some())
+    {
         let target = window_target(&json!({"windowId": window_id}))?;
-        app_name = target.get("appName").and_then(Value::as_str).map(str::to_string);
-        bundle_id = target.get("bundleId").and_then(Value::as_str).map(str::to_string);
+        app_name = target
+            .get("appName")
+            .and_then(Value::as_str)
+            .map(str::to_string);
+        bundle_id = target
+            .get("bundleId")
+            .and_then(Value::as_str)
+            .map(str::to_string);
         request["windowId"] = json!(window_id);
-    } else if let Some(pid) = payload.get("pid").and_then(Value::as_i64).filter(|pid| *pid > 0) {
+    } else if let Some(pid) = payload
+        .get("pid")
+        .and_then(Value::as_i64)
+        .filter(|pid| *pid > 0)
+    {
         let apps = helper("apps", &json!({}))?;
-        let target = apps.get("apps").and_then(Value::as_array).and_then(|apps| {
-            apps.iter().find(|app| app.get("pid").and_then(Value::as_i64) == Some(pid)).cloned()
-        }).ok_or("The target application is not running.")?;
-        app_name = target.get("appName").and_then(Value::as_str).map(str::to_string);
-        bundle_id = target.get("bundleId").and_then(Value::as_str).map(str::to_string);
+        let target = apps
+            .get("apps")
+            .and_then(Value::as_array)
+            .and_then(|apps| {
+                apps.iter()
+                    .find(|app| app.get("pid").and_then(Value::as_i64) == Some(pid))
+                    .cloned()
+            })
+            .ok_or("The target application is not running.")?;
+        app_name = target
+            .get("appName")
+            .and_then(Value::as_str)
+            .map(str::to_string);
+        bundle_id = target
+            .get("bundleId")
+            .and_then(Value::as_str)
+            .map(str::to_string);
         request["pid"] = json!(pid);
-    } else if let Some(app) = payload.get("app").and_then(Value::as_str).filter(|value| !value.trim().is_empty()) {
+    } else if let Some(app) = payload
+        .get("app")
+        .and_then(Value::as_str)
+        .filter(|value| !value.trim().is_empty())
+    {
         app_name = Some(app.to_string());
         request["app"] = json!(app);
     } else {
@@ -674,38 +860,77 @@ fn invoke_menu(payload: &Value) -> Result<Value, String> {
 fn zoom_window(payload: &Value) -> Result<Value, String> {
     require_ax()?;
     let target = window_target(payload)?;
-    let window_id = target.get("id").and_then(Value::as_str).unwrap_or_default().to_string();
+    let window_id = target
+        .get("id")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     let x = payload.get("x").and_then(Value::as_f64).unwrap_or(f64::NAN);
     let y = payload.get("y").and_then(Value::as_f64).unwrap_or(f64::NAN);
-    let width = payload.get("width").and_then(Value::as_f64).unwrap_or(f64::NAN);
-    let height = payload.get("height").and_then(Value::as_f64).unwrap_or(f64::NAN);
+    let width = payload
+        .get("width")
+        .and_then(Value::as_f64)
+        .unwrap_or(f64::NAN);
+    let height = payload
+        .get("height")
+        .and_then(Value::as_f64)
+        .unwrap_or(f64::NAN);
     let bounds = target.get("bounds").cloned().unwrap_or(json!({}));
     let bw = bounds.get("width").and_then(Value::as_f64).unwrap_or(0.0);
     let bh = bounds.get("height").and_then(Value::as_f64).unwrap_or(0.0);
-    if ![x,y,width,height].iter().all(|v| v.is_finite()) || width<=0.0 || height<=0.0 || x<0.0 || y<0.0 || x+width>bw+0.5 || y+height>bh+0.5 {
+    if ![x, y, width, height].iter().all(|v| v.is_finite())
+        || width <= 0.0
+        || height <= 0.0
+        || x < 0.0
+        || y < 0.0
+        || x + width > bw + 0.5
+        || y + height > bh + 0.5
+    {
         return Err("The zoom region lies outside the target window.".into());
     }
-    let result = checked_window_helper("zoom", json!({"windowId":window_id,"x":x,"y":y,"width":width,"height":height}))?;
-    Ok(json!({"computerId":COMPUTER_ID,"mimeType":"image/jpeg","width":result.get("width").cloned().unwrap_or(json!(0)),"height":result.get("height").cloned().unwrap_or(json!(0)),"sizeBytes":result.get("sizeBytes").cloned().unwrap_or(json!(0)),"bytesBase64":result.get("bytesBase64").cloned().unwrap_or(json!("")),"windowId":window_id,"capturedAt":crate::todo::iso_now_ms()}))
+    let result = checked_window_helper(
+        "zoom",
+        json!({"windowId":window_id,"x":x,"y":y,"width":width,"height":height}),
+    )?;
+    Ok(
+        json!({"computerId":COMPUTER_ID,"mimeType":"image/jpeg","width":result.get("width").cloned().unwrap_or(json!(0)),"height":result.get("height").cloned().unwrap_or(json!(0)),"sizeBytes":result.get("sizeBytes").cloned().unwrap_or(json!(0)),"bytesBase64":result.get("bytesBase64").cloned().unwrap_or(json!("")),"windowId":window_id,"capturedAt":crate::todo::iso_now_ms()}),
+    )
 }
 
 fn accessibility_inventory(payload: &Value) -> Result<Value, String> {
     require_ax()?;
-    let scoped = payload.get("windowId").and_then(Value::as_str).filter(|value| numeric_window_id(value).is_some()).map(str::to_string);
+    let scoped = payload
+        .get("windowId")
+        .and_then(Value::as_str)
+        .filter(|value| numeric_window_id(value).is_some())
+        .map(str::to_string);
     let windows = list_windows()?;
     let rows_all = windows;
-    let target = scoped.as_deref().and_then(|id| rows_all.iter().find(|row| row.get("id").and_then(Value::as_str)==Some(id)));
-    if scoped.is_some() && target.is_none() { return Err("Target window no longer exists.".into()); }
+    let target = scoped.as_deref().and_then(|id| {
+        rows_all
+            .iter()
+            .find(|row| row.get("id").and_then(Value::as_str) == Some(id))
+    });
+    if scoped.is_some() && target.is_none() {
+        return Err("Target window no longer exists.".into());
+    }
     let scope_pid = target.and_then(|row| row.get("pid").and_then(Value::as_i64));
-    let apps_all = helper("apps", &json!({}))?.get("apps").and_then(Value::as_array).cloned().unwrap_or_default();
+    let apps_all = helper("apps", &json!({}))?
+        .get("apps")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
     let mut apps: Vec<Value> = apps_all.into_iter().filter(|app| scope_pid.is_none() || app.get("pid").and_then(Value::as_i64)==scope_pid)
         .map(|app| json!({"pid":app.get("pid").cloned().unwrap_or(json!(0)),"name":app.get("appName").cloned().unwrap_or(json!("")),"bundleId":app.get("bundleId").cloned().unwrap_or(Value::Null)})).collect();
     let mut rows: Vec<Value> = rows_all.into_iter().filter(|window| scope_pid.is_none() || window.get("pid").and_then(Value::as_i64)==scope_pid)
         .enumerate().map(|(index,window)| json!({"id":window.get("id").cloned().unwrap_or(Value::Null),"pid":window.get("pid").cloned().unwrap_or(json!(0)),"appName":window.get("appName").cloned().unwrap_or(Value::Null),"title":window.get("title").cloned().unwrap_or(json!("")),"bounds":window.get("bounds").cloned().unwrap_or(Value::Null),"onScreen":!window.get("minimized").and_then(Value::as_bool).unwrap_or(false),"zIndex":index})).collect();
-    let truncated = apps.len()>1024 || rows.len()>256;
-    apps.truncate(1024); rows.truncate(256);
+    let truncated = apps.len() > 1024 || rows.len() > 256;
+    apps.truncate(1024);
+    rows.truncate(256);
     let mut result = json!({"computerId":COMPUTER_ID,"apps":apps,"windows":rows,"truncated":truncated,"availability":availability()});
-    if let Some(scoped) = scoped { result["windowId"] = json!(scoped); }
+    if let Some(scoped) = scoped {
+        result["windowId"] = json!(scoped);
+    }
     Ok(result)
 }
 
@@ -746,7 +971,10 @@ fn set_control_enabled(payload: &Value) -> Result<Value, String> {
     } else {
         crate::input_monitor::control_disarmed(tid);
         if let Some(host) = crate::computer_shield::shared_host() {
-            host.end_task(&crate::computer_shield::ShieldTask { thread_id: tid.to_string(), turn_id: None });
+            host.end_task(&crate::computer_shield::ShieldTask {
+                thread_id: tid.to_string(),
+                turn_id: None,
+            });
         }
     }
     Ok(json!({"enabled": enabled, "generation": generation}))
@@ -814,7 +1042,10 @@ fn ax_action(payload: &Value, op: &str) -> Result<Value, String> {
     // x/y target resolves to the frontmost window's tree.
     let r = helper("axaction", &a)?;
     if r["ok"].as_bool() != Some(true) {
-        return Err(r["error"].as_str().unwrap_or("The target did not resolve.").to_string());
+        return Err(r["error"]
+            .as_str()
+            .unwrap_or("The target did not resolve.")
+            .to_string());
     }
     Ok(r)
 }
@@ -840,12 +1071,31 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     let owner = owner_opt.as_deref().unwrap_or("");
     let mutating = matches!(
         tag,
-        "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click"
-            | "computer.moveCursor" | "computer.drag" | "computer.scroll" | "computer.input.scroll"
-            | "computer.typeText" | "computer.input.typeText" | "computer.input.key" | "computer.pressKey" | "computer.hotkey"
-            | "computer.selectText" | "computer.setValue" | "computer.performAction" | "computer.launchApp" | "computer.activateWindow"
-            | "computer.setWindowMinimized" | "computer.setWindowFrame" | "computer.killApp" | "computer.invokeMenu"
-            | "computer.writeClipboard" | "computer.paste" | "computer.setAppVisibility"
+        "computer.click"
+            | "computer.doubleClick"
+            | "computer.rightClick"
+            | "computer.input.click"
+            | "computer.moveCursor"
+            | "computer.drag"
+            | "computer.scroll"
+            | "computer.input.scroll"
+            | "computer.typeText"
+            | "computer.input.typeText"
+            | "computer.input.key"
+            | "computer.pressKey"
+            | "computer.hotkey"
+            | "computer.selectText"
+            | "computer.setValue"
+            | "computer.performAction"
+            | "computer.launchApp"
+            | "computer.activateWindow"
+            | "computer.setWindowMinimized"
+            | "computer.setWindowFrame"
+            | "computer.killApp"
+            | "computer.invokeMenu"
+            | "computer.writeClipboard"
+            | "computer.paste"
+            | "computer.setAppVisibility"
     );
     if mutating && !owner.is_empty() {
         if let Err(e) = crate::computer_manager::assert_control_authority(Some(owner)) {
@@ -863,12 +1113,17 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
     }
     let user_input = matches!(
         tag,
-        "computer.input.click" | "computer.input.scroll" | "computer.input.key" | "computer.input.typeText"
+        "computer.input.click"
+            | "computer.input.scroll"
+            | "computer.input.key"
+            | "computer.input.typeText"
     );
     let agent_mutating = mutating && !user_input;
     if agent_mutating {
         if owner.is_empty() {
-            return Some(Err("Computer input requires an owning conversation; no input was dispatched.".into()));
+            return Some(Err(
+                "Computer input requires an owning conversation; no input was dispatched.".into(),
+            ));
         }
         if let Err(e) = crate::input_monitor::ensure_input_ready(owner) {
             return Some(Err(e));
@@ -968,7 +1223,10 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 if payload["modelObservation"].as_bool() == Some(true)
                     && (v.get("screenshot").is_some() || v.get("root").is_some())
                 {
-                    if let Some(thread_id) = payload["threadId"].as_str().filter(|value| !value.is_empty()) {
+                    if let Some(thread_id) = payload["threadId"]
+                        .as_str()
+                        .filter(|value| !value.is_empty())
+                    {
                         crate::computer_manager::clear_input_pause(thread_id);
                     }
                 }
@@ -1028,23 +1286,38 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 crate::computer_manager::assert_not_denied(Some(app), None)?;
                 let hidden = payload["hidden"].as_bool() == Some(true);
                 let before = helper("apps", &json!({})).unwrap_or(json!({"apps":[]}));
-                let before_active = before.get("apps").and_then(Value::as_array).and_then(|apps| {
-                    apps.iter().find(|app| app.get("active").and_then(Value::as_bool)==Some(true))
-                        .and_then(|app| app.get("pid").and_then(Value::as_i64))
-                });
+                let before_active = before
+                    .get("apps")
+                    .and_then(Value::as_array)
+                    .and_then(|apps| {
+                        apps.iter()
+                            .find(|app| app.get("active").and_then(Value::as_bool) == Some(true))
+                            .and_then(|app| app.get("pid").and_then(Value::as_i64))
+                    });
                 let mut cmd = Command::new("open");
                 // `-g` is the upstream default: a launch is delivery, not a
                 // foreground request. `-j` adds an explicitly hidden launch.
                 cmd.args(["-n", "-g"]);
-                if hidden { cmd.arg("-j"); }
+                if hidden {
+                    cmd.arg("-j");
+                }
                 cmd.args(["-a", app]);
                 if let Some(args) = payload["arguments"].as_array() {
                     cmd.arg("--args");
-                    for a in args { if let Some(s) = a.as_str() { cmd.arg(s); } }
+                    for a in args {
+                        if let Some(s) = a.as_str() {
+                            cmd.arg(s);
+                        }
+                    }
                 }
-                let out = cmd.output().map_err(|e| format!("Failed to launch {app}: {e}"))?;
+                let out = cmd
+                    .output()
+                    .map_err(|e| format!("Failed to launch {app}: {e}"))?;
                 if !out.status.success() {
-                    return Err(format!("Failed to launch {app}: {}", String::from_utf8_lossy(&out.stderr).trim()));
+                    return Err(format!(
+                        "Failed to launch {app}: {}",
+                        String::from_utf8_lossy(&out.stderr).trim()
+                    ));
                 }
                 let wanted = app.to_ascii_lowercase();
                 let mut pid = None;
@@ -1053,31 +1326,67 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                     std::thread::sleep(std::time::Duration::from_millis(100));
                     if let Ok(value) = helper("apps", &json!({})) {
                         after_apps = value;
-                        pid = after_apps.get("apps").and_then(Value::as_array).and_then(|apps| {
-                            apps.iter().filter(|row| {
-                                let name = row.get("appName").and_then(Value::as_str).unwrap_or_default().to_ascii_lowercase();
-                                let bundle = row.get("bundleId").and_then(Value::as_str).unwrap_or_default().to_ascii_lowercase();
-                                name == wanted || bundle == wanted
-                            }).filter_map(|row| row.get("pid").and_then(Value::as_i64)).max()
-                        });
-                        if pid.is_some() { break; }
+                        pid = after_apps
+                            .get("apps")
+                            .and_then(Value::as_array)
+                            .and_then(|apps| {
+                                apps.iter()
+                                    .filter(|row| {
+                                        let name = row
+                                            .get("appName")
+                                            .and_then(Value::as_str)
+                                            .unwrap_or_default()
+                                            .to_ascii_lowercase();
+                                        let bundle = row
+                                            .get("bundleId")
+                                            .and_then(Value::as_str)
+                                            .unwrap_or_default()
+                                            .to_ascii_lowercase();
+                                        name == wanted || bundle == wanted
+                                    })
+                                    .filter_map(|row| row.get("pid").and_then(Value::as_i64))
+                                    .max()
+                            });
+                        if pid.is_some() {
+                            break;
+                        }
                     }
                 }
-                let focus_changed = after_apps.get("apps").and_then(Value::as_array).and_then(|apps| {
-                    apps.iter().find(|app| app.get("active").and_then(Value::as_bool)==Some(true))
-                        .and_then(|app| app.get("pid").and_then(Value::as_i64))
-                }) != before_active;
+                let focus_changed =
+                    after_apps
+                        .get("apps")
+                        .and_then(Value::as_array)
+                        .and_then(|apps| {
+                            apps.iter()
+                                .find(|app| {
+                                    app.get("active").and_then(Value::as_bool) == Some(true)
+                                })
+                                .and_then(|app| app.get("pid").and_then(Value::as_i64))
+                        })
+                        != before_active;
                 let mut window = Value::Null;
                 let mut status = "not_checked";
                 let mut reason = Value::Null;
                 if let Some(pid) = pid {
                     if let Ok(windows) = list_windows() {
-                        window = windows.into_iter().find(|window| {
-                            window.get("pid").and_then(Value::as_i64)==Some(pid)
-                                && !window.get("minimized").and_then(Value::as_bool).unwrap_or(false)
-                        }).unwrap_or(Value::Null);
-                        status = if window.is_null() { "no_usable_window" } else { "ready" };
-                        if window.is_null() { reason = json!(if hidden { "hidden" } else { "no_window" }); }
+                        window = windows
+                            .into_iter()
+                            .find(|window| {
+                                window.get("pid").and_then(Value::as_i64) == Some(pid)
+                                    && !window
+                                        .get("minimized")
+                                        .and_then(Value::as_bool)
+                                        .unwrap_or(false)
+                            })
+                            .unwrap_or(Value::Null);
+                        status = if window.is_null() {
+                            "no_usable_window"
+                        } else {
+                            "ready"
+                        };
+                        if window.is_null() {
+                            reason = json!(if hidden { "hidden" } else { "no_window" });
+                        }
                     }
                 }
                 let mut result = json!({
@@ -1086,11 +1395,18 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                     "windowStatus": status,
                     "window": window
                 });
-                if let Some(pid) = pid { result["pid"] = json!(pid); }
-                if !reason.is_null() { result["windowReason"] = reason; }
+                if let Some(pid) = pid {
+                    result["pid"] = json!(pid);
+                }
+                if !reason.is_null() {
+                    result["windowReason"] = reason;
+                }
                 Ok(result)
             }
-            "computer.click" | "computer.doubleClick" | "computer.rightClick" | "computer.input.click" => {
+            "computer.click"
+            | "computer.doubleClick"
+            | "computer.rightClick"
+            | "computer.input.click" => {
                 require_ax()?;
                 let (x, y) = point_of(payload).ok_or("A coordinate point is required.")?;
                 let (button, count) = match tag {
@@ -1103,8 +1419,14 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                     }
                     _ => ("left", 1),
                 };
-                helper("click", &json!({"x": x, "y": y, "button": button, "count": count}))?;
-                Ok(action_result(tag.strip_prefix("computer.").unwrap_or(tag), Some((x, y))))
+                helper(
+                    "click",
+                    &json!({"x": x, "y": y, "button": button, "count": count}),
+                )?;
+                Ok(action_result(
+                    tag.strip_prefix("computer.").unwrap_or(tag),
+                    Some((x, y)),
+                ))
             }
             "computer.moveCursor" => {
                 require_ax()?;
@@ -1125,7 +1447,8 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 let dx = payload["deltaX"].as_f64().unwrap_or(0.0);
                 let dy = payload["deltaY"].as_f64().unwrap_or(0.0);
                 helper("scroll", &json!({"x": x, "y": y, "dx": dx, "dy": dy}))?;
-                let mut v = action_result(tag.strip_prefix("computer.").unwrap_or(tag), Some((x, y)));
+                let mut v =
+                    action_result(tag.strip_prefix("computer.").unwrap_or(tag), Some((x, y)));
                 v["scroll"] = json!({
                     "requested": {"deltaX": dx, "deltaY": dy},
                     "injected": {"deltaX": dx, "deltaY": dy},
@@ -1146,7 +1469,11 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 let key = payload["key"].as_str().unwrap_or("");
                 let mods: Vec<String> = payload["modifiers"]
                     .as_array()
-                    .map(|a| a.iter().filter_map(|m| m.as_str().map(String::from)).collect())
+                    .map(|a| {
+                        a.iter()
+                            .filter_map(|m| m.as_str().map(String::from))
+                            .collect()
+                    })
                     .unwrap_or_default();
                 if let Some(code) = key_code(key) {
                     helper("press", &json!({"code": code, "flags": flag_mask(&mods)}))?;
@@ -1163,7 +1490,11 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 require_ax()?;
                 let keys: Vec<String> = payload["keys"]
                     .as_array()
-                    .map(|a| a.iter().filter_map(|k| k.as_str().map(String::from)).collect())
+                    .map(|a| {
+                        a.iter()
+                            .filter_map(|k| k.as_str().map(String::from))
+                            .collect()
+                    })
                     .unwrap_or_default();
                 if keys.is_empty() {
                     return Err("keys is required".into());
@@ -1172,7 +1503,10 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
                 let Some(code) = key_code(&key[0]) else {
                     return Err(format!("Unknown key: {}", key[0]));
                 };
-                helper("press", &json!({"code": code, "flags": flag_mask(&mods.to_vec())}))?;
+                helper(
+                    "press",
+                    &json!({"code": code, "flags": flag_mask(&mods.to_vec())}),
+                )?;
                 let mut v = action_result("hotkey", None);
                 v["value"] = json!(keys.join("+"));
                 Ok(v)
@@ -1222,12 +1556,27 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
         }
         if let Some(args) = payload.get("args").cloned().or_else(|| {
             let mut shallow = serde_json::Map::new();
-            for key in ["x", "y", "text", "value", "key", "keys", "button", "app", "direction", "amount"] {
+            for key in [
+                "x",
+                "y",
+                "text",
+                "value",
+                "key",
+                "keys",
+                "button",
+                "app",
+                "direction",
+                "amount",
+            ] {
                 if let Some(v) = payload.get(key) {
                     shallow.insert(key.to_string(), v.clone());
                 }
             }
-            if shallow.is_empty() { None } else { Some(Value::Object(shallow)) }
+            if shallow.is_empty() {
+                None
+            } else {
+                Some(Value::Object(shallow))
+            }
         }) {
             entry["args"] = args;
         }
@@ -1240,9 +1589,22 @@ pub fn handle(tag: &str, payload: &Value) -> Option<Result<Value, String>> {
 }
 
 const ACTION_TAGS: &[&str] = &[
-    "click", "doubleClick", "rightClick", "moveCursor", "drag", "scroll",
-    "typeText", "pressKey", "hotkey", "setValue", "performAction",
-    "selectText", "input.click", "input.scroll", "input.key", "invokeMenu",
+    "click",
+    "doubleClick",
+    "rightClick",
+    "moveCursor",
+    "drag",
+    "scroll",
+    "typeText",
+    "pressKey",
+    "hotkey",
+    "setValue",
+    "performAction",
+    "selectText",
+    "input.click",
+    "input.scroll",
+    "input.key",
+    "invokeMenu",
 ];
 
 fn collect_text(node: &Value, out: &mut Vec<String>) {

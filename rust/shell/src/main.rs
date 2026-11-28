@@ -10,11 +10,11 @@ use gpui_webview::WebView;
 
 actions!(shell, [QuitApp, HideApp, HideOthers]);
 
+mod appsnap;
 mod backdrop;
 mod backend;
-mod beta_diagnostics;
 mod beta_channel;
-mod appsnap;
+mod beta_diagnostics;
 mod browser_host;
 mod cua;
 mod desktop_identity;
@@ -152,9 +152,7 @@ impl Focusable for Shell {
 impl Render for Shell {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let Some(webview) = self.webview.clone() else {
-            return v_flex()
-                .size_full()
-                .child(self.native.clone());
+            return v_flex().size_full().child(self.native.clone());
         };
 
         v_flex()
@@ -202,7 +200,8 @@ impl Render for Shell {
 
 #[cfg(target_os = "macos")]
 fn start_appsnap_watcher() {
-    static WATCHER: std::sync::OnceLock<Option<std::sync::Arc<appsnap::AppSnapWatcher>>> = std::sync::OnceLock::new();
+    static WATCHER: std::sync::OnceLock<Option<std::sync::Arc<appsnap::AppSnapWatcher>>> =
+        std::sync::OnceLock::new();
     WATCHER.get_or_init(|| {
         let helper = appsnap::resolve_appsnap_helper()?;
         let flavor = desktop_identity::runtime_flavor();
@@ -215,7 +214,10 @@ fn start_appsnap_watcher() {
         };
         let watcher = std::sync::Arc::new(appsnap::AppSnapWatcher::new(
             helper,
-            backend::configured_home_dir().join("userdata").join("appsnap").join("tmp"),
+            backend::configured_home_dir()
+                .join("userdata")
+                .join("appsnap")
+                .join("tmp"),
             bundle_id,
         ));
         watcher.set_enabled(true);
@@ -233,8 +235,10 @@ fn start_appsnap_watcher() {}
 // render (the text system caches the preference).
 #[cfg(target_os = "macos")]
 fn disable_font_smoothing_dilation() {
-    use core_foundation_sys::number::{CFNumberCreate, kCFNumberIntType};
-    use core_foundation_sys::preferences::{CFPreferencesSetAppValue, kCFPreferencesCurrentApplication};
+    use core_foundation_sys::number::{kCFNumberIntType, CFNumberCreate};
+    use core_foundation_sys::preferences::{
+        kCFPreferencesCurrentApplication, CFPreferencesSetAppValue,
+    };
     use core_foundation_sys::string::CFStringCreateWithCString;
     const K_CF_STRING_ENCODING_UTF8: u32 = 0x08000100;
     unsafe {
@@ -265,13 +269,15 @@ fn main() {
     product_analytics::initialize();
     reliability::initialize();
     let diagnostics_home = backend::configured_home_dir();
-    let diagnostics_version = std::env::var("SYNARA_DESKTOP_VERSION").unwrap_or_else(|_| "0.1.0".into());
+    let diagnostics_version =
+        std::env::var("SYNARA_DESKTOP_VERSION").unwrap_or_else(|_| "0.1.0".into());
     let _beta_diagnostics = beta_diagnostics::initialize(
         &diagnostics_home,
         desktop_identity::runtime_flavor(),
         &diagnostics_version,
     );
-    let shell_environment = synara_shellenv::sync_shell_environment(&backend::configured_home_dir());
+    let shell_environment =
+        synara_shellenv::sync_shell_environment(&backend::configured_home_dir());
     synara_shellenv::apply_hydration_marker(shell_environment.path_hydrated);
     if let Err(error) = updater::start_desktop_update_bridge() {
         eprintln!("desktop updater bridge unavailable: {error}");

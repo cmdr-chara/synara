@@ -35,7 +35,9 @@ pub struct AudioLevelSubscription {
     pub microphone_id: Option<String>,
 }
 
-pub fn combine_audio_level_sources(sources: impl IntoIterator<Item = AudioLevelSource>) -> Option<AudioLevelSource> {
+pub fn combine_audio_level_sources(
+    sources: impl IntoIterator<Item = AudioLevelSource>,
+) -> Option<AudioLevelSource> {
     let mut system = false;
     let mut microphone = false;
     for source in sources {
@@ -67,7 +69,10 @@ pub fn combine_audio_level_subscriptions(
             .last()
             .and_then(|subscription| subscription.microphone_id.clone())
     };
-    Some(AudioLevelSubscription { source, microphone_id })
+    Some(AudioLevelSubscription {
+        source,
+        microphone_id,
+    })
 }
 
 pub fn helper_arguments(subscription: &AudioLevelSubscription) -> Vec<String> {
@@ -97,7 +102,9 @@ pub fn parse_audio_level_message(line: &str) -> Option<AudioLevelMessage> {
         "ready" => Some(AudioLevelMessage::Ready),
         "audio-level" => {
             let level = value.get("level").and_then(Value::as_f64)?;
-            level.is_finite().then(|| AudioLevelMessage::Level(level.clamp(0.0, 1.0)))
+            level
+                .is_finite()
+                .then(|| AudioLevelMessage::Level(level.clamp(0.0, 1.0)))
         }
         "error" => {
             let code = value.get("code").and_then(Value::as_str)?.to_string();
@@ -122,14 +129,25 @@ pub struct AudioInputDevice {
 
 pub fn parse_audio_inputs_message(output: &str) -> Vec<AudioInputDevice> {
     for line in output.lines() {
-        let Ok(value) = serde_json::from_str::<Value>(line) else { continue };
+        let Ok(value) = serde_json::from_str::<Value>(line) else {
+            continue;
+        };
         if value.get("type").and_then(Value::as_str) != Some("audio-inputs") {
             continue;
         }
         let mut devices = Vec::new();
-        for raw in value.get("devices").and_then(Value::as_array).into_iter().flatten() {
-            let Some(id) = raw.get("id").and_then(Value::as_str) else { continue };
-            if id.is_empty() || id.chars().map(char::len_utf16).sum::<usize>() > MAX_MICROPHONE_ID_LENGTH {
+        for raw in value
+            .get("devices")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+        {
+            let Some(id) = raw.get("id").and_then(Value::as_str) else {
+                continue;
+            };
+            if id.is_empty()
+                || id.chars().map(char::len_utf16).sum::<usize>() > MAX_MICROPHONE_ID_LENGTH
+            {
                 continue;
             }
             let name = raw
@@ -193,7 +211,9 @@ pub fn list_audio_input_devices(helper: &std::path::Path) -> Vec<AudioInputDevic
     loop {
         match child.try_wait() {
             Ok(Some(_)) => break,
-            Ok(None) if std::time::Instant::now() < deadline => std::thread::sleep(std::time::Duration::from_millis(20)),
+            Ok(None) if std::time::Instant::now() < deadline => {
+                std::thread::sleep(std::time::Duration::from_millis(20))
+            }
             Ok(None) => {
                 let _ = child.kill();
                 let _ = child.wait();
@@ -254,22 +274,29 @@ impl AudioLevelMonitor {
     }
 
     pub fn status(&self) -> AudioLevelStatus {
-        self.state.lock().map(|state| state.status).unwrap_or(AudioLevelStatus::Off)
+        self.state
+            .lock()
+            .map(|state| state.status)
+            .unwrap_or(AudioLevelStatus::Off)
     }
 
     pub fn is_running(&self) -> bool {
-        self.state.lock().ok().map(|mut state| {
-            if let Some(child) = state.child.as_mut() {
-                if matches!(child.try_wait(), Ok(None)) {
-                    return true;
+        self.state
+            .lock()
+            .ok()
+            .map(|mut state| {
+                if let Some(child) = state.child.as_mut() {
+                    if matches!(child.try_wait(), Ok(None)) {
+                        return true;
+                    }
+                    state.child = None;
+                    state.child_subscription = None;
+                    state.status = AudioLevelStatus::Unavailable;
+                    state.generation += 1;
                 }
-                state.child = None;
-                state.child_subscription = None;
-                state.status = AudioLevelStatus::Unavailable;
-                state.generation += 1;
-            }
-            false
-        }).unwrap_or(false)
+                false
+            })
+            .unwrap_or(false)
     }
 
     pub fn set_subscription(
@@ -278,13 +305,17 @@ impl AudioLevelMonitor {
         subscription: Option<AudioLevelSubscription>,
     ) -> AudioLevelStatus {
         let wanted = {
-            let Ok(mut state) = self.state.lock() else { return AudioLevelStatus::Off };
+            let Ok(mut state) = self.state.lock() else {
+                return AudioLevelStatus::Off;
+            };
             if let Some(subscription) = subscription {
                 state.subscribers.insert(subscriber, subscription);
             } else {
                 state.subscribers.remove(&subscriber);
             }
-            combine_audio_level_subscriptions(state.subscribers.values().cloned().collect::<Vec<_>>())
+            combine_audio_level_subscriptions(
+                state.subscribers.values().cloned().collect::<Vec<_>>(),
+            )
         };
         match wanted {
             None => {
@@ -342,7 +373,11 @@ impl AudioLevelMonitor {
             let on_error = Arc::clone(&self.on_error);
             std::thread::spawn(move || {
                 for line in BufReader::new(stdout).lines() {
-                    if state_ref.lock().map(|state| state.generation != generation).unwrap_or(true) {
+                    if state_ref
+                        .lock()
+                        .map(|state| state.generation != generation)
+                        .unwrap_or(true)
+                    {
                         break;
                     }
                     let Ok(line) = line else { break };
@@ -411,7 +446,9 @@ fn terminate_child_gracefully(child: &mut Child) {
         let pid = child.id().to_string();
         let _ = Command::new("/bin/kill").arg("-TERM").arg(&pid).status();
         for _ in 0..20 {
-            if matches!(child.try_wait(), Ok(Some(_))) { return; }
+            if matches!(child.try_wait(), Ok(Some(_))) {
+                return;
+            }
             std::thread::sleep(std::time::Duration::from_millis(10));
         }
     }
@@ -431,45 +468,93 @@ mod tests {
     #[test]
     fn combines_sources_like_upstream() {
         assert_eq!(combine_audio_level_sources([]), None);
-        assert_eq!(combine_audio_level_sources([AudioLevelSource::System]), Some(AudioLevelSource::System));
-        assert_eq!(combine_audio_level_sources([AudioLevelSource::System, AudioLevelSource::Microphone]), Some(AudioLevelSource::Both));
+        assert_eq!(
+            combine_audio_level_sources([AudioLevelSource::System]),
+            Some(AudioLevelSource::System)
+        );
+        assert_eq!(
+            combine_audio_level_sources([AudioLevelSource::System, AudioLevelSource::Microphone]),
+            Some(AudioLevelSource::Both)
+        );
     }
 
     #[test]
     fn newest_microphone_choice_wins() {
         let combined = combine_audio_level_subscriptions([
-            AudioLevelSubscription { source: AudioLevelSource::Microphone, microphone_id: Some("old".into()) },
-            AudioLevelSubscription { source: AudioLevelSource::Both, microphone_id: Some("new".into()) },
-        ]).unwrap();
+            AudioLevelSubscription {
+                source: AudioLevelSource::Microphone,
+                microphone_id: Some("old".into()),
+            },
+            AudioLevelSubscription {
+                source: AudioLevelSource::Both,
+                microphone_id: Some("new".into()),
+            },
+        ])
+        .unwrap();
         assert_eq!(combined.source, AudioLevelSource::Both);
         assert_eq!(combined.microphone_id.as_deref(), Some("new"));
     }
 
     #[test]
     fn helper_arguments_match_subscription() {
-        let subscription = AudioLevelSubscription { source: AudioLevelSource::Both, microphone_id: Some("mic".into()) };
-        assert_eq!(helper_arguments(&subscription), ["--audio-level", "--source", "system", "--source", "microphone", "--input-device", "mic"]);
+        let subscription = AudioLevelSubscription {
+            source: AudioLevelSource::Both,
+            microphone_id: Some("mic".into()),
+        };
+        assert_eq!(
+            helper_arguments(&subscription),
+            [
+                "--audio-level",
+                "--source",
+                "system",
+                "--source",
+                "microphone",
+                "--input-device",
+                "mic"
+            ]
+        );
     }
 
     #[test]
     fn parses_helper_messages() {
-        assert_eq!(parse_audio_level_message(r#"{"type":"audio-level","level":3}"#), Some(AudioLevelMessage::Level(1.0)));
-        assert_eq!(parse_audio_level_message(r#"{"type":"ready"}"#), Some(AudioLevelMessage::Ready));
+        assert_eq!(
+            parse_audio_level_message(r#"{"type":"audio-level","level":3}"#),
+            Some(AudioLevelMessage::Level(1.0))
+        );
+        assert_eq!(
+            parse_audio_level_message(r#"{"type":"ready"}"#),
+            Some(AudioLevelMessage::Ready)
+        );
         assert!(parse_audio_level_message("not json").is_none());
     }
 
     #[test]
     fn parses_input_devices_and_falls_back_to_id_name() {
-        let devices = parse_audio_inputs_message(r#"{"type":"audio-inputs","devices":[{"id":"mic-1","bluetooth":true,"default":true}]}"#);
-        assert_eq!(devices, vec![AudioInputDevice { id: "mic-1".into(), name: "mic-1".into(), bluetooth: true, default: true }]);
+        let devices = parse_audio_inputs_message(
+            r#"{"type":"audio-inputs","devices":[{"id":"mic-1","bluetooth":true,"default":true}]}"#,
+        );
+        assert_eq!(
+            devices,
+            vec![AudioInputDevice {
+                id: "mic-1".into(),
+                name: "mic-1".into(),
+                bluetooth: true,
+                default: true
+            }]
+        );
     }
 
     #[test]
     fn exited_audio_helper_resets_level_and_marks_unavailable() {
-        let directory = std::env::temp_dir().join(format!("synara-audio-test-{}", uuid::Uuid::new_v4()));
+        let directory =
+            std::env::temp_dir().join(format!("synara-audio-test-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&directory).unwrap();
         let helper = directory.join("helper.sh");
-        std::fs::write(&helper, "#!/bin/sh\nprintf '%s\\n' '{\"type\":\"audio-level\",\"level\":0.7}'\n").unwrap();
+        std::fs::write(
+            &helper,
+            "#!/bin/sh\nprintf '%s\\n' '{\"type\":\"audio-level\",\"level\":0.7}'\n",
+        )
+        .unwrap();
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt as _;
@@ -478,15 +563,31 @@ mod tests {
         let (levels_tx, levels) = std::sync::mpsc::channel();
         let monitor = AudioLevelMonitor::new(
             helper,
-            move |level| { let _ = levels_tx.send(level); },
+            move |level| {
+                let _ = levels_tx.send(level);
+            },
             |_| {},
         );
-        assert_eq!(monitor.set_subscription(1, Some(AudioLevelSubscription { source: AudioLevelSource::System, microphone_id: None })), AudioLevelStatus::Active);
+        assert_eq!(
+            monitor.set_subscription(
+                1,
+                Some(AudioLevelSubscription {
+                    source: AudioLevelSource::System,
+                    microphone_id: None
+                })
+            ),
+            AudioLevelStatus::Active
+        );
         let mut seen = Vec::new();
         for _ in 0..2 {
-            if let Ok(level) = levels.recv_timeout(std::time::Duration::from_secs(2)) { seen.push(level); }
+            if let Ok(level) = levels.recv_timeout(std::time::Duration::from_secs(2)) {
+                seen.push(level);
+            }
         }
-        assert!(seen.iter().any(|level| (*level - 0.7).abs() < f64::EPSILON), "levels: {seen:?}");
+        assert!(
+            seen.iter().any(|level| (*level - 0.7).abs() < f64::EPSILON),
+            "levels: {seen:?}"
+        );
         assert_eq!(seen.last().copied(), Some(0.0), "levels: {seen:?}");
         assert_eq!(monitor.status(), AudioLevelStatus::Unavailable);
         let _ = std::fs::remove_dir_all(directory);
@@ -498,7 +599,10 @@ mod tests {
             .join("../../native/appsnap/build/synara-appsnap-helper")
             .canonicalize();
         if let Ok(expected) = expected {
-            assert_eq!(resolve_appsnap_helper().and_then(|path| path.canonicalize().ok()), Some(expected));
+            assert_eq!(
+                resolve_appsnap_helper().and_then(|path| path.canonicalize().ok()),
+                Some(expected)
+            );
         }
     }
 }
@@ -531,47 +635,94 @@ pub struct AppSnapWindowEntry {
 }
 
 fn valid_appsnap_id(value: &str) -> bool {
-    !value.is_empty() && value.len() <= 128 && value.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')
+    !value.is_empty()
+        && value.len() <= 128
+        && value.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')
 }
 
 fn path_inside(directory: &std::path::Path, path: &std::path::Path) -> bool {
-    let Ok(directory) = directory.canonicalize() else { return false };
-    let Ok(path) = path.canonicalize() else { return false };
+    let Ok(directory) = directory.canonicalize() else {
+        return false;
+    };
+    let Ok(path) = path.canonicalize() else {
+        return false;
+    };
     path.starts_with(directory)
 }
 
-fn read_validated_png(path: &std::path::Path, output_directory: &std::path::Path) -> Result<Vec<u8>, String> {
+fn read_validated_png(
+    path: &std::path::Path,
+    output_directory: &std::path::Path,
+) -> Result<Vec<u8>, String> {
     if !path_inside(output_directory, path) {
         return Err("Invalid AppSnap capture path.".into());
     }
-    let metadata = std::fs::metadata(path).map_err(|_| "Invalid AppSnap capture path.".to_string())?;
-    if !metadata.is_file() || metadata.len() == 0 || metadata.len() as usize > APPSNAP_MAX_IMAGE_BYTES {
+    let metadata =
+        std::fs::metadata(path).map_err(|_| "Invalid AppSnap capture path.".to_string())?;
+    if !metadata.is_file()
+        || metadata.len() == 0
+        || metadata.len() as usize > APPSNAP_MAX_IMAGE_BYTES
+    {
         return Err("Invalid AppSnap capture image.".into());
     }
-    let bytes = std::fs::read(path).map_err(|_| "The AppSnap capture changed while it was read.".to_string())?;
-    if bytes.len() as u64 != metadata.len() || bytes.len() < APPSNAP_PNG_SIGNATURE.len() || bytes[..8] != APPSNAP_PNG_SIGNATURE {
+    let bytes = std::fs::read(path)
+        .map_err(|_| "The AppSnap capture changed while it was read.".to_string())?;
+    if bytes.len() as u64 != metadata.len()
+        || bytes.len() < APPSNAP_PNG_SIGNATURE.len()
+        || bytes[..8] != APPSNAP_PNG_SIGNATURE
+    {
         return Err("Invalid AppSnap capture image.".into());
     }
     Ok(bytes)
 }
 
 fn optional_text(value: &Value, key: &str) -> Option<String> {
-    value.get(key).and_then(Value::as_str).map(str::trim).filter(|s| !s.is_empty()).map(|s| s.chars().take(240).collect())
+    value
+        .get(key)
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(|s| s.chars().take(240).collect())
 }
 
-fn capture_from_message(message: &Value, output_directory: &std::path::Path) -> Result<AppSnapCapture, String> {
-    let id = message.get("id").and_then(Value::as_str).filter(|id| valid_appsnap_id(id)).ok_or("Invalid AppSnap capture id.")?;
-    let path = message.get("path").and_then(Value::as_str).ok_or("Invalid AppSnap capture path.")?;
+fn capture_from_message(
+    message: &Value,
+    output_directory: &std::path::Path,
+) -> Result<AppSnapCapture, String> {
+    let id = message
+        .get("id")
+        .and_then(Value::as_str)
+        .filter(|id| valid_appsnap_id(id))
+        .ok_or("Invalid AppSnap capture id.")?;
+    let path = message
+        .get("path")
+        .and_then(Value::as_str)
+        .ok_or("Invalid AppSnap capture path.")?;
     let bytes = read_validated_png(std::path::Path::new(path), output_directory)?;
     Ok(AppSnapCapture {
         id: id.to_string(),
-        captured_at: message.get("capturedAt").and_then(Value::as_str).unwrap_or_default().to_string(),
-        name: message.get("name").and_then(Value::as_str).filter(|name| !name.is_empty()).unwrap_or("AppSnap capture.png").chars().take(240).collect(),
+        captured_at: message
+            .get("capturedAt")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_string(),
+        name: message
+            .get("name")
+            .and_then(Value::as_str)
+            .filter(|name| !name.is_empty())
+            .unwrap_or("AppSnap capture.png")
+            .chars()
+            .take(240)
+            .collect(),
         size_bytes: bytes.len(),
         bytes,
         source_app_name: optional_text(message, "sourceAppName"),
         source_bundle_identifier: optional_text(message, "sourceBundleIdentifier"),
-        source_app_icon_data_url: message.get("sourceAppIconDataUrl").and_then(Value::as_str).filter(|v| v.starts_with("data:image/png;base64,") && v.len() <= 256_000).map(str::to_string),
+        source_app_icon_data_url: message
+            .get("sourceAppIconDataUrl")
+            .and_then(Value::as_str)
+            .filter(|v| v.starts_with("data:image/png;base64,") && v.len() <= 256_000)
+            .map(str::to_string),
         source_window_title: optional_text(message, "sourceWindowTitle"),
     })
 }
@@ -597,12 +748,19 @@ fn spawn_capture_helper(
 
 fn write_helper_line(child: &mut Child, line: &str) -> Result<(), String> {
     use std::io::Write as _;
-    let Some(stdin) = child.stdin.as_mut() else { return Err("The AppSnap helper input is unavailable.".into()) };
-    stdin.write_all(line.as_bytes()).and_then(|_| stdin.write_all(b"\n")).and_then(|_| stdin.flush())
+    let Some(stdin) = child.stdin.as_mut() else {
+        return Err("The AppSnap helper input is unavailable.".into());
+    };
+    stdin
+        .write_all(line.as_bytes())
+        .and_then(|_| stdin.write_all(b"\n"))
+        .and_then(|_| stdin.flush())
         .map_err(|error| format!("Could not ask the AppSnap helper for a capture: {error}"))
 }
 
-fn ndjson_receiver(stdout: impl std::io::Read + Send + 'static) -> std::sync::mpsc::Receiver<String> {
+fn ndjson_receiver(
+    stdout: impl std::io::Read + Send + 'static,
+) -> std::sync::mpsc::Receiver<String> {
     use std::io::{BufRead as _, BufReader};
     let (sender, receiver) = std::sync::mpsc::channel();
     std::thread::spawn(move || {
@@ -627,18 +785,29 @@ fn read_capture_messages(
     expected_capture_id: Option<&str>,
     timeout: std::time::Duration,
 ) -> Result<Value, String> {
-    let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
+    let stdout = child
+        .stdout
+        .take()
+        .ok_or("The AppSnap helper output is unavailable.")?;
     let receiver = ndjson_receiver(stdout);
     let deadline = std::time::Instant::now() + timeout;
     let mut triggered = false;
     loop {
-        let remaining = deadline.checked_duration_since(std::time::Instant::now()).ok_or("AppSnap capture timed out.")?;
+        let remaining = deadline
+            .checked_duration_since(std::time::Instant::now())
+            .ok_or("AppSnap capture timed out.")?;
         let line = match receiver.recv_timeout(remaining) {
             Ok(line) => line,
-            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => return Err("AppSnap capture timed out.".into()),
-            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => return Err("The AppSnap helper exited before capturing.".into()),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                return Err("AppSnap capture timed out.".into())
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                return Err("The AppSnap helper exited before capturing.".into())
+            }
         };
-        let Ok(message) = serde_json::from_str::<Value>(&line) else { continue };
+        let Ok(message) = serde_json::from_str::<Value>(&line) else {
+            continue;
+        };
         match message.get("type").and_then(Value::as_str) {
             Some("ready") if !triggered => {
                 write_helper_line(child, request)?;
@@ -651,11 +820,17 @@ fn read_capture_messages(
                         || message.get("id").is_none()
                 });
                 if matches_request {
-                    return Err(message.get("message").and_then(Value::as_str).unwrap_or("AppSnap capture failed.").to_string());
+                    return Err(message
+                        .get("message")
+                        .and_then(Value::as_str)
+                        .unwrap_or("AppSnap capture failed.")
+                        .to_string());
                 }
             }
             Some("captured") => {
-                if expected_capture_id.is_some_and(|id| message.get("id").and_then(Value::as_str) != Some(id)) {
+                if expected_capture_id
+                    .is_some_and(|id| message.get("id").and_then(Value::as_str) != Some(id))
+                {
                     continue;
                 }
                 let capture = capture_from_message(&message, output_directory)?;
@@ -684,7 +859,13 @@ fn requested_capture(
     std::fs::create_dir_all(&output_directory).map_err(|error| error.to_string())?;
     let result = (|| {
         let mut child = spawn_capture_helper(helper, &output_directory, excluded_bundle_id)?;
-        let result = read_capture_messages(&mut child, &output_directory, request, expected_capture_id, timeout);
+        let result = read_capture_messages(
+            &mut child,
+            &output_directory,
+            request,
+            expected_capture_id,
+            timeout,
+        );
         finish_capture_helper(&mut child);
         result.and_then(|value| serde_json::from_value(value).map_err(|error| error.to_string()))
     })();
@@ -739,13 +920,20 @@ pub fn parse_appsnap_windows(message: &Value, request_id: &str) -> Option<Vec<Ap
     }
     let mut windows = Vec::new();
     for raw in message.get("windows").and_then(Value::as_array)? {
-        let window_id = raw.get("windowId").and_then(Value::as_u64).filter(|id| *id > 0 && *id <= 0xffff_ffff)?;
+        let window_id = raw
+            .get("windowId")
+            .and_then(Value::as_u64)
+            .filter(|id| *id > 0 && *id <= 0xffff_ffff)?;
         windows.push(AppSnapWindowEntry {
             window_id,
             app_name: optional_text(raw, "appName"),
             bundle_identifier: optional_text(raw, "bundleIdentifier"),
             window_title: optional_text(raw, "windowTitle"),
-            app_icon_data_url: raw.get("appIconDataUrl").and_then(Value::as_str).filter(|v| v.starts_with("data:image/png;base64,") && v.len() <= 256_000).map(str::to_string),
+            app_icon_data_url: raw
+                .get("appIconDataUrl")
+                .and_then(Value::as_str)
+                .filter(|v| v.starts_with("data:image/png;base64,") && v.len() <= 256_000)
+                .map(str::to_string),
         });
     }
     Some(windows)
@@ -763,7 +951,10 @@ pub fn list_windows(
     std::fs::create_dir_all(&output_directory).map_err(|error| error.to_string())?;
     let result = (|| {
         let mut child = spawn_capture_helper(helper, &output_directory, excluded_bundle_id)?;
-        let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
+        let stdout = child
+            .stdout
+            .take()
+            .ok_or("The AppSnap helper output is unavailable.")?;
         let receiver = ndjson_receiver(stdout);
         let request_id = uuid::Uuid::new_v4().to_string();
         let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
@@ -774,10 +965,16 @@ pub fn list_windows(
             };
             let line = match receiver.recv_timeout(remaining) {
                 Ok(line) => line,
-                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => break Err("Listing AppSnap windows timed out.".into()),
-                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break Err("The AppSnap helper exited before listing windows.".into()),
+                Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                    break Err("Listing AppSnap windows timed out.".into())
+                }
+                Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                    break Err("The AppSnap helper exited before listing windows.".into())
+                }
             };
-            let Ok(message) = serde_json::from_str::<Value>(&line) else { continue };
+            let Ok(message) = serde_json::from_str::<Value>(&line) else {
+                continue;
+            };
             match message.get("type").and_then(Value::as_str) {
                 Some("ready") if !sent => {
                     write_helper_line(&mut child, &format!("list-windows {request_id}"))?;
@@ -788,8 +985,15 @@ pub fn list_windows(
                         break Ok(windows);
                     }
                 }
-                Some("error") if message.get("requestId").and_then(Value::as_str) == Some(request_id.as_str()) => {
-                    break Err(message.get("message").and_then(Value::as_str).unwrap_or("Could not list AppSnap windows.").to_string());
+                Some("error")
+                    if message.get("requestId").and_then(Value::as_str)
+                        == Some(request_id.as_str()) =>
+                {
+                    break Err(message
+                        .get("message")
+                        .and_then(Value::as_str)
+                        .unwrap_or("Could not list AppSnap windows.")
+                        .to_string());
                 }
                 _ => {}
             }
@@ -807,7 +1011,8 @@ mod appsnap_capture_tests {
 
     #[test]
     fn capture_message_validates_png_and_metadata() {
-        let root = std::env::temp_dir().join(format!("appsnap-capture-test-{}", std::process::id()));
+        let root =
+            std::env::temp_dir().join(format!("appsnap-capture-test-{}", std::process::id()));
         std::fs::create_dir_all(&root).unwrap();
         let image = root.join("capture.png");
         let mut png = APPSNAP_PNG_SIGNATURE.to_vec();
@@ -842,7 +1047,10 @@ mod appsnap_capture_tests {
 
     #[test]
     fn parses_permission_report() {
-        let parsed = parse_appsnap_permissions(r#"{"type":"permissions","inputMonitoring":"granted","screenRecording":"denied"}"#).unwrap();
+        let parsed = parse_appsnap_permissions(
+            r#"{"type":"permissions","inputMonitoring":"granted","screenRecording":"denied"}"#,
+        )
+        .unwrap();
         assert_eq!(parsed.input_monitoring, Some(true));
         assert_eq!(parsed.screen_recording, Some(false));
         assert!(parse_appsnap_permissions(r#"{"type":"permissions"}"#).is_none());
@@ -850,15 +1058,21 @@ mod appsnap_capture_tests {
 
     #[test]
     fn pending_capture_round_trips_and_acknowledges() {
-        let root = std::env::temp_dir().join(format!("appsnap-pending-test-{}", std::process::id()));
+        let root =
+            std::env::temp_dir().join(format!("appsnap-pending-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
         let mut bytes = APPSNAP_PNG_SIGNATURE.to_vec();
         bytes.extend_from_slice(b"image");
         let capture = AppSnapCapture {
-            id: "capture-1".into(), captured_at: "now".into(), name: "capture.png".into(),
-            size_bytes: bytes.len(), bytes,
-            source_app_name: Some("Safari".into()), source_bundle_identifier: None,
-            source_app_icon_data_url: None, source_window_title: None,
+            id: "capture-1".into(),
+            captured_at: "now".into(),
+            name: "capture.png".into(),
+            size_bytes: bytes.len(),
+            bytes,
+            source_app_name: Some("Safari".into()),
+            source_bundle_identifier: None,
+            source_app_icon_data_url: None,
+            source_window_title: None,
         };
         persist_pending_capture(&root, &capture).unwrap();
         let listed = list_pending_captures(&root);
@@ -896,13 +1110,22 @@ sleep 30
             std::fs::set_permissions(&helper, std::fs::Permissions::from_mode(0o755)).unwrap();
         }
         let captures = root.join("captures");
-        let watcher = Arc::new(AppSnapWatcher::new(helper, captures.clone(), "com.test.synara"));
+        let watcher = Arc::new(AppSnapWatcher::new(
+            helper,
+            captures.clone(),
+            "com.test.synara",
+        ));
         watcher.set_enabled(true);
         let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
         while std::time::Instant::now() < deadline && watcher.pending_captures().is_empty() {
             std::thread::sleep(std::time::Duration::from_millis(10));
         }
-        assert_eq!(watcher.state().status, "ready", "state: {:?}", watcher.state());
+        assert_eq!(
+            watcher.state().status,
+            "ready",
+            "state: {:?}",
+            watcher.state()
+        );
         assert_eq!(watcher.pending_captures().len(), 1);
         watcher.set_enabled(false);
         assert_eq!(watcher.state().status, "disabled");
@@ -946,13 +1169,18 @@ fn parse_permission(value: Option<&Value>) -> Option<bool> {
 
 pub fn parse_appsnap_permissions(line: &str) -> Option<AppSnapPermissions> {
     let value: Value = serde_json::from_str(line).ok()?;
-    if value.get("type").and_then(Value::as_str) != Some("permissions") { return None; }
+    if value.get("type").and_then(Value::as_str) != Some("permissions") {
+        return None;
+    }
     let parsed = AppSnapPermissions {
         accessibility: parse_permission(value.get("accessibility")),
         input_monitoring: parse_permission(value.get("inputMonitoring")),
         screen_recording: parse_permission(value.get("screenRecording")),
     };
-    (parsed.accessibility.is_some() || parsed.input_monitoring.is_some() || parsed.screen_recording.is_some()).then_some(parsed)
+    (parsed.accessibility.is_some()
+        || parsed.input_monitoring.is_some()
+        || parsed.screen_recording.is_some())
+    .then_some(parsed)
 }
 
 /// Executes the helper's one-shot permission modes. Legacy calls pass no
@@ -963,21 +1191,34 @@ pub fn run_appsnap_permission_command(
     permissions: &[AppSnapPermissionKind],
     app_bundle_path: Option<&std::path::Path>,
 ) -> Result<AppSnapPermissions, String> {
-    if !matches!(command, "--check-permissions" | "--request-permissions" | "--prepare-permission-setup") {
+    if !matches!(
+        command,
+        "--check-permissions" | "--request-permissions" | "--prepare-permission-setup"
+    ) {
         return Err("Unsupported AppSnap permission command.".into());
     }
     let mut args = vec![command.to_string()];
     let mut unique = Vec::new();
     for permission in permissions {
-        if !unique.contains(permission) { unique.push(*permission); }
+        if !unique.contains(permission) {
+            unique.push(*permission);
+        }
     }
-    let legacy = unique.len() == 2 && unique.contains(&AppSnapPermissionKind::InputMonitoring) && unique.contains(&AppSnapPermissionKind::ScreenRecording);
+    let legacy = unique.len() == 2
+        && unique.contains(&AppSnapPermissionKind::InputMonitoring)
+        && unique.contains(&AppSnapPermissionKind::ScreenRecording);
     if !legacy {
-        for permission in unique { args.extend(["--permission".into(), permission.cli_name().into()]); }
+        for permission in unique {
+            args.extend(["--permission".into(), permission.cli_name().into()]);
+        }
     }
     if command != "--check-permissions" {
-        let app_bundle_path = app_bundle_path.ok_or("Permission setup requires the running app bundle path.")?;
-        args.extend(["--app-path".into(), app_bundle_path.to_string_lossy().into_owned()]);
+        let app_bundle_path =
+            app_bundle_path.ok_or("Permission setup requires the running app bundle path.")?;
+        args.extend([
+            "--app-path".into(),
+            app_bundle_path.to_string_lossy().into_owned(),
+        ]);
     }
     let mut child = Command::new(helper)
         .args(args)
@@ -986,7 +1227,10 @@ pub fn run_appsnap_permission_command(
         .stderr(Stdio::null())
         .spawn()
         .map_err(|error| format!("Could not inspect AppSnap permissions: {error}"))?;
-    let stdout = child.stdout.take().ok_or("The AppSnap helper output is unavailable.")?;
+    let stdout = child
+        .stdout
+        .take()
+        .ok_or("The AppSnap helper output is unavailable.")?;
     let receiver = ndjson_receiver(stdout);
     let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
     let mut report: Option<AppSnapPermissions> = None;
@@ -997,8 +1241,16 @@ pub fn run_appsnap_permission_command(
         };
         let line = match receiver.recv_timeout(remaining) {
             Ok(line) => line,
-            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => break Err("Checking macOS permissions timed out. Try Set up again.".into()),
-            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break report.ok_or_else(|| failure.clone().unwrap_or_else(|| "The AppSnap helper did not report its permission state.".into())),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                break Err("Checking macOS permissions timed out. Try Set up again.".into())
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                break report.ok_or_else(|| {
+                    failure.clone().unwrap_or_else(|| {
+                        "The AppSnap helper did not report its permission state.".into()
+                    })
+                })
+            }
         };
         if let Some(parsed) = parse_appsnap_permissions(&line) {
             report = Some(match report {
@@ -1011,7 +1263,13 @@ pub fn run_appsnap_permission_command(
             });
         } else if let Ok(value) = serde_json::from_str::<Value>(&line) {
             if value.get("type").and_then(Value::as_str) == Some("error") {
-                failure = Some(value.get("message").and_then(Value::as_str).unwrap_or("AppSnap permission command failed.").to_string());
+                failure = Some(
+                    value
+                        .get("message")
+                        .and_then(Value::as_str)
+                        .unwrap_or("AppSnap permission command failed.")
+                        .to_string(),
+                );
             }
         }
     };
@@ -1030,7 +1288,10 @@ pub struct PendingAppSnapCapture {
 }
 
 fn pending_paths(capture_directory: &std::path::Path, id: &str) -> (PathBuf, PathBuf) {
-    (capture_directory.join(format!("{id}.png")), capture_directory.join(format!("{id}.json")))
+    (
+        capture_directory.join(format!("{id}.png")),
+        capture_directory.join(format!("{id}.json")),
+    )
 }
 
 /// Stores a completed capture durably before the UI acknowledges it. Both
@@ -1040,7 +1301,11 @@ pub fn persist_pending_capture(
     capture_directory: &std::path::Path,
     capture: &AppSnapCapture,
 ) -> Result<PendingAppSnapCapture, String> {
-    if !valid_appsnap_id(&capture.id) || capture.bytes.len() != capture.size_bytes || capture.bytes.len() < 8 || capture.bytes[..8] != APPSNAP_PNG_SIGNATURE {
+    if !valid_appsnap_id(&capture.id)
+        || capture.bytes.len() != capture.size_bytes
+        || capture.bytes.len() < 8
+        || capture.bytes[..8] != APPSNAP_PNG_SIGNATURE
+    {
         return Err("Invalid AppSnap capture.".into());
     }
     std::fs::create_dir_all(capture_directory).map_err(|error| error.to_string())?;
@@ -1068,40 +1333,76 @@ pub fn persist_pending_capture(
         std::fs::rename(&tmp, path).map_err(|error| error.to_string())
     };
     write_atomic(&image_path, &capture.bytes)?;
-    if let Err(error) = write_atomic(&metadata_path, serde_json::to_string(&body).map_err(|e| e.to_string())?.as_bytes()) {
+    if let Err(error) = write_atomic(
+        &metadata_path,
+        serde_json::to_string(&body)
+            .map_err(|e| e.to_string())?
+            .as_bytes(),
+    ) {
         let _ = std::fs::remove_file(&image_path);
         return Err(error);
     }
-    Ok(PendingAppSnapCapture { capture: capture.clone(), image_path, metadata_path })
+    Ok(PendingAppSnapCapture {
+        capture: capture.clone(),
+        image_path,
+        metadata_path,
+    })
 }
 
 fn pending_capture_from_metadata(metadata_path: &std::path::Path) -> Option<PendingAppSnapCapture> {
     let value: Value = serde_json::from_str(&std::fs::read_to_string(metadata_path).ok()?).ok()?;
-    if value.get("version").and_then(Value::as_u64) != Some(1) { return None; }
+    if value.get("version").and_then(Value::as_u64) != Some(1) {
+        return None;
+    }
     let id = value.get("id").and_then(Value::as_str)?.to_string();
-    if !valid_appsnap_id(&id) { return None; }
+    if !valid_appsnap_id(&id) {
+        return None;
+    }
     let (image_path, expected_metadata) = pending_paths(metadata_path.parent()?, &id);
-    if expected_metadata != *metadata_path { return None; }
+    if expected_metadata != *metadata_path {
+        return None;
+    }
     let bytes = read_validated_png(&image_path, metadata_path.parent()?).ok()?;
     let size_bytes = value.get("sizeBytes").and_then(Value::as_u64)? as usize;
-    if size_bytes != bytes.len() { return None; }
+    if size_bytes != bytes.len() {
+        return None;
+    }
     let capture = AppSnapCapture {
         id,
         captured_at: value.get("capturedAt").and_then(Value::as_str)?.to_string(),
         name: value.get("name").and_then(Value::as_str)?.to_string(),
         size_bytes,
         bytes,
-        source_app_name: value.get("sourceAppName").and_then(Value::as_str).map(str::to_string),
-        source_bundle_identifier: value.get("sourceBundleIdentifier").and_then(Value::as_str).map(str::to_string),
-        source_app_icon_data_url: value.get("sourceAppIconDataUrl").and_then(Value::as_str).map(str::to_string),
-        source_window_title: value.get("sourceWindowTitle").and_then(Value::as_str).map(str::to_string),
+        source_app_name: value
+            .get("sourceAppName")
+            .and_then(Value::as_str)
+            .map(str::to_string),
+        source_bundle_identifier: value
+            .get("sourceBundleIdentifier")
+            .and_then(Value::as_str)
+            .map(str::to_string),
+        source_app_icon_data_url: value
+            .get("sourceAppIconDataUrl")
+            .and_then(Value::as_str)
+            .map(str::to_string),
+        source_window_title: value
+            .get("sourceWindowTitle")
+            .and_then(Value::as_str)
+            .map(str::to_string),
     };
-    Some(PendingAppSnapCapture { capture, image_path, metadata_path: metadata_path.to_path_buf() })
+    Some(PendingAppSnapCapture {
+        capture,
+        image_path,
+        metadata_path: metadata_path.to_path_buf(),
+    })
 }
 
 pub fn list_pending_captures(capture_directory: &std::path::Path) -> Vec<PendingAppSnapCapture> {
-    let Ok(entries) = std::fs::read_dir(capture_directory) else { return Vec::new() };
-    let mut captures: Vec<_> = entries.flatten()
+    let Ok(entries) = std::fs::read_dir(capture_directory) else {
+        return Vec::new();
+    };
+    let mut captures: Vec<_> = entries
+        .flatten()
         .map(|entry| entry.path())
         .filter(|path| path.extension().and_then(|e| e.to_str()) == Some("json"))
         .filter_map(|path| pending_capture_from_metadata(&path))
@@ -1113,9 +1414,13 @@ pub fn list_pending_captures(capture_directory: &std::path::Path) -> Vec<Pending
 /// Acknowledgement is the only path that deletes a pending capture. Invalid or
 /// mismatched ids fail closed and keep the files for diagnostics/retry.
 pub fn acknowledge_pending_capture(capture_directory: &std::path::Path, id: &str) -> bool {
-    if !valid_appsnap_id(id) { return false; }
+    if !valid_appsnap_id(id) {
+        return false;
+    }
     let (image_path, metadata_path) = pending_paths(capture_directory, id);
-    if !image_path.is_file() || !metadata_path.is_file() { return false; }
+    if !image_path.is_file() || !metadata_path.is_file() {
+        return false;
+    }
     let image_removed = std::fs::remove_file(&image_path).is_ok();
     let metadata_removed = std::fs::remove_file(&metadata_path).is_ok();
     image_removed && metadata_removed
@@ -1146,7 +1451,11 @@ pub struct AppSnapWatcher {
 }
 
 impl AppSnapWatcher {
-    pub fn new(helper: PathBuf, capture_directory: PathBuf, excluded_bundle_id: impl Into<String>) -> Self {
+    pub fn new(
+        helper: PathBuf,
+        capture_directory: PathBuf,
+        excluded_bundle_id: impl Into<String>,
+    ) -> Self {
         Self {
             helper,
             capture_directory,
@@ -1166,13 +1475,16 @@ impl AppSnapWatcher {
     }
 
     pub fn state(&self) -> AppSnapWatcherState {
-        self.inner.lock().map(|inner| inner.state.clone()).unwrap_or(AppSnapWatcherState {
-            enabled: false,
-            status: "error".into(),
-            error: Some("AppSnap state lock failed.".into()),
-            input_monitoring: None,
-            screen_recording: None,
-        })
+        self.inner
+            .lock()
+            .map(|inner| inner.state.clone())
+            .unwrap_or(AppSnapWatcherState {
+                enabled: false,
+                status: "error".into(),
+                error: Some("AppSnap state lock failed.".into()),
+                input_monitoring: None,
+                screen_recording: None,
+            })
     }
 
     fn set_state(&self, status: &str, error: Option<String>) {
@@ -1207,12 +1519,17 @@ impl AppSnapWatcher {
             return self.state();
         }
         self.stop_child();
-        if let Ok(mut inner) = self.inner.lock() { inner.state.enabled = true; }
+        if let Ok(mut inner) = self.inner.lock() {
+            inner.state.enabled = true;
+        }
         self.set_state("starting", None);
         let permissions = match run_appsnap_permission_command(
             &self.helper,
             "--check-permissions",
-            &[AppSnapPermissionKind::InputMonitoring, AppSnapPermissionKind::ScreenRecording],
+            &[
+                AppSnapPermissionKind::InputMonitoring,
+                AppSnapPermissionKind::ScreenRecording,
+            ],
             None,
         ) {
             Ok(permissions) => permissions,
@@ -1225,18 +1542,28 @@ impl AppSnapWatcher {
             inner.state.input_monitoring = permissions.input_monitoring;
             inner.state.screen_recording = permissions.screen_recording;
         }
-        if permissions.input_monitoring != Some(true) || permissions.screen_recording != Some(true) {
-            self.set_state("permission-required", Some("Grant Input Monitoring and Screen Recording to use AppSnap.".into()));
+        if permissions.input_monitoring != Some(true) || permissions.screen_recording != Some(true)
+        {
+            self.set_state(
+                "permission-required",
+                Some("Grant Input Monitoring and Screen Recording to use AppSnap.".into()),
+            );
             return self.state();
         }
         if let Err(error) = std::fs::create_dir_all(&self.capture_directory) {
-            self.set_state("error", Some(format!("Could not prepare AppSnap storage: {error}")));
+            self.set_state(
+                "error",
+                Some(format!("Could not prepare AppSnap storage: {error}")),
+            );
             return self.state();
         }
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt as _;
-            let _ = std::fs::set_permissions(&self.capture_directory, std::fs::Permissions::from_mode(0o700));
+            let _ = std::fs::set_permissions(
+                &self.capture_directory,
+                std::fs::Permissions::from_mode(0o700),
+            );
         }
         let child = Command::new(&self.helper)
             .arg("--watch")
@@ -1256,11 +1583,16 @@ impl AppSnapWatcher {
             }
         };
         let Some(stdout) = child.stdout.take() else {
-            self.set_state("error", Some("The AppSnap helper output is unavailable.".into()));
+            self.set_state(
+                "error",
+                Some("The AppSnap helper output is unavailable.".into()),
+            );
             return self.state();
         };
         let generation = {
-            let Ok(mut inner) = self.inner.lock() else { return self.state() };
+            let Ok(mut inner) = self.inner.lock() else {
+                return self.state();
+            };
             inner.generation = inner.generation.saturating_add(1);
             inner.child = Some(child);
             inner.generation
@@ -1274,21 +1606,31 @@ impl AppSnapWatcher {
         let receiver = ndjson_receiver(stdout);
         loop {
             let Ok(line) = receiver.recv() else { break };
-            if !self.current_generation(generation) { return; }
-            let Ok(value) = serde_json::from_str::<Value>(&line) else { continue };
+            if !self.current_generation(generation) {
+                return;
+            }
+            let Ok(value) = serde_json::from_str::<Value>(&line) else {
+                continue;
+            };
             match value.get("type").and_then(Value::as_str) {
                 Some("ready") => self.set_state("ready", None),
                 Some("permissions") => {
                     if let Some(permissions) = parse_appsnap_permissions(&line) {
                         if let Ok(mut inner) = self.inner.lock() {
-                            inner.state.input_monitoring = permissions.input_monitoring.or(inner.state.input_monitoring);
-                            inner.state.screen_recording = permissions.screen_recording.or(inner.state.screen_recording);
+                            inner.state.input_monitoring = permissions
+                                .input_monitoring
+                                .or(inner.state.input_monitoring);
+                            inner.state.screen_recording = permissions
+                                .screen_recording
+                                .or(inner.state.screen_recording);
                         }
                     }
                 }
                 Some("captured") => {
                     if let Ok(capture) = capture_from_message(&value, &self.capture_directory) {
-                        if let Err(error) = persist_pending_capture(&self.capture_directory, &capture) {
+                        if let Err(error) =
+                            persist_pending_capture(&self.capture_directory, &capture)
+                        {
                             self.set_state("error", Some(error));
                         }
                     } else {
@@ -1296,21 +1638,36 @@ impl AppSnapWatcher {
                     }
                 }
                 Some("error") => {
-                    let message = value.get("message").and_then(Value::as_str).unwrap_or("AppSnap capture failed.");
+                    let message = value
+                        .get("message")
+                        .and_then(Value::as_str)
+                        .unwrap_or("AppSnap capture failed.");
                     self.set_state("error", Some(message.to_string()));
                 }
                 _ => {}
             }
         }
-        if !self.current_generation(generation) { return; }
-        let unexpected = self.inner.lock().ok().is_some_and(|inner| inner.state.enabled);
+        if !self.current_generation(generation) {
+            return;
+        }
+        let unexpected = self
+            .inner
+            .lock()
+            .ok()
+            .is_some_and(|inner| inner.state.enabled);
         if unexpected {
-            self.set_state("error", Some("The AppSnap helper stopped unexpectedly.".into()));
+            self.set_state(
+                "error",
+                Some("The AppSnap helper stopped unexpectedly.".into()),
+            );
         }
     }
 
     fn current_generation(&self, generation: u64) -> bool {
-        self.inner.lock().ok().is_some_and(|inner| inner.generation == generation && inner.child.is_some())
+        self.inner
+            .lock()
+            .ok()
+            .is_some_and(|inner| inner.generation == generation && inner.child.is_some())
     }
 
     pub fn pending_captures(&self) -> Vec<PendingAppSnapCapture> {

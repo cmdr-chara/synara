@@ -2,31 +2,34 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
 impl Native {
     /// Upstream toggleProjectPinned: flips isPinned via project.meta.update.
-    pub(super) fn toggle_project_pin(&mut self, project_id: String, pinned: bool, cx: &mut Context<Self>) {
+    pub(super) fn toggle_project_pin(
+        &mut self,
+        project_id: String,
+        pinned: bool,
+        cx: &mut Context<Self>,
+    ) {
         self.dispatch_cmd(
             json!({
                 "type": "project.meta.update",
@@ -40,7 +43,12 @@ impl Native {
 
     /// Upstream archiveAllThreadsInProject / deleteProjectThreads: one
     /// command per live thread filed under the project.
-    pub(super) fn project_threads_cmd(&mut self, project_id: String, kind: &str, cx: &mut Context<Self>) {
+    pub(super) fn project_threads_cmd(
+        &mut self,
+        project_id: String,
+        kind: &str,
+        cx: &mut Context<Self>,
+    ) {
         let Some(snapshot) = self.snapshot.as_ref() else {
             return;
         };
@@ -189,40 +197,48 @@ impl Native {
             prompt: None,
         });
         let client = self.client.clone();
-        cx.spawn_in(window, async move |this: WeakEntity<Self>, cx: &mut AsyncWindowContext| {
-            let Ok(Ok(Some(paths))) = rx.await else { return };
-            let Some(dir) = paths.first().cloned() else { return };
-            let title = dir
-                .file_name()
-                .map(|n| n.to_string_lossy().into_owned())
-                .unwrap_or_else(|| "Project".to_string());
-            let root = dir.to_string_lossy().into_owned();
-            let cell = client.clone();
-            let r = cx
-                .background_executor()
-                .spawn(async move {
-                    ensure_client(&cell).and_then(|c| {
-                        c.call(
-                            "orchestration.dispatchCommand",
-                            json!({
-                                "type": "project.create",
-                                "commandId": uuid(),
-                                "projectId": uuid(),
-                                "title": title,
-                                "workspaceRoot": root,
-                                "kind": "project",
-                                "createdAt": now_iso(),
-                            }),
-                        )
+        cx.spawn_in(
+            window,
+            async move |this: WeakEntity<Self>, cx: &mut AsyncWindowContext| {
+                let Ok(Ok(Some(paths))) = rx.await else {
+                    return;
+                };
+                let Some(dir) = paths.first().cloned() else {
+                    return;
+                };
+                let title = dir
+                    .file_name()
+                    .map(|n| n.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| "Project".to_string());
+                let root = dir.to_string_lossy().into_owned();
+                let cell = client.clone();
+                let r = cx
+                    .background_executor()
+                    .spawn(async move {
+                        ensure_client(&cell).and_then(|c| {
+                            c.call(
+                                "orchestration.dispatchCommand",
+                                json!({
+                                    "type": "project.create",
+                                    "commandId": uuid(),
+                                    "projectId": uuid(),
+                                    "title": title,
+                                    "workspaceRoot": root,
+                                    "kind": "project",
+                                    "createdAt": now_iso(),
+                                }),
+                            )
+                        })
                     })
-                })
-                .await;
-            let _ = this.update(cx, |this: &mut Self, cx| {
-                if r.is_none() {
-                    this.feedback_toast = Some(("Failed to add the project.".to_string(), true));
-                }
-            });
-        })
+                    .await;
+                let _ = this.update(cx, |this: &mut Self, cx| {
+                    if r.is_none() {
+                        this.feedback_toast =
+                            Some(("Failed to add the project.".to_string(), true));
+                    }
+                });
+            },
+        )
         .detach();
     }
 
@@ -235,9 +251,8 @@ impl Native {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let search = cx.new(|cx| {
-            InputState::new(window, cx).placeholder("Search projects or folders")
-        });
+        let search =
+            cx.new(|cx| InputState::new(window, cx).placeholder("Search projects or folders"));
         cx.subscribe_in(&search, window, |_this: &mut Self, _s, ev, _w, cx| {
             if let InputEvent::Change = ev {
                 cx.notify();
@@ -267,7 +282,9 @@ impl Native {
     /// "Find projects" / "Scan again": orchestration.listProjectImports for
     /// the enabled providers, then preselect every selectable item.
     pub(super) fn import_scan(&mut self, cx: &mut Context<Self>) {
-        let Some(d) = self.import_dlg.as_mut() else { return };
+        let Some(d) = self.import_dlg.as_mut() else {
+            return;
+        };
         if d.providers.is_empty() {
             return;
         }
@@ -293,7 +310,9 @@ impl Native {
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
-                let Some(d) = this.import_dlg.as_mut() else { return };
+                let Some(d) = this.import_dlg.as_mut() else {
+                    return;
+                };
                 d.scanning = false;
                 match v {
                     Some(cat) => {
@@ -321,7 +340,9 @@ impl Native {
     /// — (item key, display title, importProject input).
     pub(super) fn import_queue(d: &ImportDlg) -> Vec<(String, String, Value)> {
         let mut queue = Vec::new();
-        let Some(cat) = d.catalog.as_ref() else { return queue };
+        let Some(cat) = d.catalog.as_ref() else {
+            return queue;
+        };
         for p in arr(cat, "projects") {
             let pk = str_at(p, "key");
             let ptitle = str_at(p, "title");
@@ -378,15 +399,15 @@ impl Native {
     /// "Import selected" / "Retry failed": sequential
     /// orchestration.importProject per queued item, then a snapshot sync.
     pub(super) fn import_run(&mut self, retry_only: bool, cx: &mut Context<Self>) {
-        let Some(d) = self.import_dlg.as_mut() else { return };
+        let Some(d) = self.import_dlg.as_mut() else {
+            return;
+        };
         if d.running {
             return;
         }
         let queue: Vec<(String, String, Value)> = Self::import_queue(d)
             .into_iter()
-            .filter(|(k, _, _)| {
-                !retry_only || matches!(d.outcomes.get(k), Some(Some(_)))
-            })
+            .filter(|(k, _, _)| !retry_only || matches!(d.outcomes.get(k), Some(Some(_))))
             .collect();
         if queue.is_empty() {
             return;
@@ -433,9 +454,8 @@ impl Native {
             let snap = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell3).and_then(|c| {
-                        c.call("orchestration.getShellSnapshot", json!({}))
-                    })
+                    ensure_client(&cell3)
+                        .and_then(|c| c.call("orchestration.getShellSnapshot", json!({})))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {

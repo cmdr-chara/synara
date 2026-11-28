@@ -3,7 +3,7 @@
 //! activities), mirroring apps/server/src/studioOutputs.ts.
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
 
 use crate::orchestration_snapshot::open_state_copy;
@@ -14,8 +14,17 @@ const EXCLUDED_TOP_LEVEL: &[&str] = &["tmp", "logs", "inbox", "context", "skills
 const EXCLUDED_ROOT_FILES: &[&str] = &["agents.md", "claude.md"];
 const EXCLUDED_NESTED: &[&str] = &["node_modules"];
 const STUDIO_SUBDIRS: &[&str] = &[
-    "Inbox", "Context", "Logs", "Skills", "tmp", "Outbox/Content", "Outbox/Daily", "Outbox/Images",
-    "Outbox/Notion", "Outbox/TikTok", "Outbox/YouTube",
+    "Inbox",
+    "Context",
+    "Logs",
+    "Skills",
+    "tmp",
+    "Outbox/Content",
+    "Outbox/Daily",
+    "Outbox/Images",
+    "Outbox/Notion",
+    "Outbox/TikTok",
+    "Outbox/YouTube",
 ];
 
 fn err(message: impl Into<String>) -> WsErr {
@@ -29,7 +38,10 @@ fn scaffold_studio_root() {
     let Ok(home) = std::env::var("HOME") else {
         return;
     };
-    let root = Path::new(&home).join("Documents").join("Synara").join("Studio");
+    let root = Path::new(&home)
+        .join("Documents")
+        .join("Synara")
+        .join("Studio");
     let _ = std::fs::create_dir_all(&root);
     for sub in STUDIO_SUBDIRS {
         let _ = std::fs::create_dir_all(root.join(sub));
@@ -131,7 +143,14 @@ pub fn handle(_tag: &str, payload: &Value) -> Result<Value, WsErr> {
         return Err(err("Failed to list studio thread outputs"));
     };
     let conn = &copy.conn;
-    let ctx: Option<(String, String, String, String, Option<String>, Option<String>)> = conn
+    let ctx: Option<(
+        String,
+        String,
+        String,
+        String,
+        Option<String>,
+        Option<String>,
+    )> = conn
         .query_row(
             "SELECT t.thread_id, t.project_id, p.kind, p.workspace_root, \
                     t.env_mode, t.worktree_path, t.working_directory \

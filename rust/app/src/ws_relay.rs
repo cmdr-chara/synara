@@ -10,8 +10,8 @@
 use axum::Router;
 use axum::extract::State;
 use axum::extract::ws::{Message as ClientMessage, WebSocket, WebSocketUpgrade};
-use axum::response::IntoResponse;
 use axum::http::{HeaderMap, Uri};
+use axum::response::IntoResponse;
 use axum::response::Response;
 use axum::routing::get;
 use futures_util::{SinkExt, StreamExt};
@@ -59,14 +59,10 @@ pub fn router() -> Router<AppState> {
         .route("/ws/remote/{host_id}/ws", get(remote_renderer_upgrade))
 }
 
-
 /// Outer remote endpoint: never plaintext RPC — the upgraded socket carries
 /// the TLS tunnel exactly as upstream's RemoteTlsServer. Without a paired
 /// identity there is nothing to terminate TLS with, so the upgrade refuses.
-async fn remote_tunnel_upgrade(
-    State(original): State<AppState>,
-    ws: WebSocketUpgrade,
-) -> Response {
+async fn remote_tunnel_upgrade(State(original): State<AppState>, ws: WebSocketUpgrade) -> Response {
     let state_dir = crate::todo::state_dir();
     let secrets_dir = format!("{state_dir}/secrets");
     let environment_id = crate::server_env::environment_id(&state_dir).unwrap_or_default();
@@ -88,21 +84,30 @@ async fn remote_tunnel_upgrade(
 /// computer; upstream mode relays exactly like every other socket.
 
 pub(crate) fn query_value(uri: &Uri, wanted: &str) -> Option<String> {
-    uri.query()?.split('&').filter_map(|pair| {
-        let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
-        (key == wanted).then(|| urlencoding_decode(raw))
-    }).next()
+    uri.query()?
+        .split('&')
+        .filter_map(|pair| {
+            let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
+            (key == wanted).then(|| urlencoding_decode(raw))
+        })
+        .next()
 }
 
 fn configured_auth_token() -> Option<String> {
-    std::env::var("SYNARA_AUTH_TOKEN").ok().filter(|value| !value.trim().is_empty()).or_else(|| {
-        let args: Vec<String> = std::env::args().collect();
-        args.windows(2)
-            .find(|pair| pair[0] == "--auth-token")
-            .map(|pair| pair[1].clone())
-            .or_else(|| args.iter().find_map(|arg| arg.strip_prefix("--auth-token=").map(str::to_string)))
-            .filter(|value| !value.trim().is_empty())
-    })
+    std::env::var("SYNARA_AUTH_TOKEN")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .or_else(|| {
+            let args: Vec<String> = std::env::args().collect();
+            args.windows(2)
+                .find(|pair| pair[0] == "--auth-token")
+                .map(|pair| pair[1].clone())
+                .or_else(|| {
+                    args.iter()
+                        .find_map(|arg| arg.strip_prefix("--auth-token=").map(str::to_string))
+                })
+                .filter(|value| !value.trim().is_empty())
+        })
 }
 
 fn loopback_host(value: Option<&str>) -> bool {
@@ -112,23 +117,30 @@ fn loopback_host(value: Option<&str>) -> bool {
 
 fn websocket_auth_required() -> bool {
     configured_auth_token().is_some()
-        || std::env::var("SYNARA_PUBLIC_URL").ok().is_some_and(|value| !value.trim().is_empty())
+        || std::env::var("SYNARA_PUBLIC_URL")
+            .ok()
+            .is_some_and(|value| !value.trim().is_empty())
         || !loopback_host(std::env::var("SYNARA_HOST").ok().as_deref())
-        || std::env::var("SYNARA_SSH_FORWARD_PORT").ok().is_some_and(|value| !value.trim().is_empty())
+        || std::env::var("SYNARA_SSH_FORWARD_PORT")
+            .ok()
+            .is_some_and(|value| !value.trim().is_empty())
 }
 
 fn trusted_local_legacy_token(token: Option<&str>) -> bool {
     configured_auth_token().is_some_and(|expected| {
         Some(expected.as_str()) == token
             && loopback_host(std::env::var("SYNARA_HOST").ok().as_deref())
-            && std::env::var("SYNARA_PUBLIC_URL").ok().is_none_or(|value| value.trim().is_empty())
+            && std::env::var("SYNARA_PUBLIC_URL")
+                .ok()
+                .is_none_or(|value| value.trim().is_empty())
     })
 }
 
-
 fn has_session_cookie(cookie_header: &str) -> bool {
     cookie_header.split(';').any(|part| {
-        let Some((name, value)) = part.trim().split_once('=') else { return false };
+        let Some((name, value)) = part.trim().split_once('=') else {
+            return false;
+        };
         !value.is_empty()
             && (name == "synara_session"
                 || (name.strip_prefix("synara_session_").is_some_and(|suffix| {
@@ -141,13 +153,21 @@ fn has_session_cookie(cookie_header: &str) -> bool {
 /// local trust split of the main `/ws` upgrade: authless loopback stays local,
 /// the private legacy token stays local, but every explicit browser credential
 /// must verify and client-role sessions may not pivot to another machine.
-pub(crate) fn remote_owner_authorized(headers: &HeaderMap, uri: &Uri) -> Result<(), axum::http::StatusCode> {
+pub(crate) fn remote_owner_authorized(
+    headers: &HeaderMap,
+    uri: &Uri,
+) -> Result<(), axum::http::StatusCode> {
     let legacy_token = query_value(uri, "token");
     let ws_ticket = query_value(uri, "wsToken");
     let explicit = ws_ticket.is_some()
         || headers.get(axum::http::header::AUTHORIZATION).is_some()
-        || headers.get(axum::http::header::COOKIE).and_then(|value| value.to_str().ok()).is_some_and(has_session_cookie);
-    if !explicit && (!websocket_auth_required() || trusted_local_legacy_token(legacy_token.as_deref())) {
+        || headers
+            .get(axum::http::header::COOKIE)
+            .and_then(|value| value.to_str().ok())
+            .is_some_and(has_session_cookie);
+    if !explicit
+        && (!websocket_auth_required() || trusted_local_legacy_token(legacy_token.as_deref()))
+    {
         return Ok(());
     }
     if trusted_local_legacy_token(legacy_token.as_deref()) {
@@ -178,7 +198,12 @@ fn reject_untrusted_websocket_origin(headers: &HeaderMap) -> bool {
 }
 
 fn websocket_auth_not_required_response(status: axum::http::StatusCode) -> Response {
-    (status, [(axum::http::header::CACHE_CONTROL, "no-store")], "Unauthorized").into_response()
+    (
+        status,
+        [(axum::http::header::CACHE_CONTROL, "no-store")],
+        "Unauthorized",
+    )
+        .into_response()
 }
 
 fn authenticate_rpc_websocket_upgrade(
@@ -228,7 +253,12 @@ async fn remote_negotiate(
         return (status, no_store, "Unauthorized").into_response();
     }
     if crate::remote_connections::desired(&host_id).is_none() {
-        return (axum::http::StatusCode::NOT_FOUND, no_store, "No open connection to that host").into_response();
+        return (
+            axum::http::StatusCode::NOT_FOUND,
+            no_store,
+            "No open connection to that host",
+        )
+            .into_response();
     }
     let query = uri.query().unwrap_or_default();
     let mut epoch = None;
@@ -240,7 +270,8 @@ async fn remote_negotiate(
         let (key, raw) = pair.split_once('=').unwrap_or((pair, ""));
         let value = urlencoding_decode(raw);
         let integer = (!value.is_empty() && value.bytes().all(|byte| byte.is_ascii_digit()))
-            .then(|| value.parse::<i64>().ok()).flatten();
+            .then(|| value.parse::<i64>().ok())
+            .flatten();
         match key {
             "x-synara-protocol-epoch" => epoch = integer,
             "x-synara-protocol-min-revision" => min_revision = integer,
@@ -250,14 +281,22 @@ async fn remote_negotiate(
             _ => {}
         }
     }
-    let valid = epoch.is_some() && min_revision.is_some() && max_revision.is_some() && client_build.is_some();
+    let valid = epoch.is_some()
+        && min_revision.is_some()
+        && max_revision.is_some()
+        && client_build.is_some();
     if !valid {
         let error = crate::native_ws::error_body(
             "WebSocket negotiation parameters are missing or invalid.",
             "WS_NEGOTIATION_REQUIRED",
             "reload",
         );
-        return (axum::http::StatusCode::UPGRADE_REQUIRED, no_store, axum::Json(error)).into_response();
+        return (
+            axum::http::StatusCode::UPGRADE_REQUIRED,
+            no_store,
+            axum::Json(error),
+        )
+            .into_response();
     }
     let client = json!({
         "protocolEpoch": epoch.unwrap_or_default(),
@@ -269,17 +308,28 @@ async fn remote_negotiate(
     let host_for_worker = host_id.clone();
     let result = tokio::task::spawn_blocking(move || {
         crate::remote_connections::prepare_blocking(&host_for_worker, client)
-    }).await;
+    })
+    .await;
     match result {
         Ok(Ok(value)) => (axum::http::StatusCode::OK, no_store, axum::Json(value)).into_response(),
         Ok(Err(error)) if error.starts_with("Remote connection requires attention:") => {
             let state = crate::remote_connections::state(&host_id);
-            (axum::http::StatusCode::CONFLICT, no_store, axum::Json(json!({
-                "code":"REMOTE_CONNECTION_REQUIRES_ATTENTION",
-                "state":state,
-            }))).into_response()
+            (
+                axum::http::StatusCode::CONFLICT,
+                no_store,
+                axum::Json(json!({
+                    "code":"REMOTE_CONNECTION_REQUIRES_ATTENTION",
+                    "state":state,
+                })),
+            )
+                .into_response()
         }
-        _ => (axum::http::StatusCode::SERVICE_UNAVAILABLE, no_store, "Remote host unavailable").into_response(),
+        _ => (
+            axum::http::StatusCode::SERVICE_UNAVAILABLE,
+            no_store,
+            "Remote host unavailable",
+        )
+            .into_response(),
     }
 }
 
@@ -311,13 +361,31 @@ async fn remote_renderer_upgrade(
         }
     }
     let (Some(attachment_id), Some(server_instance)) = (attachment_id, server_instance) else {
-        return (axum::http::StatusCode::NOT_FOUND, "Remote stream negotiation expired").into_response();
+        return (
+            axum::http::StatusCode::NOT_FOUND,
+            "Remote stream negotiation expired",
+        )
+            .into_response();
     };
-    if !crate::remote_connections::attachment_valid(&host_id, &attachment_id, Some(&server_instance)) {
-        return (axum::http::StatusCode::NOT_FOUND, "Remote stream negotiation expired").into_response();
+    if !crate::remote_connections::attachment_valid(
+        &host_id,
+        &attachment_id,
+        Some(&server_instance),
+    ) {
+        return (
+            axum::http::StatusCode::NOT_FOUND,
+            "Remote stream negotiation expired",
+        )
+            .into_response();
     }
     ws.on_upgrade(move |socket| async move {
-        let _ = crate::remote_connections::attach(&host_id, &attachment_id, Some(&server_instance), socket).await;
+        let _ = crate::remote_connections::attach(
+            &host_id,
+            &attachment_id,
+            Some(&server_instance),
+            socket,
+        )
+        .await;
     })
 }
 
@@ -342,7 +410,10 @@ async fn device_frames_upgrade(
             q.split('&')
                 .filter_map(|pair| {
                     let mut parts = pair.splitn(2, '=');
-                    Some((parts.next()?.to_string(), parts.next().unwrap_or("").to_string()))
+                    Some((
+                        parts.next()?.to_string(),
+                        parts.next().unwrap_or("").to_string(),
+                    ))
                 })
                 .collect()
         })
@@ -371,7 +442,10 @@ async fn computer_frames_upgrade(
             q.split('&')
                 .filter_map(|pair| {
                     let mut parts = pair.splitn(2, '=');
-                    Some((parts.next()?.to_string(), parts.next().unwrap_or("").to_string()))
+                    Some((
+                        parts.next()?.to_string(),
+                        parts.next().unwrap_or("").to_string(),
+                    ))
                 })
                 .collect()
         })
@@ -379,12 +453,7 @@ async fn computer_frames_upgrade(
     crate::computer_frames::upgrade(ws, axum::extract::Query(params)).await
 }
 
-
-fn compatibility_error_body(
-    action: &str,
-    message: &str,
-    code: &str,
-) -> serde_json::Value {
+fn compatibility_error_body(action: &str, message: &str, code: &str) -> serde_json::Value {
     json!({
         "_tag": "WsCompatibilityError",
         "message": message,
@@ -401,9 +470,7 @@ fn compatibility_error_body(
 fn compatibility_refusal(uri: &Uri) -> Option<Response> {
     let params: std::collections::HashMap<String, String> = uri
         .query()
-        .map(|query| {
-            qstring_pairs(query).into_iter().collect()
-        })
+        .map(|query| qstring_pairs(query).into_iter().collect())
         .unwrap_or_default();
     let epoch = params
         .get("x-synara-protocol-epoch")
@@ -422,27 +489,50 @@ fn compatibility_refusal(uri: &Uri) -> Option<Response> {
         .map(|value| value.trim().to_string())
         .unwrap_or_default();
     let (action, message, code) = if epoch != crate::native_ws::PROTOCOL_EPOCH {
-        ("reload", "Feature RPC rejected before compatible WebSocket protocol negotiation.", "WS_NEGOTIATION_REQUIRED")
-    } else if revision < crate::native_ws::MIN_REVISION || revision > crate::native_ws::MAX_REVISION {
+        (
+            "reload",
+            "Feature RPC rejected before compatible WebSocket protocol negotiation.",
+            "WS_NEGOTIATION_REQUIRED",
+        )
+    } else if revision < crate::native_ws::MIN_REVISION || revision > crate::native_ws::MAX_REVISION
+    {
         if revision < crate::native_ws::MIN_REVISION {
-            ("update-client", "Feature RPC rejected because its negotiated protocol revision is unsupported.", "WS_PROTOCOL_INCOMPATIBLE")
+            (
+                "update-client",
+                "Feature RPC rejected because its negotiated protocol revision is unsupported.",
+                "WS_PROTOCOL_INCOMPATIBLE",
+            )
         } else {
-            ("update-server", "Feature RPC rejected because its negotiated protocol revision is unsupported.", "WS_PROTOCOL_INCOMPATIBLE")
+            (
+                "update-server",
+                "Feature RPC rejected because its negotiated protocol revision is unsupported.",
+                "WS_PROTOCOL_INCOMPATIBLE",
+            )
         }
     } else if client_build.is_empty() {
-        ("reload", "Feature RPC rejected because the client build identity is missing.", "WS_NEGOTIATION_REQUIRED")
+        (
+            "reload",
+            "Feature RPC rejected because the client build identity is missing.",
+            "WS_NEGOTIATION_REQUIRED",
+        )
     } else if expected_instance != crate::native_ws::server_instance_id() {
-        ("reload", "The Synara server restarted during WebSocket negotiation. Reload to reconnect to the new server generation.", "WS_SERVER_GENERATION_CHANGED")
+        (
+            "reload",
+            "The Synara server restarted during WebSocket negotiation. Reload to reconnect to the new server generation.",
+            "WS_SERVER_GENERATION_CHANGED",
+        )
     } else {
         return None;
     };
     let body = compatibility_error_body(action, message, code).to_string();
-    Some(Response::builder()
-        .status(axum::http::StatusCode::UPGRADE_REQUIRED)
-        .header(axum::http::header::CONTENT_TYPE, "application/json")
-        .header(axum::http::header::CACHE_CONTROL, "no-store")
-        .body(axum::body::Body::from(body))
-        .expect("compatibility refusal"))
+    Some(
+        Response::builder()
+            .status(axum::http::StatusCode::UPGRADE_REQUIRED)
+            .header(axum::http::header::CONTENT_TYPE, "application/json")
+            .header(axum::http::header::CACHE_CONTROL, "no-store")
+            .body(axum::body::Body::from(body))
+            .expect("compatibility refusal"),
+    )
 }
 
 fn qstring_pairs(query: &str) -> Vec<(String, String)> {
@@ -477,7 +567,11 @@ pub(crate) fn urlencoding_decode(input: &str) -> String {
                 continue;
             }
         }
-        out.push(if bytes[index] == b'+' { b' ' } else { bytes[index] });
+        out.push(if bytes[index] == b'+' {
+            b' '
+        } else {
+            bytes[index]
+        });
         index += 1;
     }
     String::from_utf8_lossy(&out).into_owned()
@@ -500,7 +594,9 @@ async fn upgrade(
     // `/ws` is the feature socket negotiated by `/ws/negotiate`; the legacy
     // bootstrap socket is itself the negotiation transport and stays exempt.
     // Frame sockets have their own query shape and are never compatibility-gated.
-    if uri.path() == "/ws" && let Some(refusal) = compatibility_refusal(&uri) {
+    if uri.path() == "/ws"
+        && let Some(refusal) = compatibility_refusal(&uri)
+    {
         return refusal;
     }
     let authenticated_session = if authenticated_websocket_path(uri.path()) {
@@ -511,9 +607,9 @@ async fn upgrade(
     } else {
         None
     };
-    let connection_lease = authenticated_session
-        .as_ref()
-        .map(|session| crate::auth_connections::register_authenticated_connection(&session.session_id));
+    let connection_lease = authenticated_session.as_ref().map(|session| {
+        crate::auth_connections::register_authenticated_connection(&session.session_id)
+    });
     let connection_lease = match connection_lease {
         Some(Ok(lease)) => Some(lease),
         Some(Err(active)) => {
@@ -527,7 +623,8 @@ async fn upgrade(
                     "limit": crate::auth_connections::MAX_AUTHENTICATED_CONNECTIONS_PER_SESSION,
                     "retryAfterSeconds": 1,
                 })),
-            ).into_response();
+            )
+                .into_response();
         }
         None => None,
     };
@@ -556,11 +653,14 @@ fn owner_only_rpc(tag: &str, payload: &serde_json::Value) -> bool {
         || (tag == "server.updateSettings"
             && (payload.get("legacyProviders").is_some()
                 || payload.get("legacyProviderInstances").is_some()))
-        || (tag == "stats.getUsageAnalytics" && payload.get("scope").and_then(serde_json::Value::as_str) == Some("mac"))
+        || (tag == "stats.getUsageAnalytics"
+            && payload.get("scope").and_then(serde_json::Value::as_str) == Some("mac"))
 }
 
 fn strip_provider_account_identity(value: &mut serde_json::Value) {
-    let Some(providers) = value.get_mut("providers").and_then(serde_json::Value::as_array_mut)
+    let Some(providers) = value
+        .get_mut("providers")
+        .and_then(serde_json::Value::as_array_mut)
     else {
         return;
     };
@@ -587,7 +687,15 @@ pub(crate) async fn intercept_todo_pub(
     desktop_update_authority: Option<&str>,
     session_role: &str,
 ) -> Option<Option<ClientMessage>> {
-    intercept_todo(text, todos, native_tx, streams, desktop_update_authority, session_role).await
+    intercept_todo(
+        text,
+        todos,
+        native_tx,
+        streams,
+        desktop_update_authority,
+        session_role,
+    )
+    .await
 }
 
 async fn intercept_todo(
@@ -742,7 +850,8 @@ async fn intercept_todo(
         && !crate::skills_catalog::handles(tag)
         && !crate::project_imports::handles(tag)
         && !crate::computer_audit::handles(tag)
-        && !tag.starts_with("computer.") && !tag.starts_with("device.")
+        && !tag.starts_with("computer.")
+        && !tag.starts_with("device.")
         && !crate::account::handles(tag)
         && !crate::hosts::handles(tag)
         && !crate::device::handles(tag)
@@ -807,7 +916,10 @@ async fn intercept_todo(
                     let chunk = serde_json::json!({
                         "_tag": "Chunk", "requestId": rid2, "values": [event],
                     });
-                    if tx2.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                    if tx2
+                        .send(ClientMessage::Text(chunk.to_string().into()))
+                        .is_err()
+                    {
                         break;
                     }
                 }
@@ -852,15 +964,22 @@ async fn intercept_todo(
                 .unwrap_or("")
                 .to_string();
             let fp = crate::git_action_registry::fingerprint(&payload2);
-            let resume = payload2.get("resume").and_then(|v| v.as_bool()).unwrap_or(false);
+            let resume = payload2
+                .get("resume")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false);
             use crate::git_action_registry::Attach;
-            let fail_exit = |message: &str| serde_json::json!({
-                "_tag": "Exit", "requestId": rid,
-                "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
-                    "_tag": "WsRpcError", "message": message, "code": null, "retryable": false,
-                }}]},
-            });
-            let (history, mut rx) = match crate::git_action_registry::attach(&action_id, &fp, resume) {
+            let fail_exit = |message: &str| {
+                serde_json::json!({
+                    "_tag": "Exit", "requestId": rid,
+                    "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
+                        "_tag": "WsRpcError", "message": message, "code": null, "retryable": false,
+                    }}]},
+                })
+            };
+            let (history, mut rx) = match crate::git_action_registry::attach(
+                &action_id, &fp, resume,
+            ) {
                 Attach::New { rx } => {
                     // Spawn the mutation itself; it publishes every progress
                     // event into the registry, which fans out to subscribers.
@@ -876,8 +995,11 @@ async fn intercept_todo(
                             .and_then(|v| v.as_str())
                             .unwrap_or("")
                             .to_string();
-                        let result =
-                            crate::git_pr::run_stacked_action_streaming(&cwd, &payload3, &mut forward);
+                        let result = crate::git_pr::run_stacked_action_streaming(
+                            &cwd,
+                            &payload3,
+                            &mut forward,
+                        );
                         if let Err(e) = &result {
                             crate::git_action_registry::publish(
                                 &aid,
@@ -951,7 +1073,10 @@ async fn intercept_todo(
                 let chunk = serde_json::json!({
                     "_tag": "Chunk", "requestId": rid, "values": [event],
                 });
-                if tx.send(ClientMessage::Text(chunk.to_string().into())).is_err() {
+                if tx
+                    .send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_err()
+                {
                     break;
                 }
                 if terminal {
@@ -1075,14 +1200,18 @@ async fn intercept_todo(
                         rid: &serde_json::Value,
                         ev: serde_json::Value|
              -> bool {
-                let chunk =
-                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [ev]});
-                tx.send(ClientMessage::Text(chunk.to_string().into())).is_ok()
+                let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [ev]});
+                tx.send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_ok()
             };
             let mut last_sig = String::new();
             if let Ok(w) = crate::computer_native::windows_value() {
                 last_sig = w.to_string();
-                if !send(&tx, &rid, serde_json::json!({"type": "computer.windows-changed", "windows": w})) {
+                if !send(
+                    &tx,
+                    &rid,
+                    serde_json::json!({"type": "computer.windows-changed", "windows": w}),
+                ) {
                     return;
                 }
             }
@@ -1165,10 +1294,7 @@ async fn intercept_todo(
                 } else {
                     quiet_ticks = (quiet_ticks + 1).min(5);
                 }
-                tokio::time::sleep(std::time::Duration::from_millis(
-                    400 + quiet_ticks * 400,
-                ))
-                .await;
+                tokio::time::sleep(std::time::Duration::from_millis(400 + quiet_ticks * 400)).await;
             }
         });
         if let Ok(mut map) = streams.lock() {
@@ -1205,8 +1331,12 @@ async fn intercept_todo(
         let tx = native_tx.clone();
         let rid = request_id.clone();
         let task = tokio::spawn(async move {
-            fn send(tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>, chunk: serde_json::Value) -> bool {
-                tx.send(ClientMessage::Text(chunk.to_string().into())).is_ok()
+            fn send(
+                tx: &tokio::sync::mpsc::UnboundedSender<ClientMessage>,
+                chunk: serde_json::Value,
+            ) -> bool {
+                tx.send(ClientMessage::Text(chunk.to_string().into()))
+                    .is_ok()
             }
             let mut last_seen: i64 = 0;
             if let Some(after) = after_seq {
@@ -1265,10 +1395,8 @@ async fn intercept_todo(
             }
             let mut quiet_ticks: u64 = 0;
             loop {
-                tokio::time::sleep(std::time::Duration::from_millis(
-                    1000 + quiet_ticks * 500,
-                ))
-                .await;
+                tokio::time::sleep(std::time::Duration::from_millis(1000 + quiet_ticks * 500))
+                    .await;
                 match crate::orchestration_reads::thread_events_after(&thread_id, last_seen) {
                     Ok(events) => {
                         let mut any = false;
@@ -1440,8 +1568,7 @@ async fn intercept_todo(
         let task = tokio::spawn(async move {
             // Upstream subscribeServerSettings streams raw {settings} objects
             // (the typed settingsUpdated envelope belongs to subscribeConfig).
-            let chunk =
-                serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"settings": snapshot}]});
+            let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"settings": snapshot}]});
             if tx
                 .send(ClientMessage::Text(chunk.to_string().into()))
                 .is_err()
@@ -1449,8 +1576,7 @@ async fn intercept_todo(
                 return;
             }
             while let Ok(settings) = rx.recv().await {
-                let chunk =
-                    serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"settings": settings}]});
+                let chunk = serde_json::json!({"_tag": "Chunk", "requestId": rid, "values": [{"settings": settings}]});
                 if tx
                     .send(ClientMessage::Text(chunk.to_string().into()))
                     .is_err()
@@ -1809,8 +1935,7 @@ async fn intercept_todo(
             .map(Some)
             .map_err(error_json)
     } else if crate::editor_intelligence::handles(tag) {
-        crate::editor_intelligence::handle(tag, &payload)
-            .map_err(error_json)
+        crate::editor_intelligence::handle(tag, &payload).map_err(error_json)
     } else if tag == "agentGateway.call" {
         crate::agent_gateway_mcp::handle_ws_call(&payload)
             .await
@@ -1954,7 +2079,10 @@ fn intercept_bootstrap(text: &str) -> Option<(String, ClientMessage)> {
         }),
     };
     let reply = json!({"_tag": "Exit", "requestId": request_id, "exit": exit});
-    Some((rpc_id_key(&request_id), ClientMessage::Text(reply.to_string().into())))
+    Some((
+        rpc_id_key(&request_id),
+        ClientMessage::Text(reply.to_string().into()),
+    ))
 }
 
 /// Replaces the `x-synara-server-instance` query value in a socket target.
@@ -2000,114 +2128,126 @@ async fn serve_native_socket(
     desktop_update_authority: Option<String>,
     session_role: String,
 ) {
-        // No usable original is running: serve every frame natively. Handled tags get
-        // their normal reply; anything else answers an Exit failure so callers
-        // never hang waiting for an upstream that does not exist.
-        eprintln!("ws_relay: serving socket natively (upstream unavailable or disabled)");
-        let (mut client_tx, mut client_rx) = client.split();
-        let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
-        let streams: std::sync::Arc<
-            std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
-        > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
-        let streams_in = streams.clone();
-        let writer = tokio::spawn(async move {
-            while let Some(m) = native_rx.recv().await {
-                if client_tx.send(m).await.is_err() {
-                    break;
-                }
+    // No usable original is running: serve every frame natively. Handled tags get
+    // their normal reply; anything else answers an Exit failure so callers
+    // never hang waiting for an upstream that does not exist.
+    eprintln!("ws_relay: serving socket natively (upstream unavailable or disabled)");
+    let (mut client_tx, mut client_rx) = client.split();
+    let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
+    let streams: std::sync::Arc<
+        std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
+    > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
+    let streams_in = streams.clone();
+    let writer = tokio::spawn(async move {
+        while let Some(m) = native_rx.recv().await {
+            if client_tx.send(m).await.is_err() {
+                break;
             }
-        });
-        while let Some(msg) = client_rx.next().await {
-            match msg {
-                Ok(ClientMessage::Text(t)) => {
-                    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
-                        let snippet: String = t.chars().take(220).collect();
-                        eprintln!("ws_native_in: {snippet}");
-                    }
-                    // Effect-rpc application-level liveness: the client's pinger
-                    // replaces the connection after one missed pong, so these
-                    // must be answered before anything else.
-                    if t.contains("\"_tag\":\"Ping\"") || t.contains("\"_tag\": \"Ping\"") {
-                        let _ = native_tx.send(ClientMessage::Text(
-                            "{\"_tag\":\"Pong\"}".to_string().into(),
-                        ));
-                        continue;
-                    }
-                    // Effect-rpc stream cancellation: the client interrupts
-                    // streams on unmount/reconnect (React StrictMode double
-                    // mounts every subscription at boot). Without this the
-                    // aborted pollers leak and keep hammering the snapshot
-                    // cache for the rest of the connection.
-                    if t.contains("\"_tag\":\"Interrupt\"") {
-                        if let Ok(m) = serde_json::from_str::<serde_json::Value>(&t) {
-                            let rid = m.get("requestId").cloned().unwrap_or(serde_json::Value::Null);
-                            let key = rpc_id_key(&rid);
-                            if let Ok(mut map) = streams_in.lock() {
-                                if let Some(task) = map.remove(&key) {
-                                    task.abort();
-                                }
+        }
+    });
+    while let Some(msg) = client_rx.next().await {
+        match msg {
+            Ok(ClientMessage::Text(t)) => {
+                if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+                    let snippet: String = t.chars().take(220).collect();
+                    eprintln!("ws_native_in: {snippet}");
+                }
+                // Effect-rpc application-level liveness: the client's pinger
+                // replaces the connection after one missed pong, so these
+                // must be answered before anything else.
+                if t.contains("\"_tag\":\"Ping\"") || t.contains("\"_tag\": \"Ping\"") {
+                    let _ = native_tx.send(ClientMessage::Text(
+                        "{\"_tag\":\"Pong\"}".to_string().into(),
+                    ));
+                    continue;
+                }
+                // Effect-rpc stream cancellation: the client interrupts
+                // streams on unmount/reconnect (React StrictMode double
+                // mounts every subscription at boot). Without this the
+                // aborted pollers leak and keep hammering the snapshot
+                // cache for the rest of the connection.
+                if t.contains("\"_tag\":\"Interrupt\"") {
+                    if let Ok(m) = serde_json::from_str::<serde_json::Value>(&t) {
+                        let rid = m
+                            .get("requestId")
+                            .cloned()
+                            .unwrap_or(serde_json::Value::Null);
+                        let key = rpc_id_key(&rid);
+                        if let Ok(mut map) = streams_in.lock() {
+                            if let Some(task) = map.remove(&key) {
+                                task.abort();
                             }
                         }
-                        continue;
                     }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), session_role.as_str()).await {
-                        if let Some(reply) = reply {
-                            let _ = native_tx.send(reply);
-                        }
-                        continue;
-                    }
-                    if let Ok(m2) = serde_json::from_str::<serde_json::Value>(&t)
-                        && m2.get("_tag").and_then(|v| v.as_str()) == Some("Request")
-                    {
-                        let rid = m2
-                            .get("id")
-                            .cloned()
-                            .unwrap_or(serde_json::Value::String(String::new()));
-                        let tag_s = m2.get("tag").and_then(|v| v.as_str()).unwrap_or("");
-                        let reply = serde_json::json!({
-                            "_tag": "Exit", "requestId": rid,
-                            "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
-                                "_tag": "WsRpcError",
-                                "message": format!("{tag_s} requires the original server, which is unavailable"),
-                                "code": null, "retryable": false}}]}
-                        });
-                        let _ = native_tx.send(ClientMessage::Text(reply.to_string().into()));
-                    }
+                    continue;
                 }
-                Ok(ClientMessage::Ping(p)) => {
-                    let _ = native_tx.send(ClientMessage::Pong(p));
-                }
-                Ok(ClientMessage::Close(frame)) => {
-                    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
-                        eprintln!("ws_native: client closed connection: {frame:?}");
+                if let Some(reply) = intercept_todo(
+                    &t,
+                    &todos,
+                    &native_tx,
+                    &streams_in,
+                    desktop_update_authority.as_deref(),
+                    session_role.as_str(),
+                )
+                .await
+                {
+                    if let Some(reply) = reply {
+                        let _ = native_tx.send(reply);
                     }
-                    break;
+                    continue;
                 }
-                Err(e) => {
-                    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
-                        eprintln!("ws_native: socket read error, dropping connection: {e}");
-                    }
-                    break;
+                if let Ok(m2) = serde_json::from_str::<serde_json::Value>(&t)
+                    && m2.get("_tag").and_then(|v| v.as_str()) == Some("Request")
+                {
+                    let rid = m2
+                        .get("id")
+                        .cloned()
+                        .unwrap_or(serde_json::Value::String(String::new()));
+                    let tag_s = m2.get("tag").and_then(|v| v.as_str()).unwrap_or("");
+                    let reply = serde_json::json!({
+                        "_tag": "Exit", "requestId": rid,
+                        "exit": {"_tag": "Failure", "cause": [{"_tag": "Fail", "error": {
+                            "_tag": "WsRpcError",
+                            "message": format!("{tag_s} requires the original server, which is unavailable"),
+                            "code": null, "retryable": false}}]}
+                    });
+                    let _ = native_tx.send(ClientMessage::Text(reply.to_string().into()));
                 }
-                _ => {}
             }
-        }
-        if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
-            eprintln!("ws_native: connection read loop ended");
-        }
-        // The connection is gone: every stream task spawned for it must die
-        // here. Their pollers hold clones of native_tx and only notice the
-        // disconnect when a send fails — but idle subscriptions send nothing
-        // for minutes at a time, so without an explicit abort each reconnect
-        // would strand a generation of sqlite-polling zombie tasks (and the
-        // writer itself, which waits for all senders to drop).
-        if let Ok(mut map) = streams.lock() {
-            for (_, task) in map.drain() {
-                task.abort();
+            Ok(ClientMessage::Ping(p)) => {
+                let _ = native_tx.send(ClientMessage::Pong(p));
             }
+            Ok(ClientMessage::Close(frame)) => {
+                if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+                    eprintln!("ws_native: client closed connection: {frame:?}");
+                }
+                break;
+            }
+            Err(e) => {
+                if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+                    eprintln!("ws_native: socket read error, dropping connection: {e}");
+                }
+                break;
+            }
+            _ => {}
         }
-        drop(native_tx);
-        let _ = writer.await;
+    }
+    if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
+        eprintln!("ws_native: connection read loop ended");
+    }
+    // The connection is gone: every stream task spawned for it must die
+    // here. Their pollers hold clones of native_tx and only notice the
+    // disconnect when a send fails — but idle subscriptions send nothing
+    // for minutes at a time, so without an explicit abort each reconnect
+    // would strand a generation of sqlite-polling zombie tasks (and the
+    // writer itself, which waits for all senders to drop).
+    if let Ok(mut map) = streams.lock() {
+        for (_, task) in map.drain() {
+            task.abort();
+        }
+    }
+    drop(native_tx);
+    let _ = writer.await;
 }
 
 async fn relay(
@@ -2126,9 +2266,14 @@ async fn relay(
     let desktop_update_authority = authenticated_session.and_then(|session| {
         (session.role == "owner").then(|| format!("owner:{}", session.session_id))
     });
-    serve_native_socket(client, todos, desktop_update_authority, session_role.clone()).await;
+    serve_native_socket(
+        client,
+        todos,
+        desktop_update_authority,
+        session_role.clone(),
+    )
+    .await;
 }
-
 
 #[cfg(test)]
 mod admission_tests {
@@ -2149,7 +2294,11 @@ mod admission_tests {
     fn loopback_feature_socket_without_credentials_is_local() {
         let headers = headers(&[]);
         let uri: Uri = "/ws".parse().unwrap();
-        assert!(super::authenticate_rpc_websocket_upgrade(&headers, &uri).unwrap().is_none());
+        assert!(
+            super::authenticate_rpc_websocket_upgrade(&headers, &uri)
+                .unwrap()
+                .is_none()
+        );
     }
 
     #[test]
@@ -2187,7 +2336,10 @@ mod admission_tests {
 
     #[test]
     fn owner_only_rpc_tags_match_upstream_boundary() {
-        assert!(super::owner_only_rpc("account.status", &serde_json::json!({})));
+        assert!(super::owner_only_rpc(
+            "account.status",
+            &serde_json::json!({})
+        ));
         assert!(super::owner_only_rpc("hosts.list", &serde_json::json!({})));
         assert!(super::owner_only_rpc(
             "stats.getUsageAnalytics",
@@ -2201,8 +2353,14 @@ mod admission_tests {
             "server.updateSettings",
             &serde_json::json!({"legacyProviders": {}})
         ));
-        assert!(!super::owner_only_rpc("server.updateSettings", &serde_json::json!({})));
-        assert!(!super::owner_only_rpc("orchestration.getSnapshot", &serde_json::json!({})));
+        assert!(!super::owner_only_rpc(
+            "server.updateSettings",
+            &serde_json::json!({})
+        ));
+        assert!(!super::owner_only_rpc(
+            "orchestration.getSnapshot",
+            &serde_json::json!({})
+        ));
     }
 
     #[tokio::test]
@@ -2229,7 +2387,10 @@ mod admission_tests {
 
     #[test]
     fn unrelated_browser_origin_is_rejected_but_absent_origin_is_allowed() {
-        let browser = headers(&[("host", "127.0.0.1:8080"), ("origin", "http://evil.example")]);
+        let browser = headers(&[
+            ("host", "127.0.0.1:8080"),
+            ("origin", "http://evil.example"),
+        ]);
         assert!(super::reject_untrusted_websocket_origin(&browser));
         let cli = headers(&[("host", "127.0.0.1:8080")]);
         assert!(!super::reject_untrusted_websocket_origin(&cli));
@@ -2238,7 +2399,9 @@ mod admission_tests {
     #[test]
     fn session_cookie_detection_matches_upstream_shape() {
         assert!(super::has_session_cookie("synara_session=abc"));
-        assert!(super::has_session_cookie("other=1; synara_session_8580=abc"));
+        assert!(super::has_session_cookie(
+            "other=1; synara_session_8580=abc"
+        ));
         assert!(!super::has_session_cookie("x-synara_session=abc"));
         assert!(!super::has_session_cookie("synara_session_x=abc"));
         assert!(!super::has_session_cookie("synara_session="));

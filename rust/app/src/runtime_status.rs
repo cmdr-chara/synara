@@ -86,10 +86,16 @@ pub fn start_sampler() {
                 }
                 s.last_stall_at = Some(now);
                 s.last_stall_ms = drift;
-                if s.last_reported_stall_at.is_none_or(|at| now.duration_since(at).as_millis() >= 10_000) {
+                if s.last_reported_stall_at
+                    .is_none_or(|at| now.duration_since(at).as_millis() >= 10_000)
+                {
                     s.last_reported_stall_at = Some(now);
                     drop(s);
-                    crate::beta_operational_issue::report("server.event-loop.stall", None, Some(drift));
+                    crate::beta_operational_issue::report(
+                        "server.event-loop.stall",
+                        None,
+                        Some(drift),
+                    );
                 }
             }
         }

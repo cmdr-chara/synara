@@ -4,8 +4,8 @@
 //! upserts them, so overlaps and retries are idempotent. Only counters and
 //! model/skill dimensions leave the machine — never prompts or content.
 
-use rusqlite::{params, Connection};
-use serde_json::{json, Value};
+use rusqlite::{Connection, params};
+use serde_json::{Value, json};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
@@ -14,13 +14,18 @@ const BACKFILL_WINDOW: &str = "-20 years";
 const MAX_BUCKETS: usize = 500;
 
 fn enabled() -> bool {
-    let flavor = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+    let flavor = match std::env::var("SYNARA_DESKTOP_BUNDLE_ID")
+        .ok()
+        .as_deref()
+        .map(str::trim)
+    {
         Some("com.emanueledipietro.synara") => "production",
         Some("com.emanueledipietro.synara.remote") => "remote",
         _ => "other",
     };
     std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").ok().as_deref() == Some("1")
-        || ((flavor == "production" || flavor == "remote") && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err())
+        || ((flavor == "production" || flavor == "remote")
+            && std::env::var("SYNARA_ACCOUNT_PROFILE_SYNC").is_err())
 }
 
 fn minute(iso: &str) -> Option<String> {
@@ -30,18 +35,30 @@ fn minute(iso: &str) -> Option<String> {
 fn dimension(value: Option<String>, fallback: &str) -> String {
     let value = value.unwrap_or_default();
     let trimmed = value.trim();
-    let selected = if trimmed.is_empty() { fallback } else { trimmed };
+    let selected = if trimmed.is_empty() {
+        fallback
+    } else {
+        trimmed
+    };
     selected.chars().take(200).collect()
 }
 
 fn tokens_from_usage(raw: Option<&str>) -> u64 {
     let Some(raw) = raw else { return 0 };
-    let Ok(Value::Object(object)) = serde_json::from_str::<Value>(raw) else { return 0 };
+    let Ok(Value::Object(object)) = serde_json::from_str::<Value>(raw) else {
+        return 0;
+    };
     object
         .values()
         .map(|entry| {
-            entry.get("inputTokens").and_then(Value::as_u64).unwrap_or(0)
-                + entry.get("outputTokens").and_then(Value::as_u64).unwrap_or(0)
+            entry
+                .get("inputTokens")
+                .and_then(Value::as_u64)
+                .unwrap_or(0)
+                + entry
+                    .get("outputTokens")
+                    .and_then(Value::as_u64)
+                    .unwrap_or(0)
         })
         .sum()
 }
@@ -76,23 +93,30 @@ fn model_buckets(conn: &Connection, window: &str) -> Result<Vec<Value>, String> 
         .map_err(|e| format!("read account usage turns: {e}"))?;
     for row in rows {
         let (requested_at, provider, model, reasoning) = row.map_err(|e| e.to_string())?;
-        let Some(minute) = minute(&requested_at) else { continue };
+        let Some(minute) = minute(&requested_at) else {
+            continue;
+        };
         let provider = dimension(provider, "unknown");
         let model = dimension(model, "unknown");
         let reasoning = reasoning.and_then(|value| {
             let trimmed = value.trim();
             (!trimmed.is_empty()).then(|| trimmed.chars().take(200).collect::<String>())
         });
-        let key = format!("{minute}\0{provider}\0{model}\0{}", reasoning.clone().unwrap_or_default());
-        let entry = grouped.entry(key).or_insert_with(|| json!({
-            "minute": minute,
-            "provider": provider,
-            "model": model,
-            "reasoning": reasoning,
-            "tokens": 0,
-            "turns": 0,
-            "prompts": 0,
-        }));
+        let key = format!(
+            "{minute}\0{provider}\0{model}\0{}",
+            reasoning.clone().unwrap_or_default()
+        );
+        let entry = grouped.entry(key).or_insert_with(|| {
+            json!({
+                "minute": minute,
+                "provider": provider,
+                "model": model,
+                "reasoning": reasoning,
+                "tokens": 0,
+                "turns": 0,
+                "prompts": 0,
+            })
+        });
         entry["turns"] = json!(entry["turns"].as_u64().unwrap_or(0) + 1);
         entry["prompts"] = json!(entry["prompts"].as_u64().unwrap_or(0) + 1);
     }
@@ -130,23 +154,30 @@ fn model_buckets(conn: &Connection, window: &str) -> Result<Vec<Value>, String> 
         .map_err(|e| format!("read account usage tokens: {e}"))?;
     for row in rows {
         let (completed_at, provider, model, reasoning, usage) = row.map_err(|e| e.to_string())?;
-        let Some(minute) = minute(&completed_at) else { continue };
+        let Some(minute) = minute(&completed_at) else {
+            continue;
+        };
         let provider = dimension(provider, "unknown");
         let model = dimension(model, "unknown");
         let reasoning = reasoning.and_then(|value| {
             let trimmed = value.trim();
             (!trimmed.is_empty()).then(|| trimmed.chars().take(200).collect::<String>())
         });
-        let key = format!("{minute}\0{provider}\0{model}\0{}", reasoning.clone().unwrap_or_default());
-        let entry = grouped.entry(key).or_insert_with(|| json!({
-            "minute": minute,
-            "provider": provider,
-            "model": model,
-            "reasoning": reasoning,
-            "tokens": 0,
-            "turns": 0,
-            "prompts": 0,
-        }));
+        let key = format!(
+            "{minute}\0{provider}\0{model}\0{}",
+            reasoning.clone().unwrap_or_default()
+        );
+        let entry = grouped.entry(key).or_insert_with(|| {
+            json!({
+                "minute": minute,
+                "provider": provider,
+                "model": model,
+                "reasoning": reasoning,
+                "tokens": 0,
+                "turns": 0,
+                "prompts": 0,
+            })
+        });
         let tokens = tokens_from_usage(usage.as_deref());
         entry["tokens"] = json!(entry["tokens"].as_u64().unwrap_or(0) + tokens);
     }
@@ -156,10 +187,11 @@ fn model_buckets(conn: &Connection, window: &str) -> Result<Vec<Value>, String> 
     Ok(buckets)
 }
 
-
 fn reference_names(raw: Option<&str>) -> Vec<String> {
     let Some(raw) = raw else { return Vec::new() };
-    let Ok(Value::Array(entries)) = serde_json::from_str::<Value>(raw) else { return Vec::new() };
+    let Ok(Value::Array(entries)) = serde_json::from_str::<Value>(raw) else {
+        return Vec::new();
+    };
     entries
         .iter()
         .filter_map(|entry| entry.get("name").and_then(Value::as_str))
@@ -189,19 +221,23 @@ fn skill_buckets(conn: &Connection, window: &str) -> Result<Vec<Value>, String> 
         .map_err(|e| format!("read account usage skills: {e}"))?;
     for row in rows {
         let (created_at, skills_json, mentions_json) = row.map_err(|e| e.to_string())?;
-        let Some(minute) = minute(&created_at) else { continue };
+        let Some(minute) = minute(&created_at) else {
+            continue;
+        };
         for (kind, names) in [
             ("skill", reference_names(skills_json.as_deref())),
             ("agent", reference_names(mentions_json.as_deref())),
         ] {
             for name in names {
                 let key = format!("{minute}\0{kind}\0{}", name.to_lowercase());
-                let entry = grouped.entry(key).or_insert_with(|| json!({
-                    "minute": minute,
-                    "name": name,
-                    "kind": kind,
-                    "runs": 0,
-                }));
+                let entry = grouped.entry(key).or_insert_with(|| {
+                    json!({
+                        "minute": minute,
+                        "name": name,
+                        "kind": kind,
+                        "runs": 0,
+                    })
+                });
                 entry["runs"] = json!(entry["runs"].as_u64().unwrap_or(0) + 1);
             }
         }
@@ -274,8 +310,13 @@ fn flush() -> Result<(), String> {
     if !db_path.is_file() {
         return Ok(());
     }
-    let conn = Connection::open(&db_path).map_err(|e| format!("open state database for account usage: {e}"))?;
-    let window = if backfill_completed() { RECENT_WINDOW } else { BACKFILL_WINDOW };
+    let conn = Connection::open(&db_path)
+        .map_err(|e| format!("open state database for account usage: {e}"))?;
+    let window = if backfill_completed() {
+        RECENT_WINDOW
+    } else {
+        BACKFILL_WINDOW
+    };
     let models = model_buckets(&conn, window)?;
     let skills = skill_buckets(&conn, window)?;
     if models.is_empty() && skills.is_empty() {
@@ -317,11 +358,13 @@ pub fn start_account_usage_reporter_job() {
     if !enabled() {
         return;
     }
-    std::thread::spawn(|| loop {
-        if let Err(error) = flush() {
-            eprintln!("account usage sync failed: {error}");
+    std::thread::spawn(|| {
+        loop {
+            if let Err(error) = flush() {
+                eprintln!("account usage sync failed: {error}");
+            }
+            std::thread::sleep(std::time::Duration::from_secs(60));
         }
-        std::thread::sleep(std::time::Duration::from_secs(60));
     });
 }
 
@@ -331,21 +374,28 @@ mod tests {
 
     #[test]
     fn minute_is_fixed_utc_shape() {
-        assert_eq!(minute("2026-11-27T07:41:23.456Z").as_deref(), Some("2026-11-27T07:41:00Z"));
+        assert_eq!(
+            minute("2026-11-27T07:41:23.456Z").as_deref(),
+            Some("2026-11-27T07:41:00Z")
+        );
         assert_eq!(minute("short"), None);
     }
 
     #[test]
     fn usage_tokens_sum_model_entries() {
         assert_eq!(
-            tokens_from_usage(Some(r#"{"claude":{"inputTokens":10,"outputTokens":5},"x":{"inputTokens":2,"outputTokens":1}}"#)),
+            tokens_from_usage(Some(
+                r#"{"claude":{"inputTokens":10,"outputTokens":5},"x":{"inputTokens":2,"outputTokens":1}}"#
+            )),
             18
         );
     }
 
     #[test]
     fn structured_reference_names_are_normalized() {
-        assert_eq!(reference_names(Some(r#"[{"name":"$rust-anything"},{"name":"/review"}]"#)), vec!["rust-anything", "review"]);
+        assert_eq!(
+            reference_names(Some(r#"[{"name":"$rust-anything"},{"name":"/review"}]"#)),
+            vec!["rust-anything", "review"]
+        );
     }
-
 }

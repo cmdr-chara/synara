@@ -56,7 +56,13 @@ fn stable_json(value: &Value) -> String {
             keys.sort();
             let inner: Vec<String> = keys
                 .into_iter()
-                .map(|k| format!("{}:{}", serde_json::to_string(k).unwrap(), stable_json(&map[k])))
+                .map(|k| {
+                    format!(
+                        "{}:{}",
+                        serde_json::to_string(k).unwrap(),
+                        stable_json(&map[k])
+                    )
+                })
                 .collect();
             format!("{{{}}}", inner.join(","))
         }
@@ -146,7 +152,9 @@ pub fn publish(action_id: &str, event: &Value) {
     let mut reg = registry().lock().expect("registry");
     if let Some(entry) = reg.actions.get_mut(action_id) {
         entry.events.push(event.clone());
-        entry.subscribers.retain(|tx| tx.send(event.clone()).is_ok());
+        entry
+            .subscribers
+            .retain(|tx| tx.send(event.clone()).is_ok());
     }
 }
 
@@ -198,9 +206,14 @@ mod tests {
             Attach::Existing { .. } => {}
             _ => panic!("resume with same fingerprint must attach"),
         }
-        publish(&id, &serde_json::json!({"kind":"phase_started","phase":"commit"}));
+        publish(
+            &id,
+            &serde_json::json!({"kind":"phase_started","phase":"commit"}),
+        );
         match attach(&id, "fp1", true) {
-            Attach::Existing { events, outcome, .. } => {
+            Attach::Existing {
+                events, outcome, ..
+            } => {
                 assert_eq!(events.len(), 1);
                 assert!(outcome.is_none());
             }
@@ -212,6 +225,9 @@ mod tests {
             _ => panic!("expected completed outcome"),
         }
         let missing = format!("missing-{}", std::process::id());
-        assert!(matches!(attach(&missing, "fp", true), Attach::ResumeMissing));
+        assert!(matches!(
+            attach(&missing, "fp", true),
+            Attach::ResumeMissing
+        ));
     }
 }

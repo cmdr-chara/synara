@@ -4,10 +4,10 @@
 //! paths when those are present in the serialized attachment metadata.
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::orchestration_engine::open_state_rw;
-use crate::todo::{state_dir, WsErr};
+use crate::todo::{WsErr, state_dir};
 
 fn err(msg: impl Into<String>) -> WsErr {
     WsErr(msg.into(), Some("PROVIDER"))
@@ -60,7 +60,10 @@ fn attachment_relative_path(attachment: &Value) -> Option<String> {
     if id.contains('/') || id.contains('\\') || id.contains("..") || id.contains('.') {
         return None;
     }
-    let mime = attachment.get("mimeType").and_then(Value::as_str).unwrap_or("");
+    let mime = attachment
+        .get("mimeType")
+        .and_then(Value::as_str)
+        .unwrap_or("");
     let name = attachment.get("name").and_then(Value::as_str).unwrap_or("");
     Some(format!("{id}{}", extension_for(mime, name)))
 }
@@ -129,9 +132,18 @@ pub fn append_file_attachments_prompt_block(
         if !path.is_file() {
             continue;
         }
-        let name = attachment.get("name").and_then(Value::as_str).unwrap_or("attachment");
-        let mime = attachment.get("mimeType").and_then(Value::as_str).unwrap_or("application/octet-stream");
-        let size = attachment.get("sizeBytes").and_then(Value::as_i64).unwrap_or(0);
+        let name = attachment
+            .get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("attachment");
+        let mime = attachment
+            .get("mimeType")
+            .and_then(Value::as_str)
+            .unwrap_or("application/octet-stream");
+        let size = attachment
+            .get("sizeBytes")
+            .and_then(Value::as_i64)
+            .unwrap_or(0);
         lines.push(format!(
             "- {} - {} - {} - {}",
             quote_prompt_value(name),
@@ -153,7 +165,6 @@ pub fn append_file_attachments_prompt_block(
         format!("{text}\n\n{block}")
     }
 }
-
 
 fn file_url(path: &std::path::Path) -> String {
     let mut out = "file://".to_string();
@@ -201,8 +212,16 @@ pub fn base64_encode(data: &[u8]) -> String {
         let n = (b0 << 16) | (b1 << 8) | b2;
         out.push(ALPHABET[(n >> 18) as usize & 63] as char);
         out.push(ALPHABET[(n >> 12) as usize & 63] as char);
-        out.push(if chunk.len() > 1 { ALPHABET[(n >> 6) as usize & 63] as char } else { '=' });
-        out.push(if chunk.len() > 2 { ALPHABET[n as usize & 63] as char } else { '=' });
+        out.push(if chunk.len() > 1 {
+            ALPHABET[(n >> 6) as usize & 63] as char
+        } else {
+            '='
+        });
+        out.push(if chunk.len() > 2 {
+            ALPHABET[n as usize & 63] as char
+        } else {
+            '='
+        });
     }
     out
 }
@@ -213,7 +232,10 @@ pub fn image_blocks(attachments: &[Value]) -> Result<Vec<Value>, WsErr> {
         if attachment.get("type").and_then(Value::as_str) != Some("image") {
             continue;
         }
-        let id = attachment.get("id").and_then(Value::as_str).unwrap_or("unknown");
+        let id = attachment
+            .get("id")
+            .and_then(Value::as_str)
+            .unwrap_or("unknown");
         let path = resolve_attachment_path(attachment)
             .ok_or_else(|| err(format!("Invalid attachment id '{id}'.")))?;
         let bytes = std::fs::read(&path)

@@ -18,54 +18,24 @@ pub fn router() -> Router<AppState> {
         .route("/", get(route_0))
         .route("/api/", get(route_1))
         .route("/api/%C4%B0stanbul", get(route_2))
-        .route(
-            "/api/%C4%B0stanbul/clients",
-            get(route_3),
-        )
-        .route(
-            "/api/%C4%B0stanbul/pairing-links",
-            get(route_4),
-        )
-        .route(
-            "/api/%C4%B0stanbul/session",
-            get(route_5),
-        )
-        .route(
-            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak",
-            get(route_6),
-        )
-        .route(
-            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/clients",
-            get(route_7),
-        )
+        .route("/api/%C4%B0stanbul/clients", get(route_3))
+        .route("/api/%C4%B0stanbul/pairing-links", get(route_4))
+        .route("/api/%C4%B0stanbul/session", get(route_5))
+        .route("/api/%C4%B1l%C4%B1k%20%C4%B1rmak", get(route_6))
+        .route("/api/%C4%B1l%C4%B1k%20%C4%B1rmak/clients", get(route_7))
         .route(
             "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/pairing-links",
             get(route_8),
         )
-        .route(
-            "/api/%C4%B1l%C4%B1k%20%C4%B1rmak/session",
-            get(route_9),
-        )
-        .route(
-            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E",
-            get(route_10),
-        )
-        .route(
-            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/clients",
-            get(route_11),
-        )
+        .route("/api/%C4%B1l%C4%B1k%20%C4%B1rmak/session", get(route_9))
+        .route("/api/%E6%97%A5%E6%9C%AC%E8%AA%9E", get(route_10))
+        .route("/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/clients", get(route_11))
         .route(
             "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/pairing-links",
             get(route_12),
         )
-        .route(
-            "/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/session",
-            get(route_13),
-        )
-        .route(
-            "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs",
-            get(route_14),
-        )
+        .route("/api/%E6%97%A5%E6%9C%AC%E8%AA%9E/session", get(route_13))
+        .route("/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs", get(route_14))
         .route(
             "/api/%F0%9F%91%8D%F0%9F%8F%BD%20thumbs/clients",
             get(route_15),
@@ -95,76 +65,27 @@ pub fn router() -> Router<AppState> {
             get(route_21),
         )
         .route("/api//clients", get(route_22))
-        .route(
-            "/api//pairing-links",
-            get(route_23),
-        )
+        .route("/api//pairing-links", get(route_23))
         .route("/api//session", get(route_24))
         .route("/api/a%C2%A0b", get(route_25))
-        .route(
-            "/api/a%C2%A0b/clients",
-            get(route_26),
-        )
-        .route(
-            "/api/a%C2%A0b/pairing-links",
-            get(route_27),
-        )
-        .route(
-            "/api/a%C2%A0b/session",
-            get(route_28),
-        )
-        .route(
-            "/api/does-not-exist",
-            get(route_29),
-        )
+        .route("/api/a%C2%A0b/clients", get(route_26))
+        .route("/api/a%C2%A0b/pairing-links", get(route_27))
+        .route("/api/a%C2%A0b/session", get(route_28))
+        .route("/api/does-not-exist", get(route_29))
         .route("/api/e%CC%81", get(route_30))
-        .route(
-            "/api/e%CC%81/clients",
-            get(route_31),
-        )
-        .route(
-            "/api/e%CC%81/pairing-links",
-            get(route_32),
-        )
-        .route(
-            "/api/e%CC%81/session",
-            get(route_33),
-        )
-        .route(
-            "/api/h%C3%A9llo%20w%C3%B6rld",
-            get(route_34),
-        )
-        .route(
-            "/api/h%C3%A9llo%20w%C3%B6rld/clients",
-            get(route_35),
-        )
-        .route(
-            "/api/h%C3%A9llo%20w%C3%B6rld/pairing-links",
-            get(route_36),
-        )
-        .route(
-            "/api/h%C3%A9llo%20w%C3%B6rld/session",
-            get(route_37),
-        )
+        .route("/api/e%CC%81/clients", get(route_31))
+        .route("/api/e%CC%81/pairing-links", get(route_32))
+        .route("/api/e%CC%81/session", get(route_33))
+        .route("/api/h%C3%A9llo%20w%C3%B6rld", get(route_34))
+        .route("/api/h%C3%A9llo%20w%C3%B6rld/clients", get(route_35))
+        .route("/api/h%C3%A9llo%20w%C3%B6rld/pairing-links", get(route_36))
+        .route("/api/h%C3%A9llo%20w%C3%B6rld/session", get(route_37))
         .route("/api/stra%C3%9Fe", get(route_38))
-        .route(
-            "/api/stra%C3%9Fe/clients",
-            get(route_39),
-        )
-        .route(
-            "/api/stra%C3%9Fe/pairing-links",
-            get(route_40),
-        )
-        .route(
-            "/api/stra%C3%9Fe/session",
-            get(route_41),
-        )
+        .route("/api/stra%C3%9Fe/clients", get(route_39))
+        .route("/api/stra%C3%9Fe/pairing-links", get(route_40))
+        .route("/api/stra%C3%9Fe/session", get(route_41))
         .route("/index.html", get(route_42))
-        .route(
-            "/rust-anything-missing",
-            get(route_43),
-        )
-        
+        .route("/rust-anything-missing", get(route_43))
 }
 
 async fn route_0(State(_state): State<AppState>, req: Request) -> Response {

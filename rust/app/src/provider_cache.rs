@@ -21,8 +21,9 @@ fn err(msg: impl Into<String>) -> WsErr {
 const DISCOVERY_CACHE_TTL_MS: i64 = 5 * 60_000;
 
 fn discovery_cache() -> &'static std::sync::Mutex<std::collections::HashMap<String, (i64, Value)>> {
-    static CACHE: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<String, (i64, Value)>>> =
-        std::sync::OnceLock::new();
+    static CACHE: std::sync::OnceLock<
+        std::sync::Mutex<std::collections::HashMap<String, (i64, Value)>>,
+    > = std::sync::OnceLock::new();
     CACHE.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
 }
 
@@ -52,7 +53,10 @@ fn store_discovery(key: &str, value: &Value) {
         return;
     }
     if let Ok(mut cache) = discovery_cache().lock() {
-        cache.insert(key.to_string(), (now_ms_i64() + DISCOVERY_CACHE_TTL_MS, value.clone()));
+        cache.insert(
+            key.to_string(),
+            (now_ms_i64() + DISCOVERY_CACHE_TTL_MS, value.clone()),
+        );
     }
 }
 
@@ -119,7 +123,6 @@ pub(crate) fn provider_statuses() -> Vec<Value> {
     out
 }
 
-
 fn opencode_binary() -> String {
     for key in ["SYNARA_OPENCODE_CLI", "OPENCODE_BINARY_PATH"] {
         if let Ok(path) = std::env::var(key) {
@@ -145,7 +148,8 @@ fn parse_opencode_models_output(output: &str) -> Vec<Value> {
         let Some((provider_id, model_id)) = candidate.split_once('/') else {
             continue;
         };
-        if provider_id.is_empty() || model_id.is_empty() || candidate.contains(char::is_whitespace) {
+        if provider_id.is_empty() || model_id.is_empty() || candidate.contains(char::is_whitespace)
+        {
             continue;
         }
         let mut object = Value::Null;
@@ -160,7 +164,10 @@ fn parse_opencode_models_output(output: &str) -> Vec<Value> {
                 json_text.push('\n');
                 for ch in line.chars() {
                     match ch {
-                        '{' => { depth += 1; started = true; }
+                        '{' => {
+                            depth += 1;
+                            started = true;
+                        }
                         '}' => depth -= 1,
                         _ => {}
                     }
@@ -200,10 +207,16 @@ fn parse_opencode_models_output(output: &str) -> Vec<Value> {
         models.push(model);
     }
     models.sort_by(|a, b| {
-        a.get("name").and_then(Value::as_str).unwrap_or("")
+        a.get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("")
             .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
-            .then(a.get("slug").and_then(Value::as_str).unwrap_or("")
-                .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")))
+            .then(
+                a.get("slug")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")),
+            )
     });
     models.dedup_by(|a, b| a.get("slug") == b.get("slug"));
     models
@@ -245,7 +258,6 @@ fn discover_opencode_models() -> Result<Vec<Value>, WsErr> {
     }
 }
 
-
 fn omp_thinking_label(value: &str) -> String {
     match value {
         "off" => "Off".to_string(),
@@ -277,7 +289,9 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
             .cloned()
             .unwrap_or_default()
     };
-    let valid_efforts = ["off", "auto", "minimal", "low", "medium", "high", "max", "xhigh"];
+    let valid_efforts = [
+        "off", "auto", "minimal", "low", "medium", "high", "max", "xhigh",
+    ];
     let mut seen = std::collections::HashSet::new();
     let mut models = Vec::new();
     for entry in raw_models {
@@ -286,7 +300,11 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
             .and_then(Value::as_str)
             .unwrap_or("")
             .trim();
-        let name = entry.get("name").and_then(Value::as_str).unwrap_or("").trim();
+        let name = entry
+            .get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim();
         if slug.is_empty() || name.is_empty() || !seen.insert(slug.to_string()) {
             continue;
         }
@@ -322,7 +340,13 @@ fn parse_omp_models_output(output: &str) -> Vec<Value> {
 }
 
 fn devin_string_field<'a>(object: &'a Value, keys: &[&str]) -> Option<&'a str> {
-    keys.iter().find_map(|key| object.get(*key).and_then(Value::as_str).map(str::trim).filter(|value| !value.is_empty()))
+    keys.iter().find_map(|key| {
+        object
+            .get(*key)
+            .and_then(Value::as_str)
+            .map(str::trim)
+            .filter(|value| !value.is_empty())
+    })
 }
 
 fn devin_words(text: &str) -> Vec<String> {
@@ -362,7 +386,9 @@ fn infer_devin_effort(model: &str, label: Option<&str>) -> Option<&'static str> 
 
 fn is_devin_fast_variant(model: &str, label: Option<&str>) -> bool {
     let words = devin_words(&format!("{} {}", model, label.unwrap_or("")));
-    words.iter().any(|word| matches!(word.as_str(), "fast" | "lightning" | "priority"))
+    words
+        .iter()
+        .any(|word| matches!(word.as_str(), "fast" | "lightning" | "priority"))
 }
 
 fn is_devin_thinking_variant(model: &str, label: Option<&str>) -> bool {
@@ -386,7 +412,11 @@ fn devin_context_window(tokens: Option<i64>, model: &str) -> Option<String> {
     }
     let lower = model.to_ascii_lowercase();
     for part in lower.split(|ch: char| ch == '-' || ch == '_') {
-        if part.ends_with('m') && part[..part.len() - 1].chars().all(|ch| ch.is_ascii_digit() || ch == '.') {
+        if part.ends_with('m')
+            && part[..part.len() - 1]
+                .chars()
+                .all(|ch| ch.is_ascii_digit() || ch == '.')
+        {
             return Some(part.to_string());
         }
     }
@@ -396,7 +426,8 @@ fn devin_context_window(tokens: Option<i64>, model: &str) -> Option<String> {
 fn parse_devin_variant(value: &Value) -> Option<Value> {
     let object = value.as_object()?;
     let model = devin_string_field(value, &["model_uid", "modelUid", "uid", "model"])?;
-    let label = devin_string_field(value, &["label", "name", "displayName", "title"]).map(str::to_string);
+    let label =
+        devin_string_field(value, &["label", "name", "displayName", "title"]).map(str::to_string);
     let tokens = object
         .get("maxContextTokens")
         .or_else(|| object.get("max_context_tokens"))
@@ -419,7 +450,8 @@ fn collect_devin_families(value: &Value, models: &mut Vec<Value>, depth: usize) 
     let Some(object) = value.as_object() else {
         return;
     };
-    let has_variant_identity = devin_string_field(value, &["model_uid", "modelUid", "uid"]).is_some();
+    let has_variant_identity =
+        devin_string_field(value, &["model_uid", "modelUid", "uid"]).is_some();
     let slug = if has_variant_identity {
         devin_string_field(value, &["family_uid", "familyUid", "slug"])
     } else {
@@ -435,7 +467,9 @@ fn collect_devin_families(value: &Value, models: &mut Vec<Value>, depth: usize) 
             .filter_map(parse_devin_variant)
             .collect::<Vec<_>>();
         let mut model = json!({"slug": slug, "variants": variants});
-        if let Some(name) = devin_string_field(value, &["family_label", "name", "label", "displayName"]) {
+        if let Some(name) =
+            devin_string_field(value, &["family_label", "name", "label", "displayName"])
+        {
             model["name"] = json!(name);
         }
         if let Some(description) = devin_string_field(value, &["description", "details"]) {
@@ -460,7 +494,11 @@ fn parse_devin_models_output(output: &str) -> Vec<Value> {
     let trimmed = output.trim().trim_start_matches('\u{feff}');
     let mut candidates = vec![trimmed.to_string()];
     if let Some(first) = trimmed.find(|ch| ch == '[' || ch == '{') {
-        let last = trimmed.rfind('}').into_iter().chain(trimmed.rfind(']')).max();
+        let last = trimmed
+            .rfind('}')
+            .into_iter()
+            .chain(trimmed.rfind(']'))
+            .max();
         if let Some(last) = last {
             if last > first {
                 candidates.push(trimmed[first..=last].to_string());
@@ -498,38 +536,63 @@ fn merge_devin_models(families: Vec<Value>) -> Vec<Value> {
     let mut seen = std::collections::HashSet::new();
     let mut models = Vec::new();
     for family in families {
-        let slug = family.get("slug").and_then(Value::as_str).unwrap_or("").trim();
+        let slug = family
+            .get("slug")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim();
         if slug.is_empty() || !seen.insert(slug.to_ascii_lowercase()) {
             continue;
         }
-        let variants = family.get("variants").and_then(Value::as_array).cloned().unwrap_or_default();
+        let variants = family
+            .get("variants")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
         let mut efforts = variants
             .iter()
-            .filter_map(|variant| infer_devin_effort(
-                variant.get("model").and_then(Value::as_str).unwrap_or(""),
-                variant.get("label").and_then(Value::as_str),
-            ))
+            .filter_map(|variant| {
+                infer_devin_effort(
+                    variant.get("model").and_then(Value::as_str).unwrap_or(""),
+                    variant.get("label").and_then(Value::as_str),
+                )
+            })
             .collect::<Vec<_>>();
-        efforts.sort_by_key(|effort| effort_order.iter().position(|candidate| candidate == effort).unwrap_or(effort_order.len()));
+        efforts.sort_by_key(|effort| {
+            effort_order
+                .iter()
+                .position(|candidate| candidate == effort)
+                .unwrap_or(effort_order.len())
+        });
         efforts.dedup();
         let mut contexts = variants
             .iter()
-            .filter_map(|variant| devin_context_window(
-                variant.get("maxContextTokens").and_then(Value::as_i64),
-                variant.get("model").and_then(Value::as_str).unwrap_or(""),
-            ))
+            .filter_map(|variant| {
+                devin_context_window(
+                    variant.get("maxContextTokens").and_then(Value::as_i64),
+                    variant.get("model").and_then(Value::as_str).unwrap_or(""),
+                )
+            })
             .collect::<Vec<_>>();
         contexts.sort();
         contexts.dedup();
-        let context_values = if contexts.len() > 1 { contexts.clone() } else { Vec::new() };
-        let has_fast = variants.iter().any(|variant| is_devin_fast_variant(
-            variant.get("model").and_then(Value::as_str).unwrap_or(""),
-            variant.get("label").and_then(Value::as_str),
-        ));
-        let has_thinking = variants.iter().any(|variant| is_devin_thinking_variant(
-            variant.get("model").and_then(Value::as_str).unwrap_or(""),
-            variant.get("label").and_then(Value::as_str),
-        ));
+        let context_values = if contexts.len() > 1 {
+            contexts.clone()
+        } else {
+            Vec::new()
+        };
+        let has_fast = variants.iter().any(|variant| {
+            is_devin_fast_variant(
+                variant.get("model").and_then(Value::as_str).unwrap_or(""),
+                variant.get("label").and_then(Value::as_str),
+            )
+        });
+        let has_thinking = variants.iter().any(|variant| {
+            is_devin_thinking_variant(
+                variant.get("model").and_then(Value::as_str).unwrap_or(""),
+                variant.get("label").and_then(Value::as_str),
+            )
+        });
         let has_plain = variants.iter().any(|variant| {
             let model = variant.get("model").and_then(Value::as_str).unwrap_or("");
             let label = variant.get("label").and_then(Value::as_str);
@@ -544,7 +607,12 @@ fn merge_devin_models(families: Vec<Value>) -> Vec<Value> {
             model["description"] = description;
         }
         if !efforts.is_empty() {
-            model["supportedReasoningEfforts"] = json!(efforts.iter().map(|effort| json!({"value": effort, "label": devin_effort_label(effort)})).collect::<Vec<_>>());
+            model["supportedReasoningEfforts"] = json!(
+                efforts
+                    .iter()
+                    .map(|effort| json!({"value": effort, "label": devin_effort_label(effort)}))
+                    .collect::<Vec<_>>()
+            );
             model["defaultReasoningEffort"] = json!(efforts[0]);
         }
         if has_fast {
@@ -567,7 +635,10 @@ fn merge_devin_models(families: Vec<Value>) -> Vec<Value> {
                     object["reasoningEffort"] = json!(effort);
                 }
                 if !context_values.is_empty() {
-                    if let Some(context) = devin_context_window(variant.get("maxContextTokens").and_then(Value::as_i64), variant_model) {
+                    if let Some(context) = devin_context_window(
+                        variant.get("maxContextTokens").and_then(Value::as_i64),
+                        variant_model,
+                    ) {
                         object["contextWindow"] = json!(context);
                     }
                 }
@@ -603,11 +674,15 @@ fn devin_static_models() -> Vec<Value> {
 }
 
 pub(crate) fn devin_discovery_result() -> Value {
-    let fallback = json!({"models": devin_static_models(), "source": "devin.static", "cached": false});
+    let fallback =
+        json!({"models": devin_static_models(), "source": "devin.static", "cached": false});
     let Some(binary) = crate::acp_runner::resolve_provider_cli("devin") else {
         return fallback;
     };
-    let output = match std::process::Command::new(&binary).args(["models", "list", "--format", "json"]).output() {
+    let output = match std::process::Command::new(&binary)
+        .args(["models", "list", "--format", "json"])
+        .output()
+    {
         Ok(output) => output,
         Err(error) => {
             let mut result = fallback;
@@ -624,7 +699,9 @@ pub(crate) fn devin_discovery_result() -> Value {
         ));
         return result;
     }
-    let models = merge_devin_models(parse_devin_models_output(&String::from_utf8_lossy(&output.stdout)));
+    let models = merge_devin_models(parse_devin_models_output(&String::from_utf8_lossy(
+        &output.stdout,
+    )));
     if models.is_empty() {
         let mut result = fallback;
         result["error"] = json!("devin models list returned no models");
@@ -668,10 +745,16 @@ fn parse_cursor_reasoning_effort(model: &str) -> Option<String> {
 
 fn cursor_cli_one_million_context(model: &str) -> bool {
     let normalized = model.trim().to_ascii_lowercase();
-    if normalized.starts_with("gpt-5.5-") || normalized.starts_with("claude-4.6-opus") || normalized.starts_with("claude-4.6-sonnet") {
+    if normalized.starts_with("gpt-5.5-")
+        || normalized.starts_with("claude-4.6-opus")
+        || normalized.starts_with("claude-4.6-sonnet")
+    {
         return true;
     }
-    if normalized.starts_with("claude-fable-5-") || normalized.starts_with("claude-opus-4-7-") || normalized.starts_with("claude-opus-4-8-") {
+    if normalized.starts_with("claude-fable-5-")
+        || normalized.starts_with("claude-opus-4-7-")
+        || normalized.starts_with("claude-opus-4-8-")
+    {
         return true;
     }
     normalized.starts_with("gpt-5.4-low")
@@ -701,7 +784,12 @@ fn infer_cursor_upstream(slug: &str, name: &str) -> (&'static str, &'static str)
         ("mistral", "Mistral")
     } else if token.contains("nemotron") {
         ("nvidia", "NVIDIA")
-    } else if token.contains("gpt") || token.contains("codex") || token.contains("o1") || token.contains("o3") || token.contains("o4") {
+    } else if token.contains("gpt")
+        || token.contains("codex")
+        || token.contains("o1")
+        || token.contains("o3")
+        || token.contains("o4")
+    {
         ("openai", "OpenAI")
     } else {
         ("cursor", "Cursor")
@@ -746,7 +834,8 @@ fn parse_cursor_models_output(output: &str) -> Vec<Value> {
             model["supportsThinkingToggle"] = json!(true);
         }
         if let Some(effort) = effort {
-            model["supportedReasoningEfforts"] = json!([{"value": effort, "label": cursor_reasoning_label(&effort)}]);
+            model["supportedReasoningEfforts"] =
+                json!([{"value": effort, "label": cursor_reasoning_label(&effort)}]);
             model["defaultReasoningEffort"] = json!(effort);
         }
         if cursor_cli_one_million_context(&lower) {
@@ -790,7 +879,10 @@ fn antigravity_effort_label(value: &str) -> String {
             let mut chars = part.chars();
             chars
                 .next()
-                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str().to_ascii_lowercase().as_str())
+                .map(|first| {
+                    first.to_uppercase().collect::<String>()
+                        + chars.as_str().to_ascii_lowercase().as_str()
+                })
                 .unwrap_or_default()
         })
         .collect::<Vec<_>>()
@@ -867,14 +959,23 @@ fn parse_antigravity_models_output(output: &str) -> Vec<Value> {
     ];
     let mut models = Vec::new();
     for (model, mut efforts) in groups {
-        efforts.sort_by_key(|effort| order.iter().position(|candidate| candidate == effort).unwrap_or(order.len()));
-        let preferred = defaults.iter().find(|(name, _)| *name == model).map(|(_, effort)| *effort);
+        efforts.sort_by_key(|effort| {
+            order
+                .iter()
+                .position(|candidate| candidate == effort)
+                .unwrap_or(order.len())
+        });
+        let preferred = defaults
+            .iter()
+            .find(|(name, _)| *name == model)
+            .map(|(_, effort)| *effort);
         let default = preferred
             .filter(|preferred| efforts.iter().any(|effort| effort == preferred))
             .or_else(|| efforts.first().map(String::as_str));
         let mut object = json!({"slug": model, "name": model});
         if !efforts.is_empty() {
-            object["supportedReasoningEfforts"] = json!(efforts
+            object["supportedReasoningEfforts"] =
+                json!(efforts
                 .iter()
                 .map(|effort| json!({"value": effort, "label": antigravity_effort_label(effort)}))
                 .collect::<Vec<_>>());
@@ -923,9 +1024,14 @@ fn grok_family(slug: &str) -> &'static str {
             }
         }
     }
-    let versioned_new = major_minor.is_some_and(|(major, minor)| major > 4 || (major == 4 && minor >= 5));
+    let versioned_new =
+        major_minor.is_some_and(|(major, minor)| major > 4 || (major == 4 && minor >= 5));
     if !versioned_new
-        && (lower.contains("build") || lower.contains("code-fast") || lower == "grok-4" || lower == "grok-4.3" || lower.starts_with("grok-4.3-"))
+        && (lower.contains("build")
+            || lower.contains("code-fast")
+            || lower == "grok-4"
+            || lower == "grok-4.3"
+            || lower.starts_with("grok-4.3-"))
     {
         return "build";
     }
@@ -1021,7 +1127,10 @@ fn parse_grok_models_output(output: &str) -> Vec<(String, bool)> {
         }
         let lower = trimmed.to_ascii_lowercase();
         if let Some(rest) = lower.strip_prefix("default model:") {
-            fallback_default = trimmed[trimmed.len() - rest.len()..].split_whitespace().next().map(str::to_string);
+            fallback_default = trimmed[trimmed.len() - rest.len()..]
+                .split_whitespace()
+                .next()
+                .map(str::to_string);
             continue;
         }
         if lower.starts_with("available models:") {
@@ -1031,7 +1140,10 @@ fn parse_grok_models_output(output: &str) -> Vec<(String, bool)> {
         if !in_available {
             continue;
         }
-        let entry = trimmed.strip_prefix("* ").or_else(|| trimmed.strip_prefix("- ")).unwrap_or(trimmed);
+        let entry = trimmed
+            .strip_prefix("* ")
+            .or_else(|| trimmed.strip_prefix("- "))
+            .unwrap_or(trimmed);
         let end = entry
             .find(|ch: char| !(ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '/' | '-')))
             .unwrap_or(entry.len());
@@ -1138,18 +1250,24 @@ fn merge_opencode_models(server_models: Vec<Value>, cli_models: Vec<Value>) -> V
     for cli_model in cli_models {
         let slug = cli_model.get("slug").and_then(Value::as_str).unwrap_or("");
         if !slug.is_empty()
-            && !models.iter().any(|model| {
-                model.get("slug").and_then(Value::as_str) == Some(slug)
-            })
+            && !models
+                .iter()
+                .any(|model| model.get("slug").and_then(Value::as_str) == Some(slug))
         {
             models.push(cli_model);
         }
     }
     models.sort_by(|a, b| {
-        a.get("name").and_then(Value::as_str).unwrap_or("")
+        a.get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("")
             .cmp(b.get("name").and_then(Value::as_str).unwrap_or(""))
-            .then(a.get("slug").and_then(Value::as_str).unwrap_or("")
-                .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")))
+            .then(
+                a.get("slug")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .cmp(b.get("slug").and_then(Value::as_str).unwrap_or("")),
+            )
     });
     models
 }
@@ -1200,7 +1318,10 @@ fn claude_discovery_result(payload: &Value, key: &str) -> Result<Value, WsErr> {
 
 fn dynamic_discovery_result(provider: &str, payload: &Value) -> Option<Result<Value, WsErr>> {
     let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
-    let force_reload = payload.get("forceReload").and_then(Value::as_bool).unwrap_or(false);
+    let force_reload = payload
+        .get("forceReload")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let cache_key = format!("models:{provider}:{cwd}");
     if let Some(cached) = cached_discovery(&cache_key, force_reload) {
         return Some(Ok(cached));
@@ -1212,7 +1333,10 @@ fn dynamic_discovery_result(provider: &str, payload: &Value) -> Option<Result<Va
     Some(result)
 }
 
-fn dynamic_discovery_result_uncached(provider: &str, payload: &Value) -> Option<Result<Value, WsErr>> {
+fn dynamic_discovery_result_uncached(
+    provider: &str,
+    payload: &Value,
+) -> Option<Result<Value, WsErr>> {
     match provider {
         "opencode" => Some(opencode_discovery_result(payload)),
         "pi" => Some(pi_discovery_result(payload)),
@@ -1240,11 +1364,13 @@ fn dynamic_discovery_result_uncached(provider: &str, payload: &Value) -> Option<
         }
         "claudeAgent" => {
             let cwd = payload.get("cwd").and_then(Value::as_str).unwrap_or("");
-            Some(crate::claude_runner::discover_catalog(cwd).map(|catalog| json!({
-                "models": catalog.get("models").cloned().unwrap_or(json!([])),
-                "source": "sdk",
-                "cached": false,
-            })))
+            Some(crate::claude_runner::discover_catalog(cwd).map(|catalog| {
+                json!({
+                    "models": catalog.get("models").cloned().unwrap_or(json!([])),
+                    "source": "sdk",
+                    "cached": false,
+                })
+            }))
         }
         _ => None,
     }
@@ -1307,8 +1433,6 @@ fn list_models(payload: &Value) -> Result<Value, WsErr> {
     )))
 }
 
-
-
 fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
     let provider = payload
         .get("provider")
@@ -1318,22 +1442,40 @@ fn composer_capabilities(payload: &Value) -> Result<Value, WsErr> {
     // adapters. Optional compaction/import fields are omitted by some older
     // adapters upstream; exposing false here is equivalent for clients.
     let caps = match provider {
-        "antigravity" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":false}),
-        "claudeAgent" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
-        "codex" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
-        "cursor" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
-        "devin" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
-        "droid" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
-        "grok" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
-        "omp" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true}),
-        "opencode" => json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true}),
-        "pi" => json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false}),
+        "antigravity" => {
+            json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":false})
+        }
+        "claudeAgent" => {
+            json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true})
+        }
+        "codex" => {
+            json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true})
+        }
+        "cursor" => {
+            json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true})
+        }
+        "devin" => {
+            json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false})
+        }
+        "droid" => {
+            json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":true,"supportsPluginDiscovery":true,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true})
+        }
+        "grok" => {
+            json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":false,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false})
+        }
+        "omp" => {
+            json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":false,"supportsThreadImport":true})
+        }
+        "opencode" => {
+            json!({"provider":provider,"supportsSkillMentions":false,"supportsSkillDiscovery":false,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":true})
+        }
+        "pi" => {
+            json!({"provider":provider,"supportsSkillMentions":true,"supportsSkillDiscovery":true,"supportsNativeSlashCommandDiscovery":true,"supportsPluginMentions":false,"supportsPluginDiscovery":false,"supportsRuntimeModelList":true,"supportsThreadCompaction":true,"supportsThreadImport":false})
+        }
         _ => return Err(err(format!("unsupported provider '{provider}'"))),
     };
     Ok(caps)
 }
-
-
 
 fn list_agents(payload: &Value) -> Result<Value, WsErr> {
     let provider = payload
@@ -1401,7 +1543,10 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
         }));
     }
     if matches!(provider, "devin" | "omp" | "droid") {
-        let force_reload = payload.get("forceReload").and_then(Value::as_bool).unwrap_or(false);
+        let force_reload = payload
+            .get("forceReload")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
         let cache_key = format!("commands:{provider}:{cwd}");
         if let Some(cached) = cached_discovery(&cache_key, force_reload) {
             return Ok(cached);
@@ -1414,14 +1559,17 @@ fn list_commands(payload: &Value) -> Result<Value, WsErr> {
         });
         // Upstream never caches an empty command list: a slow first advertise
         // would otherwise pin "no slash commands" for the whole TTL.
-        if result.get("commands").and_then(Value::as_array).is_some_and(|c| !c.is_empty()) {
+        if result
+            .get("commands")
+            .and_then(Value::as_array)
+            .is_some_and(|c| !c.is_empty())
+        {
             store_discovery(&cache_key, &result);
         }
         return Ok(result);
     }
     Ok(json!({"commands": [], "source": "unsupported", "cached": false}))
 }
-
 
 fn prewarm_thread(payload: &Value) -> Result<Value, WsErr> {
     let thread_id = payload
@@ -1442,7 +1590,9 @@ fn prewarm_thread(payload: &Value) -> Result<Value, WsErr> {
         "pi" => crate::pi_runner::prewarm_thread(thread_id)?,
         "codex" => crate::codex_runner::prewarm_thread(thread_id)?,
         "claudeAgent" => crate::claude_runner::prewarm_thread(thread_id)?,
-        "devin" | "omp" | "cursor" | "grok" | "droid" | "antigravity" => crate::acp_runner::prewarm_thread(&provider, thread_id)?,
+        "devin" | "omp" | "cursor" | "grok" | "droid" | "antigravity" => {
+            crate::acp_runner::prewarm_thread(&provider, thread_id)?
+        }
         _ => false,
     };
     Ok(json!({"started": started}))
@@ -1585,9 +1735,9 @@ fn load_active_projects(conn: &rusqlite::Connection) -> Vec<(String, String)> {
         "SELECT project_id, title FROM projection_projects \
          WHERE deleted_at IS NULL ORDER BY created_at ASC, project_id ASC",
     ) {
-        if let Ok(rows) = stmt.query_map([], |r| {
-            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
-        }) {
+        if let Ok(rows) =
+            stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        {
             out = rows.flatten().collect();
         }
     }
@@ -1834,8 +1984,11 @@ fn create_external_mcp_integration(payload: &Value) -> Result<Value, WsErr> {
     let pairing_hash = hash_external_mcp_secret(&pairing_code);
     let caps_json = serde_json::to_string(&capabilities).unwrap_or_else(|_| "[]".into());
 
-    conn.execute_batch("BEGIN IMMEDIATE")
-        .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+    conn.execute_batch("BEGIN IMMEDIATE").map_err(|e| {
+        err(format!(
+            "Could not create the external MCP integration. {e}"
+        ))
+    })?;
     let result = (|| -> Result<(), WsErr> {
         conn.execute(
             "INSERT INTO external_mcp_integrations (
@@ -1857,14 +2010,22 @@ fn create_external_mcp_integration(payload: &Value) -> Result<Value, WsErr> {
                 DEFAULT_ACTIVE_TASK_LIMIT,
             ],
         )
-        .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+        .map_err(|e| {
+            err(format!(
+                "Could not create the external MCP integration. {e}"
+            ))
+        })?;
         for pid in &project_ids {
             conn.execute(
                 "INSERT INTO external_mcp_integration_projects (integration_id, project_id) \
                  VALUES (?1, ?2)",
                 params![integration_id, pid],
             )
-            .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+            .map_err(|e| {
+                err(format!(
+                    "Could not create the external MCP integration. {e}"
+                ))
+            })?;
         }
         conn.execute(
             "INSERT INTO external_mcp_pairing_codes (
@@ -1872,7 +2033,11 @@ fn create_external_mcp_integration(payload: &Value) -> Result<Value, WsErr> {
             ) VALUES (?1, ?2, ?3, ?4, NULL)",
             params![pairing_hash, integration_id, created_at, pairing_expires_at],
         )
-        .map_err(|e| err(format!("Could not create the external MCP integration. {e}")))?;
+        .map_err(|e| {
+            err(format!(
+                "Could not create the external MCP integration. {e}"
+            ))
+        })?;
         Ok(())
     })();
     match result {
@@ -1905,7 +2070,11 @@ fn revoke_external_mcp_integration(payload: &Value) -> Result<Value, WsErr> {
              WHERE integration_id = ?1 AND revoked_at IS NULL",
             params![integration_id, crate::todo::iso_now_ms()],
         )
-        .map_err(|e| err(format!("Could not revoke the external MCP integration. {e}")))?;
+        .map_err(|e| {
+            err(format!(
+                "Could not revoke the external MCP integration. {e}"
+            ))
+        })?;
     Ok(json!({"revoked": n > 0}))
 }
 
@@ -2000,11 +2169,10 @@ fn refresh_providers() -> Result<Value, WsErr> {
     let Ok(rd) = std::fs::read_dir(&dir) else {
         return Ok(json!({"providers": []}));
     };
-    let settings = std::fs::read_to_string(
-        std::path::PathBuf::from(state_dir()).join("settings.json"),
-    )
-    .ok()
-    .and_then(|t| serde_json::from_str::<Value>(&t).ok());
+    let settings =
+        std::fs::read_to_string(std::path::PathBuf::from(state_dir()).join("settings.json"))
+            .ok()
+            .and_then(|t| serde_json::from_str::<Value>(&t).ok());
     let mut paths: Vec<_> = rd
         .filter_map(|e| e.ok())
         .map(|e| e.path())
@@ -2058,7 +2226,9 @@ fn refresh_providers() -> Result<Value, WsErr> {
             snap["available"] = json!(false);
             snap["message"] = json!(format!(
                 "{} CLI (`{}`) is not installed or not on PATH.",
-                snap.get("displayName").and_then(|v| v.as_str()).unwrap_or(&provider),
+                snap.get("displayName")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or(&provider),
                 binary
             ));
         }
@@ -2102,14 +2272,15 @@ fn update_provider(payload: &Value) -> Result<Value, WsErr> {
         ));
     };
     let started = iso_now();
-    let out = std::process::Command::new("sh")
-        .args(["-c", &cmd])
-        .output();
+    let out = std::process::Command::new("sh").args(["-c", &cmd]).output();
     let (status, output) = match out {
         Ok(o) => (
-            if o.status.success() { "succeeded" } else { "failed" },
-            String::from_utf8_lossy(&o.stdout).to_string()
-                + &String::from_utf8_lossy(&o.stderr),
+            if o.status.success() {
+                "succeeded"
+            } else {
+                "failed"
+            },
+            String::from_utf8_lossy(&o.stdout).to_string() + &String::from_utf8_lossy(&o.stderr),
         ),
         Err(e) => ("failed", e.to_string()),
     };

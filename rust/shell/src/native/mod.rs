@@ -5,29 +5,30 @@
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 
 use crate::ws_client::Client;
 
-actions!(native, [ToggleFind, ToggleTerminal, ToggleBrowser, ToggleComputer]);
+actions!(
+    native,
+    [ToggleFind, ToggleTerminal, ToggleBrowser, ToggleComputer]
+);
 
 mod browsercua;
 mod chrome;
@@ -37,9 +38,8 @@ mod explorer;
 mod git;
 mod keybindings;
 mod overlays;
-mod panes;
-mod workspace;
 mod palette;
+mod panes;
 mod projects;
 mod settings;
 mod snapshot;
@@ -48,6 +48,7 @@ mod threads;
 mod updater;
 mod vault;
 mod voice;
+mod workspace;
 
 // Real upstream icon assets: Hugeicons glyphs regenerated as SVG, Central
 // icons copied verbatim from apps/web/public/central-icons-reversed.
@@ -57,24 +58,18 @@ mod icons {
     pub const SPACES: &[u8] = include_bytes!("../../assets/icons/folder-library.svg");
     pub const KANBAN: &[u8] = include_bytes!("../../assets/icons/columns-3-wide.svg");
     pub const TASKS: &[u8] = include_bytes!("../../assets/icons/apple-reminder.svg");
-    pub const PULL_REQUESTS: &[u8] =
-        include_bytes!("../../assets/icons/git-compare-arrows.svg");
-    pub const EXTERNAL_LINK: &[u8] =
-        include_bytes!("../../assets/icons/arrow-corner-right-up.svg");
-    pub const MERGE_CONFLICT: &[u8] =
-        include_bytes!("../../assets/icons/merge-conflict.svg");
+    pub const PULL_REQUESTS: &[u8] = include_bytes!("../../assets/icons/git-compare-arrows.svg");
+    pub const EXTERNAL_LINK: &[u8] = include_bytes!("../../assets/icons/arrow-corner-right-up.svg");
+    pub const MERGE_CONFLICT: &[u8] = include_bytes!("../../assets/icons/merge-conflict.svg");
     pub const PEOPLE_2: &[u8] = include_bytes!("../../assets/icons/people-2.svg");
     pub const BRANCH: &[u8] = include_bytes!("../../assets/icons/branch-simple.svg");
     pub const USER_GROUP: &[u8] = include_bytes!("../../assets/icons/user-group.svg");
     pub const BUBBLE_TEXT: &[u8] = include_bytes!("../../assets/icons/bubble-text.svg");
-    pub const CHECK_CIRCLE: &[u8] =
-        include_bytes!("../../assets/icons/circle-check.svg");
+    pub const CHECK_CIRCLE: &[u8] = include_bytes!("../../assets/icons/circle-check.svg");
     pub const X_CIRCLE: &[u8] = include_bytes!("../../assets/icons/circle-x.svg");
     pub const LOADER: &[u8] = include_bytes!("../../assets/icons/loader.svg");
-    pub const MERGED_SIMPLE: &[u8] =
-        include_bytes!("../../assets/icons/merged-simple.svg");
-    pub const PR_SIMPLE: &[u8] =
-        include_bytes!("../../assets/icons/pull-request-simple.svg");
+    pub const MERGED_SIMPLE: &[u8] = include_bytes!("../../assets/icons/merged-simple.svg");
+    pub const PR_SIMPLE: &[u8] = include_bytes!("../../assets/icons/pull-request-simple.svg");
     pub const PR_CLOSED_SIMPLE: &[u8] =
         include_bytes!("../../assets/icons/pull-request-closed-simple.svg");
     pub const LINK: &[u8] = include_bytes!("../../assets/icons/chain-link-1.svg");
@@ -112,14 +107,12 @@ mod icons {
     pub const STAGE: &[u8] = include_bytes!("../../assets/icons/plus-medium.svg");
     pub const FOLDER: &[u8] = include_bytes!("../../assets/icons/folder-closed.svg");
     pub const FOLDER_ADD: &[u8] = include_bytes!("../../assets/icons/folder-add.svg");
-    pub const TEMPORARY: &[u8] =
-        include_bytes!("../../assets/icons/bubble-annotation-5.svg");
+    pub const TEMPORARY: &[u8] = include_bytes!("../../assets/icons/bubble-annotation-5.svg");
     pub const DOWNLOAD: &[u8] = include_bytes!("../../assets/icons/download.svg");
     pub const IMPORT: &[u8] = include_bytes!("../../assets/icons/import.svg");
     pub const TERMINAL: &[u8] = include_bytes!("../../assets/icons/square-terminal.svg");
     pub const PIN: &[u8] = include_bytes!("../../assets/icons/pin.svg");
-    pub const PANEL_TOP_OPEN: &[u8] =
-        include_bytes!("../../assets/icons/panel-top-open.svg");
+    pub const PANEL_TOP_OPEN: &[u8] = include_bytes!("../../assets/icons/panel-top-open.svg");
     pub const LAYOUT_RIGHT: &[u8] = include_bytes!("../../assets/icons/layout-right.svg");
     pub const PIN_FILL: &[u8] = include_bytes!("../../assets/icons/pin-fill.svg");
     pub const STAR: &[u8] = include_bytes!("../../assets/icons/star.svg");
@@ -137,21 +130,14 @@ mod icons {
     pub const P_ANTIGRAVITY: &[u8] = include_bytes!("../../assets/icons/antigravity.svg");
     pub const LOGO: &[u8] = include_bytes!("../../assets/icons/synara-logo.svg");
     pub const LOGO_MOTION: &[u8] = include_bytes!("../../assets/icons/synara-logo-motion.svg");
-    pub const SHIELD_ACCESS: &[u8] =
-        include_bytes!("../../assets/icons/shield-access.svg");
+    pub const SHIELD_ACCESS: &[u8] = include_bytes!("../../assets/icons/shield-access.svg");
     pub const SHIELD_CODE: &[u8] = include_bytes!("../../assets/icons/shield-code.svg");
-    pub const CHEVRON_DOWN: &[u8] =
-        include_bytes!("../../assets/icons/chevron-down-small.svg");
-    pub const CHEVRON_LEFT: &[u8] =
-        include_bytes!("../../assets/icons/chevron-left.svg");
-    pub const CHEVRON_RIGHT: &[u8] =
-        include_bytes!("../../assets/icons/chevron-right.svg");
-    pub const WORKTREE: &[u8] =
-        include_bytes!("../../assets/icons/worktree-split.svg");
-    pub const REFRESH: &[u8] =
-        include_bytes!("../../assets/icons/arrow-rotate-clockwise.svg");
-    pub const SORT: &[u8] =
-        include_bytes!("../../assets/icons/sort-arrow-up-down.svg");
+    pub const CHEVRON_DOWN: &[u8] = include_bytes!("../../assets/icons/chevron-down-small.svg");
+    pub const CHEVRON_LEFT: &[u8] = include_bytes!("../../assets/icons/chevron-left.svg");
+    pub const CHEVRON_RIGHT: &[u8] = include_bytes!("../../assets/icons/chevron-right.svg");
+    pub const WORKTREE: &[u8] = include_bytes!("../../assets/icons/worktree-split.svg");
+    pub const REFRESH: &[u8] = include_bytes!("../../assets/icons/arrow-rotate-clockwise.svg");
+    pub const SORT: &[u8] = include_bytes!("../../assets/icons/sort-arrow-up-down.svg");
     pub const FILTER: &[u8] = include_bytes!("../../assets/icons/filter-1.svg");
     // Code review header (upstream central-icons arrow-top-bottom / filter-2).
     pub const ARROW_TOP_BOTTOM: &[u8] = include_bytes!("../../assets/icons/arrow-top-bottom.svg");
@@ -159,31 +145,22 @@ mod icons {
     pub const PLUS_MED: &[u8] = include_bytes!("../../assets/icons/plus-medium.svg");
     pub const PENCIL: &[u8] = include_bytes!("../../assets/icons/pencil.svg");
     pub const TRASH: &[u8] = include_bytes!("../../assets/icons/trash-can.svg");
-    pub const S_PEOPLE_ID_CARD: &[u8] =
-        include_bytes!("../../assets/icons/people-id-card.svg");
-    pub const S_COLOR_PALETTE: &[u8] =
-        include_bytes!("../../assets/icons/color-palette.svg");
-    pub const S_LAYOUT_SIDEBAR: &[u8] =
-        include_bytes!("../../assets/icons/layout-sidebar.svg");
-    pub const S_CHAT_BUBBLES: &[u8] =
-        include_bytes!("../../assets/icons/chat-bubbles.svg");
+    pub const S_PEOPLE_ID_CARD: &[u8] = include_bytes!("../../assets/icons/people-id-card.svg");
+    pub const S_COLOR_PALETTE: &[u8] = include_bytes!("../../assets/icons/color-palette.svg");
+    pub const S_LAYOUT_SIDEBAR: &[u8] = include_bytes!("../../assets/icons/layout-sidebar.svg");
+    pub const S_CHAT_BUBBLES: &[u8] = include_bytes!("../../assets/icons/chat-bubbles.svg");
     pub const S_BELL: &[u8] = include_bytes!("../../assets/icons/bell.svg");
     pub const S_SHORTCUT: &[u8] = include_bytes!("../../assets/icons/shortcut.svg");
     pub const S_PUZZLE: &[u8] = include_bytes!("../../assets/icons/puzzle.svg");
     pub const S_BRAIN: &[u8] = include_bytes!("../../assets/icons/brain.svg");
-    pub const S_BUILDING_BLOCKS: &[u8] =
-        include_bytes!("../../assets/icons/building-blocks.svg");
+    pub const S_BUILDING_BLOCKS: &[u8] = include_bytes!("../../assets/icons/building-blocks.svg");
     pub const S_GAUGE: &[u8] = include_bytes!("../../assets/icons/gauge.svg");
-    pub const S_CONNECTORS: &[u8] =
-        include_bytes!("../../assets/icons/connectors-1.svg");
+    pub const S_CONNECTORS: &[u8] = include_bytes!("../../assets/icons/connectors-1.svg");
     pub const S_PLUGIN: &[u8] = include_bytes!("../../assets/icons/plugin-1.svg");
     pub const S_GLOBE: &[u8] = include_bytes!("../../assets/icons/globe.svg");
-    pub const S_COMPUTER_USE: &[u8] =
-        include_bytes!("../../assets/icons/computer-use.svg");
-    pub const S_SCREEN_CAPTURE: &[u8] =
-        include_bytes!("../../assets/icons/screen-capture.svg");
-    pub const S_BRANCH_SIMPLE: &[u8] =
-        include_bytes!("../../assets/icons/branch-simple.svg");
+    pub const S_COMPUTER_USE: &[u8] = include_bytes!("../../assets/icons/computer-use.svg");
+    pub const S_SCREEN_CAPTURE: &[u8] = include_bytes!("../../assets/icons/screen-capture.svg");
+    pub const S_BRANCH_SIMPLE: &[u8] = include_bytes!("../../assets/icons/branch-simple.svg");
     pub const S_ARCHIVE: &[u8] = include_bytes!("../../assets/icons/archive.svg");
     pub const S_SHIELD: &[u8] = include_bytes!("../../assets/icons/shield.svg");
     pub const HANDOFF: &[u8] = include_bytes!("../../assets/icons/handoff.svg");
@@ -196,10 +173,8 @@ mod icons {
     pub const SIDECHAT: &[u8] = include_bytes!("../../assets/icons/sidechat.svg");
     pub const CLOCK: &[u8] = include_bytes!("../../assets/icons/clock.svg");
     pub const S_TOOLBOX: &[u8] = include_bytes!("../../assets/icons/toolbox.svg");
-    pub const S_CIRCLE_INFO: &[u8] =
-        include_bytes!("../../assets/icons/circle-info.svg");
-    pub const S_GEAR: &[u8] =
-        include_bytes!("../../assets/icons/settings-gear-4.svg");
+    pub const S_CIRCLE_INFO: &[u8] = include_bytes!("../../assets/icons/circle-info.svg");
+    pub const S_GEAR: &[u8] = include_bytes!("../../assets/icons/settings-gear-4.svg");
     pub const B_SUPABASE: &[u8] = include_bytes!("../../assets/icons/brands/supabase.svg");
     pub const B_VERCEL: &[u8] = include_bytes!("../../assets/icons/brands/vercel.svg");
     pub const B_SLACK: &[u8] = include_bytes!("../../assets/icons/brands/slack.svg");
@@ -268,9 +243,18 @@ fn context_window_usage(thread_v: &Value) -> Option<(f64, f64, Option<f64>)> {
         if kind != "context-window.updated" {
             continue;
         }
-        let used = a.pointer("/payload/usedTokens").and_then(Value::as_f64).unwrap_or(0.0);
-        let pct = a.pointer("/payload/usedPercent").and_then(Value::as_f64).map(|p| p.clamp(0.0, 100.0));
-        let max_t = a.pointer("/payload/maxTokens").and_then(Value::as_f64).filter(|m| *m > 0.0);
+        let used = a
+            .pointer("/payload/usedTokens")
+            .and_then(Value::as_f64)
+            .unwrap_or(0.0);
+        let pct = a
+            .pointer("/payload/usedPercent")
+            .and_then(Value::as_f64)
+            .map(|p| p.clamp(0.0, 100.0));
+        let max_t = a
+            .pointer("/payload/maxTokens")
+            .and_then(Value::as_f64)
+            .filter(|m| *m > 0.0);
         if used <= 0.0 && pct.is_none() && max_t.is_none() {
             continue;
         }
@@ -385,7 +369,11 @@ fn sc_enc_shortcut(sc: &Value) -> String {
         parts.push("shift".into());
     }
     let key = sc.get("key").and_then(Value::as_str).unwrap_or("");
-    parts.push(if key == " " { "space".into() } else { key.into() });
+    parts.push(if key == " " {
+        "space".into()
+    } else {
+        key.into()
+    });
     parts.join("+")
 }
 
@@ -452,7 +440,10 @@ fn sc_rule_from_resolved(r: &Value) -> Value {
 /// below it).
 fn sc_encode_when(node: &Value) -> Option<String> {
     match node.get("type").and_then(Value::as_str)? {
-        "identifier" => node.get("name").and_then(Value::as_str).map(|n| n.to_string()),
+        "identifier" => node
+            .get("name")
+            .and_then(Value::as_str)
+            .map(|n| n.to_string()),
         "not" => {
             let child = node.get("node")?;
             let encoded = sc_encode_when(child)?;
@@ -509,9 +500,7 @@ fn sc_key_label(key: &str) -> String {
         "backspace" => "\u{232b}".into(),
         "delete" | "forwarddelete" => "\u{2326}".into(),
         k if k.len() == 1 => k.to_uppercase(),
-        k if k.starts_with('f') && k[1..].chars().all(|c| c.is_ascii_digit()) => {
-            k.to_uppercase()
-        }
+        k if k.starts_with('f') && k[1..].chars().all(|c| c.is_ascii_digit()) => k.to_uppercase(),
         k => {
             let mut c = k.chars();
             match c.next() {
@@ -567,9 +556,7 @@ fn sc_fmt_captured(c: &ScCaptured) -> String {
 }
 
 fn sc_is_fkey(key: &str) -> bool {
-    key.len() > 1
-        && key.starts_with('f')
-        && key[1..].chars().all(|c| c.is_ascii_digit())
+    key.len() > 1 && key.starts_with('f') && key[1..].chars().all(|c| c.is_ascii_digit())
 }
 
 /// Normalize rule-side key names to gpui's (`arrowleft` -> `left`,
@@ -609,9 +596,21 @@ fn sc_chip(label: impl Into<SharedString>, theme: &Theme) -> Div {
 /// EXPLORER_HIDDEN_DIRECTORY_NAMES + `.synara*`). Files are always shown.
 fn explorer_entry_visible(entry: &Value) -> bool {
     const HIDDEN_DIRS: &[&str] = &[
-        ".cache", ".next", ".nuxt", ".parcel-cache", ".pnpm-store",
-        ".svelte-kit", ".turbo", ".vite", ".yarn", "build", "coverage",
-        "dist", "node_modules", "out", "target",
+        ".cache",
+        ".next",
+        ".nuxt",
+        ".parcel-cache",
+        ".pnpm-store",
+        ".svelte-kit",
+        ".turbo",
+        ".vite",
+        ".yarn",
+        "build",
+        "coverage",
+        "dist",
+        "node_modules",
+        "out",
+        "target",
     ];
     if str_at(entry, "kind") != "directory" {
         return true;
@@ -720,9 +719,16 @@ fn is_activity_thread(t: &Value) -> bool {
 /// Effective lastVisitedAt: max of the thread field and the locally
 /// persisted map (upstream keeps both; markThreadVisited never regresses).
 fn eff_visited(t: &Value, visited: &std::collections::HashMap<String, String>) -> String {
-    let m = visited.get(str_at(t, "id")).map(|s| s.as_str()).unwrap_or("");
+    let m = visited
+        .get(str_at(t, "id"))
+        .map(|s| s.as_str())
+        .unwrap_or("");
     let v = str_at(t, "lastVisitedAt");
-    if m > v { m.to_string() } else { v.to_string() }
+    if m > v {
+        m.to_string()
+    } else {
+        v.to_string()
+    }
 }
 
 /// Upstream createThreadStatusDismissalKey:
@@ -738,7 +744,11 @@ fn dismissal_key(label: &str, t: &Value) -> String {
     )
 }
 
-fn is_dismissed(label: &str, t: &Value, dismissed: &std::collections::HashMap<String, String>) -> bool {
+fn is_dismissed(
+    label: &str,
+    t: &Value,
+    dismissed: &std::collections::HashMap<String, String>,
+) -> bool {
     dismissed
         .get(str_at(t, "id"))
         .map(|k| *k == dismissal_key(label, t))
@@ -754,7 +764,10 @@ fn has_unseen_completion(t: &Value, visited: &std::collections::HashMap<String, 
     visited.is_empty() || completed > visited.as_str()
 }
 
-fn has_unseen_snooze_return(t: &Value, visited: &std::collections::HashMap<String, String>) -> bool {
+fn has_unseen_snooze_return(
+    t: &Value,
+    visited: &std::collections::HashMap<String, String>,
+) -> bool {
     if !get(t, "snoozedUntil").is_null() {
         return false;
     }
@@ -768,8 +781,7 @@ fn has_unseen_snooze_return(t: &Value, visited: &std::collections::HashMap<Strin
 
 fn can_answer_pending(t: &Value) -> bool {
     let session = get(t, "session");
-    session.is_null()
-        || (sess_str(t, "status") != "closed" && sess_str(t, "status") != "error")
+    session.is_null() || (sess_str(t, "status") != "closed" && sess_str(t, "status") != "error")
 }
 
 /// Upstream needsYouKind: "approval" | "input" | "plan" | "failed" | "unread".
@@ -839,7 +851,12 @@ fn inbox_groups(
     threads: &[Value],
     dismissed: &std::collections::HashMap<String, String>,
     visited: &std::collections::HashMap<String, String>,
-) -> (Vec<(&'static str, Value)>, Vec<Value>, Vec<Value>, Vec<Value>) {
+) -> (
+    Vec<(&'static str, Value)>,
+    Vec<Value>,
+    Vec<Value>,
+    Vec<Value>,
+) {
     let mut items: Vec<(u8, &'static str, Value)> = Vec::new();
     let mut listed = std::collections::HashSet::new();
     for t in threads {
@@ -958,7 +975,11 @@ fn gh_visible_items(
     sort: &str,
 ) -> Vec<Value> {
     let q = query.trim().to_lowercase();
-    let stamp = if sort == "updated" { "updatedAt" } else { "createdAt" };
+    let stamp = if sort == "updated" {
+        "updatedAt"
+    } else {
+        "createdAt"
+    };
     let mut rows: Vec<Value> = items
         .iter()
         .filter(|item| kind == "all" || str_at(item, "kind") == kind)
@@ -970,17 +991,21 @@ fn gh_visible_items(
         .cloned()
         .collect();
     rows.sort_by(|a, b| {
-        str_at(b, stamp)
-            .cmp(str_at(a, stamp))
-            .then(
-                get(b, "number")
-                    .as_i64()
-                    .unwrap_or(0)
-                    .cmp(&get(a, "number").as_i64().unwrap_or(0)),
-            )
+        str_at(b, stamp).cmp(str_at(a, stamp)).then(
+            get(b, "number")
+                .as_i64()
+                .unwrap_or(0)
+                .cmp(&get(a, "number").as_i64().unwrap_or(0)),
+        )
     });
     // Pinned rows lead even inside the flat All section; sectioning happens at render time.
-    rows.sort_by_key(|item| if get(item, "isPinned").as_bool() == Some(true) { 0 } else { 1 });
+    rows.sort_by_key(|item| {
+        if get(item, "isPinned").as_bool() == Some(true) {
+            0
+        } else {
+            1
+        }
+    });
     rows
 }
 
@@ -998,7 +1023,13 @@ fn gh_actor_label(item: &Value) -> String {
     }
 }
 
-fn icon_btn(id: &'static str, data: &'static [u8], size: f32, hover: Hsla, ink: Hsla) -> Stateful<Div> {
+fn icon_btn(
+    id: &'static str,
+    data: &'static [u8],
+    size: f32,
+    hover: Hsla,
+    ink: Hsla,
+) -> Stateful<Div> {
     icon_btn_pad(id, data, size, 16., hover, ink)
 }
 
@@ -1018,7 +1049,10 @@ fn provider_icon_16(pid: &str, mono: &'static [u8], ink: Hsla) -> gpui::AnyEleme
         )))
         .size(px(16.))
         .into_any_element(),
-        None => svg_icon(mono).size(px(16.)).text_color(ink).into_any_element(),
+        None => svg_icon(mono)
+            .size(px(16.))
+            .text_color(ink)
+            .into_any_element(),
     }
 }
 
@@ -1125,8 +1159,6 @@ fn import_provider_icon(provider: &str) -> &'static [u8] {
         other => provider_icon(other),
     }
 }
-
-
 
 /// Drag payload for open-thread tab pills (reorder).
 struct TabDrag(String);
@@ -1711,9 +1743,7 @@ struct PiDraft {
 /// generation, and the provider-authored questions parsed out of the newest
 /// matching `user-input.requested` activity
 /// (`derivePendingUserInputs` + `parseUserInputQuestions`).
-fn active_pending_input(
-    thread_v: &Value,
-) -> Option<(String, Option<String>, Vec<Value>)> {
+fn active_pending_input(thread_v: &Value) -> Option<(String, Option<String>, Vec<Value>)> {
     for p in arr(thread_v, "pendingInteractions") {
         if str_at(p, "interactionKind") != "userInput" || str_at(p, "status") != "pending" {
             continue;
@@ -1833,10 +1863,7 @@ fn derive_ui_exchanges(
             if !qs.is_empty() {
                 open.push((rid, gen, str_at(a, "id").to_string(), qs));
             }
-        } else if let Some(pos) = open
-            .iter()
-            .rposition(|(r, g, _, _)| r == &rid && g == &gen)
-        {
+        } else if let Some(pos) = open.iter().rposition(|(r, g, _, _)| r == &rid && g == &gen) {
             let (_, _, req_id, qs) = open.remove(pos);
             consumed.insert(req_id);
             let answers = get(payload, "answers").clone();
@@ -1883,9 +1910,7 @@ const APP_VERSION: &str = "1.6.4";
 /// apps/web/src/whatsNew/entries.ts.
 fn whats_new_entries() -> &'static [Value] {
     static E: std::sync::OnceLock<Vec<Value>> = std::sync::OnceLock::new();
-    E.get_or_init(|| {
-        serde_json::from_str(include_str!("../whats_new.json")).unwrap_or_default()
-    })
+    E.get_or_init(|| serde_json::from_str(include_str!("../whats_new.json")).unwrap_or_default())
 }
 
 /// Upstream compareVersions: MAJOR.MINOR.PATCH tuple compare, non-numeric -> 0.
@@ -1909,9 +1934,7 @@ fn wn_cmp_versions(a: &str, b: &str) -> i64 {
 /// Entries sorted newest-first (upstream sortEntriesByVersionDesc).
 fn whats_new_sorted() -> Vec<Value> {
     let mut e = whats_new_entries().to_vec();
-    e.sort_by(|a, b| {
-        wn_cmp_versions(str_at(b, "version"), str_at(a, "version")).cmp(&0)
-    });
+    e.sort_by(|a, b| wn_cmp_versions(str_at(b, "version"), str_at(a, "version")).cmp(&0));
     e
 }
 
@@ -1949,7 +1972,16 @@ const AUTOM_DAYS: &[&str] = &["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // Upstream DEFAULT_PROVIDER_ORDER (PROVIDER_DESCRIPTORS order).
 const PROVIDER_ORDER: [&str; 10] = [
-    "codex", "claudeAgent", "cursor", "antigravity", "grok", "droid", "opencode", "pi", "devin", "omp",
+    "codex",
+    "claudeAgent",
+    "cursor",
+    "antigravity",
+    "grok",
+    "droid",
+    "opencode",
+    "pi",
+    "devin",
+    "omp",
 ];
 
 const SETTINGS_SEARCH_ORDER: &[(&str, &str)] = &[
@@ -2215,7 +2247,10 @@ fn switch_track(on: bool, accent: gpui::Hsla, theme: &gpui_kit::component::Theme
     let (fill, border) = if on {
         (accent, accent)
     } else {
-        (mix(control, theme.foreground, 0.2), theme.foreground.opacity(0.14))
+        (
+            mix(control, theme.foreground, 0.2),
+            theme.foreground.opacity(0.14),
+        )
     };
     let t = div()
         .w(px(32.))
@@ -2228,7 +2263,11 @@ fn switch_track(on: bool, accent: gpui::Hsla, theme: &gpui_kit::component::Theme
         .p(px(1.))
         .flex()
         .items_center();
-    let t = if on { t.justify_end() } else { t.justify_start() };
+    let t = if on {
+        t.justify_end()
+    } else {
+        t.justify_start()
+    };
     t.child(
         div()
             .size(px(16.))
@@ -2257,11 +2296,7 @@ fn lerp_f(a: f32, b: f32, t: f32) -> f32 {
 
 fn noise_plane(x0: i64, y0: i64, z: i64, fx: f32, fy: f32) -> f32 {
     lerp_f(
-        lerp_f(
-            ascii_hash3(x0, y0, z),
-            ascii_hash3(x0 + 1, y0, z),
-            fx,
-        ),
+        lerp_f(ascii_hash3(x0, y0, z), ascii_hash3(x0 + 1, y0, z), fx),
         lerp_f(
             ascii_hash3(x0, y0 + 1, z),
             ascii_hash3(x0 + 1, y0 + 1, z),
@@ -2286,8 +2321,7 @@ fn value_noise3(x: f32, y: f32, z: f32) -> f32 {
 
 fn ascii_sample(p: &AsciiPattern, x: f32, y: f32, cx: f32, cy: f32, t: f32) -> (f32, f32) {
     let (sx, sy, dx, dy, wx, wy, wl, ws, radial) = *p;
-    let noise = 0.68
-        * value_noise3(x / sx + t * dx, y / sy + t * dy, t * 0.18)
+    let noise = 0.68 * value_noise3(x / sx + t * dx, y / sy + t * dy, t * 0.18)
         + 0.32 * value_noise3(x / 70. - t * 0.08, y / 52., t * 0.35 + 17.);
     let band = if radial {
         ((x - cx) * (x - cx) + (y - cy) * (y - cy)).sqrt()
@@ -2342,12 +2376,12 @@ fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
     let mut order: Vec<String> = Vec::new();
     let mut started: HashMap<String, Launch> = HashMap::new();
     let admit = |tasks: &mut HashMap<String, State>,
-                     order: &mut Vec<String>,
-                     started: &HashMap<String, Launch>,
-                     task_id: &str,
-                     task_type: Option<String>,
-                     description: Option<String>,
-                     created_at: &str| {
+                 order: &mut Vec<String>,
+                 started: &HashMap<String, Launch>,
+                 task_id: &str,
+                 task_type: Option<String>,
+                 description: Option<String>,
+                 created_at: &str| {
         let launch = started.get(task_id);
         let task_type = task_type.or_else(|| launch.and_then(|l| l.task_type.clone()));
         // Subagents keep their own transcript row; monitors are excluded upstream.
@@ -2391,13 +2425,29 @@ fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
                 }
                 let ty = {
                     let s = str_at(t, "task_type");
-                    if s.is_empty() { None } else { Some(s.to_string()) }
+                    if s.is_empty() {
+                        None
+                    } else {
+                        Some(s.to_string())
+                    }
                 };
                 let desc = {
                     let s = str_at(t, "description");
-                    if s.is_empty() { None } else { Some(s.to_string()) }
+                    if s.is_empty() {
+                        None
+                    } else {
+                        Some(s.to_string())
+                    }
                 };
-                admit(&mut tasks, &mut order, &started, &tid, ty, desc, &created_at);
+                admit(
+                    &mut tasks,
+                    &mut order,
+                    &started,
+                    &tid,
+                    ty,
+                    desc,
+                    &created_at,
+                );
             }
             continue;
         }
@@ -2411,25 +2461,43 @@ fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
                 Launch {
                     tool_use_id: {
                         let s = str_at(payload, "toolUseId");
-                        if s.is_empty() { None } else { Some(s.to_string()) }
+                        if s.is_empty() {
+                            None
+                        } else {
+                            Some(s.to_string())
+                        }
                     },
                     task_type: {
                         let s = str_at(payload, "taskType");
-                        if s.is_empty() { None } else { Some(s.to_string()) }
+                        if s.is_empty() {
+                            None
+                        } else {
+                            Some(s.to_string())
+                        }
                     },
                     description: {
                         let s = str_at(payload, "detail");
-                        if s.is_empty() { None } else { Some(s.to_string()) }
+                        if s.is_empty() {
+                            None
+                        } else {
+                            Some(s.to_string())
+                        }
                     },
                     started_at: created_at.clone(),
                 },
             );
-            let is_agent = started
-                .get(&tid)
-                .and_then(|l| l.task_type.as_deref())
-                == Some("local_agent");
+            let is_agent =
+                started.get(&tid).and_then(|l| l.task_type.as_deref()) == Some("local_agent");
             if is_agent {
-                admit(&mut tasks, &mut order, &started, &tid, Some("local_agent".into()), None, &created_at);
+                admit(
+                    &mut tasks,
+                    &mut order,
+                    &started,
+                    &tid,
+                    Some("local_agent".into()),
+                    None,
+                    &created_at,
+                );
             } else if let Some(task) = tasks.get_mut(&tid) {
                 if task.tool_use_id.is_none() {
                     task.tool_use_id = started.get(&tid).and_then(|l| l.tool_use_id.clone());
@@ -2446,18 +2514,36 @@ fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
         if kind == "task.updated" && get(payload, "isBackgrounded").as_bool() == Some(true) {
             let ty = {
                 let s = str_at(payload, "taskType");
-                if s.is_empty() { None } else { Some(s.to_string()) }
+                if s.is_empty() {
+                    None
+                } else {
+                    Some(s.to_string())
+                }
             };
             let desc = {
                 let s = str_at(payload, "detail");
-                if s.is_empty() { None } else { Some(s.to_string()) }
+                if s.is_empty() {
+                    None
+                } else {
+                    Some(s.to_string())
+                }
             };
-            admit(&mut tasks, &mut order, &started, &tid, ty, desc, &created_at);
+            admit(
+                &mut tasks,
+                &mut order,
+                &started,
+                &tid,
+                ty,
+                desc,
+                &created_at,
+            );
         }
         let outcome = bg_task_outcome(str_at(payload, "status"));
         let reconciles_stop = get(payload, "reconcilesStop").as_bool() == Some(true)
             && tasks.get(&tid).map(|t| t.status.as_str()) == Some("stopped");
-        let Some(task) = tasks.get_mut(&tid) else { continue };
+        let Some(task) = tasks.get_mut(&tid) else {
+            continue;
+        };
         if !(task.status == "running" || reconciles_stop) {
             continue;
         }
@@ -2472,10 +2558,13 @@ fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
             task.status = oc.to_string();
             task.completed_at = Some(created_at.clone());
             let detail = str_at(payload, "detail");
-            task.exit_code = detail
-                .to_lowercase()
-                .find("exit code ")
-                .and_then(|i| detail[i + 10..].split_whitespace().next()?.parse::<i64>().ok());
+            task.exit_code = detail.to_lowercase().find("exit code ").and_then(|i| {
+                detail[i + 10..]
+                    .split_whitespace()
+                    .next()?
+                    .parse::<i64>()
+                    .ok()
+            });
         }
     }
     // The launching call's command wins when it names one (upstream merges the
@@ -2489,7 +2578,11 @@ fn derive_bg_tasks(thread: &Value) -> Vec<BgTask> {
             let payload = get(a, "payload");
             let call_id = {
                 let s = str_at(payload, "toolCallId");
-                if s.is_empty() { str_at(payload, "toolUseId") } else { s }
+                if s.is_empty() {
+                    str_at(payload, "toolUseId")
+                } else {
+                    s
+                }
             };
             if call_id.is_empty() || !launch_ids.contains(call_id) {
                 continue;
@@ -2620,7 +2713,10 @@ fn rel_time(iso: &str) -> String {
     let Ok(t) = chrono::DateTime::parse_from_rfc3339(iso) else {
         return String::new();
     };
-    let d = chrono::Utc::now().signed_duration_since(t).num_seconds().max(0);
+    let d = chrono::Utc::now()
+        .signed_duration_since(t)
+        .num_seconds()
+        .max(0);
     if d < 3600 {
         format!("{}m", d / 60)
     } else if d < 86400 {
@@ -2655,12 +2751,7 @@ fn gh_actor_name(actor: &Value) -> String {
 /// Upstream summarizePullRequestChecks (environmentPullRequest.logic):
 /// (label, tone) where tone is failure/pending/success/none.
 fn pr_checks_summary(checks: &[Value]) -> (String, &'static str) {
-    let count = |s: &str| {
-        checks
-            .iter()
-            .filter(|c| str_at(c, "status") == s)
-            .count()
-    };
+    let count = |s: &str| checks.iter().filter(|c| str_at(c, "status") == s).count();
     let failing = count("failure");
     if failing > 0 {
         return (
@@ -2713,7 +2804,11 @@ fn pr_timeline_events(detail: &Value) -> Vec<(String, String, Option<String>)> {
         str_at(detail, "createdAt").to_string(),
         format!(
             "{} opened this pull request",
-            if author.is_empty() { "Someone" } else { &author }
+            if author.is_empty() {
+                "Someone"
+            } else {
+                &author
+            }
         ),
         None,
     ));
@@ -2750,18 +2845,25 @@ fn pr_timeline_events(detail: &Value) -> Vec<(String, String, Option<String>)> {
         events.push((
             str_at(comment, "id").to_string(),
             str_at(comment, "createdAt").to_string(),
-            format!(
-                "{} {verb}",
-                if who.is_empty() { "Someone" } else { &who }
-            ),
+            format!("{} {verb}", if who.is_empty() { "Someone" } else { &who }),
             if body.is_empty() { None } else { Some(body) },
         ));
     }
     let merged_at = get(detail, "mergedAt").as_str().map(str::to_string);
     if let Some(m) = merged_at {
-        events.push(("merged".to_string(), m, "Pull request merged".to_string(), None));
+        events.push((
+            "merged".to_string(),
+            m,
+            "Pull request merged".to_string(),
+            None,
+        ));
     } else if let Some(c) = get(detail, "closedAt").as_str().map(str::to_string) {
-        events.push(("closed".to_string(), c, "Pull request closed".to_string(), None));
+        events.push((
+            "closed".to_string(),
+            c,
+            "Pull request closed".to_string(),
+            None,
+        ));
     }
     events.sort_by(|a, b| a.1.cmp(&b.1));
     events
@@ -2790,15 +2892,12 @@ fn pr_comments_summary(count: usize, truncated: bool) -> String {
 
 /// Upstream pullRequestStackTargetEntries + assessPullRequestStack.
 /// Returns (label, tone, mergeTargetCount, canAttemptMerge, blocker).
-fn pr_stack_assessment(
-    stack: &Value,
-) -> (&'static str, &'static str, usize, bool, Option<String>) {
+fn pr_stack_assessment(stack: &Value) -> (&'static str, &'static str, usize, bool, Option<String>) {
     let position = get(stack, "position").as_i64().unwrap_or(0);
     let targets: Vec<&Value> = arr(stack, "entries")
         .iter()
         .filter(|e| {
-            get(e, "position").as_i64().unwrap_or(0) <= position
-                && str_at(e, "state") != "merged"
+            get(e, "position").as_i64().unwrap_or(0) <= position && str_at(e, "state") != "merged"
         })
         .collect();
     if targets.is_empty() {
@@ -2871,8 +2970,7 @@ fn pr_stack_assessment(
 fn pr_merge_blocker(detail: &Value) -> Option<String> {
     if get(detail, "stackMetadataIncomplete").as_bool() == Some(true) {
         return Some(
-            "Stack details are temporarily unavailable. Refresh before merging."
-                .to_string(),
+            "Stack details are temporarily unavailable. Refresh before merging.".to_string(),
         );
     }
     let stack = get(detail, "stack");
@@ -2963,7 +3061,9 @@ fn clock_time(iso: &str) -> String {
     let Ok(t) = chrono::DateTime::parse_from_rfc3339(iso) else {
         return String::new();
     };
-    t.with_timezone(&chrono::Local).format("%-I:%M %p").to_string()
+    t.with_timezone(&chrono::Local)
+        .format("%-I:%M %p")
+        .to_string()
 }
 
 // Epoch-ms → RFC3339 (upstream toISOString, accepted by stats.getRecap).
@@ -3043,7 +3143,11 @@ fn fmt_dur_ms(ms: f64) -> String {
     } else {
         let h = s / 3600;
         let m = (s % 3600) / 60;
-        if m > 0 { format!("{h}h {m}m") } else { format!("{h}h") }
+        if m > 0 {
+            format!("{h}h {m}m")
+        } else {
+            format!("{h}h")
+        }
     }
 }
 
@@ -3109,15 +3213,15 @@ fn desktop_update_state_from_status(status: &Value) -> Option<crate::updater::Up
 }
 
 fn desktop_update_state_from_result(result: &Value) -> Option<crate::updater::UpdateState> {
-    result.get("status").and_then(desktop_update_state_from_status)
+    result
+        .get("status")
+        .and_then(desktop_update_state_from_status)
 }
 
 impl Native {
     pub fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
         cx.new(|cx| {
-            let composer = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("")
-            });
+            let composer = cx.new(|cx| InputState::new(window, cx).placeholder(""));
             cx.subscribe_in(
                 &composer,
                 window,
@@ -3130,8 +3234,7 @@ impl Native {
                                 // into the composer, "send" sends the message
                                 // once the transcription lands.
                                 if this.voice_capture.is_some() {
-                                    let behavior =
-                                        this.setting_str("voiceEnterBehavior", "stop");
+                                    let behavior = this.setting_str("voiceEnterBehavior", "stop");
                                     this.voice_send_after = behavior == "send";
                                     this.stop_voice(window, cx);
                                 } else {
@@ -3145,9 +3248,7 @@ impl Native {
                 },
             )
             .detach();
-            let split_composer = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("")
-            });
+            let split_composer = cx.new(|cx| InputState::new(window, cx).placeholder(""));
             cx.subscribe_in(
                 &split_composer,
                 window,
@@ -3160,9 +3261,7 @@ impl Native {
                 },
             )
             .detach();
-            let search = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Search threads")
-            });
+            let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search threads"));
             cx.subscribe_in(
                 &search,
                 window,
@@ -3173,9 +3272,8 @@ impl Native {
                 },
             )
             .detach();
-            let settings_search = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Search settings...")
-            });
+            let settings_search =
+                cx.new(|cx| InputState::new(window, cx).placeholder("Search settings..."));
             cx.subscribe_in(
                 &settings_search,
                 window,
@@ -3196,7 +3294,8 @@ impl Native {
                                 this.refresh_vault(cx);
                                 this.refresh_cookie_sources(cx);
                             }
-                            this.settings_search.update(cx, |s, cx| s.set_value("", window, cx));
+                            this.settings_search
+                                .update(cx, |s, cx| s.set_value("", window, cx));
                         }
                         cx.notify();
                     }
@@ -3204,9 +3303,7 @@ impl Native {
                 },
             )
             .detach();
-            let file_search = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Search files")
-            });
+            let file_search = cx.new(|cx| InputState::new(window, cx).placeholder("Search files"));
             cx.subscribe_in(
                 &file_search,
                 window,
@@ -3226,7 +3323,8 @@ impl Native {
                             if let Some(m) = entry.as_object_mut() {
                                 m.insert("path".into(), json!(abs));
                             }
-                            this.file_search.update(cx, |s, cx| s.set_value("", window, cx));
+                            this.file_search
+                                .update(cx, |s, cx| s.set_value("", window, cx));
                             this.file_search_results.clear();
                             this.open_entry(entry, cx);
                         }
@@ -3235,9 +3333,8 @@ impl Native {
                 },
             )
             .detach();
-            let gh_search = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Search or paste a PR link")
-            });
+            let gh_search =
+                cx.new(|cx| InputState::new(window, cx).placeholder("Search or paste a PR link"));
             cx.subscribe_in(
                 &gh_search,
                 window,
@@ -3282,17 +3379,14 @@ impl Native {
                 .detach();
                 tp_sliders.insert(id, st);
             }
-            let vault_master_input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Master password")
-            });
+            let vault_master_input =
+                cx.new(|cx| InputState::new(window, cx).placeholder("Master password"));
             vault_master_input.update(cx, |state, cx| state.set_masked(true, window, cx));
-            let vault_confirm_input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Confirm master password")
-            });
+            let vault_confirm_input =
+                cx.new(|cx| InputState::new(window, cx).placeholder("Confirm master password"));
             vault_confirm_input.update(cx, |state, cx| state.set_masked(true, window, cx));
-            let vault_reveal_input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("Master password")
-            });
+            let vault_reveal_input =
+                cx.new(|cx| InputState::new(window, cx).placeholder("Master password"));
             vault_reveal_input.update(cx, |state, cx| state.set_masked(true, window, cx));
             cx.subscribe_in(
                 &vault_master_input,
@@ -3320,9 +3414,8 @@ impl Native {
                 },
             )
             .detach();
-            let cookie_domain_input = cx.new(|cx| {
-                InputState::new(window, cx).placeholder("example.com (optional)")
-            });
+            let cookie_domain_input =
+                cx.new(|cx| InputState::new(window, cx).placeholder("example.com (optional)"));
             let this = Self {
                 focus_handle: cx.focus_handle(),
                 client: Arc::new(Mutex::new(None)),
@@ -3360,9 +3453,7 @@ impl Native {
                 search_hits: Vec::new(),
                 view_dev: false,
                 dev_servers: Vec::new(),
-                dev_cmd: cx.new(|cx| {
-                    InputState::new(window, cx).placeholder("Dev server command")
-                }),
+                dev_cmd: cx.new(|cx| InputState::new(window, cx).placeholder("Dev server command")),
                 runtime_mode: "full-access",
                 chats_collapsed: true,
                 preview_pages: std::collections::HashMap::new(),
@@ -3397,9 +3488,8 @@ impl Native {
                     "GPT-6 Astra".to_string(),
                 ),
                 model_picker_open: false,
-                model_picker_search: cx.new(|cx| {
-                    InputState::new(window, cx).placeholder("Search models...")
-                }),
+                model_picker_search: cx
+                    .new(|cx| InputState::new(window, cx).placeholder("Search models...")),
                 model_catalog: Vec::new(),
                 composer_effort_idx: 2,
                 model_picker_provider: "codex".to_string(),
@@ -3410,36 +3500,36 @@ impl Native {
                 uploading: false,
                 open_threads: Vec::new(),
                 pinned_threads: Vec::new(),
-            tab_drop_target: None,
-            composer_thread_over: false,
-            transcript_scroll: ScrollHandle::new(),
-            editing_message_id: None,
-            pending_revert: None,
-    appearance_mode: 0,
-    ui_density: 1,
-    chat_width_mode: 0,
-    show_ascii_bg: true,
-    backdrop_full: false,
-            ascii_t0: std::time::Instant::now(),
-            ascii_seed: 0.0,
-            ascii_cells: Vec::new(),
-            backdrop_img: None,
-            backdrop_field: None,
-            backdrop_spec: None,
-            backdrop_key: (0, 0, false),
-            atmosphere_img: None,
-            atmosphere_key: (0, 0, false, 0),
-            ascii_ripples: Vec::new(),
-            ascii_cell_w: 0.0,
-            ascii_fresh: true,
-            split_open: false,
-            split_thread: None,
-            split_detail: None,
-            split_stream_id: None,
-            focused_pane: 0,
-            split_ratio: 0.5,
-            split_dragging: false,
-            split_composer: Some(split_composer),
+                tab_drop_target: None,
+                composer_thread_over: false,
+                transcript_scroll: ScrollHandle::new(),
+                editing_message_id: None,
+                pending_revert: None,
+                appearance_mode: 0,
+                ui_density: 1,
+                chat_width_mode: 0,
+                show_ascii_bg: true,
+                backdrop_full: false,
+                ascii_t0: std::time::Instant::now(),
+                ascii_seed: 0.0,
+                ascii_cells: Vec::new(),
+                backdrop_img: None,
+                backdrop_field: None,
+                backdrop_spec: None,
+                backdrop_key: (0, 0, false),
+                atmosphere_img: None,
+                atmosphere_key: (0, 0, false, 0),
+                ascii_ripples: Vec::new(),
+                ascii_cell_w: 0.0,
+                ascii_fresh: true,
+                split_open: false,
+                split_thread: None,
+                split_detail: None,
+                split_stream_id: None,
+                focused_pane: 0,
+                split_ratio: 0.5,
+                split_dragging: false,
+                split_composer: Some(split_composer),
                 renaming: false,
                 rename_input: None,
                 view_changes: false,
@@ -3544,7 +3634,7 @@ impl Native {
                 flags_menu_open: false,
                 project_picker_open: false,
                 landing_project_id: None,
-            landing_temporary: false,
+                landing_temporary: false,
                 project_picker_input: None,
                 dismissed_thread_errors: std::collections::HashSet::new(),
                 error_details_open: false,
@@ -3563,77 +3653,81 @@ impl Native {
                 pr_resolve_epoch: 0,
                 coachmark: None,
                 sponsor_dismissed: false,
-            search_open: false,
-            sidebar_collapsed: false,
-            user_input_open: Vec::new(),
-            md_images: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new())),
-            md_images_pending: std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashSet::new())),
-            activity_open: Vec::new(),
-            turn_files_collapsed: Vec::new(),
-            voice_capture: None,
-            voice_transcribing: false,
-            voice_send_after: false,
-            ctx_menu: None,
-            ctx_menu_tab: false,
-            ctx_sub: None,
-            file_ctx_menu: None,
-            hover_thread: None,
-            hover_card: None,
-            hover_card_seq: 0,
-            ctx_confirm_delete: None,
-            proj_ctx_menu: None,
-            proj_ctx_confirm: false,
-            hover_project: None,
-            hover_user_msg: None,
-            project_card: None,
-            project_card_seq: 0,
-            proj_rename: None,
-            proj_rename_input: None,
-            proj_relocate: None,
-            proj_relocate_input: None,
-            import_dlg: None,
-            palette_mode: None,
-            palette_input: None,
-            palette_rows: Vec::new(),
-            palette_sel: 0,
-            palette_seq: 0,
-            kb_rules: Vec::new(),
-            sc_rec: None,
-            feedback_open: false,
-            feedback_category: None,
-            feedback_input: None,
-            feedback_sending: false,
-            feedback_toast: None,
-            sc_dialog_open: false,
-            sc_dialog_input: None,
-            snooze_dlg_tid: None,
-            snooze_dlg_input: None,
-            autom_defs: Vec::new(),
-            autom_runs: Vec::new(),
-            autom_sel: None,
-            autom_dialog: None,
-            wn_popout: false,
-            wn_view: 0,
-            wn_changelog_open: std::collections::HashSet::new(),
-            wn_seen: None,
-            theme_packs: json!({}),
-            tp_edit: None,
-            tp_input: None,
-            tp_import: None,
-            tp_sliders,
-            git_dialog: None,
-            git_msg_input: None,
-            git_pr_title_input: None,
-            git_pr_body_input: None,
-            git_pr_draft: false,
-            git_commit_action: "commit".to_string(),
-            git_action_running: false,
-            tour_step: None,
-            user_input_draft: Vec::new(),
-            pi_drafts: std::collections::HashMap::new(),
-            pi_qidx: std::collections::HashMap::new(),
-            pi_responding: false,
-            find_open: false,
+                search_open: false,
+                sidebar_collapsed: false,
+                user_input_open: Vec::new(),
+                md_images: std::sync::Arc::new(std::sync::Mutex::new(
+                    std::collections::HashMap::new(),
+                )),
+                md_images_pending: std::sync::Arc::new(std::sync::Mutex::new(
+                    std::collections::HashSet::new(),
+                )),
+                activity_open: Vec::new(),
+                turn_files_collapsed: Vec::new(),
+                voice_capture: None,
+                voice_transcribing: false,
+                voice_send_after: false,
+                ctx_menu: None,
+                ctx_menu_tab: false,
+                ctx_sub: None,
+                file_ctx_menu: None,
+                hover_thread: None,
+                hover_card: None,
+                hover_card_seq: 0,
+                ctx_confirm_delete: None,
+                proj_ctx_menu: None,
+                proj_ctx_confirm: false,
+                hover_project: None,
+                hover_user_msg: None,
+                project_card: None,
+                project_card_seq: 0,
+                proj_rename: None,
+                proj_rename_input: None,
+                proj_relocate: None,
+                proj_relocate_input: None,
+                import_dlg: None,
+                palette_mode: None,
+                palette_input: None,
+                palette_rows: Vec::new(),
+                palette_sel: 0,
+                palette_seq: 0,
+                kb_rules: Vec::new(),
+                sc_rec: None,
+                feedback_open: false,
+                feedback_category: None,
+                feedback_input: None,
+                feedback_sending: false,
+                feedback_toast: None,
+                sc_dialog_open: false,
+                sc_dialog_input: None,
+                snooze_dlg_tid: None,
+                snooze_dlg_input: None,
+                autom_defs: Vec::new(),
+                autom_runs: Vec::new(),
+                autom_sel: None,
+                autom_dialog: None,
+                wn_popout: false,
+                wn_view: 0,
+                wn_changelog_open: std::collections::HashSet::new(),
+                wn_seen: None,
+                theme_packs: json!({}),
+                tp_edit: None,
+                tp_input: None,
+                tp_import: None,
+                tp_sliders,
+                git_dialog: None,
+                git_msg_input: None,
+                git_pr_title_input: None,
+                git_pr_body_input: None,
+                git_pr_draft: false,
+                git_commit_action: "commit".to_string(),
+                git_action_running: false,
+                tour_step: None,
+                user_input_draft: Vec::new(),
+                pi_drafts: std::collections::HashMap::new(),
+                pi_qidx: std::collections::HashMap::new(),
+                pi_responding: false,
+                find_open: false,
                 find_input: None,
                 find_query: String::new(),
             };
@@ -3652,30 +3746,40 @@ impl Native {
             this.focus_handle.focus(window, cx);
             // Owner vault prompts originate in the CDP browser host, outside the
             // server websocket. Poll only while the owner surface is visible.
-            cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
-                loop {
+            cx.spawn(
+                async move |this: WeakEntity<Self>, cx: &mut AsyncApp| loop {
                     let fast = this
                         .update(cx, |this: &mut Self, _cx| {
                             this.view_settings && this.settings_section == "saved-logins"
                         })
                         .unwrap_or(false);
                     cx.background_executor()
-                        .timer(std::time::Duration::from_millis(if fast { 500 } else { 3000 }))
+                        .timer(std::time::Duration::from_millis(if fast {
+                            500
+                        } else {
+                            3000
+                        }))
                         .await;
                     let keep = this
                         .update(cx, |this: &mut Self, cx| {
-                            if let Some(Ok(vault)) = browserhost_rs::cdp::initialized_browser_vault() {
+                            if let Some(Ok(vault)) =
+                                browserhost_rs::cdp::initialized_browser_vault()
+                            {
                                 if let Ok(snapshot) = vault.snapshot() {
                                     let pending: Vec<String> = arr(&snapshot, "pending")
                                         .iter()
                                         .map(|prompt| str_at(prompt, "id").to_string())
-                                        .filter(|id| !id.is_empty() && !this.vault_prompts_seen.contains(id))
+                                        .filter(|id| {
+                                            !id.is_empty() && !this.vault_prompts_seen.contains(id)
+                                        })
                                         .collect();
                                     if !pending.is_empty() {
                                         for id in pending {
                                             this.vault_prompts_seen.insert(id);
                                         }
-                                        if !(this.view_settings && this.settings_section == "saved-logins") {
+                                        if !(this.view_settings
+                                            && this.settings_section == "saved-logins")
+                                        {
                                             this.clear_views();
                                             this.view_settings = true;
                                             this.settings_section = "saved-logins";
@@ -3691,22 +3795,26 @@ impl Native {
                     if !keep {
                         break;
                     }
-                }
-            })
+                },
+            )
             .detach();
             // Desktop updater state is owned by the shell service and changes
             // outside websocket events (background checks, transfers, restore).
-            cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
-                loop {
+            cx.spawn(
+                async move |this: WeakEntity<Self>, cx: &mut AsyncApp| loop {
                     cx.background_executor()
                         .timer(std::time::Duration::from_millis(5000))
                         .await;
                     let keep = this
-                        .update(cx, |this: &mut Self, cx| this.refresh_desktop_update_state(cx))
+                        .update(cx, |this: &mut Self, cx| {
+                            this.refresh_desktop_update_state(cx)
+                        })
                         .is_ok();
-                    if !keep { break; }
-                }
-            })
+                    if !keep {
+                        break;
+                    }
+                },
+            )
             .detach();
             // AsciiWaveBackground ambient clock: ~15fps repaints while the
             // landing field is on screen (upstream AMBIENT_FRAME_INTERVAL_MS).
@@ -3722,9 +3830,11 @@ impl Native {
                         })
                         .unwrap_or(false);
                     cx.background_executor()
-                        .timer(std::time::Duration::from_millis(
-                            if ripples { 66 } else { 1000 },
-                        ))
+                        .timer(std::time::Duration::from_millis(if ripples {
+                            66
+                        } else {
+                            1000
+                        }))
                         .await;
                     let keep = this
                         .update(cx, |this: &mut Self, cx| {
@@ -3743,120 +3853,10 @@ impl Native {
         })
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /// Global keymap: the upstream DEFAULT_SHORTCUT_FALLBACKS chords whose
     /// targets exist on the native surface. cmd-f / cmd-j stay declared
     /// KeyBindings (chat.find / terminal.toggle); the rest is dispatched here.
     // ---- shortcut recorder + keybinding dispatch ------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /// Upstream FEEDBACK_CATEGORIES: (value, label, summary lead).
     const FEEDBACK_CATEGORIES: [(&str, &str, &str); 6] = [
@@ -3868,107 +3868,7 @@ impl Native {
         ("other", "Other", "I have some feedback"),
     ];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // ── Automations ─────────────────────────────────────────────────────
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 impl Focusable for Native {
@@ -3994,8 +3894,18 @@ fn row(
         .gap_1()
         .cursor_pointer()
         .rounded_md()
-        .child(div().text_size(px(13.)).font_weight(FontWeight::SEMIBOLD).child(title))
-        .child(div().text_xs().text_color(theme.muted_foreground).child(subtitle));
+        .child(
+            div()
+                .text_size(px(13.))
+                .font_weight(FontWeight::SEMIBOLD)
+                .child(title),
+        )
+        .child(
+            div()
+                .text_xs()
+                .text_color(theme.muted_foreground)
+                .child(subtitle),
+        );
     if selected {
         let dark_ui = matches!(
             cx.window_appearance(),
@@ -4025,10 +3935,26 @@ impl Render for Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui { rgb(0x1d1d1d) } else { rgb(0xf7f7f7) };
-        let hairline = if dark_ui { rgb(0x2e2e2e) } else { rgb(0xe5e5e5) };
-        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
-        let chip_bg = if dark_ui { rgba(0xffffff12) } else { rgba(0x00000008) };
+        let well_bg = if dark_ui {
+            rgb(0x1d1d1d)
+        } else {
+            rgb(0xf7f7f7)
+        };
+        let hairline = if dark_ui {
+            rgb(0x2e2e2e)
+        } else {
+            rgb(0xe5e5e5)
+        };
+        let subtle = if dark_ui {
+            rgba(0xffffff14)
+        } else {
+            rgba(0x0000000d)
+        };
+        let chip_bg = if dark_ui {
+            rgba(0xffffff12)
+        } else {
+            rgba(0x00000008)
+        };
         let soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
@@ -4073,9 +3999,8 @@ impl Render for Native {
             mut toast_shown,
             has_thread,
             show_landing,
-            thread_v
+            thread_v,
         } = ws_parts;
-
 
         let pane_parts = self.build_panes(window, cx);
         let panes::NativePanes {
@@ -4091,7 +4016,7 @@ impl Render for Native {
             autom_panel,
             studio_panel,
             kanban_header,
-            kanban_count
+            kanban_count,
         } = pane_parts;
 
         // ---- transcript find bar (Cmd+F) ----
@@ -4115,9 +4040,7 @@ impl Render for Native {
                                 .as_array()
                                 .map(|segs| {
                                     segs.iter()
-                                        .filter_map(|s| {
-                                            s.get("text").and_then(Value::as_str)
-                                        })
+                                        .filter_map(|s| s.get("text").and_then(Value::as_str))
                                         .collect::<Vec<_>>()
                                         .join("")
                                 })
@@ -4130,81 +4053,63 @@ impl Render for Native {
                     .count()
             };
             let glyph = theme.muted_foreground;
-            find_bar = find_bar
-                .rounded(px(24.))
-                .border_1()
-                .border_color(theme.border.opacity(0.6))
-                .bg(popover_bg)
-                .shadow_lg()
-                .child(
-                    h_flex()
-                        .items_center()
-                        .h(px(44.))
-                        .px_4()
-                        .gap(px(10.))
-                        .child(
-                            svg_icon(icons::SEARCH)
-                                .size(px(16.))
-                                .text_color(glyph),
-                        )
-                        .child(
-                            div().flex_1().min_w_0().child(
-                                Input::new(fi).appearance(false),
+            find_bar =
+                find_bar
+                    .rounded(px(24.))
+                    .border_1()
+                    .border_color(theme.border.opacity(0.6))
+                    .bg(popover_bg)
+                    .shadow_lg()
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .h(px(44.))
+                            .px_4()
+                            .gap(px(10.))
+                            .child(svg_icon(icons::SEARCH).size(px(16.)).text_color(glyph))
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .child(Input::new(fi).appearance(false)),
+                            )
+                            .child(div().h(px(20.)).w(px(1.)).bg(theme.border))
+                            .child(
+                                Button::new("find-close")
+                                    .ghost()
+                                    .compact()
+                                    .icon(svg_icon(icons::X).size(px(16.)).text_color(glyph))
+                                    .on_click(cx.listener(|this, _ev, w, cx| {
+                                        this.toggle_find(w, cx);
+                                    })),
                             ),
-                        )
-                        .child(div().h(px(20.)).w(px(1.)).bg(theme.border))
-                        .child(
-                            Button::new("find-close")
-                                .ghost()
-                                .compact()
-                                .icon(
-                                    svg_icon(icons::X)
-                                        .size(px(16.))
-                                        .text_color(glyph),
-                                )
-                                .on_click(cx.listener(|this, _ev, w, cx| {
-                                    this.toggle_find(w, cx);
-                                })),
-                        ),
-                )
-                .child(
-                    h_flex()
-                        .items_center()
-                        .justify_between()
-                        .border_t_1()
-                        .border_color(theme.border.opacity(0.6))
-                        .px_3()
-                        .py_2()
-                        .child(
-                            h_flex().items_center().gap_1()
-                                .child(
-                                    Button::new("find-prev")
-                                        .ghost()
-                                        .compact()
-                                        .icon(
-                                            svg_icon(icons::SEND)
-                                                .size(px(16.))
-                                                .text_color(glyph),
-                                        ),
-                                )
-                                .child(
-                                    Button::new("find-next")
-                                        .ghost()
-                                        .compact()
-                                        .icon(
-                                            svg_icon(icons::ARROW_DOWN)
-                                                .size(px(16.))
-                                                .text_color(glyph),
-                                        ),
-                                ),
-                        )
-                        .child(
-                            div()
-                                .text_size(px(11.))
-                                .text_color(theme.muted_foreground)
-                                .child(format!("{count} matches")),
-                        ),
-                );
+                    )
+                    .child(
+                        h_flex()
+                            .items_center()
+                            .justify_between()
+                            .border_t_1()
+                            .border_color(theme.border.opacity(0.6))
+                            .px_3()
+                            .py_2()
+                            .child(
+                                h_flex()
+                                    .items_center()
+                                    .gap_1()
+                                    .child(Button::new("find-prev").ghost().compact().icon(
+                                        svg_icon(icons::SEND).size(px(16.)).text_color(glyph),
+                                    ))
+                                    .child(Button::new("find-next").ghost().compact().icon(
+                                        svg_icon(icons::ARROW_DOWN).size(px(16.)).text_color(glyph),
+                                    )),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(format!("{count} matches")),
+                            ),
+                    );
         }
 
         // ---- main column under the strip: panes + composer ----
@@ -4253,156 +4158,147 @@ impl Render for Native {
             // its own texture instance shows through.
             main = main.bg(content_bg);
         }
-                // Full-window atmosphere (upstream .app-shell-atmosphere):
-                // window-coordinated texture, composited at 35% (light) / 80%
-                // (dark) under the landing texture — the fork's two-canvas
-                // structure. Never overwrites backdrop_img: the landing canvas
-                // keeps its own pane-sized geometry.
-                if self.show_ascii_bg {
-                    let vpw = window.viewport_size().width.as_f32();
-                    let vph = window.viewport_size().height.as_f32();
-                    let dark = theme.is_dark();
-                    let key = (vpw as u32, vph as u32, dark, self.backdrop_full as u32);
-                    if self.atmosphere_key != key || self.atmosphere_img.is_none() {
-                        // Upstream .app-shell-atmosphere weight: 35% light in
-                        // both window modes; 80% dark over the chrome, but in
-                        // full-window mode it settles to 60% AND dims
-                        // (brightness 0.75 saturate 0.6 — #f2612d becomes
-                        // rgb(146,81,57)) so the spread texture does not
-                        // drown the content.
-                        let (accent, alpha_scale) = if dark {
-                            if self.backdrop_full {
-                                ([146, 81, 57], 0.6)
-                            } else {
-                                ([0xf2, 0x61, 0x2d], 0.8)
-                            }
-                        } else {
-                            ([0xc7, 0x46, 0x14], 0.35)
-                        };
-                        self.atmosphere_img = crate::backdrop::build_backdrop_image(
-                            &crate::backdrop::BackdropSpec {
-                                width: vpw,
-                                height: vph,
-                                dark,
-                                accent_rgb: accent,
-                                quiet: Vec::new(),
-                                scale: window.scale_factor(),
-                                alpha_scale,
-                                // Upstream .app-shell-atmosphere clip-path:
-                                // in normal window mode the texture prints
-                                // only in the top strip (44px), the rail
-                                // (51px) and the 3px outer gaps. Full-window
-                                // mode lifts the clip.
-                                chrome_clip: if self.backdrop_full {
-                                    None
-                                } else {
-                                    Some((51.0, 44.0, 3.0))
-                                },
-                            },
-                        );
-                        self.atmosphere_key = key;
-                    }
-                }
-                let atmosphere_img_c = if self.show_ascii_bg {
-                    self.atmosphere_img.clone()
-                } else {
-                    None
-                };
-                let mut atmosphere_layer = if self.show_ascii_bg {
-                    self.atmosphere_img.clone().map(|img| {
-                        let vpw = window.viewport_size().width.as_f32();
-                        let vph = window.viewport_size().height.as_f32();
-                        gpui::img(ImageSource::Render(img))
-                            .absolute()
-                            .top_0()
-                            .left_0()
-                            .w(px(vpw))
-                            .h(px(vph))
-                    })
-                } else {
-                    None
-                };
-                let mut landing_bd_main = if show_landing && !other_surface_active && self.show_ascii_bg {
-                    // Live ripple frames: while any click ripple is alive the
-                    // bitmap is re-rasterized per frame from the cached density
-                    // field (upstream re-dithers ring cells at 25fps).
-                    let now = std::time::Instant::now();
-                    let live: Vec<(f32, f32, f32, f32, f32)> = self
-                        .ascii_ripples
-                        .iter()
-                        .map(|r| {
-                            (
-                                r.0,
-                                r.1,
-                                r.2,
-                                r.3,
-                                now.saturating_duration_since(r.4).as_millis() as f32,
-                            )
-                        })
-                        .filter(|r| r.4 < crate::backdrop::RIPPLE_LIFETIME_MS)
-                        .collect();
-                    let frame_img = if !live.is_empty() {
-                        match (&self.backdrop_spec, &self.backdrop_field) {
-                            (Some(spec), Some(field)) => {
-                                crate::backdrop::rasterize_backdrop(spec, field, &live)
-                                    .or_else(|| self.backdrop_img.clone())
-                            }
-                            _ => self.backdrop_img.clone(),
-                        }
+        // Full-window atmosphere (upstream .app-shell-atmosphere):
+        // window-coordinated texture, composited at 35% (light) / 80%
+        // (dark) under the landing texture — the fork's two-canvas
+        // structure. Never overwrites backdrop_img: the landing canvas
+        // keeps its own pane-sized geometry.
+        if self.show_ascii_bg {
+            let vpw = window.viewport_size().width.as_f32();
+            let vph = window.viewport_size().height.as_f32();
+            let dark = theme.is_dark();
+            let key = (vpw as u32, vph as u32, dark, self.backdrop_full as u32);
+            if self.atmosphere_key != key || self.atmosphere_img.is_none() {
+                // Upstream .app-shell-atmosphere weight: 35% light in
+                // both window modes; 80% dark over the chrome, but in
+                // full-window mode it settles to 60% AND dims
+                // (brightness 0.75 saturate 0.6 — #f2612d becomes
+                // rgb(146,81,57)) so the spread texture does not
+                // drown the content.
+                let (accent, alpha_scale) = if dark {
+                    if self.backdrop_full {
+                        ([146, 81, 57], 0.6)
                     } else {
-                        self.backdrop_img.clone()
-                    };
-                    frame_img.map(|img| {
-                        // Window-sized canvas mounted at the root: the scene
-                        // continues under the floating sidebar (upstream
-                        // data-sidebar-layout=rail empty-chat geometry).
-                        let vpw = window.viewport_size().width.as_f32();
-                        let vph = window.viewport_size().height.as_f32();
-                        let mut field = div().size_full().overflow_hidden().relative();
-                        // Window-coordinated atmosphere under the landing
-                        // texture (upstream .app-shell-atmosphere at 35%/80%).
-                        // In full-window mode the body-level layer already
-                        // paints it at full strength — skip the dim copy.
-                        // The body-level shell atmosphere (35%/80% frame
-                        // weight) already reads through the transparent
-                        // landing field — no separate dim copy needed.
-                        if !theme.is_dark() {
-                            field = field.child(
-                                div()
-                                    .absolute()
-                                    .top(px(44.))
-                                    .left(px(308.))
-                                    .w(px((vpw - 308.0).max(200.0)))
-                                    .h(px((vph - 44.0).max(200.0)))
-                                    .bg(gpui::linear_gradient(
-                                        180.,
-                                        gpui::linear_color_stop(
-                                            rgb(0xc74614).opacity(0.015),
-                                            0.,
-                                        ),
-                                        gpui::linear_color_stop(
-                                            rgb(0xc74614).opacity(0.045),
-                                            0.55,
-                                        ),
-                                    )),
-                            );
-                        }
+                        ([0xf2, 0x61, 0x2d], 0.8)
+                    }
+                } else {
+                    ([0xc7, 0x46, 0x14], 0.35)
+                };
+                self.atmosphere_img =
+                    crate::backdrop::build_backdrop_image(&crate::backdrop::BackdropSpec {
+                        width: vpw,
+                        height: vph,
+                        dark,
+                        accent_rgb: accent,
+                        quiet: Vec::new(),
+                        scale: window.scale_factor(),
+                        alpha_scale,
+                        // Upstream .app-shell-atmosphere clip-path:
+                        // in normal window mode the texture prints
+                        // only in the top strip (44px), the rail
+                        // (51px) and the 3px outer gaps. Full-window
+                        // mode lifts the clip.
+                        chrome_clip: if self.backdrop_full {
+                            None
+                        } else {
+                            Some((51.0, 44.0, 3.0))
+                        },
+                    });
+                self.atmosphere_key = key;
+            }
+        }
+        let atmosphere_img_c = if self.show_ascii_bg {
+            self.atmosphere_img.clone()
+        } else {
+            None
+        };
+        let mut atmosphere_layer = if self.show_ascii_bg {
+            self.atmosphere_img.clone().map(|img| {
+                let vpw = window.viewport_size().width.as_f32();
+                let vph = window.viewport_size().height.as_f32();
+                gpui::img(ImageSource::Render(img))
+                    .absolute()
+                    .top_0()
+                    .left_0()
+                    .w(px(vpw))
+                    .h(px(vph))
+            })
+        } else {
+            None
+        };
+        let mut landing_bd_main = if show_landing && !other_surface_active && self.show_ascii_bg {
+            // Live ripple frames: while any click ripple is alive the
+            // bitmap is re-rasterized per frame from the cached density
+            // field (upstream re-dithers ring cells at 25fps).
+            let now = std::time::Instant::now();
+            let live: Vec<(f32, f32, f32, f32, f32)> = self
+                .ascii_ripples
+                .iter()
+                .map(|r| {
+                    (
+                        r.0,
+                        r.1,
+                        r.2,
+                        r.3,
+                        now.saturating_duration_since(r.4).as_millis() as f32,
+                    )
+                })
+                .filter(|r| r.4 < crate::backdrop::RIPPLE_LIFETIME_MS)
+                .collect();
+            let frame_img = if !live.is_empty() {
+                match (&self.backdrop_spec, &self.backdrop_field) {
+                    (Some(spec), Some(field)) => {
+                        crate::backdrop::rasterize_backdrop(spec, field, &live)
+                            .or_else(|| self.backdrop_img.clone())
+                    }
+                    _ => self.backdrop_img.clone(),
+                }
+            } else {
+                self.backdrop_img.clone()
+            };
+            frame_img.map(|img| {
+                // Window-sized canvas mounted at the root: the scene
+                // continues under the floating sidebar (upstream
+                // data-sidebar-layout=rail empty-chat geometry).
+                let vpw = window.viewport_size().width.as_f32();
+                let vph = window.viewport_size().height.as_f32();
+                let mut field = div().size_full().overflow_hidden().relative();
+                // Window-coordinated atmosphere under the landing
+                // texture (upstream .app-shell-atmosphere at 35%/80%).
+                // In full-window mode the body-level layer already
+                // paints it at full strength — skip the dim copy.
+                // The body-level shell atmosphere (35%/80% frame
+                // weight) already reads through the transparent
+                // landing field — no separate dim copy needed.
+                if !theme.is_dark() {
+                    field = field.child(
                         div()
                             .absolute()
-                            .inset_0()
-                            .overflow_hidden()
-                            .child(field.child(
-                                gpui::img(ImageSource::Render(img))
-                                    .absolute()
-                                    .top(px(44.))
-                                    .left(px(308.))
-                                    .w(px((vpw - 308.0).max(200.0)))
-                                    .h(px((vph - 44.0).max(200.0))),
-                            ))
-                    })
-                } else {
-                    None
-                };
+                            .top(px(44.))
+                            .left(px(308.))
+                            .w(px((vpw - 308.0).max(200.0)))
+                            .h(px((vph - 44.0).max(200.0)))
+                            .bg(gpui::linear_gradient(
+                                180.,
+                                gpui::linear_color_stop(rgb(0xc74614).opacity(0.015), 0.),
+                                gpui::linear_color_stop(rgb(0xc74614).opacity(0.045), 0.55),
+                            )),
+                    );
+                }
+                div().absolute().inset_0().overflow_hidden().child(
+                    field.child(
+                        gpui::img(ImageSource::Render(img))
+                            .absolute()
+                            .top(px(44.))
+                            .left(px(308.))
+                            .w(px((vpw - 308.0).max(200.0)))
+                            .h(px((vph - 44.0).max(200.0))),
+                    ),
+                )
+            })
+        } else {
+            None
+        };
         // landing_bd_main mounts at the window root below, behind strip+body,
         // so the texture runs under the transparent rail/sidebar chrome.
         let landing_bd_root = landing_bd_main.take();
@@ -4417,17 +4313,16 @@ impl Render for Native {
         } else if self.view_tasks {
             main = main.child(div().flex_1().child(tasks_pane));
         } else if self.view_kanban {
-            main = main
-                .child(
-                    // Header sits outside the scroll area so the top-bar
-                    // overlay isn't clipped.
-                    div()
-                        .flex_1()
-                        .min_h_0()
-                        .relative()
-                        .child(kanban_pane)
-                        .child(kanban_header),
-                );
+            main = main.child(
+                // Header sits outside the scroll area so the top-bar
+                // overlay isn't clipped.
+                div()
+                    .flex_1()
+                    .min_h_0()
+                    .relative()
+                    .child(kanban_pane)
+                    .child(kanban_header),
+            );
         } else if self.view_pullreq {
             main = main.child(div().flex_1().child(pullreq_pane));
         } else if self.view_autom {
@@ -4477,9 +4372,8 @@ impl Render for Native {
                 }
                 browser_surface = browser_surface.child(strip);
                 if let Some(webview) = &self.browser_webview {
-                    browser_surface = browser_surface.child(
-                        div().flex_1().min_h_0().child(webview.clone()),
-                    );
+                    browser_surface =
+                        browser_surface.child(div().flex_1().min_h_0().child(webview.clone()));
                 }
                 main = main.child(browser_surface);
             } else if self.view_cua {
@@ -4487,9 +4381,10 @@ impl Render for Native {
                     .cua
                     .as_ref()
                     .and_then(|h| {
-                        h.shared.lock().ok().map(|s| {
-                            (s.connected, s.error.clone(), s.sequence)
-                        })
+                        h.shared
+                            .lock()
+                            .ok()
+                            .map(|s| (s.connected, s.error.clone(), s.sequence))
                     })
                     .unwrap_or((false, None, 0));
                 let thread_for_control = self
@@ -4500,52 +4395,50 @@ impl Render for Native {
                 // Control strip: enable / emergency stop, status text.
                 let enable_thread = thread_for_control.clone();
                 let stop_thread = thread_for_control.clone();
-                let strip = h_flex()
-                    .w_full()
-                    .h(px(36.))
-                    .px_3()
-                    .items_center()
-                    .gap_2()
-                    .border_b_1()
-                    .border_color(theme.border)
-                    .child(
-                        div()
-                            .text_size(px(13.))
-                            .text_color(theme.muted_foreground)
-                            .child("Computer"),
-                    )
-                    .child(div().flex_1())
-                    .child(
-                        Button::new("cua-enable")
-                            .compact()
-                            .label("Enable control")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                let client_cell = this.client.clone();
-                                let thread = enable_thread.clone();
-                                cx.spawn(async move |_this, cx: &mut AsyncApp| {
-                                    let cell = client_cell.clone();
-                                    if let Some(client) = cx
-                                        .background_executor()
-                                        .spawn(async move { ensure_client(&cell) })
-                                        .await
-                                    {
-                                        let thread2 = thread.clone();
-                                        let _ = cx
+                let strip =
+                    h_flex()
+                        .w_full()
+                        .h(px(36.))
+                        .px_3()
+                        .items_center()
+                        .gap_2()
+                        .border_b_1()
+                        .border_color(theme.border)
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .text_color(theme.muted_foreground)
+                                .child("Computer"),
+                        )
+                        .child(div().flex_1())
+                        .child(
+                            Button::new("cua-enable")
+                                .compact()
+                                .label("Enable control")
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    let client_cell = this.client.clone();
+                                    let thread = enable_thread.clone();
+                                    cx.spawn(async move |_this, cx: &mut AsyncApp| {
+                                        let cell = client_cell.clone();
+                                        if let Some(client) = cx
                                             .background_executor()
-                                            .spawn(async move {
-                                                crate::cua::enable_control(&client, &thread2)
-                                            })
-                                            .await;
-                                    }
-                                })
-                                .detach();
-                            })),
-                    )
-                    .child(
-                        Button::new("cua-stop")
-                            .compact()
-                            .label("Stop")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                            .spawn(async move { ensure_client(&cell) })
+                                            .await
+                                        {
+                                            let thread2 = thread.clone();
+                                            let _ = cx
+                                                .background_executor()
+                                                .spawn(async move {
+                                                    crate::cua::enable_control(&client, &thread2)
+                                                })
+                                                .await;
+                                        }
+                                    })
+                                    .detach();
+                                })),
+                        )
+                        .child(Button::new("cua-stop").compact().label("Stop").on_click(
+                            cx.listener(move |this, _ev, _w, cx| {
                                 let client_cell = this.client.clone();
                                 let thread = stop_thread.clone();
                                 cx.spawn(async move |_this, cx: &mut AsyncApp| {
@@ -4565,20 +4458,20 @@ impl Render for Native {
                                     }
                                 })
                                 .detach();
-                            })),
-                    )
-                    .child(
-                        div()
-                            .text_size(px(12.))
-                            .text_color(theme.muted_foreground)
-                            .child(if connected {
-                                format!("live · frame {seq}")
-                            } else if let Some(e) = &error {
-                                format!("offline · {e}")
-                            } else {
-                                "connecting…".to_string()
                             }),
-                    );
+                        ))
+                        .child(
+                            div()
+                                .text_size(px(12.))
+                                .text_color(theme.muted_foreground)
+                                .child(if connected {
+                                    format!("live · frame {seq}")
+                                } else if let Some(e) = &error {
+                                    format!("offline · {e}")
+                                } else {
+                                    "connecting…".to_string()
+                                }),
+                        );
                 cua_surface = cua_surface.child(strip);
                 if let Some(input) = &self.cua_input {
                     cua_surface = cua_surface.child(
@@ -4702,24 +4595,16 @@ impl Render for Native {
                         this.focused_pane = 0;
                         cx.notify();
                     }))
-                    .can_drop(|v, _w, _cx| {
-                        v.is::<ThreadDrag>() || v.is::<TabDrag>()
-                    })
-                    .on_drop::<ThreadDrag>(cx.listener(
-                        |this, drag: &ThreadDrag, _w, cx| {
-                            this.focused_pane = 0;
-                            this.open_thread(drag.0.clone(), cx);
-                        },
-                    ))
-                    .on_drop::<TabDrag>(cx.listener(
-                        |this, drag: &TabDrag, _w, cx| {
-                            this.focused_pane = 0;
-                            this.open_thread(drag.0.clone(), cx);
-                        },
-                    ))
-                    .child(div().flex_1().min_h_0().child(
-                        pane,
-                    ))
+                    .can_drop(|v, _w, _cx| v.is::<ThreadDrag>() || v.is::<TabDrag>())
+                    .on_drop::<ThreadDrag>(cx.listener(|this, drag: &ThreadDrag, _w, cx| {
+                        this.focused_pane = 0;
+                        this.open_thread(drag.0.clone(), cx);
+                    }))
+                    .on_drop::<TabDrag>(cx.listener(|this, drag: &TabDrag, _w, cx| {
+                        this.focused_pane = 0;
+                        this.open_thread(drag.0.clone(), cx);
+                    }))
+                    .child(div().flex_1().min_h_0().child(pane))
                     .child(composer_bar);
                 // 9px hit strip drawn as a centered 1px line over the
                 // boundary (Zed divider affordance).
@@ -4730,9 +4615,7 @@ impl Render for Native {
                     .ml(px(-4.))
                     .mr(px(-4.))
                     .cursor_col_resize()
-                    .child(
-                        div().w(px(1.)).h_full().ml(px(4.)).bg(theme.border),
-                    )
+                    .child(div().w(px(1.)).h_full().ml(px(4.)).bg(theme.border))
                     .on_mouse_down(
                         gpui::MouseButton::Left,
                         cx.listener(|this, _ev, _w, cx| {
@@ -4762,9 +4645,7 @@ impl Render for Native {
                     .child(right);
                 main = main.child(cols);
                 if self.find_open {
-                    main = main.child(
-                        div().absolute().top(px(8.)).right(px(8.)).child(find_bar),
-                    );
+                    main = main.child(div().absolute().top(px(8.)).right(px(8.)).child(find_bar));
                 }
             } else {
                 // Status banners anchor the top of the chat column, ahead of
@@ -4776,9 +4657,7 @@ impl Render for Native {
                 if let Some(tb) = thread_error_banner {
                     main = main.child(tb);
                 }
-                main = main.child(div().flex_1().min_h_0().child(
-                    pane,
-                ));
+                main = main.child(div().flex_1().min_h_0().child(pane));
                 main = main.child(composer_bar);
                 // Floating scroll-to-bottom (upstream ChatTranscriptPane):
                 // appears once the transcript is scrolled up, sits above the
@@ -4806,13 +4685,10 @@ impl Render for Native {
                                         .flex()
                                         .items_center()
                                         .justify_center()
-                                        .on_click(cx.listener(
-                                            |this, _ev, _w, cx| {
-                                                this.transcript_scroll
-                                                    .scroll_to_bottom();
-                                                cx.notify();
-                                            },
-                                        ))
+                                        .on_click(cx.listener(|this, _ev, _w, cx| {
+                                            this.transcript_scroll.scroll_to_bottom();
+                                            cx.notify();
+                                        }))
                                         .child(
                                             svg_icon(icons::ARROW_DOWN)
                                                 .size(px(14.))
@@ -4823,9 +4699,7 @@ impl Render for Native {
                     }
                 }
                 if self.find_open {
-                    main = main.child(
-                        div().absolute().top(px(8.)).right(px(8.)).child(find_bar),
-                    );
+                    main = main.child(div().absolute().top(px(8.)).right(px(8.)).child(find_bar));
                 }
                 // Inline revert confirmation (upstream native confirm dialog):
                 // "Revert this thread to checkpoint N?"
@@ -4968,32 +4842,25 @@ impl Render for Native {
         // an ink glyph. h-px w-5 hairlines separate the icon groups.
         let mut glyph_idle = theme.muted_foreground;
         glyph_idle.a *= 0.58;
-        let rail_btn = |id: &'static str, icon: &'static [u8], active: bool, _cx: &mut Context<Self>| {
-            div()
-                .id(ElementId::Name(id.into()))
-                .size(px(36.))
-                .flex()
-                .items_center()
-                .justify_center()
-                .rounded(px(8.))
-                .cursor_pointer()
-                .when(active, |d| d.bg(theme.secondary))
-                .when(!active, |d| {
-                    d.hover(|h| h.bg(theme.secondary))
-                })
-                .child(
-                    svg_icon(icon)
-                        .size(px(20.))
-                        .text_color(if active { theme.foreground } else { glyph_idle }),
-                )
-        };
-        let _rail_divider = || {
-            div()
-                .w(px(20.))
-                .h(px(1.))
-                .bg(theme.border)
-                .my(px(2.))
-        };
+        let rail_btn =
+            |id: &'static str, icon: &'static [u8], active: bool, _cx: &mut Context<Self>| {
+                div()
+                    .id(ElementId::Name(id.into()))
+                    .size(px(36.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .rounded(px(8.))
+                    .cursor_pointer()
+                    .when(active, |d| d.bg(theme.secondary))
+                    .when(!active, |d| d.hover(|h| h.bg(theme.secondary)))
+                    .child(svg_icon(icon).size(px(20.)).text_color(if active {
+                        theme.foreground
+                    } else {
+                        glyph_idle
+                    }))
+            };
+        let _rail_divider = || div().w(px(20.)).h(px(1.)).bg(theme.border).my(px(2.));
         let home_active = !self.view_files
             && !self.view_dev
             && !self.view_settings
@@ -5754,7 +5621,11 @@ impl Render for Native {
                     .rounded(px(6.))
                     .cursor_pointer()
                     .text_size(px(12.))
-                    .text_color(if active { theme.foreground } else { theme.muted_foreground })
+                    .text_color(if active {
+                        theme.foreground
+                    } else {
+                        theme.muted_foreground
+                    })
                     .when(active, |d| d.bg(theme.foreground.opacity(0.06)))
                     .child(label)
             };
@@ -5863,11 +5734,7 @@ impl Render for Native {
         let mut left_well = h_flex()
             .h_full()
             .child(rail.border_r_1().border_color(hairline));
-        if !self.sidebar_collapsed
-            && !self.view_inbox
-            && !self.view_tasks
-            && !self.view_kanban
-        {
+        if !self.sidebar_collapsed && !self.view_inbox && !self.view_tasks && !self.view_kanban {
             let side: gpui::AnyElement = if self.view_settings {
                 settings_nav_el
             } else if self.view_pullreq {
@@ -5884,14 +5751,16 @@ impl Render for Native {
                     .w(px(self.side_panel_w()))
                     .h_full()
                     .mb(px(4.))
-                    .bg(if (self.backdrop_full || self.landing_active()) && self.show_ascii_bg {
-                        // Empty-chat landing and full-window atmosphere: the
-                        // floating sidebar card goes clear so the texture runs
-                        // behind it (upstream sidebar over EmptyChatBackdrop).
-                        gpui::transparent_black()
-                    } else {
-                        sidebar_bg
-                    })
+                    .bg(
+                        if (self.backdrop_full || self.landing_active()) && self.show_ascii_bg {
+                            // Empty-chat landing and full-window atmosphere: the
+                            // floating sidebar card goes clear so the texture runs
+                            // behind it (upstream sidebar over EmptyChatBackdrop).
+                            gpui::transparent_black()
+                        } else {
+                            sidebar_bg
+                        },
+                    )
                     .border_r_1()
                     .border_b_1()
                     .border_color(hairline)
@@ -5972,7 +5841,7 @@ impl Render for Native {
             imp_overlay,
             pr_overlay,
             wn_pop_overlay,
-            wn_dialog_overlay
+            wn_dialog_overlay,
         } = overlay_parts;
 
         v_flex()
@@ -6075,10 +5944,9 @@ impl Render for Native {
             .when(self.tour_step.is_some(), |d| d.child(tour_overlay))
             .when(self.git_dialog.is_some(), |d| d.child(git_overlay))
             .when(self.autom_dialog.is_some(), |d| d.child(autom_overlay))
-            .when(
-                self.tp_edit.is_some() || self.tp_import.is_some(),
-                |d| d.child(tp_overlay),
-            )
+            .when(self.tp_edit.is_some() || self.tp_import.is_some(), |d| {
+                d.child(tp_overlay)
+            })
             .when(self.import_dlg.is_some(), |d| d.child(imp_overlay))
             .when(self.pr_dialog_open, |d| d.child(pr_overlay))
             .when(self.wn_popout && self.wn_view == 0, |d| {
@@ -6088,81 +5956,79 @@ impl Render for Native {
     }
 }
 
-
 /// Settings hydration applied to the shell state once the server-owned
 /// settings document lands: appearance, power, sidebar UI mirrors, coachmarks,
 /// feature flags, what's-new. Extracted from fetch_settings so the critical
 /// stage can apply it without waiting for the heavy RPC tail.
 pub fn native_hydrate_settings(this: &mut Native, cx: &mut Context<Native>) {
-// Appearance (upstream appSettings, server-side mirror):
-// mode / uiDensity / chatWidth / showAsciiBackground.
-let app = get(&this.settings_data, "settings");
-let ap = get(app, "appearance");
-if ap.is_object() {
-    this.appearance_mode = match str_at(ap, "mode") {
-        "light" => 1,
-        "dark" => 2,
-        _ => 0,
-    };
-    this.ui_density = match str_at(ap, "uiDensity") {
-        "compact" => 0,
-        "spacious" => 2,
-        _ => 1,
-    };
-    this.chat_width_mode = match str_at(ap, "chatWidth") {
-        "wide" => 1,
-        "full" => 2,
-        _ => 0,
-    };
-    this.show_ascii_bg = ap
-        .get("showAsciiBackground")
-        .and_then(Value::as_bool)
-        .unwrap_or(true);
-    this.backdrop_full = ap
-        .get("atmosphereFullWindow")
-        .and_then(Value::as_bool)
-        .unwrap_or(false);
-    this.theme_packs = get(ap, "themePacks").clone();
-}
-this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
-    "always" | "on" => 0,
-    "agent" => 1,
-    _ => 2,
-};
-// Sidebar UI state (upstream localStorage mirrors): dismissed
-// status keys + last-visited stamps drive pill suppression.
-let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
-this.apply_appearance_mode(None, cx);
-this.apply_theme_pack(cx);
-if let Some(m) = get(&su, "dismissedStatusKeyByThreadId").as_object() {
-    this.dismissed_status = m
-        .iter()
-        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
-        .collect();
-}
-if let Some(m) = get(&su, "lastVisitedAtByThreadId").as_object() {
-    this.visited_threads = m
-        .iter()
-        .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
-        .collect();
-}
-if let Some(m) = get(&su, "coachmarks").as_object() {
-    this.coachmarks_seen = m.keys().cloned().collect();
-}
-if let Some(m) = get(&su, "featureFlags").as_object() {
-    const FF_KEYS: [&str; 3] = [
-        "persist-action-failed-debug-toasts",
-        "pin-git-progress-toast-preview",
-        "show-debug-task-banner",
-    ];
-    for (i, k) in FF_KEYS.iter().enumerate() {
-        this.feature_flags[i] =
-            m.get(*k).and_then(|v| v.as_bool()).unwrap_or(false);
+    // Appearance (upstream appSettings, server-side mirror):
+    // mode / uiDensity / chatWidth / showAsciiBackground.
+    let app = get(&this.settings_data, "settings");
+    let ap = get(app, "appearance");
+    if ap.is_object() {
+        this.appearance_mode = match str_at(ap, "mode") {
+            "light" => 1,
+            "dark" => 2,
+            _ => 0,
+        };
+        this.ui_density = match str_at(ap, "uiDensity") {
+            "compact" => 0,
+            "spacious" => 2,
+            _ => 1,
+        };
+        this.chat_width_mode = match str_at(ap, "chatWidth") {
+            "wide" => 1,
+            "full" => 2,
+            _ => 0,
+        };
+        this.show_ascii_bg = ap
+            .get("showAsciiBackground")
+            .and_then(Value::as_bool)
+            .unwrap_or(true);
+        this.backdrop_full = ap
+            .get("atmosphereFullWindow")
+            .and_then(Value::as_bool)
+            .unwrap_or(false);
+        this.theme_packs = get(ap, "themePacks").clone();
     }
-}
-this.wn_seen = get(&su, "whatsNewLastSeenVersion")
-    .as_str()
-    .map(|s| s.to_string());
-this.eval_whats_new(cx);
-this.show_next_coachmark(cx);
+    this.keep_awake_mode = match str_at(app, "keepAwakeMode") {
+        "always" | "on" => 0,
+        "agent" => 1,
+        _ => 2,
+    };
+    // Sidebar UI state (upstream localStorage mirrors): dismissed
+    // status keys + last-visited stamps drive pill suppression.
+    let su = get(get(&this.settings_data, "settings"), "sidebarUi").clone();
+    this.apply_appearance_mode(None, cx);
+    this.apply_theme_pack(cx);
+    if let Some(m) = get(&su, "dismissedStatusKeyByThreadId").as_object() {
+        this.dismissed_status = m
+            .iter()
+            .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
+            .collect();
+    }
+    if let Some(m) = get(&su, "lastVisitedAtByThreadId").as_object() {
+        this.visited_threads = m
+            .iter()
+            .filter_map(|(k, v)| v.as_str().map(|s| (k.clone(), s.to_string())))
+            .collect();
+    }
+    if let Some(m) = get(&su, "coachmarks").as_object() {
+        this.coachmarks_seen = m.keys().cloned().collect();
+    }
+    if let Some(m) = get(&su, "featureFlags").as_object() {
+        const FF_KEYS: [&str; 3] = [
+            "persist-action-failed-debug-toasts",
+            "pin-git-progress-toast-preview",
+            "show-debug-task-banner",
+        ];
+        for (i, k) in FF_KEYS.iter().enumerate() {
+            this.feature_flags[i] = m.get(*k).and_then(|v| v.as_bool()).unwrap_or(false);
+        }
+    }
+    this.wn_seen = get(&su, "whatsNewLastSeenVersion")
+        .as_str()
+        .map(|s| s.to_string());
+    this.eval_whats_new(cx);
+    this.show_next_coachmark(cx);
 }

@@ -10,13 +10,13 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::acp_runner::{
     append_activity, append_assistant_text, err, session_set_event, set_session, set_turn_state,
 };
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
-use crate::todo::{iso_now_ms, WsErr};
+use crate::todo::{WsErr, iso_now_ms};
 
 struct RunningTurn {
     stdin: Arc<Mutex<ChildStdin>>,
@@ -79,7 +79,10 @@ pub fn drop_thread_resources(thread_id: &str) {
 /// sessions and local servers alive after Synara can no longer control them.
 pub fn drop_all_resources() {
     let parked = if let Ok(mut parked_map) = PARKED.lock() {
-        parked_map.drain().map(|(_, parked)| parked).collect::<Vec<_>>()
+        parked_map
+            .drain()
+            .map(|(_, parked)| parked)
+            .collect::<Vec<_>>()
     } else {
         Vec::new()
     };
@@ -175,11 +178,8 @@ fn claude_content_blocks(text: &str, attachments: &[Value]) -> Result<Vec<Value>
             }
         }));
     }
-    let file_block = crate::provider_attachments::append_file_attachments_prompt_block(
-        "",
-        &projected,
-        true,
-    );
+    let file_block =
+        crate::provider_attachments::append_file_attachments_prompt_block("", &projected, true);
     if !file_block.is_empty() {
         content.push(json!({"type": "text", "text": file_block}));
     }
@@ -214,7 +214,6 @@ pub fn steer_turn(thread_id: &str, text: &str) -> bool {
     background_foreground_work(&stdin, None);
     true
 }
-
 
 /// Port of upstream `releaseForegroundWorkForSteer`: the CLI's Ctrl+B as a
 /// control request. Without a tool_use_id every foreground task moves; the
@@ -266,7 +265,12 @@ pub fn cancel_turn(thread_id: &str) {
 /// kept fresh; per-account env arrives with multi-instance support.
 pub(crate) fn spawn_credential_keepalive() {
     let enabled = std::env::var("SYNARA_CLAUDE_KEEPALIVE")
-        .map(|v| matches!(v.trim().to_lowercase().as_str(), "1" | "true" | "yes" | "on"))
+        .map(|v| {
+            matches!(
+                v.trim().to_lowercase().as_str(),
+                "1" | "true" | "yes" | "on"
+            )
+        })
         .unwrap_or(false);
     if !enabled {
         return;
@@ -276,38 +280,40 @@ pub(crate) fn spawn_credential_keepalive() {
         .and_then(|v| v.parse().ok())
         .filter(|m: &u64| *m > 0)
         .unwrap_or(30);
-    std::thread::spawn(move || loop {
-        // Run first, then wait: a boot-time refresh costs nothing and covers
-        // sessions parked across the 8h boundary right after startup.
-        let binary = claude_binary();
-        let mut command = Command::new(&binary);
-        command
-            .args(["auth", "status"])
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null());
-        crate::provider_env::sanitize_claude_child(&mut command);
-        let child = command.spawn();
-        if let Ok(mut child) = child {
-            // Bound the wait at the upstream 20s command timeout; a hung CLI
-            // must never wedge the keepalive thread.
-            let (tx, rx) = std::sync::mpsc::channel();
-            let pid = child.id();
-            std::thread::spawn(move || {
-                let _ = child.wait();
-                let _ = tx.send(());
-            });
-            if rx.recv_timeout(std::time::Duration::from_secs(20)).is_err() {
-                unsafe extern "C" {
-                    fn kill(pid: i32, sig: i32) -> i32;
+    std::thread::spawn(move || {
+        loop {
+            // Run first, then wait: a boot-time refresh costs nothing and covers
+            // sessions parked across the 8h boundary right after startup.
+            let binary = claude_binary();
+            let mut command = Command::new(&binary);
+            command
+                .args(["auth", "status"])
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null());
+            crate::provider_env::sanitize_claude_child(&mut command);
+            let child = command.spawn();
+            if let Ok(mut child) = child {
+                // Bound the wait at the upstream 20s command timeout; a hung CLI
+                // must never wedge the keepalive thread.
+                let (tx, rx) = std::sync::mpsc::channel();
+                let pid = child.id();
+                std::thread::spawn(move || {
+                    let _ = child.wait();
+                    let _ = tx.send(());
+                });
+                if rx.recv_timeout(std::time::Duration::from_secs(20)).is_err() {
+                    unsafe extern "C" {
+                        fn kill(pid: i32, sig: i32) -> i32;
+                    }
+                    unsafe {
+                        kill(pid as i32, 9);
+                    }
+                    eprintln!("claude keepalive: auth status timed out, killed");
                 }
-                unsafe {
-                    kill(pid as i32, 9);
-                }
-                eprintln!("claude keepalive: auth status timed out, killed");
             }
+            std::thread::sleep(std::time::Duration::from_secs(minutes * 60));
         }
-        std::thread::sleep(std::time::Duration::from_secs(minutes * 60));
     });
     eprintln!("claude credential keepalive: enabled every {minutes} minute(s)");
 }
@@ -343,7 +349,6 @@ fn permission_kind(tool_name: &str) -> &'static str {
         _ => "tool",
     }
 }
-
 
 fn normalize_ask_questions(input: &Value) -> Vec<Value> {
     input
@@ -383,7 +388,13 @@ fn claude_answer_string(value: &Value) -> String {
     }
     value
         .as_array()
-        .map(|items| items.iter().filter_map(Value::as_str).collect::<Vec<_>>().join(", "))
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(Value::as_str)
+                .collect::<Vec<_>>()
+                .join(", ")
+        })
         .unwrap_or_default()
 }
 
@@ -395,7 +406,10 @@ fn remap_claude_answers(questions: &[Value], answers: &Value) -> Value {
         }
     }
     for question in questions {
-        let question_text = question.get("question").and_then(Value::as_str).unwrap_or("");
+        let question_text = question
+            .get("question")
+            .and_then(Value::as_str)
+            .unwrap_or("");
         if question_text.is_empty() || remapped.contains_key(question_text) {
             continue;
         }
@@ -537,7 +551,10 @@ fn handle_can_use_tool(
             .as_deref()
             .and_then(|raw| serde_json::from_str::<Value>(raw).ok())
             .unwrap_or(json!({}));
-        let empty = answers.as_object().map(|object| object.is_empty()).unwrap_or(true);
+        let empty = answers
+            .as_object()
+            .map(|object| object.is_empty())
+            .unwrap_or(true);
         if let Ok(c) = open_state_rw() {
             let _ = c.execute(
                 "DELETE FROM projection_pending_interactions WHERE thread_id=?1 AND request_id=?2 AND interaction_kind='userInput'",
@@ -663,10 +680,16 @@ fn claude_window_tokens(value: &str) -> Option<i64> {
     if normalized == "200k" {
         return Some(200_000);
     }
-    if let Some(number) = normalized.strip_suffix('k').and_then(|v| v.parse::<i64>().ok()) {
+    if let Some(number) = normalized
+        .strip_suffix('k')
+        .and_then(|v| v.parse::<i64>().ok())
+    {
         return Some(number * 1_000);
     }
-    if let Some(number) = normalized.strip_suffix('m').and_then(|v| v.parse::<i64>().ok()) {
+    if let Some(number) = normalized
+        .strip_suffix('m')
+        .and_then(|v| v.parse::<i64>().ok())
+    {
         return Some(number * 1_000_000);
     }
     normalized.parse::<i64>().ok().filter(|value| *value > 0)
@@ -674,16 +697,27 @@ fn claude_window_tokens(value: &str) -> Option<i64> {
 
 fn selected_claude_settings(model_selection: &Value) -> Value {
     let mut settings = serde_json::Map::new();
-    if let Some(thinking) = model_selection.pointer("/options/thinking").and_then(Value::as_bool) {
+    if let Some(thinking) = model_selection
+        .pointer("/options/thinking")
+        .and_then(Value::as_bool)
+    {
         settings.insert("alwaysThinkingEnabled".to_string(), json!(thinking));
     }
-    if model_selection.pointer("/options/fastMode").and_then(Value::as_bool) == Some(true) {
+    if model_selection
+        .pointer("/options/fastMode")
+        .and_then(Value::as_bool)
+        == Some(true)
+    {
         settings.insert("fastMode".to_string(), json!(true));
     }
     let effort = model_selection
         .pointer("/options/effort")
         .and_then(Value::as_str)
-        .or_else(|| model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str))
+        .or_else(|| {
+            model_selection
+                .pointer("/options/reasoningEffort")
+                .and_then(Value::as_str)
+        })
         .unwrap_or("");
     if effort == "ultracode" {
         settings.insert("ultracode".to_string(), json!(true));
@@ -691,7 +725,11 @@ fn selected_claude_settings(model_selection: &Value) -> Value {
     let window = model_selection
         .pointer("/options/autoCompactWindow")
         .and_then(Value::as_str)
-        .or_else(|| model_selection.pointer("/options/contextWindow").and_then(Value::as_str));
+        .or_else(|| {
+            model_selection
+                .pointer("/options/contextWindow")
+                .and_then(Value::as_str)
+        });
     if let Some(tokens) = window.and_then(claude_window_tokens) {
         settings.insert("autoCompactWindow".to_string(), json!(tokens));
     }
@@ -710,10 +748,15 @@ fn selected_claude_model(model_selection: &Value) -> Option<String> {
     let context_window = model_selection
         .pointer("/options/autoCompactWindow")
         .and_then(Value::as_str)
-        .or_else(|| model_selection.pointer("/options/contextWindow").and_then(Value::as_str))
+        .or_else(|| {
+            model_selection
+                .pointer("/options/contextWindow")
+                .and_then(Value::as_str)
+        })
         .map(str::trim)
         .unwrap_or("");
-    let has_suffix = model.ends_with(']') && model.rfind('[').is_some_and(|pos| pos < model.len() - 1);
+    let has_suffix =
+        model.ends_with(']') && model.rfind('[').is_some_and(|pos| pos < model.len() - 1);
     if context_window == "1m" && !has_suffix {
         return Some(format!("{model}[1m]"));
     }
@@ -724,7 +767,11 @@ fn selected_claude_effort(model_selection: &Value) -> Option<String> {
     let effort = model_selection
         .pointer("/options/effort")
         .and_then(Value::as_str)
-        .or_else(|| model_selection.pointer("/options/reasoningEffort").and_then(Value::as_str))?
+        .or_else(|| {
+            model_selection
+                .pointer("/options/reasoningEffort")
+                .and_then(Value::as_str)
+        })?
         .trim();
     match effort {
         "low" | "medium" | "high" | "xhigh" | "max" => Some(effort.to_string()),
@@ -764,7 +811,9 @@ fn spawn_claude(
         args.push("--effort".to_string());
         args.push(effort.to_string());
     }
-    if let Some(settings) = settings.filter(|value| !value.as_object().is_none_or(|object| object.is_empty())) {
+    if let Some(settings) =
+        settings.filter(|value| !value.as_object().is_none_or(|object| object.is_empty()))
+    {
         args.push("--settings".to_string());
         args.push(settings.to_string());
     }
@@ -798,13 +847,20 @@ fn spawn_claude(
     // non-default instance without an explicit home is forced into its
     // isolated provider home, upstream `buildClaudeInstanceProcessEnv`.
     let settings = crate::server_settings::current();
-    if let Some(instance) = crate::provider_instances::resolve_instance(&settings, instance_id, Some("claudeAgent")) {
+    if let Some(instance) =
+        crate::provider_instances::resolve_instance(&settings, instance_id, Some("claudeAgent"))
+    {
         for (key, value) in crate::provider_instances::instance_start_environment(&instance) {
             command.env(key, value);
         }
-        if !instance.is_default && crate::provider_instances::instance_home_path(&instance).is_none() {
+        if !instance.is_default
+            && crate::provider_instances::instance_home_path(&instance).is_none()
+        {
             let userdata = crate::todo::state_dir();
-            let home = crate::claude_environment::isolated_home_path(&userdata, Some(&instance.instance_id));
+            let home = crate::claude_environment::isolated_home_path(
+                &userdata,
+                Some(&instance.instance_id),
+            );
             let _ = std::fs::create_dir_all(&home);
             for (key, value) in crate::claude_environment::home_environment(&home) {
                 command.env(key, value);
@@ -855,10 +911,14 @@ fn initialize_cli_response(
             return Err(err("claude exited during initialize"));
         };
         if v.get("type").and_then(Value::as_str) == Some("control_response")
-            && v.pointer("/response/request_id").and_then(Value::as_str) == Some("synara-initialize")
+            && v.pointer("/response/request_id").and_then(Value::as_str)
+                == Some("synara-initialize")
         {
             if v.pointer("/response/subtype").and_then(Value::as_str) == Some("success") {
-                return Ok(v.pointer("/response/response").cloned().unwrap_or(json!({})));
+                return Ok(v
+                    .pointer("/response/response")
+                    .cloned()
+                    .unwrap_or(json!({})));
             }
             let msg = v
                 .pointer("/response/error")
@@ -875,8 +935,6 @@ fn initialize_cli(
 ) -> Result<(), WsErr> {
     initialize_cli_response(stdin, reader).map(|_| ())
 }
-
-
 
 fn claude_reasoning_efforts(model: &Value) -> Vec<Value> {
     model
@@ -898,7 +956,11 @@ fn claude_catalog_from_initialize(init: &Value) -> Value {
         .unwrap_or_default()
         .iter()
         .filter_map(|command| {
-            let name = command.get("name").and_then(Value::as_str)?.trim().to_string();
+            let name = command
+                .get("name")
+                .and_then(Value::as_str)?
+                .trim()
+                .to_string();
             if name.is_empty() {
                 return None;
             }
@@ -918,7 +980,11 @@ fn claude_catalog_from_initialize(init: &Value) -> Value {
         .unwrap_or_default()
         .iter()
         .filter_map(|model| {
-            let value = model.get("value").and_then(Value::as_str)?.trim().to_string();
+            let value = model
+                .get("value")
+                .and_then(Value::as_str)?
+                .trim()
+                .to_string();
             if value.is_empty() {
                 return None;
             }
@@ -930,13 +996,19 @@ fn claude_catalog_from_initialize(init: &Value) -> Value {
             if let Some(resolved) = model.get("resolvedModel").and_then(Value::as_str) {
                 object["resolvedModel"] = json!(resolved);
             }
-            if !efforts.is_empty() || model.get("supportsEffort").and_then(Value::as_bool) == Some(false) {
+            if !efforts.is_empty()
+                || model.get("supportsEffort").and_then(Value::as_bool) == Some(false)
+            {
                 object["supportedReasoningEfforts"] = json!(efforts);
             }
             if let Some(fast) = model.get("supportsFastMode").and_then(Value::as_bool) {
                 object["supportsFastMode"] = json!(fast);
             }
-            if model.get("supportsAdaptiveThinking").and_then(Value::as_bool) == Some(true) {
+            if model
+                .get("supportsAdaptiveThinking")
+                .and_then(Value::as_bool)
+                == Some(true)
+            {
                 object["supportsThinkingToggle"] = json!(false);
             }
             if let Some(auto) = model.get("supportsAutoMode").and_then(Value::as_bool) {
@@ -952,7 +1024,11 @@ fn claude_catalog_from_initialize(init: &Value) -> Value {
         .unwrap_or_default()
         .iter()
         .filter_map(|agent| {
-            let name = agent.get("name").and_then(Value::as_str)?.trim().to_string();
+            let name = agent
+                .get("name")
+                .and_then(Value::as_str)?
+                .trim()
+                .to_string();
             if name.is_empty() {
                 return None;
             }
@@ -980,15 +1056,24 @@ pub fn discover_catalog(cwd: &str) -> Result<Value, WsErr> {
     } else {
         std::env::var("HOME").unwrap_or_else(|_| "/".to_string())
     };
-    let (mut child, stdin_raw, stdout) = spawn_claude(&cwd, "approval-required", None, None, None, None, None, None)?;
+    let (mut child, stdin_raw, stdout) = spawn_claude(
+        &cwd,
+        "approval-required",
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    )?;
     let stdin = Arc::new(Mutex::new(stdin_raw));
     let mut reader = BufReader::new(stdout);
-    let result = initialize_cli_response(&stdin, &mut reader).map(|init| claude_catalog_from_initialize(&init));
+    let result = initialize_cli_response(&stdin, &mut reader)
+        .map(|init| claude_catalog_from_initialize(&init));
     let _ = child.kill();
     let _ = child.wait();
     result
 }
-
 
 /// Compact a warm Claude session with the CLI's native `/compact` command.
 /// This is intentionally limited to idle parked sessions: compaction is a
@@ -1088,7 +1173,10 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
         selected_model.as_deref().unwrap_or(""),
         selected_effort.as_deref().unwrap_or(""),
         selected_settings,
-        model_selection.get("instanceId").and_then(Value::as_str).unwrap_or("")
+        model_selection
+            .get("instanceId")
+            .and_then(Value::as_str)
+            .unwrap_or("")
     );
     let (mut child, stdin_raw, stdout) = spawn_claude(
         &cwd,
@@ -1126,7 +1214,6 @@ pub fn prewarm_thread(thread_id: &str) -> Result<bool, WsErr> {
     }
 }
 
-
 /// Upstream providerRuntimeActivityProjection writes exactly one
 /// `turn.completed` row per settled turn; token/cost analytics read its
 /// payload, so the runner must emit it even when the provider reported no
@@ -1145,7 +1232,11 @@ pub(crate) fn write_turn_completed_activity(
         "interrupted" => "Turn interrupted",
         _ => "Turn failed",
     };
-    let tone = if state == "completed" || state == "interrupted" { "info" } else { "error" };
+    let tone = if state == "completed" || state == "interrupted" {
+        "info"
+    } else {
+        "error"
+    };
     let mut payload = serde_json::Map::new();
     payload.insert("state".into(), json!(state));
     payload.insert("provider".into(), json!(provider));
@@ -1337,13 +1428,17 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 }
                 continue;
             }
-            if v.get("rate_limit_info").is_some() || v.get("type").and_then(Value::as_str) == Some("rate_limit_info") {
+            if v.get("rate_limit_info").is_some()
+                || v.get("type").and_then(Value::as_str) == Some("rate_limit_info")
+            {
                 let now_ms = std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .map(|d| d.as_millis() as i64)
                     .unwrap_or(0);
                 crate::provider_usage::persist("claudeAgent", &v);
-                if let Some(next) = crate::usage_limit::claude_usage_limit_windows(&usage_windows, &v, now_ms) {
+                if let Some(next) =
+                    crate::usage_limit::claude_usage_limit_windows(&usage_windows, &v, now_ms)
+                {
                     usage_windows = next;
                 }
             }
@@ -1353,7 +1448,14 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     if subtype == "init" {
                         if let Some(sid) = v.get("session_id").and_then(Value::as_str) {
                             session_id = Some(sid.to_string());
-                            let _ = set_session(&conn, thread_id, "running", Some(&turn_id), None, Some(sid));
+                            let _ = set_session(
+                                &conn,
+                                thread_id,
+                                "running",
+                                Some(&turn_id),
+                                None,
+                                Some(sid),
+                            );
                         }
                     } else if subtype == "task_progress" || subtype == "task_notification" {
                         // Subagent progress/terminal, sliced from upstream
@@ -1362,9 +1464,11 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         // are dropped exactly as upstream drops them. The deep
                         // layer (SendMessage alias retirement, child-thread
                         // mirroring, workflow pause/kill) is not ported yet.
-                        let tool_use_id = v.get("tool_use_id").and_then(Value::as_str).unwrap_or("");
+                        let tool_use_id =
+                            v.get("tool_use_id").and_then(Value::as_str).unwrap_or("");
                         let task_id = v.get("task_id").and_then(Value::as_str).unwrap_or("");
-                        let attributable = !tool_use_id.is_empty() && pending_tools.contains_key(tool_use_id);
+                        let attributable =
+                            !tool_use_id.is_empty() && pending_tools.contains_key(tool_use_id);
                         if attributable && !task_id.is_empty() {
                             let mut payload = serde_json::Map::new();
                             payload.insert("taskId".into(), json!(task_id));
@@ -1389,10 +1493,26 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                             if let Some(st) = v.get("status").and_then(Value::as_str) {
                                 payload.insert("status".into(), json!(st));
                             }
-                            let kind = if subtype == "task_progress" { "task.progress" } else { "task.updated" };
-                            let summary = if subtype == "task_progress" { "Subagent progress" } else { "Subagent update" };
+                            let kind = if subtype == "task_progress" {
+                                "task.progress"
+                            } else {
+                                "task.updated"
+                            };
+                            let summary = if subtype == "task_progress" {
+                                "Subagent progress"
+                            } else {
+                                "Subagent update"
+                            };
                             if let Ok(c) = open_state_rw() {
-                                let _ = append_activity(&c, thread_id, &turn_id, "info", kind, summary, &Value::Object(payload));
+                                let _ = append_activity(
+                                    &c,
+                                    thread_id,
+                                    &turn_id,
+                                    "info",
+                                    kind,
+                                    summary,
+                                    &Value::Object(payload),
+                                );
                             }
                         }
                     }
@@ -1400,11 +1520,25 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                 "assistant" => {
                     let parts = v.pointer("/message/content").and_then(Value::as_array);
                     let text_out: String = parts
-                        .map(|parts| parts.iter().filter(|p| p.get("type").and_then(Value::as_str) == Some("text")).filter_map(|p| p.get("text").and_then(Value::as_str)).collect::<Vec<_>>().join(""))
+                        .map(|parts| {
+                            parts
+                                .iter()
+                                .filter(|p| p.get("type").and_then(Value::as_str) == Some("text"))
+                                .filter_map(|p| p.get("text").and_then(Value::as_str))
+                                .collect::<Vec<_>>()
+                                .join("")
+                        })
                         .unwrap_or_default();
                     if !text_out.is_empty() {
                         if let Ok(c) = open_state_rw() {
-                            let _ = append_assistant_text(&c, thread_id, &assistant_msg_id, &turn_id, &text_out, true);
+                            let _ = append_assistant_text(
+                                &c,
+                                thread_id,
+                                &assistant_msg_id,
+                                &turn_id,
+                                &text_out,
+                                true,
+                            );
                         }
                     }
                     if let Some(parts) = parts {
@@ -1412,7 +1546,11 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                             if block.get("type").and_then(Value::as_str) != Some("tool_use") {
                                 continue;
                             }
-                            let name = block.get("name").and_then(Value::as_str).unwrap_or("").to_string();
+                            let name = block
+                                .get("name")
+                                .and_then(Value::as_str)
+                                .unwrap_or("")
+                                .to_string();
                             let input = block.get("input").cloned().unwrap_or(json!({}));
                             if let Some(id) = block.get("id").and_then(Value::as_str) {
                                 pending_tools.insert(id.to_string(), (name.clone(), input.clone()));
@@ -1431,7 +1569,15 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                             if name == "TodoWrite" {
                                 if let Some(payload) = crate::claude_tasks::todo_payload(&input) {
                                     if let Ok(c) = open_state_rw() {
-                                        let _ = append_activity(&c, thread_id, &turn_id, "info", "turn.tasks.updated", "Task list updated", &payload);
+                                        let _ = append_activity(
+                                            &c,
+                                            thread_id,
+                                            &turn_id,
+                                            "info",
+                                            "turn.tasks.updated",
+                                            "Task list updated",
+                                            &payload,
+                                        );
                                     }
                                 }
                             }
@@ -1447,14 +1593,34 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                             if block.get("type").and_then(Value::as_str) != Some("tool_result") {
                                 continue;
                             }
-                            let Some(use_id) = block.get("tool_use_id").and_then(Value::as_str) else { continue };
-                            let Some((name, input)) = pending_tools.get(use_id).cloned() else { continue };
-                            let is_error = block.get("is_error").and_then(Value::as_bool) == Some(true);
+                            let Some(use_id) = block.get("tool_use_id").and_then(Value::as_str)
+                            else {
+                                continue;
+                            };
+                            let Some((name, input)) = pending_tools.get(use_id).cloned() else {
+                                continue;
+                            };
+                            let is_error =
+                                block.get("is_error").and_then(Value::as_bool) == Some(true);
                             let content = block.get("content").cloned().unwrap_or(Value::Null);
-                            if crate::claude_tasks::apply_tool_result(&mut tracked_tasks, &name, &input, &content, is_error) {
+                            if crate::claude_tasks::apply_tool_result(
+                                &mut tracked_tasks,
+                                &name,
+                                &input,
+                                &content,
+                                is_error,
+                            ) {
                                 let payload = crate::claude_tasks::tracked_payload(&tracked_tasks);
                                 if let Ok(c) = open_state_rw() {
-                                    let _ = append_activity(&c, thread_id, &turn_id, "info", "turn.tasks.updated", "Task list updated", &payload);
+                                    let _ = append_activity(
+                                        &c,
+                                        thread_id,
+                                        &turn_id,
+                                        "info",
+                                        "turn.tasks.updated",
+                                        "Task list updated",
+                                        &payload,
+                                    );
                                 }
                             }
                             if name == "Workflow" && !is_error {
@@ -1464,7 +1630,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                                     Value::String(t) => t.clone(),
                                     Value::Array(blocks) => blocks
                                         .iter()
-                                        .filter(|b| b.get("type").and_then(Value::as_str) == Some("text"))
+                                        .filter(|b| {
+                                            b.get("type").and_then(Value::as_str) == Some("text")
+                                        })
                                         .filter_map(|b| b.get("text").and_then(Value::as_str))
                                         .collect::<Vec<_>>()
                                         .join("\n"),
@@ -1501,7 +1669,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                                                 }),
                                             );
                                         }
-                                        if let Some(dir) = launch.get("transcriptDir").and_then(Value::as_str) {
+                                        if let Some(dir) =
+                                            launch.get("transcriptDir").and_then(Value::as_str)
+                                        {
                                             // Labels zip against journal start order; read
                                             // them from the persisted script when present.
                                             let labels = launch
@@ -1525,11 +1695,26 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     }
                 }
                 "control_request" => {
-                    let request_id = v.get("request_id").and_then(Value::as_str).unwrap_or("").to_string();
-                    let subtype = v.pointer("/request/subtype").and_then(Value::as_str).unwrap_or("");
+                    let request_id = v
+                        .get("request_id")
+                        .and_then(Value::as_str)
+                        .unwrap_or("")
+                        .to_string();
+                    let subtype = v
+                        .pointer("/request/subtype")
+                        .and_then(Value::as_str)
+                        .unwrap_or("");
                     if subtype == "can_use_tool" && !request_id.is_empty() {
                         let request = v.get("request").cloned().unwrap_or(json!({}));
-                        handle_can_use_tool(&stdin, &request, &request_id, thread_id, &turn_id, &turn_runtime_mode, &cancelled)?;
+                        handle_can_use_tool(
+                            &stdin,
+                            &request,
+                            &request_id,
+                            thread_id,
+                            &turn_id,
+                            &turn_runtime_mode,
+                            &cancelled,
+                        )?;
                     }
                 }
                 "result" => {
@@ -1542,7 +1727,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     // Monitor notifications never reach the SDK stream; read
                     // them back from the session transcript when this turn was
                     // woken by one, upstream emitMonitorEvents.
-                    if v.pointer("/origin/kind").and_then(Value::as_str) == Some("task-notification") {
+                    if v.pointer("/origin/kind").and_then(Value::as_str)
+                        == Some("task-notification")
+                    {
                         if let Some(sid) = session_id.clone().or_else(|| stored_session.clone()) {
                             let config_dir = std::env::var("CLAUDE_CONFIG_DIR")
                                 .ok()
@@ -1595,7 +1782,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     if subtype == "success" {
                         break Ok("completed".to_string());
                     }
-                    let msg = v.get("result").and_then(Value::as_str)
+                    let msg = v
+                        .get("result")
+                        .and_then(Value::as_str)
                         .or_else(|| v.pointer("/error/message").and_then(Value::as_str))
                         .unwrap_or("claude turn error")
                         .to_string();
@@ -1669,21 +1858,60 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
     match result {
         Ok(_) => {
             let interrupted = cancelled_flag;
-            let state = if interrupted { "interrupted" } else { "completed" };
+            let state = if interrupted {
+                "interrupted"
+            } else {
+                "completed"
+            };
             let status = if interrupted { "interrupted" } else { "ready" };
-            write_turn_completed_activity(&conn, thread_id, &turn_id, state, "claudeAgent", final_usage.as_ref(), None);
+            write_turn_completed_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                state,
+                "claudeAgent",
+                final_usage.as_ref(),
+                None,
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             if state == "completed" {
-                crate::checkpointing::capture_turn_checkpoint(thread_id, &turn_id, std::path::PathBuf::from(&cwd));
+                crate::checkpointing::capture_turn_checkpoint(
+                    thread_id,
+                    &turn_id,
+                    std::path::PathBuf::from(&cwd),
+                );
             }
-            set_session(&conn, thread_id, status, Some(""), None, session_id.as_deref())?;
-            session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}))?;
+            set_session(
+                &conn,
+                thread_id,
+                status,
+                Some(""),
+                None,
+                session_id.as_deref(),
+            )?;
+            session_set_event(
+                &conn,
+                thread_id,
+                &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": null, "updatedAt": iso_now_ms()}),
+            )?;
             crate::orchestration_engine::continue_queued_turn(thread_id);
             Ok(())
         }
         Err(e) => {
-            let (state, status) = if cancelled_flag { ("interrupted", "interrupted") } else { ("error", "error") };
-            write_turn_completed_activity(&conn, thread_id, &turn_id, state, "claudeAgent", final_usage.as_ref(), Some(&format!("{:?}", e)));
+            let (state, status) = if cancelled_flag {
+                ("interrupted", "interrupted")
+            } else {
+                ("error", "error")
+            };
+            write_turn_completed_activity(
+                &conn,
+                thread_id,
+                &turn_id,
+                state,
+                "claudeAgent",
+                final_usage.as_ref(),
+                Some(&format!("{:?}", e)),
+            );
             set_turn_state(&conn, thread_id, &turn_id, state, true)?;
             // Usage-limit evidence: schedule automatic recovery while the
             // session still carries the active turn (`source` requires it).
@@ -1692,7 +1920,9 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                     .duration_since(std::time::UNIX_EPOCH)
                     .map(|d| d.as_millis() as i64)
                     .unwrap_or(0);
-                if let Some(reset_at) = crate::usage_limit::usage_limit_reset_at(&usage_windows, now_ms) {
+                if let Some(reset_at) =
+                    crate::usage_limit::usage_limit_reset_at(&usage_windows, now_ms)
+                {
                     let epoch = format!("claude-{turn_id}");
                     let binding = json!({
                         "turnId": turn_id,
@@ -1731,12 +1961,29 @@ fn run_turn(thread_id: &str, message_id: &str, text: &str, cwd: &str) -> Result<
                         "providerInstanceId": model_sel.get("instanceId").or_else(|| model_sel.get("provider")).cloned().unwrap_or(json!("claudeAgent")),
                         "model": model_sel.get("model").cloned().unwrap_or(Value::Null),
                     }));
-                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(src));
-                    let _ = crate::orchestration_engine::handle("orchestration.dispatchCommand", &Value::Object(sched));
+                    let _ = crate::orchestration_engine::handle(
+                        "orchestration.dispatchCommand",
+                        &Value::Object(src),
+                    );
+                    let _ = crate::orchestration_engine::handle(
+                        "orchestration.dispatchCommand",
+                        &Value::Object(sched),
+                    );
                 }
             }
-            set_session(&conn, thread_id, status, Some(""), Some(&e.0), session_id.as_deref())?;
-            session_set_event(&conn, thread_id, &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}))?;
+            set_session(
+                &conn,
+                thread_id,
+                status,
+                Some(""),
+                Some(&e.0),
+                session_id.as_deref(),
+            )?;
+            session_set_event(
+                &conn,
+                thread_id,
+                &json!({"threadId": thread_id, "status": status, "providerName": "claudeAgent", "activeTurnId": null, "runtimeMode": turn_runtime_mode, "lastError": e.0, "updatedAt": iso_now_ms()}),
+            )?;
             if cancelled_flag {
                 crate::orchestration_engine::continue_queued_turn(thread_id);
             }

@@ -13,7 +13,11 @@ fn parse_reset_at(value: &Value, now_ms: i64) -> Option<String> {
         }
         // Millisecond-precision ISO timestamps sort and compare correctly as
         // strings; validate loosely and keep the original text.
-        return if text.contains('T') { Some(text.to_string()) } else { None };
+        return if text.contains('T') {
+            Some(text.to_string())
+        } else {
+            None
+        };
     } else {
         return None;
     };
@@ -29,8 +33,14 @@ fn parse_reset_at(value: &Value, now_ms: i64) -> Option<String> {
 pub fn usage_limit_reset_at(evidence: &Value, _now_ms: i64) -> Option<String> {
     let credits = evidence.get("codexCredits");
     if evidence.get("codexAllowed").and_then(Value::as_bool) == Some(true)
-        || credits.and_then(|c| c.get("hasCredits")).and_then(Value::as_bool) == Some(true)
-        || credits.and_then(|c| c.get("unlimited")).and_then(Value::as_bool) == Some(true)
+        || credits
+            .and_then(|c| c.get("hasCredits"))
+            .and_then(Value::as_bool)
+            == Some(true)
+        || credits
+            .and_then(|c| c.get("unlimited"))
+            .and_then(Value::as_bool)
+            == Some(true)
     {
         return None;
     }
@@ -93,7 +103,11 @@ pub fn claude_usage_limit_windows(previous: &Value, value: &Value, now_ms: i64) 
         _ => return None,
     }
     let kind = str_field("rateLimitType").unwrap_or("");
-    let name = if CLAUDE_KNOWN_WINDOWS.contains(&kind) { kind } else { "unknown" };
+    let name = if CLAUDE_KNOWN_WINDOWS.contains(&kind) {
+        kind
+    } else {
+        "unknown"
+    };
     let manual = str_field("errorCode") == Some("credits_required")
         || (name == "overage" && str_field("overageDisabledReason") == Some("out_of_credits"));
     let reset = if manual {
@@ -135,7 +149,10 @@ pub fn codex_usage_limit_windows(previous: &Value, value: &Value, now_ms: i64) -
         Some(root.clone())
     };
     let snapshot = snapshot?;
-    if snapshot.get("limitId").is_some_and(|l| l.as_str() != Some("codex")) {
+    if snapshot
+        .get("limitId")
+        .is_some_and(|l| l.as_str() != Some("codex"))
+    {
         return Some(previous.clone());
     }
     let mut windows = previous
@@ -167,14 +184,22 @@ pub fn codex_usage_limit_windows(previous: &Value, value: &Value, now_ms: i64) -
                 let reset = window
                     .get("resetsAt")
                     .and_then(|v| parse_reset_at(v, now_ms))
-                    .or_else(|| windows.get(name).and_then(Value::as_str).map(str::to_string));
+                    .or_else(|| {
+                        windows
+                            .get(name)
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                    });
                 match reset {
                     Some(r) => windows.insert(name.to_string(), json!(r)),
                     None => windows.insert(name.to_string(), Value::Null),
                 };
             }
         } else if window.contains_key("resetsAt") && windows.contains_key(name) {
-            if let Some(r) = window.get("resetsAt").and_then(|v| parse_reset_at(v, now_ms)) {
+            if let Some(r) = window
+                .get("resetsAt")
+                .and_then(|v| parse_reset_at(v, now_ms))
+            {
                 windows.insert(name.to_string(), json!(r));
             }
         }
@@ -211,7 +236,9 @@ pub fn is_codex_usage_limit_error(code: Option<&str>, value: &Value) -> bool {
     if code != Some("responseTooManyFailedAttempts") {
         return false;
     }
-    let Some(error) = value.as_object() else { return false };
+    let Some(error) = value.as_object() else {
+        return false;
+    };
     let info = error
         .get("codexErrorInfo")
         .or_else(|| error.get("codex_error_info"))
@@ -299,12 +326,29 @@ mod tests {
 
     #[test]
     fn codex_rate_limit_codes() {
-        assert!(is_codex_usage_limit_error(Some("usageLimitExceeded"), &json!({})));
-        assert!(is_codex_usage_limit_error(Some("rateLimitExceeded"), &json!({})));
-        assert!(!is_codex_usage_limit_error(Some("serverOverloaded"), &json!({})));
-        let too_many = json!({"codexErrorInfo":{"responseTooManyFailedAttempts":{"httpStatusCode":429}}});
-        assert!(is_codex_usage_limit_error(Some("responseTooManyFailedAttempts"), &too_many));
-        let other = json!({"codexErrorInfo":{"responseTooManyFailedAttempts":{"httpStatusCode":500}}});
-        assert!(!is_codex_usage_limit_error(Some("responseTooManyFailedAttempts"), &other));
+        assert!(is_codex_usage_limit_error(
+            Some("usageLimitExceeded"),
+            &json!({})
+        ));
+        assert!(is_codex_usage_limit_error(
+            Some("rateLimitExceeded"),
+            &json!({})
+        ));
+        assert!(!is_codex_usage_limit_error(
+            Some("serverOverloaded"),
+            &json!({})
+        ));
+        let too_many =
+            json!({"codexErrorInfo":{"responseTooManyFailedAttempts":{"httpStatusCode":429}}});
+        assert!(is_codex_usage_limit_error(
+            Some("responseTooManyFailedAttempts"),
+            &too_many
+        ));
+        let other =
+            json!({"codexErrorInfo":{"responseTooManyFailedAttempts":{"httpStatusCode":500}}});
+        assert!(!is_codex_usage_limit_error(
+            Some("responseTooManyFailedAttempts"),
+            &other
+        ));
     }
 }

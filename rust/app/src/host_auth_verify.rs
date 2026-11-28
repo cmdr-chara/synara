@@ -9,7 +9,7 @@ use std::sync::Mutex;
 
 use base64::Engine;
 use ed25519_dalek::Verifier;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 
 use crate::host_identity::HostIdentity;
@@ -67,12 +67,23 @@ pub(crate) fn split_jwt(jwt: &str) -> Result<(Value, Value, Vec<u8>, String), St
     let payload: Value = serde_json::from_slice(&b64url_decode(parts[1])?)
         .map_err(|e| format!("payload is not json: {e}"))?;
     let signature = b64url_decode(parts[2])?;
-    Ok((header, payload, signature, format!("{}.{}", parts[0], parts[1])))
+    Ok((
+        header,
+        payload,
+        signature,
+        format!("{}.{}", parts[0], parts[1]),
+    ))
 }
 
-pub(crate) fn verify_ed25519(signing_input: &str, signature: &[u8], x_b64: &str) -> Result<(), String> {
+pub(crate) fn verify_ed25519(
+    signing_input: &str,
+    signature: &[u8],
+    x_b64: &str,
+) -> Result<(), String> {
     let x = b64url_decode(x_b64)?;
-    let x: [u8; 32] = x.try_into().map_err(|_| "ed25519 public key is not 32 bytes".to_string())?;
+    let x: [u8; 32] = x
+        .try_into()
+        .map_err(|_| "ed25519 public key is not 32 bytes".to_string())?;
     let key = ed25519_dalek::VerifyingKey::from_bytes(&x)
         .map_err(|e| format!("ed25519 key invalid: {e}"))?;
     let sig = ed25519_dalek::Signature::from_slice(signature)
@@ -81,7 +92,12 @@ pub(crate) fn verify_ed25519(signing_input: &str, signature: &[u8], x_b64: &str)
         .map_err(|_| "signature verification failed".to_string())
 }
 
-fn verify_p256(signing_input: &str, signature: &[u8], x_b64: &str, y_b64: &str) -> Result<(), String> {
+fn verify_p256(
+    signing_input: &str,
+    signature: &[u8],
+    x_b64: &str,
+    y_b64: &str,
+) -> Result<(), String> {
     use p256::ecdsa::signature::Verifier as _;
     let x = b64url_decode(x_b64)?;
     let y = b64url_decode(y_b64)?;
@@ -126,7 +142,10 @@ impl JwtReplayCache {
         if entries.contains_key(jti) {
             return Err("JWT jti has already been used".to_string());
         }
-        entries.insert(jti.to_string(), expires_at_seconds + JWT_CLOCK_TOLERANCE_SECONDS);
+        entries.insert(
+            jti.to_string(),
+            expires_at_seconds + JWT_CLOCK_TOLERANCE_SECONDS,
+        );
         Ok(())
     }
 }
@@ -175,7 +194,9 @@ pub fn verify_session_credential(
     }
     let aud_matches = match claims.get("aud") {
         Some(Value::String(aud)) => aud == SYNARA_SESSION_AUDIENCE,
-        Some(Value::Array(auds)) => auds.iter().any(|a| a.as_str() == Some(SYNARA_SESSION_AUDIENCE)),
+        Some(Value::Array(auds)) => auds
+            .iter()
+            .any(|a| a.as_str() == Some(SYNARA_SESSION_AUDIENCE)),
         _ => false,
     };
     if !aud_matches {
@@ -294,7 +315,12 @@ mod tests {
         let x = b64(device.verifying_key().as_bytes());
         let device_jwk = json!({"kty": "OKP", "crv": "Ed25519", "x": x});
         let jkt = jwk_thumbprint(&device_jwk);
-        Fixture { host, device, device_jwk, jkt }
+        Fixture {
+            host,
+            device,
+            device_jwk,
+            jkt,
+        }
     }
 
     fn mint_credential(fx: &Fixture, now: u64) -> String {
@@ -331,10 +357,23 @@ mod tests {
         let fx = fixture();
         let now = now_seconds();
         let credential = mint_credential(&fx, now);
-        let dpop = mint_dpop(&fx, &credential, "GET", "https://host.example/resource", now);
+        let dpop = mint_dpop(
+            &fx,
+            &credential,
+            "GET",
+            "https://host.example/resource",
+            now,
+        );
         let cache = JwtReplayCache::new();
         let verified = verify_session_credential(
-            &credential, &dpop, &fx.host, "env-1", 1, "https://host.example/resource", "GET", Some(&cache),
+            &credential,
+            &dpop,
+            &fx.host,
+            "env-1",
+            1,
+            "https://host.example/resource",
+            "GET",
+            Some(&cache),
         )
         .unwrap();
         assert_eq!(verified.user_id, "user-1");
@@ -347,9 +386,19 @@ mod tests {
         let now = now_seconds();
         let credential = mint_credential(&fx, now);
         let dpop = mint_dpop(&fx, &credential, "GET", "https://host.example/other", now);
-        assert!(verify_session_credential(
-            &credential, &dpop, &fx.host, "env-1", 1, "https://host.example/resource", "GET", None,
-        ).is_err());
+        assert!(
+            verify_session_credential(
+                &credential,
+                &dpop,
+                &fx.host,
+                "env-1",
+                1,
+                "https://host.example/resource",
+                "GET",
+                None,
+            )
+            .is_err()
+        );
     }
 
     #[test]
@@ -357,14 +406,40 @@ mod tests {
         let fx = fixture();
         let now = now_seconds();
         let credential = mint_credential(&fx, now);
-        let dpop = mint_dpop(&fx, &credential, "GET", "https://host.example/resource", now);
+        let dpop = mint_dpop(
+            &fx,
+            &credential,
+            "GET",
+            "https://host.example/resource",
+            now,
+        );
         let cache = JwtReplayCache::new();
-        assert!(verify_session_credential(
-            &credential, &dpop, &fx.host, "env-1", 1, "https://host.example/resource", "GET", Some(&cache),
-        ).is_ok());
-        assert!(verify_session_credential(
-            &credential, &dpop, &fx.host, "env-1", 1, "https://host.example/resource", "GET", Some(&cache),
-        ).is_err());
+        assert!(
+            verify_session_credential(
+                &credential,
+                &dpop,
+                &fx.host,
+                "env-1",
+                1,
+                "https://host.example/resource",
+                "GET",
+                Some(&cache),
+            )
+            .is_ok()
+        );
+        assert!(
+            verify_session_credential(
+                &credential,
+                &dpop,
+                &fx.host,
+                "env-1",
+                1,
+                "https://host.example/resource",
+                "GET",
+                Some(&cache),
+            )
+            .is_err()
+        );
     }
 
     #[test]
@@ -372,10 +447,26 @@ mod tests {
         let fx = fixture();
         let now = now_seconds();
         let credential = mint_credential(&fx, now);
-        let dpop = mint_dpop(&fx, &credential, "GET", "https://host.example/resource", now);
-        assert!(verify_session_credential(
-            &credential, &dpop, &fx.host, "env-1", 2, "https://host.example/resource", "GET", None,
-        ).is_err());
+        let dpop = mint_dpop(
+            &fx,
+            &credential,
+            "GET",
+            "https://host.example/resource",
+            now,
+        );
+        assert!(
+            verify_session_credential(
+                &credential,
+                &dpop,
+                &fx.host,
+                "env-1",
+                2,
+                "https://host.example/resource",
+                "GET",
+                None,
+            )
+            .is_err()
+        );
     }
 
     #[test]
@@ -393,9 +484,19 @@ mod tests {
             "iat": now, "ath": b64(&sha256_bytes(credential.as_bytes())),
         });
         let dpop = sign_ed25519(&stranger, header, payload);
-        assert!(verify_session_credential(
-            &credential, &dpop, &fx.host, "env-1", 1, "https://host.example/resource", "GET", None,
-        ).is_err());
+        assert!(
+            verify_session_credential(
+                &credential,
+                &dpop,
+                &fx.host,
+                "env-1",
+                1,
+                "https://host.example/resource",
+                "GET",
+                None,
+            )
+            .is_err()
+        );
     }
 
     #[test]

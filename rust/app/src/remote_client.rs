@@ -12,11 +12,11 @@ use std::task::{Context, Poll};
 
 use base64::Engine;
 use futures_util::{SinkExt, StreamExt};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt, ReadBuf};
+use tokio_rustls::TlsConnector;
 use tokio_rustls::rustls::pki_types::{CertificateDer, ServerName};
 use tokio_rustls::rustls::{ClientConfig, RootCertStore};
-use tokio_rustls::TlsConnector;
 use tokio_tungstenite::tungstenite::Message;
 
 use crate::device_identity::DeviceIdentity;
@@ -51,7 +51,8 @@ fn sort_endpoints(mut endpoints: Vec<RemoteEndpoint>) -> Vec<RemoteEndpoint> {
 }
 
 fn websocket_url(endpoint: &str) -> Result<String, String> {
-    let mut url = reqwest::Url::parse(endpoint).map_err(|_| "Invalid remote endpoint".to_string())?;
+    let mut url =
+        reqwest::Url::parse(endpoint).map_err(|_| "Invalid remote endpoint".to_string())?;
     let scheme = match url.scheme() {
         "https" => "wss",
         "http" => "ws",
@@ -59,7 +60,8 @@ fn websocket_url(endpoint: &str) -> Result<String, String> {
         "ws" => "ws",
         _ => return Err("Invalid remote endpoint".to_string()),
     };
-    url.set_scheme(scheme).map_err(|_| "Invalid remote endpoint".to_string())?;
+    url.set_scheme(scheme)
+        .map_err(|_| "Invalid remote endpoint".to_string())?;
     if !url.username().is_empty() || url.password().is_some() {
         return Err("Invalid remote endpoint".to_string());
     }
@@ -70,11 +72,16 @@ fn websocket_url(endpoint: &str) -> Result<String, String> {
 }
 
 fn health_url(endpoint: &str) -> Result<String, String> {
-    let mut url = reqwest::Url::parse(endpoint).map_err(|_| "Invalid remote endpoint".to_string())?;
+    let mut url =
+        reqwest::Url::parse(endpoint).map_err(|_| "Invalid remote endpoint".to_string())?;
     match url.scheme() {
         "https" | "http" => {}
-        "wss" => url.set_scheme("https").map_err(|_| "Invalid remote endpoint".to_string())?,
-        "ws" => url.set_scheme("http").map_err(|_| "Invalid remote endpoint".to_string())?,
+        "wss" => url
+            .set_scheme("https")
+            .map_err(|_| "Invalid remote endpoint".to_string())?,
+        "ws" => url
+            .set_scheme("http")
+            .map_err(|_| "Invalid remote endpoint".to_string())?,
         _ => return Err("Invalid remote endpoint".to_string()),
     }
     url.set_path("/health");
@@ -84,9 +91,17 @@ fn health_url(endpoint: &str) -> Result<String, String> {
 }
 
 async fn probe(endpoint: &RemoteEndpoint) -> bool {
-    let Ok(url) = health_url(&endpoint.url) else { return false };
-    let Ok(client) = reqwest::Client::builder().timeout(PROBE_TIMEOUT).build() else { return false };
-    client.get(url).send().await.is_ok_and(|response| response.status().is_success())
+    let Ok(url) = health_url(&endpoint.url) else {
+        return false;
+    };
+    let Ok(client) = reqwest::Client::builder().timeout(PROBE_TIMEOUT).build() else {
+        return false;
+    };
+    client
+        .get(url)
+        .send()
+        .await
+        .is_ok_and(|response| response.status().is_success())
 }
 
 /// Cheap liveness race for preference. This preserves ADR ordering — a fast
@@ -95,10 +110,18 @@ async fn probe(endpoint: &RemoteEndpoint) -> bool {
 async fn order_by_probe(endpoints: Vec<RemoteEndpoint>) -> Vec<RemoteEndpoint> {
     let ordered = sort_endpoints(endpoints);
     let probes = futures_util::future::join_all(ordered.iter().map(probe)).await;
-    if let Some((winner, _)) = ordered.iter().zip(probes.iter()).find(|(_, reachable)| **reachable) {
+    if let Some((winner, _)) = ordered
+        .iter()
+        .zip(probes.iter())
+        .find(|(_, reachable)| **reachable)
+    {
         let winner_url = winner.url.clone();
         let mut result = vec![winner.clone()];
-        result.extend(ordered.into_iter().filter(|endpoint| endpoint.url != winner_url));
+        result.extend(
+            ordered
+                .into_iter()
+                .filter(|endpoint| endpoint.url != winner_url),
+        );
         return result;
     }
     ordered
@@ -116,7 +139,12 @@ pub(crate) struct ClientWsDuplex<S> {
 
 impl<S> ClientWsDuplex<S> {
     fn new(ws: tokio_tungstenite::WebSocketStream<S>) -> Self {
-        Self { incoming: VecDeque::new(), ws, write_queue: VecDeque::new(), flushing: false }
+        Self {
+            incoming: VecDeque::new(),
+            ws,
+            write_queue: VecDeque::new(),
+            flushing: false,
+        }
     }
 }
 
@@ -124,7 +152,11 @@ impl<S> AsyncRead for ClientWsDuplex<S>
 where
     S: AsyncRead + AsyncWrite + Unpin,
 {
-    fn poll_read(mut self: Pin<&mut Self>, cx: &mut Context<'_>, buf: &mut ReadBuf<'_>) -> Poll<io::Result<()>> {
+    fn poll_read(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: &mut ReadBuf<'_>,
+    ) -> Poll<io::Result<()>> {
         loop {
             if !self.incoming.is_empty() {
                 let (front, _) = self.incoming.as_slices();
@@ -137,7 +169,7 @@ where
                 Poll::Ready(Some(Ok(Message::Binary(data)))) => self.incoming.extend(data.iter()),
                 Poll::Ready(Some(Ok(_))) => continue,
                 Poll::Ready(Some(Err(error))) => {
-                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::ConnectionReset, error)))
+                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::ConnectionReset, error)));
                 }
                 Poll::Ready(None) => return Poll::Ready(Ok(())),
                 Poll::Pending => return Poll::Pending,
@@ -150,7 +182,11 @@ impl<S> AsyncWrite for ClientWsDuplex<S>
 where
     S: AsyncRead + AsyncWrite + Unpin,
 {
-    fn poll_write(mut self: Pin<&mut Self>, cx: &mut Context<'_>, data: &[u8]) -> Poll<io::Result<usize>> {
+    fn poll_write(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        data: &[u8],
+    ) -> Poll<io::Result<usize>> {
         if self.flushing {
             match self.as_mut().poll_flush(cx) {
                 Poll::Ready(Ok(())) => {}
@@ -177,13 +213,17 @@ where
                     }
                     self.flushing = false;
                 }
-                Poll::Ready(Err(error)) => return Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, error))),
+                Poll::Ready(Err(error)) => {
+                    return Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, error)));
+                }
                 Poll::Pending => return Poll::Pending,
             }
         }
         match self.ws.poll_flush_unpin(cx) {
             Poll::Ready(Ok(())) => Poll::Ready(Ok(())),
-            Poll::Ready(Err(error)) => Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, error))),
+            Poll::Ready(Err(error)) => {
+                Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, error)))
+            }
             Poll::Pending => Poll::Pending,
         }
     }
@@ -192,7 +232,9 @@ where
         match self.as_mut().poll_flush(cx) {
             Poll::Ready(Ok(())) => match self.ws.poll_close_unpin(cx) {
                 Poll::Ready(Ok(())) => Poll::Ready(Ok(())),
-                Poll::Ready(Err(error)) => Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, error))),
+                Poll::Ready(Err(error)) => {
+                    Poll::Ready(Err(io::Error::new(io::ErrorKind::BrokenPipe, error)))
+                }
                 Poll::Pending => Poll::Pending,
             },
             Poll::Ready(Err(error)) => Poll::Ready(Err(error)),
@@ -211,12 +253,12 @@ fn root_config(root_certificate: &str) -> Result<Arc<ClientConfig>, String> {
         .add(CertificateDer::from(pem))
         .map_err(|error| format!("Remote root certificate invalid: {error}"))?;
     let config = ClientConfig::builder_with_provider(
-            tokio_rustls::rustls::crypto::ring::default_provider().into(),
-        )
-        .with_protocol_versions(&[&tokio_rustls::rustls::version::TLS13])
-        .map_err(|error| format!("TLS client configuration failed: {error}"))?
-        .with_root_certificates(roots)
-        .with_no_client_auth();
+        tokio_rustls::rustls::crypto::ring::default_provider().into(),
+    )
+    .with_protocol_versions(&[&tokio_rustls::rustls::version::TLS13])
+    .map_err(|error| format!("TLS client configuration failed: {error}"))?
+    .with_root_certificates(roots)
+    .with_no_client_auth();
     Ok(Arc::new(config))
 }
 
@@ -237,7 +279,11 @@ fn random_websocket_key() -> String {
     base64::engine::general_purpose::STANDARD.encode(bytes)
 }
 
-async fn inner_upgrade<S>(mut tls: S, environment_id: &str, path: &str) -> Result<tokio_tungstenite::WebSocketStream<S>, String>
+async fn inner_upgrade<S>(
+    mut tls: S,
+    environment_id: &str,
+    path: &str,
+) -> Result<tokio_tungstenite::WebSocketStream<S>, String>
 where
     S: AsyncRead + AsyncWrite + Unpin,
 {
@@ -257,7 +303,10 @@ where
             if head.len() > 16 * 1024 {
                 return Err("Remote inner upgrade refused".to_string());
             }
-            let read = tls.read(&mut byte).await.map_err(|error| format!("Remote inner upgrade failed: {error}"))?;
+            let read = tls
+                .read(&mut byte)
+                .await
+                .map_err(|error| format!("Remote inner upgrade failed: {error}"))?;
             if read == 0 {
                 return Err("Remote inner upgrade refused".to_string());
             }
@@ -276,7 +325,8 @@ where
     }
     let accepted = lines.any(|line| {
         line.split_once(':').is_some_and(|(name, value)| {
-            name.trim().eq_ignore_ascii_case("sec-websocket-accept") && value.trim() == ws_accept_key(&key)
+            name.trim().eq_ignore_ascii_case("sec-websocket-accept")
+                && value.trim() == ws_accept_key(&key)
         })
     });
     if !accepted {
@@ -286,29 +336,40 @@ where
         tls,
         tokio_tungstenite::tungstenite::protocol::Role::Client,
         None,
-    ).await)
+    )
+    .await)
 }
 
-type OuterStream = tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>;
-type TlsStream = tokio_rustls::client::TlsStream<ClientWsDuplex<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>>;
+type OuterStream =
+    tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>;
+type TlsStream = tokio_rustls::client::TlsStream<
+    ClientWsDuplex<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
+>;
 
-async fn open_tls_channel(endpoint: &RemoteEndpoint, root_certificate: &str, environment_id: &str) -> Result<TlsStream, String> {
+async fn open_tls_channel(
+    endpoint: &RemoteEndpoint,
+    root_certificate: &str,
+    environment_id: &str,
+) -> Result<TlsStream, String> {
     let outer_url = websocket_url(&endpoint.url)?;
     let connect = tokio_tungstenite::connect_async(outer_url);
     let (outer, _) = tokio::time::timeout(HANDSHAKE_TIMEOUT, connect)
         .await
         .map_err(|_| "Could not open the remote socket".to_string())?
         .map_err(|_| "Could not open the remote socket".to_string())?;
-    let server_name = ServerName::try_from(crate::remote_tls::remote_tls_server_name(environment_id)?)
-        .map_err(|_| "Invalid remote environment identity".to_string())?;
+    let server_name =
+        ServerName::try_from(crate::remote_tls::remote_tls_server_name(environment_id)?)
+            .map_err(|_| "Invalid remote environment identity".to_string())?;
     let connector = TlsConnector::from(root_config(root_certificate)?);
-    let tls = tokio::time::timeout(HANDSHAKE_TIMEOUT, connector.connect(server_name, ClientWsDuplex::new(outer)))
-        .await
-        .map_err(|_| "Remote TLS handshake timed out".to_string())?
-        .map_err(|error| format!("No route completed the verified host handshake: {error}"))?;
+    let tls = tokio::time::timeout(
+        HANDSHAKE_TIMEOUT,
+        connector.connect(server_name, ClientWsDuplex::new(outer)),
+    )
+    .await
+    .map_err(|_| "Remote TLS handshake timed out".to_string())?
+    .map_err(|error| format!("No route completed the verified host handshake: {error}"))?;
     Ok(tls)
 }
-
 
 /// Opens the pinned TLS byte channel without an inner websocket upgrade.
 /// `/v2/resource` is plain HTTP inside this channel, unlike `/v2/rpc` and
@@ -337,7 +398,13 @@ pub async fn open_inner_websocket(
     root_certificate: &str,
     environment_id: &str,
     path: &str,
-) -> Result<(tokio_tungstenite::WebSocketStream<TlsStream>, RemoteEndpoint), String> {
+) -> Result<
+    (
+        tokio_tungstenite::WebSocketStream<TlsStream>,
+        RemoteEndpoint,
+    ),
+    String,
+> {
     if endpoints.is_empty() {
         return Err("That host has no published route".to_string());
     }
@@ -347,7 +414,8 @@ pub async fn open_inner_websocket(
         let result = async {
             let tls = open_tls_channel(&endpoint, root_certificate, environment_id).await?;
             inner_upgrade(tls, environment_id, path).await
-        }.await;
+        }
+        .await;
         match result {
             Ok(socket) => return Ok((socket, endpoint)),
             Err(error) => last_error = error,
@@ -379,7 +447,8 @@ where
     let Message::Text(text) = frame else {
         return Err("Unexpected remote handshake response".to_string());
     };
-    let parsed: Value = serde_json::from_str(&text).map_err(|_| "Unexpected remote handshake response".to_string())?;
+    let parsed: Value = serde_json::from_str(&text)
+        .map_err(|_| "Unexpected remote handshake response".to_string())?;
     if parsed.get("type").and_then(Value::as_str) == Some("session_incompatible") {
         let message = parsed
             .pointer("/error/message")
@@ -407,18 +476,41 @@ pub async fn pair_remote_host(
     label: &str,
     request_grant: impl Fn() -> Result<String, String> + Send + Sync,
 ) -> Result<PairingOutcome, String> {
-    let environment_id = bundle.get("environmentId").and_then(Value::as_str).unwrap_or_default();
-    let root_certificate = bundle.get("rootCertificate").and_then(Value::as_str).unwrap_or_default();
-    let invite_id = bundle.get("inviteId").and_then(Value::as_str).unwrap_or_default();
-    let secret = bundle.get("secret").and_then(Value::as_str).unwrap_or_default();
-    let user_id = bundle.get("userId").and_then(Value::as_str).unwrap_or_default();
-    if environment_id.is_empty() || root_certificate.is_empty() || invite_id.is_empty() || secret.is_empty() || user_id.is_empty() {
+    let environment_id = bundle
+        .get("environmentId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let root_certificate = bundle
+        .get("rootCertificate")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let invite_id = bundle
+        .get("inviteId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let secret = bundle
+        .get("secret")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    let user_id = bundle
+        .get("userId")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    if environment_id.is_empty()
+        || root_certificate.is_empty()
+        || invite_id.is_empty()
+        || secret.is_empty()
+        || user_id.is_empty()
+    {
         return Err("Review a fresh pairing code and compare the host fingerprint".to_string());
     }
     crate::remote_tls::validate_anchor(
         environment_id,
         root_certificate,
-        bundle.get("rootFingerprint").and_then(Value::as_str).unwrap_or_default(),
+        bundle
+            .get("rootFingerprint")
+            .and_then(Value::as_str)
+            .unwrap_or_default(),
     )?;
     let expires_at = bundle
         .get("expiresAt")
@@ -426,7 +518,10 @@ pub async fn pair_remote_host(
         .and_then(|text| chrono::DateTime::parse_from_rfc3339(text).ok())
         .map(|date| date.timestamp_millis())
         .unwrap_or(0);
-    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_millis() as i64).unwrap_or(0);
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_millis() as i64)
+        .unwrap_or(0);
     if expires_at <= now {
         return Err("Invitation expired or invalid".to_string());
     }
@@ -435,7 +530,8 @@ pub async fn pair_remote_host(
         root_certificate,
         environment_id,
         crate::remote_tunnel::REMOTE_INNER_PAIRING_PATH,
-    ).await?;
+    )
+    .await?;
     let challenge = exchange_frame(
         &mut socket,
         json!({
@@ -447,13 +543,24 @@ pub async fn pair_remote_host(
             "label": label,
         }),
         "pairing_challenge",
-    ).await?;
-    let nonce = challenge.get("nonce").and_then(Value::as_str).unwrap_or_default();
-    if nonce.len() != 43 || !nonce.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
+    )
+    .await?;
+    let nonce = challenge
+        .get("nonce")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
+    if nonce.len() != 43
+        || !nonce
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+    {
         return Err("Invalid host pairing challenge".to_string());
     }
     let grant = request_grant().ok();
-    let now_seconds = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_secs()).unwrap_or(0);
+    let now_seconds = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0);
     let proof = identity.sign_jwt(
         json!({"typ": crate::pairing_gateway::REMOTE_PAIRING_PROOF_TYPE}),
         json!({
@@ -477,19 +584,30 @@ pub async fn pair_remote_host(
             return Err("Host approved a different device".to_string());
         }
         match status.get("state").and_then(Value::as_str) {
-            Some("approved") => return Ok(PairingOutcome { transport: endpoint.transport }),
+            Some("approved") => {
+                return Ok(PairingOutcome {
+                    transport: endpoint.transport,
+                });
+            }
             Some("pending") => {}
             _ => return Err("Host denied this device".to_string()),
         }
-        let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_millis() as i64).unwrap_or(0);
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|duration| duration.as_millis() as i64)
+            .unwrap_or(0);
         if now >= expires_at {
             return Err("Pairing cancelled or expired".to_string());
         }
         tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-        status = exchange_frame(&mut socket, json!({"v": 2, "type": "pairing_status"}), "pairing_status").await?;
+        status = exchange_frame(
+            &mut socket,
+            json!({"v": 2, "type": "pairing_status"}),
+            "pairing_status",
+        )
+        .await?;
     }
 }
-
 
 pub(crate) type SessionWebSocket = tokio_tungstenite::WebSocketStream<TlsStream>;
 
@@ -509,9 +627,13 @@ fn credential_expiration(credential: &str) -> Result<u64, String> {
     let payload = base64::engine::general_purpose::URL_SAFE_NO_PAD
         .decode(parts[1])
         .map_err(|_| "Host returned an expired credential".to_string())?;
-    let parsed: Value = serde_json::from_slice(&payload).map_err(|_| "Host returned an expired credential".to_string())?;
+    let parsed: Value = serde_json::from_slice(&payload)
+        .map_err(|_| "Host returned an expired credential".to_string())?;
     let exp = parsed.get("exp").and_then(Value::as_u64).unwrap_or(0);
-    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_secs()).unwrap_or(0);
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0);
     if exp <= now {
         return Err("Host returned an expired credential".to_string());
     }
@@ -540,15 +662,21 @@ pub async fn dial_remote_host(
         &input.root_certificate,
         anchor_environment_id,
         crate::remote_tunnel::REMOTE_INNER_RPC_PATH,
-    ).await?;
+    )
+    .await?;
     let grant = request_grant()?;
     let mint_request = identity.sign_mint_request(user_id, &grant, anchor_environment_id)?;
     let minted = exchange_frame(
         &mut socket,
         json!({"v":1,"type":"mint_request","request":mint_request}),
         "session_credential",
-    ).await?;
-    let credential = minted.get("credential").and_then(Value::as_str).unwrap_or_default().to_string();
+    )
+    .await?;
+    let credential = minted
+        .get("credential")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     if credential.is_empty() {
         return Err("Host returned no session credential".to_string());
     }
@@ -578,7 +706,11 @@ pub async fn dial_remote_host(
         return Err("Host protocol identity does not match its paired root".to_string());
     }
     let compatibility = ready.get("compatibility").cloned().unwrap_or(Value::Null);
-    if compatibility.get("negotiatedRevision").and_then(Value::as_i64).is_none() {
+    if compatibility
+        .get("negotiatedRevision")
+        .and_then(Value::as_i64)
+        .is_none()
+    {
         return Err("Host returned an incomplete protocol negotiation".to_string());
     }
     let credential_expires_at_seconds = credential_expiration(&credential)?;

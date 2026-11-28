@@ -2,7 +2,7 @@
 //! backed by the `gh` CLI. Repository inventory is resolved from the projection DB plus each
 //! project's git remotes; pins come from `project_pull_request_pins`.
 
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 use std::collections::{BTreeMap, HashSet};
 use std::path::PathBuf;
 use std::process::Command;
@@ -152,7 +152,11 @@ fn inbox_fragments() -> String {
 }
 
 fn inbox_query(sort: &str) -> String {
-    let order = if sort == "created" { "CREATED_AT" } else { "UPDATED_AT" };
+    let order = if sort == "created" {
+        "CREATED_AT"
+    } else {
+        "UPDATED_AT"
+    };
     format!(
         "query($owner: String!, $name: String!, $prStates: [PullRequestState!], $issueStates: [IssueState!], $reviewQuery: String!, $includeReview: Boolean!) {{\n  \
          viewer {{ login }}\n  rateLimit {{ cost remaining resetAt }}\n  \
@@ -175,7 +179,12 @@ fn involvement_query() -> String {
 
 fn inbox_vars(repo: &str, state: &str) -> Vec<String> {
     let (owner, name) = repo.split_once('/').unwrap_or(("", ""));
-    let mut v = vec!["-f".into(), format!("owner={owner}"), "-f".into(), format!("name={name}")];
+    let mut v = vec![
+        "-f".into(),
+        format!("owner={owner}"),
+        "-f".into(),
+        format!("name={name}"),
+    ];
     if state == "open" {
         v.push("-f".into());
         v.push("prStates[]=OPEN".into());
@@ -190,7 +199,9 @@ fn inbox_vars(repo: &str, state: &str) -> Vec<String> {
         v.push("issueStates[]=CLOSED".into());
     }
     v.push("-f".into());
-    v.push(format!("reviewQuery=repo:{repo} is:pr is:open review-requested:@me"));
+    v.push(format!(
+        "reviewQuery=repo:{repo} is:pr is:open review-requested:@me"
+    ));
     v.push("-F".into());
     v.push(format!("includeReview={}", state == "open"));
     v
@@ -295,7 +306,8 @@ fn labels(node: &Value) -> Vec<Value> {
     nodes(node, "labels")
         .into_iter()
         .filter_map(|l| {
-            opt_str(get(&l, "name")).map(|name| json!({"name": name, "color": opt_str(get(&l, "color"))}))
+            opt_str(get(&l, "name"))
+                .map(|name| json!({"name": name, "color": opt_str(get(&l, "color"))}))
         })
         .collect()
 }
@@ -341,8 +353,17 @@ fn mergeability(node: &Value) -> &'static str {
 fn review_request_logins(node: &Value) -> Vec<String> {
     nodes(node, "reviewRequests")
         .into_iter()
-        .filter(|r| get(r, "requestedReviewer").get("__typename").and_then(Value::as_str) != Some("Team"))
-        .filter_map(|r| get(&r, "requestedReviewer").get("login").and_then(|l| opt_str(l)))
+        .filter(|r| {
+            get(r, "requestedReviewer")
+                .get("__typename")
+                .and_then(Value::as_str)
+                != Some("Team")
+        })
+        .filter_map(|r| {
+            get(&r, "requestedReviewer")
+                .get("login")
+                .and_then(|l| opt_str(l))
+        })
         .collect()
 }
 
@@ -352,7 +373,10 @@ fn stack_of(node: &Value) -> Value {
     if stack.is_null() || entry.is_null() {
         return Value::Null;
     }
-    let (size, position) = (non_negative(get(stack, "size")), non_negative(get(entry, "position")));
+    let (size, position) = (
+        non_negative(get(stack, "size")),
+        non_negative(get(entry, "position")),
+    );
     if position == 0 || position > size {
         return Value::Null;
     }
@@ -428,7 +452,12 @@ fn viewer_review_requested(
     distinct && (matched_search || logins.iter().any(|l| l.trim().to_lowercase() == v))
 }
 
-fn contexts(projects: &[&Project], repo: &str, number: i64, pins: &HashSet<(String, String, i64)>) -> Vec<Value> {
+fn contexts(
+    projects: &[&Project],
+    repo: &str,
+    number: i64,
+    pins: &HashSet<(String, String, i64)>,
+) -> Vec<Value> {
     projects
         .iter()
         .map(|p| {
@@ -454,7 +483,10 @@ fn pr_entry(
     let number = non_negative(get(&pr, "number"));
     let ctxs = contexts(projects, repo, number, pins);
     let first = projects[0];
-    let assignees: Vec<Value> = get(&pr, "assignees").as_array().cloned().unwrap_or_default();
+    let assignees: Vec<Value> = get(&pr, "assignees")
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
     json!({
         "kind": "pullRequest",
         "projectId": first.id,
@@ -502,23 +534,47 @@ fn issue_entry(
     let number = non_negative(get(&issue, "number"));
     let ctxs = contexts(projects, repo, number, pins);
     let first = projects[0];
-    let assignees: Vec<Value> = get(&issue, "assignees").as_array().cloned().unwrap_or_default();
+    let assignees: Vec<Value> = get(&issue, "assignees")
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
     let mut e = Map::new();
     e.insert("kind".into(), json!("issue"));
     e.insert("projectId".into(), json!(first.id));
     e.insert("projectTitle".into(), json!(first.title));
     e.insert("projectContexts".into(), Value::Array(ctxs.clone()));
     e.insert("repository".into(), json!(repo));
-    for k in ["number", "title", "url", "author", "state", "stateReason", "labels", "assignees", "commentCount", "createdAt", "updatedAt", "closedAt"] {
+    for k in [
+        "number",
+        "title",
+        "url",
+        "author",
+        "state",
+        "stateReason",
+        "labels",
+        "assignees",
+        "commentCount",
+        "createdAt",
+        "updatedAt",
+        "closedAt",
+    ] {
         e.insert(k.to_string(), get(&issue, k).clone());
     }
     e.insert(
         "isPinned".into(),
-        json!(ctxs.iter().any(|c| get(c, "isPinned").as_bool().unwrap_or(false))),
+        json!(
+            ctxs.iter()
+                .any(|c| get(c, "isPinned").as_bool().unwrap_or(false))
+        ),
     );
     e.insert(
         "viewerInvolvement".into(),
-        involvement(get(&issue, "author"), &assignees, viewer, involved.contains(&number)),
+        involvement(
+            get(&issue, "author"),
+            &assignees,
+            viewer,
+            involved.contains(&number),
+        ),
     );
     Value::Object(e)
 }
@@ -553,7 +609,11 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
     let state = str_at(payload, "state");
     let state = if state == "closed" { "closed" } else { "open" };
     let sort = str_at(payload, "sort");
-    let sort = if sort == "created" { "created" } else { "updated" };
+    let sort = if sort == "created" {
+        "created"
+    } else {
+        "updated"
+    };
 
     let projects = live_projects();
     let pin_set = pins();
@@ -577,13 +637,7 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
                     ));
                 }
             }
-            Err(e) => errors.push(list_error(
-                p,
-                Value::Null,
-                e.0,
-                "unavailable",
-                Value::Null,
-            )),
+            Err(e) => errors.push(list_error(p, Value::Null, e.0, "unavailable", Value::Null)),
         }
     }
 
@@ -599,13 +653,19 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
         let resp = graphql(&inbox_query(sort), &inbox_vars(repo, state), cwd);
         let inv_resp = graphql(
             &involvement_query(),
-            &["-f".into(), format!("mineQuery=repo:{repo} is:{state} involves:@me sort:{sort}-desc")],
+            &[
+                "-f".into(),
+                format!("mineQuery=repo:{repo} is:{state} involves:@me sort:{sort}-desc"),
+            ],
             cwd,
         );
         let resp = match (resp, inv_resp) {
             (Ok(mut r), Ok(i)) => {
                 if let Some(d) = r.get_mut("data").and_then(Value::as_object_mut) {
-                    d.insert("mine".into(), i.pointer("/data/mine").cloned().unwrap_or(Value::Null));
+                    d.insert(
+                        "mine".into(),
+                        i.pointer("/data/mine").cloned().unwrap_or(Value::Null),
+                    );
                     d.insert(
                         "mineRateLimit".into(),
                         i.pointer("/data/rateLimit").cloned().unwrap_or(Value::Null),
@@ -620,7 +680,13 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
                     ("unavailable", Value::Null)
                 };
                 for p in owners {
-                    errors.push(list_error(p, json!(repo), e.clone(), reason, retry_at.clone()));
+                    errors.push(list_error(
+                        p,
+                        json!(repo),
+                        e.clone(),
+                        reason,
+                        retry_at.clone(),
+                    ));
                 }
                 if state == "open" {
                     review_incomplete = true;
@@ -636,7 +702,8 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
         for key in ["rateLimit", "mineRateLimit"] {
             if let Some(rl) = data.get(key).and_then(|r| {
                 let remaining = non_negative(get(r, "remaining"));
-                opt_str(get(r, "resetAt")).map(|reset| json!({"remaining": remaining, "resetAt": reset}))
+                opt_str(get(r, "resetAt"))
+                    .map(|reset| json!({"remaining": remaining, "resetAt": reset}))
             }) {
                 rate_limit = Some(rl);
             }
@@ -658,8 +725,16 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
             continue;
         }
 
-        let pr_total = non_negative(get(repository, "pullRequests").get("totalCount").unwrap_or(&Value::Null));
-        let issue_total = non_negative(get(repository, "issues").get("totalCount").unwrap_or(&Value::Null));
+        let pr_total = non_negative(
+            get(repository, "pullRequests")
+                .get("totalCount")
+                .unwrap_or(&Value::Null),
+        );
+        let issue_total = non_negative(
+            get(repository, "issues")
+                .get("totalCount")
+                .unwrap_or(&Value::Null),
+        );
         batches.push(json!({
             "repository": repo,
             "projectIds": owners.iter().map(|p| p.id.clone()).collect::<Vec<_>>(),
@@ -693,7 +768,15 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
             if get(&node, "__typename").as_str() != Some("PullRequest") {
                 continue;
             }
-            items.push(pr_entry(&node, repo, owners, &v, &review_requested, &involved, &pin_set));
+            items.push(pr_entry(
+                &node,
+                repo,
+                owners,
+                &v,
+                &review_requested,
+                &involved,
+                &pin_set,
+            ));
         }
         for node in nodes(repository, "issues") {
             if get(&node, "__typename").as_str() != Some("Issue") {
@@ -703,7 +786,11 @@ fn list(payload: &Value) -> Result<Value, WsErr> {
         }
     }
 
-    let sort_key = if sort == "created" { "createdAt" } else { "updatedAt" };
+    let sort_key = if sort == "created" {
+        "createdAt"
+    } else {
+        "updatedAt"
+    };
     items.sort_by(|a, b| str_at(b, sort_key).cmp(str_at(a, sort_key)));
 
     Ok(json!({
@@ -736,7 +823,9 @@ fn issue_detail(payload: &Value) -> Result<Value, WsErr> {
         return Err(detail_error("number must be a positive integer"));
     }
     let Some(project) = project_by_id(project_id) else {
-        return Err(detail_error(format!("Project '{project_id}' was not found.")));
+        return Err(detail_error(format!(
+            "Project '{project_id}' was not found."
+        )));
     };
     let repo = validate_project_repository(&project, str_at(payload, "repository"))?;
     let (owner, name) = repo.split_once('/').unwrap_or(("", ""));

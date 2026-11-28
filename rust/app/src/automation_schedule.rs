@@ -24,7 +24,10 @@ fn parse_iso(value: &str, label: &str) -> Result<i64, String> {
 fn sha256_remainder(install_salt: &str, automation_id: &str) -> i64 {
     use sha2::Digest;
     let mut hasher = sha2::Sha256::new();
-    sha2::Digest::update(&mut hasher, format!("{install_salt}:{automation_id}").as_bytes());
+    sha2::Digest::update(
+        &mut hasher,
+        format!("{install_salt}:{automation_id}").as_bytes(),
+    );
     let digest = hasher.finalize();
     let mut remainder: i64 = 0;
     for byte in digest {
@@ -38,7 +41,9 @@ pub fn deterministic_jitter_seconds(install_salt: &str, automation_id: &str) -> 
 }
 
 fn jitter_ms(schedule_type: &str, jitter_context: Option<(&str, &str)>) -> i64 {
-    let Some((salt, id)) = jitter_context else { return 0 };
+    let Some((salt, id)) = jitter_context else {
+        return 0;
+    };
     match schedule_type {
         "daily" | "weekdays" | "weekly" | "cron" => sha256_remainder(salt, id) * 1000,
         _ => 0,
@@ -102,7 +107,14 @@ fn date_utc_ms(year: i64, month: i64, day: i64, hour: i64, minute: i64, second: 
 
 fn timezone_offset_ms(ms: i64, timezone: &str) -> Result<i64, String> {
     let parts = local_parts_for(ms, timezone)?;
-    let as_utc = date_utc_ms(parts.year, parts.month, parts.day, parts.hour, parts.minute, parts.second);
+    let as_utc = date_utc_ms(
+        parts.year,
+        parts.month,
+        parts.day,
+        parts.hour,
+        parts.minute,
+        parts.second,
+    );
     Ok(as_utc - ms)
 }
 
@@ -155,11 +167,20 @@ fn day_of_week_for_local_date(year: i64, month: i64, day: i64) -> i64 {
     dt.weekday().num_days_from_sunday() as i64
 }
 
-fn compute_next_zoned_wall_clock_run_at(schedule: &Value, from_ms: i64) -> Result<Option<i64>, String> {
+fn compute_next_zoned_wall_clock_run_at(
+    schedule: &Value,
+    from_ms: i64,
+) -> Result<Option<i64>, String> {
     let schedule_type = schedule.get("type").and_then(Value::as_str).unwrap_or("");
-    let time_of_day = schedule.get("timeOfDay").and_then(Value::as_str).unwrap_or("0:0");
+    let time_of_day = schedule
+        .get("timeOfDay")
+        .and_then(Value::as_str)
+        .unwrap_or("0:0");
     let timezone = schedule.get("timezone").and_then(Value::as_str);
-    let day_of_week = schedule.get("dayOfWeek").and_then(Value::as_i64).unwrap_or(0);
+    let day_of_week = schedule
+        .get("dayOfWeek")
+        .and_then(Value::as_i64)
+        .unwrap_or(0);
 
     let Some(tz) = timezone else {
         // UTC path: direct slot arithmetic.
@@ -194,7 +215,8 @@ fn compute_next_zoned_wall_clock_run_at(schedule: &Value, from_ms: i64) -> Resul
     let local_start = local_parts_for(from_ms, tz)?;
     for offset in 0..=370 {
         let local_date = add_local_days(local_start, offset);
-        let local_dow = day_of_week_for_local_date(local_date.year, local_date.month, local_date.day);
+        let local_dow =
+            day_of_week_for_local_date(local_date.year, local_date.month, local_date.day);
         if schedule_type == "weekdays" && (local_dow == 0 || local_dow == 6) {
             continue;
         }
@@ -275,13 +297,7 @@ fn parse_cron_field(
             parse_cron_integer(raw, name, reason)
         }
     };
-    let normalize = |value: i64| -> i64 {
-        if dow && value == 7 {
-            0
-        } else {
-            value
-        }
-    };
+    let normalize = |value: i64| -> i64 { if dow && value == 7 { 0 } else { value } };
     let mut field = CronField::default();
     for token in raw.split(',') {
         let part = token.trim();
@@ -319,7 +335,12 @@ fn parse_cron_field(
         }
         let start = parse_value(Some(&range_parts[0]), name, "out of range")?;
         let end = parse_value(
-            Some(range_parts.get(1).map(String::as_str).unwrap_or(&range_parts[0])),
+            Some(
+                range_parts
+                    .get(1)
+                    .map(String::as_str)
+                    .unwrap_or(&range_parts[0]),
+            ),
             name,
             "out of range",
         )?;
@@ -375,7 +396,10 @@ fn compute_next_cron_run_at(schedule: &Value, from_ms: i64) -> Result<Option<i64
         .and_then(Value::as_str)
         .ok_or_else(|| "Invalid automation schedule timezone: missing".to_string())?;
     parse_tz(timezone)?;
-    let expression = schedule.get("expression").and_then(Value::as_str).unwrap_or("");
+    let expression = schedule
+        .get("expression")
+        .and_then(Value::as_str)
+        .unwrap_or("");
     let cron = parse_cron_expression(expression)?;
     let local_start = local_parts_for(from_ms, timezone)?;
     let hours = sorted_cron_values(&cron.hour);
@@ -432,10 +456,17 @@ pub fn compute_next_run_at(
             schedule.get("runAt").and_then(Value::as_str).unwrap_or(""),
             "runAt",
         )?;
-        return Ok(if run_at > from_ms { Some(iso(run_at)) } else { None });
+        return Ok(if run_at > from_ms {
+            Some(iso(run_at))
+        } else {
+            None
+        });
     }
     if schedule_type == "interval" {
-        let every = schedule.get("everySeconds").and_then(Value::as_i64).unwrap_or(60);
+        let every = schedule
+            .get("everySeconds")
+            .and_then(Value::as_i64)
+            .unwrap_or(60);
         return Ok(Some(iso(from_ms + every * 1000)));
     }
     let jitter = jitter_ms(schedule_type, jitter_context);
@@ -463,7 +494,11 @@ pub fn compute_next_run_at_after(
     if schedule_type == "interval" {
         let from_ms = parse_iso(from_iso, "timestamp")?;
         let floor = parse_iso(not_before_iso, "timestamp").unwrap_or(from_ms);
-        let step_ms = schedule.get("everySeconds").and_then(Value::as_i64).unwrap_or(60) * 1000;
+        let step_ms = schedule
+            .get("everySeconds")
+            .and_then(Value::as_i64)
+            .unwrap_or(60)
+            * 1000;
         let mut next = from_ms + step_ms;
         if next <= floor {
             // Jump straight to the first slot after the floor rather than
@@ -478,17 +513,26 @@ pub fn compute_next_run_at_after(
 
 /// Estimate the spacing between the next two occurrences from a fixed point.
 /// Used for policy validation, not dispatch.
-pub fn compute_schedule_spacing_seconds(schedule: &Value, from_iso: &str) -> Result<Option<i64>, String> {
+pub fn compute_schedule_spacing_seconds(
+    schedule: &Value,
+    from_iso: &str,
+) -> Result<Option<i64>, String> {
     let schedule_type = schedule.get("type").and_then(Value::as_str).unwrap_or("");
     if matches!(schedule_type, "manual" | "once" | "project-event") {
         return Ok(None);
     }
-    let Some(first) = compute_next_run_at(schedule, from_iso, None)? else { return Ok(None) };
+    let Some(first) = compute_next_run_at(schedule, from_iso, None)? else {
+        return Ok(None);
+    };
     let Some(second) = compute_next_run_at_after(schedule, &first, &first, None)? else {
         return Ok(None);
     };
     let spacing = parse_iso(&second, "timestamp")? - parse_iso(&first, "timestamp")?;
-    Ok(if spacing > 0 { Some(spacing / 1000) } else { None })
+    Ok(if spacing > 0 {
+        Some(spacing / 1000)
+    } else {
+        None
+    })
 }
 
 #[cfg(test)]
@@ -542,7 +586,9 @@ mod tests {
         let s = json!({"type":"daily","timeOfDay":"01:30","timezone":"America/New_York"});
         let first = at(s.clone(), "2026-10-31T12:00:00.000Z").unwrap();
         assert_eq!(first, "2026-11-01T05:30:00.000Z");
-        let after = compute_next_run_at_after(&s, &first, &first, None).unwrap().unwrap();
+        let after = compute_next_run_at_after(&s, &first, &first, None)
+            .unwrap()
+            .unwrap();
         assert_eq!(after, "2026-11-02T06:30:00.000Z");
     }
 
@@ -564,7 +610,10 @@ mod tests {
         let next = at(s.clone(), "2026-03-09T00:00:00.000Z").unwrap();
         assert_eq!(next, "2026-03-15T10:00:00.000Z");
         let s7 = json!({"type":"cron","expression":"0 10 * * 7","timezone":"UTC"});
-        assert_eq!(at(s7, "2026-03-09T00:00:00.000Z").unwrap(), "2026-03-15T10:00:00.000Z");
+        assert_eq!(
+            at(s7, "2026-03-09T00:00:00.000Z").unwrap(),
+            "2026-03-15T10:00:00.000Z"
+        );
     }
 
     #[test]

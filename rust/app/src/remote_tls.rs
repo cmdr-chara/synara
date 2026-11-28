@@ -5,9 +5,9 @@
 
 use std::path::{Path, PathBuf};
 
-use serde_json::{json, Value};
-use x509_parser::prelude::FromDer;
+use serde_json::{Value, json};
 use sha2::Digest;
+use x509_parser::prelude::FromDer;
 
 const DAY_MS: i64 = 86_400_000;
 const ROOT_VALIDITY_DAYS: i64 = 3650;
@@ -42,11 +42,17 @@ pub fn remote_tls_server_name(environment_id: &str) -> Result<String, String> {
     {
         return Err("Invalid remote environment identity".to_string());
     }
-    Ok(format!("host-{}.synara.invalid", environment_id.to_lowercase()))
+    Ok(format!(
+        "host-{}.synara.invalid",
+        environment_id.to_lowercase()
+    ))
 }
 
 fn sha256_hex(data: &[u8]) -> String {
-    sha2::Sha256::digest(data).iter().map(|b| format!("{b:02x}")).collect()
+    sha2::Sha256::digest(data)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect()
 }
 
 /// SPKI DER of a PEM-encoded P-256 private key's public half.
@@ -118,8 +124,9 @@ fn issue_leaf(
     // params (distinguished name, key usages, identifier method) — the actual
     // signing uses the key. Rebuild those params from the persisted root and
     // use a throwaway self-signed cert purely as their carrier.
-    let carrier_params = rcgen::CertificateParams::from_ca_cert_der(&root_pem.contents.as_slice().into())
-        .map_err(|e| format!("root cert import failed: {e}"))?;
+    let carrier_params =
+        rcgen::CertificateParams::from_ca_cert_der(&root_pem.contents.as_slice().into())
+            .map_err(|e| format!("root cert import failed: {e}"))?;
     let (_, root_not_after) = cert_validity(root_cert_pem)?;
 
     let mut params = rcgen::CertificateParams::new(vec![server_name.clone()])
@@ -185,17 +192,27 @@ pub fn anchor_for(environment_id: &str, root_certificate: &str) -> Result<Remote
 /// Validates a controller-pinned root exactly as upstream does before trust is
 /// imported: environment shape, root fingerprint, CA constraint, and a valid
 /// self-signature. PEM parse failures are deliberately untrusted input errors.
-pub fn validate_anchor(environment_id: &str, root_certificate: &str, root_fingerprint: &str) -> Result<(), String> {
+pub fn validate_anchor(
+    environment_id: &str,
+    root_certificate: &str,
+    root_fingerprint: &str,
+) -> Result<(), String> {
     remote_tls_server_name(environment_id)?;
     let anchor = anchor_for(environment_id, root_certificate)?;
     if anchor.root_fingerprint != root_fingerprint {
         return Err("Remote root does not match the locally approved fingerprint".to_string());
     }
     let pem = x509_parser::pem::parse_x509_pem(root_certificate.as_bytes())
-        .map_err(|e| format!("root pem parse failed: {e}"))?.1;
+        .map_err(|e| format!("root pem parse failed: {e}"))?
+        .1;
     let cert = x509_parser::certificate::X509Certificate::from_der(&pem.contents)
-        .map_err(|e| format!("root cert parse failed: {e}"))?.1;
-    let is_ca = cert.basic_constraints().ok().flatten().is_some_and(|bc| bc.value.ca);
+        .map_err(|e| format!("root cert parse failed: {e}"))?
+        .1;
+    let is_ca = cert
+        .basic_constraints()
+        .ok()
+        .flatten()
+        .is_some_and(|bc| bc.value.ca);
     if !is_ca || cert.verify_signature(None).is_err() {
         return Err("Remote root does not match the locally approved fingerprint".to_string());
     }
@@ -206,7 +223,10 @@ pub fn root_validity(identity: &RemoteTlsIdentity) -> Result<(i64, i64), String>
     cert_validity(&identity.root_certificate)
 }
 
-pub fn reset_remote_tls_identity(path: &Path, environment_id: &str) -> Result<RemoteTlsIdentity, String> {
+pub fn reset_remote_tls_identity(
+    path: &Path,
+    environment_id: &str,
+) -> Result<RemoteTlsIdentity, String> {
     if path.exists() {
         std::fs::remove_file(path).map_err(|e| format!("identity reset failed: {e}"))?;
     }
@@ -241,7 +261,8 @@ fn persist(path: &Path, identity: &RemoteTlsIdentity) -> Result<(), String> {
 }
 
 fn identity_from_json(raw: &str, environment_id: &str) -> Result<RemoteTlsIdentity, String> {
-    let parsed: Value = serde_json::from_str(raw).map_err(|e| format!("identity is not json: {e}"))?;
+    let parsed: Value =
+        serde_json::from_str(raw).map_err(|e| format!("identity is not json: {e}"))?;
     let get = |k: &str| {
         parsed
             .get(k)
@@ -265,27 +286,42 @@ fn identity_from_json(raw: &str, environment_id: &str) -> Result<RemoteTlsIdenti
 
 /// Validates a persisted identity, renewing the leaf inside its last 30 days.
 /// Fail-closed like upstream: corrupt or expired roots demand a re-pair.
-pub fn load_remote_tls_identity(path: &Path, environment_id: &str) -> Result<RemoteTlsIdentity, String> {
+pub fn load_remote_tls_identity(
+    path: &Path,
+    environment_id: &str,
+) -> Result<RemoteTlsIdentity, String> {
     let now = now_ms();
     let raw = std::fs::read_to_string(path).map_err(|e| format!("identity read failed: {e}"))?;
     let identity = identity_from_json(&raw, environment_id)?;
 
     if !cert_is_ca(&identity.root_certificate)? {
-        return Err("Remote TLS identity is invalid or its root expired; local re-pair is required".to_string());
+        return Err(
+            "Remote TLS identity is invalid or its root expired; local re-pair is required"
+                .to_string(),
+        );
     }
     if cert_is_ca(&identity.leaf_certificate)? {
-        return Err("Remote TLS identity is invalid or its root expired; local re-pair is required".to_string());
+        return Err(
+            "Remote TLS identity is invalid or its root expired; local re-pair is required"
+                .to_string(),
+        );
     }
     // The private keys must match their certificates' public keys.
     let root_spki = spki_der_from_private_pem(&identity.root_private_key)?;
     let anchor = anchor_for(environment_id, &identity.root_certificate)?;
     if sha256_hex(&root_spki) != anchor.root_fingerprint {
-        return Err("Remote TLS identity is invalid or its root expired; local re-pair is required".to_string());
+        return Err(
+            "Remote TLS identity is invalid or its root expired; local re-pair is required"
+                .to_string(),
+        );
     }
     let (root_from, root_to) = cert_validity(&identity.root_certificate)?;
     let (leaf_from, leaf_to) = cert_validity(&identity.leaf_certificate)?;
     if root_from > now || root_to <= now || leaf_from > now {
-        return Err("Remote TLS identity is invalid or its root expired; local re-pair is required".to_string());
+        return Err(
+            "Remote TLS identity is invalid or its root expired; local re-pair is required"
+                .to_string(),
+        );
     }
     if leaf_to - now > LEAF_RENEW_THRESHOLD_DAYS * DAY_MS {
         return Ok(identity);
@@ -294,14 +330,21 @@ pub fn load_remote_tls_identity(path: &Path, environment_id: &str) -> Result<Rem
         .map_err(|e| format!("root key parse failed: {e}"))?;
     let (leaf_certificate, leaf_private_key) =
         issue_leaf(&identity.root_certificate, &root_key, environment_id, now)?;
-    let renewed = RemoteTlsIdentity { leaf_certificate, leaf_private_key, ..identity };
+    let renewed = RemoteTlsIdentity {
+        leaf_certificate,
+        leaf_private_key,
+        ..identity
+    };
     persist(path, &renewed)?;
     Ok(renewed)
 }
 
 /// Creates a fresh root and leaf. Upstream never recreates a lost root on
 /// load — creation is an explicit pairing action here too.
-pub fn initialize_remote_tls_identity(path: &Path, environment_id: &str) -> Result<RemoteTlsIdentity, String> {
+pub fn initialize_remote_tls_identity(
+    path: &Path,
+    environment_id: &str,
+) -> Result<RemoteTlsIdentity, String> {
     remote_tls_server_name(environment_id)?;
     if path.exists() {
         return load_remote_tls_identity(path, environment_id);

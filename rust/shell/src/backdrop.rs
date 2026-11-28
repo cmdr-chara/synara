@@ -118,9 +118,6 @@ fn scene() -> &'static image::RgbaImage {
     })
 }
 
-
-
-
 /// Bilinear resize of the scene into the cell-resolution grid area, matching
 /// the canvas drawImage(dst) upstream: the scene covers [scene_w x scene_h]
 /// cells placed at (left, top) in cell units; out-of-scene cells stay empty
@@ -257,7 +254,11 @@ fn quiet_factor(x: f32, y: f32, zones: &[(f32, f32, f32, f32)], floor: f32) -> f
         let dy = (zy - QUIET_PADDING_PX - y)
             .max(0.0)
             .max(y - (zy + zh) - QUIET_PADDING_PX);
-        factor = factor.min(smoothstep(0.0, QUIET_FEATHER_PX, (dx * dx + dy * dy).sqrt()));
+        factor = factor.min(smoothstep(
+            0.0,
+            QUIET_FEATHER_PX,
+            (dx * dx + dy * dy).sqrt(),
+        ));
     }
     floor + (1.0 - floor) * factor
 }
@@ -284,7 +285,11 @@ pub fn compute_backdrop_field(spec: &BackdropSpec) -> Option<BackdropField> {
     }
     let cols = (width / CELL_PX).ceil() as usize;
     let rows = (height / CELL_PX).ceil() as usize;
-    let levels = if spec.dark { &DARK_LEVELS } else { &LIGHT_LEVELS };
+    let levels = if spec.dark {
+        &DARK_LEVELS
+    } else {
+        &LIGHT_LEVELS
+    };
 
     let scene_w = width.max(SCENE_MIN_WIDTH_PX).max(height / SCENE_ASPECT);
     let scene_h = scene_w * SCENE_ASPECT;
@@ -422,7 +427,6 @@ pub fn compute_backdrop_field(spec: &BackdropSpec) -> Option<BackdropField> {
         spec.accent_rgb
     };
 
-
     Some(BackdropField {
         density: density.clone(),
         dots: clean,
@@ -444,7 +448,11 @@ pub fn rasterize_backdrop(
     let height = spec.height;
     let cols = field.cols;
     let rows = field.rows;
-    let levels = if spec.dark { &DARK_LEVELS } else { &LIGHT_LEVELS };
+    let levels = if spec.dark {
+        &DARK_LEVELS
+    } else {
+        &LIGHT_LEVELS
+    };
     let ink = field.ink;
     // Upstream renders one bitmap pixel per cell and the browser upscales it
     // with `image-rendering: pixelated` (nearest, crisp), then intersects a
@@ -490,8 +498,8 @@ pub fn rasterize_backdrop(
                     let fade = life * life;
                     let ring = (-offset * offset).exp() * fade;
                     let trough = (-trough_offset * trough_offset).exp() * fade;
-                    let delta = crest_sign
-                        * (RIPPLE_STRENGTH * ring - RIPPLE_TROUGH_STRENGTH * trough);
+                    let delta =
+                        crest_sign * (RIPPLE_STRENGTH * ring - RIPPLE_TROUGH_STRENGTH * trough);
                     value += delta;
                     disturbance += delta.abs();
                 }
@@ -577,4 +585,3 @@ pub fn build_backdrop_image(spec: &BackdropSpec) -> Option<std::sync::Arc<Render
     let field = compute_backdrop_field(spec)?;
     rasterize_backdrop(spec, &field, &[])
 }
-

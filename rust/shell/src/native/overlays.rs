@@ -3,25 +3,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -62,10 +60,26 @@ impl Native {
                 gpui::WindowAppearance::Dark | gpui::WindowAppearance::VibrantDark
             ),
         };
-        let well_bg = if dark_ui { rgb(0x1d1d1d) } else { rgb(0xf7f7f7) };
-        let hairline = if dark_ui { rgb(0x2e2e2e) } else { rgb(0xe5e5e5) };
-        let subtle = if dark_ui { rgba(0xffffff14) } else { rgba(0x0000000d) };
-        let chip_bg = if dark_ui { rgba(0xffffff12) } else { rgba(0x00000008) };
+        let well_bg = if dark_ui {
+            rgb(0x1d1d1d)
+        } else {
+            rgb(0xf7f7f7)
+        };
+        let hairline = if dark_ui {
+            rgb(0x2e2e2e)
+        } else {
+            rgb(0xe5e5e5)
+        };
+        let subtle = if dark_ui {
+            rgba(0xffffff14)
+        } else {
+            rgba(0x0000000d)
+        };
+        let chip_bg = if dark_ui {
+            rgba(0xffffff12)
+        } else {
+            rgba(0x00000008)
+        };
         let soft_bg: gpui::Hsla = if dark_ui {
             rgba(0xffffff0a).into()
         } else {
@@ -170,33 +184,24 @@ impl Native {
             // Upstream "Clear notification" row: shown when the thread has a
             // dismissible status pill. Keyed statuses store the dismissalKey;
             // Completed/Reminder store a lastVisitedAt stamp instead.
-            let clear: Option<(bool, String)> = self
-                .snapshot
-                .as_ref()
-                .and_then(|s| {
-                    arr(s, "threads")
-                        .iter()
-                        .find(|t| str_at(t, "id") == menu_tid)
-                        .and_then(|t| {
-                            inbox_needs_you_kind(
-                                t,
-                                &self.dismissed_status,
-                                &self.visited_threads,
-                            )
-                            .map(|k| {
+            let clear: Option<(bool, String)> = self.snapshot.as_ref().and_then(|s| {
+                arr(s, "threads")
+                    .iter()
+                    .find(|t| str_at(t, "id") == menu_tid)
+                    .and_then(|t| {
+                        inbox_needs_you_kind(t, &self.dismissed_status, &self.visited_threads).map(
+                            |k| {
                                 if matches!(k, "approval" | "input" | "plan") {
                                     (true, dismissal_key(needs_you_label(t, k), t))
                                 } else {
                                     let a = str_at(get(t, "latestTurn"), "completedAt");
                                     let b = str_at(t, "snoozeReminderAt");
-                                    (
-                                        false,
-                                        if a >= b { a.to_string() } else { b.to_string() },
-                                    )
+                                    (false, if a >= b { a.to_string() } else { b.to_string() })
                                 }
-                            })
-                        })
-                });
+                            },
+                        )
+                    })
+            });
             let menu_thread = self
                 .snapshot
                 .as_ref()
@@ -217,7 +222,11 @@ impl Native {
                 (d - chrono::Duration::milliseconds(1))
                     .to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
             });
-            let pin_label = if is_pinned { "Unpin thread" } else { "Pin thread" };
+            let pin_label = if is_pinned {
+                "Unpin thread"
+            } else {
+                "Pin thread"
+            };
             let mut menu = v_flex()
                 .absolute()
                 .left(px(mx))
@@ -255,9 +264,7 @@ impl Native {
                             .pb_1()
                             .text_xs()
                             .text_color(theme.muted_foreground)
-                            .child(
-                                "This permanently clears conversation history for this thread.",
-                            ),
+                            .child("This permanently clears conversation history for this thread."),
                     )
                     .child(
                         h_flex()
@@ -302,9 +309,7 @@ impl Native {
                 // Tab-menu extras (upstream OpenThreadTabStrip): scope rows
                 // first, then a separator, then the usual thread actions.
                 if self.ctx_menu_tab {
-                    if let Some(idx) =
-                        self.open_threads.iter().position(|t| t == &menu_tid)
-                    {
+                    if let Some(idx) = self.open_threads.iter().position(|t| t == &menu_tid) {
                         let n = self.open_threads.len();
                         let mut extra = 0.0f32;
                         if idx > 0 {
@@ -347,54 +352,67 @@ impl Native {
                     }
                 }
                 menu = menu
-                    .child(row("ctx-rename", "Rename thread".to_string(), Box::new(move |this, w, cx| {
-                        this.open_thread(tid_rename.clone(), cx);
-                        let input = cx.new(|cx| {
-                            InputState::new(w, cx).placeholder("Thread title")
-                        });
-                        input.update(cx, |s, cx| {
-                            s.set_value(title_rename.clone(), w, cx);
-                        });
-                        cx.subscribe_in(&input, w, |this: &mut Self, _s, event, _w, cx| {
-                            if let InputEvent::PressEnter { .. } = event {
-                                this.commit_rename(cx);
-                            }
-                        })
-                        .detach();
-                        let focus = input.read(cx).focus_handle(cx);
-                        w.focus(&focus, cx);
-                        this.rename_input = Some(input);
-                        this.renaming = true;
-                    })))
-                    .child(row("ctx-pin", pin_label.to_string(), Box::new(move |this, _w, cx| {
-                        this.toggle_pin(tid_pin.clone(), cx);
-                    })))
+                    .child(row(
+                        "ctx-rename",
+                        "Rename thread".to_string(),
+                        Box::new(move |this, w, cx| {
+                            this.open_thread(tid_rename.clone(), cx);
+                            let input =
+                                cx.new(|cx| InputState::new(w, cx).placeholder("Thread title"));
+                            input.update(cx, |s, cx| {
+                                s.set_value(title_rename.clone(), w, cx);
+                            });
+                            cx.subscribe_in(&input, w, |this: &mut Self, _s, event, _w, cx| {
+                                if let InputEvent::PressEnter { .. } = event {
+                                    this.commit_rename(cx);
+                                }
+                            })
+                            .detach();
+                            let focus = input.read(cx).focus_handle(cx);
+                            w.focus(&focus, cx);
+                            this.rename_input = Some(input);
+                            this.renaming = true;
+                        }),
+                    ))
+                    .child(row(
+                        "ctx-pin",
+                        pin_label.to_string(),
+                        Box::new(move |this, _w, cx| {
+                            this.toggle_pin(tid_pin.clone(), cx);
+                        }),
+                    ))
                     .when_some(clear.clone(), |m, (is_key, val)| {
                         let tid_c = menu_tid.clone();
-                        m.child(row("ctx-clearnotif", "Clear notification".to_string(), Box::new(
-                            move |this, _w, cx| {
+                        m.child(row(
+                            "ctx-clearnotif",
+                            "Clear notification".to_string(),
+                            Box::new(move |this, _w, cx| {
                                 if is_key {
                                     this.dismissed_status.insert(tid_c.clone(), val.clone());
                                 } else {
                                     this.visited_threads.insert(tid_c.clone(), val.clone());
                                 }
                                 this.persist_sidebar_ui(cx);
-                            },
-                        )))
+                            }),
+                        ))
                     })
                     .when_some(unread_stamp.clone(), |m, stamp| {
                         let tid_u = menu_tid.clone();
-                        m.child(row("ctx-markunread", "Mark unread".to_string(), Box::new(
-                            move |this, _w, cx| {
+                        m.child(row(
+                            "ctx-markunread",
+                            "Mark unread".to_string(),
+                            Box::new(move |this, _w, cx| {
                                 this.visited_threads.insert(tid_u.clone(), stamp.clone());
                                 this.persist_sidebar_ui(cx);
-                            },
-                        )))
+                            }),
+                        ))
                     })
                     .when(is_snoozed, |m| {
                         let tid_sc = menu_tid.clone();
-                        m.child(row("ctx-snooze-cancel", "Return now".to_string(), Box::new(
-                            move |this, _w, cx| {
+                        m.child(row(
+                            "ctx-snooze-cancel",
+                            "Return now".to_string(),
+                            Box::new(move |this, _w, cx| {
                                 this.dispatch_cmd(
                                     json!({
                                         "type": "thread.meta.update",
@@ -404,8 +422,8 @@ impl Native {
                                     }),
                                     cx,
                                 );
-                            },
-                        )))
+                            }),
+                        ))
                     })
                     .child(prow(
                         "ctx-snooze",
@@ -413,16 +431,22 @@ impl Native {
                         if is_snoozed { "Reschedule" } else { "Snooze" },
                         {
                             let mut yy = y;
-                            yy += 90.0 + if clear.is_some() { 30.0 } else { 0.0 }
+                            yy += 90.0
+                                + if clear.is_some() { 30.0 } else { 0.0 }
                                 + if unread_stamp.is_some() { 30.0 } else { 0.0 }
                                 + if is_snoozed { 30.0 } else { 0.0 };
                             yy
                         },
                     ))
-                    .child(row("ctx-handoff", "Handoff".to_string(), Box::new(move |this, _w, cx| {
-                        this.lineage(tid_hand.clone(), true, None, cx);
-                    })));
-                y += 93.0 + if clear.is_some() { 30.0 } else { 0.0 }
+                    .child(row(
+                        "ctx-handoff",
+                        "Handoff".to_string(),
+                        Box::new(move |this, _w, cx| {
+                            this.lineage(tid_hand.clone(), true, None, cx);
+                        }),
+                    ));
+                y += 93.0
+                    + if clear.is_some() { 30.0 } else { 0.0 }
                     + if unread_stamp.is_some() { 30.0 } else { 0.0 }
                     + 30.0
                     + if is_snoozed { 30.0 } else { 0.0 };
@@ -431,21 +455,29 @@ impl Native {
                 // Copy group has separatorBefore:true upstream.
                 menu = menu.child(sep()).child(prow("ctx-copy", "copy", "Copy", y));
                 if let Some(path) = ws_path.clone() {
-                    menu = menu.child(
-                        row("ctx-open-term", "Open Path in Terminal".to_string(), Box::new(
-                            move |this, w, cx| this.open_terminal_at(path.clone(), w, cx),
-                        )),
-                    );
+                    menu = menu.child(row(
+                        "ctx-open-term",
+                        "Open Path in Terminal".to_string(),
+                        Box::new(move |this, w, cx| this.open_terminal_at(path.clone(), w, cx)),
+                    ));
                 }
                 menu = menu
-                    .child(row("ctx-close", "Close tab".to_string(), Box::new(move |this, _w, cx| {
-                        this.close_tab(tid_close.clone(), cx);
-                    })))
+                    .child(row(
+                        "ctx-close",
+                        "Close tab".to_string(),
+                        Box::new(move |this, _w, cx| {
+                            this.close_tab(tid_close.clone(), cx);
+                        }),
+                    ))
                     .child(sep())
-                    .child(row("ctx-archive", "Archive".to_string(), Box::new(move |this, _w, cx| {
-                        this.open_thread(tid_arch.clone(), cx);
-                        this.archive_selected(cx);
-                    })))
+                    .child(row(
+                        "ctx-archive",
+                        "Archive".to_string(),
+                        Box::new(move |this, _w, cx| {
+                            this.open_thread(tid_arch.clone(), cx);
+                            this.archive_selected(cx);
+                        }),
+                    ))
                     .child(
                         h_flex()
                             .id("ctx-del")
@@ -501,34 +533,42 @@ impl Native {
                             let t_local = menu_tid.clone();
                             let t_wt = menu_tid.clone();
                             fly = fly
-                                .child(row("ctx-fork-local", "Fork Into Local".to_string(), Box::new(
-                                    move |this, _w, cx| {
+                                .child(row(
+                                    "ctx-fork-local",
+                                    "Fork Into Local".to_string(),
+                                    Box::new(move |this, _w, cx| {
                                         this.lineage(t_local.clone(), false, Some("local"), cx);
-                                    },
-                                )))
-                                .child(row("ctx-fork-wt", "Fork Into New Worktree".to_string(), Box::new(
-                                    move |this, _w, cx| {
+                                    }),
+                                ))
+                                .child(row(
+                                    "ctx-fork-wt",
+                                    "Fork Into New Worktree".to_string(),
+                                    Box::new(move |this, _w, cx| {
                                         this.lineage(t_wt.clone(), false, Some("worktree"), cx);
-                                    },
-                                )));
+                                    }),
+                                ));
                         }
                         "snooze" => {
                             let mk = |id: &'static str, label: &'static str, mins: i64| {
                                 let tid_s = menu_tid.clone();
-                                row(id, label.to_string(), Box::new(move |this, _w, cx| {
-                                    let until = (chrono::Utc::now()
-                                        + chrono::Duration::minutes(mins))
-                                    .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
-                                    this.dispatch_cmd(
-                                        json!({
-                                            "type": "thread.meta.update",
-                                            "commandId": uuid(),
-                                            "threadId": tid_s,
-                                            "snoozedUntil": until,
-                                        }),
-                                        cx,
-                                    );
-                                }))
+                                row(
+                                    id,
+                                    label.to_string(),
+                                    Box::new(move |this, _w, cx| {
+                                        let until = (chrono::Utc::now()
+                                            + chrono::Duration::minutes(mins))
+                                        .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+                                        this.dispatch_cmd(
+                                            json!({
+                                                "type": "thread.meta.update",
+                                                "commandId": uuid(),
+                                                "threadId": tid_s,
+                                                "snoozedUntil": until,
+                                            }),
+                                            cx,
+                                        );
+                                    }),
+                                )
                             };
                             fly = fly
                                 .child(mk("ctx-snooze-30", "For 30 minutes", 30))
@@ -536,14 +576,14 @@ impl Native {
                                 .child(mk("ctx-snooze-120", "For 2 hours", 120))
                                 .child({
                                     let tid_s = menu_tid.clone();
-                                    row("ctx-snooze-tomorrow", "Until tomorrow at 9am".to_string(), Box::new(
-                                        move |this, _w, cx| {
+                                    row(
+                                        "ctx-snooze-tomorrow",
+                                        "Until tomorrow at 9am".to_string(),
+                                        Box::new(move |this, _w, cx| {
                                             let now = chrono::Local::now();
                                             let mut d = now + chrono::Duration::days(1);
-                                            if let Some(nine) = d
-                                                .date_naive()
-                                                .and_hms_opt(9, 0, 0)
-                                                .and_then(|t| {
+                                            if let Some(nine) =
+                                                d.date_naive().and_hms_opt(9, 0, 0).and_then(|t| {
                                                     t.and_local_timezone(chrono::Local).earliest()
                                                 })
                                             {
@@ -560,34 +600,37 @@ impl Native {
                                                 }),
                                                 cx,
                                             );
-                                        },
-                                    ))
+                                        }),
+                                    )
                                 })
                                 .child({
                                     let tid_s = menu_tid.clone();
-                                    let cur = str_at(&menu_thread, "snoozedUntil")
-                                        .to_string();
-                                    row("ctx-snooze-custom", "Pick a date & time…".to_string(), Box::new(
-                                        move |this, w, cx| {
+                                    let cur = str_at(&menu_thread, "snoozedUntil").to_string();
+                                    row(
+                                        "ctx-snooze-custom",
+                                        "Pick a date & time…".to_string(),
+                                        Box::new(move |this, w, cx| {
                                             this.open_snooze_dialog(
                                                 tid_s.clone(),
                                                 (!cur.is_empty()).then(|| cur.clone()),
                                                 w,
                                                 cx,
                                             );
-                                        },
-                                    ))
+                                        }),
+                                    )
                                 });
                         }
                         "copy" => {
                             if let Some(path) = ws_path.clone() {
-                                fly = fly.child(row("ctx-copy-path", "Path".to_string(), Box::new(
-                                    move |_this, _w, cx| {
+                                fly = fly.child(row(
+                                    "ctx-copy-path",
+                                    "Path".to_string(),
+                                    Box::new(move |_this, _w, cx| {
                                         cx.write_to_clipboard(gpui::ClipboardItem::new_string(
                                             path.clone(),
                                         ));
-                                    },
-                                )));
+                                    }),
+                                ));
                             } else {
                                 fly = fly.child(
                                     div()
@@ -602,13 +645,15 @@ impl Native {
                                 );
                             }
                             let t_id = menu_tid.clone();
-                            fly = fly.child(row("ctx-copy-id", "Thread ID".to_string(), Box::new(
-                                move |_this, _w, cx| {
+                            fly = fly.child(row(
+                                "ctx-copy-id",
+                                "Thread ID".to_string(),
+                                Box::new(move |_this, _w, cx| {
                                     cx.write_to_clipboard(gpui::ClipboardItem::new_string(
                                         t_id.clone(),
                                     ));
-                                },
-                            )));
+                                }),
+                            ));
                         }
                         _ => {}
                     }
@@ -701,8 +746,10 @@ impl Native {
                                 gpui::MouseButton::Right,
                                 cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                             )
-                            .child(frow("fctx-ref", "Reference file in chat", Box::new(
-                                move |this, w, cx| {
+                            .child(frow(
+                                "fctx-ref",
+                                "Reference file in chat",
+                                Box::new(move |this, w, cx| {
                                     let name = p_ref
                                         .rsplit('/')
                                         .next()
@@ -714,23 +761,25 @@ impl Native {
                                     } else {
                                         format!("{draft} @{name} ")
                                     };
-                                    this.composer.update(cx, |s, cx| {
-                                        s.set_value(next, w, cx)
-                                    });
-                                },
-                            )))
-                            .child(frow("fctx-reveal", "Reveal in Finder", Box::new(
-                                move |_this, _w, cx| {
+                                    this.composer.update(cx, |s, cx| s.set_value(next, w, cx));
+                                }),
+                            ))
+                            .child(frow(
+                                "fctx-reveal",
+                                "Reveal in Finder",
+                                Box::new(move |_this, _w, cx| {
                                     cx.reveal_path(std::path::Path::new(&p_reveal));
-                                },
-                            )))
-                            .child(frow("fctx-copy", "Copy path", Box::new(
-                                move |_this, _w, cx| {
+                                }),
+                            ))
+                            .child(frow(
+                                "fctx-copy",
+                                "Copy path",
+                                Box::new(move |_this, _w, cx| {
                                     cx.write_to_clipboard(gpui::ClipboardItem::new_string(
                                         p_copy.clone(),
                                     ));
-                                },
-                            ))),
+                                }),
+                            )),
                     ),
             );
         }
@@ -874,15 +923,19 @@ impl Native {
                 let pid_reloc = menu_pid.clone();
                 let root_reloc = proj_root.clone();
                 menu = menu
-                    .child(mrow("pctx-finder", "Open in Finder".into(), Box::new(
-                        move |_this, _w, cx| {
+                    .child(mrow(
+                        "pctx-finder",
+                        "Open in Finder".into(),
+                        Box::new(move |_this, _w, cx| {
                             if !p_reveal.is_empty() {
                                 cx.reveal_path(std::path::Path::new(&p_reveal));
                             }
-                        },
-                    )))
-                    .child(mrow("pctx-kanban", "Open in kanban".into(), Box::new(
-                        move |this, _w, cx| {
+                        }),
+                    ))
+                    .child(mrow(
+                        "pctx-kanban",
+                        "Open in kanban".into(),
+                        Box::new(move |this, _w, cx| {
                             this.view_files = false;
                             this.view_dev = false;
                             this.view_inbox = false;
@@ -893,15 +946,15 @@ impl Native {
                             this.view_spaces = false;
                             this.view_kanban = true;
                             cx.notify();
-                        },
-                    )))
-                    .child(mrow("pctx-copy", "Copy path".into(), Box::new(
-                        move |_this, _w, cx| {
-                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(
-                                p_copy.clone(),
-                            ));
-                        },
-                    )))
+                        }),
+                    ))
+                    .child(mrow(
+                        "pctx-copy",
+                        "Copy path".into(),
+                        Box::new(move |_this, _w, cx| {
+                            cx.write_to_clipboard(gpui::ClipboardItem::new_string(p_copy.clone()));
+                        }),
+                    ))
                     .child(msep());
                 // Upstream start-dev|stop-dev row (Sidebar.tsx:8890-8930):
                 // the start variant opens the run dialog — our equivalent
@@ -912,17 +965,23 @@ impl Native {
                     .any(|srv| str_at(srv, "projectId") == menu_pid);
                 if dev_running {
                     let pid_stop = menu_pid.clone();
-                    menu = menu.child(mrow("pctx-stop-dev", "Stop dev server".into(),
+                    menu = menu.child(mrow(
+                        "pctx-stop-dev",
+                        "Stop dev server".into(),
                         Box::new(move |this, _w, cx| {
                             this.dev_stop(pid_stop.clone(), cx);
-                        })));
+                        }),
+                    ));
                 } else {
-                    menu = menu.child(mrow("pctx-start-dev", "Start dev server".into(),
+                    menu = menu.child(mrow(
+                        "pctx-start-dev",
+                        "Start dev server".into(),
                         Box::new(move |this, _w, cx| {
                             this.clear_views();
                             this.view_dev = true;
                             this.fetch_dev_servers(cx);
-                        })));
+                        }),
+                    ));
                 }
                 // Upstream MoveProjectToSpaceMenu: parent row opens a submenu
                 // listing every space plus "New space".
@@ -940,45 +999,56 @@ impl Native {
                         .child(div().flex_1().child("Move to space"))
                         .child(div().text_color(theme.muted_foreground).child("›"))
                         .on_click(cx.listener(move |this, _ev, _w, cx| {
-                            this.ctx_sub =
-                                Some(("pspace".to_string(), my + 130.));
+                            this.ctx_sub = Some(("pspace".to_string(), my + 130.));
                             cx.notify();
                         })),
                 );
                 menu = menu
                     .child(msep())
-                    .child(mrow("pctx-edit", "Edit project".into(), Box::new(
-                        move |this, w, cx| {
+                    .child(mrow(
+                        "pctx-edit",
+                        "Edit project".into(),
+                        Box::new(move |this, w, cx| {
                             this.start_project_rename(pid_edit.clone(), title_edit.clone(), w, cx);
-                        },
-                    )))
-                    .child(mrow("pctx-reloc", "Change project path".into(), Box::new(
-                        move |this, w, cx| {
+                        }),
+                    ))
+                    .child(mrow(
+                        "pctx-reloc",
+                        "Change project path".into(),
+                        Box::new(move |this, w, cx| {
                             let pid = pid_reloc.clone();
                             this.proj_relocate = Some((pid.clone(), root_reloc.clone()));
                             this.start_project_relocate(pid, root_reloc.clone(), w, cx);
+                        }),
+                    ))
+                    .child(mrow(
+                        "pctx-pin",
+                        if proj_pinned {
+                            "Unpin project".to_string()
+                        } else {
+                            "Pin project".to_string()
                         },
-                    )))
-                    .child(mrow("pctx-pin", if proj_pinned {
-                        "Unpin project".to_string()
-                    } else {
-                        "Pin project".to_string()
-                    }, Box::new(move |this, _w, cx| {
-                        this.toggle_project_pin(pid_pin.clone(), proj_pinned, cx);
-                    })));
+                        Box::new(move |this, _w, cx| {
+                            this.toggle_project_pin(pid_pin.clone(), proj_pinned, cx);
+                        }),
+                    ));
                 if has_kids {
                     menu = menu
                         .child(msep())
-                        .child(mrow("pctx-arch", "Archive all threads".into(), Box::new(
-                            move |this, _w, cx| {
+                        .child(mrow(
+                            "pctx-arch",
+                            "Archive all threads".into(),
+                            Box::new(move |this, _w, cx| {
                                 this.project_threads_cmd(pid_arch.clone(), "thread.archive", cx);
-                            },
-                        )))
-                        .child(mrow("pctx-delt", "Delete all threads".into(), Box::new(
-                            move |this, _w, cx| {
+                            }),
+                        ))
+                        .child(mrow(
+                            "pctx-delt",
+                            "Delete all threads".into(),
+                            Box::new(move |this, _w, cx| {
                                 this.project_threads_cmd(pid_del_t.clone(), "thread.delete", cx);
-                            },
-                        )));
+                            }),
+                        ));
                 }
                 menu = menu.child(msep()).child(
                     h_flex()
@@ -1049,10 +1119,7 @@ impl Native {
                                 .into_any_element()
                         };
                         let cur_space = str_at(&proj, "spaceId").to_string();
-                        for space in arr(
-                            self.snapshot.as_ref().unwrap_or(&Value::Null),
-                            "spaces",
-                        ) {
+                        for space in arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "spaces") {
                             let sid = str_at(space, "spaceId").to_string();
                             if sid.is_empty() {
                                 continue;
@@ -1150,20 +1217,35 @@ impl Native {
         let mut hc_overlay = div().absolute().left_0().top_0().w_0().h_0();
         if let Some((hc_tid, hx, hy)) = self.hover_card.clone() {
             let threads_arr = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads");
-            if let Some(t) = threads_arr.iter().find(|t| str_at(t, "id") == hc_tid).cloned() {
+            if let Some(t) = threads_arr
+                .iter()
+                .find(|t| str_at(t, "id") == hc_tid)
+                .cloned()
+            {
                 let title = str_at(&t, "title");
-                let title = if title.is_empty() { "(untitled)".to_string() } else { title.to_string() };
+                let title = if title.is_empty() {
+                    "(untitled)".to_string()
+                } else {
+                    title.to_string()
+                };
                 let rel = rel_time(str_at(&t, "updatedAt"));
-                let status = inbox_needs_you_kind(&t, &self.dismissed_status, &self.visited_threads)
-                    .map(|k| match k {
-                        "approval" => "Needs approval",
-                        "input" => "Awaiting input",
-                        "plan" => "Plan ready",
-                        "failed" => "Failed",
-                        _ => "Unread",
-                    })
-                    .or_else(|| if thread_actively_working(&t) { Some("Working") } else { None })
-                    .unwrap_or("Idle");
+                let status =
+                    inbox_needs_you_kind(&t, &self.dismissed_status, &self.visited_threads)
+                        .map(|k| match k {
+                            "approval" => "Needs approval",
+                            "input" => "Awaiting input",
+                            "plan" => "Plan ready",
+                            "failed" => "Failed",
+                            _ => "Unread",
+                        })
+                        .or_else(|| {
+                            if thread_actively_working(&t) {
+                                Some("Working")
+                            } else {
+                                None
+                            }
+                        })
+                        .unwrap_or("Idle");
                 let pid = str_at(&t, "projectId");
                 let pname = arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "projects")
                     .iter()
@@ -1175,7 +1257,11 @@ impl Native {
                     .find(|p| str_at(p, "id") == pid)
                     .map(|p| {
                         let r = str_at(p, "workspaceRoot");
-                        if r.is_empty() { str_at(p, "root").to_string() } else { r.to_string() }
+                        if r.is_empty() {
+                            str_at(p, "root").to_string()
+                        } else {
+                            r.to_string()
+                        }
                     })
                     .unwrap_or_default();
                 let model = {
@@ -1184,7 +1270,11 @@ impl Native {
                     let m2 = str_at(s, "model");
                     let p = str_at(s, "providerName");
                     let pick = if !m.is_empty() { m } else { m2 };
-                    if pick.is_empty() && p.is_empty() { String::new() } else { format!("{p} {pick}").trim().to_string() }
+                    if pick.is_empty() && p.is_empty() {
+                        String::new()
+                    } else {
+                        format!("{p} {pick}").trim().to_string()
+                    }
                 };
                 let mut card = v_flex()
                     .w(px(300.))
@@ -1199,18 +1289,50 @@ impl Native {
                         h_flex()
                             .items_baseline()
                             .justify_between()
-                            .child(div().font_weight(FontWeight::SEMIBOLD).text_size(px(13.)).child(title))
-                            .child(div().text_size(px(11.)).text_color(theme.muted_foreground).child(rel)),
+                            .child(
+                                div()
+                                    .font_weight(FontWeight::SEMIBOLD)
+                                    .text_size(px(13.))
+                                    .child(title),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(theme.muted_foreground)
+                                    .child(rel),
+                            ),
                     )
-                    .child(div().text_size(px(12.)).text_color(theme.accent).child(status));
+                    .child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.accent)
+                            .child(status),
+                    );
                 if !pname.is_empty() {
-                    card = card.child(div().text_size(px(12.)).text_color(theme.foreground).child(pname));
+                    card = card.child(
+                        div()
+                            .text_size(px(12.))
+                            .text_color(theme.foreground)
+                            .child(pname),
+                    );
                 }
                 if !cwd.is_empty() {
-                    card = card.child(div().text_size(px(11.)).text_color(theme.muted_foreground).whitespace_nowrap().overflow_hidden().child(cwd));
+                    card = card.child(
+                        div()
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .whitespace_nowrap()
+                            .overflow_hidden()
+                            .child(cwd),
+                    );
                 }
                 if !model.is_empty() {
-                    card = card.child(div().text_size(px(11.)).text_color(theme.muted_foreground).child(model));
+                    card = card.child(
+                        div()
+                            .text_size(px(11.))
+                            .text_color(theme.muted_foreground)
+                            .child(model),
+                    );
                 }
                 let vs = window.viewport_size();
                 // Mounted separately (small box only) — a full-size overlay
@@ -1245,20 +1367,22 @@ impl Native {
                     .top_0()
                     .w(pc_vs.width)
                     .h(pc_vs.height)
-                    .on_mouse_down(gpui::MouseButton::Left, cx.listener(
-                        |this, _ev, _w, cx| {
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
                             this.project_card = None;
                             this.hover_project = None;
                             cx.notify();
-                        },
-                    ))
-                    .on_mouse_down(gpui::MouseButton::Right, cx.listener(
-                        |this, _ev, _w, cx| {
+                        }),
+                    )
+                    .on_mouse_down(
+                        gpui::MouseButton::Right,
+                        cx.listener(|this, _ev, _w, cx| {
                             this.project_card = None;
                             this.hover_project = None;
                             cx.notify();
-                        },
-                    ))
+                        }),
+                    )
                     .on_mouse_move(cx.listener(|this, _ev, _w, cx| {
                         if this.hover_project.is_none() && this.project_card.is_some() {
                             this.project_card = None;
@@ -1274,7 +1398,11 @@ impl Native {
             {
                 let name = {
                     let t = str_at(&p, "title");
-                    if t.is_empty() { "Untitled project".to_string() } else { t.to_string() }
+                    if t.is_empty() {
+                        "Untitled project".to_string()
+                    } else {
+                        t.to_string()
+                    }
                 };
                 let pinned = get(&p, "isPinned").as_bool().unwrap_or(false);
                 let root = {
@@ -1364,42 +1492,32 @@ impl Native {
                         .gap_2()
                         .text_size(px(12.))
                         .text_color(theme.muted_foreground)
-                        .child(
-                            div()
-                                .overflow_hidden()
-                                .whitespace_nowrap()
-                                .child(if root.is_empty() {
-                                    "No workspace folder".to_string()
-                                } else {
-                                    root
-                                }),
-                        ),
+                        .child(div().overflow_hidden().whitespace_nowrap().child(
+                            if root.is_empty() {
+                                "No workspace folder".to_string()
+                            } else {
+                                root
+                            },
+                        )),
                 );
-                card = card
-                    .child(div().h(px(1.)).w_full().bg(theme.border))
-                    .child(
-                        h_flex()
-                            .id("pc-edit")
-                            .h(px(30.))
-                            .px_2()
-                            .items_center()
-                            .gap_2()
-                            .rounded_md()
-                            .text_size(px(12.))
-                            .text_color(theme.foreground)
-                            .cursor_pointer()
-                            .hover(|d| d.bg(theme.secondary))
-                            .child("Edit project")
-                            .on_click(cx.listener(move |this, _ev, w, cx| {
-                                this.project_card = None;
-                                this.start_project_rename(
-                                    pid_edit.clone(),
-                                    name_edit.clone(),
-                                    w,
-                                    cx,
-                                );
-                            })),
-                    );
+                card = card.child(div().h(px(1.)).w_full().bg(theme.border)).child(
+                    h_flex()
+                        .id("pc-edit")
+                        .h(px(30.))
+                        .px_2()
+                        .items_center()
+                        .gap_2()
+                        .rounded_md()
+                        .text_size(px(12.))
+                        .text_color(theme.foreground)
+                        .cursor_pointer()
+                        .hover(|d| d.bg(theme.secondary))
+                        .child("Edit project")
+                        .on_click(cx.listener(move |this, _ev, w, cx| {
+                            this.project_card = None;
+                            this.start_project_rename(pid_edit.clone(), name_edit.clone(), w, cx);
+                        })),
+                );
                 let vs = window.viewport_size();
                 pc_overlay = pc_overlay.child(
                     div()
@@ -1424,10 +1542,13 @@ impl Native {
                     .top_0()
                     .w(mp_vs.width)
                     .h(mp_vs.height)
-                    .on_mouse_down(gpui::MouseButton::Left, cx.listener(|this, _ev, _w, cx| {
-                        this.model_picker_open = false;
-                        cx.notify();
-                    })),
+                    .on_mouse_down(
+                        gpui::MouseButton::Left,
+                        cx.listener(|this, _ev, _w, cx| {
+                            this.model_picker_open = false;
+                            cx.notify();
+                        }),
+                    ),
             );
             let dark_ui = theme.is_dark();
             let panel_bg: gpui::Hsla = if dark_ui {
@@ -1467,9 +1588,21 @@ impl Native {
                         ("devin-small".into(), "Devin Small".into(), "devin".into()),
                     ],
                     "claudeAgent" => vec![
-                        ("claude-opus-5".into(), "Opus 5".into(), "claudeAgent".into()),
-                        ("claude-sonnet-5".into(), "Sonnet 5".into(), "claudeAgent".into()),
-                        ("claude-haiku-5".into(), "Haiku 5".into(), "claudeAgent".into()),
+                        (
+                            "claude-opus-5".into(),
+                            "Opus 5".into(),
+                            "claudeAgent".into(),
+                        ),
+                        (
+                            "claude-sonnet-5".into(),
+                            "Sonnet 5".into(),
+                            "claudeAgent".into(),
+                        ),
+                        (
+                            "claude-haiku-5".into(),
+                            "Haiku 5".into(),
+                            "claudeAgent".into(),
+                        ),
                     ],
                     _ => vec![
                         ("gpt-6-astra".into(), "6 Astra".into(), "codex".into()),
@@ -1492,7 +1625,11 @@ impl Native {
                 }
                 idx += 1;
                 let selected = *slug == cur_slug;
-                let hint = if idx <= 9 { format!("\u{2318} {idx}") } else { String::new() };
+                let hint = if idx <= 9 {
+                    format!("\u{2318} {idx}")
+                } else {
+                    String::new()
+                };
                 let slug_c = slug.clone();
                 let name_c = name.clone();
                 let prov_c = prov.clone();
@@ -1535,20 +1672,24 @@ impl Native {
                     .gap_2()
                     .cursor_pointer()
                     .rounded(px(6.))
-                    .when(selected, |d| d.bg(if dark_ui {
-                        // Upstream bg-[--color-background-elevated-secondary]
-                        // over the warm frost: barely-there warm lift
-                        // (measured rgb(26,21,19) vs the rows' rgb(24,21,19)),
-                        // not a gray slab.
-                        hsla(0.055, 0.14, 0.105, 1.0)
-                    } else {
-                        hsla(0.0, 0.0, 0.94, 1.0)
-                    }))
-                    .hover(|d| d.bg(if dark_ui {
-                        hsla(0.055, 0.13, 0.125, 1.0)
-                    } else {
-                        hsla(0.0, 0.0, 0.92, 1.0)
-                    }))
+                    .when(selected, |d| {
+                        d.bg(if dark_ui {
+                            // Upstream bg-[--color-background-elevated-secondary]
+                            // over the warm frost: barely-there warm lift
+                            // (measured rgb(26,21,19) vs the rows' rgb(24,21,19)),
+                            // not a gray slab.
+                            hsla(0.055, 0.14, 0.105, 1.0)
+                        } else {
+                            hsla(0.0, 0.0, 0.94, 1.0)
+                        })
+                    })
+                    .hover(|d| {
+                        d.bg(if dark_ui {
+                            hsla(0.055, 0.13, 0.125, 1.0)
+                        } else {
+                            hsla(0.0, 0.0, 0.92, 1.0)
+                        })
+                    })
                     .on_click(cx.listener(move |this, _ev, _w, cx| {
                         this.composer_model = (prov_c.clone(), slug_c.clone(), name_c.clone());
                         this.model_picker_open = false;
@@ -1630,52 +1771,65 @@ impl Native {
                                 .justify_center()
                                 .rounded(px(8.))
                                 .px(px(6.))
-                                .child(svg_icon(icons::STAR_FILLED).size(px(16.)).text_color(theme.foreground)),
+                                .child(
+                                    svg_icon(icons::STAR_FILLED)
+                                        .size(px(16.))
+                                        .text_color(theme.foreground),
+                                ),
                         )
                         .children(
                             // One icon tab per provider account (upstream
                             // ComposerModelPickerTabs); the open tab carries
                             // the accent marker.
-                            [("codex", icons::CODEX), ("devin", icons::P_DEVIN), ("claudeAgent", icons::P_CLAUDE)]
-                                .into_iter()
-                                .map(|(prov, icon)| {
-                                    let is_active = prov == active_prov;
-                                    let prov_c = prov.to_string();
-                                    let mut tab = div()
-                                        .id(ElementId::Name(format!("mp-tab-{prov}").into()))
-                                        .h(px(28.))
-                                        .min_w(px(28.))
-                                        .flex()
-                                        .items_center()
-                                        .justify_center()
-                                        .rounded(px(8.))
-                                        .px(px(6.))
-                                        .cursor_pointer()
-                                        .on_mouse_down(gpui::MouseButton::Left, cx.listener(move |this, _ev: &gpui::MouseDownEvent, _w, cx| {
-                                            cx.stop_propagation();
-                                            this.model_picker_provider = prov_c.clone();
-                                            cx.notify();
-                                        }))
-                                        .child(svg_icon(icon).size(px(16.)).text_color(if is_active {
-                                            theme.foreground
-                                        } else {
-                                            muted_fg
-                                        }));
-                                    if is_active {
-                                        tab = tab.child(
-                                            div()
-                                                .absolute()
-                                                .left(px(6.))
-                                                .top(px(32.))
-                                                .right(px(6.))
-                                                .h(px(2.))
-                                                .rounded(px(1.))
-                                                .bg(accent_orange),
-                                        );
-                                    }
-                                    tab
-                                })
-                                .collect::<Vec<_>>(),
+                            [
+                                ("codex", icons::CODEX),
+                                ("devin", icons::P_DEVIN),
+                                ("claudeAgent", icons::P_CLAUDE),
+                            ]
+                            .into_iter()
+                            .map(|(prov, icon)| {
+                                let is_active = prov == active_prov;
+                                let prov_c = prov.to_string();
+                                let mut tab = div()
+                                    .id(ElementId::Name(format!("mp-tab-{prov}").into()))
+                                    .h(px(28.))
+                                    .min_w(px(28.))
+                                    .flex()
+                                    .items_center()
+                                    .justify_center()
+                                    .rounded(px(8.))
+                                    .px(px(6.))
+                                    .cursor_pointer()
+                                    .on_mouse_down(
+                                        gpui::MouseButton::Left,
+                                        cx.listener(
+                                            move |this, _ev: &gpui::MouseDownEvent, _w, cx| {
+                                                cx.stop_propagation();
+                                                this.model_picker_provider = prov_c.clone();
+                                                cx.notify();
+                                            },
+                                        ),
+                                    )
+                                    .child(svg_icon(icon).size(px(16.)).text_color(if is_active {
+                                        theme.foreground
+                                    } else {
+                                        muted_fg
+                                    }));
+                                if is_active {
+                                    tab = tab.child(
+                                        div()
+                                            .absolute()
+                                            .left(px(6.))
+                                            .top(px(32.))
+                                            .right(px(6.))
+                                            .h(px(2.))
+                                            .rounded(px(1.))
+                                            .bg(accent_orange),
+                                    );
+                                }
+                                tab
+                            })
+                            .collect::<Vec<_>>(),
                         )
                         .child(div().flex_1())
                         .child(svg_icon(icons::PLUS).size(px(16.)).text_color(muted_fg)),
@@ -1693,7 +1847,13 @@ impl Native {
                         .child(svg_icon(icons::SEARCH).size(px(13.)).text_color(muted_fg))
                         .child(div().flex_1().child(search_input)),
                 )
-                .child(div().w_full().max_h(px(260.)).overflow_y_scrollbar().child(list))
+                .child(
+                    div()
+                        .w_full()
+                        .max_h(px(260.))
+                        .overflow_y_scrollbar()
+                        .child(list),
+                )
                 // effort section
                 .child(
                     v_flex()
@@ -1711,9 +1871,9 @@ impl Native {
                                 .w_full()
                                 .items_center()
                                 .child(
-                                    div()
-                                        .w(px(24.))
-                                        .child(svg_icon(icons::ZAP).size(px(14.)).text_color(muted_fg)),
+                                    div().w(px(24.)).child(
+                                        svg_icon(icons::ZAP).size(px(14.)).text_color(muted_fg),
+                                    ),
                                 )
                                 .child(
                                     div()
@@ -1723,17 +1883,14 @@ impl Native {
                                         .font_weight(gpui::FontWeight::MEDIUM)
                                         .text_color(accent_orange)
                                         .child({
-                                            const EFFORTS: [&str; 5] = ["Minimal", "Low", "Medium", "High", "Max"];
+                                            const EFFORTS: [&str; 5] =
+                                                ["Minimal", "Low", "Medium", "High", "Max"];
                                             EFFORTS[self.composer_effort_idx.min(4)].to_string()
                                         }),
                                 )
-                                .child(
-                                    div()
-                                        .w(px(24.))
-                                        .flex()
-                                        .justify_end()
-                                        .child(svg_icon(icons::UNDO).size(px(13.)).text_color(muted_fg)),
-                                ),
+                                .child(div().w(px(24.)).flex().justify_end().child(
+                                    svg_icon(icons::UNDO).size(px(13.)).text_color(muted_fg),
+                                )),
                         )
                         // Upstream Slider size="large": track 24px rounded-full
                         // fg 14%, accent fill edge-aligned under a 28px white
@@ -1751,17 +1908,20 @@ impl Native {
                                 .h(px(28.))
                                 .mt(px(4.))
                                 .cursor_pointer()
-                                .on_mouse_down(gpui::MouseButton::Left, cx.listener(|this, ev: &gpui::MouseDownEvent, _w, cx| {
-                                    cx.stop_propagation();
-                                    // Rail 14..266 over the 280px inner width:
-                                    // map the click x to the nearest stop.
-                                    let x: f32 = ev.position.x.into();
-                                    // position is window-space; the listener
-                                    // re-bases via the element bounds — use the
-                                    // relative fraction gpui provides instead.
-                                    let _ = x;
-                                    let _ = this;
-                                }));
+                                .on_mouse_down(
+                                    gpui::MouseButton::Left,
+                                    cx.listener(|this, ev: &gpui::MouseDownEvent, _w, cx| {
+                                        cx.stop_propagation();
+                                        // Rail 14..266 over the 280px inner width:
+                                        // map the click x to the nearest stop.
+                                        let x: f32 = ev.position.x.into();
+                                        // position is window-space; the listener
+                                        // re-bases via the element bounds — use the
+                                        // relative fraction gpui provides instead.
+                                        let _ = x;
+                                        let _ = this;
+                                    }),
+                                );
                             let _ = &mut track;
                             track = track
                                 .child(
@@ -1832,19 +1992,27 @@ impl Native {
                                         .top_0()
                                         .w(px(50.))
                                         .h(px(28.))
-                                        .on_mouse_down(gpui::MouseButton::Left, cx.listener(move |this, _ev: &gpui::MouseDownEvent, _w, cx| {
-                                            cx.stop_propagation();
-                                            this.composer_effort_idx = i;
-                                            cx.notify();
-                                        })),
+                                        .on_mouse_down(
+                                            gpui::MouseButton::Left,
+                                            cx.listener(
+                                                move |this, _ev: &gpui::MouseDownEvent, _w, cx| {
+                                                    cx.stop_propagation();
+                                                    this.composer_effort_idx = i;
+                                                    cx.notify();
+                                                },
+                                            ),
+                                        ),
                                 );
                             }
                             track
                         }),
                 );
-            let panel = panel.on_mouse_down(gpui::MouseButton::Left, cx.listener(|_this, _ev: &gpui::MouseDownEvent, _w, cx| {
-                cx.stop_propagation();
-            }));
+            let panel = panel.on_mouse_down(
+                gpui::MouseButton::Left,
+                cx.listener(|_this, _ev: &gpui::MouseDownEvent, _w, cx| {
+                    cx.stop_propagation();
+                }),
+            );
             // Anchor: bottom-right above the composer — composer bottom edge
             // sits ~10px over the window bottom padding, panel rises over it.
             mp_overlay = mp_overlay.child(
@@ -1871,20 +2039,21 @@ impl Native {
         // summary + author + date card at the clicked diff line.
         let mut bp_overlay = div().absolute().inset_0().size_full();
         if let Some((bv, bx, by)) = self.blame_pop.clone() {
-            bp_overlay = bp_overlay.child(
-                div()
-                    .size_full()
-                    .on_mouse_down(gpui::MouseButton::Left, cx.listener(
-                        |this, _ev, _w, cx| {
-                            this.blame_pop = None;
-                            cx.notify();
-                        },
-                    )),
-            );
+            bp_overlay = bp_overlay.child(div().size_full().on_mouse_down(
+                gpui::MouseButton::Left,
+                cx.listener(|this, _ev, _w, cx| {
+                    this.blame_pop = None;
+                    cx.notify();
+                }),
+            ));
             let uncommitted = get(&bv, "uncommitted").as_bool().unwrap_or(false);
             let summary = {
                 let t = str_at(&bv, "summary");
-                if t.is_empty() && uncommitted { "Uncommitted changes".to_string() } else { t.to_string() }
+                if t.is_empty() && uncommitted {
+                    "Uncommitted changes".to_string()
+                } else {
+                    t.to_string()
+                }
             };
             let author = str_at(&bv, "author").to_string();
             let when = str_at(&bv, "authorTime").to_string();
@@ -1903,20 +2072,24 @@ impl Native {
                     div()
                         .text_size(px(13.))
                         .font_weight(FontWeight::MEDIUM)
-                        .child(if uncommitted { "Uncommitted changes".to_string() } else { summary }),
+                        .child(if uncommitted {
+                            "Uncommitted changes".to_string()
+                        } else {
+                            summary
+                        }),
                 )
                 .child(
                     h_flex()
                         .gap_2()
                         .text_size(px(12.))
                         .text_color(theme.muted_foreground)
-                        .child(
-                            div()
-                                .overflow_hidden()
-                                .whitespace_nowrap()
-                                .flex_1()
-                                .child(if uncommitted { "Local edit".to_string() } else { author }),
-                        )
+                        .child(div().overflow_hidden().whitespace_nowrap().flex_1().child(
+                            if uncommitted {
+                                "Local edit".to_string()
+                            } else {
+                                author
+                            },
+                        ))
                         .child(if uncommitted { "".to_string() } else { when }),
                 )
                 .when(!sha.is_empty() && !uncommitted, |d| {
@@ -2041,18 +2214,16 @@ impl Native {
                         }),
                 );
             }
-            dlg = dlg.child(
-                h_flex()
-                    .w_full()
-                    .px(px(20.))
-                    .py(px(16.))
-                    .gap_2()
-                    .justify_end()
-                    .child(
-                        Button::new("ren-cancel")
-                            .ghost()
-                            .label("Cancel")
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
+            dlg =
+                dlg.child(
+                    h_flex()
+                        .w_full()
+                        .px(px(20.))
+                        .py(px(16.))
+                        .gap_2()
+                        .justify_end()
+                        .child(Button::new("ren-cancel").ghost().label("Cancel").on_click(
+                            cx.listener(|this, _ev, _w, cx| {
                                 this.renaming = false;
                                 this.rename_input = None;
                                 this.proj_rename = None;
@@ -2060,26 +2231,26 @@ impl Native {
                                 this.proj_relocate = None;
                                 this.proj_relocate_input = None;
                                 cx.notify();
-                            })),
-                    )
-                    .child(
-                        Button::new("ren-save")
-                            .primary()
-                            .label(if is_relocate { "Change path" } else { "Save" })
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
-                                if !can_save {
-                                    return;
-                                }
-                                if this.proj_relocate.is_some() {
-                                    this.commit_project_relocate(cx);
-                                } else if this.proj_rename.is_some() {
-                                    this.commit_project_rename(cx);
-                                } else {
-                                    this.commit_rename(cx);
-                                }
-                            })),
-                    ),
-            );
+                            }),
+                        ))
+                        .child(
+                            Button::new("ren-save")
+                                .primary()
+                                .label(if is_relocate { "Change path" } else { "Save" })
+                                .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                    if !can_save {
+                                        return;
+                                    }
+                                    if this.proj_relocate.is_some() {
+                                        this.commit_project_relocate(cx);
+                                    } else if this.proj_rename.is_some() {
+                                        this.commit_project_rename(cx);
+                                    } else {
+                                        this.commit_rename(cx);
+                                    }
+                                })),
+                        ),
+                );
             ren_overlay = ren_overlay.child(
                 v_flex()
                     .size_full()
@@ -2143,16 +2314,19 @@ impl Native {
                                 .as_ref()
                                 .map(|i| i.read(cx).value().is_empty())
                                 .unwrap_or(true);
-                            if empty && !matches!(this.palette_mode, None | Some("search" | "files" | "snippets")) {
+                            if empty
+                                && !matches!(
+                                    this.palette_mode,
+                                    None | Some("search" | "files" | "snippets")
+                                )
+                            {
                                 // Upstream: Backspace on an empty sub-page
                                 // query goes back to the search page.
                                 this.set_palette_mode("search", window, cx);
                             } else if let Some(input) = this.palette_input.clone() {
                                 let mut q = input.read(cx).value().to_string();
                                 if q.pop().is_some() {
-                                    input.update(cx, |s, cx| {
-                                        s.set_value(q.clone(), window, cx)
-                                    });
+                                    input.update(cx, |s, cx| s.set_value(q.clone(), window, cx));
                                     this.palette_query_changed(cx);
                                 }
                             }
@@ -2166,12 +2340,9 @@ impl Native {
                                 let m = ev.keystroke.modifiers;
                                 if !m.control && !m.platform && !m.function {
                                     if let Some(input) = this.palette_input.clone() {
-                                        let mut q =
-                                            input.read(cx).value().to_string();
+                                        let mut q = input.read(cx).value().to_string();
                                         q.push_str(ch);
-                                        input.update(cx, |s, cx| {
-                                            s.set_value(q, window, cx)
-                                        });
+                                        input.update(cx, |s, cx| s.set_value(q, window, cx));
                                         this.palette_query_changed(cx);
                                     }
                                 }
@@ -2188,10 +2359,7 @@ impl Native {
                     .gap_2()
                     .border_b_1()
                     .border_color(theme.border);
-                if matches!(
-                    mode,
-                    "import-sources" | "import-projs" | "import-thread"
-                ) {
+                if matches!(mode, "import-sources" | "import-projs" | "import-thread") {
                     input_row = input_row.child(
                         div()
                             .id("palette-back")
@@ -2262,23 +2430,19 @@ impl Native {
                 // Thread rows carry their provider's icon (upstream
                 // SharedProviderIcon); generic "New thread" titles none.
                 let thread_icon = if kind == "thread" {
-                    arr(
-                        self.snapshot.as_ref().unwrap_or(&Value::Null),
-                        "threads",
-                    )
-                    .iter()
-                    .find(|t| str_at(t, "id") == payload.as_str())
-                    .map(|t| {
-                        let generic = str_at(t, "title")
-                            .trim()
-                            .eq_ignore_ascii_case("new thread");
-                        if generic {
-                            &[][..]
-                        } else {
-                            provider_icon(str_at(t, "provider"))
-                        }
-                    })
-                    .unwrap_or(icons::S_CHAT_BUBBLES)
+                    arr(self.snapshot.as_ref().unwrap_or(&Value::Null), "threads")
+                        .iter()
+                        .find(|t| str_at(t, "id") == payload.as_str())
+                        .map(|t| {
+                            let generic =
+                                str_at(t, "title").trim().eq_ignore_ascii_case("new thread");
+                            if generic {
+                                &[][..]
+                            } else {
+                                provider_icon(str_at(t, "provider"))
+                            }
+                        })
+                        .unwrap_or(icons::S_CHAT_BUBBLES)
                 } else {
                     icons::FILE_TEXT
                 };
@@ -2320,7 +2484,11 @@ impl Native {
                     .gap_2()
                     .rounded_lg()
                     .cursor_pointer()
-                    .child(svg_icon(icon_data).size(px(14.)).text_color(theme.muted_foreground))
+                    .child(
+                        svg_icon(icon_data)
+                            .size(px(14.))
+                            .text_color(theme.muted_foreground),
+                    )
                     .child(
                         div()
                             .flex_1()
@@ -2569,12 +2737,10 @@ impl Native {
                                                 h_flex()
                                                     .id("sc-cancel")
                                                     .cursor_pointer()
-                                                    .on_click(cx.listener(
-                                                        |this, _ev, _w, cx| {
-                                                            this.sc_rec = None;
-                                                            cx.notify();
-                                                        },
-                                                    ))
+                                                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                                                        this.sc_rec = None;
+                                                        cx.notify();
+                                                    }))
                                                     .child(
                                                         div()
                                                             .px_3()
@@ -2591,11 +2757,9 @@ impl Native {
                                                 h_flex()
                                                     .id("sc-save")
                                                     .cursor_pointer()
-                                                    .on_click(cx.listener(
-                                                        |this, _ev, _w, cx| {
-                                                            this.sc_save(cx);
-                                                        },
-                                                    ))
+                                                    .on_click(cx.listener(|this, _ev, _w, cx| {
+                                                        this.sc_save(cx);
+                                                    }))
                                                     .child(
                                                         div()
                                                             .px_3()
@@ -2630,8 +2794,7 @@ impl Native {
                 .unwrap_or(false)
                 && !self.feedback_sending;
             let mut pills = h_flex().w_full().px(px(20.)).gap_1p5().flex_wrap();
-            for (i, (_v, label, _lead)) in Self::FEEDBACK_CATEGORIES.iter().enumerate()
-            {
+            for (i, (_v, label, _lead)) in Self::FEEDBACK_CATEGORIES.iter().enumerate() {
                 let sel = self.feedback_category == Some(i);
                 pills = pills.child(
                     div()
@@ -2655,12 +2818,11 @@ impl Native {
                         })
                         .child(format!("{} {}", if sel { "\u{2212}" } else { "+" }, label))
                         .on_click(cx.listener(move |this, _e, _w, cx| {
-                            this.feedback_category =
-                                if this.feedback_category == Some(i) {
-                                    None
-                                } else {
-                                    Some(i)
-                                };
+                            this.feedback_category = if this.feedback_category == Some(i) {
+                                None
+                            } else {
+                                Some(i)
+                            };
                             cx.notify();
                         })),
                 );
@@ -2760,9 +2922,7 @@ impl Native {
                         } else {
                             "Submit"
                         })
-                        .on_click(cx.listener(|this, _e, _w, cx| {
-                            this.submit_feedback(cx)
-                        })),
+                        .on_click(cx.listener(|this, _e, _w, cx| this.submit_feedback(cx))),
                 );
             fb_overlay = fb_overlay.child(
                 v_flex()
@@ -2783,9 +2943,7 @@ impl Native {
                         div()
                             .on_mouse_down(
                                 gpui::MouseButton::Left,
-                                cx.listener(|_this, _ev, _w, cx| {
-                                    cx.stop_propagation()
-                                }),
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                             )
                             .child(card),
                     ),
@@ -2810,9 +2968,7 @@ impl Native {
                 .pb(px(12.));
             let mut shown = 0;
             for (title, _desc, kbd, commands) in SHORTCUT_ROWS.iter() {
-                if !query.trim().is_empty()
-                    && !title.to_lowercase().contains(query.trim())
-                {
+                if !query.trim().is_empty() && !title.to_lowercase().contains(query.trim()) {
                     continue;
                 }
                 shown += 1;
@@ -2924,9 +3080,7 @@ impl Native {
                         div()
                             .on_mouse_down(
                                 gpui::MouseButton::Left,
-                                cx.listener(|_this, _ev, _w, cx| {
-                                    cx.stop_propagation()
-                                }),
+                                cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                             )
                             .child(card),
                     ),
@@ -2998,32 +3152,27 @@ impl Native {
                         .child(div().flex_1().child(Input::new(&inp))),
                 );
             }
-            dlg = dlg.child(
-                h_flex()
-                    .w_full()
-                    .px(px(20.))
-                    .py(px(16.))
-                    .gap_2()
-                    .justify_end()
-                    .child(
-                        Button::new("snz-cancel")
-                            .ghost()
-                            .label("Cancel")
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
+            dlg =
+                dlg.child(
+                    h_flex()
+                        .w_full()
+                        .px(px(20.))
+                        .py(px(16.))
+                        .gap_2()
+                        .justify_end()
+                        .child(Button::new("snz-cancel").ghost().label("Cancel").on_click(
+                            cx.listener(|this, _ev, _w, cx| {
                                 this.close_snooze_dialog(cx);
-                            })),
-                    )
-                    .child(
-                        Button::new("snz-save")
-                            .primary()
-                            .label("Snooze")
-                            .on_click(cx.listener(move |this, _ev, _w, cx| {
+                            }),
+                        ))
+                        .child(Button::new("snz-save").primary().label("Snooze").on_click(
+                            cx.listener(move |this, _ev, _w, cx| {
                                 if can_save {
                                     this.commit_snooze_dialog(cx);
                                 }
-                            })),
-                    ),
-            );
+                            }),
+                        )),
+                );
             snz_overlay = snz_overlay.child(
                 v_flex()
                     .size_full()
@@ -3046,16 +3195,11 @@ impl Native {
             let last = step_idx + 1 == TOUR_STEPS.len();
             let mut dots = h_flex().gap(px(6.)).items_center();
             for i in 0..TOUR_STEPS.len() {
-                dots = dots.child(
-                    div()
-                        .size(px(6.))
-                        .rounded_full()
-                        .bg(if i == step_idx {
-                            theme.foreground
-                        } else {
-                            theme.muted_foreground
-                        }),
-                );
+                dots = dots.child(div().size(px(6.)).rounded_full().bg(if i == step_idx {
+                    theme.foreground
+                } else {
+                    theme.muted_foreground
+                }));
             }
             let mut card = v_flex()
                 .w(px(300.))
@@ -3074,9 +3218,8 @@ impl Native {
                             cx.notify();
                         }
                         "arrowright" | "enter" => {
-                            this.tour_step = Some(
-                                (this.tour_step.unwrap_or(0) + 1).min(TOUR_STEPS.len() - 1),
-                            );
+                            this.tour_step =
+                                Some((this.tour_step.unwrap_or(0) + 1).min(TOUR_STEPS.len() - 1));
                             cx.notify();
                         }
                         "arrowleft" => {
@@ -3164,25 +3307,18 @@ impl Native {
                                 .text_size(px(13.))
                                 .child(if last { "Done" } else { "Next" })
                                 .on_click(cx.listener(move |this, _e, _w, cx| {
-                                    this.tour_step = if last {
-                                        None
-                                    } else {
-                                        Some(step_idx + 1)
-                                    };
+                                    this.tour_step = if last { None } else { Some(step_idx + 1) };
                                     cx.notify();
                                 })),
                         ),
                 );
-            let mut stage = v_flex()
-                .size_full()
-                .bg(rgba(0x00000066))
-                .on_mouse_down(
-                    gpui::MouseButton::Left,
-                    cx.listener(|this, _ev, _w, cx| {
-                        this.tour_step = None;
-                        cx.notify();
-                    }),
-                );
+            let mut stage = v_flex().size_full().bg(rgba(0x00000066)).on_mouse_down(
+                gpui::MouseButton::Left,
+                cx.listener(|this, _ev, _w, cx| {
+                    this.tour_step = None;
+                    cx.notify();
+                }),
+            );
             if let Some((x0, y0, x1, y1)) = anchor {
                 stage = stage
                     .child(
@@ -3306,9 +3442,21 @@ impl Native {
                 }
                 let actions: [(&str, &str, &str); 4] = [
                     ("commit", "Commit", "Commit staged changes on this branch."),
-                    ("commit_push", "Commit & push", "Commit, then push to the upstream branch."),
-                    ("commit_new_branch", "Commit on new branch", "Create a feature branch, then commit there."),
-                    ("create_pr", "Create PR", "Commit, push, and open a pull request."),
+                    (
+                        "commit_push",
+                        "Commit & push",
+                        "Commit, then push to the upstream branch.",
+                    ),
+                    (
+                        "commit_new_branch",
+                        "Commit on new branch",
+                        "Create a feature branch, then commit there.",
+                    ),
+                    (
+                        "create_pr",
+                        "Create PR",
+                        "Commit, push, and open a pull request.",
+                    ),
                 ];
                 for (id, label, desc) in actions {
                     let sel = self.git_commit_action == id;
@@ -3340,7 +3488,11 @@ impl Native {
                                     .justify_center()
                                     .when(sel, |d| {
                                         d.child(
-                                            div().w(px(8.)).h(px(8.)).rounded_full().bg(theme.primary),
+                                            div()
+                                                .w(px(8.))
+                                                .h(px(8.))
+                                                .rounded_full()
+                                                .bg(theme.primary),
                                         )
                                     }),
                             )
@@ -3348,9 +3500,7 @@ impl Native {
                                 v_flex()
                                     .flex_1()
                                     .min_w_0()
-                                    .child(
-                                        div().text_size(px(13.)).child(label),
-                                    )
+                                    .child(div().text_size(px(13.)).child(label))
                                     .child(
                                         div()
                                             .text_size(px(11.))
@@ -3497,10 +3647,9 @@ impl Native {
                         .justify_center()
                         .child(
                             div()
-                                .on_mouse_down(
-                                    gpui::MouseButton::Left,
-                                    |_e, _w, cx| cx.stop_propagation(),
-                                )
+                                .on_mouse_down(gpui::MouseButton::Left, |_e, _w, cx| {
+                                    cx.stop_propagation()
+                                })
                                 .child(card),
                         ),
                 );
@@ -3601,11 +3750,7 @@ impl Native {
                                 .justify_center()
                                 .when(sel, |d| {
                                     d.child(
-                                        div()
-                                            .w(px(6.))
-                                            .h(px(6.))
-                                            .rounded_full()
-                                            .bg(theme.primary),
+                                        div().w(px(6.)).h(px(6.)).rounded_full().bg(theme.primary),
                                     )
                                 }),
                         )
@@ -3696,11 +3841,7 @@ impl Native {
                             .child(
                                 div()
                                     .text_size(px(11.))
-                                    .text_color(if sel {
-                                        theme.primary
-                                    } else {
-                                        theme.foreground
-                                    })
+                                    .text_color(if sel { theme.primary } else { theme.foreground })
                                     .child(*d),
                             ),
                     );
@@ -3747,7 +3888,12 @@ impl Native {
                             .items_center()
                             .justify_center()
                             .when(en, |d| {
-                                d.child(div().text_size(px(9.)).text_color(theme.primary_foreground).child("✓"))
+                                d.child(
+                                    div()
+                                        .text_size(px(9.))
+                                        .text_color(theme.primary_foreground)
+                                        .child("✓"),
+                                )
                             }),
                     )
                     .child(div().text_size(px(12.)).child("Enabled")),
@@ -3812,10 +3958,9 @@ impl Native {
                         .justify_center()
                         .child(
                             div()
-                                .on_mouse_down(
-                                    gpui::MouseButton::Left,
-                                    |_e, _w, cx| cx.stop_propagation(),
-                                )
+                                .on_mouse_down(gpui::MouseButton::Left, |_e, _w, cx| {
+                                    cx.stop_propagation()
+                                })
                                 .child(card),
                         ),
                 );
@@ -3883,10 +4028,7 @@ impl Native {
                                 )
                                 .when_some(desc, |d, s| {
                                     d.child(
-                                        div()
-                                            .text_sm()
-                                            .text_color(theme.muted_foreground)
-                                            .child(s),
+                                        div().text_sm().text_color(theme.muted_foreground).child(s),
                                     )
                                 })
                                 .child(
@@ -4004,13 +4146,9 @@ impl Native {
                                             .child("What's new?"),
                                     )
                                     .child(
-                                        div()
-                                            .text_sm()
-                                            .text_color(theme.muted_foreground)
-                                            .child(format!(
-                                                "v{APP_VERSION} · {}",
-                                                str_at(&entry, "date")
-                                            )),
+                                        div().text_sm().text_color(theme.muted_foreground).child(
+                                            format!("v{APP_VERSION} · {}", str_at(&entry, "date")),
+                                        ),
                                     ),
                             ),
                     );
@@ -4018,12 +4156,7 @@ impl Native {
                     for f in arr(&entry, "features") {
                         body = body.child(feature_card(f));
                     }
-                    card = card.child(
-                        div()
-                            .max_h(px(520.))
-                            .overflow_y_scrollbar()
-                            .child(body),
-                    );
+                    card = card.child(div().max_h(px(520.)).overflow_y_scrollbar().child(body));
                     card = card.child(
                         h_flex()
                             .p(px(12.))
@@ -4045,8 +4178,7 @@ impl Native {
                                     .on_click(cx.listener(|this, _e, _w, cx| {
                                         this.wn_view = 2;
                                         this.wn_changelog_open.clear();
-                                        this.wn_changelog_open
-                                            .insert(APP_VERSION.to_string());
+                                        this.wn_changelog_open.insert(APP_VERSION.to_string());
                                         cx.notify();
                                     }))
                                     .child("View changelog →"),
@@ -4176,11 +4308,8 @@ impl Native {
                                     ),
                             );
                         if open {
-                            let mut feats = v_flex()
-                                .pb(px(16.))
-                                .pl(px(24.))
-                                .pr(px(4.))
-                                .gap(px(24.));
+                            let mut feats =
+                                v_flex().pb(px(16.)).pl(px(24.)).pr(px(4.)).gap(px(24.));
                             for f in arr(e, "features") {
                                 feats = feats.child(feature_card(f));
                             }
@@ -4188,12 +4317,7 @@ impl Native {
                         }
                         acc = acc.child(row);
                     }
-                    card = card.child(
-                        div()
-                            .max_h(px(560.))
-                            .overflow_y_scrollbar()
-                            .child(acc),
-                    );
+                    card = card.child(div().max_h(px(560.)).overflow_y_scrollbar().child(acc));
                 }
                 wn_dialog_overlay = wn_dialog_overlay.child(
                     v_flex()
@@ -4209,10 +4333,9 @@ impl Native {
                         )
                         .child(
                             div()
-                                .on_mouse_down(
-                                    gpui::MouseButton::Left,
-                                    |_e, _w, cx| cx.stop_propagation(),
-                                )
+                                .on_mouse_down(gpui::MouseButton::Left, |_e, _w, cx| {
+                                    cx.stop_propagation()
+                                })
                                 .child(card),
                         ),
                 );
@@ -4243,8 +4366,7 @@ impl Native {
                 // Font fields accept any family name; empty resets to the
                 // default (upstream FontInput).
                 let valid = is_font
-                    || (norm.len() == 7
-                        && norm[1..].chars().all(|c| c.is_ascii_hexdigit()));
+                    || (norm.len() == 7 && norm[1..].chars().all(|c| c.is_ascii_hexdigit()));
                 let swatch_hex = if valid {
                     u32::from_str_radix(&norm[1..], 16).unwrap_or(0)
                 } else {
@@ -4329,11 +4451,7 @@ impl Native {
                                     .flex()
                                     .items_center()
                                     .rounded(px(8.))
-                                    .bg(if valid {
-                                        theme.foreground
-                                    } else {
-                                        theme.muted
-                                    })
+                                    .bg(if valid { theme.foreground } else { theme.muted })
                                     .text_color(theme.background)
                                     .text_sm()
                                     .cursor_pointer()
@@ -4361,9 +4479,7 @@ impl Native {
                             div()
                                 .on_mouse_down(
                                     gpui::MouseButton::Left,
-                                    cx.listener(|_this, _ev, _w, cx| {
-                                        cx.stop_propagation()
-                                    }),
+                                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                                 )
                                 .child(card),
                         ),
@@ -4402,27 +4518,23 @@ impl Native {
                             .child(Input::new(&input).appearance(false)),
                     )
                     .child(
-                        h_flex()
-                            .p(px(12.))
-                            .justify_end()
-                            .items_center()
-                            .child(
-                                div()
-                                    .id("tp-import-apply")
-                                    .h(px(32.))
-                                    .px_3()
-                                    .flex()
-                                    .items_center()
-                                    .rounded(px(8.))
-                                    .bg(theme.foreground)
-                                    .text_color(theme.background)
-                                    .text_sm()
-                                    .cursor_pointer()
-                                    .on_click(cx.listener(move |this, _e, _w, cx| {
-                                        this.commit_theme_pack_import(dark, cx);
-                                    }))
-                                    .child("Import"),
-                            ),
+                        h_flex().p(px(12.)).justify_end().items_center().child(
+                            div()
+                                .id("tp-import-apply")
+                                .h(px(32.))
+                                .px_3()
+                                .flex()
+                                .items_center()
+                                .rounded(px(8.))
+                                .bg(theme.foreground)
+                                .text_color(theme.background)
+                                .text_sm()
+                                .cursor_pointer()
+                                .on_click(cx.listener(move |this, _e, _w, cx| {
+                                    this.commit_theme_pack_import(dark, cx);
+                                }))
+                                .child("Import"),
+                        ),
                     );
                 tp_overlay = tp_overlay.child(
                     v_flex()
@@ -4442,9 +4554,7 @@ impl Native {
                             div()
                                 .on_mouse_down(
                                     gpui::MouseButton::Left,
-                                    cx.listener(|_this, _ev, _w, cx| {
-                                        cx.stop_propagation()
-                                    }),
+                                    cx.listener(|_this, _ev, _w, cx| cx.stop_propagation()),
                                 )
                                 .child(card),
                         ),
@@ -4458,11 +4568,7 @@ impl Native {
 
         // Seed folder-path inputs for scanned rows whose stored directory
         // no longer exists (upstream ProjectImportFolderInput).
-        if let Some(cat) = self
-            .import_dlg
-            .as_ref()
-            .and_then(|d| d.catalog.clone())
-        {
+        if let Some(cat) = self.import_dlg.as_ref().and_then(|d| d.catalog.clone()) {
             let missing: Vec<(String, String)> = arr(&cat, "projects")
                 .iter()
                 .filter(|p| !p["directoryExists"].as_bool().unwrap_or(true))
@@ -4483,8 +4589,7 @@ impl Native {
                     continue;
                 }
                 let inp = cx.new(|cx| {
-                    InputState::new(window, cx)
-                        .placeholder("Optional existing folder path")
+                    InputState::new(window, cx).placeholder("Optional existing folder path")
                 });
                 inp.update(cx, |s, cx| s.set_value(root, window, cx));
                 let pk2 = pk.clone();
@@ -4515,13 +4620,9 @@ impl Native {
                 .iter()
                 .filter(|p| {
                     query.is_empty()
-                        || format!(
-                            "{} {}",
-                            str_at(p, "title"),
-                            str_at(p, "workspaceRoot")
-                        )
-                        .to_lowercase()
-                        .contains(&query)
+                        || format!("{} {}", str_at(p, "title"), str_at(p, "workspaceRoot"))
+                            .to_lowercase()
+                            .contains(&query)
                 })
                 .cloned()
                 .collect();
@@ -4580,7 +4681,11 @@ impl Native {
                     .flex_none()
                     .rounded(px(3.))
                     .border_1()
-                    .border_color(if state > 0 { theme.accent } else { theme.border })
+                    .border_color(if state > 0 {
+                        theme.accent
+                    } else {
+                        theme.border
+                    })
                     .bg(if state > 0 {
                         theme.accent
                     } else {
@@ -4628,15 +4733,10 @@ impl Native {
                                         .font_weight(FontWeight::SEMIBOLD)
                                         .child("Import projects"),
                                 )
-                                .child(
-                                    div()
-                                        .text_sm()
-                                        .text_color(theme.muted_foreground)
-                                        .child(
-                                            "Continue your Codex and Claude Code \
+                                .child(div().text_sm().text_color(theme.muted_foreground).child(
+                                    "Continue your Codex and Claude Code \
                                              projects in Synara.",
-                                        ),
-                                ),
+                                )),
                         )
                         .child(
                             div()
@@ -4652,11 +4752,7 @@ impl Native {
                                 .hover(|s| s.bg(theme.secondary))
                                 .child(svg_icon(icons::X).size(px(12.)))
                                 .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    if this
-                                        .import_dlg
-                                        .as_ref()
-                                        .map(|d| !d.running)
-                                        .unwrap_or(true)
+                                    if this.import_dlg.as_ref().map(|d| !d.running).unwrap_or(true)
                                     {
                                         this.import_dlg = None;
                                     }
@@ -4665,11 +4761,7 @@ impl Native {
                         ),
                 );
 
-            let mut body = v_flex()
-                .px(px(20.))
-                .pt(px(14.))
-                .pb(px(12.))
-                .gap(px(12.));
+            let mut body = v_flex().px(px(20.)).pt(px(14.)).pb(px(12.)).gap(px(12.));
             // provider chips + scan button
             let mut chips = h_flex().gap(px(6.)).items_center();
             for (pid, plabel) in [("codex", "Codex"), ("claudeAgent", "Claude Code")] {
@@ -4725,9 +4817,7 @@ impl Native {
                         let ok = this
                             .import_dlg
                             .as_ref()
-                            .map(|d| {
-                                !d.running && !d.scanning && !d.providers.is_empty()
-                            })
+                            .map(|d| !d.running && !d.scanning && !d.providers.is_empty())
                             .unwrap_or(false);
                         if ok {
                             this.import_scan(cx);
@@ -4735,15 +4825,10 @@ impl Native {
                     })),
             );
             body = body.child(chips);
-            body = body.child(
-                div()
-                    .text_sm()
-                    .text_color(theme.muted_foreground)
-                    .child(
-                        "Projects keep their existing folders and conversations \
+            body = body.child(div().text_sm().text_color(theme.muted_foreground).child(
+                "Projects keep their existing folders and conversations \
                          are copied into Synara.",
-                    ),
-            );
+            ));
             if let Some(err) = dlg.error.clone() {
                 body = body.child(div().text_sm().text_color(theme.danger).child(err));
             }
@@ -4851,13 +4936,14 @@ impl Native {
                     let root = str_at(p, "workspaceRoot").to_string();
                     let threads = arr(p, "threads");
                     let expanded = dlg.expanded.contains(&pk);
-                    let available: Vec<String> =
-                        import_selectable_keys(p, dlg.include_archived)
-                            .into_iter()
-                            .filter(|k| !matches!(dlg.outcomes.get(k), Some(None)))
-                            .collect();
-                    let sel_n =
-                        available.iter().filter(|k| dlg.selected.contains(*k)).count();
+                    let available: Vec<String> = import_selectable_keys(p, dlg.include_archived)
+                        .into_iter()
+                        .filter(|k| !matches!(dlg.outcomes.get(k), Some(None)))
+                        .collect();
+                    let sel_n = available
+                        .iter()
+                        .filter(|k| dlg.selected.contains(*k))
+                        .count();
                     let state = if available.is_empty() {
                         0u8
                     } else if sel_n == available.len() {
@@ -4896,9 +4982,7 @@ impl Native {
                                     cx.stop_propagation();
                                     if let Some(d) = this.import_dlg.as_mut() {
                                         let all = !avail_c.is_empty()
-                                            && avail_c
-                                                .iter()
-                                                .all(|k| d.selected.contains(k));
+                                            && avail_c.iter().all(|k| d.selected.contains(k));
                                         if all {
                                             for k in &avail_c {
                                                 d.selected.remove(k);
@@ -4973,51 +5057,35 @@ impl Native {
 
                     let mut card_el = v_flex().child(row);
                     if expanded {
-                        let mut tl = v_flex()
-                            .pb(px(8.))
-                            .pl(px(36.))
-                            .pr(px(12.))
-                            .gap(px(2.));
+                        let mut tl = v_flex().pb(px(8.)).pl(px(36.)).pr(px(12.)).gap(px(2.));
                         for (ti, t) in threads.iter().enumerate() {
                             let tk = str_at(t, "key");
                             let key = import_item_key(&pk, Some(tk));
-                            let imported =
-                                t["alreadyImported"].as_bool().unwrap_or(false);
+                            let imported = t["alreadyImported"].as_bool().unwrap_or(false);
                             let archived = t["archived"].as_bool().unwrap_or(false);
-                            let selectable =
-                                !imported && (dlg.include_archived || !archived);
+                            let selectable = !imported && (dlg.include_archived || !archived);
                             let done = matches!(dlg.outcomes.get(&key), Some(None));
                             let sel = dlg.selected.contains(&key);
                             let key_c = key.clone();
                             let mut trow = h_flex()
-                                .id(ElementId::Name(
-                                    format!("imp-th-{pi}-{ti}").into(),
-                                ))
+                                .id(ElementId::Name(format!("imp-th-{pi}-{ti}").into()))
                                 .py(px(4.))
                                 .gap(px(8.))
                                 .items_center();
                             if selectable && !done {
                                 trow = trow.child(
                                     div()
-                                        .id(ElementId::Name(
-                                            format!("imp-tcb-{pi}-{ti}").into(),
-                                        ))
+                                        .id(ElementId::Name(format!("imp-tcb-{pi}-{ti}").into()))
                                         .child(cbox(if sel { 2 } else { 0 }))
-                                        .on_click(cx.listener(
-                                            move |this, _ev, _w, cx| {
-                                                cx.stop_propagation();
-                                                if let Some(d) =
-                                                    this.import_dlg.as_mut()
-                                                {
-                                                    if !d.selected.remove(&key_c)
-                                                    {
-                                                        d.selected
-                                                            .insert(key_c.clone());
-                                                    }
+                                        .on_click(cx.listener(move |this, _ev, _w, cx| {
+                                            cx.stop_propagation();
+                                            if let Some(d) = this.import_dlg.as_mut() {
+                                                if !d.selected.remove(&key_c) {
+                                                    d.selected.insert(key_c.clone());
                                                 }
-                                                cx.notify();
-                                            },
-                                        )),
+                                            }
+                                            cx.notify();
+                                        })),
                                 );
                             } else {
                                 trow = trow.child(cbox(2).opacity(0.4));
@@ -5081,9 +5149,7 @@ impl Native {
                                                 .rounded(px(6.))
                                                 .px_2()
                                                 .h(px(28.))
-                                                .child(
-                                                    Input::new(inp).appearance(false),
-                                                ),
+                                                .child(Input::new(inp).appearance(false)),
                                         )
                                         .child(
                                             Button::new(ElementId::Name(
@@ -5091,50 +5157,31 @@ impl Native {
                                             ))
                                             .ghost()
                                             .label("Browse\u{2026}")
-                                            .on_click(cx.listener(
-                                                move |_this, _ev, w, cx| {
-                                                    let rx = cx.prompt_for_paths(
-                                                        gpui::PathPromptOptions {
-                                                            files: false,
-                                                            directories: true,
-                                                            multiple: false,
-                                                            prompt: None,
-                                                        },
-                                                    );
-                                                    let inp4 = inp3.clone();
-                                                    cx.spawn_in(
-                                                        w,
-                                                        async move |_this, cx| {
-                                                            if let Ok(Ok(Some(
-                                                                paths,
-                                                            ))) = rx.await
-                                                            {
-                                                                if let Some(dir) =
-                                                                    paths.first()
-                                                                {
-                                                                    let p = dir
-                                                                        .to_string_lossy()
-                                                                        .into_owned();
-                                                                    let _ = cx.update(
-                                                                        |window, app| {
-                                                                            let _ = inp4.update(
-                                                                                app,
-                                                                                |s, cx| {
-                                                                                    s.set_value(
-                                                                                        p, window,
-                                                                                        cx,
-                                                                                    );
-                                                                                },
-                                                                            );
-                                                                        },
-                                                                    );
-                                                                }
-                                                            }
-                                                        },
-                                                    )
-                                                    .detach();
-                                                },
-                                            )),
+                                            .on_click(cx.listener(move |_this, _ev, w, cx| {
+                                                let rx =
+                                                    cx.prompt_for_paths(gpui::PathPromptOptions {
+                                                        files: false,
+                                                        directories: true,
+                                                        multiple: false,
+                                                        prompt: None,
+                                                    });
+                                                let inp4 = inp3.clone();
+                                                cx.spawn_in(w, async move |_this, cx| {
+                                                    if let Ok(Ok(Some(paths))) = rx.await {
+                                                        if let Some(dir) = paths.first() {
+                                                            let p =
+                                                                dir.to_string_lossy().into_owned();
+                                                            let _ = cx.update(|window, app| {
+                                                                let _ =
+                                                                    inp4.update(app, |s, cx| {
+                                                                        s.set_value(p, window, cx);
+                                                                    });
+                                                            });
+                                                        }
+                                                    }
+                                                })
+                                                .detach();
+                                            })),
                                         ),
                                 );
                             }
@@ -5147,40 +5194,31 @@ impl Native {
 
                 // footer: counts, progress, failures, action buttons
                 let mut footer = v_flex().gap(px(8.)).pt(px(4.));
-                footer = footer.child(
-                    div()
-                        .text_sm()
-                        .text_color(theme.muted_foreground)
-                        .child(format!(
-                            "{conv_n} conversation{} in {proj_n} project{} \
+                footer = footer.child(div().text_sm().text_color(theme.muted_foreground).child(
+                    format!(
+                        "{conv_n} conversation{} in {proj_n} project{} \
                              selected · History shows text messages; tool \
                              details may be incomplete.",
-                            if conv_n == 1 { "" } else { "s" },
-                            if proj_n == 1 { "" } else { "s" },
-                        )),
-                );
+                        if conv_n == 1 { "" } else { "s" },
+                        if proj_n == 1 { "" } else { "s" },
+                    ),
+                ));
                 if let Some((i, total, title)) = dlg.progress.clone() {
-                    footer = footer.child(
-                        div()
-                            .text_sm()
-                            .text_color(theme.muted_foreground)
-                            .child(if dlg.running {
+                    footer =
+                        footer.child(div().text_sm().text_color(theme.muted_foreground).child(
+                            if dlg.running {
                                 format!("Importing {i} of {total}: {title}")
                             } else {
                                 format!("\u{2713} {total} imported or already present.")
-                            }),
-                    );
+                            },
+                        ));
                 }
                 let failed: Vec<String> = dlg
                     .outcomes
                     .iter()
                     .filter_map(|(k, v)| {
-                        v.clone().map(|e| {
-                            format!(
-                                "{}: {e}",
-                                titles.get(k).cloned().unwrap_or_default()
-                            )
-                        })
+                        v.clone()
+                            .map(|e| format!("{}: {e}", titles.get(k).cloned().unwrap_or_default()))
                     })
                     .collect();
                 if !failed.is_empty() {
@@ -5195,9 +5233,7 @@ impl Native {
                             )),
                     );
                     for f in failed.iter().take(5) {
-                        fl = fl.child(
-                            div().text_xs().text_color(theme.danger).child(f.clone()),
-                        );
+                        fl = fl.child(div().text_xs().text_color(theme.danger).child(f.clone()));
                     }
                     footer = footer.child(fl);
                 }
@@ -5210,10 +5246,7 @@ impl Native {
                             .label("Stop after current")
                             .on_click(cx.listener(|this, _ev, _w, cx| {
                                 if let Some(d) = this.import_dlg.as_mut() {
-                                    d.stop.store(
-                                        true,
-                                        std::sync::atomic::Ordering::Relaxed,
-                                    );
+                                    d.stop.store(true, std::sync::atomic::Ordering::Relaxed);
                                 }
                                 cx.notify();
                             })),
@@ -5224,9 +5257,9 @@ impl Native {
                             Button::new("imp-retry")
                                 .ghost()
                                 .label("Retry failed")
-                                .on_click(cx.listener(|this, _ev, _w, cx| {
-                                    this.import_run(true, cx)
-                                })),
+                                .on_click(
+                                    cx.listener(|this, _ev, _w, cx| this.import_run(true, cx)),
+                                ),
                         );
                     }
                     btns = btns.child(
@@ -5237,9 +5270,7 @@ impl Native {
                             } else {
                                 "Import selected"
                             })
-                            .on_click(cx.listener(|this, _ev, _w, cx| {
-                                this.import_run(false, cx)
-                            })),
+                            .on_click(cx.listener(|this, _ev, _w, cx| this.import_run(false, cx))),
                     );
                 }
                 footer = footer.child(btns);
@@ -5268,12 +5299,7 @@ impl Native {
                     .on_mouse_down(
                         gpui::MouseButton::Left,
                         cx.listener(|this, _ev, _w, cx| {
-                            if this
-                                .import_dlg
-                                .as_ref()
-                                .map(|d| !d.running)
-                                .unwrap_or(true)
-                            {
+                            if this.import_dlg.as_ref().map(|d| !d.running).unwrap_or(true) {
                                 this.import_dlg = None;
                             }
                             cx.notify();
@@ -5353,9 +5379,7 @@ impl Native {
                                             div()
                                                 .text_size(px(14.))
                                                 .font_weight(FontWeight::MEDIUM)
-                                                .child(
-                                                    str_at(pr, "title").to_string(),
-                                                ),
+                                                .child(str_at(pr, "title").to_string()),
                                         )
                                         .child(
                                             div()
@@ -5364,9 +5388,7 @@ impl Native {
                                                 .text_color(theme.muted_foreground)
                                                 .child(format!(
                                                     "#{} · {} to {}",
-                                                    get(pr, "number")
-                                                        .as_i64()
-                                                        .unwrap_or(0),
+                                                    get(pr, "number").as_i64().unwrap_or(0),
                                                     str_at(pr, "headBranch"),
                                                     str_at(pr, "baseBranch"),
                                                 )),
@@ -5398,36 +5420,34 @@ impl Native {
                 );
             }
             let can_confirm = self.pr_resolved.is_some() && !self.pr_busy;
-            let btn = |id: &'static str,
-                       label: &'static str,
-                       primary: bool,
-                       cx: &mut Context<Self>| {
-                let mut b = div()
-                    .id(id)
-                    .h(px(32.))
-                    .px_3()
-                    .flex()
-                    .items_center()
-                    .justify_center()
-                    .rounded(px(8.))
-                    .text_size(px(13.))
-                    .cursor_pointer();
-                if primary {
-                    b = b
-                        .bg(if can_confirm {
-                            theme.foreground
-                        } else {
-                            theme.muted
-                        })
-                        .text_color(theme.background);
-                } else {
-                    b = b
-                        .border_1()
-                        .border_color(theme.border)
-                        .text_color(theme.foreground);
-                }
-                b.child(label)
-            };
+            let btn =
+                |id: &'static str, label: &'static str, primary: bool, cx: &mut Context<Self>| {
+                    let mut b = div()
+                        .id(id)
+                        .h(px(32.))
+                        .px_3()
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .rounded(px(8.))
+                        .text_size(px(13.))
+                        .cursor_pointer();
+                    if primary {
+                        b = b
+                            .bg(if can_confirm {
+                                theme.foreground
+                            } else {
+                                theme.muted
+                            })
+                            .text_color(theme.background);
+                    } else {
+                        b = b
+                            .border_1()
+                            .border_color(theme.border)
+                            .text_color(theme.foreground);
+                    }
+                    b.child(label)
+                };
             card = card.child(
                 h_flex()
                     .mt(px(4.))
@@ -5454,19 +5474,17 @@ impl Native {
                                 cx.notify();
                             })),
                     )
+                    .child(btn("pr-local", "Local", false, cx).on_click(cx.listener(
+                        |this, _e, _w, cx| {
+                            this.confirm_pr_checkout("local", cx);
+                        },
+                    )))
                     .child(
-                        btn("pr-local", "Local", false, cx).on_click(cx.listener(
+                        btn("pr-worktree", "Worktree", true, cx).on_click(cx.listener(
                             |this, _e, _w, cx| {
-                                this.confirm_pr_checkout("local", cx);
+                                this.confirm_pr_checkout("worktree", cx);
                             },
                         )),
-                    )
-                    .child(
-                        btn("pr-worktree", "Worktree", true, cx).on_click(
-                            cx.listener(|this, _e, _w, cx| {
-                                this.confirm_pr_checkout("worktree", cx);
-                            }),
-                        ),
                     ),
             );
             pr_overlay = pr_overlay.child(
@@ -5487,10 +5505,9 @@ impl Native {
                     )
                     .child(
                         div()
-                            .on_mouse_down(
-                                gpui::MouseButton::Left,
-                                |_e, _w, cx| cx.stop_propagation(),
-                            )
+                            .on_mouse_down(gpui::MouseButton::Left, |_e, _w, cx| {
+                                cx.stop_propagation()
+                            })
                             .child(card),
                     ),
             );
@@ -5515,7 +5532,7 @@ impl Native {
             imp_overlay: imp_overlay.into_any(),
             pr_overlay: pr_overlay.into_any(),
             wn_pop_overlay: wn_pop_overlay.into_any(),
-            wn_dialog_overlay: wn_dialog_overlay.into_any()
+            wn_dialog_overlay: wn_dialog_overlay.into_any(),
         }
     }
 }

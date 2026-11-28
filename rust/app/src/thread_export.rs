@@ -7,11 +7,11 @@
 
 use axum::{
     extract::RawQuery,
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{IntoResponse, Response},
 };
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::orchestration_engine::open_state_rw;
 
@@ -20,7 +20,11 @@ fn crc32(data: &[u8]) -> u32 {
     for &b in data {
         crc ^= b as u32;
         for _ in 0..8 {
-            crc = if crc & 1 != 0 { (crc >> 1) ^ 0xEDB8_8320 } else { crc >> 1 };
+            crc = if crc & 1 != 0 {
+                (crc >> 1) ^ 0xEDB8_8320
+            } else {
+                crc >> 1
+            };
         }
     }
     !crc
@@ -118,10 +122,7 @@ fn role_heading(role: &str) -> &str {
     }
 }
 
-pub async fn thread_export(
-    headers: axum::http::HeaderMap,
-    RawQuery(query): RawQuery,
-) -> Response {
+pub async fn thread_export(headers: axum::http::HeaderMap, RawQuery(query): RawQuery) -> Response {
     // Full thread contents: unauthenticated export on a non-loopback bind
     // would expose every conversation to the network. Browser downloads are
     // same-origin and carry the session cookie, so first-party export keeps
@@ -135,7 +136,8 @@ pub async fn thread_export(
         return StatusCode::UNAUTHORIZED.into_response();
     }
     let query = query.unwrap_or_default();
-    let thread_id = crate::attachments_http::attachments_http_query(&query, "threadId").unwrap_or_default();
+    let thread_id =
+        crate::attachments_http::attachments_http_query(&query, "threadId").unwrap_or_default();
     if thread_id.trim().is_empty() {
         return (StatusCode::BAD_REQUEST, "Missing threadId parameter").into_response();
     }
@@ -194,14 +196,24 @@ pub async fn thread_export(
     };
     let messages: Vec<(String, String, String, String, String, Option<String>)> = stmt
         .query_map(params![thread_id], |r| {
-            Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?, r.get(5)?))
+            Ok((
+                r.get(0)?,
+                r.get(1)?,
+                r.get(2)?,
+                r.get(3)?,
+                r.get(4)?,
+                r.get(5)?,
+            ))
         })
         .map(|rows| rows.filter_map(|r| r.ok()).collect())
         .unwrap_or_default();
 
     let mut markdown = format!("# {title}\n\n> Exported from Synara.\n");
     for (_, role, text, created_at, _, _) in &messages {
-        markdown.push_str(&format!("\n## {} `{created_at}`\n\n{text}\n", role_heading(role)));
+        markdown.push_str(&format!(
+            "\n## {} `{created_at}`\n\n{text}\n",
+            role_heading(role)
+        ));
     }
 
     let metadata = json!({
@@ -214,7 +226,9 @@ pub async fn thread_export(
     });
     let mut thread_json = format!(
         "{},\n  \"messages\": [",
-        serde_json::to_string_pretty(&metadata).unwrap_or_default().trim_end_matches('}')
+        serde_json::to_string_pretty(&metadata)
+            .unwrap_or_default()
+            .trim_end_matches('}')
     );
     let mut first = true;
     for (id, role, text, created_at, msg_updated, attachments) in &messages {
@@ -249,11 +263,20 @@ pub async fn thread_export(
     thread_json.push_str("\n  ]\n}\n");
 
     let zip = build_zip(&[
-        ZipEntry { name: "transcript.md".into(), data: markdown.into_bytes() },
-        ZipEntry { name: "thread.json".into(), data: thread_json.into_bytes() },
+        ZipEntry {
+            name: "transcript.md".into(),
+            data: markdown.into_bytes(),
+        },
+        ZipEntry {
+            name: "thread.json".into(),
+            data: thread_json.into_bytes(),
+        },
     ]);
 
-    let date_bucket = updated_at.get(..10).unwrap_or("0000-00-00").replace('-', "");
+    let date_bucket = updated_at
+        .get(..10)
+        .unwrap_or("0000-00-00")
+        .replace('-', "");
     let file_name = format!("synara-thread-{}-{date_bucket}.zip", slugify_title(&title));
     (
         [
@@ -275,7 +298,10 @@ mod tests {
 
     #[test]
     fn zip_has_valid_structure() {
-        let zip = build_zip(&[ZipEntry { name: "a.txt".into(), data: b"hello".to_vec() }]);
+        let zip = build_zip(&[ZipEntry {
+            name: "a.txt".into(),
+            data: b"hello".to_vec(),
+        }]);
         assert!(zip.starts_with(&0x0403_4b50u32.to_le_bytes()));
         assert!(zip.windows(4).any(|w| w == 0x0201_4b50u32.to_le_bytes()));
         assert!(zip.windows(4).any(|w| w == 0x0605_4b50u32.to_le_bytes()));

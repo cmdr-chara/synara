@@ -5,19 +5,22 @@
 //! loopback TCP socket with Content-Length framing on plain std threads — no
 //! tokio in this layer, which keeps it legal inside spawn_blocking WS handlers.
 use crate::todo::WsErr;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use std::collections::HashMap;
 use std::io::{Read, Write};
 use std::net::TcpStream;
-use std::sync::{mpsc, Mutex, OnceLock};
+use std::sync::{Mutex, OnceLock, mpsc};
 
 fn err(msg: impl Into<String>) -> WsErr {
     crate::todo::err_pub(msg)
 }
 
 pub fn handles(tag: &str) -> bool {
-    matches!(tag, "editor.debug.start" | "editor.debug.action" | "editor.debug.poll")
+    matches!(
+        tag,
+        "editor.debug.start" | "editor.debug.action" | "editor.debug.poll"
+    )
 }
 
 // ── adapter installer ──────────────────────────────────────────────
@@ -27,7 +30,10 @@ const MAX_ARCHIVE_BYTES: usize = 16 * 1024 * 1024;
 const MAX_EXPANDED_BYTES: usize = 64 * 1024 * 1024;
 
 fn sha256_hex(data: &[u8]) -> String {
-    sha2::Sha256::digest(data).iter().map(|b| format!("{b:02x}")).collect()
+    sha2::Sha256::digest(data)
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect()
 }
 
 /// Narrow extractor mirroring upstream: js-debug/ prefix only, no links, no
@@ -53,12 +59,18 @@ fn extract_adapter(tar: &[u8], destination: &std::path::Path) -> Result<(), WsEr
         };
         let name = text(0, 100);
         let prefix = text(345, 155);
-        let archive_path = if prefix.is_empty() { name } else { format!("{prefix}/{name}") };
+        let archive_path = if prefix.is_empty() {
+            name
+        } else {
+            format!("{prefix}/{name}")
+        };
         let parts: Vec<&str> = archive_path.split('/').filter(|p| !p.is_empty()).collect();
         let size_str = text(124, 12);
         let size = usize::from_str_radix(size_str.trim(), 8).unwrap_or(usize::MAX);
         if parts.first().copied() != Some("js-debug")
-            || parts.iter().any(|p| *p == ".." || p.contains('\\') || p.contains(':'))
+            || parts
+                .iter()
+                .any(|p| *p == ".." || p.contains('\\') || p.contains(':'))
             || archive_path.starts_with('/')
             || size == usize::MAX
             || offset + 512 + size > tar.len()
@@ -112,7 +124,8 @@ pub fn ensure_debug_adapter(state_dir: &str) -> Result<String, WsErr> {
         }
     }
     let _ = std::fs::remove_dir_all(&destination);
-    std::fs::create_dir_all(destination.parent().unwrap()).map_err(|e| err(format!("adapter mkdir: {e}")))?;
+    std::fs::create_dir_all(destination.parent().unwrap())
+        .map_err(|e| err(format!("adapter mkdir: {e}")))?;
     let url = format!(
         "https://github.com/microsoft/vscode-js-debug/releases/download/v{JS_DEBUG_VERSION}/js-debug-dap-v{JS_DEBUG_VERSION}.tar.gz"
     );
@@ -129,15 +142,22 @@ pub fn ensure_debug_adapter(state_dir: &str) -> Result<String, WsErr> {
                     .send()
                     .map_err(|e| err(format!("adapter download: {e}")))?;
                 if !resp.status().is_success() {
-                    return Err(err(format!("adapter download failed (status {}).", resp.status())));
+                    return Err(err(format!(
+                        "adapter download failed (status {}).",
+                        resp.status()
+                    )));
                 }
-                resp.bytes().map(|b| b.to_vec()).map_err(|e| err(format!("adapter read: {e}")))
+                resp.bytes()
+                    .map(|b| b.to_vec())
+                    .map_err(|e| err(format!("adapter read: {e}")))
             })
             .join()
             .map_err(|_| err("adapter download thread panicked"))?
     })?;
     if archive.len() > MAX_ARCHIVE_BYTES || sha256_hex(&archive) != JS_DEBUG_SHA256 {
-        return Err(err("The JavaScript debugger download failed its SHA-256 integrity check."));
+        return Err(err(
+            "The JavaScript debugger download failed its SHA-256 integrity check.",
+        ));
     }
     let tar = gunzip(&archive)?;
     extract_adapter(&tar, &destination)?;
@@ -145,7 +165,8 @@ pub fn ensure_debug_adapter(state_dir: &str) -> Result<String, WsErr> {
         return Err(err("The debugger archive did not contain its entry point."));
     }
     let manifest = json!({ "archive": JS_DEBUG_SHA256, "entry": sha256_hex(&std::fs::read(&entry).unwrap_or_default()) });
-    std::fs::write(&integrity, manifest.to_string()).map_err(|e| err(format!("integrity write: {e}")))?;
+    std::fs::write(&integrity, manifest.to_string())
+        .map_err(|e| err(format!("integrity write: {e}")))?;
     Ok(entry.to_string_lossy().to_string())
 }
 
@@ -174,11 +195,19 @@ impl DapConnection {
         let stream = TcpStream::connect(("127.0.0.1", port))
             .map_err(|e| err(format!("debug adapter connection: {e}")))?;
         stream.set_nodelay(true).ok();
-        let reader = stream.try_clone().map_err(|e| err(format!("dap clone: {e}")))?;
-        let writer_stream = stream.try_clone().map_err(|e| err(format!("dap clone: {e}")))?;
+        let reader = stream
+            .try_clone()
+            .map_err(|e| err(format!("dap clone: {e}")))?;
+        let writer_stream = stream
+            .try_clone()
+            .map_err(|e| err(format!("dap clone: {e}")))?;
         let pending: PendingMap = Arc::new(Mutex::new(HashMap::new()));
         let pending_r = pending.clone();
-        let reverse_writer = Arc::new(Mutex::new(stream.try_clone().map_err(|e| err(format!("dap clone: {e}")))?));
+        let reverse_writer = Arc::new(Mutex::new(
+            stream
+                .try_clone()
+                .map_err(|e| err(format!("dap clone: {e}")))?,
+        ));
         std::thread::spawn(move || {
             dap_reader_loop(reader, reverse_writer, pending_r, on_event, on_reverse);
         });
@@ -210,7 +239,11 @@ impl DapConnection {
     /// Fire-and-collect-later request: sends the command and returns the
     /// receiver. Upstream ordering requires this for launch/attach, which the
     /// adapter only answers after configurationDone.
-    fn request_deferred(&self, command: &str, args: Value) -> Result<mpsc::Receiver<Result<Value, String>>, WsErr> {
+    fn request_deferred(
+        &self,
+        command: &str,
+        args: Value,
+    ) -> Result<mpsc::Receiver<Result<Value, String>>, WsErr> {
         {
             let pending = self.pending.lock().map_err(|_| err("dap pending lock"))?;
             if pending.len() >= 64 {
@@ -219,7 +252,10 @@ impl DapConnection {
         }
         let (tx, rx) = mpsc::channel();
         let id = self.send(json!({ "type": "request", "command": command, "arguments": args }))?;
-        self.pending.lock().map_err(|_| err("dap pending lock"))?.insert(id, tx);
+        self.pending
+            .lock()
+            .map_err(|_| err("dap pending lock"))?
+            .insert(id, tx);
         Ok(rx)
     }
 
@@ -233,9 +269,15 @@ impl DapConnection {
         }
         let (tx, rx) = mpsc::channel();
         let id = self.send(json!({ "type": "request", "command": command, "arguments": args }))?;
-        self.pending.lock().map_err(|_| err("dap pending lock"))?.insert(id, tx);
+        self.pending
+            .lock()
+            .map_err(|_| err("dap pending lock"))?
+            .insert(id, tx);
         let outcome = rx.recv_timeout(std::time::Duration::from_secs(15));
-        self.pending.lock().map_err(|_| err("dap pending lock"))?.remove(&id);
+        self.pending
+            .lock()
+            .map_err(|_| err("dap pending lock"))?
+            .remove(&id);
         match outcome {
             Ok(Ok(body)) => Ok(body),
             Ok(Err(e)) => Err(err(e)),
@@ -268,7 +310,9 @@ fn dap_reader_loop(
         }
         // Parse complete Content-Length framed messages.
         loop {
-            let Some(header_end) = find_subsequence(&buf, b"\r\n\r\n") else { break };
+            let Some(header_end) = find_subsequence(&buf, b"\r\n\r\n") else {
+                break;
+            };
             let header = String::from_utf8_lossy(&buf[..header_end]).to_string();
             let len: usize = header
                 .lines()
@@ -282,24 +326,36 @@ fn dap_reader_loop(
                 break;
             }
             let body_start = header_end + 4;
-            let body: Value = serde_json::from_slice(&buf[body_start..body_start + len]).unwrap_or(json!({}));
+            let body: Value =
+                serde_json::from_slice(&buf[body_start..body_start + len]).unwrap_or(json!({}));
             buf.drain(..body_start + len);
             let msg_type = body.get("type").and_then(Value::as_str).unwrap_or("");
             match msg_type {
                 "response" => {
                     let req_seq = body.get("request_seq").and_then(Value::as_u64).unwrap_or(0);
-                    let success = body.get("success").and_then(Value::as_bool).unwrap_or(false);
+                    let success = body
+                        .get("success")
+                        .and_then(Value::as_bool)
+                        .unwrap_or(false);
                     let result = if success {
                         Ok(body.get("body").cloned().unwrap_or(json!({})))
                     } else {
-                        Err(body.get("message").and_then(Value::as_str).unwrap_or("debugger command failed").to_string())
+                        Err(body
+                            .get("message")
+                            .and_then(Value::as_str)
+                            .unwrap_or("debugger command failed")
+                            .to_string())
                     };
                     if let Some(tx) = pending.lock().ok().and_then(|mut p| p.remove(&req_seq)) {
                         let _ = tx.send(result);
                     }
                 }
                 "event" => {
-                    let event = body.get("event").and_then(Value::as_str).unwrap_or("").to_string();
+                    let event = body
+                        .get("event")
+                        .and_then(Value::as_str)
+                        .unwrap_or("")
+                        .to_string();
                     let event_body = body.get("body").cloned().unwrap_or(json!({}));
                     on_event(event, event_body);
                 }
@@ -308,12 +364,18 @@ fn dap_reader_loop(
                     // opens a whole child connection, which must not stall the
                     // frame reader. The reply goes out whenever the handler ends.
                     let seq = body.get("seq").and_then(Value::as_u64).unwrap_or(0);
-                    let command = body.get("command").and_then(Value::as_str).unwrap_or("").to_string();
+                    let command = body
+                        .get("command")
+                        .and_then(Value::as_str)
+                        .unwrap_or("")
+                        .to_string();
                     let args = body.get("arguments").cloned().unwrap_or(json!({}));
                     let writer = reverse_writer.clone();
                     let handler = on_reverse.clone();
                     std::thread::spawn(move || {
-                        let reply_seq = REVERSE_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 900_000;
+                        let reply_seq = REVERSE_SEQ
+                            .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+                            + 900_000;
                         let reply = match handler(command.clone(), args) {
                             Ok(reply_body) => json!({
                                 "type": "response", "seq": reply_seq, "request_seq": seq,
@@ -327,7 +389,9 @@ fn dap_reader_loop(
                         let bytes = serde_json::to_vec(&reply).unwrap_or_default();
                         let frame = format!("Content-Length: {}\r\n\r\n", bytes.len());
                         if let Ok(mut w) = writer.lock() {
-                            let _ = w.write_all(frame.as_bytes()).and_then(|_| w.write_all(&bytes));
+                            let _ = w
+                                .write_all(frame.as_bytes())
+                                .and_then(|_| w.write_all(&bytes));
                         }
                     });
                 }
@@ -374,7 +438,11 @@ struct Service {
 static SERVICE: OnceLock<Mutex<Service>> = OnceLock::new();
 
 fn service() -> &'static Mutex<Service> {
-    SERVICE.get_or_init(|| Mutex::new(Service { sessions: HashMap::new() }))
+    SERVICE.get_or_init(|| {
+        Mutex::new(Service {
+            sessions: HashMap::new(),
+        })
+    })
 }
 
 fn now_ms() -> i64 {
@@ -384,7 +452,13 @@ fn now_ms() -> i64 {
         .unwrap_or(0)
 }
 
-fn emit(session: &mut DebugSession, connection_id: &str, event: &str, text: &str, extra: Option<Value>) {
+fn emit(
+    session: &mut DebugSession,
+    connection_id: &str,
+    event: &str,
+    text: &str,
+    extra: Option<Value>,
+) {
     session.sequence += 1;
     let mut e = json!({
         "id": session.sequence,
@@ -401,7 +475,12 @@ fn emit(session: &mut DebugSession, connection_id: &str, event: &str, text: &str
     }
     session.events.push(e);
     while session.events.len() > 500
-        || session.events.iter().map(|i| i.get("text").and_then(Value::as_str).unwrap_or("").len()).sum::<usize>() > 512_000
+        || session
+            .events
+            .iter()
+            .map(|i| i.get("text").and_then(Value::as_str).unwrap_or("").len())
+            .sum::<usize>()
+            > 512_000
     {
         let discard = session.events.iter().position(|item| {
             let ev = item.get("event").and_then(Value::as_str).unwrap_or("");
@@ -419,7 +498,9 @@ fn emit(session: &mut DebugSession, connection_id: &str, event: &str, text: &str
 fn workspace_file(root: &str, relative: &str) -> Result<String, WsErr> {
     if std::path::Path::new(relative).is_absolute()
         || relative.contains('\0')
-        || relative.split(['/', '\\']).any(|part| part == ".." || part == ".git")
+        || relative
+            .split(['/', '\\'])
+            .any(|part| part == ".." || part == ".git")
     {
         return Err(err("Expected a workspace-relative debug source."));
     }
@@ -453,18 +534,29 @@ fn variable(item: &Value) -> Value {
 /// the js-debug adapter. One session per owning connection, four per server,
 /// mirroring upstream's limits.
 fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
-    let cwd_in = payload.get("cwd").and_then(Value::as_str).ok_or_else(|| err("missing cwd"))?;
+    let cwd_in = payload
+        .get("cwd")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing cwd"))?;
     let cwd = std::path::PathBuf::from(cwd_in)
         .canonicalize()
         .map_err(|e| err(format!("cwd: {e}")))?
         .to_string_lossy()
         .to_string();
-    let request = payload.get("request").and_then(Value::as_str).unwrap_or("launch");
+    let request = payload
+        .get("request")
+        .and_then(Value::as_str)
+        .unwrap_or("launch");
     let program = if request == "launch" {
-        let rel = payload.get("program").and_then(Value::as_str).ok_or_else(|| err("missing program"))?;
+        let rel = payload
+            .get("program")
+            .and_then(Value::as_str)
+            .ok_or_else(|| err("missing program"))?;
         let abs = workspace_file(&cwd, rel)?;
         if !regexless_js_entry(&abs) {
-            return Err(err("Launch a Node.js .js/.mjs/.cjs entry point, or a .ts/.mts/.cts file supported by your Node runtime."));
+            return Err(err(
+                "Launch a Node.js .js/.mjs/.cjs entry point, or a .ts/.mts/.cts file supported by your Node runtime.",
+            ));
         }
         Some(abs)
     } else {
@@ -477,9 +569,13 @@ fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
     {
         let svc = service().lock().map_err(|_| err("debug service lock"))?;
         if svc.sessions.values().any(|s| {
-            s.lock().map(|sess| sess.owner == owner && !sess.terminated).unwrap_or(false)
+            s.lock()
+                .map(|sess| sess.owner == owner && !sess.terminated)
+                .unwrap_or(false)
         }) {
-            return Err(err("Stop the current debug session before starting another."));
+            return Err(err(
+                "Stop the current debug session before starting another.",
+            ));
         }
         if svc.sessions.len() >= 4 {
             return Err(err("The server's debug session limit has been reached."));
@@ -499,10 +595,15 @@ fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());
     crate::provider_env::sanitize_provider_child(&mut command);
-    let mut child = command
-        .spawn()
-        .map_err(|e| err(format!("Node.js is required to run the JavaScript debugger: {e}")))?;
-    let mut stdout = child.stdout.take().ok_or_else(|| err("adapter stdout missing"))?;
+    let mut child = command.spawn().map_err(|e| {
+        err(format!(
+            "Node.js is required to run the JavaScript debugger: {e}"
+        ))
+    })?;
+    let mut stdout = child
+        .stdout
+        .take()
+        .ok_or_else(|| err("adapter stdout missing"))?;
     // stderr must drain continuously: a full pipe would stall the adapter.
     if let Some(mut stderr) = child.stderr.take() {
         std::thread::spawn(move || {
@@ -538,7 +639,8 @@ fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
                     let marker = "Debug server listening at 127.0.0.1:";
                     if let Some(pos) = text.find(marker) {
                         let rest = &text[pos + marker.len()..];
-                        let digits: String = rest.chars().take_while(|c| c.is_ascii_digit()).collect();
+                        let digits: String =
+                            rest.chars().take_while(|c| c.is_ascii_digit()).collect();
                         if let Ok(port) = digits.parse::<u16>() {
                             let _ = port_tx.send(Some(port));
                             // Keep draining so the adapter never blocks on a full pipe.
@@ -572,7 +674,10 @@ fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
         for bp in bps {
             if let Some(rel) = bp.get("relativePath").and_then(Value::as_str) {
                 if workspace_file(&cwd, rel).is_ok() {
-                    breakpoints.entry(rel.to_string()).or_default().push(bp.clone());
+                    breakpoints
+                        .entry(rel.to_string())
+                        .or_default()
+                        .push(bp.clone());
                 }
             }
         }
@@ -592,7 +697,11 @@ fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
     }));
 
     // Build the launch/attach configuration exactly as upstream does.
-    let args: Vec<Value> = payload.get("args").and_then(Value::as_array).cloned().unwrap_or_default();
+    let args: Vec<Value> = payload
+        .get("args")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
     let configuration = if let Some(prog) = &program {
         json!({
             "type": "pwa-node",
@@ -633,7 +742,11 @@ fn start(owner: &str, payload: &Value) -> Result<Value, WsErr> {
         stop_session(&session);
         return Err(e);
     }
-    service().lock().map_err(|_| err("debug service lock"))?.sessions.insert(session_id.clone(), session);
+    service()
+        .lock()
+        .map_err(|_| err("debug service lock"))?
+        .sessions
+        .insert(session_id.clone(), session);
     Ok(json!({ "sessionId": session_id }))
 }
 
@@ -699,12 +812,24 @@ fn connect_target(
                             .or_else(|| body.get("reason").and_then(Value::as_str))
                             .unwrap_or("");
                         let thread = body.get("threadId").and_then(Value::as_u64);
-                        emit(&mut sess, &conn_id, "stopped", reason, Some(json!({ "threadId": thread })));
+                        emit(
+                            &mut sess,
+                            &conn_id,
+                            "stopped",
+                            reason,
+                            Some(json!({ "threadId": thread })),
+                        );
                     }
                     "continued" | "thread" => {
                         let reason = body.get("reason").and_then(Value::as_str).unwrap_or("");
                         let thread = body.get("threadId").and_then(Value::as_u64);
-                        emit(&mut sess, &conn_id, &event, reason, Some(json!({ "threadId": thread })));
+                        emit(
+                            &mut sess,
+                            &conn_id,
+                            &event,
+                            reason,
+                            Some(json!({ "threadId": thread })),
+                        );
                     }
                     "breakpoint" => {
                         let message = body
@@ -720,14 +845,26 @@ fn connect_target(
                             conn.ended = true;
                             conn.ready = false;
                         }
-                        emit(&mut sess, &conn_id, "exited", "Program exited.", Some(json!({ "exitCode": code })));
+                        emit(
+                            &mut sess,
+                            &conn_id,
+                            "exited",
+                            "Program exited.",
+                            Some(json!({ "exitCode": code })),
+                        );
                     }
                     "terminated" => {
                         if let Some(conn) = sess.connections.get_mut(&conn_id) {
                             conn.ended = true;
                             conn.ready = false;
                         }
-                        emit(&mut sess, &conn_id, "terminated", "Debug target finished.", None);
+                        emit(
+                            &mut sess,
+                            &conn_id,
+                            "terminated",
+                            "Debug target finished.",
+                            None,
+                        );
                         root_terminated = conn_id == "root";
                     }
                     _ => {}
@@ -747,25 +884,33 @@ fn connect_target(
         let mut sess = session.lock().map_err(|_| err("session lock"))?;
         sess.connections.insert(
             id.to_string(),
-            Connection { name: name.to_string(), dap: dap.clone(), ready: false, ended: false },
+            Connection {
+                name: name.to_string(),
+                dap: dap.clone(),
+                ready: false,
+                ended: false,
+            },
         );
     }
 
     let outcome = (|| -> Result<(), WsErr> {
-        dap.request("initialize", json!({
-            "clientID": "synara",
-            "clientName": "Synara",
-            "adapterID": "pwa-node",
-            "locale": "en",
-            "linesStartAt1": true,
-            "columnsStartAt1": true,
-            "pathFormat": "path",
-            "supportsVariableType": true,
-            "supportsVariablePaging": true,
-            "supportsRunInTerminalRequest": false,
-            "supportsStartDebuggingRequest": true,
-            "supportsProgressReporting": false,
-        }))?;
+        dap.request(
+            "initialize",
+            json!({
+                "clientID": "synara",
+                "clientName": "Synara",
+                "adapterID": "pwa-node",
+                "locale": "en",
+                "linesStartAt1": true,
+                "columnsStartAt1": true,
+                "pathFormat": "path",
+                "supportsVariableType": true,
+                "supportsVariablePaging": true,
+                "supportsRunInTerminalRequest": false,
+                "supportsStartDebuggingRequest": true,
+                "supportsProgressReporting": false,
+            }),
+        )?;
         // Fire launch/attach WITHOUT awaiting: the adapter answers only after
         // configurationDone, so awaiting here would deadlock (upstream does
         // `void launched.catch()` for exactly this reason).
@@ -773,9 +918,17 @@ fn connect_target(
         // Sync the session's breakpoints on every target connection.
         let grouped: Vec<(String, Vec<Value>)> = session
             .lock()
-            .map(|sess| sess.breakpoints.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
+            .map(|sess| {
+                sess.breakpoints
+                    .iter()
+                    .map(|(k, v)| (k.clone(), v.clone()))
+                    .collect()
+            })
             .unwrap_or_default();
-        let cwd = session.lock().map(|sess| sess.cwd.clone()).unwrap_or_default();
+        let cwd = session
+            .lock()
+            .map(|sess| sess.cwd.clone())
+            .unwrap_or_default();
         for (rel, bps) in grouped {
             if let Ok(abs) = workspace_file(&cwd, &rel) {
                 let bp_list: Vec<Value> = bps
@@ -789,11 +942,14 @@ fn connect_target(
                         })
                     })
                     .collect();
-                let _ = dap.request("setBreakpoints", json!({
-                    "source": { "path": abs },
-                    "breakpoints": bp_list,
-                    "sourceModified": false,
-                }));
+                let _ = dap.request(
+                    "setBreakpoints",
+                    json!({
+                        "source": { "path": abs },
+                        "breakpoints": bp_list,
+                        "sourceModified": false,
+                    }),
+                );
             }
         }
         let _ = dap.request("setExceptionBreakpoints", json!({ "filters": [] }));
@@ -832,7 +988,9 @@ fn connect_target(
 fn reverse_handler(session: Arc<Mutex<DebugSession>>, port: u16) -> ReverseHandler {
     Arc::new(move |command, args| {
         if command != "startDebugging" {
-            return Err(format!("Synara does not support the adapter's {command} request."));
+            return Err(format!(
+                "Synara does not support the adapter's {command} request."
+            ));
         }
         let config = args.get("configuration").cloned().unwrap_or(json!({}));
         let pending_id = config.get("__pendingTargetId").and_then(Value::as_str);
@@ -851,7 +1009,14 @@ fn reverse_handler(session: Arc<Mutex<DebugSession>>, port: u16) -> ReverseHandl
             "__pendingTargetId": pending_id.unwrap_or(""),
         });
         let child_id = crate::orchestration_engine::uuid_v4();
-        match connect_target(&session, port, &child_id, &child_name, child_request, child_config) {
+        match connect_target(
+            &session,
+            port,
+            &child_id,
+            &child_name,
+            child_request,
+            child_config,
+        ) {
             Ok(()) => Ok(json!({})),
             Err(e) => Err(e.0),
         }
@@ -870,7 +1035,11 @@ fn stop_session(session: &Arc<Mutex<DebugSession>>) {
             &mut sess,
             "root",
             "terminated",
-            if is_attach { "Detached from Node." } else { "Debug session stopped." },
+            if is_attach {
+                "Detached from Node."
+            } else {
+                "Debug session stopped."
+            },
             None,
         );
     }
@@ -888,16 +1057,23 @@ fn owned_session(owner: &str, id: &str) -> Result<Arc<Mutex<DebugSession>>, WsEr
                 }
                 Ok(s)
             } else {
-                Err(err("The debug session is not available to this connection."))
+                Err(err(
+                    "The debug session is not available to this connection.",
+                ))
             }
         }
-        None => Err(err("The debug session is not available to this connection.")),
+        None => Err(err(
+            "The debug session is not available to this connection.",
+        )),
     }
 }
 
 /// `editor.debug.poll` — events after `after`, connection inventory, lifecycle.
 fn poll(owner: &str, payload: &Value) -> Result<Value, WsErr> {
-    let id = payload.get("sessionId").and_then(Value::as_str).ok_or_else(|| err("missing sessionId"))?;
+    let id = payload
+        .get("sessionId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing sessionId"))?;
     let after = payload.get("after").and_then(Value::as_u64).unwrap_or(0);
     let session = owned_session(owner, id)?;
     let sess = session.lock().map_err(|_| err("session lock"))?;
@@ -930,12 +1106,22 @@ fn required_id(v: Option<u64>, name: &str) -> Result<u64, WsErr> {
 /// introspection (threads/stack/scopes/variables/evaluate), breakpoint
 /// updates, disconnect.
 fn action(owner: &str, payload: &Value) -> Result<Value, WsErr> {
-    let id = payload.get("sessionId").and_then(Value::as_str).ok_or_else(|| err("missing sessionId"))?;
-    let act = payload.get("action").and_then(Value::as_str).ok_or_else(|| err("missing action"))?;
+    let id = payload
+        .get("sessionId")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing sessionId"))?;
+    let act = payload
+        .get("action")
+        .and_then(Value::as_str)
+        .ok_or_else(|| err("missing action"))?;
     let session = owned_session(owner, id)?;
     if act == "disconnect" {
         stop_session(&session);
-        service().lock().map_err(|_| err("debug service lock"))?.sessions.remove(id);
+        service()
+            .lock()
+            .map_err(|_| err("debug service lock"))?
+            .sessions
+            .remove(id);
         return Ok(json!({}));
     }
     let conn_dap = {
@@ -979,19 +1165,24 @@ fn action(owner: &str, payload: &Value) -> Result<Value, WsErr> {
                 .cloned()
                 .unwrap_or_default()
                 .iter()
-                .map(|t| json!({
-                    "id": t.get("id").and_then(Value::as_u64).unwrap_or(0),
-                    "name": t.get("name").and_then(Value::as_str).unwrap_or(""),
-                }))
+                .map(|t| {
+                    json!({
+                        "id": t.get("id").and_then(Value::as_u64).unwrap_or(0),
+                        "name": t.get("name").and_then(Value::as_str).unwrap_or(""),
+                    })
+                })
                 .collect();
             Ok(json!({ "threads": threads }))
         }
         "stackTrace" => {
-            let body = request("stackTrace", json!({
-                "threadId": thread_id()?,
-                "startFrame": 0,
-                "levels": 100,
-            }))?;
+            let body = request(
+                "stackTrace",
+                json!({
+                    "threadId": thread_id()?,
+                    "startFrame": 0,
+                    "levels": 100,
+                }),
+            )?;
             let cwd = session.lock().map(|s| s.cwd.clone()).unwrap_or_default();
             let frames: Vec<Value> = body
                 .get("stackFrames")
@@ -1045,11 +1236,14 @@ fn action(owner: &str, payload: &Value) -> Result<Value, WsErr> {
                 payload.get("variablesReference").and_then(Value::as_u64),
                 "variables reference",
             )?;
-            let body = request("variables", json!({
-                "variablesReference": reference,
-                "start": 0,
-                "count": 200,
-            }))?;
+            let body = request(
+                "variables",
+                json!({
+                    "variablesReference": reference,
+                    "start": 0,
+                    "count": 200,
+                }),
+            )?;
             let variables: Vec<Value> = body
                 .get("variables")
                 .and_then(Value::as_array)
@@ -1061,7 +1255,11 @@ fn action(owner: &str, payload: &Value) -> Result<Value, WsErr> {
             Ok(json!({ "variables": variables }))
         }
         "evaluate" => {
-            let expression = payload.get("expression").and_then(Value::as_str).unwrap_or("").trim();
+            let expression = payload
+                .get("expression")
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .trim();
             if expression.is_empty() {
                 return Err(err("Enter an expression to evaluate."));
             }
@@ -1082,7 +1280,10 @@ fn action(owner: &str, payload: &Value) -> Result<Value, WsErr> {
             Ok(json!({ "evaluation": evaluation }))
         }
         "setBreakpoints" => {
-            let rel = payload.get("relativePath").and_then(Value::as_str).unwrap_or("");
+            let rel = payload
+                .get("relativePath")
+                .and_then(Value::as_str)
+                .unwrap_or("");
             if rel.is_empty() {
                 return Err(err("missing relativePath"));
             }
@@ -1094,28 +1295,35 @@ fn action(owner: &str, payload: &Value) -> Result<Value, WsErr> {
                 .cloned()
                 .unwrap_or_default()
                 .iter()
-                .map(|bp| json!({
-                    "line": bp.get("line").and_then(Value::as_u64).unwrap_or(1),
-                    "condition": bp.get("condition").cloned().unwrap_or(Value::Null),
-                    "hitCondition": bp.get("hitCondition").cloned().unwrap_or(Value::Null),
-                    "logMessage": bp.get("logMessage").cloned().unwrap_or(Value::Null),
-                }))
+                .map(|bp| {
+                    json!({
+                        "line": bp.get("line").and_then(Value::as_u64).unwrap_or(1),
+                        "condition": bp.get("condition").cloned().unwrap_or(Value::Null),
+                        "hitCondition": bp.get("hitCondition").cloned().unwrap_or(Value::Null),
+                        "logMessage": bp.get("logMessage").cloned().unwrap_or(Value::Null),
+                    })
+                })
                 .collect();
-            let body = request("setBreakpoints", json!({
-                "source": { "path": abs },
-                "breakpoints": bps,
-                "sourceModified": false,
-            }))?;
+            let body = request(
+                "setBreakpoints",
+                json!({
+                    "source": { "path": abs },
+                    "breakpoints": bps,
+                    "sourceModified": false,
+                }),
+            )?;
             let verified: Vec<Value> = body
                 .get("breakpoints")
                 .and_then(Value::as_array)
                 .cloned()
                 .unwrap_or_default()
                 .iter()
-                .map(|bp| json!({
-                    "verified": bp.get("verified").and_then(Value::as_bool).unwrap_or(false),
-                    "line": bp.get("line").and_then(Value::as_u64).unwrap_or(0),
-                }))
+                .map(|bp| {
+                    json!({
+                        "verified": bp.get("verified").and_then(Value::as_bool).unwrap_or(false),
+                        "line": bp.get("line").and_then(Value::as_u64).unwrap_or(0),
+                    })
+                })
                 .collect();
             Ok(json!({ "breakpoints": verified }))
         }

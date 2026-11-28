@@ -958,7 +958,7 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
     match tag {
         "git.status" => git_status(&cwd_of(payload)?).map(Some),
         "git.githubRepository" => github_repository(&cwd_of(payload)?).map(Some),
-                "git.summarizeDiff" => {
+        "git.summarizeDiff" => {
             let cwd = payload
                 .get("cwd")
                 .and_then(Value::as_str)
@@ -969,11 +969,17 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
                 .unwrap_or("workingTree");
             let mut args = diff_args(scope, None, cwd);
             args.insert(1, "-U3".to_string());
-            let patch_full = stdout(cwd, &args.iter().map(String::as_str).collect::<Vec<_>>(), "git")
-                .unwrap_or_default();
+            let patch_full = stdout(
+                cwd,
+                &args.iter().map(String::as_str).collect::<Vec<_>>(),
+                "git",
+            )
+            .unwrap_or_default();
             let patch: String = patch_full.chars().take(50_000).collect();
             if patch.trim().is_empty() {
-                return Ok(Some(json!({"summary": "## Summary\n- No changes in scope.\n\n## Files Changed\n- Not available."})));
+                return Ok(Some(
+                    json!({"summary": "## Summary\n- No changes in scope.\n\n## Files Changed\n- Not available."}),
+                ));
             }
             let prompt = [
                 "You write GitHub-style engineering summaries for git diffs.",
@@ -1000,7 +1006,11 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
             let model = payload
                 .get("textGenerationModel")
                 .and_then(Value::as_str)
-                .or_else(|| payload.pointer("/textGenerationModelSelection/model").and_then(Value::as_str));
+                .or_else(|| {
+                    payload
+                        .pointer("/textGenerationModelSelection/model")
+                        .and_then(Value::as_str)
+                });
             let structured = crate::textgen::claude_json_generate(&prompt, &schema, model)?;
             let raw = structured
                 .get("summary")
@@ -1008,7 +1018,8 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Option<Value>, WsErr> {
                 .unwrap_or("")
                 .trim();
             let summary = if raw.is_empty() {
-                "## Summary\n- Update the current diff.\n\n## Files Changed\n- Not available.".to_string()
+                "## Summary\n- Update the current diff.\n\n## Files Changed\n- Not available."
+                    .to_string()
             } else {
                 raw.to_string()
             };

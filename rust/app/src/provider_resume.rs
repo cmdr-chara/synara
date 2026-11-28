@@ -22,7 +22,10 @@ pub(crate) fn session_id_from_cursor(provider: &str, cursor_json: &str) -> Optio
         "opencode" => cursor_string(&cursor, &["openCodeSessionId"]),
         "omp" | "droid" => cursor_string(&cursor, &["sessionId"]),
         "codex" | "claude" | "claudeAgent" => cursor_string(&cursor, &["resume", "threadId"]),
-        _ => cursor_string(&cursor, &["resume", "threadId", "sessionId", "openCodeSessionId"]),
+        _ => cursor_string(
+            &cursor,
+            &["resume", "threadId", "sessionId", "openCodeSessionId"],
+        ),
     }
 }
 
@@ -60,6 +63,9 @@ mod tests {
             session_id_from_cursor("claudeAgent", r#"{"resume":"claude-1"}"#),
             Some("claude-1".to_string())
         );
-        assert_eq!(session_id_from_cursor("opencode", r#"{"resume":"wrong"}"#), None);
+        assert_eq!(
+            session_id_from_cursor("opencode", r#"{"resume":"wrong"}"#),
+            None
+        );
     }
 }

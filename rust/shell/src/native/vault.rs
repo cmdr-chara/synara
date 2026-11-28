@@ -2,36 +2,50 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
 impl Native {
-    pub(super) fn configure_vault(&mut self, key: &'static str, enabled: bool, cx: &mut Context<Self>) {
-        let Some(snapshot) = self.vault_snapshot.clone() else { return };
+    pub(super) fn configure_vault(
+        &mut self,
+        key: &'static str,
+        enabled: bool,
+        cx: &mut Context<Self>,
+    ) {
+        let Some(snapshot) = self.vault_snapshot.clone() else {
+            return;
+        };
         let current = snapshot.get("settings").cloned().unwrap_or(Value::Null);
         let mut settings = browserhost_rs::vault::VaultSettings {
-            agent_use: current.get("agentUse").and_then(Value::as_bool).unwrap_or(true),
-            offer_save: current.get("offerSave").and_then(Value::as_bool).unwrap_or(false),
-            autosave: current.get("autosave").and_then(Value::as_bool).unwrap_or(false),
+            agent_use: current
+                .get("agentUse")
+                .and_then(Value::as_bool)
+                .unwrap_or(true),
+            offer_save: current
+                .get("offerSave")
+                .and_then(Value::as_bool)
+                .unwrap_or(false),
+            autosave: current
+                .get("autosave")
+                .and_then(Value::as_bool)
+                .unwrap_or(false),
         };
         match key {
             "agentUse" => settings.agent_use = enabled,
@@ -69,14 +83,20 @@ impl Native {
             .into_any_element()
     }
 
-    pub(super) fn submit_vault_master(&mut self, setup: bool, window: &mut Window, cx: &mut Context<Self>) {
+    pub(super) fn submit_vault_master(
+        &mut self,
+        setup: bool,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         let password = self.vault_master_input.read(cx).value().to_string();
         let confirmation = self.vault_confirm_input.read(cx).value().to_string();
         if password.is_empty() {
             return;
         }
         if setup && password != confirmation {
-            self.vault_error = Some("Use at least 12 characters and enter the same master password twice.".into());
+            self.vault_error =
+                Some("Use at least 12 characters and enter the same master password twice.".into());
             cx.notify();
             return;
         }
@@ -87,8 +107,10 @@ impl Native {
                 vault.unlock(&password)
             }
         });
-        self.vault_master_input.update(cx, |state, cx| state.set_value("", window, cx));
-        self.vault_confirm_input.update(cx, |state, cx| state.set_value("", window, cx));
+        self.vault_master_input
+            .update(cx, |state, cx| state.set_value("", window, cx));
+        self.vault_confirm_input
+            .update(cx, |state, cx| state.set_value("", window, cx));
         match result {
             Ok(()) => {
                 self.vault_error = None;
@@ -116,14 +138,17 @@ impl Native {
     }
 
     pub(super) fn submit_vault_reveal(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let Some(id) = self.vault_reveal_id.clone() else { return };
+        let Some(id) = self.vault_reveal_id.clone() else {
+            return;
+        };
         let password = self.vault_reveal_input.read(cx).value().to_string();
         if password.is_empty() {
             return;
         }
         let result = browserhost_rs::cdp::shared_browser_vault()
             .and_then(|vault| vault.reveal(&id, &password));
-        self.vault_reveal_input.update(cx, |state, cx| state.set_value("", window, cx));
+        self.vault_reveal_input
+            .update(cx, |state, cx| state.set_value("", window, cx));
         match result {
             Ok(revealed) => {
                 let password = revealed
@@ -138,7 +163,11 @@ impl Native {
                         .timer(std::time::Duration::from_secs(20))
                         .await;
                     let _ = this.update(cx, |this: &mut Self, cx| {
-                        if this.vault_revealed.as_ref().is_some_and(|(open, _)| open == &id) {
+                        if this
+                            .vault_revealed
+                            .as_ref()
+                            .is_some_and(|(open, _)| open == &id)
+                        {
                             this.vault_revealed = None;
                             this.vault_reveal_id = None;
                             cx.notify();
@@ -153,8 +182,7 @@ impl Native {
     }
 
     pub(super) fn respond_vault_prompt(&mut self, id: &str, save: bool, cx: &mut Context<Self>) {
-        match browserhost_rs::cdp::shared_browser_vault()
-            .and_then(|vault| vault.respond(id, save))
+        match browserhost_rs::cdp::shared_browser_vault().and_then(|vault| vault.respond(id, save))
         {
             Ok(snapshot) => {
                 self.vault_snapshot = Some(snapshot);
@@ -194,7 +222,8 @@ impl Native {
             .first()
             .copied();
         let Some(destination) = destination else {
-            self.cookie_error = Some("Open a Synara browser tab in this chat before importing cookies.".into());
+            self.cookie_error =
+                Some("Open a Synara browser tab in this chat before importing cookies.".into());
             cx.notify();
             return;
         };
@@ -211,12 +240,16 @@ impl Native {
             .map(str::to_string)
             .collect();
         if domains.len() > 1 {
-            self.cookie_error = Some("Enter one visible site, or leave the field empty for a whole-profile import.".into());
+            self.cookie_error = Some(
+                "Enter one visible site, or leave the field empty for a whole-profile import."
+                    .into(),
+            );
             cx.notify();
             return;
         }
         if domains.is_empty() && !self.cookie_profile_confirmed {
-            self.cookie_error = Some("Confirm whole-profile session access before importing all cookies.".into());
+            self.cookie_error =
+                Some("Confirm whole-profile session access before importing all cookies.".into());
             cx.notify();
             return;
         }
@@ -245,7 +278,8 @@ impl Native {
                     Ok(result) => {
                         let imported = result.get("imported").and_then(Value::as_u64).unwrap_or(0);
                         let skipped = result.get("skipped").and_then(Value::as_u64).unwrap_or(0);
-                        this.cookie_result = Some(format!("Imported {imported} cookies; skipped {skipped}."));
+                        this.cookie_result =
+                            Some(format!("Imported {imported} cookies; skipped {skipped}."));
                         this.cookie_error = None;
                     }
                     Err(error) => this.cookie_error = Some(error),

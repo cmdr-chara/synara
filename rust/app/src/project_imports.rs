@@ -5,7 +5,7 @@
 // claude reads ~/.claude/projects/*/<uuid>.jsonl transcripts.
 
 use rusqlite::Connection;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::path::{Path, PathBuf};
@@ -19,8 +19,7 @@ fn err(msg: impl Into<String>) -> WsErr {
 pub fn handles(tag: &str) -> bool {
     tag == "orchestration.listProjectImports"
         || tag == "orchestration.loadProjectImportHistory"
-        || (tag == "orchestration.importProject"
-            && true)
+        || (tag == "orchestration.importProject" && true)
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {
@@ -81,15 +80,17 @@ fn load_project_import_history(payload: &Value) -> Result<Value, WsErr> {
     };
     let cursor = payload.get("cursor").and_then(Value::as_str);
     let Some(cursor) = cursor else {
-        let next = get_history(0)
-            .and_then(|s| s.get("cursor").and_then(|c| c.as_str()).map(String::from));
+        let next =
+            get_history(0).and_then(|s| s.get("cursor").and_then(|c| c.as_str()).map(String::from));
         return Ok(json!({
             "nextCursor": if next.is_some() { Value::from("1") } else { Value::Null },
             "messages": [],
         }));
     };
     let revision: i64 = cursor.parse().unwrap_or(-1);
-    if revision < 1 || cursor.parse::<i64>().ok() != Some(revision) || cursor != revision.to_string()
+    if revision < 1
+        || cursor.parse::<i64>().ok() != Some(revision)
+        || cursor != revision.to_string()
     {
         return Err(err("Invalid imported history cursor."));
     }
@@ -109,10 +110,7 @@ fn load_project_import_history(payload: &Value) -> Result<Value, WsErr> {
     }
     // Cache the boundary for the page after this one so a later request finds
     // its state row ready.
-    if pending
-        .get("nextCursor")
-        .and_then(Value::as_str)
-        .is_some()
+    if pending.get("nextCursor").and_then(Value::as_str).is_some()
         && get_history(revision + 1).is_none()
     {
         let mut next = state.clone();
@@ -172,7 +170,11 @@ fn canonical_import_path(value: &str) -> String {
                         .file_name()
                         .map(|f| f.to_string_lossy().into_owned())
                         .unwrap_or_default();
-                    format!("{}/{}", canonical_import_path(&p).trim_end_matches('/'), base)
+                    format!(
+                        "{}/{}",
+                        canonical_import_path(&p).trim_end_matches('/'),
+                        base
+                    )
                 }
                 _ => absolute,
             }
@@ -207,11 +209,7 @@ fn path_identity(v: &str) -> String {
     while body.contains("//") {
         body = body.replace("//", "/");
     }
-    let mut normalized = format!(
-        "{}{}",
-        prefix,
-        body.trim_end_matches('/')
-    );
+    let mut normalized = format!("{}{}", prefix, body.trim_end_matches('/'));
     if is_drive_root {
         normalized = format!("{}/", &fwd[..2]);
     } else if normalized.is_empty() {
@@ -240,11 +238,7 @@ fn root_within(candidate: &str, ancestor: &str) -> bool {
     if c == a {
         return true;
     }
-    let prefix = if a.ends_with('/') {
-        a
-    } else {
-        format!("{a}/")
-    };
+    let prefix = if a.ends_with('/') { a } else { format!("{a}/") };
     c.starts_with(&prefix)
 }
 
@@ -368,7 +362,10 @@ struct Source {
 
 fn sources(providers: &[&str]) -> Vec<Source> {
     let settings = crate::server_settings::current();
-    let instances = settings.get("providerInstances").cloned().unwrap_or(json!({}));
+    let instances = settings
+        .get("providerInstances")
+        .cloned()
+        .unwrap_or(json!({}));
     let mut out: Vec<Source> = Vec::new();
     for provider in providers {
         let default_id = provider.to_string();
@@ -403,21 +400,24 @@ fn sources(providers: &[&str]) -> Vec<Source> {
                             }
                         }
                     }
-                    let en = inst.get("enabled").and_then(|v| v.as_bool()).unwrap_or(true)
-                        && cfg
-                            .get("enabled")
-                            .and_then(|v| v.as_bool())
-                            .unwrap_or(true);
+                    let en = inst
+                        .get("enabled")
+                        .and_then(|v| v.as_bool())
+                        .unwrap_or(true)
+                        && cfg.get("enabled").and_then(|v| v.as_bool()).unwrap_or(true);
                     merged.insert(default_id.clone(), (cfg, en, None));
                     continue;
                 }
                 let cfg = inst.get("config").cloned().unwrap_or(json!({}));
-                let en = inst.get("enabled").and_then(|v| v.as_bool()).unwrap_or(true)
-                    && cfg
-                        .get("enabled")
-                        .and_then(|v| v.as_bool())
-                        .unwrap_or(true);
-                merged.insert(id.clone(), (cfg, en, inst.get("displayName").and_then(|v| text(v))));
+                let en = inst
+                    .get("enabled")
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(true)
+                    && cfg.get("enabled").and_then(|v| v.as_bool()).unwrap_or(true);
+                merged.insert(
+                    id.clone(),
+                    (cfg, en, inst.get("displayName").and_then(|v| text(v))),
+                );
             }
         }
         for (id, (cfg, enabled, display)) in merged {
@@ -434,7 +434,11 @@ fn sources(providers: &[&str]) -> Vec<Source> {
                         .collect()
                 })
                 .unwrap_or_default();
-            let label = if is_default { None } else { display.or(Some(id.clone())) };
+            let label = if is_default {
+                None
+            } else {
+                display.or(Some(id.clone()))
+            };
             if *provider == "codex" {
                 let home = cfg
                     .get("homePath")
@@ -595,7 +599,9 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
         })
         .max_by_key(|(v, _)| *v)
         .map(|(_, p)| p);
-    let conn = db_path.and_then(|p| Connection::open_with_flags(p, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY).ok());
+    let conn = db_path.and_then(|p| {
+        Connection::open_with_flags(p, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY).ok()
+    });
     let tables: HashSet<String> = conn
         .as_ref()
         .map(|c| {
@@ -642,12 +648,19 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
         }
     }
     // mergeLegacyProjects
-    let mut by_id: BTreeMap<String, NativeProject> =
-        projects.iter().map(|p| (p.id.clone(), NativeProject {
-            id: p.id.clone(),
-            title: p.title.clone(),
-            roots: p.roots.clone(),
-        })).collect();
+    let mut by_id: BTreeMap<String, NativeProject> = projects
+        .iter()
+        .map(|p| {
+            (
+                p.id.clone(),
+                NativeProject {
+                    id: p.id.clone(),
+                    title: p.title.clone(),
+                    roots: p.roots.clone(),
+                },
+            )
+        })
+        .collect();
     let mut legacy_ids: HashMap<String, String> = HashMap::new();
     let mappings = state
         .get("app-server-project-id-by-legacy-project-id-by-host")
@@ -665,7 +678,10 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
         .collect();
     if let Some(local) = state.get("local-projects").and_then(|v| v.as_object()) {
         for (key, value) in local {
-            let legacy_id = value.get("id").and_then(|v| text(v)).unwrap_or_else(|| key.clone());
+            let legacy_id = value
+                .get("id")
+                .and_then(|v| text(v))
+                .unwrap_or_else(|| key.clone());
             let mapped = host_mappings
                 .iter()
                 .filter_map(|m| m.get(&legacy_id).and_then(|v| text(v)))
@@ -692,7 +708,11 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
     let mut sessions: Vec<NativeSession> = Vec::new();
     if let Some(c) = &conn {
         if tables.contains("threads") {
-            require_cols(c, "threads", &["id", "cwd", "source", "created_at", "updated_at"])?;
+            require_cols(
+                c,
+                "threads",
+                &["id", "cwd", "source", "created_at", "updated_at"],
+            )?;
             let cols: HashSet<String> = c
                 .prepare("PRAGMA table_info(threads)")
                 .map_err(|e| e.to_string())?
@@ -701,11 +721,25 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
                 .flatten()
                 .collect();
             let wanted = [
-                "id", "cwd", "source", "created_at", "updated_at", "created_at_ms",
-                "updated_at_ms", "name", "title", "project_id", "archived", "thread_source",
+                "id",
+                "cwd",
+                "source",
+                "created_at",
+                "updated_at",
+                "created_at_ms",
+                "updated_at_ms",
+                "name",
+                "title",
+                "project_id",
+                "archived",
+                "thread_source",
                 "parent_thread_id",
             ];
-            let selected: Vec<&str> = wanted.iter().filter(|c2| cols.contains(**c2)).copied().collect();
+            let selected: Vec<&str> = wanted
+                .iter()
+                .filter(|c2| cols.contains(**c2))
+                .copied()
+                .collect();
             let children: HashSet<String> = if tables.contains("thread_spawn_edges") {
                 c.prepare("SELECT child_thread_id FROM thread_spawn_edges")
                     .map_err(|e| e.to_string())?
@@ -749,8 +783,14 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
                         .and_then(|i| row.get(i).cloned())
                         .unwrap_or(Value::Null)
                 };
-                let id = match text(&get("id")) { Some(v) => v, None => continue };
-                let cwd = match text(&get("cwd")) { Some(v) => v, None => continue };
+                let id = match text(&get("id")) {
+                    Some(v) => v,
+                    None => continue,
+                };
+                let cwd = match text(&get("cwd")) {
+                    Some(v) => v,
+                    None => continue,
+                };
                 if children.contains(&id) || text(&get("parent_thread_id")).is_some() {
                     continue;
                 }
@@ -781,7 +821,10 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
                         .and_then(|v| v.as_str())
                         == Some("local")
                 {
-                    assignments.get(&id).and_then(|a| a.get("projectId")).and_then(|v| text(v))
+                    assignments
+                        .get(&id)
+                        .and_then(|a| a.get("projectId"))
+                        .and_then(|v| text(v))
                 } else {
                     None
                 };
@@ -799,7 +842,9 @@ fn discover_codex(src: &Source) -> Result<Catalog, String> {
                     .and_then(iso_from_f64_ms)
                     .ok_or("Codex thread metadata has an unsupported timestamp.")?;
                 sessions.push(NativeSession {
-                    title: text(&get("name")).or_else(|| text(&get("title"))).unwrap_or_else(|| id.clone()),
+                    title: text(&get("name"))
+                        .or_else(|| text(&get("title")))
+                        .unwrap_or_else(|| id.clone()),
                     cwd,
                     project_id: candidate.filter(|c2| project_ids.contains(c2)),
                     created_at,
@@ -906,7 +951,9 @@ fn discover_claude(src: &Source) -> Result<Catalog, String> {
                 if line.len() > 8 * 1024 * 1024 {
                     continue;
                 }
-                let Ok(entry) = serde_json::from_slice::<Value>(line) else { continue };
+                let Ok(entry) = serde_json::from_slice::<Value>(line) else {
+                    continue;
+                };
                 if entry.get("type").and_then(|v| v.as_str()) == Some("summary") {
                     if summary.is_none() {
                         summary = entry.get("summary").and_then(|v| text(v));
@@ -924,9 +971,11 @@ fn discover_claude(src: &Source) -> Result<Catalog, String> {
                         .map(|c| c.to_string());
                 }
                 if created_at.is_none() {
-                    created_at = entry
-                        .get("timestamp")
-                        .and_then(|v| v.as_str().map(|s| s.to_string()).or_else(|| v.as_f64().and_then(iso_from_f64_ms)));
+                    created_at = entry.get("timestamp").and_then(|v| {
+                        v.as_str()
+                            .map(|s| s.to_string())
+                            .or_else(|| v.as_f64().and_then(iso_from_f64_ms))
+                    });
                 }
                 if cwd.is_some() && created_at.is_some() && summary.is_some() {
                     break;
@@ -941,7 +990,9 @@ fn discover_claude(src: &Source) -> Result<Catalog, String> {
             .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
             .map(|d| crate::todo::iso_from_ms(d.as_millis() as i64));
         let updated_at = mtime.or(created_at.clone());
-        let Some(updated_at) = updated_at else { continue };
+        let Some(updated_at) = updated_at else {
+            continue;
+        };
         let created_at = created_at.unwrap_or_else(|| updated_at.clone());
         project_ids.insert(cwd.clone());
         let _ = read;
@@ -990,8 +1041,7 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
     }
     let import_sources = sources(&providers);
     // (instance_id, account_label, error, catalog)
-    let mut results: Vec<(String, Option<String>, Option<String>, Option<Catalog>)> =
-        Vec::new();
+    let mut results: Vec<(String, Option<String>, Option<String>, Option<Catalog>)> = Vec::new();
     for src in &import_sources {
         let outcome = if src.provider == "codex" {
             discover_codex(src)
@@ -1084,7 +1134,6 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
         canonical_import_path(&git_root)
     };
 
-
     for (src, (_, _, _, catalog)) in import_sources.iter().zip(results.iter()) {
         let Some(catalog) = catalog else { continue };
         if !is_abs_dir(&catalog.source_home) {
@@ -1107,15 +1156,19 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
                 };
                 let title = if src.provider == "claudeAgent" {
                     let b = basename(&root);
-                    if b.is_empty() {
-                        sp.title.clone()
-                    } else {
-                        b
-                    }
+                    if b.is_empty() { sp.title.clone() } else { b }
                 } else {
                     sp.title.clone()
                 };
-                ensure_project(&mut out, &existing_by_root, &declared, path_identity(&root), &root, &title, src.provider);
+                ensure_project(
+                    &mut out,
+                    &existing_by_root,
+                    &declared,
+                    path_identity(&root),
+                    &root,
+                    &title,
+                    src.provider,
+                );
                 roots.insert(path_identity(&root), root);
             }
             source_projects.insert(
@@ -1176,14 +1229,18 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
                 source_project.map(|(t, _)| t.clone()).unwrap()
             } else {
                 let b = basename(&root);
-                if b.is_empty() {
-                    root.clone()
-                } else {
-                    b
-                }
+                if b.is_empty() { root.clone() } else { b }
             };
             let ident = path_identity(&root);
-            ensure_project(&mut out, &existing_by_root, &declared, ident.clone(), &root, &title, src.provider);
+            ensure_project(
+                &mut out,
+                &existing_by_root,
+                &declared,
+                ident.clone(),
+                &root,
+                &title,
+                src.provider,
+            );
             imported_keys.insert(key.clone());
             let mut thread = json!({
                 "key": key,
@@ -1256,7 +1313,10 @@ fn list_project_imports(payload: &Value) -> Result<Value, WsErr> {
                 .unwrap_or("")
                 .cmp(a["updatedAt"].as_str().unwrap_or(""))
                 .then(
-                    a["key"].as_str().unwrap_or("").cmp(b["key"].as_str().unwrap_or("")),
+                    a["key"]
+                        .as_str()
+                        .unwrap_or("")
+                        .cmp(b["key"].as_str().unwrap_or("")),
                 )
         });
         let key = project_key(&["project", &ident]);
@@ -1456,7 +1516,10 @@ fn import_project(payload: &Value) -> Result<Value, WsErr> {
             command.insert("projectId".into(), json!(new_id.clone()));
             command.insert(
                 "title".into(),
-                cached.get("title").cloned().unwrap_or(json!("Imported project")),
+                cached
+                    .get("title")
+                    .cloned()
+                    .unwrap_or(json!("Imported project")),
             );
             command.insert("workspaceRoot".into(), json!(workspace_root.clone()));
             command.insert("kind".into(), json!("project"));
@@ -1465,10 +1528,7 @@ fn import_project(payload: &Value) -> Result<Value, WsErr> {
             if let Some(space) = payload.get("spaceId").and_then(Value::as_str) {
                 command.insert("spaceId".into(), json!(space));
             }
-            command.insert(
-                "createdAt".into(),
-                json!(crate::todo::iso_from_ms(now)),
-            );
+            command.insert("createdAt".into(), json!(crate::todo::iso_from_ms(now)));
             match crate::orchestration_engine::project_create(&command) {
                 Ok(_) => {
                     // Read back the projection row; fall back to an existing
@@ -1479,9 +1539,8 @@ fn import_project(payload: &Value) -> Result<Value, WsErr> {
                              WHERE project_id = ?1 AND deleted_at IS NULL",
                         )
                         .map_err(|e| err(e.to_string()))?;
-                    let found: Option<String> = stmt
-                        .query_row(rusqlite::params![new_id], |r| r.get(0))
-                        .ok();
+                    let found: Option<String> =
+                        stmt.query_row(rusqlite::params![new_id], |r| r.get(0)).ok();
                     match found.or_else(|| find_existing(&conn)) {
                         Some(id) => id,
                         None => {
@@ -1617,7 +1676,6 @@ fn sql_to_json(v: rusqlite::types::Value) -> Value {
         }
     }
 }
-
 
 #[derive(Default)]
 struct OutProject {

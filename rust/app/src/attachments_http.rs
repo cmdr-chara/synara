@@ -13,11 +13,11 @@
 use axum::{
     body::Bytes,
     extract::{Path, RawQuery},
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{IntoResponse, Response},
 };
 use rusqlite::params;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use sha2::Digest;
 use std::path::PathBuf;
 
@@ -83,7 +83,9 @@ fn safe_thread_segment(thread_id: &str) -> Option<String> {
     }
     let trimmed = out.trim_matches(|c| c == '-' || c == '_');
     let capped: String = trimmed.chars().take(64).collect();
-    let capped = capped.trim_end_matches(|c| c == '-' || c == '_').to_string();
+    let capped = capped
+        .trim_end_matches(|c| c == '-' || c == '_')
+        .to_string();
     if capped.is_empty() {
         None
     } else {
@@ -116,7 +118,6 @@ fn extension_for(mime_type: &str, name: &str) -> String {
 fn json_error(status: StatusCode, message: &str) -> Response {
     (status, axum::Json(json!({ "error": message }))).into_response()
 }
-
 
 /// Exact upstream migration 055 shape, created lazily so the server never
 /// depends on the gate schema being fresh.
@@ -246,7 +247,9 @@ pub fn run_cleanup_sweep() {
         Err(_) => return,
     };
     let victims: Vec<(String, String)> = stmt
-        .query_map(params![now], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .query_map(params![now], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        })
         .map(|rows| rows.filter_map(|r| r.ok()).collect())
         .unwrap_or_default();
     for (id, rel) in victims {
@@ -339,24 +342,40 @@ fn cancel_staged(
         "UPDATE managed_attachment_blobs SET state='deleting', delete_reason=?4, delete_requested_at=?5, updated_at=?5 WHERE attachment_id=?1 AND owner_kind=?2 AND owner_id=?3 AND state IN ('uploading','staged')",
         params![attachment_id, owner_kind, owner_id, reason, requested_at],
     ).unwrap_or(0);
-    if updated == 0 { "not-found" } else { "cancelled" }
+    if updated == 0 {
+        "not-found"
+    } else {
+        "cancelled"
+    }
 }
 
 fn valid_attachment_cancel_id(id: &str) -> bool {
     !id.is_empty()
         && id.len() <= 128
-        && id.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
+        && id
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
 }
 
 pub async fn cancel(headers: axum::http::HeaderMap, body: Bytes) -> Response {
     let payload: Value = serde_json::from_slice(&body).unwrap_or(json!({}));
-    let attachment_id = payload.get("attachmentId").and_then(Value::as_str).unwrap_or("").trim();
+    let attachment_id = payload
+        .get("attachmentId")
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .trim();
     if !valid_attachment_cancel_id(attachment_id) {
-        return json_error(StatusCode::BAD_REQUEST, "Attachment cancellation payload is invalid.");
+        return json_error(
+            StatusCode::BAD_REQUEST,
+            "Attachment cancellation payload is invalid.",
+        );
     }
     let (owner_kind, owner_id) = attachment_principal(&headers);
     let Ok(conn) = crate::orchestration_engine::open_state_rw() else {
-        return json_error(StatusCode::INTERNAL_SERVER_ERROR, "attachment store unavailable");
+        return json_error(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "attachment store unavailable",
+        );
     };
     ensure_managed_schema(&conn);
     match cancel_staged(
@@ -373,7 +392,11 @@ pub async fn cancel(headers: axum::http::HeaderMap, body: Bytes) -> Response {
     }
 }
 
-pub async fn upload(headers: axum::http::HeaderMap, RawQuery(query): RawQuery, body: Bytes) -> Response {
+pub async fn upload(
+    headers: axum::http::HeaderMap,
+    RawQuery(query): RawQuery,
+    body: Bytes,
+) -> Response {
     let query = query.unwrap_or_default();
     let thread_id = query_param(&query, "threadId").unwrap_or_default();
     let kind = query_param(&query, "type").unwrap_or_default();
@@ -387,11 +410,21 @@ pub async fn upload(headers: axum::http::HeaderMap, RawQuery(query): RawQuery, b
         return json_error(StatusCode::BAD_REQUEST, "threadId is invalid");
     };
     if kind == "image" && !mime.to_ascii_lowercase().starts_with("image/") {
-        return json_error(StatusCode::BAD_REQUEST, "image uploads require an image MIME type");
+        return json_error(
+            StatusCode::BAD_REQUEST,
+            "image uploads require an image MIME type",
+        );
     }
-    let limit = if kind == "image" { MAX_IMAGE_BYTES } else { MAX_FILE_BYTES };
+    let limit = if kind == "image" {
+        MAX_IMAGE_BYTES
+    } else {
+        MAX_FILE_BYTES
+    };
     if body.len() > limit {
-        return json_error(StatusCode::PAYLOAD_TOO_LARGE, "attachment exceeds the size limit");
+        return json_error(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            "attachment exceeds the size limit",
+        );
     }
     if body.is_empty() {
         return json_error(StatusCode::BAD_REQUEST, "attachment body is empty");
@@ -533,9 +566,18 @@ mod tests {
     #[test]
     fn remote_device_principal_isolated_from_local_loopback() {
         let mut headers = axum::http::HeaderMap::new();
-        headers.insert("x-synara-remote-device-jkt", axum::http::HeaderValue::from_static("device-jkt"));
-        assert_eq!(attachment_principal(&headers), ("session".into(), "remote-device:device-jkt".into()));
-        assert_eq!(attachment_principal(&axum::http::HeaderMap::new()), ("local-loopback".into(), "local-loopback".into()));
+        headers.insert(
+            "x-synara-remote-device-jkt",
+            axum::http::HeaderValue::from_static("device-jkt"),
+        );
+        assert_eq!(
+            attachment_principal(&headers),
+            ("session".into(), "remote-device:device-jkt".into())
+        );
+        assert_eq!(
+            attachment_principal(&axum::http::HeaderMap::new()),
+            ("local-loopback".into(), "local-loopback".into())
+        );
     }
 
     #[test]
@@ -546,11 +588,27 @@ mod tests {
             "INSERT INTO managed_attachment_blobs (attachment_id, owner_thread_id, owner_kind, owner_id, kind, original_name, mime_type, reserved_bytes, size_bytes, sha256, relative_path, state, staging_expires_at, created_at, updated_at) VALUES ('att','thread','session','one','image','a.png','image/png',1,1,'x','objects/aa/att.png','staged','soon','now','now')",
             [],
         ).unwrap();
-        assert_eq!(cancel_staged(&conn, "att", "session", "two", "client-cancelled", "later"), "not-found");
-        assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "cancelled");
-        assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "cancelled");
-        conn.execute("UPDATE managed_attachment_blobs SET state='claimed' WHERE attachment_id='att'", []).unwrap();
-        assert_eq!(cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"), "already-claimed");
+        assert_eq!(
+            cancel_staged(&conn, "att", "session", "two", "client-cancelled", "later"),
+            "not-found"
+        );
+        assert_eq!(
+            cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"),
+            "cancelled"
+        );
+        assert_eq!(
+            cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"),
+            "cancelled"
+        );
+        conn.execute(
+            "UPDATE managed_attachment_blobs SET state='claimed' WHERE attachment_id='att'",
+            [],
+        )
+        .unwrap();
+        assert_eq!(
+            cancel_staged(&conn, "att", "session", "one", "client-cancelled", "later"),
+            "already-claimed"
+        );
     }
 
     #[test]
@@ -568,9 +626,27 @@ mod tests {
             ).unwrap();
         }
         let now = "2026-01-01T00:00:00Z";
-        assert!(claim_staged(&conn, "att-live", "thread-1", "message-1", now));
-        assert!(!claim_staged(&conn, "att-wrong-thread", "thread-1", "message-1", now));
-        assert!(!claim_staged(&conn, "att-expired", "thread-1", "message-1", now));
+        assert!(claim_staged(
+            &conn,
+            "att-live",
+            "thread-1",
+            "message-1",
+            now
+        ));
+        assert!(!claim_staged(
+            &conn,
+            "att-wrong-thread",
+            "thread-1",
+            "message-1",
+            now
+        ));
+        assert!(!claim_staged(
+            &conn,
+            "att-expired",
+            "thread-1",
+            "message-1",
+            now
+        ));
     }
 
     #[test]

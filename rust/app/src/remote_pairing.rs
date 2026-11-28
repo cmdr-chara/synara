@@ -5,8 +5,8 @@
 //! remote_device_trust; the credential column stores the invite secret's
 //! sha256 hex, verified with a constant-time compare.
 
-use rusqlite::{params, Connection};
-use serde_json::{json, Value};
+use rusqlite::{Connection, params};
+use serde_json::{Value, json};
 use sha2::Digest;
 
 use crate::orchestration_engine::{open_state_rw, uuid_v4};
@@ -88,7 +88,10 @@ fn timing_safe_eq(a: &str, b: &str) -> bool {
     if a.len() != b.len() {
         return false;
     }
-    a.iter().zip(b.iter()).fold(0u8, |acc, (x, y)| acc | (x ^ y)) == 0
+    a.iter()
+        .zip(b.iter())
+        .fold(0u8, |acc, (x, y)| acc | (x ^ y))
+        == 0
 }
 
 /// Millisecond-precision UTC ISO, matching upstream's DateTime.formatIso —
@@ -113,7 +116,10 @@ fn decode_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PairingRecord> {
             public_key: key_raw
                 .and_then(|r| serde_json::from_str(&r).ok())
                 .unwrap_or(Value::Null),
-            label: row.get("pending_device_label").unwrap_or(None).unwrap_or_default(),
+            label: row
+                .get("pending_device_label")
+                .unwrap_or(None)
+                .unwrap_or_default(),
         }
     });
     Ok(PairingRecord {
@@ -126,7 +132,11 @@ fn decode_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<PairingRecord> {
     })
 }
 
-fn query(conn: &Connection, scope: &TrustScope, id: Option<&str>) -> Result<Vec<PairingRecord>, String> {
+fn query(
+    conn: &Connection,
+    scope: &TrustScope,
+    id: Option<&str>,
+) -> Result<Vec<PairingRecord>, String> {
     let mut stmt = conn
         .prepare(
             "SELECT * FROM auth_pairing_links WHERE purpose = 'remote-device' AND (?1 IS NULL OR id = ?1)",
@@ -171,10 +181,7 @@ pub fn create_invite(conn: &Connection, scope: &TrustScope) -> Result<CreatedInv
     std::fs::File::open("/dev/urandom")
         .and_then(|mut f| f.read_exact(&mut bytes))
         .map_err(|e| format!("randomness unavailable: {e}"))?;
-    let secret = base64::Engine::encode(
-        &base64::engine::general_purpose::URL_SAFE_NO_PAD,
-        bytes,
-    );
+    let secret = base64::Engine::encode(&base64::engine::general_purpose::URL_SAFE_NO_PAD, bytes);
     let invite_id = uuid_v4();
     let created_at = now_iso();
     let created_ms = chrono::DateTime::parse_from_rfc3339(&created_at)
@@ -206,7 +213,10 @@ pub fn verify_invitation(
     let record = get(conn, scope, id)?;
     let now = now_iso();
     let expected = match &record {
-        Some(r) if r.credential_hash.len() == 64 && r.credential_hash.chars().all(|c| c.is_ascii_hexdigit()) => {
+        Some(r)
+            if r.credential_hash.len() == 64
+                && r.credential_hash.chars().all(|c| c.is_ascii_hexdigit()) =>
+        {
             r.credential_hash.clone()
         }
         _ => "0".repeat(64),
@@ -339,7 +349,10 @@ pub fn has_identity(conn: &Connection, environment_id: &str) -> Result<bool, Str
 }
 
 pub fn list_invites(conn: &Connection, scope: &TrustScope) -> Result<Vec<Value>, String> {
-    Ok(query(conn, scope, None)?.iter().map(PairingRecord::status).collect())
+    Ok(query(conn, scope, None)?
+        .iter()
+        .map(PairingRecord::status)
+        .collect())
 }
 
 pub fn revoke(conn: &Connection, scope: &TrustScope, id: &str) -> Result<(), String> {
@@ -354,28 +367,37 @@ pub fn revoke(conn: &Connection, scope: &TrustScope, id: &str) -> Result<(), Str
     Ok(())
 }
 
-
 /// Trusted devices for the management list, mirroring RemoteTrustedDevice.
 pub fn list_devices(conn: &Connection, scope: &TrustScope) -> Result<Vec<Value>, String> {
     let mut stmt = conn.prepare(
         "SELECT device_jkt, device_public_key, label, generation, approved_at, revoked_at, enrolled_via FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2",
     ).map_err(|e| e.to_string())?;
-    let rows = stmt.query_map(params![scope.environment_id, scope.root_fingerprint], |row| {
-        let key_raw: String = row.get(1)?;
-        Ok(json!({
-            "deviceJkt": row.get::<_, String>(0)?,
-            "publicKey": serde_json::from_str::<Value>(&key_raw).unwrap_or(Value::Null),
-            "label": row.get::<_, String>(2)?,
-            "generation": row.get::<_, i64>(3)?,
-            "approvedAt": row.get::<_, String>(4)?,
-            "revokedAt": row.get::<_, Option<String>>(5)?,
-            "enrolledVia": row.get::<_, Option<String>>(6)?,
-        }))
-    }).map_err(|e| e.to_string())?;
-    rows.collect::<Result<Vec<_>, _>>().map_err(|e| e.to_string())
+    let rows = stmt
+        .query_map(
+            params![scope.environment_id, scope.root_fingerprint],
+            |row| {
+                let key_raw: String = row.get(1)?;
+                Ok(json!({
+                    "deviceJkt": row.get::<_, String>(0)?,
+                    "publicKey": serde_json::from_str::<Value>(&key_raw).unwrap_or(Value::Null),
+                    "label": row.get::<_, String>(2)?,
+                    "generation": row.get::<_, i64>(3)?,
+                    "approvedAt": row.get::<_, String>(4)?,
+                    "revokedAt": row.get::<_, Option<String>>(5)?,
+                    "enrolledVia": row.get::<_, Option<String>>(6)?,
+                }))
+            },
+        )
+        .map_err(|e| e.to_string())?;
+    rows.collect::<Result<Vec<_>, _>>()
+        .map_err(|e| e.to_string())
 }
 
-pub fn revoke_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<(), String> {
+pub fn revoke_device(
+    conn: &Connection,
+    scope: &TrustScope,
+    device_jkt: &str,
+) -> Result<(), String> {
     conn.execute(
         "UPDATE remote_device_trust SET revoked_at = ?1 WHERE environment_id = ?2 AND root_fingerprint = ?3 AND device_jkt = ?4 AND revoked_at IS NULL",
         params![now_iso(), scope.environment_id, scope.root_fingerprint, device_jkt],
@@ -390,7 +412,11 @@ pub fn revoke_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) ->
 /// The credential-minting variant: generation proves the trust row is current
 /// and binds the minted credential to it, so a later revoke (which bumps or
 /// removes the row) invalidates every credential minted before it.
-pub fn device_trust_generation(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<u64, String> {
+pub fn device_trust_generation(
+    conn: &Connection,
+    scope: &TrustScope,
+    device_jkt: &str,
+) -> Result<u64, String> {
     conn.query_row(
         "SELECT generation FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2 AND device_jkt = ?3 AND revoked_at IS NULL",
         params![scope.environment_id, scope.root_fingerprint, device_jkt],
@@ -414,7 +440,11 @@ pub fn reset_environment(conn: &Connection, environment_id: &str, now: &str) -> 
     Ok(())
 }
 
-pub fn authorize_device(conn: &Connection, scope: &TrustScope, device_jkt: &str) -> Result<bool, String> {
+pub fn authorize_device(
+    conn: &Connection,
+    scope: &TrustScope,
+    device_jkt: &str,
+) -> Result<bool, String> {
     let found = conn.query_row(
         "SELECT 1 FROM remote_device_trust WHERE environment_id = ?1 AND root_fingerprint = ?2 AND device_jkt = ?3 AND revoked_at IS NULL",
         params![scope.environment_id, scope.root_fingerprint, device_jkt],
@@ -433,7 +463,11 @@ pub fn allows_connections(conn: &Connection, scope: &TrustScope) -> Result<bool,
     Ok(value.unwrap_or(1) != 0)
 }
 
-pub fn set_allow_connections(conn: &Connection, scope: &TrustScope, enabled: bool) -> Result<(), String> {
+pub fn set_allow_connections(
+    conn: &Connection,
+    scope: &TrustScope,
+    enabled: bool,
+) -> Result<(), String> {
     // `enabled` is the live-identity marker and is left untouched here; the
     // owner switch alone flips (upstream migration 140, default on).
     conn.execute(
@@ -535,7 +569,15 @@ mod tests {
         let invite = create_invite(&conn, &scope).unwrap();
         assert_eq!(invite.secret.len(), 43);
 
-        assert!(verify_invitation(&conn, &scope, &invite.invite_id, "wrong-secret-wrong-secret-wrong-secretx").is_err());
+        assert!(
+            verify_invitation(
+                &conn,
+                &scope,
+                &invite.invite_id,
+                "wrong-secret-wrong-secret-wrong-secretx"
+            )
+            .is_err()
+        );
         let status = verify_invitation(&conn, &scope, &invite.invite_id, &invite.secret).unwrap();
         assert_eq!(status["approved"], json!(false));
 
@@ -549,11 +591,19 @@ mod tests {
         assert_eq!(status["approved"], json!(true));
 
         let trusted: i64 = conn
-            .query_row("SELECT COUNT(*) FROM remote_device_trust WHERE device_jkt = 'jkt-1'", [], |r| r.get(0))
+            .query_row(
+                "SELECT COUNT(*) FROM remote_device_trust WHERE device_jkt = 'jkt-1'",
+                [],
+                |r| r.get(0),
+            )
             .unwrap();
         assert_eq!(trusted, 1);
         let enabled: i64 = conn
-            .query_row("SELECT enabled FROM remote_access_state WHERE environment_id = 'env-1'", [], |r| r.get(0))
+            .query_row(
+                "SELECT enabled FROM remote_access_state WHERE environment_id = 'env-1'",
+                [],
+                |r| r.get(0),
+            )
             .unwrap();
         assert_eq!(enabled, 1);
 
@@ -580,7 +630,11 @@ mod tests {
         let invite = create_invite(&conn, &scope).unwrap();
         assert!(enroll(&conn, &scope, &invite.invite_id, &device()).unwrap());
         let via: String = conn
-            .query_row("SELECT enrolled_via FROM remote_device_trust WHERE device_jkt = 'jkt-1'", [], |r| r.get(0))
+            .query_row(
+                "SELECT enrolled_via FROM remote_device_trust WHERE device_jkt = 'jkt-1'",
+                [],
+                |r| r.get(0),
+            )
             .unwrap();
         assert_eq!(via, "qr");
         std::fs::remove_dir_all(&dir).ok();

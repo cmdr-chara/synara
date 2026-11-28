@@ -53,7 +53,8 @@ pub fn encode_frame(config: FrameCodecConfig, frame: &FrameEnvelope) -> Result<V
             "frame stream id exceeds {FRAME_MAX_STREAM_ID_BYTES} UTF-8 bytes"
         ));
     }
-    let mut out = Vec::with_capacity(FRAME_HEADER_FIXED_BYTES + stream_id_bytes.len() + frame.payload.len());
+    let mut out =
+        Vec::with_capacity(FRAME_HEADER_FIXED_BYTES + stream_id_bytes.len() + frame.payload.len());
     let mut flags = 0u8;
     if frame.header.keyframe {
         flags |= FRAME_FLAG_KEYFRAME;
@@ -171,12 +172,30 @@ impl FrameTransport {
         };
         // Replay codec config then the latest keyframe — a joining decoder is
         // usable immediately rather than at the next natural keyframe.
-        if let Some(config_bytes) = self.codec_config_frames.lock().unwrap().get(stream_id).cloned() {
-            deliver(&mut subscriber, &config_bytes, true, self.queue_limit, self.socket_budget_bytes);
+        if let Some(config_bytes) = self
+            .codec_config_frames
+            .lock()
+            .unwrap()
+            .get(stream_id)
+            .cloned()
+        {
+            deliver(
+                &mut subscriber,
+                &config_bytes,
+                true,
+                self.queue_limit,
+                self.socket_budget_bytes,
+            );
         }
         if let Some(keyframe) = self.latest_keyframe.lock().unwrap().get(stream_id).cloned() {
             subscriber.awaiting_keyframe = false;
-            deliver(&mut subscriber, &keyframe, false, self.queue_limit, self.socket_budget_bytes);
+            deliver(
+                &mut subscriber,
+                &keyframe,
+                false,
+                self.queue_limit,
+                self.socket_budget_bytes,
+            );
         }
         self.subscribers
             .lock()
@@ -187,7 +206,9 @@ impl FrameTransport {
     }
 
     pub fn publish(&self, envelope: &FrameEnvelope) {
-        let Ok(encoded) = encode_frame(self.config, envelope) else { return };
+        let Ok(encoded) = encode_frame(self.config, envelope) else {
+            return;
+        };
         let stream_id = &envelope.header.stream_id;
         if envelope.header.codec_config {
             self.codec_config_frames
@@ -202,7 +223,9 @@ impl FrameTransport {
                 .insert(stream_id.clone(), encoded.clone());
         }
         let mut subscribers = self.subscribers.lock().unwrap();
-        let Some(list) = subscribers.get_mut(stream_id) else { return };
+        let Some(list) = subscribers.get_mut(stream_id) else {
+            return;
+        };
         let mut dead = Vec::new();
         for subscriber in list.iter_mut() {
             if !subscriber.sink.is_open() {
@@ -211,7 +234,13 @@ impl FrameTransport {
             }
             if envelope.header.codec_config {
                 subscriber.awaiting_keyframe = true;
-                deliver(subscriber, &encoded, true, self.queue_limit, self.socket_budget_bytes);
+                deliver(
+                    subscriber,
+                    &encoded,
+                    true,
+                    self.queue_limit,
+                    self.socket_budget_bytes,
+                );
                 continue;
             }
             if subscriber.awaiting_keyframe {
@@ -221,7 +250,13 @@ impl FrameTransport {
                 }
                 subscriber.awaiting_keyframe = false;
             }
-            deliver(subscriber, &encoded, false, self.queue_limit, self.socket_budget_bytes);
+            deliver(
+                subscriber,
+                &encoded,
+                false,
+                self.queue_limit,
+                self.socket_budget_bytes,
+            );
         }
         list.retain(|s| !dead.contains(&s.id) && s.sink.is_open());
         if list.is_empty() {
@@ -260,7 +295,12 @@ impl FrameTransport {
     }
 
     pub fn subscriber_count(&self) -> usize {
-        self.subscribers.lock().unwrap().values().map(Vec::len).sum()
+        self.subscribers
+            .lock()
+            .unwrap()
+            .values()
+            .map(Vec::len)
+            .sum()
     }
 }
 
@@ -312,7 +352,10 @@ mod tests {
     use super::*;
     use std::sync::Mutex as StdMutex;
 
-    const CONFIG: FrameCodecConfig = FrameCodecConfig { magic: 0x5359, version: 1 };
+    const CONFIG: FrameCodecConfig = FrameCodecConfig {
+        magic: 0x5359,
+        version: 1,
+    };
 
     fn frame(stream: &str, seq: u32, keyframe: bool, codec: bool, payload: &[u8]) -> FrameEnvelope {
         FrameEnvelope {
@@ -356,10 +399,16 @@ mod tests {
     fn decode_rejects_bad_magic_and_truncation() {
         let f = frame("main", 1, false, false, b"x");
         let encoded = encode_frame(CONFIG, &f).unwrap();
-        assert_eq!(decode_frame(CONFIG, &encoded[..10]).err(), Some(DecodeError::TooShort));
+        assert_eq!(
+            decode_frame(CONFIG, &encoded[..10]).err(),
+            Some(DecodeError::TooShort)
+        );
         let mut bad = encoded.clone();
         bad[0] = 0xFF;
-        assert_eq!(decode_frame(CONFIG, &bad).err(), Some(DecodeError::BadMagic));
+        assert_eq!(
+            decode_frame(CONFIG, &bad).err(),
+            Some(DecodeError::BadMagic)
+        );
     }
 
     #[test]
@@ -367,7 +416,10 @@ mod tests {
         let transport = FrameTransport::new(CONFIG);
         // Publish a keyframe BEFORE subscribing so replay seeds the joiner.
         transport.publish(&frame("s", 1, true, false, b"key"));
-        let sink = Box::new(TestSink { received: StdMutex::new(Vec::new()), open: true });
+        let sink = Box::new(TestSink {
+            received: StdMutex::new(Vec::new()),
+            open: true,
+        });
         let received = sink.received.lock().unwrap().len();
         drop(received);
         // We need shared access to inspect: use an Arc-shared sink instead.

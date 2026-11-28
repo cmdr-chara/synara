@@ -9,7 +9,7 @@ use std::sync::{Mutex, OnceLock};
 use base64::Engine;
 use serde_json::Value;
 
-use crate::host_auth_verify::{split_jwt, verify_ed25519, JwtReplayCache};
+use crate::host_auth_verify::{JwtReplayCache, split_jwt, verify_ed25519};
 
 const GRANT_JWT_TYP: &str = "synara-grant+jwt";
 const GRANT_MAX_AGE_SECONDS: u64 = 60;
@@ -40,9 +40,9 @@ fn now_seconds() -> u64 {
 
 fn fetch_jwks(account_url: &str) -> Result<Value, String> {
     let client = crate::account::AccountClient::new(account_url);
-    let value = client
-        .get_public("/api/v1/keys/jwks")
-        .map_err(|error| crate::account::service_error(&error, "Remote authorization unavailable").0)?;
+    let value = client.get_public("/api/v1/keys/jwks").map_err(|error| {
+        crate::account::service_error(&error, "Remote authorization unavailable").0
+    })?;
     if value.get("keys").and_then(Value::as_array).is_none() {
         return Err("Remote authorization unavailable".to_string());
     }
@@ -95,7 +95,10 @@ pub fn verify_host_grant(
     {
         return Err("grant header invalid".to_string());
     }
-    let kid = header.get("kid").and_then(Value::as_str).unwrap_or_default();
+    let kid = header
+        .get("kid")
+        .and_then(Value::as_str)
+        .unwrap_or_default();
     if kid.is_empty() {
         return Err("grant header invalid".to_string());
     }
@@ -105,7 +108,8 @@ pub fn verify_host_grant(
     }
     let key = find_key(&jwks, kid).ok_or_else(|| "grant signing key unknown".to_string())?;
     let x = key.get("x").and_then(Value::as_str).unwrap_or_default();
-    verify_ed25519(&signing_input, &signature, x).map_err(|_| "grant signature invalid".to_string())?;
+    verify_ed25519(&signing_input, &signature, x)
+        .map_err(|_| "grant signature invalid".to_string())?;
 
     let text = |name: &str| claims.get(name).and_then(Value::as_str).unwrap_or("");
     let number = |name: &str| claims.get(name).and_then(Value::as_u64).unwrap_or(0);
@@ -138,7 +142,11 @@ pub fn verify_host_grant(
     if jti.is_empty() {
         return Err("grant claims invalid".to_string());
     }
-    Ok(VerifiedGrant { subject: text("sub").to_string(), jti: jti.to_string(), expires_at_seconds: exp })
+    Ok(VerifiedGrant {
+        subject: text("sub").to_string(),
+        jti: jti.to_string(),
+        expires_at_seconds: exp,
+    })
 }
 
 pub fn consume_host_grant(grant: &VerifiedGrant) -> Result<(), String> {
@@ -196,7 +204,9 @@ mod tests {
         jti: &str,
     ) -> String {
         let now = now_seconds();
-        let header = b64(json!({"alg":"EdDSA","typ":GRANT_JWT_TYP,"kid":kid}).to_string().as_bytes());
+        let header = b64(json!({"alg":"EdDSA","typ":GRANT_JWT_TYP,"kid":kid})
+            .to_string()
+            .as_bytes());
         let payload = b64(json!({
             "iss": issuer,
             "sub": user_id,
@@ -208,7 +218,9 @@ mod tests {
             "environmentId": environment_id,
             "cnf": {"jkt": device_jkt},
             "scope": [crate::host_auth_verify::HOST_CONNECT_SCOPE],
-        }).to_string().as_bytes());
+        })
+        .to_string()
+        .as_bytes());
         let input = format!("{header}.{payload}");
         let signature = signing.sign(input.as_bytes());
         format!("{input}.{}", b64(&signature.to_bytes()))
@@ -222,7 +234,16 @@ mod tests {
         let jwks = json!({"keys":[{"kty":"OKP","crv":"Ed25519","alg":"EdDSA","use":"sig","kid":kid,"x":b64(&verifying.to_bytes())}]}).to_string();
         let (account_url, _server) = serve_once(jwks);
         let issuer = crate::account::account_api_issuer(&account_url);
-        let grant = signed_grant(&signing, kid, &issuer, "host-1", "env-1", "user-1", "device-jkt", "grant-1");
+        let grant = signed_grant(
+            &signing,
+            kid,
+            &issuer,
+            "host-1",
+            "env-1",
+            "user-1",
+            "device-jkt",
+            "grant-1",
+        );
         let verified = verify_host_grant(
             &grant,
             &account_url,
@@ -232,7 +253,8 @@ mod tests {
             "user-1",
             "device-jkt",
             Some("user-1"),
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(verified.jti, "grant-1");
         consume_host_grant(&verified).unwrap();
         assert!(consume_host_grant(&verified).is_err());
@@ -246,8 +268,41 @@ mod tests {
         let jwks = json!({"keys":[{"kty":"OKP","crv":"Ed25519","alg":"EdDSA","use":"sig","kid":kid,"x":b64(&verifying.to_bytes())}]}).to_string();
         let (account_url, _server) = serve_once(jwks);
         let issuer = crate::account::account_api_issuer(&account_url);
-        let grant = signed_grant(&signing, kid, &issuer, "host-1", "env-1", "user-1", "device-jkt", "grant-2");
-        assert!(verify_host_grant(&grant, &account_url, &issuer, "env-1", "host-1", "user-1", "other-device", Some("user-1")).is_err());
-        assert!(verify_host_grant(&grant, &account_url, &issuer, "env-1", "other-host", "user-1", "device-jkt", Some("user-1")).is_err());
+        let grant = signed_grant(
+            &signing,
+            kid,
+            &issuer,
+            "host-1",
+            "env-1",
+            "user-1",
+            "device-jkt",
+            "grant-2",
+        );
+        assert!(
+            verify_host_grant(
+                &grant,
+                &account_url,
+                &issuer,
+                "env-1",
+                "host-1",
+                "user-1",
+                "other-device",
+                Some("user-1")
+            )
+            .is_err()
+        );
+        assert!(
+            verify_host_grant(
+                &grant,
+                &account_url,
+                &issuer,
+                "env-1",
+                "other-host",
+                "user-1",
+                "device-jkt",
+                Some("user-1")
+            )
+            .is_err()
+        );
     }
 }

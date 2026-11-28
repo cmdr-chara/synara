@@ -43,13 +43,20 @@ pub(crate) fn open_state_copy() -> Option<StateCopy> {
         // cold boot quadratic and let concurrent snapshots overwrite the same
         // process-wide temporary path.
         let conn = Connection::open_with_flags(&db, OpenFlags::SQLITE_OPEN_READ_ONLY).ok()?;
-        return Some(StateCopy { conn, db: None, wal: None });
+        return Some(StateCopy {
+            conn,
+            db: None,
+            wal: None,
+        });
     }
     static TEMP_COUNTER: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
     let unique = format!(
         "{}-{}-{}",
         std::process::id(),
-        std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).ok()?.as_nanos(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .ok()?
+            .as_nanos(),
         TEMP_COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
     );
     let tmp = std::env::temp_dir().join(format!("synara-orch-snap-{unique}.sqlite"));
@@ -151,7 +158,11 @@ pub(crate) fn query_objects(
                 continue;
             }
             let Ok(v) = row.get_ref(i) else { continue };
-            let val = row_value(v, col.ends_with("_json") || json_cols.contains(&col), bool_cols.contains(&col));
+            let val = row_value(
+                v,
+                col.ends_with("_json") || json_cols.contains(&col),
+                bool_cols.contains(&col),
+            );
             obj.insert(key, val);
         }
         out.push(Value::Object(obj));
@@ -310,7 +321,9 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
     for thread in threads.iter_mut() {
         let tid = get(thread, "id").as_str().unwrap_or_default().to_string();
         let latest_turn_id = get(thread, "latestTurnId").as_str().map(|s| s.to_string());
-        let Some(tobj) = thread.as_object_mut() else { continue };
+        let Some(tobj) = thread.as_object_mut() else {
+            continue;
+        };
         let approvals = tobj
             .get("pendingApprovalCount")
             .and_then(|v| v.as_i64())
@@ -414,7 +427,9 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
             }
         }
         for message in &mut messages {
-            let Some(obj) = message.as_object_mut() else { continue };
+            let Some(obj) = message.as_object_mut() else {
+                continue;
+            };
             // Legacy gateway rows predate the contract literal set
             // (user|automation|agent); normalize so the wire decodes.
             if obj.get("dispatchOrigin").and_then(Value::as_str) == Some("agentGateway") {
@@ -470,7 +485,10 @@ fn load_threads(conn: &Connection) -> Vec<Value> {
                      FROM projection_thread_active_tools WHERE thread_id = '{}'",
                     tid.replace('\'', "''")
                 ),
-                &[("item_id", "itemId"), ("started_event_id", "startedEventId")],
+                &[
+                    ("item_id", "itemId"),
+                    ("started_event_id", "startedEventId")
+                ],
                 &[],
                 &[],
             )),
@@ -520,7 +538,11 @@ pub(crate) fn now_iso() -> String {
 fn collect_updated_at(value: &Value, best: &mut Option<String>) {
     match value {
         Value::Object(map) => {
-            if let Some(updated) = map.get("updatedAt").and_then(Value::as_str).filter(|v| !v.is_empty()) {
+            if let Some(updated) = map
+                .get("updatedAt")
+                .and_then(Value::as_str)
+                .filter(|v| !v.is_empty())
+            {
                 if best.as_deref().is_none_or(|current| updated > current) {
                     *best = Some(updated.to_string());
                 }
@@ -684,9 +706,14 @@ fn latest_reply_preview(messages: &[Value]) -> Value {
 }
 
 fn to_thread_shell(thread: &Value) -> Value {
-    let Some(obj) = thread.as_object() else { return thread.clone() };
+    let Some(obj) = thread.as_object() else {
+        return thread.clone();
+    };
     let preview = latest_reply_preview(
-        obj.get("messages").and_then(|m| m.as_array()).map(Vec::as_slice).unwrap_or(&[]),
+        obj.get("messages")
+            .and_then(|m| m.as_array())
+            .map(Vec::as_slice)
+            .unwrap_or(&[]),
     );
     let mut shell = Map::new();
     for (k, v) in obj {
@@ -706,22 +733,73 @@ const CONTRACT_KEEP_NULL_KEYS: &[&str] = &[
     // Keys typed NullOr in the contract schemas accept (and when required,
     // demand) a present null; every other null is stripped because optional
     // non-nullable fields must be absent, never null.
-    "activeTurnId", "assistantMessageId", "branch", "causationEventId", "commandId",
-    "completedAt", "correlationId", "defaultModelSelection", "deletedAt", "elapsedMs",
-    "goalStartedAt", "handoff", "implementationThreadId", "implementedAt", "label",
-    "lastError", "lastReconciledAt", "lastReconciledBy", "lastReconciliationNote",
-    "lastReconciliationOutcome", "latestTurn", "latestUserMessageAt", "lifecycleGeneration",
-    "providerName", "recordedTurnId", "resolvedAt", "responseCommandId",
-    "responseRequestedAt", "review", "session", "startedAt", "turnId", "worktreePath",
-    "additions", "archivedAt", "associatedWorktreeBranch", "associatedWorktreePath",
-    "associatedWorktreeRef", "changedFiles", "claudeCacheReview", "creationSource",
-    "deletions", "discovered", "dismissedAt", "expectedReviewId", "expectedSnoozedUntil",
-    "forkSourceMessageId", "forkSourceThreadId", "gatewayOperationId",
-    "gatewayOperationIndex", "goalPausedAt", "lastActivityAt", "lastKnownPr",
-    "lastProgressAt", "latestHumanMessageAt", "parentThreadId", "settledAt",
-    "snoozeReminderAt", "snoozedUntil", "sourceThreadId", "sourceTurnId", "spaceId",
-    "subagentAgentId", "subagentNickname", "subagentRole",
-    "usageLimitRecoveryCancelledAt", "usageLimitRecoveryCancelledTurnId",
+    "activeTurnId",
+    "assistantMessageId",
+    "branch",
+    "causationEventId",
+    "commandId",
+    "completedAt",
+    "correlationId",
+    "defaultModelSelection",
+    "deletedAt",
+    "elapsedMs",
+    "goalStartedAt",
+    "handoff",
+    "implementationThreadId",
+    "implementedAt",
+    "label",
+    "lastError",
+    "lastReconciledAt",
+    "lastReconciledBy",
+    "lastReconciliationNote",
+    "lastReconciliationOutcome",
+    "latestTurn",
+    "latestUserMessageAt",
+    "lifecycleGeneration",
+    "providerName",
+    "recordedTurnId",
+    "resolvedAt",
+    "responseCommandId",
+    "responseRequestedAt",
+    "review",
+    "session",
+    "startedAt",
+    "turnId",
+    "worktreePath",
+    "additions",
+    "archivedAt",
+    "associatedWorktreeBranch",
+    "associatedWorktreePath",
+    "associatedWorktreeRef",
+    "changedFiles",
+    "claudeCacheReview",
+    "creationSource",
+    "deletions",
+    "discovered",
+    "dismissedAt",
+    "expectedReviewId",
+    "expectedSnoozedUntil",
+    "forkSourceMessageId",
+    "forkSourceThreadId",
+    "gatewayOperationId",
+    "gatewayOperationIndex",
+    "goalPausedAt",
+    "lastActivityAt",
+    "lastKnownPr",
+    "lastProgressAt",
+    "latestHumanMessageAt",
+    "parentThreadId",
+    "settledAt",
+    "snoozeReminderAt",
+    "snoozedUntil",
+    "sourceThreadId",
+    "sourceTurnId",
+    "spaceId",
+    "subagentAgentId",
+    "subagentNickname",
+    "subagentRole",
+    "usageLimitRecoveryCancelledAt",
+    "usageLimitRecoveryCancelledTurnId",
     "workingDirectory",
 ];
 
@@ -750,7 +828,9 @@ fn normalize_contract_shape(value: &mut Value) {
 }
 
 fn conform_thread_contract(thread: &mut Value) {
-    let Some(obj) = thread.as_object_mut() else { return };
+    let Some(obj) = thread.as_object_mut() else {
+        return;
+    };
     if obj.get("updatedAt").is_none_or(Value::is_null) {
         let created = obj.get("createdAt").cloned().unwrap_or(Value::Null);
         obj.insert("updatedAt".into(), created);
@@ -760,7 +840,13 @@ fn conform_thread_contract(thread: &mut Value) {
             obj.insert(key.into(), Value::Null);
         }
     }
-    for key in ["messages", "activities", "checkpoints", "proposedPlans", "pullRequests"] {
+    for key in [
+        "messages",
+        "activities",
+        "checkpoints",
+        "proposedPlans",
+        "pullRequests",
+    ] {
         if !obj.contains_key(key) {
             obj.insert(key.into(), json!([]));
         }
@@ -854,12 +940,11 @@ pub fn search_threads(payload: &Value) -> Result<Value, WsErr> {
             Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
         })
         .map_err(|e| err(e.to_string()))?;
-    let mut by_thread: std::collections::BTreeMap<String, (String, i64)> = std::collections::BTreeMap::new();
+    let mut by_thread: std::collections::BTreeMap<String, (String, i64)> =
+        std::collections::BTreeMap::new();
     for row in rows.flatten() {
         let (tid, text) = row;
-        let entry = by_thread
-            .entry(tid)
-            .or_insert_with(|| (text.clone(), 0));
+        let entry = by_thread.entry(tid).or_insert_with(|| (text.clone(), 0));
         entry.1 += 1;
         if entry.0.len() > text.len() {
             // Keep the earliest matching message's text for the excerpt.

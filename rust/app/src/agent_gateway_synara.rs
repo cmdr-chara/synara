@@ -3,7 +3,7 @@
 //! from upstream `agentGateway/{todoTools,automationTools,threadTools}.ts`.
 //! These are the tools agents use to coordinate work inside threads.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const MAX_LISTED_TODOS: usize = 200;
 const LISTED_NOTES_PREVIEW_CHARS: usize = 500;
@@ -32,211 +32,280 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
         def(
             "synara_list_todos",
             "List the user's to-dos from the Tasks list. Completed ones are hidden unless includeCompleted is true. Returns at most 200 and reports truncated when there are more; notes are cut to 500 characters unless todoId selects one to-do.",
-            schema(json!({
-                "includeCompleted": {"type": "boolean"},
-                "projectId": {"type": "string", "description": "Only to-dos filed under this project."},
-                "todoId": {"type": "string", "description": "Return only this to-do, completed or not, with its full notes."},
-            }), &[]),
+            schema(
+                json!({
+                    "includeCompleted": {"type": "boolean"},
+                    "projectId": {"type": "string", "description": "Only to-dos filed under this project."},
+                    "todoId": {"type": "string", "description": "Return only this to-do, completed or not, with its full notes."},
+                }),
+                &[],
+            ),
         ),
         def(
             "synara_create_todo",
             "Add a to-do to the user's Tasks list. Use this for work the user asked you to track, not for steps inside the current turn.",
-            schema(json!({
-                "title": {"type": "string", "maxLength": 200, "description": "What needs doing, as one line."},
-                "notes": {"type": "string", "description": "Optional details. An agent the to-do is later handed to receives them."},
-                "priority": {"type": "string", "enum": ["low", "medium", "high"]},
-                "dueDate": {"type": "string", "description": "Due day in the user's calendar, as YYYY-MM-DD."},
-                "projectId": {"type": "string", "description": "Project to file the to-do under."},
-            }), &["title"]),
+            schema(
+                json!({
+                    "title": {"type": "string", "maxLength": 200, "description": "What needs doing, as one line."},
+                    "notes": {"type": "string", "description": "Optional details. An agent the to-do is later handed to receives them."},
+                    "priority": {"type": "string", "enum": ["low", "medium", "high"]},
+                    "dueDate": {"type": "string", "description": "Due day in the user's calendar, as YYYY-MM-DD."},
+                    "projectId": {"type": "string", "description": "Project to file the to-do under."},
+                }),
+                &["title"],
+            ),
         ),
         def(
             "synara_update_todo",
             "Edit a to-do in the user's Tasks list, or mark it done or not done. Only the fields you send change. Get todoId from synara_list_todos.",
-            schema(json!({
-                "todoId": {"type": "string"},
-                "title": {"type": "string", "maxLength": 200},
-                "notes": {"type": "string"},
-                "priority": {"type": "string", "enum": ["low", "medium", "high"]},
-                "dueDate": {"type": ["string", "null"], "description": "Pass null to clear it."},
-                "projectId": {"type": ["string", "null"], "description": "Pass null to file it under none."},
-                "completed": {"type": "boolean", "description": "true marks the to-do done; false reopens it."},
-            }), &["todoId"]),
+            schema(
+                json!({
+                    "todoId": {"type": "string"},
+                    "title": {"type": "string", "maxLength": 200},
+                    "notes": {"type": "string"},
+                    "priority": {"type": "string", "enum": ["low", "medium", "high"]},
+                    "dueDate": {"type": ["string", "null"], "description": "Pass null to clear it."},
+                    "projectId": {"type": ["string", "null"], "description": "Pass null to file it under none."},
+                    "completed": {"type": "boolean", "description": "true marks the to-do done; false reopens it."},
+                }),
+                &["todoId"],
+            ),
         ),
         def(
             "synara_list_threads",
             "List threads (chats) in the workspace, newest first. Excludes archived and deleted threads unless includeArchived is true.",
-            schema(json!({
-                "projectId": {"type": "string", "description": "Only threads in this project."},
-                "includeArchived": {"type": "boolean"},
-                "limit": {"type": "number", "description": "Max threads to return (default 50, max 100)."},
-            }), &[]),
+            schema(
+                json!({
+                    "projectId": {"type": "string", "description": "Only threads in this project."},
+                    "includeArchived": {"type": "boolean"},
+                    "limit": {"type": "number", "description": "Max threads to return (default 50, max 100)."},
+                }),
+                &[],
+            ),
         ),
         def(
             "synara_read_thread",
             "Read one thread's metadata and recent messages. Get threadId from synara_list_threads.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "messageLimit": {"type": "number", "description": "Max recent messages (default 20, max 100)."},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "messageLimit": {"type": "number", "description": "Max recent messages (default 20, max 100)."},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_read_thread_activity",
             "Read the activity feed of one thread: tool calls, file edits, command runs and errors, newest last.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "turnId": {"type": "string", "description": "Only activities of this turn."},
-                "limit": {"type": "number", "description": "Max activities (default 50, max 100)."},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "turnId": {"type": "string", "description": "Only activities of this turn."},
+                    "limit": {"type": "number", "description": "Max activities (default 50, max 100)."},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_read_thread_events",
             "Read the durable orchestration events of one thread (turn lifecycle, meta updates, checkpoint events), newest last. Use read_thread_activity for the human-facing feed; events are the raw record.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "limit": {"type": "number", "description": "Max events (default 50, max 200)."},
-                "type": {"type": "string", "description": "Only events of this type, e.g. thread.turn-started."},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "limit": {"type": "number", "description": "Max events (default 50, max 200)."},
+                    "type": {"type": "string", "description": "Only events of this type, e.g. thread.turn-started."},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_create_kanban_task",
             "Create a Kanban task from a title and optional description: starts a new thread and immediately starts a turn, so the card renders In Progress. requestId is required; retries with the same requestId replay exactly-once.",
-            schema(json!({
-                "title": {"type": "string", "maxLength": 200},
-                "description": {"type": "string", "description": "Used as the first-turn prompt."},
-                "projectId": {"type": "string"},
-                "requestId": {"type": "string", "maxLength": 256, "description": "Idempotency key."},
-            }), &["title", "requestId"]),
+            schema(
+                json!({
+                    "title": {"type": "string", "maxLength": 200},
+                    "description": {"type": "string", "description": "Used as the first-turn prompt."},
+                    "projectId": {"type": "string"},
+                    "requestId": {"type": "string", "maxLength": 256, "description": "Idempotency key."},
+                }),
+                &["title", "requestId"],
+            ),
         ),
         def(
             "synara_create_kanban_draft",
             "Create a Kanban draft card: a thread with no turn started, so the card renders in Draft. requestId is the idempotency key.",
-            schema(json!({
-                "title": {"type": "string", "maxLength": 200},
-                "projectId": {"type": "string"},
-                "requestId": {"type": "string", "maxLength": 256},
-            }), &["title", "requestId"]),
+            schema(
+                json!({
+                    "title": {"type": "string", "maxLength": 200},
+                    "projectId": {"type": "string"},
+                    "requestId": {"type": "string", "maxLength": 256},
+                }),
+                &["title", "requestId"],
+            ),
         ),
         def(
             "synara_read_kanban_card",
             "Read one Kanban card: its thread metadata and derived column with attention flags.",
-            schema(json!({
-                "threadId": {"type": "string"},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_move_kanban_card",
             "Move a card between actionable columns. target inProgress starts or resumes work, optionally with a message — required when restarting a settled thread. target done requests the running turn to interrupt.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "target": {"type": "string", "enum": ["inProgress", "done"]},
-                "message": {"type": "string", "description": "Required when restarting a settled thread."},
-            }), &["threadId", "target"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "target": {"type": "string", "enum": ["inProgress", "done"]},
+                    "message": {"type": "string", "description": "Required when restarting a settled thread."},
+                }),
+                &["threadId", "target"],
+            ),
         ),
         def(
             "synara_update_kanban_card",
             "Edit a card's title and/or description (stored as the thread notes). At least one of title/description required.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "title": {"type": "string", "maxLength": 200},
-                "description": {"type": "string"},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "title": {"type": "string", "maxLength": 200},
+                    "description": {"type": "string"},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_delete_kanban_card",
             "Delete a card: permanently deletes the thread behind it. Cannot be undone.",
-            schema(json!({
-                "threadId": {"type": "string"},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_create_automation",
             "Create a heartbeat, standalone, or dedicated Synara automation. heartbeat appends turns to an existing thread; standalone opens a fresh thread per run; dedicated reuses one owned thread. Omitting mode/schedule creates a heartbeat on your thread using everyMinutes (default 5).",
-            schema(json!({
-                "name": {"type": "string"},
-                "prompt": {"type": "string"},
-                "mode": {"type": "string", "enum": ["heartbeat", "standalone", "dedicated"]},
-                "everyMinutes": {"type": "number", "description": "Interval shorthand, default 5."},
-                "targetThreadId": {"type": "string", "description": "Heartbeat only; defaults to the caller thread."},
-                "projectId": {"type": "string", "description": "Standalone/dedicated; defaults to the caller's project."},
-                "worktreeMode": {"type": "string", "enum": ["auto", "local", "worktree"]},
-                "maxIterations": {"type": "number", "minimum": 1},
-                "enabled": {"type": "boolean"},
-            }), &["name", "prompt"]),
+            schema(
+                json!({
+                    "name": {"type": "string"},
+                    "prompt": {"type": "string"},
+                    "mode": {"type": "string", "enum": ["heartbeat", "standalone", "dedicated"]},
+                    "everyMinutes": {"type": "number", "description": "Interval shorthand, default 5."},
+                    "targetThreadId": {"type": "string", "description": "Heartbeat only; defaults to the caller thread."},
+                    "projectId": {"type": "string", "description": "Standalone/dedicated; defaults to the caller's project."},
+                    "worktreeMode": {"type": "string", "enum": ["auto", "local", "worktree"]},
+                    "maxIterations": {"type": "number", "minimum": 1},
+                    "enabled": {"type": "boolean"},
+                }),
+                &["name", "prompt"],
+            ),
         ),
         def(
             "synara_update_automation",
             "Replace an automation's mutable configuration. Call synara_view_automation first and resend every field, including unchanged ones; partial updates are rejected.",
-            schema(json!({
-                "automationId": {"type": "string"},
-                "name": {"type": "string"},
-                "prompt": {"type": "string"},
-                "everyMinutes": {"type": "number"},
-                "enabled": {"type": "boolean"},
-                "maxIterations": {"type": ["number", "null"]},
-            }), &["automationId"]),
+            schema(
+                json!({
+                    "automationId": {"type": "string"},
+                    "name": {"type": "string"},
+                    "prompt": {"type": "string"},
+                    "everyMinutes": {"type": "number"},
+                    "enabled": {"type": "boolean"},
+                    "maxIterations": {"type": ["number", "null"]},
+                }),
+                &["automationId"],
+            ),
         ),
         def(
             "synara_cancel_automation",
             "Disable an automation so it stops scheduling runs. Existing runs finish.",
-            schema(json!({
-                "automationId": {"type": "string"},
-            }), &["automationId"]),
+            schema(
+                json!({
+                    "automationId": {"type": "string"},
+                }),
+                &["automationId"],
+            ),
         ),
         def(
             "synara_view_automation",
             "Read one automation's full configuration. Get automationId from synara_list_automations.",
-            schema(json!({
-                "automationId": {"type": "string"},
-            }), &["automationId"]),
+            schema(
+                json!({
+                    "automationId": {"type": "string"},
+                }),
+                &["automationId"],
+            ),
         ),
         def(
             "synara_project_list_tasks",
             "List project coordinator tasks, including review state and dependencies.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "includeArchived": {"type": "boolean"},
-            }), &["projectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "includeArchived": {"type": "boolean"},
+                }),
+                &["projectId"],
+            ),
         ),
         def(
             "synara_project_list_threads",
             "List every hub thread in the project with its live state, PR link, last update time, and task id.",
-            schema(json!({
-                "projectId": {"type": "string"},
-            }), &["projectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                }),
+                &["projectId"],
+            ),
         ),
         def(
             "synara_project_read_document",
             "Read a shared project document by relative path (e.g. memory/MEMORY.md or memory/<date>-<slug>.md).",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "logicalPath": {"type": "string"},
-            }), &["projectId", "logicalPath"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "logicalPath": {"type": "string"},
+                }),
+                &["projectId", "logicalPath"],
+            ),
         ),
         def(
             "synara_project_write_document",
             "Write a shared project document at a relative path, creating a new revision.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "logicalPath": {"type": "string"},
-                "content": {"type": "string"},
-            }), &["projectId", "logicalPath", "content"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "logicalPath": {"type": "string"},
+                    "content": {"type": "string"},
+                }),
+                &["projectId", "logicalPath", "content"],
+            ),
         ),
         def(
             "synara_project_remember",
             "Save a note to the hub's shared memory (memory/<date>-<slug>.md) and update the MEMORY.md index every hub thread reads. Near-identical notes are deduplicated onto the existing memory file.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "note": {"type": "string"},
-                "title": {"type": "string"},
-            }), &["projectId", "note"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "note": {"type": "string"},
+                    "title": {"type": "string"},
+                }),
+                &["projectId", "note"],
+            ),
         ),
         def(
             "synara_project_forget",
             "Remove a hub memory note file (memory/<date>-<slug>.md) and its index line in MEMORY.md.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "path": {"type": "string"},
-            }), &["projectId", "path"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "path": {"type": "string"},
+                }),
+                &["projectId", "path"],
+            ),
         ),
         def(
             "synara_hub_list_work",
@@ -246,95 +315,122 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
         def(
             "synara_hub_update_progress",
             "Persist your own Hub task checklist. Pass the last progress revision (0 initially). Checklist completion does not finish the task or release its worker slot.",
-            schema(json!({
-                "workItemId": {"type": "string"},
-                "expectedRevision": {"type": "integer", "minimum": 0},
-                "summary": {"type": "string", "maxLength": 2000},
-                "steps": {
-                    "type": "array",
-                    "maxItems": 32,
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "string"},
-                            "text": {"type": "string"},
-                            "status": {"type": "string", "enum": ["pending", "inProgress", "completed"]},
+            schema(
+                json!({
+                    "workItemId": {"type": "string"},
+                    "expectedRevision": {"type": "integer", "minimum": 0},
+                    "summary": {"type": "string", "maxLength": 2000},
+                    "steps": {
+                        "type": "array",
+                        "maxItems": 32,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "string"},
+                                "text": {"type": "string"},
+                                "status": {"type": "string", "enum": ["pending", "inProgress", "completed"]},
+                            },
+                            "required": ["id", "text", "status"],
                         },
-                        "required": ["id", "text", "status"],
                     },
-                },
-            }), &["workItemId", "expectedRevision", "steps"]),
+                }),
+                &["workItemId", "expectedRevision", "steps"],
+            ),
         ),
         def(
             "synara_hub_cancel_work",
             "Cancel queued or idle Hub work. Stop active workers using the existing interrupt tool before cancelling.",
-            schema(json!({
-                "workItemId": {"type": "string"},
-            }), &["workItemId"]),
+            schema(
+                json!({
+                    "workItemId": {"type": "string"},
+                }),
+                &["workItemId"],
+            ),
         ),
         def(
             "synara_create_thread",
             "Create a new thread. Pass prompt to start it immediately, or omit it for a draft. requestId is the idempotency key: retries with the same requestId replay the original result exactly once.",
-            schema(json!({
-                "requestId": {"type": "string", "maxLength": 256},
-                "prompt": {"type": "string"},
-                "title": {"type": "string"},
-                "projectId": {"type": "string"},
-                "provider": {"type": "string"},
-                "model": {"type": "string"},
-                "environment": {"type": "string", "enum": ["local", "worktree"]},
-                "baseRef": {"type": "string", "description": "Local git revision the worktree is pinned at. Defaults to HEAD."},
-            }), &["requestId"]),
+            schema(
+                json!({
+                    "requestId": {"type": "string", "maxLength": 256},
+                    "prompt": {"type": "string"},
+                    "title": {"type": "string"},
+                    "projectId": {"type": "string"},
+                    "provider": {"type": "string"},
+                    "model": {"type": "string"},
+                    "environment": {"type": "string", "enum": ["local", "worktree"]},
+                    "baseRef": {"type": "string", "description": "Local git revision the worktree is pinned at. Defaults to HEAD."},
+                }),
+                &["requestId"],
+            ),
         ),
         def(
             "synara_send_message",
             "Send a follow-up message to a thread. mode queue (default) waits for the current turn; steer interrupts the active turn and redirects it.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "message": {"type": "string"},
-                "mode": {"type": "string", "enum": ["queue", "steer"]},
-            }), &["threadId", "message"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "message": {"type": "string"},
+                    "mode": {"type": "string", "enum": ["queue", "steer"]},
+                }),
+                &["threadId", "message"],
+            ),
         ),
         def(
             "synara_interrupt_thread",
             "Interrupt the active turn on a thread. The thread settles with its work so far.",
-            schema(json!({
-                "threadId": {"type": "string"},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_set_thread_title",
             "Rename a thread.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "title": {"type": "string", "maxLength": 200},
-            }), &["threadId", "title"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "title": {"type": "string", "maxLength": 200},
+                }),
+                &["threadId", "title"],
+            ),
         ),
         def(
             "synara_set_thread_archived",
             "Archive or unarchive a thread.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "archived": {"type": "boolean"},
-            }), &["threadId", "archived"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "archived": {"type": "boolean"},
+                }),
+                &["threadId", "archived"],
+            ),
         ),
         def(
             "synara_read_thread_runtime_events",
             "Read retained provider-runtime events for one thread. This source has a global retention cap; inspect coverage before treating absence as evidence.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "limit": {"type": "number", "description": "Default 50, max 200."},
-                "turnId": {"type": "string"},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "limit": {"type": "number", "description": "Default 50, max 200."},
+                    "turnId": {"type": "string"},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_wait_for_threads",
             "Wait for the pinned turns of 1-20 Synara threads and return every outcome in input order. When results are required, keep calling until allTerminal is true, passing the returned runIds to each subsequent call. A timedOut response is progress, not completion.",
-            schema(json!({
-                "threadIds": {"type": "array", "minItems": 1, "maxItems": 20, "items": {"type": "string"}},
-                "runIds": {"type": "array", "maxItems": 20, "items": {"type": ["string", "null"]}},
-                "timeoutMs": {"type": "integer", "minimum": 0, "maximum": 60000},
-            }), &["threadIds"]),
+            schema(
+                json!({
+                    "threadIds": {"type": "array", "minItems": 1, "maxItems": 20, "items": {"type": "string"}},
+                    "runIds": {"type": "array", "maxItems": 20, "items": {"type": ["string", "null"]}},
+                    "timeoutMs": {"type": "integer", "minimum": 0, "maximum": 60000},
+                }),
+                &["threadIds"],
+            ),
         ),
         def(
             "synara_list_connections",
@@ -344,107 +440,146 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
         def(
             "synara_project_library_list",
             "List files in the hub's Library (optionally under relativePath). Returns the library root path and entries.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "relativePath": {"type": "string"},
-            }), &["projectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "relativePath": {"type": "string"},
+                }),
+                &["projectId"],
+            ),
         ),
         def(
             "synara_project_library_add",
             "Copy a file or folder from this thread's own workspace into the hub's Library. sourcePath must resolve inside your workspace; destinationPath defaults to the source name at the library root.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "sourcePath": {"type": "string"},
-                "destinationPath": {"type": "string"},
-            }), &["projectId", "sourcePath"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "sourcePath": {"type": "string"},
+                    "destinationPath": {"type": "string"},
+                }),
+                &["projectId", "sourcePath"],
+            ),
         ),
         def(
             "synara_project_get_overview",
             "Read the current hub's coordinator overview: goal, focus, blockers, last summary, and linked repositories. Does not include document bodies.",
-            schema(json!({
-                "projectId": {"type": "string"},
-            }), &["projectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                }),
+                &["projectId"],
+            ),
         ),
         def(
             "synara_project_context",
             "Load the bounded project context packet (goal, instructions, decisions, tasks) capped at 32,000 characters.",
-            schema(json!({
-                "projectId": {"type": "string"},
-            }), &["projectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                }),
+                &["projectId"],
+            ),
         ),
         def(
             "synara_project_report_result",
             "Report worker findings into the project inbox. This records evidence and moves the task to review. It does not mark the task done.",
-            schema(json!({
-                "requestId": {"type": "string"},
-                "projectId": {"type": "string"},
-                "taskId": {"type": "string"},
-                "summary": {"type": "string"},
-            }), &["requestId", "projectId", "taskId", "summary"]),
+            schema(
+                json!({
+                    "requestId": {"type": "string"},
+                    "projectId": {"type": "string"},
+                    "taskId": {"type": "string"},
+                    "summary": {"type": "string"},
+                }),
+                &["requestId", "projectId", "taskId", "summary"],
+            ),
         ),
         def(
             "synara_update_automation_memory",
             "Fully replace an automation's persistent memory. Maximum size: 32 KiB. Omit automationId only when the current user message is the automation run envelope.",
-            schema(json!({
-                "memory": {"type": "string", "maxLength": 32768},
-                "automationId": {"type": "string"},
-            }), &["memory"]),
+            schema(
+                json!({
+                    "memory": {"type": "string", "maxLength": 32768},
+                    "automationId": {"type": "string"},
+                }),
+                &["memory"],
+            ),
         ),
         def(
             "synara_report_automation_result",
             "Report the structured result only when the current user message is the automation run envelope. Use decision silent only when a successful run needs no user attention.",
-            schema(json!({
-                "decision": {"type": "string", "enum": ["notify", "silent"]},
-                "title": {"type": "string", "maxLength": 160},
-                "summary": {"type": "string", "maxLength": 2000},
-            }), &["decision"]),
+            schema(
+                json!({
+                    "decision": {"type": "string", "enum": ["notify", "silent"]},
+                    "title": {"type": "string", "maxLength": 160},
+                    "summary": {"type": "string", "maxLength": 2000},
+                }),
+                &["decision"],
+            ),
         ),
         def(
             "synara_set_thread_pull_request",
             "Link a GitHub pull request to a thread.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "pullRequestUrl": {"type": "string"},
-            }), &["pullRequestUrl"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "pullRequestUrl": {"type": "string"},
+                }),
+                &["pullRequestUrl"],
+            ),
         ),
         def(
             "synara_unlink_thread_pull_request",
             "Unlink a pull request from a thread.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "pullRequestUrl": {"type": "string"},
-            }), &["pullRequestUrl"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "pullRequestUrl": {"type": "string"},
+                }),
+                &["pullRequestUrl"],
+            ),
         ),
         def(
             "synara_set_thread_goal",
             "Set or clear the persistent goal on a thread.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "goal": {"type": ["string", "null"], "maxLength": 4000},
-            }), &["threadId", "goal"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "goal": {"type": ["string", "null"], "maxLength": 4000},
+                }),
+                &["threadId", "goal"],
+            ),
         ),
         def(
             "synara_set_kanban_goal",
             "Set the persistent goal on a card's thread in your own project, from any column including live cards. Pass null or empty string to clear.",
-            schema(json!({
-                "threadId": {"type": "string"},
-                "goal": {"type": ["string", "null"], "maxLength": 4000},
-            }), &["threadId", "goal"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                    "goal": {"type": ["string", "null"], "maxLength": 4000},
+                }),
+                &["threadId", "goal"],
+            ),
         ),
         def(
             "synara_project_link_repository",
             "Link a repository project to the hub so the coordinator may create threads there.",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "linkedProjectId": {"type": "string"},
-            }), &["projectId", "linkedProjectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "linkedProjectId": {"type": "string"},
+                }),
+                &["projectId", "linkedProjectId"],
+            ),
         ),
         def(
             "synara_diagnose_thread",
             "Build one bounded forensic snapshot from projected status/messages/activity, durable events, and runtime incidents.",
-            schema(json!({
-                "threadId": {"type": "string"},
-            }), &["threadId"]),
+            schema(
+                json!({
+                    "threadId": {"type": "string"},
+                }),
+                &["threadId"],
+            ),
         ),
         def(
             "synara_list_mcp_connectors",
@@ -454,62 +589,74 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
         def(
             "synara_create_threads",
             "Create an exact batch of 1-20 standalone Synara threads. Each item needs prompt and optional target/projectId/title. Validation failures create nothing; durable retries with the same requestId replay the exact operation.",
-            schema(json!({
-                "requestId": {"type": "string", "maxLength": 256},
-                "threads": {
-                    "type": "array",
-                    "minItems": 1,
-                    "maxItems": 20,
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "prompt": {"type": "string"},
-                            "title": {"type": "string"},
-                            "projectId": {"type": "string"},
-                            "target": {"type": "object"},
+            schema(
+                json!({
+                    "requestId": {"type": "string", "maxLength": 256},
+                    "threads": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 20,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "prompt": {"type": "string"},
+                                "title": {"type": "string"},
+                                "projectId": {"type": "string"},
+                                "target": {"type": "object"},
+                            },
+                            "required": ["prompt"],
                         },
-                        "required": ["prompt"],
                     },
-                },
-            }), &["requestId", "threads"]),
+                }),
+                &["requestId", "threads"],
+            ),
         ),
         def(
             "synara_update_plan",
             "Keep the checklist Synara pins under your latest message while you work. Start: the whole plan in order with the step you are starting in_progress. Progress: send the whole list again with exactly one in_progress. Finish: leave the last step in_progress; Synara checks it off when your turn ends.",
-            schema(json!({
-                "items": {
-                    "type": "array",
-                    "minItems": 1,
-                    "maxItems": 12,
+            schema(
+                json!({
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "content": {"type": "string"},
-                            "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 12,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "content": {"type": "string"},
+                                "status": {"type": "string", "enum": ["pending", "in_progress", "completed"]},
+                            },
+                            "required": ["content", "status"],
                         },
-                        "required": ["content", "status"],
                     },
-                },
-            }), &["items"]),
+                }),
+                &["items"],
+            ),
         ),
         def(
             "synara_add_mcp_connector",
             "Propose adding an MCP connector. Always requires the user's approval card; never executes a command or connects before approval. Pass command and args separately, not a shell string.",
-            schema(json!({
-                "name": {"type": "string"},
-                "url": {"type": "string"},
-                "command": {"type": "string"},
-                "args": {"type": "array", "items": {"type": "string"}},
-                "env": {"type": "object"},
-                "cwd": {"type": "string"},
-            }), &[]),
+            schema(
+                json!({
+                    "name": {"type": "string"},
+                    "url": {"type": "string"},
+                    "command": {"type": "string"},
+                    "args": {"type": "array", "items": {"type": "string"}},
+                    "env": {"type": "object"},
+                    "cwd": {"type": "string"},
+                }),
+                &[],
+            ),
         ),
         def(
             "synara_remove_mcp_connector",
             "Propose removing a connector. Removal happens only when the user accepts the confirmation card.",
-            schema(json!({
-                "connectorId": {"type": "string"},
-            }), &["connectorId"]),
+            schema(
+                json!({
+                    "connectorId": {"type": "string"},
+                }),
+                &["connectorId"],
+            ),
         ),
         def(
             "synara_import_mcp_servers",
@@ -534,17 +681,23 @@ pub(crate) fn synara_tool_definitions() -> Vec<Value> {
         def(
             "synara_read_kanban_board",
             "Read the kanban board of a project: every thread as a card in one of Draft / In Progress / Awaiting you / Done, with attention flags (failed, stuck, awaiting approval/input).",
-            schema(json!({
-                "projectId": {"type": "string"},
-                "includeArchived": {"type": "boolean"},
-            }), &["projectId"]),
+            schema(
+                json!({
+                    "projectId": {"type": "string"},
+                    "includeArchived": {"type": "boolean"},
+                }),
+                &["projectId"],
+            ),
         ),
         def(
             "synara_list_projects",
             "List the user's projects with their workspace roots.",
-            schema(json!({
-                "includeArchived": {"type": "boolean"},
-            }), &[]),
+            schema(
+                json!({
+                    "includeArchived": {"type": "boolean"},
+                }),
+                &[],
+            ),
         ),
         def(
             "synara_list_automations",
@@ -575,7 +728,8 @@ fn todo_json_out(todo: &Value, preview_notes: bool) -> Value {
         if let Some(notes) = todo.get("notes").and_then(Value::as_str) {
             let cut = truncate_notes(notes, LISTED_NOTES_PREVIEW_CHARS);
             if cut.len() != notes.len() {
-                out.as_object_mut().map(|m| m.insert("notes".into(), json!(cut)));
+                out.as_object_mut()
+                    .map(|m| m.insert("notes".into(), json!(cut)));
             }
         }
     }
@@ -586,7 +740,10 @@ fn list_todos(args: &Value) -> Result<Value, String> {
     let store = todos_store()?;
     let result = store.handle("todo.list", Value::Null).map_err(|e| e.0)?;
     let empty = vec![];
-    let all = result.get("todos").and_then(Value::as_array).unwrap_or(&empty);
+    let all = result
+        .get("todos")
+        .and_then(Value::as_array)
+        .unwrap_or(&empty);
     if let Some(todo_id) = arg_str(args, "todoId") {
         let Some(todo) = all.iter().find(|t| {
             t.get("id").and_then(Value::as_str) == Some(todo_id.as_str())
@@ -596,15 +753,18 @@ fn list_todos(args: &Value) -> Result<Value, String> {
         };
         return Ok(json!({"todos": [todo_json_out(todo, false)], "truncated": false}));
     }
-    let include_completed = args.get("includeCompleted").and_then(Value::as_bool).unwrap_or(false);
+    let include_completed = args
+        .get("includeCompleted")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let project_id = arg_str(args, "projectId");
     let matching: Vec<&Value> = all
         .iter()
         .filter(|t| {
             (include_completed || t.get("completedAt").is_none_or(Value::is_null))
-                && project_id.as_ref().is_none_or(|p| {
-                    t.get("projectId").and_then(Value::as_str) == Some(p.as_str())
-                })
+                && project_id
+                    .as_ref()
+                    .is_none_or(|p| t.get("projectId").and_then(Value::as_str) == Some(p.as_str()))
         })
         .collect();
     let truncated = matching.len() > MAX_LISTED_TODOS;
@@ -625,7 +785,10 @@ fn create_todo(args: &Value) -> Result<Value, String> {
     // id per call is the correct fallback.
     payload.insert(
         "id".into(),
-        json!(format!("todo:{}", crate::orchestration_engine::uuid_v4().replace('-', ""))),
+        json!(format!(
+            "todo:{}",
+            crate::orchestration_engine::uuid_v4().replace('-', "")
+        )),
     );
     payload.insert("title".into(), json!(title));
     for key in ["notes", "priority", "dueDate", "projectId"] {
@@ -635,7 +798,9 @@ fn create_todo(args: &Value) -> Result<Value, String> {
             }
         }
     }
-    store.handle("todo.create", Value::Object(payload)).map_err(|e| e.0)
+    store
+        .handle("todo.create", Value::Object(payload))
+        .map_err(|e| e.0)
 }
 
 fn update_todo(args: &Value) -> Result<Value, String> {
@@ -651,7 +816,9 @@ fn update_todo(args: &Value) -> Result<Value, String> {
     if let Some(completed) = args.get("completed").and_then(Value::as_bool) {
         payload.insert("completed".into(), json!(completed));
     }
-    store.handle("todo.update", Value::Object(payload)).map_err(|e| e.0)
+    store
+        .handle("todo.update", Value::Object(payload))
+        .map_err(|e| e.0)
 }
 
 fn state_conn() -> Result<rusqlite::Connection, String> {
@@ -660,8 +827,12 @@ fn state_conn() -> Result<rusqlite::Connection, String> {
 
 fn list_threads(args: &Value) -> Result<Value, String> {
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
-    let include_archived = args.get("includeArchived").and_then(Value::as_bool).unwrap_or(false);
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
+    let include_archived = args
+        .get("includeArchived")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let limit = args
         .get("limit")
         .and_then(Value::as_i64)
@@ -673,8 +844,16 @@ fn list_threads(args: &Value) -> Result<Value, String> {
          FROM projection_threads \
          WHERE deleted_at IS NULL {} {} \
          ORDER BY updated_at DESC LIMIT ?1",
-        if include_archived { "" } else { "AND archived_at IS NULL" },
-        if project_filter.is_some() { "AND project_id = ?2" } else { "" }
+        if include_archived {
+            ""
+        } else {
+            "AND archived_at IS NULL"
+        },
+        if project_filter.is_some() {
+            "AND project_id = ?2"
+        } else {
+            ""
+        }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let map_row = |r: &rusqlite::Row| -> rusqlite::Result<Value> {
@@ -710,7 +889,8 @@ fn read_thread(args: &Value) -> Result<Value, String> {
         .unwrap_or(20)
         .clamp(1, 100);
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let meta: Option<Value> = conn
         .query_row(
             "SELECT thread_id, project_id, title, branch, created_at, updated_at \
@@ -770,12 +950,17 @@ fn read_thread_activity(args: &Value) -> Result<Value, String> {
         .clamp(1, MAX_THREAD_ACTIVITIES as i64);
     let turn_filter = arg_str(args, "turnId");
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let sql = format!(
         "SELECT activity_id, turn_id, tone, kind, summary, payload_json, created_at \
          FROM projection_thread_activities \
          WHERE thread_id = ?1 {} ORDER BY sequence DESC LIMIT ?2",
-        if turn_filter.is_some() { "AND turn_id = ?3" } else { "" }
+        if turn_filter.is_some() {
+            "AND turn_id = ?3"
+        } else {
+            ""
+        }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let map_row = |r: &rusqlite::Row| -> rusqlite::Result<Value> {
@@ -807,7 +992,8 @@ fn read_thread_activity(args: &Value) -> Result<Value, String> {
 
 fn list_projects(_args: &Value) -> Result<Value, String> {
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let sql = format!(
         "SELECT project_id, title, kind, workspace_root, created_at, updated_at \
          FROM projection_projects WHERE deleted_at IS NULL ORDER BY updated_at DESC LIMIT 200",
@@ -832,7 +1018,8 @@ fn list_projects(_args: &Value) -> Result<Value, String> {
 
 fn list_automations() -> Result<Value, String> {
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let mut stmt = conn
         .prepare(
             "SELECT automation_id, name, prompt, schedule_json, enabled, created_at, updated_at \
@@ -867,11 +1054,16 @@ fn read_thread_events(args: &Value) -> Result<Value, String> {
         .clamp(1, 200);
     let type_filter = arg_str(args, "type");
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let sql = format!(
         "SELECT event_type, payload_json, occurred_at, sequence FROM orchestration_events \
          WHERE stream_id = ?1 AND aggregate_kind = 'thread' {} ORDER BY sequence DESC LIMIT ?2",
-        if type_filter.is_some() { "AND event_type = ?3" } else { "" }
+        if type_filter.is_some() {
+            "AND event_type = ?3"
+        } else {
+            ""
+        }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let map_row = |r: &rusqlite::Row| -> rusqlite::Result<Value> {
@@ -982,9 +1174,13 @@ fn derive_kanban_card(
 
 fn read_kanban_board(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
-    let include_archived = args.get("includeArchived").and_then(Value::as_bool).unwrap_or(false);
+    let include_archived = args
+        .get("includeArchived")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let sql = format!(
         "SELECT t.thread_id, t.title, t.branch, t.updated_at, \
          t.pending_approval_count, t.pending_user_input_count, \
@@ -1000,7 +1196,11 @@ fn read_kanban_board(args: &Value) -> Result<Value, String> {
          FROM projection_threads t \
          WHERE t.project_id = ?1 AND t.deleted_at IS NULL {} \
          ORDER BY t.updated_at DESC LIMIT 300",
-        if include_archived { "" } else { "AND t.archived_at IS NULL" }
+        if include_archived {
+            ""
+        } else {
+            "AND t.archived_at IS NULL"
+        }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let now = now_unix_ms();
@@ -1050,9 +1250,11 @@ fn read_kanban_board(args: &Value) -> Result<Value, String> {
 }
 
 fn view_automation(args: &Value) -> Result<Value, String> {
-    let automation_id = arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
+    let automation_id =
+        arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     conn.query_row(
         "SELECT automation_id, project_id, name, prompt, schedule_json, enabled, next_run_at, \
          model_selection_json, runtime_mode, interaction_mode, mode, target_thread_id, max_iterations, \
@@ -1100,11 +1302,19 @@ fn create_automation(args: &Value, caller_thread: Option<&str>) -> Result<Value,
     let prompt = arg_str(args, "prompt").ok_or("Missing required argument: prompt")?;
     let mode = arg_str(args, "mode").unwrap_or_else(|| "heartbeat".into());
     if mode == "heartbeat" && args.get("target").is_some() {
-        return Err("Heartbeat automations continue their target thread's session and reject target.".into());
+        return Err(
+            "Heartbeat automations continue their target thread's session and reject target."
+                .into(),
+        );
     }
     let conn = state_conn()?;
-    let every_minutes = args.get("everyMinutes").and_then(Value::as_f64).unwrap_or(5.0).max(1.0);
-    let schedule = json!({"type": "interval", "everySeconds": (every_minutes * 60.0).round() as i64});
+    let every_minutes = args
+        .get("everyMinutes")
+        .and_then(Value::as_f64)
+        .unwrap_or(5.0)
+        .max(1.0);
+    let schedule =
+        json!({"type": "interval", "everySeconds": (every_minutes * 60.0).round() as i64});
     let target_thread_id = arg_str(args, "targetThreadId").or_else(|| {
         if mode == "heartbeat" {
             caller_thread.map(str::to_string)
@@ -1121,7 +1331,10 @@ fn create_automation(args: &Value, caller_thread: Option<&str>) -> Result<Value,
     payload.insert("prompt".into(), json!(prompt));
     payload.insert("schedule".into(), schedule);
     payload.insert("mode".into(), json!(mode));
-    payload.insert("enabled".into(), json!(args.get("enabled").and_then(Value::as_bool).unwrap_or(true)));
+    payload.insert(
+        "enabled".into(),
+        json!(args.get("enabled").and_then(Value::as_bool).unwrap_or(true)),
+    );
     if let Some(t) = target_thread_id {
         payload.insert("targetThreadId".into(), json!(t));
     }
@@ -1138,7 +1351,8 @@ fn create_automation(args: &Value, caller_thread: Option<&str>) -> Result<Value,
 }
 
 fn update_automation(args: &Value) -> Result<Value, String> {
-    let automation_id = arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
+    let automation_id =
+        arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
     // Upstream requires a full replacement payload; read the stored definition
     // and overlay the sent fields so partial input cannot blank the rest.
     let current = view_automation(args)?;
@@ -1147,11 +1361,15 @@ fn update_automation(args: &Value) -> Result<Value, String> {
     payload.insert("automationId".into(), json!(automation_id));
     payload.insert(
         "name".into(),
-        arg_str(args, "name").map(|s| json!(s)).unwrap_or_else(|| current.get("name").cloned().unwrap_or(Value::Null)),
+        arg_str(args, "name")
+            .map(|s| json!(s))
+            .unwrap_or_else(|| current.get("name").cloned().unwrap_or(Value::Null)),
     );
     payload.insert(
         "prompt".into(),
-        arg_str(args, "prompt").map(|s| json!(s)).unwrap_or_else(|| current.get("prompt").cloned().unwrap_or(Value::Null)),
+        arg_str(args, "prompt")
+            .map(|s| json!(s))
+            .unwrap_or_else(|| current.get("prompt").cloned().unwrap_or(Value::Null)),
     );
     let schedule = if let Some(mins) = args.get("everyMinutes").and_then(Value::as_f64) {
         json!({"type": "interval", "everySeconds": (mins.max(1.0) * 60.0).round() as i64})
@@ -1161,7 +1379,9 @@ fn update_automation(args: &Value) -> Result<Value, String> {
     payload.insert("schedule".into(), schedule);
     payload.insert(
         "enabled".into(),
-        args.get("enabled").cloned().unwrap_or_else(|| current.get("enabled").cloned().unwrap_or(json!(true))),
+        args.get("enabled")
+            .cloned()
+            .unwrap_or_else(|| current.get("enabled").cloned().unwrap_or(json!(true))),
     );
     for key in ["maxIterations"] {
         if let Some(v) = args.get(key) {
@@ -1174,7 +1394,8 @@ fn update_automation(args: &Value) -> Result<Value, String> {
 }
 
 fn cancel_automation(args: &Value) -> Result<Value, String> {
-    let automation_id = arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
+    let automation_id =
+        arg_str(args, "automationId").ok_or("Missing required argument: automationId")?;
     let mut payload = serde_json::Map::new();
     payload.insert("automationId".into(), json!(automation_id));
     payload.insert("enabled".into(), json!(false));
@@ -1188,12 +1409,15 @@ fn create_kanban_card(args: &Value, start_turn: bool) -> Result<Value, String> {
     }
     let request_id = arg_str(args, "requestId").ok_or("Missing required argument: requestId")?;
     let conn = state_conn()?;
-    let project_id = arg_str(args, "projectId").ok_or(
-        "Missing required argument: projectId (the kanban board's project).",
-    )?;
+    let project_id = arg_str(args, "projectId")
+        .ok_or("Missing required argument: projectId (the kanban board's project).")?;
     // Idempotency: the engine dedupes commands by commandId through the
     // receipts table, so a retried call replays exactly-once.
-    let key: String = request_id.chars().filter(|c| c.is_ascii_alphanumeric() || *c == '-').take(200).collect();
+    let key: String = request_id
+        .chars()
+        .filter(|c| c.is_ascii_alphanumeric() || *c == '-')
+        .take(200)
+        .collect();
     // The thread id derives from the requestId, so a retried call targets the
     // same thread; the command receipt dedup then replays exactly-once.
     let thread_id = {
@@ -1223,14 +1447,12 @@ fn create_kanban_card(args: &Value, start_turn: bool) -> Result<Value, String> {
         "title": title,
         "createdAt": now,
     });
-    let created = match crate::orchestration_engine::handle(
-        "orchestration.dispatchCommand",
-        &create,
-    ) {
-        Ok(_) => true,
-        Err(e) if e.0.contains("UNIQUE constraint") || e.0.contains("already exists") => false, // retry replay
-        Err(e) => return Err(format!("kanban thread create failed: {}", e.0)),
-    };
+    let created =
+        match crate::orchestration_engine::handle("orchestration.dispatchCommand", &create) {
+            Ok(_) => true,
+            Err(e) if e.0.contains("UNIQUE constraint") || e.0.contains("already exists") => false, // retry replay
+            Err(e) => return Err(format!("kanban thread create failed: {}", e.0)),
+        };
     drop(conn);
     if !created {
         return Ok(json!({
@@ -1366,14 +1588,17 @@ fn move_kanban_card(args: &Value) -> Result<Value, String> {
     match target.as_str() {
         "inProgress" => {
             if column == "awaitingYou" && !failed {
-                return Ok(json!({"threadId": thread_id, "column": "awaitingYou", "attention": flags, "moved": false, "reason": "awaitingYou is a human-attention state"}));
+                return Ok(
+                    json!({"threadId": thread_id, "column": "awaitingYou", "attention": flags, "moved": false, "reason": "awaitingYou is a human-attention state"}),
+                );
             }
             if column == "inProgress" {
-                return Ok(json!({"threadId": thread_id, "column": "inProgress", "attention": flags, "moved": false, "alreadyInProgress": true}));
+                return Ok(
+                    json!({"threadId": thread_id, "column": "inProgress", "attention": flags, "moved": false, "alreadyInProgress": true}),
+                );
             }
-            let message = arg_str(args, "message").ok_or(
-                "message is required when restarting a settled thread.",
-            )?;
+            let message = arg_str(args, "message")
+                .ok_or("message is required when restarting a settled thread.")?;
             let turn = json!({
                 "type": "thread.turn.start",
                 "commandId": format!("kanban-move-{}", crate::orchestration_engine::uuid_v4()),
@@ -1389,7 +1614,9 @@ fn move_kanban_card(args: &Value) -> Result<Value, String> {
         }
         "done" => {
             if column == "done" {
-                return Ok(json!({"threadId": thread_id, "column": "done", "moved": false, "alreadyDone": true}));
+                return Ok(
+                    json!({"threadId": thread_id, "column": "done", "moved": false, "alreadyDone": true}),
+                );
             }
             if column == "awaitingYou" && !failed {
                 return Err("A card awaiting human attention cannot be moved to done.".into());
@@ -1421,7 +1648,13 @@ fn update_kanban_card(args: &Value) -> Result<Value, String> {
     let now = crate::todo::iso_now_ms();
     let mut cmd = serde_json::Map::new();
     cmd.insert("type".into(), json!("thread.meta.update"));
-    cmd.insert("commandId".into(), json!(format!("kanban-edit-{}", crate::orchestration_engine::uuid_v4())));
+    cmd.insert(
+        "commandId".into(),
+        json!(format!(
+            "kanban-edit-{}",
+            crate::orchestration_engine::uuid_v4()
+        )),
+    );
     cmd.insert("threadId".into(), json!(thread_id));
     cmd.insert("createdAt".into(), json!(now));
     if let Some(t) = title {
@@ -1513,7 +1746,13 @@ fn slugify_memory_title(value: &str) -> String {
             last_dash = true;
         }
     }
-    let slug: String = slug.trim_matches('-').chars().take(48).collect::<String>().trim_end_matches('-').to_string();
+    let slug: String = slug
+        .trim_matches('-')
+        .chars()
+        .take(48)
+        .collect::<String>()
+        .trim_end_matches('-')
+        .to_string();
     if slug.is_empty() { "note".into() } else { slug }
 }
 
@@ -1538,7 +1777,11 @@ fn mirror_document(project_id: &str, logical_path: &str, content: &str) {
     }
 }
 
-fn doc_head(conn: &rusqlite::Connection, project_id: &str, logical_path: &str) -> Option<(String, i64)> {
+fn doc_head(
+    conn: &rusqlite::Connection,
+    project_id: &str,
+    logical_path: &str,
+) -> Option<(String, i64)> {
     conn.query_row(
         "SELECT content, revision FROM project_agent_documents \
          WHERE project_id = ?1 AND logical_path = ?2 ORDER BY revision DESC LIMIT 1",
@@ -1548,7 +1791,13 @@ fn doc_head(conn: &rusqlite::Connection, project_id: &str, logical_path: &str) -
     .ok()
 }
 
-fn upsert_document(conn: &rusqlite::Connection, project_id: &str, logical_path: &str, content: &str, author_thread: Option<&str>) -> Result<(), String> {
+fn upsert_document(
+    conn: &rusqlite::Connection,
+    project_id: &str,
+    logical_path: &str,
+    content: &str,
+    author_thread: Option<&str>,
+) -> Result<(), String> {
     let next_revision = conn
         .query_row(
             "SELECT COALESCE(MAX(revision), 0) + 1 FROM project_agent_documents \
@@ -1667,7 +1916,8 @@ fn project_remember(args: &Value, caller_thread: Option<&str>) -> Result<Value, 
         title = "Note".into();
     }
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let wanted = normalize_memory_note(note);
     // Scan existing dated memory notes for a near-duplicate.
     let mut stmt = conn
@@ -1679,7 +1929,9 @@ fn project_remember(args: &Value, caller_thread: Option<&str>) -> Result<Value, 
         )
         .map_err(|e| e.to_string())?;
     let existing: Vec<(String, String)> = stmt
-        .query_map(rusqlite::params![project_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))
+        .query_map(rusqlite::params![project_id], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))
+        })
         .map_err(|e| e.to_string())?
         .filter_map(|r| r.ok())
         .collect();
@@ -1688,7 +1940,9 @@ fn project_remember(args: &Value, caller_thread: Option<&str>) -> Result<Value, 
     if let Some((dup_path, dup_content)) = existing.iter().find(|(_, content)| {
         let have = memory_note_body(content);
         have == wanted
-            || (have.len() >= 40 && wanted.len() >= 40 && (have.contains(&wanted) || wanted.contains(&have)))
+            || (have.len() >= 40
+                && wanted.len() >= 40
+                && (have.contains(&wanted) || wanted.contains(&have)))
     }) {
         let have = memory_note_body(dup_content);
         let extends_existing = wanted != have && wanted.contains(&have);
@@ -1701,14 +1955,23 @@ fn project_remember(args: &Value, caller_thread: Option<&str>) -> Result<Value, 
                 caller_thread,
             )?;
         }
-        update_memory_index(&conn, &project_id, dup_path, &title, Some(&memory_note_summary(note)))?;
+        update_memory_index(
+            &conn,
+            &project_id,
+            dup_path,
+            &title,
+            Some(&memory_note_summary(note)),
+        )?;
         return Ok(json!({
             "path": dup_path,
             "updated": extends_existing,
             "deduplicated": true,
         }));
     }
-    let today = crate::todo::iso_now_ms().get(..10).unwrap_or("1970-01-01").to_string();
+    let today = crate::todo::iso_now_ms()
+        .get(..10)
+        .unwrap_or("1970-01-01")
+        .to_string();
     let slug = slugify_memory_title(&title);
     let mut logical_path = format!("memory/{today}-{slug}.md");
     let mut counter = 2;
@@ -1716,8 +1979,20 @@ fn project_remember(args: &Value, caller_thread: Option<&str>) -> Result<Value, 
         logical_path = format!("memory/{today}-{slug}-{counter}.md");
         counter += 1;
     }
-    upsert_document(&conn, &project_id, &logical_path, &format!("# {title}\n\n{note}\n"), caller_thread)?;
-    update_memory_index(&conn, &project_id, &logical_path, &title, Some(&memory_note_summary(note)))?;
+    upsert_document(
+        &conn,
+        &project_id,
+        &logical_path,
+        &format!("# {title}\n\n{note}\n"),
+        caller_thread,
+    )?;
+    update_memory_index(
+        &conn,
+        &project_id,
+        &logical_path,
+        &title,
+        Some(&memory_note_summary(note)),
+    )?;
     Ok(json!({
         "path": logical_path,
         "updated": true,
@@ -1736,7 +2011,8 @@ fn project_forget(args: &Value) -> Result<Value, String> {
         return Err("Only hub memory notes (memory/<date>-<slug>.md) can be forgotten.".into());
     }
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     if doc_head(&conn, &project_id, &path).is_none() {
         return Ok(json!({"deleted": false}));
     }
@@ -1751,7 +2027,17 @@ fn project_forget(args: &Value) -> Result<Value, String> {
 }
 
 fn hub_work_item_json(row: (&str, &str, i64, i64, &str, Option<String>, i64, i64, &str)) -> Value {
-    let (work_item_id, project_id, _seq, task_index, state, worker_thread_id, slot_held, revision, record_json) = row;
+    let (
+        work_item_id,
+        project_id,
+        _seq,
+        task_index,
+        state,
+        worker_thread_id,
+        slot_held,
+        revision,
+        record_json,
+    ) = row;
     let mut item = serde_json::from_str::<Value>(record_json).unwrap_or_else(|_| json!({}));
     if !item.is_object() {
         item = json!({});
@@ -1770,7 +2056,8 @@ fn hub_work_item_json(row: (&str, &str, i64, i64, &str, Option<String>, i64, i64
 fn hub_list_work(caller_thread: Option<&str>) -> Result<Value, String> {
     let caller = caller_thread.ok_or("This tool requires a calling thread.")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let project_id: String = conn
         .query_row(
             "SELECT project_id FROM projection_threads WHERE thread_id = ?1",
@@ -1808,7 +2095,20 @@ fn hub_list_work(caller_thread: Option<&str>) -> Result<Value, String> {
 fn hub_load_work_row(
     conn: &rusqlite::Connection,
     work_item_id: &str,
-) -> Result<(String, String, i64, i64, String, Option<String>, i64, i64, String), String> {
+) -> Result<
+    (
+        String,
+        String,
+        i64,
+        i64,
+        String,
+        Option<String>,
+        i64,
+        i64,
+        String,
+    ),
+    String,
+> {
     conn.query_row(
         "SELECT work_item_id, project_id, sequence, task_index, state, worker_thread_id, \
          slot_held, revision, record_json FROM project_agent_work_items WHERE work_item_id = ?1",
@@ -1832,7 +2132,8 @@ fn hub_load_work_row(
 
 fn hub_update_progress(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     let caller = caller_thread.ok_or("This tool requires a calling thread.")?;
-    let work_item_id = arg_str(args, "workItemId").ok_or("Missing required argument: workItemId")?;
+    let work_item_id =
+        arg_str(args, "workItemId").ok_or("Missing required argument: workItemId")?;
     let expected_revision = args
         .get("expectedRevision")
         .and_then(Value::as_i64)
@@ -1845,7 +2146,8 @@ fn hub_update_progress(args: &Value, caller_thread: Option<&str>) -> Result<Valu
         return Err("A progress checklist is limited to 32 steps.".into());
     }
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let row = hub_load_work_row(&conn, &work_item_id)?;
     let (_id, _pid, seq, _ti, state, worker_thread_id, slot_held, revision, record_json) = row;
     if worker_thread_id.as_deref() != Some(caller) {
@@ -1891,9 +2193,11 @@ fn hub_update_progress(args: &Value, caller_thread: Option<&str>) -> Result<Valu
 }
 
 fn hub_cancel_work(args: &Value) -> Result<Value, String> {
-    let work_item_id = arg_str(args, "workItemId").ok_or("Missing required argument: workItemId")?;
+    let work_item_id =
+        arg_str(args, "workItemId").ok_or("Missing required argument: workItemId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let row = hub_load_work_row(&conn, &work_item_id)?;
     let (_id, _pid, seq, _ti, state, worker_thread_id, slot_held, revision, record_json) = row;
     match state.as_str() {
@@ -1901,7 +2205,7 @@ fn hub_cancel_work(args: &Value) -> Result<Value, String> {
         _ => {
             return Err(format!(
                 "Hub work item \"{work_item_id}\" is {state} and cannot be cancelled directly."
-            ))
+            ));
         }
     }
     let mut record = serde_json::from_str::<Value>(&record_json).unwrap_or_else(|_| json!({}));
@@ -1931,10 +2235,8 @@ fn hub_cancel_work(args: &Value) -> Result<Value, String> {
 }
 
 fn dispatch_command(command: Value) -> Result<Value, String> {
-    crate::orchestration_engine::handle("orchestration.dispatchCommand", &command)
-        .map_err(|e| e.0)
+    crate::orchestration_engine::handle("orchestration.dispatchCommand", &command).map_err(|e| e.0)
 }
-
 
 /// Cost telemetry for one thread: total USD, token splits and provider set,
 /// read from `turn.completed` activities. Powers the gateway cost surface.
@@ -1958,7 +2260,9 @@ fn thread_cost_summary(conn: &rusqlite::Connection, thread_id: &str) -> Value {
     let mut providers: std::collections::HashSet<String> = std::collections::HashSet::new();
     let mut turns = 0_i64;
     for raw in rows {
-        let Ok(p) = serde_json::from_str::<Value>(&raw) else { continue };
+        let Ok(p) = serde_json::from_str::<Value>(&raw) else {
+            continue;
+        };
         turns += 1;
         if let Some(c) = p.get("totalCostUsd").and_then(Value::as_f64) {
             cost += c;
@@ -1982,7 +2286,6 @@ fn thread_cost_summary(conn: &rusqlite::Connection, thread_id: &str) -> Value {
     })
 }
 
-
 /// Isolation rule from the upstream creation coordinator: a caller isolated
 /// in a worktree cannot drive threads on the shared local checkout — steering
 /// shared state from an isolated sandbox would leak unreviewed changes into
@@ -1997,7 +2300,11 @@ fn caller_env_mode(conn: &rusqlite::Connection, caller: &str) -> Option<String> 
     .flatten()
 }
 
-fn assert_may_drive_local(conn: &rusqlite::Connection, caller: Option<&str>, target_is_local: bool) -> Result<(), String> {
+fn assert_may_drive_local(
+    conn: &rusqlite::Connection,
+    caller: Option<&str>,
+    target_is_local: bool,
+) -> Result<(), String> {
     if !target_is_local {
         return Ok(());
     }
@@ -2034,7 +2341,8 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
     let request_id = arg_str(args, "requestId").ok_or("Missing required argument: requestId")?;
     let thread_id = deterministic_thread_id(&format!("gateway:{request_id}"));
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     if conn
         .query_row(
             "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
@@ -2071,9 +2379,11 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
             });
             from_caller
                 .or_else(|| {
-                    conn.query_row("SELECT project_id FROM projection_projects LIMIT 1", [], |r| {
-                        r.get::<_, String>(0)
-                    })
+                    conn.query_row(
+                        "SELECT project_id FROM projection_projects LIMIT 1",
+                        [],
+                        |r| r.get::<_, String>(0),
+                    )
                     .ok()
                 })
                 .ok_or("No project found: pass projectId explicitly.")?
@@ -2108,7 +2418,9 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
         }
         let base_ref = arg_str(args, "baseRef").unwrap_or_else(|| "HEAD".into());
         if base_ref.starts_with('#') || base_ref.starts_with("http") {
-            return Err("Pull-request baseRef resolution is not supported yet; pass a local ref.".into());
+            return Err(
+                "Pull-request baseRef resolution is not supported yet; pass a local ref.".into(),
+            );
         }
         if base_ref.starts_with('-') {
             return Err("Invalid baseRef.".into());
@@ -2155,7 +2467,11 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
     // the flat provider/model gateway arguments are conveniences over it.
     // "claude" is accepted as the friendly alias of the upstream provider key.
     let provider = arg_str(args, "provider").map(|p| {
-        if p == "claude" { "claudeAgent".to_string() } else { p }
+        if p == "claude" {
+            "claudeAgent".to_string()
+        } else {
+            p
+        }
     });
     let model = arg_str(args, "model");
     if provider.is_some() || model.is_some() {
@@ -2166,7 +2482,10 @@ fn create_thread_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value
         if let Some(m) = model {
             selection.insert("model".into(), json!(m));
         }
-        create.as_object_mut().unwrap().insert("modelSelection".into(), Value::Object(selection));
+        create
+            .as_object_mut()
+            .unwrap()
+            .insert("modelSelection".into(), Value::Object(selection));
     }
     if let Err(e) = dispatch_command(create) {
         if e.contains("UNIQUE") || e.contains("already exists") {
@@ -2211,7 +2530,8 @@ fn send_message_tool(args: &Value, caller_thread: Option<&str>) -> Result<Value,
         return Err(format!("Unknown mode \"{mode}\": use queue or steer."));
     }
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     conn.query_row(
         "SELECT 1 FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
         [&thread_id],
@@ -2299,7 +2619,8 @@ fn read_thread_runtime_events(args: &Value) -> Result<Value, String> {
         .clamp(1, 200);
     let turn_id = arg_str(args, "turnId");
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     conn.query_row(
         "SELECT 1 FROM projection_threads WHERE thread_id = ?1",
         [&thread_id],
@@ -2407,7 +2728,8 @@ fn wait_for_threads(args: &Value) -> Result<Value, String> {
     let deadline = started + std::time::Duration::from_millis(timeout_ms as u64);
     loop {
         let conn = state_conn()?;
-        conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+        conn.execute_batch("PRAGMA busy_timeout = 5000;")
+            .map_err(|e| e.to_string())?;
         let mut results = Vec::new();
         let mut all_terminal = true;
         for tid in &thread_ids {
@@ -2449,7 +2771,11 @@ fn wait_for_threads(args: &Value) -> Result<Value, String> {
             if !terminal {
                 all_terminal = false;
             }
-            let status = if terminal { state.clone() } else { "running".to_string() };
+            let status = if terminal {
+                state.clone()
+            } else {
+                "running".to_string()
+            };
             let mut row = json!({
                 "threadId": tid,
                 "runId": turn_id,
@@ -2457,7 +2783,9 @@ fn wait_for_threads(args: &Value) -> Result<Value, String> {
             });
             if terminal {
                 if let Some(ca) = completed_at {
-                    row.as_object_mut().unwrap().insert("completedAt".into(), json!(ca));
+                    row.as_object_mut()
+                        .unwrap()
+                        .insert("completedAt".into(), json!(ca));
                 }
                 let summary: Option<String> = conn
                     .query_row(
@@ -2468,7 +2796,9 @@ fn wait_for_threads(args: &Value) -> Result<Value, String> {
                     )
                     .ok();
                 if let Some(s) = summary.filter(|s| !s.trim().is_empty()) {
-                    row.as_object_mut().unwrap().insert("summary".into(), json!(s));
+                    row.as_object_mut()
+                        .unwrap()
+                        .insert("summary".into(), json!(s));
                 }
             }
             results.push(row);
@@ -2522,7 +2852,12 @@ fn library_list(args: &Value) -> Result<Value, String> {
             }
         }
     }
-    entries.sort_by_key(|e| e.get("name").and_then(Value::as_str).unwrap_or("").to_string());
+    entries.sort_by_key(|e| {
+        e.get("name")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_string()
+    });
     Ok(json!({
         "libraryRoot": root.to_string_lossy(),
         "path": rel.to_string_lossy(),
@@ -2543,14 +2878,26 @@ fn copy_tree_guarded(
     }
     if meta.is_dir() {
         if filter_name {
-            let name = source.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+            let name = source
+                .file_name()
+                .map(|n| n.to_string_lossy().to_string())
+                .unwrap_or_default();
             if name == ".git" || name == "node_modules" {
                 return Ok(());
             }
         }
         std::fs::create_dir_all(target).map_err(|e| e.to_string())?;
-        for entry in std::fs::read_dir(source).map_err(|e| e.to_string())?.flatten() {
-            copy_tree_guarded(&entry.path(), &target.join(entry.file_name()), true, file_count, total_bytes)?;
+        for entry in std::fs::read_dir(source)
+            .map_err(|e| e.to_string())?
+            .flatten()
+        {
+            copy_tree_guarded(
+                &entry.path(),
+                &target.join(entry.file_name()),
+                true,
+                file_count,
+                total_bytes,
+            )?;
         }
         return Ok(());
     }
@@ -2577,7 +2924,8 @@ fn library_add(args: &Value, caller_thread: Option<&str>) -> Result<Value, Strin
     let source_path = arg_str(args, "sourcePath").ok_or("Missing required argument: sourcePath")?;
     let caller = caller_thread.ok_or("This tool requires a calling thread.")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let workspace: String = conn
         .query_row(
             "SELECT COALESCE(t.worktree_path, t.working_directory, (SELECT p.workspace_root FROM projection_projects p WHERE p.project_id = t.project_id)) FROM projection_threads t WHERE t.thread_id = ?1",
@@ -2591,7 +2939,9 @@ fn library_add(args: &Value, caller_thread: Option<&str>) -> Result<Value, Strin
     } else {
         std::path::Path::new(&workspace).join(source_raw)
     };
-    let canonical_source = source.canonicalize().map_err(|_| format!("Source \"{source_path}\" was not found."))?;
+    let canonical_source = source
+        .canonicalize()
+        .map_err(|_| format!("Source \"{source_path}\" was not found."))?;
     let canonical_workspace = std::path::Path::new(&workspace)
         .canonicalize()
         .unwrap_or_else(|_| std::path::PathBuf::from(&workspace));
@@ -2613,7 +2963,13 @@ fn library_add(args: &Value, caller_thread: Option<&str>) -> Result<Value, Strin
     }
     let mut file_count = 0usize;
     let mut total_bytes = 0u64;
-    copy_tree_guarded(&canonical_source, &target, false, &mut file_count, &mut total_bytes)?;
+    copy_tree_guarded(
+        &canonical_source,
+        &target,
+        false,
+        &mut file_count,
+        &mut total_bytes,
+    )?;
     // Commit inside the library when it is a git repo, mirroring upstream.
     if root.join(".git").exists() {
         let root_str = root.to_string_lossy().to_string();
@@ -2647,7 +3003,8 @@ fn library_add(args: &Value, caller_thread: Option<&str>) -> Result<Value, Strin
 fn project_get_overview(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let goal: Option<Value> = conn
         .query_row(
             "SELECT goal_id, objective, status, revision FROM project_agent_goals \
@@ -2720,7 +3077,8 @@ fn project_get_overview(args: &Value) -> Result<Value, String> {
 fn project_context(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     const CAP: usize = 32_000;
     let mut packet = String::new();
     let mut push_section = |title: &str, body: &str| {
@@ -2791,7 +3149,8 @@ fn project_report_result(args: &Value, caller_thread: Option<&str>) -> Result<Va
     let task_id = arg_str(args, "taskId").ok_or("Missing required argument: taskId")?;
     let summary = arg_str(args, "summary").ok_or("Missing required argument: summary")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     // Exactly-once replay on requestId via the receipts table.
     let receipt_key = format!("report-result:{request_id}");
     if let Ok(json) = conn.query_row(
@@ -2847,14 +3206,14 @@ fn update_automation_memory(args: &Value, caller_thread: Option<&str>) -> Result
         return Err("Automation memory is limited to 32 KiB.".into());
     }
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let automation_id = match arg_str(args, "automationId") {
         Some(id) => id,
         None => {
             // Resolve from the caller thread's latest automation run.
-            let caller = caller_thread.ok_or(
-                "automationId is required outside an automation run envelope.",
-            )?;
+            let caller = caller_thread
+                .ok_or("automationId is required outside an automation run envelope.")?;
             conn.query_row(
                 "SELECT automation_id FROM automation_runs WHERE thread_id = ?1 \
                  ORDER BY created_at DESC LIMIT 1",
@@ -2886,11 +3245,10 @@ fn report_automation_result(args: &Value, caller_thread: Option<&str>) -> Result
     if decision != "notify" && decision != "silent" {
         return Err("Argument \"decision\" must be \"notify\" or \"silent\".".into());
     }
-    let caller = caller_thread.ok_or(
-        "This tool must be called from the automation run thread.",
-    )?;
+    let caller = caller_thread.ok_or("This tool must be called from the automation run thread.")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let (run_id, automation_id, status): (String, String, String) = conn
         .query_row(
             "SELECT run_id, automation_id, status FROM automation_runs WHERE thread_id = ?1 \
@@ -2901,10 +3259,16 @@ fn report_automation_result(args: &Value, caller_thread: Option<&str>) -> Result
         .map_err(|_| "No automation run found for this thread.".to_string())?;
     let mut result = json!({"decision": decision});
     if let Some(title) = arg_str(args, "title") {
-        result.as_object_mut().unwrap().insert("title".into(), json!(title));
+        result
+            .as_object_mut()
+            .unwrap()
+            .insert("title".into(), json!(title));
     }
     if let Some(summary) = arg_str(args, "summary") {
-        result.as_object_mut().unwrap().insert("summary".into(), json!(summary));
+        result
+            .as_object_mut()
+            .unwrap()
+            .insert("summary".into(), json!(summary));
     }
     conn.execute(
         "UPDATE automation_runs SET result_json = ?1, updated_at = ?2 WHERE run_id = ?3",
@@ -2961,11 +3325,14 @@ fn unlink_thread_pull_request(args: &Value, caller_thread: Option<&str>) -> Resu
 fn set_thread_goal_impl(args: &Value) -> Result<Value, String> {
     let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
     let goal = match args.get("goal") {
-        Some(Value::String(g)) if !g.trim().is_empty() => Some(g.trim().chars().take(4000).collect::<String>()),
+        Some(Value::String(g)) if !g.trim().is_empty() => {
+            Some(g.trim().chars().take(4000).collect::<String>())
+        }
         _ => None,
     };
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let archived: bool = conn
         .query_row(
             "SELECT archived_at IS NOT NULL FROM projection_threads WHERE thread_id = ?1 AND deleted_at IS NULL",
@@ -2984,10 +3351,16 @@ fn set_thread_goal_impl(args: &Value) -> Result<Value, String> {
     });
     match &goal {
         Some(g) => {
-            command.as_object_mut().unwrap().insert("goal".into(), json!(g));
+            command
+                .as_object_mut()
+                .unwrap()
+                .insert("goal".into(), json!(g));
         }
         None => {
-            command.as_object_mut().unwrap().insert("goal".into(), json!(""));
+            command
+                .as_object_mut()
+                .unwrap()
+                .insert("goal".into(), json!(""));
         }
     }
     dispatch_command(command)?;
@@ -2996,9 +3369,11 @@ fn set_thread_goal_impl(args: &Value) -> Result<Value, String> {
 
 fn link_repository(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
-    let linked = arg_str(args, "linkedProjectId").ok_or("Missing required argument: linkedProjectId")?;
+    let linked =
+        arg_str(args, "linkedProjectId").ok_or("Missing required argument: linkedProjectId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     for id in [&project_id, &linked] {
         conn.query_row(
             "SELECT 1 FROM projection_projects WHERE project_id = ?1 AND deleted_at IS NULL",
@@ -3019,7 +3394,8 @@ fn link_repository(args: &Value) -> Result<Value, String> {
 fn diagnose_thread(args: &Value) -> Result<Value, String> {
     let thread_id = arg_str(args, "threadId").ok_or("Missing required argument: threadId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let shell: Option<(String, Option<String>, Option<String>, i64, i64)> = conn
         .query_row(
             "SELECT title, archived_at, deleted_at, pending_approval_count, pending_user_input_count \
@@ -3069,10 +3445,12 @@ fn diagnose_thread(args: &Value) -> Result<Value, String> {
         )
         .unwrap_or(0);
     let runtime_errors: Vec<String> = {
-        let mut stmt = conn.prepare(
-            "SELECT event_json FROM provider_runtime_events WHERE thread_id = ?1 \
+        let mut stmt = conn
+            .prepare(
+                "SELECT event_json FROM provider_runtime_events WHERE thread_id = ?1 \
              AND event_type LIKE '%error%' ORDER BY sequence DESC LIMIT 5",
-        ).map_err(|e| e.to_string())?;
+            )
+            .map_err(|e| e.to_string())?;
         stmt.query_map([&thread_id], |r| r.get::<_, String>(0))
             .map_err(|e| e.to_string())?
             .filter_map(|r| r.ok())
@@ -3093,7 +3471,10 @@ fn diagnose_thread(args: &Value) -> Result<Value, String> {
         if status == "error" || status == "failed" {
             findings.push(format!(
                 "session status is {status}{}",
-                last_error.as_deref().map(|e| format!(": {e}")).unwrap_or_default()
+                last_error
+                    .as_deref()
+                    .map(|e| format!(": {e}"))
+                    .unwrap_or_default()
             ));
         }
     }
@@ -3106,13 +3487,18 @@ fn diagnose_thread(args: &Value) -> Result<Value, String> {
         }
     }
     if pending_approvals > 0 {
-        findings.push(format!("{pending_approvals} pending approval(s) blocking progress"));
+        findings.push(format!(
+            "{pending_approvals} pending approval(s) blocking progress"
+        ));
     }
     if pending_inputs > 0 {
         findings.push(format!("{pending_inputs} pending user input request(s)"));
     }
     if !runtime_errors.is_empty() {
-        findings.push(format!("{} recent provider runtime error event(s)", runtime_errors.len()));
+        findings.push(format!(
+            "{} recent provider runtime error event(s)",
+            runtime_errors.len()
+        ));
     }
     if findings.is_empty() {
         findings.push("no obvious blockers found in projections".into());
@@ -3198,15 +3584,12 @@ fn create_threads_batch(args: &Value, caller_thread: Option<&str>) -> Result<Val
                     .ok()
                 })
                 .map(|mid| vec![json!({"threadId": caller, "messageId": mid})])
-                .unwrap_or_else(|| vec![json!({"threadId": caller, "messageId": format!("gateway-{request_id}")})]);
-            let outcome = crate::hub_work::submit(
-                caller,
-                None,
-                &request_id,
-                &source_messages,
-                &tasks,
-            )
-            .map_err(|e| e.0)?;
+                .unwrap_or_else(|| {
+                    vec![json!({"threadId": caller, "messageId": format!("gateway-{request_id}")})]
+                });
+            let outcome =
+                crate::hub_work::submit(caller, None, &request_id, &source_messages, &tasks)
+                    .map_err(|e| e.0)?;
             let items: Vec<Value> = outcome
                 .items
                 .iter()
@@ -3234,13 +3617,19 @@ fn create_threads_batch(args: &Value, caller_thread: Option<&str>) -> Result<Val
         });
         for key in ["title", "projectId"] {
             if let Some(v) = item.get(key) {
-                item_args.as_object_mut().unwrap().insert(key.into(), v.clone());
+                item_args
+                    .as_object_mut()
+                    .unwrap()
+                    .insert(key.into(), v.clone());
             }
         }
         if let Some(target) = item.get("target").and_then(Value::as_object) {
             for key in ["provider", "model"] {
                 if let Some(v) = target.get(key) {
-                    item_args.as_object_mut().unwrap().insert(key.into(), v.clone());
+                    item_args
+                        .as_object_mut()
+                        .unwrap()
+                        .insert(key.into(), v.clone());
                 }
             }
         }
@@ -3256,7 +3645,10 @@ fn create_threads_batch(args: &Value, caller_thread: Option<&str>) -> Result<Val
                         .unwrap()
                         .insert("link".into(), json!(link));
                 }
-                result.as_object_mut().unwrap().insert("index".into(), json!(i));
+                result
+                    .as_object_mut()
+                    .unwrap()
+                    .insert("index".into(), json!(i));
                 results.push(result);
             }
             Err(e) => {
@@ -3276,7 +3668,10 @@ fn update_plan(args: &Value) -> Result<Value, String> {
         return Err("items needs at least one step: [{content, status}].".into());
     }
     if items.len() > 12 {
-        return Err(format!("items has {} steps; keep the plan to 12.", items.len()));
+        return Err(format!(
+            "items has {} steps; keep the plan to 12.",
+            items.len()
+        ));
     }
     let mut in_progress = 0usize;
     let mut remaining = 0usize;
@@ -3288,7 +3683,9 @@ fn update_plan(args: &Value) -> Result<Value, String> {
             .map(str::trim)
             .unwrap_or("");
         if content.is_empty() {
-            return Err(format!("items[{index}].content must be a non-empty string."));
+            return Err(format!(
+                "items[{index}].content must be a non-empty string."
+            ));
         }
         let status = item.get("status").and_then(Value::as_str).unwrap_or("");
         if !matches!(status, "pending" | "in_progress" | "completed") {
@@ -3344,16 +3741,25 @@ fn add_mcp_connector(args: &Value, caller_thread: Option<&str>) -> Result<Value,
 }
 
 fn remove_mcp_connector(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
-    let connector_id = arg_str(args, "connectorId").ok_or("Missing required argument: connectorId")?;
+    let connector_id =
+        arg_str(args, "connectorId").ok_or("Missing required argument: connectorId")?;
     crate::mcp_connectors::propose_remove(&connector_id, caller_thread).map_err(|e| e.0)
 }
 
 fn scan_mcp_config_file(path: &std::path::Path, source: &str, out: &mut Vec<(Value, String)>) {
-    let Ok(text) = std::fs::read_to_string(path) else { return };
-    let Ok(doc) = serde_json::from_str::<Value>(&text) else { return };
-    let Some(servers) = doc.get("mcpServers").and_then(Value::as_object) else { return };
+    let Ok(text) = std::fs::read_to_string(path) else {
+        return;
+    };
+    let Ok(doc) = serde_json::from_str::<Value>(&text) else {
+        return;
+    };
+    let Some(servers) = doc.get("mcpServers").and_then(Value::as_object) else {
+        return;
+    };
     for (name, server) in servers {
-        let Some(command) = server.get("command").and_then(Value::as_str) else { continue };
+        let Some(command) = server.get("command").and_then(Value::as_str) else {
+            continue;
+        };
         let mut input = json!({
             "name": name,
             "command": command,
@@ -3361,11 +3767,12 @@ fn scan_mcp_config_file(path: &std::path::Path, source: &str, out: &mut Vec<(Val
         });
         if let Some(env) = server.get("env").and_then(Value::as_object) {
             // Never carry secret values into the proposal: keys only.
-            let keys: serde_json::Map<String, Value> = env
-                .keys()
-                .map(|k| (k.clone(), json!("")))
-                .collect();
-            input.as_object_mut().unwrap().insert("env".into(), Value::Object(keys));
+            let keys: serde_json::Map<String, Value> =
+                env.keys().map(|k| (k.clone(), json!(""))).collect();
+            input
+                .as_object_mut()
+                .unwrap()
+                .insert("env".into(), Value::Object(keys));
         }
         out.push((input, source.to_string()));
     }
@@ -3447,7 +3854,8 @@ fn synara_context_tool(caller_thread: Option<&str>) -> Result<Value, String> {
     let (thread, turn_id) = match caller_thread {
         Some(t) => {
             let conn = state_conn()?;
-            conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+            conn.execute_batch("PRAGMA busy_timeout = 5000;")
+                .map_err(|e| e.to_string())?;
             let title: Option<String> = conn
                 .query_row(
                     "SELECT title FROM projection_threads WHERE thread_id = ?1",
@@ -3463,10 +3871,7 @@ fn synara_context_tool(caller_thread: Option<&str>) -> Result<Value, String> {
                     |r| r.get(0),
                 )
                 .ok();
-            (
-                json!({"threadId": t, "title": title}),
-                running_turn,
-            )
+            (json!({"threadId": t, "title": title}), running_turn)
         }
         None => (Value::Null, None),
     };
@@ -3501,30 +3906,43 @@ fn capabilities() -> Result<Value, String> {
     }
     // The model catalog is cached per provider by provider.listModels.
     for (driver, entry) in providers.iter_mut() {
-        let catalog = crate::provider_cache::handle(
-            "provider.listModels",
-            &json!({"provider": driver}),
-        );
+        let catalog =
+            crate::provider_cache::handle("provider.listModels", &json!({"provider": driver}));
         if let Ok(cat) = catalog {
             if let Some(models) = cat.get("models") {
-                entry.as_object_mut().map(|m| m.insert("models".into(), models.clone()));
+                entry
+                    .as_object_mut()
+                    .map(|m| m.insert("models".into(), models.clone()));
             }
         }
     }
     let mut list: Vec<Value> = providers.into_values().collect();
-    list.sort_by_key(|p| p.get("provider").and_then(Value::as_str).unwrap_or("").to_string());
+    list.sort_by_key(|p| {
+        p.get("provider")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_string()
+    });
     Ok(json!({"providers": list}))
 }
 
 fn project_list_tasks(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
-    let include_archived = args.get("includeArchived").and_then(Value::as_bool).unwrap_or(false);
+    let include_archived = args
+        .get("includeArchived")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let sql = format!(
         "SELECT task_id, goal_id, title, status, assigned_thread_id, revision \
          FROM project_agent_tasks WHERE project_id = ?1 {} ORDER BY task_id LIMIT 200",
-        if include_archived { "" } else { "AND archived_at IS NULL" }
+        if include_archived {
+            ""
+        } else {
+            "AND archived_at IS NULL"
+        }
     );
     let mut stmt = conn.prepare(&sql).map_err(|e| e.to_string())?;
     let rows: Vec<Value> = stmt
@@ -3547,7 +3965,8 @@ fn project_list_tasks(args: &Value) -> Result<Value, String> {
 fn project_list_threads(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let mut stmt = conn
         .prepare(
             "SELECT t.thread_id, t.title, t.branch, t.updated_at, t.archived_at, t.pull_requests_json, \
@@ -3566,8 +3985,11 @@ fn project_list_threads(args: &Value) -> Result<Value, String> {
                 .and_then(|p| serde_json::from_str::<Value>(&p).ok())
                 .and_then(|v| v.as_array().cloned())
                 .and_then(|arr| {
-                    arr.iter()
-                        .find_map(|l| l.pointer("/pullRequest/url").and_then(Value::as_str).map(str::to_string))
+                    arr.iter().find_map(|l| {
+                        l.pointer("/pullRequest/url")
+                            .and_then(Value::as_str)
+                            .map(str::to_string)
+                    })
                 });
             Ok(json!({
                 "threadId": r.get::<_, String>(0)?,
@@ -3588,9 +4010,11 @@ fn project_list_threads(args: &Value) -> Result<Value, String> {
 
 fn project_read_document(args: &Value) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
-    let logical_path = arg_str(args, "logicalPath").ok_or("Missing required argument: logicalPath")?;
+    let logical_path =
+        arg_str(args, "logicalPath").ok_or("Missing required argument: logicalPath")?;
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     conn.query_row(
         "SELECT content, revision, author_kind, created_at FROM project_agent_documents \
          WHERE project_id = ?1 AND logical_path = ?2 ORDER BY revision DESC LIMIT 1",
@@ -3611,13 +4035,15 @@ fn project_read_document(args: &Value) -> Result<Value, String> {
 
 fn project_write_document(args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
     let project_id = arg_str(args, "projectId").ok_or("Missing required argument: projectId")?;
-    let logical_path = arg_str(args, "logicalPath").ok_or("Missing required argument: logicalPath")?;
+    let logical_path =
+        arg_str(args, "logicalPath").ok_or("Missing required argument: logicalPath")?;
     let content = arg_str(args, "content").ok_or("Missing required argument: content")?;
     if logical_path.contains("..") || logical_path.starts_with('/') {
         return Err("logicalPath must be a project-relative path without traversal.".into());
     }
     let conn = state_conn()?;
-    conn.execute_batch("PRAGMA busy_timeout = 5000;").map_err(|e| e.to_string())?;
+    conn.execute_batch("PRAGMA busy_timeout = 5000;")
+        .map_err(|e| e.to_string())?;
     let next_revision: i64 = conn
         .query_row(
             "SELECT COALESCE(MAX(revision), 0) + 1 FROM project_agent_documents \
@@ -3659,7 +4085,11 @@ fn project_write_document(args: &Value, caller_thread: Option<&str>) -> Result<V
     }))
 }
 
-pub(crate) fn call_synara_tool(name: &str, args: &Value, caller_thread: Option<&str>) -> Result<Value, String> {
+pub(crate) fn call_synara_tool(
+    name: &str,
+    args: &Value,
+    caller_thread: Option<&str>,
+) -> Result<Value, String> {
     match name {
         "synara_list_todos" => list_todos(args),
         "synara_create_todo" => create_todo(args),
@@ -3760,8 +4190,14 @@ mod tests {
     #[test]
     fn memory_note_helpers_match_upstream() {
         assert_eq!(normalize_memory_note("Hello, World!"), "hello world");
-        assert_eq!(memory_note_body("# Title\n\nSome note here"), "some note here");
-        assert_eq!(slugify_memory_title("Release Schedule!"), "release-schedule");
+        assert_eq!(
+            memory_note_body("# Title\n\nSome note here"),
+            "some note here"
+        );
+        assert_eq!(
+            slugify_memory_title("Release Schedule!"),
+            "release-schedule"
+        );
         assert_eq!(sanitize_memory_title("a\n\tb"), "a b");
     }
 }

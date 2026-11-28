@@ -74,7 +74,10 @@ fn identity_field_state(options: &Map<String, Value>, key: &str) -> FieldState {
 fn canonical_selection(selection: &Map<String, Value>, instance_id: &str) -> Map<String, Value> {
     let mut canonical = selection.clone();
     canonical.remove("provider");
-    canonical.insert("instanceId".to_string(), Value::String(instance_id.to_string()));
+    canonical.insert(
+        "instanceId".to_string(),
+        Value::String(instance_id.to_string()),
+    );
     canonical
 }
 
@@ -89,7 +92,11 @@ pub fn resolve_automation_provider_identity(
     provider_hint: Option<&Value>,
 ) -> IdentityResolution {
     let selection = match model_selection.as_object() {
-        Some(s) if non_empty_string(model_selection.get("model").unwrap_or(&Value::Null)).is_some() => s,
+        Some(s)
+            if non_empty_string(model_selection.get("model").unwrap_or(&Value::Null)).is_some() =>
+        {
+            s
+        }
         _ => return IdentityResolution::Unsafe,
     };
 
@@ -143,7 +150,7 @@ pub fn resolve_automation_provider_identity(
     let options_value = match provider_options {
         None => return IdentityResolution::Safe(canonical_selection(selection, &provider)),
         Some(v) if v.is_null() => {
-            return IdentityResolution::Safe(canonical_selection(selection, &provider))
+            return IdentityResolution::Safe(canonical_selection(selection, &provider));
         }
         Some(v) => v,
     };
@@ -155,7 +162,7 @@ pub fn resolve_automation_provider_identity(
     let selected = match options.get(&provider) {
         None => return IdentityResolution::Safe(canonical_selection(selection, &provider)),
         Some(v) if v.is_null() => {
-            return IdentityResolution::Safe(canonical_selection(selection, &provider))
+            return IdentityResolution::Safe(canonical_selection(selection, &provider));
         }
         Some(v) => v,
     };
@@ -242,9 +249,25 @@ fn iso_valid(value: &str) -> bool {
     if len != 20 && len != 24 {
         return false;
     }
-    if !digit(0) || !digit(1) || !digit(2) || !digit(3) || b[4] != b'-' || !digit(5) || !digit(6)
-        || b[7] != b'-' || !digit(8) || !digit(9) || b[10] != b'T' || !digit(11) || !digit(12)
-        || b[13] != b':' || !digit(14) || !digit(15) || b[16] != b':' || !digit(17) || !digit(18)
+    if !digit(0)
+        || !digit(1)
+        || !digit(2)
+        || !digit(3)
+        || b[4] != b'-'
+        || !digit(5)
+        || !digit(6)
+        || b[7] != b'-'
+        || !digit(8)
+        || !digit(9)
+        || b[10] != b'T'
+        || !digit(11)
+        || !digit(12)
+        || b[13] != b':'
+        || !digit(14)
+        || !digit(15)
+        || b[16] != b':'
+        || !digit(17)
+        || !digit(18)
     {
         return false;
     }
@@ -343,10 +366,16 @@ pub fn make_unresolved_permission_snapshot(
 pub fn is_valid_permission_snapshot(value: &Map<String, Value>) -> bool {
     let str_field = |key: &str| value.get(key).and_then(|v| v.as_str()).is_some();
     str_field("provider")
-        && value.get("modelSelection").map(|v| v.is_object()).unwrap_or(false)
+        && value
+            .get("modelSelection")
+            .map(|v| v.is_object())
+            .unwrap_or(false)
         && str_field("runtimeMode")
         && str_field("interactionMode")
         && str_field("worktreeMode")
         && str_field("createdAt")
-        && value.get("allowedCapabilities").map(|v| v.is_array()).unwrap_or(false)
+        && value
+            .get("allowedCapabilities")
+            .map(|v| v.is_array())
+            .unwrap_or(false)
 }

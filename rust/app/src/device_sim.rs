@@ -3,7 +3,7 @@
 //! backend hides input injection behind a helper process; discovery, lifecycle
 //! and capture are pure simctl and ported here directly.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::process::Command;
 
 fn simctl(args: &[&str]) -> Result<String, String> {
@@ -47,8 +47,8 @@ fn format_runtime(identifier: &str) -> String {
 /// `simctl list devices --json` flattened into contract-shaped descriptors.
 pub fn list_devices(include_shutdown: bool) -> Result<Value, String> {
     let raw = simctl(&["list", "devices", "--json"])?;
-    let parsed: Value = serde_json::from_str(&raw)
-        .map_err(|_| "could not parse simctl device list".to_string())?;
+    let parsed: Value =
+        serde_json::from_str(&raw).map_err(|_| "could not parse simctl device list".to_string())?;
     let mut devices = Vec::new();
     if let Some(by_runtime) = parsed.get("devices").and_then(|d| d.as_object()) {
         for (runtime_id, list) in by_runtime {
@@ -122,7 +122,6 @@ pub fn screenshot(udid: &str) -> Result<Value, String> {
 fn uuid_v4_short() -> String {
     crate::orchestration_engine::uuid_v4().replace('-', "")[..12].to_string()
 }
-
 
 // ---- input injection through the native helper -----------------------------
 
@@ -214,16 +213,14 @@ fn device_describe_ui(udid: &str) -> Result<Value, String> {
     Ok(json!({ "udid": udid, "tree": tree }))
 }
 
-
 // ---- video capture -----------------------------------------------------------
 
 static RECORDINGS: std::sync::OnceLock<
     std::sync::Mutex<std::collections::HashMap<String, std::process::Child>>,
 > = std::sync::OnceLock::new();
 
-fn recordings() -> &'static std::sync::Mutex<
-    std::collections::HashMap<String, std::process::Child>,
-> {
+fn recordings() -> &'static std::sync::Mutex<std::collections::HashMap<String, std::process::Child>>
+{
     RECORDINGS.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
 }
 
@@ -265,7 +262,6 @@ fn stop_recording(udid: &str) -> Result<Value, String> {
     let _ = child.wait();
     Ok(json!({ "udid": udid, "recording": false }))
 }
-
 
 // ---- thread-scoped attachment (pragmatic manager slice) ----------------------
 //
@@ -351,7 +347,6 @@ fn device_thread_state(payload: &Value) -> Result<Value, String> {
         })),
     }
 }
-
 
 // ---- unified log capture + focused-value editing -------------------------------
 
@@ -483,7 +478,10 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
             }
         }
         "device.installApp" => {
-            let app_path = payload.get("appPath").and_then(|v| v.as_str()).unwrap_or("");
+            let app_path = payload
+                .get("appPath")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
             if udid.is_empty() || app_path.is_empty() {
                 Err("udid and appPath required".into())
             } else {
@@ -524,10 +522,18 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, String> {
         "device.logs" => device_logs(udid, payload),
         "device.setFocusedValue" => device_set_focused_value(udid, payload),
         "device.startRecording" => {
-            if udid.is_empty() { Err("udid required".into()) } else { start_recording(udid) }
+            if udid.is_empty() {
+                Err("udid required".into())
+            } else {
+                start_recording(udid)
+            }
         }
         "device.stopRecording" => {
-            if udid.is_empty() { Err("udid required".into()) } else { stop_recording(udid) }
+            if udid.is_empty() {
+                Err("udid required".into())
+            } else {
+                stop_recording(udid)
+            }
         }
         "device.openUrl" => {
             let url = payload.get("url").and_then(|v| v.as_str()).unwrap_or("");

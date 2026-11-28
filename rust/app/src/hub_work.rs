@@ -33,7 +33,13 @@ fn canonical_json(value: &Value) -> String {
             keys.sort();
             let inner: Vec<String> = keys
                 .iter()
-                .map(|k| format!("{}:{}", serde_json::to_string(k).unwrap_or_default(), canonical_json(&map[*k])))
+                .map(|k| {
+                    format!(
+                        "{}:{}",
+                        serde_json::to_string(k).unwrap_or_default(),
+                        canonical_json(&map[*k])
+                    )
+                })
                 .collect();
             format!("{{{}}}", inner.join(","))
         }
@@ -185,10 +191,15 @@ pub(crate) fn submit(
             .get("title")
             .and_then(Value::as_str)
             .map(str::to_string)
-            .or_else(|| spec.get("title").and_then(Value::as_str).map(str::to_string));
+            .or_else(|| {
+                spec.get("title")
+                    .and_then(Value::as_str)
+                    .map(str::to_string)
+            });
         // Task sources: the referenced context messages when pinned, else the
         // whole frozen source request.
-        let task_sources: Vec<Value> = match spec.get("contextMessageIds").and_then(Value::as_array) {
+        let task_sources: Vec<Value> = match spec.get("contextMessageIds").and_then(Value::as_array)
+        {
             Some(ids) => {
                 let mut out = Vec::new();
                 let mut seen = std::collections::HashSet::new();
@@ -203,7 +214,7 @@ pub(crate) fn submit(
                         None => {
                             return Err(err(
                                 "Task context references must belong to this frozen source request.",
-                            ))
+                            ));
                         }
                     }
                 }
@@ -233,7 +244,9 @@ pub(crate) fn submit(
             .map(|o| o.insert("taskKey".into(), json!(task_key)));
         // The routing reason annotates the decision but is not part of its identity.
         let mut decision_spec = frozen_spec.clone();
-        decision_spec.as_object_mut().map(|o| o.remove("routingReason"));
+        decision_spec
+            .as_object_mut()
+            .map(|o| o.remove("routingReason"));
         let fingerprint = task_fingerprint(&json!(task_sources), &decision_spec, title.as_deref());
         if let Some((_id, existing)) = frozen_by_key.get(&task_key) {
             let existing_fp = existing
@@ -266,7 +279,9 @@ pub(crate) fn submit(
     let now = crate::todo::iso_now_ms();
     let mut task_index = max_index;
     let mut inserted: Vec<Value> = Vec::new();
-    let tx = conn.unchecked_transaction().map_err(|e| err(e.to_string()))?;
+    let tx = conn
+        .unchecked_transaction()
+        .map_err(|e| err(e.to_string()))?;
     for (task_key, task_fp, spec, task) in &fresh {
         task_index += 1;
         let id = work_item_id(&project_id, &scope_key, task_key);
@@ -279,7 +294,11 @@ pub(crate) fn submit(
                 .and_then(|p| p.lines().next());
             let raw = explicit.or(spec_title).or(prompt_first).unwrap_or("Task");
             let trimmed: String = raw.trim().chars().take(240).collect();
-            if trimmed.is_empty() { "Task".to_string() } else { trimmed }
+            if trimmed.is_empty() {
+                "Task".to_string()
+            } else {
+                trimmed
+            }
         };
         let first_source = source_messages
             .first()
@@ -348,16 +367,16 @@ pub(crate) fn claim_next(project_id: &str) -> Result<Option<Value>, crate::todo:
             |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
         )
         .ok();
-    let Some((id, raw, revision)) = row else { return Ok(None) };
+    let Some((id, raw, revision)) = row else {
+        return Ok(None);
+    };
     let mut record = serde_json::from_str::<Value>(&raw).unwrap_or_else(|_| json!({}));
-    record
-        .as_object_mut()
-        .map(|o| {
-            o.insert("state".into(), json!("starting"));
-            o.insert("slotHeld".into(), json!(true));
-            o.insert("revision".into(), json!(revision + 1));
-            o.insert("updatedAt".into(), json!(crate::todo::iso_now_ms()));
-        });
+    record.as_object_mut().map(|o| {
+        o.insert("state".into(), json!("starting"));
+        o.insert("slotHeld".into(), json!(true));
+        o.insert("revision".into(), json!(revision + 1));
+        o.insert("updatedAt".into(), json!(crate::todo::iso_now_ms()));
+    });
     let updated = conn
         .execute(
             "UPDATE project_agent_work_items SET state = 'starting', slot_held = 1, \
@@ -421,7 +440,10 @@ pub(crate) fn reconcile_queue_reasons(project_id: &str) -> Result<(), crate::tod
         } else {
             "Waiting for an available worker slot"
         };
-        let current = record.get("queueReason").and_then(Value::as_str).unwrap_or("");
+        let current = record
+            .get("queueReason")
+            .and_then(Value::as_str)
+            .unwrap_or("");
         if current != reason {
             record.as_object_mut().map(|o| {
                 o.insert("queueReason".into(), json!(reason));
@@ -452,7 +474,10 @@ pub(crate) fn admit_next(project_id: &str) -> Result<bool, crate::todo::WsErr> {
         .and_then(Value::as_str)
         .unwrap_or_default()
         .to_string();
-    let spec = record.get("creationSpec").cloned().unwrap_or_else(|| json!({}));
+    let spec = record
+        .get("creationSpec")
+        .cloned()
+        .unwrap_or_else(|| json!({}));
     let target_project = record
         .get("targetProjectId")
         .and_then(Value::as_str)
@@ -555,30 +580,32 @@ fn release_failed(work_item_id: &str) {
 /// Background admission loop: every few seconds each enabled hub project
 /// reconciles its queue reasons and admits waiting work while slots allow.
 pub(crate) fn spawn_admission_loop() {
-    std::thread::spawn(|| loop {
-        std::thread::sleep(std::time::Duration::from_secs(5));
-        let Ok(conn) = state_conn() else { continue };
-        let projects: Vec<String> = {
-            let mut stmt = match conn.prepare(
-                "SELECT project_id FROM project_agent_configs WHERE enabled = 1",
-            ) {
-                Ok(s) => s,
-                Err(_) => continue,
+    std::thread::spawn(|| {
+        loop {
+            std::thread::sleep(std::time::Duration::from_secs(5));
+            let Ok(conn) = state_conn() else { continue };
+            let projects: Vec<String> = {
+                let mut stmt = match conn
+                    .prepare("SELECT project_id FROM project_agent_configs WHERE enabled = 1")
+                {
+                    Ok(s) => s,
+                    Err(_) => continue,
+                };
+                stmt.query_map([], |r| r.get::<_, String>(0))
+                    .map(|rows| rows.filter_map(|r| r.ok()).collect())
+                    .unwrap_or_default()
             };
-            stmt.query_map([], |r| r.get::<_, String>(0))
-                .map(|rows| rows.filter_map(|r| r.ok()).collect())
-                .unwrap_or_default()
-        };
-        drop(conn);
-        for project_id in projects {
-            let _ = reconcile_queue_reasons(&project_id);
-            // Admit while items claim successfully; each admission spawns a
-            // worker thread so the loop naturally paces itself.
-            for _ in 0..4 {
-                match admit_next(&project_id) {
-                    Ok(true) => {}
-                    Ok(false) => break,
-                    Err(_) => break,
+            drop(conn);
+            for project_id in projects {
+                let _ = reconcile_queue_reasons(&project_id);
+                // Admit while items claim successfully; each admission spawns a
+                // worker thread so the loop naturally paces itself.
+                for _ in 0..4 {
+                    match admit_next(&project_id) {
+                        Ok(true) => {}
+                        Ok(false) => break,
+                        Err(_) => break,
+                    }
                 }
             }
         }
@@ -591,12 +618,18 @@ mod tests {
 
     #[test]
     fn task_key_validation_matches_upstream_charset() {
-        assert_eq!(normalize_task_key("valid-key_1.2:3"), Some("valid-key_1.2:3".into()));
+        assert_eq!(
+            normalize_task_key("valid-key_1.2:3"),
+            Some("valid-key_1.2:3".into())
+        );
         assert_eq!(normalize_task_key("has space"), None);
         assert_eq!(normalize_task_key("UPPER"), None);
         assert_eq!(normalize_task_key(""), None);
         assert_eq!(normalize_task_key(&"x".repeat(129)), None);
-        assert_eq!(normalize_task_key(&"x".repeat(128)).map(|k| k.len()), Some(128));
+        assert_eq!(
+            normalize_task_key(&"x".repeat(128)).map(|k| k.len()),
+            Some(128)
+        );
     }
 
     #[test]

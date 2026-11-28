@@ -6,14 +6,14 @@
 
 use axum::body::Body;
 use axum::extract::{Path, Request};
-use axum::http::{header, HeaderMap, HeaderName, HeaderValue, StatusCode};
+use axum::http::{HeaderMap, HeaderName, HeaderValue, StatusCode, header};
 use axum::response::{IntoResponse, Response};
 use serde_json::Value;
+use std::sync::{Arc, Mutex, OnceLock};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::sync::Semaphore;
-use std::sync::{Arc, Mutex, OnceLock};
 
-use crate::remote_resource::{resource_route, REMOTE_RESOURCE_PATH};
+use crate::remote_resource::{REMOTE_RESOURCE_PATH, resource_route};
 
 const MAX_METADATA_BYTES: usize = 16 * 1024;
 const MAX_RESPONSE_HEAD_BYTES: usize = 64 * 1024;
@@ -62,20 +62,25 @@ fn presentation_url(environment_id: &str, encoded_reference: &str) -> String {
     )
 }
 
-fn filtered_request_headers(headers: &HeaderMap, max_body_bytes: usize) -> Result<Vec<(String, String)>, StatusCode> {
+fn filtered_request_headers(
+    headers: &HeaderMap,
+    max_body_bytes: usize,
+) -> Result<Vec<(String, String)>, StatusCode> {
     let mut result = Vec::new();
-    if let Some(value) = headers.get(header::RANGE).and_then(|value| value.to_str().ok()) {
-        let valid = max_body_bytes == 0
-            && {
-                let bytes = value.strip_prefix("bytes=").unwrap_or("");
-                let mut parts = bytes.split('-');
-                let start = parts.next().unwrap_or("");
-                let end = parts.next().unwrap_or("");
-                parts.next().is_none()
-                    && (start.chars().all(|c| c.is_ascii_digit()) || start.is_empty())
-                    && (end.chars().all(|c| c.is_ascii_digit()) || end.is_empty())
-                    && !(start.is_empty() && end.is_empty())
-            };
+    if let Some(value) = headers
+        .get(header::RANGE)
+        .and_then(|value| value.to_str().ok())
+    {
+        let valid = max_body_bytes == 0 && {
+            let bytes = value.strip_prefix("bytes=").unwrap_or("");
+            let mut parts = bytes.split('-');
+            let start = parts.next().unwrap_or("");
+            let end = parts.next().unwrap_or("");
+            parts.next().is_none()
+                && (start.chars().all(|c| c.is_ascii_digit()) || start.is_empty())
+                && (end.chars().all(|c| c.is_ascii_digit()) || end.is_empty())
+                && !(start.is_empty() && end.is_empty())
+        };
         if !valid {
             return Err(StatusCode::FORBIDDEN);
         }
@@ -94,31 +99,59 @@ fn filtered_request_headers(headers: &HeaderMap, max_body_bytes: usize) -> Resul
 
 fn response_headers(remote_head: &str) -> HeaderMap {
     const ALLOWED: &[&str] = &[
-        "content-type", "content-length", "content-range", "accept-ranges",
-        "content-disposition", "etag", "last-modified", "cache-control",
-        "content-security-policy", "x-content-type-options",
+        "content-type",
+        "content-length",
+        "content-range",
+        "accept-ranges",
+        "content-disposition",
+        "etag",
+        "last-modified",
+        "cache-control",
+        "content-security-policy",
+        "x-content-type-options",
     ];
     let mut result = HeaderMap::new();
     for line in remote_head.lines().skip(1) {
-        let Some((name, value)) = line.split_once(':') else { continue };
+        let Some((name, value)) = line.split_once(':') else {
+            continue;
+        };
         let lower = name.trim().to_ascii_lowercase();
-        if !ALLOWED.contains(&lower.as_str()) { continue }
-        let Ok(name) = HeaderName::from_bytes(lower.as_bytes()) else { continue };
-        let Ok(value) = HeaderValue::from_str(value.trim()) else { continue };
+        if !ALLOWED.contains(&lower.as_str()) {
+            continue;
+        }
+        let Ok(name) = HeaderName::from_bytes(lower.as_bytes()) else {
+            continue;
+        };
+        let Ok(value) = HeaderValue::from_str(value.trim()) else {
+            continue;
+        };
         result.insert(name, value);
     }
     result.insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
     result
 }
 
-
 fn host_semaphore(host_id: &str, transfer: bool) -> Arc<Semaphore> {
-    static PENDING: OnceLock<Mutex<std::collections::HashMap<String, Arc<Semaphore>>>> = OnceLock::new();
-    static TRANSFERS: OnceLock<Mutex<std::collections::HashMap<String, Arc<Semaphore>>>> = OnceLock::new();
-    let (cell, permits) = if transfer { (&TRANSFERS, 2) } else { (&PENDING, 32) };
+    static PENDING: OnceLock<Mutex<std::collections::HashMap<String, Arc<Semaphore>>>> =
+        OnceLock::new();
+    static TRANSFERS: OnceLock<Mutex<std::collections::HashMap<String, Arc<Semaphore>>>> =
+        OnceLock::new();
+    let (cell, permits) = if transfer {
+        (&TRANSFERS, 2)
+    } else {
+        (&PENDING, 32)
+    };
     let map = cell.get_or_init(|| Mutex::new(std::collections::HashMap::new()));
-    map.lock().ok()
-        .and_then(|mut entries| Some(entries.entry(host_id.to_string()).or_insert_with(|| Arc::new(Semaphore::new(permits))).clone()))
+    map.lock()
+        .ok()
+        .and_then(|mut entries| {
+            Some(
+                entries
+                    .entry(host_id.to_string())
+                    .or_insert_with(|| Arc::new(Semaphore::new(permits)))
+                    .clone(),
+            )
+        })
         .unwrap_or_else(|| Arc::new(Semaphore::new(permits)))
 }
 
@@ -131,10 +164,7 @@ fn bad(status: StatusCode, text: &'static str) -> Response {
 /// This is deliberately not a general HTTP proxy. The resource JSON is the
 /// upstream manifest and `resource_route` is the only authority that maps it
 /// to a loopback path on the host.
-pub async fn handle_remote_resource(
-    Path(host_id): Path<String>,
-    request: Request,
-) -> Response {
+pub async fn handle_remote_resource(Path(host_id): Path<String>, request: Request) -> Response {
     let uri = request.uri().clone();
     let headers = request.headers().clone();
     if crate::ws_relay::query_value(&uri, "token").is_some() {
@@ -142,7 +172,9 @@ pub async fn handle_remote_resource(
     }
     let cfg = crate::native_ws::config();
     let request_origin = crate::native_ws::request_origin(&headers);
-    let raw_origin = headers.get(header::ORIGIN).and_then(|value| value.to_str().ok());
+    let raw_origin = headers
+        .get(header::ORIGIN)
+        .and_then(|value| value.to_str().ok());
     if crate::native_ws::should_reject_untrusted_request_origin(raw_origin, &request_origin, cfg) {
         return bad(StatusCode::FORBIDDEN, "Forbidden");
     }
@@ -166,7 +198,8 @@ pub async fn handle_remote_resource(
     let Some((host, credential)) = crate::remote_connections::resource_credential(&host_id) else {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     };
-    if reference.get("environmentId").and_then(Value::as_str) != Some(host.environment_id.as_str()) {
+    if reference.get("environmentId").and_then(Value::as_str) != Some(host.environment_id.as_str())
+    {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     }
     let Some(resource) = reference.get("resource") else {
@@ -191,10 +224,13 @@ pub async fn handle_remote_resource(
     let Ok(_transfer_permit) = tokio::time::timeout(
         std::time::Duration::from_secs(30),
         transfers.acquire_owned(),
-    ).await else {
+    )
+    .await
+    else {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     };
-    let Ok(forward_headers) = filtered_request_headers(&headers, route.max_body_bytes as usize) else {
+    let Ok(forward_headers) = filtered_request_headers(&headers, route.max_body_bytes as usize)
+    else {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     };
     let Ok(endpoints) = crate::hosts::fresh_host_endpoints(&host_id, &host.environment_id) else {
@@ -218,7 +254,8 @@ pub async fn handle_remote_resource(
         "{} {} HTTP/1.1\r\nHost: {}\r\nAuthorization: DPoP {}\r\nDPoP: {}\r\nContent-Length: {}\r\nConnection: close\r\n",
         route.method,
         target_path,
-        crate::remote_tls::remote_tls_server_name(&host.environment_id).unwrap_or_else(|_| "remote.invalid".to_string()),
+        crate::remote_tls::remote_tls_server_name(&host.environment_id)
+            .unwrap_or_else(|_| "remote.invalid".to_string()),
         credential,
         dpop,
         body.len(),
@@ -232,28 +269,44 @@ pub async fn handle_remote_resource(
             endpoints,
             &host.root_certificate,
             &host.environment_id,
-        ).await?;
-        tokio::time::timeout(std::time::Duration::from_secs(15), tls.write_all(head.as_bytes()))
+        )
+        .await?;
+        tokio::time::timeout(
+            std::time::Duration::from_secs(15),
+            tls.write_all(head.as_bytes()),
+        )
+        .await
+        .map_err(|_| "Remote resource write timed out".to_string())?
+        .map_err(|error| format!("Remote resource write failed: {error}"))?;
+        tls.write_all(&body)
             .await
-            .map_err(|_| "Remote resource write timed out".to_string())?
             .map_err(|error| format!("Remote resource write failed: {error}"))?;
-        tls.write_all(&body).await.map_err(|error| format!("Remote resource write failed: {error}"))?;
-        tls.flush().await.map_err(|error| format!("Remote resource write failed: {error}"))?;
+        tls.flush()
+            .await
+            .map_err(|error| format!("Remote resource write failed: {error}"))?;
         let mut raw = Vec::new();
         tokio::time::timeout(std::time::Duration::from_secs(15 * 60), async {
             let mut chunk = [0u8; 64 * 1024];
             loop {
-                let read = tls.read(&mut chunk).await.map_err(|error| format!("Remote resource read failed: {error}"))?;
-                if read == 0 { break; }
+                let read = tls
+                    .read(&mut chunk)
+                    .await
+                    .map_err(|error| format!("Remote resource read failed: {error}"))?;
+                if read == 0 {
+                    break;
+                }
                 raw.extend_from_slice(&chunk[..read]);
                 if raw.len() > MAX_RESPONSE_BODY_BYTES {
                     return Err("Remote resource response exceeds limit".to_string());
                 }
             }
             Ok::<(), String>(())
-        }).await.map_err(|_| "Remote resource timed out".to_string())??;
+        })
+        .await
+        .map_err(|_| "Remote resource timed out".to_string())??;
         Ok::<Vec<u8>, String>(raw)
-    }.await;
+    }
+    .await;
     let Ok(raw) = forwarded else {
         return bad(StatusCode::FORBIDDEN, "Remote resource unavailable");
     };
@@ -301,7 +354,10 @@ mod tests {
         headers.insert(header::RANGE, HeaderValue::from_static("bytes=1-2"));
         headers.insert(header::COOKIE, HeaderValue::from_static("secret=yes"));
         let filtered = filtered_request_headers(&headers, 0).unwrap();
-        assert_eq!(filtered, vec![("range".to_string(), "bytes=1-2".to_string())]);
+        assert_eq!(
+            filtered,
+            vec![("range".to_string(), "bytes=1-2".to_string())]
+        );
         assert!(filtered_request_headers(&headers, 4096).is_err());
     }
 }

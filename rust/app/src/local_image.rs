@@ -10,7 +10,7 @@
 
 use axum::{
     extract::RawQuery,
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{IntoResponse, Response},
 };
 use std::path::{Path, PathBuf};
@@ -31,7 +31,9 @@ fn lower_extension(path: &str) -> Option<String> {
 }
 
 fn is_supported_preview(path: &str) -> bool {
-    let Some(ext) = lower_extension(path) else { return false };
+    let Some(ext) = lower_extension(path) else {
+        return false;
+    };
     IMAGE_EXTENSIONS.contains(&ext.as_str())
         || VIDEO_EXTENSIONS.contains(&ext.as_str())
         || PDF_EXTENSIONS.contains(&ext.as_str())
@@ -61,7 +63,6 @@ fn mime_for(path: &str) -> &'static str {
         _ => "application/octet-stream",
     }
 }
-
 
 /// Range-aware file response shared by `/api/local-image` and `/attachments`.
 /// Semantics match upstream streamedFileResponse exactly: `bytes=a-b`,
@@ -251,11 +252,15 @@ fn codex_generated_roots() -> Vec<PathBuf> {
 }
 
 fn is_video(path: &str) -> bool {
-    lower_extension(path).map(|e| VIDEO_EXTENSIONS.contains(&e.as_str())).unwrap_or(false)
+    lower_extension(path)
+        .map(|e| VIDEO_EXTENSIONS.contains(&e.as_str()))
+        .unwrap_or(false)
 }
 
 fn is_image(path: &str) -> bool {
-    lower_extension(path).map(|e| IMAGE_EXTENSIONS.contains(&e.as_str())).unwrap_or(false)
+    lower_extension(path)
+        .map(|e| IMAGE_EXTENSIONS.contains(&e.as_str()))
+        .unwrap_or(false)
 }
 
 fn resolve_allowed_with_grant(
@@ -290,7 +295,9 @@ fn resolve_allowed_with_grant(
     // Exact upstream shape: absolute path + grant bound to this realpath.
     if is_absolute {
         if let Some(token) = grant {
-            if crate::projects_fileops::resolve_grant_real_path(token).as_deref() == Some(real.as_path()) {
+            if crate::projects_fileops::resolve_grant_real_path(token).as_deref()
+                == Some(real.as_path())
+            {
                 return Some((real, meta.len()));
             }
         }
@@ -349,7 +356,11 @@ pub async fn local_image(RawQuery(query): RawQuery, headers: axum::http::HeaderM
     let query = query.unwrap_or_default();
     let path_param = query_param(&query, "path");
     let cwd_param = query_param(&query, "cwd");
-    let Some(requested) = path_param.as_deref().map(str::trim).filter(|s| !s.is_empty()) else {
+    let Some(requested) = path_param
+        .as_deref()
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+    else {
         return StatusCode::NOT_FOUND.into_response();
     };
     let grant_param = query_param(&query, "grant");
@@ -361,9 +372,7 @@ pub async fn local_image(RawQuery(query): RawQuery, headers: axum::http::HeaderM
     if !real.is_file() {
         return StatusCode::NOT_FOUND.into_response();
     }
-    let range = headers
-        .get(header::RANGE)
-        .and_then(|v| v.to_str().ok());
+    let range = headers.get(header::RANGE).and_then(|v| v.to_str().ok());
     file_response_with_range(
         &real,
         range,

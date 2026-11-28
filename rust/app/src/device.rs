@@ -5,7 +5,7 @@
 //! an empty stream completes instantly and the client treats that as a
 //! zombie socket that forces reconnect loops.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub fn handles(tag: &str) -> bool {
     tag.starts_with("device.")

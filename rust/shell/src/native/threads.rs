@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -173,7 +171,12 @@ impl Native {
 
     /// Upstream closeTabsInScope: close every open tab in one scope of the
     /// tab whose menu was used ("left" | "right" | "others").
-    pub(super) fn close_tabs_scope(&mut self, thread_id: &str, scope: &str, cx: &mut Context<Self>) {
+    pub(super) fn close_tabs_scope(
+        &mut self,
+        thread_id: &str,
+        scope: &str,
+        cx: &mut Context<Self>,
+    ) {
         let Some(idx) = self.open_threads.iter().position(|t| t == thread_id) else {
             return;
         };
@@ -391,7 +394,11 @@ impl Native {
                 return None;
             }
             let r = str_at(p, "workspaceRoot");
-            let r = if r.is_empty() { str_at(p, "workspace_root") } else { r };
+            let r = if r.is_empty() {
+                str_at(p, "workspace_root")
+            } else {
+                r
+            };
             (!r.is_empty()).then(|| r.to_string())
         })
     }
@@ -486,7 +493,11 @@ impl Native {
             .find(|p| str_at(p, "id") == pid)
             .map(|p| {
                 let r = str_at(p, "workspaceRoot");
-                if r.is_empty() { str_at(p, "workspace_root") } else { r }
+                if r.is_empty() {
+                    str_at(p, "workspace_root")
+                } else {
+                    r
+                }
             })
             .filter(|r| !r.is_empty());
         root.map(|r| r.to_string())

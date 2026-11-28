@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -54,9 +52,7 @@ impl Native {
         };
         let label = sc_fmt_captured(cap);
         if rec.numbered
-            && !(cap.key.len() == 1
-                && cap.key.as_bytes()[0].is_ascii_digit()
-                && cap.key != "0")
+            && !(cap.key.len() == 1 && cap.key.as_bytes()[0].is_ascii_digit() && cap.key != "0")
         {
             return (
                 Some("Hold the modifiers and press a number key.".to_string()),
@@ -143,19 +139,18 @@ impl Native {
                 .map(|(p, _)| format!("{p}+"))
                 .unwrap_or_default();
             for (i, cmd) in commands.iter().enumerate() {
-                let mut edit =
-                    json!({"type": "set", "rule": {"command": cmd, "key": format!("{prefix}{}", i + 1)}});
-                if let Some(rep) = replacing.iter().find(|r| {
-                    r.get("command").and_then(Value::as_str) == Some(cmd.as_str())
-                }) {
+                let mut edit = json!({"type": "set", "rule": {"command": cmd, "key": format!("{prefix}{}", i + 1)}});
+                if let Some(rep) = replacing
+                    .iter()
+                    .find(|r| r.get("command").and_then(Value::as_str) == Some(cmd.as_str()))
+                {
                     edit["replacing"] = sc_rule_from_resolved(rep);
                 }
                 edits.push(edit);
             }
         } else {
             for (i, cmd) in commands.iter().enumerate() {
-                let mut edit =
-                    json!({"type": "set", "rule": {"command": cmd, "key": enc}});
+                let mut edit = json!({"type": "set", "rule": {"command": cmd, "key": enc}});
                 if let Some(rep) = replacing.get(i).or_else(|| replacing.first()) {
                     edit["replacing"] = sc_rule_from_resolved(rep);
                 }
@@ -188,17 +183,13 @@ impl Native {
             };
             let reply = cx
                 .background_executor()
-                .spawn(async move {
-                    client.call("server.editKeybindings", json!({"edits": edits}))
-                })
+                .spawn(
+                    async move { client.call("server.editKeybindings", json!({"edits": edits})) },
+                )
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
-                if let Some(rules) = reply
-                    .and_then(|v| {
-                        v.get("keybindings")
-                            .and_then(|k| k.as_array())
-                            .cloned()
-                    })
+                if let Some(rules) =
+                    reply.and_then(|v| v.get("keybindings").and_then(|k| k.as_array()).cloned())
                 {
                     this.kb_rules = rules.clone();
                     if !this.settings_data.is_null() {
@@ -279,12 +270,20 @@ impl Native {
     /// Run a keybinding command. Returns false for commands the shell has
     /// no action for (model pickers, editor.*, snooze, …) so the caller can
     /// try the next matching rule.
-    pub(super) fn run_command(&mut self, cmd: &str, window: &mut Window, cx: &mut Context<Self>) -> bool {
+    pub(super) fn run_command(
+        &mut self,
+        cmd: &str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> bool {
         match cmd {
-            "chat.new" | "chat.newChat" | "chat.newLocal" | "chat.newClaude"
-            | "chat.newCodex" | "chat.newCursor" | "chat.newLatestProject" => {
-                self.new_thread(cx)
-            }
+            "chat.new"
+            | "chat.newChat"
+            | "chat.newLocal"
+            | "chat.newClaude"
+            | "chat.newCodex"
+            | "chat.newCursor"
+            | "chat.newLatestProject" => self.new_thread(cx),
             "threadTab.close" | "terminal.close" | "terminal.workspace.closeActive" => {
                 if self.split_open && self.focused_pane == 1 {
                     if self.split_thread.is_some() {
@@ -334,10 +333,11 @@ impl Native {
                 cx.notify();
             }
             "chat.find" => self.toggle_find(window, cx),
-            "chat.newTerminal" | "terminal.new" | "terminal.toggle"
-            | "terminal.workspace.newFullWidth" | "terminal.workspace.terminal" => {
-                self.toggle_terminal(window, cx)
-            }
+            "chat.newTerminal"
+            | "terminal.new"
+            | "terminal.toggle"
+            | "terminal.workspace.newFullWidth"
+            | "terminal.workspace.terminal" => self.toggle_terminal(window, cx),
             "terminal.workspace.chat" => {
                 if self.view_terminal {
                     self.toggle_terminal(window, cx);
@@ -355,10 +355,15 @@ impl Native {
                 }
             }
             "thread.archive" => self.archive_selected(cx),
-            "chat.visible.previous" | "view.recent.previous" | "threadTab.previous"
+            "chat.visible.previous"
+            | "view.recent.previous"
+            | "threadTab.previous"
             | "space.previous" => self.cycle_tab(-1, cx),
-            "chat.visible.next" | "view.recent.next" | "threadTab.next"
-            | "chat.attention.next" | "space.next" => self.cycle_tab(1, cx),
+            "chat.visible.next"
+            | "view.recent.next"
+            | "threadTab.next"
+            | "chat.attention.next"
+            | "space.next" => self.cycle_tab(1, cx),
             "diff.toggle" | "git.commitAndPush" => self.toggle_changes(cx),
             "computer.toggle" => self.toggle_cua(window, cx),
             "browser.toggle" => self.toggle_browser(window, cx),
@@ -409,17 +414,11 @@ impl Native {
                             let oi = (digit - b'1') as usize;
                             let qidx = *self.pi_qidx.get(&rid).unwrap_or(&0);
                             if let Some(q) = questions.get(qidx) {
-                                let multi =
-                                    get(q, "multiSelect").as_bool().unwrap_or(false);
-                                if let Some(opt) =
-                                    arr(q, "options").get(oi)
-                                {
+                                let multi = get(q, "multiSelect").as_bool().unwrap_or(false);
+                                if let Some(opt) = arr(q, "options").get(oi) {
                                     let qid = str_at(q, "id").to_string();
-                                    let label =
-                                        str_at(opt, "label").to_string();
-                                    self.pi_toggle(
-                                        &rid, &qid, &label, multi, cx,
-                                    );
+                                    let label = str_at(opt, "label").to_string();
+                                    self.pi_toggle(&rid, &qid, &label, multi, cx);
                                     if !multi {
                                         self.pi_advance(&rid, &questions, gen, cx);
                                     }
@@ -570,13 +569,9 @@ impl Native {
                 }
             }
             // ⌘⌃→ / ⌘⌃Tab — threadTab.next / view.recent.next
-            (true, false, false, "right") | (true, false, false, "tab") => {
-                self.cycle_tab(1, cx)
-            }
+            (true, false, false, "right") | (true, false, false, "tab") => self.cycle_tab(1, cx),
             // ⌘⌃← / ⌘⌃⇧Tab — threadTab.previous / view.recent.previous
-            (true, false, false, "left") | (true, false, true, "tab") => {
-                self.cycle_tab(-1, cx)
-            }
+            (true, false, false, "left") | (true, false, true, "tab") => self.cycle_tab(-1, cx),
             // ⌘⌃P — git.commitAndPush opens the changes pane
             (true, false, false, "p") => self.toggle_changes(cx),
             // ⌘⌥U — sidebar.activity → inbox
@@ -596,9 +591,7 @@ impl Native {
 
     /// Upstream ShortcutsDialog (isKeyboardShortcutsHelpShortcut, mod+/).
     pub(super) fn open_sc_dialog(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let input = cx.new(|cx| {
-            InputState::new(window, cx).placeholder("Search shortcuts...")
-        });
+        let input = cx.new(|cx| InputState::new(window, cx).placeholder("Search shortcuts..."));
         cx.subscribe_in(&input, window, |_this, _s, event, _w, cx| {
             if let InputEvent::Change = event {
                 cx.notify();
@@ -633,20 +626,17 @@ impl Native {
     /// Upstream rail "…" checkbox: toggles `key` inside
     /// settings.railShortcuts and persists via server.updateSettings.
     pub(super) fn toggle_rail_shortcut(&mut self, key: &str, cx: &mut Context<Self>) {
-        let mut next: Vec<String> = arr(
-            get(&self.settings_data, "settings"),
-            "railShortcuts",
-        )
-        .iter()
-        .filter_map(|v| v.as_str().map(|s| s.to_string()))
-        .collect();
+        let mut next: Vec<String> = arr(get(&self.settings_data, "settings"), "railShortcuts")
+            .iter()
+            .filter_map(|v| v.as_str().map(|s| s.to_string()))
+            .collect();
         if let Some(pos) = next.iter().position(|k| k == key) {
             next.remove(pos);
         } else {
             next.push(key.to_string());
         }
-        if let Some(obj) = get_mut(&mut self.settings_data, "settings")
-            .and_then(|s| s.as_object_mut())
+        if let Some(obj) =
+            get_mut(&mut self.settings_data, "settings").and_then(|s| s.as_object_mut())
         {
             obj.insert(
                 "railShortcuts".to_string(),
@@ -659,8 +649,8 @@ impl Native {
         cx.spawn(async move |_this: WeakEntity<Self>, cx: &mut AsyncApp| {
             cx.background_executor()
                 .spawn(async move {
-                    let _ = ensure_client(&cell)
-                        .and_then(|c| c.call("server.updateSettings", payload));
+                    let _ =
+                        ensure_client(&cell).and_then(|c| c.call("server.updateSettings", payload));
                 })
                 .await;
         })

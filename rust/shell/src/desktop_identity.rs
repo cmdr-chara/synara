@@ -40,10 +40,14 @@ fn plist_string_value(text: &str, key: &str) -> Option<String> {
     let needle = format!("<key>{key}</key>");
     let mut lines = text.lines();
     while let Some(line) = lines.next() {
-        if line.trim() != needle { continue; }
+        if line.trim() != needle {
+            continue;
+        }
         for next in lines.by_ref() {
             let trimmed = next.trim();
-            if trimmed.is_empty() { continue; }
+            if trimmed.is_empty() {
+                continue;
+            }
             return trimmed
                 .strip_prefix("<string>")
                 .and_then(|value| value.strip_suffix("</string>"))
@@ -64,7 +68,9 @@ fn plist_value(path: &Path, key: &str) -> Option<String> {
         {
             if output.status.success() {
                 let value = String::from_utf8_lossy(&output.stdout).trim().to_string();
-                if !value.is_empty() { return Some(value); }
+                if !value.is_empty() {
+                    return Some(value);
+                }
             }
         }
     }
@@ -90,9 +96,13 @@ fn flavor_for_executable_name(name: &str) -> Option<&'static str> {
 fn packaged_flavor() -> Option<&'static str> {
     if let Some(plist) = current_app_info_plist() {
         if let Some(value) = plist_value(&plist, "SynaraDesktopFlavor") {
-            if let Some(flavor) = valid_flavor(&value) { return Some(flavor); }
+            if let Some(flavor) = valid_flavor(&value) {
+                return Some(flavor);
+            }
         }
-        if let Some(flavor) = plist_value(&plist, "CFBundleIdentifier").and_then(|id| flavor_for_bundle_id(&id)) {
+        if let Some(flavor) =
+            plist_value(&plist, "CFBundleIdentifier").and_then(|id| flavor_for_bundle_id(&id))
+        {
             return Some(flavor);
         }
     }
@@ -109,7 +119,9 @@ fn packaged_flavor() -> Option<&'static str> {
 /// environment override exists for source/dev launches and must not be able to
 /// turn an installed beta into stable (or the reverse).
 pub(crate) fn runtime_flavor() -> &'static str {
-    if let Some(flavor) = packaged_flavor() { return flavor; }
+    if let Some(flavor) = packaged_flavor() {
+        return flavor;
+    }
     std::env::var("SYNARA_DESKTOP_FLAVOR")
         .ok()
         .and_then(|value| valid_flavor(&value))
@@ -151,11 +163,26 @@ mod tests {
 
     #[test]
     fn bundle_ids_resolve_to_isolated_flavors() {
-        assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara"), Some("production"));
-        assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara.beta"), Some("beta"));
-        assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara.remote"), Some("remote"));
-        assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara.canary"), Some("canary"));
-        assert_eq!(flavor_for_bundle_id("com.emanueledipietro.synara.cua"), Some("cua"));
+        assert_eq!(
+            flavor_for_bundle_id("com.emanueledipietro.synara"),
+            Some("production")
+        );
+        assert_eq!(
+            flavor_for_bundle_id("com.emanueledipietro.synara.beta"),
+            Some("beta")
+        );
+        assert_eq!(
+            flavor_for_bundle_id("com.emanueledipietro.synara.remote"),
+            Some("remote")
+        );
+        assert_eq!(
+            flavor_for_bundle_id("com.emanueledipietro.synara.canary"),
+            Some("canary")
+        );
+        assert_eq!(
+            flavor_for_bundle_id("com.emanueledipietro.synara.cua"),
+            Some("cua")
+        );
         assert_eq!(flavor_for_bundle_id("com.example.other"), None);
     }
 

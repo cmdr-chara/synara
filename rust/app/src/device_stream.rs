@@ -75,12 +75,11 @@ pub fn stop_stream(udid: &str) -> Result<serde_json::Value, String> {
     Ok(json!({ "udid": udid, "streaming": false }))
 }
 
-
 // ---- websocket fan-out --------------------------------------------------------
 
+use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{Query, WebSocketUpgrade};
 use axum::response::{IntoResponse, Response};
-use axum::extract::ws::{Message, WebSocket};
 use std::sync::Arc;
 
 struct WsSink {
@@ -90,7 +89,11 @@ struct WsSink {
 
 impl crate::frame_transport::FrameSink for WsSink {
     fn send(&mut self, bytes: &[u8]) {
-        if self.tx.send(Message::Binary(bytes.to_vec().into())).is_err() {
+        if self
+            .tx
+            .send(Message::Binary(bytes.to_vec().into()))
+            .is_err()
+        {
             self.open.store(false, std::sync::atomic::Ordering::SeqCst);
         }
     }

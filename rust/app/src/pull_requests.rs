@@ -3,13 +3,13 @@
 //! upstream server layer; repository identity and pins live in state.sqlite.
 
 use rusqlite::params;
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 use std::collections::{BTreeMap, HashSet};
 use std::io::Write;
 use std::process::{Command, Stdio};
 
 use crate::git_domain::run as git;
-use crate::github_inbox::{gh_run, summarize_error, GhOutput};
+use crate::github_inbox::{GhOutput, gh_run, summarize_error};
 use crate::todo::WsErr;
 
 const DETAIL_FIELDS: &str = "number,title,body,url,author,state,isDraft,mergeable,mergeStateStatus,additions,deletions,changedFiles,headRefName,baseRefName,reviewDecision,reviewRequests,reviews,comments,statusCheckRollup,commits,labels,maintainerCanModify,createdAt,updatedAt,mergedAt,closedAt";
@@ -91,10 +91,11 @@ fn valid_repo(repo: &str) -> bool {
     if owner.is_empty() || name.contains('/') {
         return false;
     }
-    if !owner
-        .chars()
-        .all(|c| c.is_ascii_alphanumeric() || c == '-')
-        || !owner.chars().next().is_some_and(|c| c.is_ascii_alphanumeric())
+    if !owner.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')
+        || !owner
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_ascii_alphanumeric())
         || !owner
             .chars()
             .last()
@@ -266,8 +267,7 @@ fn find_project(project_id: &str) -> Result<Project, WsErr> {
 
 /// `resolveGitHubRepositories(cwd)`: branch remote → pushDefault → origin → sorted names.
 pub(crate) fn resolve_repositories(cwd: &str) -> Result<Vec<String>, WsErr> {
-    let unavailable =
-        || err("GitHub repository inventory is unavailable.".to_string());
+    let unavailable = || err("GitHub repository inventory is unavailable.".to_string());
     let branch_out = git(cwd, &["branch", "--show-current"]).map_err(|_| unavailable())?;
     if !branch_out.status.success() {
         return Err(unavailable());
@@ -276,8 +276,8 @@ pub(crate) fn resolve_repositories(cwd: &str) -> Result<Vec<String>, WsErr> {
         .trim()
         .to_string();
     let pattern = "^(remote\\..*\\.url|remote\\.pushDefault|branch\\..*\\.remote)$";
-    let cfg = git(cwd, &["config", "--null", "--get-regexp", pattern])
-        .map_err(|_| unavailable())?;
+    let cfg =
+        git(cwd, &["config", "--null", "--get-regexp", pattern]).map_err(|_| unavailable())?;
     if !cfg.status.success() && cfg.status.code() != Some(1) {
         return Err(unavailable());
     }
@@ -300,9 +300,13 @@ pub(crate) fn resolve_repositories(cwd: &str) -> Result<Vec<String>, WsErr> {
             branch_remote = Some(value.to_string());
         } else if lower_key == "remote.pushdefault" {
             push_default = Some(value.to_string());
-        } else if lower_key.starts_with("remote.") && lower_key.ends_with(".url") && key.len() > "remote..url".len() {
+        } else if lower_key.starts_with("remote.")
+            && lower_key.ends_with(".url")
+            && key.len() > "remote..url".len()
+        {
             let name = &key["remote.".len()..key.len() - ".url".len()];
-            urls.entry(name.to_string()).or_insert_with(|| value.to_string());
+            urls.entry(name.to_string())
+                .or_insert_with(|| value.to_string());
         }
     }
     let mut candidates: Vec<String> = Vec::new();
@@ -528,7 +532,8 @@ fn normalize_reviewers(detail: &Value) -> Vec<Value> {
     let mut out = Vec::new();
     for n in nodes(get(detail, "reviewRequests"), "nodes") {
         let reviewer = get(n, "requestedReviewer");
-        if let Some(login) = opt_str(get(reviewer, "login")).or_else(|| opt_str(get(reviewer, "slug")))
+        if let Some(login) =
+            opt_str(get(reviewer, "login")).or_else(|| opt_str(get(reviewer, "slug")))
         {
             if seen.insert(login.to_lowercase()) {
                 out.push(actor(reviewer));
@@ -616,7 +621,12 @@ fn review_thread_comments(
             vars.push("-f".into());
             vars.push(format!("cursor={c}"));
         }
-        let data = graphql(REVIEW_THREADS_QUERY, &vars, cwd, "Failed to load pull request")?;
+        let data = graphql(
+            REVIEW_THREADS_QUERY,
+            &vars,
+            cwd,
+            "Failed to load pull request",
+        )?;
         let pr = get(get(get(&data, "data"), "repository"), "pullRequest");
         let threads = get(pr, "reviewThreads");
         for t in nodes(threads, "nodes") {
@@ -867,9 +877,15 @@ fn is_shallow(cwd: &str) -> bool {
 
 fn missing_object(stderr: &str) -> bool {
     let low = stderr.to_lowercase();
-    ["bad object", "unknown revision", "not a valid object name", "no merge base", "bad revision"]
-        .iter()
-        .any(|p| low.contains(p))
+    [
+        "bad object",
+        "unknown revision",
+        "not a valid object name",
+        "no merge base",
+        "bad revision",
+    ]
+    .iter()
+    .any(|p| low.contains(p))
 }
 
 fn no_merge_base(stderr: &str) -> bool {
@@ -1072,11 +1088,9 @@ fn merge_async(repo: &str, number: i64, method: &str, cwd: &str) -> Result<Strin
             "merged" => return Ok("merged".into()),
             "enqueued" => return Ok("enqueued".into()),
             "failed" => {
-                return Err(err(
-                    opt_str(get(&status, "message"))
-                        .unwrap_or("GitHub could not merge the pull request.")
-                        .to_string(),
-                ))
+                return Err(err(opt_str(get(&status, "message"))
+                    .unwrap_or("GitHub could not merge the pull request.")
+                    .to_string()));
             }
             _ => continue,
         }
@@ -1143,7 +1157,9 @@ fn action(payload: &Value) -> Result<Value, WsErr> {
     let mut merge_outcome: Option<String> = None;
     match action_kind.as_str() {
         "merge" => {
-            let method = opt_str(get(payload, "mergeMethod")).unwrap_or("merge").to_string();
+            let method = opt_str(get(payload, "mergeMethod"))
+                .unwrap_or("merge")
+                .to_string();
             let caps = read_merge_caps(&repo, &cwd)?;
             let allowed = match method.as_str() {
                 "merge" | "squash" | "rebase" => get(&caps, &method).as_bool().unwrap_or(false),
@@ -1171,8 +1187,7 @@ fn action(payload: &Value) -> Result<Value, WsErr> {
                 if let Some(thread_id) = opt_str(get(payload, "threadId")) {
                     // Persist the reopened state on the thread's existing link.
                     let links_thread = {
-                        let Some(copy) = crate::orchestration_snapshot::open_state_copy()
-                        else {
+                        let Some(copy) = crate::orchestration_snapshot::open_state_copy() else {
                             return Err(err("thread lookup failed"));
                         };
                         copy.conn
@@ -1293,7 +1308,18 @@ fn set_pinned(payload: &Value) -> Result<Value, WsErr> {
 // Auto-fix CI
 // ---------------------------------------------------------------------------------------------
 
-fn auto_fix_state(row: (String, String, Option<String>, String, Option<String>, i64, Option<String>, String)) -> Value {
+fn auto_fix_state(
+    row: (
+        String,
+        String,
+        Option<String>,
+        String,
+        Option<String>,
+        i64,
+        Option<String>,
+        String,
+    ),
+) -> Value {
     let mut o = Map::new();
     o.insert("threadId".into(), json!(row.0));
     o.insert("pullRequestUrl".into(), json!(row.1));
@@ -1301,7 +1327,10 @@ fn auto_fix_state(row: (String, String, Option<String>, String, Option<String>, 
         o.insert("requestedPullRequestUrl".into(), json!(r));
     }
     o.insert("status".into(), json!(row.3));
-    o.insert("pauseReason".into(), row.4.map(Value::String).unwrap_or(Value::Null));
+    o.insert(
+        "pauseReason".into(),
+        row.4.map(Value::String).unwrap_or(Value::Null),
+    );
     o.insert("attempts".into(), json!(row.5));
     o.insert(
         "lastHandledHeadSha".into(),
@@ -1459,14 +1488,9 @@ fn set_auto_fix(payload: &Value) -> Result<Value, WsErr> {
          ON CONFLICT(thread_id, pull_request_url) DO UPDATE SET \
          status = 'watching', pause_reason = NULL, attempts = 0, \
          requested_pull_request_url = ?3, updated_at = ?4",
-        params![
-            thread_id,
-            canonical_url,
-            canonical,
-            chrono_now(),
-        ],
+        params![thread_id, canonical_url, canonical, chrono_now(),],
     )
-        .map_err(|e| err(format!("{e}")))?;
+    .map_err(|e| err(format!("{e}")))?;
     Ok(json!({
         "state": {
             "threadId": thread_id,
@@ -1500,12 +1524,14 @@ const AUTO_FIX_MAX_ATTEMPTS: i64 = 3;
 const AUTO_FIX_POLL_INTERVAL_SECS: u64 = 60;
 
 pub(crate) fn spawn_auto_fix_watcher() {
-    std::thread::spawn(|| loop {
-        std::thread::sleep(std::time::Duration::from_secs(AUTO_FIX_POLL_INTERVAL_SECS));
-        std::panic::catch_unwind(|| {
-            auto_fix_poll_once();
-        })
-        .ok();
+    std::thread::spawn(|| {
+        loop {
+            std::thread::sleep(std::time::Duration::from_secs(AUTO_FIX_POLL_INTERVAL_SECS));
+            std::panic::catch_unwind(|| {
+                auto_fix_poll_once();
+            })
+            .ok();
+        }
     });
 }
 
@@ -1587,7 +1613,13 @@ fn auto_fix_poll_row(row: &AutoFixRow) -> Result<(), WsErr> {
         .ok()
     });
 
-    let decision = decide_auto_fix(row, &conn, thread.as_ref(), observation.as_ref(), cwd.as_deref());
+    let decision = decide_auto_fix(
+        row,
+        &conn,
+        thread.as_ref(),
+        observation.as_ref(),
+        cwd.as_deref(),
+    );
     let now = chrono_now();
     match decision {
         AutoFixDecision::Wait => Ok(()),
@@ -1644,9 +1676,7 @@ fn auto_fix_cwd(conn: &rusqlite::Connection, thread_id: &str) -> Option<String> 
             },
         )
         .ok();
-    row.and_then(|t| {
-        thread_workspace_cwd(&t.4, &t.5, &t.1, t.2.as_deref(), t.3.as_deref())
-    })
+    row.and_then(|t| thread_workspace_cwd(&t.4, &t.5, &t.1, t.2.as_deref(), t.3.as_deref()))
 }
 
 /// Port of upstream `decidePullRequestAutoFix` reduced to the data the Rust

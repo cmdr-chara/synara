@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -72,7 +70,11 @@ impl Native {
     /// Port of the web task-completion watcher for thread sessions: initial
     /// hydration only primes state, then running→settled transitions and newly
     /// pending input produce toast/OS notifications according to settings.
-    pub(super) fn observe_snapshot_notifications(&mut self, incoming: &Value, cx: &mut Context<Self>) {
+    pub(super) fn observe_snapshot_notifications(
+        &mut self,
+        incoming: &Value,
+        cx: &mut Context<Self>,
+    ) {
         let threads = arr(incoming, "threads");
         // The server materializes snoozeReminderAt only when a snooze expires,
         // so its presence is itself the due-reminder event. Dedupe by the exact
@@ -91,7 +93,11 @@ impl Native {
                 continue;
             }
             let title = str_at(thread, "title");
-            let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
+            let title = if title.trim().is_empty() {
+                "Untitled thread".to_string()
+            } else {
+                title.to_string()
+            };
             self.deliver_activity_notification(
                 id,
                 title,
@@ -130,18 +136,15 @@ impl Native {
             let running = thread_running_for_activity(thread);
             let attention = get(thread, "hasPendingApprovals").as_bool() == Some(true)
                 || get(thread, "hasPendingUserInput").as_bool() == Some(true);
-            let Some((previous_running, previous_attention)) = self.notification_states.get(&id).copied() else {
+            let Some((previous_running, previous_attention)) =
+                self.notification_states.get(&id).copied()
+            else {
                 next.insert(id, (running, attention));
                 continue;
             };
             let latest = get(thread, "latestTurn");
             let completed_at = str_at(latest, "completedAt");
-            let completion_key = format!(
-                "{}:{}:{}",
-                id,
-                str_at(latest, "turnId"),
-                completed_at
-            );
+            let completion_key = format!("{}:{}:{}", id, str_at(latest, "turnId"), completed_at);
             let completion = previous_running
                 && !running
                 && str_at(latest, "state") == "completed"
@@ -149,12 +152,19 @@ impl Native {
                 && get(thread, "snoozedUntil").is_null()
                 && get(thread, "archivedAt").is_null()
                 && (!wait_subagents || get(thread, "parentThreadId").is_null())
-                && get(thread, "pendingBackgroundTaskCount").as_u64().unwrap_or(0) == 0
+                && get(thread, "pendingBackgroundTaskCount")
+                    .as_u64()
+                    .unwrap_or(0)
+                    == 0
                 && !self.notification_keys.contains(&completion_key);
             if completion {
                 self.notification_keys.insert(completion_key.clone());
                 let title = str_at(thread, "title");
-                let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
+                let title = if title.trim().is_empty() {
+                    "Untitled thread".to_string()
+                } else {
+                    title.to_string()
+                };
                 let preview = str_at(thread, "latestReplyPreview");
                 let body = if preview.trim().is_empty() {
                     "Finished working.".to_string()
@@ -165,10 +175,24 @@ impl Native {
             }
             if !previous_attention && attention && get(thread, "snoozedUntil").is_null() {
                 let title = str_at(thread, "title");
-                let title = if title.trim().is_empty() { "Untitled thread".to_string() } else { title.to_string() };
-                let key = format!("attention:{}:{}", id, str_at(get(thread, "session"), "updatedAt"));
+                let title = if title.trim().is_empty() {
+                    "Untitled thread".to_string()
+                } else {
+                    title.to_string()
+                };
+                let key = format!(
+                    "attention:{}:{}",
+                    id,
+                    str_at(get(thread, "session"), "updatedAt")
+                );
                 if self.notification_keys.insert(key.clone()) {
-                    events.push((id.clone(), "Input needed".to_string(), format!("{title}: input requested"), true, key));
+                    events.push((
+                        id.clone(),
+                        "Input needed".to_string(),
+                        format!("{title}: input requested"),
+                        true,
+                        key,
+                    ));
                 }
             }
             next.insert(id, (running, attention));
@@ -223,11 +247,9 @@ impl Native {
                     {
                         this.provider_statuses = providers;
                     }
-                    if let Some(rules) = cfg.and_then(|v| {
-                        v.get("keybindings")
-                            .and_then(|k| k.as_array())
-                            .cloned()
-                    }) {
+                    if let Some(rules) =
+                        cfg.and_then(|v| v.get("keybindings").and_then(|k| k.as_array()).cloned())
+                    {
                         this.kb_rules = rules;
                     }
                     if let Some(s) = snapshot {
@@ -440,10 +462,8 @@ impl Native {
                     Some(_v) => {
                         this.changes_unavailable = false;
                         let parse = |r: Option<Value>| -> Vec<Value> {
-                            r.map(|v| {
-                                parse_patch_files(str_at(&v, "patch"))
-                            })
-                            .unwrap_or_default()
+                            r.map(|v| parse_patch_files(str_at(&v, "patch")))
+                                .unwrap_or_default()
                         };
                         this.staged_files = parse(staged_res);
                         this.unstaged_files = parse(unstaged_res);
@@ -468,7 +488,11 @@ impl Native {
         self.gh_loading = true;
         self.gh_epoch += 1;
         let epoch = self.gh_epoch;
-        let state = if self.gh_state_filter == "open" { "open" } else { "closed" };
+        let state = if self.gh_state_filter == "open" {
+            "open"
+        } else {
+            "closed"
+        };
         let sort = self.gh_sort;
         let client = self.client.clone();
         cx.spawn(async move |this: WeakEntity<Self>, cx: &mut AsyncApp| {
@@ -549,30 +573,34 @@ impl Native {
     /// never touches gpui state, the UI thread copies the newest PNG into
     /// the panel cache and redraws only when the sequence advanced.
     pub(super) fn ensure_cua_refresh(&mut self, cx: &mut Context<Self>) {
-        cx.spawn(async move |this, cx: &mut AsyncApp| {
-            loop {
-                cx.background_executor()
-                    .timer(std::time::Duration::from_millis(350))
-                    .await;
-                let alive = this.update(cx, |view, cx| {
-                    if !view.view_cua {
-                        return false;
-                    }
-                    let new_frame = view
-                        .cua
-                        .as_ref()
-                        .and_then(|h| h.shared.lock().ok().map(|s| (s.sequence, s.frame_png.clone(), s.connected, s.error.clone())));
-                    if let Some((seq, png, _conn, _err)) = new_frame {
-                        if seq != view.cua_seen_seq && png.is_some() {
-                            view.cua_seen_seq = seq;
-                            cx.notify();
-                        }
-                    }
-                    true
-                });
-                if alive.is_err() || !alive.unwrap_or(false) {
-                    break;
+        cx.spawn(async move |this, cx: &mut AsyncApp| loop {
+            cx.background_executor()
+                .timer(std::time::Duration::from_millis(350))
+                .await;
+            let alive = this.update(cx, |view, cx| {
+                if !view.view_cua {
+                    return false;
                 }
+                let new_frame = view.cua.as_ref().and_then(|h| {
+                    h.shared.lock().ok().map(|s| {
+                        (
+                            s.sequence,
+                            s.frame_png.clone(),
+                            s.connected,
+                            s.error.clone(),
+                        )
+                    })
+                });
+                if let Some((seq, png, _conn, _err)) = new_frame {
+                    if seq != view.cua_seen_seq && png.is_some() {
+                        view.cua_seen_seq = seq;
+                        cx.notify();
+                    }
+                }
+                true
+            });
+            if alive.is_err() || !alive.unwrap_or(false) {
+                break;
             }
         })
         .detach();
@@ -727,8 +755,12 @@ impl Native {
                         return Value::Null;
                     };
                     let cfg = c.call("server.getConfig", json!({})).unwrap_or(Value::Null);
-                    let app = c.call("server.getSettings", json!({})).unwrap_or(Value::Null);
-                    let usage = c.call("server.listProviderUsage", json!({})).unwrap_or(Value::Null);
+                    let app = c
+                        .call("server.getSettings", json!({}))
+                        .unwrap_or(Value::Null);
+                    let usage = c
+                        .call("server.listProviderUsage", json!({}))
+                        .unwrap_or(Value::Null);
                     json!({"config":cfg,"settings":app,"usage":usage})
                 })
                 .await;
@@ -754,13 +786,27 @@ impl Native {
                     let Some(c) = ensure_client(&cell_tail) else {
                         return Value::Null;
                     };
-                    let skills = c.call("provider.listSkills", json!({})).unwrap_or(Value::Null);
-                    let conns = c.call("server.listMcpConnectors", json!({})).unwrap_or(Value::Null);
-                    let props = c.call("server.listMcpConnectorProposals", json!({})).unwrap_or(Value::Null);
-                    let exts = c.call("server.listExternalMcpIntegrations", json!({})).unwrap_or(Value::Null);
-                    let wts = c.call("server.listWorktrees", json!({})).unwrap_or(Value::Null);
-                    let prof = c.call("stats.getProfileStats", json!({})).unwrap_or(Value::Null);
-                    let toks = c.call("stats.getProfileTokenStats", json!({})).unwrap_or(Value::Null);
+                    let skills = c
+                        .call("provider.listSkills", json!({}))
+                        .unwrap_or(Value::Null);
+                    let conns = c
+                        .call("server.listMcpConnectors", json!({}))
+                        .unwrap_or(Value::Null);
+                    let props = c
+                        .call("server.listMcpConnectorProposals", json!({}))
+                        .unwrap_or(Value::Null);
+                    let exts = c
+                        .call("server.listExternalMcpIntegrations", json!({}))
+                        .unwrap_or(Value::Null);
+                    let wts = c
+                        .call("server.listWorktrees", json!({}))
+                        .unwrap_or(Value::Null);
+                    let prof = c
+                        .call("stats.getProfileStats", json!({}))
+                        .unwrap_or(Value::Null);
+                    let toks = c
+                        .call("stats.getProfileTokenStats", json!({}))
+                        .unwrap_or(Value::Null);
                     // Upstream default "30d" range, previous period included
                     // (usageAnalyticsWindow): from = local midnight today-59,
                     // to = local midnight tomorrow, scope "synara".
@@ -796,8 +842,12 @@ impl Native {
                             .unwrap_or(Value::Null),
                         _ => Value::Null,
                     };
-                    let comp = c.call("computer.getStatus", json!({})).unwrap_or(Value::Null);
-                    let snap = c.call("orchestration.getShellSnapshot", json!({})).unwrap_or(Value::Null);
+                    let comp = c
+                        .call("computer.getStatus", json!({}))
+                        .unwrap_or(Value::Null);
+                    let snap = c
+                        .call("orchestration.getShellSnapshot", json!({}))
+                        .unwrap_or(Value::Null);
                     let acct = c.call("account.status", json!({})).unwrap_or(Value::Null);
                     json!({"skills":skills,
                            "connectors":conns,"proposals":props,"external":exts,
@@ -806,10 +856,9 @@ impl Native {
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
-                if let (Some(dst), Some(src)) = (
-                    this.settings_data.as_object_mut(),
-                    tail.as_object(),
-                ) {
+                if let (Some(dst), Some(src)) =
+                    (this.settings_data.as_object_mut(), tail.as_object())
+                {
                     for (k, v) in src {
                         dst.insert(k.clone(), v.clone());
                     }
@@ -857,8 +906,7 @@ impl Native {
             let v = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("projects.listDevServers", json!({})))
+                    ensure_client(&cell).and_then(|c| c.call("projects.listDevServers", json!({})))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {
@@ -871,10 +919,7 @@ impl Native {
 
     /// Fetch git.status of the selected thread's project root (fallback: first project).
     pub(super) fn fetch_git_status(&self, cx: &mut Context<Self>) {
-        let Some(root) = self
-            .thread_project_root()
-            .or_else(|| self.files_root())
-        else {
+        let Some(root) = self.thread_project_root().or_else(|| self.files_root()) else {
             return;
         };
         let cell = self.client.clone();
@@ -882,8 +927,7 @@ impl Native {
             let v = cx
                 .background_executor()
                 .spawn(async move {
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("git.status", json!({"cwd": root})))
+                    ensure_client(&cell).and_then(|c| c.call("git.status", json!({"cwd": root})))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {

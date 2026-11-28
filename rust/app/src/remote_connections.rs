@@ -6,12 +6,12 @@
 //! stream. Streams are consumable once and are never replayed after a close.
 
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex, OnceLock};
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
 use futures_util::{SinkExt, StreamExt};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use tokio::sync::Mutex as AsyncMutex;
 use tokio_tungstenite::tungstenite::Message as WsMessage;
 
@@ -96,8 +96,12 @@ pub fn remove_desired(host_id: &str) {
 }
 
 pub fn clear_all() {
-    if let Ok(mut hosts) = desired_hosts().lock() { hosts.clear(); }
-    if let Ok(mut live) = attachments().lock() { live.clear(); }
+    if let Ok(mut hosts) = desired_hosts().lock() {
+        hosts.clear();
+    }
+    if let Ok(mut live) = attachments().lock() {
+        live.clear();
+    }
 }
 
 fn connection_view(host: &DesiredHost) -> Value {
@@ -117,7 +121,13 @@ fn connection_view(host: &DesiredHost) -> Value {
 pub fn list() -> Vec<Value> {
     desired_hosts()
         .lock()
-        .map(|hosts| hosts.values().filter(|host| host.started_at.is_some()).map(connection_view).collect())
+        .map(|hosts| {
+            hosts
+                .values()
+                .filter(|host| host.started_at.is_some())
+                .map(connection_view)
+                .collect()
+        })
         .unwrap_or_default()
 }
 
@@ -133,12 +143,22 @@ pub fn mark_state(host_id: &str, state: &'static str) {
     }
 }
 
-async fn dial(desired: &DesiredHost, client: Value) -> Result<crate::remote_client::DialedSession, String> {
+async fn dial(
+    desired: &DesiredHost,
+    client: Value,
+) -> Result<crate::remote_client::DialedSession, String> {
     let state_dir = crate::todo::state_dir();
     let secrets_dir = format!("{state_dir}/secrets");
-    let identity = crate::device_identity::load_or_create(&crate::device_identity::device_identity_path(&secrets_dir))
-        .map_err(|_| "Remote access operation failed".to_string())?;
-    let user_id = desired.execution_scope.get("userId").and_then(Value::as_str).unwrap_or_default().to_string();
+    let identity = crate::device_identity::load_or_create(
+        &crate::device_identity::device_identity_path(&secrets_dir),
+    )
+    .map_err(|_| "Remote access operation failed".to_string())?;
+    let user_id = desired
+        .execution_scope
+        .get("userId")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     let host_id = desired.host_id.clone();
     let grant_user_id = user_id.clone();
     // Endpoint reachability is account-directory state, not pairing trust.
@@ -155,9 +175,9 @@ async fn dial(desired: &DesiredHost, client: Value) -> Result<crate::remote_clie
         &identity,
         &user_id,
         move || crate::hosts::request_host_grant(&host_id, &grant_user_id),
-    ).await
+    )
+    .await
 }
-
 
 fn retry_deadlines() -> &'static Mutex<HashMap<String, u64>> {
     static DEADLINES: OnceLock<Mutex<HashMap<String, u64>>> = OnceLock::new();
@@ -165,7 +185,10 @@ fn retry_deadlines() -> &'static Mutex<HashMap<String, u64>> {
 }
 
 fn unix_now() -> u64 {
-    std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|duration| duration.as_secs()).unwrap_or(0)
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0)
 }
 
 /// One bounded supervisor pass. Desired relationships restore as
@@ -174,12 +197,17 @@ fn unix_now() -> u64 {
 /// streams are still negotiated one at a time.
 pub fn retry_reconnecting_once() -> usize {
     let now = unix_now();
-    let hosts: Vec<String> = desired_hosts().lock().ok().map(|hosts| {
-        hosts.values()
-            .filter(|host| host.state == "reconnecting" && host.retry_at_unix <= now)
-            .map(|host| host.host_id.clone())
-            .collect()
-    }).unwrap_or_default();
+    let hosts: Vec<String> = desired_hosts()
+        .lock()
+        .ok()
+        .map(|hosts| {
+            hosts
+                .values()
+                .filter(|host| host.state == "reconnecting" && host.retry_at_unix <= now)
+                .map(|host| host.host_id.clone())
+                .collect()
+        })
+        .unwrap_or_default();
     let mut started = 0;
     for host_id in hosts {
         if let Ok(mut hosts) = desired_hosts().lock()
@@ -198,7 +226,6 @@ pub fn retry_reconnecting_once() -> usize {
     started
 }
 
-
 pub fn resource_credential(host_id: &str) -> Option<(DesiredHost, String)> {
     let host = desired(host_id)?;
     let credential = host.credential.clone()?;
@@ -209,11 +236,9 @@ pub fn resource_credential(host_id: &str) -> Option<(DesiredHost, String)> {
     Some((host, credential))
 }
 
-
 fn client_key(client: &Value) -> String {
     serde_json::to_string(client).unwrap_or_else(|_| "null".to_string())
 }
-
 
 fn retry_delay_seconds(failures: u32) -> u64 {
     (500u64 << failures.min(6)).min(30_000) / 1000
@@ -223,7 +248,8 @@ fn classify_failure(error: &str) -> &'static str {
     let lower = error.to_ascii_lowercase();
     if lower.contains("incompatible") {
         "incompatible"
-    } else if lower.contains("sign in") || lower.contains("grant") || lower.contains("unauthorized") {
+    } else if lower.contains("sign in") || lower.contains("grant") || lower.contains("unauthorized")
+    {
         "needs-sign-in"
     } else if lower.contains("revoked") || lower.contains("not paired") || lower.contains("trust") {
         "revoked"
@@ -233,20 +259,32 @@ fn classify_failure(error: &str) -> &'static str {
 }
 
 pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
-    let desired = desired(host_id).ok_or_else(|| "Connect to this host from the local controller first".to_string())?;
-    if matches!(desired.state, "needs-sign-in" | "revoked" | "incompatible" | "stopped") {
-        return Err(format!("Remote connection requires attention: {}", desired.state));
+    let desired = desired(host_id)
+        .ok_or_else(|| "Connect to this host from the local controller first".to_string())?;
+    if matches!(
+        desired.state,
+        "needs-sign-in" | "revoked" | "incompatible" | "stopped"
+    ) {
+        return Err(format!(
+            "Remote connection requires attention: {}",
+            desired.state
+        ));
     }
     if attachments().lock().ok().is_some_and(|live| {
-        live.values().filter(|attachment| attachment.host_id == host_id).count() >= 8 || live.len() >= 32
+        live.values()
+            .filter(|attachment| attachment.host_id == host_id)
+            .count()
+            >= 8
+            || live.len() >= 32
     }) {
         return Err("Remote renderer connection limit reached".to_string());
     }
     let key = client_key(&client);
     let replacement = attachments().lock().ok().and_then(|mut live| {
         let id = live.iter().find_map(|(id, attachment)| {
-            (attachment.host_id == host_id && attachment.replacement_for.as_deref() == Some(key.as_str()))
-                .then(|| id.clone())
+            (attachment.host_id == host_id
+                && attachment.replacement_for.as_deref() == Some(key.as_str()))
+            .then(|| id.clone())
         })?;
         if let Some(attachment) = live.get_mut(&id)
             && let Some(attachment) = Arc::get_mut(attachment)
@@ -271,19 +309,33 @@ pub async fn prepare(host_id: &str, client: Value) -> Result<Value, String> {
             {
                 let keep_connected = failure_state == "reconnecting"
                     && host.state == "connected"
-                    && attachments().lock().ok().is_some_and(|live| live.values().any(|attachment| {
-                        attachment.host_id == host_id && attachment.active.load(Ordering::SeqCst)
-                    }));
-                host.state = if keep_connected { "connected" } else { failure_state };
+                    && attachments().lock().ok().is_some_and(|live| {
+                        live.values().any(|attachment| {
+                            attachment.host_id == host_id
+                                && attachment.active.load(Ordering::SeqCst)
+                        })
+                    });
+                host.state = if keep_connected {
+                    "connected"
+                } else {
+                    failure_state
+                };
                 host.failures = host.failures.saturating_add(1);
                 host.retry_at_unix = if failure_state == "reconnecting" {
                     unix_now() + retry_delay_seconds(host.failures)
-                } else { 0 };
+                } else {
+                    0
+                };
             }
             return Err(error);
         }
     };
-    let server_instance_id = session.compatibility.get("serverInstanceId").and_then(Value::as_str).unwrap_or_default().to_string();
+    let server_instance_id = session
+        .compatibility
+        .get("serverInstanceId")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     let transport = session.transport.clone();
     let credential_expires = iso_from_unix(session.credential_expires_at_seconds);
     if let Ok(mut hosts) = desired_hosts().lock()
@@ -358,10 +410,18 @@ pub fn probe_blocking(host_id: &str, client: Value) -> Result<(), String> {
 }
 
 pub async fn close_attachment(id: &str) {
-    let attachment = attachments().lock().ok().and_then(|mut live| live.remove(id));
+    let attachment = attachments()
+        .lock()
+        .ok()
+        .and_then(|mut live| live.remove(id));
     if let Some(attachment) = attachment {
         attachment.active.store(false, Ordering::SeqCst);
-        let _ = attachment.write.lock().await.send(close_frame(1000, "Remote stream closed")).await;
+        let _ = attachment
+            .write
+            .lock()
+            .await
+            .send(close_frame(1000, "Remote stream closed"))
+            .await;
     }
 }
 
@@ -371,37 +431,70 @@ pub fn disconnect_blocking(host_id: &str) -> bool {
     existed
 }
 
-pub async fn unary_rpc(host_id: &str, tag: &str, payload: Value, client: Value) -> Result<Value, String> {
+pub async fn unary_rpc(
+    host_id: &str,
+    tag: &str,
+    payload: Value,
+    client: Value,
+) -> Result<Value, String> {
     let prepared = prepare(host_id, client).await?;
-    let id = prepared.get("remoteAttachmentId").and_then(Value::as_str).unwrap_or_default().to_string();
-    let attachment = attachments().lock().ok().and_then(|live| live.get(&id).cloned())
+    let id = prepared
+        .get("remoteAttachmentId")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
+    let attachment = attachments()
+        .lock()
+        .ok()
+        .and_then(|live| live.get(&id).cloned())
         .ok_or_else(|| "Remote tool connection is unavailable".to_string())?;
     let request_id = crate::orchestration_engine::uuid_v4();
     let frame = json!({"_tag":"Request","id":request_id,"tag":tag,"payload":payload,"headers":[]});
     let work = async {
-        attachment.write.lock().await
+        attachment
+            .write
+            .lock()
+            .await
             .send(WsMessage::Text(frame.to_string().into()))
             .await
-            .map_err(|_| "Remote connection closed; do not replay mutations automatically.".to_string())?;
+            .map_err(|_| {
+                "Remote connection closed; do not replay mutations automatically.".to_string()
+            })?;
         let mut read = attachment.read.lock().await;
         loop {
-            let message = read.next().await
-                .ok_or_else(|| "Remote connection closed; do not replay mutations automatically.".to_string())?
-                .map_err(|_| "Remote connection closed; do not replay mutations automatically.".to_string())?;
-            let WsMessage::Text(text) = message else { continue };
-            let parsed: Value = serde_json::from_str(&text).map_err(|_| "Invalid remote tool response.".to_string())?;
+            let message = read
+                .next()
+                .await
+                .ok_or_else(|| {
+                    "Remote connection closed; do not replay mutations automatically.".to_string()
+                })?
+                .map_err(|_| {
+                    "Remote connection closed; do not replay mutations automatically.".to_string()
+                })?;
+            let WsMessage::Text(text) = message else {
+                continue;
+            };
+            let parsed: Value = serde_json::from_str(&text)
+                .map_err(|_| "Invalid remote tool response.".to_string())?;
             if parsed.get("_tag").and_then(Value::as_str) != Some("Exit")
                 || parsed.get("requestId").and_then(Value::as_str) != Some(request_id.as_str())
             {
                 continue;
             }
             if parsed.pointer("/exit/_tag").and_then(Value::as_str) == Some("Success") {
-                return Ok(parsed.pointer("/exit/value").cloned().unwrap_or(Value::Null));
+                return Ok(parsed
+                    .pointer("/exit/value")
+                    .cloned()
+                    .unwrap_or(Value::Null));
             }
             let message = parsed
                 .pointer("/exit/cause")
                 .and_then(Value::as_array)
-                .and_then(|cause| cause.iter().find(|entry| entry.get("_tag").and_then(Value::as_str) == Some("Fail")))
+                .and_then(|cause| {
+                    cause
+                        .iter()
+                        .find(|entry| entry.get("_tag").and_then(Value::as_str) == Some("Fail"))
+                })
                 .and_then(|failure| failure.pointer("/error/message").and_then(Value::as_str))
                 .unwrap_or("Remote tool request was refused or interrupted.");
             return Err(message.to_string());
@@ -409,7 +502,9 @@ pub async fn unary_rpc(host_id: &str, tag: &str, payload: Value, client: Value) 
     };
     let result = match tokio::time::timeout(Duration::from_secs(120), work).await {
         Ok(result) => result,
-        Err(_) => Err("Remote tool call timed out; do not replay mutations automatically.".to_string()),
+        Err(_) => {
+            Err("Remote tool call timed out; do not replay mutations automatically.".to_string())
+        }
     };
     close_attachment(&id).await;
     result
@@ -423,7 +518,9 @@ fn axum_to_tungstenite(message: axum::extract::ws::Message) -> Option<WsMessage>
         axum::extract::ws::Message::Pong(bytes) => Some(WsMessage::Pong(bytes.to_vec().into())),
         axum::extract::ws::Message::Close(frame) => Some(WsMessage::Close(frame.map(|frame| {
             tokio_tungstenite::tungstenite::protocol::CloseFrame {
-                code: tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode::from(frame.code),
+                code: tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode::from(
+                    frame.code,
+                ),
                 reason: frame.reason.to_string().into(),
             }
         }))),
@@ -436,24 +533,30 @@ fn tungstenite_to_axum(message: WsMessage) -> Option<axum::extract::ws::Message>
         WsMessage::Binary(bytes) => Some(axum::extract::ws::Message::Binary(bytes.to_vec().into())),
         WsMessage::Ping(bytes) => Some(axum::extract::ws::Message::Ping(bytes.to_vec().into())),
         WsMessage::Pong(bytes) => Some(axum::extract::ws::Message::Pong(bytes.to_vec().into())),
-        WsMessage::Close(frame) => Some(axum::extract::ws::Message::Close(frame.map(|frame| axum::extract::ws::CloseFrame {
-            code: frame.code.into(),
-            reason: frame.reason.to_string().into(),
+        WsMessage::Close(frame) => Some(axum::extract::ws::Message::Close(frame.map(|frame| {
+            axum::extract::ws::CloseFrame {
+                code: frame.code.into(),
+                reason: frame.reason.to_string().into(),
+            }
         }))),
         WsMessage::Frame(_) => None,
     }
 }
 
-pub fn attachment_valid(host_id: &str, attachment_id: &str, server_instance_id: Option<&str>) -> bool {
+pub fn attachment_valid(
+    host_id: &str,
+    attachment_id: &str,
+    server_instance_id: Option<&str>,
+) -> bool {
     attachments().lock().ok().is_some_and(|mut live| {
         live.retain(|_, attachment| attachment.created_at.elapsed() < Duration::from_secs(30));
         live.get(attachment_id).is_some_and(|attachment| {
             attachment.host_id == host_id
-                && server_instance_id.is_some_and(|expected| expected == attachment.server_instance_id)
+                && server_instance_id
+                    .is_some_and(|expected| expected == attachment.server_instance_id)
         })
     })
 }
-
 
 fn close_frame(code: u16, reason: &str) -> WsMessage {
     WsMessage::Close(Some(tokio_tungstenite::tungstenite::protocol::CloseFrame {
@@ -468,7 +571,10 @@ fn close_frame(code: u16, reason: &str) -> WsMessage {
 /// mutations are replayed by this layer.
 fn schedule_renewal(attachment: Arc<Attachment>) {
     let now = unix_now();
-    let Some(seconds_left) = attachment.credential_expires_at_seconds.checked_sub(now + 45) else {
+    let Some(seconds_left) = attachment
+        .credential_expires_at_seconds
+        .checked_sub(now + 45)
+    else {
         return;
     };
     tokio::spawn(async move {
@@ -486,7 +592,10 @@ fn schedule_renewal(attachment: Arc<Attachment>) {
             replacement.replacement_for = Some(key);
         }
         if attachment.active.load(Ordering::SeqCst) {
-            let _ = attachment.write.lock().await
+            let _ = attachment
+                .write
+                .lock()
+                .await
                 .send(close_frame(1012, "Renewing remote authorization"))
                 .await;
         }
@@ -496,11 +605,19 @@ fn schedule_renewal(attachment: Arc<Attachment>) {
 /// Bridges one local renderer websocket to its freshly negotiated remote
 /// stream. Either side closing consumes the stream; renewal requires another
 /// negotiation, so no mutation bytes are replayed.
-pub async fn attach(host_id: &str, attachment_id: &str, server_instance_id: Option<&str>, socket: axum::extract::ws::WebSocket) -> Result<(), String> {
+pub async fn attach(
+    host_id: &str,
+    attachment_id: &str,
+    server_instance_id: Option<&str>,
+    socket: axum::extract::ws::WebSocket,
+) -> Result<(), String> {
     // Negotiated streams are consumable once. Removing the reservation before
     // bridging prevents a second renderer from attaching to the same byte
     // stream while the first one is active.
-    let attachment = attachments().lock().ok().and_then(|mut live| live.remove(attachment_id))
+    let attachment = attachments()
+        .lock()
+        .ok()
+        .and_then(|mut live| live.remove(attachment_id))
         .ok_or_else(|| "Remote connection is unavailable".to_string())?;
     if attachment.host_id != host_id
         || server_instance_id != Some(attachment.server_instance_id.as_str())
@@ -516,22 +633,37 @@ pub async fn attach(host_id: &str, attachment_id: &str, server_instance_id: Opti
         let mut read = remote_read.lock().await;
         while let Some(message) = read.next().await {
             let Ok(message) = message else { break };
-            let Some(message) = tungstenite_to_axum(message) else { continue };
-            if local_write.send(message).await.is_err() { break }
+            let Some(message) = tungstenite_to_axum(message) else {
+                continue;
+            };
+            if local_write.send(message).await.is_err() {
+                break;
+            }
         }
     });
     while let Some(message) = local_read.next().await {
         let Ok(message) = message else { break };
-        let Some(message) = axum_to_tungstenite(message) else { continue };
-        if remote_write.lock().await.send(message).await.is_err() { break }
+        let Some(message) = axum_to_tungstenite(message) else {
+            continue;
+        };
+        if remote_write.lock().await.send(message).await.is_err() {
+            break;
+        }
     }
     attachment.active.store(false, Ordering::SeqCst);
     remote_to_local.abort();
-    let _ = attachment.write.lock().await
+    let _ = attachment
+        .write
+        .lock()
+        .await
         .send(close_frame(1000, "Renderer detached"))
         .await;
     close_attachment(attachment_id).await;
-    if attachments().lock().ok().is_some_and(|live| !live.values().any(|item| item.host_id == host_id)) {
+    if attachments()
+        .lock()
+        .ok()
+        .is_some_and(|live| !live.values().any(|item| item.host_id == host_id))
+    {
         mark_state(host_id, "idle");
     }
     Ok(())

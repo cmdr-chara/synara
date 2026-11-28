@@ -28,11 +28,21 @@ const CODES: [&str; 19] = [
     "startup.migration-startup-block-invalid",
 ];
 const REASONS: [&str; 7] = [
-    "unknown", "auth", "invalid-response", "timeout", "output-limit", "live-owner", "unknown-owner",
+    "unknown",
+    "auth",
+    "invalid-response",
+    "timeout",
+    "output-limit",
+    "live-owner",
+    "unknown-owner",
 ];
 
 fn desktop_flavor() -> String {
-    match std::env::var("SYNARA_DESKTOP_BUNDLE_ID").ok().as_deref().map(str::trim) {
+    match std::env::var("SYNARA_DESKTOP_BUNDLE_ID")
+        .ok()
+        .as_deref()
+        .map(str::trim)
+    {
         Some("com.emanueledipietro.synara") => return "production".into(),
         Some("com.emanueledipietro.synara.dev") => return "development".into(),
         Some("com.emanueledipietro.synara.canary") => return "canary".into(),
@@ -60,7 +70,10 @@ pub fn report(code: &str, reason: Option<&str>, duration_ms: Option<u64>) {
     if let Some(duration) = duration_ms {
         payload["durationMs"] = json!(duration.min(604_800_000));
     }
-    println!("{PREFIX}{}", serde_json::to_string(&payload).unwrap_or_else(|_| "{}".into()));
+    println!(
+        "{PREFIX}{}",
+        serde_json::to_string(&payload).unwrap_or_else(|_| "{}".into())
+    );
 }
 
 /// Startup migration blocks are already deliberate process exits; duplicate
@@ -72,7 +85,10 @@ pub fn report_startup_migration_error(error: &str) {
         "startup.migration-schema-too-new"
     } else if error.contains("database is locked") || error.contains("database locked") {
         "startup.database-locked"
-    } else if error.contains("migration recovery") || error.contains("restore") || error.contains("resume attempt") {
+    } else if error.contains("migration recovery")
+        || error.contains("restore")
+        || error.contains("resume attempt")
+    {
         "startup.migration-recovery-required"
     } else {
         return;

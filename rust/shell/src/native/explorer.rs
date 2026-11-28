@@ -2,25 +2,23 @@
 #![allow(unused_imports)]
 
 use super::*;
+use gpui::prelude::FluentBuilder as _;
+use gpui_kit::assets::IconName as AssetIcon;
+use gpui_kit::base::Disableable as _;
+use gpui_kit::component::WindowExt as _;
 use gpui_kit::component::{
     button::{Button, ButtonCustomVariant, ButtonRounded, ButtonVariant, ButtonVariants as _},
     h_flex,
     input::{Editor, EditorState, Input, InputEvent, InputState},
     menu::{DropdownMenu as _, PopupMenuItem},
-    slider::{Slider, SliderEvent, SliderState},
     scroll::ScrollableElement as _,
+    slider::{Slider, SliderEvent, SliderState},
     spinner::Spinner,
     text::TextView,
     theme::Theme,
-    v_flex,
-    Icon,
-    ActiveTheme as _, IconName, Sizable as _,
+    v_flex, ActiveTheme as _, Icon, IconName, Sizable as _,
 };
 use gpui_kit::*;
-use gpui_kit::component::WindowExt as _;
-use gpui_kit::base::Disableable as _;
-use gpui_kit::assets::IconName as AssetIcon;
-use gpui::prelude::FluentBuilder as _;
 use serde_json::{json, Value};
 use std::sync::{Arc, Mutex};
 
@@ -213,9 +211,8 @@ impl Native {
                 if seq != this.file_search_seq {
                     return;
                 }
-                this.file_search_results = res
-                    .map(|v| arr(&v, "entries").to_vec())
-                    .unwrap_or_default();
+                this.file_search_results =
+                    res.map(|v| arr(&v, "entries").to_vec()).unwrap_or_default();
                 cx.notify();
             });
         })
@@ -543,11 +540,7 @@ impl Native {
                 let still_open = this
                     .update(cx, |this: &mut Self, cx| {
                         if let Some(v) = v {
-                            if this
-                                .open_file
-                                .as_ref()
-                                .is_some_and(|(p, _)| *p == path)
-                            {
+                            if this.open_file.as_ref().is_some_and(|(p, _)| *p == path) {
                                 let text = str_at(&v, "contents").to_string();
                                 this.open_file_meta = Some((
                                     str_at(&v, "version").to_string(),
@@ -619,8 +612,7 @@ impl Native {
             return;
         };
         let contents = editor.read(cx).value().to_string();
-        let (version, encoding, line_ending) =
-            self.open_file_meta.clone().unwrap_or_default();
+        let (version, encoding, line_ending) = self.open_file_meta.clone().unwrap_or_default();
         let dir = path
             .rsplit_once('/')
             .map(|(d, _)| d.to_string())
@@ -647,8 +639,7 @@ impl Native {
                             payload["lineEnding"] = json!(line_ending);
                         }
                     }
-                    ensure_client(&cell)
-                        .and_then(|c| c.call("projects.writeFile", payload))
+                    ensure_client(&cell).and_then(|c| c.call("projects.writeFile", payload))
                 })
                 .await;
             let _ = this.update(cx, |this: &mut Self, cx| {

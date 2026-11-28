@@ -63,7 +63,12 @@ pub(crate) fn resolve_omp_agent_dir(instance_id: Option<&str>) -> PathBuf {
     let env_or_process = |key: &str| -> Option<String> {
         env_value(&environment, key)
             .map(str::to_string)
-            .or_else(|| std::env::var(key).ok().map(|v| v.trim().to_string()).filter(|v| !v.is_empty()))
+            .or_else(|| {
+                std::env::var(key)
+                    .ok()
+                    .map(|v| v.trim().to_string())
+                    .filter(|v| !v.is_empty())
+            })
     };
     let home = env_or_process("HOME")
         .or_else(|| env_or_process("USERPROFILE"))
@@ -90,13 +95,20 @@ fn find_session_path(sessions_dir: &Path, session_id: &str) -> Option<PathBuf> {
         return None;
     }
     for workspace in std::fs::read_dir(sessions_dir).ok()?.flatten() {
-        if workspace.file_type().map(|kind| !kind.is_dir()).unwrap_or(true) {
+        if workspace
+            .file_type()
+            .map(|kind| !kind.is_dir())
+            .unwrap_or(true)
+        {
             continue;
         }
         let dir = workspace.path();
         for entry in std::fs::read_dir(&dir).ok()?.flatten() {
             let name = entry.file_name().to_string_lossy().to_string();
-            if entry.file_type().map(|kind| kind.is_file()).unwrap_or(false)
+            if entry
+                .file_type()
+                .map(|kind| kind.is_file())
+                .unwrap_or(false)
                 && name.ends_with(&format!("_{session_id}.jsonl"))
             {
                 return Some(entry.path());
@@ -126,7 +138,9 @@ fn strip_host_context(text: &str) -> String {
 }
 
 fn visible_message_text(content: Option<&Value>) -> String {
-    let Some(content) = content else { return String::new() };
+    let Some(content) = content else {
+        return String::new();
+    };
     let joined = if let Some(text) = content.as_str() {
         text.to_string()
     } else if let Some(parts) = content.as_array() {
@@ -142,7 +156,10 @@ fn visible_message_text(content: Option<&Value>) -> String {
     strip_host_context(&joined).trim().to_string()
 }
 
-pub(crate) fn read_omp_session_history(agent_dir: &Path, session_id: &str) -> Option<OmpSessionHistory> {
+pub(crate) fn read_omp_session_history(
+    agent_dir: &Path,
+    session_id: &str,
+) -> Option<OmpSessionHistory> {
     let session_id = session_id.trim();
     let path = find_session_path(&agent_dir.join("sessions"), session_id)?;
     let raw = std::fs::read_to_string(path).ok()?;
@@ -154,25 +171,44 @@ pub(crate) fn read_omp_session_history(agent_dir: &Path, session_id: &str) -> Op
         if line.trim().is_empty() {
             continue;
         }
-        let Ok(entry) = serde_json::from_str::<Value>(line) else { continue };
+        let Ok(entry) = serde_json::from_str::<Value>(line) else {
+            continue;
+        };
         match entry.get("type").and_then(Value::as_str) {
             Some("session") => {
-                if let Some(value) = entry.get("cwd").and_then(Value::as_str).map(str::trim).filter(|v| !v.is_empty()) {
+                if let Some(value) = entry
+                    .get("cwd")
+                    .and_then(Value::as_str)
+                    .map(str::trim)
+                    .filter(|v| !v.is_empty())
+                {
                     cwd = Some(value.to_string());
                 }
             }
             Some("model_change") => {
-                if let Some(value) = entry.get("model").and_then(Value::as_str).map(str::trim).filter(|v| !v.is_empty()) {
+                if let Some(value) = entry
+                    .get("model")
+                    .and_then(Value::as_str)
+                    .map(str::trim)
+                    .filter(|v| !v.is_empty())
+                {
                     last_model = Some(value.to_string());
                 }
             }
             Some("thinking_level_change") => {
-                if let Some(value) = entry.get("thinkingLevel").and_then(Value::as_str).map(str::trim).filter(|v| !v.is_empty()) {
+                if let Some(value) = entry
+                    .get("thinkingLevel")
+                    .and_then(Value::as_str)
+                    .map(str::trim)
+                    .filter(|v| !v.is_empty())
+                {
                     last_thinking_level = Some(value.to_string());
                 }
             }
             Some("message") => {
-                let Some(message) = entry.get("message") else { continue };
+                let Some(message) = entry.get("message") else {
+                    continue;
+                };
                 let role = message.get("role").and_then(Value::as_str).unwrap_or("");
                 if role != "user" && role != "assistant" {
                     continue;
@@ -230,14 +266,18 @@ mod tests {
     fn reads_only_visible_messages_and_session_metadata() {
         let root = std::env::temp_dir().join(format!("omp-import-test-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&root);
-        write_history(&root, "sess-abc", &[
-            r#"{"type":"session","cwd":"/tmp/project"}"#,
-            r#"{"type":"model_change","model":"gpt-5"}"#,
-            r#"{"type":"thinking_level_change","thinkingLevel":"high"}"#,
-            r#"{"type":"message","id":"m1","timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":[{"type":"text","text":"hello"},{"type":"tool","text":"hidden"}]}}"#,
-            r#"{"type":"message","id":"tool","message":{"role":"tool","content":"hidden"}}"#,
-            r#"{"type":"message","id":"m2","timestamp":"2026-01-01T00:00:02.000Z","message":{"role":"assistant","content":"answer"}}"#,
-        ]);
+        write_history(
+            &root,
+            "sess-abc",
+            &[
+                r#"{"type":"session","cwd":"/tmp/project"}"#,
+                r#"{"type":"model_change","model":"gpt-5"}"#,
+                r#"{"type":"thinking_level_change","thinkingLevel":"high"}"#,
+                r#"{"type":"message","id":"m1","timestamp":"2026-01-01T00:00:01.000Z","message":{"role":"user","content":[{"type":"text","text":"hello"},{"type":"tool","text":"hidden"}]}}"#,
+                r#"{"type":"message","id":"tool","message":{"role":"tool","content":"hidden"}}"#,
+                r#"{"type":"message","id":"m2","timestamp":"2026-01-01T00:00:02.000Z","message":{"role":"assistant","content":"answer"}}"#,
+            ],
+        );
         let history = read_omp_session_history(&root, "sess-abc").unwrap();
         assert_eq!(history.cwd.as_deref(), Some("/tmp/project"));
         assert_eq!(history.last_model.as_deref(), Some("gpt-5"));

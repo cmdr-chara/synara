@@ -95,7 +95,6 @@ pub fn get_config() -> Value {
     })
 }
 
-
 struct KeepAwakeProcess {
     child: Option<std::process::Child>,
     restarts: u32,
@@ -106,12 +105,19 @@ struct KeepAwakeProcess {
 
 impl Default for KeepAwakeProcess {
     fn default() -> Self {
-        Self { child: None, restarts: 0, active: false, error: None, last_desired: false }
+        Self {
+            child: None,
+            restarts: 0,
+            active: false,
+            error: None,
+            last_desired: false,
+        }
     }
 }
 
 fn keep_awake_process() -> &'static std::sync::Mutex<KeepAwakeProcess> {
-    static PROCESS: std::sync::OnceLock<std::sync::Mutex<KeepAwakeProcess>> = std::sync::OnceLock::new();
+    static PROCESS: std::sync::OnceLock<std::sync::Mutex<KeepAwakeProcess>> =
+        std::sync::OnceLock::new();
     PROCESS.get_or_init(|| std::sync::Mutex::new(KeepAwakeProcess::default()))
 }
 
@@ -128,7 +134,9 @@ fn active_turn_count() -> usize {
     let Ok(conn) = rusqlite::Connection::open_with_flags(
         db,
         rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
-    ) else { return 0 };
+    ) else {
+        return 0;
+    };
     conn.query_row(
         "SELECT COUNT(*) FROM projection_thread_sessions WHERE status = 'running' AND active_turn_id IS NOT NULL",
         [],
@@ -149,7 +157,9 @@ fn stop_caffeinate(child: &mut std::process::Child) {
     loop {
         match child.try_wait() {
             Ok(Some(_)) => return,
-            Ok(None) if std::time::Instant::now() < deadline => std::thread::sleep(std::time::Duration::from_millis(20)),
+            Ok(None) if std::time::Instant::now() < deadline => {
+                std::thread::sleep(std::time::Duration::from_millis(20))
+            }
             Ok(None) => {
                 let _ = child.kill();
                 let _ = child.wait();
@@ -192,7 +202,10 @@ fn reconcile_keep_awake() {
         if desired {
             process.restarts += 1;
             if process.restarts > 5 {
-                process.error = Some("caffeinate exited unexpectedly 6 times; giving up until the mode changes".into());
+                process.error = Some(
+                    "caffeinate exited unexpectedly 6 times; giving up until the mode changes"
+                        .into(),
+                );
             }
         }
     }
@@ -202,7 +215,9 @@ fn reconcile_keep_awake() {
             stop_caffeinate(&mut child);
         }
         process.active = false;
-        if mode == "off" { process.error = None; }
+        if mode == "off" {
+            process.error = None;
+        }
         return;
     }
 

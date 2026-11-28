@@ -39,7 +39,7 @@ fn load() -> ControlFile {
             return ControlFile {
                 threads: HashMap::new(),
                 load_error: false,
-            }
+            };
         }
     };
     let parsed: serde_json::Result<Value> = serde_json::from_str(&raw);
@@ -147,7 +147,10 @@ fn persist(guard: &ControlFile) -> Result<(), String> {
 pub fn set(thread_id: &str, disabled: bool) -> Result<i64, String> {
     let mut guard = state().lock().unwrap();
     if guard.load_error {
-        return Err("Computer authorization state could not be loaded; control remains disabled.".to_string());
+        return Err(
+            "Computer authorization state could not be loaded; control remains disabled."
+                .to_string(),
+        );
     }
     let current = guard
         .threads
@@ -181,7 +184,10 @@ pub fn record_chat_intent(thread_id: &str, enabled: bool, generation: i64) -> Re
     let mut guard = state().lock().unwrap();
     if guard.load_error {
         return if enabled {
-            Err("Computer authorization state could not be loaded; control remains disabled.".to_string())
+            Err(
+                "Computer authorization state could not be loaded; control remains disabled."
+                    .to_string(),
+            )
         } else {
             Ok(())
         };

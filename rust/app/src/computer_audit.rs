@@ -5,7 +5,7 @@
 //! disk. Retention is bounded by entries and bytes with compaction to half,
 //! and history reads tail the file with symlink substitution refused.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub const COMPUTER_AUDIT_MAX_ENTRIES: usize = 10_000;
 pub const COMPUTER_AUDIT_MAX_BYTES: u64 = 2 * 1024 * 1024;
@@ -164,7 +164,9 @@ pub fn record(entry: Value) {
 }
 
 fn compact_if_needed(path: &std::path::Path) {
-    let Ok(metadata) = std::fs::metadata(path) else { return };
+    let Ok(metadata) = std::fs::metadata(path) else {
+        return;
+    };
     if metadata.len() <= COMPUTER_AUDIT_MAX_BYTES {
         // Byte-bound alone does not decide — upstream compacts on either bound,
         // but the entry count requires reading; the byte check gates the read.
@@ -173,7 +175,9 @@ fn compact_if_needed(path: &std::path::Path) {
             return;
         }
     }
-    let Ok(contents) = std::fs::read_to_string(path) else { return };
+    let Ok(contents) = std::fs::read_to_string(path) else {
+        return;
+    };
     let lines: Vec<&str> = contents.lines().filter(|l| !l.trim().is_empty()).collect();
     if lines.len() <= COMPUTER_AUDIT_MAX_ENTRIES && metadata.len() <= COMPUTER_AUDIT_MAX_BYTES {
         return;
@@ -265,7 +269,10 @@ pub fn handle(tag: &str, payload: &Value) -> Result<Value, crate::todo::WsErr> {
                 "auditEnabled": true,
             }))
         }
-        _ => Err(crate::todo::WsErr(format!("unsupported computer audit tag: {tag}"), None)),
+        _ => Err(crate::todo::WsErr(
+            format!("unsupported computer audit tag: {tag}"),
+            None,
+        )),
     }
 }
 
@@ -296,7 +303,10 @@ mod tests {
         let args = json!({"steps": [{"type": "click"}, {"type": "type"}, {"other": 1}]});
         let summarized = summarize_args(&args);
         assert_eq!(summarized["steps"]["count"], json!(3));
-        assert_eq!(summarized["steps"]["types"], json!(["click", "type", "unknown"]));
+        assert_eq!(
+            summarized["steps"]["types"],
+            json!(["click", "type", "unknown"])
+        );
     }
 
     #[test]

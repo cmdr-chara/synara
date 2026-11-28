@@ -29,12 +29,11 @@ pub fn table_exists(conn: &Connection, table: &str) -> bool {
 /// Primary-key columns in key order. Table rebuilds that only change the key
 /// shape use this to recognize their own post-state and skip a destructive replay.
 pub fn primary_key_columns(conn: &Connection, table: &str) -> Vec<String> {
-    let mut stmt = match conn
-        .prepare("SELECT name FROM pragma_table_info(?1) WHERE pk > 0 ORDER BY pk ASC")
-    {
-        Ok(s) => s,
-        Err(_) => return Vec::new(),
-    };
+    let mut stmt =
+        match conn.prepare("SELECT name FROM pragma_table_info(?1) WHERE pk > 0 ORDER BY pk ASC") {
+            Ok(s) => s,
+            Err(_) => return Vec::new(),
+        };
     let rows = match stmt.query_map(rusqlite::params![table], |r| r.get::<_, String>(0)) {
         Ok(rows) => rows,
         Err(_) => return Vec::new(),

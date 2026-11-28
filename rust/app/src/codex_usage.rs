@@ -10,7 +10,7 @@
 //! strictly Codex.
 use crate::provider_usage::err_usage as err;
 use crate::todo::WsErr;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
@@ -62,15 +62,24 @@ pub struct CodexOAuth {
 
 fn parse_auth_record(record: &Value, source_path: Option<PathBuf>) -> Option<CodexOAuth> {
     let tokens = record.get("tokens")?;
-    let access_token = tokens.get("access_token").and_then(Value::as_str)?.to_string();
+    let access_token = tokens
+        .get("access_token")
+        .and_then(Value::as_str)?
+        .to_string();
     if access_token.is_empty() {
         return None;
     }
     Some(CodexOAuth {
         record: record.clone(),
         access_token,
-        refresh_token: tokens.get("refresh_token").and_then(Value::as_str).map(str::to_string),
-        account_id: tokens.get("account_id").and_then(Value::as_str).map(str::to_string),
+        refresh_token: tokens
+            .get("refresh_token")
+            .and_then(Value::as_str)
+            .map(str::to_string),
+        account_id: tokens
+            .get("account_id")
+            .and_then(Value::as_str)
+            .map(str::to_string),
         source_path,
     })
 }
@@ -93,13 +102,13 @@ fn read_keychain_auth() -> Option<Value> {
     let text = String::from_utf8(out.stdout).ok()?;
     // Keychain payloads may be base64-wrapped depending on the codex version.
     let trimmed = text.trim();
-    serde_json::from_str(trimmed)
-        .ok()
-        .or_else(|| {
-            use base64::Engine;
-            let decoded = base64::engine::general_purpose::STANDARD.decode(trimmed).ok()?;
-            serde_json::from_slice(&decoded).ok()
-        })
+    serde_json::from_str(trimmed).ok().or_else(|| {
+        use base64::Engine;
+        let decoded = base64::engine::general_purpose::STANDARD
+            .decode(trimmed)
+            .ok()?;
+        serde_json::from_slice(&decoded).ok()
+    })
 }
 
 /// Resolve the best available codex auth: first readable auth.json wins,
@@ -122,14 +131,21 @@ pub fn resolve_codex_auth() -> Option<CodexOAuth> {
 fn decode_jwt_exp_ms(token: &str) -> Option<i64> {
     use base64::Engine;
     let payload = token.split('.').nth(1)?;
-    let decoded = base64::engine::general_purpose::URL_SAFE_NO_PAD.decode(payload).ok()?;
+    let decoded = base64::engine::general_purpose::URL_SAFE_NO_PAD
+        .decode(payload)
+        .ok()?;
     let json: Value = serde_json::from_slice(&decoded).ok()?;
-    json.get("exp").and_then(Value::as_i64).map(|exp| exp * 1000)
+    json.get("exp")
+        .and_then(Value::as_i64)
+        .map(|exp| exp * 1000)
 }
 
 fn iso_to_ms(iso: &str) -> Option<i64> {
     // lenient ISO8601: enough for the CLI's own last_refresh writes
-    let digits: String = iso.chars().filter(|c| c.is_ascii_digit() || *c == '.').collect();
+    let digits: String = iso
+        .chars()
+        .filter(|c| c.is_ascii_digit() || *c == '.')
+        .collect();
     if digits.len() < 14 {
         return None;
     }
@@ -176,7 +192,10 @@ fn write_json_atomic(path: &std::path::Path, value: &Value) -> Result<(), WsErr>
 
 fn http_form_post(url: &str, fields: &[(&str, &str)]) -> Result<(u16, Value), WsErr> {
     let url_owned = url.to_string();
-    let fields_owned: Vec<(String, String)> = fields.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
+    let fields_owned: Vec<(String, String)> = fields
+        .iter()
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect();
     std::thread::scope(|scope| {
         scope
             .spawn(move || -> Result<(u16, Value), String> {
@@ -191,7 +210,9 @@ fn http_form_post(url: &str, fields: &[(&str, &str)]) -> Result<(u16, Value), Ws
                     .send()
                     .map_err(|e| e.to_string())?;
                 let status = response.status().as_u16();
-                let body: Value = serde_json::from_slice(&response.bytes().map_err(|e| e.to_string())?).unwrap_or(json!({}));
+                let body: Value =
+                    serde_json::from_slice(&response.bytes().map_err(|e| e.to_string())?)
+                        .unwrap_or(json!({}));
                 Ok((status, body))
             })
             .join()
@@ -200,7 +221,10 @@ fn http_form_post(url: &str, fields: &[(&str, &str)]) -> Result<(u16, Value), Ws
     })
 }
 
-fn http_get_json(url: &str, auth: &CodexOAuth) -> Result<(u16, Value, std::collections::HashMap<String, String>), WsErr> {
+fn http_get_json(
+    url: &str,
+    auth: &CodexOAuth,
+) -> Result<(u16, Value, std::collections::HashMap<String, String>), WsErr> {
     let url_owned = url.to_string();
     let token = auth.access_token.clone();
     let account = auth.account_id.clone();
@@ -298,8 +322,14 @@ fn refresh_auth(auth: &CodexOAuth, allow_redeem: bool, now: i64) -> RefreshOutco
         let Some(access) = body.get("access_token").and_then(Value::as_str) else {
             return RefreshOutcome::Unavailable;
         };
-        let new_refresh = body.get("refresh_token").and_then(Value::as_str).map(str::to_string);
-        let new_id = body.get("id_token").and_then(Value::as_str).map(str::to_string);
+        let new_refresh = body
+            .get("refresh_token")
+            .and_then(Value::as_str)
+            .map(str::to_string);
+        let new_id = body
+            .get("id_token")
+            .and_then(Value::as_str)
+            .map(str::to_string);
         // Persist the rotation atomically, preserving unknown fields.
         let mut record = live.record.clone();
         let mut tokens = record.get("tokens").cloned().unwrap_or(json!({}));
@@ -332,13 +362,19 @@ fn refresh_auth(auth: &CodexOAuth, allow_redeem: bool, now: i64) -> RefreshOutco
         );
     }
     let error_code = body.get("error").and_then(|e| {
-        e.as_str().map(str::to_string).or_else(|| e.get("code").and_then(Value::as_str).map(str::to_string))
+        e.as_str()
+            .map(str::to_string)
+            .or_else(|| e.get("code").and_then(Value::as_str).map(str::to_string))
     });
     match error_code.as_deref() {
-        Some("refresh_token_expired") | Some("refresh_token_invalidated") => RefreshOutcome::NeedsAuth,
+        Some("refresh_token_expired") | Some("refresh_token_invalidated") => {
+            RefreshOutcome::NeedsAuth
+        }
         Some("refresh_token_reused") => {
             // Already redeemed elsewhere: the file likely holds newer credentials.
-            if let Some(fresh) = read_auth_file(&path).and_then(|r| parse_auth_record(&r, Some(path.clone()))) {
+            if let Some(fresh) =
+                read_auth_file(&path).and_then(|r| parse_auth_record(&r, Some(path.clone())))
+            {
                 if fresh.access_token != auth.access_token {
                     return RefreshOutcome::Updated(fresh, false);
                 }
@@ -378,7 +414,9 @@ fn ms_to_iso(ms: i64) -> String {
     let year = if m <= 2 { y + 1 } else { y };
     format!(
         "{:04}-{:02}-{:02}T{:02}:{:02}:{:02}Z",
-        year, m, d,
+        year,
+        m,
+        d,
         rem / 3600,
         (rem % 3600) / 60,
         rem % 60
@@ -386,7 +424,8 @@ fn ms_to_iso(ms: i64) -> String {
 }
 
 fn clamp_percent(v: Option<f64>) -> Option<f64> {
-    v.filter(|n| n.is_finite() && *n >= 0.0).map(|n| n.min(100.0))
+    v.filter(|n| n.is_finite() && *n >= 0.0)
+        .map(|n| n.min(100.0))
 }
 
 fn reset_from_window(window: &Value, now: i64) -> Option<String> {
@@ -406,43 +445,64 @@ fn reset_from_window(window: &Value, now: i64) -> Option<String> {
 
 /// Port of upstream `parseCodexUsage`: shape the wham/usage response into
 /// the shared snapshot's limits + usage lines.
-pub fn parse_codex_usage(body: &Value, headers: &std::collections::HashMap<String, String>, now: i64) -> (Vec<Value>, Vec<Value>, Option<String>) {
+pub fn parse_codex_usage(
+    body: &Value,
+    headers: &std::collections::HashMap<String, String>,
+    now: i64,
+) -> (Vec<Value>, Vec<Value>, Option<String>) {
     let rate_limit = body.get("rate_limit");
     let mut limits: Vec<Value> = Vec::new();
     let mut usage_lines: Vec<Value> = Vec::new();
-    let mut push_window = |label: &str, window_value: Option<&Value>, header_name: &str, fallback_mins: i64| {
-        let Some(window) = window_value else { return };
-        if !window.is_object() {
-            return;
-        }
-        let used = clamp_percent(headers.get(header_name).and_then(|v| v.parse::<f64>().ok()))
-            .or_else(|| clamp_percent(window.get("used_percent").and_then(Value::as_f64)));
-        let resets = reset_from_window(window, now);
-        let window_mins = window
-            .get("limit_window_seconds")
-            .and_then(Value::as_i64)
-            .map(|secs| secs / 60)
-            .unwrap_or(fallback_mins);
-        if used.is_none() && resets.is_none() {
-            return;
-        }
-        let mut entry = json!({ "window": label, "windowDurationMins": window_mins });
-        if let Some(u) = used {
-            entry["usedPercent"] = json!(u);
-        }
-        if let Some(r) = resets {
-            entry["resetsAt"] = json!(r);
-        }
-        limits.push(entry);
-    };
-    push_window("5h", rate_limit.and_then(|r| r.get("primary_window")), "x-codex-primary-used-percent", 300);
-    push_window("Weekly", rate_limit.and_then(|r| r.get("secondary_window")), "x-codex-secondary-used-percent", 10_080);
+    let mut push_window =
+        |label: &str, window_value: Option<&Value>, header_name: &str, fallback_mins: i64| {
+            let Some(window) = window_value else { return };
+            if !window.is_object() {
+                return;
+            }
+            let used = clamp_percent(headers.get(header_name).and_then(|v| v.parse::<f64>().ok()))
+                .or_else(|| clamp_percent(window.get("used_percent").and_then(Value::as_f64)));
+            let resets = reset_from_window(window, now);
+            let window_mins = window
+                .get("limit_window_seconds")
+                .and_then(Value::as_i64)
+                .map(|secs| secs / 60)
+                .unwrap_or(fallback_mins);
+            if used.is_none() && resets.is_none() {
+                return;
+            }
+            let mut entry = json!({ "window": label, "windowDurationMins": window_mins });
+            if let Some(u) = used {
+                entry["usedPercent"] = json!(u);
+            }
+            if let Some(r) = resets {
+                entry["resetsAt"] = json!(r);
+            }
+            limits.push(entry);
+        };
+    push_window(
+        "5h",
+        rate_limit.and_then(|r| r.get("primary_window")),
+        "x-codex-primary-used-percent",
+        300,
+    );
+    push_window(
+        "Weekly",
+        rate_limit.and_then(|r| r.get("secondary_window")),
+        "x-codex-secondary-used-percent",
+        10_080,
+    );
     let credits = body.get("credits");
     let balance = headers
         .get("x-codex-credits-balance")
         .and_then(|v| v.parse::<f64>().ok())
-        .or_else(|| credits.and_then(|c| c.get("balance")).and_then(Value::as_f64));
-    let has_credits = credits.and_then(|c| c.get("has_credits")).and_then(Value::as_bool);
+        .or_else(|| {
+            credits
+                .and_then(|c| c.get("balance"))
+                .and_then(Value::as_f64)
+        });
+    let has_credits = credits
+        .and_then(|c| c.get("has_credits"))
+        .and_then(Value::as_bool);
     if let Some(balance) = balance {
         if has_credits != Some(false) || balance > 0.0 {
             let estimate = balance * CREDIT_LIST_PRICE_USD;
@@ -511,7 +571,8 @@ pub fn fetch_live_codex_usage() -> Result<Value, WsErr> {
 // TTL cache mirroring upstream: 5 minutes for healthy snapshots, 60 seconds
 // for degraded ones. The mutex doubles as the in-flight join — concurrent
 // panel refreshes serialize instead of racing the rotating-token endpoint.
-static FETCH_CACHE: LazyLock<Mutex<Option<(i64, Result<Value, String>)>>> = LazyLock::new(|| Mutex::new(None));
+static FETCH_CACHE: LazyLock<Mutex<Option<(i64, Result<Value, String>)>>> =
+    LazyLock::new(|| Mutex::new(None));
 static FETCH_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 const SNAPSHOT_CACHE_TTL_MS: i64 = 5 * 60 * 1000;
 const SNAPSHOT_CACHE_DEGRADED_TTL_MS: i64 = 60 * 1000;
@@ -520,7 +581,11 @@ pub fn fetch_live_codex_usage_cached(now: i64) -> Result<Value, WsErr> {
     {
         if let Ok(cache) = FETCH_CACHE.lock() {
             if let Some((fetched_at, outcome)) = cache.as_ref() {
-                let ttl = if outcome.is_ok() { SNAPSHOT_CACHE_TTL_MS } else { SNAPSHOT_CACHE_DEGRADED_TTL_MS };
+                let ttl = if outcome.is_ok() {
+                    SNAPSHOT_CACHE_TTL_MS
+                } else {
+                    SNAPSHOT_CACHE_DEGRADED_TTL_MS
+                };
                 if now - fetched_at < ttl {
                     return outcome.clone().map_err(|e| err(&e));
                 }
@@ -531,7 +596,11 @@ pub fn fetch_live_codex_usage_cached(now: i64) -> Result<Value, WsErr> {
     // Re-check inside the lock: a serialized predecessor may have just filled it.
     if let Ok(cache) = FETCH_CACHE.lock() {
         if let Some((fetched_at, outcome)) = cache.as_ref() {
-            let ttl = if outcome.is_ok() { SNAPSHOT_CACHE_TTL_MS } else { SNAPSHOT_CACHE_DEGRADED_TTL_MS };
+            let ttl = if outcome.is_ok() {
+                SNAPSHOT_CACHE_TTL_MS
+            } else {
+                SNAPSHOT_CACHE_DEGRADED_TTL_MS
+            };
             if now - fetched_at < ttl {
                 return outcome.clone().map_err(|e| err(&e));
             }
@@ -578,7 +647,10 @@ mod tests {
             "credits": {"balance": 50.0},
         });
         let mut headers = std::collections::HashMap::new();
-        headers.insert("x-codex-primary-used-percent".to_string(), "77.0".to_string());
+        headers.insert(
+            "x-codex-primary-used-percent".to_string(),
+            "77.0".to_string(),
+        );
         headers.insert("x-codex-credits-balance".to_string(), "99.0".to_string());
         let (limits, lines, _) = parse_codex_usage(&body, &headers, 0);
         assert_eq!(limits[0]["usedPercent"], 77.0);
@@ -588,7 +660,8 @@ mod tests {
     #[test]
     fn jwt_exp_decode_works() {
         use base64::Engine;
-        let payload = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(br#"{"exp": 1700000000}"#);
+        let payload =
+            base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(br#"{"exp": 1700000000}"#);
         let token = format!("header.{payload}.sig");
         assert_eq!(decode_jwt_exp_ms(&token), Some(1_700_000_000_000));
     }

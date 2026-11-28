@@ -274,15 +274,18 @@ pub(crate) fn browser_tool_definitions() -> Vec<Value> {
                     "from": {"type":"string", "description":"Selector of the drag source element."},
                     "to": {"type":"string", "description":"Selector of the drop target element."},
                 })),
-                &["from","to"],
+                &["from", "to"],
             ),
         ),
         tool(
             "browser_download",
             "Arm downloads into the scoped browser's download directory and wait for the next completed download. Pass a selector to click the triggering element first.",
-            object_schema(merge_properties(json!({
-                "timeout": {"type":"number", "description":"Maximum wait in milliseconds."},
-            })), &[]),
+            object_schema(
+                merge_properties(json!({
+                    "timeout": {"type":"number", "description":"Maximum wait in milliseconds."},
+                })),
+                &[],
+            ),
         ),
         tool(
             "browser_close",

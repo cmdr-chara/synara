@@ -306,7 +306,7 @@ fn to_iso_string(ms: f64) -> Result<String, String> {
 fn data() -> &'static Value {
     static DATA: OnceLock<Value> = OnceLock::new();
     DATA.get_or_init(|| {
-        serde_json::from_str(include_str!("../../model-rs/src/model_data.json"))
+        serde_json::from_str(include_str!("../../assets/model_data.json"))
             .unwrap_or(Value::Null)
     })
 }

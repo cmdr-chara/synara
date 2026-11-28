@@ -1,2 +1,0 @@
-{"fn":"resolveWorktreeHandoffWorkspaceMetadata","args":[{"targetMode":"worktree","branch":"feature/preview-root","worktreePath":"/repo/worktrees/preview-root","associatedWorktreePath":"/repo/worktrees/preview-root","associatedWorktreeBranch":"feature/preview-root","associatedWorktreeRef":"abc123"}]}
-{"fn":"resolveWorktreeHandoffWorkspaceMetadata","args":[{"targetMode":"local","branch":"main","worktreePath":null,"associatedWorktreePath":"/repo/worktrees/preview-root","associatedWorktreeBranch":"feature/preview-root","associatedWorktreeRef":"abc123"}]}

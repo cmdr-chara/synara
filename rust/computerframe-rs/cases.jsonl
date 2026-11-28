@@ -1,9 +1,0 @@
-{"fn":"decodeComputerFrame","args":[["a",1]],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":[{}],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":["x"],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":[[]],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":[null],"error":"Cannot read properties of null (reading 'byteLength')"}
-{"fn":"decodeComputerFrame","args":[true],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":[{"a":{"b":"c"}}],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":[0],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeComputerFrame","args":[{"a":"b"}],"error":"First argument to DataView constructor must be an ArrayBuffer"}

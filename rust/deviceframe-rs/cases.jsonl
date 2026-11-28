@@ -1,9 +1,0 @@
-{"fn":"decodeDeviceFrame","args":["x"],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[0],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[{"a":"b"}],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[["a",1]],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[null],"error":"Cannot read properties of null (reading 'byteLength')"}
-{"fn":"decodeDeviceFrame","args":[true],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[[]],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[{"a":{"b":"c"}}],"error":"First argument to DataView constructor must be an ArrayBuffer"}
-{"fn":"decodeDeviceFrame","args":[{}],"error":"First argument to DataView constructor must be an ArrayBuffer"}

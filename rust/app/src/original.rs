@@ -83,6 +83,11 @@ impl Original {
         let child: Option<Child> = if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
             eprintln!("front door: SYNARA_NO_UPSTREAM set, the original is not started");
             None
+        } else if !Path::new(ROOT).join("apps/server/src/index.ts").exists() {
+            // The TypeScript tree is gone from this checkout: there is no
+            // upstream server to shadow, so behave as if it were disabled.
+            eprintln!("front door: no TypeScript server in this checkout, the original is not started");
+            None
         } else {
             let (program, rest) = RUN.split_first().expect("the original's command");
             let mut child = Command::new(resolve(program, port))

@@ -18,9 +18,11 @@ fn dist_dir() -> Option<std::path::PathBuf> {
     if let Ok(exe) = std::env::current_exe() {
         let mut dir = exe.parent()?.to_path_buf();
         for _ in 0..8 {
-            let cand = dir.join("apps/web/dist");
-            if cand.join("index.html").exists() {
-                return Some(cand);
+            for rel in ["rust/app/web-dist", "apps/web/dist"] {
+                let cand = dir.join(rel);
+                if cand.join("index.html").exists() {
+                    return Some(cand);
+                }
             }
             if !dir.pop() {
                 break;

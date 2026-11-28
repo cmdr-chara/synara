@@ -106,11 +106,9 @@ fn environment_channel() -> &'static str {
 /// `apps/server/package.json` version — the server build string the
 /// descriptor reports (`packageJson.version` upstream).
 fn server_version() -> String {
-    const PKG: &str = include_str!("../../../apps/server/package.json");
-    serde_json::from_str::<Value>(PKG)
-        .ok()
-        .and_then(|v| v.get("version").and_then(|v| v.as_str()).map(String::from))
-        .unwrap_or_else(|| "0.0.0".to_string())
+    // Frozen at the TypeScript elimination: the rust backend is the server now,
+    // and this string feeds only the environment descriptor's build field.
+    "1.6.6".to_string()
 }
 
 fn desktop_update_bridge_available(state_dir: &str) -> bool {

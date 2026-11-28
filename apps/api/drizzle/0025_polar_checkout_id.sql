@@ -1,1 +1,0 @@
-ALTER TABLE "billing_accounts" ADD COLUMN "checkout_id" uuid;

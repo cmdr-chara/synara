@@ -1,0 +1,1 @@
+import{S as e}from"./boot-chat-3-DaTNukUG.js";var t=e;export{t as component};

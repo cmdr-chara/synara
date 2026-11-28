@@ -1,5 +1,5 @@
 //! JSON-RPC stdio client for the native device helper. The helper is a Swift
-//! binary compiled on demand from apps/server/native/device-helper — private
+//! binary compiled on demand from rust/native/device-helper — private
 //! frameworks mean it cannot ship prebuilt, so the same source the TypeScript
 //! server compiles is reused here unchanged. Protocol: newline-delimited
 //! JSON-RPC 2.0 with integer ids on the control channel, a `ready`
@@ -36,7 +36,7 @@ fn helper_binary() -> Option<String> {
     }
     for cand in [
         "/tmp/devhelper-build/synara-device-helper",
-        "apps/server/native/device-helper/build/synara-device-helper",
+        "rust/native/device-helper/build/synara-device-helper",
     ] {
         if std::path::Path::new(cand).exists() {
             return Some(cand.to_string());
@@ -46,7 +46,7 @@ fn helper_binary() -> Option<String> {
     // helper build output.
     let mut dir = std::env::current_exe().ok()?.parent()?.to_path_buf();
     for _ in 0..6 {
-        let cand = dir.join("apps/server/native/device-helper/build/synara-device-helper");
+        let cand = dir.join("rust/native/device-helper/build/synara-device-helper");
         if cand.exists() {
             return Some(cand.to_string_lossy().to_string());
         }
@@ -59,7 +59,7 @@ fn helper_binary() -> Option<String> {
 
 fn spawn_helper() -> Result<HelperProcess, String> {
     let binary = helper_binary().ok_or_else(|| {
-        "device helper binary not found; build apps/server/native/device-helper".to_string()
+        "device helper binary not found; build rust/native/device-helper".to_string()
     })?;
     let mut child = Command::new(&binary)
         .stdin(Stdio::piped())

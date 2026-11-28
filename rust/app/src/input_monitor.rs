@@ -681,7 +681,7 @@ fn resolve_helper() -> Option<PathBuf> {
     }
     for ancestor in exe.ancestors() {
         for candidate in [
-            ancestor.join("apps/desktop/native/appsnap/build/synara-appsnap-helper"),
+            ancestor.join("rust/native/appsnap/build/synara-appsnap-helper"),
             ancestor.join("apps/desktop/.electron-runtime/appsnap/synara-appsnap-helper"),
         ] {
             if candidate.is_file() {

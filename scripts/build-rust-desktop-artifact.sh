@@ -7,7 +7,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT_DIR="${SYNARA_RUST_DESKTOP_OUT:-$ROOT/dist/rust-desktop}"
-VERSION="${SYNARA_DESKTOP_VERSION:-$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1] + "/apps/desktop/package.json"))["version"])' "$ROOT")}"
+VERSION="${SYNARA_DESKTOP_VERSION:-$(cat "$ROOT/rust/VERSION" 2>/dev/null || echo 1.7.0)}"
 FLAVOR="${SYNARA_DESKTOP_FLAVOR:-production}"
 CHANNEL="${SYNARA_UPDATE_CHANNEL:-synara}"
 OWNER="${SYNARA_UPDATE_OWNER:-cmdr-chara}"
@@ -49,9 +49,9 @@ case "$(uname -m)" in
   *) ARCH="$(uname -m)" ;;
 esac
 
-APPSNAP_HELPER_SRC="$ROOT/apps/desktop/native/appsnap/build/synara-appsnap-helper"
+APPSNAP_HELPER_SRC="$ROOT/rust/native/appsnap/build/synara-appsnap-helper"
 if [[ "${SYNARA_SKIP_APPSNAP_HELPER:-0}" != 1 ]]; then
-  node "$ROOT/apps/desktop/scripts/build-appsnap-helper.mjs" \
+  node "$ROOT/rust/native/scripts/build-appsnap-helper.mjs" \
     --arch "$ARCH" --release --output "$APPSNAP_HELPER_SRC"
 fi
 [[ -x "$APPSNAP_HELPER_SRC" ]] || { echo "missing AppSnap helper: $APPSNAP_HELPER_SRC" >&2; exit 1; }
@@ -78,7 +78,7 @@ chmod 755 \
   "$APP_DIR/Contents/MacOS/synara-backend" \
   "$APP_DIR/Contents/MacOS/synara-restore-migration-backup" \
   "$APP_DIR/Contents/Helpers/synara-appsnap-helper"
-cp "$ROOT/apps/desktop/resources/icon.icns" "$APP_DIR/Contents/Resources/icon.icns"
+cp "$ROOT/rust/assets/icon.icns" "$APP_DIR/Contents/Resources/icon.icns"
 
 cat > "$APP_DIR/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>

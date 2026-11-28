@@ -168,7 +168,7 @@ pub fn resolve_appsnap_helper() -> Option<PathBuf> {
     }
     for ancestor in exe.ancestors() {
         for candidate in [
-            ancestor.join("apps/desktop/native/appsnap/build/synara-appsnap-helper"),
+            ancestor.join("rust/native/appsnap/build/synara-appsnap-helper"),
             ancestor.join("apps/desktop/.electron-runtime/appsnap/synara-appsnap-helper"),
         ] {
             if candidate.is_file() {
@@ -495,7 +495,7 @@ mod tests {
     #[test]
     fn resolves_development_helper_when_built() {
         let expected = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../apps/desktop/native/appsnap/build/synara-appsnap-helper")
+            .join("../../native/appsnap/build/synara-appsnap-helper")
             .canonicalize();
         if let Ok(expected) = expected {
             assert_eq!(resolve_appsnap_helper().and_then(|path| path.canonicalize().ok()), Some(expected));

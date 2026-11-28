@@ -1,6 +1,0 @@
-dist-electron/
-.electron-runtime/
-native/appsnap/build/
-native/window-material/build/
-
-/resources/cua-driver/

@@ -1,0 +1,1 @@
+import{m as e}from"./boot-vendor-DRSLOtsv.js";import{_a as t}from"./boot-main-0-uf6FqkVt.js";import{r as n}from"./boot-main-11-Rl_oW9JM.js";import{t as r}from"./KanbanView-BKqJFX1x.js";var i=e(),a=t();function o(){let e=(0,i.c)(2),{projectId:t}=n.useParams(),o;return e[0]===t?o=e[1]:(o=(0,a.jsx)(r,{projectId:t}),e[0]=t,e[1]=o),o}export{o as component};

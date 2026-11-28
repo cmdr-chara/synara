@@ -344,7 +344,7 @@ pub fn resolve_appsnap_helper() -> Option<PathBuf> {
         if bundled.is_file() { return Some(bundled); }
     }
     let development = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../apps/desktop/native/appsnap/build/synara-appsnap-helper");
+        .join("../../native/appsnap/build/synara-appsnap-helper");
     development.is_file().then_some(development)
 }
 

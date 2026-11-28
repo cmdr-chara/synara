@@ -3213,13 +3213,17 @@ impl Native {
                 .on_key_down(cx.listener(|this, ev: &KeyDownEvent, _w, cx| {
                     match ev.keystroke.key.as_str() {
                         "escape" => {
-                            this.tour_step = None;
+                            this.dismiss_feature_tour();
                             cx.stop_propagation();
                             cx.notify();
                         }
                         "arrowright" | "enter" => {
-                            this.tour_step =
-                                Some((this.tour_step.unwrap_or(0) + 1).min(TOUR_STEPS.len() - 1));
+                            let current = this.tour_step.unwrap_or(0);
+                            if current + 1 >= TOUR_STEPS.len() {
+                                this.dismiss_feature_tour();
+                            } else {
+                                this.tour_step = Some(current + 1);
+                            }
                             cx.notify();
                         }
                         "arrowleft" => {
@@ -3248,7 +3252,7 @@ impl Native {
                                 .hover(|d| d.text_color(theme.foreground))
                                 .child(svg_icon(icons::X).size(px(16.)))
                                 .on_click(cx.listener(|this, _e, _w, cx| {
-                                    this.tour_step = None;
+                                    this.dismiss_feature_tour();
                                     cx.notify();
                                 })),
                         ),
@@ -3307,7 +3311,11 @@ impl Native {
                                 .text_size(px(13.))
                                 .child(if last { "Done" } else { "Next" })
                                 .on_click(cx.listener(move |this, _e, _w, cx| {
-                                    this.tour_step = if last { None } else { Some(step_idx + 1) };
+                                    if last {
+                                        this.dismiss_feature_tour();
+                                    } else {
+                                        this.tour_step = Some(step_idx + 1);
+                                    }
                                     cx.notify();
                                 })),
                         ),
@@ -3315,7 +3323,7 @@ impl Native {
             let mut stage = v_flex().size_full().bg(rgba(0x00000066)).on_mouse_down(
                 gpui::MouseButton::Left,
                 cx.listener(|this, _ev, _w, cx| {
-                    this.tour_step = None;
+                    this.dismiss_feature_tour();
                     cx.notify();
                 }),
             );

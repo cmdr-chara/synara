@@ -18,6 +18,7 @@ mod beta_diagnostics;
 mod browser_host;
 mod cua;
 mod desktop_identity;
+mod feature_tour;
 mod native;
 mod product_analytics;
 mod reliability;

@@ -43,6 +43,7 @@ mod settings;
 mod snapshot;
 mod terminal;
 mod threads;
+mod tour;
 mod updater;
 mod vault;
 mod voice;
@@ -1680,6 +1681,11 @@ pub struct Native {
     snooze_dlg_input: Option<Entity<InputState>>,
     /// App tour walkthrough (upstream AppTour): current step index.
     tour_step: Option<usize>,
+    /// Installation keys whose startup app tour was already dismissed
+    /// (upstream FeatureTourDialog localStorage, shell-persisted instead).
+    tour_seen_installations: Vec<String>,
+    /// Startup auto-open is evaluated once after server config lands.
+    tour_startup_evaluated: bool,
     user_input_draft: Vec<(String, usize, String)>,
     // Blocking pending userInput prompt (upstream UserInputQuestionForm +
     // ComposerPendingUserInputPanel): drafts keyed requestId → questionId,
@@ -3721,6 +3727,8 @@ impl Native {
                 git_commit_action: "commit".to_string(),
                 git_action_running: false,
                 tour_step: None,
+                tour_seen_installations: crate::feature_tour::load_seen(),
+                tour_startup_evaluated: false,
                 user_input_draft: Vec::new(),
                 pi_drafts: std::collections::HashMap::new(),
                 pi_qidx: std::collections::HashMap::new(),
@@ -6027,6 +6035,7 @@ pub fn native_hydrate_settings(this: &mut Native, cx: &mut Context<Native>) {
     this.wn_seen = get(&su, "whatsNewLastSeenVersion")
         .as_str()
         .map(|s| s.to_string());
+    this.maybe_start_feature_tour();
     this.eval_whats_new(cx);
     this.show_next_coachmark(cx);
 }

@@ -514,6 +514,9 @@ async fn oauth_mcp_callback(
 }
 
 async fn health() -> axum::Json<serde_json::Value> {
+    let high_water_sequence = tokio::task::spawn_blocking(orchestration_high_water_sequence)
+        .await
+        .unwrap_or(0);
     axum::Json(serde_json::json!({
         "status": "ok",
         // Tokio has no direct equivalent of Node's monitorEventLoopDelay, so
@@ -532,11 +535,26 @@ async fn health() -> axum::Json<serde_json::Value> {
             "inFlight": false,
             "retryAttempts": 0,
             "hasFailure": false,
-            "highWaterSequence": 0,
+            "highWaterSequence": high_water_sequence,
             "lagByProjector": {},
             "missingProjectors": [],
         },
     }))
+}
+
+fn orchestration_high_water_sequence() -> i64 {
+    let db = std::path::PathBuf::from(todo::state_dir()).join("state.sqlite");
+    let Ok(conn) =
+        rusqlite::Connection::open_with_flags(db, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+    else {
+        return 0;
+    };
+    conn.query_row(
+        "SELECT COALESCE(MAX(sequence), 0) FROM orchestration_events",
+        [],
+        |row| row.get(0),
+    )
+    .unwrap_or(0)
 }
 
 fn html_escape(v: &str) -> String {

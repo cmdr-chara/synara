@@ -60,6 +60,7 @@ mod hosts;
 mod hub_outputs;
 mod hub_work;
 mod input_monitor;
+mod journal_validation;
 mod list_worktrees;
 mod local_image;
 mod mcp_connectors;
@@ -259,6 +260,12 @@ async fn main() {
                 );
                 std::process::exit(1);
             }
+        }
+        if let Err(error) = journal_validation::validate_state_journal() {
+            eprintln!(
+                "orchestration journal validation failed: {error} — refusing to serve a divergent projection as healthy"
+            );
+            std::process::exit(1);
         }
         // Host identity is established once at startup like upstream: the
         // pairing scope, credential minting and tunnel admission all derive

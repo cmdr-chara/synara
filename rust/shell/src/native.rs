@@ -211,8 +211,9 @@ fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
     s.code_block.padding.top = Some(px(28.).into());
     // Upstream: code surface follows the user-message token (3% ink in light),
     // radius 0.65rem = 10.4px.
+    // Measured on main (dark): .chat-markdown-codeblock is foreground at 2.7%.
     s.code_block.background = Some(if dark {
-        gpui::hsla(0.0, 0.0, 1.0, 0.06).into()
+        gpui::hsla(0.0, 0.0, 0.988, 0.027).into()
     } else {
         gpui::hsla(0.0, 0.0, 0.0, 0.03).into()
     });
@@ -224,6 +225,17 @@ fn markdown_style(dark: bool) -> gpui_kit::component::text::TextViewStyle {
         gpui_kit::component::highlighter::HighlightTheme::default_dark()
     } else {
         gpui_kit::component::highlighter::HighlightTheme::default_light()
+    };
+    // Inline code: a faint chip in the text colour (upstream code element:
+    // foreground 2.7% fill). gpui-component's default paints it with
+    // theme.accent, the orange brand colour.
+    s.inline_code = gpui::HighlightStyle {
+        background_color: Some(if dark {
+            gpui::hsla(0.0, 0.0, 0.988, 0.027)
+        } else {
+            gpui::hsla(0.0, 0.0, 0.0, 0.03)
+        }),
+        ..Default::default()
     };
     s.is_dark = dark;
     s
@@ -13118,8 +13130,9 @@ impl Native {
         };
         // Upstream light bubble: rgba(13,13,13,0.03) — neutral ink, not the
         // list-selection tint.
+        // Upstream --app-user-message-background (dark): foreground at 2.7%.
         let user_bubble: gpui::Hsla = if dark_ui {
-            rgb(0x181818).into()
+            theme.foreground.opacity(0.027)
         } else {
             gpui::hsla(0.0, 0.0, 0.05, 0.03)
         };
@@ -13729,7 +13742,7 @@ impl Native {
                                         }
                                         content = content.child(row);
                                     }
-                                    content.child(div().text_size(px(13.)).child(text))
+                                    content.child(div().text_size(px(13.)).line_height(relative(1.625)).child(text))
                                 }))
                                 .child(ufooter.opacity(reveal))
                             ),
@@ -13869,34 +13882,69 @@ impl Native {
                                             }
                                         }
                                     })
-                                    .style(markdown_style(theme.is_dark()))
+                                    .style({
+                                        // Code starts below upstream's 27px header row
+                                        // plus the 8px pre padding (35px).
+                                        let mut s = markdown_style(theme.is_dark());
+                                        s.code_block.padding.top = Some(px(35.).into());
+                                        s
+                                    })
                                     .code_block_actions({
-                                        let muted_fg = theme.muted_foreground;
+                                        // Upstream chat-markdown-codeblock__header: language
+                                        // 11.52px mono 10px from the left; wrap, then copy, as
+                                        // 24px buttons (12px icons) 6px from the right, muted.
+                                        // gpui pins this slot 8px from the top-right on a muted
+                                        // chip, so the row spans the block, sits 7px higher and
+                                        // repaints the block colour over the chip.
+                                        let hdr_ink = theme.foreground.opacity(0.58);
+                                        let page_bg: gpui::Hsla = if dark_ui {
+                                            rgb(0x111111).into()
+                                        } else {
+                                            theme.background
+                                        };
+                                        let hdr_bg = page_bg.blend(if dark_ui {
+                                            gpui::hsla(0.0, 0.0, 0.988, 0.027)
+                                        } else {
+                                            gpui::hsla(0.0, 0.0, 0.0, 0.03)
+                                        });
+                                        let hdr_w = if chat_mw < px(2000.) {
+                                            chat_mw - px(18.)
+                                        } else {
+                                            px(700.)
+                                        };
                                         move |cb, _w, _cx| {
-                                        let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
-                                        h_flex()
-                                            .items_center()
-                                            .justify_between()
-                                            .child(
+                                            let lang = cb.lang().map(|l| l.to_string()).unwrap_or_default();
+                                            let btn = |icon: &'static [u8]| {
                                                 div()
-                                                    .text_size(px(11.))
-                                                    .text_color(muted_fg)
-                                                    .child(lang),
-                                            )
-                                            .child(
-                                                h_flex()
-                                                    .gap(px(2.))
-                                                    .child(
-                                                        svg_icon(icons::COPY)
-                                                            .size(px(14.))
-                                                            .text_color(muted_fg),
-                                                    )
-                                                    .child(
-                                                        svg_icon(icons::TEXT_WRAP)
-                                                            .size(px(14.))
-                                                            .text_color(muted_fg),
-                                                    ),
-                                            )
+                                                    .size(px(24.))
+                                                    .flex()
+                                                    .items_center()
+                                                    .justify_center()
+                                                    .rounded(px(6.))
+                                                    .child(svg_icon(icon).size(px(12.)).text_color(hdr_ink))
+                                            };
+                                            h_flex()
+                                                .w(hdr_w)
+                                                .h(px(24.))
+                                                .mt(px(-7.))
+                                                .mr(px(-2.))
+                                                .bg(hdr_bg)
+                                                .items_center()
+                                                .justify_between()
+                                                .child(
+                                                    div()
+                                                        .font_family("JetBrains Mono")
+                                                        .text_size(px(11.52))
+                                                        .line_height(px(16.128))
+                                                        .text_color(hdr_ink)
+                                                        .child(lang),
+                                                )
+                                                .child(
+                                                    h_flex()
+                                                        .gap(px(2.))
+                                                        .child(btn(icons::TEXT_WRAP))
+                                                        .child(btn(icons::COPY)),
+                                                )
                                         }
                                     })
                                     .selectable(true),

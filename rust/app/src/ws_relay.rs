@@ -2095,6 +2095,17 @@ async fn serve_native_socket(
         if std::env::var("SYNARA_TAP_NATIVE").is_ok() {
             eprintln!("ws_native: connection read loop ended");
         }
+        // The connection is gone: every stream task spawned for it must die
+        // here. Their pollers hold clones of native_tx and only notice the
+        // disconnect when a send fails — but idle subscriptions send nothing
+        // for minutes at a time, so without an explicit abort each reconnect
+        // would strand a generation of sqlite-polling zombie tasks (and the
+        // writer itself, which waits for all senders to drop).
+        if let Ok(mut map) = streams.lock() {
+            for (_, task) in map.drain() {
+                task.abort();
+            }
+        }
         drop(native_tx);
         let _ = writer.await;
 }

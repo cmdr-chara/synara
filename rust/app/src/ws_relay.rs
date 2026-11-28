@@ -20,8 +20,6 @@ use tokio::sync::mpsc::unbounded_channel;
 
 use crate::state::AppState;
 
-
-
 fn rpc_id_key(v: &serde_json::Value) -> String {
     // Effect RPC clients use numeric request ids while the native shell uses
     // string ids; responses must echo the original JSON type verbatim. Internally
@@ -2025,9 +2023,6 @@ fn error_json(crate::todo::WsErr(message, code): crate::todo::WsErr) -> serde_js
         "retryable": false,
     })
 }
-
-
-
 
 async fn serve_native_socket(
     client: WebSocket,

@@ -18,7 +18,7 @@ pub fn handles(tag: &str) -> bool {
         "server.listMcpConnectors"
             | "server.listMcpConnectorProposals"
             | "server.getMcpConnectorSetup"
-    ) || (std::env::var("SYNARA_NO_UPSTREAM").is_ok()
+    ) || (true
         && matches!(
             tag,
             "server.disconnectMcpConnector" | "server.resolveMcpConnectorProposal" | "server.connectMcpConnector"

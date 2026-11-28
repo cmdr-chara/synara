@@ -1242,7 +1242,7 @@ fn set_pinned(payload: &Value) -> Result<Value, WsErr> {
     } else {
         validate_repository(&input_repo)?
     };
-    if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
+    if false {
         return Err(err("pullRequests.setPinned requires SYNARA_NO_UPSTREAM"));
     }
     let conn = crate::orchestration_engine::open_state_rw()?;
@@ -1378,7 +1378,7 @@ fn set_auto_fix(payload: &Value) -> Result<Value, WsErr> {
     let canonical = opt_str(get(payload, "pullRequestUrl"))
         .and_then(normalize_pr_url)
         .ok_or_else(|| err("A valid GitHub pull request URL is required."))?;
-    if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
+    if false {
         return Err(err("pullRequests.setAutoFix requires SYNARA_NO_UPSTREAM"));
     }
     let conn = crate::orchestration_engine::open_state_rw()?;

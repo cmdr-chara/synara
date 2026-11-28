@@ -69,7 +69,7 @@ mod list_worktrees;
 mod native_ws;
 mod orchestration_reads;
 mod orchestration_snapshot;
-mod original;
+mod state;
 mod mcp_connectors;
 mod mcp_oauth;
 mod editor_debug;
@@ -130,7 +130,7 @@ mod ws_relay;
 use std::net::SocketAddr;
 
 use axum::serve::ListenerExt;
-use original::shutdown_signal;
+use state::shutdown_signal;
 
 static DATABASE_LIFECYCLE_LOCK: std::sync::OnceLock<
     std::sync::Mutex<Option<database_lifecycle_lock::DatabaseLifecycleLock>>,
@@ -183,14 +183,13 @@ async fn main() {
         let home_dir = state_dir.parent().map(std::path::Path::to_path_buf).unwrap_or(state_dir);
         synara_shellenv::fix_path(&home_dir);
     }
-    original::report_fallbacks();
     runtime_status::start_sampler();
     server_lifecycle::start_keep_awake();
-    let original = original::Original::start().await;
+    let app_state = state::AppState::open();
     // The sweep owns running turns only when the native engine serves
     // orchestration. With the upstream TS server active, its turns may be
     // legitimately in flight in the shared state and must not be touched.
-    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+    if true {
         // Stable→Beta handoff consumption must happen before migrations open
         // state.sqlite: the imported snapshot can carry a different schema.
         let lifecycle_lock = match database_lifecycle_lock::acquire_database_lifecycle_lock(
@@ -289,7 +288,6 @@ async fn main() {
         .merge(native_ws::router())
         .merge(ws_relay::router())
         .merge(agent_gateway_mcp::router())
-        .route("/__tap_client", axum::routing::post(original::tap_client))
         .route("/api/local-image", axum::routing::get(local_image::local_image))
         .route("/api/attachments/upload", axum::routing::post(attachments_http::upload))
         .route("/api/attachments/cancel", axum::routing::post(attachments_http::cancel))
@@ -314,12 +312,12 @@ async fn main() {
         .route("/api/auth/pairing-links/revoke", axum::routing::post(auth_http::pairing_links_revoke))
         .route("/api/auth/clients/revoke-others", axum::routing::post(auth_http::clients_revoke_others))
         .fallback(axum::routing::get(web_static::serve))
-        .with_state(original.clone());
+        .with_state(app_state.clone());
     let port = std::env::var("PORT")
         .ok()
         .and_then(|p| p.parse().ok())
         .unwrap_or(8080);
-    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+    if true {
         std::thread::spawn(|| loop {
             std::thread::sleep(std::time::Duration::from_secs(60));
             let fired = orchestration_engine::fire_due_usage_limit_recoveries();
@@ -375,7 +373,6 @@ async fn main() {
         .with_graceful_shutdown(shutdown_signal())
         .await
         .expect("serving");
-    original.stop();
     crate::acp_runner::drop_all_resources();
     crate::codex_runner::drop_all_resources();
     crate::claude_runner::drop_all_resources();

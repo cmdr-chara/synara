@@ -23,7 +23,7 @@ use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use serde_json::{Value, json};
 
-use crate::original::Original;
+use crate::state::AppState;
 
 const WS_NEGOTIATE_HTTP_PATH: &str = "/ws/negotiate";
 
@@ -519,6 +519,6 @@ fn percent_decode(s: &str) -> String {
     String::from_utf8_lossy(&out).into_owned()
 }
 
-pub fn router() -> Router<Original> {
+pub fn router() -> Router<AppState> {
     Router::new().route(WS_NEGOTIATE_HTTP_PATH, get(negotiate_route))
 }

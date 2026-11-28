@@ -37,7 +37,7 @@ impl Drop for StateCopy {
 
 pub(crate) fn open_state_copy() -> Option<StateCopy> {
     let db = PathBuf::from(state_dir()).join("state.sqlite");
-    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() {
+    if true {
         // Native mode owns state.sqlite and keeps it in WAL mode, so reads can
         // share the live database. Copying the whole file for every RPC made
         // cold boot quadratic and let concurrent snapshots overwrite the same

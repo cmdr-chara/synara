@@ -20,7 +20,7 @@ pub fn handles(tag: &str) -> bool {
     tag == "orchestration.listProjectImports"
         || tag == "orchestration.loadProjectImportHistory"
         || (tag == "orchestration.importProject"
-            && std::env::var("SYNARA_NO_UPSTREAM").is_ok())
+            && true)
 }
 
 pub fn handle(tag: &str, payload: &Value) -> Result<Value, WsErr> {

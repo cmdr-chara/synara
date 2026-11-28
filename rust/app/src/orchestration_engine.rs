@@ -45,7 +45,7 @@ pub fn handles(tag: &str) -> bool {
             | "orchestration.repairState"
             | "orchestration.regenerateThreadTitle"
             | "orchestration.importThread"
-    ) && std::env::var("SYNARA_NO_UPSTREAM").is_ok()
+    ) && true
 }
 
 pub(crate) fn open_state_rw() -> Result<Connection, WsErr> {

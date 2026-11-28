@@ -14,7 +14,7 @@ fn err(message: impl Into<String>) -> WsErr {
 }
 
 fn no_upstream() -> bool {
-    std::env::var("SYNARA_NO_UPSTREAM").map(|v| v == "1").unwrap_or(false)
+    true
 }
 
 fn iso_now() -> String {

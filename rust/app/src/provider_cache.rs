@@ -68,7 +68,7 @@ pub fn handles(tag: &str) -> bool {
             | "server.listExternalMcpIntegrations"
             | "server.refreshProviders"
             | "server.updateProvider"
-    ) || (std::env::var("SYNARA_NO_UPSTREAM").is_ok()
+    ) || (true
         && matches!(
             tag,
             "server.createExternalMcpIntegration"

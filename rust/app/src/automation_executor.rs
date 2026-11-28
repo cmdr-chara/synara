@@ -29,7 +29,7 @@ fn parse_iso_ms(value: &str) -> i64 {
 }
 
 pub fn start() {
-    if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
+    if false {
         return;
     }
     tokio::spawn(async {

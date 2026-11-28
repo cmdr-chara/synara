@@ -21,7 +21,7 @@ use tokio_tungstenite::connect_async;
 use tokio_tungstenite::tungstenite::Message as UpstreamMessage;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 
-use crate::original::Original;
+use crate::state::AppState;
 
 /// Forward the headers that matter to the original's admission and auth.
 /// `origin` is deliberately excluded: the original gates upgrades on a trusted
@@ -48,7 +48,7 @@ fn rpc_id_key(v: &serde_json::Value) -> String {
     }
 }
 
-pub fn router() -> Router<Original> {
+pub fn router() -> Router<AppState> {
     Router::new()
         .route("/ws", get(|s, w, u, h| upgrade(s, w, u, h, false)))
         .route("/ws/bootstrap", get(|s, w, u, h| upgrade(s, w, u, h, true)))
@@ -64,7 +64,7 @@ pub fn router() -> Router<Original> {
 /// the TLS tunnel exactly as upstream's RemoteTlsServer. Without a paired
 /// identity there is nothing to terminate TLS with, so the upgrade refuses.
 async fn remote_tunnel_upgrade(
-    State(original): State<Original>,
+    State(original): State<AppState>,
     ws: WebSocketUpgrade,
 ) -> Response {
     let state_dir = crate::todo::state_dir();
@@ -322,7 +322,7 @@ async fn remote_renderer_upgrade(
 }
 
 async fn device_frames_upgrade(
-    State(original): State<Original>,
+    State(original): State<AppState>,
     ws: WebSocketUpgrade,
     uri: Uri,
     headers: HeaderMap,
@@ -330,7 +330,7 @@ async fn device_frames_upgrade(
     if reject_untrusted_websocket_origin(&headers) {
         return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
     }
-    if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
+    if false {
         return upgrade(State(original), ws, uri, headers, false).await;
     }
     if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
@@ -351,7 +351,7 @@ async fn device_frames_upgrade(
 }
 
 async fn computer_frames_upgrade(
-    State(original): State<Original>,
+    State(original): State<AppState>,
     ws: WebSocketUpgrade,
     uri: Uri,
     headers: HeaderMap,
@@ -359,7 +359,7 @@ async fn computer_frames_upgrade(
     if reject_untrusted_websocket_origin(&headers) {
         return (axum::http::StatusCode::FORBIDDEN, "Forbidden").into_response();
     }
-    if std::env::var("SYNARA_NO_UPSTREAM").is_err() {
+    if false {
         return upgrade(State(original), ws, uri, headers, false).await;
     }
     if let Err(status) = authenticate_rpc_websocket_upgrade(&headers, &uri) {
@@ -488,7 +488,7 @@ async fn wait_for_close_signal(mut signal: tokio::sync::watch::Receiver<()>) {
 }
 
 async fn upgrade(
-    State(original): State<Original>,
+    State(original): State<AppState>,
     ws: WebSocketUpgrade,
     uri: Uri,
     headers: HeaderMap,
@@ -2112,7 +2112,7 @@ async fn serve_native_socket(
 
 async fn relay(
     client: WebSocket,
-    original: Original,
+    original: AppState,
     uri: Uri,
     headers: HeaderMap,
     intercept: bool,
@@ -2126,246 +2126,7 @@ async fn relay(
     let desktop_update_authority = authenticated_session.and_then(|session| {
         (session.role == "owner").then(|| format!("owner:{}", session.session_id))
     });
-    if std::env::var("SYNARA_NO_UPSTREAM").is_ok() || !original.upstream_running() {
-        eprintln!("ws_relay: serving socket natively (upstream unavailable or disabled)");
-        return serve_native_socket(client, todos, desktop_update_authority, session_role.clone()).await;
-    }
-    // The native `/ws/negotiate` issues OUR server-instance id, but upstream
-    // gates upgrades on its own — swap the param so relayed sockets pass the
-    // generation check (fetched lazily; refetched once after a 426).
-    let mut target = format!(
-        "{}{}",
-        original.ws_base(),
-        uri.path_and_query().map_or("/ws", |p| p.as_str())
-    );
-    let mut refreshed = false;
-    if target.contains("x-synara-server-instance=")
-        && let Some(id) = original.upstream_instance(false).await
-    {
-        target = rewrite_server_instance(&target, &id);
-    }
-    let (upstream, resp) = loop {
-        let request = match build_upstream_request(&target, &headers) {
-            Some(r) => r,
-            None => {
-                eprintln!("ws_relay: request build failed for {target}");
-                return;
-            }
-        };
-        match connect_async(request).await {
-            Ok(pair) => break pair,
-            Err(e) => {
-                if !refreshed
-                    && target.contains("x-synara-server-instance=")
-                    && let Some(id) = original.upstream_instance(true).await
-                {
-                    refreshed = true;
-                    target = rewrite_server_instance(&target, &id);
-                    continue;
-                }
-                eprintln!("ws_relay: upstream connect to {target} failed: {e}");
-                // Do not strand an already accepted cold-boot socket on a dead
-                // upstream: degrade this same connection to native serving. Tags
-                // still missing natively fail fast instead of hanging forever.
-                eprintln!("ws_relay: upstream unavailable after upgrade; serving socket natively");
-                return serve_native_socket(client, todos, desktop_update_authority, session_role.clone()).await;
-            }
-        }
-    };
-    let _ = resp;
-    let (mut client_tx, mut client_rx) = client.split();
-    let (mut up_tx, mut up_rx) = upstream.split();
-    // Debug tap: SYNARA_TAP_WS=/path appends every text frame (">" to
-    // upstream, "<" from upstream) so relayed wire shapes can be studied.
-    let tap_path = std::env::var("SYNARA_TAP_WS").ok();
-    let tap = std::sync::Arc::new(move |dir: &str, t: &str| {
-        if let Some(p) = &tap_path
-            && let Ok(mut f) = std::fs::OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open(p)
-        {
-            use std::io::Write;
-            let _ = writeln!(f, "{dir}{t}");
-        }
-    });
-    let (native_tx, mut native_rx) = unbounded_channel::<ClientMessage>();
-    let streams: std::sync::Arc<
-        std::sync::Mutex<std::collections::HashMap<String, tokio::task::JoinHandle<()>>>,
-    > = std::sync::Arc::new(std::sync::Mutex::new(std::collections::HashMap::new()));
-    let streams_in = streams.clone();
-
-    let tap_out = tap.clone();
-    let to_upstream = async move {
-        while let Some(msg) = client_rx.next().await {
-            let msg = match msg {
-                Ok(m) => m,
-                Err(e) => {
-                    eprintln!("ws_relay: client read error: {e}");
-                    break;
-                }
-            };
-            let out = match msg {
-                ClientMessage::Text(t) => {
-                    if intercept && t.contains(BOOTSTRAP_NEGOTIATE) {
-                        if let Some((_, reply)) = intercept_bootstrap(&t) {
-                            eprintln!("ws_relay: native bootstrap.negotiate reply sent");
-                            let _ = native_tx.send(reply);
-                            continue;
-                        }
-                    }
-                    if let Some(reply) = intercept_todo(&t, &todos, &native_tx, &streams_in, desktop_update_authority.as_deref(), session_role.as_str()).await {
-                        eprintln!("ws_relay: native todo reply");
-                        if let Some(reply) = reply {
-                            let _ = native_tx.send(reply);
-                        }
-                        continue;
-                    }
-                    // `Ack`/`Interrupt`/`Eof` addressed at a native stream stay
-                    // on this side: upstream never saw the request id, so the
-                    // frame would be a protocol violation there and poison the
-                    // whole socket. Interrupt aborts the pump; Eof drains all.
-                    if (t.contains("\"Interrupt\"") || t.contains("\"Eof\"") || t.contains("\"Ack\""))
-                        && let Ok(msg) = serde_json::from_str::<serde_json::Value>(&t)
-                    {
-                        let tag = msg.get("_tag").and_then(|v| v.as_str()).unwrap_or("");
-                        if tag == "Interrupt" || tag == "Eof" || tag == "Ack" {
-                            let rid = msg.get("requestId").map(rpc_id_key).unwrap_or_default();
-                            let owned = if let Ok(mut map) = streams_in.lock() {
-                                if tag == "Eof" {
-                                    map.drain().map(|(_, h)| h).collect::<Vec<_>>()
-                                } else if tag == "Interrupt" {
-                                    map.remove(&rid).into_iter().collect::<Vec<_>>()
-                                } else {
-                                    Vec::new()
-                                }
-                            } else {
-                                Vec::new()
-                            };
-                            let known_native = if let Ok(map) = streams_in.lock() {
-                                map.contains_key(rid.as_str())
-                            } else {
-                                false
-                            };
-                            if !owned.is_empty() {
-                                for h in owned {
-                                    h.abort();
-                                }
-                                continue;
-                            }
-                            if known_native {
-                                continue;
-                            }
-                        }
-                    }
-                    tap_out(">", &t);
-                    UpstreamMessage::Text(t.to_string().into())
-                }
-                ClientMessage::Binary(b) => {
-                    tap_out(">", &format!(
-                        "[bin {}B] {}",
-                        b.len(),
-                        b.iter()
-                            .take(160)
-                            .map(|x| format!("{x:02x}"))
-                            .collect::<String>()
-                    ));
-                    UpstreamMessage::Binary(b)
-                },
-                ClientMessage::Ping(p) => UpstreamMessage::Ping(p),
-                ClientMessage::Pong(p) => UpstreamMessage::Pong(p),
-                ClientMessage::Close(c) => {
-                    eprintln!("ws_relay: client closed socket: {c:?}");
-                    let _ = up_tx
-                        .send(UpstreamMessage::Close(c.map(|f| {
-                            tokio_tungstenite::tungstenite::protocol::CloseFrame {
-                                code: tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode::from(
-                                    f.code,
-                                ),
-                                reason: f.reason.to_string().into(),
-                            }
-                        })))
-                        .await;
-                    break;
-                }
-            };
-            if up_tx.send(out).await.is_err() {
-                eprintln!("ws_relay: upstream send channel closed");
-                break;
-            }
-        }
-        eprintln!("ws_relay: client->upstream loop ended");
-    };
-
-    let to_client = async move {
-        loop {
-            let out = tokio::select! {
-                msg = up_rx.next() => match msg {
-                    Some(Err(e)) => {
-                        eprintln!("ws_relay: upstream read error: {e}");
-                        break;
-                    }
-                    None => {
-                        eprintln!("ws_relay: upstream socket ended");
-                        break;
-                    }
-                    Some(Ok(m)) => match m {
-                        UpstreamMessage::Text(t) => {
-                            tap("<", &t);
-                            ClientMessage::Text(t.to_string().into())
-                        },
-                        UpstreamMessage::Binary(b) => {
-                            tap("<", &format!(
-                                "[bin {}B] {}",
-                                b.len(),
-                                b.iter()
-                                    .take(160)
-                                    .map(|x| format!("{x:02x}"))
-                                    .collect::<String>()
-                            ));
-                            ClientMessage::Binary(b)
-                        },
-                        UpstreamMessage::Ping(p) => ClientMessage::Ping(p),
-                        UpstreamMessage::Pong(p) => ClientMessage::Pong(p),
-                        UpstreamMessage::Frame(f) => {
-                            let p = f.into_payload();
-                            tap("<", &format!("[frame {}B]", p.len()));
-                            ClientMessage::Binary(p)
-                        },
-                        UpstreamMessage::Close(c) => {
-                            eprintln!("ws_relay: upstream close: {c:?}");
-                            let _ = client_tx
-                                .send(ClientMessage::Close(c.map(|f| {
-                                    axum::extract::ws::CloseFrame {
-                                        code: u16::from(f.code),
-                                        reason: f.reason.to_string().into(),
-                                    }
-                                })))
-                                .await;
-                            break;
-                        }
-                    },
-                },
-                msg = native_rx.recv() => match msg {
-                    Some(m) => {
-                        if let ClientMessage::Text(t) = &m {
-                            tap("<", t);
-                        }
-                        m
-                    }
-                    None => continue,
-                },
-            };
-            if client_tx.send(out).await.is_err() {
-                break;
-            }
-        }
-    };
-
-    tokio::select! {
-        _ = to_upstream => {}
-        _ = to_client => {}
-    }
+    serve_native_socket(client, todos, desktop_update_authority, session_role.clone()).await;
 }
 
 

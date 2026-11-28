@@ -357,7 +357,15 @@ async fn main() {
             std::thread::sleep(std::time::Duration::from_secs(5));
         });
     }
-    let listener = tokio::net::TcpListener::bind(SocketAddr::from(([0, 0, 0, 0], port)))
+    // Loopback by default, matching upstream: remote exposure requires an
+    // explicit SYNARA_HOST override, and ws_relay then enforces authentication
+    // for non-loopback binds. Binding wildcard unconditionally would publish
+    // the HTTP API and every socket on the LAN without notice.
+    let bind_host = crate::native_ws::config()
+        .host()
+        .and_then(|value| value.parse::<std::net::IpAddr>().ok())
+        .unwrap_or(std::net::IpAddr::V4(std::net::Ipv4Addr::LOCALHOST));
+    let listener = tokio::net::TcpListener::bind(SocketAddr::from((bind_host, port)))
         .await
         .expect("binding the port");
     let listener = listener.tap_io(|tcp| {

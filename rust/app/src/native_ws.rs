@@ -64,6 +64,12 @@ pub(crate) struct Config {
     dev_url: Option<String>,
 }
 
+impl Config {
+    pub(crate) fn host(&self) -> Option<&str> {
+        self.host.as_deref()
+    }
+}
+
 pub(crate) fn config() -> &'static Config {
     static CONFIG: OnceLock<Config> = OnceLock::new();
     CONFIG.get_or_init(|| Config {

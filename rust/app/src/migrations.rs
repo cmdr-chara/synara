@@ -20,7 +20,7 @@ use crate::todo::WsErr;
 mod automation_identity;
 mod batch1;
 mod helpers;
-mod model_selection_compat;
+pub(crate) mod model_selection_compat;
 
 pub use helpers::{column_exists, table_exists};
 

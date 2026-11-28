@@ -62,6 +62,11 @@ pub(crate) fn validate_journal(conn: &Connection) -> Result<(), String> {
             format!("journal sequence {sequence} ({event_type}): metadata_json is not valid JSON: {error}")
         })?;
         validate_event_metadata(sequence, &event_type, &metadata)?;
+        let payload = crate::orchestration_engine::payload_after_persisted_upcast(
+            &event_type,
+            &payload,
+            &metadata_json,
+        );
         validate_event_payload(sequence, &event_type, &payload)?;
     }
     Ok(())
@@ -243,12 +248,10 @@ fn require_model_selection(
     nullable: bool,
 ) -> Result<(), String> {
     let value = object.get(key);
-    // Missing model-selection keys pass through upstream's v0 persisted-event
-    // upcaster before schema decoding: project rows gain null, while legacy
-    // thread rows gain a normalized selection (thread.created falls back to
-    // its historical default model). Explicit null remains invalid for
-    // thread.created because there is no legacy shape to upcast.
-    if value.is_none() || (nullable && value.is_some_and(Value::is_null)) {
+    // This validator runs after the v0 -> v1 payload upcast. Missing keys are
+    // therefore already a schema failure: legacy rows that could be repaired
+    // have gained either a normalized object or null by this point.
+    if nullable && value.is_some_and(Value::is_null) {
         return Ok(());
     }
     require_object(sequence, event_type, key, value).map(|_| ())
@@ -523,6 +526,30 @@ mod tests {
         );
         let error = validate_journal(&conn).unwrap_err();
         assert!(error.contains("session.status"));
+    }
+
+    #[test]
+    fn upcasts_legacy_missing_thread_model_selection_before_validation() {
+        let conn = fixture();
+        insert_event(
+            &conn,
+            13,
+            "thread.created",
+            r#"{"threadId":"t1","projectId":"p1","title":"Thread","branch":null,"worktreePath":null}"#,
+        );
+        assert!(validate_journal(&conn).is_ok());
+    }
+
+    #[test]
+    fn rejects_missing_model_selection_on_v1_rows() {
+        let conn = fixture();
+        conn.execute(
+            "INSERT INTO orchestration_events (sequence, event_type, payload_json, metadata_json) VALUES (14, 'thread.created', '{\"threadId\":\"t1\",\"projectId\":\"p1\",\"title\":\"Thread\",\"branch\":null,\"worktreePath\":null}', '{\"persistedEventSchemaVersion\":1}')",
+            [],
+        )
+        .unwrap();
+        let error = validate_journal(&conn).unwrap_err();
+        assert!(error.contains("modelSelection"));
     }
 
     #[test]

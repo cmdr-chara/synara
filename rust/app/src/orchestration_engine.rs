@@ -58,6 +58,47 @@ mod persisted_metadata_tests {
     }
 
     #[test]
+    fn v0_upcast_normalizes_legacy_thread_model_selection() {
+        let payload = json!({
+            "threadId":"thread-1",
+            "provider":"gemini",
+            "model":"gemini-3-flash-preview (High)",
+            "modelOptions":{"gemini":{"temperature":0.2}}
+        });
+        let upcasted = payload_after_persisted_upcast("thread.created", &payload, "{}");
+        assert_eq!(
+            upcasted
+                .get("modelSelection")
+                .and_then(|v| v.get("provider")),
+            Some(&json!("antigravity"))
+        );
+        assert_eq!(
+            upcasted.get("modelSelection").and_then(|v| v.get("model")),
+            Some(&json!("gemini-3-flash-preview"))
+        );
+        assert_eq!(
+            upcasted
+                .get("modelSelection")
+                .and_then(|v| v.get("options"))
+                .and_then(|v| v.get("reasoningEffort")),
+            Some(&json!("high"))
+        );
+        assert!(upcasted.get("provider").is_none());
+        assert!(upcasted.get("model").is_none());
+        assert!(upcasted.get("modelOptions").is_none());
+    }
+
+    #[test]
+    fn v1_rows_do_not_pass_through_v0_upcaster() {
+        let payload = json!({"threadId":"thread-1"});
+        let metadata = json!({PERSISTED_EVENT_SCHEMA_VERSION_KEY: 1}).to_string();
+        assert_eq!(
+            payload_after_persisted_upcast("thread.created", &payload, &metadata),
+            payload
+        );
+    }
+
+    #[test]
     fn commit_events_persists_schema_version_metadata() {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute_batch(
@@ -92,6 +133,140 @@ mod persisted_metadata_tests {
             metadata.get(PERSISTED_EVENT_SCHEMA_VERSION_KEY),
             Some(&json!(CURRENT_PERSISTED_EVENT_SCHEMA_VERSION))
         );
+    }
+}
+
+fn trimmed_string(value: Option<&Value>) -> Option<&str> {
+    value
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+}
+
+fn upcasted_model_selection(payload: &Map<String, Value>, key: &str) -> Option<(String, Value)> {
+    payload.get(key).map(|selection| {
+        (
+            key.to_string(),
+            crate::migrations::model_selection_compat::normalize_persisted_model_selection(
+                selection,
+            ),
+        )
+    })
+}
+
+/// v0 -> v1 persisted-event payload normalization, mirroring upstream's
+/// normalizeLegacyEventRow for the model-selection families. Rows already
+/// stamped v1 must not pass through here.
+pub(crate) fn upcast_v0_payload(event_type: &str, payload: &Value) -> Value {
+    let Some(original) = payload.as_object() else {
+        return payload.clone();
+    };
+    let mut normalized: Option<Map<String, Value>> = None;
+    let mut next = |key: String, value: Value| {
+        normalized
+            .get_or_insert_with(|| original.clone())
+            .insert(key, value);
+    };
+
+    let project_model_event =
+        event_type == "project.created" || event_type == "project.meta-updated";
+    let thread_model_event = matches!(
+        event_type,
+        "thread.created" | "thread.meta-updated" | "thread.turn-start-requested"
+    );
+
+    if project_model_event && original.contains_key("defaultModelSelection") {
+        if !original
+            .get("defaultModelSelection")
+            .is_some_and(Value::is_null)
+        {
+            if let Some((key, value)) = upcasted_model_selection(original, "defaultModelSelection")
+            {
+                next(key, value);
+            }
+        }
+    }
+    if thread_model_event && original.contains_key("modelSelection") {
+        if let Some((key, value)) = upcasted_model_selection(original, "modelSelection") {
+            next(key, value);
+        }
+    }
+
+    if project_model_event && !original.contains_key("defaultModelSelection") {
+        let next_payload = normalized.get_or_insert_with(|| original.clone());
+        let legacy_model = trimmed_string(original.get("defaultModel"));
+        next_payload.insert(
+            "defaultModelSelection".to_string(),
+            legacy_model
+                .map(|model| {
+                    Value::Object(
+                        crate::migrations::model_selection_compat::normalize_legacy_model_selection(
+                            original.get("defaultProvider").unwrap_or(&Value::Null),
+                            None,
+                            model,
+                            original.get("defaultModelOptions").unwrap_or(&Value::Null),
+                        ),
+                    )
+                })
+                .unwrap_or(Value::Null),
+        );
+        for key in ["defaultProvider", "defaultModel", "defaultModelOptions"] {
+            next_payload.remove(key);
+        }
+        return Value::Object(next_payload.clone());
+    }
+
+    if thread_model_event && !original.contains_key("modelSelection") {
+        let next_payload = normalized.get_or_insert_with(|| original.clone());
+        let legacy_model =
+            trimmed_string(original.get("model")).or(if event_type == "thread.created" {
+                Some("gpt-5.5")
+            } else {
+                None
+            });
+        if let Some(model) = legacy_model {
+            next_payload.insert(
+                "modelSelection".to_string(),
+                Value::Object(
+                    crate::migrations::model_selection_compat::normalize_legacy_model_selection(
+                        original.get("provider").unwrap_or(&Value::Null),
+                        None,
+                        model,
+                        original.get("modelOptions").unwrap_or(&Value::Null),
+                    ),
+                ),
+            );
+        }
+        for key in ["provider", "model", "modelOptions"] {
+            next_payload.remove(key);
+        }
+        return Value::Object(next_payload.clone());
+    }
+
+    normalized.map_or_else(|| payload.clone(), Value::Object)
+}
+
+pub(crate) fn payload_after_persisted_upcast(
+    event_type: &str,
+    payload: &Value,
+    metadata_json: &str,
+) -> Value {
+    let legacy = serde_json::from_str::<Value>(metadata_json)
+        .ok()
+        .and_then(|metadata| {
+            metadata.as_object().map(|object| {
+                object
+                    .get(PERSISTED_EVENT_SCHEMA_VERSION_KEY)
+                    .and_then(Value::as_i64)
+                    .unwrap_or(0)
+                    == 0
+            })
+        })
+        .unwrap_or(false);
+    if legacy {
+        upcast_v0_payload(event_type, payload)
+    } else {
+        payload.clone()
     }
 }
 
@@ -9532,7 +9707,7 @@ fn repair_state() -> Result<Value, WsErr> {
     let replay_result = (|| -> Result<(), WsErr> {
         let mut st = conn
             .prepare(
-                "SELECT event_type, stream_id, payload_json, sequence, occurred_at \
+                "SELECT event_type, stream_id, payload_json, sequence, occurred_at, metadata_json \
                  FROM orchestration_events ORDER BY sequence",
             )
             .map_err(|e| err(e.to_string()))?;
@@ -9543,7 +9718,9 @@ fn repair_state() -> Result<Value, WsErr> {
             let payload_json: String = row.get(2).map_err(|e| err(e.to_string()))?;
             let sequence: i64 = row.get(3).map_err(|e| err(e.to_string()))?;
             let occurred_at: String = row.get(4).map_err(|e| err(e.to_string()))?;
-            let payload: Value = serde_json::from_str(&payload_json).unwrap_or(Value::Null);
+            let metadata_json: String = row.get(5).map_err(|e| err(e.to_string()))?;
+            let parsed: Value = serde_json::from_str(&payload_json).unwrap_or(Value::Null);
+            let payload = payload_after_persisted_upcast(&event_type, &parsed, &metadata_json);
             replay_projection_event(
                 &conn,
                 &event_type,

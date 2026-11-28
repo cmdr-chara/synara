@@ -148,12 +148,17 @@ fn event_row(
         "correlationId": correlation_id,
         "metadata": crate::orchestration_engine::wire_metadata_json(&metadata_json),
         "type": event_type,
-        "payload": normalized_payload(&payload_json),
+        "payload": normalized_payload(&event_type, &payload_json, &metadata_json),
     })
 }
 
-fn normalized_payload(payload_json: &str) -> Value {
-    let mut p = serde_json::from_str::<Value>(payload_json).unwrap_or(Value::Null);
+fn normalized_payload(event_type: &str, payload_json: &str, metadata_json: &str) -> Value {
+    let parsed = serde_json::from_str::<Value>(payload_json).unwrap_or(Value::Null);
+    let mut p = crate::orchestration_engine::payload_after_persisted_upcast(
+        event_type,
+        &parsed,
+        metadata_json,
+    );
     // Legacy gateway rows predate the contract literal set
     // (user|automation|agent); normalize so the wire decodes.
     if p.get("dispatchOrigin").and_then(Value::as_str) == Some("agentGateway") {
